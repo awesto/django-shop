@@ -1,4 +1,8 @@
 # djangoshop/checkout.py
+
+from djangoshop.payment_base import PaymentBase
+from djangoshop.shipper_base import ShipperBase
+
 from django.views.generic import TemplateView
 
 class CheckoutView(TemplateView):
@@ -10,7 +14,7 @@ class CheckoutSite(object):
     
     def __init__(self, name=None, app_name='django_shop'):
         self._payment_registry = []
-        self._shippers_registry = []
+        self._shipper_registry = []
          # model_class class -> admin_class instance
         self.root_path = None
         if name is None:
@@ -19,32 +23,46 @@ class CheckoutSite(object):
             self.name = name
         self.app_name = app_name
         
-    def register(self, registry, class_or_iterable):
+    def register(self, registry, classtype, class_or_iterable):
         """
         Registers the given model(s) with the checkoutsite
         """
             
-        if isinstance(cls, ShipperBase) or isinstance(cls, PaymentBase):
+        if isinstance(cls, classtype):
             class_or_iterable = [class_or_iterable]
         for cls in class_or_iterable:
             if cls in getattr(self, '_%s_registry' % registry):
-                raise AlreadyRegistered('The class %s is already registered' % model.__name__)
+                raise AlreadyRegistered('The %s class %s is already registered' % (registry, cls.__name__))
             # Instantiate the class to save in the registry
             getattr(self, '_%s_registry' % registry).append(cls(self))
 
-    def unregister(self, model_or_iterable):
+     def register(self, registry, classtype, class_or_iterable):
         """
         Unregisters the given model(s).
 
         If a class isn't already registered, this will raise NotRegistered.
         """
-        if isinstance(cls, ShipperBase) or isinstance(cls, PaymentBase):
+        if isinstance(cls, classtype):
             class_or_iterable = [class_or_iterable]
         for cls in class_or_iterable:
             if cls in getattr(self, '_%s_registry' % registry):
-                raise NotRegistered('The model %s is not registered' % model.__name__)
-            del self._registry[model]
-                    
+                raise AlreadyRegistered('The %s class %s is alrea
+            if cls in getattr(self, '_%s_registry' % registry):
+                raise NotRegistered('The %s class %s is not registered' % (registry, cls.__name__))
+            del self._registry[cls] # not a dict anymore how to remove
+            
+    def register_shipper(self, shipper):
+        self.register(self, 'shipper', ShipperBase, shipper)
+            
+    def unregister_shipper(self, shipper):
+        self.unregister(self, 'shipper', ShipperBase, shipper)
+        
+    def register_payment(self, payment):
+        self.register(self, 'payment', PaymentBase, payment)
+            
+    def unregister_payment(self, shipper):
+        self.unregister(self, 'payment', PaymentBase, payment)
+                
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url, include
 
@@ -63,7 +81,7 @@ class CheckoutSite(object):
         for shipper in self._shippers_registry:
             if hasattr(shipper, 'urls'):
                 urlpatterns += patterns('',
-                    url(r'^payment/%s/ % payment.url_prefix,
+                    url(r'^payment/%s/' % payment.url_prefix,
                         include(shipper.urls))
                 )
         return urlpatterns
@@ -125,7 +143,7 @@ class PaymentClass(PaymentBase, UrlMixin):
 
         urlpatterns = patterns('',
             url(r'^$', self.payment_view,
-                name='%s_payment' % self.url_prefix,
+                name='%s_payment' % self.url_prefix),
         )
         return urlpatterns
         
