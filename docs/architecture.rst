@@ -42,50 +42,7 @@ Plugin structure
 Plugins should be class based, as most of the other stuff in Django is (for instace the admins), with the framework
 defining both a base class for plugin writers to extend, as well as a registration method for subclasses.
 
-As suggested by fivethreeo::
-
- # djangoshop/checkout.py
-
- class CheckoutSite(object):
-    """ code copied from AdminSite """
-    pass
-
- def autodiscover():
-    pass
-
- # djangoshop/__init__.py
-
- from djangoshop.checkout import CheckoutSite
- checkoutsite = CheckoutSite()
-
- # djangoshop/shipper_base.py
-
- class ShipperBase(object)
-    pass
-    
- # djangoshop/payment_base.py
-
- class PaymentBase(object)
-    pass
-
- # app/djangoshop_shipper.py
-
- from djangoshop.shipper_base import ShipperBase
-
- class ShipmentClass(ShipperBase):
-    pass
-    
- checkoutsite.register_shipment(ShipmentClass)
-
- # app/djangoshop_payment.py
-
- from djangoshop.payment_base import PaymentBase
-
- class PaymentClass(PaymentBase):
-    pass
-    
- checkoutsite.register_payment(PaymentClass)
-
+Refer to snippets/plugins.py for a proposal by fivethreeo for a plugin structure.
 
 Similar to the Django-CMS plugins, most of the shop plugins will probably have to render templates (for instance when
 they want to define a new checkout step).
