@@ -13,6 +13,7 @@ Contents:
     
     statement
     architecture 
+    products
 
 Indices and tables
 ==================

@@ -42,7 +42,10 @@ Plugin structure
 Plugins should be class based, as most of the other stuff in Django is (for instace the admins), with the framework
 defining both a base class for plugin writers to extend, as well as a registration method for subclasses.
 
-Refer to snippets/plugins.py for a proposal by fivethreeo for a plugin structure.
+Proposal by fivethreeo for the plugin structure:
+
+.. literalinclude:: snippets/modules.py
+   :language: python
 
 Similar to the Django-CMS plugins, most of the shop plugins will probably have to render templates (for instance when
 they want to define a new checkout step).
