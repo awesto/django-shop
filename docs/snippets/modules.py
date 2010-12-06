@@ -13,8 +13,10 @@ class CheckoutSite(object):
     checkout_view = CheckoutView.as_view()
     
     def __init__(self, name=None, app_name='django_shop'):
-        self._payment_registry = []
-        self._shipper_registry = []
+        self._registry = {
+            'shipper': {},
+            'payment': {}
+        }
          # model_class class -> admin_class instance
         self.root_path = None
         if name is None:
@@ -27,29 +29,26 @@ class CheckoutSite(object):
         """
         Registers the given model(s) with the checkoutsite
         """
-            
         if isinstance(cls, classtype):
             class_or_iterable = [class_or_iterable]
         for cls in class_or_iterable:
-            if cls in getattr(self, '_%s_registry' % registry):
+            if cls in self._registry[registry].keys():
                 raise AlreadyRegistered('The %s class %s is already registered' % (registry, cls.__name__))
             # Instantiate the class to save in the registry
-            getattr(self, '_%s_registry' % registry).append(cls(self))
+            self._registry[registry][cls] = cls(self)
 
-     def register(self, registry, classtype, class_or_iterable):
+     def unregister(self, registry, classtype, class_or_iterable):
         """
-        Unregisters the given model(s).
+        Unregisters the given classes(s).
 
         If a class isn't already registered, this will raise NotRegistered.
         """
         if isinstance(cls, classtype):
             class_or_iterable = [class_or_iterable]
         for cls in class_or_iterable:
-            if cls in getattr(self, '_%s_registry' % registry):
-                raise AlreadyRegistered('The %s class %s is alrea
-            if cls in getattr(self, '_%s_registry' % registry):
+            if cls not in self._registry[registry].keys():
                 raise NotRegistered('The %s class %s is not registered' % (registry, cls.__name__))
-            del self._registry[cls] # not a dict anymore how to remove
+            del self._registry[cls] 
             
     def register_shipper(self, shipper):
         self.register(self, 'shipper', ShipperBase, shipper)
@@ -60,7 +59,7 @@ class CheckoutSite(object):
     def register_payment(self, payment):
         self.register(self, 'payment', PaymentBase, payment)
             
-    def unregister_payment(self, shipper):
+    def unregister_payment(self, payment):
         self.unregister(self, 'payment', PaymentBase, payment)
                 
     def get_urls(self):
