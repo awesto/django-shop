@@ -1,4 +1,42 @@
-# djangoshop/checkout.py
+# django_shop/checkout/__init__.py
+# django_shop/checkout/__init__.py
+
+
+from django_shop.checkout.site import CheckoutSite, checkoutsite
+
+def autodiscover():
+    """
+    Auto-discover INSTALLED_APPS admin.py modules and fail silently when
+    not present. This forces an import on them to register any admin bits they
+    may want.
+    """
+
+    import copy
+    from django.conf import settings
+    from django.utils.importlib import import_module
+    from django.utils.module_loading import module_has_submodule
+
+    for app in settings.INSTALLED_APPS:
+        mod = import_module(app)
+        for submod in ('django_shop_payment', 'django_shop_shipment')
+            # Attempt to import the app's admin module.
+            try:
+                before_import_registry = copy.copy(checkoutsite._registry)
+                import_module('%s.%s' % (app, submod))
+            except:
+                # Reset the model registry to the state before the last import as
+                # this import will have to reoccur on the next request and this
+                # could raise NotRegistered and AlreadyRegistered exceptions
+                # (see #8245).
+                site._registry = before_import_registry
+    
+                # Decide whether to bubble up this error. If the app just
+                # doesn't have an admin module, we can ignore the error
+                # attempting to import it, otherwise we want it to bubble up.
+                if module_has_submodule(mod, submod):
+                    raise
+
+# django_shop/checkout/site.py
 
 from djangoshop.payment_base import PaymentBase
 from djangoshop.shipper_base import ShipperBase
@@ -48,7 +86,7 @@ class CheckoutSite(object):
         for cls in class_or_iterable:
             if cls not in self._registry[registry].keys():
                 raise NotRegistered('The %s class %s is not registered' % (registry, cls.__name__))
-            del self._registry[cls] 
+            del self._registry[registry][cls] 
             
     def register_shipper(self, shipper):
         self.register(self, 'shipper', ShipperBase, shipper)
@@ -89,20 +127,14 @@ class CheckoutSite(object):
     def urls(self):
         return self.get_urls(), self.app_name, self.name
 
-def autodiscover():
-    pass
-
-# djangoshop/__init__.py
-
-from djangoshop.checkout import CheckoutSite
 checkoutsite = CheckoutSite()
 
-# djangoshop/shipper_base.py
+# django_shop/checkout/shipper_base.py
 
 class ShipperBase(object)
     pass
     
-# djangoshop/payment_base.py
+# django_shop/checkout/payment_base.py
 from djangoshop. import RegisterAbleClass
 
 class PaymentBase(object)
@@ -111,7 +143,7 @@ class PaymentBase(object)
     self.checkout_site = checkout_site
     super(PaymentBase, self).__init__()
     
-# app/djangoshop_shipper.py
+# app/django_shop_shipment.py
 
 from djangoshop.shipper_base import ShipperBase
 
@@ -123,7 +155,7 @@ class ShipmentClass(ShipperBase):
     
 checkoutsite.register_shipment(ShipmentClass)
 
-# app/djangoshop_payment.py
+# app/django_shop_payment.py
 
 from django.views.generic import TemplateView
 from djangoshop.payment_base import PaymentBase
