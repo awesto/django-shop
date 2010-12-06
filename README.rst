@@ -14,6 +14,6 @@ Use the docs/ directory to go nuts!
 How to help:
 ============
 
-# Development is done on github - please fork!
-# Most of the discussion around architecture decisions / tools etc... take place on IRC (Freenode), on #django-shop
+ # Development is done on github - please fork!
+ # Most of the discussion around architecture decisions / tools etc... take place on IRC (Freenode), on #django-shop
 
