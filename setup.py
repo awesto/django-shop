@@ -1,4 +1,7 @@
 # This shouldn't be used yet obviously, there is nothing to build :)
+from setuptools import setup, find_packages
+
+CLASSIFIERS = []
 
 setup(
     author="Christopher Glass",
@@ -11,35 +14,10 @@ setup(
     license='BSD License',
     platforms=['OS Independent'],
     classifiers=CLASSIFIERS,
-    requires=[
-        'django (>1.1.0)',
+    install_requires=[
+        'Django>=1.2',
     ],
     packages=find_packages(exclude=["example", "example.*"]),
-#    package_data={
-#        'cms': [
-#            'templates/admin/*.html',
-#            'templates/admin/cms/mail/*.html',
-#            'templates/admin/cms/mail/*.txt',
-#            'templates/admin/cms/page/*.html',
-#            'templates/admin/cms/page/*/*.html',
-#            'templates/cms/*.html',
-#            'templates/cms/*/*.html',
-#            'plugins/*/templates/cms/plugins/*.html',
-#            'plugins/*/templates/cms/plugins/*/*.html',
-#            'plugins/*/templates/cms/plugins/*/*.js',
-#            'locale/*/LC_MESSAGES/*',
-#        ] + media_files,
-#        'example': [
-#            'media/css/*.css',
-#            'media/img/*.jpg',
-#            'templates/*.html',
-#            'sampleapp/media/sampleapp/img/gift.jpg',
-#            'sampleapp/templates/sampleapp/*.html',
-#        ],
-#        'menus': [
-#            'templates/menu/*.html',
-#        ],
-#    },
     zip_safe = False
 )
 
