@@ -41,44 +41,44 @@ Plugin structure
 
 As suggested by fivethreeo::
 
-# djangoshop/checkout.py
+ # djangoshop/checkout.py
 
-class CheckoutSite(object):
+ class CheckoutSite(object):
     """ code copied from AdminSite """
     pass
 
-def autodiscover():
+ def autodiscover():
     pass
 
-# djangoshop/__init__.py
+ # djangoshop/__init__.py
 
-from djangoshop.checkout import CheckoutSite
-checkoutsite = CheckoutSite()
+ from djangoshop.checkout import CheckoutSite
+ checkoutsite = CheckoutSite()
 
-# djangoshop/shipper_base.py
+ # djangoshop/shipper_base.py
 
-class ShipperBase(object)
-    pass
-    
-# djangoshop/payment_base.py
-
-class PaymentBase(object)
-    pass
-
-# app/djangoshop_shipper.py
-
-from djangoshop.shipper_base import ShipperBase
-
-class ShipmentClass(ShipperBase):
+ class ShipperBase(object)
     pass
     
-checkoutsite.register_shipment(ShipmentClass)
+ # djangoshop/payment_base.py
 
-# app/djangoshop_payment.py
+ class PaymentBase(object)
+    pass
 
-from djangoshop.payment_base import PaymentBase
+ # app/djangoshop_shipper.py
 
-class PaymentClass(PaymentBase):
+ from djangoshop.shipper_base import ShipperBase
+
+ class ShipmentClass(ShipperBase):
     pass
     
-checkoutsite.register_payment(PaymentClass)
+ checkoutsite.register_shipment(ShipmentClass)
+
+ # app/djangoshop_payment.py
+
+ from djangoshop.payment_base import PaymentBase
+
+ class PaymentClass(PaymentBase):
+    pass
+    
+ checkoutsite.register_payment(PaymentClass)
