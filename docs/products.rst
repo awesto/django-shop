@@ -38,7 +38,7 @@ Different ways may exist for differnt use-cases:
   snippets/products.py for this approach.
 
 
-The core Product model should not know anything about these
+The core Product model should not need to know anything about these
 extensions. Django ORM will take care of reverse accessors to these
 extensions.
 
