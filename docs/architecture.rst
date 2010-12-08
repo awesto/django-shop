@@ -79,3 +79,30 @@ Proposal by fivethreeo for the plugin structure:
 
 Similar to the Django-CMS plugins, most of the shop plugins will probably have to render templates (for instance when
 they want to define a new checkout step).
+
+
+Shoppping Cart
+==============
+
+In its core this is a list of a kind of CartItems which relate to Product.
+
+It should be possible to have the same Product in different CartItems
+when some details are different. Stuff like different service addons
+etc.
+
+
+Prices
+======
+
+This seems to be rather complex and must be pluggable. Prices may be
+influenced by many different things like the Product itself,
+quantities, the customer (location, special prices), shipping method
+and the payment method. This all would have to be handled by special /
+custom pricing implementations. The core implementation must only
+include ways for such extension possibilities.
+
+Prices will also be related to taxes in some way.
+
+The core product implementation should possibly know nothing about
+prices and taxes at all.
+
