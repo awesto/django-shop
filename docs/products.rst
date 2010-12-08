@@ -46,4 +46,19 @@ Other Django-based webshops handle the complexity in a clever way: make the core
 product attributes. Similar to key-value tags, product attributes allow for very flexible product creation, and a clever
 set of model managers hide the complexity of theses added tables quite well.
 
+Are there reasons why these attributes should relate to Product
+instead of implementing a generic attribute app? Maybe this way::
+
+   class Attribute(models.Model):
+       # relation stuff
+       content_type = models.ForeignKey(ContentType)
+       object_id = models.PositiveIntegerField()
+       content_object = generic.GenericForeignKey('content_type', 'object_id')
+
+       # content and type
+       value = models.CharField(max_length = 500)
+       description = models.TextField()
+       type = models.ForeignKey(AttributeType)
+
+
 See snippets/products.py for more info.
