@@ -35,23 +35,32 @@ Random ideas:
 * multiple shops (site and prefixed)
 
     * namespaced urls for shops 
+
         psuedocode , is this possible and or a good idea? requires restarts like the cms apphooks.
 
-        prefix = shop.prefix
-        # shopsite.get_urls(shop) # returns a tuple of (urlpatterns, app_name, shop_namespace)
-        url(prefix, shopsite.get_urls(shop), kwargs={'shop_prefix': prefix})
+        .. code-block:: python
+
+            prefix = shop.prefix
+            # shopsite.get_urls(shop) # returns a tuple of (urlpatterns, app_name, shop_namespace)
+            url(prefix, shopsite.get_urls(shop), kwargs={'shop_prefix': prefix})
 
         on a product
-        def get_product_url(self):
-           reverse('shop_%s:product_detail' % threadlocals.shop_pk, kwargs={'category_slug': self.category_slug, slug=product.slug})
+
+        .. code-block:: python
+
+            def get_product_url(self):
+               return reverse('shop_%s:product_detail' % threadlocals.shop_pk, kwargs={'category_slug': self.category_slug, slug=product.slug})
 
     * middleware to find current shop based on site and or prefix/ set current shop id in threadlocals?( process view )
-        def process_view(self, request, view_func, view_args, view_kwargs)
-            shop_prefix = view_kwargs.pop('shop_prefix', None):
-            if shop_prefix:
-                shop = Shop.objects.get(prefix=shop_prefix)
-                request.shop = shop
-                threadlocals.shop_pk = shop.pk
+
+        .. code-block:: python
+
+            def process_view(self, request, view_func, view_args, view_kwargs)
+                shop_prefix = view_kwargs.pop('shop_prefix', None):
+                if shop_prefix:
+                    shop = Shop.objects.get(prefix=shop_prefix)
+                    request.shop = shop
+                    threadlocals.shop_pk = shop.pk
 
 * class-based views
 * class based plugins (not modules based!)
