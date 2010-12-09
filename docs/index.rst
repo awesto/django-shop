@@ -15,6 +15,7 @@ Contents:
     architecture
     requirements
     products
+    taxes
 
 Indices and tables
 ==================
