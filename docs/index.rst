@@ -12,7 +12,8 @@ Contents:
     :maxdepth: 3
     
     statement
-    architecture 
+    architecture
+    requirements
     products
 
 Indices and tables

@@ -81,6 +81,8 @@ Similar to the Django-CMS plugins, most of the shop plugins will probably have t
 they want to define a new checkout step).
 
 
+.. _cart:
+
 Shoppping Cart
 ==============
 
@@ -90,6 +92,8 @@ It should be possible to have the same Product in different CartItems
 when some details are different. Stuff like different service addons
 etc.
 
+
+.. _prices:
 
 Prices
 ======
