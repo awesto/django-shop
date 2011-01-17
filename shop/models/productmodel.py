@@ -1,8 +1,7 @@
 '''
-Models.py for django-shop
+Created on Jan 17, 2011
 
-This is a work in progress!
-
+@author: Christopher Glass <christopher.glass@divio.ch>
 '''
 from django.db import models
 
@@ -18,20 +17,6 @@ class Product(models.Model):
     long_description = models.TextField()
     active = models.BooleanField(default = False)
 
-class Cart(models.Model):
-    '''
-    This should be a rather simple list of items. Ideally it should be bound to
-    a session and not to a User is we want to let people buy from our shop 
-    without having to register with us.
-    '''
-    
-class Cartitem(models.Model):
-    '''
-    This is a holder for the quantity of items in the cart and, obviously, a 
-    pointer to the actual Product being purchased :)
-    '''
-    quatity = models.IntegerField()
-    product = models.ForeignKey(Product)
 
 class Category(models.Model):
     '''
@@ -57,4 +42,3 @@ class ProductAttributeValue(models.Model):
     attribute = models.ForeignKey(ProductAttribute)
     product = models.ForeignKey(Product)
     value = models.TextField() # Does it make sense to use something smaller?
-
