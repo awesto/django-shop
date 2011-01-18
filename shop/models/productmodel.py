@@ -6,6 +6,31 @@ Created on Jan 17, 2011
 from django.db import models
 from util.fields import CurrencyField
 
+class Category(models.Model):
+    '''
+    This should be a node in a tree (mptt?) structure representing categories 
+    of products.
+    Ideally, this should be usable as a tag cloud too (tags are just categories
+    that are not in a tree structure). The display logic should be handle on a 
+    per-site basis
+    '''
+    name = models.CharField(max_length=255)
+    parent_category = models.ForeignKey('self', related_name="children",
+                                        null=True, blank=True)
+    
+    def get_products(self):
+        '''
+        Gets the products belonging to this category (not recursively)
+        '''
+        return Product.objects.filter(category=self)
+    
+class ProductAttribute(models.Model):
+    '''
+    This is an example of how the attributes could work for products, if this 
+    approach is chosen
+    '''
+    name = models.CharField(max_length=255)
+
 class Product(models.Model):
     '''
     A basic product for the shop
@@ -19,23 +44,9 @@ class Product(models.Model):
     active = models.BooleanField(default = False)
     
     base_price = CurrencyField()
-
-class Category(models.Model):
-    '''
-    This should be a node in a tree (mptt?) structure representing categories 
-    of products.
-    Ideally, this should be usable as a tag cloud too (tags are just categories
-    that are not in a tree structure). The display logic should be handle on a 
-    per-site basis
-    '''
     
-class ProductAttribute(models.Model):
-    '''
-    This is an example of how the attributes could work for products, if this 
-    approach is chosen
-    '''
-    name = models.CharField(max_length=255)
-
+    category = models.ForeignKey(Category)
+    
 class ProductAttributeValue(models.Model):
     '''
     This is simply a M2M class with an extra field to the relation (the value of 

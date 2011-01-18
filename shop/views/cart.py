@@ -17,7 +17,9 @@ def add_product_to_cart(request, product_id):
     if not shopping_cart_id:
         #TODO Handle the no user + no session case
         pass
+    
     shopping_cart = Cart.objects.get(pk=shopping_cart_id)
     product = Product.objects.get(pk=product_id)
     shopping_cart.add_product(product)
+    #TODO: Class based views. Really.
     
