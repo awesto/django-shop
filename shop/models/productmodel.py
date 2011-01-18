@@ -4,6 +4,7 @@ Created on Jan 17, 2011
 @author: Christopher Glass <christopher.glass@divio.ch>
 '''
 from django.db import models
+from util.fields import CurrencyField
 
 class Product(models.Model):
     '''
@@ -16,6 +17,8 @@ class Product(models.Model):
     short_description = models.CharField(max_length=255)
     long_description = models.TextField()
     active = models.BooleanField(default = False)
+    
+    base_price = CurrencyField()
 
 
 class Category(models.Model):

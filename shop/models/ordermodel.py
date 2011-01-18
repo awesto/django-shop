@@ -4,6 +4,7 @@ Created on Jan 17, 2011
 @author: Christopher Glass <christopher.glass@divio.ch>
 '''
 from django.db import models
+from util.fields import CurrencyField
 
 class Order(models.Model):
     '''
@@ -15,7 +16,7 @@ class Order(models.Model):
     status, shipping costs, taxes, etc...
     '''
     
-    shipping_cost = models.DecimalField(max_digits=12, decimal_places=2)
+    shipping_cost = CurrencyField()
     
     # Addresses MUST be copied over to the order when it's created.
     shipping_name = models.CharField(max_length=255)
