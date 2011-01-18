@@ -20,7 +20,6 @@ class Product(models.Model):
     
     base_price = CurrencyField()
 
-
 class Category(models.Model):
     '''
     This should be a node in a tree (mptt?) structure representing categories 
