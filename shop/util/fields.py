@@ -12,8 +12,8 @@ class CurrencyField(DecimalField):
     max_digits = 12 and decimal_places=2
     '''
     def __init__(self, **kwargs):
-        if kwargs['max_digits']:
+        if kwargs.get('max_digits'):
             del kwargs['max_digits']
-        if kwargs['decimal_places']:
+        if kwargs.get('decimal_places'):
             del kwargs['decimal_places']
         return super(CurrencyField,self).__init__(max_digits=12,decimal_places=2,**kwargs)
