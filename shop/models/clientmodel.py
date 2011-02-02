@@ -9,13 +9,30 @@ Holds all the information relevant to the client (addresses for instance)
 
 from django.contrib.auth.models import User
 from django.db import models
+import datetime
 
+class Client(models.Model):
+    user = models.ForeignKey(User)
+    
+    date_of_birth = models.DateField()
+    created = models.DateTimeField(default=datetime.datetime.now)
+    
+    def __unicode__(self):
+        return "ClientProfile for %s %s" % (self.user.first_name, self.user.last_name)
+    
+    @property
+    def shipping_address(self):
+        return Address.objects.filter(client=self).filter(is_shipping=True)[0]
+    
+    @property
+    def billing_address(self):
+        return Address.objects.filter(client=self).filter(is_billing=True)[0]
 
 class Country(models.Model):
     name = models.CharField(max_length=255)
 
 class Address(models.Model):
-    user = models.ForeignKey(User)
+    client = models.ForeignKey(Client, name_related="addresses")
     
     address = models.CharField(max_length=255)
     address2 = models.CharField(max_length=255)
