@@ -6,6 +6,12 @@ Created on Jan 17, 2011
 from django.db import models
 from util.fields import CurrencyField
 
+STATUS_CODES = {
+    1: 'Processing', # User still checking out the contents
+    2: 'Confirmed', # Contents are valid, now we can handle payment etc...
+    3: 'Completed', # Everything is fine, only need to send the products
+}
+
 class Order(models.Model):
     '''
     A model representing an Order.
@@ -15,6 +21,9 @@ class Order(models.Model):
     when the Order is first created), list of items, and holds stuff like the
     status, shipping costs, taxes, etc...
     '''
+    
+    status = models.IntegerField(choices=STATUS_CODES)
+    
     
     shipping_cost = CurrencyField()
     
