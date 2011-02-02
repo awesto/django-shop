@@ -1,7 +1,7 @@
 #!/bin/bash
 
 pushd .
-cd tests
-python testapp/manage.py test shop
+cd tests/testapp
+python manage.py test shop
 
 popd
