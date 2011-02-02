@@ -32,7 +32,7 @@ class Country(models.Model):
     name = models.CharField(max_length=255)
 
 class Address(models.Model):
-    client = models.ForeignKey(Client, name_related="addresses")
+    client = models.ForeignKey(Client, related_name="addresses")
     
     address = models.CharField(max_length=255)
     address2 = models.CharField(max_length=255)

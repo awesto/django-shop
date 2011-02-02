@@ -4,7 +4,7 @@ Created on Jan 17, 2011
 @author: Christopher Glass <christopher.glass@divio.ch>
 '''
 from django.db import models
-from util.fields import CurrencyField
+from shop.util.fields import CurrencyField
 
 class Category(models.Model):
     '''
@@ -45,7 +45,7 @@ class Product(models.Model):
     
     base_price = CurrencyField()
     
-    category = models.ForeignKey(Category)
+    category = models.ForeignKey(Category, null=True)
     
 class ProductAttributeValue(models.Model):
     '''

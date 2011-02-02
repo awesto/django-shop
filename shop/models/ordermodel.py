@@ -4,13 +4,13 @@ Created on Jan 17, 2011
 @author: Christopher Glass <christopher.glass@divio.ch>
 '''
 from django.db import models
-from util.fields import CurrencyField
+from shop.util.fields import CurrencyField
 
-STATUS_CODES = {
-    1: 'Processing', # User still checking out the contents
-    2: 'Confirmed', # Contents are valid, now we can handle payment etc...
-    3: 'Completed', # Everything is fine, only need to send the products
-}
+STATUS_CODES = (
+    (1, 'Processing'), # User still checking out the contents
+    (2, 'Confirmed'), # Contents are valid, now we can handle payment etc...
+    (3, 'Completed'), # Everything is fine, only need to send the products
+)
 
 class Order(models.Model):
     '''
