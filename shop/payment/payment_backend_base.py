@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-class BasePaymentBackend():
+class BasePaymentBackend(object):
     '''
     Needs a lot more work...
     '''
