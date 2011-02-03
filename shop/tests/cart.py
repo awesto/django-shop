@@ -52,5 +52,34 @@ class CartTestCase(TestCase):
             self.assertEqual(cart.subtotal_price, the_price)
             self.assertEqual(cart.total_price, the_price)
     
-    def test_03_one_object_one_modifier(self):
-        pass
+    def test_03_two_objects_no_modifier(self):
+        with SettingsOverride(SHOP_PRICE_MODIFIERS=[]):
+            
+            user = User.objects.create(username="test3", email="test@example.com")
+            
+            cart = Cart()
+            cart.user = user
+            cart.save()
+            
+            product = Product()
+            
+            product.name = "TestPrduct"
+            product.slug = "TestPrduct"
+            product.short_description = "TestPrduct"
+            product.long_description = "TestPrduct"
+            product.active = True
+            product.base_price = Decimal('12.00')
+            
+            product.save()
+            
+            # We add two objects now :)
+            cart.add_product(product)
+            cart.add_product(product)
+            
+            cart.save()
+            cart.update()
+            cart.save()
+            
+            self.assertEqual(cart.subtotal_price, Decimal('24.00'))
+            self.assertEqual(cart.total_price, Decimal('24.00'))
+            
