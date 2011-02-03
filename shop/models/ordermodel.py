@@ -35,15 +35,15 @@ class OrderManager(models.Manager):
         ship_address = cart.user.client.addresses.filter(is_shipping=True)[0] 
         bill_address = cart.user.client.addresses.filter(is_billing=True)[0]
         
-        o.shipping_name = str(cart.user.client)
+        o.shipping_name = "%s %s" % (cart.user.first_name, cart.user.last_name)
         o.shipping_address = ship_address.address
         o.shipping_address2 = ship_address.address2
         o.shipping_zip_code = ship_address.zip_code
         o.shipping_state = ship_address.state
         o.shipping_country = ship_address.country.name
         
-        o.billing_name = str(cart.user.client)
-        o.billingaddress = bill_address.address
+        o.billing_name = "%s %s" % (cart.user.first_name, cart.user.last_name)
+        o.billing_address = bill_address.address
         o.billing_address2 = bill_address.address2
         o.billing_zip_code = bill_address.zip_code
         o.billing_state = bill_address.state
@@ -103,7 +103,7 @@ class Order(models.Model):
     shipping_country = models.CharField(max_length=255)
     
     billing_name = models.CharField(max_length=255)
-    billingaddress = models.CharField(max_length=255)
+    billing_address = models.CharField(max_length=255)
     billing_address2 = models.CharField(max_length=255)
     billing_zip_code = models.CharField(max_length=20)
     billing_state = models.CharField(max_length=255)

@@ -19,7 +19,10 @@ class OrderTestCase(TestCase):
         
         cart_modifiers_pool.USE_CACHE=False
         
-        self.user = User.objects.create(username="test", email="test@example.com")
+        self.user = User.objects.create(username="test", 
+                                        email="test@example.com",
+                                        first_name="Test",
+                                        last_name = "Toto")
         
         self.product = Product()
         self.product.name = "TestPrduct"
@@ -51,6 +54,16 @@ class OrderTestCase(TestCase):
         self.address.is_shipping = True
         self.address.save()
         
+        self.address2 = Address()
+        self.address2.client = self.client
+        self.address2.address = '2address'
+        self.address2.address2 = '2address2'
+        self.address2.zip_code = '21234'
+        self.address2.state = '2ZH'
+        self.address2.country = self.country
+        self.address2.is_billing = True
+        self.address2.is_shipping = False
+        self.address2.save()
     
     def tearDown(self):
         self.user.delete()
@@ -107,5 +120,29 @@ class OrderTestCase(TestCase):
             # Check that totals match
             self.assertEqual(o.order_subtotal, self.cart.subtotal_price)
             self.assertEqual(o.order_total, self.cart.total_price)
-                
+            
+    def test_03_order_addresses_match_user_preferences(self):
+        self.cart.add_product(self.product)
+        self.cart.update()
+        self.cart.save()
         
+        self.address.is_billing = False
+        self.address.save()
+        
+        o = Order.objects.create_from_cart(self.cart)
+        # Must not return None, obviously
+        self.assertNotEqual(o, None)
+        # Check that addresses are transfered properly
+        self.assertEqual(o.shipping_name, "%s %s" % (self.user.first_name, self.user.last_name))
+        self.assertEqual(o.shipping_address, self.address.address)
+        self.assertEqual(o.shipping_address2, self.address.address2)
+        self.assertEqual(o.shipping_zip_code, self.address.zip_code)
+        self.assertEqual(o.shipping_state, self.address.state)    
+        self.assertEqual(o.shipping_country, self.address.country.name)
+        
+        self.assertEqual(o.billing_name, "%s %s" % (self.user.first_name, self.user.last_name))
+        self.assertEqual(o.billing_address, self.address2.address)
+        self.assertEqual(o.billing_address2, self.address2.address2)
+        self.assertEqual(o.billing_zip_code, self.address2.zip_code)
+        self.assertEqual(o.billing_state, self.address2.state)    
+        self.assertEqual(o.billing_country, self.address2.country.name)                 

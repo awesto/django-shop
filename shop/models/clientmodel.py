@@ -4,7 +4,6 @@ Holds all the information relevant to the client (addresses for instance)
 '''
 from django.contrib.auth.models import User
 from django.db import models
-import datetime
 
 class Client(models.Model):
     user = models.OneToOneField(User, related_name="client")
