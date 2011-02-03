@@ -16,8 +16,8 @@ class Cart(models.Model):
     
     extra_price_fields = {} # That will hold things like tax totals or total discount
     
-    subtotal_price = CurrencyField()
-    total_price = CurrencyField()
+    subtotal_price = Decimal('0.0')
+    total_price = Decimal('0.0')
     
     def add_product(self,product, quantity=1):
         '''
@@ -89,9 +89,10 @@ class CartItem(models.Model):
     '''
     cart = models.ForeignKey(Cart, related_name="items")
     
-    line_subtotal = CurrencyField()
-    line_total = CurrencyField()
-    
+    # These must not be stored, since their components can be changed between
+    # sessions / logins etc...
+    line_subtotal = Decimal('0.0')
+    line_total = Decimal('0.0')
     extra_price_fields = {} # That will hold extra fields to display to the user (ex. taxes, discount)
     
     quantity = models.IntegerField()
