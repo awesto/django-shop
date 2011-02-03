@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from shop.prices.modifiers_pool import price_modifiers_pool
@@ -20,17 +19,17 @@ class Cart(models.Model):
     subtotal_price = CurrencyField()
     total_price = CurrencyField()
     
-    def add_product(self,product):
+    def add_product(self,product, quantity=1):
         '''
         Adds a product to the cart
         '''
         # Let's see if we already have an Item with the same product ID
         if len(CartItem.objects.filter(cart=self).filter(product=product)) > 0:
             cart_item = CartItem.objects.filter(cart=self).filter(product=product)[0]
-            cart_item.quantity = cart_item.quantity + 1
+            cart_item.quantity = cart_item.quantity + quantity
             cart_item.save()
         else:
-            cart_item = CartItem.objects.create(cart=self,quantity=1,product=product)
+            cart_item = CartItem.objects.create(cart=self,quantity=quantity,product=product)
             cart_item.save()
             
     def update(self):
@@ -44,7 +43,6 @@ class Cart(models.Model):
             
             item.line_subtotal = item.product.base_price * item.quantity
             item.line_total = item.line_subtotal
-            
             for modifier in price_modifiers_pool.get_modifiers_list():
                 item = modifier.process_cart_item(item)
                 for value in item.extra_price_fields.itervalues():
