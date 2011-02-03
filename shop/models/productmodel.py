@@ -24,12 +24,18 @@ class Category(models.Model):
         '''
         return Product.objects.filter(category=self)
     
+    class Meta:
+        app_label = 'shop'
+    
 class ProductAttribute(models.Model):
     '''
     This is an example of how the attributes could work for products, if this 
     approach is chosen
     '''
     name = models.CharField(max_length=255)
+    
+    class Meta:
+        app_label = 'shop'
 
 class Product(models.Model):
     '''
@@ -47,6 +53,9 @@ class Product(models.Model):
     
     category = models.ForeignKey(Category, null=True)
     
+    class Meta:
+        app_label = 'shop'
+    
 class ProductAttributeValue(models.Model):
     '''
     This is simply a M2M class with an extra field to the relation (the value of 
@@ -55,3 +64,6 @@ class ProductAttributeValue(models.Model):
     attribute = models.ForeignKey(ProductAttribute)
     product = models.ForeignKey(Product)
     value = models.TextField() # Does it make sense to use something smaller?
+    
+    class Meta:
+        app_label = 'shop'

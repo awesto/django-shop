@@ -59,6 +59,9 @@ class Cart(models.Model):
         self.total_price = self.subtotal_price
         for value in self.extra_price_fields.itervalues():
             self.total_price = self.total_price + value
+            
+    class Meta:
+        app_label = 'shop'
     
 class CartItem(models.Model):
     '''
@@ -74,3 +77,6 @@ class CartItem(models.Model):
     
     quantity = models.IntegerField()
     product = models.ForeignKey(Product)
+    
+    class Meta:
+        app_label = 'shop'

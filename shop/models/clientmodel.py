@@ -27,6 +27,9 @@ class Client(models.Model):
     @property
     def billing_address(self):
         return Address.objects.filter(client=self).filter(is_billing=True)[0]
+    
+    class Meta:
+        app_label = 'shop'
 
 class Country(models.Model):
     name = models.CharField(max_length=255)
@@ -42,3 +45,7 @@ class Address(models.Model):
     
     is_shipping = models.BooleanField() # Is it the default shipping address?
     is_billing = models.BooleanField() # is it the default billing address? 
+    
+    class Meta:
+        app_label = 'shop'
+        

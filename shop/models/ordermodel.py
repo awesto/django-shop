@@ -41,7 +41,12 @@ class Order(models.Model):
     billing_zip_code = models.CharField(max_length=20)
     billing_state = models.CharField(max_length=255)
     billing_country = models.CharField(max_length=255)
+    
+    class Meta:
+        app_label = 'shop'
 
 class OrderItem():
-    pass
+    
+    class Meta:
+        app_label = 'shop'
     
