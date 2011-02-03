@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
-from shop.prices.price_modifiers_base import BasePriceModifier
+from shop.cart.cart_modifiers_base import BaseCartModifier
 
-class TenPercentTaxModifier(BasePriceModifier):
+class TenPercentTaxModifier(BaseCartModifier):
     '''
     A basic Tax calculator: it simply adds a taxes field to the order, 
     and makes it a fixed percentage of the subtotal (10%)

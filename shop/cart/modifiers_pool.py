@@ -4,7 +4,7 @@ from django.core import exceptions
 from django.utils.importlib import import_module
 
 
-class PriceModifiersPool():
+class CartModifiersPool():
     
     USE_CACHE = True
     
@@ -42,4 +42,4 @@ class PriceModifiersPool():
             
         return result
     
-price_modifiers_pool = PriceModifiersPool()
+cart_modifiers_pool = CartModifiersPool()

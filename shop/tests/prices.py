@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 from __future__ import with_statement
-from shop.prices import modifiers_pool
+from shop.cart import modifiers_pool
 from shop.tests.utils.context_managers import SettingsOverride
 from unittest import TestCase
 
@@ -11,9 +11,9 @@ class PricesTestCase(TestCase):
         Let's add a price modifier to the settings, then load it,
         then call a method on it to make sure it works.
         '''
-        MODIFIERS = ['shop.prices.modifiers.tax_modifiers.TenPercentTaxModifier']
+        MODIFIERS = ['shop.cart.modifiers.tax_modifiers.TenPercentTaxModifier']
         with SettingsOverride(SHOP_PRICE_MODIFIERS=MODIFIERS):
-            thelist = modifiers_pool.price_modifiers_pool.get_modifiers_list()
+            thelist = modifiers_pool.cart_modifiers_pool.get_modifiers_list()
             self.assertEqual(len(thelist), 1)
             instance = thelist[0]
             self.assertTrue(hasattr(instance,'TAX_PERCENTAGE'))

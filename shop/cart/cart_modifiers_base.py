@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-class BasePriceModifier(object):
+class BaseCartModifier(object):
     '''
     Price modifiers are the cart's counterpart to backends.
     It allows to implement Taxes and rebates / bulk prices in an elegant manner:

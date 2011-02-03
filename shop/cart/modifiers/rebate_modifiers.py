@@ -1,8 +1,8 @@
 #-*- coding: utf-8 -*-
 from decimal import Decimal
-from shop.prices.price_modifiers_base import BasePriceModifier
+from shop.cart.cart_modifiers_base import BaseCartModifier
 
-class BulkRebateModifier(BasePriceModifier):
+class BulkRebateModifier(BaseCartModifier):
     
     def add_extra_cart_item_price_field(self, cart_item):
         '''

@@ -2,7 +2,7 @@
 from decimal import Decimal
 from django.contrib.auth.models import User
 from django.db import models
-from shop.prices.modifiers_pool import price_modifiers_pool
+from shop.cart.modifiers_pool import cart_modifiers_pool
 from shop.models.productmodel import Product
 from shop.util.fields import CurrencyField
 
@@ -54,7 +54,7 @@ class Cart(models.Model):
             item.line_subtotal = item.product.base_price * item.quantity
             item.line_total = item.line_subtotal
             
-            for modifier in price_modifiers_pool.get_modifiers_list():
+            for modifier in cart_modifiers_pool.get_modifiers_list():
                 # We now loop over every registered price modifier,
                 # most of them will simply add a field to extra_payment_fields
                 item = modifier.process_cart_item(item)
@@ -68,7 +68,7 @@ class Cart(models.Model):
         
         # Now we have to iterate over the registered modifiers again (unfortunately)
         # to pass them the whole Order this time
-        for modifier in price_modifiers_pool.get_modifiers_list():
+        for modifier in cart_modifiers_pool.get_modifiers_list():
             modifier.process_cart(self)
             
         self.total_price = self.subtotal_price
