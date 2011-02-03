@@ -21,6 +21,9 @@ class CartModifiersPool():
         Heavily inspired by django.core.handlers.base...
         '''
         result = []
+        if not getattr(settings,'SHOP_PRICE_MODIFIERS', None):
+            return result
+        
         for modifier_path in settings.SHOP_PRICE_MODIFIERS:
             try:
                 mod_module, mod_classname = modifier_path.rsplit('.', 1)
