@@ -2,16 +2,17 @@
 from decimal import Decimal
 from shop.prices.price_modifiers_base import BasePriceModifier
 
-class TaxPercentageModifier(BasePriceModifier):
+class TenPercentTaxModifier(BasePriceModifier):
     '''
     A basic Tax calculator: it simply adds a taxes field to the order, 
-    and makes it a fixed percentage of the subtotal.
+    and makes it a fixed percentage of the subtotal (10%)
     
-    Obviously, this will have to be put in a setting later, but for now
-    it will just be a constant.
+    Obviously, this is only provided as an example, and anything serious should
+    use a more dynamic configuration system, such as settings or models to
+    hold the tax values.
     '''
     
-    TAX_PERCENTAGE = Decimal('7.6') # That's VAT
+    TAX_PERCENTAGE = Decimal('10') # That's VAT
     
     def add_extra_cart_price_field(self, cart):
         '''
