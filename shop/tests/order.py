@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
+from __future__ import with_statement
 from decimal import Decimal
 from django.contrib.auth.models import User
 from shop.cart.modifiers_pool import cart_modifiers_pool
-from shop.models.cartmodel import Cart
+from shop.models.cartmodel import Cart, CartItem
 from shop.models.clientmodel import Client, Address, Country
-from shop.models.ordermodel import Order
+from shop.models.ordermodel import Order, OrderItem, ExtraOrderPriceField
 from shop.models.productmodel import Product
+from shop.tests.utils.context_managers import SettingsOverride
 from unittest import TestCase
 
 class OrderTestCase(TestCase):
@@ -67,4 +69,43 @@ class OrderTestCase(TestCase):
         
         self.assertNotEqual(o, None)
         
+        ois = OrderItem.objects.filter(order=o)
+        cis = CartItem.objects.filter(cart=self.cart)
+        self.assertEqual(len(ois), len(cis))
+        
+        self.assertEqual(o.order_subtotal, self.cart.subtotal_price)
+        self.assertEqual(o.order_total, self.cart.total_price)
+
+    def test_02_create_order_from_taxed_cart(self):
+        '''
+        This time assert that everything is consistent with a tax cart modifier
+        '''
+        MODIFIERS = ['shop.cart.modifiers.tax_modifiers.TenPercentTaxModifier']
+        
+        with SettingsOverride(SHOP_PRICE_MODIFIERS=MODIFIERS):
+
+            self.cart.add_product(self.product)
+            self.cart.update()
+            self.cart.save()
+            
+            o = Order.objects.create_from_cart(self.cart)
+            
+            # Must not return None, obviously
+            self.assertNotEqual(o, None)
+            
+            # Compare all the OrderItems to all CartItems (length)
+            ois = OrderItem.objects.filter(order=o)
+            cis = CartItem.objects.filter(cart=self.cart)
+            self.assertEqual(len(ois), len(cis))
+            
+            # Assert that there are as many extra_cart_price_fields than there
+            # are extra order price fields
+            e_cart_fields = self.cart.extra_price_fields
+            e_order_fields = ExtraOrderPriceField.objects.filter(order=o)
+            self.assertEqual(len(e_cart_fields), len(e_order_fields))
+            
+            # Check that totals match
+            self.assertEqual(o.order_subtotal, self.cart.subtotal_price)
+            self.assertEqual(o.order_total, self.cart.total_price)
+                
         

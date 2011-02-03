@@ -2,6 +2,7 @@
 from django.db import models
 from shop.models.cartmodel import CartItem
 from shop.util.fields import CurrencyField
+from django.db import transaction
 
 STATUS_CODES = (
     (1, 'Processing'), # User still checking out the contents
@@ -11,6 +12,7 @@ STATUS_CODES = (
 
 class OrderManager(models.Manager):
     
+    @transaction.commit_on_success
     def create_from_cart(self, cart):
         '''
         This creates a new Order object (and all the rest) from a passed Cart 
@@ -19,13 +21,16 @@ class OrderManager(models.Manager):
         Specifically, it creates an Order with corresponding OrderItems and
         eventually corresponding ExtraPriceFields
         
+        This will only actually commit the transaction once the function exits
+        to minimize useless database access.
+        
         '''
         # Let's create the Order itself:
         o = Order()
         o.status = STATUS_CODES[0][0] # Processing
         
         o.order_subtotal = cart.subtotal_price
-        o.order_total = cart.subtotal_price
+        o.order_total = cart.total_price
         
         ship_address = cart.user.client.addresses.filter(is_shipping=True)[0] 
         bill_address = cart.user.client.addresses.filter(is_billing=True)[0]
@@ -44,8 +49,15 @@ class OrderManager(models.Manager):
         o.billing_state = bill_address.state
         o.billing_country = bill_address.country.name
         o.save()
-        # There, now move on to the order items.
+        # Let's serialize all the extra price arguments in DB
+        for label, value in cart.extra_price_fields.iteritems():
+            eoi = ExtraOrderPriceField()
+            eoi.order = o
+            eoi.label = label
+            eoi.value = value
+            eoi.save()
         
+        # There, now move on to the order items.
         cart_items = CartItem.objects.filter(cart=cart)
         for item in cart_items:
             i = OrderItem()
@@ -56,10 +68,15 @@ class OrderManager(models.Manager):
             i.line_total = item.line_total
             i.line_subtotal = item.line_subtotal
             i.save()
-        
+            # For each order item, we save the extra_price_fields to DB 
+            for label, value in item.extra_price_fields.iteritems():
+                eoi = ExtraOrderItemPriceField()
+                eoi.order_item = i
+                eoi.label = label
+                eoi.value = value
+                eoi.save()
         return o
         
-
 class Order(models.Model):
     '''
     A model representing an Order.
