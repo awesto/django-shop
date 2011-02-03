@@ -11,7 +11,7 @@ class PricesTestCase(TestCase):
         Let's add a price modifier to the settings, then load it,
         then call a method on it to make sure it works.
         '''
-        MODIFIERS = ['shop.prices.modifiers.taxes_percentage.TaxPercentageModifier']
+        MODIFIERS = ['shop.prices.modifiers.tax_modifiers.TenPercentTaxModifier']
         with SettingsOverride(SHOP_PRICE_MODIFIERS=MODIFIERS):
             thelist = modifiers_pool.price_modifiers_pool.get_modifiers_list()
             self.assertEqual(len(thelist), 1)
