@@ -19,8 +19,8 @@ class Cart(models.Model):
     
     extra_price_fields = {} # That will hold things like tax totals or total discount
     
-    subtotal_price = CurrencyField()
-    total_price = CurrencyField()
+    subtotal_price = CurrencyField(default='0.0')
+    total_price = CurrencyField(default='0.0')
     
     def add_product(self,product):
         '''
