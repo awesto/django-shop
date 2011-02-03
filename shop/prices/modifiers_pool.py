@@ -1,0 +1,43 @@
+#-*- coding: utf-8 -*-
+from django.conf import settings
+from django.core import exceptions
+from django.utils.importlib import import_module
+
+
+class PriceModifiersPool():
+
+    def __init__(self):
+        self._modifiers_list = []
+
+    def get_modifiers_list(self):
+        if not self._modifiers_list:
+            self._modifiers_list = self._load_modifiers_list()
+        return self._modifiers_list
+
+    def _load_modifiers_list(self):
+        '''
+        Heavily inspired by django.core.handlers.base...
+        '''
+        result = []
+        for modifier_path in settings.SHOP_PRICE_MODIFIERS:
+            try:
+                mod_module, mod_classname = modifier_path.rsplit('.', 1)
+            except ValueError:
+                raise exceptions.ImproperlyConfigured('%s isn\'t a price modifier module' % modifier_path)
+            try:
+                mod = import_module(mod_module)
+            except ImportError, e:
+                raise exceptions.ImproperlyConfigured('Error importing modifier %s: "%s"' % (mod_module, e))
+            try:
+                mod_class = getattr(mod, mod_classname)
+            except AttributeError:
+                raise exceptions.ImproperlyConfigured('Price modifier module "%s" does not define a "%s" class' % (mod_module, mod_classname))
+            try:
+                mod_instance = mod_class()
+            except exceptions.MiddlewareNotUsed:
+                continue
+            result.append(mod_instance)
+            
+        return result
+    
+price_modifiers_pool = PriceModifiersPool()
