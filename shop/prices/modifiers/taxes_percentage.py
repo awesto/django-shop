@@ -21,4 +21,4 @@ class TaxPercentageModifier(BasePriceModifier):
         '''
         taxes = (self.TAX_PERCENTAGE/100) * cart.subtotal_price
         cart.extra_price_fields.update({'Taxes total':taxes})
-        
+        return cart

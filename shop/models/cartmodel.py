@@ -38,26 +38,30 @@ class Cart(models.Model):
         This should be called whenever anything is changed in the cart (added or removed)
         '''
         items = list(CartItem.objects.filter(cart=self)) # force query to "cache" it
-        # Loop on all modifiers and pass them items
-        for modifier in price_modifiers_pool.get_modifiers_list():
-            for item in items : # For each item line in the cart...
-                modifier.process_cart_item(item)
-            # Modifiers need to process the cart itself.
-            modifier.process_cart(self)
-
-        # Now recompute line totals, subtotal and total
+        
         self.subtotal_price = Decimal('0.0')
         for item in items:
+            
             item.line_subtotal = item.product.base_price * item.quantity
             item.line_total = item.line_subtotal
-            for value in item.extra_price_fields.itervalues():
-                item.total = item.total + value
+            
+            for modifier in price_modifiers_pool.get_modifiers_list():
+                item = modifier.process_cart_item(item)
+                for value in item.extra_price_fields.itervalues():
+                    item.line_total = item.line_total + value
+                    
             self.subtotal_price = self.subtotal_price + item.line_total
-    
+            item.save()
+        
+        for modifier in price_modifiers_pool.get_modifiers_list():
+            modifier.process_cart(self)
+            
         self.total_price = self.subtotal_price
         for value in self.extra_price_fields.itervalues():
             self.total_price = self.total_price + value
             
+        self.save()
+        
     class Meta:
         app_label = 'shop'
     
