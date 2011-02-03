@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from decimal import Decimal
 from shop.prices.price_modifiers_base import BasePriceModifier
 
 class TaxPercentageModifier(BasePriceModifier):
@@ -10,7 +11,7 @@ class TaxPercentageModifier(BasePriceModifier):
     it will just be a constant.
     '''
     
-    TAX_PERCENTAGE = 7.6 # That's VAT
+    TAX_PERCENTAGE = Decimal('7.6') # That's VAT
     
     def add_extra_cart_price_field(self, cart):
         '''
@@ -20,4 +21,4 @@ class TaxPercentageModifier(BasePriceModifier):
         '''
         taxes = (self.TAX_PERCENTAGE/100) * cart.subtotal_price
         cart.extra_price_fields.update({'Taxes total':taxes})
-        cart.update()
+        

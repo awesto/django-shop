@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from decimal import Decimal
 from django.db.models.fields import DecimalField
 
 
@@ -12,7 +13,8 @@ class CurrencyField(DecimalField):
             delattr(kwargs,'max_digits')
         if kwargs.get('decimal_places'):
             delattr(kwargs,'decimal_places')
-        default = kwargs.get('default', '0.00') # get "default" or 0.00
+        default = kwargs.get('default', Decimal('0.00')) # get "default" or 0.00
         if kwargs.get('default'):
             delattr(kwargs,'default')
         return super(CurrencyField,self).__init__(max_digits=12,decimal_places=2,default=default,**kwargs)
+    

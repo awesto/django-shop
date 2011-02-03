@@ -3,6 +3,7 @@ from decimal import Decimal
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
+from shop.prices.modifiers_pool import price_modifiers_pool
 from shop.models.productmodel import Product
 from shop.util.fields import CurrencyField
 
@@ -38,12 +39,12 @@ class Cart(models.Model):
         '''
         items = list(CartItem.objects.filter(cart=self)) # force query to "cache" it
         # Loop on all modifiers and pass them items
-        for modifier in settings.SHOP_PRICE_MODIFIERS:
+        for modifier in price_modifiers_pool.get_modifiers_list():
             for item in items : # For each item line in the cart...
                 modifier.process_cart_item(item)
             # Modifiers need to process the cart itself.
             modifier.process_cart(self)
-            
+
         # Now recompute line totals, subtotal and total
         self.subtotal_price = Decimal('0.0')
         for item in items:
