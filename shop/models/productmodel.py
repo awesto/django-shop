@@ -45,7 +45,7 @@ class Product(models.Model):
     long_description = models.TextField()
     active = models.BooleanField(default = False)
     
-    base_price = CurrencyField()
+    unit_price = CurrencyField()
     
     category = models.ForeignKey(Category, null=True)
     

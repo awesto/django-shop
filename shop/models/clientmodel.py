@@ -2,26 +2,24 @@
 '''
 Holds all the information relevant to the client (addresses for instance)
 '''
-
-
 from django.contrib.auth.models import User
 from django.db import models
 import datetime
 
 class Client(models.Model):
-    user = models.ForeignKey(User)
+    user = models.OneToOneField(User, related_name="client")
     
-    date_of_birth = models.DateField()
-    created = models.DateTimeField(default=datetime.datetime.now)
+    date_of_birth = models.DateField(null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
     
     def __unicode__(self):
         return "ClientProfile for %s %s" % (self.user.first_name, self.user.last_name)
     
-    @property
+    #@property
     def shipping_address(self):
         return Address.objects.filter(client=self).filter(is_shipping=True)[0]
     
-    @property
+    #@property
     def billing_address(self):
         return Address.objects.filter(client=self).filter(is_billing=True)[0]
     
@@ -30,6 +28,9 @@ class Client(models.Model):
 
 class Country(models.Model):
     name = models.CharField(max_length=255)
+    
+    class Meta:
+        app_label = 'shop'
 
 class Address(models.Model):
     client = models.ForeignKey(Client, related_name="addresses")

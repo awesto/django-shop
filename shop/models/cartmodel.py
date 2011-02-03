@@ -51,7 +51,7 @@ class Cart(models.Model):
         self.subtotal_price = Decimal('0.0') # Reset the subtotal
         for item in items: # For each OrderItem (order line)...
             
-            item.line_subtotal = item.product.base_price * item.quantity
+            item.line_subtotal = item.product.unit_price * item.quantity
             item.line_total = item.line_subtotal
             
             for modifier in cart_modifiers_pool.get_modifiers_list():

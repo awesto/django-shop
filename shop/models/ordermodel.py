@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from shop.models.cartmodel import CartItem
 from shop.util.fields import CurrencyField
-from django.core.management.validation import max_length
 
 STATUS_CODES = (
     (1, 'Processing'), # User still checking out the contents
@@ -20,6 +20,45 @@ class OrderManager(models.Manager):
         eventually corresponding ExtraPriceFields
         
         '''
+        # Let's create the Order itself:
+        o = Order()
+        o.status = STATUS_CODES[0][0] # Processing
+        
+        o.order_subtotal = cart.subtotal_price
+        o.order_total = cart.subtotal_price
+        
+        ship_address = cart.user.client.addresses.filter(is_shipping=True)[0] 
+        bill_address = cart.user.client.addresses.filter(is_billing=True)[0]
+        
+        o.shipping_name = str(cart.user.client)
+        o.shipping_address = ship_address.address
+        o.shipping_address2 = ship_address.address2
+        o.shipping_zip_code = ship_address.zip_code
+        o.shipping_state = ship_address.state
+        o.shipping_country = ship_address.country.name
+        
+        o.billing_name = str(cart.user.client)
+        o.billingaddress = bill_address.address
+        o.billing_address2 = bill_address.address2
+        o.billing_zip_code = bill_address.zip_code
+        o.billing_state = bill_address.state
+        o.billing_country = bill_address.country.name
+        o.save()
+        # There, now move on to the order items.
+        
+        cart_items = CartItem.objects.filter(cart=cart)
+        for item in cart_items:
+            i = OrderItem()
+            i.order = o
+            i.product_name = item.product.name
+            i.unit_price = item.product.unit_price
+            i.quantity = item.quantity
+            i.line_total = item.line_total
+            i.line_subtotal = item.line_subtotal
+            i.save()
+        
+        return o
+        
 
 class Order(models.Model):
     '''
@@ -53,13 +92,17 @@ class Order(models.Model):
     billing_state = models.CharField(max_length=255)
     billing_country = models.CharField(max_length=255)
     
+    objects = OrderManager()
+    
     class Meta:
         app_label = 'shop'
 
-class OrderItem():
+class OrderItem(models.Model):
     '''
     A line Item for an order.
     '''
+    
+    order = models.ForeignKey(Order, related_name='items')
     
     product_name = models.CharField(max_length=255)
     unit_price = CurrencyField()
