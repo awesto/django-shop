@@ -5,12 +5,14 @@ from django.utils.importlib import import_module
 
 
 class PriceModifiersPool():
-
+    
+    USE_CACHE = True
+    
     def __init__(self):
         self._modifiers_list = []
 
     def get_modifiers_list(self):
-        if not self._modifiers_list:
+        if not self.USE_CACHE or not self._modifiers_list:
             self._modifiers_list = self._load_modifiers_list()
         return self._modifiers_list
 
