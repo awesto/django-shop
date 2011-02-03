@@ -1,8 +1,4 @@
-'''
-Created on Jan 17, 2011
-
-@author: Christopher Glass <christopher.glass@divio.ch>
-'''
+# -*- coding: utf-8 -*-
 from payment.payment_backend_base import BasePaymentBackend
 
 class PayOnDeliveryBackend(BasePaymentBackend):

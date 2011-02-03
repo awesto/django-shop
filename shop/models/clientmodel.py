@@ -1,8 +1,5 @@
+# -*- coding: utf-8 -*-
 '''
-Created on Jan 17, 2011
-
-@author: Christopher Glass <christopher.glass@divio.ch>
-
 Holds all the information relevant to the client (addresses for instance)
 '''
 

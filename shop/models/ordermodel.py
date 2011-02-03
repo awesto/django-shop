@@ -1,8 +1,4 @@
-'''
-Created on Jan 17, 2011
-
-@author: Christopher Glass <christopher.glass@divio.ch>
-'''
+# -*- coding: utf-8 -*-
 from django.db import models
 from shop.util.fields import CurrencyField
 

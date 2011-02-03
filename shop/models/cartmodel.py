@@ -1,8 +1,4 @@
-'''
-Created on Jan 17, 2011
-
-@author: Christopher Glass <christopher.glass@divio.ch>
-'''
+# -*- coding: utf-8 -*-
 from decimal import Decimal
 from django.conf import settings
 from django.contrib.auth.models import User

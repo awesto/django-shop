@@ -1,8 +1,4 @@
-'''
-Created on Jan 18, 2011
-
-@author: Christopher Glass <christopher.glass@divio.ch>
-'''
+# -*- coding: utf-8 -*-
 from django.db.models.fields import DecimalField
 
 
