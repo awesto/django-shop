@@ -15,7 +15,7 @@ class BaseCartModifier(object):
         This will be called for every line item in the Cart:
         Line items typically contain: product, unit_price, quantity...
         
-        Subtotal for every line (unit price * quantity) is already comupted, but
+        Subtotal for every line (unit price * quantity) is already computed, but
         the line total is 0, and is expected to be calculated in the Cart's 
         update() method
         '''
@@ -45,7 +45,7 @@ class BaseCartModifier(object):
         And a rebate modifier would do something along the lines of:
         >>> cart_item.extra_price_fields.update({'rebate': Decimal(-9)})
         
-        More examples can be found in shop.prices.modifiers.*
+        More examples can be found in shop.cart.modifiers.*
         
         '''
         return cart_item # Does nothing by default

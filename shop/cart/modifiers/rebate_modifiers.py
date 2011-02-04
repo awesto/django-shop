@@ -6,9 +6,12 @@ class BulkRebateModifier(BaseCartModifier):
     
     def add_extra_cart_item_price_field(self, cart_item):
         '''
-        Add a field on cart_item.extra_price_fields:
+        Add a rebate to a line item depending on the quantity ordered:
         
-        >>> cart_item.extra_price_fields.update({'taxes': 9.00})
+        This serves as an example mass rebate modifier: if you buy more than
+        5 items of the same kind, you get 10% off the bunch
+        
+        >>> cart_item.extra_price_fields.update({'Rebate': Decimal('10.0')})
         '''
         REBATE_PERCENTAGE = Decimal('10')
         NUMBER_OF_ITEMS_TO_TRIGGER_REBATE = 5
