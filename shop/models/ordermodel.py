@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from django.db import models
+from django.db import models, transaction
 from shop.models.cartmodel import CartItem
+from shop.models.productmodel import Product
 from shop.util.fields import CurrencyField
-from django.db import transaction
 
 STATUS_CODES = (
     (1, 'Processing'), # User still checking out the contents
@@ -137,6 +137,10 @@ class OrderItem(models.Model):
     
     line_subtotal = CurrencyField()
     line_total = CurrencyField()
+    
+    @property
+    def product(self):
+        return Product.objects.get(pk=self.product_reference)
     
     class Meta:
         app_label = 'shop'

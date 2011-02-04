@@ -167,3 +167,7 @@ class OrderTestCase(TestCase):
         # take the first item from the order:
         oi = OrderItem.objects.filter(order=o)[0]
         self.assertEqual(oi.product_reference, str(self.product.id))
+        
+        # Lookup works?
+        prod = oi.product
+        self.assertEqual(prod,self.product)
