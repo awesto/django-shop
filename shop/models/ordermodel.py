@@ -92,6 +92,8 @@ class Order(models.Model):
     order_subtotal = CurrencyField()
     order_total = CurrencyField()
     
+    amount_payed = CurrencyField()
+    
     shipping_cost = CurrencyField()
     
     # Addresses MUST be copied over to the order when it's created.
@@ -110,6 +112,12 @@ class Order(models.Model):
     billing_country = models.CharField(max_length=255)
     
     objects = OrderManager()
+    
+    def is_payed(self):
+        '''
+        Has this order been integrally payed for?
+        '''
+        return self.amount_payed == self.order_total
     
     class Meta:
         app_label = 'shop'
