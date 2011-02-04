@@ -145,4 +145,25 @@ class OrderTestCase(TestCase):
         self.assertEqual(o.billing_address2, self.address2.address2)
         self.assertEqual(o.billing_zip_code, self.address2.zip_code)
         self.assertEqual(o.billing_state, self.address2.state)    
-        self.assertEqual(o.billing_country, self.address2.country.name)                 
+        self.assertEqual(o.billing_country, self.address2.country.name)
+        
+    def test_04_order_saves_item_pk_as_a_string(self):
+        '''
+        That's needed in case shipment or payment backends need to make fancy 
+        calculations on products (i.e. shipping based on weight/size...)
+        '''
+        self.cart.add_product(self.product)
+        self.cart.update()
+        self.cart.save()
+        
+        self.address.is_billing = False
+        self.address.save()
+        
+        o = Order.objects.create_from_cart(self.cart)
+        
+        # Must not return None, obviously
+        self.assertNotEqual(o, None)
+        
+        # take the first item from the order:
+        oi = OrderItem.objects.filter(order=o)[0]
+        self.assertEqual(oi.product_reference, str(self.product.id))
