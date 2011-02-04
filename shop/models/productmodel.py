@@ -33,6 +33,12 @@ class ProductAttribute(models.Model):
     class Meta:
         app_label = 'shop'
 
+
+class ProductManager(models.Manager):
+    
+    def active(self):
+        return self.filter(active=True)
+
 class Product(models.Model):
     '''
     A basic product for the shop
@@ -44,6 +50,9 @@ class Product(models.Model):
     short_description = models.CharField(max_length=255)
     long_description = models.TextField()
     active = models.BooleanField(default = False)
+    
+    date_added = models.DateTimeField(auto_now_add=True)
+    last_modified = models.DateTimeField(auto_now=True)
     
     unit_price = CurrencyField()
     
