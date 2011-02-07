@@ -13,9 +13,7 @@ class BasePaymentBackend(object):
         
         Gather all necessary information from the Order object, and
         pass them to the payment backend (Paypal, whatever)
-        
         '''
-        
         
     def get_urls(self):
         '''
