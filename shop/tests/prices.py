@@ -12,7 +12,7 @@ class PricesTestCase(TestCase):
         then call a method on it to make sure it works.
         '''
         MODIFIERS = ['shop.cart.modifiers.tax_modifiers.TenPercentTaxModifier']
-        with SettingsOverride(SHOP_PRICE_MODIFIERS=MODIFIERS):
+        with SettingsOverride(SHOP_CART_MODIFIERS=MODIFIERS):
             thelist = modifiers_pool.cart_modifiers_pool.get_modifiers_list()
             self.assertEqual(len(thelist), 1)
             instance = thelist[0]

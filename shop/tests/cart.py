@@ -35,7 +35,7 @@ class CartTestCase(TestCase):
         self.product.delete()
     
     def test_01_empty_cart_costs_0(self):
-        with SettingsOverride(SHOP_PRICE_MODIFIERS=[]):
+        with SettingsOverride(SHOP_CART_MODIFIERS=[]):
             
             self.cart.update()
             
@@ -43,7 +43,7 @@ class CartTestCase(TestCase):
             self.assertEqual(self.cart.total_price, Decimal('0.0'))
             
     def test_02_one_object_no_modifiers(self):
-        with SettingsOverride(SHOP_PRICE_MODIFIERS=[]):
+        with SettingsOverride(SHOP_CART_MODIFIERS=[]):
             self.cart.add_product(self.product)
             self.cart.save()
             self.cart.update()
@@ -53,7 +53,7 @@ class CartTestCase(TestCase):
             self.assertEqual(self.cart.total_price, self.PRODUCT_PRICE)
     
     def test_03_two_objects_no_modifier(self):
-        with SettingsOverride(SHOP_PRICE_MODIFIERS=[]):
+        with SettingsOverride(SHOP_CART_MODIFIERS=[]):
             
             # We add two objects now :)
             self.cart.add_product(self.product,2)
@@ -65,7 +65,7 @@ class CartTestCase(TestCase):
             
     def test_04_one_object_simple_modifier(self):
         MODIFIERS = ['shop.cart.modifiers.tax_modifiers.TenPercentTaxModifier']
-        with SettingsOverride(SHOP_PRICE_MODIFIERS=MODIFIERS):
+        with SettingsOverride(SHOP_CART_MODIFIERS=MODIFIERS):
             self.cart.add_product(self.product)
             self.cart.update()
             self.cart.save()
@@ -76,7 +76,7 @@ class CartTestCase(TestCase):
     def test_05_one_object_two_modifiers_no_rebate(self):
         MODIFIERS = ['shop.cart.modifiers.tax_modifiers.TenPercentTaxModifier',
                      'shop.cart.modifiers.rebate_modifiers.BulkRebateModifier']
-        with SettingsOverride(SHOP_PRICE_MODIFIERS=MODIFIERS):
+        with SettingsOverride(SHOP_CART_MODIFIERS=MODIFIERS):
             self.cart.add_product(self.product)
             
             self.cart.update()
@@ -88,7 +88,7 @@ class CartTestCase(TestCase):
     def test_06_one_object_two_modifiers_with_rebate(self):
         MODIFIERS = ['shop.cart.modifiers.tax_modifiers.TenPercentTaxModifier',
                      'shop.cart.modifiers.rebate_modifiers.BulkRebateModifier']
-        with SettingsOverride(SHOP_PRICE_MODIFIERS=MODIFIERS):
+        with SettingsOverride(SHOP_CART_MODIFIERS=MODIFIERS):
             # We add 6 objects now :)
             self.cart.add_product(self.product,6)
             self.cart.update()

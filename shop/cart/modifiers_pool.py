@@ -21,10 +21,10 @@ class CartModifiersPool():
         Heavily inspired by django.core.handlers.base...
         '''
         result = []
-        if not getattr(settings,'SHOP_PRICE_MODIFIERS', None):
+        if not getattr(settings,'SHOP_CART_MODIFIERS', None):
             return result
         
-        for modifier_path in settings.SHOP_PRICE_MODIFIERS:
+        for modifier_path in settings.SHOP_CART_MODIFIERS:
             try:
                 mod_module, mod_classname = modifier_path.rsplit('.', 1)
             except ValueError:
