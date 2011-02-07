@@ -4,12 +4,6 @@ from shop.models.cartmodel import CartItem
 from shop.models.productmodel import Product
 from shop.util.fields import CurrencyField
 
-STATUS_CODES = (
-    (1, 'Processing'), # User still checking out the contents
-    (2, 'Confirmed'), # Contents are valid, now we can handle payment etc...
-    (3, 'Completed'), # Everything is fine, only need to send the products
-)
-
 class OrderManager(models.Manager):
     
     @transaction.commit_on_success
@@ -27,7 +21,7 @@ class OrderManager(models.Manager):
         '''
         # Let's create the Order itself:
         o = Order()
-        o.status = STATUS_CODES[0][0] # Processing
+        o.status = Order.STATUS_CODES[0][0] # Processing
         
         o.order_subtotal = cart.subtotal_price
         o.order_total = cart.total_price
@@ -87,6 +81,16 @@ class Order(models.Model):
     when the Order is first created), list of items, and holds stuff like the
     status, shipping costs, taxes, etc...
     '''
+    
+    PROCESSING = 1
+    CONFIRMED = 2
+    COMPLETED = 3
+    
+    STATUS_CODES = (
+        (PROCESSING, 'Processing'), # User still checking out the contents
+        (CONFIRMED, 'Confirmed'), # Contents are valid, now we can handle payment etc...
+        (COMPLETED, 'Completed'), # Everything is fine, only need to send the products
+    )
     
     status = models.IntegerField(choices=STATUS_CODES)
     
