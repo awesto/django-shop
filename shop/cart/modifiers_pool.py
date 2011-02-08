@@ -37,10 +37,7 @@ class CartModifiersPool():
                 mod_class = getattr(mod, mod_classname)
             except AttributeError:
                 raise exceptions.ImproperlyConfigured('Price modifier module "%s" does not define a "%s" class' % (mod_module, mod_classname))
-            try:
-                mod_instance = mod_class()
-            except exceptions.MiddlewareNotUsed:
-                continue
+            mod_instance = mod_class()
             result.append(mod_instance)
             
         return result
