@@ -3,3 +3,4 @@ from prices import PricesTestCase
 from order import OrderTestCase
 from client import ClientTestCase
 from payment import PayOnDeliveryTestCase
+from util import UtilTestCase
