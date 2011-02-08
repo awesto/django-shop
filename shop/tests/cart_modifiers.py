@@ -4,7 +4,7 @@ from shop.cart import modifiers_pool
 from shop.tests.utils.context_managers import SettingsOverride
 from unittest import TestCase
 
-class PricesTestCase(TestCase):
+class CartModifiersTestCase(TestCase):
     
     def test_01_price_modifier_pool_loads_modifiers_properly(self):
         '''
