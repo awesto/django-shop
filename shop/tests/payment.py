@@ -18,32 +18,55 @@ Total: 110'''
 
 class GeneralPaymentBackendTestCase(TestCase):
     
+    def setUp(self):
+        self.user = User.objects.create(username="test", 
+                                        email="test@example.com",
+                                        first_name="Test",
+                                        last_name = "Toto")
+    
+    def tearDown(self):
+        self.user.delete()
+    
     def test_01_enforcing_of_name_works(self):
-        class FakeBackend(BasePaymentBackend):
+        class MockBackend(BasePaymentBackend):
             pass
         
         raised = False
         
         try:
-            FakeBackend()
+            MockBackend()
         except NotImplementedError:
             raised = True
         
         self.assertEqual(raised, True)
         
     def test_02_enforcing_of_namespace_works(self):
-        class FakeBackend(BasePaymentBackend):
+        class MockBackend(BasePaymentBackend):
             backend_name = "Fake"
         
         raised = False
         
         try:
-            FakeBackend()
+            MockBackend()
         except NotImplementedError:
             raised = True
         
         self.assertEqual(raised, True)
-
+        
+    def test_03_get_order_returns_sensible_nulls(self):
+        class MockBackend(BasePaymentBackend):
+            backend_name = "Fake"
+            url_namespace = "fake"
+        
+        class MockRequest():
+            user = self.user
+        
+        be = MockBackend()
+        order = be.shop.getOrder(MockRequest())
+        self.assertNotEqual(order, None)
+        self.assertEqual(len(order), 0) # Should basically be an empty list
+        
+        
 class PayOnDeliveryTestCase(TestCase):
     
     def setUp(self):
