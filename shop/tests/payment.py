@@ -1,19 +1,21 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
 from django.contrib.auth.models import User
+from django.test.client import FakePayload
 from shop.models.clientmodel import Address, Client, Country
-from shop.models.ordermodel import Order, OrderItem, ExtraOrderItemPriceField
+from shop.models.ordermodel import Order, OrderItem, ExtraOrderItemPriceField, \
+    ExtraOrderPriceField
 from shop.payment.backends.pay_on_delivery import PayOnDeliveryBackend
 from shop.payment.payment_backend_base import BasePaymentBackend
 from unittest import TestCase
-from django.test.client import FakePayload
 
 EXPECTED = '''A new order was placed!
 
 Ref: fakeref| Name: Test item| Price: 100| Q: 1| SubTot: 100| Fake extra field: 10|Tot: 110| 
 
 Subtotal: 100
-Total: 110'''
+Fake Taxes: 10
+Total: 120'''
 
 
 class GeneralPaymentBackendTestCase(TestCase):
@@ -109,7 +111,7 @@ class PayOnDeliveryTestCase(TestCase):
         self.order = Order()
         self.order.user = self.user
         self.order.order_subtotal = Decimal('100') # One item worth 100
-        self.order.order_total = Decimal('110') # plus a test field worth 10
+        self.order.order_total = Decimal('120') # plus a test field worth 10
         self.order.status = Order.PROCESSING
         ship_address = self.address
         bill_address = self.address2
@@ -151,6 +153,12 @@ class PayOnDeliveryTestCase(TestCase):
         eoif.label = 'Fake extra field'
         eoif.value = Decimal("10")
         eoif.save()
+        
+        eof = ExtraOrderPriceField()
+        eof.order = self.order
+        eof.label = "Fake Taxes"
+        eof.value = Decimal("10")
+        eof.save()
         
     def tearDown(self):
         self.user.delete()
