@@ -53,6 +53,7 @@ class PayOnDeliveryTestCase(TestCase):
         # The order fixture
         
         self.order = Order()
+        self.order.user = self.user
         self.order.order_subtotal = Decimal('100') # One item worth 100
         self.order.order_total = Decimal('110') # plus a test field worth 10
         self.order.status = Order.PROCESSING

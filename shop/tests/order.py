@@ -78,7 +78,7 @@ class OrderTestCase(TestCase):
         self.cart.update()
         self.cart.save()
         
-        o = Order.objects.create_from_cart(self.cart)
+        o = Order.objects.create_from_cart(self.cart,self.user)
         
         self.assertNotEqual(o, None)
         
@@ -101,7 +101,7 @@ class OrderTestCase(TestCase):
             self.cart.update()
             self.cart.save()
             
-            o = Order.objects.create_from_cart(self.cart)
+            o = Order.objects.create_from_cart(self.cart,self.user)
             
             # Must not return None, obviously
             self.assertNotEqual(o, None)
@@ -129,7 +129,7 @@ class OrderTestCase(TestCase):
         self.address.is_billing = False
         self.address.save()
         
-        o = Order.objects.create_from_cart(self.cart)
+        o = Order.objects.create_from_cart(self.cart,self.user)
         # Must not return None, obviously
         self.assertNotEqual(o, None)
         # Check that addresses are transfered properly
@@ -159,7 +159,7 @@ class OrderTestCase(TestCase):
         self.address.is_billing = False
         self.address.save()
         
-        o = Order.objects.create_from_cart(self.cart)
+        o = Order.objects.create_from_cart(self.cart,self.user)
         
         # Must not return None, obviously
         self.assertNotEqual(o, None)

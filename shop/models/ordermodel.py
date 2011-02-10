@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.contrib.auth.models import User
 from django.db import models, transaction
 from shop.models.cartmodel import CartItem
 from shop.models.productmodel import Product
@@ -7,7 +8,7 @@ from shop.util.fields import CurrencyField
 class OrderManager(models.Manager):
     
     @transaction.commit_on_success
-    def create_from_cart(self, cart):
+    def create_from_cart(self, cart, user):
         '''
         This creates a new Order object (and all the rest) from a passed Cart 
         object.
@@ -21,6 +22,7 @@ class OrderManager(models.Manager):
         '''
         # Let's create the Order itself:
         o = Order()
+        o.user = user
         o.status = Order.STATUS_CODES[0][0] # Processing
         
         o.order_subtotal = cart.subtotal_price
@@ -92,6 +94,8 @@ class Order(models.Model):
         (COMPLETED, 'Completed'), # Everything is fine, only need to send the products
     )
     
+    user = models.ForeignKey(User)
+    
     status = models.IntegerField(choices=STATUS_CODES)
     
     order_subtotal = CurrencyField()
@@ -119,10 +123,11 @@ class Order(models.Model):
     objects = OrderManager()
     
     def is_payed(self):
-        '''
-        Has this order been integrally payed for?
-        '''
+        '''Has this order been integrally payed for?'''
         return self.amount_payed == self.order_total
+    
+    def is_completed(self):
+        return self.status == self.COMPLETED
     
     class Meta:
         app_label = 'shop'
