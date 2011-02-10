@@ -4,7 +4,9 @@ from django.contrib.auth.models import User
 from shop.models.clientmodel import Address, Client, Country
 from shop.models.ordermodel import Order, OrderItem, ExtraOrderItemPriceField
 from shop.payment.backends.pay_on_delivery import PayOnDeliveryBackend
+from shop.payment.payment_backend_base import BasePaymentBackend
 from unittest import TestCase
+from django.test.client import FakePayload
 
 EXPECTED = '''A new order was placed!
 
@@ -12,6 +14,35 @@ Ref: fakeref| Name: Test item| Price: 100| Q: 1| SubTot: 100| Fake extra field: 
 
 Subtotal: 100
 Total: 110'''
+
+
+class GeneralPaymentBackendTestCase(TestCase):
+    
+    def test_01_enforcing_of_name_works(self):
+        class FakeBackend(BasePaymentBackend):
+            pass
+        
+        raised = False
+        
+        try:
+            FakeBackend()
+        except NotImplementedError:
+            raised = True
+        
+        self.assertEqual(raised, True)
+        
+    def test_02_enforcing_of_namespace_works(self):
+        class FakeBackend(BasePaymentBackend):
+            backend_name = "Fake"
+        
+        raised = False
+        
+        try:
+            FakeBackend()
+        except NotImplementedError:
+            raised = True
+        
+        self.assertEqual(raised, True)
 
 class PayOnDeliveryTestCase(TestCase):
     
@@ -111,4 +142,9 @@ class PayOnDeliveryTestCase(TestCase):
         be = PayOnDeliveryBackend()
         text = be._create_email_body(self.order)
         self.assertEqual(EXPECTED, text)
-        
+    
+    def test_03_backend_returns_urls(self):
+        be = PayOnDeliveryBackend()
+        urls = be.get_urls()
+        self.assertNotEqual(urls,None)
+        self.assertEqual(len(urls), 1)

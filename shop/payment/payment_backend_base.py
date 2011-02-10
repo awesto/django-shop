@@ -52,7 +52,7 @@ class BasePaymentBackend(object):
                 'One of your payment backends lacks a name, please define one.')
         if self.url_namespace == "":
             raise NotImplementedError(
-                'Please set a namespace for backend "%s"') % self.backend_name
+                'Please set a namespace for backend "%s"' % self.backend_name)
         
     def get_urls(self):
         '''
