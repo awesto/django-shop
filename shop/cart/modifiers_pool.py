@@ -4,7 +4,7 @@ from django.core import exceptions
 from django.utils.importlib import import_module
 
 
-class CartModifiersPool():
+class CartModifiersPool(object):
     
     USE_CACHE = True
     
