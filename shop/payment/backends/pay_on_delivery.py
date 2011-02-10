@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
-from django.conf import settings
-from django.core.mail import send_mail
+from django.conf.urls.defaults import patterns, url
+from django.http import HttpResponse
 from shop.models.ordermodel import OrderItem, ExtraOrderItemPriceField, \
-    ExtraOrderPriceField, Order
+    ExtraOrderPriceField
 from shop.payment.payment_backend_base import BasePaymentBackend
 
 
 class PayOnDeliveryBackend(BasePaymentBackend):
+    
+    url_namespace = "pay-on-delivery"
     
     def _create_email_body(self, order):
         '''
@@ -44,21 +46,26 @@ class PayOnDeliveryBackend(BasePaymentBackend):
         email_body = "\n".join(email_body)
         return email_body
             
-    def process_order(self,order):
-        '''
-        This should simply save the order in the database with relevant 
-        information, set the order's status to "completed", and send an
-        email to the admin (it's an example plugin, obviously)
-        '''
-        recipients = [x[1] for x in settings.ADMINS]
-        body = self._create_email_body(order)
-        send_mail('New order!', body, 'shop@example.com',
-                  [recipients], fail_silently=False)
-        order.status = Order.COMPLETED
-        order.save()
+#    def process_order(self,order):
+#        '''
+#        This should simply save the order in the database with relevant 
+#        information, set the order's status to "completed", and send an
+#        email to the admin (it's an example plugin, obviously)
+#        '''
+#        recipients = [x[1] for x in settings.ADMINS]
+#        body = self._create_email_body(order)
+#        send_mail('New order!', body, 'shop@example.com',
+#                  [recipients], fail_silently=False)
+#        order.status = Order.COMPLETED
+#        order.save()
             
+    def simple_view(self, request):
+        the_order = self.shop.getOrder(request)
+        return HttpResponse('%s' % self._create_email_body(the_order))
         
-        
-        
-        
-        
+    def get_urls(self):
+        urlpatterns = patterns('',
+            url(r'^$', self.simple_view, name='pay_on_del_simple' ),
+        )
+        return urlpatterns
+    
