@@ -8,6 +8,7 @@ from shop.payment.payment_backend_base import BasePaymentBackend
 
 class PayOnDeliveryBackend(BasePaymentBackend):
     
+    backend_name = "Pay On Delivery"
     url_namespace = "pay-on-delivery"
     
     def _create_email_body(self, order):
