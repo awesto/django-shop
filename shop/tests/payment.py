@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
 from django.contrib.auth.models import User
-from django.test.client import FakePayload
 from shop.models.clientmodel import Address, Client, Country
 from shop.models.ordermodel import Order, OrderItem, ExtraOrderItemPriceField, \
     ExtraOrderPriceField
