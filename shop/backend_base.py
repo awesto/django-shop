@@ -64,7 +64,7 @@ class BackendsPool(object):
             self._payment_backends_list = self._load_backends_list(self.PAYMENT)
             return self._payment_backends_list
     
-    def get_shippment_backends_list(self):
+    def get_shipping_backends_list(self):
         if self._shippment_backends_list and self.USE_CACHE:
             return self._shippment_backends_list
         else:
@@ -94,7 +94,7 @@ class BackendsPool(object):
             except AttributeError:
                 raise exceptions.ImproperlyConfigured(
                     'Backend module "%s" does not define a "%s" class. Check your %s setting' 
-                    % (back_module, back_classname))
+                    % (back_module, back_classname, setting_name))
                 
             mod_instance = mod_class()
             result.append(mod_instance)
