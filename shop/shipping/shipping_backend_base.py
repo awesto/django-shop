@@ -18,6 +18,10 @@ class BaseShippingBackend(BaseBackend):
     shop = None # Must be injected in __init__()
     
     def __init__(self, shop=ShippingBackendAPI()):
+        '''
+        Make sure the shop helper is of the right type (shipping), then call 
+        super
+        '''
         self.shop = shop
         super(BaseShippingBackend, self).__init__()
         

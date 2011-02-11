@@ -35,8 +35,7 @@ class BasePaymentBackend(BaseBackend):
     
     def __init__(self, shop=PaymentBackendAPI()):
         '''
-        This enforces having a valid name and url namespace defined, as well as
-        having a proper shop backend defined.
+        Make sure the shop helper is of the right type, then call super()
         '''
         self.shop = shop
         super(BasePaymentBackend, self).__init__()
