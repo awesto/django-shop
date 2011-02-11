@@ -6,7 +6,10 @@ from unittest import TestCase
 class ClientTestCase(TestCase):
     
     def setUp(self):
-        self.user = User.objects.create(username="test", email="test@example.com")
+        self.user = User.objects.create(username="test", 
+                                        email="test@example.com",
+                                        first_name="Test",
+                                        last_name = "Toto")
         
         self.client = Client()
         self.client.user = self.user
@@ -47,4 +50,17 @@ class ClientTestCase(TestCase):
         add = self.client.billing_address()
         self.assertEqual(add, self.address2)
         
+    def test_03_unicode_method_works(self):
+        expected = "ClientProfile for Test Toto"
+        text = self.client.__unicode__()
+        self.assertEqual(expected, text)
         
+    def test_04_unicode_method_works_for_null_user_info(self):
+        u = User.objects.create(username="test2", 
+                                        email="test2@example.com")
+        
+        expected = "test2"
+        text = u.__unicode__()
+        self.assertEqual(expected, text)
+        
+        u.delete()
