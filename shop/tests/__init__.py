@@ -4,3 +4,4 @@ from order import OrderTestCase
 from client import ClientTestCase
 from payment import PayOnDeliveryTestCase, GeneralPaymentBackendTestCase
 from util import UtilTestCase
+from shipping import GeneralShippingBackendTestCase
