@@ -8,11 +8,8 @@ from unittest import TestCase
 
 class MockShippingBackend(object):
     '''
-    A simple, useless backend that returns "URLs" (actually only strings),
-    to test pool imports
+    A simple, useless backend
     '''
-    def get_urls(self):
-        return ['http://www.divio.ch',]
 
 class GeneralShippingBackendTestCase(TestCase):
     

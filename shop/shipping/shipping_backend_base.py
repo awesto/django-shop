@@ -9,6 +9,8 @@ class ShippingBackendAPI(BaseBackendAPI):
     
     This implementation is the interface reference for Django Shop
     
+    Methods defined in BaseBackendAPI:
+    getOrder(request): Return the Order object for the current shopper
     '''
 
 class BaseShippingBackend(BaseBackend):

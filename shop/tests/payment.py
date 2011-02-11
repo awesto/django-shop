@@ -22,11 +22,8 @@ Total: 120'''
 
 class MockPaymentBackend(object):
     '''
-    A simple, useless backend that returns 3 "URLs" (actually only strings),
-    to test pool imports
+    A simple, useless backend
     '''
-    def get_urls(self):
-        return ['http://www.divio.ch',]
 
 class GeneralPaymentBackendTestCase(TestCase):
     
@@ -227,13 +224,13 @@ class PayOnDeliveryTestCase(TestCase):
     
     def test_01_empty_order_text(self):
         be = PayOnDeliveryBackend()
-        text= be._create_email_body(None)
+        text= be._create_body(None)
         self.assertNotEqual(None,text)
         
     def test_02_normal_order_text(self):
         
         be = PayOnDeliveryBackend()
-        text = be._create_email_body(self.order)
+        text = be._create_body(self.order)
         self.assertEqual(EXPECTED, text)
     
     def test_03_backend_returns_urls(self):

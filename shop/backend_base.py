@@ -15,6 +15,10 @@ class BaseBackendAPI(object):
     
     Define all functions common to both the shipping and the payment shop APIs 
     here
+    
+    PLEASE: When adding functions here please write a short description of
+    them in BaseShippingBackend and BasePaymentBackend, future implementers
+    thank you :)
     '''
     def getOrder(self, request):
         '''

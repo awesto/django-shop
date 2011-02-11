@@ -11,7 +11,7 @@ class PayOnDeliveryBackend(BasePaymentBackend):
     backend_name = "Pay On Delivery"
     url_namespace = "pay-on-delivery"
     
-    def _create_email_body(self, order):
+    def _create_body(self, order):
         '''
         A drill to put all of the Order's content as text... little
         attempt at beautifying was made so far
@@ -47,22 +47,9 @@ class PayOnDeliveryBackend(BasePaymentBackend):
         email_body = "\n".join(email_body)
         return email_body
             
-#    def process_order(self,order):
-#        '''
-#        This should simply save the order in the database with relevant 
-#        information, set the order's status to "completed", and send an
-#        email to the admin (it's an example plugin, obviously)
-#        '''
-#        recipients = [x[1] for x in settings.ADMINS]
-#        body = self._create_email_body(order)
-#        send_mail('New order!', body, 'shop@example.com',
-#                  [recipients], fail_silently=False)
-#        order.status = Order.COMPLETED
-#        order.save()
-            
     def simple_view(self, request):
         the_order = self.shop.getOrder(request)
-        return HttpResponse('%s' % self._create_email_body(the_order))
+        return HttpResponse('%s' % self._create_body(the_order))
         
     def get_urls(self):
         urlpatterns = patterns('',

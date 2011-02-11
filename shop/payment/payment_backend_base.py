@@ -14,6 +14,9 @@ class PaymentBackendAPI(BaseBackendAPI):
     
     This implementation is the interface reference for Django Shop
     
+    Methods defined in BaseBackendAPI:
+    getOrder(request): Return the Order object for the current shopper
+    
     '''
     
     def setOrderFinished(self):
