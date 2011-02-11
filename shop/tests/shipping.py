@@ -58,7 +58,7 @@ class GeneralShippingBackendTestCase(TestCase):
             user = self.user
         
         be = MockBackend()
-        order = be.shop.getOrder(MockRequest())
+        order = be.shop.get_order(MockRequest())
         self.assertNotEqual(order, None)
         self.assertEqual(len(order), 0) # Should basically be an empty list
         

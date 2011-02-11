@@ -20,7 +20,7 @@ class BaseBackendAPI(object):
     them in BaseShippingBackend and BasePaymentBackend, future implementers
     thank you :)
     '''
-    def getOrder(self, request):
+    def get_order(self, request):
         '''
         Returns the order object for the current shopper.
         
