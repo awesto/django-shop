@@ -100,3 +100,17 @@ class CartTestCase(TestCase):
             
             self.assertEqual(self.cart.subtotal_price, sub_should_be)
             self.assertEqual(self.cart.total_price, total_should_be)
+            
+    def test_07_add_same_object_twice(self):
+        with SettingsOverride(SHOP_CART_MODIFIERS=[]):
+            self.cart.add_product(self.product)
+            self.cart.save()
+            self.cart.update()
+            self.cart.save()
+            
+            self.cart.add_product(self.product)
+            self.cart.update()
+            self.cart.save()
+            
+            self.assertEqual(len(self.cart.items.all()),1)
+            self.assertEqual(self.cart.items.all()[0].quantity, 2)
