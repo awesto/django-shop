@@ -10,3 +10,4 @@ include/
 lib/
 distribute*
 share/
+*.sqlite
