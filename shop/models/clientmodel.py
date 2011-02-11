@@ -30,6 +30,7 @@ class Country(models.Model):
     
     class Meta:
         app_label = 'shop'
+        verbose_name_plural = "countries"
 
 class Address(models.Model):
     client = models.ForeignKey(Client, related_name="addresses")
