@@ -4,9 +4,9 @@
 This file defines the interafces one should implement when either creating a new
 payment module or willing to use modules with another shop system.
 '''
-from shop.models.ordermodel import Order
+from shop.backend_base import BaseBackendAPI, BaseBackend
 
-class PaymentBackendAPI(object):
+class PaymentBackendAPI(BaseBackendAPI):
     '''
     This object's purpose is to expose an API to the shop system.
     Ideally, shops (Django shop or others) should implement this API, so that
@@ -15,23 +15,13 @@ class PaymentBackendAPI(object):
     This implementation is the interface reference for Django Shop
     
     '''
-    def getOrder(self, request):
-        '''
-        Returns the order object for the current shopper.
-        
-        This is called from the backend's views as: 
-        >>> order = self.shop.getOrder(request)
-        '''
-        user = request.user
-        order = Order.objects.filter(user=user).filter(status=Order.CONFIRMED)
-        return order
     
     def setOrderFinished(self):
         '''
         Sets the current order processing status to "Finished"
         '''
 
-class BasePaymentBackend(object):
+class BasePaymentBackend(BaseBackend):
     '''
     This is the base class for all payment backends to implement.
     
@@ -41,18 +31,15 @@ class BasePaymentBackend(object):
     
     url_namespace = "" # That's what part of the URL goes after "pay/"
     backend_name = ""
-    shop = PaymentBackendAPI() # That's the easier to use API
+    shop = None # Must be injected at __init__()
     
-    def __init__(self):
+    def __init__(self, shop=PaymentBackendAPI()):
         '''
-        This enforces having a valid name and url namespace defined.
+        This enforces having a valid name and url namespace defined, as well as
+        having a proper shop backend defined.
         '''
-        if self.backend_name == "":
-            raise NotImplementedError(
-                'One of your payment backends lacks a name, please define one.')
-        if self.url_namespace == "":
-            raise NotImplementedError(
-                'Please set a namespace for backend "%s"' % self.backend_name)
+        self.shop = shop
+        super(BasePaymentBackend, self).__init__()
         
     def get_urls(self):
         '''
