@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from django.db import models
 from shop.cart.modifiers_pool import cart_modifiers_pool
 from shop.models.productmodel import Product
-from shop.util.fields import CurrencyField
 
 class Cart(models.Model):
     '''
@@ -16,7 +15,7 @@ class Cart(models.Model):
     
     extra_price_fields = {} # That will hold things like tax totals or total discount
     
-    subtotal_price = Decimal('0.0')
+    subtotal_price = Decimal('0.0') # Note that theses are transient!
     total_price = Decimal('0.0')
     
     def add_product(self,product, quantity=1):
@@ -91,7 +90,7 @@ class CartItem(models.Model):
     
     # These must not be stored, since their components can be changed between
     # sessions / logins etc...
-    line_subtotal = Decimal('0.0')
+    line_subtotal = Decimal('0.0') # Not saved to DB!
     line_total = Decimal('0.0')
     extra_price_fields = {} # That will hold extra fields to display to the user (ex. taxes, discount)
     
