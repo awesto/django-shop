@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 from django.conf.urls.defaults import patterns, include, url
 from shop.models.productmodel import Product, Category
-from shop.views import ShopDetailView, ShopListView
+from shop.views import ShopDetailView, ShopListView, ShopTemplateView
 from shop.views.cart import CartDetails
 from shop.views.category import CategoryDetailView
 
@@ -10,6 +10,10 @@ urlpatterns = patterns('',
     (r'^pay/$', include('shop.payment.urls')),
     (r'^ship/$', include('shop.shipping.urls')),
     
+    #Home
+    url(r'^$', ShopTemplateView.as_view(template_name="shop/welcome.html")),
+    
+    # Cart
     url(r'^cart/$', CartDetails.as_view(), 
         name='cart' # NOT cart_detail since we can POST to it to add stuff
         ),

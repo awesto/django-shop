@@ -7,7 +7,7 @@ from django.http import HttpResponse
 
 class CartDetails(ShopTemplateView):
     template_name = 'shop/cart.html'
-    add_to_cart_redirect = HttpResponse('Ok')
+    add_to_cart_redirect = HttpResponse('Ok<br />')
     
     def get_context_data(self, **kwargs):
         ctx = super(CartDetails,self).get_context_data(**kwargs)
