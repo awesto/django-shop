@@ -4,7 +4,7 @@ from shop.models.cartmodel import Cart
 from shop.views import ShopTemplateView
 
 class CartDetails(ShopTemplateView):
-    template_name = 'shop/cart/details.html'
+    template_name = 'shop/cart/cart_detail.html'
     
     def get_context_data(self, **kwargs):
         ctx = super(CartDetails,self).get_context_data(**kwargs)
