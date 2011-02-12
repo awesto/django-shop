@@ -16,8 +16,8 @@ class Cart(models.Model):
     user = models.OneToOneField(User, null=True, blank=True)
     
     extra_price_fields = {} # That will hold things like tax totals or total discount
-    subtotal_price = CurrencyField()
-    total_price = CurrencyField()
+    subtotal_price = Decimal('0.0') 
+    total_price = Decimal('0.0')
     
     date_created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
@@ -86,8 +86,8 @@ class CartItem(models.Model):
     
     # These must not be stored, since their components can be changed between
     # sessions / logins etc...
-    line_subtotal = CurrencyField()
-    line_total = CurrencyField()
+    line_subtotal = Decimal('0.0') 
+    line_total = Decimal('0.0') 
     extra_price_fields = {} # That will hold extra fields to display to the user (ex. taxes, discount)
     
     quantity = models.IntegerField()
