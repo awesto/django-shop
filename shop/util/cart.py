@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from shop.models.cartmodel import Cart
+from django.contrib.auth.models import AnonymousUser
 
 def get_or_create_cart(request):
     '''
@@ -8,7 +9,7 @@ def get_or_create_cart(request):
     exists), or to the session.
     '''
     cart = None
-    if request.user:
+    if request.user and not isinstance(request.user, AnonymousUser):
         # There is a logged in user
         cart = Cart.objects.filter(user=request.user) # a list
         if not cart: # if list is empty
@@ -25,5 +26,4 @@ def get_or_create_cart(request):
             else:
                 cart = Cart.objects.create()
                 session['cart_id'] = cart.id
-            
     return cart

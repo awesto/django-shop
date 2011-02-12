@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 from decimal import Decimal
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AnonymousUser
 from shop.models.cartmodel import Cart
 from shop.util.cart import get_or_create_cart
 from shop.util.fields import CurrencyField
@@ -81,3 +81,8 @@ class CartUtilsTestCase(TestCase):
         ret = get_or_create_cart(self.request)
         self.assertNotEqual(ret, None)
         self.assertEqual(ret, self.cart)
+        
+    def test_06_anonymous_user_is_like_no_user(self):
+        setattr(self.request, 'user', AnonymousUser())
+        ret = get_or_create_cart(self.request)
+        self.assertEqual(ret, None)
