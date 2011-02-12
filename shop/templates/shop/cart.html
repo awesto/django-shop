@@ -1,8 +1,15 @@
 {% if cart %}
-    
-    {% for item in cart_items %}
+    <h1>Your shopping cart</h1>
     
     <table border="1">
+    <tr>
+    <th>Product name</th>
+    <th>Unit price</th>
+    <th>Quantity</th>
+    <th>&nbsp;</th>
+    </tr>
+    
+    {% for item in cart_items %}
     <tr>
     <td>{{item.product.name}}</td>    
     <td>{{item.product.unit_price}}</td>
@@ -17,12 +24,11 @@
     </tr>
     {% endfor %}
     <tr><td colspan="2">&nbsp;</td><td>Line Total:</td><td>{{item.line_total}}</td></tr>
+    {% endfor %}
+    <tr><td colspan="2">&nbsp;</td><td>Cart Subtotal</td><td>{{cart.subtotal_price}}</td></tr>
+    <tr><td colspan="2">&nbsp;</td><td><b>Cart Total</b></td><td><b>{{cart.total_price}}</b></td></tr>
     </table>
     
-    {% endfor %}
-    
-    Subtotal price: {{cart.subtotal_price}}<br />
-    Total price: {{cart.total_price}}<br />
     
 {% else %}
 There is no cart attached to your session
