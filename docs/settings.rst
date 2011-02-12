@@ -1,6 +1,6 @@
-=====================
-Django SHOP settings
-=====================
+=========
+Settings
+=========
 
 This is a small list of the settings defined in Django SHOP.
 

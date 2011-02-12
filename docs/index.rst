@@ -16,3 +16,15 @@ Various short articles on how to do specific things
     howto/how-to-cart-mod
     howto/how-to-payment
     howto/how-to-shipping
+
+    
+Reference
+==========
+
+Reference sheets and lists regarding django SHOP
+
+.. toctree::
+    :maxdepth: 2
+    :numbered:
+    
+    settings
