@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.conf import settings
-from shipping.shipping_backend_base import BaseShippingBackend
+from shop.shipping.shipping_backend_base import BaseShippingBackend
 
 class FlatRateShipping(BaseShippingBackend):
     '''
