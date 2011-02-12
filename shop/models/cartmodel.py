@@ -4,23 +4,27 @@ from django.contrib.auth.models import User
 from django.db import models
 from shop.cart.modifiers_pool import cart_modifiers_pool
 from shop.models.productmodel import Product
+from shop.util.fields import CurrencyField
 
 class Cart(models.Model):
     '''
     This should be a rather simple list of items. Ideally it should be bound to
-    a sessin and not to a User is we want to let people buy from our shop 
+    a session and not to a User is we want to let people buy from our shop 
     without having to register with us.
     '''
     # If the user is null, that means this is used for a session
     user = models.OneToOneField(User, null=True, blank=True)
     
     extra_price_fields = {} # That will hold things like tax totals or total discount
-    
-    subtotal_price = Decimal('0.0') # Note that theses are transient!
-    total_price = Decimal('0.0')
+    subtotal_price = CurrencyField()
+    total_price = CurrencyField()
     
     date_created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
+    
+    def __init__(self, *args, **kwargs):
+        super(Cart, self).__init__(*args,**kwargs)
+        self.update() # This populates transient fields when coming from the DB
     
     def add_product(self,product, quantity=1):
         '''
@@ -29,12 +33,13 @@ class Cart(models.Model):
         # Let's see if we already have an Item with the same product ID
         if len(CartItem.objects.filter(cart=self).filter(product=product)) > 0:
             cart_item = CartItem.objects.filter(cart=self).filter(product=product)[0]
-            cart_item.quantity = cart_item.quantity + quantity
+            cart_item.quantity = cart_item.quantity + int(quantity)
             cart_item.save()
         else:
             cart_item = CartItem.objects.create(cart=self,quantity=quantity,product=product)
             cart_item.save()
-        self.save(force_update=True) # to get the last updated timestamp
+            
+        self.save() # to get the last updated timestamp
             
     def update(self):
         '''
@@ -50,24 +55,12 @@ class Cart(models.Model):
         the order items (since they are legally binding after the "purchase" button
         was pressed)
         '''
-        items = list(CartItem.objects.filter(cart=self)) # force query to "cache" it
+        items = CartItem.objects.filter(cart=self)
         
         self.subtotal_price = Decimal('0.0') # Reset the subtotal
+        
         for item in items: # For each OrderItem (order line)...
-            
-            item.line_subtotal = item.product.unit_price * item.quantity
-            item.line_total = item.line_subtotal
-            
-            for modifier in cart_modifiers_pool.get_modifiers_list():
-                # We now loop over every registered price modifier,
-                # most of them will simply add a field to extra_payment_fields
-                item = modifier.process_cart_item(item)
-                for value in item.extra_price_fields.itervalues():
-                    item.line_total = item.line_total + value
-                
-            # Let's update the Order's subtotal with this line's total while 
-            # we're at it
-            self.subtotal_price = self.subtotal_price + item.line_total
+            self.subtotal_price = self.subtotal_price + item.update()
             item.save()
         
         # Now we have to iterate over the registered modifiers again (unfortunately)
@@ -79,9 +72,7 @@ class Cart(models.Model):
         # Like for line items, most of the modifiers will simply add a field
         # to extra_price_fields, let's update the total with them
         for value in self.extra_price_fields.itervalues():
-            self.total_price = self.total_price + value
-            
-        self.save()
+            self.total_price = self.total_price + value            
         
     class Meta:
         app_label = 'shop'
@@ -95,12 +86,25 @@ class CartItem(models.Model):
     
     # These must not be stored, since their components can be changed between
     # sessions / logins etc...
-    line_subtotal = Decimal('0.0') # Not saved to DB!
-    line_total = Decimal('0.0')
+    line_subtotal = CurrencyField()
+    line_total = CurrencyField()
     extra_price_fields = {} # That will hold extra fields to display to the user (ex. taxes, discount)
     
     quantity = models.IntegerField()
     product = models.ForeignKey(Product)
+    
+    def update(self):
+        self.line_subtotal = self.product.unit_price * self.quantity
+        self.line_total = self.line_subtotal
+        
+        for modifier in cart_modifiers_pool.get_modifiers_list():
+            # We now loop over every registered price modifier,
+            # most of them will simply add a field to extra_payment_fields
+            modifier.process_cart_item(self)
+            for value in self.extra_price_fields.itervalues():
+                self.line_total = self.line_total + value
+                
+        return self.line_total
     
     class Meta:
         app_label = 'shop'

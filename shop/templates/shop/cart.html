@@ -1,0 +1,29 @@
+{% if cart %}
+    
+    {% for item in cart_items %}
+    
+    <table border="1">
+    <tr>
+    <td>{{item.product.name}}</td>    
+    <td>{{item.product.unit_price}}</td>
+    <td>{{item.quantity}}</td>
+    <td>{{item.line_subtotal}}</td>
+    </tr>
+    {% for label, value in item.extra_price_fields.iteritems %}
+    <tr>
+    <td colspan="2">&nbsp;</td>
+    <td>{{label}}</td>
+    <td>{{value}}</td>
+    </tr>
+    {% endfor %}
+    <tr><td colspan="2">&nbsp;</td><td>Line Total:</td><td>{{item.line_total}}</td></tr>
+    </table>
+    
+    {% endfor %}
+    
+    Subtotal price: {{cart.subtotal_price}}<br />
+    Total price: {{cart.total_price}}<br />
+    
+{% else %}
+There is no cart attached to your session
+{% endif %}
