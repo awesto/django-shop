@@ -10,7 +10,9 @@ urlpatterns = patterns('',
     (r'^pay/$', include('shop.payment.urls')),
     (r'^ship/$', include('shop.shipping.urls')),
     
-    url(r'^cart/$', CartDetails.as_view()),
+    url(r'^cart/$', CartDetails.as_view(), 
+        name='cart' # NOT cart_detail since we can POST to it to add stuff
+        ),
     
     # Products
     url(r'^product/(?P<slug>[0-9A-Za-z-_.//]+)/$',

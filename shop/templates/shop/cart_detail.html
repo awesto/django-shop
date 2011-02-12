@@ -1,5 +1,18 @@
 {% if cart %}
-    Total price: {{cart.total_price}}
+	Subtotal price: {{cart.subtotal_price}}<br />
+    Total price: {{cart.total_price}}<br />
+    
+    {% for item in cart_items %}
+    {{item.line_subtotal}}<br />
+    {{item.line_total}}<br />
+    {{item.extra_price_fields}}<br />
+    
+    {{item.quantity}}<br />
+    
+    {{item.product.name}}<br />
+    {{item.product.base_price}}<br />
+    {% endfor %}
+    
 {% else %}
 There is no cart attached to your session
 {% endif %}
