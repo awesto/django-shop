@@ -7,6 +7,7 @@ from django.http import HttpResponse
 
 class CartDetails(ShopTemplateView):
     template_name = 'shop/cart_detail.html'
+    add_to_cart_redirect = HttpResponse('Ok')
     
     def get_context_data(self, **kwargs):
         ctx = super(CartDetails,self).get_context_data(**kwargs)
@@ -30,5 +31,5 @@ class CartDetails(ShopTemplateView):
         item = Product.objects.get(pk=item_id)
         cart_object = get_or_create_cart(self.request)
         cart_object.add_product(item, quantity)
-        return HttpResponse('Ok')
+        return self.add_to_cart_redirect
     
