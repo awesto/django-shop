@@ -33,6 +33,7 @@ class CartTestCase(TestCase):
     def tearDown(self):
         self.user.delete()
         self.product.delete()
+        self.cart.delete()
     
     def test_01_empty_cart_costs_0(self):
         with SettingsOverride(SHOP_CART_MODIFIERS=[]):
@@ -114,3 +115,9 @@ class CartTestCase(TestCase):
             
             self.assertEqual(len(self.cart.items.all()),1)
             self.assertEqual(self.cart.items.all()[0].quantity, 2)
+            
+    def test_08_add_product_updates_last_updated(self):
+        initial = self.cart.last_updated
+        self.cart.add_product(self.product)
+        self.assertNotEqual(initial, self.cart.last_updated)
+        

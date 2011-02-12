@@ -11,12 +11,16 @@ class Cart(models.Model):
     a sessin and not to a User is we want to let people buy from our shop 
     without having to register with us.
     '''
-    user = models.ForeignKey(User)
+    # If the user is null, that means this is used for a session
+    user = models.OneToOneField(User, null=True, blank=True)
     
     extra_price_fields = {} # That will hold things like tax totals or total discount
     
     subtotal_price = Decimal('0.0') # Note that theses are transient!
     total_price = Decimal('0.0')
+    
+    date_created = models.DateTimeField(auto_now_add=True)
+    last_updated = models.DateTimeField(auto_now=True)
     
     def add_product(self,product, quantity=1):
         '''
@@ -30,6 +34,7 @@ class Cart(models.Model):
         else:
             cart_item = CartItem.objects.create(cart=self,quantity=quantity,product=product)
             cart_item.save()
+        self.save(force_update=True) # to get the last updated timestamp
             
     def update(self):
         '''
