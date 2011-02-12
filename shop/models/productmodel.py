@@ -11,6 +11,7 @@ class Category(models.Model):
     per-site basis
     '''
     name = models.CharField(max_length=255)
+    slug = models.SlugField()
     parent_category = models.ForeignKey('self', related_name="children",
                                         null=True, blank=True)
     
@@ -20,7 +21,11 @@ class Category(models.Model):
         '''
         return Product.objects.filter(category=self)
     
+    def __unicode__(self):
+        return self.name
+    
     class Meta:
+        verbose_name_plural = "categories"
         app_label = 'shop'
 
 class ProductManager(models.Manager):
@@ -35,7 +40,7 @@ class Product(models.Model):
     on the "base model" and not on an added property
     '''
     name = models.CharField(max_length=255)
-    slug = models.CharField(max_length=255)
+    slug = models.SlugField()
     short_description = models.CharField(max_length=255)
     long_description = models.TextField()
     active = models.BooleanField(default = False)
@@ -46,6 +51,8 @@ class Product(models.Model):
     unit_price = CurrencyField()
     
     category = models.ForeignKey(Category, null=True, blank=True)
+    
+    objects = ProductManager()
     
     def __unicode__(self):
         return self.name
