@@ -1,0 +1,17 @@
+<h1>Product detail:</h1>
+{{object.name}}<br />
+{{object.slug}}<br />
+{{object.short_description}}<br />
+{{object.long_description}}<br />
+{{object.active}}<br />
+
+{{object.date_added}}<br />
+{{object.last_modified}}<br />
+
+{{object.unit_price}}<br />
+
+{% if object.category %}
+{{object.category.name}}
+{% else %}
+(Product is at root category)
+{% endif %}
