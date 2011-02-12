@@ -22,17 +22,6 @@ class Category(models.Model):
     
     class Meta:
         app_label = 'shop'
-    
-class ProductAttribute(models.Model):
-    '''
-    This is an example of how the attributes could work for products, if this 
-    approach is chosen
-    '''
-    name = models.CharField(max_length=255)
-    
-    class Meta:
-        app_label = 'shop'
-
 
 class ProductManager(models.Manager):
     
@@ -56,19 +45,11 @@ class Product(models.Model):
     
     unit_price = CurrencyField()
     
-    category = models.ForeignKey(Category, null=True)
+    category = models.ForeignKey(Category, null=True, blank=True)
+    
+    def __unicode__(self):
+        return self.name
     
     class Meta:
         app_label = 'shop'
     
-class ProductAttributeValue(models.Model):
-    '''
-    This is simply a M2M class with an extra field to the relation (the value of 
-    an attribute for a give product)
-    '''
-    attribute = models.ForeignKey(ProductAttribute)
-    product = models.ForeignKey(Product)
-    value = models.TextField() # Does it make sense to use something smaller?
-    
-    class Meta:
-        app_label = 'shop'
