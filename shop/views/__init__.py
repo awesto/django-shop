@@ -5,7 +5,7 @@ if django_version[0] >= 1 and django_version[1] >=3:
 else:
     from cbv import TemplateView, ListView, DetailView
 
-class BaseShopView(TemplateView):
+class ShopTemplateView(TemplateView):
     '''
     A class-based view for use within the shop (this allows to keep the above
     import magic in only one place)

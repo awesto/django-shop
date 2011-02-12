@@ -1,7 +1,7 @@
 
 <h1>Product list:</h1>
-{% for object in object_list %}
 <hr />
+{% for object in object_list %}
 <a href="{% url product_detail object.slug %}">{{object.name}}</a><br />
 {{object.slug}}<br />
 {{object.short_description}}<br />

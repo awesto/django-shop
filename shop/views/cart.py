@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth.models import AnonymousUser
 from shop.models.cartmodel import Cart
-from shop.views import BaseShopView
+from shop.views import ShopTemplateView
 
-class CartDetails(BaseShopView):
+class CartDetails(ShopTemplateView):
     template_name = 'shop/cart/details.html'
     
     def get_context_data(self, **kwargs):
