@@ -30,6 +30,12 @@ class BasePaymentBackend(BaseBackend):
     
     The goal is to be able to register a few payment modules, and let one of 
     them be selected at runtime by the shopper.
+    
+    Class members:
+    
+    url_namespace 
+    backend_name
+    shop
     '''
     
     def __init__(self, shop=PaymentBackendAPI()):

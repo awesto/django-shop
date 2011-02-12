@@ -14,6 +14,15 @@ class ShippingBackendAPI(BaseBackendAPI):
     '''
 
 class BaseShippingBackend(BaseBackend):
+    '''
+    This is the base class for all shipping backends to implement.
+    
+    Class members:
+    
+    url_namespace 
+    backend_name
+    shop
+    '''
     
     def __init__(self, shop=ShippingBackendAPI()):
         '''
