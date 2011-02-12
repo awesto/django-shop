@@ -100,3 +100,5 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'shop',
 )
+
+SHOP_CART_MODIFIERS= ['shop.cart.modifiers.rebate_modifiers.BulkRebateModifier']
