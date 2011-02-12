@@ -14,21 +14,25 @@ urlpatterns = patterns('',
     
     # Products
     url(r'^product/(?P<slug>[0-9A-Za-z-_.//]+)/$',
-        ShopDetailView.as_view(model=Product, template_name="shop/product/product_detail.html"),
+#        ShopDetailView.as_view(model=Product, template_name="shop/product/product_detail.html"),
+        ShopDetailView.as_view(model=Product),
         name='product_detail'
         ),
     url(r'^products/$',
-        ShopListView.as_view(model=Product, template_name="shop/product/product_list.html"),
+#        ShopDetailView.as_view(model=Product, template_name="shop/product/product_detail.html"),
+        ShopListView.as_view(model=Product),
         name='product_list'
         ),
         
     # Categories
     url(r'^categories/$',
-        ShopListView.as_view(model=Category, template_name='shop/category/category_list.html'),
+#        ShopListView.as_view(model=Category, template_name='shop/category/category_list.html'),
+        ShopListView.as_view(model=Category),
         name='category_list'
         ),
     url(r'^category/(?P<slug>[0-9A-Za-z-_.//]+)/$',
-        CategoryDetailView.as_view(template_name='shop/category/category_detail.html'),
+#        CategoryDetailView.as_view(template_name='shop/category/category_detail.html'),
+        CategoryDetailView.as_view(),
         name='category_detail'
         ),
 )
