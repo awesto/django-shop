@@ -1,0 +1,7 @@
+{% for object in object_list %}
+
+<a href="{% url category_detail object.slug %}">{{object.name}}</a><br />
+{{object.slug}}
+
+
+{% endfor %}
