@@ -8,7 +8,7 @@ from shop.util.fields import CurrencyField
 class OrderManager(models.Manager):
     
     @transaction.commit_on_success
-    def create_from_cart(self, cart, user):
+    def create_from_cart(self, cart):
         '''
         This creates a new Order object (and all the rest) from a passed Cart 
         object.
@@ -22,7 +22,7 @@ class OrderManager(models.Manager):
         '''
         # Let's create the Order itself:
         o = Order()
-        o.user = user
+        o.user = cart.user
         o.status = Order.STATUS_CODES[0][0] # Processing
         
         o.order_subtotal = cart.subtotal_price
@@ -94,7 +94,8 @@ class Order(models.Model):
         (COMPLETED, 'Completed'), # Everything is fine, only need to send the products
     )
     
-    user = models.ForeignKey(User)
+    # If the user is null, the order was created with a session
+    user = models.ForeignKey(User, blank=True, null=True)
     
     status = models.IntegerField(choices=STATUS_CODES)
     
