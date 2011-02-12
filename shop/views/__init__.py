@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-import django
-
-if django.VERSION[0] >= 1 and django.VERSION[1] >=3:
-    #Django 1.3+ -> No need to import cbv
-    from django.views.generic import TemplateView
+from django import VERSION as django_version
+if django_version[0] >= 1 and django_version[1] >=3:
+    from django.views.generic import TemplateView, ListView, DetailView
 else:
-    from cbv import TemplateView
+    from cbv import TemplateView, ListView, DetailView
 
 class BaseShopView(TemplateView):
     '''
@@ -20,3 +18,15 @@ class BaseShopView(TemplateView):
     self.get_context_data(): Returns the context {} to render the template with
     self.get(request, *args, **kwargs): called for GET methods
     ''' 
+    
+class ShopListView(ListView):
+    '''
+    This is just to abstract the "Django version switching magic happening up 
+    there
+    '''
+    
+class ShopDetailView(DetailView):
+    '''
+    This is just to abstract the "Django version switching magic happening up 
+    there
+    '''
