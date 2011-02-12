@@ -15,10 +15,6 @@ class ShippingBackendAPI(BaseBackendAPI):
 
 class BaseShippingBackend(BaseBackend):
     
-    url_namespace = "" # That's what part of the URL goes after "ship/"
-    backend_name = ""
-    shop = None # Must be injected in __init__()
-    
     def __init__(self, shop=ShippingBackendAPI()):
         '''
         Make sure the shop helper is of the right type (shipping), then call 

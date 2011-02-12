@@ -35,6 +35,11 @@ class BaseBackend(object):
     '''
     A base-baseclass for all backends (payment backends and shipping backends)
     '''
+    
+    url_namespace = "" # That's what part of the URL goes after "pay/"
+    backend_name = ""
+    shop = None # Must be injected at __init__()
+    
     def __init__(self):
         '''
         This enforces having a valid name and url namespace defined.

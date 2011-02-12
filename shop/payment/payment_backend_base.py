@@ -32,10 +32,6 @@ class BasePaymentBackend(BaseBackend):
     them be selected at runtime by the shopper.
     '''
     
-    url_namespace = "" # That's what part of the URL goes after "pay/"
-    backend_name = ""
-    shop = None # Must be injected at __init__()
-    
     def __init__(self, shop=PaymentBackendAPI()):
         '''
         Make sure the shop helper is of the right type, then call super()
