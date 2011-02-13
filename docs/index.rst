@@ -3,6 +3,17 @@
 Welcome to Django SHOP's documentation!
 ========================================
 
+User Manual
+============
+
+The "instructions" :)
+
+.. toctree::
+    :maxdepth: 1
+    :numbered:
+    
+    getting-started
+
 How to
 ======
 
