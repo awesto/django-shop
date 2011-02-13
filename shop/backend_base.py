@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 from django.conf import settings
+from django.conf.urls.defaults import url
 from django.core import exceptions
 from django.utils.importlib import import_module
 from shop.models.ordermodel import Order, OrderExtraInfo
@@ -28,7 +29,7 @@ class BaseBackendAPI(object):
         >>> order = self.shop.getOrder(request)
         '''
         user = request.user
-        order = Order.objects.filter(user=user).filter(status=Order.CONFIRMED)
+        order = Order.objects.filter(user=user).filter(status__lt=Order.COMPLETED)[0]
         return order
     
     def add_extra_info(self,order, text):
@@ -56,10 +57,26 @@ class BaseBackend(object):
         '''
         if self.backend_name == "":
             raise NotImplementedError(
-                'One of your payment backends lacks a name, please define one.')
+                'One of your backends lacks a name, please define one.')
         if self.url_namespace == "":
             raise NotImplementedError(
                 'Please set a namespace for backend "%s"' % self.backend_name)
+            
+            
+    def url(self,regex, view, kwargs=None, name=None, prefix=''):
+        '''
+        A special URL helper that will append the Backend's namespace to the
+        passed regexp (so as to force namespacing)
+        '''
+        prefix = '%s%s%s' % (r'^',self.url_namespace,r'/')
+        if (self.url_namespace not in regex) or not regex.startswith(prefix):
+            if '^' in regex:
+                # Delete ^, if it's not the first char it's an error anyway
+                regex = regex[1:]
+            regex = r"%s%s%s%s" % (r'^', self.url_namespace, r'/', regex)
+        return url(regex, view, kwargs, name, prefix)
+            
+        
             
             
 class BackendsPool(object):

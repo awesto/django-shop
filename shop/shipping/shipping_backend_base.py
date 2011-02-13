@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from shop.backend_base import BaseBackendAPI, BaseBackend
 from shop.models.ordermodel import ExtraOrderPriceField
+from django.http import HttpResponseRedirect
 
 class ShippingBackendAPI(BaseBackendAPI):
     '''
@@ -47,18 +48,10 @@ class BaseShippingBackend(BaseBackend):
         self.shop = shop
         super(BaseShippingBackend, self).__init__()
         
-    def process_order(self,order):
+    def finished(self):
         '''
-        Processes the supplied Order object for shipping costs computing.
-        This should ideally store the shipping costs total in 
-        Order.shipping_cost.
-        
+        A helper for subclasses, so that they can call this when their job
+        is finished i.e. shipping costs are added to the order.
+        This will redirect to the "select a payment method" page.
         '''
-        
-    def process_order_item(self,order_item):
-        '''
-        Processes the supplied Order object for shipping costs computing.
-        This should ideally store the shipping costs total in 
-        Order.shipping_cost.
-        
-        '''
+        return HttpResponseRedirect('checkout_shipping')

@@ -3,6 +3,7 @@ from decimal import Decimal
 from django.contrib.auth.models import User
 from django.db import models, transaction
 from shop.models.cartmodel import CartItem
+from shop.models.clientmodel import Client
 from shop.models.productmodel import Product
 from shop.util.fields import CurrencyField
 
@@ -29,22 +30,30 @@ class OrderManager(models.Manager):
         o.order_subtotal = cart.subtotal_price
         o.order_total = cart.total_price
         
-        ship_address = cart.user.client.addresses.filter(is_shipping=True)[0] 
-        bill_address = cart.user.client.addresses.filter(is_billing=True)[0]
+        try:
+            client = cart.user.client
+        except Client.DoesNotExist:
+            client = None
+            
+        if cart.user and client:
+            
+            ship_address = cart.user.client.addresses.filter(is_shipping=True)[0] 
+            bill_address = cart.user.client.addresses.filter(is_billing=True)[0]
         
-        o.shipping_name = "%s %s" % (cart.user.first_name, cart.user.last_name)
-        o.shipping_address = ship_address.address
-        o.shipping_address2 = ship_address.address2
-        o.shipping_zip_code = ship_address.zip_code
-        o.shipping_state = ship_address.state
-        o.shipping_country = ship_address.country.name
         
-        o.billing_name = "%s %s" % (cart.user.first_name, cart.user.last_name)
-        o.billing_address = bill_address.address
-        o.billing_address2 = bill_address.address2
-        o.billing_zip_code = bill_address.zip_code
-        o.billing_state = bill_address.state
-        o.billing_country = bill_address.country.name
+            o.shipping_name = "%s %s" % (cart.user.first_name, cart.user.last_name)
+            o.shipping_address = ship_address.address
+            o.shipping_address2 = ship_address.address2
+            o.shipping_zip_code = ship_address.zip_code
+            o.shipping_state = ship_address.state
+            o.shipping_country = ship_address.country.name
+            
+            o.billing_name = "%s %s" % (cart.user.first_name, cart.user.last_name)
+            o.billing_address = bill_address.address
+            o.billing_address2 = bill_address.address2
+            o.billing_zip_code = bill_address.zip_code
+            o.billing_state = bill_address.state
+            o.billing_country = bill_address.country.name
         o.save()
         # Let's serialize all the extra price arguments in DB
         for label, value in cart.extra_price_fields.iteritems():
@@ -105,20 +114,22 @@ class Order(models.Model):
     
     amount_payed = CurrencyField()
     
-    # Addresses MUST be copied over to the order when it's created.
-    shipping_name = models.CharField(max_length=255)
-    shipping_address = models.CharField(max_length=255)
-    shipping_address2 = models.CharField(max_length=255)
-    shipping_zip_code = models.CharField(max_length=20)
-    shipping_state = models.CharField(max_length=255)
-    shipping_country = models.CharField(max_length=255)
+    # Addresses MUST be copied over to the order when it's created, however
+    # the fields must be nullable since sometimes we cannot create the address 
+    # fields right away (for instance when the shopper is a guest)
+    shipping_name = models.CharField(max_length=255, null=True)
+    shipping_address = models.CharField(max_length=255, null=True)
+    shipping_address2 = models.CharField(max_length=255, null=True)
+    shipping_zip_code = models.CharField(max_length=20, null=True)
+    shipping_state = models.CharField(max_length=255, null=True)
+    shipping_country = models.CharField(max_length=255, null=True)
     
-    billing_name = models.CharField(max_length=255)
-    billing_address = models.CharField(max_length=255)
-    billing_address2 = models.CharField(max_length=255)
-    billing_zip_code = models.CharField(max_length=20)
-    billing_state = models.CharField(max_length=255)
-    billing_country = models.CharField(max_length=255)
+    billing_name = models.CharField(max_length=255, null=True)
+    billing_address = models.CharField(max_length=255, null=True)
+    billing_address2 = models.CharField(max_length=255, null=True)
+    billing_zip_code = models.CharField(max_length=20, null=True)
+    billing_state = models.CharField(max_length=255, null=True)
+    billing_country = models.CharField(max_length=255, null=True)
     
     objects = OrderManager()
     

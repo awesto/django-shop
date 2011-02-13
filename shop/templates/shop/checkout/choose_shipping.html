@@ -1,0 +1,5 @@
+<h1>Shipping</h1>
+<p>Please select a shipping option:</p>
+{% for name, theurl in shipping_options.iteritems %}
+<p><a href="{{theurl}}">{{name}}</a></p>
+{% endfor %}
