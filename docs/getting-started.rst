@@ -38,7 +38,7 @@ django-cbv if you're using 1.3.
 	
 5. Obviously, you need to add shop and myshop to your INSTALLED_APPS too::
 
-	INSTALLED_APPS = (
+	INSTALLED_APPS = [
 	    'django.contrib.auth',
 	    'django.contrib.contenttypes',
 	    'django.contrib.sessions',
@@ -50,7 +50,7 @@ django-cbv if you're using 1.3.
 	    'django.contrib.admindocs',
 	    'shop', # The django SHOP application
 	    'myshop', # the project we just created
-	)
+	]
 	
 6. Most of the stuff you'll have to do is styling and templates work, so go ahead
    and create a templates directory in your project::
