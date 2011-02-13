@@ -8,7 +8,7 @@ django-cbv if you're using 1.3.
 
 1. Create a normal Django project (we'll call it myshop for now)::
 	
-	django-admin startproject myshop
+	django-admin startproject example
 	cd myshop; django-admin startapp myshop
 	
 2. You'll want to virtualenv your world, just in case::
@@ -49,13 +49,13 @@ django-cbv if you're using 1.3.
 	    # Uncomment the next line to enable admin documentation:
 	    'django.contrib.admindocs',
 	    'shop', # The django SHOP application
-	    'myshop', # the project we just created
+	    'theshop', # the project we just created
 	]
 	
 6. Most of the stuff you'll have to do is styling and templates work, so go ahead
    and create a templates directory in your project::
    
-	cd myshop/myshop; mkdir -p templates/myshop
+	cd example/myshop; mkdir -p templates/myshop
 	
 7. Lock and load::
 
