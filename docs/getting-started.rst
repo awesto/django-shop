@@ -8,7 +8,7 @@ django-cbv if you're using 1.3.
 
 1. Create a normal Django project (we'll call it myshop for now)::
 	
-	django-admin startproject myshop
+	django-admin startproject example
 	cd myshop; django-admin startapp myshop
 	
 2. You'll want to virtualenv your world, just in case::
@@ -22,7 +22,23 @@ django-cbv if you're using 1.3.
 	git clone https://github.com/divio/django-shop.git ;
 	cd django-shop; python setup.py install; cd ../..
 	
-4. Go to your settings.py and add the following stuff to middlewares::
+4. Go to your settings.py and configure your DB like the following, or anything 
+   matching your setup::
+  
+	DATABASES = {
+    	'default': {
+        	'ENGINE': 'django.db.backends.sqlite3',
+        	'NAME': 'test.sqlite',                 
+        	'USER': '',                      
+        	'PASSWORD': '',                  
+        	'HOST': '',                      
+        	'PORT': '',           
+    	}
+	} 
+
+
+
+5. Add the following stuff to middlewares::
 
 	MIDDLEWARE_CLASSES = [
 	    'django.middleware.common.CommonMiddleware',
@@ -36,9 +52,9 @@ django-cbv if you're using 1.3.
 	if django.VERSION[0] < 1 or django.VERSION[1] < 3:
     	MIDDLEWARE_CLASSES.append('cbv.middleware.DeferredRenderingMiddleware')
 	
-5. Obviously, you need to add shop and myshop to your INSTALLED_APPS too::
+6. Obviously, you need to add shop and myshop to your INSTALLED_APPS too::
 
-	INSTALLED_APPS = (
+	INSTALLED_APPS = [
 	    'django.contrib.auth',
 	    'django.contrib.contenttypes',
 	    'django.contrib.sessions',
@@ -49,20 +65,36 @@ django-cbv if you're using 1.3.
 	    # Uncomment the next line to enable admin documentation:
 	    'django.contrib.admindocs',
 	    'shop', # The django SHOP application
-	    'myshop', # the project we just created
+	    'theshop', # the project we just created
+	]
+	
+7. Make the exmaple/urls.py contain the following::
+
+	from shop import urls as shop_urls # <-- Add this at the top
+	
+	# Other stuff here
+	
+	urlpatterns = patterns('',
+	    # Example:
+	    #(r'^example/', include('example.foo.urls')),
+	    # Uncomment the admin/doc line below to enable admin documentation:
+	    (r'^admin/doc/', include('django.contrib.admindocs.urls')),
+	    # Uncomment the next line to enable the admin:
+	    (r'^admin/', include(admin.site.urls)),
+	    (r'^shop/', include(shop_urls)), # <-- That's the important bit
 	)
 	
-6. Most of the stuff you'll have to do is styling and templates work, so go ahead
+7. Most of the stuff you'll have to do is styling and templates work, so go ahead
    and create a templates directory in your project::
    
-	cd myshop/myshop; mkdir -p templates/myshop
+	cd example/myshop; mkdir -p templates/myshop
 	
-7. Lock and load::
+8. Lock and load::
 
 	cd .. ; python manage.py syncdb
 	python manage.py runserver
 	
-8. Point your browser and marvel at the absence of styling::
+9. Point your browser and marvel at the absence of styling::
 
 	x-www-browser localhost:8000/shop
 
