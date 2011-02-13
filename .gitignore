@@ -1,6 +1,9 @@
 *.pyc
+.project
+.pydevproject
+.settings
+*.coverage
 *~
-.*
 docs/_build
 dist
 *egg-info*

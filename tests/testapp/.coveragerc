@@ -1,0 +1,10 @@
+[run]
+branch = True
+source =
+    shop
+omit =
+    ../*migrations*
+    /usr/share/*
+[report]
+precision = 2
+
