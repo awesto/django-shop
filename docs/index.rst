@@ -36,7 +36,7 @@ Reference
 Reference sheets and lists regarding django SHOP
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
     :numbered:
     
     settings

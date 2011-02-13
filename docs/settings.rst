@@ -1,6 +1,6 @@
-=========
-Settings
-=========
+================
+General Settings
+================
 
 This is a small list of the settings defined in Django SHOP.
 
@@ -25,3 +25,18 @@ SHOP_CART_MODIFIERS
 Theses modifiers function like the django middlewares. The cart will call each of
 theses classes, in order, everytime it is displayed. They are passed every item in
 the cart, as well as the cart itself.
+
+
+==========================
+Backend specific Settings
+==========================
+
+Some backends define extra settings to tweak their behavior. This should be an
+exhaustive list of all of the backends and modifiers included in the trunk of
+django SHOP.
+
+SHOP_SHIPPING_FLAT_RATE
+========================
+
+The "flat rate" shipping module uses this to know how much to charge. This
+should be a string, and will be converted to a Decimal by the backend. 
