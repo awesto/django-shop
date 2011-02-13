@@ -97,7 +97,7 @@ class Order(models.Model):
     # If the user is null, the order was created with a session
     user = models.ForeignKey(User, blank=True, null=True)
     
-    status = models.IntegerField(choices=STATUS_CODES)
+    status = models.IntegerField(choices=STATUS_CODES, default=PROCESSING)
     
     order_subtotal = CurrencyField()
     order_total = CurrencyField()

@@ -10,7 +10,44 @@ from shop.models.productmodel import Product
 from shop.tests.utils.context_managers import SettingsOverride
 from unittest import TestCase
 
+
 class OrderTestCase(TestCase):
+    def setUp(self):
+        
+        self.order = Order()
+        self.order.order_subtotal = Decimal('10')
+        self.order.order_total = Decimal('10')
+        self.order.amount_payed = Decimal('0')
+        self.order.shipping_cost = Decimal('0')
+        
+        self.order.shipping_name = 'toto'
+        self.order.shipping_address = 'address'
+        self.order.shipping_address2 = 'address2'
+        self.order.shipping_zip_code = 'zip'
+        self.order.shipping_state = 'state'
+        self.order.shipping_country = 'country'
+        
+        self.order.billing_name = 'toto'
+        self.order.billing_address = 'address'
+        self.order.billing_address2 = 'address2'
+        self.order.billing_zip_code = 'zip'
+        self.order.billing_state = 'state'
+        self.order.billing_country = 'country'
+        
+        self.order.save()
+            
+    def tearDown(self):
+        self.order.delete()
+    
+    def test_01_order_is_completed_works(self):
+        ret = self.order.is_completed()
+        self.assertNotEqual(ret, Order.COMPLETED)
+    
+    def test_02_is_payed_works(self):
+        ret = self.order.is_payed()
+        self.assertEqual(ret, False)
+
+class OrderConversionTestCase(TestCase):
     
     PRODUCT_PRICE = Decimal('100')
     TEN_PERCENT = Decimal(10) / Decimal(100)
