@@ -17,6 +17,11 @@
 {% endif %}
 <br />
 
+<h2>Book specifics:</h2><br />
+ISBN: {{object.isbn}}<br />
+Pages: {{object.number_of_pages}}<br />
+
+
 <form method="post" action="{% url cart %}">{% csrf_token %}
 <input type="hidden" name="add_item_id" value="{{object.id}}">
 <input type="hidden" name="add_item_quantity" value="1">
