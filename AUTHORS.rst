@@ -1,9 +1,11 @@
 AUTHORS
 =======
 
-In no particular order of importance:
-
 * Chris Glass (chrisglass)
+
+CONTRIBUTORS
+============
+
 * fivethreeo
 * Jonas Obrist
 * Issac Kelly
