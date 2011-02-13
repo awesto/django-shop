@@ -102,4 +102,9 @@ INSTALLED_APPS = (
     'project', # the test project application
 )
 
+# The shop settings:
 SHOP_CART_MODIFIERS= ['shop.cart.modifiers.rebate_modifiers.BulkRebateModifier']
+SHOP_SHIPPING_BACKENDS=['shop.shipping.backends.flat_rate.FlatRateShipping']
+
+# Shop module settings
+SHOP_SHIPPING_FLAT_RATE = '10' # That's just for the flat rate shipping backend
