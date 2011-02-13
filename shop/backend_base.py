@@ -29,7 +29,11 @@ class BaseBackendAPI(object):
         >>> order = self.shop.getOrder(request)
         '''
         user = request.user
-        order = Order.objects.filter(user=user).filter(status__lt=Order.COMPLETED)[0]
+        order = Order.objects.filter(user=user).filter(status__lt=Order.COMPLETED)
+        if len(order) >= 1:
+            order = order[0]
+        else:
+            order = []
         return order
     
     def add_extra_info(self,order, text):
