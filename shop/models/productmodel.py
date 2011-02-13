@@ -74,6 +74,12 @@ class Product(models.Model):
         '''
         return getattr(self, self.subtype)
     
+    def get_price(self):
+        '''
+        Return the price for this item (provided for extensibility)
+        '''
+        return self.unit_price
+    
     class Meta:
         app_label = 'shop'
         

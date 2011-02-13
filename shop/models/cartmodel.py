@@ -94,7 +94,7 @@ class CartItem(models.Model):
     product = models.ForeignKey(Product)
     
     def update(self):
-        self.line_subtotal = self.product.unit_price * self.quantity
+        self.line_subtotal = self.product.get_price() * self.quantity
         self.line_total = self.line_subtotal
         
         for modifier in cart_modifiers_pool.get_modifiers_list():
