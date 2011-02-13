@@ -52,11 +52,28 @@ class Product(models.Model):
     
     category = models.ForeignKey(Category, null=True, blank=True)
     
+    # The subtype stores the lowest-level classname in the inheritence tree
+    subtype = models.CharField(max_length=255, editable=False)
+    
     objects = ProductManager()
+    
+    def save(self, *args, **kwargs):
+        '''
+        Saves the name of the subtype to the subtype column.
+        '''
+        self.subtype = self.__class__.__name__.lower()
+        super(Product, self).save(*args, **kwargs)
     
     def __unicode__(self):
         return self.name
     
+    def specify(self):
+        '''
+        This magic method returns this as an instance of the most specific
+        decendant in the inheritence tree.
+        '''
+        return getattr(self, self.subtype)
+    
     class Meta:
         app_label = 'shop'
-    
+        
