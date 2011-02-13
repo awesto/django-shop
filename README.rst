@@ -28,6 +28,4 @@ Todo:
   Also, please keep templates to the main templates directory only (so that people have a clear view of the 
   templates structure)
 * Writing docs is most welcome :)
-* Make carts be get_or_created(), ideally either for a User or for a Session. If Session, they should be cleaned 
-  up when the session expires...
 
