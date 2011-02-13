@@ -1,7 +1,9 @@
 #-*- coding: utf-8 -*-
+from decimal import Decimal
 from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured
 from shop.backend_base import backends_pool
+from shop.models.ordermodel import Order
 from shop.shipping.shipping_backend_base import BaseShippingBackend
 from shop.tests.utils.context_managers import SettingsOverride
 from unittest import TestCase
@@ -19,6 +21,28 @@ class GeneralShippingBackendTestCase(TestCase):
                                         first_name="Test",
                                         last_name = "Toto")
         backends_pool.USE_CACHE = False
+        
+        self.order = Order()
+        self.order.order_subtotal = Decimal('10')
+        self.order.order_total = Decimal('10')
+        self.order.amount_payed = Decimal('0')
+        self.order.shipping_cost = Decimal('0')
+        
+        self.order.shipping_name = 'toto'
+        self.order.shipping_address = 'address'
+        self.order.shipping_address2 = 'address2'
+        self.order.shipping_zip_code = 'zip'
+        self.order.shipping_state = 'state'
+        self.order.shipping_country = 'country'
+        
+        self.order.billing_name = 'toto'
+        self.order.billing_address = 'address'
+        self.order.billing_address2 = 'address2'
+        self.order.billing_zip_code = 'zip'
+        self.order.billing_state = 'state'
+        self.order.billing_country = 'country'
+        
+        self.order.save()
         
     def tearDown(self):
         self.user.delete()
@@ -114,3 +138,15 @@ class GeneralShippingBackendTestCase(TestCase):
             self.assertEqual(len(list2), 1)
             self.assertEqual(list,list2)
             
+    def test_10_add_shipping_costs_works(self):
+        class MockBackend(BaseShippingBackend):
+            backend_name = "Fake"
+            url_namespace = "fake"
+            
+        MODIFIERS = ['shop.tests.shipping.MockShippingBackend']
+        backends_pool.USE_CACHE = True
+        
+        with SettingsOverride(SHOP_SHIPPING_BACKENDS=MODIFIERS):
+            be = MockBackend()
+            be.shop.add_shipping_costs(self.order, 'Test shipping', Decimal('-10'))
+            self.assertEqual(self.order.shipping_costs, Decimal('-10'))

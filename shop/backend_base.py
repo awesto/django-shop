@@ -2,7 +2,7 @@
 from django.conf import settings
 from django.core import exceptions
 from django.utils.importlib import import_module
-from shop.models.ordermodel import Order
+from shop.models.ordermodel import Order, OrderExtraInfo
 
 
 class BaseBackendAPI(object):
@@ -30,7 +30,13 @@ class BaseBackendAPI(object):
         user = request.user
         order = Order.objects.filter(user=user).filter(status=Order.CONFIRMED)
         return order
-
+    
+    def add_extra_info(self,order, text):
+        '''
+        Add an extra info text field to the order
+        '''
+        OrderExtraInfo.objects.create(text=text, order=self)
+        
 class BaseBackend(object):
     '''
     A base-baseclass for all backends (payment backends and shipping backends)

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from shop.backend_base import BaseBackendAPI, BaseBackend
+from shop.models.ordermodel import ExtraOrderPriceField
 
 class ShippingBackendAPI(BaseBackendAPI):
     '''
@@ -12,6 +13,20 @@ class ShippingBackendAPI(BaseBackendAPI):
     Methods defined in BaseBackendAPI:
     getOrder(request): Return the Order object for the current shopper
     '''
+
+    def add_shipping_costs(self, order, label, value):
+        '''
+        Add shipping costs to the given order, with the given label (text), and
+        for the given value. 
+        Please not that the value *should* be negative (it's a cost).
+        '''
+        ExtraOrderPriceField.objects.create(order=order, 
+                                            label=label, 
+                                            value=value,
+                                            is_shipping=True)
+        order.order_total = order.order_total + value
+        order.save()
+        
 
 class BaseShippingBackend(BaseBackend):
     '''

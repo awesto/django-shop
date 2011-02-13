@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from decimal import Decimal
 from django.contrib.auth.models import User
 from django.db import models, transaction
 from shop.models.cartmodel import CartItem
@@ -104,8 +105,6 @@ class Order(models.Model):
     
     amount_payed = CurrencyField()
     
-    shipping_cost = CurrencyField()
-    
     # Addresses MUST be copied over to the order when it's created.
     shipping_name = models.CharField(max_length=255)
     shipping_address = models.CharField(max_length=255)
@@ -129,6 +128,14 @@ class Order(models.Model):
     
     def is_completed(self):
         return self.status == self.COMPLETED
+    
+    @property
+    def shipping_costs(self):
+        sum = Decimal('0.0')
+        cost_list = ExtraOrderPriceField.objects.filter(order=self).filter(is_shipping=True)
+        for cost in cost_list:
+            sum = sum + cost.value
+        return sum
     
     class Meta:
         app_label = 'shop'
@@ -155,6 +162,16 @@ class OrderItem(models.Model):
     class Meta:
         app_label = 'shop'
         
+class OrderExtraInfo(models.Model):
+    '''
+    A holder for extra textual information to attach to this order.
+    '''
+    order = models.ForeignKey(Order, related_name="extra_info")
+    text = models.TextField()
+    
+    class Meta:
+        app_label = 'shop'
+        
 class ExtraOrderPriceField(models.Model):
     '''
     This will make Cart-provided extra price fields persistent since we want
@@ -164,6 +181,9 @@ class ExtraOrderPriceField(models.Model):
     label = models.CharField(max_length=255)
     value = CurrencyField()
     
+    # Does this represent shipping costs?
+    is_shipping = models.BooleanField(default=False, editable=False)
+
     class Meta:
         app_label = 'shop'
     
