@@ -1,5 +1,6 @@
 # This shouldn't be used yet obviously, there is nothing to build :)
 from setuptools import setup, find_packages
+import os
 
 CLASSIFIERS = []
 
