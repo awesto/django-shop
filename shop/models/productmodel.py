@@ -43,7 +43,7 @@ class Product(models.Model):
     slug = models.SlugField()
     short_description = models.CharField(max_length=255)
     long_description = models.TextField()
-    active = models.BooleanField(default = False)
+    active = models.BooleanField(default=False)
     
     date_added = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
@@ -72,7 +72,7 @@ class Product(models.Model):
         This magic method returns this as an instance of the most specific
         decendant in the inheritence tree.
         '''
-        return getattr(self, self.subtype)
+        return getattr(self, self.subtype, self)
     
     def get_price(self):
         '''
