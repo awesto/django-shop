@@ -22,8 +22,8 @@ django-cbv if you're using 1.3.
 	git clone https://github.com/divio/django-shop.git ;
 	cd django-shop; python setup.py install; cd ../..
 	
-4. Go to your settings.py and configure your DB like the following, or anything
-  matching your setup::
+4. Go to your settings.py and configure your DB like the following, or anything 
+   matching your setup::
   
 	DATABASES = {
     	'default': {
@@ -67,6 +67,22 @@ django-cbv if you're using 1.3.
 	    'shop', # The django SHOP application
 	    'theshop', # the project we just created
 	]
+	
+7. Make the exmaple/urls.py contain the following::
+
+	from shop import urls as shop_urls # <-- Add this at the top
+	
+	# Other stuff here
+	
+	urlpatterns = patterns('',
+	    # Example:
+	    #(r'^example/', include('example.foo.urls')),
+	    # Uncomment the admin/doc line below to enable admin documentation:
+	    (r'^admin/doc/', include('django.contrib.admindocs.urls')),
+	    # Uncomment the next line to enable the admin:
+	    (r'^admin/', include(admin.site.urls)),
+	    (r'^shop/', include(shop_urls)), # <-- That's the important bit
+	)
 	
 7. Most of the stuff you'll have to do is styling and templates work, so go ahead
    and create a templates directory in your project::
