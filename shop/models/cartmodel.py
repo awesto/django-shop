@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from django.db import models
 from shop.cart.modifiers_pool import cart_modifiers_pool
 from shop.models.productmodel import Product
-from shop.util.fields import CurrencyField
 
 class Cart(models.Model):
     '''
@@ -91,6 +90,7 @@ class CartItem(models.Model):
     extra_price_fields = {} # That will hold extra fields to display to the user (ex. taxes, discount)
     
     quantity = models.IntegerField()
+    
     product = models.ForeignKey(Product)
     
     def update(self):
