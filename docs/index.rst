@@ -13,6 +13,7 @@ The "instructions" :)
     :numbered:
     
     getting-started
+    contributing
 
 How to
 ======
