@@ -11,6 +11,9 @@ class Client(models.Model):
     date_of_birth = models.DateField(null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     
+    class Meta:
+        app_label = 'shop'
+    
     def __unicode__(self):
         return "ClientProfile for %s %s" % (self.user.first_name, self.user.last_name)
     
@@ -22,8 +25,7 @@ class Client(models.Model):
     def billing_address(self):
         return Address.objects.filter(client=self).filter(is_billing=True)[0]
     
-    class Meta:
-        app_label = 'shop'
+    
 
 class Country(models.Model):
     name = models.CharField(max_length=255)

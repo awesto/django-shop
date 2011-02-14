@@ -21,6 +21,9 @@ class Cart(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
     
+    class Meta:
+        app_label = 'shop'
+    
     def __init__(self, *args, **kwargs):
         super(Cart, self).__init__(*args,**kwargs)
         self.update() # This populates transient fields when coming from the DB
@@ -73,8 +76,6 @@ class Cart(models.Model):
         for value in self.extra_price_fields.itervalues():
             self.total_price = self.total_price + value            
         
-    class Meta:
-        app_label = 'shop'
     
 class CartItem(models.Model):
     '''
@@ -93,6 +94,9 @@ class CartItem(models.Model):
     
     product = models.ForeignKey(Product)
     
+    class Meta:
+        app_label = 'shop'
+    
     def update(self):
         self.line_subtotal = self.product.get_price() * self.quantity
         self.line_total = self.line_subtotal
@@ -105,6 +109,3 @@ class CartItem(models.Model):
                 self.line_total = self.line_total + value
                 
         return self.line_total
-    
-    class Meta:
-        app_label = 'shop'

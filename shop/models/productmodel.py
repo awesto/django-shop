@@ -15,18 +15,18 @@ class Category(models.Model):
     parent_category = models.ForeignKey('self', related_name="children",
                                         null=True, blank=True)
     
+    class Meta:
+        verbose_name_plural = "categories"
+        app_label = 'shop'
+    
+    def __unicode__(self):
+        return self.name
+    
     def get_products(self):
         '''
         Gets the products belonging to this category (not recursively)
         '''
         return Product.objects.filter(category=self)
-    
-    def __unicode__(self):
-        return self.name
-    
-    class Meta:
-        verbose_name_plural = "categories"
-        app_label = 'shop'
 
 class ProductManager(models.Manager):
     
@@ -57,15 +57,18 @@ class Product(models.Model):
     
     objects = ProductManager()
     
+    class Meta:
+        app_label = 'shop'
+    
+    def __unicode__(self):
+        return self.name
+    
     def save(self, *args, **kwargs):
         '''
         Saves the name of the subtype to the subtype column.
         '''
         self.subtype = self.__class__.__name__.lower()
         super(Product, self).save(*args, **kwargs)
-    
-    def __unicode__(self):
-        return self.name
     
     def specify(self):
         '''
@@ -80,6 +83,3 @@ class Product(models.Model):
         '''
         return self.unit_price
     
-    class Meta:
-        app_label = 'shop'
-        

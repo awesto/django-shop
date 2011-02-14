@@ -133,6 +133,9 @@ class Order(models.Model):
     
     objects = OrderManager()
     
+    class Meta:
+        app_label = 'shop'
+    
     def is_payed(self):
         '''Has this order been integrally payed for?'''
         return self.amount_payed == self.order_total
@@ -147,9 +150,6 @@ class Order(models.Model):
         for cost in cost_list:
             sum = sum + cost.value
         return sum
-    
-    class Meta:
-        app_label = 'shop'
 
 class OrderItem(models.Model):
     '''
@@ -166,13 +166,13 @@ class OrderItem(models.Model):
     line_subtotal = CurrencyField()
     line_total = CurrencyField()
     
+    class Meta:
+        app_label = 'shop'
+    
     @property
     def product(self):
         return Product.objects.get(pk=self.product_reference)
     
-    class Meta:
-        app_label = 'shop'
-        
 class OrderExtraInfo(models.Model):
     '''
     A holder for extra textual information to attach to this order.
