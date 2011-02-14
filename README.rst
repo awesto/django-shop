@@ -28,4 +28,4 @@ Todo:
   Also, please keep templates to the main templates directory only (so that people have a clear view of the 
   templates structure)
 * Writing docs is most welcome :)
-
+* Refactoring tests to make creating test environments less messy (fixtures?)
