@@ -39,3 +39,30 @@ naming conventions: "appname/book_detail.html".
 
 That's all there is to it :)
 
+
+Using your newly created Product
+=================================
+
+Your product should behave like a normal Django model in all circumstances. You 
+should register it to admin (and create an admin class for it) like a normal 
+model.
+
+Code wise, the following options are possible to retrieve your newly
+created model::
+
+    # This gets your model's instance the normal way, you get both your model's
+    # fields and the Product fields
+    o = MyProduct.objects.get(pk=...)
+    
+    # This is also possible - You retrieve a Product instance, with only the
+    # fields defined in Product... but fear not! There is a way to get yours :)
+    o = Product.objects.get(pk=...) # This gets a Product instance
+    o = o.get_specific() # There, this is now an instance of MyProduct. Magic!
+    
+    # The opposite is of course possible as well:
+    o = MyProduct.objects.get(pk=...) # a MyModel instance
+    o = o.product # A Product instance
+    o = o.get_specific() # Back to a MyModel instance
+    
+.. note:: This is possible thanks to using a Python __metaclass__, so the magic
+          making it possible should be completely transparent to your Model.
