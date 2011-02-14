@@ -56,6 +56,7 @@ class ProductMetaClass(ModelBase):
             # This is a subclass of Product. Let's register it to pre_save
             super_klass = super_new(cls, name, bases,attrs)
             pre_save.connect(super_klass.save_subtype_name, sender=super_klass, weak=False)
+            return super_klass
 
 class Product(models.Model):
     '''
