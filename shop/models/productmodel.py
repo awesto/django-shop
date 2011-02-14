@@ -67,7 +67,10 @@ class Product(models.Model):
         '''
         Saves the name of the subtype to the subtype column.
         '''
-        self.subtype = self.__class__.__name__.lower()
+        subtype_name = self.__class__.__name__.lower()
+        if not subtype_name == 'product':
+            self.subtype = subtype_name
+             
         super(Product, self).save(*args, **kwargs)
     
     def specify(self):
