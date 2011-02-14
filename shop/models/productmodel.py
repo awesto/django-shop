@@ -73,7 +73,7 @@ class Product(models.Model):
              
         super(Product, self).save(*args, **kwargs)
     
-    def specify(self):
+    def get_specific(self):
         '''
         This magic method returns this as an instance of the most specific
         decendant in the inheritence tree.

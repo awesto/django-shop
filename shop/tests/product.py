@@ -26,7 +26,7 @@ class ProductTestCase(TestCase):
         self.assertEqual(ret, self.product.name)
         
     def test_02_specify_returns_self_when_not_a_subclass(self):
-        ret = self.product.specify()
+        ret = self.product.get_specific()
         self.assertEqual(ret, self.product)
         
     def test_03_active_filter_returns_only_active_products(self):
