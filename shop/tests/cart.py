@@ -105,10 +105,6 @@ class CartTestCase(TestCase):
     def test_07_add_same_object_twice(self):
         with SettingsOverride(SHOP_CART_MODIFIERS=[]):
             self.cart.add_product(self.product)
-            self.cart.save()
-            self.cart.update()
-            self.cart.save()
-            
             self.cart.add_product(self.product)
             self.cart.update()
             self.cart.save()
