@@ -30,12 +30,16 @@ class OrderManager(models.Manager):
         o.order_subtotal = cart.subtotal_price
         o.order_total = cart.total_price
         
-        try:
-            client = cart.user.client
-        except Client.DoesNotExist:
-            client = None
+        user = cart.user
+        client = None
+        
+        if user:
+            try:
+                client = cart.user.client
+            except Client.DoesNotExist:
+                client = None
             
-        if cart.user and client:
+        if user and client:
             
             ship_address = cart.user.client.addresses.filter(is_shipping=True)[0] 
             bill_address = cart.user.client.addresses.filter(is_billing=True)[0]
