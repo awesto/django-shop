@@ -16,7 +16,7 @@ class ProductDetailView(ShopDetailView):
     
     def get_object(self, queryset=None):
         obj = super(ProductDetailView,self).get_object(queryset)
-        return obj.specify()
+        return obj.get_specific()
 
     def get_template_names(self):
         ret = super(ProductDetailView, self).get_template_names()
