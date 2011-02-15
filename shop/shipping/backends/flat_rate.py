@@ -4,6 +4,7 @@ from decimal import Decimal
 from django.conf import settings
 from django.conf.urls.defaults import patterns, url
 from shop.shipping.shipping_backend_base import BaseShippingBackend
+from django.shortcuts import render_to_response
 
 class FlatRateShipping(BaseShippingBackend):
     '''
@@ -13,7 +14,7 @@ class FlatRateShipping(BaseShippingBackend):
     url_namespace = 'flat' 
     backend_name = 'Flat rate'
     
-    def process_order(self,request):
+    def view_process_order(self,request):
         '''
         A simple (not class-based) view to process an order.
         
@@ -27,13 +28,23 @@ class FlatRateShipping(BaseShippingBackend):
                                      Decimal(settings.SHOP_SHIPPING_FLAT_RATE))
         return self.finished() # That's an HttpResponseRedirect
     
+    def view_display_fees(self,request):
+        '''
+        A simple, normal view that displays a template showing how much the 
+        shipping will be (it's an example, alright)
+        '''
+        ctx = {}
+        ctx.update({'shipping_costs':Decimal(settings.SHOP_SHIPPING_FLAT_RATE)})
+        return render_to_response('shop/shipping/flat_rate/display_fees.html',ctx)
+    
         
     def get_urls(self):
         '''
         Return the list of URLs defined here.
         '''
         urlpatterns = patterns('',
-            url(r'^$', self.process_order, name='flat'),
+            url(r'^$', self.view_display_fees, name='flat'),
+            url(r'^process/$', self.view_process_order, name='flat_process'),
         )
         return urlpatterns
         
