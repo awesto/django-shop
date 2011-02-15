@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from shop.models.cartmodel import CartItem
 from shop.models.productmodel import Product
 from shop.util.cart import get_or_create_cart
@@ -8,8 +8,22 @@ from shop.views import ShopTemplateView
 
 class CartDetails(ShopTemplateView):
     template_name = 'shop/cart.html'
-    add_to_cart_ajax_redirect = HttpResponse('Ok<br />')
-    add_to_cart_normal_redirect = reverse('cart')
+    
+    @property
+    def add_to_cart_normal_redirect(self):
+        '''
+        That would be a member, but it really screws up url imports (because of)
+        the reverse() call. So it is now a property!
+        '''
+        return HttpResponseRedirect(reverse('cart'))
+    
+    @property
+    def add_to_cart_ajax_redirect(self):
+        '''
+        This is propertified for consistency only.
+        '''
+        return HttpResponse('Ok<br />')
+
     
     def get_context_data(self, **kwargs):
         ctx = super(CartDetails,self).get_context_data(**kwargs)
@@ -39,6 +53,7 @@ class CartDetails(ShopTemplateView):
         cart_object = get_or_create_cart(self.request)
         cart_object.add_product(item, quantity)
         cart_object.save()
+        import ipdb; ipdb.set_trace()
         if self.request.is_ajax():
             return self.add_to_cart_ajax_redirect
         return self.add_to_cart_normal_redirect
