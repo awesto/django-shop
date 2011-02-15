@@ -22,7 +22,6 @@ class FlatRateShipping(BaseShippingBackend):
         The goal of this view is to 
         
         '''
-        import ipdb; ipdb.set_trace()
         self.shop.add_shipping_costs(self.shop.get_order(request), 
                                      'Flat shipping',
                                      Decimal(settings.SHOP_SHIPPING_FLAT_RATE))
