@@ -3,7 +3,8 @@ from django.conf import settings
 from django.conf.urls.defaults import url
 from django.core import exceptions
 from django.utils.importlib import import_module
-from shop.models.ordermodel import Order, OrderExtraInfo
+from shop.models.ordermodel import OrderExtraInfo
+from shop.util.order import get_order_from_request
 
 
 class BaseBackendAPI(object):
@@ -28,13 +29,10 @@ class BaseBackendAPI(object):
         This is called from the backend's views as: 
         >>> order = self.shop.getOrder(request)
         '''
-        user = request.user
-        order = Order.objects.filter(user=user).filter(status__lt=Order.COMPLETED)
-        if len(order) >= 1:
-            order = order[0]
-        else:
-            order = []
-        return order
+        # it might seem a bit strange to simply forward the call to a helper, 
+        # but this avoids exposing the shop's internal workings to module 
+        # writers
+        return get_order_from_request(request)
     
     def add_extra_info(self,order, text):
         '''

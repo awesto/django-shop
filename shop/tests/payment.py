@@ -73,8 +73,7 @@ class GeneralPaymentBackendTestCase(TestCase):
         
         be = MockBackend()
         order = be.shop.get_order(MockRequest())
-        self.assertNotEqual(order, None)
-        self.assertEqual(len(order), 0) # Should basically be an empty list
+        self.assertEqual(order, None)
         
     def test_04_get_backends_from_pool(self):
         MODIFIERS = ['shop.tests.payment.MockPaymentBackend']
