@@ -29,13 +29,13 @@ urlpatterns = patterns('',
         ),
     
     # Products
-    url(r'^product/(?P<slug>[0-9A-Za-z-_.//]+)/$',
-        ProductDetailView.as_view(),
-        name='product_detail'
-        ),
     url(r'^products/$',
         ShopListView.as_view(model=Product),
         name='product_list'
+        ),
+    url(r'^products/(?P<slug>[0-9A-Za-z-_.//]+)/$',
+        ProductDetailView.as_view(),
+        name='product_detail'
         ),
         
     # Categories
@@ -43,7 +43,7 @@ urlpatterns = patterns('',
         ShopListView.as_view(model=Category),
         name='category_list'
         ),
-    url(r'^category/(?P<slug>[0-9A-Za-z-_.//]+)/$',
+    url(r'^categories/(?P<slug>[0-9A-Za-z-_.//]+)/$',
         CategoryDetailView.as_view(),
         name='category_detail'
         ),
