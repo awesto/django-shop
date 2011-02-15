@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
+from django.core.urlresolvers import reverse
+from django.http import HttpResponse
 from shop.models.cartmodel import CartItem
 from shop.models.productmodel import Product
 from shop.util.cart import get_or_create_cart
 from shop.views import ShopTemplateView
-from django.http import HttpResponse
 
 class CartDetails(ShopTemplateView):
     template_name = 'shop/cart.html'
-    add_to_cart_redirect = HttpResponse('Ok<br />')
+    add_to_cart_ajax_redirect = HttpResponse('Ok<br />')
+    add_to_cart_normal_redirect = reverse('cart')
     
     def get_context_data(self, **kwargs):
         ctx = super(CartDetails,self).get_context_data(**kwargs)
@@ -37,5 +39,7 @@ class CartDetails(ShopTemplateView):
         cart_object = get_or_create_cart(self.request)
         cart_object.add_product(item, quantity)
         cart_object.save()
-        return self.add_to_cart_redirect
+        if self.request.is_ajax():
+            return self.add_to_cart_ajax_redirect
+        return self.add_to_cart_normal_redirect
     
