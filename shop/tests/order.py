@@ -7,10 +7,78 @@ from shop.models.cartmodel import Cart, CartItem
 from shop.models.clientmodel import Client, Address, Country
 from shop.models.ordermodel import Order, OrderItem, ExtraOrderPriceField
 from shop.models.productmodel import Product
+from shop.tests.util import Mock
 from shop.tests.utils.context_managers import SettingsOverride
+from shop.util.order import get_order_from_request, add_order_to_request
 from unittest import TestCase
 
+class OrderUtilTestCase(TestCase):
 
+    def setUp(self):
+        self.user = User.objects.create(username="test", email="test@example.com")
+        
+        self.request = Mock()
+        setattr(self.request, 'user', None)
+        
+        self.order = Order()
+        self.order.order_subtotal = Decimal('10')
+        self.order.order_total = Decimal('10')
+        self.order.amount_payed = Decimal('0')
+        self.order.shipping_cost = Decimal('0')
+        
+        self.order.shipping_name = 'toto'
+        self.order.shipping_address = 'address'
+        self.order.shipping_address2 = 'address2'
+        self.order.shipping_zip_code = 'zip'
+        self.order.shipping_state = 'state'
+        self.order.shipping_country = 'country'
+        
+        self.order.billing_name = 'toto'
+        self.order.billing_address = 'address'
+        self.order.billing_address2 = 'address2'
+        self.order.billing_zip_code = 'zip'
+        self.order.billing_state = 'state'
+        self.order.billing_country = 'country'
+        
+        self.order.save()
+        
+    def tearDown(self):
+        self.user.delete()
+        self.order.delete()
+        
+    def test_01_request_without_user_or_session_returns_none(self):
+        ret = get_order_from_request(self.request)
+        self.assertEqual(ret, None)
+        
+    def test_02_request_with_session_without_order_returns_none(self):
+        setattr(self.request,'session', {})
+        ret = get_order_from_request(self.request)
+        self.assertEqual(ret, None)
+        
+    def test_03_request_with_order_returns_order(self):
+        session = {}
+        session['order_id'] = self.order.id
+        setattr(self.request, 'session', session)
+        ret = get_order_from_request(self.request)
+        self.assertEqual(ret, self.order)
+    
+    def test_04_request_with_user_returns_correct_order(self):
+        setattr(self.request, 'user', self.user)
+        self.order.user = self.user
+        self.order.save()
+        ret = get_order_from_request(self.request)
+        self.assertEqual(ret, self.order)
+        
+    def test_05_set_order_to_session_works(self):
+        setattr(self.request,'session', {})
+        add_order_to_request(self.request, self.order)
+        self.assertEqual(self.request.session['order_id'], self.order.id)
+        
+    def test_06_set_order_to_user_works(self):
+        setattr(self.request,'user', self.user)
+        add_order_to_request(self.request, self.order)
+        self.assertEqual(self.request.session['order_id'], self.order.id)
+        
 class OrderTestCase(TestCase):
     def setUp(self):
         
