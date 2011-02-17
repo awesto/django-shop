@@ -81,6 +81,13 @@ class OrderUtilTestCase(TestCase):
         setattr(self.request,'user', self.user)
         add_order_to_request(self.request, self.order)
         self.assertEqual(self.order.user, self.user)
+    
+    def test_06_same_user_does_not_override(self):
+        self.order.user = self.user
+        self.order.save()
+        setattr(self.request,'user', self.user)
+        add_order_to_request(self.request, self.order)
+        self.assertEqual(self.order.user, self.user)
         
 class OrderTestCase(TestCase):
     def setUp(self):
