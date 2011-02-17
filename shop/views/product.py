@@ -19,6 +19,8 @@ class ProductDetailView(ShopDetailView):
         return obj.get_specific()
 
     def get_template_names(self):
+        generic_template = 'shop/product_detail.html'
         ret = super(ProductDetailView, self).get_template_names()
-        ret.append('shop/product_detail.html')
+        if not generic_template in ret:
+            ret.append(generic_template)
         return ret
