@@ -13,5 +13,6 @@ class CategoryDetailView(ShopDetailView):
     def get_context_data(self, **kwargs):
         ctx = super(CategoryDetailView, self).get_context_data(**kwargs)
         product_list = Product.objects.active().filter(category=self.object)
-        ctx.update({'product_list':product_list})
+        if product_list:
+            ctx.update({'product_list':product_list})
         return ctx
