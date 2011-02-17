@@ -11,9 +11,12 @@ from shop.tests.util import Mock
 from shop.tests.utils.context_managers import SettingsOverride
 from shop.util.order import get_order_from_request, add_order_to_request
 from unittest import TestCase
+import os
+
+THIS_PATH = os.path.abspath(os.path.dirname(__file__))
 
 class OrderUtilTestCase(TestCase):
-
+    fixtures = [os.path.join(THIS_PATH, 'fixtures/order.')]
     def setUp(self):
         self.user = User.objects.create(username="test", email="test@example.com")
         
@@ -173,6 +176,10 @@ class OrderConversionTestCase(TestCase):
     def tearDown(self):
         self.user.delete()
         self.product.delete()
+        self.address.delete()
+        self.address2.delete()
+        self.country.delete()
+        self.client.delete()
     
     def test_01_create_order_from_simple_cart(self):
         '''
