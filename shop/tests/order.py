@@ -77,7 +77,7 @@ class OrderUtilTestCase(TestCase):
     def test_06_set_order_to_user_works(self):
         setattr(self.request,'user', self.user)
         add_order_to_request(self.request, self.order)
-        self.assertEqual(self.request.session['order_id'], self.order.id)
+        self.assertEqual(self.order.user, self.user)
         
 class OrderTestCase(TestCase):
     def setUp(self):
