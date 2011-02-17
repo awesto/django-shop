@@ -6,3 +6,4 @@ from payment import PayOnDeliveryTestCase, GeneralPaymentBackendTestCase
 from util import CurrencyFieldTestCase, CartUtilsTestCase
 from shipping import GeneralShippingBackendTestCase
 from product import ProductTestCase
+from views import ProductDetailViewTestCase
