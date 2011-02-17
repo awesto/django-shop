@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.base import ModelBase
-from shop.util.fields import CurrencyField
 from django.db.models.signals import pre_save
+from shop.util.fields import CurrencyField
 
 class Category(models.Model):
     '''
@@ -23,6 +24,9 @@ class Category(models.Model):
     
     def __unicode__(self):
         return self.name
+    
+    def get_absolute_url(self):
+        return reverse('category_detail', args=[self.slug])
     
     def get_products(self):
         '''
@@ -90,6 +94,9 @@ class Product(models.Model):
     
     def __unicode__(self):
         return self.name
+    
+    def get_absolute_url(self):
+        return reverse('product_detail', args=[self.slug])
     
     def get_specific(self):
         '''
