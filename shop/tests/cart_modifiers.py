@@ -4,7 +4,7 @@ from django.core.exceptions import ImproperlyConfigured
 from shop.cart import modifiers_pool
 from shop.cart.modifiers_pool import cart_modifiers_pool
 from shop.tests.utils.context_managers import SettingsOverride
-from unittest import TestCase
+from django.test.testcases import TestCase
 
 class CartModifiersTestCase(TestCase):
     

@@ -4,7 +4,7 @@ from django.contrib.auth.models import User, AnonymousUser
 from shop.models.cartmodel import Cart
 from shop.util.cart import get_or_create_cart
 from shop.util.fields import CurrencyField
-from unittest import TestCase
+from django.test.testcases import TestCase
 
 class Mock(object):
         pass

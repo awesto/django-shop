@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
 from shop.models.productmodel import Product, Category
-from unittest import TestCase
+from django.test.testcases import TestCase
 
 class ProductTestCase(TestCase):
 
-    def setUp(self):
+    def create_fixtures(self):
         self.category = Category()
         self.category.name = "test_category"
         self.category.save()
@@ -18,18 +18,18 @@ class ProductTestCase(TestCase):
         self.product.category = self.category
         self.product.save()
     
-    def tearDown(self):
-        self.product.delete()
-    
     def test_01_unicode_returns_proper_stuff(self):
+        self.create_fixtures()
         ret = self.product.__unicode__()
         self.assertEqual(ret, self.product.name)
         
     def test_02_specify_returns_self_when_not_a_subclass(self):
+        self.create_fixtures()
         ret = self.product.get_specific()
         self.assertEqual(ret, self.product)
         
     def test_03_active_filter_returns_only_active_products(self):
+        self.create_fixtures()
         ret1 = len(Product.objects.active())
         # Set self.product to be active
         self.product.active = True
@@ -40,10 +40,12 @@ class ProductTestCase(TestCase):
         self.assertEqual(ret2, 1)
     
     def test_04_category_unicode_returns_name(self):
+        self.create_fixtures()
         ret = self.category.__unicode__()
         self.assertEqual(ret, self.category.name)
         
     def test_05_category_get_products_works(self):
+        self.create_fixtures()
         ret = self.category.get_products()
         self.assertEqual(len(ret),1)
         cat_product = ret[0]

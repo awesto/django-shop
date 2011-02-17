@@ -10,14 +10,11 @@ from shop.models.productmodel import Product
 from shop.tests.util import Mock
 from shop.tests.utils.context_managers import SettingsOverride
 from shop.util.order import get_order_from_request, add_order_to_request
-from unittest import TestCase
+from django.test.testcases import TestCase
 import os
 
-THIS_PATH = os.path.abspath(os.path.dirname(__file__))
-
 class OrderUtilTestCase(TestCase):
-    fixtures = [os.path.join(THIS_PATH, 'fixtures/order.')]
-    def setUp(self):
+    def create_fixtures(self):
         self.user = User.objects.create(username="test", email="test@example.com")
         
         self.request = Mock()
@@ -45,20 +42,19 @@ class OrderUtilTestCase(TestCase):
         
         self.order.save()
         
-    def tearDown(self):
-        self.user.delete()
-        self.order.delete()
-        
     def test_01_request_without_user_or_session_returns_none(self):
+        self.create_fixtures()
         ret = get_order_from_request(self.request)
         self.assertEqual(ret, None)
         
     def test_02_request_with_session_without_order_returns_none(self):
+        self.create_fixtures()
         setattr(self.request,'session', {})
         ret = get_order_from_request(self.request)
         self.assertEqual(ret, None)
         
     def test_03_request_with_order_returns_order(self):
+        self.create_fixtures()
         session = {}
         session['order_id'] = self.order.id
         setattr(self.request, 'session', session)
@@ -66,6 +62,7 @@ class OrderUtilTestCase(TestCase):
         self.assertEqual(ret, self.order)
     
     def test_04_request_with_user_returns_correct_order(self):
+        self.create_fixtures()
         setattr(self.request, 'user', self.user)
         self.order.user = self.user
         self.order.save()
@@ -73,16 +70,19 @@ class OrderUtilTestCase(TestCase):
         self.assertEqual(ret, self.order)
         
     def test_05_set_order_to_session_works(self):
+        self.create_fixtures()
         setattr(self.request,'session', {})
         add_order_to_request(self.request, self.order)
         self.assertEqual(self.request.session['order_id'], self.order.id)
         
     def test_06_set_order_to_user_works(self):
+        self.create_fixtures()
         setattr(self.request,'user', self.user)
         add_order_to_request(self.request, self.order)
         self.assertEqual(self.order.user, self.user)
     
     def test_06_same_user_does_not_override(self):
+        self.create_fixtures()
         self.order.user = self.user
         self.order.save()
         setattr(self.request,'user', self.user)
@@ -90,7 +90,7 @@ class OrderUtilTestCase(TestCase):
         self.assertEqual(self.order.user, self.user)
         
 class OrderTestCase(TestCase):
-    def setUp(self):
+    def create_fixtures(self):
         
         self.order = Order()
         self.order.order_subtotal = Decimal('10')
@@ -113,15 +113,14 @@ class OrderTestCase(TestCase):
         self.order.billing_country = 'country'
         
         self.order.save()
-            
-    def tearDown(self):
-        self.order.delete()
     
     def test_01_order_is_completed_works(self):
+        self.create_fixtures()
         ret = self.order.is_completed()
         self.assertNotEqual(ret, Order.COMPLETED)
     
     def test_02_is_payed_works(self):
+        self.create_fixtures()
         ret = self.order.is_payed()
         self.assertEqual(ret, False)
 
@@ -130,7 +129,7 @@ class OrderConversionTestCase(TestCase):
     PRODUCT_PRICE = Decimal('100')
     TEN_PERCENT = Decimal(10) / Decimal(100)
     
-    def setUp(self):
+    def create_fixtures(self):
         
         cart_modifiers_pool.USE_CACHE=False
         
@@ -180,19 +179,12 @@ class OrderConversionTestCase(TestCase):
         self.address2.is_shipping = False
         self.address2.save()
     
-    def tearDown(self):
-        self.user.delete()
-        self.product.delete()
-        self.address.delete()
-        self.address2.delete()
-        self.country.delete()
-        self.client.delete()
-    
     def test_01_create_order_from_simple_cart(self):
         '''
         Let's make sure that all the info is copied over properly when using
         Order.objects.create_from_cart()
         '''
+        self.create_fixtures()
         self.cart.add_product(self.product)
         self.cart.update()
         self.cart.save()
@@ -212,6 +204,7 @@ class OrderConversionTestCase(TestCase):
         '''
         This time assert that everything is consistent with a tax cart modifier
         '''
+        self.create_fixtures()
         MODIFIERS = ['shop.cart.modifiers.tax_modifiers.TenPercentTaxModifier']
         
         with SettingsOverride(SHOP_PRICE_MODIFIERS=MODIFIERS):
@@ -241,6 +234,7 @@ class OrderConversionTestCase(TestCase):
             self.assertEqual(o.order_total, self.cart.total_price)
             
     def test_03_order_addresses_match_user_preferences(self):
+        self.create_fixtures()
         self.cart.add_product(self.product)
         self.cart.update()
         self.cart.save()
@@ -271,6 +265,7 @@ class OrderConversionTestCase(TestCase):
         That's needed in case shipment or payment backends need to make fancy 
         calculations on products (i.e. shipping based on weight/size...)
         '''
+        self.create_fixtures()
         self.cart.add_product(self.product)
         self.cart.update()
         self.cart.save()
