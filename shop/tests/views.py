@@ -26,8 +26,6 @@ class ProductDetailViewTestCase(TestCase):
         inst = isinstance(obj,Product)
         self.assertEqual(inst, True)
         
-    # This is commented out until the following gets solved:
-    # http://code.djangoproject.com/ticket/15329
     def test_02_get_templates_return_expected_values(self):
         self.create_fixtures()
         self.view = ProductDetailView()
