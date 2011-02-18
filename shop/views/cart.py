@@ -53,7 +53,6 @@ class CartDetails(ShopTemplateView):
         cart_object = get_or_create_cart(self.request)
         cart_object.add_product(item, quantity)
         cart_object.save()
-        import ipdb; ipdb.set_trace()
         if self.request.is_ajax():
             return self.add_to_cart_ajax_redirect
         return self.add_to_cart_normal_redirect
