@@ -9,7 +9,7 @@ django-cbv if you're using 1.3.
 1. Create a normal Django project (we'll call it myshop for now)::
 	
 	django-admin startproject example
-	cd myshop; django-admin startapp myshop
+	cd example; django-admin startapp myshop
 	
 2. You'll want to virtualenv your world, just in case::
 	
@@ -65,7 +65,7 @@ django-cbv if you're using 1.3.
 	    # Uncomment the next line to enable admin documentation:
 	    'django.contrib.admindocs',
 	    'shop', # The django SHOP application
-	    'theshop', # the project we just created
+	    'myshop', # the project we just created
 	]
 	
 7. Make the exmaple/urls.py contain the following::
