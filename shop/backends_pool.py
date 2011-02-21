@@ -59,7 +59,7 @@ class BackendsPool(object):
         url_namespace = getattr(backend_instance, 'url_namespace', "")
         if url_namespace == "":
             raise NotImplementedError(
-                'Please set a namespace for backend "%s"' % self.backend_name)
+                'Please set a namespace for backend "%s"' % backend_instance.backend_name)
         
     def _load_backends_list(self, setting_name, shop_object):
         result = []
@@ -88,7 +88,7 @@ class BackendsPool(object):
             
             # Seems like it is a real class - let's instanciate it!
             # This is where the backends receive their self.shop reference!
-            mod_instance = mod_class(shop_object)
+            mod_instance = mod_class(shop=shop_object)
             
             self._check_backend_for_validity(mod_instance)
             
