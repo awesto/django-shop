@@ -29,7 +29,7 @@ class FlatRateShipping(object):
         self.shop.add_shipping_costs(self.shop.get_order(request), 
                                      'Flat shipping',
                                      Decimal(settings.SHOP_SHIPPING_FLAT_RATE))
-        return self.finished() # That's an HttpResponseRedirect
+        return self.shop.finished() # That's an HttpResponseRedirect
     
     def view_display_fees(self,request):
         '''

@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls.defaults import patterns, url
-from django.http import HttpResponse
-
 
 class PayOnDeliveryBackend(object):
     
@@ -21,7 +19,7 @@ class PayOnDeliveryBackend(object):
         # he does his job properly)
         self.shop.pay(the_order, the_order.order_total)
         # TODO: Needs a better view than this!
-        return self.finished()
+        return self.shop.finished()
         
     def get_urls(self):
         urlpatterns = patterns('',
