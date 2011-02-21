@@ -5,6 +5,7 @@ This file defines the interafces one should implement when either creating a new
 payment module or willing to use modules with another shop system.
 '''
 from decimal import Decimal
+from django.http import HttpResponseRedirect
 from shop.backend_base import BaseBackendAPI
 
 class PaymentBackendAPI(BaseBackendAPI):
@@ -44,3 +45,10 @@ class PaymentBackendAPI(BaseBackendAPI):
         if save:
             order.save()
         
+    def finished(self):
+        '''
+        A helper for backends, so that they can call this when their job
+        is finished i.e. The payment has been processed from a user perspective
+        This will redirect to the "Thanks for your order" page.
+        '''
+        return HttpResponseRedirect('thanks_for_your_order')
