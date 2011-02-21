@@ -33,8 +33,6 @@ class NamedMockPaymentBackend(MockPaymentBackend):
 class ValidMockPaymentBackend(NamedMockPaymentBackend):
     url_namespace = 'fake'
     
-    def __init__(self, shop):
-        self.shop = shop
 
 class GeneralPaymentBackendTestCase(TestCase):
     

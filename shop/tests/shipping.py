@@ -2,16 +2,25 @@
 from decimal import Decimal
 from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured
-from shop.backend_base import backends_pool
-from shop.models.ordermodel import Order
-from shop.tests.utils.context_managers import SettingsOverride
 from django.test.testcases import TestCase
+from shop.backends_pool import backends_pool
+from shop.models.ordermodel import Order
+from shop.shipping.shipping_backend_base import ShippingBackendAPI
+from shop.tests.utils.context_managers import SettingsOverride
 
 class MockShippingBackend(object):
     '''
     A simple, useless backend
     '''
-
+    def __init__(self, shop):
+        self.shop = shop
+        
+class NamedMockShippingBackend(MockShippingBackend):
+    backend_name = "Fake"
+    
+class ValidMockShippingBackend(NamedMockShippingBackend):
+    url_namespace = "fake"
+    
 class GeneralShippingBackendTestCase(TestCase):
     
     def create_fixtures(self):
@@ -43,50 +52,43 @@ class GeneralShippingBackendTestCase(TestCase):
         
         self.order.save()
     
-#    def test_01_enforcing_of_name_works(self):
-#        self.create_fixtures()
-#        class MockBackend(BaseShippingBackend):
-#            pass
-#        
-#        raised = False
-#        
-#        try:
-#            MockBackend()
-#        except NotImplementedError:
-#            raised = True
-#        
-#        self.assertEqual(raised, True)
-#        
-#    def test_02_enforcing_of_namespace_works(self):
-#        self.create_fixtures()
-#        class MockBackend(BaseShippingBackend):
-#            backend_name = "Fake"
-#        
-#        raised = False
-#        
-#        try:
-#            MockBackend()
-#        except NotImplementedError:
-#            raised = True
-#        
-#        self.assertEqual(raised, True)
-#        
-#    def test_03_get_order_returns_sensible_nulls(self):
-#        self.create_fixtures()
-#        class MockBackend(BaseShippingBackend):
-#            backend_name = "Fake"
-#            url_namespace = "fake"
-#        
-#        class MockRequest():
-#            user = self.user
-#        
-#        be = MockBackend()
-#        order = be.shop.get_order(MockRequest())
-#        self.assertEqual(order, None)
+    def test_01_enforcing_of_name_works(self):
+        self.create_fixtures()
+        MODIFIERS = ['shop.tests.shipping.MockShippingBackend']
+        with SettingsOverride(SHOP_SHIPPING_BACKENDS=MODIFIERS):
+            raised = False
+            try:
+                backends_pool.get_shipping_backends_list()
+            except NotImplementedError:
+                raised = True
+            
+            self.assertEqual(raised, True)
+        
+    def test_02_enforcing_of_namespace_works(self):
+        self.create_fixtures()
+        MODIFIERS = ['shop.tests.shipping.NamedMockShippingBackend']
+        with SettingsOverride(SHOP_SHIPPING_BACKENDS=MODIFIERS):
+            raised = False
+            
+            try:
+                backends_pool.get_shipping_backends_list()
+            except NotImplementedError:
+                raised = True
+            
+            self.assertEqual(raised, True)
+        
+    def test_03_get_order_returns_sensible_nulls(self):
+        self.create_fixtures()
+        class MockRequest():
+            user = self.user
+        
+        be = ValidMockShippingBackend(shop=ShippingBackendAPI())
+        order = be.shop.get_order(MockRequest())
+        self.assertEqual(order, None)
         
     def test_04_get_backends_from_pool(self):
         self.create_fixtures()
-        MODIFIERS = ['shop.tests.shipping.MockShippingBackend']
+        MODIFIERS = ['shop.tests.shipping.ValidMockShippingBackend']
         with SettingsOverride(SHOP_SHIPPING_BACKENDS=MODIFIERS):
             list = backends_pool.get_shipping_backends_list()
             self.assertEqual(len(list), 1)
@@ -133,7 +135,7 @@ class GeneralShippingBackendTestCase(TestCase):
             
     def test_09_get_backends_cache_works(self):
         self.create_fixtures()
-        MODIFIERS = ['shop.tests.shipping.MockShippingBackend']
+        MODIFIERS = ['shop.tests.shipping.ValidMockShippingBackend']
         backends_pool.USE_CACHE = True
         with SettingsOverride(SHOP_SHIPPING_BACKENDS=MODIFIERS):
             list = backends_pool.get_shipping_backends_list()
