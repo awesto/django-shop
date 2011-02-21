@@ -8,7 +8,6 @@ from shop.models.clientmodel import Address, Client, Country
 from shop.models.ordermodel import Order, OrderItem, ExtraOrderItemPriceField, \
     ExtraOrderPriceField
 from shop.payment.backends.pay_on_delivery import PayOnDeliveryBackend
-from shop.payment.payment_backend_base import BasePaymentBackend
 from shop.tests.utils.context_managers import SettingsOverride
 from django.test.testcases import TestCase
 
@@ -34,47 +33,47 @@ class GeneralPaymentBackendTestCase(TestCase):
                                         last_name = "Toto")
         backends_pool.USE_CACHE = False
         
-    def test_01_enforcing_of_name_works(self):
-        self.create_fixtures()
-        class MockBackend(BasePaymentBackend):
-            pass
-        
-        raised = False
-        
-        try:
-            MockBackend()
-        except NotImplementedError:
-            raised = True
-        
-        self.assertEqual(raised, True)
-        
-    def test_02_enforcing_of_namespace_works(self):
-        self.create_fixtures()
-        class MockBackend(BasePaymentBackend):
-            backend_name = "Fake"
-        
-        raised = False
-        
-        try:
-            MockBackend()
-        except NotImplementedError:
-            raised = True
-        
-        self.assertEqual(raised, True)
-        
-    def test_03_get_order_returns_sensible_nulls(self):
-        self.create_fixtures()
-        class MockBackend(BasePaymentBackend):
-            backend_name = "Fake"
-            url_namespace = "fake"
-        
-        class MockRequest():
-            user = self.user
-        
-        be = MockBackend()
-        order = be.shop.get_order(MockRequest())
-        self.assertEqual(order, None)
-        
+#    def test_01_enforcing_of_name_works(self):
+#        self.create_fixtures()
+#        class MockBackend(BasePaymentBackend):
+#            pass
+#        
+#        raised = False
+#        
+#        try:
+#            MockBackend()
+#        except NotImplementedError:
+#            raised = True
+#        
+#        self.assertEqual(raised, True)
+#        
+#    def test_02_enforcing_of_namespace_works(self):
+#        self.create_fixtures()
+#        class MockBackend(BasePaymentBackend):
+#            backend_name = "Fake"
+#        
+#        raised = False
+#        
+#        try:
+#            MockBackend()
+#        except NotImplementedError:
+#            raised = True
+#        
+#        self.assertEqual(raised, True)
+#        
+#    def test_03_get_order_returns_sensible_nulls(self):
+#        self.create_fixtures()
+#        class MockBackend(BasePaymentBackend):
+#            backend_name = "Fake"
+#            url_namespace = "fake"
+#        
+#        class MockRequest():
+#            user = self.user
+#        
+#        be = MockBackend()
+#        order = be.shop.get_order(MockRequest())
+#        self.assertEqual(order, None)
+#        
     def test_04_get_backends_from_pool(self):
         self.create_fixtures()
         MODIFIERS = ['shop.tests.payment.MockPaymentBackend']

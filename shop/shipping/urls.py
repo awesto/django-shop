@@ -8,7 +8,7 @@ http://www.example.com/shop/ship/fedex
 ...
 '''
 from django.conf.urls.defaults import patterns, include
-from shop.backend_base import backends_pool
+from shop.backends_pool import backends_pool
 
 urlpatterns = patterns('')
 
