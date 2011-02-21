@@ -229,19 +229,7 @@ class PayOnDeliveryTestCase(TestCase):
         eof.value = Decimal("10")
         eof.save()
     
-    def test_01_empty_order_text(self):
-        self.create_fixtures()
-        be = PayOnDeliveryBackend(shop=PaymentBackendAPI())
-        text= be._create_body(None)
-        self.assertNotEqual(None,text)
-        
-    def test_02_normal_order_text(self):
-        self.create_fixtures()
-        be = PayOnDeliveryBackend(shop=PaymentBackendAPI())
-        text = be._create_body(self.order)
-        self.assertEqual(EXPECTED, text)
-    
-    def test_03_backend_returns_urls(self):
+    def test_01_backend_returns_urls(self):
         self.create_fixtures()
         be = PayOnDeliveryBackend(shop=PaymentBackendAPI())
         urls = be.get_urls()
