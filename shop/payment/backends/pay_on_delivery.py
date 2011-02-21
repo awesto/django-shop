@@ -3,13 +3,16 @@ from django.conf.urls.defaults import patterns, url
 from django.http import HttpResponse
 from shop.models.ordermodel import OrderItem, ExtraOrderItemPriceField, \
     ExtraOrderPriceField
-from shop.payment.payment_backend_base import BasePaymentBackend
 
 
-class PayOnDeliveryBackend(BasePaymentBackend):
+class PayOnDeliveryBackend(object):
     
     backend_name = "Pay On Delivery"
     url_namespace = "pay-on-delivery"
+    
+    def __init__(self, shop):
+        self.shop = shop # This is the shop reference, it allows this backend
+        # to interact with it in a tidy way (look ma', no imports!)
     
     def _create_body(self, order):
         '''

@@ -44,31 +44,3 @@ class PaymentBackendAPI(BaseBackendAPI):
         if save:
             order.save()
         
-class BasePaymentBackend(BaseBackend):
-    '''
-    This is the base class for all payment backends to implement.
-    
-    The goal is to be able to register a few payment modules, and let one of 
-    them be selected at runtime by the shopper.
-    
-    Class members:
-    
-    url_namespace 
-    backend_name
-    shop
-    '''
-    
-    def __init__(self, shop=PaymentBackendAPI()):
-        '''
-        Make sure the shop helper is of the right type, then call super()
-        '''
-        self.shop = shop
-        super(BasePaymentBackend, self).__init__()
-        
-    def get_urls(self):
-        '''
-        Return a set of patterns() or urls() to hook to the site's main url
-        resolver.
-        This allows payment systems to register urls for callback, or to 
-        maintain a set of own views / templates
-        '''
