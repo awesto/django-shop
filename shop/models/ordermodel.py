@@ -117,6 +117,7 @@ class Order(models.Model):
     order_total = CurrencyField()
     
     amount_payed = CurrencyField()
+    payment_method = models.CharField(max_length=255, null=True)
     
     # Addresses MUST be copied over to the order when it's created, however
     # the fields must be nullable since sometimes we cannot create the address 

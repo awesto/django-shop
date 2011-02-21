@@ -48,12 +48,19 @@ class PayOnDeliveryBackend(BasePaymentBackend):
         return email_body
             
     def simple_view(self, request):
+        # Get the order object
         the_order = self.shop.getOrder(request)
+        # Set the payment method to be this backend (for traceability)
+        self.shop.set_payment_method(the_order, self.backend_name)
+        # Set it as payed (it needs to be payed to the delivery guy, we assume 
+        # he does his job properly)
+        self.shop.pay(the_order, the_order.order_total)
+        # TODO: Needs a better view than this!
         return HttpResponse('%s' % self._create_body(the_order))
         
     def get_urls(self):
         urlpatterns = patterns('',
-            url(r'^$', self.simple_view, name='pay_on_del_simple' ),
+            url(r'^$', self.simple_view, name='pay-on-delivery' ),
         )
         return urlpatterns
     

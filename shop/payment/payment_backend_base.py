@@ -4,6 +4,7 @@
 This file defines the interafces one should implement when either creating a new
 payment module or willing to use modules with another shop system.
 '''
+from decimal import Decimal
 from shop.backend_base import BaseBackendAPI, BaseBackend
 
 class PaymentBackendAPI(BaseBackendAPI):
@@ -19,11 +20,30 @@ class PaymentBackendAPI(BaseBackendAPI):
     
     '''
     
-    def setOrderFinished(self):
+    def pay(self, order, amount, save=True):
         '''
-        Sets the current order processing status to "Finished"
+        "Pays" the specified amount for the given order.
+        This allows to hook in more complex behaviors (like saving a history
+        of payments in a Payment model)
+        The optional save argument allows backends to explicitly not save the 
+        order yet
         '''
-
+        # TODO: Add a "Payment" model to handle this in a more professional way
+        
+        amount = Decimal(amount) # In case it's not already a Decimal
+        order.amount_payed = order.amount_payed + amount
+        if save:
+            order.save()
+        
+    def set_payment_method(self, order, method, save=True):
+        '''
+        Sets the payment mthod on the order object to whatever is specified in
+        the method argument (should be a String)
+        '''
+        order.payment_method = method
+        if save:
+            order.save()
+        
 class BasePaymentBackend(BaseBackend):
     '''
     This is the base class for all payment backends to implement.
