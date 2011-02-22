@@ -17,7 +17,7 @@ class FlatRateShipping(object):
         self.shop = shop # This is the shop reference, it allows this backend
         # to interact with it in a tidy way (look ma', no imports!)
     
-    def view_process_order(self,request):
+    def view_process_order(self, request):
         '''
         A simple (not class-based) view to process an order.
         
