@@ -63,7 +63,7 @@ class BackendsPool(object):
         
     def _load_backends_list(self, setting_name, shop_object):
         result = []
-        if not getattr(settings,setting_name, None):
+        if not getattr(settings, setting_name, None):
             return result
         
         for backend_path in getattr(settings,setting_name, None):
