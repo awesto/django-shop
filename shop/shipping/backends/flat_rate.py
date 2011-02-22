@@ -33,14 +33,14 @@ class FlatRateShipping(object):
                                      Decimal(settings.SHOP_SHIPPING_FLAT_RATE))
         return self.shop.finished() # That's an HttpResponseRedirect
     
-    def view_display_fees(self,request):
+    def view_display_fees(self, request):
         '''
         A simple, normal view that displays a template showing how much the 
         shipping will be (it's an example, alright)
         '''
         ctx = {}
         ctx.update({'shipping_costs':Decimal(settings.SHOP_SHIPPING_FLAT_RATE)})
-        return render_to_response('shop/shipping/flat_rate/display_fees.html',ctx)
+        return render_to_response('shop/shipping/flat_rate/display_fees.html', ctx)
     
         
     def get_urls(self):
