@@ -24,6 +24,8 @@ class FlatRateShipping(object):
         This will be called by the selection view via the default url (that is
         registered on server load).
         The goal of this view is to 
+
+        TODO: complete above sentence
         
         '''
         self.shop.add_shipping_costs(self.shop.get_order(request), 
