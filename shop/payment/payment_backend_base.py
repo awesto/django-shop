@@ -38,7 +38,7 @@ class PaymentBackendAPI(BaseBackendAPI):
         
     def set_payment_method(self, order, method, save=True):
         '''
-        Sets the payment mthod on the order object to whatever is specified in
+        Sets the payment method on the order object to whatever is specified in
         the method argument (should be a String)
         '''
         order.payment_method = method

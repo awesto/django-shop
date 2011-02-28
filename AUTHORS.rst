@@ -9,3 +9,6 @@ CONTRIBUTORS
 * fivethreeo
 * Jonas Obrist
 * Issac Kelly
+* Audrey Roy
+* Martin Brochhaus
+* Raúl Cumplido

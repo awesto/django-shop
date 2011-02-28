@@ -68,7 +68,7 @@ django-cbv if you're using 1.3.
 	    'myshop', # the project we just created
 	]
 	
-7. Make the exmaple/urls.py contain the following::
+7. Make the example/urls.py contain the following::
 
 	from shop import urls as shop_urls # <-- Add this at the top
 	
