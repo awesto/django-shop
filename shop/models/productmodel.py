@@ -33,6 +33,9 @@ class Category(models.Model):
         Gets the products belonging to this category (not recursively)
         '''
         return Product.objects.filter(category=self)
+    
+    def get_child_categories(self):
+        return Category.objects.filter(parent_category=self)
 
 class ProductManager(models.Manager):
     
@@ -123,4 +126,4 @@ class Product(models.Model):
         This method is (and should) only called from the pre_save signal set
         in ProductMetaClass
         '''
-        instance.sutype = cls.__name__.lower()
+        instance.subtype = cls.__name__.lower()
