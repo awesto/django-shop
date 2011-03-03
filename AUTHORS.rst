@@ -12,3 +12,4 @@ CONTRIBUTORS
 * Audrey Roy
 * Martin Brochhaus
 * Raúl Cumplido
+* Bojan Mihelac
