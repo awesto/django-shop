@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from shop.backend_base import BaseBackendAPI, BaseBackend
 from shop.models.ordermodel import ExtraOrderPriceField
-from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 
 class ShippingBackendAPI(BaseBackendAPI):
     '''
@@ -54,4 +54,4 @@ class BaseShippingBackend(BaseBackend):
         is finished i.e. shipping costs are added to the order.
         This will redirect to the "select a payment method" page.
         '''
-        return HttpResponseRedirect('checkout_shipping')
+        return redirect('checkout_payment')
