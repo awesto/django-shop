@@ -11,3 +11,5 @@ CONTRIBUTORS
 * Issac Kelly
 * Audrey Roy
 * Martin Brochhaus
+* Raúl Cumplido
+* Bojan Mihelac

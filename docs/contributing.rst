@@ -33,7 +33,7 @@ Code guidelines
 ================
 
 * As most projects, we try to follow PEP8 as closely as possible
-* Most pull reuqests will be rejected without proper unit testing
+* Most pull requests will be rejected without proper unit testing
 * Generally we like to discuss new features before they are merged in, but this
   is a somewhat flexible rule :)
   
