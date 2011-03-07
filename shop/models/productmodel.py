@@ -142,6 +142,7 @@ class OptionGroup(models.Model):
     "Colors"
     '''
     name = models.CharField(max_length=255)
+    product = models.ForeignKey(Product)
     
     class Meta:
         app_label = 'shop'

@@ -32,6 +32,7 @@ class ProductOptionsTestCase(TestCase):
         self.product.save()
         
         self.ogroup = OptionGroup()
+        self.ogroup.product = self.product
         self.ogroup.name = 'Test group'
         self.ogroup.save()
         
