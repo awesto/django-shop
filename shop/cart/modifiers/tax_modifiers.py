@@ -19,5 +19,14 @@ class TenPercentTaxModifier(BaseCartModifier):
         Add a field on cart.extra_price_fields:
         '''
         taxes = (self.TAX_PERCENTAGE/100) * cart.subtotal_price
-        cart.extra_price_fields.update({'Taxes total':taxes})
+        to_append = ('Taxes total', taxes)
+        cart.extra_price_fields.append(to_append)
         return cart
+    
+class TenPercentPerItemTaxModifier(BaseCartModifier):
+    '''
+    This adds a 10% tax cart modifier on
+    '''
+    TAX_PERCENTAGE = Decimal("10")
+    
+    

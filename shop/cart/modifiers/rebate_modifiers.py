@@ -17,5 +17,6 @@ class BulkRebateModifier(BaseCartModifier):
         NUMBER_OF_ITEMS_TO_TRIGGER_REBATE = 5
         if cart_item.quantity >= NUMBER_OF_ITEMS_TO_TRIGGER_REBATE:
             rebate = (REBATE_PERCENTAGE/100) * cart_item.line_subtotal
-            cart_item.extra_price_fields.update({'Rebate': -rebate})
+            to_append = ('Rebate', -rebate)
+            cart_item.extra_price_fields.append(to_append)
         return cart_item

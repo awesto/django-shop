@@ -25,7 +25,7 @@ class Cart(models.Model):
         # That will hold things like tax totals or total discount
         self.subtotal_price = Decimal('0.0') 
         self.total_price = Decimal('0.0')
-        self.extra_price_fields = {} 
+        self.extra_price_fields = [] # List of tuples (label, value) 
         self.update() # This populates transient fields when coming from the DB
     
     def add_product(self,product, quantity=1):
@@ -73,7 +73,7 @@ class Cart(models.Model):
         self.total_price = self.subtotal_price
         # Like for line items, most of the modifiers will simply add a field
         # to extra_price_fields, let's update the total with them
-        for value in self.extra_price_fields.values():
+        for (label, value) in self.extra_price_fields:
             self.total_price = self.total_price + value
         
     
@@ -95,7 +95,7 @@ class CartItem(models.Model):
         # That will hold extra fields to display to the user 
         # (ex. taxes, discount)
         super(CartItem, self).__init__(*args,**kwargs)
-        self.extra_price_fields = {}
+        self.extra_price_fields = [] # list of tuples (label, value)
         # These must not be stored, since their components can be changed between
         # sessions / logins etc...
         self.line_subtotal = Decimal('0.0') 
@@ -110,7 +110,7 @@ class CartItem(models.Model):
             # We now loop over every registered price modifier,
             # most of them will simply add a field to extra_payment_fields
             modifier.process_cart_item(self)
-            for value in self.extra_price_fields.values():
+            for (label, value) in self.extra_price_fields:
                 self.line_total = self.line_total + value
                 
         return self.line_total
