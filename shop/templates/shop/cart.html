@@ -12,7 +12,7 @@
     {% for item in cart_items %}
     <tr>
     <td>{{item.product.name}}</td>    
-    <td>{{item.product.unit_price}}</td>
+    <td>{{item.product.get_specific.unit_price}}</td>
     <td>{{item.quantity}}</td>
     <td>{{item.line_subtotal}}</td>
     </tr>
