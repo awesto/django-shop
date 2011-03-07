@@ -87,7 +87,6 @@ class CartTestCase(TestCase):
             self.assertEqual(self.cart.total_price, (self.TEN_PERCENT*self.PRODUCT_PRICE)+self.PRODUCT_PRICE)
             
     def test_06_one_object_two_modifiers_with_rebate(self):
-        import ipdb; ipdb.set_trace()
         self.create_fixtures()
         MODIFIERS = ['shop.cart.modifiers.tax_modifiers.TenPercentGlobalTaxModifier',
                      'shop.cart.modifiers.rebate_modifiers.BulkRebateModifier']
