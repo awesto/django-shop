@@ -7,6 +7,8 @@ from shop.cart.modifiers_pool import cart_modifiers_pool
 from shop.models.cartmodel import Cart
 from shop.models.productmodel import Product
 from shop.tests.utils.context_managers import SettingsOverride
+from project.models import BaseProduct
+
 
 class CartTestCase(TestCase):
     PRODUCT_PRICE = Decimal('100')
@@ -119,4 +121,16 @@ class CartTestCase(TestCase):
         initial = self.cart.last_updated
         self.cart.add_product(self.product)
         self.assertNotEqual(initial, self.cart.last_updated)
-        
+    
+
+    def test_09_cart_item_should_use_specific_type_to_get_price(self):
+        self.create_fixtures()
+        base_product = BaseProduct.objects.create(unit_price=self.PRODUCT_PRICE)
+        variation = base_product.productvariation_set.create(
+                name="Variation 1"
+                )
+        with SettingsOverride(SHOP_CART_MODIFIERS=[]):
+            self.cart.add_product(variation)
+            self.cart.update()
+            self.cart.save()
+            self.assertEqual(self.cart.subtotal_price, self.PRODUCT_PRICE)
