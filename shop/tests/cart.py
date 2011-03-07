@@ -66,7 +66,7 @@ class CartTestCase(TestCase):
             
     def test_04_one_object_simple_modifier(self):
         self.create_fixtures()
-        MODIFIERS = ['shop.cart.modifiers.tax_modifiers.TenPercentTaxModifier']
+        MODIFIERS = ['shop.cart.modifiers.tax_modifiers.TenPercentGlobalTaxModifier']
         with SettingsOverride(SHOP_CART_MODIFIERS=MODIFIERS):
             self.cart.add_product(self.product)
             self.cart.update()
@@ -77,7 +77,7 @@ class CartTestCase(TestCase):
             
     def test_05_one_object_two_modifiers_no_rebate(self):
         self.create_fixtures()
-        MODIFIERS = ['shop.cart.modifiers.tax_modifiers.TenPercentTaxModifier',
+        MODIFIERS = ['shop.cart.modifiers.tax_modifiers.TenPercentGlobalTaxModifier',
                      'shop.cart.modifiers.rebate_modifiers.BulkRebateModifier']
         with SettingsOverride(SHOP_CART_MODIFIERS=MODIFIERS):
             self.cart.add_product(self.product)
@@ -90,7 +90,7 @@ class CartTestCase(TestCase):
             
     def test_06_one_object_two_modifiers_with_rebate(self):
         self.create_fixtures()
-        MODIFIERS = ['shop.cart.modifiers.tax_modifiers.TenPercentTaxModifier',
+        MODIFIERS = ['shop.cart.modifiers.tax_modifiers.TenPercentGlobalTaxModifier',
                      'shop.cart.modifiers.rebate_modifiers.BulkRebateModifier']
         with SettingsOverride(SHOP_CART_MODIFIERS=MODIFIERS):
             # We add 6 objects now :)
@@ -100,6 +100,7 @@ class CartTestCase(TestCase):
             
             #subtotal is 600 - 10% = 540
             sub_should_be = (6*self.PRODUCT_PRICE) - (self.TEN_PERCENT*(6*self.PRODUCT_PRICE)) 
+            
             total_should_be = sub_should_be + (self.TEN_PERCENT*sub_should_be) 
             
             self.assertEqual(self.cart.subtotal_price, sub_should_be)
@@ -118,10 +119,10 @@ class CartTestCase(TestCase):
             
     def test_08_add_product_updates_last_updated(self):
         self.create_fixtures()
-        initial = self.cart.last_updated
-        self.cart.add_product(self.product)
-        self.assertNotEqual(initial, self.cart.last_updated)
-    
+        with SettingsOverride(SHOP_CART_MODIFIERS=[]):
+            initial = self.cart.last_updated
+            self.cart.add_product(self.product)
+            self.assertNotEqual(initial, self.cart.last_updated)
 
     def test_09_cart_item_should_use_specific_type_to_get_price(self):
         self.create_fixtures()

@@ -11,7 +11,6 @@ from shop.tests.util import Mock
 from shop.tests.utils.context_managers import SettingsOverride
 from shop.util.order import get_order_from_request, add_order_to_request
 from django.test.testcases import TestCase
-import os
 
 class OrderUtilTestCase(TestCase):
     def create_fixtures(self):

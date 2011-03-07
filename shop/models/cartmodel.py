@@ -3,7 +3,7 @@ from decimal import Decimal
 from django.contrib.auth.models import User
 from django.db import models
 from shop.cart.modifiers_pool import cart_modifiers_pool
-from shop.models.productmodel import Product
+from shop.models.productmodel import Product, Option
 
 class Cart(models.Model):
     '''
@@ -14,10 +14,6 @@ class Cart(models.Model):
     # If the user is null, that means this is used for a session
     user = models.OneToOneField(User, null=True, blank=True)
     
-    extra_price_fields = {} # That will hold things like tax totals or total discount
-    subtotal_price = Decimal('0.0') 
-    total_price = Decimal('0.0')
-    
     date_created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
     
@@ -26,7 +22,10 @@ class Cart(models.Model):
     
     def __init__(self, *args, **kwargs):
         super(Cart, self).__init__(*args,**kwargs)
-        self.update() # This populates transient fields when coming from the DB
+        # That will hold things like tax totals or total discount
+        self.subtotal_price = Decimal('0.0') 
+        self.total_price = Decimal('0.0')
+        self.extra_price_fields = [] # List of tuples (label, value) 
     
     def add_product(self,product, quantity=1):
         '''
@@ -58,7 +57,6 @@ class Cart(models.Model):
         was pressed)
         '''
         items = CartItem.objects.filter(cart=self)
-        
         self.subtotal_price = Decimal('0.0') # Reset the subtotal
         
         for item in items: # For each OrderItem (order line)...
@@ -73,8 +71,8 @@ class Cart(models.Model):
         self.total_price = self.subtotal_price
         # Like for line items, most of the modifiers will simply add a field
         # to extra_price_fields, let's update the total with them
-        for value in self.extra_price_fields.itervalues():
-            self.total_price = self.total_price + value            
+        for label, value in self.extra_price_fields:
+            self.total_price = self.total_price + value
         
     
 class CartItem(models.Model):
@@ -84,12 +82,6 @@ class CartItem(models.Model):
     '''
     cart = models.ForeignKey(Cart, related_name="items")
     
-    # These must not be stored, since their components can be changed between
-    # sessions / logins etc...
-    line_subtotal = Decimal('0.0') 
-    line_total = Decimal('0.0') 
-    extra_price_fields = {} # That will hold extra fields to display to the user (ex. taxes, discount)
-    
     quantity = models.IntegerField()
     
     product = models.ForeignKey(Product)
@@ -97,6 +89,16 @@ class CartItem(models.Model):
     class Meta:
         app_label = 'shop'
     
+    def __init__(self, *args, **kwargs):
+        # That will hold extra fields to display to the user 
+        # (ex. taxes, discount)
+        super(CartItem, self).__init__(*args,**kwargs)
+        self.extra_price_fields = [] # list of tuples (label, value)
+        # These must not be stored, since their components can be changed between
+        # sessions / logins etc...
+        self.line_subtotal = Decimal('0.0') 
+        self.line_total = Decimal('0.0')
+        
     def update(self):
         self.line_subtotal = self.product.get_specific().get_price() * self.quantity
         self.line_total = self.line_subtotal
@@ -105,7 +107,23 @@ class CartItem(models.Model):
             # We now loop over every registered price modifier,
             # most of them will simply add a field to extra_payment_fields
             modifier.process_cart_item(self)
-            for value in self.extra_price_fields.itervalues():
-                self.line_total = self.line_total + value
+            
+        for label, value in self.extra_price_fields:
+            self.line_total = self.line_total + value
                 
         return self.line_total
+    
+    
+class CartItemOption(models.Model):
+    '''
+    This holds the relation to product options from the cart item.
+    It allows to know which options where selected for what cartItem.
+    
+    Generally, this is used by 
+    shop.cart.modifiers.product_options.ProductOptionsModifier
+    '''
+    cartitem = models.ForeignKey(CartItem)
+    option = models.ForeignKey(Option)
+    
+    class Meta:
+        app_label = 'shop'

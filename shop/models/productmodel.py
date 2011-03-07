@@ -127,3 +127,30 @@ class Product(models.Model):
         in ProductMetaClass
         '''
         instance.subtype = cls.__name__.lower()
+
+class OptionGroup(models.Model):
+    '''
+    A logical group of options
+    Example:
+    
+    "Colors"
+    '''
+    name = models.CharField(max_length=255)
+    
+    class Meta:
+        app_label = 'shop'
+
+class Option(models.Model):
+    '''
+    A product option. Examples:
+    
+    "Red": 10$
+    "Blue": 5$
+    ...
+    '''
+    name = models.CharField(max_length=255)
+    price = CurrencyField() # Can be negative
+    group = models.ForeignKey(OptionGroup)
+    
+    class Meta:
+        app_label = 'shop'
