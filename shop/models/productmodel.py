@@ -127,3 +127,19 @@ class Product(models.Model):
         in ProductMetaClass
         '''
         instance.subtype = cls.__name__.lower()
+
+class Option(models.Model):
+    
+    name = models.CharField(max_length=255)
+    price = CurrencyField() # Can be negative
+    
+    class Meta:
+        app_label = 'shop'
+
+class OptionGroup(models.Model):
+    
+    name = models.CharField(max_length=255)
+    
+    class Meta:
+        app_label = 'shop'
+        
