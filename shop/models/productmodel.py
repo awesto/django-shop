@@ -114,6 +114,12 @@ class Product(models.Model):
         '''
         return self.unit_price
     
+    def get_name(self):
+        '''
+        Return the name of this Product (provided for extensibility)
+        '''
+        return self.name
+    
     @classmethod
     def save_subtype_name(cls, instance, **kwargs):
         '''
