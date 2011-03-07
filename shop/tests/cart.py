@@ -98,10 +98,11 @@ class CartTestCase(TestCase):
             
             #subtotal is 600 - 10% = 540
             sub_should_be = (6*self.PRODUCT_PRICE) - (self.TEN_PERCENT*(6*self.PRODUCT_PRICE)) 
+            
             total_should_be = sub_should_be + (self.TEN_PERCENT*sub_should_be) 
             
-            self.assertEqual(self.cart.subtotal_price, 540)
-            self.assertEqual(self.cart.total_price, 496)
+            self.assertEqual(self.cart.subtotal_price, sub_should_be)
+            self.assertEqual(self.cart.total_price, total_should_be)
             
     def test_07_add_same_object_twice(self):
         self.create_fixtures()

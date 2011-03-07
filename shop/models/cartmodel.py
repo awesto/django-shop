@@ -26,7 +26,6 @@ class Cart(models.Model):
         self.subtotal_price = Decimal('0.0') 
         self.total_price = Decimal('0.0')
         self.extra_price_fields = [] # List of tuples (label, value) 
-        self.update() # This populates transient fields when coming from the DB
     
     def add_product(self,product, quantity=1):
         '''
@@ -58,7 +57,6 @@ class Cart(models.Model):
         was pressed)
         '''
         items = CartItem.objects.filter(cart=self)
-        
         self.subtotal_price = Decimal('0.0') # Reset the subtotal
         
         for item in items: # For each OrderItem (order line)...
@@ -73,7 +71,7 @@ class Cart(models.Model):
         self.total_price = self.subtotal_price
         # Like for line items, most of the modifiers will simply add a field
         # to extra_price_fields, let's update the total with them
-        for (label, value) in self.extra_price_fields:
+        for label, value in self.extra_price_fields:
             self.total_price = self.total_price + value
         
     
@@ -100,7 +98,6 @@ class CartItem(models.Model):
         # sessions / logins etc...
         self.line_subtotal = Decimal('0.0') 
         self.line_total = Decimal('0.0')
-        self.update()
         
     def update(self):
         self.line_subtotal = self.product.get_price() * self.quantity
@@ -110,8 +107,9 @@ class CartItem(models.Model):
             # We now loop over every registered price modifier,
             # most of them will simply add a field to extra_payment_fields
             modifier.process_cart_item(self)
-            for (label, value) in self.extra_price_fields:
-                self.line_total = self.line_total + value
+            
+        for label, value in self.extra_price_fields:
+            self.line_total = self.line_total + value
                 
         return self.line_total
     
