@@ -12,7 +12,6 @@ class ProductOptionsModifier(BaseCartModifier):
         This adds a list of price modifiers dependeing on the product options 
         the client selected for the current cart_item (if any)
         '''
-        
         selected_options = CartItemOption.objects.filter(cartitem=cart_item)
         
         for selected_opt in selected_options:

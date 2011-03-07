@@ -116,7 +116,8 @@ class CartTestCase(TestCase):
             
     def test_08_add_product_updates_last_updated(self):
         self.create_fixtures()
-        initial = self.cart.last_updated
-        self.cart.add_product(self.product)
-        self.assertNotEqual(initial, self.cart.last_updated)
+        with SettingsOverride(SHOP_CART_MODIFIERS=[]):
+            initial = self.cart.last_updated
+            self.cart.add_product(self.product)
+            self.assertNotEqual(initial, self.cart.last_updated)
         
