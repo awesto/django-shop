@@ -16,9 +16,11 @@ urlpatterns = patterns('',
     url(r'^$', ShopTemplateView.as_view(template_name="shop/welcome.html")),
     
     # Cart
-    url(r'^cart/$', CartDetails.as_view(), 
-        name='cart'
-        ),
+    url(r'^cart/empty/$', CartDetails.as_view(action='delete'), 
+        name='cart_empty'),
+    url(r'^cart/update/$', CartDetails.as_view(action='put'), 
+        name='cart_update'),
+    url(r'^cart/$', CartDetails.as_view(), name='cart'),
     
     # Checkout
     url(r'^checkout/ship/$', SelectShippingView.as_view(), 
