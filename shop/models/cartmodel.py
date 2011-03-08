@@ -3,7 +3,7 @@ from decimal import Decimal
 from django.contrib.auth.models import User
 from django.db import models
 from shop.cart.modifiers_pool import cart_modifiers_pool
-from shop.models.productmodel import Product, Option
+from shop.models.productmodel import Product
 
 class Cart(models.Model):
     '''
@@ -113,17 +113,3 @@ class CartItem(models.Model):
                 
         return self.line_total
     
-    
-class CartItemOption(models.Model):
-    '''
-    This holds the relation to product options from the cart item.
-    It allows to know which options where selected for what cartItem.
-    
-    Generally, this is used by 
-    shop.cart.modifiers.product_options.ProductOptionsModifier
-    '''
-    cartitem = models.ForeignKey(CartItem)
-    option = models.ForeignKey(Option)
-    
-    class Meta:
-        app_label = 'shop'

@@ -7,4 +7,3 @@ from util import CurrencyFieldTestCase, CartUtilsTestCase
 from shipping import GeneralShippingBackendTestCase
 from product import ProductTestCase
 from views import ProductDetailViewTestCase, CategoryDetailViewTestCase, CartDetailsViewTestCase
-from product_options import ProductOptionsTestCase
