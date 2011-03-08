@@ -70,15 +70,11 @@ created model::
 Product variations
 ====================
 
-One big complexity in shop systems is how to handle product variations: different
-colors for the same product, different languages for books, or "build it 
-youself" computers...
+By design, django SHOP does not include an out of the box solution to handling
+product variations (colors, sizes...), in order to let implementors create their
+own unrestricted. 
 
-In Django SHOP we suggest you use the following method to define theses variations:
+If you want such a pre-made solution for simple cases, we suggest you take a 
+look at the `shop_simplevariations` "add-on" application, located at:
 
-* Create an OptionGroup model, and bind it to your model
-* Add some options: they simply consist of a description and price for the time
-  being.
-* Options will now be displayed as "normal" cart modifiers, and so will appear
-  on the Order object and the "bill".
-  
+  https://github.com/chrisglass/django-shop-simplevariations
