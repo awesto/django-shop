@@ -1,36 +1,60 @@
+{% load i18n %}
+
 {% if cart %}
     <h1>Your shopping cart</h1>
-    
-    <table border="1">
-    <tr>
-    <th>Product name</th>
-    <th>Unit price</th>
-    <th>Quantity</th>
-    <th>&nbsp;</th>
-    </tr>
-    
-    {% for item in cart_items %}
-    <tr>
-    <td>{{item.product.name}}</td>    
-    <td>{{item.product.get_specific.unit_price}}</td>
-    <td>{{item.quantity}}</td>
-    <td>{{item.line_subtotal}}</td>
-    </tr>
-    {% for label, value in item.extra_price_fields.iteritems %}
-    <tr>
-    <td colspan="2">&nbsp;</td>
-    <td>{{label}}</td>
-    <td>{{value}}</td>
-    </tr>
-    {% endfor %}
-    <tr><td colspan="2">&nbsp;</td><td>Line Total:</td><td>{{item.line_total}}</td></tr>
-    {% endfor %}
-    <tr><td colspan="2">&nbsp;</td><td>Cart Subtotal</td><td>{{cart.subtotal_price}}</td></tr>
-    <tr><td colspan="2">&nbsp;</td><td><b>Cart Total</b></td><td><b>{{cart.total_price}}</b></td></tr>
-    </table>
-    
-    <a href="{% url checkout_shipping %}">Proceed to checkout</a>
-    
+
+    <form method="post" action="{% url cart_update %}">
+      {% csrf_token %}
+      <table border="1">
+        <thead>
+          <tr>
+          <th>{% trans "Product name" %}</th>
+          <th>{% trans "Unit price" %}</th>
+          <th>{% trans "Quantity" %}</th>
+          <th>&nbsp;</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for item in cart_items %}
+          <tr>
+          <td>{{item.product.name}}</td>    
+          <td>{{item.product.get_specific.unit_price}}</td>
+          <td><input type="text" name="update_item-{{ item.id }}"
+            value="{{item.quantity}}"></td>
+          <td>{{item.line_subtotal}}</td>
+          </tr>
+          {% for label, value in item.extra_price_fields.iteritems %}
+          <tr>
+          <td colspan="2">&nbsp;</td>
+          <td>{{label}}</td>
+          <td>{{value}}</td>
+          </tr>
+          {% endfor %}
+          <tr><td colspan="2">&nbsp;</td><td>{% trans "Line Total" %}:</td><td>{{item.line_total}}</td></tr>
+        </tbody>
+
+        <tfoot>
+          {% endfor %}
+          <tr><td colspan="2">&nbsp;</td><td>{% trans "Cart Subtotal" %}</td><td>{{cart.subtotal_price}}</td></tr>
+          <tr><td colspan="2">&nbsp;</td><td><b>{% trans "Cart Total" %}</b></td><td><b>{{cart.total_price}}</b></td></tr>
+        </tfoot>
+      </table>
+
+      <p><input type="submit" value="{% trans "Update Shopping Cart" %}"/></p>
+    </form>
+
+    <form action="{% url cart_empty %}" method="post">
+      {% csrf_token %}
+      <p><input type="submit" value="{% trans "Empty Shopping Cart" %}"/></p>
+    </form>
+
+    <p>
+      <a href="{% url checkout_shipping %}">{% trans "Proceed to checkout" %}</a>
+    </p>
+
 {% else %}
-There is no cart attached to your session
+<p>
+  {% trans "There is no cart attached to your session" %}
+</p>
 {% endif %}
