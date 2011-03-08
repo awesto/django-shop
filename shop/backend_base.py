@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
 from django.conf import settings
-from django.conf.urls.defaults import url
 from django.core import exceptions
 from django.utils.importlib import import_module
 from shop.models.ordermodel import OrderExtraInfo

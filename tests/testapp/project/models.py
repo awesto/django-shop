@@ -8,6 +8,7 @@ class BookProduct(Product):
     isbn = models.CharField(max_length=255)
     number_of_pages = models.IntegerField()
 
+
 class CompactDiscProduct(Product):
     number_of_tracks = models.IntegerField()
 
