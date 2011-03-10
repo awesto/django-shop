@@ -56,7 +56,7 @@ class CartDetails(ShopTemplateView):
         """
         Post success hook"
         """
-        return self.success(self)
+        return self.success()
 
     def delete_success(self):
         """
