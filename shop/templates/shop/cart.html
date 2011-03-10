@@ -17,26 +17,33 @@
 
         <tbody>
           {% for item in cart_items %}
-          <tr>
-          <td>{{item.product.name}}</td>    
-          <td>{{item.product.get_specific.unit_price}}</td>
-          <td><input type="text" name="update_item-{{ item.id }}"
-            value="{{item.quantity}}"></td>
-          <td>{{item.line_subtotal}}</td>
-          </tr>
-          {% for label, value in item.extra_price_fields.iteritems %}
-          <tr>
-          <td colspan="2">&nbsp;</td>
-          <td>{{label}}</td>
-          <td>{{value}}</td>
-          </tr>
+            <tr>
+              <td>{{item.product.name}}</td>    
+              <td>{{item.product.get_specific.unit_price}}</td>
+              <td><input type="text" name="update_item-{{ item.id }}"
+                value="{{item.quantity}}"></td>
+              <td>{{item.line_subtotal}}</td>
+            </tr>
+            {% for extra_price_field in item.extra_price_fields %}
+              <tr>
+                <td colspan="2">&nbsp;</td>
+                <td>{{ extra_price_field.0 }}</td>
+                <td>{{ extra_price_field.1 }}</td>
+              </tr>
+            {% endfor %}
+            <tr><td colspan="2">&nbsp;</td><td>{% trans "Line Total" %}:</td><td>{{item.line_total}}</td></tr>
           {% endfor %}
-          <tr><td colspan="2">&nbsp;</td><td>{% trans "Line Total" %}:</td><td>{{item.line_total}}</td></tr>
         </tbody>
 
         <tfoot>
-          {% endfor %}
           <tr><td colspan="2">&nbsp;</td><td>{% trans "Cart Subtotal" %}</td><td>{{cart.subtotal_price}}</td></tr>
+          {% for extra_price_field in cart.extra_price_fields %}
+            <tr>
+              <td colspan="2">&nbsp;</td>
+              <td>{{ extra_price_field.0 }}</td>
+              <td>{{ extra_price_field.1 }}</td>
+            </tr>
+          {% endfor %}
           <tr><td colspan="2">&nbsp;</td><td><b>{% trans "Cart Total" %}</b></td><td><b>{{cart.total_price}}</b></td></tr>
         </tfoot>
       </table>
