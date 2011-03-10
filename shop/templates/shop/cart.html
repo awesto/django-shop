@@ -44,7 +44,7 @@
       <p><input type="submit" value="{% trans "Update Shopping Cart" %}"/></p>
     </form>
 
-    <form action="{% url cart_empty %}" method="post">
+    <form action="{% url cart_delete %}" method="post">
       {% csrf_token %}
       <p><input type="submit" value="{% trans "Empty Shopping Cart" %}"/></p>
     </form>
