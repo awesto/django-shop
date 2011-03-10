@@ -1,7 +1,7 @@
 {% load i18n %}
 
-{% if cart %}
-    <h1>{% trans "Your shopping cart" %}</h1>
+<h1>{% trans "Your shopping cart" %}</h1>
+{% if cart_items %}
 
     <form method="post" action="{% url cart_update %}">
       {% csrf_token %}
@@ -55,6 +55,6 @@
 
 {% else %}
 <p>
-  {% trans "There is no cart attached to your session" %}
+  {% trans "Shopping cart is empty" %}
 </p>
 {% endif %}
