@@ -35,7 +35,7 @@ class TenPercentPerItemTaxModifier(BaseCartModifier):
     TAX_PERCENTAGE = Decimal("10")
     
     def add_extra_cart_item_price_field(self, cart_item):
-        total_before_taxes = Decimal('0')
+        total_before_taxes = cart_item.line_subtotal
         for label, value in cart_item.extra_price_fields:
             total_before_taxes = total_before_taxes + value
             
