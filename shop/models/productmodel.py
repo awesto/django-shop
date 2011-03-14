@@ -5,37 +5,6 @@ from django.db.models.base import ModelBase
 from django.db.models.signals import pre_save
 from shop.util.fields import CurrencyField
 
-class Category(models.Model):
-    '''
-    This should be a node in a tree (mptt?) structure representing categories 
-    of products.
-    Ideally, this should be usable as a tag cloud too (tags are just categories
-    that are not in a tree structure). The display logic should be handle on a 
-    per-site basis
-    '''
-    name = models.CharField(max_length=255)
-    slug = models.SlugField()
-    parent_category = models.ForeignKey('self', related_name="children",
-                                        null=True, blank=True)
-    
-    class Meta:
-        verbose_name_plural = "categories"
-        app_label = 'shop'
-    
-    def __unicode__(self):
-        return self.name
-    
-    def get_absolute_url(self):
-        return reverse('category_detail', args=[self.slug])
-    
-    def get_products(self):
-        '''
-        Gets the products belonging to this category (not recursively)
-        '''
-        return Product.objects.filter(category=self)
-    
-    def get_child_categories(self):
-        return Category.objects.filter(parent_category=self)
 
 class ProductManager(models.Manager):
     
@@ -85,8 +54,6 @@ class Product(models.Model):
     
     unit_price = CurrencyField()
     
-    category = models.ForeignKey(Category, null=True, blank=True)
-    
     # The subtype stores the lowest-level classname in the inheritence tree
     subtype = models.CharField(max_length=255, editable=False)
     
@@ -114,6 +81,12 @@ class Product(models.Model):
         '''
         return self.unit_price
     
+    def get_name(self):
+        '''
+        Return the name of this Product (provided for extensibility)
+        '''
+        return self.name
+    
     @classmethod
     def save_subtype_name(cls, instance, **kwargs):
         '''
@@ -127,3 +100,4 @@ class Product(models.Model):
         in ProductMetaClass
         '''
         instance.subtype = cls.__name__.lower()
+

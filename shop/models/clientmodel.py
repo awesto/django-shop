@@ -48,4 +48,5 @@ class Address(models.Model):
     
     class Meta:
         app_label = 'shop'
+        verbose_name_plural = "addresses"
         

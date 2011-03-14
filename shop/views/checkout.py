@@ -42,4 +42,19 @@ class SelectShippingView(ShopTemplateView):
         
 
 class SelectPaymentView(ShopTemplateView):
-    pass
+    template_name = 'shop/checkout/choose_payment.html'
+
+    def get_context_data(self, **kwargs):
+        '''
+        This overrides the context from the normal template view
+        '''
+        ctx = super(SelectPaymentView, self).get_context_data(**kwargs)
+        payment_modules_list = backends_pool.get_payment_backends_list()
+        
+        select = {}
+        
+        for backend in payment_modules_list:
+            url = reverse(backend.url_namespace)
+            select.update({backend.backend_name:url})
+        ctx.update({'payment_options':select})
+        return ctx

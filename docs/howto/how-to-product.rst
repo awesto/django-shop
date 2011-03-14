@@ -66,3 +66,15 @@ created model::
     
 .. note:: This is possible thanks to using a Python __metaclass__, so the magic
           making it possible should be completely transparent to your Model.
+          
+Product variations
+====================
+
+By design, django SHOP does not include an out of the box solution to handling
+product variations (colors, sizes...), in order to let implementors create their
+own unrestricted. 
+
+If you want such a pre-made solution for simple cases, we suggest you take a 
+look at the `shop_simplevariations` "add-on" application, located at:
+
+  https://github.com/chrisglass/django-shop-simplevariations
