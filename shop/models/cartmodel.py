@@ -32,7 +32,7 @@ class Cart(models.Model):
         Adds a product to the cart
         '''
         # Let's see if we already have an Item with the same product ID
-        if len(CartItem.objects.filter(cart=self).filter(product=product)) > 0:
+        if CartItem.objects.filter(cart=self).filter(product=product).exists():
             cart_item = CartItem.objects.filter(cart=self).filter(product=product)[0]
             cart_item.quantity = cart_item.quantity + int(quantity)
             cart_item.save()
