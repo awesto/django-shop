@@ -18,9 +18,10 @@ class FlatRateShipping(BaseShippingBackend):
         '''
         A simple (not class-based) view to process an order.
         
-        This will be called by the selection view via the default url (that is
-        registered on server load).
-        The goal of this view is to 
+        This will be called by the selection view (from the template) to do the
+        actual processing of the order (the previous view displayed a summary).
+        
+        It calls shop.finished() to go to the next step in the checkout process.
         
         '''
         self.shop.add_shipping_costs(self.shop.get_order(request), 
