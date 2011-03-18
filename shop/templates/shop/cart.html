@@ -19,7 +19,7 @@
           {% for item in cart_items %}
             <tr>
               <td>{{item.product.name}}</td>    
-              <td>{{item.product.get_specific.unit_price}}</td>
+              <td>{{item.product.get_specific.get_price}}</td>
               <td><input type="text" name="update_item-{{ item.id }}"
                 value="{{item.quantity}}"></td>
               <td>{{item.line_subtotal}}</td>
