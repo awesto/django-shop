@@ -60,7 +60,7 @@ class OrderManager(models.Manager):
             o.billing_country = bill_address.country.name
         o.save()
         # Let's serialize all the extra price arguments in DB
-        for label, value in cart.extra_price_fields.iteritems():
+        for label, value in cart.extra_price_fields:
             eoi = ExtraOrderPriceField()
             eoi.order = o
             eoi.label = label
@@ -80,7 +80,7 @@ class OrderManager(models.Manager):
             i.line_subtotal = item.line_subtotal
             i.save()
             # For each order item, we save the extra_price_fields to DB 
-            for label, value in item.extra_price_fields.iteritems():
+            for label, value in item.extra_price_fields:
                 eoi = ExtraOrderItemPriceField()
                 eoi.order_item = i
                 eoi.label = label

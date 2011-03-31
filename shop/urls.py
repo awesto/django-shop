@@ -1,9 +1,8 @@
 #-*- coding: utf-8 -*-
 from django.conf.urls.defaults import patterns, include, url
-from shop.models.productmodel import Product, Category
+from shop.models.productmodel import Product
 from shop.views import ShopListView, ShopTemplateView
 from shop.views.cart import CartDetails
-from shop.views.category import CategoryDetailView
 from shop.views.checkout import SelectShippingView, SelectPaymentView
 from shop.views.product import ProductDetailView
 
@@ -38,13 +37,4 @@ urlpatterns = patterns('',
         name='product_detail'
         ),
         
-    # Categories
-    url(r'^categories/$',
-        ShopListView.as_view(model=Category),
-        name='category_list'
-        ),
-    url(r'^categories/(?P<slug>[0-9A-Za-z-_.//]+)/$',
-        CategoryDetailView.as_view(),
-        name='category_detail'
-        ),
 )
