@@ -20,6 +20,18 @@ class PaymentBackendAPI(BaseBackendAPI):
     
     '''
     
+    def get_order(self, request):
+        '''
+        Simply calls super(), left here for clarity
+        '''
+        return super(PaymentBackendAPI, self).get_order(request)
+        
+    def add_extra_info(self,order, text):
+        '''
+        Left here for clarity
+        '''
+        return super(PaymentBackendAPI, self).add_extra_info(order, text)
+    
     def pay(self, order, amount, save=True):
         '''
         "Pays" the specified amount for the given order.
