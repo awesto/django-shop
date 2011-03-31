@@ -25,7 +25,6 @@ class FlatRateShipping(object):
         actual processing of the order (the previous view displayed a summary).
         
         It calls shop.finished() to go to the next step in the checkout process.
-        
         '''
         self.shop.add_shipping_costs(self.shop.get_order(request), 
                                      'Flat shipping',

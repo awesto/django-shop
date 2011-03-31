@@ -44,7 +44,13 @@ class PaymentBackendAPI(BaseBackendAPI):
         order.payment_method = method
         if save:
             order.save()
-        
+    
+    def is_order_payed(self, order):
+        return order.is_payed()
+    
+    def is_order_complete(self, order):
+        return order.is_complete()
+    
     def finished(self):
         '''
         A helper for backends, so that they can call this when their job
