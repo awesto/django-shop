@@ -3,11 +3,11 @@
 This models the checkout process using views.
 '''
 from django.core.urlresolvers import reverse
-from shop.backend_base import backends_pool
+from shop.backends_pool import backends_pool
 from shop.models.ordermodel import Order
 from shop.util.cart import get_or_create_cart
-from shop.views import ShopTemplateView
 from shop.util.order import add_order_to_request
+from shop.views import ShopTemplateView
 
 class SelectShippingView(ShopTemplateView):
     template_name = 'shop/checkout/choose_shipping.html'

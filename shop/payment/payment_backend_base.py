@@ -5,9 +5,10 @@ This file defines the interafces one should implement when either creating a new
 payment module or willing to use modules with another shop system.
 '''
 from decimal import Decimal
-from shop.backend_base import BaseBackendAPI, BaseBackend
+from django.http import HttpResponseRedirect
+from shop.backend_base import ShopAPI
 
-class PaymentBackendAPI(BaseBackendAPI):
+class ShopPaymentAPI(ShopAPI):
     '''
     This object's purpose is to expose an API to the shop system.
     Ideally, shops (Django shop or others) should implement this API, so that
@@ -15,33 +16,26 @@ class PaymentBackendAPI(BaseBackendAPI):
     
     This implementation is the interface reference for Django Shop
     
-    Methods defined in BaseBackendAPI:
-    getOrder(request): Return the Order object for the current shopper
+    Don't forget that since plenty of methods are common to both ShopPaymentAPI
+    and ShopShippingAPI(), they are defined in the ShopAPI base class!
     
     '''
     
-    def get_order(self, request):
-        '''
-        Simply calls super(), left here for clarity
-        '''
-        return super(PaymentBackendAPI, self).get_order(request)
-        
-    def add_extra_info(self,order, text):
-        '''
-        Left here for clarity
-        '''
-        return super(PaymentBackendAPI, self).add_extra_info(order, text)
+    #===========================================================================
+    # Payment-specific
+    #===========================================================================
     
-    def pay(self, order, amount, save=True):
+    def confirm_payment(self, order, amount, transaction_id, save=True):
         '''
-        "Pays" the specified amount for the given order.
+        Marks the specified amount for the given order as payed.
         This allows to hook in more complex behaviors (like saving a history
         of payments in a Payment model)
         The optional save argument allows backends to explicitly not save the 
         order yet
         '''
         # TODO: Add a "Payment" model to handle this in a more professional way
-        
+        # TODO: Add the transaction ID to the payment object, too.
+        # TODO: Add a description of the payment type used (maybe the backend's name)
         amount = Decimal(amount) # In case it's not already a Decimal
         order.amount_payed = order.amount_payed + amount
         if save:
@@ -55,32 +49,19 @@ class PaymentBackendAPI(BaseBackendAPI):
         order.payment_method = method
         if save:
             order.save()
-        
-class BasePaymentBackend(BaseBackend):
-    '''
-    This is the base class for all payment backends to implement.
     
-    The goal is to be able to register a few payment modules, and let one of 
-    them be selected at runtime by the shopper.
+    #===========================================================================
+    # URLS
+    #===========================================================================
+    # Theses simply return URLs to make redirections easier.
+    def get_finished_url(self):
+        '''
+        A helper for backends, so that they can call this when their job
+        is finished i.e. The payment has been processed from a user perspective
+        This will redirect to the "Thanks for your order" page.
+        '''
+        return HttpResponseRedirect('thank_you_for_your_order')
     
-    Class members:
+    def get_cancel_url(self):
+        return HttpResponseRedirect('checkout_payment')
     
-    url_namespace 
-    backend_name
-    shop
-    '''
-    
-    def __init__(self, shop=PaymentBackendAPI()):
-        '''
-        Make sure the shop helper is of the right type, then call super()
-        '''
-        self.shop = shop
-        super(BasePaymentBackend, self).__init__()
-        
-    def get_urls(self):
-        '''
-        Return a set of patterns() or urls() to hook to the site's main url
-        resolver.
-        This allows payment systems to register urls for callback, or to 
-        maintain a set of own views / templates
-        '''

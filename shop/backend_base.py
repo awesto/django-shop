@@ -1,14 +1,15 @@
 #-*- coding: utf-8 -*-
-from django.conf import settings
-from django.core import exceptions
-from django.utils.importlib import import_module
-from shop.models.ordermodel import OrderExtraInfo
+from shop.models.ordermodel import OrderExtraInfo, Order
 from shop.util.order import get_order_from_request
 
-
-class BaseBackendAPI(object):
+class ShopAPI(object):
     '''
     A base-baseclass for shop APIs.
+    
+    Both payment and shipping backends need some common functions from the shop
+    interface (for example get_order() is useful in both cases). To reduce code
+    duplication, theses common methods are defined here and inherited by shop
+    interfaces (DRY)
     
     Another approach would be to stuff everything here, but I think it opens
     up potential to overbloating this one class.
@@ -38,83 +39,36 @@ class BaseBackendAPI(object):
         Add an extra info text field to the order
         '''
         OrderExtraInfo.objects.create(text=text, order=self)
-        
-class BaseBackend(object):
-    '''
-    A base-baseclass for all backends (payment backends and shipping backends)
-    '''
     
-    url_namespace = "" # That's what part of the URL goes after "pay/"
-    backend_name = ""
-    shop = None # Must be injected at __init__()
+    def is_order_payed(self, order):
+        '''Whether the passed order is fully payed or not.'''
+        return order.is_payed()
     
-    def __init__(self):
+    def is_order_complete(self, order):
+        return order.is_complete()
+    
+    def get_order_total(self, order):
+        '''The total amount to be charged for passed order'''
+        return order.order_total
+    
+    def get_order_short_name(self, order):
+        '''A short name for the order, to be displayed on the payment processor's
+        website. Should be human-readable, as much as possible'''
+        return "%s-%s" % (order.id, order.order_total)
+    
+    def get_order_unique_id(self, order):
         '''
-        This enforces having a valid name and url namespace defined.
-        Backends, both shipping and payment are namespaced in respectively
-        /pay/ and /ship/ URL spaces, so as to avoid name clashes.
-        
-        "Namespaces are one honking great idea -- let's do more of those!"
+        A unique identifier for this order. This should be our shop's reference 
+        number. This is sent back by the payment processor when confirming 
+        payment, for example.
         '''
-        if self.backend_name == "":
-            raise NotImplementedError(
-                'One of your backends lacks a name, please define one.')
-        if self.url_namespace == "":
-            raise NotImplementedError(
-                'Please set a namespace for backend "%s"' % self.backend_name)
-            
-class BackendsPool(object):
-    USE_CACHE = True
+        return order.id
     
-    SHIPPING = 'SHOP_SHIPPING_BACKENDS'
-    PAYMENT = 'SHOP_PAYMENT_BACKENDS'
-    
-    def __init__(self):
-        self._payment_backends_list = []
-        self._shippment_backends_list = []
-
-    def get_payment_backends_list(self):
-        if self._payment_backends_list and self.USE_CACHE:
-            return self._payment_backends_list
-        else:
-            self._payment_backends_list = self._load_backends_list(self.PAYMENT)
-            return self._payment_backends_list
-    
-    def get_shipping_backends_list(self):
-        if self._shippment_backends_list and self.USE_CACHE:
-            return self._shippment_backends_list
-        else:
-            self._shippment_backends_list = self._load_backends_list(self.SHIPPING)
-            return self._shippment_backends_list
-            
-    def _load_backends_list(self, setting_name):
-        result = []
-        if not getattr(settings,setting_name, None):
-            return result
-        
-        for backend_path in getattr(settings,setting_name, None):
-            try:
-                back_module, back_classname = backend_path.rsplit('.', 1)
-            except ValueError:
-                raise exceptions.ImproperlyConfigured(
-                    '%s isn\'t a backend module. Check your %s setting' 
-                    % (backend_path,setting_name))
-            try:
-                mod = import_module(back_module)
-            except ImportError, e:
-                raise exceptions.ImproperlyConfigured(
-                        'Error importing backend %s: "%s". Check your %s setting' 
-                        % (back_module, e, setting_name))
-            try:
-                mod_class = getattr(mod, back_classname)
-            except AttributeError:
-                raise exceptions.ImproperlyConfigured(
-                    'Backend module "%s" does not define a "%s" class. Check your %s setting' 
-                    % (back_module, back_classname, setting_name))
-                
-            mod_instance = mod_class()
-            result.append(mod_instance)
-            
-        return result
-
-backends_pool = BackendsPool()
+    def get_order_for_id(self, id):
+        '''
+        Get an order for a given ID. Typically, this would be used when the backend
+        receives notification from the transaction processor (i.e. paypal ipn),
+        with an attached "invoice ID" or "order ID", which should then be used to 
+        get the shop's order with this method.
+        '''
+        return Order.objects.get(pk=id)
