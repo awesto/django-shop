@@ -7,7 +7,6 @@ from shop.shipping.shipping_backend_base import ShippingBackendAPI
 
 
 class BackendsPool(object):
-    USE_CACHE = True
     
     SHIPPING = 'SHOP_SHIPPING_BACKENDS'
     PAYMENT = 'SHOP_PAYMENT_BACKENDS'
@@ -15,16 +14,17 @@ class BackendsPool(object):
     PAYMENT_SHOP_INTERFACE = PaymentBackendAPI()
     SHIPPING_SHOP_INTERFACE = ShippingBackendAPI()
     
-    def __init__(self):
+    def __init__(self, use_cache=True):
         self._payment_backends_list = []
         self._shippment_backends_list = []
+        self.use_cache = use_cache
 
     def get_payment_backends_list(self):
         '''
         Returns the list of payment backends, as instances, from the list of 
         backends defined in settings.SHOP_PAYMENT_BACKENDS
         '''
-        if self._payment_backends_list and self.USE_CACHE:
+        if self._payment_backends_list and self.use_cache:
             return self._payment_backends_list
         else:
             self._payment_backends_list = self._load_backends_list(self.PAYMENT,
@@ -33,10 +33,10 @@ class BackendsPool(object):
     
     def get_shipping_backends_list(self):
         '''
-        Returns the list of payment backends, as instances, from the list of 
+        Returns the list of shipping backends, as instances, from the list of 
         backends defined in settings.SHOP_SHIPPING_BACKENDS
         '''
-        if self._shippment_backends_list and self.USE_CACHE:
+        if self._shippment_backends_list and self.use_cache:
             return self._shippment_backends_list
         else:
             self._shippment_backends_list = self._load_backends_list(self.SHIPPING,
@@ -52,12 +52,14 @@ class BackendsPool(object):
         "Namespaces are one honking great idea -- let's do more of those!"
         '''
         backend_name = getattr(backend_instance, 'backend_name', "")
-        if backend_name == "":
+        if not backend_name:
+            d_tuple = (str(backend_instance), str(type(backend_instance)))
             raise NotImplementedError(
-            'One of your backends lacks a name, please define one.')
+            'One of your backends ("%s" of type "%s") lacks a name, please define one.' % d_tuple
+            )
             
         url_namespace = getattr(backend_instance, 'url_namespace', "")
-        if url_namespace == "":
+        if not url_namespace:
             raise NotImplementedError(
                 'Please set a namespace for backend "%s"' % backend_instance.backend_name)
         
@@ -66,7 +68,7 @@ class BackendsPool(object):
         if not getattr(settings, setting_name, None):
             return result
         
-        for backend_path in getattr(settings,setting_name, None):
+        for backend_path in getattr(settings, setting_name, None):
             try:
                 back_module, back_classname = backend_path.rsplit('.', 1)
             except ValueError:

@@ -6,6 +6,11 @@ class BaseBackendAPI(object):
     '''
     A base-baseclass for shop APIs.
     
+    Both payment and shipping backends need some common functions from the shop
+    interface (for example get_order() is useful in both cases). To reduce code
+    duplication, theses common methods are defined here and inherited by shop
+    interfaces (DRY)
+    
     Another approach would be to stuff everything here, but I think it opens
     up potential to overbloating this one class.
     This is debatable and relatively easy to change later anyway.

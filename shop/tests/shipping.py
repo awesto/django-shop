@@ -28,7 +28,7 @@ class GeneralShippingBackendTestCase(TestCase):
                                         email="test@example.com",
                                         first_name="Test",
                                         last_name = "Toto")
-        backends_pool.USE_CACHE = False
+        backends_pool.use_cache = False
         
         self.order = Order()
         self.order.order_subtotal = Decimal('10')
@@ -56,26 +56,13 @@ class GeneralShippingBackendTestCase(TestCase):
         self.create_fixtures()
         MODIFIERS = ['shop.tests.shipping.MockShippingBackend']
         with SettingsOverride(SHOP_SHIPPING_BACKENDS=MODIFIERS):
-            raised = False
-            try:
-                backends_pool.get_shipping_backends_list()
-            except NotImplementedError:
-                raised = True
-            
-            self.assertEqual(raised, True)
+            self.assertRaises(NotImplementedError, backends_pool.get_shipping_backends_list)
         
     def test_02_enforcing_of_namespace_works(self):
         self.create_fixtures()
         MODIFIERS = ['shop.tests.shipping.NamedMockShippingBackend']
         with SettingsOverride(SHOP_SHIPPING_BACKENDS=MODIFIERS):
-            raised = False
-            
-            try:
-                backends_pool.get_shipping_backends_list()
-            except NotImplementedError:
-                raised = True
-            
-            self.assertEqual(raised, True)
+            self.assertRaises(NotImplementedError, backends_pool.get_shipping_backends_list)
         
     def test_03_get_order_returns_sensible_nulls(self):
         self.create_fixtures()
@@ -104,39 +91,24 @@ class GeneralShippingBackendTestCase(TestCase):
         self.create_fixtures()
         MODIFIERS = ['blob']
         with SettingsOverride(SHOP_SHIPPING_BACKENDS=MODIFIERS):
-            raised = False
-            try:
-                backends_pool.get_shipping_backends_list()
-            except ImproperlyConfigured:
-                raised = True
-            self.assertEqual(raised, True)
+            self.assertRaises(ImproperlyConfigured, backends_pool.get_shipping_backends_list)
     
     def test_07_get_backends_from_non_module(self):
         self.create_fixtures()
         MODIFIERS = ['shop.tests.IdontExist.IdontExistEither']
         with SettingsOverride(SHOP_SHIPPING_BACKENDS=MODIFIERS):
-            raised = False
-            try:
-                backends_pool.get_shipping_backends_list()
-            except ImproperlyConfigured:
-                raised = True
-            self.assertEqual(raised, True)
+            self.assertRaises(ImproperlyConfigured, backends_pool.get_shipping_backends_list)
             
     def test_08_get_backends_from_non_class(self):
         self.create_fixtures()
         MODIFIERS = ['shop.tests.shipping.IdontExistEither']
         with SettingsOverride(SHOP_SHIPPING_BACKENDS=MODIFIERS):
-            raised = False
-            try:
-                backends_pool.get_shipping_backends_list()
-            except ImproperlyConfigured:
-                raised = True
-            self.assertEqual(raised, True)
+            self.assertRaises(ImproperlyConfigured, backends_pool.get_shipping_backends_list)
             
     def test_09_get_backends_cache_works(self):
         self.create_fixtures()
         MODIFIERS = ['shop.tests.shipping.ValidMockShippingBackend']
-        backends_pool.USE_CACHE = True
+        backends_pool.use_cache = True
         with SettingsOverride(SHOP_SHIPPING_BACKENDS=MODIFIERS):
             list = backends_pool.get_shipping_backends_list()
             self.assertEqual(len(list), 1)
@@ -144,16 +116,3 @@ class GeneralShippingBackendTestCase(TestCase):
             self.assertEqual(len(list2), 1)
             self.assertEqual(list,list2)
             
-#    def test_10_add_shipping_costs_works(self):
-#        self.create_fixtures()
-#        class MockBackend(BaseShippingBackend):
-#            backend_name = "Fake"
-#            url_namespace = "fake"
-#            
-#        MODIFIERS = ['shop.tests.shipping.MockShippingBackend']
-#        backends_pool.USE_CACHE = True
-#        
-#        with SettingsOverride(SHOP_SHIPPING_BACKENDS=MODIFIERS):
-#            be = MockBackend()
-#            be.shop.add_shipping_costs(self.order, 'Test shipping', Decimal('-10'))
-#            self.assertEqual(self.order.shipping_costs, Decimal('-10'))

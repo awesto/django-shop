@@ -41,34 +41,21 @@ class GeneralPaymentBackendTestCase(TestCase):
                                         email="test@example.com",
                                         first_name="Test",
                                         last_name = "Toto")
-        backends_pool.USE_CACHE = False
+        backends_pool.use_cache = False
         
     def test_01_enforcing_of_name_works(self):
         self.create_fixtures()
         MODIFIERS = ['shop.tests.payment.MockPaymentBackend']
         with SettingsOverride(SHOP_PAYMENT_BACKENDS=MODIFIERS):
-            raised = False
-            
-            try:
-                backends_pool.get_payment_backends_list()
-            except NotImplementedError:
-                raised = True
-            
-            self.assertEqual(raised, True)
+            self.assertRaises(NotImplementedError, backends_pool.get_payment_backends_list)
 
     def test_02_enforcing_of_namespace_works(self):
         self.create_fixtures()
         
         MODIFIERS = ['shop.tests.payment.NamedMockPaymentBackend']
         with SettingsOverride(SHOP_PAYMENT_BACKENDS=MODIFIERS):
-            raised = False
+            self.assertRaises(NotImplementedError, backends_pool.get_payment_backends_list)
             
-            try:
-                backends_pool.get_payment_backends_list()
-            except NotImplementedError:
-                raised = True
-            
-            self.assertEqual(raised, True)
         
     def test_03_get_order_returns_sensible_nulls(self):
         self.create_fixtures()
@@ -98,40 +85,25 @@ class GeneralPaymentBackendTestCase(TestCase):
         self.create_fixtures()
         MODIFIERS = ['blob']
         with SettingsOverride(SHOP_PAYMENT_BACKENDS=MODIFIERS):
-            raised = False
-            try:
-                backends_pool.get_payment_backends_list()
-            except ImproperlyConfigured:
-                raised = True
-            self.assertEqual(raised, True)
+            self.assertRaises(ImproperlyConfigured, backends_pool.get_payment_backends_list)
     
     def test_07_get_backends_from_non_module(self):
         self.create_fixtures()
         MODIFIERS = ['shop.tests.IdontExist.IdontExistEither']
         with SettingsOverride(SHOP_PAYMENT_BACKENDS=MODIFIERS):
-            raised = False
-            try:
-                backends_pool.get_payment_backends_list()
-            except ImproperlyConfigured:
-                raised = True
-            self.assertEqual(raised, True)
+            self.assertRaises(ImproperlyConfigured, backends_pool.get_payment_backends_list)
             
     def test_08_get_backends_from_non_class(self):
         self.create_fixtures()
         MODIFIERS = ['shop.tests.payment.IdontExistEither']
         with SettingsOverride(SHOP_PAYMENT_BACKENDS=MODIFIERS):
-            raised = False
-            try:
-                backends_pool.get_payment_backends_list()
-            except ImproperlyConfigured:
-                raised = True
-            self.assertEqual(raised, True)
+            self.assertRaises(ImproperlyConfigured, backends_pool.get_payment_backends_list)
             
     def test_09_get_backends_cache_works(self):
         self.create_fixtures()
         MODIFIERS = ['shop.tests.payment.ValidMockPaymentBackend']
         with SettingsOverride(SHOP_PAYMENT_BACKENDS=MODIFIERS):
-            backends_pool.USE_CACHE = True
+            backends_pool.use_cache = True
             list = backends_pool.get_payment_backends_list()
             self.assertEqual(len(list), 1)
             list2 = backends_pool.get_payment_backends_list()

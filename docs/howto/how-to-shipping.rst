@@ -8,11 +8,11 @@ How to create a shipping backend
 Shop interface
 ===============
 
-While we could solve this with defining a superclass for all Shipping backends,
+While we could solve this with defining a superclass for all shipping backends,
 the better approach to plugins is to implement inversion-of-control, and let
 the backends hold a reference to the shop instead.
 
-The reference interface for Shipping backends is located at 
+The reference interface for shipping backends is located at 
 shop.shipping.shipping_backend_base.ShippingBackendAPI 
 
 

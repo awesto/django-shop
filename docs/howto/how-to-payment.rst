@@ -8,11 +8,11 @@ How to create a Payment backend
 Shop interface
 ===============
 
-While we could solve this with defining a superclass for all Payment backends,
+While we could solve this with defining a superclass for all payment backends,
 the better approach to plugins is to implement inversion-of-control, and let
 the backends hold a reference to the shop instead.
 
-The reference interface for Payment backends is located at 
+The reference interface for payment backends is located at 
 shop.payment.payment_backend_base.PaymentBackendAPI 
 
 
