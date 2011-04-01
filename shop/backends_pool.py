@@ -7,6 +7,12 @@ from shop.shipping.api import ShippingAPI
 
 
 class BackendsPool(object):
+    '''
+    A pool for backends. 
+    It handles loading backend modules (both shipping and payment backends), and
+    keeping a cached copy of the classes in-memory (so that the backends aren't
+    loaded from file every time one requests them) 
+    '''
     
     SHIPPING = 'SHOP_SHIPPING_BACKENDS'
     PAYMENT = 'SHOP_PAYMENT_BACKENDS'
@@ -15,6 +21,10 @@ class BackendsPool(object):
     SHIPPING_SHOP_INTERFACE = ShippingAPI()
     
     def __init__(self, use_cache=True):
+        ''' 
+        The use_cache parameter is mostly used for testing, since setting it
+        to false will trigger reloading from disk 
+        '''
         self._payment_backends_list = []
         self._shippment_backends_list = []
         self.use_cache = use_cache
@@ -64,6 +74,7 @@ class BackendsPool(object):
                 'Please set a namespace for backend "%s"' % backend_instance.backend_name)
         
     def _load_backends_list(self, setting_name, shop_object):
+        ''' This actually loads the backends from disk'''
         result = []
         if not getattr(settings, setting_name, None):
             return result
