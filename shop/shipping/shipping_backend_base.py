@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from shop.backend_base import BaseBackendAPI
+from shop.backend_base import ShopAPI
 from shop.models.ordermodel import ExtraOrderPriceField
 from django.shortcuts import redirect
 
-class ShippingBackendAPI(BaseBackendAPI):
+class ShopShippingAPI(ShopAPI):
     '''
     This object's purpose is to expose an API to the shop system.
     Ideally, shops (Django shop or others) should implement this API, so that

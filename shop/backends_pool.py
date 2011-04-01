@@ -2,8 +2,8 @@
 from django.conf import settings
 from django.core import exceptions
 from django.utils.importlib import import_module
-from shop.payment.payment_backend_base import PaymentBackendAPI
-from shop.shipping.shipping_backend_base import ShippingBackendAPI
+from shop.payment.payment_backend_base import ShopPaymentAPI
+from shop.shipping.shipping_backend_base import ShopShippingAPI
 
 
 class BackendsPool(object):
@@ -11,8 +11,8 @@ class BackendsPool(object):
     SHIPPING = 'SHOP_SHIPPING_BACKENDS'
     PAYMENT = 'SHOP_PAYMENT_BACKENDS'
     
-    PAYMENT_SHOP_INTERFACE = PaymentBackendAPI()
-    SHIPPING_SHOP_INTERFACE = ShippingBackendAPI()
+    PAYMENT_SHOP_INTERFACE = ShopPaymentAPI()
+    SHIPPING_SHOP_INTERFACE = ShopShippingAPI()
     
     def __init__(self, use_cache=True):
         self._payment_backends_list = []

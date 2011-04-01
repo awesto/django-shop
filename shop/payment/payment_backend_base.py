@@ -6,10 +6,9 @@ payment module or willing to use modules with another shop system.
 '''
 from decimal import Decimal
 from django.http import HttpResponseRedirect
-from shop.backend_base import BaseBackendAPI
-from shop.models.ordermodel import Order
+from shop.backend_base import ShopAPI
 
-class PaymentBackendAPI(BaseBackendAPI):
+class ShopPaymentAPI(ShopAPI):
     '''
     This object's purpose is to expose an API to the shop system.
     Ideally, shops (Django shop or others) should implement this API, so that
@@ -17,10 +16,14 @@ class PaymentBackendAPI(BaseBackendAPI):
     
     This implementation is the interface reference for Django Shop
     
-    Methods defined in BaseBackendAPI:
-    getOrder(request): Return the Order object for the current shopper
+    Don't forget that since plenty of methods are common to both ShopPaymentAPI
+    and ShopShippingAPI(), they are defined in the ShopAPI base class!
     
     '''
+    
+    #===========================================================================
+    # Payment-specific
+    #===========================================================================
     
     def confirm_payment(self, order, amount, transaction_id, save=True):
         '''
@@ -47,42 +50,10 @@ class PaymentBackendAPI(BaseBackendAPI):
         if save:
             order.save()
     
-    def is_order_payed(self, order):
-        '''Whether the passed order is fully payed or not.'''
-        return order.is_payed()
-    
-    def is_order_complete(self, order):
-        return order.is_complete()
-    
-    def get_order_total(self, order):
-        '''The total amount to be charged for passed order'''
-        return order.order_total
-    
-    def get_order_short_name(self, order):
-        '''A short name for the order, to be displayed on the payment processor's
-        website. Should be human-readable, as much as possible'''
-        return "%s-%s" % (order.id, order.order_total)
-    
-    def get_order_unique_id(self, order):
-        '''
-        A unique identifier for this order. This should be our shop's reference 
-        number. This is sent back by the payment processor when confirming 
-        payment, for example.
-        '''
-        return order.id
-    
-    def get_order_for_id(self, id):
-        '''
-        Get an order for a given ID. Typically, this would be used when the backend
-        receives notification from the transaction processor (i.e. paypal ipn),
-        with an attached "invoice ID" or "order ID", which should then be used to 
-        get the shop's order with this method.
-        '''
-        return Order.objects.get(pk=id)
-        
-#===============================================================================
-# URLS
-#===============================================================================
+    #===========================================================================
+    # URLS
+    #===========================================================================
+    # Theses simply return URLs to make redirections easier.
     def get_finished_url(self):
         '''
         A helper for backends, so that they can call this when their job
@@ -93,3 +64,4 @@ class PaymentBackendAPI(BaseBackendAPI):
     
     def get_cancel_url(self):
         return HttpResponseRedirect('checkout_payment')
+    

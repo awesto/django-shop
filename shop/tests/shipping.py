@@ -5,7 +5,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.test.testcases import TestCase
 from shop.backends_pool import backends_pool
 from shop.models.ordermodel import Order
-from shop.shipping.shipping_backend_base import ShippingBackendAPI
+from shop.shipping.shipping_backend_base import ShopShippingAPI
 from shop.tests.utils.context_managers import SettingsOverride
 
 class MockShippingBackend(object):
@@ -69,7 +69,7 @@ class GeneralShippingBackendTestCase(TestCase):
         class MockRequest():
             user = self.user
         
-        be = ValidMockShippingBackend(shop=ShippingBackendAPI())
+        be = ValidMockShippingBackend(shop=ShopShippingAPI())
         order = be.shop.get_order(MockRequest())
         self.assertEqual(order, None)
         

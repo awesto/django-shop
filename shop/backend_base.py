@@ -1,8 +1,8 @@
 #-*- coding: utf-8 -*-
-from shop.models.ordermodel import OrderExtraInfo
+from shop.models.ordermodel import OrderExtraInfo, Order
 from shop.util.order import get_order_from_request
 
-class BaseBackendAPI(object):
+class ShopAPI(object):
     '''
     A base-baseclass for shop APIs.
     
@@ -40,3 +40,35 @@ class BaseBackendAPI(object):
         '''
         OrderExtraInfo.objects.create(text=text, order=self)
     
+    def is_order_payed(self, order):
+        '''Whether the passed order is fully payed or not.'''
+        return order.is_payed()
+    
+    def is_order_complete(self, order):
+        return order.is_complete()
+    
+    def get_order_total(self, order):
+        '''The total amount to be charged for passed order'''
+        return order.order_total
+    
+    def get_order_short_name(self, order):
+        '''A short name for the order, to be displayed on the payment processor's
+        website. Should be human-readable, as much as possible'''
+        return "%s-%s" % (order.id, order.order_total)
+    
+    def get_order_unique_id(self, order):
+        '''
+        A unique identifier for this order. This should be our shop's reference 
+        number. This is sent back by the payment processor when confirming 
+        payment, for example.
+        '''
+        return order.id
+    
+    def get_order_for_id(self, id):
+        '''
+        Get an order for a given ID. Typically, this would be used when the backend
+        receives notification from the transaction processor (i.e. paypal ipn),
+        with an attached "invoice ID" or "order ID", which should then be used to 
+        get the shop's order with this method.
+        '''
+        return Order.objects.get(pk=id)
