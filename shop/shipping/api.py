@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from shop.backend_base import ShopAPI
+from shop.shop_api import ShopAPI
 from shop.models.ordermodel import ExtraOrderPriceField
 from django.shortcuts import redirect
 

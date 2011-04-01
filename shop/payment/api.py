@@ -6,7 +6,7 @@ payment module or willing to use modules with another shop system.
 '''
 from decimal import Decimal
 from django.http import HttpResponseRedirect
-from shop.backend_base import ShopAPI
+from shop.shop_api import ShopAPI
 
 class PaymentAPI(ShopAPI):
     '''
