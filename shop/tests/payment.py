@@ -9,7 +9,7 @@ from shop.models.clientmodel import Address, Client, Country
 from shop.models.ordermodel import Order, OrderItem, ExtraOrderItemPriceField, \
     ExtraOrderPriceField
 from shop.payment.backends.pay_on_delivery import PayOnDeliveryBackend
-from shop.payment.payment_backend_base import ShopPaymentAPI
+from shop.payment.api import PaymentAPI
 from shop.tests.utils.context_managers import SettingsOverride
 
 EXPECTED = '''A new order was placed!
@@ -63,7 +63,7 @@ class GeneralPaymentBackendTestCase(TestCase):
         class MockRequest():
             user = self.user
         
-        be = ValidMockPaymentBackend(shop=ShopPaymentAPI())
+        be = ValidMockPaymentBackend(shop=PaymentAPI())
         order = be.shop.get_order(MockRequest())
         self.assertEqual(order, None)
 
@@ -203,7 +203,7 @@ class PayOnDeliveryTestCase(TestCase):
     
     def test_01_backend_returns_urls(self):
         self.create_fixtures()
-        be = PayOnDeliveryBackend(shop=ShopPaymentAPI())
+        be = PayOnDeliveryBackend(shop=PaymentAPI())
         urls = be.get_urls()
         self.assertNotEqual(urls,None)
         self.assertEqual(len(urls), 1)

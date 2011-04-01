@@ -8,7 +8,7 @@ from decimal import Decimal
 from django.http import HttpResponseRedirect
 from shop.backend_base import ShopAPI
 
-class ShopPaymentAPI(ShopAPI):
+class PaymentAPI(ShopAPI):
     '''
     This object's purpose is to expose an API to the shop system.
     Ideally, shops (Django shop or others) should implement this API, so that
@@ -18,7 +18,6 @@ class ShopPaymentAPI(ShopAPI):
     
     Don't forget that since plenty of methods are common to both ShopPaymentAPI
     and ShopShippingAPI(), they are defined in the ShopAPI base class!
-    
     '''
     
     #===========================================================================
