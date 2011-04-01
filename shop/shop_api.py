@@ -51,6 +51,10 @@ class ShopAPI(object):
         '''The total amount to be charged for passed order'''
         return order.order_total
     
+    def get_order_subtotal(self, order):
+        '''The total amount to be charged for passed order'''
+        return order.order_subtotal
+    
     def get_order_short_name(self, order):
         '''A short name for the order, to be displayed on the payment processor's
         website. Should be human-readable, as much as possible'''
