@@ -73,8 +73,26 @@ class Cart(models.Model):
         # to extra_price_fields, let's update the total with them
         for label, value in self.extra_price_fields:
             self.total_price = self.total_price + value
-        
-    
+
+    def empty(self):
+        """
+        Remove all cart items
+        """
+        self.items.all().delete()
+
+    def update_quantity(self, cart_item_id, quantity):
+        """
+        Update quantity for cart item or delete it if quantity is `0`
+        """
+        cart_item = self.items.get(pk=cart_item_id)
+        if quantity == 0:
+            cart_item.delete()
+        else:
+            cart_item.quantity = quantity
+            cart_item.save()
+        self.save()
+
+
 class CartItem(models.Model):
     '''
     This is a holder for the quantity of items in the cart and, obviously, a 

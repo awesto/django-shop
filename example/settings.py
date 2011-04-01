@@ -117,6 +117,11 @@ SHOP_PAYMENT_BACKENDS = (
 
 SHOP_SHIPPING_FLAT_RATE = "10.00"
 
+SHOP_CART_MODIFIERS = [
+        'shop.cart.modifiers.tax_modifiers.TenPercentGlobalTaxModifier',
+        'shop.cart.modifiers.rebate_modifiers.BulkRebateModifier',
+        ]
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
