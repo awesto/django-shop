@@ -24,7 +24,7 @@ class PaymentAPI(ShopAPI):
     # Payment-specific
     #===========================================================================
     
-    def confirm_payment(self, order, amount, transaction_id, save=True):
+    def confirm_payment(self, order, amount, transaction_id, payment_method, save=True):
         '''
         Marks the specified amount for the given order as payed.
         This allows to hook in more complex behaviors (like saving a history
@@ -40,14 +40,6 @@ class PaymentAPI(ShopAPI):
         if save:
             order.save()
         
-    def set_payment_method(self, order, method, save=True):
-        '''
-        Sets the payment method on the order object to whatever is specified in
-        the method argument (should be a String)
-        '''
-        order.payment_method = method
-        if save:
-            order.save()
     
     #===========================================================================
     # URLS
