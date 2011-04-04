@@ -2,6 +2,7 @@
 from decimal import Decimal
 from django.contrib.auth.models import User
 from django.db import models, transaction
+from django.db.models.aggregates import Sum
 from shop.models.cartmodel import CartItem
 from shop.models.clientmodel import Client
 from shop.models.productmodel import Product
@@ -116,7 +117,6 @@ class Order(models.Model):
     order_subtotal = CurrencyField()
     order_total = CurrencyField()
     
-    amount_payed = CurrencyField()
     payment_method = models.CharField(max_length=255, null=True)
     
     # Addresses MUST be copied over to the order when it's created, however
@@ -148,6 +148,17 @@ class Order(models.Model):
     def is_completed(self):
         return self.status == self.COMPLETED
     
+    @property
+    def amount_payed(self):
+        '''
+        The amount payed is the sum of related orderpayments
+        '''
+        sum = OrderPayment.objects.filter(order=self).aggregate(sum=Sum('amount'))
+        result = sum.get('sum')
+        if not result:
+            result = Decimal('0')
+        return result
+        
     @property
     def shipping_costs(self):
         sum = Decimal('0.0')
@@ -215,3 +226,15 @@ class ExtraOrderItemPriceField(models.Model):
     class Meta:
         app_label = 'shop'
         
+class OrderPayment(models.Model):
+    ''' 
+    A class to hold basic payment information. Backends should define their own 
+    more complex payment types should they need to store more informtion
+    '''
+    order = models.ForeignKey(Order)
+    amount = CurrencyField()# How much was payed with this particular transfer
+    transaction_id = models.CharField(max_length=255, help_text="The transaction processor's reference")
+    payment_method= models.CharField(max_length=255, help_text="The payment backend use to process the purchase")
+    
+    class Meta:
+        app_label = 'shop'
