@@ -33,7 +33,6 @@ class GeneralShippingBackendTestCase(TestCase):
         self.order = Order()
         self.order.order_subtotal = Decimal('10')
         self.order.order_total = Decimal('10')
-        self.order.amount_payed = Decimal('0')
         self.order.shipping_cost = Decimal('0')
         
         self.order.shipping_name = 'toto'

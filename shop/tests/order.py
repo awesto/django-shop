@@ -2,15 +2,16 @@
 from __future__ import with_statement
 from decimal import Decimal
 from django.contrib.auth.models import User
+from django.test.testcases import TestCase
 from shop.cart.modifiers_pool import cart_modifiers_pool
 from shop.models.cartmodel import Cart, CartItem
 from shop.models.clientmodel import Client, Address, Country
-from shop.models.ordermodel import Order, OrderItem, ExtraOrderPriceField
+from shop.models.ordermodel import Order, OrderItem, ExtraOrderPriceField, \
+    OrderPayment
 from shop.models.productmodel import Product
 from shop.tests.util import Mock
 from shop.tests.utils.context_managers import SettingsOverride
 from shop.util.order import get_order_from_request, add_order_to_request
-from django.test.testcases import TestCase
 
 class OrderUtilTestCase(TestCase):
     def create_fixtures(self):
@@ -22,7 +23,6 @@ class OrderUtilTestCase(TestCase):
         self.order = Order()
         self.order.order_subtotal = Decimal('10')
         self.order.order_total = Decimal('10')
-        self.order.amount_payed = Decimal('0')
         self.order.shipping_cost = Decimal('0')
         
         self.order.shipping_name = 'toto'
@@ -94,7 +94,6 @@ class OrderTestCase(TestCase):
         self.order = Order()
         self.order.order_subtotal = Decimal('10')
         self.order.order_total = Decimal('10')
-        self.order.amount_payed = Decimal('0')
         self.order.shipping_cost = Decimal('0')
         
         self.order.shipping_name = 'toto'
@@ -295,3 +294,60 @@ class OrderConversionTestCase(TestCase):
         # Lookup works?
         prod = oi.product
         self.assertEqual(prod,product2)
+        
+        
+class OrderPaymentTestCase(TestCase):
+    
+    def create_fixtures(self):
+        self.user = User.objects.create(username="test", email="test@example.com")
+        
+        self.request = Mock()
+        setattr(self.request, 'user', None)
+        
+        self.order = Order()
+        self.order.order_subtotal = Decimal('10')
+        self.order.order_total = Decimal('10')
+        self.order.shipping_cost = Decimal('0')
+        
+        self.order.shipping_name = 'toto'
+        self.order.shipping_address = 'address'
+        self.order.shipping_address2 = 'address2'
+        self.order.shipping_zip_code = 'zip'
+        self.order.shipping_state = 'state'
+        self.order.shipping_country = 'country'
+        
+        self.order.billing_name = 'toto'
+        self.order.billing_address = 'address'
+        self.order.billing_address2 = 'address2'
+        self.order.billing_zip_code = 'zip'
+        self.order.billing_state = 'state'
+        self.order.billing_country = 'country'
+        
+        self.order.save()
+    
+    def test_payment_sum_works(self):
+        self.create_fixtures()
+        
+        self.assertEqual(self.order.amount_payed, 0)
+        
+    def test_payment_sum_works_with_partial_payments(self):
+        self.create_fixtures()
+        OrderPayment.objects.create(
+                order = self.order,
+                amount = Decimal('2'),
+                transaction_id = 'whatever',
+                payment_method = 'test method'
+                )
+        self.assertEqual(self.order.amount_payed, 2)
+        self.assertEqual(self.order.is_payed(), False)
+        
+    def test_payment_sum_works_with_full_payments(self):
+        self.create_fixtures()
+        OrderPayment.objects.create(
+                order = self.order,
+                amount = Decimal('10'),
+                transaction_id = 'whatever',
+                payment_method = 'test method'
+                )
+        self.assertEqual(self.order.amount_payed, 10)
+        self.assertEqual(self.order.is_payed(), True)
