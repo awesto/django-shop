@@ -72,7 +72,7 @@ class OrderManager(models.Manager):
         for item in cart_items:
             i = OrderItem()
             i.order = o
-            i.product_reference = item.id
+            i.product_reference = item.product.id
             i.product_name = item.product.name
             i.unit_price = item.product.unit_price
             i.quantity = item.quantity
