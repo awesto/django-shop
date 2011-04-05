@@ -20,7 +20,7 @@ class CartItemDetail(ShopView):
         If `action` is defined use it dispatch request to the right method.
         """
         if not self.action:
-            return super(CartDetails, self).dispatch(request, *args, **kwargs)
+            return super(CartItemDetail, self).dispatch(request, *args, **kwargs)
         if self.action in self.http_method_names:
             handler = getattr(self, self.action, self.http_method_not_allowed)
         else:
