@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from shop.models.cartmodel import CartItem
 from shop.models.productmodel import Product
 from shop.util.cart import get_or_create_cart
-from shop.views import ShopTemplateView, ShopView
+from shop.views import ShopView, ShopTemplateResponseMixin
 
 class CartItemDetail(ShopView):
     '''
@@ -86,7 +86,7 @@ class CartItemDetail(ShopView):
 
     # TODO: add failure hooks
 
-class CartDetails(ShopTemplateView, CartItemDetail):
+class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
     '''
     This is the actual "cart" view, that answers to GET and POST requests like
     a normal view (and returns HTML that people can actually see)
@@ -96,8 +96,8 @@ class CartDetails(ShopTemplateView, CartItemDetail):
     action = None
 
     def get_context_data(self, **kwargs):
-        ctx = super(CartDetails,self).get_context_data(**kwargs)
-        
+        # There is no get_context_data on super(), we inherit from the mixin!
+        ctx = {}
         cart_object = get_or_create_cart(self.request)
         cart_object.update()
         ctx.update({'cart': cart_object})
@@ -110,6 +110,14 @@ class CartDetails(ShopTemplateView, CartItemDetail):
         ctx.update({'cart_items': final_items})
         
         return ctx
+
+    def get(self, request, *args, **kwargs):
+        '''
+        This is lifted from the TemplateView - we don't get this behavior since
+        this only extends the mixin and not templateview.
+        '''
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
 
     def post(self, *args, **kwargs):
         '''
