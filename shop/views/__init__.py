@@ -6,7 +6,7 @@ if django_version[0] >= 1 and django_version[1] >=3: # pragma: no cover
     from django.views.generic.base import TemplateResponseMixin
 else:# pragma: no cover
     from cbv import (TemplateView, ListView, DetailView, View)
-    from cbv.base import TemplateResponseMixin
+    from cbv.views.base import TemplateResponseMixin
 
 class ShopTemplateView(TemplateView):
     '''
