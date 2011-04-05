@@ -13,3 +13,4 @@ CONTRIBUTORS
 * Martin Brochhaus
 * Raúl Cumplido
 * Bojan Mihelac
+* Rolo Mawlabaux
