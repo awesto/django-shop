@@ -2,7 +2,7 @@
 from django.conf.urls.defaults import patterns, include, url
 from shop.models.productmodel import Product
 from shop.views import ShopListView, ShopTemplateView
-from shop.views.cart import CartDetails
+from shop.views.cart import CartDetails, CartItemDetail
 from shop.views.checkout import SelectShippingView, SelectPaymentView
 from shop.views.product import ProductDetailView
 
@@ -15,11 +15,16 @@ urlpatterns = patterns('',
     url(r'^$', ShopTemplateView.as_view(template_name="shop/welcome.html")),
     
     # Cart
-    url(r'^cart/delete/$', CartDetails.as_view(action='delete'), 
+    url(r'^cart/delete/$', CartDetails.as_view(action='delete'), # DELETE 
         name='cart_delete'),
-    url(r'^cart/update/$', CartDetails.as_view(action='put'), 
-        name='cart_update'),
-    url(r'^cart/$', CartDetails.as_view(), name='cart'),
+    url('^cart/item/$', CartDetails.as_view(action='post'), # POST
+        name='cart_item_add' ),
+    url(r'^cart/$', CartDetails.as_view(), name='cart'), # GET
+    # CartItems
+    url('^cart/item/(?P<id>[0-9A-Za-z-_.//]+)$', CartItemDetail.as_view(action='put'),
+        name='cart_item_update' ),
+    url('^cart/item/(?P<id>[0-9A-Za-z-_.//]+)$', CartItemDetail.as_view(action='delete'),
+        name='cart_item_delete' ),
     
     # Checkout
     url(r'^checkout/ship/$', SelectShippingView.as_view(), 

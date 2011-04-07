@@ -29,7 +29,7 @@ class Cart(models.Model):
     
     def add_product(self,product, quantity=1):
         '''
-        Adds a product to the cart
+        Adds a (new) product to the cart
         '''
         # Let's see if we already have an Item with the same product ID
         if CartItem.objects.filter(cart=self).filter(product=product).exists():
@@ -41,7 +41,30 @@ class Cart(models.Model):
             cart_item.save()
             
         self.save() # to get the last updated timestamp
-            
+        
+    def update_quantity(self, cart_item_id, quantity):
+        """
+        Updates the quantity for given cart item or deletes it if its quantity 
+        reaches `0`
+        """
+        cart_item = self.items.get(pk=cart_item_id)
+        if quantity == 0:
+            cart_item.delete()
+        else:
+            cart_item.quantity = quantity
+            cart_item.save()
+        self.save()
+    
+    def delete_item(self, cart_item_id):
+        '''
+        A simple convenience method to delete one of the cart's items. This
+        allows to implicitely check for "access rights" since we insure the cartitem
+        is actually in the user's cart
+        '''
+        cart_item = self.items.get(pk=cart_item_id)
+        cart_item.delete()
+        self.save()
+    
     def update(self):
         '''
         This should be called whenever anything is changed in the cart (added or removed)
@@ -80,17 +103,7 @@ class Cart(models.Model):
         """
         self.items.all().delete()
 
-    def update_quantity(self, cart_item_id, quantity):
-        """
-        Update quantity for cart item or delete it if quantity is `0`
-        """
-        cart_item = self.items.get(pk=cart_item_id)
-        if quantity == 0:
-            cart_item.delete()
-        else:
-            cart_item.quantity = quantity
-            cart_item.save()
-        self.save()
+    
 
 
 class CartItem(models.Model):

@@ -6,6 +6,7 @@ payment module or willing to use modules with another shop system.
 '''
 from decimal import Decimal
 from django.http import HttpResponseRedirect
+from shop.models.ordermodel import OrderPayment
 from shop.shop_api import ShopAPI
 
 class PaymentAPI(ShopAPI):
@@ -32,14 +33,13 @@ class PaymentAPI(ShopAPI):
         The optional save argument allows backends to explicitly not save the 
         order yet
         '''
-        # TODO: Add a "Payment" model to handle this in a more professional way
-        # TODO: Add the transaction ID to the payment object, too.
-        # TODO: Add a description of the payment type used (maybe the backend's name)
-        amount = Decimal(amount) # In case it's not already a Decimal
-        order.amount_payed = order.amount_payed + amount
-        if save:
-            order.save()
-        
+        OrderPayment.objects.create(
+                    order = order,
+                    amount = Decimal(amount),# How much was payed with this particular transfer
+                    transaction_id = transaction_id,
+                    payment_method = payment_method
+                )
+        # Save is not used in the particular case.
     
     #===========================================================================
     # URLS

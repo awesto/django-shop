@@ -4,35 +4,23 @@ from django.http import HttpResponse, HttpResponseRedirect
 from shop.models.cartmodel import CartItem
 from shop.models.productmodel import Product
 from shop.util.cart import get_or_create_cart
-from shop.views import ShopTemplateView
+from shop.views import ShopView, ShopTemplateResponseMixin
 
-class CartDetails(ShopTemplateView):
-    template_name = 'shop/cart.html'
+class CartItemDetail(ShopView):
+    '''
+    A view to handle CartItem-related operations. This is not a real view in the
+    sense that it is not designed to answer to GET or POST request nor to display
+    anything, but only to be used from AJAX.
+    '''
     action = None
-
-    def get_context_data(self, **kwargs):
-        ctx = super(CartDetails,self).get_context_data(**kwargs)
-        
-        cart_object = get_or_create_cart(self.request)
-        cart_object.update()
-        ctx.update({'cart': cart_object})
-        
-        cart_items = CartItem.objects.filter(cart=cart_object)
-        final_items = []
-        for item in cart_items:
-            item.update()
-            final_items.append(item)
-        ctx.update({'cart_items': final_items})
-        
-        return ctx
-
+    
     def dispatch(self, request, *args, **kwargs):
         """
         Submitting form works only for "GET" and "POST".
         If `action` is defined use it dispatch request to the right method.
         """
         if not self.action:
-            return super(CartDetails, self).dispatch(request, *args, **kwargs)
+            return super(CartItemDetail, self).dispatch(request, *args, **kwargs)
         if self.action in self.http_method_names:
             handler = getattr(self, self.action, self.http_method_not_allowed)
         else:
@@ -41,7 +29,33 @@ class CartDetails(ShopTemplateView):
         self.args = args
         self.kwargs = kwargs
         return handler(request, *args, **kwargs)
-
+    
+    def put(self):
+        '''
+        Update one of the cartItem's quantities. This requires a single 'item_quantity'
+        POST parameter, but should be posted to a properly RESTful URL (that should
+        contain the item's ID):
+        
+        http://example.com/shop/cart/item/12345
+        '''
+        cart_object = get_or_create_cart(self.request)
+        item_id = self.kwargs.get('id')
+        quantity = self.request.POST['item_quantity']
+        cart_object.update_quantity(item_id, int(quantity))
+        # TODO: Finish by returning something
+    
+    def delete(self):
+        '''
+        Deletes one of the cartItems. This should be posted to a properly 
+        RESTful URL (that should contain the item's ID):
+        
+        http://example.com/shop/cart/item/12345
+        '''
+        cart_object = get_or_create_cart(self.request)
+        item_id = self.kwargs.get('id')
+        cart_object.delete_item(item_id)
+        # TODO: Finish by returning something
+    
     # success hooks
     def success(self):
         """
@@ -72,18 +86,49 @@ class CartDetails(ShopTemplateView):
 
     # TODO: add failure hooks
 
-    # REST methods
+class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
+    '''
+    This is the actual "cart" view, that answers to GET and POST requests like
+    a normal view (and returns HTML that people can actually see)
+    '''
+    
+    template_name = 'shop/cart.html'
+    action = None
+
+    def get_context_data(self, **kwargs):
+        # There is no get_context_data on super(), we inherit from the mixin!
+        ctx = {}
+        cart_object = get_or_create_cart(self.request)
+        cart_object.update()
+        ctx.update({'cart': cart_object})
+        
+        cart_items = CartItem.objects.filter(cart=cart_object)
+        final_items = []
+        for item in cart_items:
+            item.update()
+            final_items.append(item)
+        ctx.update({'cart_items': final_items})
+        
+        return ctx
+
+    def get(self, request, *args, **kwargs):
+        '''
+        This is lifted from the TemplateView - we don't get this behavior since
+        this only extends the mixin and not templateview.
+        '''
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
+
     def post(self, *args, **kwargs):
         '''
-        We expect to be posted with add_item_id and add_item_quantity set in
-        the POST 
+        This is to *add* a new item to the cart, therefore the quantity is 
+        irrelevant (it should always be 1)
         '''
         item_id = self.request.POST['add_item_id']
-        quantity = self.request.POST['add_item_quantity']
 
         item = Product.objects.get(pk=item_id)
         cart_object = get_or_create_cart(self.request)
-        cart_object.add_product(item, quantity)
+        cart_object.add_product(item)
         cart_object.save()
         return self.post_success(item)
 
