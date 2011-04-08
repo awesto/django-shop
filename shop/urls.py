@@ -20,6 +20,9 @@ urlpatterns = patterns('',
     url('^cart/item/$', CartDetails.as_view(action='post'), # POST
         name='cart_item_add' ),
     url(r'^cart/$', CartDetails.as_view(), name='cart'), # GET
+    url(r'^cart/update/$', CartDetails.as_view(action='put'), 
+        name='cart_update'),
+
     # CartItems
     url('^cart/item/(?P<id>[0-9A-Za-z-_.//]+)$', CartItemDetail.as_view(action='put'),
         name='cart_item_update' ),
