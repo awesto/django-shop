@@ -24,10 +24,8 @@ urlpatterns = patterns('',
         name='cart_update'),
 
     # CartItems
-    url('^cart/item/(?P<id>[0-9A-Za-z-_.//]+)$', CartItemDetail.as_view(action='put'),
-        name='cart_item_update' ),
-    url('^cart/item/(?P<id>[0-9A-Za-z-_.//]+)$', CartItemDetail.as_view(action='delete'),
-        name='cart_item_delete' ),
+    url('^cart/item/(?P<id>[0-9A-Za-z-_.//]+)$', CartItemDetail.as_view(),
+        name='cart_item' ),
     
     # Checkout
     url(r'^checkout/ship/$', SelectShippingView.as_view(), 
