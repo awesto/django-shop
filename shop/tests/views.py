@@ -3,11 +3,15 @@ from decimal import Decimal
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, HttpResponse
 from django.test.testcases import TestCase
+from django.core.urlresolvers import reverse
+
 from shop.models.cartmodel import Cart, CartItem
 from shop.models.productmodel import Product
 from shop.tests.util import Mock
 from shop.views.cart import CartDetails
 from shop.views.product import ProductDetailView
+from shop.util.cart import get_or_create_cart
+
 
 class ProductDetailViewTestCase(TestCase):
     def create_fixtures(self):
@@ -117,3 +121,78 @@ class CartDetailsViewTestCase(TestCase):
         
         self.assertEqual(ret['cart_items'][0], self.item)
         self.assertEqual(ret['cart_items'][0].quantity, 2)
+
+
+
+class CartTestCase(TestCase):
+
+    def setUp(self):
+        self.product = Product.objects.create()
+
+    def add_product_to_cart(self, product):
+        post = {
+            'add_item_id':self.product.id,
+            'add_item_quantity':1,
+        }
+        return self.client.post(reverse('cart_item_add'), post)
+
+    def get_cart(self):
+        # NOTE: it would be better to use get_or_create_cart(request)
+        # dont know how to get request
+        response = self.client.get(reverse('cart'))
+        return response.context["cart"]
+
+    def assertCartHasItems(self, expected):
+        cart = self.get_cart()
+        count = sum([cart_item.quantity for cart_item in cart.items.all()])
+        self.assertEqual(count, expected)
+
+    def test_01_cart(self):
+        response = self.client.get(reverse('cart'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_02_cart_item_add(self):
+        response = self.add_product_to_cart(self.product)
+        self.assertEqual(response.status_code, 302)
+        self.assertCartHasItems(1)
+
+    def test_03_cart_delete(self):
+        self.add_product_to_cart(self.product)
+
+        url = reverse('cart_delete')
+        response = self.client.post(url, {})
+        self.assertEqual(response.status_code, 302)
+        self.assertCartHasItems(0)
+
+    def test_04_cart_update(self):
+        self.add_product_to_cart(self.product)
+
+        cart = self.get_cart()
+        post = { 'update_item-%d' % cart.items.all()[0].pk : '5' }
+        response = self.client.post(reverse("cart_update"), post)
+        self.assertEqual(response.status_code, 302)
+        self.assertCartHasItems(5)
+
+    def test_05_cart_item_update(self):
+        self.add_product_to_cart(self.product)
+
+        cart = self.get_cart()
+        cart_item_id = cart.items.all()[0].pk
+        url = reverse('cart_item', kwargs={'id': cart_item_id})
+        post = { 'item_quantity': "5" }
+        response = self.client.put(url, post, 
+                HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertCartHasItems(5)
+
+    def test_06_cart_item_delete(self):
+        self.add_product_to_cart(self.product)
+
+        cart = self.get_cart()
+        cart_item_id = cart.items.all()[0].pk
+        cart_item_id = "1"
+        url = reverse('cart_item', kwargs={'id': cart_item_id})
+        response = self.client.delete(url,
+                HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertCartHasItems(0)
