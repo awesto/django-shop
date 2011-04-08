@@ -17,7 +17,7 @@ urlpatterns = patterns('',
     # Cart
     url(r'^cart/delete/$', CartDetails.as_view(action='delete'), # DELETE 
         name='cart_delete'),
-    url(r'^cart/update/$', CartDetails.as_view(action='put'), # DELETE 
+    url(r'^cart/update/$', CartDetails.as_view(action='put'), # PUT 
         name='cart_update'),
     url('^cart/item/$', CartDetails.as_view(action='post'), # POST
         name='cart_item_add' ),
