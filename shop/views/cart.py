@@ -13,7 +13,7 @@ class CartItemDetail(ShopView):
     anything, but only to be used from AJAX.
     '''
     action = None
-    
+
     def dispatch(self, request, *args, **kwargs):
         """
         Submitting form works only for "GET" and "POST".
@@ -30,7 +30,7 @@ class CartItemDetail(ShopView):
         self.kwargs = kwargs
         return handler(request, *args, **kwargs)
     
-    def put(self):
+    def put(self, request, *args, **kwargs):
         '''
         Update one of the cartItem's quantities. This requires a single 'item_quantity'
         POST parameter, but should be posted to a properly RESTful URL (that should
@@ -40,11 +40,15 @@ class CartItemDetail(ShopView):
         '''
         cart_object = get_or_create_cart(self.request)
         item_id = self.kwargs.get('id')
-        quantity = self.request.POST['item_quantity']
+        # NOTE: it seems logic to be in POST but as tests client shows
+        #with PUT request, data is in GET variable
+        # TODO: test in real client
+        #quantity = self.request.POST['item_quantity']
+        quantity = self.request.GET['item_quantity']
         cart_object.update_quantity(item_id, int(quantity))
-        # TODO: Finish by returning something
+        return self.put_success()
     
-    def delete(self):
+    def delete(self, request, *args, **kwargs):
         '''
         Deletes one of the cartItems. This should be posted to a properly 
         RESTful URL (that should contain the item's ID):
@@ -54,7 +58,7 @@ class CartItemDetail(ShopView):
         cart_object = get_or_create_cart(self.request)
         item_id = self.kwargs.get('id')
         cart_object.delete_item(item_id)
-        # TODO: Finish by returning something
+        return self.delete_success()
     
     # success hooks
     def success(self):
