@@ -124,7 +124,7 @@ class CartDetailsViewTestCase(TestCase):
 
 
 
-class CartTestCase(TestCase):
+class CartViewTestCase(TestCase):
 
     def setUp(self):
         self.product = Product.objects.create()
