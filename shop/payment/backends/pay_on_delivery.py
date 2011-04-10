@@ -23,7 +23,7 @@ class PayOnDeliveryBackend(object):
         # he does his job properly)
         self.shop.confirm_payment(the_order, self.shop.get_order_total(the_order),
                                   "None", self.backend_name)
-        return self.shop.finished()
+        return self.shop.get_finished_url()
         
     def get_urls(self):
         urlpatterns = patterns('',
