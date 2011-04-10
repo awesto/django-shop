@@ -13,12 +13,11 @@ class PayOnDeliveryBackend(object):
     def simple_view(self, request):
         # Get the order object
         the_order = self.shop.get_order(request)
-        # Set the payment method to be this backend (for traceability)
-        self.shop.set_payment_method(the_order, self.backend_name)
+        # Let's mark this as being complete for the full sum in our database
         # Set it as payed (it needs to be payed to the delivery guy, we assume 
         # he does his job properly)
-        self.shop.pay(the_order, the_order.order_total)
-        # TODO: Needs a better view than this!
+        self.shop.confirm_payment(the_order, self.shop.get_order_total(the_order),
+                                  "None", self.backend_name)
         return self.shop.finished()
         
     def get_urls(self):
