@@ -3,7 +3,8 @@ branch = True
 source =
     shop
 omit =
-    ../*migrations*
+    ../../*migrations*
+    ../../*tests*
     /usr/share/*
 [report]
 precision = 2
