@@ -32,7 +32,7 @@ class CartTestCase(TestCase):
         self.cart.user = self.user
         self.cart.save()
     
-    def test_01_empty_cart_costs_0(self):
+    def test_01_empty_cart_costs_0_quantity_0(self):
         self.create_fixtures()
         with SettingsOverride(SHOP_CART_MODIFIERS=[]):
             
@@ -40,6 +40,7 @@ class CartTestCase(TestCase):
             
             self.assertEqual(self.cart.subtotal_price, Decimal('0.0'))
             self.assertEqual(self.cart.total_price, Decimal('0.0'))
+            self.assertEqual(self.cart.total_quantity, 0)
             
     def test_02_one_object_no_modifiers(self):
         self.create_fixtures()
@@ -51,6 +52,7 @@ class CartTestCase(TestCase):
             
             self.assertEqual(self.cart.subtotal_price, self.PRODUCT_PRICE)
             self.assertEqual(self.cart.total_price, self.PRODUCT_PRICE)
+            self.assertEqual(self.cart.total_quantity, 1)
     
     def test_03_two_objects_no_modifier(self):
         self.create_fixtures()
@@ -63,6 +65,7 @@ class CartTestCase(TestCase):
             
             self.assertEqual(self.cart.subtotal_price, self.PRODUCT_PRICE*2)
             self.assertEqual(self.cart.total_price, self.PRODUCT_PRICE*2)
+            self.assertEqual(self.cart.total_quantity, 2)
             
     def test_04_one_object_simple_modifier(self):
         self.create_fixtures()
@@ -109,6 +112,7 @@ class CartTestCase(TestCase):
     def test_07_add_same_object_twice(self):
         self.create_fixtures()
         with SettingsOverride(SHOP_CART_MODIFIERS=[]):
+            self.assertEqual(self.cart.total_quantity, 0)
             self.cart.add_product(self.product)
             self.cart.add_product(self.product)
             self.cart.update()
@@ -116,6 +120,7 @@ class CartTestCase(TestCase):
             
             self.assertEqual(len(self.cart.items.all()),1)
             self.assertEqual(self.cart.items.all()[0].quantity, 2)
+            self.assertEqual(self.cart.total_quantity, 2)
             
     def test_08_add_product_updates_last_updated(self):
         self.create_fixtures()
