@@ -43,10 +43,10 @@ class Cart(models.Model):
         self.save() # to get the last updated timestamp
         
     def update_quantity(self, cart_item_id, quantity):
-        """
+        '''
         Updates the quantity for given cart item or deletes it if its quantity 
         reaches `0`
-        """
+        '''
         cart_item = self.items.get(pk=cart_item_id)
         if quantity == 0:
             cart_item.delete()
@@ -98,9 +98,9 @@ class Cart(models.Model):
             self.total_price = self.total_price + value
 
     def empty(self):
-        """
+        '''
         Remove all cart items
-        """
+        '''
         self.items.all().delete()
 
     @property

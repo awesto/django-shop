@@ -15,10 +15,10 @@ class CartItemDetail(ShopView):
     action = None
 
     def dispatch(self, request, *args, **kwargs):
-        """
+        '''
         Submitting form works only for "GET" and "POST".
         If `action` is defined use it dispatch request to the right method.
-        """
+        '''
         if not self.action:
             return super(CartItemDetail, self).dispatch(request, *args, **kwargs)
         if self.action in self.http_method_names:
@@ -62,30 +62,30 @@ class CartItemDetail(ShopView):
     
     # success hooks
     def success(self):
-        """
+        '''
         Generic hook by default redirects to cart
-        """
+        '''
         if self.request.is_ajax():
             return HttpResponse('Ok<br />')
         else:
             return HttpResponseRedirect(reverse('cart'))
 
     def post_success(self, item):
-        """
+        '''
         Post success hook"
-        """
+        '''
         return self.success()
 
     def delete_success(self):
-        """
+        '''
         Post delete hook"
-        """
+        '''
         return self.success()
 
     def put_success(self):
-        """
+        '''
         Post put hook"
-        """
+        '''
         return self.success()
 
     # TODO: add failure hooks
@@ -137,20 +137,20 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
         return self.post_success(item)
 
     def delete(self, *args, **kwargs):
-        """
+        '''
         Empty shopping cart.
-        """
+        '''
         cart_object = get_or_create_cart(self.request)
         cart_object.empty()
         return self.delete_success()
 
     def put(self, *args, **kwargs):
-        """
+        '''
         Update shopping cart items quantities.
 
         Data should be in update_item-ID=QTY form, where ID is id of cart item
         and QTY is quantity to set.
-        """
+        '''
         field_prefix = 'update_item-'
         cart_item_fields = [k for k in self.request.POST.keys() 
                 if k.startswith(field_prefix)]
