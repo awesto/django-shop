@@ -103,7 +103,12 @@ class Cart(models.Model):
         """
         self.items.all().delete()
 
-    
+    @property
+    def total_quantity(self):
+        '''
+        Returns the total quantity of all items in the cart
+        '''
+        return sum([ci.quantity for ci in self.items.all()])
 
 
 class CartItem(models.Model):
