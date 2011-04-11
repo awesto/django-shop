@@ -54,5 +54,9 @@ class PaymentAPI(ShopAPI):
         return HttpResponseRedirect('thank_you_for_your_order')
     
     def get_cancel_url(self):
+        '''
+        A helper for backends to let them redirect to a generic "order was 
+        cancelled" URL of their choosing. 
+        '''
         return HttpResponseRedirect('checkout_payment')
     

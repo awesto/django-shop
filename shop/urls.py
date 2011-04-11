@@ -17,16 +17,15 @@ urlpatterns = patterns('',
     # Cart
     url(r'^cart/delete/$', CartDetails.as_view(action='delete'), # DELETE 
         name='cart_delete'),
-    url(r'^cart/update/$', CartDetails.as_view(action='put'), # PUT 
-        name='cart_update'),
     url('^cart/item/$', CartDetails.as_view(action='post'), # POST
         name='cart_item_add' ),
     url(r'^cart/$', CartDetails.as_view(), name='cart'), # GET
+    url(r'^cart/update/$', CartDetails.as_view(action='put'), 
+        name='cart_update'),
+
     # CartItems
-    url('^cart/item/(?P<id>[0-9A-Za-z-_.//]+)$', CartItemDetail.as_view(action='put'),
-        name='cart_item_update' ),
-    url('^cart/item/(?P<id>[0-9A-Za-z-_.//]+)$', CartItemDetail.as_view(action='delete'),
-        name='cart_item_delete' ),
+    url('^cart/item/(?P<id>[0-9A-Za-z-_.//]+)$', CartItemDetail.as_view(),
+        name='cart_item' ),
     
     # Checkout
     url(r'^checkout/ship/$', SelectShippingView.as_view(), 
