@@ -4,10 +4,10 @@ from django.db.models.fields import DecimalField
 
 
 class CurrencyField(DecimalField):
-    '''
+    """
     A CurrencyField is simply a subclass of DecimalField with a fixed format:
     max_digits = 12, decimal_places=2, and defaults to 0.00
-    '''
+    """
     def __init__(self, **kwargs):
         if 'max_digits' in kwargs.keys():
             del kwargs['max_digits']

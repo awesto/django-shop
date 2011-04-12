@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
-'''
+"""
 Borrowed from Django CMS. This is too useful to live without
-'''
+"""
 from django.conf import settings
 
 class NULL:
     pass
 
 class SettingsOverride(object):
-    '''
+    """
     Overrides Django settings within a context and resets them to their inital
     values on exit.
 
@@ -17,7 +17,7 @@ class SettingsOverride(object):
 
         with SettingsOverride(DEBUG=True):
             # do something
-    '''
+    """
 
     def __init__(self, **overrides):
         self.overrides = overrides

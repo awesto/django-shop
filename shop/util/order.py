@@ -3,10 +3,10 @@ from django.contrib.auth.models import AnonymousUser
 from shop.models.ordermodel import Order
 
 def get_order_from_request(request):
-    '''
+    """
     Returns the currently processing Order from a request (switches between
     user or session mode) if any.
-    '''
+    """
     order = None
     if request.user and not isinstance(request.user, AnonymousUser):
         # There is a logged in user
@@ -26,10 +26,10 @@ def get_order_from_request(request):
 
 
 def add_order_to_request(request,order):
-    '''
+    """
     Checks that the order is linked to the current user or adds the order to
     the session should there be no logged in user.
-    '''
+    """
     if request.user and not isinstance(request.user, AnonymousUser):
         # We should check that the current user is indeed the request's user.
         if order.user != request.user:

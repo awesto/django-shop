@@ -178,10 +178,10 @@ class OrderConversionTestCase(TestCase):
         self.address2.save()
     
     def test_01_create_order_from_simple_cart(self):
-        '''
+        """
         Let's make sure that all the info is copied over properly when using
         Order.objects.create_from_cart()
-        '''
+        """
         self.create_fixtures()
         self.cart.add_product(self.product)
         self.cart.update()
@@ -199,9 +199,9 @@ class OrderConversionTestCase(TestCase):
         self.assertEqual(o.order_total, self.cart.total_price)
 
     def test_02_create_order_from_taxed_cart(self):
-        '''
+        """
         This time assert that everything is consistent with a tax cart modifier
-        '''
+        """
         self.create_fixtures()
         MODIFIERS = ['shop.cart.modifiers.tax_modifiers.TenPercentTaxModifier']
         
@@ -260,10 +260,10 @@ class OrderConversionTestCase(TestCase):
         self.assertEqual(o.billing_country, self.address2.country.name)
         
     def test_04_order_saves_item_pk_as_a_string(self):
-        '''
+        """
         That's needed in case shipment or payment backends need to make fancy 
         calculations on products (i.e. shipping based on weight/size...)
-        '''
+        """
         self.create_fixtures()
         
         # Add another product to the database, so it's ID isn't 1

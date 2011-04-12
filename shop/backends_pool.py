@@ -7,12 +7,12 @@ from shop.shipping.api import ShippingAPI
 
 
 class BackendsPool(object):
-    '''
+    """
     A pool for backends. 
     It handles loading backend modules (both shipping and payment backends), and
     keeping a cached copy of the classes in-memory (so that the backends aren't
     loaded from file every time one requests them) 
-    '''
+    """
     
     SHIPPING = 'SHOP_SHIPPING_BACKENDS'
     PAYMENT = 'SHOP_PAYMENT_BACKENDS'
@@ -21,19 +21,19 @@ class BackendsPool(object):
     SHIPPING_SHOP_INTERFACE = ShippingAPI()
     
     def __init__(self, use_cache=True):
-        ''' 
+        """ 
         The use_cache parameter is mostly used for testing, since setting it
         to false will trigger reloading from disk 
-        '''
+        """
         self._payment_backends_list = []
         self._shippment_backends_list = []
         self.use_cache = use_cache
 
     def get_payment_backends_list(self):
-        '''
+        """
         Returns the list of payment backends, as instances, from the list of 
         backends defined in settings.SHOP_PAYMENT_BACKENDS
-        '''
+        """
         if self._payment_backends_list and self.use_cache:
             return self._payment_backends_list
         else:
@@ -42,10 +42,10 @@ class BackendsPool(object):
             return self._payment_backends_list
     
     def get_shipping_backends_list(self):
-        '''
+        """
         Returns the list of shipping backends, as instances, from the list of 
         backends defined in settings.SHOP_SHIPPING_BACKENDS
-        '''
+        """
         if self._shippment_backends_list and self.use_cache:
             return self._shippment_backends_list
         else:
@@ -54,13 +54,13 @@ class BackendsPool(object):
             return self._shippment_backends_list
             
     def _check_backend_for_validity(self, backend_instance):
-        '''
+        """
         This enforces having a valid name and url namespace defined.
         Backends, both shipping and payment are namespaced in respectively
         /pay/ and /ship/ URL spaces, so as to avoid name clashes.
         
         "Namespaces are one honking great idea -- let's do more of those!"
-        '''
+        """
         backend_name = getattr(backend_instance, 'backend_name', "")
         if not backend_name:
             d_tuple = (str(backend_instance), str(type(backend_instance)))
@@ -74,7 +74,7 @@ class BackendsPool(object):
                 'Please set a namespace for backend "%s"' % backend_instance.backend_name)
         
     def _load_backends_list(self, setting_name, shop_object):
-        ''' This actually loads the backends from disk'''
+        """ This actually loads the backends from disk"""
         result = []
         if not getattr(settings, setting_name, None):
             return result

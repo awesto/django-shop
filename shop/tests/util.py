@@ -10,9 +10,9 @@ class Mock(object):
         pass
 
 class CurrencyFieldTestCase(TestCase):
-    '''
+    """
     Tests the currency field defined in the util package
-    '''
+    """
     def test_01_currencyfield_has_fixed_format(self):
         cf = CurrencyField(max_digits=2,decimal_places=1)
         number = cf.format_number(99.99)
@@ -32,9 +32,9 @@ class CurrencyFieldTestCase(TestCase):
         self.assertEqual(default, Decimal('99.99'))
         
 class CartUtilsTestCase(TestCase):
-    '''
+    """
     Tests the cart util functions in the util package
-    '''
+    """
     
     def setUp(self):
         self.user = User.objects.create(username="test", 

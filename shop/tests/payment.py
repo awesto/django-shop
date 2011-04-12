@@ -12,18 +12,18 @@ from shop.payment.backends.pay_on_delivery import PayOnDeliveryBackend
 from shop.payment.api import PaymentAPI
 from shop.tests.utils.context_managers import SettingsOverride
 
-EXPECTED = '''A new order was placed!
+EXPECTED = """A new order was placed!
 
 Ref: fakeref| Name: Test item| Price: 100| Q: 1| SubTot: 100| Fake extra field: 10|Tot: 110| 
 
 Subtotal: 100
 Fake Taxes: 10
-Total: 120'''
+Total: 120"""
 
 class MockPaymentBackend(object):
-    '''
+    """
     A simple, useless backend
-    '''
+    """
     def __init__(self, shop):
         self.shop = shop
         

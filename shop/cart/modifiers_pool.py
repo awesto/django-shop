@@ -17,9 +17,9 @@ class CartModifiersPool(object):
         return self._modifiers_list
 
     def _load_modifiers_list(self):
-        '''
+        """
         Heavily inspired by django.core.handlers.base...
-        '''
+        """
         result = []
         if not getattr(settings,'SHOP_CART_MODIFIERS', None):
             return result

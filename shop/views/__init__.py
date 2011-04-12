@@ -9,7 +9,7 @@ else:# pragma: no cover
     from cbv.views.base import TemplateResponseMixin
 
 class ShopTemplateView(TemplateView):
-    '''
+    """
     A class-based view for use within the shop (this allows to keep the above
     import magic in only one place)
     
@@ -20,26 +20,26 @@ class ShopTemplateView(TemplateView):
     self.template_name : Name of the template to use for rendering
     self.get_context_data(): Returns the context {} to render the template with
     self.get(request, *args, **kwargs): called for GET methods
-    ''' 
+    """ 
     
 class ShopListView(ListView):
-    '''
+    """
     This is just to abstract the "Django version switching magic happening up 
     there
-    '''
+    """
     
 class ShopDetailView(DetailView):
-    '''
+    """
     This is just to abstract the "Django version switching magic happening up 
     there
-    '''
+    """
     
 class ShopView(View):
-    '''
+    """
     An abstraction of the basic view
-    '''
+    """
     
 class ShopTemplateResponseMixin(TemplateResponseMixin):
-    '''
+    """
     An abstraction to solve the import problem for the template response mixin
-    '''
+    """

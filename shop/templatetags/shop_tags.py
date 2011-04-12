@@ -9,9 +9,9 @@ register = template.Library()
 
 
 class Cart(InclusionTag):
-    '''
+    """
     Inclusion tag for displaying cart summary.
-    '''
+    """
     template = 'shop/templatetags/_cart.html'
     
     def get_context(self, context):

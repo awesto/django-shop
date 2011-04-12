@@ -9,9 +9,9 @@ from shop.shipping.api import ShippingAPI
 from shop.tests.utils.context_managers import SettingsOverride
 
 class MockShippingBackend(object):
-    '''
+    """
     A simple, useless backend
-    '''
+    """
     def __init__(self, shop):
         self.shop = shop
         

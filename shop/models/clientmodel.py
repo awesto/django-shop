@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 Holds all the information relevant to the client (addresses for instance)
-'''
+"""
 from django.contrib.auth.models import User
 from django.db import models
 

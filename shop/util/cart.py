@@ -3,11 +3,11 @@ from shop.models.cartmodel import Cart
 from django.contrib.auth.models import AnonymousUser
 
 def get_or_create_cart(request):
-    '''
+    """
     Let's inspect the request for session or for user, then either find a
     matching cart and return it or create a new one bound to the user (if one
     exists), or to the session.
-    '''
+    """
     cart = None
     if request.user and not isinstance(request.user, AnonymousUser):
         # There is a logged in user

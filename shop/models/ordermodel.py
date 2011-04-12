@@ -12,7 +12,7 @@ class OrderManager(models.Manager):
     
     @transaction.commit_on_success
     def create_from_cart(self, cart):
-        '''
+        """
         This creates a new Order object (and all the rest) from a passed Cart 
         object.
         
@@ -22,7 +22,7 @@ class OrderManager(models.Manager):
         This will only actually commit the transaction once the function exits
         to minimize useless database access.
         
-        '''
+        """
         # Let's create the Order itself:
         o = Order()
         o.user = cart.user
@@ -90,14 +90,14 @@ class OrderManager(models.Manager):
         return o
         
 class Order(models.Model):
-    '''
+    """
     A model representing an Order.
     
     An order is the "in process" counterpart of the shopping cart, which holds
     stuff like the shipping and billing addresses (copied from the User profile)
     when the Order is first created), list of items, and holds stuff like the
     status, shipping costs, taxes, etc...
-    '''
+    """
     
     PROCESSING = 1
     CONFIRMED = 2
@@ -142,7 +142,7 @@ class Order(models.Model):
         app_label = 'shop'
     
     def is_payed(self):
-        '''Has this order been integrally payed for?'''
+        """Has this order been integrally payed for?"""
         return self.amount_payed == self.order_total
     
     def is_completed(self):
@@ -150,9 +150,9 @@ class Order(models.Model):
     
     @property
     def amount_payed(self):
-        '''
+        """
         The amount payed is the sum of related orderpayments
-        '''
+        """
         sum = OrderPayment.objects.filter(order=self).aggregate(sum=Sum('amount'))
         result = sum.get('sum')
         if not result:
@@ -168,9 +168,9 @@ class Order(models.Model):
         return sum
 
 class OrderItem(models.Model):
-    '''
+    """
     A line Item for an order.
-    '''
+    """
     
     order = models.ForeignKey(Order, related_name='items')
     
@@ -190,9 +190,9 @@ class OrderItem(models.Model):
         return Product.objects.get(pk=self.product_reference)
     
 class OrderExtraInfo(models.Model):
-    '''
+    """
     A holder for extra textual information to attach to this order.
-    '''
+    """
     order = models.ForeignKey(Order, related_name="extra_info")
     text = models.TextField()
     
@@ -200,10 +200,10 @@ class OrderExtraInfo(models.Model):
         app_label = 'shop'
         
 class ExtraOrderPriceField(models.Model):
-    '''
+    """
     This will make Cart-provided extra price fields persistent since we want
     to "snapshot" their statuses at the time when the order was made
-    '''
+    """
     order = models.ForeignKey(Order)
     label = models.CharField(max_length=255)
     value = CurrencyField()
@@ -215,10 +215,10 @@ class ExtraOrderPriceField(models.Model):
         app_label = 'shop'
     
 class ExtraOrderItemPriceField(models.Model):
-    '''
+    """
     This will make Cart-provided extra price fields persistent since we want
     to "snapshot" their statuses at the time when the order was made
-    '''
+    """
     order_item = models.ForeignKey(OrderItem)
     label = models.CharField(max_length=255)
     value = CurrencyField()
@@ -227,10 +227,10 @@ class ExtraOrderItemPriceField(models.Model):
         app_label = 'shop'
         
 class OrderPayment(models.Model):
-    ''' 
+    """ 
     A class to hold basic payment information. Backends should define their own 
     more complex payment types should they need to store more informtion
-    '''
+    """
     order = models.ForeignKey(Order)
     amount = CurrencyField()# How much was payed with this particular transfer
     transaction_id = models.CharField(max_length=255, help_text="The transaction processor's reference")

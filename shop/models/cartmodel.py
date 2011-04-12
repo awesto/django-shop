@@ -6,11 +6,11 @@ from shop.cart.modifiers_pool import cart_modifiers_pool
 from shop.models.productmodel import Product
 
 class Cart(models.Model):
-    '''
+    """
     This should be a rather simple list of items. Ideally it should be bound to
     a session and not to a User is we want to let people buy from our shop 
     without having to register with us.
-    '''
+    """
     # If the user is null, that means this is used for a session
     user = models.OneToOneField(User, null=True, blank=True)
     
@@ -28,9 +28,9 @@ class Cart(models.Model):
         self.extra_price_fields = [] # List of tuples (label, value) 
     
     def add_product(self,product, quantity=1):
-        '''
+        """
         Adds a (new) product to the cart
-        '''
+        """
         # Let's see if we already have an Item with the same product ID
         if CartItem.objects.filter(cart=self).filter(product=product).exists():
             cart_item = CartItem.objects.filter(cart=self).filter(product=product)[0]
@@ -43,10 +43,10 @@ class Cart(models.Model):
         self.save() # to get the last updated timestamp
         
     def update_quantity(self, cart_item_id, quantity):
-        '''
+        """
         Updates the quantity for given cart item or deletes it if its quantity 
         reaches `0`
-        '''
+        """
         cart_item = self.items.get(pk=cart_item_id)
         if quantity == 0:
             cart_item.delete()
@@ -56,17 +56,17 @@ class Cart(models.Model):
         self.save()
     
     def delete_item(self, cart_item_id):
-        '''
+        """
         A simple convenience method to delete one of the cart's items. This
         allows to implicitely check for "access rights" since we insure the cartitem
         is actually in the user's cart
-        '''
+        """
         cart_item = self.items.get(pk=cart_item_id)
         cart_item.delete()
         self.save()
     
     def update(self):
-        '''
+        """
         This should be called whenever anything is changed in the cart (added or removed)
         It will loop on all line items in the cart, and call all the price modifiers
         on each row.
@@ -78,7 +78,7 @@ class Cart(models.Model):
         rebate and tax changes on the *cart* items, but we don't want that for
         the order items (since they are legally binding after the "purchase" button
         was pressed)
-        '''
+        """
         items = CartItem.objects.filter(cart=self)
         self.subtotal_price = Decimal('0.0') # Reset the subtotal
         
@@ -98,24 +98,24 @@ class Cart(models.Model):
             self.total_price = self.total_price + value
 
     def empty(self):
-        '''
+        """
         Remove all cart items
-        '''
+        """
         self.items.all().delete()
 
     @property
     def total_quantity(self):
-        '''
+        """
         Returns the total quantity of all items in the cart
-        '''
+        """
         return sum([ci.quantity for ci in self.items.all()])
 
 
 class CartItem(models.Model):
-    '''
+    """
     This is a holder for the quantity of items in the cart and, obviously, a 
     pointer to the actual Product being purchased :)
-    '''
+    """
     cart = models.ForeignKey(Cart, related_name="items")
     
     quantity = models.IntegerField()

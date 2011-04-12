@@ -12,10 +12,10 @@ class CartModifiersTestCase(TestCase):
         cart_modifiers_pool.USE_CACHE=False
     
     def test_01_cart_modifier_pool_loads_modifiers_properly(self):
-        '''
+        """
         Let's add a price modifier to the settings, then load it,
         then call a method on it to make sure it works.
-        '''
+        """
         MODIFIERS = ['shop.cart.modifiers.tax_modifiers.TenPercentGlobalTaxModifier']
         with SettingsOverride(SHOP_CART_MODIFIERS=MODIFIERS):
             thelist = modifiers_pool.cart_modifiers_pool.get_modifiers_list()

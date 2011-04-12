@@ -11,11 +11,11 @@ class PayOnDeliveryBackend(object):
         # to interact with it in a tidy way (look ma', no imports!)
             
     def simple_view(self, request):
-        '''
+        """
         This simple view does nothing but record the "payment" as being complete
         since we trust the delivery guy to collect money, and redirect to the 
         success page. This is the most simple case.
-        '''
+        """
         # Get the order object
         the_order = self.shop.get_order(request)
         # Let's mark this as being complete for the full sum in our database

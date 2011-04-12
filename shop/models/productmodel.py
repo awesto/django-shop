@@ -12,14 +12,14 @@ class ProductManager(models.Manager):
         return self.filter(active=True)
 
 class ProductMetaClass(ModelBase):
-    '''
+    """
     Pretty much lifted from django.db.models.base.ModelBase
     
     Registers Product.save_subtype_name as a callback for the pre_save signal
     for all of the subclasses of Product.
     
     To understand it you might want to read about Python __metaclass__...
-    '''
+    """
     def __new__(cls, name, bases, attrs):
         # That is - on a new "registration" (loading) of a subclass
         super_new = super(ProductMetaClass, cls).__new__ # The new class (not instance!)
@@ -35,11 +35,11 @@ class ProductMetaClass(ModelBase):
             return super_klass
 
 class Product(models.Model):
-    '''
+    """
     A basic product for the shop
     Most of the already existing fields here should be generic enough to reside
     on the "base model" and not on an added property
-    '''
+    """
     
     __metaclass__ = ProductMetaClass
     
@@ -69,27 +69,27 @@ class Product(models.Model):
         return reverse('product_detail', args=[self.slug])
     
     def get_specific(self):
-        '''
+        """
         This magic method returns this as an instance of the most specific
         decendant in the inheritence tree.
-        '''
+        """
         return getattr(self, self.subtype, self)
     
     def get_price(self):
-        '''
+        """
         Return the price for this item (provided for extensibility)
-        '''
+        """
         return self.unit_price
     
     def get_name(self):
-        '''
+        """
         Return the name of this Product (provided for extensibility)
-        '''
+        """
         return self.name
     
     @classmethod
     def save_subtype_name(cls, instance, **kwargs):
-        '''
+        """
         This is called when a subclass of Product is saved. It sets the 
         relation name to the subclass in the "subtype" field of the Product 
         instance.
@@ -98,6 +98,6 @@ class Product(models.Model):
         
         This method is (and should) only called from the pre_save signal set
         in ProductMetaClass
-        '''
+        """
         instance.subtype = cls.__name__.lower()
 
