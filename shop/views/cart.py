@@ -125,14 +125,17 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
 
     def post(self, *args, **kwargs):
         """
-        This is to *add* a new item to the cart, therefore the quantity is 
-        irrelevant (it should always be 1)
+        This is to *add* a new item to the cart. Optionally, you can pass it a 
+        quantity parameter to specify how many you wish to add at once (defaults
+        to 1)
         """
         item_id = self.request.POST['add_item_id']
-
+        item_quantity = self.request.POST.get('add_item_quantity')
+        if not item_quantity:
+            item_quantity = 1
         item = Product.objects.get(pk=item_id)
         cart_object = get_or_create_cart(self.request)
-        cart_object.add_product(item)
+        cart_object.add_product(item, item_quantity)
         cart_object.save()
         return self.post_success(item)
 
