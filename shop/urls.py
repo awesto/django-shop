@@ -5,6 +5,8 @@ from shop.views import ShopListView, ShopTemplateView
 from shop.views.cart import CartDetails, CartItemDetail
 from shop.views.checkout import SelectShippingView, SelectPaymentView
 from shop.views.product import ProductDetailView
+from shop.views.order import OrderListView, OrderDetailView
+
 
 # Loop through payment backends and mount the modules in pay/
 urlpatterns = patterns('',
@@ -44,5 +46,12 @@ urlpatterns = patterns('',
         ProductDetailView.as_view(),
         name='product_detail'
         ),
-        
+
+    # Orders
+    url(r'^orders/$',
+        OrderListView.as_view(),
+        name='order_list'),
+    url(r'^orders/(?P<pk>\d+)/$',
+        OrderDetailView.as_view(),
+        name='order_detail'),
 )
