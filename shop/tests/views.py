@@ -4,9 +4,11 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, HttpResponse
 from django.test.testcases import TestCase
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 from shop.models.cartmodel import Cart, CartItem
 from shop.models.productmodel import Product
+from shop.models.ordermodel import Order
 from shop.tests.util import Mock
 from shop.views.cart import CartDetails
 from shop.views.product import ProductDetailView
@@ -196,3 +198,33 @@ class CartViewTestCase(TestCase):
                 HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertCartHasItems(0)
+
+
+class OrderListViewTestCase(TestCase):
+
+    def setUp(self):
+        self.user = User(username='test', is_active=True)
+        self.user.set_password('test')
+        self.user.save()
+        self.order = Order.objects.create(user=self.user)
+
+    def test_01_anonymous_user_redirected_to_login(self):
+        url = reverse('order_list')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        redirect_url = '%s?next=%s' % (settings.LOGIN_URL, url)
+        self.assertTrue(redirect_url in response['location'])
+
+    def test_02_authenticated_user_see_order_list(self):
+        self.client.login(username='test', password='test')
+        url = reverse('order_list')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, unicode(self.order))
+
+    def test_03_authenticated_user_see_order_detail(self):
+        self.client.login(username='test', password='test')
+        url = reverse('order_detail', kwargs={'pk': self.order.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, unicode(self.order))
