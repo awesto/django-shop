@@ -3,6 +3,9 @@ from decimal import Decimal
 from django.contrib.auth.models import User
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
+from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse
+
 from shop.models.cartmodel import CartItem
 from shop.models.clientmodel import Client
 from shop.models.productmodel import Product
@@ -166,6 +169,13 @@ class Order(models.Model):
         for cost in cost_list:
             sum = sum + cost.value
         return sum
+
+    def __unicode__(self):
+        return _('Order ID: %(id)s') % {'id': self.id}
+
+    def get_absolute_url(self):
+        return reverse('order_detail', kwargs={'pk': self.pk })
+
 
 class OrderItem(models.Model):
     """
