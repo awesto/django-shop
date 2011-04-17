@@ -58,3 +58,6 @@ class SelectPaymentView(ShopTemplateView):
             select.update({backend.backend_name:url})
         ctx.update({'payment_options':select})
         return ctx
+
+class ThankYouView(ShopTemplateView):
+    template_name = 'shop/checkout/thank_you.html'

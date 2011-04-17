@@ -3,9 +3,10 @@ from django.conf.urls.defaults import patterns, include, url
 from shop.models.productmodel import Product
 from shop.views import ShopListView, ShopTemplateView
 from shop.views.cart import CartDetails, CartItemDetail
-from shop.views.checkout import SelectShippingView, SelectPaymentView
-from shop.views.product import ProductDetailView
+from shop.views.checkout import SelectShippingView, SelectPaymentView, \
+    ThankYouView
 from shop.views.order import OrderListView, OrderDetailView
+from shop.views.product import ProductDetailView
 
 
 # Loop through payment backends and mount the modules in pay/
@@ -14,7 +15,8 @@ urlpatterns = patterns('',
     (r'^ship/', include('shop.shipping.urls')),
     
     #Home
-    url(r'^$', ShopTemplateView.as_view(template_name="shop/welcome.html")),
+    url(r'^$', ShopTemplateView.as_view(template_name="shop/welcome.html"),
+        name='shop_welcome'),
     
     # Cart
     url(r'^cart/delete/$', CartDetails.as_view(action='delete'), # DELETE 
@@ -36,7 +38,9 @@ urlpatterns = patterns('',
     url(r'^checkout/pay/$', SelectPaymentView.as_view(), 
         name='checkout_payment' # Second step of the checkout process
         ),
-    
+    url(r'^checkout/thank_you/$', ThankYouView.as_view(), 
+        name='thank_you_for_your_order' # Second step of the checkout process
+        ),
     # Products
     url(r'^products/$',
         ShopListView.as_view(model=Product),
