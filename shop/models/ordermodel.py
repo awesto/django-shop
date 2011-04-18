@@ -52,6 +52,7 @@ class OrderManager(models.Manager):
             o.shipping_name = "%s %s" % (cart.user.first_name, cart.user.last_name)
             o.shipping_address = ship_address.address
             o.shipping_address2 = ship_address.address2
+            o.shipping_city = ship_address.city
             o.shipping_zip_code = ship_address.zip_code
             o.shipping_state = ship_address.state
             o.shipping_country = ship_address.country.name
@@ -59,6 +60,7 @@ class OrderManager(models.Manager):
             o.billing_name = "%s %s" % (cart.user.first_name, cart.user.last_name)
             o.billing_address = bill_address.address
             o.billing_address2 = bill_address.address2
+            o.billing_city = bill_address.city
             o.billing_zip_code = bill_address.zip_code
             o.billing_state = bill_address.state
             o.billing_country = bill_address.country.name
@@ -129,6 +131,7 @@ class Order(models.Model):
     shipping_name = models.CharField(max_length=255, null=True)
     shipping_address = models.CharField(max_length=255, null=True)
     shipping_address2 = models.CharField(max_length=255, null=True)
+    shipping_city = models.CharField(max_length=255, null=True)
     shipping_zip_code = models.CharField(max_length=20, null=True)
     shipping_state = models.CharField(max_length=255, null=True)
     shipping_country = models.CharField(max_length=255, null=True)
@@ -136,6 +139,7 @@ class Order(models.Model):
     billing_name = models.CharField(max_length=255, null=True)
     billing_address = models.CharField(max_length=255, null=True)
     billing_address2 = models.CharField(max_length=255, null=True)
+    billing_city = models.CharField(max_length=255, null=True)
     billing_zip_code = models.CharField(max_length=20, null=True)
     billing_state = models.CharField(max_length=255, null=True)
     billing_country = models.CharField(max_length=255, null=True)
