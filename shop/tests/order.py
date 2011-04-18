@@ -12,6 +12,8 @@ from shop.models.productmodel import Product
 from shop.tests.util import Mock
 from shop.tests.utils.context_managers import SettingsOverride
 from shop.util.order import get_order_from_request, add_order_to_request
+from project.models import BaseProduct, ProductVariation
+
 
 class OrderUtilTestCase(TestCase):
     def create_fixtures(self):
@@ -294,6 +296,19 @@ class OrderConversionTestCase(TestCase):
         # Lookup works?
         prod = oi.product
         self.assertEqual(prod,product2)
+
+    def test_05_create_order_respects_product_specific_get_price_method(self):
+        self.create_fixtures()
+
+        baseproduct = BaseProduct.objects.create(unit_price=Decimal('10.0'))
+        product = ProductVariation.objects.create(baseproduct=baseproduct)
+
+        self.cart.add_product(product)
+        self.cart.update()
+        self.cart.save()
+        o = Order.objects.create_from_cart(self.cart)
+        oi = OrderItem.objects.filter(order=o)[0]
+        self.assertEqual(oi.unit_price, baseproduct.unit_price)
         
         
 class OrderPaymentTestCase(TestCase):
