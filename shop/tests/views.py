@@ -12,6 +12,7 @@ from shop.models.ordermodel import Order
 from shop.tests.util import Mock
 from shop.views.cart import CartDetails
 from shop.views.product import ProductDetailView
+from shop.views.checkout import SelectShippingView
 from shop.util.cart import get_or_create_cart
 
 
@@ -228,3 +229,30 @@ class OrderListViewTestCase(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, unicode(self.order))
+
+class CheckoutViewTestCase(TestCase):
+    def create_fixtures(self): 
+        self.user = User.objects.create(username="test", 
+                                        email="test@example.com",
+                                        first_name="Test",
+                                        last_name = "Tester")
+        
+        self.cart = Cart.objects.create()
+        self.product= Product.objects.create()
+        self.item = CartItem.objects.create(cart=self.cart, quantity=1, 
+                                            product=self.product)
+
+    def test_select_shipping_view(self):
+        self.create_fixtures()
+
+        request = Mock()
+        setattr(request, 'is_ajax', lambda : False)
+        setattr(request, 'user', self.user)
+        post={
+            'add_item_id':self.product.id,
+            'add_item_quantity':1,
+        }
+
+        view = SelectShippingView(request=request)
+        view.create_order_object_from_cart()
+        #TODO: Check more exensively that the order created is correct
