@@ -15,3 +15,5 @@ distribute*
 share/
 *.sqlite
 database.db
+*.swp
+*coverage.xml
