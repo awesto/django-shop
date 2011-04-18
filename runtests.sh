@@ -8,6 +8,7 @@ suite='shop'
 
 coverage=false
 documentation=false
+ci=false
 
 while [ "$index" -lt "$num_args" ]
 do
@@ -18,13 +19,22 @@ do
 		"--with-coverage")
 			coverage=true
 			;;
+		"--ci")
+			ci=true
+			;;
 		*)
 			suite="shop.${args[$index]}"
 	esac
 let "index = $index + 1"
 done
+if [ $ci == true ]; then
+	pushd .
+	cd tests/testapp
+	coverage run manage.py test $suite
+	coverage xml
+	popd
 
-if [ $coverage == true ]; then
+elif [ $coverage == true ]; then
 	pushd .
 	cd tests/testapp
 	coverage run manage.py test $suite
