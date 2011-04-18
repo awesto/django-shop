@@ -89,6 +89,21 @@ class OrderUtilTestCase(TestCase):
         setattr(self.request,'user', self.user)
         add_order_to_request(self.request, self.order)
         self.assertEqual(self.order.user, self.user)
+
+    def test_07_request_with_user_returns_last_order(self):
+        self.create_fixtures()
+        setattr(self.request, 'user', self.user)
+
+        order1 = Order.objects.create(user=self.user)
+        ret = get_order_from_request(self.request)
+        self.assertEqual(ret, order1)
+
+        order2 = Order.objects.create(user=self.user)
+        ret = get_order_from_request(self.request)
+        self.assertEqual(ret, order2)
+
+
+        
         
 class OrderTestCase(TestCase):
     def create_fixtures(self):
