@@ -238,7 +238,10 @@ class OrderConversionTestCase(TestCase):
             # Check that totals match
             self.assertEqual(o.order_subtotal, self.cart.subtotal_price)
             self.assertEqual(o.order_total, self.cart.total_price)
-            
+            self.assertNotEqual(o.order_subtotal, Decimal("0"))
+            self.assertNotEqual(o.order_total, Decimal("0"))
+
+
     def test_03_order_addresses_match_user_preferences(self):
         self.create_fixtures()
         
