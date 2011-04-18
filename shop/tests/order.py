@@ -196,6 +196,9 @@ class OrderConversionTestCase(TestCase):
         ois = OrderItem.objects.filter(order=o)
         cis = CartItem.objects.filter(cart=self.cart)
         self.assertEqual(len(ois), len(cis))
+
+        self.assertEqual(ois[0].line_subtotal, self.PRODUCT_PRICE)
+        self.assertEqual(ois[0].line_total, self.PRODUCT_PRICE)
         
         self.assertEqual(o.order_subtotal, self.cart.subtotal_price)
         self.assertEqual(o.order_total, self.cart.total_price)
@@ -222,7 +225,10 @@ class OrderConversionTestCase(TestCase):
             ois = OrderItem.objects.filter(order=o)
             cis = CartItem.objects.filter(cart=self.cart)
             self.assertEqual(len(ois), len(cis))
-            
+
+            self.assertEqual(ois[0].line_subtotal, self.PRODUCT_PRICE)
+            self.assertEqual(ois[0].line_total, self.PRODUCT_PRICE)
+        
             # Assert that there are as many extra_cart_price_fields than there
             # are extra order price fields
             e_cart_fields = self.cart.extra_price_fields
