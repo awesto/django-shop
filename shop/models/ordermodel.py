@@ -139,6 +139,11 @@ class Order(models.Model):
     billing_zip_code = models.CharField(max_length=20, null=True)
     billing_state = models.CharField(max_length=255, null=True)
     billing_country = models.CharField(max_length=255, null=True)
+
+    created = models.DateTimeField(auto_now_add=True,
+            verbose_name=_('Created'))
+    modified = models.DateTimeField(auto_now=True,
+            verbose_name=_('Updated'))
     
     objects = OrderManager()
     
