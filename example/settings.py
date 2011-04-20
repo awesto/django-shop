@@ -133,6 +133,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
+    'polymorphic', # We need polymorphic installed for the shop
     'shop', # The django SHOP application
     'myshop', # the project we just created
 )
