@@ -13,10 +13,6 @@ class ProductDetailView(ShopDetailView):
     model=Product # It must be the biggest ancestor of the inheritence tree.
     generic_template = 'shop/product_detail.html'
     
-    def get_object(self, queryset=None):
-        obj = super(ProductDetailView,self).get_object(queryset)
-        return obj.get_specific()
-
     def get_template_names(self):
         ret = super(ProductDetailView, self).get_template_names()
         if not self.generic_template in ret:

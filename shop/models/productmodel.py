@@ -3,45 +3,22 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.base import ModelBase
 from django.db.models.signals import pre_save
+from polymorphic.manager import PolymorphicManager
+from polymorphic.polymorphic_model import PolymorphicModel
 from shop.util.fields import CurrencyField
 
 
-class ProductManager(models.Manager):
+class ProductManager(PolymorphicManager):
     
     def active(self):
         return self.filter(active=True)
 
-class ProductMetaClass(ModelBase):
-    """
-    Pretty much lifted from django.db.models.base.ModelBase
-    
-    Registers Product.save_subtype_name as a callback for the pre_save signal
-    for all of the subclasses of Product.
-    
-    To understand it you might want to read about Python __metaclass__...
-    """
-    def __new__(cls, name, bases, attrs):
-        # That is - on a new "registration" (loading) of a subclass
-        super_new = super(ProductMetaClass, cls).__new__ # The new class (not instance!)
-        parents = [b for b in bases if isinstance(b, ProductMetaClass)]
-        if not parents:
-            # If this isn't a subclass of Product, don't do anything special.
-            # This means it's a "pure" product
-            return super_new(cls, name, bases, attrs)
-        else:
-            # This is a subclass of Product. Let's register it to pre_save
-            super_klass = super_new(cls, name, bases,attrs)
-            pre_save.connect(super_klass.save_subtype_name, sender=super_klass, weak=False)
-            return super_klass
-
-class Product(models.Model):
+class Product(PolymorphicModel):
     """
     A basic product for the shop
     Most of the already existing fields here should be generic enough to reside
     on the "base model" and not on an added property
     """
-    
-    __metaclass__ = ProductMetaClass
     
     name = models.CharField(max_length=255)
     slug = models.SlugField()
@@ -54,9 +31,6 @@ class Product(models.Model):
     
     unit_price = CurrencyField()
     
-    # The subtype stores the lowest-level classname in the inheritence tree
-    subtype = models.CharField(max_length=255, editable=False)
-    
     objects = ProductManager()
     
     class Meta:
@@ -67,13 +41,6 @@ class Product(models.Model):
     
     def get_absolute_url(self):
         return reverse('product_detail', args=[self.slug])
-    
-    def get_specific(self):
-        """
-        This magic method returns this as an instance of the most specific
-        decendant in the inheritence tree.
-        """
-        return getattr(self, self.subtype, self)
     
     def get_price(self):
         """
@@ -87,17 +54,3 @@ class Product(models.Model):
         """
         return self.name
     
-    @classmethod
-    def save_subtype_name(cls, instance, **kwargs):
-        """
-        This is called when a subclass of Product is saved. It sets the 
-        relation name to the subclass in the "subtype" field of the Product 
-        instance.
-        This allows "get_specific()" to always return the specific instance of 
-        the subclass, no matter its type.
-        
-        This method is (and should) only called from the pre_save signal set
-        in ProductMetaClass
-        """
-        instance.subtype = cls.__name__.lower()
-
