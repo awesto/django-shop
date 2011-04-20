@@ -40,6 +40,7 @@ class Address(models.Model):
     address = models.CharField(max_length=255)
     address2 = models.CharField(max_length=255)
     zip_code = models.CharField(max_length=20)
+    city = models.CharField(max_length=20)
     state = models.CharField(max_length=255)
     country = models.ForeignKey(Country)
     

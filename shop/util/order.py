@@ -10,9 +10,11 @@ def get_order_from_request(request):
     order = None
     if request.user and not isinstance(request.user, AnonymousUser):
         # There is a logged in user
-        order = Order.objects.filter(user=request.user).filter(status__lt=Order.COMPLETED)
-        if len(order) >= 1: # The queryset returns a list
-            order = order[0]
+        orders = Order.objects.filter(user=request.user)
+        orders = orders.filter(status__lt=Order.COMPLETED)
+        orders = orders.order_by('-created')
+        if len(orders) >= 1: # The queryset returns a list
+            order = orders[0]
         else:
             order = None # There is a logged in user but he has no pending order
     else:
