@@ -102,6 +102,7 @@ class Cart(models.Model):
         Remove all cart items
         """
         self.items.all().delete()
+        self.delete()
 
     @property
     def total_quantity(self):
