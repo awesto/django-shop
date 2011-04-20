@@ -208,9 +208,9 @@ class OrderConversionTestCase(TestCase):
         This time assert that everything is consistent with a tax cart modifier
         """
         self.create_fixtures()
-        MODIFIERS = ['shop.cart.modifiers.tax_modifiers.TenPercentTaxModifier']
+        MODIFIERS = ['shop.cart.modifiers.tax_modifiers.TenPercentGlobalTaxModifier']
         
-        with SettingsOverride(SHOP_PRICE_MODIFIERS=MODIFIERS):
+        with SettingsOverride(SHOP_CART_MODIFIERS=MODIFIERS):
 
             self.cart.add_product(self.product)
             self.cart.update()

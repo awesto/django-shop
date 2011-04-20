@@ -7,7 +7,7 @@ class BaseCartModifier(object):
     
     Everytime the cart is refreshed (via it's update() method), the cart will 
     call all subclasses of this registered with their full path in the
-    settings.SHOP_PRICE_MODIFIERS setting.
+    settings.SHOP_CART_MODIFIERS setting.
     """
         
     def process_cart_item(self, cart_item):
