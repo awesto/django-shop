@@ -105,14 +105,18 @@ class Order(models.Model):
     status, shipping costs, taxes, etc...
     """
     
-    PROCESSING = 1
-    CONFIRMED = 2
-    COMPLETED = 3
-    
+    PROCESSING = 1 # New order, no shipping/payment backend chosen yet
+    CONFIRMED = 2 # Chosen shipping/payment backend, processing payment
+    COMPLETED = 3 # Successful payment confirmed by payment backend
+    SHIPPED = 4 # successful order shipped to client
+    CANCELLED = 5 # order has been cancelled
+
     STATUS_CODES = (
-        (PROCESSING, 'Processing'), # User still checking out the contents
-        (CONFIRMED, 'Confirmed'), # Contents are valid, now we can handle payment etc...
-        (COMPLETED, 'Completed'), # Everything is fine, only need to send the products
+        (PROCESSING, 'Processing'),
+        (CONFIRMED, 'Confirmed'),
+        (COMPLETED, 'Completed'),
+        (SHIPPED, 'Shipped'),
+        (CANCELLED, 'Cancelled'),
     )
     
     # If the user is null, the order was created with a session
