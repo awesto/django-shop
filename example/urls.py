@@ -15,5 +15,5 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     (r'^admin/', include(admin.site.urls)),
-    (r'^shop/', include(shop_urls)), # <-- That's the important bit
+    (r'^', include(shop_urls)), # <-- That's the important bit
 )
