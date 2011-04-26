@@ -17,4 +17,12 @@ class CurrencyField(DecimalField):
         if 'default' in kwargs.keys():
             del kwargs['default']
         return super(CurrencyField,self).__init__(max_digits=12,decimal_places=2,default=default,**kwargs)
-    
+
+    def south_field_triple(self):
+        "Returns a suitable description of this field for South."
+        # We'll just introspect the _actual_ field.
+        from south.modelsinspector import introspector
+        field_class = "django.db.models.fields.DecimalField"
+        args, kwargs = introspector(self)
+        # That's our definition!
+        return (field_class, args, kwargs)
