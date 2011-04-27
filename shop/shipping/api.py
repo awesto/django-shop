@@ -21,12 +21,35 @@ class ShippingAPI(ShopAPI):
         for the given value. 
         Please not that the value *should* be negative (it's a cost).
         """
-        ExtraOrderPriceField.objects.create(order=order, 
-                                            label=label, 
-                                            value=value,
-                                            is_shipping=True)
-        order.order_total = order.order_total + value
-        order.save()
+        # Check if we already have one shipping cost entry
+        eopf = ExtraOrderPriceField.objects.filter(order=order,
+                                                   is_shipping=True)
+        if eopf and len(eopf) >= 1:
+            eopf = eopf[0]
+
+        if eopf:
+            # Tweak the total (since the value might have changed)
+            order.order_total = order.order_total - eopf.value
+            
+            # Update the existing fields
+            eopf.label = label
+            eopf.value = value
+            eopf.save()
+            
+            # Re-add the shipping costs to the total
+            order.order_total = order.order_total + value
+            order.save()
+
+        else:
+            # In this case, there was no shipping cost already associated with
+            # the order - let's simply create a new one (theat should be the
+            # default case)
+            ExtraOrderPriceField.objects.create(order=order, 
+                                                label=label, 
+                                                value=value,
+                                                is_shipping=True)
+            order.order_total = order.order_total + value
+            order.save()
         
     def finished(self):
         """

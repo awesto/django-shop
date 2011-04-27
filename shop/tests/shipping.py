@@ -1,4 +1,5 @@
 #-*- coding: utf-8 -*-
+from __future__ import with_statement
 from decimal import Decimal
 from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured
@@ -7,6 +8,7 @@ from shop.backends_pool import backends_pool
 from shop.models.ordermodel import Order
 from shop.shipping.api import ShippingAPI
 from shop.tests.utils.context_managers import SettingsOverride
+from shop.tests.util import Mock
 
 class MockShippingBackend(object):
     """
@@ -114,4 +116,59 @@ class GeneralShippingBackendTestCase(TestCase):
             list2 = backends_pool.get_shipping_backends_list()
             self.assertEqual(len(list2), 1)
             self.assertEqual(list,list2)
-            
+           
+
+class ShippingApiTestCase(TestCase):
+
+    def create_fixtures(self):
+        self.user = User.objects.create(username="test", email="test@example.com")
+
+        self.request = Mock()
+        setattr(self.request, 'user', None)
+
+        self.order = Order()
+        self.order.order_subtotal = Decimal('10')
+        self.order.order_total = Decimal('10')
+        self.order.shipping_cost = Decimal('0')
+
+        self.order.shipping_name = 'toto'
+        self.order.shipping_address = 'address'
+        self.order.shipping_address2 = 'address2'
+        self.order.shipping_city = 'city'
+        self.order.shipping_zip_code = 'zip'
+        self.order.shipping_state = 'state'
+        self.order.shipping_country = 'country'
+
+        self.order.billing_name = 'toto'
+        self.order.billing_address = 'address'
+        self.order.billing_address2 = 'address2'
+        self.order.billing_city = 'city'
+        self.order.billing_zip_code = 'zip'
+        self.order.billing_state = 'state'
+        self.order.billing_country = 'country'
+
+        self.order.save()
+    
+        self.shipping_label = "Shipping"
+        self.shipping_value = Decimal("10")
+
+    def test_adding_shipping_costs_work(self):
+        self.create_fixtures()
+        api = ShippingAPI()
+        api.add_shipping_costs(self.order, self.shipping_label, self.shipping_value)
+        self.assertEqual(self.order.shipping_costs, self.shipping_value)
+        self.assertEqual(self.order.order_total, (self.order.order_subtotal +
+            self.shipping_value))
+        
+    def test_adding_shipping_costs_twice_works(self):
+        # That should test against #39 regressions
+        self.create_fixtures()
+        api = ShippingAPI()
+        
+        api.add_shipping_costs(self.order, self.shipping_label, self.shipping_value)
+        api.add_shipping_costs(self.order, self.shipping_label, self.shipping_value)
+        
+        self.assertEqual(self.order.shipping_costs, self.shipping_value)
+        self.assertEqual(self.order.order_total, (self.order.order_subtotal +
+            self.shipping_value))
+        
