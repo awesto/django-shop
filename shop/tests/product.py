@@ -14,17 +14,12 @@ class ProductTestCase(TestCase):
         self.product.unit_price = Decimal('1.0')
         self.product.save()
     
-    def test_01_unicode_returns_proper_stuff(self):
+    def test_unicode_returns_proper_stuff(self):
         self.create_fixtures()
         ret = self.product.__unicode__()
         self.assertEqual(ret, self.product.name)
         
-    def test_02_specify_returns_self_when_not_a_subclass(self):
-        self.create_fixtures()
-        ret = self.product.get_specific()
-        self.assertEqual(ret, self.product)
-        
-    def test_03_active_filter_returns_only_active_products(self):
+    def test_active_filter_returns_only_active_products(self):
         self.create_fixtures()
         ret1 = len(Product.objects.active())
         # Set self.product to be active

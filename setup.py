@@ -17,6 +17,7 @@ setup(
     install_requires=[
         'Django>=1.2',
         'django-classy-tags>=0.3.3',
+        'django-polymorphic>=0.2',
     ],
     packages=find_packages(exclude=["example", "example.*"]),
     zip_safe = False

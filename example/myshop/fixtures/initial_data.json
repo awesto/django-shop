@@ -11,8 +11,8 @@
         "pk": 1, 
         "model": "shop.product", 
         "fields": {
+            "polymorphic_ctype": ["myshop", "book"],
             "name": "Cat's Cradle: A Novel", 
-            "subtype": "book", 
             "unit_price": "9.99", 
             "slug": "cats-cradle", 
             "active": true, 
