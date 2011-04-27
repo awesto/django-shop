@@ -29,7 +29,7 @@ class OrderManager(models.Manager):
         # Let's create the Order itself:
         o = Order()
         o.user = cart.user
-        o.status = Order.STATUS_CODES[0][0] # Processing
+        o.status = Order.PROCESSING # Processing
         
         o.order_subtotal = cart.subtotal_price
         o.order_total = cart.total_price
@@ -106,13 +106,15 @@ class Order(models.Model):
     """
     
     PROCESSING = 1 # New order, no shipping/payment backend chosen yet
-    CONFIRMED = 2 # Chosen shipping/payment backend, processing payment
-    COMPLETED = 3 # Successful payment confirmed by payment backend
-    SHIPPED = 4 # successful order shipped to client
-    CANCELLED = 5 # order has been cancelled
+    PAYMENT = 2 # The user is filling in payment information
+    CONFIRMED = 3 # Chosen shipping/payment backend, processing payment
+    COMPLETED = 4 # Successful payment confirmed by payment backend
+    SHIPPED = 5 # successful order shipped to client
+    CANCELLED = 6 # order has been cancelled
 
     STATUS_CODES = (
         (PROCESSING, 'Processing'),
+        (PAYMENT, 'Selecting payment'),
         (CONFIRMED, 'Confirmed'),
         (COMPLETED, 'Completed'),
         (SHIPPED, 'Shipped'),

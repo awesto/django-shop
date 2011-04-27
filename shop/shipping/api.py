@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from shop.shop_api import ShopAPI
+from shop.order_signals import payment_selection 
 from shop.models.ordermodel import ExtraOrderPriceField
 from django.shortcuts import redirect
 
@@ -51,10 +52,11 @@ class ShippingAPI(ShopAPI):
             order.order_total = order.order_total + value
             order.save()
         
-    def finished(self):
+    def finished(self, order):
         """
         A helper for backends, so that they can call this when their job
         is finished i.e. shipping costs are added to the order.
         This will redirect to the "select a payment method" page.
         """
+        payment_selection.send(self, order) # Emit the signal to say we're now selecting payment
         return redirect('checkout_payment')
