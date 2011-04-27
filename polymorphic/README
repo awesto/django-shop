@@ -1,0 +1,14 @@
+This is django_polymorphic from https://github.com/bconstantin/django_polymorphic
+
+Since no pypi packages exist yet, this is an in-tree copy as it was at version:
+https://github.com/bconstantin/django_polymorphic/commit/2c47db8fcc284a92d2c9769ba503603fbea92660
+(this is the last inclusive commit)
+
+It is a one-to-one copy of the tree, except for the addition of this file.
+This tree is governed by "the same license as Django", and redistributed as
+such.
+Original source code can be found at
+https://github.com/bconstantin/django_polymorphic
+
+- The Django-SHOP team
+

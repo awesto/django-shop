@@ -54,18 +54,11 @@ created model::
     # fields and the Product fields
     o = MyProduct.objects.get(pk=...)
     
-    # This is also possible - You retrieve a Product instance, with only the
-    # fields defined in Product... but fear not! There is a way to get yours :)
-    o = Product.objects.get(pk=...) # This gets a Product instance
-    o = o.get_specific() # There, this is now an instance of MyProduct. Magic!
+    # This is also possible - You retrieve a MyProduct instance, using the 
+    # Product manager
+    o = Product.objects.get(pk=...)
     
-    # The opposite is of course possible as well:
-    o = MyProduct.objects.get(pk=...) # a MyModel instance
-    o = o.product # A Product instance
-    o = o.get_specific() # Back to a MyModel instance
-    
-.. note:: This is possible thanks to using a Python __metaclass__, so the magic
-          making it possible should be completely transparent to your Model.
+.. note:: This is possible thanks to the terrific django_polymorphic dependency
           
 Product variations
 ====================

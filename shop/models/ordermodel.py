@@ -81,7 +81,7 @@ class OrderManager(models.Manager):
             i.order = o
             i.product_reference = item.product.id
             i.product_name = item.product.name
-            i.unit_price = item.product.get_specific().get_price()
+            i.unit_price = item.product.get_price()
             i.quantity = item.quantity
             i.line_total = item.line_total
             i.line_subtotal = item.line_subtotal
