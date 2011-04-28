@@ -1,0 +1,112 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Pedro Gracia <pedro.gracia@impulzia.com>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-04-28 15:11+0200\n"
+"PO-Revision-Date: 2011-04-28 15:16+0200\n"
+"Last-Translator: Pedro Gracia <pedro.gracia@impulzia.com>\n"
+"Language-Team: Español <i18n@impulzia.com>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: models/ordermodel.py:152
+msgid "Created"
+msgstr "Creado"
+
+#: models/ordermodel.py:154
+msgid "Updated"
+msgstr "Actualizado"
+
+#: models/ordermodel.py:188
+#, python-format
+msgid "Order ID: %(id)s"
+msgstr "ID del Pedido: %(id)s"
+
+#: templates/shop/cart.html:3
+msgid "Your shopping cart"
+msgstr "Su carro de la compra"
+
+#: templates/shop/cart.html:11 templates/shop/templatetags/_order.html:37
+msgid "Product name"
+msgstr "Nombre del producto"
+
+#: templates/shop/cart.html:12 templates/shop/templatetags/_order.html:38
+msgid "Unit price"
+msgstr "Precio unitario"
+
+#: templates/shop/cart.html:13 templates/shop/templatetags/_order.html:39
+msgid "Quantity"
+msgstr "Cantidad"
+
+#: templates/shop/cart.html:34 templates/shop/templatetags/_order.html:59
+msgid "Line Total"
+msgstr "Total de línea"
+
+#: templates/shop/cart.html:39
+msgid "Cart Subtotal"
+msgstr "Subtotal del carro"
+
+#: templates/shop/cart.html:47
+msgid "Cart Total"
+msgstr "Total del carro"
+
+#: templates/shop/cart.html:51
+msgid "Update Shopping Cart"
+msgstr "Actualizar Carro de la Compra"
+
+#: templates/shop/cart.html:56
+msgid "Empty Shopping Cart"
+msgstr "Vaciar Carro de la Compra"
+
+#: templates/shop/cart.html:60
+msgid "Proceed to checkout"
+msgstr "Proceder a comprar"
+
+#: templates/shop/cart.html:65
+msgid "Shopping cart is empty"
+msgstr "El carro de la compra está vacío"
+
+#: templates/shop/order_list.html:3
+msgid "Order list"
+msgstr "Listado del pedido"
+
+#: templates/shop/welcome.html:8
+msgid "Hello"
+msgstr "Hola"
+
+#: templates/shop/welcome.html:9
+msgid "Your orders"
+msgstr "Sus pedidos"
+
+#: templates/shop/templatetags/_order.html:4
+msgid "Order ID:"
+msgstr "ID del Pedido:"
+
+#: templates/shop/templatetags/_order.html:8
+msgid "Order Status"
+msgstr "Estado del Pedido"
+
+#: templates/shop/templatetags/_order.html:14
+msgid "Shipping Address"
+msgstr "Dirección de Envío"
+
+#: templates/shop/templatetags/_order.html:23
+msgid "Billing Address"
+msgstr "Dirección de Facturación"
+
+#: templates/shop/templatetags/_order.html:64
+msgid "Order Subtotal"
+msgstr "Subtotal de la Compra"
+
+#: templates/shop/templatetags/_order.html:72
+msgid "Order Total"
+msgstr "Total de la Compra"
