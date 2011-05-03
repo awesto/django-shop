@@ -68,6 +68,17 @@ class ThankYouView(ShopTemplateView):
 class ShippingBillingView(ShopTemplateView):
     template_name = 'shop/checkout/billingshipping.html'
 
+    def create_order_object_from_cart(self):
+        """
+        This will create an Order object form the current cart, and will pass
+        a reference to the Order on either the User object or the session.
+        """
+        cart = get_or_create_cart(self.request)
+        cart.update()
+        order = Order.objects.create_from_cart(cart)
+        request = self.request
+        add_order_to_request(request, order)
+    
     def _get_billing_client(self):
         """
         If we already have the client, return that (don't duplicate effort)
@@ -138,6 +149,7 @@ class ShippingBillingView(ShopTemplateView):
         if shipping_form.is_valid() and billing_form.is_valid():
             shipping_address = shipping_form.save()
             billing_address = billing_form.save()
+            self.create_order_object_from_cart()
     
         return self.get(self, *args, **kwargs)
 
