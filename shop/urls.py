@@ -4,7 +4,7 @@ from shop.models.productmodel import Product
 from shop.views import ShopListView, ShopTemplateView
 from shop.views.cart import CartDetails, CartItemDetail
 from shop.views.checkout import SelectShippingView, SelectPaymentView, \
-    ThankYouView
+    ThankYouView, ShippingBillingView
 from shop.views.order import OrderListView, OrderDetailView
 from shop.views.product import ProductDetailView
 
@@ -32,6 +32,9 @@ urlpatterns = patterns('',
         name='cart_item' ),
     
     # Checkout
+    url(r'^checkout/$', ShippingBillingView.as_view(), 
+        name='checkout_shippingbilling' # First step of the checkout process
+        ),
     url(r'^checkout/ship/$', SelectShippingView.as_view(), 
         name='checkout_shipping' # First step of the checkout process
         ),
