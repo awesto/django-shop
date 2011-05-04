@@ -6,10 +6,11 @@ from django.core.urlresolvers import reverse
 from shop.backends_pool import backends_pool
 from shop.models.ordermodel import Order
 from shop.models.clientmodel import Client, Address
-from shop.forms import AddressForm
+from shop.forms import AddressForm, BillingShippingForm
 from shop.util.cart import get_or_create_cart
 from shop.util.order import add_order_to_request
-from shop.views import ShopTemplateView
+from shop.views import ShopTemplateView,ShopView
+from django.http import HttpResponseRedirect
 
 class SelectShippingView(ShopTemplateView):
     template_name = 'shop/checkout/choose_shipping.html'
@@ -97,7 +98,7 @@ class ShippingBillingView(ShopTemplateView):
         return client
 
 
-    def _get_shipping_form(self):
+    def _get_shipping_address_form(self):
         """
         Serves the same purpose as _get_billing_client(). This one for shipping
         address details.
@@ -119,7 +120,7 @@ class ShippingBillingView(ShopTemplateView):
         self._shipping_address_form = form
         return form
             
-    def _get_billing_form(self):
+    def _get_billing_address_form(self):
         """
         Serves the same purpose as _get_billing_client(). This one for billing
         address details.
@@ -141,16 +142,34 @@ class ShippingBillingView(ShopTemplateView):
         self._billing_address_form = form
         return form
             
+    def _get_billingshipping_form(self):
+        """
+        Get (and cache) the BillingShippingForm instance
+        """
+        form = getattr(self, '_billingshipping_form', None)
+        if not form:
+            if self.request.method == 'POST':
+                form = BillingShippingForm(self.request.POST)
+            else:
+                form = BillingShippingForm
+            self._billingshipping_form = form
+        return form
 
     def post(self, *args, **kwargs):
         """ Called when view is POSTed """
-        shipping_form = self._get_shipping_form
-        billing_form = self._get_billing_form
+        shipping_form = self._get_shipping_address_form()
+        billing_form = self._get_billing_address_form()
         if shipping_form.is_valid() and billing_form.is_valid():
             shipping_address = shipping_form.save()
             billing_address = billing_form.save()
             self.create_order_object_from_cart()
-    
+            req  = self.request
+            billingshipping_form = self._get_billingshipping_form()
+            if billingshipping_form.is_valid():
+                req.session['payment_backend'] = billingshipping_form.cleaned_data['payment_method']
+                req.session['shipping_backend'] = billingshipping_form.cleaned_data['shipping_method']
+                return HttpResponseRedirect(reverse('checkout_shipping'))
+        
         return self.get(self, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -162,19 +181,28 @@ class ShippingBillingView(ShopTemplateView):
         shipping_modules_list = backends_pool.get_shipping_backends_list()
         request = self.request
 
-        shipping_form = self._get_shipping_form()
-        billing_form = self._get_billing_form()
-        ctx.update({'shipping_address':shipping_form,'billing_address':billing_form})
+        shipping_address_form = self._get_shipping_address_form()
+        billing_address_form = self._get_billing_address_form()
+        billingshipping_form = self._get_billingshipping_form()
+        ctx.update({
+            'shipping_address':shipping_address_form,
+            'billing_address':billing_address_form,
+            'billing_shipping_form':billingshipping_form,
+        })
+        print ctx
         
-        select = {}
-        for backend in payment_modules_list:
-            url = reverse(backend.url_namespace)
-            select.update({backend.backend_name:url})
-        ctx.update({'payment_options':select})
-
-        select = {}
-        for backend in shipping_modules_list:
-            url = reverse(backend.url_namespace)
-            select.update({backend.backend_name:url})
-        ctx.update({'shipping_options':select})
         return ctx
+class ShippingBackendRedirectView(ShopView):
+    def get(self, *args, **kwargs):
+        try:
+            backend_namespace = self.request.session.pop('shipping_backend')
+            return HttpResponseRedirect(reverse(backend_namespace))
+        except KeyError:
+            return HttpResponseRedirect(reverse('cart'))
+class PaymentBackendRedirectView(ShopView):
+    def get(self, *args, **kwargs):
+        try:
+            backend_namespace = self.request.session.pop('payment_backend')
+            return HttpResponseRedirect(reverse(backend_namespace))
+        except KeyError:
+            return HttpResponseRedirect(reverse('cart'))

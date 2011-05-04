@@ -1,3 +1,5 @@
+<html>
+<body>
 <h1>Shipping and Billing</h1>
 <form method="POST">
 {% csrf_token %}
@@ -5,9 +7,9 @@
 {{ shipping_address.as_p }}
 <h3>Your billing address</h3>
 {{ billing_address.as_p }}
-<h3>Shipping Method</h3>
-placeholder<br>
-<h3>Payment Method</h3>
-placeholder<br>
+<h3>Payment and Shipping Methods</h3>
+{{ billing_shipping_form.as_p }}
 <button type="submit">Save</button>
 </form>
+</body>
+</html>

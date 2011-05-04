@@ -4,7 +4,8 @@ from shop.models.productmodel import Product
 from shop.views import ShopListView, ShopTemplateView
 from shop.views.cart import CartDetails, CartItemDetail
 from shop.views.checkout import SelectShippingView, SelectPaymentView, \
-    ThankYouView, ShippingBillingView
+    ThankYouView, ShippingBillingView, ShippingBackendRedirectView, \
+    PaymentBackendRedirectView
 from shop.views.order import OrderListView, OrderDetailView
 from shop.views.product import ProductDetailView
 
@@ -35,11 +36,17 @@ urlpatterns = patterns('',
     url(r'^checkout/$', ShippingBillingView.as_view(), 
         name='checkout_shippingbilling' # First step of the checkout process
         ),
-    url(r'^checkout/ship/$', SelectShippingView.as_view(), 
+    #url(r'^checkout/ship/$', SelectShippingView.as_view(), 
+    #    name='checkout_shipping' # First step of the checkout process
+    #    ),
+    url(r'^checkout/ship/$', ShippingBackendRedirectView.as_view(), 
         name='checkout_shipping' # First step of the checkout process
         ),
-    url(r'^checkout/pay/$', SelectPaymentView.as_view(), 
-        name='checkout_payment' # Second step of the checkout process
+    #url(r'^checkout/pay/$', SelectPaymentView.as_view(), 
+    #    name='checkout_payment' # Second step of the checkout process
+    #    ),
+    url(r'^checkout/pay/$', PaymentBackendRedirectView.as_view(), 
+        name='checkout_payment' # First step of the checkout process
         ),
     url(r'^checkout/thank_you/$', ThankYouView.as_view(), 
         name='thank_you_for_your_order' # Second step of the checkout process
