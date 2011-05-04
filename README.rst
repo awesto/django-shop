@@ -21,7 +21,6 @@ How to help:
 Todo:
 =====
 
-* Now that the class-based views infrastructure is in place, please feel free to go ahead and write more views!
 * Somebody should kickstart an example shop application using django Shop, to use as an example.
 * If you feel like adding templates, please *refrain* from adding fancy styling to the core set of templates. 
   Styling is awesome, and everybody wants a good looking shop, but it should go in example apps, not in core shop :) 
@@ -29,3 +28,4 @@ Todo:
   templates structure)
 * Writing docs is most welcome :)
 * Refactoring tests to make creating test environments less messy (fixtures?)
+* If you feel like you could solve having multiple currencies in an elegant manner, we would really be interested to hear from you
