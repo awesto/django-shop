@@ -41,7 +41,7 @@ class Address(models.Model):
     client = models.ForeignKey(Client, related_name="addresses")
     
     address = models.CharField(max_length=255)
-    address2 = models.CharField(max_length=255)
+    address2 = models.CharField(max_length=255,blank=True)
     zip_code = models.CharField(max_length=20)
     city = models.CharField(max_length=20)
     state = models.CharField(max_length=255)
