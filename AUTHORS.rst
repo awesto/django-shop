@@ -15,3 +15,8 @@ CONTRIBUTORS
 * Bojan Mihelac
 * Rolo Mawlabaux
 * Justin Steward 
+
+TRANSLATORS
+===========
+
+* Pedro Gracia (Spanish)
