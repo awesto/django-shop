@@ -1,3 +1,8 @@
+Version 0.0.3
+=============
+
+* More packaging fixes (missing templates, basically)
+
 Version 0.0.2
 =============
 

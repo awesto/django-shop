@@ -21,6 +21,7 @@ setup(
         'south>=0.7.2'
     ],
     packages=find_packages(exclude=["example", "example.*"]),
-    zip_safe = False
+    include_package_data=True,
+    zip_safe = False,
 )
 
