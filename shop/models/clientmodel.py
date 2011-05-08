@@ -17,11 +17,9 @@ class Client(models.Model):
     def __unicode__(self):
         return "ClientProfile for %s %s" % (self.user.first_name, self.user.last_name)
     
-    #@property
     def shipping_address(self):
         return Address.objects.filter(client=self).filter(is_shipping=True)[0]
     
-    #@property
     def billing_address(self):
         return Address.objects.filter(client=self).filter(is_billing=True)[0]
     
