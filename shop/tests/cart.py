@@ -121,6 +121,19 @@ class CartTestCase(TestCase):
             self.assertEqual(len(self.cart.items.all()),1)
             self.assertEqual(self.cart.items.all()[0].quantity, 2)
             self.assertEqual(self.cart.total_quantity, 2)
+    
+    def test_add_same_object_twice_no_merge(self):
+        self.create_fixtures()
+        with SettingsOverride(SHOP_CART_MODIFIERS=[]):
+            self.assertEqual(self.cart.total_quantity, 0)
+            self.cart.add_product(self.product, merge=False)
+            self.cart.add_product(self.product, merge=False)
+            self.cart.update()
+            self.cart.save()
+            
+            self.assertEqual(len(self.cart.items.all()),2)
+            self.assertEqual(self.cart.items.all()[0].quantity, 1)
+            self.assertEqual(self.cart.items.all()[1].quantity, 1)
             
     def test_add_product_updates_last_updated(self):
         self.create_fixtures()
@@ -140,3 +153,16 @@ class CartTestCase(TestCase):
             self.cart.update()
             self.cart.save()
             self.assertEqual(self.cart.subtotal_price, self.PRODUCT_PRICE)
+    
+    def test_update_quantity_deletes(self):
+        self.create_fixtures()
+        with SettingsOverride(SHOP_CART_MODIFIERS=[]):
+            self.assertEqual(self.cart.total_quantity, 0)
+            self.cart.add_product(self.product)
+            self.cart.add_product(self.product)
+            self.cart.update()
+            self.cart.save()
+
+            self.assertEqual(len(self.cart.items.all()),1)
+            self.cart.update_quantity(self.cart.items.all()[0].id, 0)
+            self.assertEqual(len(self.cart.items.all()),0)
