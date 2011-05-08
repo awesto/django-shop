@@ -32,7 +32,7 @@ class CartTestCase(TestCase):
         self.cart.user = self.user
         self.cart.save()
     
-    def test_01_empty_cart_costs_0_quantity_0(self):
+    def test_empty_cart_costs_0_quantity_0(self):
         self.create_fixtures()
         with SettingsOverride(SHOP_CART_MODIFIERS=[]):
             
@@ -42,7 +42,7 @@ class CartTestCase(TestCase):
             self.assertEqual(self.cart.total_price, Decimal('0.0'))
             self.assertEqual(self.cart.total_quantity, 0)
             
-    def test_02_one_object_no_modifiers(self):
+    def test_one_object_no_modifiers(self):
         self.create_fixtures()
         with SettingsOverride(SHOP_CART_MODIFIERS=[]):
             self.cart.add_product(self.product)
@@ -54,7 +54,7 @@ class CartTestCase(TestCase):
             self.assertEqual(self.cart.total_price, self.PRODUCT_PRICE)
             self.assertEqual(self.cart.total_quantity, 1)
     
-    def test_03_two_objects_no_modifier(self):
+    def test_two_objects_no_modifier(self):
         self.create_fixtures()
         with SettingsOverride(SHOP_CART_MODIFIERS=[]):
             
@@ -67,7 +67,7 @@ class CartTestCase(TestCase):
             self.assertEqual(self.cart.total_price, self.PRODUCT_PRICE*2)
             self.assertEqual(self.cart.total_quantity, 2)
             
-    def test_04_one_object_simple_modifier(self):
+    def test_one_object_simple_modifier(self):
         self.create_fixtures()
         MODIFIERS = ['shop.cart.modifiers.tax_modifiers.TenPercentGlobalTaxModifier']
         with SettingsOverride(SHOP_CART_MODIFIERS=MODIFIERS):
@@ -78,7 +78,7 @@ class CartTestCase(TestCase):
             self.assertEqual(self.cart.subtotal_price, self.PRODUCT_PRICE)
             self.assertEqual(self.cart.total_price, (self.TEN_PERCENT*self.PRODUCT_PRICE)+self.PRODUCT_PRICE)
             
-    def test_05_one_object_two_modifiers_no_rebate(self):
+    def test_one_object_two_modifiers_no_rebate(self):
         self.create_fixtures()
         MODIFIERS = ['shop.cart.modifiers.tax_modifiers.TenPercentGlobalTaxModifier',
                      'shop.cart.modifiers.rebate_modifiers.BulkRebateModifier']
@@ -91,7 +91,7 @@ class CartTestCase(TestCase):
             self.assertEqual(self.cart.subtotal_price, self.PRODUCT_PRICE)
             self.assertEqual(self.cart.total_price, (self.TEN_PERCENT*self.PRODUCT_PRICE)+self.PRODUCT_PRICE)
             
-    def test_06_one_object_two_modifiers_with_rebate(self):
+    def test_one_object_two_modifiers_with_rebate(self):
         self.create_fixtures()
         MODIFIERS = ['shop.cart.modifiers.tax_modifiers.TenPercentGlobalTaxModifier',
                      'shop.cart.modifiers.rebate_modifiers.BulkRebateModifier']
@@ -109,7 +109,7 @@ class CartTestCase(TestCase):
             self.assertEqual(self.cart.subtotal_price, sub_should_be)
             self.assertEqual(self.cart.total_price, total_should_be)
             
-    def test_07_add_same_object_twice(self):
+    def test_add_same_object_twice(self):
         self.create_fixtures()
         with SettingsOverride(SHOP_CART_MODIFIERS=[]):
             self.assertEqual(self.cart.total_quantity, 0)
@@ -122,14 +122,14 @@ class CartTestCase(TestCase):
             self.assertEqual(self.cart.items.all()[0].quantity, 2)
             self.assertEqual(self.cart.total_quantity, 2)
             
-    def test_08_add_product_updates_last_updated(self):
+    def test_add_product_updates_last_updated(self):
         self.create_fixtures()
         with SettingsOverride(SHOP_CART_MODIFIERS=[]):
             initial = self.cart.last_updated
             self.cart.add_product(self.product)
             self.assertNotEqual(initial, self.cart.last_updated)
 
-    def test_09_cart_item_should_use_specific_type_to_get_price(self):
+    def test_cart_item_should_use_specific_type_to_get_price(self):
         self.create_fixtures()
         base_product = BaseProduct.objects.create(unit_price=self.PRODUCT_PRICE)
         variation = base_product.productvariation_set.create(
