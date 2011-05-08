@@ -39,7 +39,7 @@ elif [ $coverage == true ]; then
 	cd tests/testapp
 	coverage run manage.py test $suite
 	coverage html
-	x-www-browser htmlcov/index.html
+	#x-www-browser htmlcov/index.html
 	popd
 
 else
