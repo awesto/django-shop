@@ -27,13 +27,35 @@ class Cart(models.Model):
         self.total_price = Decimal('0.0')
         self.extra_price_fields = [] # List of tuples (label, value) 
     
-    def add_product(self,product, quantity=1):
+    def add_product(self, product, quantity=1, merge=True):
         """
-        Adds a (new) product to the cart
+        Adds a (new) product to the cart.
+        The last parameter to this method, `merge`, controls wheter we should
+        merge the added CartItem with another already existing sharing the same
+        product_id.
+
+        Example with merge = True:
+        >>> self.items[0] = CartItem.objects.create(..., product=MyProduct())
+        >>> self.add_product(MyProduct())
+        >>> self.items[0].quantity
+        2
+
+        Example with merge=False:
+        >>> self.items[0] = CartItem.objects.create(..., product=MyProduct())
+        >>> self.add_product(MyProduct())
+        >>> self.items[0].quantity
+        1
+        >>> self.items[1].quantity
+        1
+
+        This is useful when you have products with variations (for example),
+        and you don't want to have your products merge (to loose their specific
+        variations, for example).
         """
+        item = CartItem.objects.filter(cart=self).filter(product=product)
         # Let's see if we already have an Item with the same product ID
-        if CartItem.objects.filter(cart=self).filter(product=product).exists():
-            cart_item = CartItem.objects.filter(cart=self).filter(product=product)[0]
+        if item.exists() and merge:
+            cart_item = item[0]
             cart_item.quantity = cart_item.quantity + int(quantity)
             cart_item.save()
         else:
