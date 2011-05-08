@@ -1,5 +1,6 @@
 from cart import CartTestCase
-from cart_modifiers import CartModifiersTestCase
+from cart_modifiers import ( CartModifiersTestCase,
+        TenPercentPerItemTaxModifierTestCase )
 from order import ( OrderConversionTestCase, OrderTestCase, OrderUtilTestCase,
     OrderPaymentTestCase )
 from client import ClientTestCase
