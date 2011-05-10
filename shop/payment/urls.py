@@ -7,7 +7,7 @@ http://www.example.com/shop/pay/paypal
 http://www.example.com/shop/pay/pay-on-delivery
 ...
 """
-from django.conf.urls.defaults import patterns
+from django.conf.urls.defaults import patterns, include
 from shop.backends_pool import backends_pool
 
 
@@ -18,8 +18,8 @@ urlpatterns = patterns('')
 for backend in backends_pool.get_payment_backends_list():
     regexp = '^%s/' % backend.url_namespace
     urls = backend.get_urls()
-    patterns = patterns('',
+    pattern = patterns('',
         (regexp, include(backend.get_urls()))
     )
 
-    urlpatterns = patterns + urlpatterns
+    urlpatterns = pattern + urlpatterns
