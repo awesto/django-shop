@@ -16,4 +16,10 @@ urlpatterns = patterns('')
 # For every backend defined in the backend pool, load all the URLs it defines
 # in its get_urls() method.
 for backend in backends_pool.get_payment_backends_list():
-    urlpatterns = backend.get_urls() + urlpatterns
+    regexp = '^%s/' % backend.url_namespace
+    urls = backend.get_urls()
+    patterns = patterns('',
+        (regexp, include(backend.get_urls()))
+    )
+
+    urlpatterns = patterns + urlpatterns
