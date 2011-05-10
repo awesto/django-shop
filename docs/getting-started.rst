@@ -17,14 +17,10 @@ django-cbv if you're using 1.3.
 2. You'll want to use virtualenv::
 	
 	virtualenv . ; source bin/activate
-	pip install django-cbv
-	
-3. You'll be able to pip install later on, but for the time being it's manual::
-	
-	mkdir build; cd build; 
-	git clone https://github.com/divio/django-shop.git ;
-	cd django-shop; python setup.py install; cd ../..
-	
+	pip install django-cbv # only if using django<1.3
+        pip install south
+        pip install django-shop
+		
 4. Go to your settings.py and configure your DB like the following, or anything 
    matching your setup::
   
@@ -68,6 +64,7 @@ django-cbv if you're using 1.3.
 	    # Uncomment the next line to enable admin documentation:
 	    'django.contrib.admindocs',
 	    'polymorphic', # We need polymorphic installed for the shop
+            'south',
 	    'shop', # The django SHOP application
 	    'myshop', # the project we just created
 	]
@@ -96,7 +93,7 @@ django-cbv if you're using 1.3.
 	
 8. Lock and load::
 
-	cd .. ; python manage.py syncdb
+	cd .. ; python manage.py syncdb --all ; python manage.py migrate --fake
 	python manage.py runserver
 	
 9. Point your browser and marvel at the absence of styling::
