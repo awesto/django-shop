@@ -1,3 +1,7 @@
+
+* Removed Product.long_description and Product.short_description from the
+  Product superclass
+
 Version 0.0.3
 =============
 

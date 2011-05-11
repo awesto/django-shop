@@ -20,8 +20,6 @@ class Product(PolymorphicModel):
     
     name = models.CharField(max_length=255)
     slug = models.SlugField()
-    short_description = models.CharField(max_length=255)
-    long_description = models.TextField()
     active = models.BooleanField(default=False)
     
     date_added = models.DateTimeField(auto_now_add=True)
