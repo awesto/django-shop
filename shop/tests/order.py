@@ -297,8 +297,6 @@ class OrderConversionTestCase(TestCase):
         # Add another product to the database, so it's ID isn't 1
         product2 = Product.objects.create(name="TestPrduct2",
         slug="TestPrduct2",
-        short_description="TestPrduct2",
-        long_description="TestPrduct2",
         active=True,
         unit_price=self.PRODUCT_PRICE)
         
