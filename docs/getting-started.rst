@@ -131,10 +131,6 @@ to allow easy edition by your users. In an admin.py file::
 
 That's it! 
 
-.. note:: Some fields are already defined in the Product superclass, to allow a 
-          minimal quantity of data to be displayed in list views for example.
-          More information about this can be fond #TODO: Make a link
-
 Adding taxes
 =============
 
