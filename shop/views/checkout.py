@@ -78,6 +78,7 @@ class ThankYouView(ShopTemplateView):
         # Set the order status:
         order = get_order_from_request(request)
         order.status = Order.COMPLETED
+        order.save()
         completed.send(sender=self, order=order)
         
         return ctx
