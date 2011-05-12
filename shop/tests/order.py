@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.test.testcases import TestCase
 from shop.cart.modifiers_pool import cart_modifiers_pool
 from shop.models.cartmodel import Cart, CartItem
-from shop.models.clientmodel import Address, Country
+from shop.clientmodel.models import Address, Country
 from shop.models.ordermodel import Order, OrderItem, ExtraOrderPriceField, \
     OrderPayment
 from shop.models.productmodel import Product
