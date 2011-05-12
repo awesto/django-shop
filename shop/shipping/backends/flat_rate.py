@@ -4,6 +4,7 @@ from decimal import Decimal
 from django.conf import settings
 from django.conf.urls.defaults import patterns, url
 from django.shortcuts import render_to_response
+from django.template import RequestContext
 
 class FlatRateShipping(object):
     """
@@ -38,7 +39,8 @@ class FlatRateShipping(object):
         """
         ctx = {}
         ctx.update({'shipping_costs':Decimal(settings.SHOP_SHIPPING_FLAT_RATE)})
-        return render_to_response('shop/shipping/flat_rate/display_fees.html', ctx)
+        return render_to_response('shop/shipping/flat_rate/display_fees.html', ctx,
+                                  context_instance=RequestContext(request))
     
         
     def get_urls(self):
