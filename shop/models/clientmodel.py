@@ -36,7 +36,7 @@ class Country(models.Model):
         verbose_name_plural = "countries"
 
 class Address(models.Model):
-    client = models.ForeignKey(Client, related_name="addresses")
+    #client = models.ForeignKey(Client, related_name="addresses")
     
     address = models.CharField(max_length=255)
     address2 = models.CharField(max_length=255,blank=True)

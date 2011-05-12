@@ -7,7 +7,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 
 from shop.models.cartmodel import CartItem
-from shop.models.clientmodel import Client
 from shop.models.productmodel import Product
 from shop.util.fields import CurrencyField
 
@@ -34,37 +33,8 @@ class OrderManager(models.Manager):
         o.order_subtotal = cart.subtotal_price
         o.order_total = cart.total_price
         
-        user = cart.user
-        client = None
-        
-        if user:
-            try:
-                client = cart.user.client
-            except Client.DoesNotExist:
-                client = None
-            
-        if user and client:
-            
-            ship_address = cart.user.client.addresses.filter(is_shipping=True)[0] 
-            bill_address = cart.user.client.addresses.filter(is_billing=True)[0]
-        
-        
-            o.shipping_name = "%s %s" % (cart.user.first_name, cart.user.last_name)
-            o.shipping_address = ship_address.address
-            o.shipping_address2 = ship_address.address2
-            o.shipping_city = ship_address.city
-            o.shipping_zip_code = ship_address.zip_code
-            o.shipping_state = ship_address.state
-            o.shipping_country = ship_address.country.name
-            
-            o.billing_name = "%s %s" % (cart.user.first_name, cart.user.last_name)
-            o.billing_address = bill_address.address
-            o.billing_address2 = bill_address.address2
-            o.billing_city = bill_address.city
-            o.billing_zip_code = bill_address.zip_code
-            o.billing_state = bill_address.state
-            o.billing_country = bill_address.country.name
         o.save()
+        
         # Let's serialize all the extra price arguments in DB
         for label, value in cart.extra_price_fields:
             eoi = ExtraOrderPriceField()
@@ -211,6 +181,25 @@ class Order(models.Model):
     def get_absolute_url(self):
         return reverse('order_detail', kwargs={'pk': self.pk })
 
+    def set_billing_address(self, address):
+        self.billing_name = "%s %s" % (self.user.first_name, self.user.last_name)
+        self.billing_address = address.address
+        self.billing_address2 = address.address2
+        self.billing_city = address.city
+        self.billing_zip_code = address.zip_code
+        self.billing_state = address.state
+        self.billing_country = address.country.name
+        self.save()
+    
+    def set_shipping_address(self, address):
+        self.shipping_name = "%s %s" % (self.user.first_name, self.user.last_name)
+        self.shipping_address = address.address
+        self.shipping_address2 = address.address2
+        self.shipping_city = address.city
+        self.shipping_zip_code = address.zip_code
+        self.shipping_state = address.state
+        self.shipping_country = address.country.name
+        self.save()
 
 class OrderItem(models.Model):
     """
