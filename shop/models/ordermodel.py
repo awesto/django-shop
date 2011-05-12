@@ -120,33 +120,50 @@ class Order(models.Model):
     )
     
     # If the user is null, the order was created with a session
-    user = models.ForeignKey(User, blank=True, null=True)
+    user = models.ForeignKey(User, blank=True, null=True,
+            verbose_name=_('User'))
     
-    status = models.IntegerField(choices=STATUS_CODES, default=PROCESSING)
+    status = models.IntegerField(choices=STATUS_CODES, default=PROCESSING,
+            verbose_name=_('Status'))
     
-    order_subtotal = CurrencyField()
-    order_total = CurrencyField()
+    order_subtotal = CurrencyField(verbose_name=_('Order subtotal'))
+    order_total = CurrencyField(verbose_name='Order total')
     
-    payment_method = models.CharField(max_length=255, null=True)
+    payment_method = models.CharField(max_length=255, null=True,
+            verbose_name=_('Payment method'))
     
     # Addresses MUST be copied over to the order when it's created, however
     # the fields must be nullable since sometimes we cannot create the address 
     # fields right away (for instance when the shopper is a guest)
-    shipping_name = models.CharField(max_length=255, null=True)
-    shipping_address = models.CharField(max_length=255, null=True)
-    shipping_address2 = models.CharField(max_length=255, null=True)
-    shipping_city = models.CharField(max_length=255, null=True)
-    shipping_zip_code = models.CharField(max_length=20, null=True)
-    shipping_state = models.CharField(max_length=255, null=True)
-    shipping_country = models.CharField(max_length=255, null=True)
+    shipping_name = models.CharField(max_length=255, null=True,
+            verbose_name=_('Shipping name'))
+    shipping_address = models.CharField(max_length=255, null=True,
+            verbose_name=_('Shipping address'))
+    shipping_address2 = models.CharField(max_length=255, null=True,
+            verbose_name=_('Shipping addresses 2'))
+    shipping_city = models.CharField(max_length=255, null=True,
+            verbose_name=_('Shipping City'))
+    shipping_zip_code = models.CharField(max_length=20, null=True,
+            verbose_name=_('Shipping zip code'))
+    shipping_state = models.CharField(max_length=255, null=True,
+            verbose_name=_('Shipping state'))
+    shipping_country = models.CharField(max_length=255, null=True,
+            verbose_name=_('Shipping country'))
     
-    billing_name = models.CharField(max_length=255, null=True)
-    billing_address = models.CharField(max_length=255, null=True)
-    billing_address2 = models.CharField(max_length=255, null=True)
-    billing_city = models.CharField(max_length=255, null=True)
-    billing_zip_code = models.CharField(max_length=20, null=True)
-    billing_state = models.CharField(max_length=255, null=True)
-    billing_country = models.CharField(max_length=255, null=True)
+    billing_name = models.CharField(max_length=255, null=True,
+            verbose_name=_('Billing name'))
+    billing_address = models.CharField(max_length=255, null=True,
+            verbose_name=_('Billing address'))
+    billing_address2 = models.CharField(max_length=255, null=True,
+            verbose_name=_('Billing address 2'))
+    billing_city = models.CharField(max_length=255, null=True,
+            verbose_name=_('Billing city'))
+    billing_zip_code = models.CharField(max_length=20, null=True,
+            verbose_name=_('Billing zip code'))
+    billing_state = models.CharField(max_length=255, null=True,
+            verbose_name=_('Billing state'))
+    billing_country = models.CharField(max_length=255, null=True,
+            verbose_name=_('Billing country'))
 
     created = models.DateTimeField(auto_now_add=True,
             verbose_name=_('Created'))
@@ -157,6 +174,8 @@ class Order(models.Model):
     
     class Meta:
         app_label = 'shop'
+        verbose_name = _('Order')
+        verbose_name_plural = _('Orders')
     
     def is_payed(self):
         """Has this order been integrally payed for?"""
@@ -196,69 +215,92 @@ class OrderItem(models.Model):
     A line Item for an order.
     """
     
-    order = models.ForeignKey(Order, related_name='items')
+    order = models.ForeignKey(Order, related_name='items',
+            verbose_name=_('Order'))
     
-    product_reference = models.CharField(max_length=255)
-    product_name = models.CharField(max_length=255)
-    unit_price = CurrencyField()
-    quantity = models.IntegerField()
+    product_reference = models.CharField(max_length=255,
+            verbose_name=_('Product reference'))
+    product_name = models.CharField(max_length=255,
+            verbose_name=_('Product name'))
+    unit_price = CurrencyField(verbose_name=_('Unit price'))
+    quantity = models.IntegerField(verbose_name=_('Quantity'))
     
-    line_subtotal = CurrencyField()
-    line_total = CurrencyField()
+    line_subtotal = CurrencyField(verbose_name=_('Line subtotal'))
+    line_total = CurrencyField(verbose_name=_('Line total'))
     
     class Meta:
         app_label = 'shop'
+        verbose_name = _('Order item')
+        verbose_name_plural = _('Order items')
     
     @property
     def product(self):
         return Product.objects.get(pk=self.product_reference)
-    
+
+
 class OrderExtraInfo(models.Model):
     """
     A holder for extra textual information to attach to this order.
     """
-    order = models.ForeignKey(Order, related_name="extra_info")
-    text = models.TextField()
-    
+    order = models.ForeignKey(Order, related_name="extra_info",
+            verbose_name=_('Order'))
+    text = models.TextField(verbose_name=_('Extra info'))
+
     class Meta:
         app_label = 'shop'
-        
+        verbose_name = _('Order extra info')
+        verbose_name_plural = _('Order extra info')
+
+
 class ExtraOrderPriceField(models.Model):
     """
     This will make Cart-provided extra price fields persistent since we want
     to "snapshot" their statuses at the time when the order was made
     """
-    order = models.ForeignKey(Order)
-    label = models.CharField(max_length=255)
-    value = CurrencyField()
+    order = models.ForeignKey(Order, verbose_name=_('Order'))
+    label = models.CharField(max_length=255, verbose_name=_('Label'))
+    value = CurrencyField(verbose_name=_('Amount'))
     
     # Does this represent shipping costs?
-    is_shipping = models.BooleanField(default=False, editable=False)
+    is_shipping = models.BooleanField(default=False, editable=False,
+            verbose_name=_('Is shipping'))
 
     class Meta:
         app_label = 'shop'
-    
+        verbose_name = _('Extra order price field')
+        verbose_name_plural = _('Extra order price fields')
+
+
 class ExtraOrderItemPriceField(models.Model):
     """
     This will make Cart-provided extra price fields persistent since we want
     to "snapshot" their statuses at the time when the order was made
     """
-    order_item = models.ForeignKey(OrderItem)
-    label = models.CharField(max_length=255)
-    value = CurrencyField()
+    order_item = models.ForeignKey(OrderItem, verbose_name=_('Order item'))
+    label = models.CharField(max_length=255, verbose_name=_('Label'))
+    value = CurrencyField(verbose_name=_('Amount'))
     
     class Meta:
         app_label = 'shop'
-        
+        verbose_name = _('Extra order item price field')
+        verbose_name_plural = _('Extra order item price fields')
+
+
 class OrderPayment(models.Model):
     """ 
     A class to hold basic payment information. Backends should define their own 
     more complex payment types should they need to store more informtion
     """
-    order = models.ForeignKey(Order)
-    amount = CurrencyField()# How much was payed with this particular transfer
-    transaction_id = models.CharField(max_length=255, help_text="The transaction processor's reference")
-    payment_method= models.CharField(max_length=255, help_text="The payment backend use to process the purchase")
+    order = models.ForeignKey(Order, verbose_name=_('Order'))
+    amount = CurrencyField(verbose_name=_('Amount'))# How much was payed with this particular transfer
+    transaction_id = models.CharField(max_length=255, 
+            verbose_name=_('Transaction ID'),
+            help_text=_("The transaction processor's reference"))
+    payment_method = models.CharField(max_length=255,
+            verbose_name=_('Payment method'),
+            help_text=_("The payment backend use to process the purchase"))
     
     class Meta:
         app_label = 'shop'
+        verbose_name = _('Order payment')
+        verbose_name_plural = _('Order payments')
