@@ -4,8 +4,7 @@ args=("$@")
 num_args=${#args[@]}
 index=0
 
-suite='shop'
-
+suite='shop clientmodel'
 coverage=false
 documentation=false
 ci=false
