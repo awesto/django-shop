@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.test.testcases import TestCase
 from shop.cart.modifiers_pool import cart_modifiers_pool
 from shop.models.cartmodel import Cart, CartItem
-from shop.models.clientmodel import Client, Address, Country
+from shop.clientmodel.models import Address, Country
 from shop.models.ordermodel import Order, OrderItem, ExtraOrderPriceField, \
     OrderPayment
 from shop.models.productmodel import Product
@@ -168,14 +168,13 @@ class OrderConversionTestCase(TestCase):
         self.cart.user = self.user
         self.cart.save()
         
-        self.client = Client()
-        self.client.user = self.user
-        self.client.save()
+        #self.client.user = self.user
+        #self.client.save()
         
         self.country = Country.objects.create(name='CH')
         
         self.address = Address()
-        self.address.client = self.client
+        #self.address.client = self.client
         self.address.address = 'address'
         self.address.address2 = 'address2'
         self.address.zip_code = '1234'
@@ -186,7 +185,7 @@ class OrderConversionTestCase(TestCase):
         self.address.save()
         
         self.address2 = Address()
-        self.address2.client = self.client
+        #self.address2.client = self.client
         self.address2.address = '2address'
         self.address2.address2 = '2address2'
         self.address2.zip_code = '21234'
@@ -272,6 +271,10 @@ class OrderConversionTestCase(TestCase):
         o = Order.objects.create_from_cart(self.cart)
         # Must not return None, obviously
         self.assertNotEqual(o, None)
+        
+        o.set_shipping_address(self.address)
+        o.set_billing_address(self.address2)
+        
         # Check that addresses are transfered properly
         self.assertEqual(o.shipping_name, "%s %s" % (self.user.first_name, self.user.last_name))
         self.assertEqual(o.shipping_address, self.address.address)

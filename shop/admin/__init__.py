@@ -1,2 +1,1 @@
-import clientadmin
 import orderadmin
