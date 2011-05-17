@@ -45,18 +45,18 @@ class OrderUtilTestCase(TestCase):
         
         self.order.save()
         
-    def test_01_request_without_user_or_session_returns_none(self):
+    def test_request_without_user_or_session_returns_none(self):
         self.create_fixtures()
         ret = get_order_from_request(self.request)
         self.assertEqual(ret, None)
         
-    def test_02_request_with_session_without_order_returns_none(self):
+    def test_request_with_session_without_order_returns_none(self):
         self.create_fixtures()
         setattr(self.request,'session', {})
         ret = get_order_from_request(self.request)
         self.assertEqual(ret, None)
         
-    def test_03_request_with_order_returns_order(self):
+    def test_request_with_order_returns_order(self):
         self.create_fixtures()
         session = {}
         session['order_id'] = self.order.id
@@ -64,7 +64,7 @@ class OrderUtilTestCase(TestCase):
         ret = get_order_from_request(self.request)
         self.assertEqual(ret, self.order)
     
-    def test_04_request_with_user_returns_correct_order(self):
+    def test_request_with_user_returns_correct_order(self):
         self.create_fixtures()
         setattr(self.request, 'user', self.user)
         self.order.user = self.user
@@ -72,19 +72,19 @@ class OrderUtilTestCase(TestCase):
         ret = get_order_from_request(self.request)
         self.assertEqual(ret, self.order)
         
-    def test_05_set_order_to_session_works(self):
+    def test_set_order_to_session_works(self):
         self.create_fixtures()
         setattr(self.request,'session', {})
         add_order_to_request(self.request, self.order)
         self.assertEqual(self.request.session['order_id'], self.order.id)
         
-    def test_06_set_order_to_user_works(self):
+    def test_set_order_to_user_works(self):
         self.create_fixtures()
         setattr(self.request,'user', self.user)
         add_order_to_request(self.request, self.order)
         self.assertEqual(self.order.user, self.user)
     
-    def test_06_same_user_does_not_override(self):
+    def test_same_user_does_not_override(self):
         self.create_fixtures()
         self.order.user = self.user
         self.order.save()
@@ -92,7 +92,7 @@ class OrderUtilTestCase(TestCase):
         add_order_to_request(self.request, self.order)
         self.assertEqual(self.order.user, self.user)
 
-    def test_07_request_with_user_returns_last_order(self):
+    def test_request_with_user_returns_last_order(self):
         self.create_fixtures()
         setattr(self.request, 'user', self.user)
 
@@ -129,12 +129,12 @@ class OrderTestCase(TestCase):
         
         self.order.save()
     
-    def test_01_order_is_completed_works(self):
+    def test_order_is_completed_works(self):
         self.create_fixtures()
         ret = self.order.is_completed()
         self.assertNotEqual(ret, Order.COMPLETED)
     
-    def test_02_is_payed_works(self):
+    def test_is_payed_works(self):
         self.create_fixtures()
         ret = self.order.is_payed()
         self.assertEqual(ret, False)
@@ -194,7 +194,7 @@ class OrderConversionTestCase(TestCase):
         self.address2.is_shipping = False
         self.address2.save()
     
-    def test_01_create_order_from_simple_cart(self):
+    def test_create_order_from_simple_cart(self):
         """
         Let's make sure that all the info is copied over properly when using
         Order.objects.create_from_cart()
@@ -218,7 +218,7 @@ class OrderConversionTestCase(TestCase):
         self.assertEqual(o.order_subtotal, self.cart.subtotal_price)
         self.assertEqual(o.order_total, self.cart.total_price)
 
-    def test_02_create_order_from_taxed_cart(self):
+    def test_create_order_from_taxed_cart(self):
         """
         This time assert that everything is consistent with a tax cart modifier
         """
@@ -257,7 +257,7 @@ class OrderConversionTestCase(TestCase):
             self.assertNotEqual(o.order_total, Decimal("0"))
 
 
-    def test_03_order_addresses_match_user_preferences(self):
+    def test_order_addresses_match_user_preferences(self):
         self.create_fixtures()
         
         self.cart.add_product(self.product)
@@ -294,7 +294,7 @@ class OrderConversionTestCase(TestCase):
         self.assertEqual(o.billing_state, self.address2.state)    
         self.assertEqual(o.billing_country, self.address2.country)
         
-    def test_04_order_saves_item_pk_as_a_string(self):
+    def test_order_saves_item_pk_as_a_string(self):
         """
         That's needed in case shipment or payment backends need to make fancy 
         calculations on products (i.e. shipping based on weight/size...)
@@ -328,7 +328,7 @@ class OrderConversionTestCase(TestCase):
         prod = oi.product
         self.assertEqual(prod,product2)
 
-    def test_05_create_order_respects_product_specific_get_price_method(self):
+    def test_create_order_respects_product_specific_get_price_method(self):
         self.create_fixtures()
 
         baseproduct = BaseProduct.objects.create(unit_price=Decimal('10.0'))
