@@ -181,9 +181,8 @@ class Order(models.Model):
     def get_absolute_url(self):
         return reverse('order_detail', kwargs={'pk': self.pk })
 
-    def set_billing_address(self, billing_name='', billing_address,
-        billing_address2='', billing_city, billing_zip_code, billing_state,
-        billing_country):
+    def set_billing_address(self, billing_address, billing_city, billing_zip_code, 
+        billing_state, billing_country, billing_address2='', billing_name=''):
         """Sets the billing address for this order."""
         if billing_name:
             self.billing_name = billing_name
@@ -198,21 +197,21 @@ class Order(models.Model):
         self.billing_country = billing_country
         self.save()
     
-    def set_shipping_address(self, shipping_name='', shipping_address,
-        shipping_address2='', shipping_city, shipping_zip_code, shipping_state,
-        shipping_country):
+    def set_shipping_address(self, shipping_address, shipping_city, 
+        shipping_zip_code, shipping_state, shipping_country,
+        shipping_address2='', shipping_name=''):
         """Sets the shipping address for this order."""
         if shipping_name:
             self.shipping_name = shipping_name
         else:
             self.shipping_name = "%s %s" % (self.user.first_name, self.user.last_name)
 
-        self.shipping_address = shipping.address
-        self.shipping_address2 = shipping.address2
-        self.shipping_city = shipping.city
-        self.shipping_zip_code = shipping.zip_code
-        self.shipping_state = shipping.state
-        self.shipping_country = shipping.country.name
+        self.shipping_address = shipping_address
+        self.shipping_address2 = shipping_address2
+        self.shipping_city = shipping_city
+        self.shipping_zip_code = shipping_zip_code
+        self.shipping_state = shipping_state
+        self.shipping_country = shipping_country
         self.save()
 
 class OrderItem(models.Model):
