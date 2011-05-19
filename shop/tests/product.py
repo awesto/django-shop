@@ -30,6 +30,11 @@ class ProductTestCase(TestCase):
         self.assertNotEqual(ret1, ret2)
         self.assertEqual(ret1, 0)
         self.assertEqual(ret2, 1)
+
+    def test_get_name_works_properly_by_default(self):
+        self.create_fixtures()
+        res = self.product.get_name()
+        self.assertEqual(res, self.product.name)
     
 class ProductStatisticsTestCase(TestCase):
 
