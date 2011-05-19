@@ -4,6 +4,7 @@
 .settings
 *.coverage
 *~
+build
 docs/_build
 dist
 *egg-info*
