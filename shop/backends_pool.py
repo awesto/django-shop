@@ -4,6 +4,7 @@ from django.core import exceptions
 from django.utils.importlib import import_module
 from shop.payment.api import PaymentAPI
 from shop.shipping.api import ShippingAPI
+from shop.util.loader import load_class
 
 
 class BackendsPool(object):
@@ -80,26 +81,11 @@ class BackendsPool(object):
             return result
         
         for backend_path in getattr(settings, setting_name, None):
-            try:
-                back_module, back_classname = backend_path.rsplit('.', 1)
-            except ValueError:
-                raise exceptions.ImproperlyConfigured(
-                    '%s isn\'t a backend module. Check your %s setting' 
-                    % (backend_path,setting_name))
-            try:
-                mod = import_module(back_module)
-            except ImportError, e:
-                raise exceptions.ImproperlyConfigured(
-                        'Error importing backend %s: "%s". Check your %s setting' 
-                        % (back_module, e, setting_name))
-            try:
-                mod_class = getattr(mod, back_classname)
-            except AttributeError:
-                raise exceptions.ImproperlyConfigured(
-                    'Backend module "%s" does not define a "%s" class. Check your %s setting' 
-                    % (back_module, back_classname, setting_name))
+            # The load_class function takes care of the classloading. It returns
+            # a CLASS, not an INSTANCE!
+            mod_class = load_class(backend_path,setting_name)
             
-            # Seems like it is a real class - let's instanciate it!
+            # Seems like it is a real, valid class - let's instanciate it!
             # This is where the backends receive their self.shop reference!
             mod_instance = mod_class(shop=shop_object)
             
