@@ -54,7 +54,7 @@ class SelectPaymentView(ShopTemplateView):
         ctx = super(SelectPaymentView, self).get_context_data(**kwargs)
         
         # Set the order status:
-        order = get_order_from_request(request)
+        order = get_order_from_request(self.request)
         order.status = Order.PAYMENT
         payment_selection.send(sender=self, order=order)
         
@@ -76,7 +76,7 @@ class ThankYouView(ShopTemplateView):
         ctx = super(ShopTemplateView, self).get_context_data(**kwargs)
         
         # Set the order status:
-        order = get_order_from_request(request)
+        order = get_order_from_request(self.request)
         order.status = Order.COMPLETED
         order.save()
         completed.send(sender=self, order=order)
