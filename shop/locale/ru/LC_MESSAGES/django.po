@@ -1,0 +1,275 @@
+# Pavel Zhukov <gelios@gmail.com>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-05-20 15:57+0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Pavel Zhukov <gelios@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+
+#: admin/orderadmin.py:43
+msgid "Shipping"
+msgstr "Доставка"
+
+#: admin/orderadmin.py:48
+msgid "Billing"
+msgstr "Оплата"
+
+#: models/ordermodel.py:126
+msgid "User"
+msgstr "Пользователь"
+
+#: models/ordermodel.py:129
+msgid "Status"
+msgstr "Статус"
+
+#: models/ordermodel.py:131
+msgid "Order subtotal"
+msgstr "Подитог заказа"
+
+#: models/ordermodel.py:135 models/ordermodel.py:302
+msgid "Payment method"
+msgstr "Метод оплаты"
+
+#: models/ordermodel.py:141
+msgid "Shipping name"
+msgstr "Имя для доставки"
+
+#: models/ordermodel.py:143
+msgid "Shipping address"
+msgstr "Адрес доставки"
+
+#: models/ordermodel.py:145
+msgid "Shipping addresses 2"
+msgstr "Адрес доставки 2"
+
+#: models/ordermodel.py:147
+msgid "Shipping City"
+msgstr "Город доставки"
+
+#: models/ordermodel.py:149
+msgid "Shipping zip code"
+msgstr "Почтовый индекс"
+
+#: models/ordermodel.py:151
+msgid "Shipping state"
+msgstr "Штат доставки"
+
+#: models/ordermodel.py:153
+msgid "Shipping country"
+msgstr "Страна доставки"
+
+#: models/ordermodel.py:156
+msgid "Billing name"
+msgstr "Имя счета"
+
+#: models/ordermodel.py:158
+msgid "Billing address"
+msgstr "Ардес счета"
+
+#: models/ordermodel.py:160
+msgid "Billing address 2"
+msgstr "Адрес счета 2"
+
+#: models/ordermodel.py:162
+msgid "Billing city"
+msgstr "Город счета"
+
+#: models/ordermodel.py:164
+msgid "Billing zip code"
+msgstr "Почтовый индекс счета"
+
+#: models/ordermodel.py:166
+msgid "Billing state"
+msgstr "Штат счета"
+
+#: models/ordermodel.py:168
+msgid "Billing country"
+msgstr "Страна счета"
+
+#: models/ordermodel.py:171
+msgid "Created"
+msgstr "Создано"
+
+#: models/ordermodel.py:173
+msgid "Updated"
+msgstr "Обновлено"
+
+#: models/ordermodel.py:179 models/ordermodel.py:221 models/ordermodel.py:248
+#: models/ordermodel.py:262 models/ordermodel.py:296
+msgid "Order"
+msgstr "Заказ"
+
+#: models/ordermodel.py:180
+msgid "Orders"
+msgstr "Заказы"
+
+#: models/ordermodel.py:209
+#, python-format
+msgid "Order ID: %(id)s"
+msgstr "ID заказа: %(id)s"
+
+#: models/ordermodel.py:224
+msgid "Product reference"
+msgstr "Описание продукта"
+
+#: models/ordermodel.py:226 templates/shop/cart.html:11
+#: templates/shop/templatetags/_order.html:37
+msgid "Product name"
+msgstr "Название продукта"
+
+#: models/ordermodel.py:227 templates/shop/cart.html:12
+#: templates/shop/templatetags/_order.html:38
+msgid "Unit price"
+msgstr "Стоимость единицы"
+
+#: models/ordermodel.py:228 templates/shop/cart.html:13
+#: templates/shop/templatetags/_order.html:39
+msgid "Quantity"
+msgstr "Количество"
+
+#: models/ordermodel.py:230
+msgid "Line subtotal"
+msgstr "Подитог строки"
+
+#: models/ordermodel.py:231
+msgid "Line total"
+msgstr "Итого по строке"
+
+#: models/ordermodel.py:235 models/ordermodel.py:281
+msgid "Order item"
+msgstr "Элемент заказа"
+
+#: models/ordermodel.py:236
+msgid "Order items"
+msgstr "Элементы заказа"
+
+#: models/ordermodel.py:249
+msgid "Extra info"
+msgstr "Дополнительная информация"
+
+#: models/ordermodel.py:253 models/ordermodel.py:254
+msgid "Order extra info"
+msgstr "Дополнительная информация заказа"
+
+#: models/ordermodel.py:263 models/ordermodel.py:282
+msgid "Label"
+msgstr "Метка"
+
+#: models/ordermodel.py:264 models/ordermodel.py:283 models/ordermodel.py:297
+msgid "Amount"
+msgstr "Количество"
+
+#: models/ordermodel.py:268
+msgid "Is shipping"
+msgstr "Доставляется"
+
+#: models/ordermodel.py:272
+msgid "Extra order price field"
+msgstr "Дополнительное поле цены заказа"
+
+#: models/ordermodel.py:273
+msgid "Extra order price fields"
+msgstr "Дополнительные поля цены заказа"
+
+#: models/ordermodel.py:287
+msgid "Extra order item price field"
+msgstr "Дополнительное поле цены элемента заказа"
+
+#: models/ordermodel.py:288
+msgid "Extra order item price fields"
+msgstr "Дополнительные поля цены"
+
+#: models/ordermodel.py:299
+msgid "Transaction ID"
+msgstr "ID Транзакции"
+
+#: models/ordermodel.py:300
+msgid "The transaction processor's reference"
+msgstr "Описание платежной системы транзакции"
+
+#: models/ordermodel.py:303
+msgid "The payment backend use to process the purchase"
+msgstr "Модуль оплаты через который проведена оплата"
+
+#: models/ordermodel.py:307
+msgid "Order payment"
+msgstr "Оплата заказа"
+
+#: models/ordermodel.py:308
+msgid "Order payments"
+msgstr "Оплаты заказов"
+
+#: templates/shop/cart.html:3
+msgid "Your shopping cart"
+msgstr "Ваша корзина"
+
+#: templates/shop/cart.html:34 templates/shop/templatetags/_order.html:59
+msgid "Line Total"
+msgstr "Итог строки"
+
+#: templates/shop/cart.html:39
+msgid "Cart Subtotal"
+msgstr "Подитог корзины"
+
+#: templates/shop/cart.html:47
+msgid "Cart Total"
+msgstr "Итог корзины"
+
+#: templates/shop/cart.html:51
+msgid "Update Shopping Cart"
+msgstr "Обновить корзину"
+
+#: templates/shop/cart.html:56
+msgid "Empty Shopping Cart"
+msgstr "Пустая корзина"
+
+#: templates/shop/cart.html:60
+msgid "Proceed to checkout"
+msgstr "Перейти к оплате"
+
+#: templates/shop/cart.html:65
+msgid "Shopping cart is empty"
+msgstr "Корзина пуста"
+
+#: templates/shop/order_list.html:3
+msgid "Order list"
+msgstr "Список заказов"
+
+#: templates/shop/welcome.html:8
+msgid "Hello"
+msgstr "Привет"
+
+#: templates/shop/welcome.html:9
+msgid "Your orders"
+msgstr "Ваши заказы"
+
+#: templates/shop/templatetags/_order.html:4
+msgid "Order ID:"
+msgstr "ID заказа:"
+
+#: templates/shop/templatetags/_order.html:8
+msgid "Order Status"
+msgstr "Статус заказа"
+
+#: templates/shop/templatetags/_order.html:14
+msgid "Shipping Address"
+msgstr "Адрес доставки"
+
+#: templates/shop/templatetags/_order.html:23
+msgid "Billing Address"
+msgstr "Адрес оплаты"
+
+#: templates/shop/templatetags/_order.html:64
+msgid "Order Subtotal"
+msgstr "Подитог заказа"
+
+#: templates/shop/templatetags/_order.html:72
+msgid "Order Total"
+msgstr "Итог заказа"
