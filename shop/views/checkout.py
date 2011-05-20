@@ -81,4 +81,8 @@ class ThankYouView(ShopTemplateView):
         order.save()
         completed.send(sender=self, order=order)
 
+        # Empty the customers basket, to reflect that the purchase was completed
+        cart_object = get_or_create_cart(self.request)
+        cart_object.empty()
+
         return ctx
