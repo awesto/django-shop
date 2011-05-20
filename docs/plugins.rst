@@ -3,6 +3,7 @@ Plugins
 ================
 
 Django Shop defines 3 types of different plugins for the time being:
+
 1. Cart modifiers
 2. Shipping modules
 3. Payment modules
@@ -11,8 +12,10 @@ Cart modifiers
 ===============
 
 Cart modifiers are plugins that modify the cart's contents.
+
 Rough categories could be discount modules or tax modules: rules for theses modules
 are invariant, and should be "stacked".
+
 Example: "CDs are buy two get one free this month", "orders over 500$ get a 10% 
 discount"
 
@@ -30,7 +33,8 @@ are called for each cart item/cart when the cart's update() method is called.
  
 Example implementations
 ------------------------
-You can refer to shop.cart.modifiers.* package to see some example implementations
+
+You can refer to the shop.cart.modifiers.* package to see some example implementations
 
 
 Shipping backends
@@ -46,12 +50,9 @@ are fully serialized in the database for archiving purposes).
 How they work
 --------------
 
-Shipping backends need to subclass 
-shop.shipping.shipping_backend_base.BaseShippingBackend, and be registered in 
-the SHOP_SHIPPING_BACKENDS Django setting.
-
-Extending this class allows the backend to expose a set of functions, and to 
-access the shop system's interface via ``self.shop``.
+Shipping backends need to be registered in the SHOP_SHIPPING_BACKENDS Django 
+setting. They do not need to extend any particular class, but need to expose
+a specific interface, as defined in :ref:`shipping-backend-interface`.
 
 The core functionality the shop exposes is the ability to retrieve the current 
 Order object (and all it's related bits and pieces such as extra price fields,
@@ -77,9 +78,9 @@ Theses modules take care of the actual payment processing.
 How they work
 --------------
 
-Similar to shipping backends, payment backends must subclass 
-shop.payment.payment_backends_base.BasePaymentBackend and be registerd in the
-SHOP_PAYMENT_BACKENDS Django setting.
+Similar to shipping backends, payment backends do not need to extend any 
+particular class, but need to expose a specific interface, as defined in 
+:ref:`payment-backend-interface`.
 
 They also obtain a reference to the shop, with some convenient methods defined 
 such as self.shop.get_order().

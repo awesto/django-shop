@@ -1,10 +1,12 @@
 #-*- coding: utf-8 -*-
 from decimal import Decimal
 from django.contrib.auth.models import User, AnonymousUser
+from django.core.exceptions import ImproperlyConfigured
+from django.test.testcases import TestCase
 from shop.models.cartmodel import Cart
 from shop.util.cart import get_or_create_cart
 from shop.util.fields import CurrencyField
-from django.test.testcases import TestCase
+from shop.util.loader import load_class
 
 class Mock(object):
         pass
@@ -86,3 +88,21 @@ class CartUtilsTestCase(TestCase):
         setattr(self.request, 'user', AnonymousUser())
         ret = get_or_create_cart(self.request)
         self.assertEqual(ret, None)
+        
+class LoaderTestCase(TestCase):
+    def test_loader_without_a_name_works(self):
+        class_to_load = 'shop.tests.util.Mock'
+        res = load_class(class_to_load)
+        self.assertEqual(res, Mock)
+        
+    def test_loader_without_a_name_fails(self):
+        class_to_load = 'shop.tests.IdontExist.IdontExistEither'
+        self.assertRaises(ImproperlyConfigured, load_class, class_to_load)
+        
+    def test_loader_without_a_name_fails_for_wrong_classname(self):
+        class_to_load = 'shop.tests.util.IdontExist'
+        self.assertRaises(ImproperlyConfigured, load_class, class_to_load)
+        
+    def test_loader_without_a_name_fails_when_too_short(self):
+        class_to_load = 'IdontExist'
+        self.assertRaises(ImproperlyConfigured, load_class, class_to_load)

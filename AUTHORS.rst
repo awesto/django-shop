@@ -15,8 +15,10 @@ CONTRIBUTORS
 * Bojan Mihelac
 * Rolo Mawlabaux
 * Justin Steward 
+* Kristian Øllegaard
 
 TRANSLATORS
 ===========
 
 * Pedro Gracia (Spanish)
+* Pavel Zhukov (Russian)

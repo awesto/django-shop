@@ -144,7 +144,7 @@ class Order(models.Model):
     
     objects = OrderManager()
     
-    class Meta:
+    class Meta(object):
         app_label = 'shop'
         verbose_name = _('Order')
         verbose_name_plural = _('Orders')
@@ -232,7 +232,7 @@ class OrderItem(models.Model):
     line_subtotal = CurrencyField(verbose_name=_('Line subtotal'))
     line_total = CurrencyField(verbose_name=_('Line total'))
     
-    class Meta:
+    class Meta(object):
         app_label = 'shop'
         verbose_name = _('Order item')
         verbose_name_plural = _('Order items')
@@ -250,7 +250,7 @@ class OrderExtraInfo(models.Model):
             verbose_name=_('Order'))
     text = models.TextField(verbose_name=_('Extra info'))
 
-    class Meta:
+    class Meta(object):
         app_label = 'shop'
         verbose_name = _('Order extra info')
         verbose_name_plural = _('Order extra info')
@@ -269,7 +269,7 @@ class ExtraOrderPriceField(models.Model):
     is_shipping = models.BooleanField(default=False, editable=False,
             verbose_name=_('Is shipping'))
 
-    class Meta:
+    class Meta(object):
         app_label = 'shop'
         verbose_name = _('Extra order price field')
         verbose_name_plural = _('Extra order price fields')
@@ -284,7 +284,7 @@ class ExtraOrderItemPriceField(models.Model):
     label = models.CharField(max_length=255, verbose_name=_('Label'))
     value = CurrencyField(verbose_name=_('Amount'))
     
-    class Meta:
+    class Meta(object):
         app_label = 'shop'
         verbose_name = _('Extra order item price field')
         verbose_name_plural = _('Extra order item price fields')
@@ -304,7 +304,7 @@ class OrderPayment(models.Model):
             verbose_name=_('Payment method'),
             help_text=_("The payment backend use to process the purchase"))
     
-    class Meta:
+    class Meta(object):
         app_label = 'shop'
         verbose_name = _('Order payment')
         verbose_name_plural = _('Order payments')

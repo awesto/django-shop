@@ -20,8 +20,6 @@ The following fields are already defined in the Product superclass:
 
 * name : The name/title of the product
 * slug : The slug used to refer to this product in the URLs
-* short_description : a short description of the product
-* long_description : A longer, more in-depth description of the product
 * active : Products flagged as not active will not show in the lists
 * date_added : The date at which the product was first created
 * last_modified : A timestamp of when the product was last modified

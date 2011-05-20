@@ -39,4 +39,5 @@ Reference sheets and lists regarding django SHOP
     :maxdepth: 1
     :numbered:
     
+    plugins
     settings

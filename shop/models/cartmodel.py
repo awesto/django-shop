@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from shop.cart.modifiers_pool import cart_modifiers_pool
 from shop.models.productmodel import Product
+from django.utils.translation import ugettext_lazy as _
 
 class Cart(models.Model):
     """
@@ -17,8 +18,10 @@ class Cart(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
     
-    class Meta:
+    class Meta(object):
         app_label = 'shop'
+        verbose_name = _('Cart')
+        verbose_name_plural = _('Carts')
     
     def __init__(self, *args, **kwargs):
         super(Cart, self).__init__(*args,**kwargs)
@@ -145,8 +148,10 @@ class CartItem(models.Model):
     
     product = models.ForeignKey(Product)
     
-    class Meta:
+    class Meta(object):
         app_label = 'shop'
+        verbose_name = _('Cart item')
+        verbose_name_plural = _('Cart items')
     
     def __init__(self, *args, **kwargs):
         # That will hold extra fields to display to the user 

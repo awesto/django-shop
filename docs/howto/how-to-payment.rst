@@ -41,6 +41,8 @@ Specific to payment
   save all of them at the end in one go (?). Finally the payment method keeps track
   of what backend was used for this specific payment.
 
+.. _payment-backend-interface:
+
 Backend interface
 ==================
 
