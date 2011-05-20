@@ -21,3 +21,4 @@ TRANSLATORS
 ===========
 
 * Pedro Gracia (Spanish)
+* Pavel Zhukov (Russian)
