@@ -4,6 +4,7 @@ Holds all the information relevant to the client (addresses for instance)
 """
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 class Client(models.Model):
     user = models.OneToOneField(User, related_name="client")
@@ -11,9 +12,11 @@ class Client(models.Model):
     date_of_birth = models.DateField(null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     
-    class Meta:
+    class Meta(object):
         app_label = 'shop'
-    
+        verbose_name = _('Client')
+        verbose_name_plural = _('Clients')
+
     def __unicode__(self):
         return "ClientProfile for %s %s" % (self.user.first_name, self.user.last_name)
     
@@ -31,9 +34,11 @@ class Country(models.Model):
     def __unicode__(self):
         return u'%s' % self.name
     
-    class Meta:
+    class Meta(object):
         app_label = 'shop'
-        verbose_name_plural = "countries"
+        verbose_name = _('Country')
+        verbose_name_plural = _('Coutries')
+
 
 class Address(models.Model):
     client = models.ForeignKey(Client, related_name="addresses")
