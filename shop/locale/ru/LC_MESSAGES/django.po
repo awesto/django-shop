@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-20 15:57+0400\n"
+"POT-Creation-Date: 2011-05-20 16:57+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Pavel Zhukov <gelios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -20,6 +20,39 @@ msgstr "Доставка"
 #: admin/orderadmin.py:48
 msgid "Billing"
 msgstr "Оплата"
+
+#: models/cartmodel.py:23
+msgid "Cart"
+msgstr "Корзина"
+
+#: models/cartmodel.py:24
+msgid "Carts"
+msgstr "Корзины"
+
+#: models/cartmodel.py:153
+msgid "Cart item"
+msgstr "Элемент заказа"
+
+#: models/cartmodel.py:154
+msgid "Cart items"
+msgstr "Элементы заказа"
+
+#: models/clientmodel.py:17
+msgid "Client"
+msgstr "Клиенты"
+
+#: models/clientmodel.py:18
+msgid "Clients"
+msgstr "Клиенты"
+
+#: models/clientmodel.py:39
+#, fuzzy
+msgid "Country"
+msgstr "Количество"
+
+#: models/clientmodel.py:40
+msgid "Coutries"
+msgstr "Страны"
 
 #: models/ordermodel.py:126
 msgid "User"
@@ -124,8 +157,8 @@ msgstr "Описание продукта"
 msgid "Product name"
 msgstr "Название продукта"
 
-#: models/ordermodel.py:227 templates/shop/cart.html:12
-#: templates/shop/templatetags/_order.html:38
+#: models/ordermodel.py:227 models/productmodel.py:28
+#: templates/shop/cart.html:12 templates/shop/templatetags/_order.html:38
 msgid "Unit price"
 msgstr "Стоимость единицы"
 
@@ -205,6 +238,34 @@ msgstr "Оплата заказа"
 #: models/ordermodel.py:308
 msgid "Order payments"
 msgstr "Оплаты заказов"
+
+#: models/productmodel.py:21
+msgid "Name"
+msgstr "Название"
+
+#: models/productmodel.py:22
+msgid "Slug"
+msgstr "Метка"
+
+#: models/productmodel.py:23
+msgid "Active"
+msgstr "Активен"
+
+#: models/productmodel.py:25
+msgid "Date added"
+msgstr "Дата добавления"
+
+#: models/productmodel.py:26
+msgid "Last modified"
+msgstr "Дата изменения"
+
+#: models/productmodel.py:34
+msgid "Product"
+msgstr "Название продукта"
+
+#: models/productmodel.py:35
+msgid "Products"
+msgstr "Название продуктов"
 
 #: templates/shop/cart.html:3
 msgid "Your shopping cart"

@@ -4,7 +4,7 @@ from django.db import models
 from polymorphic.manager import PolymorphicManager
 from polymorphic.polymorphic_model import PolymorphicModel
 from shop.util.fields import CurrencyField
-
+from django.utils.translation import ugettext_lazy as _
 
 class ProductManager(PolymorphicManager):
     
@@ -18,19 +18,21 @@ class Product(PolymorphicModel):
     on the "base model" and not on an added property
     """
     
-    name = models.CharField(max_length=255)
-    slug = models.SlugField()
-    active = models.BooleanField(default=False)
+    name = models.CharField(max_length=255, verbose_name=_('Name'))
+    slug = models.SlugField(verbose_name=_('Slug'))
+    active = models.BooleanField(default=False, verbose_name=_('Active'))
     
-    date_added = models.DateTimeField(auto_now_add=True)
-    last_modified = models.DateTimeField(auto_now=True)
+    date_added = models.DateTimeField(auto_now_add=True, verbose_name=_('Date added'))
+    last_modified = models.DateTimeField(auto_now=True, verbose_name=_('Last modified'))
     
-    unit_price = CurrencyField()
+    unit_price = CurrencyField(verbose_name=_('Unit price'))
     
     objects = ProductManager()
     
-    class Meta:
+    class Meta(object):
         app_label = 'shop'
+        verbose_name = _('Product')
+        verbose_name_plural = _('Products')
     
     def __unicode__(self):
         return self.name
