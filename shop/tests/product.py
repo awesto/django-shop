@@ -10,8 +10,6 @@ class ProductTestCase(TestCase):
         
         self.product = Product()
         self.product.name = 'test'
-        self.product.short_description = 'test'
-        self.product.long_description = 'test'
         self.product.unit_price = Decimal('1.0')
         self.product.save()
     
@@ -41,22 +39,16 @@ class ProductStatisticsTestCase(TestCase):
     def create_fixtures(self):
         self.product = Product()
         self.product.name = 'test'
-        self.product.short_description = 'test'
-        self.product.long_description = 'test'
         self.product.unit_price = Decimal('1.0')
         self.product.save()
         
         self.product2 = Product()
         self.product2.name = 'test2'
-        self.product2.short_description = 'test2'
-        self.product2.long_description = 'test2'
         self.product2.unit_price = Decimal('1.0')
         self.product2.save()
         
         self.product3 = Product()
         self.product3.name = 'test3'
-        self.product3.short_description = 'test3'
-        self.product3.long_description = 'test3'
         self.product3.unit_price = Decimal('1.0')
         self.product3.save()
 
@@ -100,5 +92,4 @@ class ProductStatisticsTestCase(TestCase):
         self.assertNotEqual(res, None)
         self.assertEqual(len(res), 2)
         self.assertTrue(self.product3 not in res)
-
 
