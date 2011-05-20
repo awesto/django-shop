@@ -15,6 +15,7 @@ CONTRIBUTORS
 * Bojan Mihelac
 * Rolo Mawlabaux
 * Justin Steward 
+* Kristian Øllegaard
 
 TRANSLATORS
 ===========
