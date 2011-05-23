@@ -13,11 +13,10 @@ from shop.tests.util import Mock
 from shop.views.cart import CartDetails
 from shop.views.product import ProductDetailView
 from shop.views.checkout import SelectShippingView
-from shop.util.cart import get_or_create_cart
 
 
 class ProductDetailViewTestCase(TestCase):
-    def create_fixtures(self):
+    def setUp(self):
         
         self.product = Product()
         self.product.name = 'test'
@@ -28,22 +27,20 @@ class ProductDetailViewTestCase(TestCase):
         
         self.view = ProductDetailView(kwargs={'pk':self.product.id})
     
-    def test_01_get_product_returns_correctly(self):
-        self.create_fixtures()
+    def test_get_product_returns_correctly(self):
         setattr(self.view, 'object', None)
         obj = self.view.get_object()
         inst = isinstance(obj,Product)
         self.assertEqual(inst, True)
         
-    def test_02_get_templates_return_expected_values(self):
-        self.create_fixtures()
+    def test_get_templates_return_expected_values(self):
         self.view = ProductDetailView()
         setattr(self.view, 'object', None)
         tmp = self.view.get_template_names()
         self.assertEqual(len(tmp), 1)
         
 class CartDetailsViewTestCase(TestCase):
-    def create_fixtures(self):
+    def setUp(self):
         self.user = User.objects.create(username="test", 
                                         email="test@example.com",
                                         first_name="Test",
@@ -55,16 +52,14 @@ class CartDetailsViewTestCase(TestCase):
                                             product=self.product)
         
         
-    def test_01_get_context_data_works(self):
-        self.create_fixtures()
+    def test_get_context_data_works(self):
         request = Mock()
         setattr(request, 'user', self.user)
         view = CartDetails(request=request)
         ret = view.get_context_data()
         self.assertNotEqual(ret,None)
         
-    def test_02_context_has_as_many_items_as_cart(self):
-        self.create_fixtures()
+    def test_context_has_as_many_items_as_cart(self):
         self.cart.user = self.user
         self.cart.save()
         request = Mock()
@@ -75,8 +70,7 @@ class CartDetailsViewTestCase(TestCase):
         self.assertEqual(len(ret['cart_items']),1)
         self.assertEqual(ret['cart_items'][0], self.item)
         
-    def test_03_calling_post_redirects_properly(self):
-        self.create_fixtures()
+    def test_calling_post_redirects_properly(self):
         self.cart.user = self.user
         self.cart.save()
         
@@ -100,8 +94,7 @@ class CartDetailsViewTestCase(TestCase):
         self.assertEqual(ret['cart_items'][0], self.item)
         self.assertEqual(ret['cart_items'][0].quantity, 2)
         
-    def test_04_calling_ajax_post_returns_content(self):
-        self.create_fixtures()
+    def test_calling_ajax_post_returns_content(self):
         self.cart.user = self.user
         self.cart.save()
         
@@ -150,16 +143,16 @@ class CartViewTestCase(TestCase):
         count = sum([cart_item.quantity for cart_item in cart.items.all()])
         self.assertEqual(count, expected)
 
-    def test_01_cart(self):
+    def test_cart(self):
         response = self.client.get(reverse('cart'))
         self.assertEqual(response.status_code, 200)
 
-    def test_02_cart_item_add(self):
+    def test_cart_item_add(self):
         response = self.add_product_to_cart(self.product)
         self.assertEqual(response.status_code, 302)
         self.assertCartHasItems(1)
 
-    def test_03_cart_delete(self):
+    def test_cart_delete(self):
         self.add_product_to_cart(self.product)
 
         url = reverse('cart_delete')
@@ -167,7 +160,7 @@ class CartViewTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertCartHasItems(0)
 
-    def test_04_cart_update(self):
+    def test_cart_update(self):
         self.add_product_to_cart(self.product)
 
         cart = self.get_cart()
@@ -176,7 +169,7 @@ class CartViewTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertCartHasItems(5)
 
-    def test_05_cart_item_update(self):
+    def test_cart_item_update(self):
         self.add_product_to_cart(self.product)
 
         cart = self.get_cart()
@@ -188,7 +181,7 @@ class CartViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertCartHasItems(5)
 
-    def test_06_cart_item_delete(self):
+    def test_cart_item_delete(self):
         self.add_product_to_cart(self.product)
 
         cart = self.get_cart()
@@ -209,21 +202,21 @@ class OrderListViewTestCase(TestCase):
         self.user.save()
         self.order = Order.objects.create(user=self.user)
 
-    def test_01_anonymous_user_redirected_to_login(self):
+    def test_anonymous_user_redirected_to_login(self):
         url = reverse('order_list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         redirect_url = '%s?next=%s' % (settings.LOGIN_URL, url)
         self.assertTrue(redirect_url in response['location'])
 
-    def test_02_authenticated_user_see_order_list(self):
+    def test_authenticated_user_see_order_list(self):
         self.client.login(username='test', password='test')
         url = reverse('order_list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, unicode(self.order))
 
-    def test_03_authenticated_user_see_order_detail(self):
+    def test_authenticated_user_see_order_detail(self):
         self.client.login(username='test', password='test')
         url = reverse('order_detail', kwargs={'pk': self.order.id})
         response = self.client.get(url)
@@ -231,7 +224,7 @@ class OrderListViewTestCase(TestCase):
         self.assertContains(response, unicode(self.order))
 
 class CheckoutViewTestCase(TestCase):
-    def create_fixtures(self): 
+    def setUp(self): 
         self.user = User.objects.create(username="test", 
                                         email="test@example.com",
                                         first_name="Test",
@@ -243,8 +236,6 @@ class CheckoutViewTestCase(TestCase):
                                             product=self.product)
 
     def test_select_shipping_view(self):
-        self.create_fixtures()
-
         request = Mock()
         setattr(request, 'is_ajax', lambda : False)
         setattr(request, 'user', self.user)

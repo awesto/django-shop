@@ -57,17 +57,17 @@ class CartUtilsTestCase(TestCase):
         self.cart.delete()
         del self.request
         
-    def test_01_uninteresting_request_returns_none(self):
+    def test_uninteresting_request_returns_none(self):
         ret = get_or_create_cart(self.request)
         self.assertEqual(ret, None)
     
-    def test_02_passing_user_returns_new_cart(self):
+    def test_passing_user_returns_new_cart(self):
         setattr(self.request, 'user', self.user)
         ret = get_or_create_cart(self.request)
         self.assertNotEqual(ret, None)
         self.assertNotEqual(ret, self.cart)
     
-    def test_03_passing_user_returns_proper_cart(self):
+    def test_passing_user_returns_proper_cart(self):
         self.cart.user = self.user
         self.cart.save()
         setattr(self.request, 'user', self.user)
@@ -75,19 +75,19 @@ class CartUtilsTestCase(TestCase):
         self.assertNotEqual(ret, None)
         self.assertEqual(ret, self.cart)
         
-    def test_04_passing_session_returns_new_cart(self):
+    def test_passing_session_returns_new_cart(self):
         setattr(self.request, 'session', {})
         ret = get_or_create_cart(self.request)
         self.assertNotEqual(ret, None)
         self.assertNotEqual(ret, self.cart)
     
-    def test_05_passing_session_returns_proper_cart(self):
+    def test_passing_session_returns_proper_cart(self):
         setattr(self.request, 'session', {'cart_id':self.cart.id})
         ret = get_or_create_cart(self.request)
         self.assertNotEqual(ret, None)
         self.assertEqual(ret, self.cart)
         
-    def test_06_anonymous_user_is_like_no_user(self):
+    def test_anonymous_user_is_like_no_user(self):
         setattr(self.request, 'user', AnonymousUser())
         ret = get_or_create_cart(self.request)
         self.assertEqual(ret, None)
@@ -112,7 +112,7 @@ class LoaderTestCase(TestCase):
         
 class AddressUtilTestCase(TestCase):
     
-    def create_fixtures(self):
+    def setUp(self):
         self.user = User.objects.create(username="test", 
                                         email="test@example.com",
                                         first_name="Test",
@@ -129,21 +129,18 @@ class AddressUtilTestCase(TestCase):
     # Shipping
     #===========================================================================
     def test_get_shipping_address_from_request_no_preset(self):
-        self.create_fixtures()
         # Set the user
         setattr(self.request, 'user', self.user)
         res = get_shipping_address_from_request(self.request)
         self.assertEqual(res, None)
         
     def test_get_shipping_address_from_request_with_preset_and_user(self):
-        self.create_fixtures()
         setattr(self.request, 'user', self.user)
         assign_address_to_request(self.request, self.address, shipping=True)
         res = get_shipping_address_from_request(self.request)
         self.assertEqual(res, self.address)
         
     def test_get_shipping_address_from_request_with_preset_and_session(self):
-        self.create_fixtures()
         assign_address_to_request(self.request, self.address, shipping=True)
         res = get_shipping_address_from_request(self.request)
         self.assertEqual(res, self.address)
@@ -151,21 +148,18 @@ class AddressUtilTestCase(TestCase):
     # Billing
     #===========================================================================
     def test_get_billing_address_from_request_no_preset(self):
-        self.create_fixtures()
         # Set the user
         setattr(self.request, 'user', self.user)
         res = get_billing_address_from_request(self.request)
         self.assertEqual(res, None)
         
     def test_get_billing_address_from_request_with_preset_and_user(self):
-        self.create_fixtures()
         setattr(self.request, 'user', self.user)
         assign_address_to_request(self.request, self.address, shipping=False)
         res = get_billing_address_from_request(self.request)
         self.assertEqual(res, self.address)
         
     def test_get_billing_address_from_request_with_preset_and_session(self):
-        self.create_fixtures()
         assign_address_to_request(self.request, self.address, shipping=False)
         res = get_billing_address_from_request(self.request)
         self.assertEqual(res, self.address)
