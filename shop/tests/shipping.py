@@ -25,7 +25,7 @@ class ValidMockShippingBackend(NamedMockShippingBackend):
     
 class GeneralShippingBackendTestCase(TestCase):
     
-    def create_fixtures(self):
+    def setUp(self):
         self.user = User.objects.create(username="test", 
                                         email="test@example.com",
                                         first_name="Test",
@@ -53,20 +53,17 @@ class GeneralShippingBackendTestCase(TestCase):
         
         self.order.save()
     
-    def test_01_enforcing_of_name_works(self):
-        self.create_fixtures()
+    def test_enforcing_of_name_works(self):
         MODIFIERS = ['shop.tests.shipping.MockShippingBackend']
         with SettingsOverride(SHOP_SHIPPING_BACKENDS=MODIFIERS):
             self.assertRaises(NotImplementedError, backends_pool.get_shipping_backends_list)
         
-    def test_02_enforcing_of_namespace_works(self):
-        self.create_fixtures()
+    def test_enforcing_of_namespace_works(self):
         MODIFIERS = ['shop.tests.shipping.NamedMockShippingBackend']
         with SettingsOverride(SHOP_SHIPPING_BACKENDS=MODIFIERS):
             self.assertRaises(NotImplementedError, backends_pool.get_shipping_backends_list)
         
-    def test_03_get_order_returns_sensible_nulls(self):
-        self.create_fixtures()
+    def test_get_order_returns_sensible_nulls(self):
         class MockRequest():
             user = self.user
         
@@ -74,40 +71,34 @@ class GeneralShippingBackendTestCase(TestCase):
         order = be.shop.get_order(MockRequest())
         self.assertEqual(order, None)
         
-    def test_04_get_backends_from_pool(self):
-        self.create_fixtures()
+    def test_get_backends_from_pool(self):
         MODIFIERS = ['shop.tests.shipping.ValidMockShippingBackend']
         with SettingsOverride(SHOP_SHIPPING_BACKENDS=MODIFIERS):
             list = backends_pool.get_shipping_backends_list()
             self.assertEqual(len(list), 1)
     
-    def test_05_get_backends_from_empty_pool(self):
-        self.create_fixtures()
+    def test_get_backends_from_empty_pool(self):
         MODIFIERS = []
         with SettingsOverride(SHOP_SHIPPING_BACKENDS=MODIFIERS):
             list = backends_pool.get_shipping_backends_list()
             self.assertEqual(len(list), 0)
     
-    def test_06_get_backends_from_non_path(self):
-        self.create_fixtures()
+    def test_get_backends_from_non_path(self):
         MODIFIERS = ['blob']
         with SettingsOverride(SHOP_SHIPPING_BACKENDS=MODIFIERS):
             self.assertRaises(ImproperlyConfigured, backends_pool.get_shipping_backends_list)
     
-    def test_07_get_backends_from_non_module(self):
-        self.create_fixtures()
+    def test_get_backends_from_non_module(self):
         MODIFIERS = ['shop.tests.IdontExist.IdontExistEither']
         with SettingsOverride(SHOP_SHIPPING_BACKENDS=MODIFIERS):
             self.assertRaises(ImproperlyConfigured, backends_pool.get_shipping_backends_list)
             
-    def test_08_get_backends_from_non_class(self):
-        self.create_fixtures()
+    def test_get_backends_from_non_class(self):
         MODIFIERS = ['shop.tests.shipping.IdontExistEither']
         with SettingsOverride(SHOP_SHIPPING_BACKENDS=MODIFIERS):
             self.assertRaises(ImproperlyConfigured, backends_pool.get_shipping_backends_list)
             
-    def test_09_get_backends_cache_works(self):
-        self.create_fixtures()
+    def test_get_backends_cache_works(self):
         MODIFIERS = ['shop.tests.shipping.ValidMockShippingBackend']
         backends_pool.use_cache = True
         with SettingsOverride(SHOP_SHIPPING_BACKENDS=MODIFIERS):
@@ -120,7 +111,7 @@ class GeneralShippingBackendTestCase(TestCase):
 
 class ShippingApiTestCase(TestCase):
 
-    def create_fixtures(self):
+    def setUp(self):
         self.user = User.objects.create(username="test", email="test@example.com")
 
         self.request = Mock()
@@ -153,7 +144,6 @@ class ShippingApiTestCase(TestCase):
         self.shipping_value = Decimal("10")
 
     def test_adding_shipping_costs_work(self):
-        self.create_fixtures()
         api = ShippingAPI()
         api.add_shipping_costs(self.order, self.shipping_label, self.shipping_value)
         self.assertEqual(self.order.shipping_costs, self.shipping_value)
@@ -162,7 +152,6 @@ class ShippingApiTestCase(TestCase):
         
     def test_adding_shipping_costs_twice_works(self):
         # That should test against #39 regressions
-        self.create_fixtures()
         api = ShippingAPI()
         
         api.add_shipping_costs(self.order, self.shipping_label, self.shipping_value)

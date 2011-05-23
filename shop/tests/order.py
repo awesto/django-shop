@@ -16,7 +16,7 @@ from project.models import BaseProduct, ProductVariation
 
 
 class OrderUtilTestCase(TestCase):
-    def create_fixtures(self):
+    def setUp(self):
         self.user = User.objects.create(username="test", email="test@example.com")
         
         self.request = Mock()
@@ -45,55 +45,47 @@ class OrderUtilTestCase(TestCase):
         
         self.order.save()
         
-    def test_01_request_without_user_or_session_returns_none(self):
-        self.create_fixtures()
+    def test_request_without_user_or_session_returns_none(self):
         ret = get_order_from_request(self.request)
         self.assertEqual(ret, None)
         
-    def test_02_request_with_session_without_order_returns_none(self):
-        self.create_fixtures()
+    def test_request_with_session_without_order_returns_none(self):
         setattr(self.request,'session', {})
         ret = get_order_from_request(self.request)
         self.assertEqual(ret, None)
         
-    def test_03_request_with_order_returns_order(self):
-        self.create_fixtures()
+    def test_request_with_order_returns_order(self):
         session = {}
         session['order_id'] = self.order.id
         setattr(self.request, 'session', session)
         ret = get_order_from_request(self.request)
         self.assertEqual(ret, self.order)
     
-    def test_04_request_with_user_returns_correct_order(self):
-        self.create_fixtures()
+    def test_request_with_user_returns_correct_order(self):
         setattr(self.request, 'user', self.user)
         self.order.user = self.user
         self.order.save()
         ret = get_order_from_request(self.request)
         self.assertEqual(ret, self.order)
         
-    def test_05_set_order_to_session_works(self):
-        self.create_fixtures()
+    def test_set_order_to_session_works(self):
         setattr(self.request,'session', {})
         add_order_to_request(self.request, self.order)
         self.assertEqual(self.request.session['order_id'], self.order.id)
         
-    def test_06_set_order_to_user_works(self):
-        self.create_fixtures()
+    def test_set_order_to_user_works(self):
         setattr(self.request,'user', self.user)
         add_order_to_request(self.request, self.order)
         self.assertEqual(self.order.user, self.user)
     
-    def test_06_same_user_does_not_override(self):
-        self.create_fixtures()
+    def test_same_user_does_not_override(self):
         self.order.user = self.user
         self.order.save()
         setattr(self.request,'user', self.user)
         add_order_to_request(self.request, self.order)
         self.assertEqual(self.order.user, self.user)
 
-    def test_07_request_with_user_returns_last_order(self):
-        self.create_fixtures()
+    def test_request_with_user_returns_last_order(self):
         setattr(self.request, 'user', self.user)
 
         order1 = Order.objects.create(user=self.user)
@@ -108,7 +100,7 @@ class OrderUtilTestCase(TestCase):
         
         
 class OrderTestCase(TestCase):
-    def create_fixtures(self):
+    def setUp(self):
         
         self.order = Order()
         self.order.order_subtotal = Decimal('10')
@@ -131,13 +123,11 @@ class OrderTestCase(TestCase):
         
         self.order.save()
     
-    def test_01_order_is_completed_works(self):
-        self.create_fixtures()
+    def test_order_is_completed_works(self):
         ret = self.order.is_completed()
         self.assertNotEqual(ret, Order.COMPLETED)
     
-    def test_02_is_payed_works(self):
-        self.create_fixtures()
+    def test_is_payed_works(self):
         ret = self.order.is_payed()
         self.assertEqual(ret, False)
 
@@ -146,7 +136,7 @@ class OrderConversionTestCase(TestCase):
     PRODUCT_PRICE = Decimal('100')
     TEN_PERCENT = Decimal(10) / Decimal(100)
     
-    def create_fixtures(self):
+    def setUp(self):
         
         cart_modifiers_pool.USE_CACHE=False
         
@@ -201,7 +191,6 @@ class OrderConversionTestCase(TestCase):
         Let's make sure that all the info is copied over properly when using
         Order.objects.create_from_cart()
         """
-        self.create_fixtures()
         self.cart.add_product(self.product)
         self.cart.update()
         self.cart.save()
@@ -224,7 +213,6 @@ class OrderConversionTestCase(TestCase):
         """
         This time assert that everything is consistent with a tax cart modifier
         """
-        self.create_fixtures()
         MODIFIERS = ['shop.cart.modifiers.tax_modifiers.TenPercentGlobalTaxModifier']
         
         with SettingsOverride(SHOP_CART_MODIFIERS=MODIFIERS):
@@ -259,9 +247,7 @@ class OrderConversionTestCase(TestCase):
             self.assertNotEqual(o.order_total, Decimal("0"))
 
 
-    def test_03_order_addresses_match_user_preferences(self):
-        self.create_fixtures()
-        
+    def test_order_addresses_match_user_preferences(self):
         self.cart.add_product(self.product)
         self.cart.update()
         self.cart.save()
@@ -292,8 +278,6 @@ class OrderConversionTestCase(TestCase):
         That's needed in case shipment or payment backends need to make fancy 
         calculations on products (i.e. shipping based on weight/size...)
         """
-        self.create_fixtures()
-        
         # Add another product to the database, so it's ID isn't 1
         product2 = Product.objects.create(name="TestPrduct2",
         slug="TestPrduct2",
@@ -321,9 +305,7 @@ class OrderConversionTestCase(TestCase):
         prod = oi.product
         self.assertEqual(prod,product2)
 
-    def test_05_create_order_respects_product_specific_get_price_method(self):
-        self.create_fixtures()
-
+    def test_create_order_respects_product_specific_get_price_method(self):
         baseproduct = BaseProduct.objects.create(unit_price=Decimal('10.0'))
         product = ProductVariation.objects.create(baseproduct=baseproduct)
 
@@ -337,7 +319,7 @@ class OrderConversionTestCase(TestCase):
         
 class OrderPaymentTestCase(TestCase):
     
-    def create_fixtures(self):
+    def setUp(self):
         self.user = User.objects.create(username="test", email="test@example.com")
         
         self.request = Mock()
@@ -365,12 +347,9 @@ class OrderPaymentTestCase(TestCase):
         self.order.save()
     
     def test_payment_sum_works(self):
-        self.create_fixtures()
-        
         self.assertEqual(self.order.amount_payed, 0)
         
     def test_payment_sum_works_with_partial_payments(self):
-        self.create_fixtures()
         OrderPayment.objects.create(
                 order = self.order,
                 amount = Decimal('2'),
@@ -381,7 +360,6 @@ class OrderPaymentTestCase(TestCase):
         self.assertEqual(self.order.is_payed(), False)
         
     def test_payment_sum_works_with_full_payments(self):
-        self.create_fixtures()
         OrderPayment.objects.create(
                 order = self.order,
                 amount = Decimal('10'),

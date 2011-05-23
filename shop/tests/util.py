@@ -54,17 +54,17 @@ class CartUtilsTestCase(TestCase):
         self.cart.delete()
         del self.request
         
-    def test_01_uninteresting_request_returns_none(self):
+    def test_uninteresting_request_returns_none(self):
         ret = get_or_create_cart(self.request)
         self.assertEqual(ret, None)
     
-    def test_02_passing_user_returns_new_cart(self):
+    def test_passing_user_returns_new_cart(self):
         setattr(self.request, 'user', self.user)
         ret = get_or_create_cart(self.request)
         self.assertNotEqual(ret, None)
         self.assertNotEqual(ret, self.cart)
     
-    def test_03_passing_user_returns_proper_cart(self):
+    def test_passing_user_returns_proper_cart(self):
         self.cart.user = self.user
         self.cart.save()
         setattr(self.request, 'user', self.user)
@@ -72,19 +72,19 @@ class CartUtilsTestCase(TestCase):
         self.assertNotEqual(ret, None)
         self.assertEqual(ret, self.cart)
         
-    def test_04_passing_session_returns_new_cart(self):
+    def test_passing_session_returns_new_cart(self):
         setattr(self.request, 'session', {})
         ret = get_or_create_cart(self.request)
         self.assertNotEqual(ret, None)
         self.assertNotEqual(ret, self.cart)
     
-    def test_05_passing_session_returns_proper_cart(self):
+    def test_passing_session_returns_proper_cart(self):
         setattr(self.request, 'session', {'cart_id':self.cart.id})
         ret = get_or_create_cart(self.request)
         self.assertNotEqual(ret, None)
         self.assertEqual(ret, self.cart)
         
-    def test_06_anonymous_user_is_like_no_user(self):
+    def test_anonymous_user_is_like_no_user(self):
         setattr(self.request, 'user', AnonymousUser())
         ret = get_or_create_cart(self.request)
         self.assertEqual(ret, None)
