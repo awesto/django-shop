@@ -13,7 +13,7 @@ class Client(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     
     class Meta(object):
-        app_label = 'shop'
+        app_label = 'shop.clientmodel'
         verbose_name = _('Client')
         verbose_name_plural = _('Clients')
 
@@ -35,7 +35,7 @@ class Country(models.Model):
         return u'%s' % self.name
     
     class Meta(object):
-        app_label = 'shop'
+        app_label = 'shop.clientmodel'
         verbose_name = _('Country')
         verbose_name_plural = _('Coutries')
 
@@ -51,12 +51,12 @@ class Address(models.Model):
     zip_code = models.CharField(max_length=20)
     city = models.CharField(max_length=20)
     state = models.CharField(max_length=255)
-    country = models.ForeignKey(Country)
+    country = models.ForeignKey(Country, blank=True, null=True)
     
     #is_shipping = models.BooleanField() # Is it the default shipping address?
     #is_billing = models.BooleanField() # is it the default billing address? 
     
     class Meta:
-        app_label = 'shop'
+        app_label = 'shop.clientmodel'
         verbose_name_plural = "addresses"
         
