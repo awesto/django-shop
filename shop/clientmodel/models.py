@@ -13,7 +13,6 @@ class Client(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     
     class Meta(object):
-        app_label = 'shop.clientmodel'
         verbose_name = _('Client')
         verbose_name_plural = _('Clients')
 
@@ -35,7 +34,6 @@ class Country(models.Model):
         return u'%s' % self.name
     
     class Meta(object):
-        app_label = 'shop.clientmodel'
         verbose_name = _('Country')
         verbose_name_plural = _('Coutries')
 
@@ -57,6 +55,5 @@ class Address(models.Model):
     #is_billing = models.BooleanField() # is it the default billing address? 
     
     class Meta:
-        app_label = 'shop.clientmodel'
         verbose_name_plural = "addresses"
         
