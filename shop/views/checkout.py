@@ -92,7 +92,7 @@ class ShippingBillingView(ShopTemplateView):
                 assign_address_to_request(self.request, billing_address, shipping=False)
                 
             form = form_class(instance=billing_address, prefix="bill")
-        setattr(self, '_shipping_form', form)
+        setattr(self, '_billing_form', form)
         return form
             
     def get_billing_and_shipping_selection_form(self):

@@ -10,4 +10,5 @@ from util import (CurrencyFieldTestCase, CartUtilsTestCase, LoaderTestCase,
 from shipping import GeneralShippingBackendTestCase, ShippingApiTestCase
 from product import ProductTestCase, ProductStatisticsTestCase
 from views import ( ProductDetailViewTestCase, CartDetailsViewTestCase,
-        CartViewTestCase, OrderListViewTestCase, CheckoutViewTestCase )
+        CartViewTestCase, OrderListViewTestCase )
+from views_checkout import CheckoutViewTestCase, ShippingBillingViewTestCase

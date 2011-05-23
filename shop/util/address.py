@@ -18,6 +18,7 @@ def get_shipping_address_from_request(request):
     Get the shipping address from the request. This abstracts the fact that users
     can be either registered (and thus, logged in), or only session-based guests
     """
+    shipping_address = None
     if request.user and not isinstance(request.user, AnonymousUser):
         # There is a logged-in user here, but he might not have an address defined.
         try:
@@ -28,11 +29,9 @@ def get_shipping_address_from_request(request):
         # The client is a guest - let's use the session instead.
         session = getattr(request, 'session', None)
         shipping_address = None
-        if session != None :
-            # There is a session
-            shipping_address_id = session.get('shipping_address_id')
-            if shipping_address_id:
-                shipping_address = AddressModel.objects.get(pk=shipping_address_id)
+        session_address_id = session.get('shipping_address_id')
+        if session != None and session_address_id:
+            shipping_address = AddressModel.objects.get(pk=session_address_id)
     return shipping_address
 
 def get_billing_address_from_request(request):
@@ -40,6 +39,7 @@ def get_billing_address_from_request(request):
     Get the billing address from the request. This abstracts the fact that users
     can be either registered (and thus, logged in), or only session-based guests
     """
+    billing_address = None
     if request.user and not isinstance(request.user, AnonymousUser):
         # There is a logged-in user here, but he might not have an address defined.
         try:
@@ -49,11 +49,9 @@ def get_billing_address_from_request(request):
     else:
         # The client is a guest - let's use the session instead.
         session = getattr(request, 'session', None)
-        if session != None :
-            # There is a session
-            billing_address_id = session.get('billing_address_id')
-            if billing_address_id:
-                billing_address = AddressModel.objects.get(pk=billing_address_id)
+        session_billing_id = session.get('billing_address_id')
+        if session != None and session_billing_id:
+            billing_address = AddressModel.objects.get(pk=session_billing_id)
     return billing_address
     
 def assign_address_to_request(request, address, shipping=True):
