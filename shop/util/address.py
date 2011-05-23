@@ -6,7 +6,7 @@ from shop.util.loader import load_class
 """
 Load the class specified by the user as the Address Model.
 """
-AddressModel = load_class(settings.SHOP_ADDRESS_MODEL or 'shop.clientmodel.models.Address')
+AddressModel = load_class(getattr(settings,'SHOP_ADDRESS_MODEL', None) or 'shop.clientmodel.models.Address')
 
 #===============================================================================
 # Addresses handling

@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
 from django import forms
-from shop.models.clientmodel import *
 from shop.backends_pool import backends_pool
 
 def get_shipping_backends_choices():
