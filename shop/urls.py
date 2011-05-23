@@ -3,8 +3,8 @@ from django.conf.urls.defaults import patterns, include, url
 from shop.models.productmodel import Product
 from shop.views import ShopListView, ShopTemplateView
 from shop.views.cart import CartDetails, CartItemDetail
-from shop.views.checkout import SelectShippingView, SelectPaymentView, \
-    ThankYouView
+from shop.views.checkout import ThankYouView, CheckoutSelectionView, \
+    ShippingBackendRedirectView, PaymentBackendRedirectView#, SelectShippingView, SelectPaymentView,
 from shop.views.order import OrderListView, OrderDetailView
 from shop.views.product import ProductDetailView
 
@@ -32,11 +32,20 @@ urlpatterns = patterns('',
         name='cart_item' ),
     
     # Checkout
-    url(r'^checkout/ship/$', SelectShippingView.as_view(), 
+    url(r'^checkout/$', CheckoutSelectionView.as_view(), 
+        name='checkout_selection' # First step of the checkout process
+        ),
+    #url(r'^checkout/ship/$', SelectShippingView.as_view(), 
+    #    name='checkout_shipping' # First step of the checkout process
+    #    ),
+    url(r'^checkout/ship/$', ShippingBackendRedirectView.as_view(), 
         name='checkout_shipping' # First step of the checkout process
         ),
-    url(r'^checkout/pay/$', SelectPaymentView.as_view(), 
-        name='checkout_payment' # Second step of the checkout process
+    #url(r'^checkout/pay/$', SelectPaymentView.as_view(), 
+    #    name='checkout_payment' # Second step of the checkout process
+    #    ),
+    url(r'^checkout/pay/$', PaymentBackendRedirectView.as_view(), 
+        name='checkout_payment' # First step of the checkout process
         ),
     url(r'^checkout/thank_you/$', ThankYouView.as_view(), 
         name='thank_you_for_your_order' # Second step of the checkout process
