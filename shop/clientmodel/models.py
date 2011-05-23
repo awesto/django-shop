@@ -43,6 +43,9 @@ class Country(models.Model):
 class Address(models.Model):
     #client = models.ForeignKey(Client, related_name="addresses")
     
+    user_shipping = models.OneToOneField(User, related_name='shipping_address', blank=True, null=True)
+    user_billing = models.OneToOneField(User, related_name='billing_address', blank=True, null=True)
+    
     address = models.CharField(max_length=255)
     address2 = models.CharField(max_length=255,blank=True)
     zip_code = models.CharField(max_length=20)
@@ -50,8 +53,8 @@ class Address(models.Model):
     state = models.CharField(max_length=255)
     country = models.ForeignKey(Country)
     
-    is_shipping = models.BooleanField() # Is it the default shipping address?
-    is_billing = models.BooleanField() # is it the default billing address? 
+    #is_shipping = models.BooleanField() # Is it the default shipping address?
+    #is_billing = models.BooleanField() # is it the default billing address? 
     
     class Meta:
         app_label = 'shop'

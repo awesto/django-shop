@@ -2,6 +2,7 @@
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from shop.util.loader import load_class
+from django.core.exceptions import ObjectDoesNotExist
 
 """
 Load the class specified by the user as the Address Model.
@@ -18,11 +19,15 @@ def get_shipping_address_from_request(request):
     can be either registered (and thus, logged in), or only session-based guests
     """
     if request.user and not isinstance(request.user, AnonymousUser):
-        # There is a logged-in user here.
-        shipping_address = request.user.shipping_address
+        # There is a logged-in user here, but he might not have an address defined.
+        try:
+            shipping_address = request.user.shipping_address
+        except (AttributeError, ObjectDoesNotExist):
+            shipping_address = None
     else:
         # The client is a guest - let's use the session instead.
         session = getattr(request, 'session', None)
+        shipping_address = None
         if session != None :
             # There is a session
             shipping_address_id = session.get('shipping_address_id')
@@ -36,8 +41,11 @@ def get_billing_address_from_request(request):
     can be either registered (and thus, logged in), or only session-based guests
     """
     if request.user and not isinstance(request.user, AnonymousUser):
-        # There is a logged-in user here.
-        billing_address = request.user.billing_address
+        # There is a logged-in user here, but he might not have an address defined.
+        try:
+            billing_address = request.user.billing_address
+        except (AttributeError, ObjectDoesNotExist):
+            billing_address = None
     else:
         # The client is a guest - let's use the session instead.
         session = getattr(request, 'session', None)

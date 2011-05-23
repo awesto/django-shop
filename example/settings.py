@@ -136,6 +136,7 @@ INSTALLED_APPS = (
     'south',
     'polymorphic', # We need polymorphic installed for the shop
     'shop', # The django SHOP application
+    'shop.clientmodel',
     'myshop', # the project we just created
 )
 
