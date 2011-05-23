@@ -26,6 +26,12 @@ Theses modifiers function like the django middlewares. The cart will call each o
 theses classes, in order, everytime it is displayed. They are passed every item in
 the cart, as well as the cart itself.
 
+SHOP_ADDRESS_MODEL
+===================
+(Optional)
+When defined, should be the full python path to the Model to use as an Address model
+in the checkout process.
+
 
 ==========================
 Backend specific Settings
