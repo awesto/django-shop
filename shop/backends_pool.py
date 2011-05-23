@@ -1,7 +1,5 @@
 #-*- coding: utf-8 -*-
 from django.conf import settings
-from django.core import exceptions
-from django.utils.importlib import import_module
 from shop.payment.api import PaymentAPI
 from shop.shipping.api import ShippingAPI
 from shop.util.loader import load_class
