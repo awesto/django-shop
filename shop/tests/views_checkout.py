@@ -4,31 +4,6 @@ from django.test.testcases import TestCase
 from shop.clientmodel.models import Country, Address
 from shop.tests.util import Mock
 from shop.views.checkout import CheckoutSelectionView
-
-#class CheckoutViewTestCase(TestCase):
-#    def setUp(self): 
-#        self.user = User.objects.create(username="test", 
-#                                        email="test@example.com",
-#                                        first_name="Test",
-#                                        last_name = "Tester")
-#        
-#        self.cart = Cart.objects.create()
-#        self.product= Product.objects.create()
-#        self.item = CartItem.objects.create(cart=self.cart, quantity=1, 
-#                                            product=self.product)
-#
-#    def test_select_shipping_view(self):
-#        request = Mock()
-#        setattr(request, 'is_ajax', lambda : False)
-#        setattr(request, 'user', self.user)
-#        post={
-#            'add_item_id':self.product.id,
-#            'add_item_quantity':1,
-#        }
-#
-#        view = SelectShippingView(request=request)
-#        view.create_order_object_from_cart()
-#        #TODO: Check more exensively that the order created is correct
         
 class ShippingBillingViewTestCase(TestCase):
     
@@ -45,6 +20,7 @@ class ShippingBillingViewTestCase(TestCase):
         self.request = Mock()
         setattr(self.request, 'user', None)
         setattr(self.request, 'session', {})
+        setattr(self.request, 'method', 'GET')
     
     def test_shipping_address_cache(self):
         setattr(self.request, 'method', 'POST')
@@ -65,15 +41,12 @@ class ShippingBillingViewTestCase(TestCase):
         self.assertNotEqual(res, None)
     
     def test_shipping_address_form_user_preset(self):
-        setattr(self.request, 'method', 'GET')
-        
         view = CheckoutSelectionView(request=self.request)
         res = view.get_shipping_address_form()
         self.assertNotEqual(res, None)
     
     def test_shipping_address_form_user_no_preset(self):
         setattr(self.request, 'user', self.user)
-        setattr(self.request, 'method', 'GET')
         
         address = Address.objects.create(country=self.country, user_shipping=self.user)
         address.save()
@@ -101,15 +74,12 @@ class ShippingBillingViewTestCase(TestCase):
         self.assertNotEqual(res, None)
     
     def test_billing_address_form_user_preset(self):
-        setattr(self.request, 'method', 'GET')
-        
         view = CheckoutSelectionView(request=self.request)
         res = view.get_billing_address_form()
         self.assertNotEqual(res, None)
     
     def test_billing_address_form_user_no_preset(self):
         setattr(self.request, 'user', self.user)
-        setattr(self.request, 'method', 'GET')
         
         address = Address.objects.create(country=self.country, user_billing=self.user)
         address.save()
@@ -117,3 +87,39 @@ class ShippingBillingViewTestCase(TestCase):
         view = CheckoutSelectionView(request=self.request)
         res = view.get_billing_address_form()
         self.assertEqual(res.instance, address)
+
+    #===========================================================================
+    # Billing and shipping form
+    #===========================================================================
+
+    def test_billing_and_shipping_selection_post(self):
+        setattr(self.request, 'method', 'POST')
+        setattr(self.request, 'POST', {})
+        view = CheckoutSelectionView(request=self.request)
+        res = view.get_billing_and_shipping_selection_form()
+        self.assertNotEqual(res, None)
+        
+    def test_billing_and_shipping_selection_get(self):
+        view = CheckoutSelectionView(request=self.request)
+        res = view.get_billing_and_shipping_selection_form()
+        self.assertNotEqual(res, None)
+        
+    def test_billing_and_shipping_selection_cached(self):
+        view = CheckoutSelectionView(request=self.request)
+        res = view.get_billing_and_shipping_selection_form()
+        res2 = view.get_billing_and_shipping_selection_form()
+        self.assertEqual(res, res2)
+
+    #===========================================================================
+    # Context Data
+    #===========================================================================
+    
+    def test_get_context_data(self):
+        setattr(self.request, 'method', 'GET')
+        view = CheckoutSelectionView(request=self.request)
+        ctx = view.get_context_data()
+        self.assertNotEqual(ctx, None)
+        self.assertNotEqual(ctx['shipping_address'], None)
+        self.assertNotEqual(ctx['billing_address'], None)
+        self.assertNotEqual(ctx['billing_shipping_form'], None)
+        
