@@ -35,7 +35,7 @@ class Country(models.Model):
     
     class Meta(object):
         verbose_name = _('Country')
-        verbose_name_plural = _('Coutries')
+        verbose_name_plural = _('Countries')
 
 
 class Address(models.Model):
