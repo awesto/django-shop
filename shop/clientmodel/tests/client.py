@@ -24,8 +24,6 @@ class ClientTestCase(TestCase):
         self.address.zip_code = '1234'
         self.address.state = 'ZH'
         self.address.country = self.country
-        self.address.is_billing = False
-        self.address.is_shipping = True
         self.address.save()
         
         self.address2 = Address()
@@ -35,28 +33,16 @@ class ClientTestCase(TestCase):
         self.address2.zip_code = '21234'
         self.address2.state = '2ZH'
         self.address2.country = self.country
-        self.address2.is_billing = True
-        self.address2.is_shipping = False
         self.address2.save()
 
-#   COMMENTED OUT BECAUSE OF THE MOVING OF CLIENTMODEL
-#    def test_01_shipping_address_shortcut_works(self):
-#        self.create_fixtures()
-#        add = self.client.shipping_address()
-#        self.assertEqual(add, self.address)
-    
-#    def test_02_billing_address_shortcut_works(self):
-#        self.create_fixtures()
-#        add = self.client.billing_address()
-#        self.assertEqual(add, self.address2)
         
-    def test_03_unicode_method_works(self):
+    def test_unicode_method_works(self):
         self.create_fixtures()
         expected = "ClientProfile for Test Toto"
         text = self.client.__unicode__()
         self.assertEqual(expected, text)
         
-    def test_04_unicode_method_works_for_null_user_info(self):
+    def test_unicode_method_works_for_null_user_info(self):
         self.create_fixtures()
         u = User.objects.create(username="test2", 
                                         email="test2@example.com")
