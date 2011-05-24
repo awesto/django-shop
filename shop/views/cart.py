@@ -30,7 +30,7 @@ class CartItemDetail(ShopView):
         self.kwargs = kwargs
         return handler(request, *args, **kwargs)
     
-    def put(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         """
         Update one of the cartItem's quantities. This requires a single 'item_quantity'
         POST parameter, but should be posted to a properly RESTful URL (that should
@@ -44,7 +44,7 @@ class CartItemDetail(ShopView):
         #with PUT request, data is in GET variable
         # TODO: test in real client
         #quantity = self.request.POST['item_quantity']
-        quantity = self.request.GET['item_quantity']
+        quantity = self.request.POST['item_quantity']
         cart_object.update_quantity(item_id, int(quantity))
         return self.put_success()
     

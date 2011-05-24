@@ -175,7 +175,7 @@ class CartViewTestCase(TestCase):
         cart_item_id = cart.items.all()[0].pk
         url = reverse('cart_item', kwargs={'id': cart_item_id})
         post = { 'item_quantity': "5" }
-        response = self.client.put(url, post, 
+        response = self.client.post(url, post, 
                 HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertCartHasItems(5)
