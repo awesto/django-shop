@@ -9,6 +9,7 @@ from shop.util.cart import get_or_create_cart
 from shop.util.order import add_order_to_request, get_order_from_request
 from shop.views import ShopTemplateView
 from shop.order_signals import payment_selection, completed, processing
+from django.http import HttpResponseRedirect
 
 class SelectShippingView(ShopTemplateView):
     template_name = 'shop/checkout/choose_shipping.html'
@@ -31,17 +32,22 @@ class SelectShippingView(ShopTemplateView):
         the transformation of a Cart into an Order.
         """
         ctx = super(SelectShippingView, self).get_context_data(**kwargs)
-        shipping_modules_list = backends_pool.get_shipping_backends_list()
-
         self.create_order_object_from_cart()
 
         select = {}
 
-        for backend in shipping_modules_list:
+        for backend in self.shipping_modules_list:
             url = reverse(backend.url_namespace)
             select.update({backend.backend_name:url})
         ctx.update({'shipping_options':select})
         return ctx
+
+    def get(self, request, *args, **kwargs):
+        self.shipping_modules_list = backends_pool.get_shipping_backends_list()
+        if len(self.shipping_modules_list) == 1:
+            url = reverse(self.shipping_modules_list[0].url_namespace)
+            return HttpResponseRedirect(url)
+        return super(SelectShippingView, self).get(request, *args, **kwargs)
 
 
 class SelectPaymentView(ShopTemplateView):
