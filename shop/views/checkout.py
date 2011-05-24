@@ -28,6 +28,7 @@ class CheckoutSelectionView(ShopTemplateView):
         order = Order.objects.create_from_cart(cart)
         request = self.request
         add_order_to_request(request, order)
+        return order
 
     def get_shipping_address_form(self):
         """
@@ -109,20 +110,57 @@ class CheckoutSelectionView(ShopTemplateView):
             self._billingshipping_form = form
         return form
 
+    def save_addresses_to_order(self, order, shipping_address, billing_address):
+        """
+        Provided for extensibility.
+        Adds both addresses (shipping and billing addresses to the Order object.
+        """
+        kwargs = {
+                  'shipping_address':shipping_address.address,
+                  'shipping_city':shipping_address.city,
+                  'shipping_zip_code':shipping_address.zip_code,
+                  'shipping_state':shipping_address.state,
+                  'shipping_country':shipping_address.country,
+                  }
+        if shipping_address.address2:
+            kwargs.update({'shipping_address2':shipping_address.address2})
+        if shipping_address.name:
+            kwargs.update({'shipping_name':shipping_address.name})
+            
+        order.set_shipping_address(**kwargs)
+        
+        kwargs = {
+                  'billing_address':billing_address.address,
+                  'billing_city':billing_address.city,
+                  'billing_zip_code':billing_address.zip_code,
+                  'billing_state':billing_address.state,
+                  'billing_country':billing_address.country,
+                  }
+        if billing_address.address2:
+            kwargs.update({'billing_address2':billing_address.address2})
+        if billing_address.name:
+            kwargs.update({'billing_name':billing_address.name})
+            
+        order.set_billing_address(**kwargs)
+        order.save()
+
     def post(self, *args, **kwargs):
         """ Called when view is POSTed """
         shipping_form = self.get_shipping_address_form()
         billing_form = self.get_billing_address_form()
         if shipping_form.is_valid() and billing_form.is_valid():
-            # TODO: Figure out what this is for
+            
+            # Add the address to the order
             shipping_address = shipping_form.save()
             billing_address = billing_form.save()
-            self.create_order_object_from_cart()
-            req  = self.request
+            order = self.create_order_object_from_cart()
+            
+            self.save_addresses_to_order(order, shipping_address, billing_address)
+            
             billingshipping_form = self.get_billing_and_shipping_selection_form()
             if billingshipping_form.is_valid():
-                req.session['payment_backend'] = billingshipping_form.cleaned_data['payment_method']
-                req.session['shipping_backend'] = billingshipping_form.cleaned_data['shipping_method']
+                self.request.session['payment_backend'] = billingshipping_form.cleaned_data['payment_method']
+                self.request.session['shipping_backend'] = billingshipping_form.cleaned_data['shipping_method']
                 return HttpResponseRedirect(reverse('checkout_shipping'))
         
         return self.get(self, *args, **kwargs)
