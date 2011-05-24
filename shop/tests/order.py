@@ -271,14 +271,14 @@ class OrderConversionTestCase(TestCase):
         self.assertEqual(o.shipping_address2, self.address.address2)
         self.assertEqual(o.shipping_zip_code, self.address.zip_code)
         self.assertEqual(o.shipping_state, self.address.state)    
-        self.assertEqual(o.shipping_country, self.address.country)
+        self.assertEqual(o.shipping_country, self.address.country.name)
         
         self.assertEqual(o.billing_name, "%s %s" % (self.user.first_name, self.user.last_name))
         self.assertEqual(o.billing_address, self.address2.address)
         self.assertEqual(o.billing_address2, self.address2.address2)
         self.assertEqual(o.billing_zip_code, self.address2.zip_code)
         self.assertEqual(o.billing_state, self.address2.state)    
-        self.assertEqual(o.billing_country, self.address2.country)
+        self.assertEqual(o.billing_country, self.address2.country.name)
         
     def test_order_saves_item_pk_as_a_string(self):
         """

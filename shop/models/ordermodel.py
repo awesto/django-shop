@@ -194,7 +194,7 @@ class Order(models.Model):
         self.billing_city = billing_city
         self.billing_zip_code = billing_zip_code
         self.billing_state = billing_state
-        self.billing_country = billing_country
+        self.billing_country = str(billing_country)
         self.save()
     
     def set_shipping_address(self, shipping_address, shipping_city, 
@@ -211,7 +211,7 @@ class Order(models.Model):
         self.shipping_city = shipping_city
         self.shipping_zip_code = shipping_zip_code
         self.shipping_state = shipping_state
-        self.shipping_country = shipping_country
+        self.shipping_country = str(shipping_country)
         self.save()
 
 class OrderItem(models.Model):
