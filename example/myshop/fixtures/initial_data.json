@@ -37,6 +37,14 @@
             "email": "admin@example.com", 
             "date_joined": "2011-04-08 06:12:24"
         }
+    },
+    {
+        "pk": 1, 
+        "model": "clientmodel.country", 
+        "fields": {
+            "name": "USA"
+        }
     }
+
 
 ]
