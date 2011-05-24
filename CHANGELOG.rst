@@ -1,4 +1,7 @@
-
+* Changed checkout views. The shop uses one single checkout view by default now.
+* Created new mechanism to use custom Address models (see docs)
+* Moved all Address-related models to shop.addressmodel sub-app
+* Removed Client Class
 * Removed Product.long_description and Product.short_description from the
   Product superclass
 
