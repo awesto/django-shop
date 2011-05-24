@@ -3,7 +3,7 @@ from decimal import Decimal
 from django.contrib.auth.models import User, AnonymousUser
 from django.core.exceptions import ImproperlyConfigured
 from django.test.testcases import TestCase
-from shop.clientmodel.models import Address, Country
+from shop.addressmodel.models import Address, Country
 from shop.models.cartmodel import Cart
 from shop.util.address import get_shipping_address_from_request, \
     assign_address_to_request, get_billing_address_from_request

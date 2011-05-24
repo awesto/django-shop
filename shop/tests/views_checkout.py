@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 from django.contrib.auth.models import User
 from django.test.testcases import TestCase
-from shop.clientmodel.models import Country, Address
+from shop.addressmodel.models import Country, Address
 from shop.models.ordermodel import Order
 from shop.tests.util import Mock
 from shop.views.checkout import CheckoutSelectionView
@@ -168,12 +168,12 @@ class ShippingBillingViewOrderStuffTestCase(TestCase):
         self.assertEqual(order.shipping_country, self.s_add.country.name)
         
         self.assertEqual(order.billing_name, self.b_add.name)
-        self.assertEqual(order.shipping_address, self.b_add.address)
-        self.assertEqual(order.shipping_address2, self.b_add.address2)
-        self.assertEqual(order.shipping_city, self.b_add.city)
-        self.assertEqual(order.shipping_zip_code, self.b_add.zip_code)
-        self.assertEqual(order.shipping_state, self.b_add.state)
-        self.assertEqual(order.shipping_country, self.b_add.country.name)
+        self.assertEqual(order.billing_address, self.b_add.address)
+        self.assertEqual(order.billing_address2, self.b_add.address2)
+        self.assertEqual(order.billing_city, self.b_add.city)
+        self.assertEqual(order.billing_zip_code, self.b_add.zip_code)
+        self.assertEqual(order.billing_state, self.b_add.state)
+        self.assertEqual(order.billing_country, self.b_add.country.name)
         
     def test_assigning_to_order_from_view_works(self):
         view = CheckoutSelectionView(request=self.request)

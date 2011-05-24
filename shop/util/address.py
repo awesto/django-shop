@@ -7,7 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 """
 Load the class specified by the user as the Address Model.
 """
-AddressModel = load_class(getattr(settings,'SHOP_ADDRESS_MODEL', None) or 'shop.clientmodel.models.Address')
+AddressModel = load_class(getattr(settings,'SHOP_ADDRESS_MODEL', None) or 'shop.addressmodel.models.Address')
 
 #===============================================================================
 # Addresses handling

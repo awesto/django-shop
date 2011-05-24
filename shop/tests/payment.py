@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured
 from django.test.testcases import TestCase
 from shop.backends_pool import backends_pool
-from shop.clientmodel.models import Address, Client, Country
+from shop.addressmodel.models import Address, Country
 from shop.models.ordermodel import Order, OrderItem, ExtraOrderItemPriceField, \
     ExtraOrderPriceField
 from shop.payment.backends.pay_on_delivery import PayOnDeliveryBackend
@@ -110,10 +110,6 @@ class PayOnDeliveryTestCase(TestCase):
                                         last_name = "Toto")
         self.user.save()
         
-        self.client = Client()
-        self.client.user = self.user
-        self.client.save()
-        
         self.country = Country.objects.create(name='CH')
         
         self.address = Address()
@@ -148,8 +144,8 @@ class PayOnDeliveryTestCase(TestCase):
         ship_address = self.address
         bill_address = self.address2
         
-        self.order.shipping_name = "%s %s" %(self.address.client.user.first_name, 
-                                              self.address.client.user.last_name)
+        self.order.shipping_name = "%s %s" %(self.user.first_name, 
+                                              self.user.last_name)
         
         self.order.shipping_address = ship_address.address
         self.order.shipping_address2 = ship_address.address2
@@ -157,8 +153,8 @@ class PayOnDeliveryTestCase(TestCase):
         self.order.shipping_state = ship_address.state
         self.order.shipping_country = ship_address.country.name
         
-        self.order.shipping_name = "%s %s" %(self.address.client.user.first_name, 
-                                              self.address.client.user.last_name)
+        self.order.shipping_name = "%s %s" %(self.user.first_name, 
+                                              self.user.last_name)
         self.order.billing_address = bill_address.address
         self.order.billing_address2 = bill_address.address2
         self.order.billing_zip_code = bill_address.zip_code
