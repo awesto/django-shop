@@ -20,7 +20,7 @@ INSTALLED_APPS::
     INSTALLED_APPS = (
     ...
     'shop', # The django SHOP
-    #'shop.clientmodel', # <-- Comment this out
+    #'shop.addressmodel', # <-- Comment this out
     ...
     )
     

@@ -66,6 +66,7 @@ django-cbv if you're using 1.3.
 	    'polymorphic', # We need polymorphic installed for the shop
             'south',
 	    'shop', # The django SHOP application
+            'shop.addressmodel', # The default Address and country models
 	    'myshop', # the project we just created
 	]
 	
