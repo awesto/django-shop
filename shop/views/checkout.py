@@ -18,6 +18,26 @@ from shop.views import ShopTemplateView, ShopView
 class CheckoutSelectionView(ShopTemplateView):
     template_name = 'shop/checkout/selection.html'
 
+    def _get_dynamic_form_class_from_factory(self):
+        """
+        Returns a dynamic ModelForm from the loaded AddressModel
+        """
+        form_class = model_forms.modelform_factory(AddressModel, 
+                                                   exclude=['user_shipping', 'user_billing'])
+        return form_class
+    
+    def get_shipping_form_class(self):
+        """
+        Provided for extensibility.
+        """
+        return self._get_dynamic_form_class_from_factory()
+    
+    def get_billing_form_class(self):
+        """
+        Provided for extensibility.
+        """
+        return self._get_dynamic_form_class_from_factory()
+
     def create_order_object_from_cart(self):
         """
         This will create an Order object form the current cart, and will pass
@@ -46,9 +66,10 @@ class CheckoutSelectionView(ShopTemplateView):
         form = getattr(self, '_shipping_form', None)
         if form:
             return form
+        
         # Create a dynamic Form class for the model specified as the address model
-        form_class = model_forms.modelform_factory(AddressModel, 
-                                                   exclude=['user_shipping', 'user_billing'])
+        form_class = self.get_shipping_form_class()
+        
         if self.request.method == "POST":
             form = form_class(self.request.POST, prefix="ship")
         else:
@@ -66,7 +87,7 @@ class CheckoutSelectionView(ShopTemplateView):
             form = form_class(instance=shipping_address, prefix="ship")
         setattr(self, '_shipping_form', form)
         return form
-            
+    
     def get_billing_address_form(self):
         """
         Initializes and handles the form for the shipping address.
