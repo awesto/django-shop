@@ -182,13 +182,8 @@ class Order(models.Model):
         return reverse('order_detail', kwargs={'pk': self.pk })
 
     def set_billing_address(self, billing_address, billing_city, billing_zip_code, 
-        billing_state, billing_country, billing_address2='', billing_name=''):
-        """Sets the billing address for this order."""
-        if billing_name:
-            self.billing_name = billing_name
-        else:
-            self.billing_name  = "%s %s" % (self.user.first_name, self.user.last_name)
-
+        billing_state, billing_country, billing_name, billing_address2=''):
+        self.billing_name = billing_name
         self.billing_address = billing_address
         self.billing_address2 = billing_address2
         self.billing_city = billing_city
@@ -198,14 +193,9 @@ class Order(models.Model):
         self.save()
     
     def set_shipping_address(self, shipping_address, shipping_city, 
-        shipping_zip_code, shipping_state, shipping_country,
-        shipping_address2='', shipping_name=''):
-        """Sets the shipping address for this order."""
-        if shipping_name:
-            self.shipping_name = shipping_name
-        else:
-            self.shipping_name = "%s %s" % (self.user.first_name, self.user.last_name)
-
+        shipping_zip_code, shipping_state, shipping_country, shipping_name,
+        shipping_address2=''):
+        self.shipping_name = shipping_name
         self.shipping_address = shipping_address
         self.shipping_address2 = shipping_address2
         self.shipping_city = shipping_city

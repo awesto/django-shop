@@ -21,6 +21,7 @@ class Address(models.Model):
     user_shipping = models.OneToOneField(User, related_name='shipping_address', blank=True, null=True)
     user_billing = models.OneToOneField(User, related_name='billing_address', blank=True, null=True)
     
+    name = models.CharField(max_length=255)
     address = models.CharField(max_length=255)
     address2 = models.CharField(max_length=255,blank=True)
     zip_code = models.CharField(max_length=20)

@@ -78,3 +78,13 @@ def assign_address_to_request(request, address, shipping=True):
             request.session['shipping_address_id'] = address.pk
         else:
             request.session['billing_address_id'] = address.pk
+            
+def get_user_name_from_request(request):
+    """
+    Simple helper to return the username from the request, or '' if the user is
+    AnonymousUser.
+    """
+    name = ''
+    if request.user and not isinstance(request.user, AnonymousUser):
+        name = request.user.get_full_name()
+    return name

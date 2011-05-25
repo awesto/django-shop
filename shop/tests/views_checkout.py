@@ -19,7 +19,7 @@ class ShippingBillingViewTestCase(TestCase):
         self.address = Address.objects.create(country=self.country)
         
         self.request = Mock()
-        setattr(self.request, 'user', None)
+        setattr(self.request, 'user', self.user)
         setattr(self.request, 'session', {})
         setattr(self.request, 'method', 'GET')
     
@@ -128,14 +128,18 @@ class ShippingBillingViewTestCase(TestCase):
 class ShippingBillingViewOrderStuffTestCase(TestCase):
     
     def setUp(self):
+        self.user = User.objects.create(username="test", 
+                                        email="test@example.com",
+                                        first_name="Test",
+                                        last_name = "Toto")
+        
         self.order = Order.objects.create()
         
         self.country = Country.objects.create(name='CH')
         
         self.s_add = Address.objects.create() # Shipping
-        self.s_add.name = 'toto'
+        self.s_add.name = 'TestName'
         self.s_add.address = 'address'
-        self.s_add.address2 = 'address2'
         self.s_add.city = 'city'
         self.s_add.zip_code = 'zip'
         self.s_add.state = 'state'
@@ -143,9 +147,8 @@ class ShippingBillingViewOrderStuffTestCase(TestCase):
         self.s_add.save()
         
         self.b_add = Address.objects.create() # Billing
-        self.b_add.name = 'toto'
+        self.s_add.name = 'TestName'
         self.b_add.address = 'address'
-        self.b_add.address2 = 'address2'
         self.b_add.city = 'city'
         self.b_add.zip_code = 'zip'
         self.b_add.state = 'state'
@@ -153,7 +156,7 @@ class ShippingBillingViewOrderStuffTestCase(TestCase):
         self.b_add.save()
         
         self.request = Mock()
-        setattr(self.request, 'user', None)
+        setattr(self.request, 'user', self.user)
         setattr(self.request, 'session', {})
         setattr(self.request, 'method', 'GET')
         
@@ -176,6 +179,19 @@ class ShippingBillingViewOrderStuffTestCase(TestCase):
         self.assertEqual(order.billing_country, self.b_add.country.name)
         
     def test_assigning_to_order_from_view_works(self):
+        view = CheckoutSelectionView(request=self.request)
+        view.save_addresses_to_order(self.order, self.s_add, self.b_add)
+        
+        self.check_order_address()
+        
+    def test_assigning_to_order_from_view_works_with_name_and_address(self):
+        self.s_add.name = 'toto'
+        self.s_add.address2 = 'address2'
+        self.s_add.save()
+        self.b_add.name = 'toto'
+        self.b_add.address2 = 'address2'
+        self.b_add.save()
+        
         view = CheckoutSelectionView(request=self.request)
         view.save_addresses_to_order(self.order, self.s_add, self.b_add)
         
