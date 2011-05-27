@@ -5,6 +5,8 @@ from shop.addressmodel.models import Country, Address
 from shop.models.ordermodel import Order
 from shop.tests.util import Mock
 from shop.views.checkout import CheckoutSelectionView
+from shop.models.cartmodel import Cart
+from decimal import Decimal
         
 class ShippingBillingViewTestCase(TestCase):
     
@@ -196,4 +198,27 @@ class ShippingBillingViewOrderStuffTestCase(TestCase):
         view.save_addresses_to_order(self.order, self.s_add, self.b_add)
         
         self.check_order_address()
+
+
+class CheckoutCartToOrderTestCase(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create(username="test", 
+                                        email="test@example.com",
+                                        first_name="Test",
+                                        last_name = "Toto")
         
+        self.request = Mock()
+        setattr(self.request, 'user', self.user)
+        setattr(self.request, 'session', {})
+        setattr(self.request, 'method', 'GET')
+
+        self.cart = Cart()
+        self.cart.user = self.user
+        self.cart.save()
+
+    def test_order_created(self):
+        
+        view = CheckoutSelectionView(request=self.request)
+        res = view.create_order_object_from_cart()
+        self.assertEqual(res.order_total, Decimal('0'))
