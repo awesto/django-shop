@@ -2,7 +2,7 @@
 branch = True
 source =
     shop
-    addressmodel
+    shop.addressmodel
 omit =
     ../../*migrations*
     ../../*tests*
