@@ -12,3 +12,4 @@ from views import ( ProductDetailViewTestCase, CartDetailsViewTestCase,
         CartViewTestCase, OrderListViewTestCase )
 from views_checkout import (ShippingBillingViewTestCase, 
                             ShippingBillingViewOrderStuffTestCase)
+from api import ShopApiTestCase

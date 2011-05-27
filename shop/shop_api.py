@@ -38,14 +38,14 @@ class ShopAPI(object):
         """
         Add an extra info text field to the order
         """
-        OrderExtraInfo.objects.create(text=text, order=self)
+        OrderExtraInfo.objects.create(text=text, order=order)
     
     def is_order_payed(self, order):
         """Whether the passed order is fully payed or not."""
         return order.is_payed()
     
-    def is_order_complete(self, order):
-        return order.is_complete()
+    def is_order_completed(self, order):
+        return order.is_completed()
     
     def get_order_total(self, order):
         """The total amount to be charged for passed order"""

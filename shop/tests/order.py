@@ -354,7 +354,7 @@ class OrderPaymentTestCase(TestCase):
         self.order.save()
     
     def test_payment_sum_works(self):
-        self.assertEqual(self.order.amount_payed, 0)
+        self.assertEqual(self.order.amount_payed, Decimal('-1'))
         
     def test_payment_sum_works_with_partial_payments(self):
         OrderPayment.objects.create(
