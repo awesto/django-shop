@@ -164,7 +164,7 @@ class Order(models.Model):
         sum = OrderPayment.objects.filter(order=self).aggregate(sum=Sum('amount'))
         result = sum.get('sum')
         if not result:
-            result = Decimal('0')
+            result = Decimal('-1')
         return result
         
     @property
