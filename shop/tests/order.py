@@ -163,7 +163,7 @@ class OrderConversionTestCase(TestCase):
         self.country = Country.objects.create(name='CH')
         
         self.address = Address()
-        #self.address.client = self.client
+        self.address.name = 'Test Toto'
         self.address.address = 'address'
         self.address.address2 = 'address2'
         self.address.zip_code = '1234'
@@ -174,7 +174,7 @@ class OrderConversionTestCase(TestCase):
         self.address.save()
         
         self.address2 = Address()
-        #self.address2.client = self.client
+        self.address2.name = 'Test Toto'
         self.address2.address = '2address'
         self.address2.address2 = '2address2'
         self.address2.zip_code = '21234'
@@ -259,11 +259,11 @@ class OrderConversionTestCase(TestCase):
         
         o.set_shipping_address(self.address.address, self.address.city,
             self.address.zip_code, self.address.state, self.address.country,
-            self.address.address2)
+            self.address.name, self.address.address2)
         
         o.set_billing_address(self.address2.address, self.address2.city,
             self.address2.zip_code, self.address2.state, self.address2.country,
-            self.address2.address2)
+            self.address2.name, self.address2.address2)
         
         # Check that addresses are transfered properly
         self.assertEqual(o.shipping_name, "%s %s" % (self.user.first_name, self.user.last_name))
