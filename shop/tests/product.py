@@ -81,7 +81,7 @@ class ProductStatisticsTestCase(TestCase):
         self.orderitem2 = OrderItem()
         self.orderitem2.order = self.order
         #self.orderitem2.product_reference = str(self.product2.pk)
-        self.orderitem2.product = self.product
+        self.orderitem2.product = self.product2
         self.orderitem2.quantity = 1 # this will be the second most
         self.orderitem2.save()
 
