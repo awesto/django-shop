@@ -5,13 +5,14 @@ from django.db import models, transaction
 from django.db.models.aggregates import Sum
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
+from django.db.models.signals import pre_delete
+import django
 
 from shop.models.cartmodel import CartItem
 from shop.models.productmodel import Product
 from shop.util.fields import CurrencyField
 
 class OrderManager(models.Manager):
-    
     @transaction.commit_on_success
     def create_from_cart(self, cart):
         """
@@ -29,12 +30,12 @@ class OrderManager(models.Manager):
         o = Order()
         o.user = cart.user
         o.status = Order.PROCESSING # Processing
-        
+
         o.order_subtotal = cart.subtotal_price
         o.order_total = cart.total_price
-        
+
         o.save()
-        
+
         # Let's serialize all the extra price arguments in DB
         for label, value in cart.extra_price_fields:
             eoi = ExtraOrderPriceField()
@@ -42,14 +43,13 @@ class OrderManager(models.Manager):
             eoi.label = label
             eoi.value = value
             eoi.save()
-        
+
         # There, now move on to the order items.
         cart_items = CartItem.objects.filter(cart=cart)
         for item in cart_items:
             item.update()
             i = OrderItem()
             i.order = o
-            i.product_reference = item.product.id
             i.product_name = item.product.name
             i.unit_price = item.product.get_price()
             i.quantity = item.quantity
@@ -64,7 +64,8 @@ class OrderManager(models.Manager):
                 eoi.value = value
                 eoi.save()
         return o
-        
+
+
 class Order(models.Model):
     """
     A model representing an Order.
@@ -74,7 +75,7 @@ class Order(models.Model):
     when the Order is first created), list of items, and holds stuff like the
     status, shipping costs, taxes, etc...
     """
-    
+
     PROCESSING = 1 # New order, no shipping/payment backend chosen yet
     PAYMENT = 2 # The user is filling in payment information
     CONFIRMED = 3 # Chosen shipping/payment backend, processing payment
@@ -83,79 +84,79 @@ class Order(models.Model):
     CANCELLED = 6 # order has been cancelled
 
     STATUS_CODES = (
-        (PROCESSING, 'Processing'),
-        (PAYMENT, 'Selecting payment'),
-        (CONFIRMED, 'Confirmed'),
-        (COMPLETED, 'Completed'),
-        (SHIPPED, 'Shipped'),
-        (CANCELLED, 'Cancelled'),
+    (PROCESSING, 'Processing'),
+    (PAYMENT, 'Selecting payment'),
+    (CONFIRMED, 'Confirmed'),
+    (COMPLETED, 'Completed'),
+    (SHIPPED, 'Shipped'),
+    (CANCELLED, 'Cancelled'),
     )
-    
+
     # If the user is null, the order was created with a session
     user = models.ForeignKey(User, blank=True, null=True,
-            verbose_name=_('User'))
-    
+                             verbose_name=_('User'))
+
     status = models.IntegerField(choices=STATUS_CODES, default=PROCESSING,
-            verbose_name=_('Status'))
-    
+                                 verbose_name=_('Status'))
+
     order_subtotal = CurrencyField(verbose_name=_('Order subtotal'))
     order_total = CurrencyField(verbose_name='Order total')
-    
+
     payment_method = models.CharField(max_length=255, null=True,
-            verbose_name=_('Payment method'))
-    
+                                      verbose_name=_('Payment method'))
+
     # Addresses MUST be copied over to the order when it's created, however
     # the fields must be nullable since sometimes we cannot create the address 
     # fields right away (for instance when the shopper is a guest)
     shipping_name = models.CharField(max_length=255, null=True,
-            verbose_name=_('Shipping name'))
+                                     verbose_name=_('Shipping name'))
     shipping_address = models.CharField(max_length=255, null=True,
-            verbose_name=_('Shipping address'))
+                                        verbose_name=_('Shipping address'))
     shipping_address2 = models.CharField(max_length=255, null=True,
-            verbose_name=_('Shipping addresses 2'))
+                                         verbose_name=_('Shipping addresses 2'))
     shipping_city = models.CharField(max_length=255, null=True,
-            verbose_name=_('Shipping City'))
+                                     verbose_name=_('Shipping City'))
     shipping_zip_code = models.CharField(max_length=20, null=True,
-            verbose_name=_('Shipping zip code'))
+                                         verbose_name=_('Shipping zip code'))
     shipping_state = models.CharField(max_length=255, null=True,
-            verbose_name=_('Shipping state'))
+                                      verbose_name=_('Shipping state'))
     shipping_country = models.CharField(max_length=255, null=True,
-            verbose_name=_('Shipping country'))
-    
+                                        verbose_name=_('Shipping country'))
+
     billing_name = models.CharField(max_length=255, null=True,
-            verbose_name=_('Billing name'))
+                                    verbose_name=_('Billing name'))
     billing_address = models.CharField(max_length=255, null=True,
-            verbose_name=_('Billing address'))
+                                       verbose_name=_('Billing address'))
     billing_address2 = models.CharField(max_length=255, null=True,
-            verbose_name=_('Billing address 2'))
+                                        verbose_name=_('Billing address 2'))
     billing_city = models.CharField(max_length=255, null=True,
-            verbose_name=_('Billing city'))
+                                    verbose_name=_('Billing city'))
     billing_zip_code = models.CharField(max_length=20, null=True,
-            verbose_name=_('Billing zip code'))
+                                        verbose_name=_('Billing zip code'))
     billing_state = models.CharField(max_length=255, null=True,
-            verbose_name=_('Billing state'))
+                                     verbose_name=_('Billing state'))
     billing_country = models.CharField(max_length=255, null=True,
-            verbose_name=_('Billing country'))
+                                       verbose_name=_('Billing country'))
 
     created = models.DateTimeField(auto_now_add=True,
-            verbose_name=_('Created'))
+                                   verbose_name=_('Created'))
     modified = models.DateTimeField(auto_now=True,
-            verbose_name=_('Updated'))
-    
+                                    verbose_name=_('Updated'))
+
     objects = OrderManager()
-    
+
     class Meta(object):
         app_label = 'shop'
         verbose_name = _('Order')
         verbose_name_plural = _('Orders')
-    
+
     def is_payed(self):
         """Has this order been integrally payed for?"""
         return self.amount_payed == self.order_total
-    
+
     def is_completed(self):
         return self.status == self.COMPLETED
-    
+
     @property
     def amount_payed(self):
         """
@@ -166,7 +167,7 @@ class Order(models.Model):
         if not result:
             result = Decimal('0')
         return result
-        
+
     @property
     def shipping_costs(self):
         sum = Decimal('0.0')
@@ -179,15 +180,15 @@ class Order(models.Model):
         return _('Order ID: %(id)s') % {'id': self.id}
 
     def get_absolute_url(self):
-        return reverse('order_detail', kwargs={'pk': self.pk })
+        return reverse('order_detail', kwargs={'pk': self.pk})
 
-    def set_billing_address(self, billing_address, billing_city, billing_zip_code, 
-        billing_state, billing_country, billing_address2='', billing_name=''):
+    def set_billing_address(self, billing_address, billing_city, billing_zip_code,
+                            billing_state, billing_country, billing_address2='', billing_name=''):
         """Sets the billing address for this order."""
         if billing_name:
             self.billing_name = billing_name
         else:
-            self.billing_name  = "%s %s" % (self.user.first_name, self.user.last_name)
+            self.billing_name = "%s %s" % (self.user.first_name, self.user.last_name)
 
         self.billing_address = billing_address
         self.billing_address2 = billing_address2
@@ -196,10 +197,10 @@ class Order(models.Model):
         self.billing_state = billing_state
         self.billing_country = str(billing_country)
         self.save()
-    
-    def set_shipping_address(self, shipping_address, shipping_city, 
-        shipping_zip_code, shipping_state, shipping_country,
-        shipping_address2='', shipping_name=''):
+
+    def set_shipping_address(self, shipping_address, shipping_city,
+                             shipping_zip_code, shipping_state, shipping_country,
+                             shipping_address2='', shipping_name=''):
         """Sets the shipping address for this order."""
         if shipping_name:
             self.shipping_name = shipping_name
@@ -214,40 +215,48 @@ class Order(models.Model):
         self.shipping_country = str(shipping_country)
         self.save()
 
+# We need some magic to support django < 1.3 that has no support models.on_delete option
+f_kwargs = {}
+if django.VERSION >= (1, 3):
+    f_kwargs['on_delete'] = models.SET_NULL
+
 class OrderItem(models.Model):
     """
     A line Item for an order.
     """
-    
+
     order = models.ForeignKey(Order, related_name='items',
-            verbose_name=_('Order'))
+                              verbose_name=_('Order'))
     
-    product_reference = models.CharField(max_length=255,
-            verbose_name=_('Product reference'))
+    product = models.ForeignKey(Product, verbose_name=_('Product'), null=True, blank=True, **f_kwargs)
     product_name = models.CharField(max_length=255,
-            verbose_name=_('Product name'))
+                                    verbose_name=_('Product name'))
     unit_price = CurrencyField(verbose_name=_('Unit price'))
     quantity = models.IntegerField(verbose_name=_('Quantity'))
-    
+
     line_subtotal = CurrencyField(verbose_name=_('Line subtotal'))
     line_total = CurrencyField(verbose_name=_('Line total'))
-    
+
     class Meta(object):
         app_label = 'shop'
         verbose_name = _('Order item')
         verbose_name_plural = _('Order items')
-    
-    @property
-    def product(self):
-        return Product.objects.get(pk=self.product_reference)
 
+# Now we clear refrence to product from every OrderItem
+def clear_products(sender, instance, using):
+    for oi in OrderItem.objects.filter(product=instance):
+        oi.product = None
+        oi.save()
+
+if django.VERSION < (1, 3):
+    pre_delete.connect(clear_products, sender=Product)
 
 class OrderExtraInfo(models.Model):
     """
     A holder for extra textual information to attach to this order.
     """
     order = models.ForeignKey(Order, related_name="extra_info",
-            verbose_name=_('Order'))
+                              verbose_name=_('Order'))
     text = models.TextField(verbose_name=_('Extra info'))
 
     class Meta(object):
@@ -264,10 +273,10 @@ class ExtraOrderPriceField(models.Model):
     order = models.ForeignKey(Order, verbose_name=_('Order'))
     label = models.CharField(max_length=255, verbose_name=_('Label'))
     value = CurrencyField(verbose_name=_('Amount'))
-    
+
     # Does this represent shipping costs?
     is_shipping = models.BooleanField(default=False, editable=False,
-            verbose_name=_('Is shipping'))
+                                      verbose_name=_('Is shipping'))
 
     class Meta(object):
         app_label = 'shop'
@@ -283,7 +292,7 @@ class ExtraOrderItemPriceField(models.Model):
     order_item = models.ForeignKey(OrderItem, verbose_name=_('Order item'))
     label = models.CharField(max_length=255, verbose_name=_('Label'))
     value = CurrencyField(verbose_name=_('Amount'))
-    
+
     class Meta(object):
         app_label = 'shop'
         verbose_name = _('Extra order item price field')
@@ -297,13 +306,13 @@ class OrderPayment(models.Model):
     """
     order = models.ForeignKey(Order, verbose_name=_('Order'))
     amount = CurrencyField(verbose_name=_('Amount'))# How much was payed with this particular transfer
-    transaction_id = models.CharField(max_length=255, 
-            verbose_name=_('Transaction ID'),
-            help_text=_("The transaction processor's reference"))
+    transaction_id = models.CharField(max_length=255,
+                                      verbose_name=_('Transaction ID'),
+                                      help_text=_("The transaction processor's reference"))
     payment_method = models.CharField(max_length=255,
-            verbose_name=_('Payment method'),
-            help_text=_("The payment backend use to process the purchase"))
-    
+                                      verbose_name=_('Payment method'),
+                                      help_text=_("The payment backend use to process the purchase"))
+
     class Meta(object):
         app_label = 'shop'
         verbose_name = _('Order payment')

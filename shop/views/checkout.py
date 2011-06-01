@@ -124,8 +124,8 @@ class CheckoutSelectionView(ShopTemplateView):
                   }
         if shipping_address.address2:
             kwargs.update({'shipping_address2':shipping_address.address2})
-        if shipping_address.name:
-            kwargs.update({'shipping_name':shipping_address.name})
+#        if shipping_address.name:
+#            kwargs.update({'shipping_name':shipping_address.name})
             
         order.set_shipping_address(**kwargs)
         
@@ -138,8 +138,8 @@ class CheckoutSelectionView(ShopTemplateView):
                   }
         if billing_address.address2:
             kwargs.update({'billing_address2':billing_address.address2})
-        if billing_address.name:
-            kwargs.update({'billing_name':billing_address.name})
+#        if billing_address.name:
+#            kwargs.update({'billing_name':billing_address.name})
             
         order.set_billing_address(**kwargs)
         order.save()
