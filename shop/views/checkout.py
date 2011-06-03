@@ -148,11 +148,11 @@ class CheckoutSelectionView(ShopTemplateView):
                   'shipping_country':shipping_address.country,
                   'shipping_name':shipping_address.name,
                   }
-        
+
         address_2 = getattr(shipping_address,'address2', None)
         if address_2:
             kwargs.update({'shipping_address2':address_2})
-        
+
         order.set_shipping_address(**kwargs)
         
         kwargs = {
