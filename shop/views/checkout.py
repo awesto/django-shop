@@ -14,31 +14,14 @@ from shop.util.address import AddressModel, get_shipping_address_from_request, \
 from shop.util.cart import get_or_create_cart
 from shop.util.order import add_order_to_request, get_order_from_request
 from shop.views import ShopTemplateView, ShopView
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 
 
-class CheckoutSelectionView(ShopTemplateView):
-    template_name = 'shop/checkout/selection.html'
-
-    def _get_dynamic_form_class_from_factory(self):
-        """
-        Returns a dynamic ModelForm from the loaded AddressModel
-        """
-        form_class = model_forms.modelform_factory(AddressModel, 
-                                                   exclude=['user_shipping', 'user_billing'])
-        return form_class
-    
-    def get_shipping_form_class(self):
-        """
-        Provided for extensibility.
-        """
-        return self._get_dynamic_form_class_from_factory()
-    
-    def get_billing_form_class(self):
-        """
-        Provided for extensibility.
-        """
-        return self._get_dynamic_form_class_from_factory()
-
+class BaseCheckoutMixin(object):
+    '''
+    Provide only create_order_object_from_cart method needed in every checkout view
+    '''
     def create_order_object_from_cart(self):
         """
         This will create an Order object form the current cart, and will pass
@@ -51,16 +34,44 @@ class CheckoutSelectionView(ShopTemplateView):
         add_order_to_request(request, order)
         return order
 
+class BaseCheckoutView(BaseCheckoutMixin, ShopTemplateView):
+    '''
+    Create order directly from cart without any extra questions
+    '''
+    def get(self, request, *args, **kwargs):
+        order = self.create_order_object_from_cart()
+        return HttpResponseRedirect(reverse('thank_you_for_your_order'))
+        
+
+class AddressMixin(object):
+    
+    def _get_dynamic_form_class_from_factory(self):
+        """
+        Returns a dynamic ModelForm from the loaded AddressModel
+        """
+        form_class = model_forms.modelform_factory(AddressModel,
+                                                   exclude=['user_shipping', 'user_billing'])
+        return form_class
+
+
+class ShippingMixin(AddressMixin):
+
+    def get_shipping_form_class(self):
+        """
+        Provided for extensibility.
+        """
+        return self._get_dynamic_form_class_from_factory()
+
     def get_shipping_address_form(self):
         """
         Initializes and handles the form for the shipping address.
         AddressModel is a model of the type defined in settings.SHOP_ADDRESS_MODEL.
-        
-        The trick here is that we generate a ModelForm for whatever model was 
+
+        The trick here is that we generate a ModelForm for whatever model was
         passed to us by the SHOP_ADDRESS_MODEL setting, and us this, prefixed, as
         the shipping address form. So this can be as complex or as simple as one wants.
-        
-        Subclasses of this view can obviously override this method and return any 
+
+        Subclasses of this view can obviously override this method and return any
         other form instead.
         """
         # Try to get the cached version first.
@@ -69,7 +80,7 @@ class CheckoutSelectionView(ShopTemplateView):
         if not form:
             # Create a dynamic Form class for the model specified as the address model
             form_class = self.get_shipping_form_class()
-            
+
             if self.request.method == "POST":
                 form = form_class(self.request.POST, prefix="ship")
             else:
@@ -83,11 +94,21 @@ class CheckoutSelectionView(ShopTemplateView):
                     shipping_address = AddressModel()
                     # Make our new address the default for the User or Guest.
                     assign_address_to_request(self.request, shipping_address, shipping=True)
-                    
+
                 form = form_class(instance=shipping_address, prefix="ship", initial=initial)
             setattr(self, '_shipping_form', form)
         return form
-    
+
+
+class BillingMixin(AddressMixin):
+
+    def get_billing_form_class(self):
+        """
+        Provided for extensibility.
+        """
+        return self._get_dynamic_form_class_from_factory()
+
+
     def get_billing_address_form(self):
         """
         Initializes and handles the form for the shipping address.
@@ -97,7 +118,7 @@ class CheckoutSelectionView(ShopTemplateView):
         form = getattr(self, '_billing_form', None)
         initial = {'name':get_user_name_from_request(self.request)}
         if not form:
-            
+
             # Create a dynamic Form class for the model specified as the address model
             form_class = model_forms.modelform_factory(AddressModel,
                                                        exclude=['user_shipping', 'user_billing'])
@@ -114,14 +135,19 @@ class CheckoutSelectionView(ShopTemplateView):
                     billing_address = AddressModel()
                     # Make our new address the default for the User or Guest.
                     assign_address_to_request(self.request, billing_address, shipping=False)
-                    
+
                 form = form_class(instance=billing_address, prefix="bill", initial=initial)
-                
-            
+
+
             setattr(self, '_billing_form', form)
-            
+
         return form
-            
+
+
+class CheckoutSelectionView(ShippingMixin, BillingMixin, BaseCheckoutView):
+    template_name = 'shop/checkout/selection.html'
+
+
     def get_billing_and_shipping_selection_form(self):
         """
         Get (and cache) the BillingShippingForm instance

@@ -41,11 +41,13 @@ class OrderAdmin(ModelAdmin):
             (None, {'fields': ('user', 'status', 'order_total',
                 'order_subtotal', 'payment_method', 'created', 'modified')}),
             (_('Shipping'), {
+                'classes': ('collapse',),
                 'fields': ('shipping_name', 'shipping_address',
                 'shipping_address2', 'shipping_city', 'shipping_zip_code', 
                 'shipping_state', 'shipping_country',)
                 }),
             (_('Billing'), {
+                'classes': ('collapse',),
                 'fields': ('billing_name', 'billing_address', 
                 'billing_address2', 'billing_city', 'billing_zip_code', 
                 'billing_state', 'billing_country',)
