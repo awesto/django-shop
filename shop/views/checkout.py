@@ -19,9 +19,9 @@ from django.core.urlresolvers import reverse
 
 
 class BaseCheckoutMixin(object):
-    '''
+    """
     Provide only create_order_object_from_cart method needed in every checkout view
-    '''
+    """
     def create_order_object_from_cart(self):
         """
         This will create an Order object form the current cart, and will pass
@@ -35,9 +35,9 @@ class BaseCheckoutMixin(object):
         return order
 
 class BaseCheckoutView(BaseCheckoutMixin, ShopTemplateView):
-    '''
+    """
     Create order directly from cart without any extra questions
-    '''
+    """
     def get(self, request, *args, **kwargs):
         order = self.create_order_object_from_cart()
         return HttpResponseRedirect(reverse('thank_you_for_your_order'))
@@ -99,6 +99,21 @@ class ShippingMixin(AddressMixin):
             setattr(self, '_shipping_form', form)
         return form
 
+    def save_shipping_address(self, order, shipping_address):
+        kwargs = {
+                  'shipping_address':shipping_address.address,
+                  'shipping_city':shipping_address.city,
+                  'shipping_zip_code':shipping_address.zip_code,
+                  'shipping_state':shipping_address.state,
+                  'shipping_country':shipping_address.country,
+                  'shipping_name':shipping_address.name,
+                  }
+
+        address_2 = getattr(shipping_address,'address2', None)
+        if address_2:
+            kwargs.update({'shipping_address2':address_2})
+
+        order.set_shipping_address(**kwargs)
 
 class BillingMixin(AddressMixin):
 
@@ -143,6 +158,22 @@ class BillingMixin(AddressMixin):
 
         return form
 
+    def save_billing_address(self, order, billing_address):
+        kwargs = {
+                  'billing_address':billing_address.address,
+                  'billing_city':billing_address.city,
+                  'billing_zip_code':billing_address.zip_code,
+                  'billing_state':billing_address.state,
+                  'billing_country':billing_address.country,
+                  'billing_name':billing_address.name,
+                  }
+        # If there is a second address line, set it
+        address_2 = getattr(billing_address, 'address2', None)
+        if address_2:
+            kwargs.update({'billing_address2':billing_address.address2})
+
+        order.set_billing_address(**kwargs)
+        order.save()
 
 class CheckoutSelectionView(ShippingMixin, BillingMixin, BaseCheckoutView):
     template_name = 'shop/checkout/selection.html'
@@ -162,40 +193,8 @@ class CheckoutSelectionView(ShippingMixin, BillingMixin, BaseCheckoutView):
         return form
 
     def save_addresses_to_order(self, order, shipping_address, billing_address):
-        """
-        Provided for extensibility.
-        Adds both addresses (shipping and billing addresses to the Order object.
-        """
-        kwargs = {
-                  'shipping_address':shipping_address.address,
-                  'shipping_city':shipping_address.city,
-                  'shipping_zip_code':shipping_address.zip_code,
-                  'shipping_state':shipping_address.state,
-                  'shipping_country':shipping_address.country,
-                  'shipping_name':shipping_address.name,
-                  }
-
-        address_2 = getattr(shipping_address,'address2', None)
-        if address_2:
-            kwargs.update({'shipping_address2':address_2})
-
-        order.set_shipping_address(**kwargs)
-        
-        kwargs = {
-                  'billing_address':billing_address.address,
-                  'billing_city':billing_address.city,
-                  'billing_zip_code':billing_address.zip_code,
-                  'billing_state':billing_address.state,
-                  'billing_country':billing_address.country,
-                  'billing_name':billing_address.name,
-                  }
-        # If there is a second address line, set it
-        address_2 = getattr(billing_address, 'address2', None)
-        if address_2:
-            kwargs.update({'billing_address2':billing_address.address2})
-
-        order.set_billing_address(**kwargs)
-        order.save()
+        self.save_shipping_address(order, shipping_address)
+        self.save_billing_address(order, billing_address)
 
     def post(self, *args, **kwargs):
         """ Called when view is POSTed """

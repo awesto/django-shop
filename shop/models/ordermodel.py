@@ -65,7 +65,6 @@ class OrderManager(models.Manager):
                 eoi.save()
         return o
 
-
 class Order(models.Model):
     """
     A model representing an Order.
@@ -102,40 +101,40 @@ class Order(models.Model):
     order_subtotal = CurrencyField(verbose_name=_('Order subtotal'))
     order_total = CurrencyField(verbose_name='Order total')
 
-    payment_method = models.CharField(max_length=255, null=True,
+    payment_method = models.CharField(max_length=255, null=True, blank=True,
                                       verbose_name=_('Payment method'))
 
     # Addresses MUST be copied over to the order when it's created, however
     # the fields must be nullable since sometimes we cannot create the address 
     # fields right away (for instance when the shopper is a guest)
-    shipping_name = models.CharField(max_length=255, null=True,
+    shipping_name = models.CharField(max_length=255, null=True, blank=True,
                                      verbose_name=_('Shipping name'))
-    shipping_address = models.CharField(max_length=255, null=True,
+    shipping_address = models.CharField(max_length=255, null=True, blank=True,
                                         verbose_name=_('Shipping address'))
-    shipping_address2 = models.CharField(max_length=255, null=True,
+    shipping_address2 = models.CharField(max_length=255, null=True, blank=True,
                                          verbose_name=_('Shipping addresses 2'))
-    shipping_city = models.CharField(max_length=255, null=True,
+    shipping_city = models.CharField(max_length=255, null=True, blank=True,
                                      verbose_name=_('Shipping City'))
-    shipping_zip_code = models.CharField(max_length=20, null=True,
+    shipping_zip_code = models.CharField(max_length=20, null=True, blank=True,
                                          verbose_name=_('Shipping zip code'))
-    shipping_state = models.CharField(max_length=255, null=True,
+    shipping_state = models.CharField(max_length=255, null=True, blank=True,
                                       verbose_name=_('Shipping state'))
-    shipping_country = models.CharField(max_length=255, null=True,
+    shipping_country = models.CharField(max_length=255, null=True, blank=True,
                                         verbose_name=_('Shipping country'))
 
-    billing_name = models.CharField(max_length=255, null=True,
+    billing_name = models.CharField(max_length=255, null=True, blank=True,
                                     verbose_name=_('Billing name'))
-    billing_address = models.CharField(max_length=255, null=True,
+    billing_address = models.CharField(max_length=255, null=True, blank=True,
                                        verbose_name=_('Billing address'))
-    billing_address2 = models.CharField(max_length=255, null=True,
+    billing_address2 = models.CharField(max_length=255, null=True, blank=True,
                                         verbose_name=_('Billing address 2'))
-    billing_city = models.CharField(max_length=255, null=True,
+    billing_city = models.CharField(max_length=255, null=True, blank=True,
                                     verbose_name=_('Billing city'))
-    billing_zip_code = models.CharField(max_length=20, null=True,
+    billing_zip_code = models.CharField(max_length=20, null=True, blank=True,
                                         verbose_name=_('Billing zip code'))
-    billing_state = models.CharField(max_length=255, null=True,
+    billing_state = models.CharField(max_length=255, null=True, blank=True,
                                      verbose_name=_('Billing state'))
-    billing_country = models.CharField(max_length=255, null=True,
+    billing_country = models.CharField(max_length=255, null=True, blank=True,
                                        verbose_name=_('Billing country'))
 
     created = models.DateTimeField(auto_now_add=True,
@@ -221,7 +220,7 @@ class OrderItem(models.Model):
                               verbose_name=_('Order'))
     
     product = models.ForeignKey(Product, verbose_name=_('Product'), null=True, blank=True, **f_kwargs)
-    product_name = models.CharField(max_length=255,
+    product_name = models.CharField(max_length=255, blank=True, null=True,
                                     verbose_name=_('Product name'))
     unit_price = CurrencyField(verbose_name=_('Unit price'))
     quantity = models.IntegerField(verbose_name=_('Quantity'))
@@ -233,6 +232,11 @@ class OrderItem(models.Model):
         app_label = 'shop'
         verbose_name = _('Order item')
         verbose_name_plural = _('Order items')
+
+    def save(self, *args, **kwargs):
+        if self.product:
+            self.product_name = self.product.name
+        super(OrderItem, self).save(*args, **kwargs)
 
 # Now we clear refrence to product from every OrderItem
 def clear_products(sender, instance, using):
