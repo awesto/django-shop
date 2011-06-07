@@ -29,6 +29,8 @@ class OrderItemInline(admin.TabularInline):
 #TODO: add ExtraOrderItemPriceField inline, ideas?
 
 class OrderAdmin(ModelAdmin):
+    def queryset(self, request):
+        return Order.objects.exclude(status=Order.PROCESSING)
     list_display = ('id', 'user', 'shipping_name', 'status','order_total',
             'payment_method', 'created')
     list_filter = ('status', 'payment_method', )
