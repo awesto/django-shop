@@ -16,6 +16,7 @@ CONTRIBUTORS
 * Rolo Mawlabaux
 * Justin Steward 
 * Kristian Øllegaard
+* Martin Ogden
 
 TRANSLATORS
 ===========
