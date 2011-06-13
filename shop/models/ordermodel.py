@@ -222,7 +222,7 @@ class OrderItem(models.Model):
     
     product_reference = models.CharField(max_length=255,
             verbose_name=_('Product reference'))
-    product_name = models.CharField(max_length=255,
+    product_name = models.CharField(max_length=255, null=True, blank=True,
             verbose_name=_('Product name'))
     product = models.ForeignKey(Product, verbose_name=_('Product'), null=True, blank=True, **f_kwargs)
     unit_price = CurrencyField(verbose_name=_('Unit price'))
@@ -235,6 +235,12 @@ class OrderItem(models.Model):
         app_label = 'shop'
         verbose_name = _('Order item')
         verbose_name_plural = _('Order items')
+
+
+    def save(self, *args, **kwargs):
+        if self.product:
+            self.product_name = self.product.name
+        super(OrderItem, self).save(*args, **kwargs)
 
 
 # Now we clear refrence to product from every OrderItem
