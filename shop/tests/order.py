@@ -280,38 +280,6 @@ class OrderConversionTestCase(TestCase):
         self.assertEqual(o.billing_state, self.address2.state)    
         self.assertEqual(o.billing_country, self.address2.country.name)
         
-    def test_order_saves_item_pk_as_a_string(self):
-        """
-        That's needed in case shipment or payment backends need to make fancy 
-        calculations on products (i.e. shipping based on weight/size...)
-        """
-        # Add another product to the database, so it's ID isn't 1
-        product2 = Product.objects.create(name="TestPrduct2",
-        slug="TestPrduct2",
-        active=True,
-        unit_price=self.PRODUCT_PRICE)
-        
-        self.cart.add_product(product2)
-        self.cart.update()
-        self.cart.save()
-        
-        self.address.is_billing = False
-        self.address.save()
-        
-        o = Order.objects.create_from_cart(self.cart)
-        
-        # Must not return None, obviously
-        self.assertNotEqual(o, None)
-        
-        # take the first item from the order:
-        oi = OrderItem.objects.filter(order=o)[0]
-        
-        self.assertEqual(oi.product_reference, str(product2.id))
-        
-        # Lookup works?
-        prod = oi.product
-        self.assertEqual(prod,product2)
-
     def test_create_order_respects_product_specific_get_price_method(self):
         baseproduct = BaseProduct.objects.create(unit_price=Decimal('10.0'))
         product = ProductVariation.objects.create(baseproduct=baseproduct)
