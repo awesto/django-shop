@@ -7,8 +7,12 @@ from shop.cart.modifiers_pool import cart_modifiers_pool
 from shop.models.cartmodel import Cart
 from shop.models.productmodel import Product
 from shop.tests.utils.context_managers import SettingsOverride
-from project.models import BaseProduct
 
+SKIP_BASEPRODUCT_TEST = False
+try:
+    from project.models import BaseProduct, ProductVariation
+except:
+    SKIP_BASEPRODUCT_TEST = True
 
 class CartTestCase(TestCase):
     PRODUCT_PRICE = Decimal('100')
@@ -134,6 +138,8 @@ class CartTestCase(TestCase):
             self.assertNotEqual(initial, self.cart.last_updated)
 
     def test_cart_item_should_use_specific_type_to_get_price(self):
+        if SKIP_BASEPRODUCT_TEST:
+            return
         base_product = BaseProduct.objects.create(unit_price=self.PRODUCT_PRICE)
         variation = base_product.productvariation_set.create(
                 name="Variation 1"
