@@ -30,7 +30,7 @@ class Cart(models.Model):
         self.total_price = Decimal('0.0')
         self.extra_price_fields = [] # List of tuples (label, value) 
     
-    def add_product(self, product, quantity=1, merge=True):
+    def add_product(self, product, quantity=1, merge=True, queryset=None):
         """
         Adds a (new) product to the cart.
         The last parameter to this method, `merge`, controls wheter we should
@@ -55,17 +55,22 @@ class Cart(models.Model):
         and you don't want to have your products merge (to loose their specific
         variations, for example).
         """
-        item = CartItem.objects.filter(cart=self).filter(product=product)
+        if queryset:
+            item = queryset
+        else:
+            item = CartItem.objects.filter(cart=self).filter(product=product)
         # Let's see if we already have an Item with the same product ID
         if item.exists() and merge:
             cart_item = item[0]
             cart_item.quantity = cart_item.quantity + int(quantity)
             cart_item.save()
         else:
-            cart_item = CartItem.objects.create(cart=self,quantity=quantity,product=product)
+            cart_item = CartItem.objects.create(
+                cart=self,quantity=quantity,product=product)
             cart_item.save()
             
         self.save() # to get the last updated timestamp
+        return cart_item
         
     def update_quantity(self, cart_item_id, quantity):
         """
