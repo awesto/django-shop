@@ -21,7 +21,15 @@ class ProductsTestCase(TestCase):
     def test01_should_return_all_active_products(self):
         self._create_fixture()
         tag = Products(DummyParser(), DummyTokens())
-        result = tag.get_context(None)
+        result = tag.get_context(None, None)
         self.assertTrue(result.has_key('products'))
         self.assertEqual(len(result['products']), 2)
+
+    def test02_should_return_objects_given_as_argument(self):
+        self._create_fixture()
+        tag = Products(DummyParser(), DummyTokens())
+        arg_objects = Product.objects.filter(active=False)
+        result = tag.get_context(None, arg_objects)
+        self.assertTrue(result.has_key('products'))
+        self.assertEqual(len(result['products']), 1)
 

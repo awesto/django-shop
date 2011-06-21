@@ -54,10 +54,16 @@ you need to display your products on pages other than just product_list.html.
 Usage
 -----
 
+If no argument is given, the tag will just render all active products. The tag
+allows an optional argument ``objects``. It should be a queryset of Product
+objects. If given, the tag will render the given products only instead of all
+active products.
+
 ::
 
   {% load shop_tags %}
   {% products %}
+  {% products object_list %}
 
 In order to define your own template, override the template
 ``shop/templatetags/_products.html``. The tag adds a variable called

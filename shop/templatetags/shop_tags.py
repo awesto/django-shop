@@ -47,10 +47,14 @@ class Products(InclusionTag):
     Inclusion tag for displaying all products.
     """
     template = 'shop/templatetags/_products.html'
+    options = Options(
+        Argument('objects', resolve=True, required=False),
+    )
 
-    def get_context(self, context):
-        products = Product.objects.filter(active=True)
+    def get_context(self, context, objects):
+        if not objects:
+            objects = Product.objects.filter(active=True)
         return {
-            'products': products
+            'products': objects,
         }
 register.tag(Products)
