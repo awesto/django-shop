@@ -54,7 +54,6 @@ class Products(InclusionTag):
     def get_context(self, context, objects):
         if not objects:
             objects = Product.objects.filter(active=True)
-        return {
-            'products': objects,
-        }
+        context.update({'products': objects, })
+        return context
 register.tag(Products)
