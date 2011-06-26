@@ -11,8 +11,9 @@ The "instructions" :)
 .. toctree::
     :maxdepth: 1
     :numbered:
-    
+
     getting-started
+    templatetags
     contributing
 
 How to
@@ -29,7 +30,7 @@ Various short articles on how to do specific things
     howto/how-to-payment
     howto/how-to-shipping
 
-    
+
 Reference
 ==========
 
@@ -38,6 +39,6 @@ Reference sheets and lists regarding django SHOP
 .. toctree::
     :maxdepth: 1
     :numbered:
-    
+
     plugins
     settings

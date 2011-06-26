@@ -4,13 +4,14 @@ from cart_modifiers import ( CartModifiersTestCase,
 from order import ( OrderConversionTestCase, OrderTestCase, OrderUtilTestCase,
     OrderPaymentTestCase )
 from payment import PayOnDeliveryTestCase, GeneralPaymentBackendTestCase
-from util import (CurrencyFieldTestCase, CartUtilsTestCase, LoaderTestCase, 
+from util import (CurrencyFieldTestCase, CartUtilsTestCase, LoaderTestCase,
                   AddressUtilTestCase)
 from shipping import GeneralShippingBackendTestCase, ShippingApiTestCase
 from product import ProductTestCase, ProductStatisticsTestCase
 from views import ( ProductDetailViewTestCase, CartDetailsViewTestCase,
         CartViewTestCase, OrderListViewTestCase )
-from views_checkout import (ShippingBillingViewTestCase, 
+from views_checkout import (ShippingBillingViewTestCase,
                             ShippingBillingViewOrderStuffTestCase,
 			    CheckoutCartToOrderTestCase,)
 from api import ShopApiTestCase
+from templatetags import ProductsTestCase
