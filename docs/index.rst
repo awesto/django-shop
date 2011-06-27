@@ -29,6 +29,19 @@ Various short articles on how to do specific things
     howto/how-to-cart-mod
     howto/how-to-payment
     howto/how-to-shipping
+    howto/how-to-interact-with-the-cart
+
+Advanced how to
+===============
+
+More focused short articles, focusing on less general and more advanced use cases.
+
+.. toctree::
+    :maxdepth: 2
+    :numbered:
+
+    howto/how-to-extend-django-shop-models
+    howto/how-to-use-your-own-addressmodel
 
 
 Reference
