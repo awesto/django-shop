@@ -91,7 +91,13 @@ class Product(PolymorphicModel):
         """
         return self.name
 
-
+#===============================================================================
+# Extensibility
+#===============================================================================
+"""
+This overrides the Product model with the class loaded from the SHOP_PRODUCT_MODEL
+setting if it exists.
+"""
 PRODUCT_MODEL = getattr(settings, 'SHOP_PRODUCT_MODEL', None)
 if PRODUCT_MODEL:
     Product = load_class(PRODUCT_MODEL, 'SHOP_PRODUCT_MODEL')

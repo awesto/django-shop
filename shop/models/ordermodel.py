@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
+from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
 from django.utils.translation import ugettext_lazy as _
-from django.core.urlresolvers import reverse
-
 from shop.models.cartmodel import CartItem
 from shop.models.productmodel import Product
 from shop.util.fields import CurrencyField
+from shop.util.loader import load_class
+
 
 class OrderManager(models.Manager):
     
@@ -298,3 +300,20 @@ class OrderPayment(models.Model):
         app_label = 'shop'
         verbose_name = _('Order payment')
         verbose_name_plural = _('Order payments')
+        
+#===============================================================================
+# Extensibility
+#===============================================================================
+"""
+This overrides the various models with classes loaded from the corresponding
+setting if it exists.
+"""
+# Order model
+ORDER_MODEL = getattr(settings, 'SHOP_ORDER_MODEL', None)
+if ORDER_MODEL:
+    Order = load_class(ORDER_MODEL, 'SHOP_ORDER_MODEL')
+    
+# Order item model
+ORDERITEM_MODEL = getattr(settings, 'SHOP_ORDERITEM_MODEL', None)
+if ORDERITEM_MODEL:
+    OrderItem = load_class(ORDERITEM_MODEL, 'SHOP_ORDERITEM_MODEL')

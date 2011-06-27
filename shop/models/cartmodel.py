@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 from shop.cart.modifiers_pool import cart_modifiers_pool
 from shop.models.productmodel import Product
-from django.utils.translation import ugettext_lazy as _
+from shop.util.loader import load_class
 
 class Cart(models.Model):
     """
@@ -192,3 +194,18 @@ class CartItem(models.Model):
 
         return self.line_total
 
+#===============================================================================
+# Extensibility
+#===============================================================================
+"""
+This overrides the various models with classes loaded from the corresponding
+setting if it exists.
+"""
+# Cart model
+CART_MODEL = getattr(settings, 'SHOP_CART_MODEL', None)
+if CART_MODEL:
+    Cart = load_class(CART_MODEL, 'SHOP_CART_MODEL')
+# Cart item model
+CARTITEM_MODEL = getattr(settings, 'SHOP_CARTITEM_MODEL', None)
+if CARTITEM_MODEL:
+    CartItem = load_class(CART_MODEL, 'SHOP_CARTITEM_MODEL')
