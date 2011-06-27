@@ -52,7 +52,8 @@ Extensibility Settings
 =======================
 
 Theses settings allow developers to extend the shop's functionality by replacing
-models by their own models. More information about how to 
+models by their own models. More information about how to use theses settings 
+can be found in the :doc:`/howto/how-to-extend-django-shop-models` section.
 
 SHOP_CART_MODEL
 ================
