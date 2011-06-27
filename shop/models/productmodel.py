@@ -48,7 +48,7 @@ class ProductManager(PolymorphicManager):
     def active(self):
         return self.filter(active=True)
 
-class DefaultBaseProduct(PolymorphicModel):
+class Product(PolymorphicModel):
     """
     A basic product for the shop
     Most of the already existing fields here should be generic enough to reside
@@ -72,7 +72,6 @@ class DefaultBaseProduct(PolymorphicModel):
         app_label = 'shop'
         verbose_name = _('Product')
         verbose_name_plural = _('Products')
-        abstract = True
     
     def __unicode__(self):
         return self.name
@@ -93,15 +92,6 @@ class DefaultBaseProduct(PolymorphicModel):
         return self.name
 
 
-PRODUCT_BASEMODEL = getattr(settings, 'SHOP_PRODUCT_BASEMODEL', None)
-if PRODUCT_BASEMODEL:
-    BaseProduct = load_class(settings.SHOP_PRODUCT_BASEMODEL)
-else:
-    BaseProduct = DefaultBaseProduct
-
-
-class Product(BaseProduct):
-    class Meta(object):
-        app_label = 'shop'
-        verbose_name = _('Product')
-        verbose_name_plural = _('Products')
+PRODUCT_MODEL = getattr(settings, 'SHOP_PRODUCT_MODEL', None)
+if PRODUCT_MODEL:
+    Product = load_class(PRODUCT_MODEL, 'SHOP_PRODUCT_MODEL')

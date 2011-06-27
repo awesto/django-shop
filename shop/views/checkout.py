@@ -6,11 +6,12 @@ from django.core.urlresolvers import reverse
 from django.forms import models as model_forms
 from django.http import HttpResponseRedirect
 from shop.forms import BillingShippingForm
+from shop.models import AddressModel
 from shop.models.ordermodel import Order
 from shop.order_signals import completed
-from shop.util.address import AddressModel, get_shipping_address_from_request, \
-    assign_address_to_request, get_billing_address_from_request, \
-    get_user_name_from_request
+from shop.util.address import (get_shipping_address_from_request, 
+    assign_address_to_request, get_billing_address_from_request, 
+    get_user_name_from_request)
 from shop.util.cart import get_or_create_cart
 from shop.util.order import add_order_to_request, get_order_from_request
 from shop.views import ShopTemplateView, ShopView

@@ -1,13 +1,9 @@
 #-*- coding: utf-8 -*-
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
-from shop.util.loader import load_class
 from django.core.exceptions import ObjectDoesNotExist
+from shop.models import AddressModel
 
-"""
-Load the class specified by the user as the Address Model.
-"""
-AddressModel = load_class(getattr(settings,'SHOP_ADDRESS_MODEL', None) or 'shop.addressmodel.models.Address')
 
 #===============================================================================
 # Addresses handling
