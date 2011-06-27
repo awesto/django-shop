@@ -46,3 +46,29 @@ SHOP_SHIPPING_FLAT_RATE
 
 The "flat rate" shipping module uses this to know how much to charge. This
 should be a string, and will be converted to a Decimal by the backend. 
+
+=======================
+Extensibility Settings
+=======================
+
+Theses settings allow developers to extend the shop's functionality by replacing
+models by their own models. More information about how to 
+
+SHOP_CART_MODEL
+================
+(Optional)
+A python classpath to the class you want to replace the Cart model with.
+Example value: `myproject.models.MyCartModel`
+
+SHOP_ADDRESS_MODEL
+================
+(Optional)
+A python classpath to the class you want to replace the Address model with.
+See :doc:`/howto/how-to-use-your-own-clientmodel` for a more complete example.
+Example value: `myproject.models.MyAddressModel`
+
+SHOP_ORDER_MODEL
+================
+(Optional)
+A python classpath to the class you want to replace the Oredr model with.
+Example value: `myproject.models.MyOrderModel`
