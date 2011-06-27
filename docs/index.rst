@@ -29,6 +29,7 @@ Various short articles on how to do specific things
     howto/how-to-cart-mod
     howto/how-to-payment
     howto/how-to-shipping
+    howto/how-to-test-your-app
 
 
 Reference
