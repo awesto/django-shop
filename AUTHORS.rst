@@ -1,5 +1,5 @@
-AUTHORS
-=======
+CORE DEVELOPERS
+===============
 
 * Chris Glass (chrisglass)
 * Martin Brochhaus
