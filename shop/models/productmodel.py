@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
+from django.conf import settings
 from django.db import models
+from django.db.models import Count
+from django.utils.translation import ugettext_lazy as _
 from polymorphic.manager import PolymorphicManager
 from polymorphic.polymorphic_model import PolymorphicModel
 from shop.util.fields import CurrencyField
-from django.db.models import Count
-from django.utils.translation import ugettext_lazy as _
+from shop.util.loader import load_class
 
 class ProductStatisticsManager(PolymorphicManager):
     """
@@ -88,4 +90,8 @@ class Product(PolymorphicModel):
         Return the name of this Product (provided for extensibility)
         """
         return self.name
-    
+
+
+PRODUCT_MODEL = getattr(settings, 'SHOP_PRODUCT_MODEL', None)
+if PRODUCT_MODEL:
+    Product = load_class(PRODUCT_MODEL, 'SHOP_PRODUCT_MODEL')
