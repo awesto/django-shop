@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
+from django.conf import settings
 from django.db import models
+from django.db.models import Count
+from django.utils.translation import ugettext_lazy as _
 from polymorphic.manager import PolymorphicManager
 from polymorphic.polymorphic_model import PolymorphicModel
 from shop.util.fields import CurrencyField
-from django.db.models import Count
-from django.utils.translation import ugettext_lazy as _
+from shop.util.loader import load_class
 
 class ProductStatisticsManager(PolymorphicManager):
     """
@@ -46,7 +48,7 @@ class ProductManager(PolymorphicManager):
     def active(self):
         return self.filter(active=True)
 
-class Product(PolymorphicModel):
+class DefaultBaseProduct(PolymorphicModel):
     """
     A basic product for the shop
     Most of the already existing fields here should be generic enough to reside
@@ -70,6 +72,7 @@ class Product(PolymorphicModel):
         app_label = 'shop'
         verbose_name = _('Product')
         verbose_name_plural = _('Products')
+        abstract = True
     
     def __unicode__(self):
         return self.name
@@ -88,4 +91,17 @@ class Product(PolymorphicModel):
         Return the name of this Product (provided for extensibility)
         """
         return self.name
-    
+
+
+PRODUCT_BASEMODEL = getattr(settings, 'SHOP_PRODUCT_BASEMODEL', None)
+if PRODUCT_BASEMODEL:
+    BaseProduct = load_class(settings.SHOP_PRODUCT_BASEMODEL)
+else:
+    BaseProduct = DefaultBaseProduct
+
+
+class Product(BaseProduct):
+    class Meta(object):
+        app_label = 'shop'
+        verbose_name = _('Product')
+        verbose_name_plural = _('Products')
