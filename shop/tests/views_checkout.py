@@ -164,22 +164,9 @@ class ShippingBillingViewOrderStuffTestCase(TestCase):
         
     def check_order_address(self):
         order = self.order
-        self.assertEqual(order.shipping_name, self.s_add.name)
-        self.assertEqual(order.shipping_address, self.s_add.address)
-        self.assertEqual(order.shipping_address2, self.s_add.address2)
-        self.assertEqual(order.shipping_city, self.s_add.city)
-        self.assertEqual(order.shipping_zip_code, self.s_add.zip_code)
-        self.assertEqual(order.shipping_state, self.s_add.state)
-        self.assertEqual(order.shipping_country, self.s_add.country.name)
-        
-        self.assertEqual(order.billing_name, self.b_add.name)
-        self.assertEqual(order.billing_address, self.b_add.address)
-        self.assertEqual(order.billing_address2, self.b_add.address2)
-        self.assertEqual(order.billing_city, self.b_add.city)
-        self.assertEqual(order.billing_zip_code, self.b_add.zip_code)
-        self.assertEqual(order.billing_state, self.b_add.state)
-        self.assertEqual(order.billing_country, self.b_add.country.name)
-        
+        self.assertEqual(order.shipping_address_text, self.s_add.as_text())
+        self.assertEqual(order.billing_address_text, self.b_add.as_text())
+
     def test_assigning_to_order_from_view_works(self):
         view = CheckoutSelectionView(request=self.request)
         view.save_addresses_to_order(self.order, self.s_add, self.b_add)
