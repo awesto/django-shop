@@ -29,10 +29,10 @@ class OrderItemInline(admin.TabularInline):
 #TODO: add ExtraOrderItemPriceField inline, ideas?
 
 class OrderAdmin(ModelAdmin):
-    list_display = ('id', 'user', 'shipping_name', 'status','order_total',
+    list_display = ('id', 'user', 'status','order_total',
             'payment_method', 'created')
     list_filter = ('status', 'payment_method', )
-    search_fields = ('id', 'shipping_name', 'user__username')
+    search_fields = ('id', 'shipping_address_text', 'user__username')
     date_hierarchy = 'created'
     inlines = (OrderItemInline, OrderExtraInfoInline, 
             ExtraOrderPriceFieldInline, OrderPaymentInline)
@@ -41,14 +41,10 @@ class OrderAdmin(ModelAdmin):
             (None, {'fields': ('user', 'status', 'order_total',
                 'order_subtotal', 'payment_method', 'created', 'modified')}),
             (_('Shipping'), {
-                'fields': ('shipping_name', 'shipping_address',
-                'shipping_address2', 'shipping_city', 'shipping_zip_code', 
-                'shipping_state', 'shipping_country',)
+                'fields': ('shipping_address_text',),
                 }),
             (_('Billing'), {
-                'fields': ('billing_name', 'billing_address', 
-                'billing_address2', 'billing_city', 'billing_zip_code', 
-                'billing_state', 'billing_country',)
+                'fields': ('billing_address_text',)
                 }),
             )
 
