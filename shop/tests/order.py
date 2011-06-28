@@ -257,29 +257,13 @@ class OrderConversionTestCase(TestCase):
         # Must not return None, obviously
         self.assertNotEqual(o, None)
         
-        o.set_shipping_address(self.address.address, self.address.city,
-            self.address.zip_code, self.address.state, self.address.country,
-            self.address.name, self.address.address2)
-        
-        o.set_billing_address(self.address2.address, self.address2.city,
-            self.address2.zip_code, self.address2.state, self.address2.country,
-            self.address2.name, self.address2.address2)
+        o.set_shipping_address(self.address)
+        o.set_billing_address(self.address2)
         
         # Check that addresses are transfered properly
-        self.assertEqual(o.shipping_name, "%s %s" % (self.user.first_name, self.user.last_name))
-        self.assertEqual(o.shipping_address, self.address.address)
-        self.assertEqual(o.shipping_address2, self.address.address2)
-        self.assertEqual(o.shipping_zip_code, self.address.zip_code)
-        self.assertEqual(o.shipping_state, self.address.state)    
-        self.assertEqual(o.shipping_country, self.address.country.name)
-        
-        self.assertEqual(o.billing_name, "%s %s" % (self.user.first_name, self.user.last_name))
-        self.assertEqual(o.billing_address, self.address2.address)
-        self.assertEqual(o.billing_address2, self.address2.address2)
-        self.assertEqual(o.billing_zip_code, self.address2.zip_code)
-        self.assertEqual(o.billing_state, self.address2.state)    
-        self.assertEqual(o.billing_country, self.address2.country.name)
-        
+        self.assertEqual(o.shipping_address_text, self.address.as_text())
+        self.assertEqual(o.billing_address_text, self.address2.as_text())
+
     def test_order_saves_item_pk_as_a_string(self):
         """
         That's needed in case shipment or payment backends need to make fancy 

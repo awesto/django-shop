@@ -106,38 +106,9 @@ class Order(models.Model):
     payment_method = models.CharField(max_length=255, null=True,
             verbose_name=_('Payment method'))
     
-    # Addresses MUST be copied over to the order when it's created, however
-    # the fields must be nullable since sometimes we cannot create the address 
-    # fields right away (for instance when the shopper is a guest)
-    shipping_name = models.CharField(max_length=255, null=True,
-            verbose_name=_('Shipping name'))
-    shipping_address = models.CharField(max_length=255, null=True,
-            verbose_name=_('Shipping address'))
-    shipping_address2 = models.CharField(max_length=255, null=True,
-            verbose_name=_('Shipping addresses 2'))
-    shipping_city = models.CharField(max_length=255, null=True,
-            verbose_name=_('Shipping City'))
-    shipping_zip_code = models.CharField(max_length=20, null=True,
-            verbose_name=_('Shipping zip code'))
-    shipping_state = models.CharField(max_length=255, null=True,
-            verbose_name=_('Shipping state'))
-    shipping_country = models.CharField(max_length=255, null=True,
-            verbose_name=_('Shipping country'))
-    
-    billing_name = models.CharField(max_length=255, null=True,
-            verbose_name=_('Billing name'))
-    billing_address = models.CharField(max_length=255, null=True,
-            verbose_name=_('Billing address'))
-    billing_address2 = models.CharField(max_length=255, null=True,
-            verbose_name=_('Billing address 2'))
-    billing_city = models.CharField(max_length=255, null=True,
-            verbose_name=_('Billing city'))
-    billing_zip_code = models.CharField(max_length=20, null=True,
-            verbose_name=_('Billing zip code'))
-    billing_state = models.CharField(max_length=255, null=True,
-            verbose_name=_('Billing state'))
-    billing_country = models.CharField(max_length=255, null=True,
-            verbose_name=_('Billing country'))
+    shipping_address_text = models.TextField(_('Shipping address'), blank=True, null=True)
+    billing_address_text = models.TextField(_('Billing address'), blank=True, null=True)
+
 
     created = models.DateTimeField(auto_now_add=True,
             verbose_name=_('Created'))
@@ -183,28 +154,27 @@ class Order(models.Model):
     def get_absolute_url(self):
         return reverse('order_detail', kwargs={'pk': self.pk })
 
-    def set_billing_address(self, billing_address, billing_city, billing_zip_code, 
-        billing_state, billing_country, billing_name, billing_address2=''):
-        self.billing_name = billing_name
-        self.billing_address = billing_address
-        self.billing_address2 = billing_address2
-        self.billing_city = billing_city
-        self.billing_zip_code = billing_zip_code
-        self.billing_state = billing_state
-        self.billing_country = str(billing_country)
-        self.save()
+    def set_billing_address(self, billing_address):
+        """
+        Process billing_address trying to get as_text method from address
+        and copying.
+        You can override this method to process address more granulary
+        e.g. you can copy address instance and save FK to it in your order class
+        """
+        if  hasattr(billing_address, 'as_text'):
+            self.billing_address_text = billing_address.as_text()
+            self.save()
     
-    def set_shipping_address(self, shipping_address, shipping_city, 
-        shipping_zip_code, shipping_state, shipping_country, shipping_name,
-        shipping_address2=''):
-        self.shipping_name = shipping_name
-        self.shipping_address = shipping_address
-        self.shipping_address2 = shipping_address2
-        self.shipping_city = shipping_city
-        self.shipping_zip_code = shipping_zip_code
-        self.shipping_state = shipping_state
-        self.shipping_country = str(shipping_country)
-        self.save()
+    def set_shipping_address(self, shipping_address):
+        """
+        Process shipping_address trying to get as_text method from address
+        and copying.
+        You can override this method to process address more granulary
+        e.g. you can copy address instance and save FK to it in your order class
+        """
+        if hasattr(shipping_address, 'as_text'):
+            self.shipping_address_text = shipping_address.as_text()
+            self.save()
 
 class OrderItem(models.Model):
     """

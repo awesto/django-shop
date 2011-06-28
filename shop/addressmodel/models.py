@@ -6,6 +6,20 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from django.conf import settings
+
+BASE_ADDRESS_TEMPLATE = \
+_("""
+Name: %s,
+Address: %s,
+Zip-Code: %s,
+City: %s,
+State: %s,
+Country: %s
+""")
+
+ADDRESS_TEMPLATE = getattr(settings, 'SHOP_ADDRESS_TEMPLATE', BASE_ADDRESS_TEMPLATE)
+
 class Country(models.Model):
     name = models.CharField(max_length=255)
 
@@ -29,6 +43,14 @@ class Address(models.Model):
     state = models.CharField(max_length=255)
     country = models.ForeignKey(Country, blank=True, null=True)
     
-    class Meta:
-        verbose_name_plural = "addresses"
-        
+    class Meta(object):
+        verbose_name = _('Address')
+        verbose_name_plural = _("Addresses")
+
+    def clone(self):
+        new_kwargs = dict([(fld.name, getattr(self, fld.name)) for fld in self._meta.fields if fld.name != 'id'])
+        return self.__class__.objects.create(**new_kwargs)
+
+    def as_text(self):
+        return ADDRESS_TEMPLATE % (self.name, '%s\n%s' % (self.address, self.address2),
+                                   self.city, self.zip_code, self.state, self.country)
