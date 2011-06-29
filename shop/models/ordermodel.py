@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
+from distutils.version import LooseVersion
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -182,7 +183,7 @@ class Order(models.Model):
 
 # We need some magic to support django < 1.3 that has no support models.on_delete option
 f_kwargs = {}
-if django.VERSION >= (1, 3):
+if LooseVersion(django.get_version()) >= LooseVersion('1.3'):
     f_kwargs['on_delete'] = models.SET_NULL
 
 class OrderItem(models.Model):
@@ -222,7 +223,7 @@ def clear_products(sender, instance, using, **kwargs):
         oi.product = None
         oi.save()
 
-if django.VERSION < (1, 3):
+if LooseVersion(django.get_version()) < LooseVersion('1.3'):
     pre_delete.connect(clear_products, sender=Product)
 
 class OrderExtraInfo(models.Model):
