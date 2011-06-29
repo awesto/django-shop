@@ -1,3 +1,8 @@
+Version 0.0.5
+=============
+
+* Fix a bug in 0.0.4 that made South migration fail with Django < 1.3
+
 Version 0.0.4
 =============
 
