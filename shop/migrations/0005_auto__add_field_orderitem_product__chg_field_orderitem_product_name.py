@@ -20,8 +20,8 @@ class Migration(SchemaMigration):
         # Deleting field 'OrderItem.product'
         db.delete_column('shop_orderitem', 'product_id')
 
-        # Changing field 'OrderItem.product_name'
-        db.alter_column('shop_orderitem', 'product_name', self.gf('django.db.models.fields.CharField')(default='', max_length=255))
+        # User chose to not deal with backwards NULL issues for 'OrderItem.product_name'
+        raise RuntimeError("Cannot reverse this migration. 'OrderItem.product_name' and its values cannot be restored.")
 
 
     models = {
@@ -92,26 +92,14 @@ class Migration(SchemaMigration):
         },
         'shop.order': {
             'Meta': {'object_name': 'Order'},
-            'billing_address': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'billing_address2': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'billing_city': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'billing_country': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'billing_name': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'billing_state': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'billing_zip_code': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True'}),
+            'billing_address_text': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'order_subtotal': ('django.db.models.fields.DecimalField', [], {'default': "'0.00'", 'max_digits': '12', 'decimal_places': '2'}),
             'order_total': ('django.db.models.fields.DecimalField', [], {'default': "'0.00'", 'max_digits': '12', 'decimal_places': '2'}),
             'payment_method': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'shipping_address': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'shipping_address2': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'shipping_city': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'shipping_country': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'shipping_name': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'shipping_state': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'shipping_zip_code': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True'}),
+            'shipping_address_text': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'status': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'null': 'True', 'blank': 'True'})
         },
