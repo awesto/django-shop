@@ -1,9 +1,20 @@
+Version 0.0.4
+=============
+
+* The Address model was isolated in a separate app and made easily
+  extensible/replaceable (see docs)
+* Addresses are now stored as one single text field on the Order objects
+* OrderItems now have a ForeignKey relation to Products (to retrieve the
+  product more easily)
+* New templatetag ("products")
+* Made most models swappable using settings (see docs)
 * Changed checkout views. The shop uses one single checkout view by default now.
 * Created new mechanism to use custom Address models (see docs)
 * Moved all Address-related models to shop.addressmodel sub-app
 * Removed Client Class
 * Removed Product.long_description and Product.short_description from the
   Product superclass
+* Bugfixes, docs update
 
 Version 0.0.3
 =============
