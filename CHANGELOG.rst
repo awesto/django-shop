@@ -1,8 +1,6 @@
 Version 0.0.4
 =============
 
-* The Address model was isolated in a separate app and made easily
-  extensible/replaceable (see docs)
 * Addresses are now stored as one single text field on the Order objects
 * OrderItems now have a ForeignKey relation to Products (to retrieve the
   product more easily)
