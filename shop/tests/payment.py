@@ -167,7 +167,6 @@ class PayOnDeliveryTestCase(TestCase):
         self.orderitem = OrderItem()
         self.orderitem.order = self.order
     
-        self.orderitem.product_reference = 'fakeref'
         self.orderitem.product_name = 'Test item'
         self.orderitem.unit_price = Decimal("100")
         self.orderitem.quantity = 1

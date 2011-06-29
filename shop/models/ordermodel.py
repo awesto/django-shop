@@ -6,6 +6,9 @@ from django.core.urlresolvers import reverse
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
 from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse
+from django.db.models.signals import pre_delete
+import django
 from shop.models.cartmodel import CartItem
 from shop.models.productmodel import Product
 from shop.util.fields import CurrencyField
@@ -176,6 +179,12 @@ class Order(models.Model):
             self.shipping_address_text = shipping_address.as_text()
             self.save()
 
+
+# We need some magic to support django < 1.3 that has no support models.on_delete option
+f_kwargs = {}
+if django.VERSION >= (1, 3):
+    f_kwargs['on_delete'] = models.SET_NULL
+
 class OrderItem(models.Model):
     """
     A line Item for an order.
@@ -186,8 +195,9 @@ class OrderItem(models.Model):
     
     product_reference = models.CharField(max_length=255,
             verbose_name=_('Product reference'))
-    product_name = models.CharField(max_length=255,
+    product_name = models.CharField(max_length=255, null=True, blank=True,
             verbose_name=_('Product name'))
+    product = models.ForeignKey(Product, verbose_name=_('Product'), null=True, blank=True, **f_kwargs)
     unit_price = CurrencyField(verbose_name=_('Unit price'))
     quantity = models.IntegerField(verbose_name=_('Quantity'))
     
@@ -198,11 +208,22 @@ class OrderItem(models.Model):
         app_label = 'shop'
         verbose_name = _('Order item')
         verbose_name_plural = _('Order items')
-    
-    @property
-    def product(self):
-        return Product.objects.get(pk=self.product_reference)
 
+
+    def save(self, *args, **kwargs):
+        if self.product:
+            self.product_name = self.product.name
+        super(OrderItem, self).save(*args, **kwargs)
+
+
+# Now we clear refrence to product from every OrderItem
+def clear_products(sender, instance, using):
+    for oi in OrderItem.objects.filter(product=instance):
+        oi.product = None
+        oi.save()
+
+if django.VERSION < (1, 3):
+    pre_delete.connect(clear_products, sender=Product)
 
 class OrderExtraInfo(models.Model):
     """

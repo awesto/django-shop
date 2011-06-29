@@ -25,8 +25,8 @@ class ProductStatisticsManager(PolymorphicManager):
         from shop.models.ordermodel import OrderItem
         # Get an aggregate of product references and their respective counts
         top_products_data = OrderItem.objects.values(
-                'product_reference').annotate(
-                    product_count=Count('product_reference')
+                'product').annotate(
+                    product_count=Count('product')
                 ).order_by('product_count'
             )[:quantity]
 
@@ -35,7 +35,7 @@ class ProductStatisticsManager(PolymorphicManager):
  
         top_products_list = [] # The actual list of products
         for values in top_products_data:
-            prod = Product.objects.get(pk=values.get('product_reference'))
+            prod = values.get('product')
             # We could eventually return the count easily here, if needed.
             top_products_list.append(prod)
 
