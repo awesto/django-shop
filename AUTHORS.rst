@@ -17,6 +17,7 @@ CONTRIBUTORS
 * Justin Steward 
 * Kristian Øllegaard
 * Martin Ogden
+* Pavel Zhukov
 
 TRANSLATORS
 ===========
