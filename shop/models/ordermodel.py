@@ -217,7 +217,7 @@ class OrderItem(models.Model):
 
 
 # Now we clear refrence to product from every OrderItem
-def clear_products(sender, instance, using):
+def clear_products(sender, instance, using, **kwargs):
     for oi in OrderItem.objects.filter(product=instance):
         oi.product = None
         oi.save()
