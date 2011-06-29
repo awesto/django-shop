@@ -158,7 +158,7 @@ file in your project, for example modifiers.py, and add the following::
 You can now use this newly created tax modifier in your shop! to do so, simply
 add the class to the list of cart modifiers defined in your settings.py file::
 
-    SHOP_CART_MODIFIERS = ['myshop.modifers.Fixed7PercentTaxRate']
+    SHOP_CART_MODIFIERS = ['myshop.modifiers.Fixed7PercentTaxRate']
     
 Restart your server, and you should now see that a cart's total is dynamically
 augmented to reflect this new rule.
