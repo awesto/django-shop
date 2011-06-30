@@ -139,6 +139,8 @@ Adding taxes calculation according to local regulations is also something that
 you will be likely to have to do. It is relatively easy as well: create a new
 file in your project, for example modifiers.py, and add the following::
 
+    import decimal    
+
     from shop.cart.cart_modifiers_base import BaseCartModifier
     
     class Fixed7PercentTaxRate(BaseCartModifier):
@@ -150,7 +152,7 @@ file in your project, for example modifiers.py, and add the following::
         """
         
         def add_extra_cart_price_field(self, cart):
-            taxes = (7/100) * cart.subtotal_price
+            taxes = decimal.Decimal('0.07') * cart.subtotal_price
             to_append = ('Taxes total', taxes)
             cart.extra_price_fields.append(to_append)
             return cart
