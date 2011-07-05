@@ -53,7 +53,7 @@ class OrderManager(models.Manager):
         for label, value in cart.extra_price_fields:
             eoi = ExtraOrderPriceField()
             eoi.order = o
-            eoi.label = label
+            eoi.label = str(label)
             eoi.value = value
             eoi.save()
         
@@ -74,7 +74,7 @@ class OrderManager(models.Manager):
             for label, value in item.extra_price_fields:
                 eoi = ExtraOrderItemPriceField()
                 eoi.order_item = i
-                eoi.label = label
+                eoi.label = str(label)
                 eoi.value = value
                 eoi.save()
         return o
