@@ -43,7 +43,7 @@ django SHOP.
 
 SHOP_SHIPPING_FLAT_RATE
 ========================
-
+(Optional)
 The "flat rate" shipping module uses this to know how much to charge. This
 should be a string, and will be converted to a Decimal by the backend. 
 
