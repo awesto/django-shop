@@ -66,26 +66,24 @@ class CheckoutSelectionView(ShopTemplateView):
         """
         # Try to get the cached version first.
         form = getattr(self, '_shipping_form', None)
-        initial = {'name':get_user_name_from_request(self.request)}
         if not form:
             # Create a dynamic Form class for the model specified as the address model
             form_class = self.get_shipping_form_class()
 
+            # Try to get a shipping address instance from the request (user or session))
+            shipping_address = get_shipping_address_from_request(self.request)
             if self.request.method == "POST":
-                form = form_class(self.request.POST, prefix="ship")
+                form = form_class(self.request.POST, prefix="ship", instance=shipping_address)
             else:
-                # Try to get a shipping address instance from the request (user or session))
-                shipping_address = get_shipping_address_from_request(self.request)
                 # We should either have an instance, or None
                 if not shipping_address:
                     # The user or guest doesn't already have a favorite address.
                     # Instanciate a blank one, and use this as the default value for
                     # the form.
                     shipping_address = AddressModel()
-                    # Make our new address the default for the User or Guest.
-                    assign_address_to_request(self.request, shipping_address, shipping=True)
-
-                form = form_class(instance=shipping_address, prefix="ship", initial=initial)
+                
+                # Instanciate the form
+                form = form_class(instance=shipping_address, prefix="ship")
             setattr(self, '_shipping_form', form)
         return form
 
@@ -96,31 +94,26 @@ class CheckoutSelectionView(ShopTemplateView):
         """
         # Try to get the cached version first.
         form = getattr(self, '_billing_form', None)
-        initial = {'name':get_user_name_from_request(self.request)}
         if not form:
-
             # Create a dynamic Form class for the model specified as the address model
             form_class = model_forms.modelform_factory(AddressModel,
                                                        exclude=['user_shipping', 'user_billing'])
+            
+            # Try to get a shipping address instance from the request (user or session))
+            billing_address = get_billing_address_from_request(self.request)
             if self.request.method == "POST":
-                form = form_class(self.request.POST, prefix="bill")
+                form = form_class(self.request.POST, prefix="bill", instance=billing_address)
             else:
-                # Try to get a shipping address instance from the request (user or session))
-                billing_address = get_billing_address_from_request(self.request)
                 # We should either have an instance, or None
                 if not billing_address:
                     # The user or guest doesn't already have a favorite address.
                     # Instansiate a blank one, and use this as the default value for
                     # the form.
                     billing_address = AddressModel()
-                    # Make our new address the default for the User or Guest.
-                    assign_address_to_request(self.request, billing_address, shipping=False)
-
-                form = form_class(instance=billing_address, prefix="bill", initial=initial)
-
-
+                
+                #Instanciate the form
+                form = form_class(instance=billing_address, prefix="bill")
             setattr(self, '_billing_form', form)
-
         return form
 
     def get_billing_and_shipping_selection_form(self):
