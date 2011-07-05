@@ -12,21 +12,11 @@
   <tr>
     <td style="vertical-align:top;">
       <strong>{% trans "Shipping Address" %}</strong><br>
-      {% if order.shipping_name %}{{ order.shipping_name }}<br>{% endif %}
-      {% if order.shipping_address %}{{ order.shipping_address }}<br>{% endif %}
-      {% if order.shipping_address2 %}{{ order.shipping_address2 }}<br>{% endif %}
-      {% if order.shipping_zip_code %}{{ order.shipping_zip_code }}<br>{% endif %}
-      {% if order.shipping_state %}{{ order.shipping_state }}<br>{% endif %}
-      {% if order.shipping_country %}{{ order.shipping_country }}<br>{% endif %}
+      {% if order.shipping_address_text %}<textarea>{{ order.shipping_address_text }}</textarea>{% endif %}
     </td>
     <td style="vertical-align:top;">
       <strong>{% trans "Billing Address" %}</strong><br>
-      {% if order.billing_name %}{{ order.billing_name }}<br>{% endif %}
-      {% if order.billing_address %}{{ order.billing_address }}<br>{% endif %}
-      {% if order.billing_address2 %}{{ order.billing_address2 }}<br>{% endif %}
-      {% if order.billing_zip_code %}{{ order.billing_zip_code }}<br>{% endif %}
-      {% if order.billing_state %}{{ order.billing_state }}<br>{% endif %}
-      {% if order.billing_country %}{{ order.billing_country }}<br>{% endif %}
+      {% if order.billing_address_text %}<textarea>{{ order.billing_address_text }}</textarea>{% endif %}
     </td>
   </tr>
 </table>
