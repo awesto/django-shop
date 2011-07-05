@@ -46,7 +46,10 @@ class Address(models.Model):
     class Meta(object):
         verbose_name = _('Address')
         verbose_name_plural = _("Addresses")
-
+    
+    def __unicode__(self):
+        return '%s (%s, %s)' % (self.name, self.zip_code, self.city)
+        
     def clone(self):
         new_kwargs = dict([(fld.name, getattr(self, fld.name)) for fld in self._meta.fields if fld.name != 'id'])
         return self.__class__.objects.create(**new_kwargs)

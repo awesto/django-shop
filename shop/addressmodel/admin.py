@@ -13,5 +13,6 @@ class CountryAdmin(ModelAdmin):
 admin.site.register(Country, CountryAdmin)
 
 class AddressAdmin(ModelAdmin):
-    pass
+    list_display = ('name', 'address','address2', 'zip_code', 'city', 'country',
+                    'user_shipping', 'user_billing')
 admin.site.register(Address, AddressAdmin)
