@@ -115,9 +115,6 @@ class Order(models.Model):
     order_subtotal = CurrencyField(verbose_name=_('Order subtotal'))
     order_total = CurrencyField(verbose_name='Order total')
     
-    payment_method = models.CharField(max_length=255, null=True,
-            verbose_name=_('Payment method'))
-    
     shipping_address_text = models.TextField(_('Shipping address'), blank=True, null=True)
     billing_address_text = models.TextField(_('Billing address'), blank=True, null=True)
 
