@@ -1,6 +1,8 @@
 Version 0.0.6
 =============
 
+* The "thank you" view does not crash anymore when it's refreshed. It now
+  displays the last order the user placed.
 * Fixed a bug in the shippingbilling view where the returned form was a from
   class instead of a from instance.
 
