@@ -3,7 +3,7 @@ from decimal import Decimal
 from distutils.version import LooseVersion
 from django.conf import settings
 from django.contrib.auth.models import User, AnonymousUser
-from django.core.urlresolvers import reverse, reverse
+from django.core.urlresolvers import reverse
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
 from django.db.models.signals import pre_delete
