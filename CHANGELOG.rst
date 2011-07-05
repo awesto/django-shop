@@ -1,6 +1,8 @@
 Version 0.0.6
 =============
 
+* Creating AddressModels for use with the checkout view (the default ones at
+  least) were bugged, and would spawn two instances of Address for every user.
 * Removed redundant payment method field on the Order model.
 * The "thank you" view does not crash anymore when it's refreshed. It now
   displays the last order the user placed.

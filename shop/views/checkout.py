@@ -9,8 +9,8 @@ from shop.forms import BillingShippingForm
 from shop.models import AddressModel
 from shop.models.ordermodel import Order
 from shop.order_signals import completed
-from shop.util.address import (get_shipping_address_from_request,
-    get_billing_address_from_request)
+from shop.util.address import get_shipping_address_from_request, \
+    get_billing_address_from_request, assign_address_to_request
 from shop.util.cart import get_or_create_cart
 from shop.util.order import add_order_to_request, get_order_from_request
 from shop.views import ShopTemplateView, ShopView
@@ -149,6 +149,11 @@ class CheckoutSelectionView(ShopTemplateView):
             order = self.create_order_object_from_cart()
 
             self.save_addresses_to_order(order, shipping_address, billing_address)
+            
+            # The following marks addresses as being default addresses for shipping
+            # and billing. For more options (amazon style), we should remove this 
+            assign_address_to_request(self.request, shipping_address, shipping=True)
+            assign_address_to_request(self.request, billing_address, shipping=False)
 
             billingshipping_form = self.get_billing_and_shipping_selection_form()
             if billingshipping_form.is_valid():
