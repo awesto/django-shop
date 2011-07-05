@@ -53,4 +53,4 @@ class Address(models.Model):
 
     def as_text(self):
         return ADDRESS_TEMPLATE % (self.name, '%s\n%s' % (self.address, self.address2),
-                                   self.city, self.zip_code, self.state, self.country)
+                                   self.zip_code, self.city, self.state, self.country)
