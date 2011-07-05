@@ -1,5 +1,4 @@
 #-*- coding: utf-8 -*-
-from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ObjectDoesNotExist
 from shop.models import AddressModel
@@ -18,8 +17,8 @@ def get_shipping_address_from_request(request):
     if request.user and not isinstance(request.user, AnonymousUser):
         # There is a logged-in user here, but he might not have an address defined.
         try:
-            shipping_address = request.user.shipping_address
-        except (AttributeError, ObjectDoesNotExist):
+            shipping_address = AddressModel.objects.get(user_shipping=request.user)
+        except AddressModel.DoesNotExist:
             shipping_address = None
     else:
         # The client is a guest - let's use the session instead.
@@ -39,8 +38,8 @@ def get_billing_address_from_request(request):
     if request.user and not isinstance(request.user, AnonymousUser):
         # There is a logged-in user here, but he might not have an address defined.
         try:
-            billing_address = request.user.billing_address
-        except (AttributeError, ObjectDoesNotExist):
+            billing_address = AddressModel.objects.get(user_billing=request.user)
+        except AddressModel.DoesNotExist:
             billing_address = None
     else:
         # The client is a guest - let's use the session instead.
@@ -82,5 +81,5 @@ def get_user_name_from_request(request):
     """
     name = ''
     if request.user and not isinstance(request.user, AnonymousUser):
-        name = request.user.get_full_name()
+        name = request.user.get_full_name() # TODO: Administrators!
     return name
