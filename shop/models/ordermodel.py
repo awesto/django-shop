@@ -2,21 +2,29 @@
 from decimal import Decimal
 from distutils.version import LooseVersion
 from django.conf import settings
-from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User, AnonymousUser
+from django.core.urlresolvers import reverse, reverse
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
-from django.utils.translation import ugettext_lazy as _
-from django.core.urlresolvers import reverse
 from django.db.models.signals import pre_delete
-import django
+from django.utils.translation import ugettext_lazy as _
 from shop.models.cartmodel import CartItem
 from shop.models.productmodel import Product
 from shop.util.fields import CurrencyField
 from shop.util.loader import load_class
+import django
 
 
 class OrderManager(models.Manager):
+    
+    def get_latest_for_user(self, user):
+        """
+        Returns the last Order (from a time perspective) a given user has placed.
+        """
+        if user and not isinstance(user, AnonymousUser):
+            return self.filter(user=user).order_by('-modified')[0]
+        else:
+            return None
     
     @transaction.commit_on_success
     def create_from_cart(self, cart):

@@ -190,9 +190,12 @@ class ThankYouView(ShopTemplateView):
 
         # Set the order status:
         order = get_order_from_request(self.request)
-        order.status = Order.COMPLETED
-        order.save()
-        completed.send(sender=self, order=order)
+        if order:
+            order.status = Order.COMPLETED
+            order.save()
+            completed.send(sender=self, order=order)
+        else:
+            order = Order.objects.get_latest_for_user(self.request.user)
         ctx.update({'order': order,})
 
         # Empty the customers basket, to reflect that the purchase was completed
