@@ -132,8 +132,7 @@ class CheckoutSelectionView(ShopTemplateView):
             if self.request.method == 'POST':
                 form = BillingShippingForm(self.request.POST)
             else:
-                form = BillingShippingForm
-            form = form()
+                form = BillingShippingForm()
             self._billingshipping_form = form
         return form
 
