@@ -133,6 +133,7 @@ class CheckoutSelectionView(ShopTemplateView):
                 form = BillingShippingForm(self.request.POST)
             else:
                 form = BillingShippingForm
+            form = form()
             self._billingshipping_form = form
         return form
 
