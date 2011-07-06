@@ -1,6 +1,7 @@
 Version 0.0.7
 =============
 
+* Added complete German translations
 * Added verbose names to the Address model in order to have shipping and billing forms that has multilingual labels.
 
 Version 0.0.6
