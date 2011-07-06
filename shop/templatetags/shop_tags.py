@@ -52,7 +52,7 @@ class Products(InclusionTag):
     )
 
     def get_context(self, context, objects):
-        if not objects:
+        if objects is None:
             objects = Product.objects.filter(active=True)
         context.update({'products': objects, })
         return context
