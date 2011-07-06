@@ -33,3 +33,9 @@ class ProductsTestCase(TestCase):
         self.assertTrue(result.has_key('products'))
         self.assertEqual(len(result['products']), 1)
 
+    def test03_should_return_empty_array_if_no_objects_found(self):
+        self._create_fixture()
+        tag = Products(DummyParser(), DummyTokens())
+        arg_objects = Product.objects.filter(slug='non-existant-slug')
+        result = tag.get_context({}, arg_objects)
+        self.assertEqual(len(result['products']), 0)
