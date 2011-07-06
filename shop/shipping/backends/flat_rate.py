@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-
 from decimal import Decimal
+
 from django.conf import settings
 from django.conf.urls.defaults import patterns, url
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.utils.translation import gettext as _
 
 class FlatRateShipping(object):
     """
@@ -12,8 +13,8 @@ class FlatRateShipping(object):
     charges a flat rate defined in settings.SHOP_SHIPPING_FLAT_RATE
     """
     url_namespace = 'flat'
-    backend_name = 'Flat rate'
-    
+    backend_name = _('Flat rate')
+
 
     def __init__(self, shop):
         self.shop = shop # This is the shop reference, it allows this backend
@@ -30,7 +31,7 @@ class FlatRateShipping(object):
         It calls shop.finished() to go to the next step in the checkout process.
         """
         self.shop.add_shipping_costs(self.shop.get_order(request),
-                                     'Flat shipping',
+                                     _('Flat shipping'),
                                      Decimal(self.rate))
         return self.shop.finished(self.shop.get_order(request))
         # That's an HttpResponseRedirect
@@ -42,8 +43,9 @@ class FlatRateShipping(object):
         """
         ctx = {}
         ctx.update({'shipping_costs':Decimal(self.rate)})
-        return render_to_response('shop/shipping/flat_rate/display_fees.html', ctx,
-                                  context_instance=RequestContext(request))
+        return render_to_response(
+            'shop/shipping/flat_rate/display_fees.html', ctx,
+            context_instance=RequestContext(request))
 
 
     def get_urls(self):
