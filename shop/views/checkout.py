@@ -5,18 +5,23 @@ This models the checkout process using views.
 from django.core.urlresolvers import reverse
 from django.forms import models as model_forms
 from django.http import HttpResponseRedirect
+
 from shop.forms import BillingShippingForm
 from shop.models import AddressModel
 from shop.models.ordermodel import Order
 from shop.order_signals import completed
-from shop.util.address import get_shipping_address_from_request, \
-    get_billing_address_from_request, assign_address_to_request
+from shop.util.address import (
+    assign_address_to_request,
+    get_billing_address_from_request, 
+    get_shipping_address_from_request, 
+)
 from shop.util.cart import get_or_create_cart
 from shop.util.order import add_order_to_request, get_order_from_request
 from shop.views import ShopTemplateView, ShopView
+from shop.util.login_mixin import LoginMixin
 
 
-class CheckoutSelectionView(ShopTemplateView):
+class CheckoutSelectionView(LoginMixin, ShopTemplateView):
     template_name = 'shop/checkout/selection.html'
 
     def _get_dynamic_form_class_from_factory(self):
