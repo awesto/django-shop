@@ -143,24 +143,9 @@ class PayOnDeliveryTestCase(TestCase):
         self.order.status = Order.PROCESSING
         ship_address = self.address
         bill_address = self.address2
-        
-        self.order.shipping_name = "%s %s" %(self.user.first_name, 
-                                              self.user.last_name)
-        
-        self.order.shipping_address = ship_address.address
-        self.order.shipping_address2 = ship_address.address2
-        self.order.shipping_zip_code = ship_address.zip_code
-        self.order.shipping_state = ship_address.state
-        self.order.shipping_country = ship_address.country.name
-        
-        self.order.shipping_name = "%s %s" %(self.user.first_name, 
-                                              self.user.last_name)
-        self.order.billing_address = bill_address.address
-        self.order.billing_address2 = bill_address.address2
-        self.order.billing_zip_code = bill_address.zip_code
-        self.order.billing_state = bill_address.state
-        self.order.billing_country = bill_address.country.name
-        
+
+        self.order.set_shipping_address(ship_address)
+        self.order.set_billing_address(bill_address)
         self.order.save()
         
         # Orderitems
