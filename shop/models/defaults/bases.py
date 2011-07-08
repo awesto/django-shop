@@ -25,7 +25,7 @@ class BaseCart(models.Model):
         verbose_name_plural = _('Carts')
 
     def __init__(self, *args, **kwargs):
-        super(Cart, self).__init__(*args,**kwargs)
+        super(BaseCart, self).__init__(*args,**kwargs)
         # That will hold things like tax totals or total discount
         self.subtotal_price = Decimal('0.0')
         self.total_price = Decimal('0.0')
@@ -158,7 +158,7 @@ class BaseCartItem(models.Model):
     This is a holder for the quantity of items in the cart and, obviously, a
     pointer to the actual Product being purchased :)
     """
-    cart = models.ForeignKey(Cart, related_name="items")
+    cart = models.ForeignKey('shop.Cart', related_name="items")
 
     quantity = models.IntegerField()
 
@@ -173,7 +173,7 @@ class BaseCartItem(models.Model):
     def __init__(self, *args, **kwargs):
         # That will hold extra fields to display to the user
         # (ex. taxes, discount)
-        super(CartItem, self).__init__(*args,**kwargs)
+        super(BaseCartItem, self).__init__(*args,**kwargs)
         self.extra_price_fields = [] # list of tuples (label, value)
         # These must not be stored, since their components can be changed between
         # sessions / logins etc...
