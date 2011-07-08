@@ -82,6 +82,17 @@ class OrderUtilTestCase(TestCase):
         order2 = Order.objects.create(user=self.user)
         ret = get_order_from_request(self.request)
         self.assertEqual(ret, order2)
+
+    def test_addresses_are_conserved_properly(self):
+        session = {}
+        session['order_id'] = self.order.id
+        setattr(self.request, 'session', session)
+        ret = get_order_from_request(self.request)
+        self.assertEqual(ret, self.order)
+        self.assertEqual(ret.shipping_address_text,
+                        self.order.shipping_address_text)
+        self.assertEqual(ret.billing_address_text,
+                        self.order.billing_address_text)
         
 
 class OrderTestCase(TestCase):

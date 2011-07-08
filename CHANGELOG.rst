@@ -1,6 +1,7 @@
 Version 0.0.7
 =============
 
+* Fixed bug in the extensibility section of CartItem
 * Added complete German translations
 * Added verbose names to the Address model in order to have shipping and billing forms that has multilingual labels.
 

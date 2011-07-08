@@ -20,6 +20,7 @@ class Cart(InclusionTag):
 
     def get_context(self, context):
         cart = get_or_create_cart(context['request'])
+        cart.update()
         return {
             'cart': cart
         }
