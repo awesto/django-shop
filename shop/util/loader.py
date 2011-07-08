@@ -35,3 +35,10 @@ def load_class(class_path, setting_name=None):
             txt = 'Backend module "%s" does not define a "%s" class.' % (class_module, class_name)
         raise exceptions.ImproperlyConfigured(txt)
     return clazz
+
+def validate_custom_model(model, app_label, name):
+    if model.__name__ != name:
+        raise exceptions.ImproperlyConfigured('Model %r must be named %r, not %r' % (model, name, model.__name__))
+    if model._meta.app_label != app_label:
+        raise exceptions.ImproperlyConfigured('The app_label of %r must be %r, not %r' % (model, app_label, model._meta.app_label))
+    

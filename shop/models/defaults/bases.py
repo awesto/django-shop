@@ -1,10 +1,66 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
+from distutils.version import LooseVersion
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django.db import models
+from django.db.models.aggregates import Sum
+from django.db.models.loading import get_model
 from django.utils.translation import ugettext_lazy as _
 from shop.cart.modifiers_pool import cart_modifiers_pool
-from shop.models.productmodel import Product
+from shop.util.fields import CurrencyField
+from polymorphic.polymorphic_model import PolymorphicModel
+import django
+
+
+#==============================================================================
+# Product
+#==============================================================================
+
+class BaseProduct(PolymorphicModel):
+    """
+    A basic product for the shop
+    Most of the already existing fields here should be generic enough to reside
+    on the "base model" and not on an added property
+    """
+    
+    name = models.CharField(max_length=255, verbose_name=_('Name'))
+    slug = models.SlugField(verbose_name=_('Slug'))
+    active = models.BooleanField(default=False, verbose_name=_('Active'))
+    
+    date_added = models.DateTimeField(auto_now_add=True, verbose_name=_('Date added'))
+    last_modified = models.DateTimeField(auto_now=True, verbose_name=_('Last modified'))
+    
+    unit_price = CurrencyField(verbose_name=_('Unit price'))
+    
+    class Meta(object):
+        abstract = True
+        app_label = 'shop'
+        verbose_name = _('Product')
+        verbose_name_plural = _('Products')
+    
+    def __unicode__(self):
+        return self.name
+    
+    def get_absolute_url(self):
+        return reverse('product_detail', args=[self.slug])
+    
+    def get_price(self):
+        """
+        Return the price for this item (provided for extensibility)
+        """
+        return self.unit_price
+    
+    def get_name(self):
+        """
+        Return the name of this Product (provided for extensibility)
+        """
+        return self.name
+
+
+#==============================================================================
+# Carts
+#==============================================================================
 
 class BaseCart(models.Model):
     """
@@ -67,6 +123,7 @@ class BaseCart(models.Model):
         >>> self.items[1].quantity
         1
         """
+        CartItem = get_model('shop', 'CartItem')
         if queryset == None:
             queryset = CartItem.objects.filter(cart=self, product=product)
         item = queryset
@@ -99,8 +156,8 @@ class BaseCart(models.Model):
     def delete_item(self, cart_item_id):
         """
         A simple convenience method to delete one of the cart's items. This
-        allows to implicitely check for "access rights" since we insure the cartitem
-        is actually in the user's cart
+        allows to implicitely check for "access rights" since we insure the
+        cartitem is actually in the user's cart
         """
         cart_item = self.items.get(pk=cart_item_id)
         cart_item.delete()
@@ -108,18 +165,20 @@ class BaseCart(models.Model):
 
     def update(self):
         """
-        This should be called whenever anything is changed in the cart (added or removed)
-        It will loop on all line items in the cart, and call all the price modifiers
-        on each row.
+        This should be called whenever anything is changed in the cart (added
+        or removed).
+        It will loop on all line items in the cart, and call all the price
+        modifiers on each row.
         After doing this, it will compute and update the order's total and
         subtotal fields, along with any payment field added along the way by
         modifiers.
 
-        Note that theses added fields are not stored - we actually want to reflect
-        rebate and tax changes on the *cart* items, but we don't want that for
-        the order items (since they are legally binding after the "purchase" button
-        was pressed)
+        Note that theses added fields are not stored - we actually want to
+        reflect rebate and tax changes on the *cart* items, but we don't want
+        that for the order items (since they are legally binding after the
+        "purchase" button was pressed)
         """
+        CartItem = get_model('shop', 'CartItem')
         items = CartItem.objects.filter(cart=self)
         self.subtotal_price = Decimal('0.0') # Reset the subtotal
 
@@ -162,7 +221,7 @@ class BaseCartItem(models.Model):
 
     quantity = models.IntegerField()
 
-    product = models.ForeignKey(Product)
+    product = models.ForeignKey('shop.Product')
 
     class Meta(object):
         abstract = True
@@ -193,3 +252,155 @@ class BaseCartItem(models.Model):
             self.line_total = self.line_total + value
 
         return self.line_total
+
+
+#==============================================================================
+# Orders
+#==============================================================================
+
+
+
+        
+class BaseOrder(models.Model):
+    """
+    A model representing an Order.
+    
+    An order is the "in process" counterpart of the shopping cart, which holds
+    stuff like the shipping and billing addresses (copied from the User profile)
+    when the Order is first created), list of items, and holds stuff like the
+    status, shipping costs, taxes, etc...
+    """
+    
+    PROCESSING = 1 # New order, no shipping/payment backend chosen yet
+    PAYMENT = 2 # The user is filling in payment information
+    CONFIRMED = 3 # Chosen shipping/payment backend, processing payment
+    COMPLETED = 4 # Successful payment confirmed by payment backend
+    SHIPPED = 5 # successful order shipped to client
+    CANCELLED = 6 # order has been cancelled
+
+    STATUS_CODES = (
+        (PROCESSING, 'Processing'),
+        (PAYMENT, 'Selecting payment'),
+        (CONFIRMED, 'Confirmed'),
+        (COMPLETED, 'Completed'),
+        (SHIPPED, 'Shipped'),
+        (CANCELLED, 'Cancelled'),
+    )
+    
+    # If the user is null, the order was created with a session
+    user = models.ForeignKey(User, blank=True, null=True,
+            verbose_name=_('User'))
+    
+    status = models.IntegerField(choices=STATUS_CODES, default=PROCESSING,
+            verbose_name=_('Status'))
+    
+    order_subtotal = CurrencyField(verbose_name=_('Order subtotal'))
+    order_total = CurrencyField(verbose_name='Order total')
+    
+    shipping_address_text = models.TextField(_('Shipping address'), blank=True, null=True)
+    billing_address_text = models.TextField(_('Billing address'), blank=True, null=True)
+
+
+    created = models.DateTimeField(auto_now_add=True,
+            verbose_name=_('Created'))
+    modified = models.DateTimeField(auto_now=True,
+            verbose_name=_('Updated'))
+    
+    class Meta(object):
+        abstract = True
+        app_label = 'shop'
+        verbose_name = _('Order')
+        verbose_name_plural = _('Orders')
+
+    def __unicode__(self):
+        return _('Order ID: %(id)s') % {'id': self.id}
+
+    def get_absolute_url(self):
+        return reverse('order_detail', kwargs={'pk': self.pk })
+    
+    def is_payed(self):
+        """Has this order been integrally payed for?"""
+        return self.amount_payed == self.order_total
+    
+    def is_completed(self):
+        return self.status == self.COMPLETED
+    
+    @property
+    def amount_payed(self):
+        """
+        The amount payed is the sum of related orderpayments
+        """
+        OrderPayment = get_model('shop', 'OrderPayment')
+        sum = OrderPayment.objects.filter(order=self).aggregate(sum=Sum('amount'))
+        result = sum.get('sum')
+        if not result:
+            result = Decimal('-1')
+        return result
+        
+    @property
+    def shipping_costs(self):
+        sum = Decimal('0.0')
+        ExtraOrderPriceField = get_model('shop', 'ExtraOrderPriceField')
+        cost_list = ExtraOrderPriceField.objects.filter(order=self).filter(is_shipping=True)
+        for cost in cost_list:
+            sum = sum + cost.value
+        return sum
+
+    def set_billing_address(self, billing_address):
+        """
+        Process billing_address trying to get as_text method from address
+        and copying.
+        You can override this method to process address more granulary
+        e.g. you can copy address instance and save FK to it in your order class
+        """
+        if  hasattr(billing_address, 'as_text'):
+            self.billing_address_text = billing_address.as_text()
+            self.save()
+    
+    def set_shipping_address(self, shipping_address):
+        """
+        Process shipping_address trying to get as_text method from address
+        and copying.
+        You can override this method to process address more granulary
+        e.g. you can copy address instance and save FK to it in your order class
+        """
+        if hasattr(shipping_address, 'as_text'):
+            self.shipping_address_text = shipping_address.as_text()
+            self.save()
+
+
+# We need some magic to support django < 1.3 that has no support models.on_delete option
+f_kwargs = {}
+if LooseVersion(django.get_version()) >= LooseVersion('1.3'):
+    f_kwargs['on_delete'] = models.SET_NULL
+
+
+class BaseOrderItem(models.Model):
+    """
+    A line Item for an order.
+    """
+    
+    order = models.ForeignKey('shop.Order', related_name='items',
+            verbose_name=_('Order'))
+    
+    product_reference = models.CharField(max_length=255,
+            verbose_name=_('Product reference'))
+    product_name = models.CharField(max_length=255, null=True, blank=True,
+            verbose_name=_('Product name'))
+    product = models.ForeignKey('shop.Product', verbose_name=_('Product'), null=True, blank=True, **f_kwargs)
+    unit_price = CurrencyField(verbose_name=_('Unit price'))
+    quantity = models.IntegerField(verbose_name=_('Quantity'))
+    
+    line_subtotal = CurrencyField(verbose_name=_('Line subtotal'))
+    line_total = CurrencyField(verbose_name=_('Line total'))
+    
+    class Meta(object):
+        abstract = True
+        app_label = 'shop'
+        verbose_name = _('Order item')
+        verbose_name_plural = _('Order items')
+
+    def save(self, *args, **kwargs):
+        if self.product:
+            self.product_name = self.product.name
+        super(BaseOrderItem, self).save(*args, **kwargs)
