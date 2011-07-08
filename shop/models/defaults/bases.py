@@ -7,9 +7,10 @@ from django.db import models
 from django.db.models.aggregates import Sum
 from django.db.models.loading import get_model
 from django.utils.translation import ugettext_lazy as _
+from polymorphic.polymorphic_model import PolymorphicModel
 from shop.cart.modifiers_pool import cart_modifiers_pool
 from shop.util.fields import CurrencyField
-from polymorphic.polymorphic_model import PolymorphicModel
+from shop.util.loader import get_model_string
 import django
 
 
@@ -217,11 +218,11 @@ class BaseCartItem(models.Model):
     This is a holder for the quantity of items in the cart and, obviously, a
     pointer to the actual Product being purchased :)
     """
-    cart = models.ForeignKey('shop.Cart', related_name="items")
+    cart = models.ForeignKey(get_model_string('Cart'), related_name="items")
 
     quantity = models.IntegerField()
 
-    product = models.ForeignKey('shop.Product')
+    product = models.ForeignKey(get_model_string('Product'))
 
     class Meta(object):
         abstract = True
@@ -380,14 +381,14 @@ class BaseOrderItem(models.Model):
     A line Item for an order.
     """
     
-    order = models.ForeignKey('shop.Order', related_name='items',
+    order = models.ForeignKey(get_model_string('Order'), related_name='items',
             verbose_name=_('Order'))
     
     product_reference = models.CharField(max_length=255,
             verbose_name=_('Product reference'))
     product_name = models.CharField(max_length=255, null=True, blank=True,
             verbose_name=_('Product name'))
-    product = models.ForeignKey('shop.Product', verbose_name=_('Product'), null=True, blank=True, **f_kwargs)
+    product = models.ForeignKey(get_model_string('Product'), verbose_name=_('Product'), null=True, blank=True, **f_kwargs)
     unit_price = CurrencyField(verbose_name=_('Unit price'))
     quantity = models.IntegerField(verbose_name=_('Quantity'))
     

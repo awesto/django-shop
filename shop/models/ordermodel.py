@@ -6,7 +6,7 @@ from django.db.models.signals import pre_delete
 from django.utils.translation import ugettext_lazy as _
 from shop.models.productmodel import Product
 from shop.util.fields import CurrencyField
-from shop.util.loader import load_class, validate_custom_model
+from shop.util.loader import load_class
 import django
 
 
@@ -21,12 +21,10 @@ setting if it exists.
 # Order model
 ORDER_MODEL = getattr(settings, 'SHOP_ORDER_MODEL', 'shop.models.defaults.order.Order')
 Order = load_class(ORDER_MODEL, 'SHOP_ORDER_MODEL')
-validate_custom_model(Order, 'shop', 'Order')
     
 # Order item model
 ORDERITEM_MODEL = getattr(settings, 'SHOP_ORDERITEM_MODEL', 'shop.models.defaults.orderitem.OrderItem')
 OrderItem = load_class(ORDERITEM_MODEL, 'SHOP_ORDERITEM_MODEL')
-validate_custom_model(OrderItem, 'shop', 'OrderItem')
 
 
 # Now we clear refrence to product from every OrderItem

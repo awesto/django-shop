@@ -1,4 +1,5 @@
 #-*- coding: utf-8 -*-
+from django.conf import settings
 from django.core import exceptions
 from django.utils.importlib import import_module
 
@@ -36,9 +37,16 @@ def load_class(class_path, setting_name=None):
         raise exceptions.ImproperlyConfigured(txt)
     return clazz
 
-def validate_custom_model(model, app_label, name):
-    if model.__name__ != name:
-        raise exceptions.ImproperlyConfigured('Model %r must be named %r, not %r' % (model, name, model.__name__))
-    if model._meta.app_label != app_label:
-        raise exceptions.ImproperlyConfigured('The app_label of %r must be %r, not %r' % (model, app_label, model._meta.app_label))
-    
+
+def get_model_string(model_name):
+    """
+    Returns the model string notation Django uses for lazily loaded ForeignKeys
+    (eg 'auth.User') to prevent circular imports.
+    This is needed to allow our crazy custom model usage.
+    """
+    class_path = getattr(settings, 'SHOP_%s_MODEL' % model_name.upper().replace('_', ''), None)
+    if not class_path:
+        return 'shop.%s' % model_name
+    else:
+        klass = load_class(class_path)
+        return '%s.%s' % (klass._meta.app_label, klass.__name__)
