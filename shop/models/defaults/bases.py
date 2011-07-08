@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.aggregates import Sum
-from django.db.models.loading import get_model
 from django.utils.translation import ugettext_lazy as _
 from polymorphic.polymorphic_model import PolymorphicModel
 from shop.cart.modifiers_pool import cart_modifiers_pool
@@ -124,7 +123,7 @@ class BaseCart(models.Model):
         >>> self.items[1].quantity
         1
         """
-        CartItem = get_model('shop', 'CartItem')
+        from shop.models import CartItem
         if queryset == None:
             queryset = CartItem.objects.filter(cart=self, product=product)
         item = queryset
@@ -179,7 +178,7 @@ class BaseCart(models.Model):
         that for the order items (since they are legally binding after the
         "purchase" button was pressed)
         """
-        CartItem = get_model('shop', 'CartItem')
+        from shop.models import CartItem
         items = CartItem.objects.filter(cart=self)
         self.subtotal_price = Decimal('0.0') # Reset the subtotal
 
@@ -331,7 +330,7 @@ class BaseOrder(models.Model):
         """
         The amount payed is the sum of related orderpayments
         """
-        OrderPayment = get_model('shop', 'OrderPayment')
+        from shop.models import OrderPayment
         sum = OrderPayment.objects.filter(order=self).aggregate(sum=Sum('amount'))
         result = sum.get('sum')
         if not result:
@@ -340,8 +339,8 @@ class BaseOrder(models.Model):
         
     @property
     def shipping_costs(self):
+        from shop.models import ExtraOrderPriceField
         sum = Decimal('0.0')
-        ExtraOrderPriceField = get_model('shop', 'ExtraOrderPriceField')
         cost_list = ExtraOrderPriceField.objects.filter(order=self).filter(is_shipping=True)
         for cost in cost_list:
             sum = sum + cost.value
