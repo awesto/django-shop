@@ -23,7 +23,7 @@ Extending the Product model in django-SHOP works like this::
     
     # In myproject.models
     from shop.models.productmodel import Product
-    class MyProduct(Product):
+    class MyProduct(BaseProduct):
         def extra_method(self):
             return 'Yay'
             
