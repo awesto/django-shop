@@ -208,4 +208,4 @@ if CART_MODEL:
 # Cart item model
 CARTITEM_MODEL = getattr(settings, 'SHOP_CARTITEM_MODEL', None)
 if CARTITEM_MODEL:
-    CartItem = load_class(CART_MODEL, 'SHOP_CARTITEM_MODEL')
+    CartItem = load_class(CARTITEM_MODEL, 'SHOP_CARTITEM_MODEL')
