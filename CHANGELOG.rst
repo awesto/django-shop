@@ -1,9 +1,19 @@
+Version 0.0.8
+=============
+
+* Major change in the way injecting models for extensibility works: the base
+  models are now abstract, and the shop provides a set of default implementations
+  that users can replace / override using the settings, as usual. A special
+  mechanism is required to make the Foreign keys to shop models work. This is
+  explained in shop.utils.loaders
+
 Version 0.0.7
 =============
 
 * Fixed bug in the extensibility section of CartItem
 * Added complete German translations
-* Added verbose names to the Address model in order to have shipping and billing forms that has multilingual labels.
+* Added verbose names to the Address model in order to have shipping and 
+  billing forms that has multilingual labels.
 
 Version 0.0.6
 =============
