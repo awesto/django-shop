@@ -184,7 +184,7 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
         })
         return ctx
 
-class ThankYouView(ShopTemplateView):
+class ThankYouView(LoginMixin, ShopTemplateView):
     template_name = 'shop/checkout/thank_you.html'
 
     def get_context_data(self, **kwargs):
@@ -206,7 +206,7 @@ class ThankYouView(ShopTemplateView):
 
         return ctx
 
-class ShippingBackendRedirectView(ShopView):
+class ShippingBackendRedirectView(LoginMixin, ShopView):
     def get(self, *args, **kwargs):
         try:
             backend_namespace = self.request.session.pop('shipping_backend')
@@ -214,7 +214,7 @@ class ShippingBackendRedirectView(ShopView):
         except KeyError:
             return HttpResponseRedirect(reverse('cart'))
 
-class PaymentBackendRedirectView(ShopView):
+class PaymentBackendRedirectView(LoginMixin, ShopView):
     def get(self, *args, **kwargs):
         try:
             backend_namespace = self.request.session.pop('payment_backend')
