@@ -3,8 +3,11 @@ A mixin class that provides view securing functionality to class based views
 similar to the @login_required() decorator.
 """
 from django.conf import settings
+<<<<<<< HEAD
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import login_required
+=======
+>>>>>>> f3ee66c960f19af6a2420450d3a378dfa6e739f5
 from django.contrib.auth.decorators import user_passes_test
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -27,7 +30,14 @@ class LoginMixin(object):
         Returns the function that is being used to test if a user is
         authenticated.
         """
+<<<<<<< HEAD
         return get_test_func(getattr(self, 'test_func', None))
+=======
+        if getattr(settings, 'SHOP_FORCE_LOGIN', False):
+            return getattr(self, 'test_func', lambda u: u.is_authenticated())
+        else:
+            return lambda x: True
+>>>>>>> f3ee66c960f19af6a2420450d3a378dfa6e739f5
 
     def get_login_url(self):
         """Returns the login URL."""
@@ -38,6 +48,7 @@ class LoginMixin(object):
         return getattr(self, 'redirect_field_name', None)
 
     def dispatch(self, request, *args, **kwargs):
+<<<<<<< HEAD
         test_kwargs = {}
         login_url = self.get_login_url()
         if login_url:
@@ -83,3 +94,10 @@ def get_test_func(test_func=None):
         return lambda u: u.is_authenticated()
     else:
         return lambda u: True
+=======
+        return user_passes_test(
+            self.get_test_func(),
+            login_url=self.get_login_url(),
+            redirect_field_name=self.get_redirect_field_name()
+        )(super(LoginMixin, self).dispatch)(request, *args, **kwargs)
+>>>>>>> f3ee66c960f19af6a2420450d3a378dfa6e739f5
