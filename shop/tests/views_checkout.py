@@ -1,12 +1,17 @@
 #-*- coding: utf-8 -*-
+from decimal import Decimal
+
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django.test.testcases import TestCase
+
 from shop.addressmodel.models import Country, Address
+from shop.models.cartmodel import Cart
 from shop.models.ordermodel import Order
 from shop.tests.util import Mock
+from shop.tests.utils.context_managers import SettingsOverride
 from shop.views.checkout import CheckoutSelectionView
-from shop.models.cartmodel import Cart
-from decimal import Decimal
+
         
 class ShippingBillingViewTestCase(TestCase):
     
@@ -126,6 +131,16 @@ class ShippingBillingViewTestCase(TestCase):
         self.assertNotEqual(ctx['billing_address'], None)
         self.assertNotEqual(ctx['billing_shipping_form'], None)
         
+    #===========================================================================
+    # Login Mixin
+    #===========================================================================
+
+    def test_must_be_logged_in_if_setting_is_true(self):
+        with SettingsOverride(SHOP_FORCE_LOGIN=True):
+            resp = self.client.get(reverse('checkout_selection'))
+            self.assertEqual(resp.status_code, 302)
+            self.assertTrue('accounts/login/' in resp._headers['location'][1])
+
 
 class ShippingBillingViewOrderStuffTestCase(TestCase):
     

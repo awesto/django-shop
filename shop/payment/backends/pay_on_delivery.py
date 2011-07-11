@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls.defaults import patterns, url
 
+from shop.util.decorators import on_method
+from shop.util.login_mixin import shop_login_required
+
+
 class PayOnDeliveryBackend(object):
     
     backend_name = "Pay On Delivery"
@@ -10,6 +14,7 @@ class PayOnDeliveryBackend(object):
         self.shop = shop # This is the shop reference, it allows this backend
         # to interact with it in a tidy way (look ma', no imports!)
             
+    @on_method(shop_login_required)
     def simple_view(self, request):
         """
         This simple view does nothing but record the "payment" as being complete
