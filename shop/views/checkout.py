@@ -5,18 +5,23 @@ This models the checkout process using views.
 from django.core.urlresolvers import reverse
 from django.forms import models as model_forms
 from django.http import HttpResponseRedirect
+
 from shop.forms import BillingShippingForm
 from shop.models import AddressModel
 from shop.models.ordermodel import Order
 from shop.order_signals import completed
-from shop.util.address import get_shipping_address_from_request, \
-    get_billing_address_from_request, assign_address_to_request
+from shop.util.address import (
+    assign_address_to_request,
+    get_billing_address_from_request,
+    get_shipping_address_from_request,
+)
 from shop.util.cart import get_or_create_cart
 from shop.util.order import add_order_to_request, get_order_from_request
 from shop.views import ShopTemplateView, ShopView
+from shop.util.login_mixin import LoginMixin
 
 
-class CheckoutSelectionView(ShopTemplateView):
+class CheckoutSelectionView(LoginMixin, ShopTemplateView):
     template_name = 'shop/checkout/selection.html'
 
     def _get_dynamic_form_class_from_factory(self):
@@ -179,7 +184,7 @@ class CheckoutSelectionView(ShopTemplateView):
         })
         return ctx
 
-class ThankYouView(ShopTemplateView):
+class ThankYouView(LoginMixin, ShopTemplateView):
     template_name = 'shop/checkout/thank_you.html'
 
     def get_context_data(self, **kwargs):
@@ -201,7 +206,7 @@ class ThankYouView(ShopTemplateView):
 
         return ctx
 
-class ShippingBackendRedirectView(ShopView):
+class ShippingBackendRedirectView(LoginMixin, ShopView):
     def get(self, *args, **kwargs):
         try:
             backend_namespace = self.request.session.pop('shipping_backend')
@@ -209,7 +214,7 @@ class ShippingBackendRedirectView(ShopView):
         except KeyError:
             return HttpResponseRedirect(reverse('cart'))
 
-class PaymentBackendRedirectView(ShopView):
+class PaymentBackendRedirectView(LoginMixin, ShopView):
     def get(self, *args, **kwargs):
         try:
             backend_namespace = self.request.session.pop('payment_backend')

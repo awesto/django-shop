@@ -1,14 +1,18 @@
 #-*- coding: utf-8 -*-
 from __future__ import with_statement
 from decimal import Decimal
+
 from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured
+from django.core.urlresolvers import reverse
 from django.test.testcases import TestCase
+
 from shop.backends_pool import backends_pool
 from shop.models.ordermodel import Order
 from shop.shipping.api import ShippingAPI
-from shop.tests.utils.context_managers import SettingsOverride
 from shop.tests.util import Mock
+from shop.tests.utils.context_managers import SettingsOverride
+
 
 class MockShippingBackend(object):
     """
@@ -16,15 +20,18 @@ class MockShippingBackend(object):
     """
     def __init__(self, shop):
         self.shop = shop
-        
+
+
 class NamedMockShippingBackend(MockShippingBackend):
     backend_name = "Fake"
-    
+
+
 class ValidMockShippingBackend(NamedMockShippingBackend):
     url_namespace = "fake"
-    
+
+
 class GeneralShippingBackendTestCase(TestCase):
-    
+
     def setUp(self):
         self.user = User.objects.create(username="test", 
                                         email="test@example.com",
@@ -96,7 +103,7 @@ class GeneralShippingBackendTestCase(TestCase):
             list2 = backends_pool.get_shipping_backends_list()
             self.assertEqual(len(list2), 1)
             self.assertEqual(list,list2)
-           
+
 
 class ShippingApiTestCase(TestCase):
 
@@ -136,4 +143,16 @@ class ShippingApiTestCase(TestCase):
         self.assertEqual(self.order.shipping_costs, self.shipping_value)
         self.assertEqual(self.order.order_total, (self.order.order_subtotal +
             self.shipping_value))
-        
+
+
+class FlatRateShippingTestCase(TestCase):
+    """Tests for ``shop.shipping.backends.flat_rate.FlatRateShipping``."""
+    
+    def test_must_be_logged_in_if_setting_is_true(self):
+        with SettingsOverride(SHOP_FORCE_LOGIN=True):
+            resp = self.client.get(reverse('flat'))
+            self.assertEqual(resp.status_code, 302)
+            self.assertTrue('accounts/login/' in resp._headers['location'][1])
+            resp = self.client.get(reverse('flat_process'))
+            self.assertEqual(resp.status_code, 302)
+            self.assertTrue('accounts/login/' in resp._headers['location'][1])
