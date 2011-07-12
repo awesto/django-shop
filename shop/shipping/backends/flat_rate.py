@@ -6,8 +6,7 @@ from django.conf.urls.defaults import patterns, url
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from shop.util.decorators import on_method
-from shop.util.login_mixin import shop_login_required
+from shop.util.decorators import on_method, shop_login_required
 
 
 class FlatRateShipping(object):

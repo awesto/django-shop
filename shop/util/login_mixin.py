@@ -3,9 +3,6 @@ A mixin class that provides view securing functionality to class based views
 similar to the @login_required() decorator.
 """
 from django.conf import settings
-from django.contrib.auth import REDIRECT_FIELD_NAME
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.decorators import user_passes_test
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 
@@ -50,24 +47,6 @@ class LoginMixin(object):
             **test_kwargs
         )(super(LoginMixin, self).dispatch)(request, *args, **kwargs)
     
-
-def shop_login_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, 
-                        login_url=None):
-    """
-    Decorator for views that checks that the user is logged in, redirecting
-    to the log-in page if necessary.
-
-    Takes the `SHOP_FORCE_LOGIN` setting into consideration.
-    """
-    actual_decorator = user_passes_test(
-        get_test_func(),
-        login_url=login_url,
-        redirect_field_name=redirect_field_name
-    )
-    if function:
-        return actual_decorator(function)
-    return actual_decorator
-
 
 def get_test_func(test_func=None):
     """

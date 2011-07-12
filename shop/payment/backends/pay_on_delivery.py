@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls.defaults import patterns, url
 
-from shop.util.decorators import on_method
-from shop.util.login_mixin import shop_login_required
+from shop.util.decorators import on_method, shop_login_required
 
 
 class PayOnDeliveryBackend(object):

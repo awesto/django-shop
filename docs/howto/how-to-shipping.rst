@@ -36,3 +36,11 @@ Methods
 * get_urls(): should return a list of URLs (similar to urlpatterns), to be added
   to the URL resolver when urls are loaded. Theses will be namespaced with the 
   url_namespace attribute by the shop system, so it shouldn't be done manually.
+
+Security
+---------
+
+In order to make your shipping backend compatible with the ``SHOP_FORCE_LOGIN``
+setting please make sure to add the ``@shop_login_required`` decorator to any
+views that your backend provides. See ``how-to-secure-your-views.rts`` for more
+information.
