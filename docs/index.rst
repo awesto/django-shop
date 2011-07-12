@@ -30,6 +30,7 @@ Various short articles on how to do specific things
     howto/how-to-payment
     howto/how-to-shipping
     howto/how-to-interact-with-the-cart
+    howto/how-to-secure-your-views
 
 Advanced how to
 ===============

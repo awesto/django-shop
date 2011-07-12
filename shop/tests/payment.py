@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import with_statement
 from decimal import Decimal
+
 from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured
+from django.core.urlresolvers import reverse
 from django.test.testcases import TestCase
+
 from shop.backends_pool import backends_pool
 from shop.addressmodel.models import Address, Country
 from shop.models.ordermodel import Order, OrderItem, ExtraOrderItemPriceField, \
@@ -12,6 +15,7 @@ from shop.payment.backends.pay_on_delivery import PayOnDeliveryBackend
 from shop.payment.api import PaymentAPI
 from shop.tests.utils.context_managers import SettingsOverride
 
+
 EXPECTED = """A new order was placed!
 
 Ref: fakeref| Name: Test item| Price: 100| Q: 1| SubTot: 100| Fake extra field: 10|Tot: 110| 
@@ -19,6 +23,7 @@ Ref: fakeref| Name: Test item| Price: 100| Q: 1| SubTot: 100| Fake extra field: 
 Subtotal: 100
 Fake Taxes: 10
 Total: 120"""
+
 
 class MockPaymentBackend(object):
     """
@@ -171,9 +176,15 @@ class PayOnDeliveryTestCase(TestCase):
         eof.label = "Fake Taxes"
         eof.value = Decimal("10")
         eof.save()
-    
-    def test_backend_returns_urls(self):
+
+    def test01_backend_returns_urls(self):
         be = PayOnDeliveryBackend(shop=PaymentAPI())
         urls = be.get_urls()
         self.assertNotEqual(urls,None)
         self.assertEqual(len(urls), 1)
+
+    def test02_must_be_logged_in_if_setting_is_true(self):
+        with SettingsOverride(SHOP_FORCE_LOGIN=True):
+            resp = self.client.get(reverse('pay-on-delivery'))
+            self.assertEqual(resp.status_code, 302)
+            self.assertTrue('accounts/login/' in resp._headers['location'][1])
