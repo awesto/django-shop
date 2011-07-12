@@ -35,9 +35,13 @@ class BaseProduct(PolymorphicModel):
     
     class Meta(object):
         abstract = True
-        app_label = 'shop'
         verbose_name = _('Product')
         verbose_name_plural = _('Products')
+
+        def __getattr__(self, name):
+            if name == 'app_label' and self.abstract == True:
+                return 'shop'
+            raise AttributeError
     
     def __unicode__(self):
         return self.name
