@@ -41,7 +41,7 @@ class BaseProduct(PolymorphicModel):
         def __getattr__(self, name):
             if name == 'app_label' and self.abstract == True:
                 return 'shop'
-            return AttributeError
+            raise AttributeError
     
     def __unicode__(self):
         return self.name
