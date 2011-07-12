@@ -1,3 +1,10 @@
+Version 0.0.9
+=============
+
+* Added a SHOP_FORCE_LOGIN setting that restricts the checkout process to
+  loged-in users.
+
+
 Version 0.0.8
 =============
 
