@@ -1,3 +1,13 @@
+======================
+Undocumented Settings
+======================
+
+The following settings have been found undocumented while doing a refactoring.
+We will add documentation soon. Promise :)
+
+  * SHOP_ADDRESS_TEMPLATE
+
+
 ================
 General Settings
 ================

@@ -5,6 +5,9 @@ Borrowed from Django CMS. This is too useful to live without
 """
 from django.conf import settings
 
+from shop import app_settings
+
+
 class NULL:
     pass
 
@@ -27,6 +30,7 @@ class SettingsOverride(object):
         for key, value in self.overrides.items():
             self.old[key] = getattr(settings, key, NULL)
             setattr(settings, key, value)
+        reload(app_settings)
 
     def __exit__(self, type, value, traceback):
         for key, value in self.old.items():
@@ -34,4 +38,5 @@ class SettingsOverride(object):
                 setattr(settings, key, value)
             else:
                 delattr(settings,key) # do not pollute the context!
+        reload(app_settings)
 
