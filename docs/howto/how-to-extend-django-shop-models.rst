@@ -26,9 +26,16 @@ Extending the Product model in django-SHOP works like this::
     class MyProduct(BaseProduct):
         def extra_method(self):
             return 'Yay'
+
+        class Meta:
+            pass
             
     # In your project's settings.py, add the following line:
     SHOP_PRODUCT_MODEL = 'myproject.models.MyProduct'
+
+.. important:: Your model replacement must define a Meta class. Otherwise, they
+   will inherit their parent's Meta, which will break things. The Meta class
+   does not need to do anything important - it just has to be there.
     
 From a django interactive shell, you should now be able to do::
 

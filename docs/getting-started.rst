@@ -122,7 +122,13 @@ describing a book::
         author = models.CharField(max_length=255)
         cover_picture = models.ImageField() 
         isbn = models.CharField(max_length=255)
+
+        class Meta:
+            ordering = ['author']
         
+
+.. note:: The only limitation is that your product subclass must define a
+   ``Meta`` class.
 
 Like a normal Django Model, you might want to register it to the admin interface
 to allow easy edition by your users. In an admin.py file::

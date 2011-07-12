@@ -14,7 +14,11 @@ an example Book model together::
 	from django.db import models
 	
 	class Book(Product):
-		isbn = models.CharField(max_length=255)
+	    isbn = models.CharField(max_length=255)
+            class Meta: pass
+
+.. note:: Your product subclass must define a Meta class. Usually, you will
+   want to do so anyway, to define ordering and verbose names for example.
 		
 The following fields are already defined in the Product superclass:
 
