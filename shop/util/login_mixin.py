@@ -3,7 +3,8 @@ A mixin class that provides view securing functionality to class based views
 similar to the @login_required() decorator.
 """
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseRedirect
 
 
