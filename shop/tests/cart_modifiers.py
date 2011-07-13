@@ -1,11 +1,12 @@
 #-*- coding: utf-8 -*-
 from __future__ import with_statement
+from decimal import Decimal
 from django.core.exceptions import ImproperlyConfigured
-from shop.cart import modifiers_pool
-from shop.cart.modifiers_pool import cart_modifiers_pool
-from shop.cart.modifiers.tax_modifiers import TenPercentPerItemTaxModifier
-from shop.tests.utils.context_managers import SettingsOverride
 from django.test.testcases import TestCase
+from shop.cart import modifiers_pool
+from shop.cart.modifiers.tax_modifiers import TenPercentPerItemTaxModifier
+from shop.cart.modifiers_pool import cart_modifiers_pool
+from shop.tests.utils.context_managers import SettingsOverride
 
 class CartModifiersTestCase(TestCase):
     
@@ -60,19 +61,21 @@ class TenPercentPerItemTaxModifierTestCase(TestCase):
         """ A simple mock object to assert the tax modifier works properly"""
         def __init__(self):
             self.line_subtotal = 100 # Makes testing easy
+            self.current_total = self.line_subtotal
             self.extra_price_fields = []
 
     def test_tax_amount_is_correct(self):
         modifier = TenPercentPerItemTaxModifier()
         item = self.MockItem()
-        modifier.add_extra_cart_item_price_field(item)
-        self.assertEqual(item.extra_price_fields, [('Taxes (10%)', 10)])
+        field = modifier.get_extra_cart_item_price_field(item)
+        self.assertTrue(field[1] == Decimal('10'))
     
     def test_tax_amount_is_correct_after_modifier(self):
         modifier = TenPercentPerItemTaxModifier()
         item = self.MockItem()
         previous_option = ('Some option', 10)
         item.extra_price_fields.append(previous_option)
-        modifier.add_extra_cart_item_price_field(item)
-        self.assertEqual(item.extra_price_fields, [previous_option, ('Taxes (10%)', 11)])
+        item.current_total = item.current_total + previous_option[1]
+        field = modifier.get_extra_cart_item_price_field(item)
+        self.assertTrue(field[1] == Decimal('11'))
     
