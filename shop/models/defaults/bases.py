@@ -85,6 +85,7 @@ class BaseCart(models.Model):
         # That will hold things like tax totals or total discount
         self.subtotal_price = Decimal('0.0')
         self.total_price = Decimal('0.0')
+        self.current_total = Decimal('0.0') # used by cart modifiers
         self.extra_price_fields = [] # List of tuples (label, value)
 
     def add_product(self, product, quantity=1, merge=True, queryset=None):
@@ -180,22 +181,20 @@ class BaseCart(models.Model):
         """
         from shop.models import CartItem
         items = CartItem.objects.filter(cart=self)
+        self.extra_price_fields = [] # Reset the price fields
         self.subtotal_price = Decimal('0.0') # Reset the subtotal
 
         for item in items: # For each OrderItem (order line)...
             self.subtotal_price = self.subtotal_price + item.update()
             item.save()
-
+        
+        self.current_total = self.subtotal_price
         # Now we have to iterate over the registered modifiers again (unfortunately)
         # to pass them the whole Order this time
         for modifier in cart_modifiers_pool.get_modifiers_list():
             modifier.process_cart(self)
-
-        self.total_price = self.subtotal_price
-        # Like for line items, most of the modifiers will simply add a field
-        # to extra_price_fields, let's update the total with them
-        for label, value in self.extra_price_fields:
-            self.total_price = self.total_price + value
+        
+        self.total_price = self.current_total
 
     def empty(self):
         """
@@ -238,26 +237,25 @@ class BaseCartItem(models.Model):
         # sessions / logins etc...
         self.line_subtotal = Decimal('0.0')
         self.line_total = Decimal('0.0')
+        self.current_total = Decimal('0.0') # Used by cart modifiers
 
     def update(self):
+        self.extra_price_fields = [] # Reset the price fields
         self.line_subtotal = self.product.get_price() * self.quantity
-        self.line_total = self.line_subtotal
+        self.current_total = self.line_subtotal
 
         for modifier in cart_modifiers_pool.get_modifiers_list():
             # We now loop over every registered price modifier,
             # most of them will simply add a field to extra_payment_fields
             modifier.process_cart_item(self)
-
-        for label, value in self.extra_price_fields:
-            self.line_total = self.line_total + value
-
+        
+        self.line_total = self.current_total
         return self.line_total
 
 
 #==============================================================================
 # Orders
 #==============================================================================
-
 
 
         
