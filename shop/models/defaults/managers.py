@@ -117,7 +117,7 @@ class OrderManager(models.Manager):
             for label, value in item.extra_price_fields:
                 eoi = ExtraOrderItemPriceField()
                 eoi.order_item = i
-                eoi.label = str(label)
+                eoi.label = unicode(label) # Force unicode, in case it has àö...
                 eoi.value = value
                 eoi.save()
         return o
