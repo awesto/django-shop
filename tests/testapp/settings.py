@@ -107,6 +107,8 @@ INSTALLED_APPS = (
 # The shop settings:
 SHOP_CART_MODIFIERS= ['shop.cart.modifiers.rebate_modifiers.BulkRebateModifier']
 SHOP_SHIPPING_BACKENDS=['shop.shipping.backends.flat_rate.FlatRateShipping']
+SHOP_PAYMENT_BACKENDS=[
+    'shop.payment.backends.pay_on_delivery.PayOnDeliveryBackend']
 
 # Shop module settings
 SHOP_SHIPPING_FLAT_RATE = '10' # That's just for the flat rate shipping backend

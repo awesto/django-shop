@@ -17,9 +17,17 @@ class BaseCartModifier(object):
         
         Subtotal for every line (unit price * quantity) is already computed, but
         the line total is 0, and is expected to be calculated in the Cart's 
-        update() method
+        update() method. Subtotal and total should NOT be written by this.
+        
+        Overrides of this method should however update cart_item.current_total, 
+        since it will potentially be used by other modifiers.
         """
-        return self.add_extra_cart_item_price_field(cart_item)
+        field = self.get_extra_cart_item_price_field(cart_item)
+        if field != None:
+            price = field[1]
+            cart_item.current_total = cart_item.current_total + price
+            cart_item.extra_price_fields.append(field)
+        return cart_item
     
     def process_cart(self, cart):
         """
@@ -29,34 +37,49 @@ class BaseCartModifier(object):
         update() method.
         
         Line items should be complete by now, so all of their fields are accessible
-        """
-        return self.add_extra_cart_price_field(cart)
-    
-    def add_extra_cart_item_price_field(self, cart_item):
-        """
-        Add an extra price field on cart_item.extra_price_fields:
         
-        This allows to modify the price easily, simply add a 
-        {'Label':Decimal(difference)} entry to it.
+        Subtotal is accessible, but total is still 0.0. Overrides are expected to
+        update cart.current_total.
+        """
+        field = self.get_extra_cart_price_field(cart)
+        if field != None:
+            price = field[1]
+            cart.current_total = cart.current_total + price
+            cart.extra_price_fields.append(field)
+        return cart
+    
+    def get_extra_cart_item_price_field(self, cart_item):
+        """
+        Get an extra price field tuple for the current cart_item:
+        
+        This allows to modify the price easily, simply return a 
+        ('Label', Decimal(difference)) from an override. This is expected to be
+        a tuple.
+        
+        Implementations should use ``cart_item.current_price`` to compute their price
+        difference (that is the subtotal, updated with all cart modifiers so far)
         
         A tax modifier would do something like this:
-        >>> cart_item.extra_price_fields.update({'taxes': Decimal(9)})
+        >>> return ('taxes', Decimal(9))
         
         And a rebate modifier would do something along the lines of:
-        >>> cart_item.extra_price_fields.update({'rebate': Decimal(-9)})
+        >>> return ('rebate', Decimal(-9))
         
         More examples can be found in shop.cart.modifiers.*
-        
         """
-        return cart_item # Does nothing by default
+        return None # Does nothing by default
     
-    def add_extra_cart_price_field(self, cart):
+    def get_extra_cart_price_field(self, cart):
         """
-        Add a field on cart.extra_price_fields:
+        Get an extra price field tuple for the current cart:
         
-        In a similar fashion, this allows to easily add price modifications to 
-        the general Cart object, 
+        This allows to modify the price easily, simply return a 
+        ('Label', Decimal(difference)) from an override. This is expected to be
+        a tuple.
         
-        >>> cart.extra_price_fields.update({'Taxes total': 19.00})
+        Implementations should use ``cart.current_price`` to compute their price
+        difference (that is the subtotal, updated with all cart modifiers so far)
+        
+        >>> return ('Taxes total', 19.00)
         """
-        return cart
+        return None

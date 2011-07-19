@@ -122,7 +122,13 @@ describing a book::
         author = models.CharField(max_length=255)
         cover_picture = models.ImageField() 
         isbn = models.CharField(max_length=255)
+
+        class Meta:
+            ordering = ['author']
         
+
+.. note:: The only limitation is that your product subclass must define a
+   ``Meta`` class.
 
 Like a normal Django Model, you might want to register it to the admin interface
 to allow easy edition by your users. In an admin.py file::
@@ -139,15 +145,20 @@ Adding taxes calculation according to local regulations is also something that
 you will be likely to have to do. It is relatively easy as well: create a new
 file in your project, for example modifiers.py, and add the following::
 
+    import decimal    
+
     from shop.cart.cart_modifiers_base import BaseCartModifier
     
-    class Fixed7PercentTaxRate(BaseCartModifier)
-        """This will add 7% of the subtotal of the order to the total
+    class Fixed7PercentTaxRate(BaseCartModifier):
+        """
+        This will add 7% of the subtotal of the order to the total.
+
         It is of course not very useful in the real world, but this is an
-        example"""
+        example.
+        """
         
         def add_extra_cart_price_field(self, cart):
-            taxes = (7/100) * cart.subtotal_price
+            taxes = decimal.Decimal('0.07') * cart.subtotal_price
             to_append = ('Taxes total', taxes)
             cart.extra_price_fields.append(to_append)
             return cart
@@ -155,7 +166,7 @@ file in your project, for example modifiers.py, and add the following::
 You can now use this newly created tax modifier in your shop! to do so, simply
 add the class to the list of cart modifiers defined in your settings.py file::
 
-    SHOP_CART_MODIFIERS = ['myshop.modifers.Fixed7PercentTaxRate']
+    SHOP_CART_MODIFIERS = ['myshop.modifiers.Fixed7PercentTaxRate']
     
 Restart your server, and you should now see that a cart's total is dynamically
 augmented to reflect this new rule.

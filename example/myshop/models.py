@@ -11,4 +11,6 @@ class Book(Product):
     isbn = models.CharField(max_length=255)
     
     objects = BookManager()
-
+    
+    class Meta:
+        pass

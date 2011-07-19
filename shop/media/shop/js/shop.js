@@ -15,15 +15,15 @@ jQuery(document).ready(function ($) {
         },
         addItem: function(item_add_url, item_id, callback){
             callback = (callback) ? callback : function(){};
-            $.post(item_add_url, {'add_item_id': item_id}, callback);			  
+            $.post(item_add_url, {'add_item_id': item_id}, callback);
         },
         updateItemQuantity: function(update_item_url, quantity, callback){
             callback = (callback) ? callback : function(){};
-            $.post(update_item_url, {'item_quantity': quantity}, callback);			  
+            $.post(update_item_url, {'item_quantity': quantity}, callback);	  
         },
         deleteItem: function(delete_item_url, callback){
             callback = (callback) ? callback : function(){};
-            $.post(delete_item_url, {}, callback);			  
+            $.post(delete_item_url, {}, callback);
         },
     }
 });

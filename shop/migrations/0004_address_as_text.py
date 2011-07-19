@@ -8,20 +8,104 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         
-        # Adding field 'OrderItem.product'
-        db.add_column('shop_orderitem', 'product', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['shop.Product'], null=True, blank=True), keep_default=False)
+        # Deleting field 'Order.billing_zip_code'
+        db.delete_column('shop_order', 'billing_zip_code')
 
-        # Changing field 'OrderItem.product_name'
-        db.alter_column('shop_orderitem', 'product_name', self.gf('django.db.models.fields.CharField')(max_length=255, null=True))
+        # Deleting field 'Order.shipping_address2'
+        db.delete_column('shop_order', 'shipping_address2')
+
+        # Deleting field 'Order.billing_name'
+        db.delete_column('shop_order', 'billing_name')
+
+        # Deleting field 'Order.shipping_zip_code'
+        db.delete_column('shop_order', 'shipping_zip_code')
+
+        # Deleting field 'Order.billing_country'
+        db.delete_column('shop_order', 'billing_country')
+
+        # Deleting field 'Order.shipping_name'
+        db.delete_column('shop_order', 'shipping_name')
+
+        # Deleting field 'Order.billing_address'
+        db.delete_column('shop_order', 'billing_address')
+
+        # Deleting field 'Order.shipping_city'
+        db.delete_column('shop_order', 'shipping_city')
+
+        # Deleting field 'Order.billing_address2'
+        db.delete_column('shop_order', 'billing_address2')
+
+        # Deleting field 'Order.shipping_state'
+        db.delete_column('shop_order', 'shipping_state')
+
+        # Deleting field 'Order.billing_city'
+        db.delete_column('shop_order', 'billing_city')
+
+        # Deleting field 'Order.shipping_address'
+        db.delete_column('shop_order', 'shipping_address')
+
+        # Deleting field 'Order.shipping_country'
+        db.delete_column('shop_order', 'shipping_country')
+
+        # Deleting field 'Order.billing_state'
+        db.delete_column('shop_order', 'billing_state')
+
+        # Adding field 'Order.shipping_address_text'
+        db.add_column('shop_order', 'shipping_address_text', self.gf('django.db.models.fields.TextField')(null=True, blank=True), keep_default=False)
+
+        # Adding field 'Order.billing_address_text'
+        db.add_column('shop_order', 'billing_address_text', self.gf('django.db.models.fields.TextField')(null=True, blank=True), keep_default=False)
 
 
     def backwards(self, orm):
         
-        # Deleting field 'OrderItem.product'
-        db.delete_column('shop_orderitem', 'product_id')
+        # Adding field 'Order.billing_zip_code'
+        db.add_column('shop_order', 'billing_zip_code', self.gf('django.db.models.fields.CharField')(max_length=20, null=True), keep_default=False)
 
-        # Changing field 'OrderItem.product_name'
-        db.alter_column('shop_orderitem', 'product_name', self.gf('django.db.models.fields.CharField')(default='', max_length=255))
+        # Adding field 'Order.shipping_address2'
+        db.add_column('shop_order', 'shipping_address2', self.gf('django.db.models.fields.CharField')(max_length=255, null=True), keep_default=False)
+
+        # Adding field 'Order.billing_name'
+        db.add_column('shop_order', 'billing_name', self.gf('django.db.models.fields.CharField')(max_length=255, null=True), keep_default=False)
+
+        # Adding field 'Order.shipping_zip_code'
+        db.add_column('shop_order', 'shipping_zip_code', self.gf('django.db.models.fields.CharField')(max_length=20, null=True), keep_default=False)
+
+        # Adding field 'Order.billing_country'
+        db.add_column('shop_order', 'billing_country', self.gf('django.db.models.fields.CharField')(max_length=255, null=True), keep_default=False)
+
+        # Adding field 'Order.shipping_name'
+        db.add_column('shop_order', 'shipping_name', self.gf('django.db.models.fields.CharField')(max_length=255, null=True), keep_default=False)
+
+        # Adding field 'Order.billing_address'
+        db.add_column('shop_order', 'billing_address', self.gf('django.db.models.fields.CharField')(max_length=255, null=True), keep_default=False)
+
+        # Adding field 'Order.shipping_city'
+        db.add_column('shop_order', 'shipping_city', self.gf('django.db.models.fields.CharField')(max_length=255, null=True), keep_default=False)
+
+        # Adding field 'Order.billing_address2'
+        db.add_column('shop_order', 'billing_address2', self.gf('django.db.models.fields.CharField')(max_length=255, null=True), keep_default=False)
+
+        # Adding field 'Order.shipping_state'
+        db.add_column('shop_order', 'shipping_state', self.gf('django.db.models.fields.CharField')(max_length=255, null=True), keep_default=False)
+
+        # Adding field 'Order.billing_city'
+        db.add_column('shop_order', 'billing_city', self.gf('django.db.models.fields.CharField')(max_length=255, null=True), keep_default=False)
+
+        # Adding field 'Order.shipping_address'
+        db.add_column('shop_order', 'shipping_address', self.gf('django.db.models.fields.CharField')(max_length=255, null=True), keep_default=False)
+
+        # Adding field 'Order.shipping_country'
+        db.add_column('shop_order', 'shipping_country', self.gf('django.db.models.fields.CharField')(max_length=255, null=True), keep_default=False)
+
+        # Adding field 'Order.billing_state'
+        db.add_column('shop_order', 'billing_state', self.gf('django.db.models.fields.CharField')(max_length=255, null=True), keep_default=False)
+
+        # Deleting field 'Order.shipping_address_text'
+        db.delete_column('shop_order', 'shipping_address_text')
+
+        # Deleting field 'Order.billing_address_text'
+        db.delete_column('shop_order', 'billing_address_text')
 
 
     models = {
@@ -92,26 +176,14 @@ class Migration(SchemaMigration):
         },
         'shop.order': {
             'Meta': {'object_name': 'Order'},
-            'billing_address': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'billing_address2': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'billing_city': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'billing_country': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'billing_name': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'billing_state': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'billing_zip_code': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True'}),
+            'billing_address_text': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'order_subtotal': ('django.db.models.fields.DecimalField', [], {'default': "'0.00'", 'max_digits': '12', 'decimal_places': '2'}),
             'order_total': ('django.db.models.fields.DecimalField', [], {'default': "'0.00'", 'max_digits': '12', 'decimal_places': '2'}),
             'payment_method': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'shipping_address': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'shipping_address2': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'shipping_city': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'shipping_country': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'shipping_name': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'shipping_state': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'shipping_zip_code': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True'}),
+            'shipping_address_text': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'status': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'null': 'True', 'blank': 'True'})
         },
@@ -127,8 +199,7 @@ class Migration(SchemaMigration):
             'line_subtotal': ('django.db.models.fields.DecimalField', [], {'default': "'0.00'", 'max_digits': '12', 'decimal_places': '2'}),
             'line_total': ('django.db.models.fields.DecimalField', [], {'default': "'0.00'", 'max_digits': '12', 'decimal_places': '2'}),
             'order': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'items'", 'to': "orm['shop.Order']"}),
-            'product': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['shop.Product']", 'null': 'True', 'blank': 'True'}),
-            'product_name': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
+            'product_name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'product_reference': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'quantity': ('django.db.models.fields.IntegerField', [], {}),
             'unit_price': ('django.db.models.fields.DecimalField', [], {'default': "'0.00'", 'max_digits': '12', 'decimal_places': '2'})

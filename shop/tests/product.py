@@ -54,21 +54,8 @@ class ProductStatisticsTestCase(TestCase):
         self.order.order_total = Decimal('10')
         self.order.shipping_cost = Decimal('0')
         
-        self.order.shipping_name = 'toto'
-        self.order.shipping_address = 'address'
-        self.order.shipping_address2 = 'address2'
-        self.order.shipping_city = 'city'
-        self.order.shipping_zip_code = 'zip'
-        self.order.shipping_state = 'state'
-        self.order.shipping_country = 'country'
-        
-        self.order.billing_name = 'toto'
-        self.order.billing_address = 'address'
-        self.order.billing_address2 = 'address2'
-        self.order.billing_city = 'city'
-        self.order.billing_zip_code = 'zip'
-        self.order.billing_state = 'state'
-        self.order.billing_country = 'country'
+        self.order.shipping_address_text = 'shipping address example'
+        self.order.billing_address_text = 'billing address example'
         self.order.save()
         
         self.orderitem1 = OrderItem()

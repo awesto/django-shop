@@ -31,22 +31,9 @@ class OrderUtilTestCase(TestCase):
         self.order.order_subtotal = Decimal('10')
         self.order.order_total = Decimal('10')
         self.order.shipping_cost = Decimal('0')
-        
-        self.order.shipping_name = 'toto'
-        self.order.shipping_address = 'address'
-        self.order.shipping_address2 = 'address2'
-        self.order.shipping_city = 'city'
-        self.order.shipping_zip_code = 'zip'
-        self.order.shipping_state = 'state'
-        self.order.shipping_country = 'country'
-        
-        self.order.billing_name = 'toto'
-        self.order.billing_address = 'address'
-        self.order.billing_address2 = 'address2'
-        self.order.billing_city = 'city'
-        self.order.billing_zip_code = 'zip'
-        self.order.billing_state = 'state'
-        self.order.billing_country = 'country'
+
+        self.order.shipping_address_text = 'shipping address example'
+        self.order.billing_address_text = 'billing address example'
         
         self.order.save()
         
@@ -100,6 +87,17 @@ class OrderUtilTestCase(TestCase):
         order2 = Order.objects.create(user=self.user)
         ret = get_order_from_request(self.request)
         self.assertEqual(ret, order2)
+
+    def test_addresses_are_conserved_properly(self):
+        session = {}
+        session['order_id'] = self.order.id
+        setattr(self.request, 'session', session)
+        ret = get_order_from_request(self.request)
+        self.assertEqual(ret, self.order)
+        self.assertEqual(ret.shipping_address_text,
+                        self.order.shipping_address_text)
+        self.assertEqual(ret.billing_address_text,
+                        self.order.billing_address_text)
         
 
 class OrderTestCase(TestCase):
@@ -110,19 +108,8 @@ class OrderTestCase(TestCase):
         self.order.order_total = Decimal('10')
         self.order.shipping_cost = Decimal('0')
         
-        self.order.shipping_name = 'toto'
-        self.order.shipping_address = 'address'
-        self.order.shipping_address2 = 'address2'
-        self.order.shipping_zip_code = 'zip'
-        self.order.shipping_state = 'state'
-        self.order.shipping_country = 'country'
-        
-        self.order.billing_name = 'toto'
-        self.order.billing_address = 'address'
-        self.order.billing_address2 = 'address2'
-        self.order.billing_zip_code = 'zip'
-        self.order.billing_state = 'state'
-        self.order.billing_country = 'country'
+        self.order.shipping_address_text = 'shipping address example'
+        self.order.billing_address_text = 'billing address example'
         
         self.order.save()
     
@@ -262,28 +249,11 @@ class OrderConversionTestCase(TestCase):
         # Must not return None, obviously
         self.assertNotEqual(o, None)
         
-        o.set_shipping_address(self.address.address, self.address.city,
-            self.address.zip_code, self.address.state, self.address.country,
-            self.address.name, self.address.address2)
+        o.set_shipping_address(self.address)
+        o.set_billing_address(self.address2)
         
-        o.set_billing_address(self.address2.address, self.address2.city,
-            self.address2.zip_code, self.address2.state, self.address2.country,
-            self.address2.name, self.address2.address2)
-        
-        # Check that addresses are transfered properly
-        self.assertEqual(o.shipping_name, "%s %s" % (self.user.first_name, self.user.last_name))
-        self.assertEqual(o.shipping_address, self.address.address)
-        self.assertEqual(o.shipping_address2, self.address.address2)
-        self.assertEqual(o.shipping_zip_code, self.address.zip_code)
-        self.assertEqual(o.shipping_state, self.address.state)    
-        self.assertEqual(o.shipping_country, self.address.country.name)
-        
-        self.assertEqual(o.billing_name, "%s %s" % (self.user.first_name, self.user.last_name))
-        self.assertEqual(o.billing_address, self.address2.address)
-        self.assertEqual(o.billing_address2, self.address2.address2)
-        self.assertEqual(o.billing_zip_code, self.address2.zip_code)
-        self.assertEqual(o.billing_state, self.address2.state)    
-        self.assertEqual(o.billing_country, self.address2.country.name)
+        self.assertEqual(o.shipping_address_text, self.address.as_text())
+        self.assertEqual(o.billing_address_text, self.address2.as_text())
         
     def test_create_order_respects_product_specific_get_price_method(self):
         if SKIP_BASEPRODUCT_TEST:
@@ -312,19 +282,8 @@ class OrderPaymentTestCase(TestCase):
         self.order.order_total = Decimal('10')
         self.order.shipping_cost = Decimal('0')
         
-        self.order.shipping_name = 'toto'
-        self.order.shipping_address = 'address'
-        self.order.shipping_address2 = 'address2'
-        self.order.shipping_zip_code = 'zip'
-        self.order.shipping_state = 'state'
-        self.order.shipping_country = 'country'
-        
-        self.order.billing_name = 'toto'
-        self.order.billing_address = 'address'
-        self.order.billing_address2 = 'address2'
-        self.order.billing_zip_code = 'zip'
-        self.order.billing_state = 'state'
-        self.order.billing_country = 'country'
+        self.order.shipping_address_text = 'shipping address example'
+        self.order.billing_address_text = 'billing address example'
         
         self.order.save()
     

@@ -1,7 +1,8 @@
-AUTHORS
-=======
+CORE DEVELOPERS
+===============
 
 * Chris Glass (chrisglass)
+* Martin Brochhaus
 
 CONTRIBUTORS
 ============
@@ -10,13 +11,13 @@ CONTRIBUTORS
 * Jonas Obrist
 * Issac Kelly
 * Audrey Roy
-* Martin Brochhaus
 * Raúl Cumplido
 * Bojan Mihelac
 * Rolo Mawlabaux
 * Justin Steward 
 * Kristian Øllegaard
 * Martin Ogden
+* Pavel Zhukov
 
 TRANSLATORS
 ===========

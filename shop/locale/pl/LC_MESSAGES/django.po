@@ -1,0 +1,331 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Jakub Paczkowski <jakub@paczkowski.eu>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: django-shop\n"
+"Report-Msgid-Bugs-To: http://github.com/divio/django-shop/issues\n"
+"POT-Creation-Date: 2011-07-13 11:13-0500\n"
+"PO-Revision-Date: 2011-07-14 12:10+0000\n"
+"Last-Translator: mrbox <jakub@paczkowski.eu>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+
+#: addressmodel/models.py:12
+#, python-format
+msgid ""
+"\n"
+"Name: %(name)s,\n"
+"Address: %(address)s,\n"
+"Zip-Code: %(zipcode)s,\n"
+"City: %(city)s,\n"
+"State: %(state)s,\n"
+"Country: %(country)s\n"
+msgstr ""
+"\n"
+"Imię i nazwisko: %(name)s,\n"
+"Adres: %(address)s,\n"
+"Kod pocztowy: %(zipcode)s,\n"
+"Miasto: %(city)s,\n"
+"Województwo: %(state)s,\n"
+"Państwo: %(country)s\n"
+
+#: addressmodel/models.py:31 addressmodel/models.py:47
+msgid "Country"
+msgstr "Kraj"
+
+#: addressmodel/models.py:32
+msgid "Countries"
+msgstr "Kraje"
+
+#: addressmodel/models.py:41 models/defaults/bases.py:27
+msgid "Name"
+msgstr "Imię i nazwisko"
+
+#: addressmodel/models.py:42 addressmodel/models.py:51
+msgid "Address"
+msgstr "Adres"
+
+#: addressmodel/models.py:43
+msgid "Address2"
+msgstr "Adres 2"
+
+#: addressmodel/models.py:44
+msgid "Zip Code"
+msgstr "Kod pocztowy"
+
+#: addressmodel/models.py:45
+msgid "City"
+msgstr "Miasto"
+
+#: addressmodel/models.py:46
+msgid "State"
+msgstr "Województwo"
+
+#: addressmodel/models.py:52
+msgid "Addresses"
+msgstr "Adresy"
+
+#: admin/orderadmin.py:43
+msgid "Shipping"
+msgstr "Dostawa"
+
+#: admin/orderadmin.py:46
+msgid "Billing"
+msgstr "Rachunek"
+
+#: models/ordermodel.py:44 models/ordermodel.py:58 models/ordermodel.py:92
+#: models/defaults/bases.py:310 models/defaults/bases.py:382
+#: models/defaults/order.py:13
+msgid "Order"
+msgstr "Zamówienie"
+
+#: models/ordermodel.py:45
+msgid "Extra info"
+msgstr "Dodatkowe informacje"
+
+#: models/ordermodel.py:49 models/ordermodel.py:50
+msgid "Order extra info"
+msgstr "Dodatkowe informacje do zamówienia"
+
+#: models/ordermodel.py:59 models/ordermodel.py:78
+msgid "Label"
+msgstr "Etykieta"
+
+#: models/ordermodel.py:60 models/ordermodel.py:79 models/ordermodel.py:93
+msgid "Amount"
+msgstr "Ilość"
+
+#: models/ordermodel.py:64
+msgid "Is shipping"
+msgstr ""
+
+#: models/ordermodel.py:68
+msgid "Extra order price field"
+msgstr "Dodatkowe pole ceny zamówienia"
+
+#: models/ordermodel.py:69
+msgid "Extra order price fields"
+msgstr "Dodatkowe pola ceny zamówienia"
+
+#: models/ordermodel.py:77 models/defaults/bases.py:398
+#: models/defaults/orderitem.py:11
+msgid "Order item"
+msgstr "Pozycja zamówienia"
+
+#: models/ordermodel.py:83
+msgid "Extra order item price field"
+msgstr "Dodatkowe pole ceny produktu"
+
+#: models/ordermodel.py:84
+msgid "Extra order item price fields"
+msgstr "Dodatkowe pola ceny produktu"
+
+#: models/ordermodel.py:95
+msgid "Transaction ID"
+msgstr "ID Transakcji"
+
+#: models/ordermodel.py:96
+msgid "The transaction processor's reference"
+msgstr ""
+
+#: models/ordermodel.py:98
+msgid "Payment method"
+msgstr "Metoda płatności"
+
+#: models/ordermodel.py:99
+msgid "The payment backend use to process the purchase"
+msgstr ""
+
+#: models/ordermodel.py:103
+msgid "Order payment"
+msgstr ""
+
+#: models/ordermodel.py:104
+msgid "Order payments"
+msgstr ""
+
+#: models/defaults/bases.py:28
+msgid "Slug"
+msgstr "Adres URL"
+
+#: models/defaults/bases.py:29
+msgid "Active"
+msgstr "Aktywny"
+
+#: models/defaults/bases.py:31
+msgid "Date added"
+msgstr "Data dodania"
+
+#: models/defaults/bases.py:32
+msgid "Last modified"
+msgstr "Data modyfikacji"
+
+#: models/defaults/bases.py:34 models/defaults/bases.py:389
+#: templates/shop/cart.html:12 templates/shop/templatetags/_order.html:28
+msgid "Unit price"
+msgstr "Cena jednostkowa"
+
+#: models/defaults/bases.py:39 models/defaults/bases.py:388
+#: models/defaults/product.py:14
+msgid "Product"
+msgstr "Produkt"
+
+#: models/defaults/bases.py:40 models/defaults/product.py:15
+msgid "Products"
+msgstr "Produkty"
+
+#: models/defaults/bases.py:80 models/defaults/cart.py:9
+msgid "Cart"
+msgstr "Koszyk"
+
+#: models/defaults/bases.py:81 models/defaults/cart.py:10
+msgid "Carts"
+msgstr "Koszyki"
+
+#: models/defaults/bases.py:228 models/defaults/cartitem.py:10
+msgid "Cart item"
+msgstr "Produkt w koszyku"
+
+#: models/defaults/bases.py:229 models/defaults/cartitem.py:11
+msgid "Cart items"
+msgstr "Produkty w koszyku"
+
+#: models/defaults/bases.py:290
+msgid "User"
+msgstr "Użytkownik"
+
+#: models/defaults/bases.py:293
+msgid "Status"
+msgstr "Status"
+
+#: models/defaults/bases.py:295
+msgid "Order subtotal"
+msgstr ""
+
+#: models/defaults/bases.py:298
+msgid "Shipping address"
+msgstr "Adres dostawy"
+
+#: models/defaults/bases.py:299
+msgid "Billing address"
+msgstr "Adres do faktury"
+
+#: models/defaults/bases.py:303
+msgid "Created"
+msgstr "Stworzony"
+
+#: models/defaults/bases.py:305
+msgid "Updated"
+msgstr "Zaktualizowany"
+
+#: models/defaults/bases.py:311 models/defaults/order.py:14
+msgid "Orders"
+msgstr "Zamówienia"
+
+#: models/defaults/bases.py:314
+#, python-format
+msgid "Order ID: %(id)s"
+msgstr "ID Zamówienia: %(id)s"
+
+#: models/defaults/bases.py:385
+msgid "Product reference"
+msgstr ""
+
+#: models/defaults/bases.py:387 templates/shop/cart.html:11
+#: templates/shop/templatetags/_order.html:27
+msgid "Product name"
+msgstr "Nazwa produktu"
+
+#: models/defaults/bases.py:390 templates/shop/cart.html:13
+#: templates/shop/templatetags/_order.html:29
+msgid "Quantity"
+msgstr "Ilość"
+
+#: models/defaults/bases.py:392
+msgid "Line subtotal"
+msgstr ""
+
+#: models/defaults/bases.py:393
+msgid "Line total"
+msgstr "Suma wiersza"
+
+#: models/defaults/bases.py:399 models/defaults/orderitem.py:12
+msgid "Order items"
+msgstr "Pozycje zamówienia"
+
+#: templates/shop/cart.html:3
+msgid "Your shopping cart"
+msgstr "Twój koszyk"
+
+#: templates/shop/cart.html:34 templates/shop/templatetags/_order.html:49
+msgid "Line Total"
+msgstr ""
+
+#: templates/shop/cart.html:39
+msgid "Cart Subtotal"
+msgstr ""
+
+#: templates/shop/cart.html:47
+msgid "Cart Total"
+msgstr ""
+
+#: templates/shop/cart.html:51
+msgid "Update Shopping Cart"
+msgstr "Zaktualizuj koszyk"
+
+#: templates/shop/cart.html:56
+msgid "Empty Shopping Cart"
+msgstr "Opróżnij koszyk"
+
+#: templates/shop/cart.html:60
+msgid "Proceed to checkout"
+msgstr "Przejdź do płatności"
+
+#: templates/shop/cart.html:65
+msgid "Shopping cart is empty"
+msgstr "Koszyk jest pusty"
+
+#: templates/shop/order_list.html:3
+msgid "Order list"
+msgstr "Lista zamówień"
+
+#: templates/shop/welcome.html:8
+msgid "Hello"
+msgstr "Witaj"
+
+#: templates/shop/welcome.html:9
+msgid "Your orders"
+msgstr "Twoje zamówienia"
+
+#: templates/shop/templatetags/_order.html:4
+msgid "Order ID:"
+msgstr "ID Zamówienia:"
+
+#: templates/shop/templatetags/_order.html:8
+msgid "Order Status"
+msgstr "Status zamówienia"
+
+#: templates/shop/templatetags/_order.html:14
+msgid "Shipping Address"
+msgstr "Adres dostawy"
+
+#: templates/shop/templatetags/_order.html:18
+msgid "Billing Address"
+msgstr "Adres do rachunku"
+
+#: templates/shop/templatetags/_order.html:54
+msgid "Order Subtotal"
+msgstr ""
+
+#: templates/shop/templatetags/_order.html:62
+msgid "Order Total"
+msgstr "Kwota zamówienia"
+
+

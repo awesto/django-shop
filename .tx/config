@@ -1,0 +1,7 @@
+[django-shop.main]
+file_filter = shop/locale/<lang>/LC_MESSAGES/django.po
+source_file = shop/locale/en/LC_MESSAGES/django.po
+source_lang = en
+
+[main]
+host = https://www.transifex.net

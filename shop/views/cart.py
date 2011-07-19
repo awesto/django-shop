@@ -70,7 +70,7 @@ class CartItemDetail(ShopView):
         else:
             return HttpResponseRedirect(reverse('cart'))
 
-    def post_success(self, item):
+    def post_success(self, product, cart_item):
         """
         Post success hook"
         """
@@ -129,15 +129,15 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
         quantity parameter to specify how many you wish to add at once (defaults
         to 1)
         """
-        item_id = self.request.POST['add_item_id']
-        item_quantity = self.request.POST.get('add_item_quantity')
-        if not item_quantity:
-            item_quantity = 1
-        item = Product.objects.get(pk=item_id)
+        product_id = self.request.POST['add_item_id']
+        product_quantity = self.request.POST.get('add_item_quantity')
+        if not product_quantity:
+            product_quantity = 1
+        product = Product.objects.get(pk=product_id)
         cart_object = get_or_create_cart(self.request)
-        cart_object.add_product(item, item_quantity)
+        cart_item = cart_object.add_product(product, product_quantity)
         cart_object.save()
-        return self.post_success(item)
+        return self.post_success(product, cart_item)
 
     def delete(self, *args, **kwargs):
         """

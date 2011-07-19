@@ -1,17 +1,17 @@
-===============================
-How to use your own clientmodel
-===============================
+================================
+How to use your own addressmodel
+================================
 
 (Instead of the default one)
 
-Some people might feel like the current clientmodel is not suitable for their
+Some people might feel like the current addressmodel is not suitable for their
 project. You might be using a "client" + address model from an external application
 or simply want to write your own.
 
 This is a rather advanced use case, and most developers should hopefully be happy 
 with the default model. It is however relatively easy to do.
 
-Deactivate the default clientmodel
+Deactivate the default addressmodel
 ===================================
 
 Simple enough: just remove or comment the corresponding entry in your project's
@@ -42,5 +42,9 @@ the checkout views to work::
     
 This is to ensure that the views take handle "attaching" the address objects to the
 User (or the session if the shopper is a guest).
+
+We recommend to add `as_text` method to your address model that 'collect' all fields
+and return them in one string. This string will be saved to order
+(to billing_address_text or shipping_address_text accordingly) during checkout view.
     
 You are obviously free to subclass theses views and hook your own behavior.
