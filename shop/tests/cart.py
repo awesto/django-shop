@@ -8,11 +8,14 @@ from shop.models.cartmodel import Cart, CartItem
 from shop.models.productmodel import Product
 from shop.tests.utils.context_managers import SettingsOverride
 
+# This try except is there to let people run the tests from any project
+# Not only from the provided "test" project.
 SKIP_BASEPRODUCT_TEST = False
 try:
     from project.models import BaseProduct, ProductVariation
 except:
     SKIP_BASEPRODUCT_TEST = True
+
 
 class CartTestCase(TestCase):
     PRODUCT_PRICE = Decimal('100')

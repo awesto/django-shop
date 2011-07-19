@@ -13,6 +13,8 @@ from shop.tests.util import Mock
 from shop.tests.utils.context_managers import SettingsOverride
 from shop.util.order import get_order_from_request, add_order_to_request
 
+# This try except is there to let people run the tests from any project
+# Not only from the provided "test" project.
 SKIP_BASEPRODUCT_TEST = False
 try:
     from project.models import BaseProduct, ProductVariation
