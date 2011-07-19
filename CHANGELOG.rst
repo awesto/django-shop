@@ -1,3 +1,8 @@
+Version 0.0.10
+==============
+
+* Tests for the shop are now runnable from any project
+
 Version 0.0.9
 =============
 
@@ -6,7 +11,6 @@ Version 0.0.9
   the total is not done using an intermediate "current_total" attribute.
 * Added a SHOP_FORCE_LOGIN setting that restricts the checkout process to
   loged-in users.
-
 
 Version 0.0.8
 =============
