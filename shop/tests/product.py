@@ -36,16 +36,19 @@ class ProductStatisticsTestCase(TestCase):
     def setUp(self):
         self.product = Product()
         self.product.name = 'test'
+        self.product.slug = 'test'
         self.product.unit_price = Decimal('1.0')
         self.product.save()
         
         self.product2 = Product()
         self.product2.name = 'test2'
+        self.product2.slug = 'test2'
         self.product2.unit_price = Decimal('1.0')
         self.product2.save()
         
         self.product3 = Product()
         self.product3.name = 'test3'
+        self.product3.slug = 'test3'
         self.product3.unit_price = Decimal('1.0')
         self.product3.save()
 
