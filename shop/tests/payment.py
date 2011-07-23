@@ -69,34 +69,34 @@ class GeneralPaymentBackendTestCase(TestCase):
         order = be.shop.get_order(MockRequest())
         self.assertEqual(order, None)
 
-    def test_04_get_backends_from_pool(self):
+    def test_get_backends_from_pool(self):
         MODIFIERS = ['shop.tests.payment.ValidMockPaymentBackend']
         with SettingsOverride(SHOP_PAYMENT_BACKENDS=MODIFIERS):
             list = backends_pool.get_payment_backends_list()
             self.assertEqual(len(list), 1)
     
-    def test_05_get_backends_from_empty_pool(self):
+    def test_get_backends_from_empty_pool(self):
         MODIFIERS = []
         with SettingsOverride(SHOP_PAYMENT_BACKENDS=MODIFIERS):
             list = backends_pool.get_payment_backends_list()
             self.assertEqual(len(list), 0)
     
-    def test_06_get_backends_from_non_path(self):
+    def test_get_backends_from_non_path(self):
         MODIFIERS = ['blob']
         with SettingsOverride(SHOP_PAYMENT_BACKENDS=MODIFIERS):
             self.assertRaises(ImproperlyConfigured, backends_pool.get_payment_backends_list)
     
-    def test_07_get_backends_from_non_module(self):
+    def test_get_backends_from_non_module(self):
         MODIFIERS = ['shop.tests.IdontExist.IdontExistEither']
         with SettingsOverride(SHOP_PAYMENT_BACKENDS=MODIFIERS):
             self.assertRaises(ImproperlyConfigured, backends_pool.get_payment_backends_list)
             
-    def test_08_get_backends_from_non_class(self):
+    def test_get_backends_from_non_class(self):
         MODIFIERS = ['shop.tests.payment.IdontExistEither']
         with SettingsOverride(SHOP_PAYMENT_BACKENDS=MODIFIERS):
             self.assertRaises(ImproperlyConfigured, backends_pool.get_payment_backends_list)
             
-    def test_09_get_backends_cache_works(self):
+    def test_get_backends_cache_works(self):
         MODIFIERS = ['shop.tests.payment.ValidMockPaymentBackend']
         with SettingsOverride(SHOP_PAYMENT_BACKENDS=MODIFIERS):
             backends_pool.use_cache = True
