@@ -10,7 +10,7 @@ from shop.models.cartmodel import Cart
 from shop.models.ordermodel import Order
 from shop.tests.util import Mock
 from shop.tests.utils.context_managers import SettingsOverride
-from shop.views.checkout import CheckoutSelectionView
+from shop.views.checkout import CheckoutSelectionView, ThankYouView
 
         
 class ShippingBillingViewTestCase(TestCase):
@@ -224,3 +224,29 @@ class CheckoutCartToOrderTestCase(TestCase):
         view = CheckoutSelectionView(request=self.request)
         res = view.create_order_object_from_cart()
         self.assertEqual(res.order_total, Decimal('0'))
+
+class ThankYouViewTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(username="test", 
+                                        email="test@example.com",
+                                        first_name="Test",
+                                        last_name = "Toto")
+        
+        self.request = Mock()
+        setattr(self.request, 'user', self.user)
+        setattr(self.request, 'session', {})
+        setattr(self.request, 'method', 'GET')
+
+        self.order = Order.objects.create(user=self.user)
+
+    def test_get_context_gives_correct_order(self):
+        view = ThankYouView(request=self.request)
+        self.assertNotEqual(view, None)
+        res = view.get_context_data()
+        self.assertNotEqual(res, None)
+        self.assertEqual(self.order.status, Order.COMPLETED)
+        # refresh self.order from db (it was saved in the view)
+        self.order = Order.objects.get(pk=self.order.pk)
+        ctx_order = res.get('order', None)
+        self.assertNotEqual(ctx_order, None)
+        self.assertEqual(ctx_order, self.order)
