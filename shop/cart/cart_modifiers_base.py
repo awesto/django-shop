@@ -52,19 +52,21 @@ class BaseCartModifier(object):
         """
         Get an extra price field tuple for the current cart_item:
         
-        This allows to modify the price easily, simply return a 
-        ('Label', Decimal(difference)) from an override. This is expected to be
-        a tuple.
-        
-        Implementations should use ``cart_item.current_price`` to compute their price
-        difference (that is the subtotal, updated with all cart modifiers so far)
-        
+        This allows to modify the price easily, simply return a
+        ('Label', Decimal('amount')) from an override. This is expected to be
+        a tuple. The decimal should be the amount that should get added to the
+        current subtotal. It can be a negative value.
+
+        In case your modifier is based on the current price (for example in
+        order to compute value added tax for this cart item only) your
+        override can access that price via ``cart_item.current_price``.
+
         A tax modifier would do something like this:
         >>> return ('taxes', Decimal(9))
-        
+
         And a rebate modifier would do something along the lines of:
         >>> return ('rebate', Decimal(-9))
-        
+
         More examples can be found in shop.cart.modifiers.*
         """
         return None # Does nothing by default
@@ -74,12 +76,15 @@ class BaseCartModifier(object):
         Get an extra price field tuple for the current cart:
         
         This allows to modify the price easily, simply return a 
-        ('Label', Decimal(difference)) from an override. This is expected to be
-        a tuple.
-        
-        Implementations should use ``cart.current_price`` to compute their price
-        difference (that is the subtotal, updated with all cart modifiers so far)
-        
+        ('Label', Decimal('amount')) from an override. This is expected to be
+        a tuple. The decimal should be the amount that should get added to the
+        current subtotal. It can be a negative value.
+
+        In case your modifier is based on the current price (for example in
+        order to compute value added tax for the whole current price) your
+        override can access that price via ``cart.current_price``. That is the
+        subtotal, updated with all cart modifiers so far)
+
         >>> return ('Taxes total', 19.00)
         """
         return None
