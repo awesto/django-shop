@@ -59,7 +59,7 @@ class BaseCartModifier(object):
 
         In case your modifier is based on the current price (for example in
         order to compute value added tax for this cart item only) your
-        override can access that price via ``cart_item.current_price``.
+        override can access that price via ``cart_item.current_total``.
 
         A tax modifier would do something like this:
         >>> return ('taxes', Decimal(9))
@@ -82,7 +82,7 @@ class BaseCartModifier(object):
 
         In case your modifier is based on the current price (for example in
         order to compute value added tax for the whole current price) your
-        override can access that price via ``cart.current_price``. That is the
+        override can access that price via ``cart.current_total``. That is the
         subtotal, updated with all cart modifiers so far)
 
         >>> return ('Taxes total', 19.00)
