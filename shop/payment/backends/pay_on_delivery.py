@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls.defaults import patterns, url
-
+from django.http import HttpResponseRedirect
 from shop.util.decorators import on_method, shop_login_required
 
 
@@ -27,7 +27,7 @@ class PayOnDeliveryBackend(object):
         # he does his job properly)
         self.shop.confirm_payment(the_order, self.shop.get_order_total(the_order),
                                   "None", self.backend_name)
-        return self.shop.get_finished_url()
+        return HttpResponseRedirect(self.shop.get_finished_url())
         
     def get_urls(self):
         urlpatterns = patterns('',

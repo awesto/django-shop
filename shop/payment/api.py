@@ -52,12 +52,12 @@ class PaymentAPI(ShopAPI):
         is finished i.e. The payment has been processed from a user perspective
         This will redirect to the "Thanks for your order" page.
         """
-        return HttpResponseRedirect(reverse('thank_you_for_your_order'))
+        return reverse('thank_you_for_your_order')
     
     def get_cancel_url(self):
         """
         A helper for backends to let them redirect to a generic "order was 
         cancelled" URL of their choosing. 
         """
-        return HttpResponseRedirect(reverse('checkout_payment'))
+        return reverse('checkout_payment')
     
