@@ -12,6 +12,8 @@ The "instructions" :)
     :maxdepth: 1
     :numbered:
 
+    tutorial
+
     getting-started
     templatetags
     contributing
