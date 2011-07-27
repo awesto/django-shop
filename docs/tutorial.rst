@@ -3,7 +3,7 @@ Tutorial
 ========
 
 This tutorial is aimed at people new to django-SHOP but already familiar with
-django. If you aren't yet, reading their exceppent django tutorial is highly
+django. If you aren't yet, reading their excellent `django tutorial <https://docs.djangoproject.com/en/1.3/intro/tutorial01/>`_ is highly
 recommended.
 
 The steps outlined in this tutorial are meant to be followed in order.
