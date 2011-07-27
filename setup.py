@@ -1,5 +1,6 @@
 from setuptools import setup, find_packages
 import os
+import shop
 
 CLASSIFIERS = []
 
@@ -7,7 +8,7 @@ setup(
     author="Christopher Glass",
     author_email="tribaal@gmail.com",
     name='django-shop',
-    version='0.0.9',
+    version=shop.__version__,
     description='An Advanced Django Shop',
     long_description=open(os.path.join(os.path.dirname(__file__), 'README.rst')).read(),
     url='http://www.django-shop.org/',
