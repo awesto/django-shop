@@ -109,7 +109,7 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
         cart_items = CartItem.objects.filter(cart=cart_object)
         final_items = []
         for item in cart_items:
-            item.update()
+            item.update(cart_object)
             final_items.append(item)
         ctx.update({'cart_items': final_items})
         

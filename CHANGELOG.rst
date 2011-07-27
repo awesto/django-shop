@@ -1,10 +1,13 @@
 Version 0.0.10
 ==============
 
+* [API change] Cart modifiers cart item methods now recieve a reference to 
+  the current cart object.
 * Changed the version definition mechanism. You can now: import shop;
   shop.__version__. Also, it now conforms to PEP 386
-* Changed the payment backend API to let get_finished_url and get_cancel_url
-  return strings instead of HttpResponse objects (this was confusing)
+* [API Change] Changed the payment backend API to let get_finished_url 
+  and get_cancel_url return strings instead of HttpResponse objects (this 
+  was confusing)
 * Tests for the shop are now runnable from any project
 
 Version 0.0.9
