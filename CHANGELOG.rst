@@ -1,8 +1,8 @@
 Version 0.0.10
 ==============
 
-* [API change] Cart modifiers cart item methods now recieve a reference to 
-  the current cart object.
+* [API change] Cart modifiers cart item methods now recieve a state object,
+  that allows them to pass information between cart modifiers cheaply.
 * Changed the version definition mechanism. You can now: import shop;
   shop.__version__. Also, it now conforms to PEP 386
 * [API Change] Changed the payment backend API to let get_finished_url 

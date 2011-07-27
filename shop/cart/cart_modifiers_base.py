@@ -10,7 +10,7 @@ class BaseCartModifier(object):
     settings.SHOP_CART_MODIFIERS setting.
     """
         
-    def process_cart_item(self, cart_item, cart):
+    def process_cart_item(self, cart_item, state):
         """
         This will be called for every line item in the Cart:
         Line items typically contain: product, unit_price, quantity...
@@ -22,17 +22,17 @@ class BaseCartModifier(object):
         Overrides of this method should however update cart_item.current_total, 
         since it will potentially be used by other modifiers.
         
-        The cart parameter is only used to let implementations access the current 
-        cart object (to store information for example)
+        The state parameter is only used to let implementations store temporary
+        information to pass between cart_item_modifers and cart_modifiers
         """
-        field = self.get_extra_cart_item_price_field(cart_item, cart)
+        field = self.get_extra_cart_item_price_field(cart_item)
         if field != None:
             price = field[1]
             cart_item.current_total = cart_item.current_total + price
             cart_item.extra_price_fields.append(field)
         return cart_item
     
-    def process_cart(self, cart):
+    def process_cart(self, cart, state):
         """
         This will be called once per Cart, after every line item was treated
         The subtotal for the cart is already known, but the Total is 0.
@@ -43,6 +43,9 @@ class BaseCartModifier(object):
         
         Subtotal is accessible, but total is still 0.0. Overrides are expected to
         update cart.current_total.
+        
+        The state parameter is only used to let implementations store temporary
+        information to pass between cart_item_modifers and cart_modifiers
         """
         field = self.get_extra_cart_price_field(cart)
         if field != None:
@@ -51,7 +54,7 @@ class BaseCartModifier(object):
             cart.extra_price_fields.append(field)
         return cart
     
-    def get_extra_cart_item_price_field(self, cart_item, cart):
+    def get_extra_cart_item_price_field(self, cart_item):
         """
         Get an extra price field tuple for the current cart_item:
         
@@ -71,9 +74,6 @@ class BaseCartModifier(object):
         >>> return ('rebate', Decimal(-9))
 
         More examples can be found in shop.cart.modifiers.*
-        
-        The cart parameter is only providing a reference to the current cart for
-        extensibility and flexibility purposes.
         """
         return None # Does nothing by default
     
