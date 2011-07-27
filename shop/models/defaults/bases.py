@@ -164,7 +164,7 @@ class BaseCart(models.Model):
         cart_item.delete()
         self.save()
 
-    def update(self):
+    def update(self, state=None):
         """
         This should be called whenever anything is changed in the cart (added
         or removed).
@@ -192,7 +192,8 @@ class BaseCart(models.Model):
 
         # This will hold extra information that cart modifiers might want to pass
         # to each other
-        state = {} 
+        if state == None:
+            state = {} 
 
         for item in items: # For each OrderItem (order line)...
             item.product = products_dict[item.product_id] #This is still the ghetto select_related
