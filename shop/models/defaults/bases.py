@@ -179,12 +179,19 @@ class BaseCart(models.Model):
         that for the order items (since they are legally binding after the
         "purchase" button was pressed)
         """
-        from shop.models import CartItem
+        from shop.models import CartItem, Product
+        
+        # This is a ghetto "select_related" for polymorphic models. 2 queries!
         items = CartItem.objects.filter(cart=self)
+        product_ids = [item.product_id for item in items]
+        products = Product.objects.filter(id__in=product_ids)
+        products_dict = dict([(p.id, p) for p in products])
+        
         self.extra_price_fields = [] # Reset the price fields
         self.subtotal_price = Decimal('0.0') # Reset the subtotal
 
         for item in items: # For each OrderItem (order line)...
+            item.product = products_dict[item.product_id] #This is still the ghetto select_related
             self.subtotal_price = self.subtotal_price + item.update()
             item.save()
         
