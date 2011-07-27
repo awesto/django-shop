@@ -102,14 +102,15 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
     def get_context_data(self, **kwargs):
         # There is no get_context_data on super(), we inherit from the mixin!
         ctx = {}
+        state = {}
         cart_object = get_or_create_cart(self.request)
-        cart_object.update()
+        cart_object.update(state)
         ctx.update({'cart': cart_object})
         
         cart_items = CartItem.objects.filter(cart=cart_object)
         final_items = []
         for item in cart_items:
-            item.update({}) # TODO: This looks wrong...
+            item.update(state)
             final_items.append(item)
         ctx.update({'cart_items': final_items})
         
