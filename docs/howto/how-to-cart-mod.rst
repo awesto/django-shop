@@ -7,12 +7,6 @@ which carts should be modified (and in what order).
 
 Generally, this is how you implement a "bulk rebate" module, for instance.
 
-.. warning::
-   When using ``cart.extra_price_fields.append('your label', price)`` you might
-   want to use ``from django.utils.translation import gettext as _`` for your
-   label in multilingual projects. Please make sure that you use ``gettext``
-   indeed and not ``ugettext_lazy``!
-   
 Writing a simple cart modifier for the whole cart
 ==================================================
 
@@ -46,3 +40,9 @@ This will affect the price of the whole cart. We will therefore override the
 Adding this cart modifier to your SHOP_CART_MODIFIERS setting will enable it, and
 you should be able to already test that your cart displays a rebate when the 
 total for the order is over 500.
+
+
+.. note::
+   When using ``cart.extra_price_fields.append('your label', price)`` you might
+   want to use ``from django.utils.translation import gettext as _`` for your
+   label in multilingual projects. Please make sure that you use ``gettext``
