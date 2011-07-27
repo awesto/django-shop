@@ -66,7 +66,7 @@ SHOP_ADDRESS_MODEL
 ===================
 (Optional)
 A python classpath to the class you want to replace the Address model with.
-See :doc:`/howto/how-to-use-your-own-clientmodel` for a more complete example.
+See :doc:`/howto/how-to-use-your-own-addressmodel` for a more complete example.
 Example value: `myproject.models.MyAddressModel`
 
 SHOP_ORDER_MODEL
