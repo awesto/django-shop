@@ -52,3 +52,13 @@ Shipping backends
 
 Payment backends
 ================
+
+More plugins?
+=============
+
+You can find more plugins or share your own plugin with the world on `the
+django-SHOP website <https://www.django-shop.org/ecosystem/>`_
+
+Lots of functionality in django-SHOP was left to implement as plugins and
+extensions, checking this resource for extra functionality is highly
+recommended before starting a new project!
