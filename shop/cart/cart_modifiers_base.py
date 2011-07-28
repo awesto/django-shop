@@ -25,8 +25,6 @@ class BaseCartModifier(object):
         returns a tuple of (description, value) to add to the current cart_item
     4. post_process_cart: all totals are up-to-date, the cart is ready to be
         displayed. Any change you make here must be consistent!
-    
-    
     """
     
     #===========================================================================
@@ -35,7 +33,7 @@ class BaseCartModifier(object):
     
     def pre_process_cart(self, cart, state):
         """
-        This method will be called, in sequence, before the cart starts being processed.
+        This method will be called before the cart starts being processed.
         Totals are not updated yep (obviously), but this method can be useful to 
         gather some information on products in the cart.
         
@@ -46,6 +44,12 @@ class BaseCartModifier(object):
         pass
     
     def post_process_cart(self, cart, state):
+        """
+        This method will be called after the cart was processed.
+        The Cart object is "final" and all the fields are computed. Remember that
+        anything changed at this point should be consistent: if updating the price
+        you should also update all relevant totals (for example).
+        """
         pass
     
     def process_cart_item(self, cart_item, state):
