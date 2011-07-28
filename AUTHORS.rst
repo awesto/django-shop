@@ -18,6 +18,7 @@ CONTRIBUTORS
 * Kristian Øllegaard
 * Martin Ogden
 * Pavel Zhukov
+* Adrien Lemaire
 
 TRANSLATORS
 ===========
