@@ -1,6 +1,8 @@
 Version 0.0.10
 ==============
 
+* New hooks were added to cart modifiers: pre_process_cart and
+  post_process_cart.
 * [API change] Cart modifiers cart item methods now recieve a state object,
   that allows them to pass information between cart modifiers cheaply.
 * Changed the version definition mechanism. You can now: import shop;
