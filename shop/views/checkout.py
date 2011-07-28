@@ -197,7 +197,7 @@ class ThankYouView(LoginMixin, ShopTemplateView):
             order.save()
             completed.send(sender=self, order=order)
         else:
-            order = Order.objects.get_latest_for_user(self.request.user)
+            order = Order.objects.get_latest_for_user(self.request.user) #TODO: Is this ever the case?
         ctx.update({'order': order,})
 
         # Empty the customers basket, to reflect that the purchase was completed
