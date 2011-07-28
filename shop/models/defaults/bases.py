@@ -181,7 +181,7 @@ class BaseCart(models.Model):
         """
         from shop.models import CartItem, Product
         
-        # This is a ghetto "select_related" for polymorphic models. 2 queries!
+        # This is a ghetto "select_related" for polymorphic models.
         items = CartItem.objects.filter(cart=self)
         product_ids = [item.product_id for item in items]
         products = Product.objects.filter(id__in=product_ids)
@@ -194,6 +194,11 @@ class BaseCart(models.Model):
         # to each other
         if state == None:
             state = {} 
+        
+        # This calls all the pre_proocess_cart methods (if any), before the cart
+        # is, well, processed. This allows for data collection on the cart for example)
+        for modifier in cart_modifiers_pool.get_modifiers_list():
+            modifier.pre_process_cart(self, state)
 
         for item in items: # For each OrderItem (order line)...
             item.product = products_dict[item.product_id] #This is still the ghetto select_related
@@ -207,6 +212,12 @@ class BaseCart(models.Model):
             modifier.process_cart(self, state)
         
         self.total_price = self.current_total
+        
+        # This calls the post_process_cart method from cart modifiers, if any.
+        # It allows for a last bit of processing on the "finished" cart, before
+        # it is displayed
+        for modifier in cart_modifiers_pool.get_modifiers_list():
+            modifier.post_process_cart(self, state)
 
     def empty(self):
         """

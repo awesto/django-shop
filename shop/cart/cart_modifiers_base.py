@@ -9,7 +9,13 @@ class BaseCartModifier(object):
     call all subclasses of this registered with their full path in the
     settings.SHOP_CART_MODIFIERS setting.
     """
-        
+    
+    def pre_process_cart(self, cart, state):
+        pass
+    
+    def post_process_cart(self, cart, state):
+        pass
+    
     def process_cart_item(self, cart_item, state):
         """
         This will be called for every line item in the Cart:
