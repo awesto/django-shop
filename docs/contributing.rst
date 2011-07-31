@@ -29,13 +29,11 @@ Chat), on the freenode servers in the #django-shop channel
 We also have a mailing list and a google group::
 
 	http://groups.google.com/group/django-shop
-	
+
 Code guidelines
 ================
 
-* As most projects, we try to follow PEP8_ as closely as possible
+* As most projects, we try to follow :pep:`8` as closely as possible
 * Most pull requests will be rejected without proper unit testing
 * Generally we like to discuss new features before they are merged in, but this
   is a somewhat flexible rule :)
-  
-.. _PEP8: http://www.python.org/dev/peps/pep-0008/
