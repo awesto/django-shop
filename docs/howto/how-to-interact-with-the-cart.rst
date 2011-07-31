@@ -3,7 +3,7 @@ How to interact with the cart
 ===============================
 
 Interacting with the cart is most probably one of the single most important
-thing shop implementors will want to do: adding products to it, changing
+thing shop implementers will want to do: adding products to it, changing
 quantities...
 
 There are roughly two different ways to interact with the cart: through Ajax, or

@@ -2,9 +2,11 @@
 Templatetags
 ============
 
-django-shop ships various templatetags to make quick creation of html templates
+django-shop ships various templatetags to make quick creation of HTML templates
 easier. In order to use these templatetags you need to load them in your
 template
+
+.. highlight:: html+django
 
 ::
 
@@ -49,15 +51,15 @@ Product
 =======
 
 Renders information about all active products in the shop. This is useful if
-you need to display your products on pages other than just product_list.html.
+you need to display your products on pages other than just ``product_list.html``.
 
 Usage
 -----
 
 If no argument is given, the tag will just render all active products. The tag
-allows an optional argument ``objects``. It should be a queryset of Product
-objects. If given, the tag will render the given products only instead of all
-active products.
+allows an optional argument ``objects``. It should be a queryset of
+:class:`~shop.models.Product` objects. If given, the tag will render the given
+products only instead of all active products.
 
 ::
 
