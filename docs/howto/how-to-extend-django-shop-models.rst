@@ -22,7 +22,7 @@ Example
 Extending the Product model in django-SHOP works like this::
     
     # In myproject.models
-    from shop.models.productmodel import Product
+    from shop.models import Product
     class MyProduct(BaseProduct):
         def extra_method(self):
             return 'Yay'
@@ -33,13 +33,14 @@ Extending the Product model in django-SHOP works like this::
     # In your project's settings.py, add the following line:
     SHOP_PRODUCT_MODEL = 'myproject.models.MyProduct'
 
-.. important:: Your model replacement must define a Meta class. Otherwise, they
-   will inherit their parent's Meta, which will break things. The Meta class
-   does not need to do anything important - it just has to be there.
+.. important:: Your model replacement must define a :class:`Meta` class.
+   Otherwise, they will inherit their parent's :class:`Meta`, which will break
+   things. The :class:`Meta` class does not need to do anything important - it
+   just has to be there.
     
 From a django interactive shell, you should now be able to do::
 
-    >>> from shop.models.productmodel import Product
+    >>> from shop.models import Product
     >>> p = Product.objects.all()[0] # I assume there is already at least one
     >>> p.extra_method()
     Yay

@@ -10,11 +10,12 @@ Generally, this is how you implement a "bulk rebate" module, for instance.
 Writing a simple cart modifier for the whole cart
 ==================================================
 
-Let's assume you want to provide a discount of 10% off the Cart's total to
+Let's assume you want to provide a discount of 10% off the cart's total to
 clients that buy more than 500$ of goods.
 
 This will affect the price of the whole cart. We will therefore override the
-``get_extra_cart_price_field`` method of ``BaseCartModifier``::
+:meth:`get_extra_cart_price_field` method of
+:class:`shop.cart.cart_modifiers_base.BaseCartModifier`::
 
     from shop.cart.cart_modifiers_base import BaseCartModifier
     from decimal import Decimal # We need this because python's float are confusing
@@ -44,5 +45,5 @@ total for the order is over 500.
 
 .. note::
    When using ``cart.extra_price_fields.append('your label', price)`` you might
-   want to use ``from django.utils.translation import gettext as _`` for your
+   want to use ``from django.utils.translation import ugettext as _`` for your
    label in multilingual projects. Please make sure that you use ``gettext``
