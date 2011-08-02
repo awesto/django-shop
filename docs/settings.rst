@@ -7,7 +7,7 @@ This is a small list of the settings defined in Django SHOP.
 SHOP_PAYMENT_BACKENDS
 ======================
 
-A list (or iterable) of payment backend class pathes.
+A list (or iterable) of payment backend class paths.
 These classes will be used as the active payment backends by the checkout system,
 and so anything in this list will be shown to the customer for him/her to make
 a decision
@@ -15,7 +15,7 @@ a decision
 SHOP_SHIPPING_BACKENDS
 =======================
 
-In a similar fashion, this must be a list of Shipping backends. This list is used
+In a similar fashion, this must be a list of shipping backends. This list is used
 to display the end customer what shipping options are available to him/her during 
 the checkout process. 
 
@@ -23,14 +23,14 @@ SHOP_CART_MODIFIERS
 ====================
 
 Theses modifiers function like the django middlewares. The cart will call each of
-theses classes, in order, everytime it is displayed. They are passed every item in
+theses classes, in order, every time it is displayed. They are passed every item in
 the cart, as well as the cart itself.
 
 SHOP_FORCE_LOGIN
 =================
-If ``True``, all views after the CartDetails view will need the user to be
-authenticated. An anonymous user will be redirected to your login url. Please
-read more on authentication in Django's official 
+If ``True``, all views after the :class:`~shop.views.cart.CartDetails` view will
+need the user to be authenticated. An anonymous user will be redirected to your
+login url. Please read more on authentication in Django's official
 `authentication documentation <https://docs.djangoproject.com/en/dev/topics/auth/>`_
 .
 
@@ -65,12 +65,16 @@ Example value: `myproject.models.MyCartModel`
 SHOP_ADDRESS_MODEL
 ===================
 (Optional)
-A python classpath to the class you want to replace the Address model with.
-See :doc:`/howto/how-to-use-your-own-addressmodel` for a more complete example.
+A python classpath to the class you want to replace the
+:class:`shop.addressmodel.models.Address` model with. See
+:doc:`/howto/how-to-use-your-own-addressmodel` for a more complete example.
+
 Example value: `myproject.models.MyAddressModel`
 
 SHOP_ORDER_MODEL
 =================
 (Optional)
-A python classpath to the class you want to replace the Oredr model with.
+A python classpath to the class you want to replace the
+:class:`shop.models.Order` model with.
+
 Example value: `myproject.models.MyOrderModel`
