@@ -195,8 +195,8 @@ class BaseCart(models.Model):
         if state == None:
             state = {} 
         
-        # This calls all the pre_proocess_cart methods (if any), before the cart
-        # is, well, processed. This allows for data collection on the cart for example)
+        # This calls all the pre_process_cart methods (if any), before the cart
+        # is processed. This allows for data collection on the cart for example)
         for modifier in cart_modifiers_pool.get_modifiers_list():
             modifier.pre_process_cart(self, state)
 

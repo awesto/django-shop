@@ -34,7 +34,7 @@ class BaseCartModifier(object):
     def pre_process_cart(self, cart, state):
         """
         This method will be called before the cart starts being processed.
-        Totals are not updated yep (obviously), but this method can be useful to 
+        Totals are not updated yet (obviously), but this method can be useful to 
         gather some information on products in the cart.
         
         The `state` parameter is further passed to process_cart_item, process_cart,
