@@ -1,6 +1,9 @@
 Version 0.0.10
 ==============
 
+* The cart items are not automatically saved after  process_cart_item anymore.
+  This allows for cart modifiers that change the cart's content (also
+  deleting).
 * Changed the version definition mechanism. You can now: import shop;
   shop.__version__. Also, it now conforms to PEP 386
 * Changed the payment backend API to let get_finished_url and get_cancel_url
