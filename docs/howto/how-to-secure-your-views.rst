@@ -1,3 +1,5 @@
+.. _how-to-secure-your-views:
+
 =========================
 How to secure your views
 =========================
@@ -24,19 +26,18 @@ can be found `here <http://www.toddreed.name/content/django-view-class/>`_.
 
 Usage::
 
-  from shop.util.decorators import on_method, shop_login_required
+    from shop.util.decorators import on_method, shop_login_required
 
-  
-  class PayOnDeliveryBackend(object):
-    
-    backend_name = "Pay On Delivery"
-    url_namespace = "pay-on-delivery"
+    class PayOnDeliveryBackend(object):
 
-    [...]
-    
-    @on_method(shop_login_required)
-    def simple_view(self, request):
+        backend_name = "Pay On Delivery"
+        url_namespace = "pay-on-delivery"
+
         [...]
+
+        @on_method(shop_login_required)
+        def simple_view(self, request):
+            [...]
         
 @shop_login_required decorator
 ===============================
@@ -50,16 +51,17 @@ LoginMixin class
 =================
 
 If you are using class based views for anything related to the shop you can use
-``shop.util.login_mixin.LoginMixin`` to secure your views. More information on
-this can be found 
+:class:`shop.util.login_mixin.LoginMixin` to secure your views. More information
+on this can be found
 `here <https://groups.google.com/d/msg/django-users/g2E_6ZYN_R0/tnB9b262lcAJ>`_.
-We are using a slightly modified version of that LoginMixin that makes sure 
-to check for the ``SHOP_FORCE_LOGIN`` setting.
+We are using a slightly modified version of that
+:class:`~shop.util.login_mixin.LoginMixin` that makes sure to check for the
+``SHOP_FORCE_LOGIN`` setting.
 
 Usage::
 
-  class CheckoutSelectionView(LoginMixin, ShopTemplateView):
-    template_name = 'shop/checkout/selection.html'
+    class CheckoutSelectionView(LoginMixin, ShopTemplateView):
+        template_name = 'shop/checkout/selection.html'
 
-    [...]
-    
+        [...]
+
