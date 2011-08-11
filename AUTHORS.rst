@@ -19,6 +19,7 @@ CONTRIBUTORS
 * Martin Ogden
 * Pavel Zhukov
 * Adrien Lemaire
+* Benjamin Wohlwend
 
 TRANSLATORS
 ===========

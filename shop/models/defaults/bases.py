@@ -203,7 +203,6 @@ class BaseCart(models.Model):
         for item in items: # For each OrderItem (order line)...
             item.product = products_dict[item.product_id] #This is still the ghetto select_related
             self.subtotal_price = self.subtotal_price + item.update(state)
-            item.save()
         
         self.current_total = self.subtotal_price
         # Now we have to iterate over the registered modifiers again (unfortunately)

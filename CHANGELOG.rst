@@ -5,6 +5,9 @@ Version 0.0.10
   post_process_cart.
 * [API change] Cart modifiers cart item methods now recieve a state object,
   that allows them to pass information between cart modifiers cheaply.
+* The cart items are not automatically saved after  process_cart_item anymore.
+  This allows for cart modifiers that change the cart's content (also
+  deleting).
 * Changed the version definition mechanism. You can now: import shop;
   shop.__version__. Also, it now conforms to PEP 386
 * [API Change] Changed the payment backend API to let get_finished_url 
