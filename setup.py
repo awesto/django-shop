@@ -2,7 +2,16 @@ from setuptools import setup, find_packages
 import os
 import shop
 
-CLASSIFIERS = []
+CLASSIFIERS = [
+    'Environment :: Web Environment',
+    'Framework :: Django',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: BSD License',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python',
+    'Topic :: Software Development :: Libraries :: Application Frameworks',
+    'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
+]
 
 setup(
     author="Christopher Glass",
