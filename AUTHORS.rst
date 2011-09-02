@@ -20,6 +20,7 @@ CONTRIBUTORS
 * Pavel Zhukov
 * Adrien Lemaire
 * Benjamin Wohlwend
+* Mike Yumatov
 
 TRANSLATORS
 ===========
