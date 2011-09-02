@@ -299,12 +299,12 @@ class BaseOrder(models.Model):
     CANCELLED = 6 # order has been cancelled
 
     STATUS_CODES = (
-        (PROCESSING, 'Processing'),
-        (PAYMENT, 'Selecting payment'),
-        (CONFIRMED, 'Confirmed'),
-        (COMPLETED, 'Completed'),
-        (SHIPPED, 'Shipped'),
-        (CANCELLED, 'Cancelled'),
+        (PROCESSING, _('Processing')),
+        (PAYMENT, _('Selecting payment')),
+        (CONFIRMED, _('Confirmed')),
+        (COMPLETED, _('Completed')),
+        (SHIPPED, _('Shipped')),
+        (CANCELLED, _('Cancelled')),
     )
     
     # If the user is null, the order was created with a session
