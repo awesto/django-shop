@@ -147,11 +147,11 @@ class BaseCart(models.Model):
         reaches `0`
         """
         cart_item = self.items.get(pk=cart_item_id)
-        if quantity == 0:
-            cart_item.delete()
-        else:
-            cart_item.quantity = quantity
-            cart_item.save()
+#        if quantity == 0:
+#            cart_item.delete()
+#        else:
+        cart_item.quantity = quantity
+        cart_item.save()
         self.save()
 
     def delete_item(self, cart_item_id):
