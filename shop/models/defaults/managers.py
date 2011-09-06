@@ -102,22 +102,23 @@ class OrderManager(models.Manager):
         # There, now move on to the order items.
         cart_items = CartItem.objects.filter(cart=cart)
         for item in cart_items:
-            item.update(cart)
-            i = OrderItem()
-            i.order = o
-            i.product_reference = item.product.id
-            i.product_name = item.product.name
-            i.product = item.product
-            i.unit_price = item.product.get_price()
-            i.quantity = item.quantity
-            i.line_total = item.line_total
-            i.line_subtotal = item.line_subtotal
-            i.save()
-            # For each order item, we save the extra_price_fields to DB 
-            for label, value in item.extra_price_fields:
-                eoi = ExtraOrderItemPriceField()
-                eoi.order_item = i
-                eoi.label = unicode(label) # Force unicode, in case it has àö...
-                eoi.value = value
-                eoi.save()
+            if item.quantity > 0:
+                item.update(cart)
+                i = OrderItem()
+                i.order = o
+                i.product_reference = item.product.id
+                i.product_name = item.product.name
+                i.product = item.product
+                i.unit_price = item.product.get_price()
+                i.quantity = item.quantity
+                i.line_total = item.line_total
+                i.line_subtotal = item.line_subtotal
+                i.save()
+                # For each order item, we save the extra_price_fields to DB 
+                for label, value in item.extra_price_fields:
+                    eoi = ExtraOrderItemPriceField()
+                    eoi.order_item = i
+                    eoi.label = unicode(label) # Force unicode, in case it has àö...
+                    eoi.value = value
+                    eoi.save()
         return o
