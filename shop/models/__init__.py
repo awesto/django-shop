@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from cartmodel import *
 from ordermodel import *
 from productmodel import *
