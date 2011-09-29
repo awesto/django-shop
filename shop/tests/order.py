@@ -201,6 +201,23 @@ class OrderConversionTestCase(TestCase):
         self.assertEqual(o.order_subtotal, self.cart.subtotal_price)
         self.assertEqual(o.order_total, self.cart.total_price)
 
+    def test_create_order_order_items_proper_product_name(self):
+        baseproduct = BaseProduct.objects.create(
+                name="Table",
+                unit_price=self.PRODUCT_PRICE
+                )
+        variation = ProductVariation.objects.create(
+                baseproduct=baseproduct,
+                name="white"
+                )
+        self.cart.add_product(variation)
+        self.cart.update()
+        self.cart.save()
+
+        o = Order.objects.create_from_cart(self.cart)
+        ois = OrderItem.objects.filter(order=o)
+        self.assertEqual(ois[0].product_name, "Table - white")
+
     def test_create_order_from_taxed_cart(self):
         """
         This time assert that everything is consistent with a tax cart modifier
