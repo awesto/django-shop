@@ -422,5 +422,5 @@ class BaseOrderItem(models.Model):
 
     def save(self, *args, **kwargs):
         if self.product:
-            self.product_name = self.product.name
+            self.product_name = self.product.get_name()
         super(BaseOrderItem, self).save(*args, **kwargs)

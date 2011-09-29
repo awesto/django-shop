@@ -14,6 +14,7 @@ class CompactDiscProduct(Product):
 
 
 class BaseProduct(models.Model):
+    name = models.CharField(max_length=255)
     unit_price = CurrencyField()
 
 
@@ -22,5 +23,9 @@ class ProductVariation(Product):
 
     def get_price(self):
         return self.baseproduct.unit_price
+
+    def get_name(self):
+        return "%s - %s" % (self.baseproduct.name, self.name,)
+
 
 

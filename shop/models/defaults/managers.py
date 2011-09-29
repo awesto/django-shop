@@ -106,7 +106,7 @@ class OrderManager(models.Manager):
             i = OrderItem()
             i.order = o
             i.product_reference = item.product.id
-            i.product_name = item.product.name
+            i.product_name = item.product.get_name()
             i.product = item.product
             i.unit_price = item.product.get_price()
             i.quantity = item.quantity
