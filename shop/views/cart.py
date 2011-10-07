@@ -161,5 +161,9 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
         cart_object = get_or_create_cart(self.request)
         for key in cart_item_fields:
             id = key[len(field_prefix):]
-            cart_object.update_quantity(id, int(self.request.POST[key]))
+            try:
+                quantity = int(self.request.POST[key])
+            except ValueError:
+                quantity = 0
+            cart_object.update_quantity(id, quantity)
         return self.put_success()
