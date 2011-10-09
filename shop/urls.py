@@ -30,7 +30,9 @@ urlpatterns = patterns('',
     # CartItems
     url('^cart/item/(?P<id>[0-9A-Za-z-_.//]+)$', CartItemDetail.as_view(),
         name='cart_item' ),
-    
+    url('^cart/item/(?P<id>[0-9A-Za-z-_.//]+)/delete$', CartItemDetail.as_view(action='delete'),
+        name='cart_item_delete' ),
+        
     # Checkout
     url(r'^checkout/$', CheckoutSelectionView.as_view(), 
         name='checkout_selection' # First step of the checkout process
