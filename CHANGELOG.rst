@@ -14,6 +14,7 @@ Version 0.0.10
   and get_cancel_url return strings instead of HttpResponse objects (this 
   was confusing)
 * Tests for the shop are now runnable from any project
+* added URL to CartItemView.delete()
 
 Version 0.0.9
 =============
