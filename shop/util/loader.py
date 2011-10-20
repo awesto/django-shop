@@ -48,5 +48,10 @@ def get_model_string(model_name):
     if not class_path:
         return 'shop.%s' % model_name
     else:
-        klass = load_class(class_path)
-        return '%s.%s' % (klass._meta.app_label, klass.__name__)
+        parts = class_path.split('.')
+        if len(parts) == 3 and parts[1] == 'models':
+            return '%s.%s' % (parts[0], parts[2])
+        else:
+            klass = load_class(class_path)
+            return '%s.%s' % (klass._meta.app_label, klass.__name__)
+
