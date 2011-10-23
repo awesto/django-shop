@@ -149,10 +149,12 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
         and QTY is quantity to set.
         """
         field_prefix = 'update_item-'
-        cart_item_fields = [k for k in self.request.POST.keys() 
+        cart_item_fields = [k for k in self.request.REQUEST.keys() 
                 if k.startswith(field_prefix)]
         cart_object = get_or_create_cart(self.request)
         for key in cart_item_fields:
             id = key[len(field_prefix):]
-            cart_object.update_quantity(id, int(self.request.POST[key]))
+            cart_object.update_quantity(id, int(self.request.REQUEST[key]))
         return self.put_success()
+
+
