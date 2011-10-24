@@ -178,3 +178,20 @@ class CartTestCase(TestCase):
             # be a new CartItem being created now.
             self.cart.add_product(self.product, queryset=qs)
             self.assertEqual(len(self.cart.items.all()),2)
+
+    def test_get_updated_cart_items(self):
+        self.cart.add_product(self.product)
+        self.cart.update()
+        cached_cart_items = self.cart.get_updated_cart_items()
+
+        cart_items = CartItem.objects.filter(cart=self.cart)
+        for item in cart_items:
+            item.update({})
+
+        self.assertEqual(len(cached_cart_items), len(cart_items))
+        self.assertEqual(cached_cart_items[0].line_total,
+                cart_items[0].line_total)
+
+    def test_get_updated_cart_items_without_updating_cart(self):
+        with self.assertRaises(AssertionError):
+            self.cart.get_updated_cart_items()
