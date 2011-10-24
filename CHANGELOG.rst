@@ -1,3 +1,10 @@
+Version 0.0.11
+==============
+
+* Performance improvement (update CartItems are now cached to avoid unnecessary
+  db queries)
+
+
 Version 0.0.10
 ==============
 
