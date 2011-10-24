@@ -433,6 +433,6 @@ class BaseOrderItem(models.Model):
         verbose_name_plural = _('Order items')
 
     def save(self, *args, **kwargs):
-        if self.product:
+        if not self.product_name and self.product:
             self.product_name = self.product.get_name()
         super(BaseOrderItem, self).save(*args, **kwargs)
