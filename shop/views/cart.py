@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
-from shop.models.cartmodel import CartItem
 from shop.models.productmodel import Product
 from shop.util.cart import get_or_create_cart
 from shop.views import ShopView, ShopTemplateResponseMixin
@@ -106,13 +105,7 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
         cart_object = get_or_create_cart(self.request)
         cart_object.update(state)
         ctx.update({'cart': cart_object})
-        
-        cart_items = CartItem.objects.filter(cart=cart_object)
-        final_items = []
-        for item in cart_items:
-            item.update(state)
-            final_items.append(item)
-        ctx.update({'cart_items': final_items})
+        ctx.update({'cart_items': cart_object.get_updated_cart_items()})
         
         return ctx
 
