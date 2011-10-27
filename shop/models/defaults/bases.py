@@ -297,6 +297,7 @@ class BaseOrder(models.Model):
     COMPLETED = 4 # Successful payment confirmed by payment backend
     SHIPPED = 5 # successful order shipped to client
     CANCELLED = 6 # order has been cancelled
+    INVALID = 7 # some failure in the payment process put the order in an inconsistant state
 
     STATUS_CODES = (
         (PROCESSING, _('Processing')),
@@ -305,6 +306,7 @@ class BaseOrder(models.Model):
         (COMPLETED, _('Completed')),
         (SHIPPED, _('Shipped')),
         (CANCELLED, _('Cancelled')),
+        (INVALID, _('Invalid')),
     )
     
     # If the user is null, the order was created with a session
