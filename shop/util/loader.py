@@ -4,7 +4,7 @@ from django.core import exceptions
 from django.utils.importlib import import_module
 
 CLASS_PATH_ERROR = 'django-shop is unable to interpret settings value for %s. %s should ' \
-                   'be in ther form of a tupple: ('path.to.models.Class', 'app_label').' 
+                   'be in ther form of a tupple: ("path.to.models.Class", "app_label").' 
 
 def load_class(class_path, setting_name=None):
     """
@@ -58,7 +58,7 @@ def get_model_string(model_name):
     (eg 'auth.User') to prevent circular imports.
     This is needed to allow our crazy custom model usage.
     """
-    setting_name = 'SHOP_%s_MODEL' % model_name.upper().replace('_', ''),
+    setting_name = 'SHOP_%s_MODEL' % model_name.upper().replace('_', '')
     class_path = getattr(settings, setting_name, None)
         
     if not class_path:
