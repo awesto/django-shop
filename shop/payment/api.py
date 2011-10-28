@@ -60,4 +60,3 @@ class PaymentAPI(ShopAPI):
         cancelled" URL of their choosing. 
         """
         return reverse('checkout_payment')
-    
