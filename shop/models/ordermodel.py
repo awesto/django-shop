@@ -26,6 +26,27 @@ Order = load_class(ORDER_MODEL, 'SHOP_ORDER_MODEL')
 ORDERITEM_MODEL = getattr(settings, 'SHOP_ORDERITEM_MODEL', 'shop.models.defaults.orderitem.OrderItem')
 OrderItem = load_class(ORDERITEM_MODEL, 'SHOP_ORDERITEM_MODEL')
 
+# Order item model
+ORDEREXTRAINFO_MODEL = getattr(settings, 'SHOP_ORDEREXTRAINFO_MODEL', 
+                               'shop.models.defaults.orderextras.OrderExtraInfo')
+OrderExtraInfo = load_class(ORDEREXTRAINFO_MODEL, 'SHOP_ORDEREXTRAINFO_MODEL')
+
+# Order item model
+EXTRAORDERPRICEFIELD_MODEL = getattr(settings, 'SHOP_EXTRAORDERPRICEFIELD_MODEL', 
+                                     'shop.models.defaults.orderextras.ExtraOrderPriceField')
+ExtraOrderPriceField = load_class(EXTRAORDERPRICEFIELD_MODEL, 'SHOP_EXTRAORDERPRICEFIELD_MODEL')
+
+# Order item model
+EXTRAORDERITEMPRICEFIELD_MODEL = getattr(settings, 'SHOP_EXTRAORDERITEMPRICEFIELD_MODEL', 
+                                         'shop.models.defaults.orderextras.ExtraOrderItemPriceField')
+ExtraOrderItemPriceField = load_class(EXTRAORDERITEMPRICEFIELD_MODEL , 
+                                      'SHOP_EXTRAORDERITEMPRICEFIELD_MODEL')
+
+# Order item model
+ORDERPAYMENT_MODEL = getattr(settings, 'SHOP_ORDERPAYMENT_MODEL', 
+                             'shop.models.defaults.orderextras.OrderPayment')
+OrderPayment = load_class(ORDERPAYMENT_MODEL, 'SHOP_ORDERPAYMENT_MODEL')
+
 
 # Now we clear refrence to product from every OrderItem
 def clear_products(sender, instance, using, **kwargs):
@@ -36,69 +57,3 @@ def clear_products(sender, instance, using, **kwargs):
 if LooseVersion(django.get_version()) < LooseVersion('1.3'):
     pre_delete.connect(clear_products, sender=Product)
 
-class OrderExtraInfo(models.Model):
-    """
-    A holder for extra textual information to attach to this order.
-    """
-    order = models.ForeignKey(Order, related_name="extra_info",
-            verbose_name=_('Order'))
-    text = models.TextField(verbose_name=_('Extra info'))
-
-    class Meta(object):
-        app_label = 'shop'
-        verbose_name = _('Order extra info')
-        verbose_name_plural = _('Order extra info')
-
-
-class ExtraOrderPriceField(models.Model):
-    """
-    This will make Cart-provided extra price fields persistent since we want
-    to "snapshot" their statuses at the time when the order was made
-    """
-    order = models.ForeignKey(Order, verbose_name=_('Order'))
-    label = models.CharField(max_length=255, verbose_name=_('Label'))
-    value = CurrencyField(verbose_name=_('Amount'))
-    
-    # Does this represent shipping costs?
-    is_shipping = models.BooleanField(default=False, editable=False,
-            verbose_name=_('Is shipping'))
-
-    class Meta(object):
-        app_label = 'shop'
-        verbose_name = _('Extra order price field')
-        verbose_name_plural = _('Extra order price fields')
-
-
-class ExtraOrderItemPriceField(models.Model):
-    """
-    This will make Cart-provided extra price fields persistent since we want
-    to "snapshot" their statuses at the time when the order was made
-    """
-    order_item = models.ForeignKey(OrderItem, verbose_name=_('Order item'))
-    label = models.CharField(max_length=255, verbose_name=_('Label'))
-    value = CurrencyField(verbose_name=_('Amount'))
-    
-    class Meta(object):
-        app_label = 'shop'
-        verbose_name = _('Extra order item price field')
-        verbose_name_plural = _('Extra order item price fields')
-
-
-class OrderPayment(models.Model):
-    """ 
-    A class to hold basic payment information. Backends should define their own 
-    more complex payment types should they need to store more informtion
-    """
-    order = models.ForeignKey(Order, verbose_name=_('Order'))
-    amount = CurrencyField(verbose_name=_('Amount'))# How much was payed with this particular transfer
-    transaction_id = models.CharField(max_length=255, 
-            verbose_name=_('Transaction ID'),
-            help_text=_("The transaction processor's reference"))
-    payment_method = models.CharField(max_length=255,
-            verbose_name=_('Payment method'),
-            help_text=_("The payment backend use to process the purchase"))
-    
-    class Meta(object):
-        app_label = 'shop'
-        verbose_name = _('Order payment')
-        verbose_name_plural = _('Order payments')
