@@ -10,8 +10,8 @@
 
 {{object.unit_price}}<br />
 
-{% if object.category %}
-{{object.category.name}}
+{% if object.categories %}
+{% for cat in object.categories.all %} {{ cat.name }} {% endfor %}
 {% else %}
 (Product is at root category)
 {% endif %}
