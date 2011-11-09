@@ -52,8 +52,7 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
         cart = get_or_create_cart(self.request)
         cart.update()
         order = Order.objects.create_from_cart(cart)
-        request = self.request
-        add_order_to_request(request, order)
+        add_order_to_request(self.request, order)
         return order
 
     def get_shipping_address_form(self):
