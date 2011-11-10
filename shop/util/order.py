@@ -27,7 +27,7 @@ def get_order_from_request(request):
     return order
 
 
-def add_order_to_request(request,order):
+def add_order_to_request(request, order):
     """
     Checks that the order is linked to the current user or adds the order to
     the session should there be no logged in user.
