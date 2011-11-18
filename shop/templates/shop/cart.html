@@ -21,7 +21,7 @@
 
         <tbody>
           {% for form in formset %}
-            {% for field in form.visible_fields %}
+            {% with form.quantity as field %}
               <tr>
                 <td>{{ form.instance.product.name }}</td>
                 <td>{{ form.instance.product.get_price }}</td>
@@ -38,7 +38,7 @@
                 </tr>
               {% endfor %}
               <tr><td colspan="2">&nbsp;</td><td>{% trans "Line Total" %}:</td><td>{{ form.instance.line_total }}</td></tr>
-            {% endfor %}
+            {% endwith %}
           {% endfor %}
         </tbody>
 
