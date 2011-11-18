@@ -40,7 +40,9 @@ class CartItemModelForm(forms.ModelForm):
         items from the cart when the quantity is set to 0.
         """
         quantity = self.cleaned_data['quantity']
-        self.instance.cart.update_quantity(self.instance.id, quantity)
+        instance = self.instance.cart.update_quantity(self.instance.id,
+                quantity)
+        return instance
 
 
 def get_cart_item_formset(cart_items=None, data=None):

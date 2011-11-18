@@ -108,7 +108,6 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
         cart_object.update(state)
         ctx.update({'cart': cart_object})
         ctx.update({'cart_items': cart_object.get_updated_cart_items()})
-
         return ctx
 
     def get(self, request, *args, **kwargs):

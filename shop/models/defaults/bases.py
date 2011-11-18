@@ -23,34 +23,34 @@ class BaseProduct(PolymorphicModel):
     Most of the already existing fields here should be generic enough to reside
     on the "base model" and not on an added property
     """
-    
+
     name = models.CharField(max_length=255, verbose_name=_('Name'))
     slug = models.SlugField(verbose_name=_('Slug'), unique=True)
     active = models.BooleanField(default=False, verbose_name=_('Active'))
-    
+
     date_added = models.DateTimeField(auto_now_add=True, verbose_name=_('Date added'))
     last_modified = models.DateTimeField(auto_now=True, verbose_name=_('Last modified'))
-    
+
     unit_price = CurrencyField(verbose_name=_('Unit price'))
-    
+
     class Meta(object):
         abstract = True
         app_label = 'shop'
         verbose_name = _('Product')
         verbose_name_plural = _('Products')
-    
+
     def __unicode__(self):
         return self.name
-    
+
     def get_absolute_url(self):
         return reverse('product_detail', args=[self.slug])
-    
+
     def get_price(self):
         """
         Return the price for this item (provided for extensibility)
         """
         return self.unit_price
-    
+
     def get_name(self):
         """
         Return the name of this Product (provided for extensibility)
@@ -81,12 +81,13 @@ class BaseCart(models.Model):
         verbose_name_plural = _('Carts')
 
     def __init__(self, *args, **kwargs):
-        super(BaseCart, self).__init__(*args,**kwargs)
+        super(BaseCart, self).__init__(*args, **kwargs)
         # That will hold things like tax totals or total discount
         self.subtotal_price = Decimal('0.0')
         self.total_price = Decimal('0.0')
         self.current_total = Decimal('0.0') # used by cart modifiers
         self.extra_price_fields = [] # List of tuples (label, value)
+        self._updated_cart_items = None
 
     def add_product(self, product, quantity=1, merge=True, queryset=None):
         """
@@ -153,6 +154,7 @@ class BaseCart(models.Model):
             cart_item.quantity = quantity
             cart_item.save()
         self.save()
+        return cart_item
 
     def delete_item(self, cart_item_id):
         """
@@ -169,8 +171,8 @@ class BaseCart(models.Model):
         Returns updated cart items after update() has been called and
         cart modifiers have been processed for all cart items.
         """
-        assert hasattr(self, '_updated_cart_items'),\
-                "Cart needs to be updated before calling get_updated_cart_items."
+        assert self._updated_cart_items is not None, ('Cart needs to be'
+            'updated before calling get_updated_cart_items.')
         return self._updated_cart_items
 
     def update(self, state=None):
@@ -189,21 +191,21 @@ class BaseCart(models.Model):
         "purchase" button was pressed)
         """
         from shop.models import CartItem, Product
-        
+
         # This is a ghetto "select_related" for polymorphic models.
         items = CartItem.objects.filter(cart=self)
         product_ids = [item.product_id for item in items]
         products = Product.objects.filter(id__in=product_ids)
         products_dict = dict([(p.id, p) for p in products])
-        
+
         self.extra_price_fields = [] # Reset the price fields
         self.subtotal_price = Decimal('0.0') # Reset the subtotal
 
         # This will hold extra information that cart modifiers might want to pass
         # to each other
         if state == None:
-            state = {} 
-        
+            state = {}
+
         # This calls all the pre_process_cart methods (if any), before the cart
         # is processed. This allows for data collection on the cart for example)
         for modifier in cart_modifiers_pool.get_modifiers_list():
@@ -212,15 +214,15 @@ class BaseCart(models.Model):
         for item in items: # For each CartItem (order line)...
             item.product = products_dict[item.product_id] #This is still the ghetto select_related
             self.subtotal_price = self.subtotal_price + item.update(state)
-        
+
         self.current_total = self.subtotal_price
         # Now we have to iterate over the registered modifiers again (unfortunately)
         # to pass them the whole Order this time
         for modifier in cart_modifiers_pool.get_modifiers_list():
             modifier.process_cart(self, state)
-        
+
         self.total_price = self.current_total
-        
+
         # This calls the post_process_cart method from cart modifiers, if any.
         # It allows for a last bit of processing on the "finished" cart, before
         # it is displayed
@@ -265,7 +267,7 @@ class BaseCartItem(models.Model):
     def __init__(self, *args, **kwargs):
         # That will hold extra fields to display to the user
         # (ex. taxes, discount)
-        super(BaseCartItem, self).__init__(*args,**kwargs)
+        super(BaseCartItem, self).__init__(*args, **kwargs)
         self.extra_price_fields = [] # list of tuples (label, value)
         # These must not be stored, since their components can be changed between
         # sessions / logins etc...
@@ -282,7 +284,7 @@ class BaseCartItem(models.Model):
             # We now loop over every registered price modifier,
             # most of them will simply add a field to extra_payment_fields
             modifier.process_cart_item(self, state)
-        
+
         self.line_total = self.current_total
         return self.line_total
 
@@ -292,17 +294,17 @@ class BaseCartItem(models.Model):
 #==============================================================================
 
 
-        
+
 class BaseOrder(models.Model):
     """
     A model representing an Order.
-    
+
     An order is the "in process" counterpart of the shopping cart, which holds
     stuff like the shipping and billing addresses (copied from the User profile)
     when the Order is first created), list of items, and holds stuff like the
     status, shipping costs, taxes, etc...
     """
-    
+
     PROCESSING = 1 # New order, no shipping/payment backend chosen yet
     PAYMENT = 2 # The user is filling in payment information
     CONFIRMED = 3 # Chosen shipping/payment backend, processing payment
@@ -318,17 +320,17 @@ class BaseOrder(models.Model):
         (SHIPPED, _('Shipped')),
         (CANCELLED, _('Cancelled')),
     )
-    
+
     # If the user is null, the order was created with a session
     user = models.ForeignKey(User, blank=True, null=True,
             verbose_name=_('User'))
-    
+
     status = models.IntegerField(choices=STATUS_CODES, default=PROCESSING,
             verbose_name=_('Status'))
-    
+
     order_subtotal = CurrencyField(verbose_name=_('Order subtotal'))
     order_total = CurrencyField(verbose_name='Order total')
-    
+
     shipping_address_text = models.TextField(_('Shipping address'), blank=True, null=True)
     billing_address_text = models.TextField(_('Billing address'), blank=True, null=True)
 
@@ -337,7 +339,7 @@ class BaseOrder(models.Model):
             verbose_name=_('Created'))
     modified = models.DateTimeField(auto_now=True,
             verbose_name=_('Updated'))
-    
+
     class Meta(object):
         abstract = True
         app_label = 'shop'
@@ -349,34 +351,36 @@ class BaseOrder(models.Model):
 
     def get_absolute_url(self):
         return reverse('order_detail', kwargs={'pk': self.pk })
-    
+
     def is_payed(self):
         """Has this order been integrally payed for?"""
         return self.amount_payed == self.order_total
-    
+
     def is_completed(self):
         return self.status == self.COMPLETED
-    
+
     @property
     def amount_payed(self):
         """
         The amount payed is the sum of related orderpayments
         """
         from shop.models import OrderPayment
-        sum = OrderPayment.objects.filter(order=self).aggregate(sum=Sum('amount'))
-        result = sum.get('sum')
+        sum_ = OrderPayment.objects.filter(order=self).aggregate(
+                sum=Sum('amount'))
+        result = sum_.get('sum')
         if not result:
             result = Decimal('-1')
         return result
-        
+
     @property
     def shipping_costs(self):
         from shop.models import ExtraOrderPriceField
-        sum = Decimal('0.0')
-        cost_list = ExtraOrderPriceField.objects.filter(order=self).filter(is_shipping=True)
+        sum_ = Decimal('0.0')
+        cost_list = ExtraOrderPriceField.objects.filter(order=self).filter(
+                is_shipping=True)
         for cost in cost_list:
-            sum = sum + cost.value
-        return sum
+            sum_ += cost.value
+        return sum_
 
     def set_billing_address(self, billing_address):
         """
@@ -388,7 +392,7 @@ class BaseOrder(models.Model):
         if  hasattr(billing_address, 'as_text'):
             self.billing_address_text = billing_address.as_text()
             self.save()
-    
+
     def set_shipping_address(self, shipping_address):
         """
         Process shipping_address trying to get as_text method from address
@@ -411,10 +415,10 @@ class BaseOrderItem(models.Model):
     """
     A line Item for an order.
     """
-    
+
     order = models.ForeignKey(get_model_string('Order'), related_name='items',
             verbose_name=_('Order'))
-    
+
     product_reference = models.CharField(max_length=255,
             verbose_name=_('Product reference'))
     product_name = models.CharField(max_length=255, null=True, blank=True,
@@ -422,10 +426,10 @@ class BaseOrderItem(models.Model):
     product = models.ForeignKey(get_model_string('Product'), verbose_name=_('Product'), null=True, blank=True, **f_kwargs)
     unit_price = CurrencyField(verbose_name=_('Unit price'))
     quantity = models.IntegerField(verbose_name=_('Quantity'))
-    
+
     line_subtotal = CurrencyField(verbose_name=_('Line subtotal'))
     line_total = CurrencyField(verbose_name=_('Line total'))
-    
+
     class Meta(object):
         abstract = True
         app_label = 'shop'
