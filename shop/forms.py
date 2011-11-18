@@ -1,6 +1,11 @@
 #-*- coding: utf-8 -*-
+"""Forms for the django-shop app."""
 from django import forms
+from django.forms.models import modelformset_factory
+
 from shop.backends_pool import backends_pool
+from shop.models.cartmodel import CartItem
+
 
 def get_shipping_backends_choices():
     shipping_backends = backends_pool.get_shipping_backends_list()
@@ -19,25 +24,43 @@ class BillingShippingForm(forms.Form):
     payment_method = forms.ChoiceField(choices=get_billing_backends_choices())
 
 
-class CartDetailsForm(forms.Form):
-    """A dynamically generated form displaying all items in the cart."""
+class CartItemModelForm(forms.ModelForm):
+    """A form for the CartItem model. To be used in the CartDetails view."""
 
-    field_prefix = 'update_item'
+    quantity = forms.IntegerField(min_value=0)
 
-    def __init__(self, cart, *args, **kwargs):
-        """Instanciates the form and creates fields for each cart item."""
-        super(CartDetailsForm, self).__init__(*args, **kwargs)
-        self.cart = cart
-        for item in cart.get_updated_cart_items():
-            field_name = '%s_%d' % (self.field_prefix, item.id)
-            field = forms.IntegerField(label=item.product.name, min_value=0,
-                    initial=item.quantity)
-            field.cart_item = item
-            self.fields[field_name] = field
+    class Meta:
+        model = CartItem
+        fields = ('quantity', )
 
-    def save(self):
-        """Updates the quantities of the cart items."""
-        cleaned_data = self.cleaned_data
-        for key in cleaned_data:
-            cart_item_id = int(key[len(self.field_prefix)+1:])
-            self.cart.update_quantity(cart_item_id, cleaned_data[key])
+    def save(self, *args, **kwargs):
+        """
+        We don't save the model using the regular way here because the
+        Cart's ``update_quantity()`` method already takes care of deleting
+        items from the cart when the quantity is set to 0.
+        """
+        quantity = self.cleaned_data['quantity']
+        self.instance.cart.update_quantity(self.instance.id, quantity)
+
+
+def get_cart_item_formset(cart_items=None, data=None):
+    """
+    Returns a CartItemFormSet which can be used in the CartDetails view.
+
+    :param cart_items: The queryset to be used for this formset. This should
+      be the list of updated cart items of the current cart.
+    :param data: Optional POST data to be bound to this formset.
+    """
+    assert(cart_items is not None)
+    CartItemFormSet = modelformset_factory(CartItem, form=CartItemModelForm,
+            extra=0)
+    kwargs = {'queryset': cart_items, }
+    form_set = CartItemFormSet(data, **kwargs)
+
+    # The Django ModelFormSet pulls the item out of the database again and we
+    # would lose the updated line_subtotals
+    for form in form_set:
+        for cart_item in cart_items:
+            if form.instance.id == cart_item.id:
+                form.instance = cart_item
+    return form_set

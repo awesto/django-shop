@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
-from shop.forms import CartDetailsForm
+
+from shop.forms import get_cart_item_formset
 from shop.models.productmodel import Product
 from shop.util.cart import get_or_create_cart
 from shop.views import ShopView, ShopTemplateResponseMixin
@@ -116,8 +117,8 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
         this only extends the mixin and not templateview.
         """
         context = self.get_context_data(**kwargs)
-        form = CartDetailsForm(context['cart'])
-        context.update({'form': form, })
+        formset = get_cart_item_formset(cart_items=context['cart_items'])
+        context.update({'formset': formset, })
         return self.render_to_response(context)
 
     def post(self, *args, **kwargs):
@@ -152,9 +153,10 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
         and QTY is quantity to set.
         """
         context = self.get_context_data(**kwargs)
-        form = CartDetailsForm(context['cart'], data=self.request.POST)
-        if form.is_valid():
-            form.save()
+        formset = get_cart_item_formset(cart_items=context['cart_items'],
+                data=self.request.POST)
+        if formset.is_valid():
+            formset.save()
             return self.put_success()
-        context.update({'form': form, })
+        context.update({'formset': formset, })
         return self.render_to_response(context)
