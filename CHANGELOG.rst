@@ -1,3 +1,11 @@
+Version 0.0.12
+==============
+
+* Using a dynamically generated form for the cart now to validate user input.
+  This will break your cart.html template. Please refer to the changes in 
+  cart.html shipped by the shop to see how you can update your own template.
+  Basically you need to iterate over a formset now instead of cart_items.
+
 Version 0.0.11
 ==============
 
