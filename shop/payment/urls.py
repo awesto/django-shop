@@ -1,7 +1,6 @@
 #-*- coding: utf-8 -*-
-
 """
-Loop over payment backends defined in settings.SHOP_PAYMENT_BACKENDS and add 
+Loop over payment backends defined in settings.SHOP_PAYMENT_BACKENDS and add
 their URLs to the payment namespace. eg:
 http://www.example.com/shop/pay/paypal
 http://www.example.com/shop/pay/pay-on-delivery

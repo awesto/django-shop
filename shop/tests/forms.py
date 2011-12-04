@@ -15,12 +15,11 @@ class BaseCartItemFormsTestCase(TestCase):
         self.user = User.objects.create(username="test",
                                         email="test@example.com",
                                         first_name="Test",
-                                        last_name = "Tester")
+                                        last_name="Tester")
         self.cart = Cart.objects.create()
         self.product = Product.objects.create(unit_price=123)
         self.item = CartItem.objects.create(cart=self.cart, quantity=2,
                                             product=self.product)
-
 
 
 class CartItemModelFormTestCase(BaseCartItemFormsTestCase):

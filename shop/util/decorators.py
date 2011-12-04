@@ -7,7 +7,8 @@ from shop.util.login_mixin import get_test_func
 
 def on_method(function_decorator):
     """
-    Enables decorators for functions of classes (for example class based views).
+    Enables decorators for functions of classes (for example class based
+    views).
 
     Credits go to: http://www.toddreed.name/content/django-view-class/
     """
@@ -20,7 +21,7 @@ def on_method(function_decorator):
     return decorate_method
 
 
-def shop_login_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, 
+def shop_login_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME,
                         login_url=None):
     """
     Decorator for views that checks that the user is logged in, redirecting

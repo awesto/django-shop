@@ -21,6 +21,7 @@ Country: %(country)s
 ADDRESS_TEMPLATE = getattr(settings, 'SHOP_ADDRESS_TEMPLATE',
                            BASE_ADDRESS_TEMPLATE)
 
+
 class Country(models.Model):
     name = models.CharField(max_length=255)
 
@@ -61,6 +62,10 @@ class Address(models.Model):
 
     def as_text(self):
         return ADDRESS_TEMPLATE % {
-            'name':self.name, 'address': '%s\n%s' % (self.address, self.address2),
-            'zipcode':self.zip_code, 'city':self.city, 'state':self.state,
-            'country':self.country}
+            'name': self.name,
+            'address': '%s\n%s' % (self.address, self.address2),
+            'zipcode': self.zip_code,
+            'city': self.city,
+            'state': self.state,
+            'country': self.country,
+        }

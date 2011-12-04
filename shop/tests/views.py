@@ -13,7 +13,6 @@ from shop.views.cart import CartDetails
 from shop.views.product import ProductDetailView
 
 
-
 class ProductDetailViewTestCase(TestCase):
     def setUp(self):
 
@@ -24,7 +23,7 @@ class ProductDetailViewTestCase(TestCase):
         self.product.unit_price = Decimal('1.0')
         self.product.save()
 
-        self.view = ProductDetailView(kwargs={'pk':self.product.id})
+        self.view = ProductDetailView(kwargs={'pk': self.product.id})
 
     def test_get_product_returns_correctly(self):
         setattr(self.view, 'object', None)
@@ -38,18 +37,18 @@ class ProductDetailViewTestCase(TestCase):
         tmp = self.view.get_template_names()
         self.assertEqual(len(tmp), 1)
 
+
 class CartDetailsViewTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create(username="test",
                                         email="test@example.com",
                                         first_name="Test",
-                                        last_name = "Tester")
+                                        last_name="Tester")
 
         self.cart = Cart.objects.create()
         self.product = Product.objects.create()
         self.item = CartItem.objects.create(cart=self.cart, quantity=1,
                                             product=self.product)
-
 
     def test_get_context_data_works(self):
         request = Mock()
@@ -74,11 +73,11 @@ class CartDetailsViewTestCase(TestCase):
         self.cart.save()
 
         request = Mock()
-        setattr(request, 'is_ajax', lambda :False)
+        setattr(request, 'is_ajax', lambda: False)
         setattr(request, 'user', self.user)
         post = {
-            'add_item_id':self.product.id,
-            'add_item_quantity':1,
+            'add_item_id': self.product.id,
+            'add_item_quantity': 1,
         }
         setattr(request, 'POST', post)
 
@@ -98,11 +97,11 @@ class CartDetailsViewTestCase(TestCase):
         self.cart.save()
 
         request = Mock()
-        setattr(request, 'is_ajax', lambda :True)
+        setattr(request, 'is_ajax', lambda: True)
         setattr(request, 'user', self.user)
         post = {
-            'add_item_id':self.product.id,
-            'add_item_quantity':1,
+            'add_item_id': self.product.id,
+            'add_item_quantity': 1,
         }
         setattr(request, 'POST', post)
 
@@ -111,12 +110,11 @@ class CartDetailsViewTestCase(TestCase):
         self.assertTrue(isinstance(ret, HttpResponse))
 
         ret = view.get_context_data()
-        self.assertNotEqual(ret,None)
-        self.assertEqual(len(ret['cart_items']),1)
+        self.assertNotEqual(ret, None)
+        self.assertEqual(len(ret['cart_items']), 1)
 
         self.assertEqual(ret['cart_items'][0], self.item)
         self.assertEqual(ret['cart_items'][0].quantity, 2)
-
 
 
 class CartViewTestCase(TestCase):
@@ -126,8 +124,8 @@ class CartViewTestCase(TestCase):
 
     def add_product_to_cart(self, product):
         post = {
-            'add_item_id':self.product.id,
-            'add_item_quantity':1,
+            'add_item_id': self.product.id,
+            'add_item_quantity': 1,
         }
         return self.client.post(reverse('cart_item_add'), post)
 
@@ -169,7 +167,7 @@ class CartViewTestCase(TestCase):
             'form-INITIAL_FORMS': '1',
             'form-MAX_NUM_FORMS': '',
             'form-0-id': str(cart_item_id),
-            'form-0-quantity': '5' }
+            'form-0-quantity': '5', }
         response = self.client.post(reverse("cart_update"), post)
         self.assertEqual(response.status_code, 302)
         self.assertCartHasItems(5)
@@ -180,7 +178,7 @@ class CartViewTestCase(TestCase):
         cart = self.get_cart()
         cart_item_id = cart.items.all()[0].pk
         url = reverse('cart_item', kwargs={'id': cart_item_id})
-        post = { 'item_quantity': "5" }
+        post = {'item_quantity': '5', }
         response = self.client.post(url, post,
                 HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
@@ -227,4 +225,3 @@ class OrderListViewTestCase(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, unicode(self.order))
-

@@ -1,3 +1,4 @@
+# flake8: noqa
 # encoding: utf-8
 import datetime
 from south.db import db
@@ -7,7 +8,7 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
+
         # Deleting model 'Country'
         db.delete_table('shop_country')
 
@@ -19,7 +20,7 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
-        
+
         # Adding model 'Country'
         db.create_table('shop_country', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),

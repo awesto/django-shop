@@ -7,11 +7,12 @@ from shop.models.productmodel import Product
 from shop.util.cart import get_or_create_cart
 from shop.views import ShopView, ShopTemplateResponseMixin
 
+
 class CartItemDetail(ShopView):
     """
-    A view to handle CartItem-related operations. This is not a real view in the
-    sense that it is not designed to answer to GET or POST request nor to display
-    anything, but only to be used from AJAX.
+    A view to handle CartItem-related operations. This is not a real view in
+    the sense that it is not designed to answer to GET or POST request nor to
+    display anything, but only to be used from AJAX.
     """
     action = None
 
@@ -21,7 +22,8 @@ class CartItemDetail(ShopView):
         If `action` is defined use it dispatch request to the right method.
         """
         if not self.action:
-            return super(CartItemDetail, self).dispatch(request, *args, **kwargs)
+            return super(CartItemDetail, self).dispatch(request, *args,
+                **kwargs)
         if self.action in self.http_method_names:
             handler = getattr(self, self.action, self.http_method_not_allowed)
         else:
@@ -33,9 +35,9 @@ class CartItemDetail(ShopView):
 
     def post(self, request, *args, **kwargs):
         """
-        Update one of the cartItem's quantities. This requires a single 'item_quantity'
-        POST parameter, but should be posted to a properly RESTful URL (that should
-        contain the item's ID):
+        Update one of the cartItem's quantities. This requires a single
+        ``item_quantity`` POST parameter, but should be posted to a properly
+        RESTful URL (that should contain the item's ID):
 
         http://example.com/shop/cart/item/12345
         """
@@ -91,6 +93,7 @@ class CartItemDetail(ShopView):
 
     # TODO: add failure hooks
 
+
 class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
     """
     This is the actual "cart" view, that answers to GET and POST requests like
@@ -123,8 +126,8 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
     def post(self, *args, **kwargs):
         """
         This is to *add* a new item to the cart. Optionally, you can pass it a
-        quantity parameter to specify how many you wish to add at once (defaults
-        to 1)
+        quantity parameter to specify how many you wish to add at once
+        (defaults to 1)
         """
         product_id = self.request.POST['add_item_id']
         product_quantity = self.request.POST.get('add_item_quantity')

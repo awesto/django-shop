@@ -9,7 +9,8 @@ from django.http import HttpResponseRedirect
 
 
 class LoginMixin(object):
-    """Mixin for securing a class.
+    """
+    Mixin for securing a class.
 
     Taken from here:
     https://groups.google.com/d/msg/django-users/g2E_6ZYN_R0/tnB9b262lcAJ
@@ -45,16 +46,16 @@ class LoginMixin(object):
             test_kwargs['redirect_field_name'] = redirect_field_name
         return user_passes_test(
             self.get_test_func(),
-            **test_kwargs
-        )(super(LoginMixin, self).dispatch)(request, *args, **kwargs)
-    
+            **test_kwargs)(super(LoginMixin, self).dispatch)(
+                request, *args, **kwargs)
+
 
 def get_test_func(test_func=None):
     """
-    Returns the test function to be used for authentication and takes the 
+    Returns the test function to be used for authentication and takes the
     setting `SHOP_FORCE_LOGIN` into consideration.
 
-    :param test_func: Optional. You can provide your own test function for 
+    :param test_func: Optional. You can provide your own test function for
       authentication. This should be a lambda expression.
     """
     if getattr(settings, 'SHOP_FORCE_LOGIN', False):

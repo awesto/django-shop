@@ -1,3 +1,4 @@
+# flake8: noqa
 from api import ShopApiTestCase
 from cart import CartTestCase
 from cart_modifiers import (
