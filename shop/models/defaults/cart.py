@@ -2,6 +2,7 @@
 from django.utils.translation import ugettext_lazy as _
 from shop.models.defaults.bases import BaseCart
 
+
 class Cart(BaseCart):
     class Meta(object):
         abstract = False

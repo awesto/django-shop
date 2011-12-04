@@ -8,18 +8,16 @@ from polymorphic.manager import PolymorphicManager
 #==============================================================================
 # Product
 #==============================================================================
-
-
 class ProductStatisticsManager(PolymorphicManager):
     """
     A Manager for all the non-object manipulation needs, mostly statistics and
     other "data-mining" toys.
     """
-    
+
     def top_selling_products(self, quantity):
         """
         This method "mines" the previously passed orders, and gets a list of
-        products (of a size equal to the quantity parameter), ordered by how 
+        products (of a size equal to the quantity parameter), ordered by how
         many times they have been purchased.
         """
         # Importing here is fugly, but it saves us from circular imports...
@@ -32,9 +30,9 @@ class ProductStatisticsManager(PolymorphicManager):
             )[:quantity]
 
         # The top_products_data result should be in the form:
-        # [{'product_reference': '<product_id>', 'product_count': <count>}, ...]
- 
-        top_products_list = [] # The actual list of products
+        # [{'product_reference': '<product_id>', 'product_count': <count>}, ..]
+
+        top_products_list = []  # The actual list of products
         for values in top_products_data:
             prod = values.get('product')
             # We could eventually return the count easily here, if needed.
@@ -56,41 +54,46 @@ class ProductManager(PolymorphicManager):
 #==============================================================================
 
 class OrderManager(models.Manager):
-    
+
     def get_latest_for_user(self, user):
         """
-        Returns the last Order (from a time perspective) a given user has placed.
+        Returns the last Order (from a time perspective) a given user has
+        placed.
         """
         if user and not isinstance(user, AnonymousUser):
             return self.filter(user=user).order_by('-modified')[0]
         else:
             return None
-    
+
     @transaction.commit_on_success
     def create_from_cart(self, cart):
         """
-        This creates a new Order object (and all the rest) from a passed Cart 
+        This creates a new Order object (and all the rest) from a passed Cart
         object.
-        
+
         Specifically, it creates an Order with corresponding OrderItems and
         eventually corresponding ExtraPriceFields
-        
+
         This will only actually commit the transaction once the function exits
         to minimize useless database access.
         """
         # must be imported here!
-        from shop.models.ordermodel import OrderItem, ExtraOrderPriceField, ExtraOrderItemPriceField
+        from shop.models.ordermodel import (
+            ExtraOrderItemPriceField,
+            ExtraOrderPriceField,
+            OrderItem,
+        )
         from shop.models.cartmodel import CartItem
         # Let's create the Order itself:
         o = self.model()
         o.user = cart.user
-        o.status = self.model.PROCESSING # Processing
-        
+        o.status = self.model.PROCESSING  # Processing
+
         o.order_subtotal = cart.subtotal_price
         o.order_total = cart.total_price
-        
+
         o.save()
-        
+
         # Let's serialize all the extra price arguments in DB
         for label, value in cart.extra_price_fields:
             eoi = ExtraOrderPriceField()
@@ -98,7 +101,7 @@ class OrderManager(models.Manager):
             eoi.label = str(label)
             eoi.value = value
             eoi.save()
-        
+
         # There, now move on to the order items.
         cart_items = CartItem.objects.filter(cart=cart)
         for item in cart_items:
@@ -113,11 +116,12 @@ class OrderManager(models.Manager):
             i.line_total = item.line_total
             i.line_subtotal = item.line_subtotal
             i.save()
-            # For each order item, we save the extra_price_fields to DB 
+            # For each order item, we save the extra_price_fields to DB
             for label, value in item.extra_price_fields:
                 eoi = ExtraOrderItemPriceField()
                 eoi.order_item = i
-                eoi.label = unicode(label) # Force unicode, in case it has àö...
+                # Force unicode, in case it has àö...
+                eoi.label = unicode(label)
                 eoi.value = value
                 eoi.save()
         return o
