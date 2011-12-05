@@ -32,7 +32,7 @@ class BillingShippingForm(forms.Form):
 class CartItemModelForm(forms.ModelForm):
     """A form for the CartItem model. To be used in the CartDetails view."""
 
-    quantity = forms.IntegerField(min_value=0)
+    quantity = forms.IntegerField(min_value=0, max_value=9999)
 
     class Meta:
         model = CartItem
