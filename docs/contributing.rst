@@ -34,6 +34,22 @@ Code guidelines
 ================
 
 * As most projects, we try to follow :pep:`8` as closely as possible
+* Indentation should be exactly 4 spaces. Not 2, not 6, not 8. **4**. Also, tabs
+  are evil.
+* We try (loosely) to keep the line length at 79 characters. Generally the rule
+  is "it should look good in a terminal-base editor" (eg vim), but we try not be
+  [Godwin's law] about it.
 * Most pull requests will be rejected without proper unit testing
 * Generally we like to discuss new features before they are merged in, but this
   is a somewhat flexible rule :)
+
+Process
+=======
+
+This is how you fix a bug or add a feature:
+
+#. `fork`_ us on GitHub.
+#. Checkout your fork.
+#. Hack hack hack, test test test, commit commit commit, test again.
+#. Push to your fork.
+#. Open a pull request.
