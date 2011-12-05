@@ -14,12 +14,12 @@ class OrderExtraInfoInline(admin.TabularInline):
 
 
 class OrderPaymentInline(admin.TabularInline):
-    model = OrderPayment 
+    model = OrderPayment
     extra = 0
 
 
 class ExtraOrderPriceFieldInline(admin.TabularInline):
-    model = ExtraOrderPriceField 
+    model = ExtraOrderPriceField
     extra = 0
 
 
@@ -29,12 +29,13 @@ class OrderItemInline(admin.TabularInline):
 
 #TODO: add ExtraOrderItemPriceField inline, ideas?
 
+
 class OrderAdmin(ModelAdmin):
-    list_display = ('id', 'user', 'status','order_total', 'created')
+    list_display = ('id', 'user', 'status', 'order_total', 'created')
     list_filter = ('status', 'user')
     search_fields = ('id', 'shipping_address_text', 'user__username')
     date_hierarchy = 'created'
-    inlines = (OrderItemInline, OrderExtraInfoInline, 
+    inlines = (OrderItemInline, OrderExtraInfoInline,
             ExtraOrderPriceFieldInline, OrderPaymentInline)
     readonly_fields = ('created', 'modified',)
     fieldsets = (

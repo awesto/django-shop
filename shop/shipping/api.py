@@ -4,6 +4,7 @@ from shop.order_signals import payment_selection
 from shop.models.ordermodel import ExtraOrderPriceField
 from django.shortcuts import redirect
 
+
 class ShippingAPI(ShopAPI):
     """
     This object's purpose is to expose an API to the shop system.
@@ -15,7 +16,6 @@ class ShippingAPI(ShopAPI):
     Methods defined in BaseBackendAPI:
     getOrder(request): Return the Order object for the current shopper
     """
-
     def add_shipping_costs(self, order, label, value):
         """
         Add shipping costs to the given order, with the given label (text), and
@@ -58,5 +58,6 @@ class ShippingAPI(ShopAPI):
         is finished i.e. shipping costs are added to the order.
         This will redirect to the "select a payment method" page.
         """
-        payment_selection.send(self, order=order) # Emit the signal to say we're now selecting payment
+        # Emit the signal to say we're now selecting payment
+        payment_selection.send(self, order=order)
         return redirect('checkout_payment')

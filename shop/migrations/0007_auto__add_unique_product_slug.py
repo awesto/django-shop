@@ -1,3 +1,4 @@
+# flake8: noqa
 # encoding: utf-8
 import datetime
 from south.db import db
@@ -7,13 +8,13 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
+
         # Adding unique constraint on 'Product', fields ['slug']
         db.create_unique('shop_product', ['slug'])
 
 
     def backwards(self, orm):
-        
+
         # Removing unique constraint on 'Product', fields ['slug']
         db.delete_unique('shop_product', ['slug'])
 
