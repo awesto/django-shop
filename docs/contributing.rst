@@ -37,3 +37,18 @@ Code guidelines
 * Most pull requests will be rejected without proper unit testing
 * Generally we like to discuss new features before they are merged in, but this
   is a somewhat flexible rule :)
+
+
+Sending a pull request
+======================
+
+We use github for development, and so all code that you would like to see
+included into should follow the following simple workflow:
+
+* Clone django-shop
+* Checkout your fork
+* Make a feature branch (to make pull requests easier)
+* Hack hack, Test test, Commit commit, Test test
+* Push your feature branch to your remote (your fork)
+* Use the github interface to create a pull request from your branch
+* Nag developers until they merge your pull request in (joking)
