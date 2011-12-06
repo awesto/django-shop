@@ -52,3 +52,6 @@ included into should follow the following simple workflow:
 * Push your feature branch to your remote (your fork)
 * Use the github interface to create a pull request from your branch
 * Nag developers until they merge your pull request in (joking)
+
+More information can be found on Github itself:
+http://help.github.com/send-pull-requests/
