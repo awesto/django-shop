@@ -51,7 +51,13 @@ included into should follow the following simple workflow:
 * Hack hack, Test test, Commit commit, Test test
 * Push your feature branch to your remote (your fork)
 * Use the github interface to create a pull request from your branch
-* Nag developers until they merge your pull request in (joking)
+* Wait for the community to review your changes. You can hang out with us and
+  ask for feedback on #django-shop (on freenode) in the mean time!
+* If some changes are required, please commit to your local feature branch and
+  push the changes to your remote feature branch. The pull request will be
+  updated automagically with your new changes!
+* DO NOT add unrelated commits to your branch, since they make the review
+  process more complicated and painful for everybody.
 
 More information can be found on Github itself:
 http://help.github.com/send-pull-requests/
