@@ -16,6 +16,11 @@ try:
 except:
     SKIP_BASEPRODUCT_TEST = True
 
+class ProductMockVariation():
+    def __init__(self, value):
+        self.label = 'Color'
+        self.value = value
+
 
 class CartTestCase(TestCase):
     PRODUCT_PRICE = Decimal('100')
@@ -128,17 +133,36 @@ class CartTestCase(TestCase):
             self.assertEqual(self.cart.items.all()[0].quantity, 2)
             self.assertEqual(self.cart.total_quantity, 2)
 
-    def test_add_same_object_twice_no_merge(self):
+    def test_add_same_object_twice_with_variation(self):
         with SettingsOverride(SHOP_CART_MODIFIERS=[]):
             self.assertEqual(self.cart.total_quantity, 0)
-            self.cart.add_product(self.product, merge=False)
-            self.cart.add_product(self.product, merge=False)
+            variation1 = ProductMockVariation('red')
+            variation2 = ProductMockVariation('green')
+            self.cart.add_product(self.product, variation=variation1)
+            self.cart.add_product(self.product, variation=variation2)
             self.cart.update()
             self.cart.save()
 
-            self.assertEqual(len(self.cart.items.all()), 2)
-            self.assertEqual(self.cart.items.all()[0].quantity, 1)
-            self.assertEqual(self.cart.items.all()[1].quantity, 1)
+            cart_items = self.cart.items.all()
+            self.assertEqual(len(cart_items), 2)
+            self.assertEqual(cart_items[0].quantity, 1)
+            self.assertEqual(cart_items[1].quantity, 1)
+            self.assertEqual(cart_items[0].variation.value, 'red')
+            self.assertEqual(cart_items[1].variation.value, 'green')
+
+    def test_add_same_object_twice_no_variation(self):
+        with SettingsOverride(SHOP_CART_MODIFIERS=[]):
+            self.assertEqual(self.cart.total_quantity, 0)
+            variation = ProductMockVariation('blue')
+            self.cart.add_product(self.product, variation=variation)
+            self.cart.add_product(self.product, variation=variation)
+            self.cart.update()
+            self.cart.save()
+
+            cart_items = self.cart.items.all()
+            self.assertEqual(len(cart_items), 1)
+            self.assertEqual(cart_items[0].quantity, 2)
+            self.assertEqual(cart_items[0].variation.value, 'blue')
 
     def test_add_product_updates_last_updated(self):
         with SettingsOverride(SHOP_CART_MODIFIERS=[]):

@@ -7,6 +7,7 @@ from django.db import models
 from django.db.models.aggregates import Sum
 from django.utils.translation import ugettext_lazy as _
 from polymorphic.polymorphic_model import PolymorphicModel
+from picklefield.fields import PickledObjectField
 from shop.cart.modifiers_pool import cart_modifiers_pool
 from shop.util.fields import CurrencyField
 from shop.util.loader import get_model_string
@@ -86,58 +87,29 @@ class BaseCart(models.Model):
         self.extra_price_fields = []  # List of tuples (label, value)
         self._updated_cart_items = None
 
-    def add_product(self, product, quantity=1, merge=True, queryset=None):
+    def add_product(self, product, quantity=1, variation=None):
         """
         Adds a (new) product to the cart.
 
-        The parameter `merge`, controls wheter we should merge the added
-        CartItem with another already existing sharing the same
-        product_id. This is useful when you have products with variations
-        (for example), and you don't want to have your products merge (to loose
-        their specific variations, for example).
-
-        A drawback is, that generally  setting `merge` to ``False`` for
-        products with variations can be a problem if users can buy thousands of
-        products at a time (that would mean we would create thousands of
-        CartItems as well which all have the same variation).
-
-        The parameter `queryset` can be used to override the standard queryset
-        that is being used to find the CartItem that should be merged into.
-        If you use variations, just finding the first CartItem that
-        belongs to this cart and the given product is not sufficient. You will
-        want to find the CartItem that already has the same variations that the
-        user chose for this request.
-
-        Example with merge = True:
-        >>> self.items[0] = CartItem.objects.create(..., product=MyProduct())
-        >>> self.add_product(MyProduct())
-        >>> self.items[0].quantity
-        2
-
-        Example with merge=False:
-        >>> self.items[0] = CartItem.objects.create(..., product=MyProduct())
-        >>> self.add_product(MyProduct())
-        >>> self.items[0].quantity
-        1
-        >>> self.items[1].quantity
-        1
+        The parameter `variation`, can be any kind of pickable Python object.
+        If a product with exactly this variation already exists, the quantity
+        is increased in the cart. Otherwise a new product is added to the cart.
         """
         from shop.models import CartItem
-        if queryset == None:
-            queryset = CartItem.objects.filter(cart=self, product=product)
-        item = queryset
-        # Let's see if we already have an Item with the same product ID
-        if item.exists() and merge:
-            cart_item = item[0]
-            cart_item.quantity = cart_item.quantity + int(quantity)
+        # Let's see if we already have an Item with the same product ID and the
+        # same variation
+        cart_item = CartItem.objects.filter(cart=self, product=product, variation=variation)
+        if cart_item.exists():
+            cart_item = cart_item[0]
+            cart_item.quantity += int(quantity)
             cart_item.save()
         else:
-            cart_item = CartItem.objects.create(
-                cart=self, quantity=quantity, product=product)
+            cart_item = CartItem.objects.create(cart=self, quantity=quantity, product=product, variation=variation)
             cart_item.save()
 
-        self.save()  # to get the last updated timestamp
+        self.save() # to get the last updated timestamp
         return cart_item
+
 
     def update_quantity(self, cart_item_id, quantity):
         """
@@ -256,6 +228,8 @@ class BaseCartItem(models.Model):
     quantity = models.IntegerField()
 
     product = models.ForeignKey(get_model_string('Product'))
+
+    variation = PickledObjectField(null=True, blank=True)
 
     class Meta(object):
         abstract = True
