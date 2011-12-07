@@ -1,4 +1,5 @@
 from django.conf.urls.defaults import *
+from shop.views import ShopTemplateView
 
 from shop import urls as shop_urls
 
@@ -15,5 +16,10 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     (r'^admin/', include(admin.site.urls)),
+
+    #Home
+    url(r'^$', ShopTemplateView.as_view(template_name="shop/welcome.html"),
+        name='shop_welcome'),
+
     (r'^', include(shop_urls)), # <-- That's the important bit
 )
