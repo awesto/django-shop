@@ -393,9 +393,12 @@ class BaseOrderItem(models.Model):
     product_name = models.CharField(max_length=255, null=True, blank=True,
             verbose_name=_('Product name'))
     product = models.ForeignKey(get_model_string('Product'),
-        verbose_name=_('Product'), null=True, blank=True, **f_kwargs)
+            verbose_name=_('Product'), null=True, blank=True, **f_kwargs)
     unit_price = CurrencyField(verbose_name=_('Unit price'))
     quantity = models.IntegerField(verbose_name=_('Quantity'))
+    variation = PickledObjectField(null=True, blank=True, 
+            verbose_name=_('Variable Object Container'))
+
     line_subtotal = CurrencyField(verbose_name=_('Line subtotal'))
     line_total = CurrencyField(verbose_name=_('Line total'))
 

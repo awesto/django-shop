@@ -17,7 +17,7 @@ from shop.util.order import get_order_from_request, add_order_to_request
 # Not only from the provided "test" project.
 SKIP_BASEPRODUCT_TEST = False
 try:
-    from project.models import BaseProduct, ProductVariation
+    from project.models import BaseProduct
 except:
     SKIP_BASEPRODUCT_TEST = True
 

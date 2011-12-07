@@ -113,6 +113,7 @@ class OrderManager(models.Manager):
             i.product = item.product
             i.unit_price = item.product.get_price()
             i.quantity = item.quantity
+            i.variation = item.variation
             i.line_total = item.line_total
             i.line_subtotal = item.line_subtotal
             i.save()
