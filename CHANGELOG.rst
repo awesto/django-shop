@@ -1,6 +1,7 @@
 Version 0.0.12
 ==============
 
+* Split urls.py into several sub-files for better readability.
 * Made templates extend a common base template
 * Using a dynamically generated form for the cart now to validate user input.
   This will break your cart.html template. Please refer to the changes in 
