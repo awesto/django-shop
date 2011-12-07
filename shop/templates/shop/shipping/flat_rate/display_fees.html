@@ -1,2 +1,6 @@
-<p>You will be charged {{shipping_costs}} for shipping</p><br />
-<a href="{% url flat_process %}">Proceed</a>
+{% extends "shop/base.html" %}
+
+{% block body %}
+  <p>You will be charged {{shipping_costs}} for shipping</p><br />
+  <a href="{% url flat_process %}">Proceed</a>
+{% endblock %}
