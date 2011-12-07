@@ -1,10 +1,14 @@
-{% load i18n %}
-<h1>Welcome to Django SHOP</h1>
+{% extends "shop/base.html" %}
 
-<a href="{% url product_list %}">Product list</a><br />
-<a href="{% url cart %}">Your cart</a><br />
+{% block body %}
+  {% load i18n %}
+  <h1>Welcome to Django SHOP</h1>
 
-{% if user.is_authenticated %}
-  {% trans "Hello" %} {{ user }}
-  <a href="{% url order_list %}">{% trans "Your orders" %}</a>
-{% endif %}
+  <a href="{% url product_list %}">Product list</a><br />
+  <a href="{% url cart %}">Your cart</a><br />
+
+  {% if user.is_authenticated %}
+    {% trans "Hello" %} {{ user }}
+    <a href="{% url order_list %}">{% trans "Your orders" %}</a>
+  {% endif %}
+{% endblock %}
