@@ -1,6 +1,7 @@
 Version 0.0.12
 ==============
 
+* Made templates extend a common base template
 * Using a dynamically generated form for the cart now to validate user input.
   This will break your cart.html template. Please refer to the changes in 
   cart.html shipped by the shop to see how you can update your own template.
