@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import with_statement
 from decimal import Decimal
+from time import sleep
 from django.contrib.auth.models import User
 from django.test.testcases import TestCase
 from shop.cart.modifiers_pool import cart_modifiers_pool
@@ -82,10 +83,12 @@ class OrderUtilTestCase(TestCase):
     def test_request_with_user_returns_last_order(self):
         setattr(self.request, 'user', self.user)
 
+        sleep(1) # enforce order1 to be the latest
         order1 = Order.objects.create(user=self.user)
         ret = get_order_from_request(self.request)
         self.assertEqual(ret, order1)
 
+        sleep(1) # enforce order2 to be the latest
         order2 = Order.objects.create(user=self.user)
         ret = get_order_from_request(self.request)
         self.assertEqual(ret, order2)
