@@ -25,7 +25,7 @@
             {% for form in formset %}
               {% with form.quantity as field %}
                 <tr>
-                  <td>{{ form.instance.product.name }}</td>
+                  <td>{{ form.instance.product.get_name }}</td>
                   <td>{{ form.instance.product.get_price }}</td>
                   <td>
                       {{ field.errors }}
