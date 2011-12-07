@@ -1,24 +1,29 @@
-<h1>Product detail:</h1>
-{{object.name}}<br />
-{{object.slug}}<br />
-{{object.short_description}}<br />
-{{object.long_description}}<br />
-{{object.active}}<br />
+{% extends "shop/base.html" %}
+{% block body %}
 
-{{object.date_added}}<br />
-{{object.last_modified}}<br />
+  <h1>Product detail:</h1>
+  {{object.name}}<br />
+  {{object.slug}}<br />
+  {{object.short_description}}<br />
+  {{object.long_description}}<br />
+  {{object.active}}<br />
 
-{{object.unit_price}}<br />
+  {{object.date_added}}<br />
+  {{object.last_modified}}<br />
 
-{% if object.category %}
-{{object.category.name}}
-{% else %}
-(Product is at root category)
-{% endif %}
-<br />
+  {{object.unit_price}}<br />
 
-<form method="post" action="{% url cart %}">{% csrf_token %}
-<input type="hidden" name="add_item_id" value="{{object.id}}">
-<input type="hidden" name="add_item_quantity" value="1">
-<input type="submit" value="Add to cart">
-</form>
+  {% if object.category %}
+  {{object.category.name}}
+  {% else %}
+  (Product is at root category)
+  {% endif %}
+  <br />
+
+  <form method="post" action="{% url cart %}">{% csrf_token %}
+  <input type="hidden" name="add_item_id" value="{{object.id}}">
+  <input type="hidden" name="add_item_quantity" value="1">
+  <input type="submit" value="Add to cart">
+  </form>
+{% endblock %}
+
