@@ -7,8 +7,31 @@ Running tests
 
 It's important to run tests before committing :)
 
+
+Setting up the environment
+--------------------------
+
+We highly suggest you run the tests suite in a clean environment, using a tool such as
+`virtualenv <http://pypi.python.org/pypi/virtualenv>`_
+
+The following packages are needed for the test suite to run:
+
+* `django <https://www.djangoproject.com/>`_
+* `django_polymorphic <https://github.com/chrisglass/django_polymorphic>`_
+* `django-classy-tags <https://github.com/ojii/django-classy-tags>`_
+
+Running the following command inside your virtualenv shouldget you started::
+
+    pip install django django_polymorphic django-classy-tags
+
+Running the tests
+-----------------
+
 Thankfully, we provided a small yet handy script to do it for you! Simply
 invoke ``runtests.sh`` on a unix platform and you should be all set.
+
+The test suite should output normally (only "."'s), an we try to keep the suite fast 
+(subsecond), so that people can tests very often.
 
 Options
 --------
@@ -16,7 +39,7 @@ Options
 While a simple tool, ``runtests.sh`` provides the following options:
 
 * ``--with-coverage`` : run the tests using coverage and let the coverage results
-  be displayed in your default browser
+  be displayed in your default browser (run ``pip install coverage`` beforehand)
 * ``--with-docs`` : run the tests and generate the documentation (the one you're
   reading right now).
 
