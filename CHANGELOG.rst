@@ -1,3 +1,20 @@
+Version 0.0.12
+==============
+
+* Made templates extend a common base template
+* Using a dynamically generated form for the cart now to validate user input.
+  This will break your cart.html template. Please refer to the changes in 
+  cart.html shipped by the shop to see how you can update your own template.
+  Basically you need to iterate over a formset now instead of cart_items.
+
+Version 0.0.11
+==============
+
+* Performance improvement (update CartItems are now cached to avoid unnecessary
+  db queries)
+* Various bugfixes
+
+
 Version 0.0.10
 ==============
 
@@ -14,6 +31,7 @@ Version 0.0.10
   and get_cancel_url return strings instead of HttpResponse objects (this 
   was confusing)
 * Tests for the shop are now runnable from any project
+* added URL to CartItemView.delete()
 
 Version 0.0.9
 =============

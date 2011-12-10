@@ -12,7 +12,7 @@ from shop.tests.utils.context_managers import SettingsOverride
 # Not only from the provided "test" project.
 SKIP_BASEPRODUCT_TEST = False
 try:
-    from project.models import BaseProduct, ProductVariation
+    from project.models import BaseProduct
 except:
     SKIP_BASEPRODUCT_TEST = True
 
@@ -22,10 +22,9 @@ class CartTestCase(TestCase):
     TEN_PERCENT = Decimal(10) / Decimal(100)
 
     def setUp(self):
-
-        cart_modifiers_pool.USE_CACHE=False
-
-        self.user = User.objects.create(username="test", email="test@example.com")
+        cart_modifiers_pool.USE_CACHE = False
+        self.user = User.objects.create(username="test",
+            email="test@example.com")
         self.product = Product()
         self.product.name = "TestPrduct"
         self.product.slug = "TestPrduct"
@@ -63,27 +62,30 @@ class CartTestCase(TestCase):
         with SettingsOverride(SHOP_CART_MODIFIERS=[]):
 
             # We add two objects now :)
-            self.cart.add_product(self.product,2)
+            self.cart.add_product(self.product, 2)
             self.cart.update()
             self.cart.save()
 
-            self.assertEqual(self.cart.subtotal_price, self.PRODUCT_PRICE*2)
-            self.assertEqual(self.cart.total_price, self.PRODUCT_PRICE*2)
+            self.assertEqual(self.cart.subtotal_price, self.PRODUCT_PRICE * 2)
+            self.assertEqual(self.cart.total_price, self.PRODUCT_PRICE * 2)
             self.assertEqual(self.cart.total_quantity, 2)
 
     def test_one_object_simple_modifier(self):
-        MODIFIERS = ['shop.cart.modifiers.tax_modifiers.TenPercentGlobalTaxModifier']
+        MODIFIERS = [
+            'shop.cart.modifiers.tax_modifiers.TenPercentGlobalTaxModifier']
         with SettingsOverride(SHOP_CART_MODIFIERS=MODIFIERS):
             self.cart.add_product(self.product)
             self.cart.update()
             self.cart.save()
 
             self.assertEqual(self.cart.subtotal_price, self.PRODUCT_PRICE)
-            self.assertEqual(self.cart.total_price, (self.TEN_PERCENT*self.PRODUCT_PRICE)+self.PRODUCT_PRICE)
+            self.assertEqual(self.cart.total_price,
+                (self.TEN_PERCENT * self.PRODUCT_PRICE) + self.PRODUCT_PRICE)
 
     def test_one_object_two_modifiers_no_rebate(self):
-        MODIFIERS = ['shop.cart.modifiers.tax_modifiers.TenPercentGlobalTaxModifier',
-                     'shop.cart.modifiers.rebate_modifiers.BulkRebateModifier']
+        MODIFIERS = [
+            'shop.cart.modifiers.tax_modifiers.TenPercentGlobalTaxModifier',
+            'shop.cart.modifiers.rebate_modifiers.BulkRebateModifier']
         with SettingsOverride(SHOP_CART_MODIFIERS=MODIFIERS):
             self.cart.add_product(self.product)
 
@@ -91,21 +93,25 @@ class CartTestCase(TestCase):
             self.cart.save()
 
             self.assertEqual(self.cart.subtotal_price, self.PRODUCT_PRICE)
-            self.assertEqual(self.cart.total_price, (self.TEN_PERCENT*self.PRODUCT_PRICE)+self.PRODUCT_PRICE)
+            self.assertEqual(self.cart.total_price,
+                (self.TEN_PERCENT * self.PRODUCT_PRICE) + self.PRODUCT_PRICE)
 
     def test_one_object_two_modifiers_with_rebate(self):
-        MODIFIERS = ['shop.cart.modifiers.tax_modifiers.TenPercentGlobalTaxModifier',
-                     'shop.cart.modifiers.rebate_modifiers.BulkRebateModifier']
+        MODIFIERS = [
+            'shop.cart.modifiers.tax_modifiers.TenPercentGlobalTaxModifier',
+            'shop.cart.modifiers.rebate_modifiers.BulkRebateModifier']
         with SettingsOverride(SHOP_CART_MODIFIERS=MODIFIERS):
             # We add 6 objects now :)
-            self.cart.add_product(self.product,6)
+            self.cart.add_product(self.product, 6)
             self.cart.update()
             self.cart.save()
 
             #subtotal is 600 - 10% = 540
-            sub_should_be = (6*self.PRODUCT_PRICE) - (self.TEN_PERCENT*(6*self.PRODUCT_PRICE))
+            sub_should_be = (6 * self.PRODUCT_PRICE) - (
+                self.TEN_PERCENT * (6 * self.PRODUCT_PRICE))
 
-            total_should_be = sub_should_be + (self.TEN_PERCENT*sub_should_be)
+            total_should_be = sub_should_be + (
+                self.TEN_PERCENT * sub_should_be)
 
             self.assertEqual(self.cart.subtotal_price, sub_should_be)
             self.assertEqual(self.cart.total_price, total_should_be)
@@ -118,7 +124,7 @@ class CartTestCase(TestCase):
             self.cart.update()
             self.cart.save()
 
-            self.assertEqual(len(self.cart.items.all()),1)
+            self.assertEqual(len(self.cart.items.all()), 1)
             self.assertEqual(self.cart.items.all()[0].quantity, 2)
             self.assertEqual(self.cart.total_quantity, 2)
 
@@ -130,7 +136,7 @@ class CartTestCase(TestCase):
             self.cart.update()
             self.cart.save()
 
-            self.assertEqual(len(self.cart.items.all()),2)
+            self.assertEqual(len(self.cart.items.all()), 2)
             self.assertEqual(self.cart.items.all()[0].quantity, 1)
             self.assertEqual(self.cart.items.all()[1].quantity, 1)
 
@@ -143,10 +149,10 @@ class CartTestCase(TestCase):
     def test_cart_item_should_use_specific_type_to_get_price(self):
         if SKIP_BASEPRODUCT_TEST:
             return
-        base_product = BaseProduct.objects.create(unit_price=self.PRODUCT_PRICE)
+        base_product = BaseProduct.objects.create(
+            unit_price=self.PRODUCT_PRICE)
         variation = base_product.productvariation_set.create(
-                name="Variation 1"
-                )
+            name="Variation 1")
         with SettingsOverride(SHOP_CART_MODIFIERS=[]):
             self.cart.add_product(variation)
             self.cart.update()
@@ -161,9 +167,9 @@ class CartTestCase(TestCase):
             self.cart.update()
             self.cart.save()
 
-            self.assertEqual(len(self.cart.items.all()),1)
+            self.assertEqual(len(self.cart.items.all()), 1)
             self.cart.update_quantity(self.cart.items.all()[0].id, 0)
-            self.assertEqual(len(self.cart.items.all()),0)
+            self.assertEqual(len(self.cart.items.all()), 0)
 
     def test_custom_queryset_is_used_when_passed_to_method(self):
         with SettingsOverride(SHOP_CART_MODIFIERS=[]):
@@ -174,7 +180,24 @@ class CartTestCase(TestCase):
             # could be an item with a yet unused combination of variations.
             qs = CartItem.objects.filter(cart=self.cart, product=self.product,
                                          quantity=42)
-            # although we add the same product and have merge=True, there should
-            # be a new CartItem being created now.
+            # although we add the same product and have merge=True, there
+            # should be a new CartItem being created now.
             self.cart.add_product(self.product, queryset=qs)
-            self.assertEqual(len(self.cart.items.all()),2)
+            self.assertEqual(len(self.cart.items.all()), 2)
+
+    def test_get_updated_cart_items(self):
+        self.cart.add_product(self.product)
+        self.cart.update()
+        cached_cart_items = self.cart.get_updated_cart_items()
+
+        cart_items = CartItem.objects.filter(cart=self.cart)
+        for item in cart_items:
+            item.update({})
+
+        self.assertEqual(len(cached_cart_items), len(cart_items))
+        self.assertEqual(cached_cart_items[0].line_total,
+                cart_items[0].line_total)
+
+    def test_get_updated_cart_items_without_updating_cart(self):
+        with self.assertRaises(AssertionError):
+            self.cart.get_updated_cart_items()

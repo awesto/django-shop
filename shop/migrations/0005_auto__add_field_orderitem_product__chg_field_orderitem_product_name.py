@@ -1,3 +1,4 @@
+# flake8: noqa
 # encoding: utf-8
 import datetime
 from south.db import db
@@ -7,7 +8,7 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
+
         # Adding field 'OrderItem.product'
         db.add_column('shop_orderitem', 'product', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['shop.Product'], null=True, blank=True), keep_default=False)
 
@@ -16,7 +17,7 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
-        
+
         # Deleting field 'OrderItem.product'
         db.delete_column('shop_orderitem', 'product_id')
 

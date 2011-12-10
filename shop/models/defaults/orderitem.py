@@ -4,7 +4,7 @@ from shop.models.defaults.bases import BaseOrderItem
 
 
 class OrderItem(BaseOrderItem):
-    
+
     class Meta(object):
         abstract = False
         app_label = 'shop'

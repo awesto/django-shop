@@ -6,7 +6,7 @@ from shop.models.defaults.managers import OrderManager
 
 class Order(BaseOrder):
     objects = OrderManager()
-    
+
     class Meta(object):
         abstract = False
         app_label = 'shop'

@@ -1,34 +1,39 @@
+# flake8: noqa
 from api import ShopApiTestCase
 from cart import CartTestCase
-from cart_modifiers import ( 
+from cart_modifiers import (
     CartModifiersTestCase,
     TenPercentPerItemTaxModifierTestCase,
 )
-from order import ( 
-    OrderConversionTestCase, 
+from order import (
+    OrderConversionTestCase,
     OrderPaymentTestCase,
-    OrderTestCase, 
+    OrderTestCase,
     OrderUtilTestCase,
+)
+from forms import (
+    CartItemModelFormTestCase,
+    GetCartItemFormsetTestCase,
 )
 from payment import PayOnDeliveryTestCase, GeneralPaymentBackendTestCase
 from product import ProductTestCase, ProductStatisticsTestCase
 from shipping import (
     FlatRateShippingTestCase,
-    GeneralShippingBackendTestCase, 
-    ShippingApiTestCase, 
+    GeneralShippingBackendTestCase,
+    ShippingApiTestCase,
 )
 from templatetags import ProductsTestCase
 from util import (
     AddressUtilTestCase,
-    CartUtilsTestCase, 
-    CurrencyFieldTestCase, 
+    CartUtilsTestCase,
+    CurrencyFieldTestCase,
     LoaderTestCase,
 )
-from views import ( 
+from views import (
     CartDetailsViewTestCase,
-    CartViewTestCase, 
+    CartViewTestCase,
     OrderListViewTestCase,
-    ProductDetailViewTestCase, 
+    ProductDetailViewTestCase,
 )
 from views_checkout import (
     CheckoutCartToOrderTestCase,

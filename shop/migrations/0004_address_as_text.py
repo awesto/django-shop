@@ -1,3 +1,4 @@
+# flake8: noqa
 # encoding: utf-8
 import datetime
 from south.db import db
@@ -7,7 +8,7 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
+
         # Deleting field 'Order.billing_zip_code'
         db.delete_column('shop_order', 'billing_zip_code')
 
@@ -58,7 +59,7 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
-        
+
         # Adding field 'Order.billing_zip_code'
         db.add_column('shop_order', 'billing_zip_code', self.gf('django.db.models.fields.CharField')(max_length=20, null=True), keep_default=False)
 
