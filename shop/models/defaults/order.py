@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
-from shop.models.defaults.bases import BaseOrder
-from shop.models.defaults.managers import OrderManager
+from shop.models_bases import BaseOrder
+from shop.models_bases.managers import OrderManager
 
 
 class Order(BaseOrder):

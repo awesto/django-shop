@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
-from shop.models.defaults.bases import BaseProduct
-from shop.models.defaults.managers import (
+from shop.models_bases import BaseProduct
+from shop.models_bases.managers import (
     ProductManager,
     ProductStatisticsManager,
 )
