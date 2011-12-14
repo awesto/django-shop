@@ -323,7 +323,7 @@ class BaseOrder(models.Model):
     status = models.IntegerField(choices=STATUS_CODES, default=PROCESSING,
             verbose_name=_('Status'))
     order_subtotal = CurrencyField(verbose_name=_('Order subtotal'))
-    order_total = CurrencyField(verbose_name='Order total')
+    order_total = CurrencyField(verbose_name=_('Order total'))
     shipping_address_text = models.TextField(_('Shipping address'), blank=True,
         null=True)
     billing_address_text = models.TextField(_('Billing address'), blank=True,
