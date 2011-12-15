@@ -28,6 +28,7 @@ from util import (
     CartUtilsTestCase,
     CurrencyFieldTestCase,
     LoaderTestCase,
+    ModelImportTestCase,
 )
 from views import (
     CartDetailsViewTestCase,

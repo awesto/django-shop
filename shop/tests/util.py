@@ -115,6 +115,28 @@ class LoaderTestCase(TestCase):
         self.assertRaises(ImproperlyConfigured, load_class, class_to_load)
 
 
+class ModelImportTestCase(TestCase):
+    def test_bases_old_import_path(self):
+        try:
+            module = __import__('shop.models.defaults.bases', globals(),
+                locals(), ['BaseProduct',])
+        except ImportError:
+            module = False
+
+        self.assertTrue(hasattr(module, 'BaseProduct'),
+            'Model bases could not be imported from old location!')
+
+    def test_managers_old_import_path(self):
+        try:
+            module = __import__('shop.models.defaults.managers', globals(),
+                locals(), ['ProductManager',])
+        except ImportError:
+            module = False
+
+        self.assertTrue(hasattr(module, 'ProductManager'),
+            'Model managers could not be imported from old location!')
+
+
 class AddressUtilTestCase(TestCase):
 
     def setUp(self):
