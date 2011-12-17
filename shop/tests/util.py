@@ -1,5 +1,8 @@
 #-*- coding: utf-8 -*-
+import sys
 from decimal import Decimal
+from django.conf import settings
+from django.db.models.loading import cache
 from django.contrib.auth.models import User, AnonymousUser
 from django.core.exceptions import ImproperlyConfigured
 from django.test.testcases import TestCase
@@ -135,6 +138,53 @@ class ModelImportTestCase(TestCase):
 
         self.assertTrue(hasattr(module, 'ProductManager'),
             'Model managers could not be imported from old location!')
+
+
+class CircularImportTestCase(TestCase):
+    """
+    Test circular import when custom Product model inherits from BaseProduct
+    """
+
+    # NOTE: Deleting the modules in TestCase.setUp does not work
+    def setup_app(self, app_name, product_model):
+        self.app_name = app_name
+        settings.INSTALLED_APPS.insert(0, app_name)
+
+        cache.loaded = False
+        try:
+            del sys.modules['shop.models.productmodel']
+            del sys.modules['shop.models']
+        except KeyError:
+            pass
+
+        try:
+            self.product_model = settings.SHOP_PRODUCT_MODEL
+        except AttributeError:
+            self.product_model = '!'
+        settings.SHOP_PRODUCT_MODEL = product_model
+
+    def tearDown(self):
+        cache.loaded = False
+        settings.INSTALLED_APPS.remove(self.app_name)
+        if self.product_model == '!':
+            del settings.SHOP_PRODUCT_MODEL
+        else:
+            settings.SHOP_PRODUCT_MODEL = self.product_model
+
+    def test_old_import_raises_exception(self):
+        self.setup_app('circular_import_old',
+            'circular_import_old.models.MyProduct')
+        self.assertRaises(ImproperlyConfigured, cache.load_app,
+            'circular_import_old')
+
+    def test_new_import_doesnot_raise_exception(self):
+        self.setup_app('circular_import_new',
+            'circular_import_new.models.MyProduct')
+        try:
+            app = cache.load_app('circular_import_new')
+        except ImproperlyConfigured:
+            app = False
+        self.assertTrue(app, 'Could not load app "circular_import_new"')
 
 
 class AddressUtilTestCase(TestCase):

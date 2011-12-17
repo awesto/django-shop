@@ -29,6 +29,7 @@ from util import (
     CurrencyFieldTestCase,
     LoaderTestCase,
     ModelImportTestCase,
+    CircularImportTestCase,
 )
 from views import (
     CartDetailsViewTestCase,
