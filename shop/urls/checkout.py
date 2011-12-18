@@ -10,22 +10,22 @@ from shop.views.checkout import (
 )
 
 urlpatterns = patterns('',
-    url(r'^checkout/$', CheckoutSelectionView.as_view(),
+    url(r'^$', CheckoutSelectionView.as_view(),
         name='checkout_selection'  # First step of the checkout process
         ),
     #url(r'^checkout/ship/$', SelectShippingView.as_view(),
     #    name='checkout_shipping'  # First step of the checkout process
     #    ),
-    url(r'^checkout/ship/$', ShippingBackendRedirectView.as_view(),
+    url(r'^ship/$', ShippingBackendRedirectView.as_view(),
         name='checkout_shipping'  # First step of the checkout process
         ),
     #url(r'^checkout/pay/$', SelectPaymentView.as_view(),
     #    name='checkout_payment'  # Second step of the checkout process
     #    ),
-    url(r'^checkout/pay/$', PaymentBackendRedirectView.as_view(),
+    url(r'^pay/$', PaymentBackendRedirectView.as_view(),
         name='checkout_payment'  # First step of the checkout process
         ),
-    url(r'^checkout/thank_you/$', ThankYouView.as_view(),
+    url(r'^thank_you/$', ThankYouView.as_view(),
         name='thank_you_for_your_order'  # Second step of the checkout process
         ),
     )
