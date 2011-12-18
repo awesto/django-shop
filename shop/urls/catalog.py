@@ -6,11 +6,11 @@ from shop.models.productmodel import Product
 
 
 urlpatterns = patterns('',
-    url(r'^products/$',
+    url(r'^$',
         ShopListView.as_view(model=Product),
         name='product_list'
         ),
-    url(r'^products/(?P<slug>[0-9A-Za-z-_.//]+)/$',
+    url(r'^(?P<slug>[0-9A-Za-z-_.//]+)/$',
         ProductDetailView.as_view(),
         name='product_detail'
         ),
