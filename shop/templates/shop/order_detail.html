@@ -5,5 +5,8 @@
 {% block body %}
   <h1>{{ object }}</h1>
 
+<form method="post">
+  {% csrf_token %}
   {% order object %}
+</form>
 {% endblock %}

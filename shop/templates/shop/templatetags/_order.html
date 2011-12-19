@@ -24,46 +24,57 @@
 <table border="1" class="order">
   <thead>
     <tr>
-    <th>{% trans "Product name" %}</th>
-    <th>{% trans "Unit price" %}</th>
-    <th>{% trans "Quantity" %}</th>
-    <th>&nbsp;</th>
+      <th>{% trans "Product name" %}</th>
+	  <th>{% trans "Unit price" %}</th>
+	  <th>{% trans "Quantity" %}</th>
+	  <th>&nbsp;</th>
     </tr>
   </thead>
 
   <tbody>
-    {% for item in order.items.all %}
-      <tr>
-        <td>{{item.product_name}}</td>
-        <td>{{ item.unit_price }}</td>
-        <td>{{item.quantity}}</td>
-        <td>{{item.line_subtotal }}</td>
-      </tr>
-      {% for item_extra in item.extraorderitempricefield_set.all %}
-        <tr>
-          <td colspan="2">&nbsp;</td>
-          <td>{{ item_extra.label }}</td>
-          <td>{{ item_extra.value }}</td>
-        </tr>
-      {% endfor %}
-      <tr><td colspan="2">&nbsp;</td><td>{% trans "Line Total" %}:</td><td>{{item.line_total }}</td></tr>
+  {% for item in order.items.all %}
+    <tr>
+      <td>{{ item.product_name }}</td>
+      <td>{{ item.unit_price }}</td>
+      <td>{{ item.quantity }}</td>
+      <td>{{ item.line_subtotal }}</td>
+    </tr>
+    {% for item_extra in item.extraorderitempricefield_set.all %}
+    <tr>
+      <td colspan="2">&nbsp;</td>
+      <td>{{ item_extra.label }}</td>
+      <td>{{ item_extra.value }}</td>
+    </tr>
     {% endfor %}
+    <tr>
+      <td colspan="2"><button type="submit" name="copy_item_to_cart" value="{{ item.id }}">{% trans "Add again to cart" %}</button></td>
+      <td>{% trans "Line Total" %}:</td>
+      <td>{{ item.line_total }}</td>
+    </tr>
+  {% endfor %}
   </tbody>
 
   <tfoot>
-    <tr><td colspan="2">&nbsp;</td><td>{% trans "Order Subtotal" %}</td><td>{{order.order_subtotal }}</td></tr>
+    <tr>
+      <td colspan="2">&nbsp;</td>
+	  <td>{% trans "Order Subtotal" %}</td>
+	  <td>{{ order.order_subtotal }}</td>
+	</tr>
     {% for extra_price_field in order.extraorderpricefield_set.all %}
-      <tr>
-        <td colspan="2">&nbsp;</td>
-        <td>{{ extra_price_field.label }}</td>
-        <td>{{ extra_price_field.value }}</td>
-      </tr>
+    <tr>
+      <td colspan="2">&nbsp;</td>
+      <td>{{ extra_price_field.label }}</td>
+      <td>{{ extra_price_field.value }}</td>
+    </tr>
     {% endfor %}
-    <tr><td colspan="2">&nbsp;</td><td><b>{% trans "Order Total" %}</b></td><td><b>{{order.order_total}}</b></td></tr>
+    <tr>
+      <td colspan="2">&nbsp;</td>
+	  <td><b>{% trans "Order Total" %}</b></td>
+	  <td><b>{{ order.order_total }}</b></td>
+	</tr>
   </tfoot>
 </table>
 
 {% for extra_info in order.extra_info.all  %}
   <p>{{ extra_info.text }}</p>
 {% endfor %}
-
