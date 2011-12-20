@@ -19,14 +19,14 @@ The benefits for built-in variations:
 - The variation definition is part of the product model.
 - Any kind of information can be stored together with the product.
 - Identical variations are always serialized to the same string, so identical
-product variations will sum up in CartItem, whereas different variations of the
-same product create individual CartItem entries.
+  product variations will sum up in CartItem, whereas different variations of 
+  the same product create individual CartItem entries.
 - A customer may readd an already shipped item from the list of orders to the 
-cart.
-- The product model must not deal with problems, such as adding variation details
-to the CartItem, OrderItem or an external WishItem.
+  cart.
+- The product model must not deal with problems, such as adding variation
+  details to the CartItem, OrderItem or an external WishItem.
 
-When using the django-shop-wishlists, the built-in variations are a required 
+When using the django-shop-wishlists, built-in variations are a required 
 feature.
 
 Installation
