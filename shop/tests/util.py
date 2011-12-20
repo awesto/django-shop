@@ -105,6 +105,11 @@ class LoaderTestCase(TestCase):
         res = load_class(class_to_load)
         self.assertEqual(res, Mock)
 
+    def test_loader_without_a_name_works_tuple(self):
+        class_to_load = tuple(['shop.tests.util.Mock', 'tests'])
+        res = load_class(class_to_load)
+        self.assertEqual(res, Mock)
+
     def test_loader_without_a_name_fails(self):
         class_to_load = 'shop.tests.IdontExist.IdontExistEither'
         self.assertRaises(ImproperlyConfigured, load_class, class_to_load)
