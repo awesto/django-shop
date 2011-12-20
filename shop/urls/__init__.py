@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls.defaults import patterns, include
+from django.conf.urls.defaults import patterns, include, url
 from shop.views import ShopTemplateView
 
 
 urlpatterns = patterns('',
-    (r'^$', ShopTemplateView.as_view(template_name="shop/welcome.html")),
+    url(r'^$', ShopTemplateView.as_view(template_name="shop/welcome.html"),
+        name='shop_welcome'),
     (r'^pay/', include('shop.payment.urls')),
     (r'^ship/', include('shop.shipping.urls')),
     (r'^orders/', include('shop.urls.order')),
