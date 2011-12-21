@@ -195,18 +195,14 @@ class CartTestCase(TestCase):
             self.cart.update_quantity(self.cart.items.all()[0].id, 0)
             self.assertEqual(len(self.cart.items.all()), 0)
 
-    def test_custom_queryset_is_used_when_passed_to_method(self):
+    def test_custom_variation_is_used_when_passed_to_method(self):
         with SettingsOverride(SHOP_CART_MODIFIERS=[]):
             # first we add any product
             self.cart.add_product(self.product)
 
-            # now we try to select a CartItem that does not exist yet. This
-            # could be an item with a yet unused combination of variations.
-            qs = CartItem.objects.filter(cart=self.cart, product=self.product,
-                                         quantity=42)
-            # although we add the same product and have merge=True, there
+            # add another product with a different variation
             # should be a new CartItem being created now.
-            self.cart.add_product(self.product, queryset=qs)
+            self.cart.add_product(self.product, variation={ 'foo': 'bar' })
             self.assertEqual(len(self.cart.items.all()), 2)
 
     def test_get_updated_cart_items(self):
