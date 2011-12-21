@@ -6,7 +6,7 @@ from shop.views import ShopListView, ShopDetailView
 from shop.models import Order
 from shop.models.ordermodel import OrderItem
 from shop.util.cart import get_or_create_cart
-
+from shop.util.order import copy_order_item_to_cart
 
 class OrderListView(ShopListView):
     """
@@ -38,13 +38,8 @@ class OrderDetailView(ShopDetailView):
     def post(self, request, *args, **kwargs):
         order = self.get_object()
         if request.POST.has_key('copy_item_to_cart'):
-            id = int(request.POST['copy_item_to_cart'])
-            item = OrderItem.objects.filter(order=order, id=id)
-            if item != None:
-                item = item[0]
-                cart = get_or_create_cart(self.request)
-                cart.add_product(item.product, item.quantity, item.variation)
-                cart.save()
+            copy_order_item_to_cart(request, order, 
+                                    int(request.POST['copy_item_to_cart']))
         return redirect(order)
 
     @method_decorator(login_required)
