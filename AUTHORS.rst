@@ -14,6 +14,7 @@ CONTRIBUTORS
 * Raúl Cumplido
 * Bojan Mihelac
 * Rolo Mawlabaux
+* Jacob Rief
 * Justin Steward 
 * Kristian Øllegaard
 * Martin Ogden
