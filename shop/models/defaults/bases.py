@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
+import hashlib
 from distutils.version import LooseVersion
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.db.models.aggregates import Sum
+from django.utils import simplejson as json
 from django.utils.translation import ugettext_lazy as _
 from polymorphic.polymorphic_model import PolymorphicModel
-from picklefield.fields import PickledObjectField
+from jsonfield.fields import JSONField
 from shop.cart.modifiers_pool import cart_modifiers_pool
 from shop.util.fields import CurrencyField
 from shop.util.loader import get_model_string
@@ -98,13 +101,16 @@ class BaseCart(models.Model):
         from shop.models import CartItem
         # Let's see if we already have an Item with the same product ID and the
         # same variation
-        cart_item = CartItem.objects.filter(cart=self, product=product, variation=variation)
+        variation_hash = hashlib.sha1(json.dumps(variation, cls=DjangoJSONEncoder)).hexdigest()
+        cart_item = CartItem.objects.filter(cart=self, product=product, 
+                                            variation_hash=variation_hash)
         if cart_item.exists():
             cart_item = cart_item[0]
             cart_item.quantity += int(quantity)
             cart_item.save()
         else:
-            cart_item = CartItem.objects.create(cart=self, quantity=quantity, product=product, variation=variation)
+            cart_item = CartItem.objects.create(cart=self, quantity=quantity, 
+                    product=product, variation=variation, variation_hash=variation_hash)
             cart_item.save()
 
         self.save() # to get the last updated timestamp
@@ -229,7 +235,9 @@ class BaseCartItem(models.Model):
 
     product = models.ForeignKey(get_model_string('Product'))
 
-    variation = PickledObjectField(null=True, blank=True)
+    variation = JSONField(null=True, blank=True)
+
+    variation_hash = models.CharField(max_length=64, null=True, blank=True)
 
     class Meta(object):
         abstract = True
@@ -396,8 +404,9 @@ class BaseOrderItem(models.Model):
             verbose_name=_('Product'), null=True, blank=True, **f_kwargs)
     unit_price = CurrencyField(verbose_name=_('Unit price'))
     quantity = models.IntegerField(verbose_name=_('Quantity'))
-    variation = PickledObjectField(null=True, blank=True, 
+    variation = JSONField(null=True, blank=True, 
             verbose_name=_('Variable Object Container'))
+    variation_hash = models.CharField(max_length=64, null=True, blank=True)
 
     line_subtotal = CurrencyField(verbose_name=_('Line subtotal'))
     line_total = CurrencyField(verbose_name=_('Line total'))
