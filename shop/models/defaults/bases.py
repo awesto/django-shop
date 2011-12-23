@@ -238,7 +238,7 @@ class BaseCartItem(models.Model):
 
     variation = JSONField(null=True, blank=True)
 
-    variation_hash = models.CharField(max_length=64, null=True, blank=True)
+    variation_hash = models.CharField(max_length=64, null=True)
 
     class Meta(object):
         abstract = True
@@ -407,7 +407,7 @@ class BaseOrderItem(models.Model):
     quantity = models.IntegerField(verbose_name=_('Quantity'))
     variation = JSONField(null=True, blank=True, 
             verbose_name=_('Variable Object Container'))
-    variation_hash = models.CharField(max_length=64, null=True, blank=True)
+    variation_hash = models.CharField(max_length=64, null=True)
 
     line_subtotal = CurrencyField(verbose_name=_('Line subtotal'))
     line_total = CurrencyField(verbose_name=_('Line total'))
