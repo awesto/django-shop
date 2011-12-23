@@ -101,7 +101,8 @@ class BaseCart(models.Model):
         from shop.models import CartItem
         # Let's see if we already have an Item with the same product ID and the
         # same variation
-        variation_hash = hashlib.sha1(json.dumps(variation, cls=DjangoJSONEncoder)).hexdigest()
+        variation_hash = hashlib.sha1(json.dumps(variation, cls=DjangoJSONEncoder,
+                sort_keys=True)).hexdigest() if variation else None
         cart_item = CartItem.objects.filter(cart=self, product=product, 
                                             variation_hash=variation_hash)
         if cart_item.exists():
