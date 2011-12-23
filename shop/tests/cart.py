@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import with_statement
 from decimal import Decimal
+from copy import deepcopy
 from django.contrib.auth.models import User
 from django.test.testcases import TestCase
 from shop.cart.modifiers_pool import cart_modifiers_pool
@@ -15,11 +16,6 @@ try:
     from project.models import BaseProduct
 except:
     SKIP_BASEPRODUCT_TEST = True
-
-class ProductMockVariation():
-    def __init__(self, value):
-        self.label = 'Color'
-        self.value = value
 
 
 class CartTestCase(TestCase):
@@ -38,6 +34,17 @@ class CartTestCase(TestCase):
         self.product.active = True
         self.product.unit_price = self.PRODUCT_PRICE
         self.product.save()
+
+        self.variation = {'option_groups':
+                {1L: {'description': None, 'name': u'Color', 'id': 1L,
+                      'slug': u'color', 'option': {'price': Decimal('1.25'),
+                                     'group_id': 1L, 'id': 1L, 'name': u'red'}
+                      }}, 'text_options': {1L: {'description': None,
+                                                'text': 'Hello World',
+                                                'price': Decimal('.17'),
+                                                'max_length': 12L, 'id': 1L,
+                                                'name': u'label'}}
+                          }
 
         self.cart = Cart()
         self.cart.user = self.user
@@ -136,8 +143,9 @@ class CartTestCase(TestCase):
     def test_add_same_object_twice_with_variation(self):
         with SettingsOverride(SHOP_CART_MODIFIERS=[]):
             self.assertEqual(self.cart.total_quantity, 0)
-            variation1 = ProductMockVariation('red')
-            variation2 = ProductMockVariation('green')
+            variation1 = self.variation
+            variation2 = deepcopy(self.variation)
+            variation2['option_groups'][1L]['option']['name'] = 'green'
             self.cart.add_product(self.product, variation=variation1)
             self.cart.add_product(self.product, variation=variation2)
             self.cart.update()
@@ -147,22 +155,22 @@ class CartTestCase(TestCase):
             self.assertEqual(len(cart_items), 2)
             self.assertEqual(cart_items[0].quantity, 1)
             self.assertEqual(cart_items[1].quantity, 1)
-            self.assertEqual(cart_items[0].variation.value, 'red')
-            self.assertEqual(cart_items[1].variation.value, 'green')
+            self.assertEqual(cart_items[0].variation['option_groups']['1']['option']['name'], 'red')
+            self.assertEqual(cart_items[1].variation['option_groups']['1']['option']['name'], 'green')
 
     def test_add_same_object_twice_no_variation(self):
         with SettingsOverride(SHOP_CART_MODIFIERS=[]):
             self.assertEqual(self.cart.total_quantity, 0)
-            variation = ProductMockVariation('blue')
-            self.cart.add_product(self.product, variation=variation)
-            self.cart.add_product(self.product, variation=variation)
+            self.cart.add_product(self.product, variation=self.variation)
+            variation_reordered = deepcopy(self.variation) # must deliver the same hash
+            self.cart.add_product(self.product, variation=variation_reordered)
             self.cart.update()
             self.cart.save()
 
             cart_items = self.cart.items.all()
             self.assertEqual(len(cart_items), 1)
             self.assertEqual(cart_items[0].quantity, 2)
-            self.assertEqual(cart_items[0].variation.value, 'blue')
+            self.assertEqual(cart_items[0].variation['option_groups']['1']['option']['name'], 'red')
 
     def test_add_product_updates_last_updated(self):
         with SettingsOverride(SHOP_CART_MODIFIERS=[]):
