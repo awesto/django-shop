@@ -39,12 +39,13 @@ class CartTestCase(TestCase):
                 {1L: {'description': None, 'name': u'Color', 'id': 1L,
                       'slug': u'color', 'option': {'price': Decimal('1.25'),
                                      'group_id': 1L, 'id': 1L, 'name': u'red'}
-                      }}, 'text_options': {1L: {'description': None,
+                }}, 'text_options': {1L: {'description': None,
                                                 'text': 'Hello World',
                                                 'price': Decimal('.17'),
                                                 'max_length': 12L, 'id': 1L,
-                                                'name': u'label'}}
-                          }
+                                                'name': u'label'
+                }},
+        }
 
         self.cart = Cart()
         self.cart.user = self.user
@@ -162,7 +163,7 @@ class CartTestCase(TestCase):
         with SettingsOverride(SHOP_CART_MODIFIERS=[]):
             self.assertEqual(self.cart.total_quantity, 0)
             self.cart.add_product(self.product, variation=self.variation)
-            variation_reordered = deepcopy(self.variation) # must deliver the same hash
+            variation_reordered = deepcopy(self.variation) # reorders, but must deliver the same hash
             self.cart.add_product(self.product, variation=variation_reordered)
             self.cart.update()
             self.cart.save()
