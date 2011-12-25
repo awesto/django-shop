@@ -94,7 +94,8 @@ class BaseCart(models.Model):
         """
         Adds a (new) product to the cart.
 
-        The parameter `variation`, can be any kind of pickable Python object.
+        The parameter `variation`, can be any kind of JSON serializable Python
+        object.
         If a product with exactly this variation already exists, the quantity
         is increased in the cart. Otherwise a new product is added to the cart.
         """
