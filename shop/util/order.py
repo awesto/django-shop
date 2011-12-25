@@ -47,7 +47,9 @@ def add_order_to_request(request, order):
 
 def copy_order_item_to_cart(request, order, item_id):
     """
-    Copy the item with the given id back to the cart.
+    Copy the item with the given id back to the cart. The item must be part
+    of the given order, otherwise it is not copied. This is to assure the privacy
+    of orders not belonging to the calling user.
     """
     item = OrderItem.objects.filter(order=order, id=item_id)
     if item != None:
