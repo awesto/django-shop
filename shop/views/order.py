@@ -1,12 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.shortcuts import redirect
-
 from shop.views import ShopListView, ShopDetailView
-from shop.models import Order
-from shop.models.ordermodel import OrderItem
+from shop.models import Order, OrderItem
 from shop.util.cart import get_or_create_cart
 from shop.util.order import copy_order_item_to_cart
+
 
 class OrderListView(ShopListView):
     """
