@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
-import hashlib
+from hashlib import sha1
 from distutils.version import LooseVersion
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -102,7 +102,7 @@ class BaseCart(models.Model):
         from shop.models import CartItem
         # Let's see if we already have an Item with the same product ID and the
         # same variation
-        variation_hash = hashlib.sha1(json.dumps(variation, cls=DjangoJSONEncoder,
+        variation_hash = sha1(json.dumps(variation, cls=DjangoJSONEncoder,
                 sort_keys=True)).hexdigest() if variation else None
         cart_item = CartItem.objects.filter(cart=self, product=product, 
                                             variation_hash=variation_hash)
@@ -232,13 +232,9 @@ class BaseCartItem(models.Model):
     pointer to the actual Product being purchased :)
     """
     cart = models.ForeignKey(get_model_string('Cart'), related_name="items")
-
     quantity = models.IntegerField()
-
     product = models.ForeignKey(get_model_string('Product'))
-
     variation = JSONField(null=True, blank=True)
-
     variation_hash = models.CharField(max_length=64, null=True)
 
     class Meta(object):
