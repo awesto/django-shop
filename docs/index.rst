@@ -16,6 +16,7 @@ The "instructions" :)
 
     getting-started
     templatetags
+    signals
     contributing
 
 How to
