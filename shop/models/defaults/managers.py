@@ -4,6 +4,8 @@ from django.db import models, transaction
 from django.db.models.aggregates import Count
 from polymorphic.manager import PolymorphicManager
 
+from shop.order_signals import processing
+
 
 #==============================================================================
 # Product
@@ -76,6 +78,8 @@ class OrderManager(models.Manager):
 
         This will only actually commit the transaction once the function exits
         to minimize useless database access.
+
+        Emits the ``processing`` signal.
         """
         # must be imported here!
         from shop.models.ordermodel import (
@@ -124,4 +128,6 @@ class OrderManager(models.Manager):
                 eoi.label = unicode(label)
                 eoi.value = value
                 eoi.save()
+
+        processing.send(self.model, order=order)
         return order
