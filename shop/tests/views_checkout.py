@@ -8,6 +8,7 @@ from django.test.testcases import TestCase
 from shop.addressmodel.models import Country, Address
 from shop.models.cartmodel import Cart
 from shop.models.ordermodel import Order
+from shop.order_signals import processing
 from shop.tests.util import Mock
 from shop.tests.utils.context_managers import SettingsOverride
 from shop.views.checkout import CheckoutSelectionView, ThankYouView
@@ -213,6 +214,18 @@ class CheckoutCartToOrderTestCase(TestCase):
         view = CheckoutSelectionView(request=self.request)
         res = view.create_order_object_from_cart()
         self.assertEqual(res.order_total, Decimal('0'))
+
+    def test_processing_signal(self):
+        view = CheckoutSelectionView(request=self.request)
+
+        order_from_signal = []
+        def receiver(sender, order=None, **kwargs):
+            order_from_signal.append(order)
+
+        processing.connect(receiver)
+        res = view.create_order_object_from_cart()
+
+        self.assertIs(res, order_from_signal[0])
 
 
 class ThankYouViewTestCase(TestCase):
