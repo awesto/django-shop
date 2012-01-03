@@ -31,6 +31,9 @@ Arguments sent with this signal:
 ``order``
     The :class:`~shop.models.Order` instance
 
+``cart``
+    The :class:`~shop.models.Cart` instance
+
 ``payment_selection``
 ---------------------
 
