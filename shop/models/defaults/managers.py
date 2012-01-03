@@ -129,5 +129,5 @@ class OrderManager(models.Manager):
                 eoi.value = value
                 eoi.save()
 
-        processing.send(self.model, order=order)
+        processing.send(self.model, order=order, cart=cart)
         return order
