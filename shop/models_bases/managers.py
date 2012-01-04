@@ -4,6 +4,8 @@ from django.db import models, transaction
 from django.db.models.aggregates import Count
 from polymorphic.manager import PolymorphicManager
 
+from shop.order_signals import processing
+
 
 #==============================================================================
 # Product
@@ -76,6 +78,8 @@ class OrderManager(models.Manager):
 
         This will only actually commit the transaction once the function exits
         to minimize useless database access.
+
+        Emits the ``processing`` signal.
         """
         # must be imported here!
         from shop.models.ordermodel import (
@@ -85,19 +89,19 @@ class OrderManager(models.Manager):
         )
         from shop.models.cartmodel import CartItem
         # Let's create the Order itself:
-        o = self.model()
-        o.user = cart.user
-        o.status = self.model.PROCESSING  # Processing
+        order = self.model()
+        order.user = cart.user
+        order.status = self.model.PROCESSING  # Processing
 
-        o.order_subtotal = cart.subtotal_price
-        o.order_total = cart.total_price
+        order.order_subtotal = cart.subtotal_price
+        order.order_total = cart.total_price
 
-        o.save()
+        order.save()
 
         # Let's serialize all the extra price arguments in DB
         for label, value in cart.extra_price_fields:
             eoi = ExtraOrderPriceField()
-            eoi.order = o
+            eoi.order = order
             eoi.label = str(label)
             eoi.value = value
             eoi.save()
@@ -106,22 +110,24 @@ class OrderManager(models.Manager):
         cart_items = CartItem.objects.filter(cart=cart)
         for item in cart_items:
             item.update(cart)
-            i = OrderItem()
-            i.order = o
-            i.product_reference = item.product.id
-            i.product_name = item.product.get_name()
-            i.product = item.product
-            i.unit_price = item.product.get_price()
-            i.quantity = item.quantity
-            i.line_total = item.line_total
-            i.line_subtotal = item.line_subtotal
-            i.save()
+            order_item = OrderItem()
+            order_item.order = order
+            order_item.product_reference = item.product.id
+            order_item.product_name = item.product.get_name()
+            order_item.product = item.product
+            order_item.unit_price = item.product.get_price()
+            order_item.quantity = item.quantity
+            order_item.line_total = item.line_total
+            order_item.line_subtotal = item.line_subtotal
+            order_item.save()
             # For each order item, we save the extra_price_fields to DB
             for label, value in item.extra_price_fields:
                 eoi = ExtraOrderItemPriceField()
-                eoi.order_item = i
+                eoi.order_item = order_item
                 # Force unicode, in case it has àö...
                 eoi.label = unicode(label)
                 eoi.value = value
                 eoi.save()
-        return o
+
+        processing.send(self.model, order=order, cart=cart)
+        return order

@@ -7,24 +7,25 @@ CORE DEVELOPERS
 CONTRIBUTORS
 ============
 
-* fivethreeo
-* Jonas Obrist
-* Issac Kelly
+* Adrien Lemaire
+* airtonix
 * Audrey Roy
-* Raúl Cumplido
+* Benjamin Wohlwend
 * Bojan Mihelac
-* Rolo Mawlabaux
+* fivethreeo
+* Issac Kelly
+* Jacob Rief
+* Jonas Obrist
 * Justin Steward 
 * Kristian Øllegaard
 * Martin Ogden
-* Pavel Zhukov
-* Adrien Lemaire
-* Benjamin Wohlwend
 * Mike Yumatov
-* airtonix
+* Pavel Zhukov
+* Raúl Cumplido
+* Rolo Mawlabaux
 
 TRANSLATORS
 ===========
 
-* Pedro Gracia (Spanish)
 * Pavel Zhukov (Russian)
+* Pedro Gracia (Spanish)
