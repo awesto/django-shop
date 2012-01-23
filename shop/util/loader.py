@@ -4,7 +4,8 @@ from django.core import exceptions
 from django.utils.importlib import import_module
 
 CLASS_PATH_ERROR = 'django-shop is unable to interpret settings value for %s. %s should ' \
-                   'be in ther form of a tupple: ('path.to.models.Class', 'app_label').' 
+                   'be in ther form of a tuple: (\'path.to.models.Class\',
+                   \'app_label\').' 
 
 def load_class(class_path, setting_name=None):
     """
