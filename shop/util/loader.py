@@ -59,7 +59,7 @@ def get_model_string(model_name):
     (eg 'auth.User') to prevent circular imports.
     This is needed to allow our crazy custom model usage.
     """
-    setting_name = 'SHOP_%s_MODEL' % model_name.upper().replace('_', ''),
+    setting_name = 'SHOP_%s_MODEL' % model_name.upper().replace('_', '')
     class_path = getattr(settings, setting_name, None)
         
     if not class_path:
