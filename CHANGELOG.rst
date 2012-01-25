@@ -1,6 +1,7 @@
 Version 0.0.12
 ==============
 
+* Updated translations
 * Split urls.py into several sub-files for better readability, and put in a
   urls shubfolder.
 * Made templates extend a common base template
