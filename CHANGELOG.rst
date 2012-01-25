@@ -9,6 +9,7 @@ Version 0.0.12
   This will break your cart.html template. Please refer to the changes in 
   cart.html shipped by the shop to see how you can update your own template.
   Basically you need to iterate over a formset now instead of cart_items.
+* Fixed a circular import problem when user overrode their own models
 
 Version 0.0.11
 ==============
