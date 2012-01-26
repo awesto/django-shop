@@ -1,6 +1,12 @@
+Version 0.0.13
+==============
+
+(Version cleanup)
+
 Version 0.0.12
 ==============
 
+* Updated translations
 * Split urls.py into several sub-files for better readability, and put in a
   urls shubfolder.
 * Made templates extend a common base template
@@ -8,6 +14,7 @@ Version 0.0.12
   This will break your cart.html template. Please refer to the changes in 
   cart.html shipped by the shop to see how you can update your own template.
   Basically you need to iterate over a formset now instead of cart_items.
+* Fixed a circular import problem when user overrode their own models
 
 Version 0.0.11
 ==============

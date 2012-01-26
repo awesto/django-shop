@@ -3,14 +3,27 @@ from django.conf import settings
 from django.core import exceptions
 from django.utils.importlib import import_module
 
+CLASS_PATH_ERROR = '''django-shop is unable to interpret settings value for %s. %s should ' \
+                   'be in ther form of a tuple: (\'path.to.models.Class\',
+                   \'app_label\').''' 
 
 def load_class(class_path, setting_name=None):
     """
-    Loads a class given a class_path.
-
-    The setting_name parameter is only there for pretty error output, and
+    Loads a class given a class_path.  The setting value may be a string or a tuple.
+    The setting_name parameter is only there for pretty error output, and 
     therefore is optional
     """
+    if isinstance(class_path, basestring):
+        pass
+    else:
+        try:
+            class_path, app_label = class_path
+        except:
+            if setting_name:
+                raise exceptions.ImproperlyConfigured(CLASS_PATH_ERROR % (setting_name, setting_name))
+            else:
+                raise exceptions.ImproperlyConfigured(CLASS_PATH_ERROR % ("this setting", "It"))
+
     try:
         class_module, class_name = class_path.rsplit('.', 1)
     except ValueError:
@@ -52,10 +65,24 @@ def get_model_string(model_name):
 
     This is needed to allow our crazy custom model usage.
     """
-    class_path = getattr(settings,
-        'SHOP_%s_MODEL' % model_name.upper().replace('_', ''), None)
+    setting_name = 'SHOP_%s_MODEL' % model_name.upper().replace('_', '')
+    class_path = getattr(settings, setting_name, None)
+        
     if not class_path:
         return 'shop.%s' % model_name
+    elif isinstance(class_path, basestring):
+        parts = class_path.split('.')
+        try:
+            index = parts.index('models') - 1
+        except ValueError, e:
+            raise exceptions.ImproperlyConfigured(CLASS_PATH_ERROR % (setting_name, setting_name))
+        app_label, model_name = parts[index], parts[-1]
     else:
-        klass = load_class(class_path)
-        return '%s.%s' % (klass._meta.app_label, klass.__name__)
+        try:
+            class_path, app_label = class_path
+            model_name = class_path.split('.')[-1]
+        except:
+            raise exceptions.ImproperlyConfigured(CLASS_PATH_ERROR % (setting_name, setting_name))
+
+    return "%s.%s" % (app_label, model_name)
+
