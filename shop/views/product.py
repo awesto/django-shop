@@ -26,8 +26,8 @@ class ProductDetailView(ShopDetailView):
         """
         pass
 
-    def get_variation(self, product):
+    def get_variation(self):
         """
         Dummy function to enable seamless view mixins. 
         """
-        pass
+        return {}
