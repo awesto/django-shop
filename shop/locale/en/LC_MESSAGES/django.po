@@ -134,7 +134,7 @@ msgstr ""
 
 #: models/ordermodel.py:99
 msgid "The payment backend use to process the purchase"
-msgstr ""
+msgstr "The payment backend used to process the purchase"
 
 #: models/ordermodel.py:103
 msgid "Order payment"
