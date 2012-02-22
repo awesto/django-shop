@@ -113,6 +113,9 @@ class BaseCartModifier(object):
         a tuple. The decimal should be the amount that should get added to the
         current subtotal. It can be a negative value.
 
+        Optional third tuple element can be used to store extra text data (ie:
+        name of cart modifier, group of field, etc.).
+
         In case your modifier is based on the current price (for example in
         order to compute value added tax for this cart item only) your
         override can access that price via ``cart_item.current_total``.
@@ -122,6 +125,9 @@ class BaseCartModifier(object):
 
         And a rebate modifier would do something along the lines of:
         >>> return ('rebate', Decimal(-9))
+
+        Third tuple element can be used to store additional data:
+        >>> return ('taxes', Decimal(9), 'tax field')
 
         More examples can be found in shop.cart.modifiers.*
         """
@@ -135,6 +141,9 @@ class BaseCartModifier(object):
         ('Label', Decimal('amount')) from an override. This is expected to be
         a tuple. The decimal should be the amount that should get added to the
         current subtotal. It can be a negative value.
+
+        Optional third tuple element can be used to store extra text data (ie:
+        name of cart modifier, group of field, etc.).
 
         In case your modifier is based on the current price (for example in
         order to compute value added tax for the whole current price) your

@@ -4,10 +4,16 @@ from decimal import Decimal
 from django.contrib.auth.models import User
 from django.test.testcases import TestCase
 from shop.cart.modifiers_pool import cart_modifiers_pool
+from shop.cart.cart_modifiers_base import BaseCartModifier
 from shop.models.cartmodel import Cart, CartItem
 from shop.addressmodel.models import Address, Country
-from shop.models.ordermodel import Order, OrderItem, ExtraOrderPriceField, \
-    OrderPayment
+from shop.models.ordermodel import (
+        Order,
+        OrderItem,
+        ExtraOrderPriceField,
+        ExtraOrderItemPriceField,
+        OrderPayment,
+        )
 from shop.models.productmodel import Product
 from shop.tests.util import Mock
 from shop.tests.utils.context_managers import SettingsOverride
@@ -20,6 +26,15 @@ try:
     from project.models import BaseProduct, ProductVariation
 except:
     SKIP_BASEPRODUCT_TEST = True
+
+
+class CartModifierWithExtraData(BaseCartModifier):
+
+    def get_extra_cart_price_field(self, cart):
+        return ('Taxes total', Decimal('10'), 'extra data')
+
+    def get_extra_cart_item_price_field(self, cart_item):
+        return ('Taxes', Decimal('1'), 'extra item data')
 
 
 class OrderUtilTestCase(TestCase):
@@ -253,6 +268,28 @@ class OrderConversionTestCase(TestCase):
             self.assertEqual(o.order_total, self.cart.total_price)
             self.assertNotEqual(o.order_subtotal, Decimal("0"))
             self.assertNotEqual(o.order_total, Decimal("0"))
+
+    def test_create_order_with_extra_data_in_cart_modifier(self):
+        MODIFIERS = ['shop.tests.order.CartModifierWithExtraData']
+
+        with SettingsOverride(SHOP_CART_MODIFIERS=MODIFIERS):
+
+            self.cart.add_product(self.product)
+            self.cart.update()
+            self.cart.save()
+
+            o = Order.objects.create_from_cart(self.cart,)
+
+            e_order_fields = ExtraOrderPriceField.objects.filter(order=o,
+                    data='extra data')
+            self.assertEqual(len(e_order_fields), 1)
+
+            e_order_fields = ExtraOrderItemPriceField.objects.filter(
+                    order_item__order=o,
+                    data='extra item data'
+                    )
+            self.assertEqual(len(e_order_fields), 1)
+
 
     def test_order_addresses_match_user_preferences(self):
         self.cart.add_product(self.product)

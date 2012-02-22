@@ -62,6 +62,7 @@ class ExtraOrderPriceField(models.Model):
     # Does this represent shipping costs?
     is_shipping = models.BooleanField(default=False, editable=False,
             verbose_name=_('Is shipping'))
+    data = models.TextField(_('Data'), blank=True)
 
     class Meta(object):
         app_label = 'shop'
@@ -77,6 +78,7 @@ class ExtraOrderItemPriceField(models.Model):
     order_item = models.ForeignKey(OrderItem, verbose_name=_('Order item'))
     label = models.CharField(max_length=255, verbose_name=_('Label'))
     value = CurrencyField(verbose_name=_('Amount'))
+    data = models.TextField(_('Data'), blank=True)
 
     class Meta(object):
         app_label = 'shop'
