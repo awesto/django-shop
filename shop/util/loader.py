@@ -58,18 +58,18 @@ def load_class(class_path, setting_name=None):
     return clazz
 
 
-def get_model_string(model_name):
+def get_model_string(model_name, namespace='shop'):
     """
     Returns the model string notation Django uses for lazily loaded ForeignKeys
     (eg 'auth.User') to prevent circular imports.
-
+    Use namespace to use this function outside the shop's app.
     This is needed to allow our crazy custom model usage.
     """
     setting_name = 'SHOP_%s_MODEL' % model_name.upper().replace('_', '')
     class_path = getattr(settings, setting_name, None)
         
     if not class_path:
-        return 'shop.%s' % model_name
+        return '%s.%s' % (namespace, model_name)
     elif isinstance(class_path, basestring):
         parts = class_path.split('.')
         try:
