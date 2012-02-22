@@ -13,9 +13,9 @@ urlpatterns = patterns('',
         name='cart_update'),
 
     # CartItems
-    url('^item/(?P<id>[0-9A-Za-z-_.//]+)$', CartItemDetail.as_view(),
+    url('^item/(?P<id>[0-9]+)$', CartItemDetail.as_view(),
         name='cart_item'),
-    url('^item/(?P<id>[0-9A-Za-z-_.//]+)/delete$',
+    url('^item/(?P<id>[0-9]+)/delete$',
         CartItemDetail.as_view(action='delete'),
         name='cart_item_delete'),
 )
