@@ -21,6 +21,7 @@ CONTRIBUTORS
 * Martin Ogden
 * Mike Yumatov
 * Pavel Zhukov
+* Per Rosengren
 * Raúl Cumplido
 * Rolo Mawlabaux
 

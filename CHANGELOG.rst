@@ -1,3 +1,8 @@
+Version 0.0.14
+==============
+
+* Order status is now directly modified in the shop API
+
 Version 0.0.13
 ==============
 
