@@ -24,6 +24,7 @@ CONTRIBUTORS
 * Per Rosengren
 * Raúl Cumplido
 * Rolo Mawlabaux
+* Thomas Woolford
 
 TRANSLATORS
 ===========

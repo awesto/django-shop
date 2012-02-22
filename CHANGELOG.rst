@@ -2,6 +2,7 @@ Version 0.0.14
 ==============
 
 * Order status is now directly modified in the shop API
+* CartItem URLs were too greedy, they now match less.
 
 Version 0.0.13
 ==============
