@@ -2,6 +2,7 @@
 from shop.shop_api import ShopAPI
 from shop.order_signals import payment_selection
 from shop.models.ordermodel import ExtraOrderPriceField
+from shop.models.ordermodel import Order
 from django.shortcuts import redirect
 
 
@@ -58,6 +59,8 @@ class ShippingAPI(ShopAPI):
         is finished i.e. shipping costs are added to the order.
         This will redirect to the "select a payment method" page.
         """
+        order.status = Order.CONFIRMED
+        order.save()
         # Emit the signal to say we're now selecting payment
         payment_selection.send(self, order=order)
         return redirect('checkout_payment')

@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 
 """
-This file defines the interafces one should implement when either creating a
+This file defines the interfaces one should implement when either creating a
 new payment module or willing to use modules with another shop system.
 """
 from decimal import Decimal
 from shop.models.ordermodel import OrderPayment
+from shop.models.ordermodel import Order
+from shop.models.cartmodel import Cart
 from shop.shop_api import ShopAPI
+from shop.order_signals import completed
 from django.core.urlresolvers import reverse
-
 
 class PaymentAPI(ShopAPI):
     """
@@ -41,7 +43,18 @@ class PaymentAPI(ShopAPI):
             amount=Decimal(amount),
             transaction_id=transaction_id,
             payment_method=payment_method)
-        # Save is not used in the particular case.
+        
+        if save and self.is_order_payed(order):
+            # Set the order status:
+            order.status = Order.COMPLETED
+            order.save()
+            completed.send(sender=self, order=order)
+    
+            # Empty the customers basket, to reflect that the purchase was
+            # completed
+            cart_object = Cart.objects.get(user=order.user)
+            cart_object.empty()
+
 
     #==========================================================================
     # URLS
@@ -52,6 +65,11 @@ class PaymentAPI(ShopAPI):
         A helper for backends, so that they can call this when their job
         is finished i.e. The payment has been processed from a user perspective
         This will redirect to the "Thanks for your order" page.
+        
+        To confirm the payment, call confirm_payment before this function. 
+        For example, for PayPal IPN, the payment is confirmed upon receipt 
+        of an Instant Payment Notification, and later this function is called 
+        when the user is directed back from PayPal.
         """
         return reverse('thank_you_for_your_order')
 
