@@ -19,3 +19,15 @@ class ProductDetailView(ShopDetailView):
         if not self.generic_template in ret:
             ret.append(self.generic_template)
         return ret
+
+    def post(self, *args, **kwargs):
+        """
+        Dummy function to enable seamless view mixins. 
+        """
+        pass
+
+    def get_variation(self):
+        """
+        Dummy function to enable seamless view mixins. 
+        """
+        return {}

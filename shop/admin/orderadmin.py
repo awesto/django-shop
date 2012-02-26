@@ -25,6 +25,7 @@ class ExtraOrderPriceFieldInline(admin.TabularInline):
 
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
+    fields = ('product_name', 'unit_price', 'quantity', 'line_subtotal', 'line_total')
     extra = 0
 
 #TODO: add ExtraOrderItemPriceField inline, ideas?
