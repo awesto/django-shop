@@ -1,3 +1,10 @@
+DEV
+===
+* Added a mixin class which helps to localize model fields of type DecimalField
+  in Django admin view.
+* Added this newly created mixin class to OrderAdmin, so that all price fields
+  are handled with the correct localization.
+
 Version 0.0.14
 ==============
 
