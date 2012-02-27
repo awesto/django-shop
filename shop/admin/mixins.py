@@ -5,8 +5,8 @@ from django import forms
 class LocalizeDecimalFieldsMixin(object):
     '''
     To be used as a mixin for classes derived from admin.ModelAdmin,
-    admin.TabularInline, etc. which localizes the input fields for models of
-    with type DecimalField in the admin interface.
+    admin.TabularInline, etc. which localizes the input fields for models
+    of type DecimalField in the admin interface.
     '''
     class LocalizeDecimalFieldsForm(forms.ModelForm):
         def __new__(cls, *args, **kwargs):
