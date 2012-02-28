@@ -1,3 +1,10 @@
+DEV
+===
+
+* For each product added to the Cart and Order, optional product variations can
+  be stored together in the database. Variations are stored as serialized 
+  dictionaries.
+
 Version 0.0.13
 ==============
 

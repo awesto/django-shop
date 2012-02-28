@@ -11,10 +11,7 @@ from shop.models.ordermodel import Order, OrderItem, ExtraOrderPriceField, \
 from shop.models.productmodel import Product
 from shop.tests.util import Mock
 from shop.tests.utils.context_managers import SettingsOverride
-from shop.util.order import get_order_from_request, add_order_to_request, \
-    copy_order_item_to_cart
-from shop.util.cart import get_or_create_cart
-
+from shop.util.order import get_order_from_request, add_order_to_request
 
 # This try except is there to let people run the tests from any project
 # Not only from the provided "test" project.
@@ -105,23 +102,6 @@ class OrderUtilTestCase(TestCase):
         self.assertEqual(ret.billing_address_text,
                         self.order.billing_address_text)
 
-    def test_copy_item_from_order_to_cart(self):
-        product = Product()
-        product.name = "TestProductName"
-        product.slug = "test-product"
-        product.save()
-        setattr(self.request, 'user', self.user)
-        cart = get_or_create_cart(self.request)
-        cart.save()
-        cart.add_product(product)
-        o = Order.objects.create_from_cart(cart)
-        cart.empty()
-        oi = OrderItem.objects.filter(order=o)[0]
-        copy_order_item_to_cart(self.request, o, oi.id)
-        cart = get_or_create_cart(self.request)
-        ci = CartItem.objects.filter(cart=cart)[0]
-        self.assertEqual(oi.product_name, ci.product.name)
-        
 
 class OrderTestCase(TestCase):
     def setUp(self):
@@ -304,6 +284,7 @@ class OrderConversionTestCase(TestCase):
         o = Order.objects.create_from_cart(self.cart)
         oi = OrderItem.objects.filter(order=o)[0]
         self.assertEqual(oi.unit_price, baseproduct.unit_price)
+
 
 class OrderPaymentTestCase(TestCase):
 
