@@ -1,5 +1,5 @@
-DEV
-===
+localize-decimal-fields
+=======================
 
 * Added a mixin class which helps to localize model fields of type DecimalField
   in Django admin view.
