@@ -1,7 +1,6 @@
 #-*- coding: utf-8 -*-
 from django.contrib.auth.models import AnonymousUser
-from shop.models.ordermodel import Order, OrderItem
-from shop.util.cart import get_or_create_cart
+from shop.models.ordermodel import Order
 
 
 def get_order_from_request(request):
@@ -44,17 +43,3 @@ def add_order_to_request(request, order):
         # Add the order_id to the session There has to be a session. Otherwise
         # it's fine to get an AttributeError
         request.session['order_id'] = order.id
-
-def copy_order_item_to_cart(request, order, item_id):
-    """
-    Copy the item with the given id back to the cart. The item must be part
-    of the given order, otherwise it is not copied. This is to assure the privacy
-    of orders not belonging to the calling user.
-    """
-    item = OrderItem.objects.filter(order=order, id=item_id)
-    if item != None:
-        item = item[0]
-        cart = get_or_create_cart(request)
-        cart.save()
-        cart.add_product(item.product, item.quantity, item.variation)
-        cart.update()
