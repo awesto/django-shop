@@ -1,3 +1,9 @@
+enhance-get_model_string
+========================
+
+* shop.util.loader.get_model_string now can be used to load models outside
+  the shop's namespace.
+
 Version 0.0.13
 ==============
 
