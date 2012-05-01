@@ -1,14 +1,10 @@
-localize-decimal-fields
-=======================
+Version NEXT
+==============
 
 * Added a mixin class which helps to localize model fields of type DecimalField
   in Django admin view.
 * Added this newly created mixin class to OrderAdmin, so that all price fields
   are handled with the correct localization.
-
-Version 0.0.14
-==============
-
 * Order status is now directly modified in the shop API
 * CartItem URLs were too greedy, they now match less.
 
