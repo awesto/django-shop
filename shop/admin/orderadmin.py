@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.contrib.admin.options import ModelAdmin
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
-
+from shop.admin.mixins import LocalizeDecimalFieldsMixin
 from shop.models.ordermodel import (Order, OrderItem,
         OrderExtraInfo, ExtraOrderPriceField, OrderPayment)
 
@@ -13,24 +13,24 @@ class OrderExtraInfoInline(admin.TabularInline):
     extra = 0
 
 
-class OrderPaymentInline(admin.TabularInline):
+class OrderPaymentInline(LocalizeDecimalFieldsMixin, admin.TabularInline):
     model = OrderPayment
     extra = 0
 
 
-class ExtraOrderPriceFieldInline(admin.TabularInline):
+class ExtraOrderPriceFieldInline(LocalizeDecimalFieldsMixin, admin.TabularInline):
     model = ExtraOrderPriceField
     extra = 0
 
 
-class OrderItemInline(admin.TabularInline):
+class OrderItemInline(LocalizeDecimalFieldsMixin, admin.TabularInline):
     model = OrderItem
     extra = 0
 
 #TODO: add ExtraOrderItemPriceField inline, ideas?
 
 
-class OrderAdmin(ModelAdmin):
+class OrderAdmin(LocalizeDecimalFieldsMixin, ModelAdmin):
     list_display = ('id', 'user', 'status', 'order_total', 'created')
     list_filter = ('status', 'user')
     search_fields = ('id', 'shipping_address_text', 'user__username')
