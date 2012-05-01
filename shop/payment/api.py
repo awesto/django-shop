@@ -31,7 +31,7 @@ class PaymentAPI(ShopAPI):
     def confirm_payment(self, order, amount, transaction_id, payment_method,
                         save=True):
         """
-        Marks the specified amount for the given order as payed.
+        Marks the specified amount for the given order as paid.
         This allows to hook in more complex behaviors (like saving a history
         of payments in a Payment model)
         The optional save argument allows backends to explicitly not save the
@@ -39,12 +39,12 @@ class PaymentAPI(ShopAPI):
         """
         OrderPayment.objects.create(
             order=order,
-            # How much was payed with this particular transfer
+            # How much was paid with this particular transfer
             amount=Decimal(amount),
             transaction_id=transaction_id,
             payment_method=payment_method)
         
-        if save and self.is_order_payed(order):
+        if save and self.is_order_paid(order):
             # Set the order status:
             order.status = Order.COMPLETED
             order.save()

@@ -90,7 +90,7 @@ class OrderPayment(models.Model):
     more complex payment types should they need to store more informtion
     """
     order = models.ForeignKey(Order, verbose_name=_('Order'))
-    # How much was payed with this particular transfer
+    # How much was paid with this particular transfer
     amount = CurrencyField(verbose_name=_('Amount'))
     transaction_id = models.CharField(max_length=255,
             verbose_name=_('Transaction ID'),
