@@ -10,6 +10,7 @@ CONTRIBUTORS
 * Adrien Lemaire
 * airtonix
 * Audrey Roy
+* Ben Lopatin
 * Benjamin Wohlwend
 * Bojan Mihelac
 * fivethreeo

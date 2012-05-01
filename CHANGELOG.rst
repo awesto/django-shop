@@ -1,6 +1,9 @@
 Version NEXT
 ==============
 
+* Changed spelling mistakes in methods from `payed` to `paid` on the Order 
+  model and on the API. This is potentially not backwards compatible in some 
+  border cases.
 * Added a mixin class which helps to localize model fields of type DecimalField
   in Django admin view.
 * Added this newly created mixin class to OrderAdmin, so that all price fields
