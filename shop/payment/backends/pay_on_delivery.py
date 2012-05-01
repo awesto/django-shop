@@ -24,7 +24,7 @@ class PayOnDeliveryBackend(object):
         # Get the order object
         the_order = self.shop.get_order(request)
         # Let's mark this as being complete for the full sum in our database
-        # Set it as payed (it needs to be payed to the delivery guy, we assume
+        # Set it as paid (it needs to be paid to the delivery guy, we assume
         # he does his job properly)
         self.shop.confirm_payment(
             the_order, self.shop.get_order_total(the_order), "None",

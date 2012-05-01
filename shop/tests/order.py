@@ -120,8 +120,11 @@ class OrderTestCase(TestCase):
         ret = self.order.is_completed()
         self.assertNotEqual(ret, Order.COMPLETED)
 
-    def test_is_payed_works(self):
+    def test_is_paid_works(self):
+        # Ensure deprecated method still works
         ret = self.order.is_payed()
+        self.assertEqual(ret, False)
+        ret = self.order.is_paid()
         self.assertEqual(ret, False)
 
 
@@ -307,6 +310,7 @@ class OrderPaymentTestCase(TestCase):
 
     def test_payment_sum_works(self):
         self.assertEqual(self.order.amount_payed, Decimal('-1'))
+        self.assertEqual(self.order.amount_paid, Decimal('-1'))
 
     def test_payment_sum_works_with_partial_payments(self):
         OrderPayment.objects.create(
@@ -316,6 +320,8 @@ class OrderPaymentTestCase(TestCase):
                 payment_method='test method')
         self.assertEqual(self.order.amount_payed, 2)
         self.assertEqual(self.order.is_payed(), False)
+        self.assertEqual(self.order.amount_paid, 2)
+        self.assertEqual(self.order.is_paid(), False)
 
     def test_payment_sum_works_with_full_payments(self):
         OrderPayment.objects.create(
@@ -325,3 +331,5 @@ class OrderPaymentTestCase(TestCase):
                 payment_method='test method')
         self.assertEqual(self.order.amount_payed, 10)
         self.assertEqual(self.order.is_payed(), True)
+        self.assertEqual(self.order.amount_paid, 10)
+        self.assertEqual(self.order.is_paid(), True)
