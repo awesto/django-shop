@@ -56,6 +56,12 @@ class BaseProduct(PolymorphicModel):
         """
         return self.name
 
+    def get_product_reference(self):
+        """
+        Return product reference of this Product (provided for extensibility).
+        """
+        return unicode(self.id)
+
 
 #==============================================================================
 # Carts
