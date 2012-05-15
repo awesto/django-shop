@@ -108,8 +108,7 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
         if not form:
             # Create a dynamic Form class for the model specified as the
             # address model
-            form_class = model_forms.modelform_factory(
-                AddressModel, exclude=['user_shipping', 'user_billing'])
+            form_class = self.get_billing_form_class()
 
             # Try to get a shipping address instance from the request (user or
             # session))
