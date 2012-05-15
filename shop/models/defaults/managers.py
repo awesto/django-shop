@@ -112,7 +112,7 @@ class OrderManager(models.Manager):
             item.update(cart)
             order_item = OrderItem()
             order_item.order = order
-            order_item.product_reference = item.product.id
+            order_item.product_reference = item.product.get_product_reference()
             order_item.product_name = item.product.get_name()
             order_item.product = item.product
             order_item.unit_price = item.product.get_price()
