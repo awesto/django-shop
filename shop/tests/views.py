@@ -196,6 +196,11 @@ class CartViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertCartHasItems(0)
 
+    def test_no_creating_empty_cart(self):
+        response = self.client.get(reverse('cart'))
+        cart = response.context['cart']
+        self.assertIsNone(cart.pk)
+
 
 class OrderListViewTestCase(TestCase):
 
