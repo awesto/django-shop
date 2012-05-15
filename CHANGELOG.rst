@@ -1,6 +1,7 @@
 Version NEXT
 ==============
 
+* Cart object is not saved to database if it is empty (#147)
 * Changed spelling mistakes in methods from `payed` to `paid` on the Order 
   model and on the API. This is potentially not backwards compatible in some 
   border cases.
