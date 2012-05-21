@@ -7,7 +7,6 @@ new payment module or willing to use modules with another shop system.
 from decimal import Decimal
 from shop.models.ordermodel import OrderPayment
 from shop.models.ordermodel import Order
-from shop.models.cartmodel import Cart
 from shop.shop_api import ShopAPI
 from shop.order_signals import completed
 from django.core.urlresolvers import reverse
@@ -49,11 +48,6 @@ class PaymentAPI(ShopAPI):
             order.status = Order.COMPLETED
             order.save()
             completed.send(sender=self, order=order)
-    
-            # Empty the customers basket, to reflect that the purchase was
-            # completed
-            cart_object = Cart.objects.get(user=order.user)
-            cart_object.empty()
 
 
     #==========================================================================
