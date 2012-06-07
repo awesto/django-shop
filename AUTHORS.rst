@@ -13,6 +13,7 @@ CONTRIBUTORS
 * Ben Lopatin
 * Benjamin Wohlwend
 * Bojan Mihelac
+* Chris Morgan
 * fivethreeo
 * Issac Kelly
 * Jacob Rief
@@ -26,7 +27,6 @@ CONTRIBUTORS
 * Raúl Cumplido
 * Rolo Mawlabaux
 * Thomas Woolford
-* Chris Morgan
 
 TRANSLATORS
 ===========
