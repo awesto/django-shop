@@ -9,10 +9,10 @@ from django.shortcuts import redirect
 class ShippingAPI(ShopAPI):
     """
     This object's purpose is to expose an API to the shop system.
-    Ideally, shops (Django shop or others) should implement this API, so that
+    Ideally, shops (django SHOP or others) should implement this API, so that
     shipping plugins are interchangeable between systems.
 
-    This implementation is the interface reference for Django Shop
+    This implementation is the interface reference for django SHOP
 
     Methods defined in BaseBackendAPI:
     getOrder(request): Return the Order object for the current shopper

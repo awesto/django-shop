@@ -1,10 +1,10 @@
 ===========
-Django-shop
+django SHOP
 ===========
 
-This repository hosts the Django-Shop code and documentation.
+This repository hosts the django SHOP code and documentation.
 
-Django Shop aims to be the easy, fun and fast shop counterpart to django CMS.
+Django SHOP aims to be the easy, fun and fast shop counterpart to django CMS.
 Specifically, we aim at providing a clean, modular and pythonic/djangonic
 implementation of a shop framework,
 that a moderately talented Django programmer should be able to pick up and run
@@ -28,7 +28,7 @@ How to help:
 Todo:
 =====
 
-* Somebody should kickstart an example shop application using django Shop, to
+* Somebody should kickstart an example shop application using django SHOP, to
   use as an example.
 * If you feel like adding templates, please *refrain* from adding fancy styling
   to the core set of templates.

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Django Shop documentation build configuration file, created by
+# django SHOP documentation build configuration file, created by
 # sphinx-quickstart on Mon Dec  6 14:42:25 2010.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -40,7 +40,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Django Shop'
+project = u'django SHOP'
 copyright = u'2010, Chris Glass'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -182,7 +182,7 @@ htmlhelp_basename = 'DjangoShopdoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index_', 'DjangoShop.tex', u'Django Shop Documentation',
+  ('index_', 'DjangoShop.tex', u'Django SHOP Documentation',
    u'Chris Glass', 'manual'),
 ]
 
@@ -215,6 +215,6 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index_', 'djangoshop', u'Django Shop Documentation',
+    ('index_', 'djangoshop', u'Django SHOP Documentation',
      [u'Chris Glass'], 1)
 ]
