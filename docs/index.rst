@@ -1,6 +1,6 @@
 
 ========================================
-Welcome to Django SHOP's documentation!
+Welcome to django SHOP's documentation!
 ========================================
 
 User Manual
@@ -59,3 +59,14 @@ Reference sheets and lists regarding django SHOP
 
     plugins
     settings
+
+The name
+========
+
+The official name of this project is **django SHOP**.
+
+**Django SHOP** should be capitalised at the start of sentences and in
+title-case headings.
+
+When referring to the package, repositories and any other things in which
+spaces are not permitted, use **django-shop**.

@@ -15,10 +15,10 @@ from django.core.urlresolvers import reverse
 class PaymentAPI(ShopAPI):
     """
     This object's purpose is to expose an API to the shop system.
-    Ideally, shops (Django shop or others) should implement this API, so that
+    Ideally, shops (django SHOP or others) should implement this API, so that
     payment plugins are interchangeable between systems.
 
-    This implementation is the interface reference for Django Shop
+    This implementation is the interface reference for django SHOP
 
     Don't forget that since plenty of methods are common to both ShopPaymentAPI
     and ShopShippingAPI(), they are defined in the ShopAPI base class!
