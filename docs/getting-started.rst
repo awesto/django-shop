@@ -107,7 +107,7 @@ django-cbv if you're using 1.3.
 
     x-www-browser localhost:8000/shop
 
-You now have a running but very empty django-shop installation.
+You now have a running but very empty django SHOP installation.
 
 Adding a custom product
 ========================

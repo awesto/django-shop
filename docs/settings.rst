@@ -2,7 +2,7 @@
 General Settings
 =================
 
-This is a small list of the settings defined in Django SHOP.
+This is a small list of the settings defined in django SHOP.
 
 SHOP_PAYMENT_BACKENDS
 ======================

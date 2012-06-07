@@ -2,7 +2,7 @@
 Templatetags
 ============
 
-django-shop ships various templatetags to make quick creation of HTML templates
+Django SHOP ships various templatetags to make quick creation of HTML templates
 easier. In order to use these templatetags you need to load them in your
 template
 

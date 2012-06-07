@@ -1,10 +1,10 @@
 ==================================
-How to extend django-SHOP models
+How to extend django SHOP models
 ==================================
 
 (Instead of the default ones)
 
-Some people might feel like the django shop models are not suitable for their
+Some people might feel like the django SHOP models are not suitable for their
 project, or want to extend functionality for their specific needs.
 
 This is a rather advanced use case, and most developers should hopefully be happy 
@@ -14,12 +14,12 @@ All models you can override have a corresponding setting, which should contain
 the class path to the model you wish to use in its stead.
 
 .. note:: While your models will be used, they will still be "called" by their
-  default django-SHOP name.
+  default django SHOP name.
   
 Example
 ========
 
-Extending the Product model in django-SHOP works like this::
+Extending the Product model in django SHOP works like this::
     
     # In myproject.models
     from shop.models import Product
