@@ -26,6 +26,7 @@ CONTRIBUTORS
 * Raúl Cumplido
 * Rolo Mawlabaux
 * Thomas Woolford
+* Chris Morgan
 
 TRANSLATORS
 ===========
