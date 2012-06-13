@@ -56,7 +56,7 @@ Arguments sent with this signal:
 .. data:: shop.order_signals.confirmed
     :module:
 
-Emitted when the user finished placing his order (regardless of the payment
+Emitted when the user has finished placing his order (regardless of the payment
 success or failure).
 
 Arguments sent with this signal:
@@ -76,7 +76,7 @@ Arguments sent with this signal:
 .. data:: shop.order_signals.completed
     :module:
 
-Emitted when the payment was received for the :class:`~shop.models.Order`. This
+Emitted when payment is received for the :class:`~shop.models.Order`. This
 signal is emitted by the :class:`shop.views.checkout.ThankYouView`.
 
 Arguments sent with this signal:
@@ -93,7 +93,7 @@ Arguments sent with this signal:
 .. data:: shop.order_signals.cancelled
     :module:
 
-Emitted if the payment was refused or other fatal problem.
+Emitted if the payment was refused or another fatal problem occurred.
 
 Arguments sent with this signal:
 

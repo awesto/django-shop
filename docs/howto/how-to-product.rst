@@ -66,8 +66,8 @@ That's all there is to it :)
 Using your newly created Product
 =================================
 
-Your product should behave like a normal Django model in all circumstances. You 
-should register it to admin (and create an admin class for it) like a normal 
+Your product should behave like a normal Django model in all circumstances. You
+should register it in admin (and create an admin class for it) like a normal
 model.
 
 Code wise, the following options are possible to retrieve your newly
@@ -76,21 +76,21 @@ created model::
     # This gets your model's instance the normal way, you get both your model's
     # fields and the Product fields
     o = MyProduct.objects.get(pk=...)
-    
-    # This is also possible - You retrieve a MyProduct instance, using the 
+
+    # This is also possible - You retrieve a MyProduct instance, using the
     # Product manager
     o = Product.objects.get(pk=...)
-    
+
 .. note:: This is possible thanks to the terrific django_polymorphic dependency
-          
+
 Product variations
 ====================
 
 By design, django SHOP does not include an out of the box solution to handling
-product variations (colors, sizes...), in order to let implementors create their
-own unrestricted. 
+product variations (colors, sizes...) in order to let implementors create their
+own unrestricted solutions.
 
-If you want such a pre-made solution for simple cases, we suggest you take a 
+If you want such a pre-made solution for simple cases, we suggest you take a
 look at the `shop_simplevariations`_ "add-on" application.
 
 .. _shop_simplevariations: https://github.com/chrisglass/django-shop-simplevariations

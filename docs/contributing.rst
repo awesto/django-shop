@@ -20,7 +20,7 @@ The following packages are needed for the test suite to run:
 * `django_polymorphic <https://github.com/chrisglass/django_polymorphic>`_
 * `django-classy-tags <https://github.com/ojii/django-classy-tags>`_
 
-Running the following command inside your virtualenv shouldget you started::
+Running the following command inside your virtualenv should get you started::
 
     pip install django django_polymorphic django-classy-tags
 
@@ -30,8 +30,8 @@ Running the tests
 Thankfully, we provided a small yet handy script to do it for you! Simply
 invoke ``runtests.sh`` on a unix platform and you should be all set.
 
-The test suite should output normally (only "."'s), an we try to keep the suite fast 
-(subsecond), so that people can tests very often.
+The test suite should output normally (only "."'s), and we try to keep the suite fast
+(subsecond), so that people can test very often.
 
 Options
 --------
@@ -47,7 +47,7 @@ Community
 ==========
 
 Most of the discussion around django SHOP takes place on IRC (Internet Relay
-Chat), on the freenode servers in the #django-shop channel
+Chat), on the freenode servers in the #django-shop channel.
 
 We also have a mailing list and a google group::
 
@@ -56,7 +56,7 @@ We also have a mailing list and a google group::
 Code guidelines
 ================
 
-* As most projects, we try to follow :pep:`8` as closely as possible
+* Like most projects, we try to follow :pep:`8` as closely as possible
 * Most pull requests will be rejected without proper unit testing
 * Generally we like to discuss new features before they are merged in, but this
   is a somewhat flexible rule :)
@@ -66,7 +66,7 @@ Sending a pull request
 ======================
 
 We use github for development, and so all code that you would like to see
-included into should follow the following simple workflow:
+included should follow the following simple workflow:
 
 * Clone django-shop
 * Checkout your fork

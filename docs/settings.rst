@@ -16,14 +16,14 @@ SHOP_SHIPPING_BACKENDS
 =======================
 
 In a similar fashion, this must be a list of shipping backends. This list is used
-to display the end customer what shipping options are available to him/her during 
-the checkout process. 
+to display to the end customer what shipping options are available to him/her during
+the checkout process.
 
 SHOP_CART_MODIFIERS
 ====================
 
-Theses modifiers function like the django middlewares. The cart will call each of
-theses classes, in order, every time it is displayed. They are passed every item in
+These modifiers function like the django middlewares. The cart will call each of
+these classes, in order, every time it is displayed. They are passed every item in
 the cart, as well as the cart itself.
 
 SHOP_FORCE_LOGIN
@@ -53,7 +53,7 @@ Extensibility Settings
 =======================
 
 Theses settings allow developers to extend the shop's functionality by replacing
-models by their own models. More information about how to use theses settings 
+models with their own models. More information on how to use these settings
 can be found in the :doc:`/howto/how-to-extend-django-shop-models` section.
 
 SHOP_CART_MODEL
