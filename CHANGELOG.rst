@@ -1,6 +1,7 @@
 Version NEXT
 ==============
 
+* Added a order_required decorator to fix bug #84
 * Added get_product_reference method to Product (for extensibility)
 * Cart object is not saved to database if it is empty (#147)
 * Changed spelling mistakes in methods from `payed` to `paid` on the Order 
