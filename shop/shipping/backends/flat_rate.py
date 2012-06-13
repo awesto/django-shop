@@ -6,7 +6,7 @@ from django.conf.urls.defaults import patterns, url
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from shop.util.decorators import on_method, shop_login_required
+from shop.util.decorators import on_method, shop_login_required, order_required
 
 
 class FlatRateShipping(object):
@@ -23,6 +23,7 @@ class FlatRateShipping(object):
         self.rate = getattr(settings, 'SHOP_SHIPPING_FLAT_RATE', '10')
 
     @on_method(shop_login_required)
+    @on_method(order_required)
     def view_process_order(self, request):
         """
         A simple (not class-based) view to process an order.
