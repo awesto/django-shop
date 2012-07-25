@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls.defaults import patterns, url
 from django.http import HttpResponseRedirect
+from django.utils.translation import ugettext_lazy as _
 from shop.util.decorators import on_method, shop_login_required
 
 
 class PayOnDeliveryBackend(object):
 
     backend_name = "Pay On Delivery"
+    verbose_backend_name = _("Pay On Delivery")
     url_namespace = "pay-on-delivery"
 
     def __init__(self, shop):
