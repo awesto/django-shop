@@ -2,6 +2,7 @@
 """Forms for the django-shop app."""
 from django import forms
 from django.forms.models import modelformset_factory
+from django.utils.translation import ugettext_lazy as _
 
 from shop.backends_pool import backends_pool
 from shop.models.cartmodel import CartItem
@@ -23,9 +24,8 @@ class BillingShippingForm(forms.Form):
     defined in settings.SHOP_SHIPPING_BACKENDS and
     settings.SHOP_PAYMENT_BACKENDS)
     """
-    shipping_method = forms.ChoiceField(
-        choices=get_shipping_backends_choices())
-    payment_method = forms.ChoiceField(choices=get_billing_backends_choices())
+    shipping_method = forms.ChoiceField(choices=get_shipping_backends_choices(), label=_('Shipping method'))
+    payment_method = forms.ChoiceField(choices=get_billing_backends_choices(), label=_('Payment method'))
 
 
 class CartItemModelForm(forms.ModelForm):
