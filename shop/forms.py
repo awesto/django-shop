@@ -9,13 +9,12 @@ from shop.models.cartmodel import CartItem
 
 def get_shipping_backends_choices():
     shipping_backends = backends_pool.get_shipping_backends_list()
-    return tuple(
-        [(x.url_namespace, x.backend_name) for x in shipping_backends])
+    return tuple([(x.url_namespace, getattr(x, 'backend_verbose_name', x.backend_name)) for x in shipping_backends])
 
 
 def get_billing_backends_choices():
     billing_backends = backends_pool.get_payment_backends_list()
-    return tuple([(x.url_namespace, x.backend_name) for x in billing_backends])
+    return tuple([(x.url_namespace, getattr(x, 'backend_verbose_name', x.backend_name)) for x in billing_backends])
 
 
 class BillingShippingForm(forms.Form):
