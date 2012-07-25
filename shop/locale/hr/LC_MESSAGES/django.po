@@ -7,15 +7,25 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-25 16:28+0200\n"
+"POT-Creation-Date: 2012-07-25 16:51+0200\n"
 "PO-Revision-Date: 2011-02-15 02:47\n"
 "Last-Translator:   <bmihelac@mihelac.org>\n"
 "Language-Team: Bojan Mihelac <bmihelac@mihelac.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
-"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2\n"
+
+#: forms.py:27
+#, fuzzy
+msgid "Shipping method"
+msgstr "Dostava"
+
+#: forms.py:28 models/ordermodel.py:99
+msgid "Payment method"
+msgstr "Način plaćanja"
 
 #: addressmodel/models.py:12
 #, python-format
@@ -127,10 +137,6 @@ msgstr "ID transakcije"
 #: models/ordermodel.py:97
 msgid "The transaction processor's reference"
 msgstr "Referenca transakcije"
-
-#: models/ordermodel.py:99
-msgid "Payment method"
-msgstr "Način plaćanja"
 
 #: models/ordermodel.py:100
 msgid "The payment backend use to process the purchase"
@@ -280,6 +286,14 @@ msgstr "Stavka ukupno"
 #: models/defaults/bases.py:445 models/defaults/orderitem.py:12
 msgid "Order items"
 msgstr "Stavke narudžbe"
+
+#: payment/backends/pay_on_delivery.py:11
+msgid "Pay On Delivery"
+msgstr ""
+
+#: shipping/backends/flat_rate.py:20
+msgid "Flat rate"
+msgstr ""
 
 #: templates/shop/cart.html:5
 msgid "Your shopping cart"
