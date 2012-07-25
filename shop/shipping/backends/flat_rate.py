@@ -5,6 +5,7 @@ from django.conf import settings
 from django.conf.urls.defaults import patterns, url
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.utils.translation import ugettext_lazy as _
 
 from shop.util.decorators import on_method, shop_login_required, order_required
 
@@ -16,6 +17,7 @@ class FlatRateShipping(object):
     """
     url_namespace = 'flat'
     backend_name = 'Flat rate'
+    verbose_backend_name = _('Flat rate')
 
     def __init__(self, shop):
         self.shop = shop  # This is the shop reference, it allows this backend
