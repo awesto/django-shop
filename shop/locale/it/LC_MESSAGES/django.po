@@ -1,21 +1,30 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 #   <matteo.larghi@divio.ch>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: django-shop\n"
-"Report-Msgid-Bugs-To: http://github.com/divio/django-shop/issues\n"
-"POT-Creation-Date: 2011-07-13 11:13-0500\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-07-25 16:51+0200\n"
 "PO-Revision-Date: 2011-07-14 09:56+0000\n"
 "Last-Translator: mplus <matteo.larghi@divio.ch>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: forms.py:27
+#, fuzzy
+msgid "Shipping method"
+msgstr "Spedizione"
+
+#: forms.py:28 models/ordermodel.py:99
+msgid "Payment method"
+msgstr "Metodo di pagamento"
 
 #: addressmodel/models.py:12
 #, python-format
@@ -29,69 +38,69 @@ msgid ""
 "Country: %(country)s\n"
 msgstr ""
 
-#: addressmodel/models.py:31 addressmodel/models.py:47
+#: addressmodel/models.py:32 addressmodel/models.py:48
 msgid "Country"
 msgstr "Paese"
 
-#: addressmodel/models.py:32
+#: addressmodel/models.py:33
 msgid "Countries"
 msgstr "Paesi"
 
-#: addressmodel/models.py:41 models/defaults/bases.py:27
+#: addressmodel/models.py:42 models/defaults/bases.py:26
 msgid "Name"
 msgstr "Nome"
 
-#: addressmodel/models.py:42 addressmodel/models.py:51
+#: addressmodel/models.py:43 addressmodel/models.py:52
 msgid "Address"
 msgstr "Indirizzo"
 
-#: addressmodel/models.py:43
+#: addressmodel/models.py:44
 msgid "Address2"
 msgstr "Indirizzo2"
 
-#: addressmodel/models.py:44
+#: addressmodel/models.py:45
 msgid "Zip Code"
 msgstr "Cap"
 
-#: addressmodel/models.py:45
+#: addressmodel/models.py:46
 msgid "City"
 msgstr "Città"
 
-#: addressmodel/models.py:46
+#: addressmodel/models.py:47
 msgid "State"
 msgstr "Provincia"
 
-#: addressmodel/models.py:52
+#: addressmodel/models.py:53
 msgid "Addresses"
 msgstr "Indirizzi"
 
-#: admin/orderadmin.py:43
+#: admin/orderadmin.py:44
 msgid "Shipping"
 msgstr "Spedizione"
 
-#: admin/orderadmin.py:46
+#: admin/orderadmin.py:47
 msgid "Billing"
 msgstr "Fatturazione"
 
-#: models/ordermodel.py:44 models/ordermodel.py:58 models/ordermodel.py:92
-#: models/defaults/bases.py:310 models/defaults/bases.py:382
+#: models/ordermodel.py:45 models/ordermodel.py:59 models/ordermodel.py:92
+#: models/defaults/bases.py:350 models/defaults/bases.py:429
 #: models/defaults/order.py:13
 msgid "Order"
 msgstr "Ordine"
 
-#: models/ordermodel.py:45
+#: models/ordermodel.py:46
 msgid "Extra info"
 msgstr "Informazioni aggiuntive"
 
-#: models/ordermodel.py:49 models/ordermodel.py:50
+#: models/ordermodel.py:50 models/ordermodel.py:51
 msgid "Order extra info"
 msgstr "Ordina informazioni aggiuntive"
 
-#: models/ordermodel.py:59 models/ordermodel.py:78
+#: models/ordermodel.py:60 models/ordermodel.py:78
 msgid "Label"
 msgstr "Etichetta"
 
-#: models/ordermodel.py:60 models/ordermodel.py:79 models/ordermodel.py:93
+#: models/ordermodel.py:61 models/ordermodel.py:79 models/ordermodel.py:94
 msgid "Amount"
 msgstr "Quantità"
 
@@ -107,7 +116,7 @@ msgstr "Prezzo per ordine aggiuntivo"
 msgid "Extra order price fields"
 msgstr "Prezzo per ordini aggiuntivi"
 
-#: models/ordermodel.py:77 models/defaults/bases.py:398
+#: models/ordermodel.py:77 models/defaults/bases.py:444
 #: models/defaults/orderitem.py:11
 msgid "Order item"
 msgstr "Ordina oggetto"
@@ -120,39 +129,35 @@ msgstr "Prezzo per ordine di un oggetto aggiuntivo"
 msgid "Extra order item price fields"
 msgstr "Prezzo per ordine di un oggetti aggiuntivi"
 
-#: models/ordermodel.py:95
+#: models/ordermodel.py:96
 msgid "Transaction ID"
 msgstr "ID della transazione"
 
-#: models/ordermodel.py:96
+#: models/ordermodel.py:97
 msgid "The transaction processor's reference"
 msgstr ""
 
-#: models/ordermodel.py:98
-msgid "Payment method"
-msgstr "Metodo di pagamento"
-
-#: models/ordermodel.py:99
+#: models/ordermodel.py:100
 msgid "The payment backend use to process the purchase"
 msgstr ""
 
-#: models/ordermodel.py:103
+#: models/ordermodel.py:104
 msgid "Order payment"
 msgstr "Pagamento ordine"
 
-#: models/ordermodel.py:104
+#: models/ordermodel.py:105
 msgid "Order payments"
 msgstr "Pagamento ordini"
 
-#: models/defaults/bases.py:28
+#: models/defaults/bases.py:27
 msgid "Slug"
 msgstr ""
 
-#: models/defaults/bases.py:29
+#: models/defaults/bases.py:28
 msgid "Active"
 msgstr "Attivo"
 
-#: models/defaults/bases.py:31
+#: models/defaults/bases.py:30
 msgid "Date added"
 msgstr "Aggiunto in data"
 
@@ -160,140 +165,178 @@ msgstr "Aggiunto in data"
 msgid "Last modified"
 msgstr "Ultima modifica"
 
-#: models/defaults/bases.py:34 models/defaults/bases.py:389
-#: templates/shop/cart.html:12 templates/shop/templatetags/_order.html:28
+#: models/defaults/bases.py:33 models/defaults/bases.py:436
+#: templates/shop/cart.html:18 templates/shop/templatetags/_order.html:28
 msgid "Unit price"
 msgstr "Prezzo unità"
 
-#: models/defaults/bases.py:39 models/defaults/bases.py:388
-#: models/defaults/product.py:14
+#: models/defaults/bases.py:38 models/defaults/bases.py:435
+#: models/defaults/product.py:17
 msgid "Product"
 msgstr "Prodotto"
 
-#: models/defaults/bases.py:40 models/defaults/product.py:15
+#: models/defaults/bases.py:39 models/defaults/product.py:18
 msgid "Products"
 msgstr "Prodotti"
 
-#: models/defaults/bases.py:80 models/defaults/cart.py:9
+#: models/defaults/bases.py:83 models/defaults/cart.py:10
 msgid "Cart"
 msgstr "Carrello"
 
-#: models/defaults/bases.py:81 models/defaults/cart.py:10
+#: models/defaults/bases.py:84 models/defaults/cart.py:11
 msgid "Carts"
 msgstr "Carrelli"
 
-#: models/defaults/bases.py:228 models/defaults/cartitem.py:10
+#: models/defaults/bases.py:274 models/defaults/cartitem.py:10
 msgid "Cart item"
 msgstr "Oggetto nel carrello"
 
-#: models/defaults/bases.py:229 models/defaults/cartitem.py:11
+#: models/defaults/bases.py:275 models/defaults/cartitem.py:11
 msgid "Cart items"
 msgstr "Oggetti nel carrello"
 
-#: models/defaults/bases.py:290
+#: models/defaults/bases.py:323
+msgid "Processing"
+msgstr ""
+
+#: models/defaults/bases.py:324
+#, fuzzy
+msgid "Selecting payment"
+msgstr "Pagamento ordine"
+
+#: models/defaults/bases.py:325
+msgid "Confirmed"
+msgstr ""
+
+#: models/defaults/bases.py:326
+msgid "Completed"
+msgstr ""
+
+#: models/defaults/bases.py:327
+#, fuzzy
+msgid "Shipped"
+msgstr "Spedizione"
+
+#: models/defaults/bases.py:328
+msgid "Cancelled"
+msgstr ""
+
+#: models/defaults/bases.py:333
 msgid "User"
 msgstr "User"
 
-#: models/defaults/bases.py:293
+#: models/defaults/bases.py:335
 msgid "Status"
 msgstr "Status"
 
-#: models/defaults/bases.py:295
+#: models/defaults/bases.py:336
 msgid "Order subtotal"
 msgstr "Totale ordine"
 
-#: models/defaults/bases.py:298
+#: models/defaults/bases.py:337 templates/shop/templatetags/_order.html:62
+msgid "Order Total"
+msgstr "Totale dell'ordine"
+
+#: models/defaults/bases.py:338
 msgid "Shipping address"
 msgstr "Indirizzo di spedizione"
 
-#: models/defaults/bases.py:299
+#: models/defaults/bases.py:340
 msgid "Billing address"
 msgstr "Indirizzo di fatturazione"
 
-#: models/defaults/bases.py:303
+#: models/defaults/bases.py:343
 msgid "Created"
 msgstr "Creato"
 
-#: models/defaults/bases.py:305
+#: models/defaults/bases.py:345
 msgid "Updated"
 msgstr "Aggiornato"
 
-#: models/defaults/bases.py:311 models/defaults/order.py:14
+#: models/defaults/bases.py:351 models/defaults/order.py:14
 msgid "Orders"
 msgstr "Ordini"
 
-#: models/defaults/bases.py:314
+#: models/defaults/bases.py:354
 #, python-format
 msgid "Order ID: %(id)s"
 msgstr ""
 
-#: models/defaults/bases.py:385
+#: models/defaults/bases.py:431
 msgid "Product reference"
 msgstr ""
 
-#: models/defaults/bases.py:387 templates/shop/cart.html:11
+#: models/defaults/bases.py:433 templates/shop/cart.html:17
 #: templates/shop/templatetags/_order.html:27
 msgid "Product name"
 msgstr "Nome del prodotto"
 
-#: models/defaults/bases.py:390 templates/shop/cart.html:13
+#: models/defaults/bases.py:437 templates/shop/cart.html:19
 #: templates/shop/templatetags/_order.html:29
 msgid "Quantity"
 msgstr "Quantità"
 
-#: models/defaults/bases.py:392
+#: models/defaults/bases.py:438
 msgid "Line subtotal"
 msgstr ""
 
-#: models/defaults/bases.py:393
+#: models/defaults/bases.py:439
 msgid "Line total"
 msgstr ""
 
-#: models/defaults/bases.py:399 models/defaults/orderitem.py:12
+#: models/defaults/bases.py:445 models/defaults/orderitem.py:12
 msgid "Order items"
 msgstr "Ordina oggetti"
 
-#: templates/shop/cart.html:3
+#: payment/backends/pay_on_delivery.py:11
+msgid "Pay On Delivery"
+msgstr ""
+
+#: shipping/backends/flat_rate.py:20
+msgid "Flat rate"
+msgstr ""
+
+#: templates/shop/cart.html:5
 msgid "Your shopping cart"
 msgstr "Il tuo carrello della spesa"
 
-#: templates/shop/cart.html:34 templates/shop/templatetags/_order.html:49
+#: templates/shop/cart.html:42 templates/shop/templatetags/_order.html:49
 msgid "Line Total"
 msgstr "Totale linea"
 
-#: templates/shop/cart.html:39
+#: templates/shop/cart.html:48
 msgid "Cart Subtotal"
 msgstr "Subtotale in carrello"
 
-#: templates/shop/cart.html:47
+#: templates/shop/cart.html:56
 msgid "Cart Total"
 msgstr "Totale in carrello"
 
-#: templates/shop/cart.html:51
+#: templates/shop/cart.html:60
 msgid "Update Shopping Cart"
 msgstr "Aggiorna carrello"
 
-#: templates/shop/cart.html:56
+#: templates/shop/cart.html:65
 msgid "Empty Shopping Cart"
 msgstr "Svuota il carrello"
 
-#: templates/shop/cart.html:60
+#: templates/shop/cart.html:69
 msgid "Proceed to checkout"
 msgstr "Procedi al checkout"
 
-#: templates/shop/cart.html:65
+#: templates/shop/cart.html:74
 msgid "Shopping cart is empty"
 msgstr "Il carrello è vuoto"
 
-#: templates/shop/order_list.html:3
+#: templates/shop/order_list.html:5
 msgid "Order list"
 msgstr "Lista d'ordine"
 
-#: templates/shop/welcome.html:8
+#: templates/shop/welcome.html:11
 msgid "Hello"
 msgstr "Ciao"
 
-#: templates/shop/welcome.html:9
+#: templates/shop/welcome.html:12
 msgid "Your orders"
 msgstr "I tuoi ordini"
 
@@ -316,9 +359,3 @@ msgstr "Indirizzo di fatturazione"
 #: templates/shop/templatetags/_order.html:54
 msgid "Order Subtotal"
 msgstr "Subtotale dell'ordine"
-
-#: templates/shop/templatetags/_order.html:62
-msgid "Order Total"
-msgstr "Totale dell'ordine"
-
-

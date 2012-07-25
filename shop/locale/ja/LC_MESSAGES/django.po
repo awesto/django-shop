@@ -1,22 +1,31 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Jonas Obrist <me@ojii.ch>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: django-shop\n"
-"Report-Msgid-Bugs-To: http://github.com/divio/django-shop/issues\n"
-"POT-Creation-Date: 2011-07-13 11:13-0500\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-07-25 16:51+0200\n"
 "PO-Revision-Date: 2012-01-24 13:04\n"
 "Last-Translator: Yuna Iha <i_una411@yahoo.co.jp>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0\n"
 "X-Translated-Using: django-transhette 0.1.SVN\n"
+
+#: forms.py:27
+#, fuzzy
+msgid "Shipping method"
+msgstr "出荷"
+
+#: forms.py:28 models/ordermodel.py:99
+msgid "Payment method"
+msgstr "支払い方法"
 
 #: addressmodel/models.py:12
 #, python-format
@@ -37,69 +46,69 @@ msgstr ""
 "才：%(state)s、\n"
 "国%(country)s：\n"
 
-#: addressmodel/models.py:31 addressmodel/models.py:47
+#: addressmodel/models.py:32 addressmodel/models.py:48
 msgid "Country"
 msgstr "国"
 
-#: addressmodel/models.py:32
+#: addressmodel/models.py:33
 msgid "Countries"
 msgstr "国"
 
-#: addressmodel/models.py:41 models/defaults/bases.py:27
+#: addressmodel/models.py:42 models/defaults/bases.py:26
 msgid "Name"
 msgstr "名前"
 
-#: addressmodel/models.py:42 addressmodel/models.py:51
+#: addressmodel/models.py:43 addressmodel/models.py:52
 msgid "Address"
 msgstr "ご住所"
 
-#: addressmodel/models.py:43
+#: addressmodel/models.py:44
 msgid "Address2"
 msgstr "区"
 
-#: addressmodel/models.py:44
+#: addressmodel/models.py:45
 msgid "Zip Code"
 msgstr "郵便番号"
 
-#: addressmodel/models.py:45
+#: addressmodel/models.py:46
 msgid "City"
 msgstr "市"
 
-#: addressmodel/models.py:46
+#: addressmodel/models.py:47
 msgid "State"
 msgstr "在"
 
-#: addressmodel/models.py:52
+#: addressmodel/models.py:53
 msgid "Addresses"
 msgstr "ご住所"
 
-#: admin/orderadmin.py:43
+#: admin/orderadmin.py:44
 msgid "Shipping"
 msgstr "出荷"
 
-#: admin/orderadmin.py:46
+#: admin/orderadmin.py:47
 msgid "Billing"
 msgstr "請求"
 
-#: models/ordermodel.py:44 models/ordermodel.py:58 models/ordermodel.py:92
-#: models/defaults/bases.py:310 models/defaults/bases.py:382
+#: models/ordermodel.py:45 models/ordermodel.py:59 models/ordermodel.py:92
+#: models/defaults/bases.py:350 models/defaults/bases.py:429
 #: models/defaults/order.py:13
 msgid "Order"
 msgstr "注文"
 
-#: models/ordermodel.py:45
+#: models/ordermodel.py:46
 msgid "Extra info"
 msgstr "余分に広報"
 
-#: models/ordermodel.py:49 models/ordermodel.py:50
+#: models/ordermodel.py:50 models/ordermodel.py:51
 msgid "Order extra info"
 msgstr "注文の余分に広報"
 
-#: models/ordermodel.py:59 models/ordermodel.py:78
+#: models/ordermodel.py:60 models/ordermodel.py:78
 msgid "Label"
 msgstr "ラベル"
 
-#: models/ordermodel.py:60 models/ordermodel.py:79 models/ordermodel.py:93
+#: models/ordermodel.py:61 models/ordermodel.py:79 models/ordermodel.py:94
 msgid "Amount"
 msgstr "個数"
 
@@ -115,7 +124,7 @@ msgstr "余分に注文の代金のフィールド"
 msgid "Extra order price fields"
 msgstr "余分に注文の代金のフィールド"
 
-#: models/ordermodel.py:77 models/defaults/bases.py:398
+#: models/ordermodel.py:77 models/defaults/bases.py:444
 #: models/defaults/orderitem.py:11
 msgid "Order item"
 msgstr "注文の項目"
@@ -128,39 +137,35 @@ msgstr "余分に注文の項目のフィールド"
 msgid "Extra order item price fields"
 msgstr "余分に注文の項目のフィールド"
 
-#: models/ordermodel.py:95
+#: models/ordermodel.py:96
 msgid "Transaction ID"
 msgstr "トランザクションID"
 
-#: models/ordermodel.py:96
+#: models/ordermodel.py:97
 msgid "The transaction processor's reference"
 msgstr "トランザクションプロセッサのリファレンス"
 
-#: models/ordermodel.py:98
-msgid "Payment method"
-msgstr "支払い方法"
-
-#: models/ordermodel.py:99
+#: models/ordermodel.py:100
 msgid "The payment backend use to process the purchase"
 msgstr "購入を処理するために支払いのバックエンドを使用する"
 
-#: models/ordermodel.py:103
+#: models/ordermodel.py:104
 msgid "Order payment"
 msgstr "注文の支払い"
 
-#: models/ordermodel.py:104
+#: models/ordermodel.py:105
 msgid "Order payments"
 msgstr "注文の支払い"
 
-#: models/defaults/bases.py:28
+#: models/defaults/bases.py:27
 msgid "Slug"
 msgstr "スラグ"
 
-#: models/defaults/bases.py:29
+#: models/defaults/bases.py:28
 msgid "Active"
 msgstr "アクティブ"
 
-#: models/defaults/bases.py:31
+#: models/defaults/bases.py:30
 msgid "Date added"
 msgstr "登録日"
 
@@ -168,140 +173,178 @@ msgstr "登録日"
 msgid "Last modified"
 msgstr "最後の修正"
 
-#: models/defaults/bases.py:34 models/defaults/bases.py:389
-#: templates/shop/cart.html:12 templates/shop/templatetags/_order.html:28
+#: models/defaults/bases.py:33 models/defaults/bases.py:436
+#: templates/shop/cart.html:18 templates/shop/templatetags/_order.html:28
 msgid "Unit price"
 msgstr "単価"
 
-#: models/defaults/bases.py:39 models/defaults/bases.py:388
-#: models/defaults/product.py:14
+#: models/defaults/bases.py:38 models/defaults/bases.py:435
+#: models/defaults/product.py:17
 msgid "Product"
 msgstr "商材"
 
-#: models/defaults/bases.py:40 models/defaults/product.py:15
+#: models/defaults/bases.py:39 models/defaults/product.py:18
 msgid "Products"
 msgstr "商材"
 
-#: models/defaults/bases.py:80 models/defaults/cart.py:9
+#: models/defaults/bases.py:83 models/defaults/cart.py:10
 msgid "Cart"
 msgstr "カート"
 
-#: models/defaults/bases.py:81 models/defaults/cart.py:10
+#: models/defaults/bases.py:84 models/defaults/cart.py:11
 msgid "Carts"
 msgstr "カート"
 
-#: models/defaults/bases.py:228 models/defaults/cartitem.py:10
+#: models/defaults/bases.py:274 models/defaults/cartitem.py:10
 msgid "Cart item"
 msgstr "カートの項目"
 
-#: models/defaults/bases.py:229 models/defaults/cartitem.py:11
+#: models/defaults/bases.py:275 models/defaults/cartitem.py:11
 msgid "Cart items"
 msgstr "カートの項目"
 
-#: models/defaults/bases.py:290
+#: models/defaults/bases.py:323
+msgid "Processing"
+msgstr ""
+
+#: models/defaults/bases.py:324
+#, fuzzy
+msgid "Selecting payment"
+msgstr "注文の支払い"
+
+#: models/defaults/bases.py:325
+msgid "Confirmed"
+msgstr ""
+
+#: models/defaults/bases.py:326
+msgid "Completed"
+msgstr ""
+
+#: models/defaults/bases.py:327
+#, fuzzy
+msgid "Shipped"
+msgstr "出荷"
+
+#: models/defaults/bases.py:328
+msgid "Cancelled"
+msgstr ""
+
+#: models/defaults/bases.py:333
 msgid "User"
 msgstr "ユーザー"
 
-#: models/defaults/bases.py:293
+#: models/defaults/bases.py:335
 msgid "Status"
 msgstr "ステータス"
 
-#: models/defaults/bases.py:295
+#: models/defaults/bases.py:336
 msgid "Order subtotal"
 msgstr "注文の小計"
 
-#: models/defaults/bases.py:298
+#: models/defaults/bases.py:337 templates/shop/templatetags/_order.html:62
+msgid "Order Total"
+msgstr "注文の合計"
+
+#: models/defaults/bases.py:338
 msgid "Shipping address"
 msgstr "出荷のご住所"
 
-#: models/defaults/bases.py:299
+#: models/defaults/bases.py:340
 msgid "Billing address"
 msgstr "請求のご住所"
 
-#: models/defaults/bases.py:303
+#: models/defaults/bases.py:343
 msgid "Created"
 msgstr "作成"
 
-#: models/defaults/bases.py:305
+#: models/defaults/bases.py:345
 msgid "Updated"
 msgstr "更新"
 
-#: models/defaults/bases.py:311 models/defaults/order.py:14
+#: models/defaults/bases.py:351 models/defaults/order.py:14
 msgid "Orders"
 msgstr "注文"
 
-#: models/defaults/bases.py:314
+#: models/defaults/bases.py:354
 #, python-format
 msgid "Order ID: %(id)s"
 msgstr "注文ID %(id)s"
 
-#: models/defaults/bases.py:385
+#: models/defaults/bases.py:431
 msgid "Product reference"
 msgstr "製品の参照"
 
-#: models/defaults/bases.py:387 templates/shop/cart.html:11
+#: models/defaults/bases.py:433 templates/shop/cart.html:17
 #: templates/shop/templatetags/_order.html:27
 msgid "Product name"
 msgstr "製品名"
 
-#: models/defaults/bases.py:390 templates/shop/cart.html:13
+#: models/defaults/bases.py:437 templates/shop/cart.html:19
 #: templates/shop/templatetags/_order.html:29
 msgid "Quantity"
 msgstr "数量"
 
-#: models/defaults/bases.py:392
+#: models/defaults/bases.py:438
 msgid "Line subtotal"
 msgstr "小計の行"
 
-#: models/defaults/bases.py:393
+#: models/defaults/bases.py:439
 msgid "Line total"
 msgstr "合計の行"
 
-#: models/defaults/bases.py:399 models/defaults/orderitem.py:12
+#: models/defaults/bases.py:445 models/defaults/orderitem.py:12
 msgid "Order items"
 msgstr "注文の項目"
 
-#: templates/shop/cart.html:3
+#: payment/backends/pay_on_delivery.py:11
+msgid "Pay On Delivery"
+msgstr ""
+
+#: shipping/backends/flat_rate.py:20
+msgid "Flat rate"
+msgstr ""
+
+#: templates/shop/cart.html:5
 msgid "Your shopping cart"
 msgstr "あなたのカート"
 
-#: templates/shop/cart.html:34 templates/shop/templatetags/_order.html:49
+#: templates/shop/cart.html:42 templates/shop/templatetags/_order.html:49
 msgid "Line Total"
 msgstr "合計の行"
 
-#: templates/shop/cart.html:39
+#: templates/shop/cart.html:48
 msgid "Cart Subtotal"
 msgstr "カートの小計"
 
-#: templates/shop/cart.html:47
+#: templates/shop/cart.html:56
 msgid "Cart Total"
 msgstr "カートの合計"
 
-#: templates/shop/cart.html:51
+#: templates/shop/cart.html:60
 msgid "Update Shopping Cart"
 msgstr "ショッピングカートの更新"
 
-#: templates/shop/cart.html:56
+#: templates/shop/cart.html:65
 msgid "Empty Shopping Cart"
 msgstr "空のショッピングカート"
 
-#: templates/shop/cart.html:60
+#: templates/shop/cart.html:69
 msgid "Proceed to checkout"
 msgstr "チェックアウトに進む"
 
-#: templates/shop/cart.html:65
+#: templates/shop/cart.html:74
 msgid "Shopping cart is empty"
 msgstr "ショッピングカートは空です"
 
-#: templates/shop/order_list.html:3
+#: templates/shop/order_list.html:5
 msgid "Order list"
 msgstr "注文リスト"
 
-#: templates/shop/welcome.html:8
+#: templates/shop/welcome.html:11
 msgid "Hello"
 msgstr "こんにちは"
 
-#: templates/shop/welcome.html:9
+#: templates/shop/welcome.html:12
 msgid "Your orders"
 msgstr "ご注文"
 
@@ -324,7 +367,3 @@ msgstr "請求の住所"
 #: templates/shop/templatetags/_order.html:54
 msgid "Order Subtotal"
 msgstr "注文の小計"
-
-#: templates/shop/templatetags/_order.html:62
-msgid "Order Total"
-msgstr "注文の合計"
