@@ -9,6 +9,7 @@ CONTRIBUTORS
 
 * Adrien Lemaire
 * airtonix
+* Aleš Kocjančič
 * Audrey Roy
 * Ben Lopatin
 * Benjamin Wohlwend
