@@ -180,11 +180,11 @@ class FlatRateShippingTestCase(TestCase):
 
         # User logged in (no order)
         view = self.backend.view_process_order(self.request)
-        self.assertEqual(view.get('location'), '/')
+        self.assertEqual(view.get('location', None), '/')
 
         # User logged in with order
         order = Order()
         setattr(order, 'user', self.user)
         order.save()
         view = self.backend.view_process_order(self.request)
-        self.assertEqual(view.get('location'), reverse('checkout_payment'))
+        self.assertEqual(view.get('location', None), reverse('checkout_payment'))
