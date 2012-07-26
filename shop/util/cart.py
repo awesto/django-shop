@@ -53,6 +53,13 @@ def get_or_create_cart(request, save=False):
                         database_cart = None
                         cart.user = request.user # and save the user to the new one
                         cart.save()
+                else:
+                    # we might need to overwrite the session cart
+                    session = getattr(request, 'session', None)
+                    if session != None:
+                        cart_id = session.get('cart_id')
+                        if cart_id != cart.id:
+                            request.session['cart_id'] = cart.id
             else:
                 # no cart in database, let's use the session cart
                 cart = get_cart_from_session(request)
@@ -67,14 +74,14 @@ def get_or_create_cart(request, save=False):
         if not cart:
             # in case it's our first visit and no cart was created yet
             if is_logged_in:
-                cart = Cart.objects.create(user=request.user)
+                cart = Cart(user=request.user)
             else:
-                cart = Cart.objects.create()
+                cart = Cart()
 
         if save and not cart.pk:
             cart.save()
+            request.session['cart_id'] = cart.id
 
-        request.session['cart_id'] = cart.id
         setattr(request, '_cart', cart)
 
     cart = getattr(request, '_cart')  # There we *must* have a cart
