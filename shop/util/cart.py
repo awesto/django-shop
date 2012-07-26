@@ -38,35 +38,29 @@ def get_or_create_cart(request, save=False):
         is_logged_in = request.user and not isinstance(request.user, AnonymousUser)
 
         if is_logged_in:
-            # if we are authenticated, the database cart has priority
-            database_cart = get_cart_from_database(request)
-            if database_cart:
-                # let's use the database cart
-                cart = database_cart
-                if database_cart.total_quantity < 1:
-                    # if the database cart is empty, check the session cart
-                    session_cart = get_cart_from_session(request)
-                    if session_cart and session_cart.total_quantity > 0:
-                        # the session cart is not empty, let's use it instead
-                        cart = session_cart
-                        database_cart.delete() # delete the old, empty one
-                        database_cart = None
-                        cart.user = request.user # and save the user to the new one
-                        cart.save()
-                else:
-                    # we might need to overwrite the session cart
-                    session = getattr(request, 'session', None)
-                    if session != None:
-                        cart_id = session.get('cart_id')
-                        if cart_id != cart.id:
-                            request.session['cart_id'] = cart.id
+            # if we are authenticated
+            session_cart = get_cart_from_session(request)
+            if session_cart and session_cart.user == request.user:
+                # and the session cart already belongs to us, we are done
+                cart = session_cart
+            elif session_cart and session_cart.total_quantity > 0 and session_cart.user != request.user:
+                # if it does not belong to us yet
+                database_cart = get_cart_from_database(request)
+                if database_cart:
+                    # and there already is a cart that belongs to us in the database
+                    # delete the old database cart
+                    database_cart.delete()
+                    database_cart = None
+                # save the user to the new one from the session
+                session_cart.user = request.user
+                session_cart.save()
+                cart = session_cart
             else:
-                # no cart in database, let's use the session cart
-                cart = get_cart_from_session(request)
-                if cart.user != request.user:
-                    # save the user reference to the cart
-                    cart.user = request.user
-                    cart.save()
+                # if there is no session_cart, or it's empty, use the database cart
+                cart = get_cart_from_database(request)
+                if cart:
+                    # and save it to the session
+                    request.session['cart_id'] = cart.id
         else:
             # not authenticated? cart might be in session
             cart = get_cart_from_session(request)
