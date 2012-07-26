@@ -74,6 +74,7 @@ class CartUtilsTestCase(TestCase):
         self.cart.user = self.user
         self.cart.save()
         setattr(self.request, 'user', self.user)
+        setattr(self.request, 'session', {})
         ret = get_or_create_cart(self.request)
         self.assertNotEqual(ret, None)
         self.assertEqual(ret, self.cart)
