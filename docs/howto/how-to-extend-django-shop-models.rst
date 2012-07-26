@@ -34,7 +34,7 @@ Extending the Product model in django SHOP works like this::
     SHOP_PRODUCT_MODEL = 'myproject.models.MyProduct'
 
 .. important:: Your model replacement must define a :class:`Meta` class.
-   Otherwise, they will inherit their parent's :class:`Meta`, which will break
+   Otherwise, it will inherit its parent's :class:`Meta`, which will break
    things. The :class:`Meta` class does not need to do anything important - it
    just has to be there.
     
@@ -50,4 +50,4 @@ From a django interactive shell, you should now be able to do::
 Settings
 =========
 
-All available settings to control models overrides are defined in :doc:`/settings`
+All available settings to control model overrides are defined in :doc:`/settings`

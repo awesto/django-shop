@@ -7,7 +7,7 @@ How to create a shipping backend
 Shop interface
 ===============
 
-While we could solve this with defining a superclass for all shipping backends,
+While we could solve this by defining a superclass for all shipping backends,
 the better approach to plugins is to implement inversion-of-control, and let
 the backends hold a reference to the shop instead.
 
@@ -46,7 +46,7 @@ Methods
 .. method:: get_urls
 
     should return a list of URLs (similar to urlpatterns), to be added
-    to the URL resolver when urls are loaded. Theses will be namespaced with the
+    to the URL resolver when urls are loaded. These will be namespaced with the
     :attr:`url_namespace` attribute by the shop system, so it shouldn't be done manually.
 
 Security

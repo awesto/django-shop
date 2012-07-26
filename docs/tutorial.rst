@@ -17,7 +17,7 @@ Installation
 Defining your products
 ======================
 
-The first thing a shop should do is defining products to sell. While some other
+The first thing a shop should do is define its products to sell. While some other
 shop solutions do not require you to, in django SHOP you must write a django
 model (or a set of django models) to represent your products.
 
