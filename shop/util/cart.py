@@ -13,7 +13,7 @@ def get_cart_from_database(request):
 def get_cart_from_session(request):
     session_cart = None
     session = getattr(request, 'session', None)
-    if session != None:
+    if session is not None:
         cart_id = session.get('cart_id')
         if cart_id:
             try:
@@ -69,7 +69,7 @@ def get_or_create_cart(request, save=False):
             # in case it's our first visit and no cart was created yet
             if is_logged_in:
                 cart = Cart(user=request.user)
-            else:
+            elif getattr(request, 'session', None) is not None:
                 cart = Cart()
 
         if save and not cart.pk:
