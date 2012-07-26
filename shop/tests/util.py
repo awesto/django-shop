@@ -115,7 +115,10 @@ class CartUtilsTestCase(TestCase):
         ret = get_or_create_cart(self.request)
         self.assertNotEqual(ret, None)
         self.assertNotEqual(ret, database_cart)
+        self.assertNotEqual(ret.user, None)
+        self.assertEqual(ret.user, self.user)
         self.assertEqual(ret, self.cart)
+        self.assertEqual(Cart.objects.filter(user=self.user).count(), 1)
 
     def test_having_empty_session_cart_and_filled_database_cart_returns_database_cart(self):
         setattr(self.request, 'user', self.user)
@@ -139,6 +142,7 @@ class CartUtilsTestCase(TestCase):
         self.assertNotEqual(ret, None)
         self.assertNotEqual(ret, database_cart)
         self.assertEqual(ret, self.cart)
+        self.assertEqual(Cart.objects.filter(user=self.user).count(), 1)
 
 
 class LoaderTestCase(TestCase):
