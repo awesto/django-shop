@@ -373,8 +373,8 @@ class BaseOrder(models.Model):
         sum_ = OrderPayment.objects.filter(order=self).aggregate(
                 sum=Sum('amount'))
         result = sum_.get('sum')
-        if not result:
-            result = Decimal('-1')
+        if result is None:
+            result = Decimal(0)
         return result
     amount_payed = amount_paid #Backward compatability, deprecated spelling
 
