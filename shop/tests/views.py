@@ -62,6 +62,7 @@ class CartDetailsViewTestCase(TestCase):
         self.cart.save()
         request = Mock()
         setattr(request, 'user', self.user)
+        setattr(request, 'session', {})
         view = CartDetails(request=request)
         ret = view.get_context_data()
         self.assertNotEqual(ret, None)
@@ -75,6 +76,7 @@ class CartDetailsViewTestCase(TestCase):
         request = Mock()
         setattr(request, 'is_ajax', lambda: False)
         setattr(request, 'user', self.user)
+        setattr(request, 'session', {})
         post = {
             'add_item_id': self.product.id,
             'add_item_quantity': 1,
@@ -99,6 +101,7 @@ class CartDetailsViewTestCase(TestCase):
         request = Mock()
         setattr(request, 'is_ajax', lambda: True)
         setattr(request, 'user', self.user)
+        setattr(request, 'session', {})
         post = {
             'add_item_id': self.product.id,
             'add_item_quantity': 1,
