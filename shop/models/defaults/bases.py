@@ -358,7 +358,7 @@ class BaseOrder(models.Model):
 
     def is_paid(self):
         """Has this order been integrally paid for?"""
-        return self.amount_paid == self.order_total
+        return self.amount_paid >= self.order_total
     is_payed = is_paid #Backward compatability, deprecated spelling
 
     def is_completed(self):
