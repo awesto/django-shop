@@ -210,15 +210,14 @@ class ThankYouView(LoginMixin, ShopTemplateView):
     def get_context_data(self, **kwargs):
         ctx = super(ShopTemplateView, self).get_context_data(**kwargs)
 
-        # put the latest order in the context
+        # put the latest order in the context only if it is completed
         order = get_order_from_request(self.request)
-
-        ctx.update({'order': order, })
-
-        # Empty the customers basket, to reflect that the purchase was
-        # completed
-        cart_object = get_or_create_cart(self.request)
-        cart_object.empty()
+        if order and order.status == Order.COMPLETED:
+            ctx.update({'order': order, })
+            # Empty the customers basket, to reflect that the purchase was
+            # completed
+            cart_object = get_or_create_cart(self.request)
+            cart_object.empty()
 
         return ctx
 
