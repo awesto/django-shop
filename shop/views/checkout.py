@@ -210,15 +210,9 @@ class ThankYouView(LoginMixin, ShopTemplateView):
     def get_context_data(self, **kwargs):
         ctx = super(ShopTemplateView, self).get_context_data(**kwargs)
 
-        # Set the order status:
+        # put the latest order in the context
         order = get_order_from_request(self.request)
-        if order:
-            order.status = Order.COMPLETED
-            order.save()
-            completed.send(sender=self, order=order)
-        else:
-            order = Order.objects.get_latest_for_user(self.request.user)
-            #TODO: Is this ever the case?
+
         ctx.update({'order': order, })
 
         # Empty the customers basket, to reflect that the purchase was
