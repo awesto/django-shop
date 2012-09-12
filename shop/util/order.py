@@ -12,7 +12,6 @@ def get_order_from_request(request):
     if request.user and not isinstance(request.user, AnonymousUser):
         # There is a logged in user
         orders = Order.objects.filter(user=request.user)
-        orders = orders.filter(status__lt=Order.COMPLETED)
         orders = orders.order_by('-created')
         if len(orders) >= 1:  # The queryset returns a list
             order = orders[0]

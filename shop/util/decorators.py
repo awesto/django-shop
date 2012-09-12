@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect
 
 from shop.util.login_mixin import get_test_func
 from shop.util.order import get_order_from_request
+from shop.models.ordermodel import Order
 
 
 def on_method(function_decorator):
@@ -45,8 +46,8 @@ def shop_login_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME,
 
 def order_required(redirect_url='/'):
     """
-    Ensures that an order exists before carrying out any additional functions
-    that rely on one.
+    Ensures that an non-complete order exists before carrying out any
+    additional functions that rely on one.
 
     If an order does not exist the browser will be redirected to another page
     supplied in the optional keyword argument `redirect_url`.
@@ -66,7 +67,8 @@ def order_required(redirect_url='/'):
 
     def decorator(func):
         def inner(request, *args, **kwargs):
-            if get_order_from_request(request) is None:
+            order = get_order_from_request(request)
+            if order is None or getattr(order, 'status', Order.COMPLETED) == Order.COMPLETED:
                 return HttpResponseRedirect(redirect_url)
             return func(request, *args, **kwargs)
         return wraps(func)(inner)

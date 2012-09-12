@@ -9,6 +9,7 @@ from shop.addressmodel.models import Country, Address
 from shop.models.cartmodel import Cart
 from shop.models.ordermodel import Order
 from shop.order_signals import processing
+from shop.payment.api import PaymentAPI
 from shop.tests.util import Mock
 from shop.tests.utils.context_managers import SettingsOverride
 from shop.views.checkout import CheckoutSelectionView, ThankYouView
@@ -229,18 +230,22 @@ class CheckoutCartToOrderTestCase(TestCase):
 
 
 class ThankYouViewTestCase(TestCase):
+
     def setUp(self):
         self.user = User.objects.create(username="test",
                                         email="test@example.com",
                                         first_name="Test",
                                         last_name="Toto")
         self.request = Mock()
+        self.order = Order.objects.create(user=self.user, order_total=10)
         setattr(self.request, 'user', self.user)
         setattr(self.request, 'session', {})
         setattr(self.request, 'method', 'GET')
-        self.order = Order.objects.create(user=self.user)
 
     def test_get_context_gives_correct_order(self):
+        # first send the order through the payment API
+        PaymentAPI().confirm_payment(self.order, 10, 'None', 'magic payment')
+        # then call the view
         view = ThankYouView(request=self.request)
         self.assertNotEqual(view, None)
         res = view.get_context_data()
