@@ -16,6 +16,8 @@ Version NEXT
   are handled with the correct localization.
 * Order status is now directly modified in the shop API
 * CartItem URLs were too greedy, they now match less.
+* In case a user has two carts, one bound to the session and one to the user, 
+  the one from the session will be used (#169)
 
 Version 0.0.13
 ==============
