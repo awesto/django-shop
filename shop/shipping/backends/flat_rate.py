@@ -17,7 +17,7 @@ class FlatRateShipping(object):
     """
     url_namespace = 'flat'
     backend_name = 'Flat rate'
-    verbose_backend_name = _('Flat rate')
+    backend_verbose_name = _('Flat rate')
 
     def __init__(self, shop):
         self.shop = shop  # This is the shop reference, it allows this backend

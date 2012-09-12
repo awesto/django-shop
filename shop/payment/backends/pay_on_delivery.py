@@ -8,7 +8,7 @@ from shop.util.decorators import on_method, shop_login_required
 class PayOnDeliveryBackend(object):
 
     backend_name = "Pay On Delivery"
-    verbose_backend_name = _("Pay On Delivery")
+    backend_verbose_name = _("Pay On Delivery")
     url_namespace = "pay-on-delivery"
 
     def __init__(self, shop):
