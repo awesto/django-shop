@@ -9,6 +9,7 @@ from django.test.testcases import TestCase
 
 from shop.backends_pool import backends_pool
 from shop.models.ordermodel import Order
+from shop.shipping.backends.flat_rate import FlatRateShipping
 from shop.shipping.api import ShippingAPI
 from shop.tests.util import Mock
 from shop.tests.utils.context_managers import SettingsOverride
@@ -156,6 +157,11 @@ class ShippingApiTestCase(TestCase):
 
 class FlatRateShippingTestCase(TestCase):
     """Tests for ``shop.shipping.backends.flat_rate.FlatRateShipping``."""
+    def setUp(self):
+        self.backend = FlatRateShipping(shop=ShippingAPI())
+        self.user = User.objects.create(username="test", email="test@example.com")
+        self.request = Mock()
+        setattr(self.request, 'user', self.user)
 
     def test_must_be_logged_in_if_setting_is_true(self):
         with SettingsOverride(SHOP_FORCE_LOGIN=True):
@@ -165,3 +171,20 @@ class FlatRateShippingTestCase(TestCase):
             resp = self.client.get(reverse('flat_process'))
             self.assertEqual(resp.status_code, 302)
             self.assertTrue('accounts/login/' in resp._headers['location'][1])
+
+    def test_order_required_before_shipping_processed(self):
+        """ See issue #84 """
+        # Session only (no order)
+        response = self.client.get(reverse('flat_process'))
+        self.assertEqual(response.status_code, 302)
+
+        # User logged in (no order)
+        view = self.backend.view_process_order(self.request)
+        self.assertEqual(view.get('location', None), '/')
+
+        # User logged in with order
+        order = Order()
+        setattr(order, 'user', self.user)
+        order.save()
+        view = self.backend.view_process_order(self.request)
+        self.assertEqual(view.get('location', None), reverse('checkout_payment'))

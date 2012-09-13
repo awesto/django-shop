@@ -1,10 +1,10 @@
 ==================================
-How to extend django-SHOP models
+How to extend django SHOP models
 ==================================
 
 (Instead of the default ones)
 
-Some people might feel like the django shop models are not suitable for their
+Some people might feel like the django SHOP models are not suitable for their
 project, or want to extend functionality for their specific needs.
 
 This is a rather advanced use case, and most developers should hopefully be happy 
@@ -14,12 +14,12 @@ All models you can override have a corresponding setting, which should contain
 the class path to the model you wish to use in its stead.
 
 .. note:: While your models will be used, they will still be "called" by their
-  default django-SHOP name.
+  default django SHOP name.
   
 Example
 ========
 
-Extending the Product model in django-SHOP works like this::
+Extending the Product model in django SHOP works like this::
     
     # In myproject.models
     from shop.models_bases import BaseProduct
@@ -34,7 +34,7 @@ Extending the Product model in django-SHOP works like this::
     SHOP_PRODUCT_MODEL = 'myproject.models.MyProduct'
 
 .. important:: Your model replacement must define a :class:`Meta` class.
-   Otherwise, they will inherit their parent's :class:`Meta`, which will break
+   Otherwise, it will inherit its parent's :class:`Meta`, which will break
    things. The :class:`Meta` class does not need to do anything important - it
    just has to be there.
     
@@ -50,4 +50,4 @@ From a django interactive shell, you should now be able to do::
 Settings
 =========
 
-All available settings to control models overrides are defined in :doc:`/settings`
+All available settings to control model overrides are defined in :doc:`/settings`

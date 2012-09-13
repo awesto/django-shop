@@ -43,9 +43,9 @@ the checkout views to work::
 This is to ensure that the views take handle "attaching" the address objects to the
 User (or the session if the shopper is a guest).
 
-We recommend to add :meth:`as_text` method to your address model that 'collects' all fields
-and return them in one string. This string will be saved to order
+We recommend adding the :meth:`as_text` method to your address model. This 'collects' all fields
+and returns them in one string. This string will be saved to the order
 (to :attr:`~shop.models.Order.billing_address_text` or
 :attr:`~shop.models.Order.shipping_address_text` accordingly) during checkout view.
-    
-You are obviously free to subclass theses views and hook your own behavior.
+
+You are obviously free to subclass these views and hook in your own behavior.

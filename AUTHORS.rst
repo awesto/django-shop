@@ -9,9 +9,12 @@ CONTRIBUTORS
 
 * Adrien Lemaire
 * airtonix
+* Aleš Kocjančič
 * Audrey Roy
+* Ben Lopatin
 * Benjamin Wohlwend
 * Bojan Mihelac
+* Chris Morgan
 * fivethreeo
 * Issac Kelly
 * Jacob Rief
@@ -21,8 +24,11 @@ CONTRIBUTORS
 * Martin Ogden
 * Mike Yumatov
 * Pavel Zhukov
+* Per Rosengren
 * Raúl Cumplido
 * Rolo Mawlabaux
+* Stephen Muss
+* Thomas Woolford
 
 TRANSLATORS
 ===========

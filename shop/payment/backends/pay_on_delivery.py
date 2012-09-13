@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls.defaults import patterns, url
 from django.http import HttpResponseRedirect
+from django.utils.translation import ugettext_lazy as _
 from shop.util.decorators import on_method, shop_login_required
 
 
 class PayOnDeliveryBackend(object):
 
     backend_name = "Pay On Delivery"
+    backend_verbose_name = _("Pay On Delivery")
     url_namespace = "pay-on-delivery"
 
     def __init__(self, shop):
@@ -24,7 +26,7 @@ class PayOnDeliveryBackend(object):
         # Get the order object
         the_order = self.shop.get_order(request)
         # Let's mark this as being complete for the full sum in our database
-        # Set it as payed (it needs to be payed to the delivery guy, we assume
+        # Set it as paid (it needs to be paid to the delivery guy, we assume
         # he does his job properly)
         self.shop.confirm_payment(
             the_order, self.shop.get_order_total(the_order), "None",

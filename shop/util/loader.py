@@ -5,7 +5,7 @@ from django.utils.importlib import import_module
 
 
 CLASS_PATH_ERROR = 'django-shop is unable to interpret settings value for %s. '\
-                   '%s should be in ther form of a tupple: '\
+                   '%s should be in the form of a tupple: '\
                    '(\'path.to.models.Class\', \'app_label\').'
 
 

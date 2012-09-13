@@ -56,6 +56,12 @@ class BaseProduct(PolymorphicModel):
         """
         return self.name
 
+    def get_product_reference(self):
+        """
+        Return product reference of this Product (provided for extensibility).
+        """
+        return unicode(self.id)
+
 
 #==============================================================================
 # Carts
@@ -123,6 +129,11 @@ class BaseCart(models.Model):
         1
         """
         from shop.models import CartItem
+
+        # get the last updated timestamp
+        # also saves cart object if it is not saved
+        self.save()
+
         if queryset == None:
             queryset = CartItem.objects.filter(cart=self, product=product)
         item = queryset
@@ -136,7 +147,6 @@ class BaseCart(models.Model):
                 cart=self, quantity=quantity, product=product)
             cart_item.save()
 
-        self.save()  # to get the last updated timestamp
         return cart_item
 
     def update_quantity(self, cart_item_id, quantity):
@@ -235,8 +245,9 @@ class BaseCart(models.Model):
         """
         Remove all cart items
         """
-        self.items.all().delete()
-        self.delete()
+        if self.pk:
+            self.items.all().delete()
+            self.delete()
 
     @property
     def total_quantity(self):
@@ -345,25 +356,27 @@ class BaseOrder(models.Model):
     def get_absolute_url(self):
         return reverse('order_detail', kwargs={'pk': self.pk})
 
-    def is_payed(self):
-        """Has this order been integrally payed for?"""
-        return self.amount_payed == self.order_total
+    def is_paid(self):
+        """Has this order been integrally paid for?"""
+        return self.amount_paid >= self.order_total
+    is_payed = is_paid #Backward compatability, deprecated spelling
 
     def is_completed(self):
         return self.status == self.COMPLETED
 
     @property
-    def amount_payed(self):
+    def amount_paid(self):
         """
-        The amount payed is the sum of related orderpayments
+        The amount paid is the sum of related orderpayments
         """
         from shop.models import OrderPayment
         sum_ = OrderPayment.objects.filter(order=self).aggregate(
                 sum=Sum('amount'))
         result = sum_.get('sum')
-        if not result:
-            result = Decimal('-1')
+        if result is None:
+            result = Decimal(0)
         return result
+    amount_payed = amount_paid #Backward compatability, deprecated spelling
 
     @property
     def shipping_costs(self):

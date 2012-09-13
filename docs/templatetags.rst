@@ -2,7 +2,7 @@
 Templatetags
 ============
 
-django-shop ships various templatetags to make quick creation of HTML templates
+Django SHOP ships various templatetags to make quick creation of HTML templates
 easier. In order to use these templatetags you need to load them in your
 template
 
@@ -58,8 +58,8 @@ Usage
 
 If no argument is given, the tag will just render all active products. The tag
 allows an optional argument ``objects``. It should be a queryset of
-:class:`~shop.models.Product` objects. If given, the tag will render the given
-products only instead of all active products.
+:class:`~shop.models.Product` objects. If supplied, the tag will render the given
+products instead of all active products.
 
 ::
 

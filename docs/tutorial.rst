@@ -2,7 +2,7 @@
 Tutorial
 ========
 
-This tutorial is aimed at people new to django-SHOP but already familiar with
+This tutorial is aimed at people new to django SHOP but already familiar with
 django. If you aren't yet, reading their excellent
 `django tutorial <https://docs.djangoproject.com/en/1.3/intro/tutorial01/>`_ is
 highly recommended.
@@ -17,8 +17,8 @@ Installation
 Defining your products
 ======================
 
-The first thing a shop should do is defining products to sell. While some other
-shop solutions do not require you to, in django-SHOP you must write a django
+The first thing a shop should do is define its products to sell. While some other
+shop solutions do not require you to, in django SHOP you must write a django
 model (or a set of django models) to represent your products.
 
 Roughly, this means you'll need to create a django model subclassing
@@ -58,8 +58,8 @@ More plugins?
 =============
 
 You can find more plugins or share your own plugin with the world on `the
-django-SHOP website <https://www.django-shop.org/ecosystem/>`_
+django SHOP website <https://www.django-shop.org/ecosystem/>`_
 
-Lots of functionality in django-SHOP was left to implement as plugins and
+Lots of functionality in django SHOP was left to implement as plugins and
 extensions, checking this resource for extra functionality is highly
 recommended before starting a new project!

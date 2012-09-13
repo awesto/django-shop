@@ -7,7 +7,8 @@ from django.contrib.auth.models import User, AnonymousUser
 from django.core.exceptions import ImproperlyConfigured
 from django.test.testcases import TestCase
 from shop.addressmodel.models import Address, Country
-from shop.models.cartmodel import Cart
+from shop.models.cartmodel import Cart, CartItem
+from shop.models.productmodel import Product
 from shop.util.address import get_shipping_address_from_request, \
     assign_address_to_request, get_billing_address_from_request
 from shop.util.cart import get_or_create_cart
@@ -77,6 +78,7 @@ class CartUtilsTestCase(TestCase):
         self.cart.user = self.user
         self.cart.save()
         setattr(self.request, 'user', self.user)
+        setattr(self.request, 'session', {})
         ret = get_or_create_cart(self.request)
         self.assertNotEqual(ret, None)
         self.assertEqual(ret, self.cart)
@@ -97,6 +99,53 @@ class CartUtilsTestCase(TestCase):
         setattr(self.request, 'user', AnonymousUser())
         ret = get_or_create_cart(self.request)
         self.assertEqual(ret, None)
+
+    def test_having_two_empty_carts_returns_database_cart(self):
+        setattr(self.request, 'user', self.user)
+        setattr(self.request, 'session', {'cart_id': self.cart.id})
+        database_cart = Cart.objects.create(user=self.user)
+        ret = get_or_create_cart(self.request)
+        self.assertNotEqual(ret, None)
+        self.assertEqual(ret, database_cart)
+        self.assertNotEqual(ret, self.cart)
+
+    def test_having_filled_session_cart_and_empty_database_cart_returns_session_cart(self):
+        setattr(self.request, 'user', self.user)
+        setattr(self.request, 'session', {'cart_id': self.cart.id})
+        database_cart = Cart.objects.create(user=self.user)
+        product = Product.objects.create(name='pizza', slug='pizza', unit_price=0)
+        CartItem.objects.create(cart=self.cart, quantity=1, product=product)
+        ret = get_or_create_cart(self.request)
+        self.assertNotEqual(ret, None)
+        self.assertNotEqual(ret, database_cart)
+        self.assertNotEqual(ret.user, None)
+        self.assertEqual(ret.user, self.user)
+        self.assertEqual(ret, self.cart)
+        self.assertEqual(Cart.objects.filter(user=self.user).count(), 1)
+
+    def test_having_empty_session_cart_and_filled_database_cart_returns_database_cart(self):
+        setattr(self.request, 'user', self.user)
+        setattr(self.request, 'session', {'cart_id': self.cart.id})
+        database_cart = Cart.objects.create(user=self.user)
+        product = Product.objects.create(name='pizza', slug='pizza', unit_price=0)
+        CartItem.objects.create(cart=database_cart, quantity=1, product=product)
+        ret = get_or_create_cart(self.request)
+        self.assertNotEqual(ret, None)
+        self.assertEqual(ret, database_cart)
+        self.assertNotEqual(ret, self.cart)
+
+    def test_having_two_filled_carts_returns_session_cart(self):
+        setattr(self.request, 'user', self.user)
+        setattr(self.request, 'session', {'cart_id': self.cart.id})
+        database_cart = Cart.objects.create(user=self.user)
+        product = Product.objects.create(name='pizza', slug='pizza', unit_price=0)
+        CartItem.objects.create(cart=database_cart, quantity=1, product=product)
+        CartItem.objects.create(cart=self.cart, quantity=1, product=product)
+        ret = get_or_create_cart(self.request)
+        self.assertNotEqual(ret, None)
+        self.assertNotEqual(ret, database_cart)
+        self.assertEqual(ret, self.cart)
+        self.assertEqual(Cart.objects.filter(user=self.user).count(), 1)
 
 
 class LoaderTestCase(TestCase):

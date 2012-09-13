@@ -15,14 +15,14 @@ class ShopApiTestCase(TestCase):
         setattr(self.request, 'user', None)
 
         self.order = Order()
-        self.order.order_subtotal = Decimal('10')
-        self.order.order_total = Decimal('10')
+        self.order.order_subtotal = Decimal('10.95')
+        self.order.order_total = Decimal('10.95')
         self.order.shipping_cost = Decimal('0')
 
         self.order.shipping_address_text = 'shipping address example'
         self.order.billing_address_text = 'billing address example'
 
-        self.order = Order.objects.create()
+        self.order.save()
 
     def test_add_extra_info(self):
         api = ShopAPI()
@@ -31,9 +31,12 @@ class ShopApiTestCase(TestCase):
         oei = OrderExtraInfo.objects.get(order=self.order)
         self.assertEqual(oei.text, 'test')
 
-    def test_is_order_payed(self):
+    def test_is_order_paid(self):
         api = ShopAPI()
+        # Ensure deprecated method still works
         res = api.is_order_payed(self.order)
+        self.assertEqual(res, False)
+        res = api.is_order_paid(self.order)
         self.assertEqual(res, False)
 
     def test_is_order_complete(self):
@@ -44,17 +47,17 @@ class ShopApiTestCase(TestCase):
     def test_get_order_total(self):
         api = ShopAPI()
         res = api.get_order_total(self.order)
-        self.assertEqual(res, Decimal('0'))
+        self.assertEqual(res, Decimal('10.95'))
 
     def test_get_order_subtotal(self):
         api = ShopAPI()
         res = api.get_order_subtotal(self.order)
-        self.assertEqual(res, Decimal('0'))
+        self.assertEqual(res, Decimal('10.95'))
 
     def test_get_order_short_name(self):
         api = ShopAPI()
         res = api.get_order_short_name(self.order)
-        self.assertEqual(res, '1-0.00')
+        self.assertEqual(res, '1-10.95')
 
     def test_get_order_unique_id(self):
         api = ShopAPI()

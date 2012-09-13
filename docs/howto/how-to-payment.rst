@@ -7,7 +7,7 @@ Payment backends must be listed in settings.SHOP_PAYMENT_BACKENDS
 Shop interface
 ===============
 
-While we could solve this with defining a superclass for all payment backends,
+While we could solve this by defining a superclass for all payment backends,
 the better approach to plugins is to implement inversion-of-control, and let
 the backends hold a reference to the shop instead.
 
@@ -25,10 +25,10 @@ Common with shipping
 
 .. method:: ShopPaymentAPI.get_order(request)
 
-    Returns the currently being processed order.
-    
+    Returns the order currently being processed.
+
     :param request: a Django request object
-    :rtype: a :class:`~shop.models.Order` instance
+    :rtype: an :class:`~shop.models.Order` instance
 
 .. method:: ShopPaymentAPI.add_extra_info(order, text)
 
@@ -39,7 +39,7 @@ Common with shipping
 
 .. method:: ShopPaymentAPI.is_order_payed(order)
 
-    Whether the passed order is fully payed or not
+    Whether the passed order is fully paid or not
 
     :param order: an :class:`~shop.models.Order` instance
     :rtype: :class:`bool`
@@ -100,7 +100,7 @@ Specific to payment
     payment method keeps track of what backend was used for this specific payment.
 
     :param order: an :class:`~shop.models.Order` instance
-    :param amount: the payed amount
+    :param amount: the paid amount
     :param transaction_id: the backend-specific transaction identifier
     :param save: a :class:`bool` that indicates if the changes should be committed
         to the database.
@@ -136,7 +136,7 @@ Methods
 .. method:: PaymentBackend.get_urls()
 
     should return a list of URLs (similar to urlpatterns), to be added
-    to the URL resolver when urls are loaded. Theses will be namespaced with the
+    to the URL resolver when urls are loaded. These will be namespaced with the
     url_namespace attribute by the shop system, so it shouldn't be done manually.
 
 Security

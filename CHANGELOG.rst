@@ -1,6 +1,34 @@
+Version NEXT
+==============
+
+* Made Backends internationalizable, as well as the BillingShippingForm
+  thanks to the introduciton of a new optional backend_verbose_name attribute
+  to backends.
+* Added a order_required decorator to fix bug #84, which should be used on all payment and shipping views
+* Added get_product_reference method to Product (for extensibility)
+* Cart object is not saved to database if it is empty (#147)
+* Before adding items to cart you now have to use get_or_create_cart with save=True
+* Changed spelling mistakes in methods from `payed` to `paid` on the Order 
+  model and on the API. This is potentially not backwards compatible in some 
+  border cases.
+* Added a mixin class which helps to localize model fields of type DecimalField
+  in Django admin view.
+* Added this newly created mixin class to OrderAdmin, so that all price fields
+  are handled with the correct localization.
+* Order status is now directly modified in the shop API
+* CartItem URLs were too greedy, they now match less.
+* In case a user has two carts, one bound to the session and one to the user, 
+  the one from the session will be used (#169)
+
+Version 0.0.13
+==============
+
+(Version cleanup)
+
 Version 0.0.12
 ==============
 
+* Updated translations
 * Split urls.py into several sub-files for better readability, and put in a
   urls shubfolder.
 * Made templates extend a common base template
@@ -8,6 +36,7 @@ Version 0.0.12
   This will break your cart.html template. Please refer to the changes in 
   cart.html shipped by the shop to see how you can update your own template.
   Basically you need to iterate over a formset now instead of cart_items.
+* Fixed a circular import problem when user overrode their own models
 
 Version 0.0.11
 ==============

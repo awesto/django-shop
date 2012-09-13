@@ -2,16 +2,17 @@
 from shop.shop_api import ShopAPI
 from shop.order_signals import payment_selection
 from shop.models.ordermodel import ExtraOrderPriceField
+from shop.models.ordermodel import Order
 from django.shortcuts import redirect
 
 
 class ShippingAPI(ShopAPI):
     """
     This object's purpose is to expose an API to the shop system.
-    Ideally, shops (Django shop or others) should implement this API, so that
+    Ideally, shops (django SHOP or others) should implement this API, so that
     shipping plugins are interchangeable between systems.
 
-    This implementation is the interface reference for Django Shop
+    This implementation is the interface reference for django SHOP
 
     Methods defined in BaseBackendAPI:
     getOrder(request): Return the Order object for the current shopper
@@ -58,6 +59,8 @@ class ShippingAPI(ShopAPI):
         is finished i.e. shipping costs are added to the order.
         This will redirect to the "select a payment method" page.
         """
+        order.status = Order.CONFIRMED
+        order.save()
         # Emit the signal to say we're now selecting payment
         payment_selection.send(self, order=order)
         return redirect('checkout_payment')

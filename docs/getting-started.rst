@@ -93,7 +93,7 @@ django-cbv if you're using 1.3.
 
 .. highlight:: bash
 
-7. Most of the stuff you'll have to do is styling and templates work, so go ahead
+7. Most of the stuff you'll have to do is styling and template work, so go ahead
    and create a templates directory in your project::
    
     cd example/myshop; mkdir -p templates/myshop
@@ -107,7 +107,7 @@ django-cbv if you're using 1.3.
 
     x-www-browser localhost:8000/shop
 
-You now have a running but very empty django-shop installation.
+You now have a running but very empty django SHOP installation.
 
 Adding a custom product
 ========================
@@ -127,7 +127,7 @@ describing a book::
         # The author should probably be a foreign key in the real world, but
         # this is just an example
         author = models.CharField(max_length=255)
-        cover_picture = models.ImageField() 
+        cover_picture = models.ImageField(upload_to='img/book') 
         isbn = models.CharField(max_length=255)
 
         class Meta:
@@ -137,10 +137,13 @@ describing a book::
 .. note:: The only limitation is that your product subclass must define a
    ``Meta`` class.
 
-Like a normal Django model, you might want to register it to the admin interface
-to allow easy edition by your users. In an ``admin.py`` file::
+Like a normal Django model, you might want to register it in the admin interface
+to allow for easy editing by your admin users. In an ``admin.py`` file::
 
     from django.contrib import admin
+    
+    from models import Book
+    
     admin.site.register(Book)
 
 That's it! 
@@ -148,8 +151,8 @@ That's it!
 Adding taxes
 =============
 
-Adding taxes calculation according to local regulations is also something that
-you will be likely to have to do. It is relatively easy as well: create a new
+Adding tax calculations according to local regulations is also something that
+you will likely have to do. It is relatively easy as well: create a new
 file in your project, for example ``modifiers.py``, and add the following::
 
     import decimal    
@@ -178,7 +181,7 @@ add the class to the list of cart modifiers defined in your ``settings.py`` file
 Restart your server, and you should now see that a cart's total is dynamically
 augmented to reflect this new rule.
 
-You can implemented many other types of rules by overriding either this method
+You can implement many other types of rules by overriding either this method
 or other methods defined in
 :class:`~shop.cart.cart_modifiers_base.BaseCartModifier`.
 
