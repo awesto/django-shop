@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-25 16:51+0200\n"
+"POT-Creation-Date: 2012-09-13 12:10+0300\n"
 "PO-Revision-Date: 2011-02-15 02:47\n"
 "Last-Translator:   <bmihelac@mihelac.org>\n"
 "Language-Team: Bojan Mihelac <bmihelac@mihelac.org>\n"
@@ -139,7 +139,7 @@ msgid "The transaction processor's reference"
 msgstr "Referenca transakcije"
 
 #: models/ordermodel.py:100
-msgid "The payment backend use to process the purchase"
+msgid "The payment backend used to process the purchase"
 msgstr "Backend za plaćanje koji se koristi za kupovinu"
 
 #: models/ordermodel.py:104
