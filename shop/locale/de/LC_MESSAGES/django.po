@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-shop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-25 16:51+0200\n"
+"POT-Creation-Date: 2012-09-13 12:11+0300\n"
 "PO-Revision-Date: 2011-07-13 16:16+0000\n"
 "Last-Translator: chrisglass <tribaal@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -144,7 +144,7 @@ msgid "The transaction processor's reference"
 msgstr "Die Referenz des Transaktionsprozessors"
 
 #: models/ordermodel.py:100
-msgid "The payment backend use to process the purchase"
+msgid "The payment backend used to process the purchase"
 msgstr "Das zum Kauf verwendete Zahlungsbackend"
 
 #: models/ordermodel.py:104

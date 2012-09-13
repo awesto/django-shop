@@ -97,7 +97,7 @@ class OrderPayment(models.Model):
             help_text=_("The transaction processor's reference"))
     payment_method = models.CharField(max_length=255,
             verbose_name=_('Payment method'),
-            help_text=_("The payment backend use to process the purchase"))
+            help_text=_("The payment backend used to process the purchase"))
 
     class Meta(object):
         app_label = 'shop'
