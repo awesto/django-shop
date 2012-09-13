@@ -1,13 +1,14 @@
-# SOME DESCRIPTIVE TITLE.
+# Django-shop Russian translation file.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Pavel Zhukov <gelios@gmail.com>, 2011.
+# Mikhail Kolesnik <mike@openbunker.org>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: django-shop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-25 16:52+0200\n"
+"POT-Creation-Date: 2012-09-13 12:18+0300\n"
 "PO-Revision-Date: 2011-07-13 16:16+0000\n"
 "Last-Translator: chrisglass <tribaal@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,9 +20,8 @@ msgstr ""
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 
 #: forms.py:27
-#, fuzzy
 msgid "Shipping method"
-msgstr "Доставка"
+msgstr "Метод доставки"
 
 #: forms.py:28 models/ordermodel.py:99
 msgid "Payment method"
@@ -38,14 +38,21 @@ msgid ""
 "State: %(state)s,\n"
 "Country: %(country)s\n"
 msgstr ""
+"\n"
+"Имя: %(name)s,\n"
+"Адрес: %(address)s,\n"
+"Почтовый индекс: %(zipcode)s,\n"
+"Город: %(city)s,\n"
+"Регион: %(state)s,\n"
+"Страна: %(country)s\n"
 
 #: addressmodel/models.py:32 addressmodel/models.py:48
 msgid "Country"
-msgstr ""
+msgstr "Страна"
 
 #: addressmodel/models.py:33
 msgid "Countries"
-msgstr ""
+msgstr "Страны"
 
 #: addressmodel/models.py:42 models/defaults/bases.py:26
 msgid "Name"
@@ -53,27 +60,27 @@ msgstr "Название"
 
 #: addressmodel/models.py:43 addressmodel/models.py:52
 msgid "Address"
-msgstr ""
+msgstr "Адрес"
 
 #: addressmodel/models.py:44
 msgid "Address2"
-msgstr ""
+msgstr "Адрес (вторая строка)"
 
 #: addressmodel/models.py:45
 msgid "Zip Code"
-msgstr ""
+msgstr "Почтовый индекс"
 
 #: addressmodel/models.py:46
 msgid "City"
-msgstr ""
+msgstr "Город"
 
 #: addressmodel/models.py:47
 msgid "State"
-msgstr ""
+msgstr "Регион"
 
 #: addressmodel/models.py:53
 msgid "Addresses"
-msgstr ""
+msgstr "Адреса"
 
 #: admin/orderadmin.py:44
 msgid "Shipping"
@@ -136,11 +143,11 @@ msgstr "ID Транзакции"
 
 #: models/ordermodel.py:97
 msgid "The transaction processor's reference"
-msgstr "Описание платежной системы транзакции"
+msgstr "Описание платежной системы, осуществляющей транзакции"
 
 #: models/ordermodel.py:100
-msgid "The payment backend use to process the purchase"
-msgstr "Модуль оплаты через который проведена оплата"
+msgid "The payment backend used to process the purchase"
+msgstr "Модуль оплаты, через который проведена оплата"
 
 #: models/ordermodel.py:104
 msgid "Order payment"
@@ -198,29 +205,27 @@ msgstr "Элементы заказа"
 
 #: models/defaults/bases.py:323
 msgid "Processing"
-msgstr ""
+msgstr "Обрабатывается"
 
 #: models/defaults/bases.py:324
-#, fuzzy
 msgid "Selecting payment"
-msgstr "Оплата заказа"
+msgstr "Выбор способа оплаты"
 
 #: models/defaults/bases.py:325
 msgid "Confirmed"
-msgstr ""
+msgstr "Подтверждён"
 
 #: models/defaults/bases.py:326
 msgid "Completed"
-msgstr ""
+msgstr "Завершён"
 
 #: models/defaults/bases.py:327
-#, fuzzy
 msgid "Shipped"
-msgstr "Доставка"
+msgstr "Доставлен"
 
 #: models/defaults/bases.py:328
 msgid "Cancelled"
-msgstr ""
+msgstr "Отменён"
 
 #: models/defaults/bases.py:333
 msgid "User"
@@ -244,11 +249,11 @@ msgstr "Адрес доставки"
 
 #: models/defaults/bases.py:340
 msgid "Billing address"
-msgstr "Ардес счета"
+msgstr "Адрес плательщика"
 
 #: models/defaults/bases.py:343
 msgid "Created"
-msgstr "Создано"
+msgstr "Дата создания"
 
 #: models/defaults/bases.py:345
 msgid "Updated"
@@ -265,12 +270,12 @@ msgstr "ID заказа: %(id)s"
 
 #: models/defaults/bases.py:431
 msgid "Product reference"
-msgstr "Описание продукта"
+msgstr "Описание товара"
 
 #: models/defaults/bases.py:433 templates/shop/cart.html:17
 #: templates/shop/templatetags/_order.html:27
 msgid "Product name"
-msgstr "Название продукта"
+msgstr "Название товара"
 
 #: models/defaults/bases.py:437 templates/shop/cart.html:19
 #: templates/shop/templatetags/_order.html:29
@@ -279,11 +284,11 @@ msgstr "Количество"
 
 #: models/defaults/bases.py:438
 msgid "Line subtotal"
-msgstr "Подитог строки"
+msgstr "Стоимость товаров"
 
 #: models/defaults/bases.py:439
 msgid "Line total"
-msgstr "Итого по строке"
+msgstr "Всего к оплате за товары"
 
 #: models/defaults/bases.py:445 models/defaults/orderitem.py:12
 msgid "Order items"
@@ -291,11 +296,11 @@ msgstr "Элементы заказа"
 
 #: payment/backends/pay_on_delivery.py:11
 msgid "Pay On Delivery"
-msgstr ""
+msgstr "Оплата при получении"
 
 #: shipping/backends/flat_rate.py:20
 msgid "Flat rate"
-msgstr ""
+msgstr "Единая цена"
 
 #: templates/shop/cart.html:5
 msgid "Your shopping cart"
@@ -303,15 +308,15 @@ msgstr "Ваша корзина"
 
 #: templates/shop/cart.html:42 templates/shop/templatetags/_order.html:49
 msgid "Line Total"
-msgstr "Итог строки"
+msgstr "Всего к оплате за товары"
 
 #: templates/shop/cart.html:48
 msgid "Cart Subtotal"
-msgstr "Подитог корзины"
+msgstr "Стоимость корзины"
 
 #: templates/shop/cart.html:56
 msgid "Cart Total"
-msgstr "Итог корзины"
+msgstr "Всего к оплате за товары в корзине"
 
 #: templates/shop/cart.html:60
 msgid "Update Shopping Cart"
@@ -319,7 +324,7 @@ msgstr "Обновить корзину"
 
 #: templates/shop/cart.html:65
 msgid "Empty Shopping Cart"
-msgstr "Пустая корзина"
+msgstr "Очистить корзину"
 
 #: templates/shop/cart.html:69
 msgid "Proceed to checkout"
@@ -359,4 +364,4 @@ msgstr "Адрес оплаты"
 
 #: templates/shop/templatetags/_order.html:54
 msgid "Order Subtotal"
-msgstr "Подитог заказа"
+msgstr "Стоимость заказа"
