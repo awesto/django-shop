@@ -7,6 +7,7 @@ Version NEXT
 * Added a order_required decorator to fix bug #84, which should be used on all payment and shipping views
 * Added get_product_reference method to Product (for extensibility)
 * Cart object is not saved to database if it is empty (#147)
+* Before adding items to cart you now have to use get_or_create_cart with save=True
 * Changed spelling mistakes in methods from `payed` to `paid` on the Order 
   model and on the API. This is potentially not backwards compatible in some 
   border cases.
