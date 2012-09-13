@@ -202,7 +202,9 @@ class CircularImportTestCase(TestCase):
     # NOTE: Deleting the modules in TestCase.setUp does not work
     def setup_app(self, app_name, product_model):
         self.app_name = app_name
-        settings.INSTALLED_APPS.insert(0, app_name)
+        apps = list(settings.INSTALLED_APPS)
+        apps.insert(0, app_name)
+        settings.INSTALLED_APPS = tuple(apps)
 
         cache.loaded = False
         try:
@@ -219,7 +221,9 @@ class CircularImportTestCase(TestCase):
 
     def tearDown(self):
         cache.loaded = False
-        settings.INSTALLED_APPS.remove(self.app_name)
+        apps = list(settings.INSTALLED_APPS)
+        apps.remove(self.app_name)
+        settings.INSTALLED_APPS = tuple(apps)
         if self.product_model == '!':
             del settings.SHOP_PRODUCT_MODEL
         else:
