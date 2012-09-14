@@ -8,27 +8,16 @@ class CurrencyField(DecimalField):
     A CurrencyField is simply a subclass of DecimalField with a fixed format:
     decimal_places=2, and defaults to 0.00
 
-    You can specify max-digits here, otherwise it will default to 20
+    You can specify max-digits here, otherwise it will default to 30
     """
     def __init__(self, **kwargs):
-        # Remove decimal places from kwargs, we only want 2
-        if 'decimal_places' in kwargs.keys():
-            del kwargs['decimal_places']
-
-        # get "default" or 0.00
-        default = kwargs.get('default', Decimal('0.00'))
-        # get "max_digits" or 20
-        max_digits = kwargs.get('max_digits', 20)
-
-        # Now remove the keys from kwargs, otherwise we will pass them at 
-        # double in the super() call below
-        if 'default' in kwargs.keys():
-            del kwargs['default']
-        if 'max_digits' in kwargs.keys():
-            del kwargs['max_digits']
-
-        super(CurrencyField, self).__init__(max_digits=max_digits,
-            decimal_places=2, default=default, **kwargs)
+        defaults = {
+            'max_digits': 30,
+            'decimal_places': 10,
+            'default': Decimal('0.0')
+        }
+        defaults.update(kwargs)
+        super(CurrencyField, self).__init__(**defaults)
 
     def south_field_triple(self):  # pragma: no cover
         """
