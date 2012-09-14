@@ -62,8 +62,14 @@ def order_required(redirect_url, args=[], kwargs={}):
     @order_required(some_function)
     def some_view(...
 
+    @order_required(some_function, args=['a', 'b', 'c'], kwargs={'foo': 'bar'})
+    def some_view(...
+
     OR:
-    @order_required('')
+    @order_required('some_named_url')
+    def some_view(...
+
+    @order_required('some_named_url', args=['a', 'b', 'c'], kwargs={'foo': 'bar'})
     def some_view(...
     """
     def decorator(func):
