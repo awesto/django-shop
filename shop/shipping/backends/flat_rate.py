@@ -25,7 +25,7 @@ class FlatRateShipping(object):
         self.rate = getattr(settings, 'SHOP_SHIPPING_FLAT_RATE', '10')
 
     @on_method(shop_login_required)
-    @on_method(order_required)
+    @on_method(order_required('cart'))
     def view_process_order(self, request):
         """
         A simple (not class-based) view to process an order.
