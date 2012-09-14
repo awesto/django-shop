@@ -19,6 +19,8 @@ Version NEXT
 * CartItem URLs were too greedy, they now match less.
 * In case a user has two carts, one bound to the session and one to the user, 
   the one from the session will be used (#169)
+* Fixed circular import errors by moving base models to shop.models_bases and 
+  base managers to shop.models_bases.managers
 
 Version 0.0.13
 ==============
