@@ -68,7 +68,7 @@ def order_required(redirect_url='/'):
     def decorator(func):
         def inner(request, *args, **kwargs):
             order = get_order_from_request(request)
-            if order is None or getattr(order, 'status', Order.COMPLETED) == Order.COMPLETED:
+            if order is None or getattr(order, 'status', Order.COMPLETED) >= Order.COMPLETED:
                 return HttpResponseRedirect(redirect_url)
             return func(request, *args, **kwargs)
         return wraps(func)(inner)
