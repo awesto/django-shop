@@ -4,7 +4,9 @@ Version NEXT
 * Made Backends internationalizable, as well as the BillingShippingForm
   thanks to the introduciton of a new optional backend_verbose_name attribute
   to backends.
-* Added a order_required decorator to fix bug #84, which should be used on all payment and shipping views
+* Added order_required decorator to fix bug #84, which should be used on all 
+  payment and shipping views
+* Added cart_required decorator that checks for a cart on the checkout view #172
 * Added get_product_reference method to Product (for extensibility)
 * Cart object is not saved to database if it is empty (#147)
 * Before adding items to cart you now have to use get_or_create_cart with save=True
