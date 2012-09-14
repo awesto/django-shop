@@ -208,7 +208,7 @@ class PayOnDeliveryTestCase(TestCase):
         # User logged in (no order)
         username = 'user'
         pw = 'pass'
-        User.objects.create_user(username=username, password=pw)
+        User.objects.create_user(username=username, password=pw, email='test@example.com')
         logged_in = self.client.login(username=username, password=pw)
         self.assertTrue(logged_in)
         response = self.client.get(reverse('pay-on-delivery'))
