@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
-from shop.models.defaults.bases import BaseOrderItem
+from shop.models_bases import BaseOrderItem
 
 
 class OrderItem(BaseOrderItem):
