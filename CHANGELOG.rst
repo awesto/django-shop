@@ -1,6 +1,8 @@
 Version NEXT
 ==============
 
+* Bumped the CurrencyField precision limitation to 30 max_digits and 10 decimal
+  places, like it should have been since the beginning.
 * Made Backends internationalizable, as well as the BillingShippingForm
   thanks to the introduciton of a new optional backend_verbose_name attribute
   to backends.
