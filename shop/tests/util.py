@@ -25,7 +25,7 @@ class CurrencyFieldTestCase(TestCase):
     Tests the currency field defined in the util package
     """
     def test_01_currencyfield_has_fixed_format(self):
-        cf = CurrencyField(max_digits=2, decimal_places=1)
+        cf = CurrencyField(max_digits=2, decimal_places=10)
         number = cf.format_number(99.99)
         #number should *not* end up having only one decimal place
         self.assertEqual(Decimal(number), Decimal('99.99'))
