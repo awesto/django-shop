@@ -2,7 +2,7 @@
 from django.conf.urls.defaults import patterns, url
 from django.http import HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _
-from shop.util.decorators import on_method, shop_login_required
+from shop.util.decorators import on_method, shop_login_required, order_required
 
 
 class PayOnDeliveryBackend(object):
@@ -17,6 +17,7 @@ class PayOnDeliveryBackend(object):
         # it in a tidy way (look ma', no imports!)
 
     @on_method(shop_login_required)
+    @on_method(order_required)
     def simple_view(self, request):
         """
         This simple view does nothing but record the "payment" as being

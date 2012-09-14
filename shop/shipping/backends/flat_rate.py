@@ -43,6 +43,7 @@ class FlatRateShipping(object):
         # That's an HttpResponseRedirect
 
     @on_method(shop_login_required)
+    @on_method(order_required)
     def view_display_fees(self, request):
         """
         A simple, normal view that displays a template showing how much the
