@@ -197,3 +197,29 @@ class PayOnDeliveryTestCase(TestCase):
             resp = self.client.get(reverse('pay-on-delivery'))
             self.assertEqual(resp.status_code, 302)
             self.assertTrue('accounts/login/' in resp._headers['location'][1])
+
+    def test_order_required_before_payment(self):
+        """ See issue #84 """
+        # Session only (no order)
+        response = self.client.get(reverse('pay-on-delivery'))
+        self.assertEqual(302, response.status_code)
+        self.assertEqual('http://testserver/', response._headers['location'][1])
+
+        # User logged in (no order)
+        username = 'user'
+        pw = 'pass'
+        User.objects.create_user(username=username, password=pw)
+        logged_in = self.client.login(username=username, password=pw)
+        self.assertTrue(logged_in)
+        response = self.client.get(reverse('pay-on-delivery'))
+        self.assertEqual(302, response.status_code)
+        self.assertEqual('http://testserver/', response._headers['location'][1])
+        self.client.logout()
+
+        # User logged in and has order
+        self.user.set_password('blah')
+        self.user.save()
+        logged_in = self.client.login(username=self.user.username, password='blah')
+        self.assertTrue(logged_in)
+        response = self.client.get(reverse('pay-on-delivery'))
+        self.assertTrue(reverse('thank_you_for_your_order') in response._headers['location'][1])
