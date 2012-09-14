@@ -9,7 +9,6 @@ from django.http import HttpResponseRedirect
 from shop.forms import BillingShippingForm
 from shop.models import AddressModel
 from shop.models.ordermodel import Order
-from shop.order_signals import completed
 from shop.util.address import (
     assign_address_to_request,
     get_billing_address_from_request,
