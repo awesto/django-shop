@@ -58,3 +58,8 @@ class Products(InclusionTag):
         context.update({'products': objects, })
         return context
 register.tag(Products)
+
+def priceformat(price):
+    FORMAT = '%0.2f'
+    return FORMAT % price
+register.filter(priceformat)
