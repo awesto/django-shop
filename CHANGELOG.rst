@@ -1,5 +1,10 @@
 Version NEXT
-==============
+============
+
+
+
+Version 0.1.0
+=============
 
 * Bumped the CurrencyField precision limitation to 30 max_digits and 10 decimal
   places, like it should have been since the beginning.
