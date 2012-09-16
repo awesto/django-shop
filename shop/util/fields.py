@@ -6,19 +6,16 @@ from django.db.models.fields import DecimalField
 class CurrencyField(DecimalField):
     """
     A CurrencyField is simply a subclass of DecimalField with a fixed format:
-    max_digits = 12, decimal_places=2, and defaults to 0.00
+    max_digits = 30, decimal_places=10, and defaults to 0.00
     """
     def __init__(self, **kwargs):
-        if 'max_digits' in kwargs.keys():
-            del kwargs['max_digits']
-        if 'decimal_places' in kwargs.keys():
-            del kwargs['decimal_places']
-        # get "default" or 0.00
-        default = kwargs.get('default', Decimal('0.00'))
-        if 'default' in kwargs.keys():
-            del kwargs['default']
-        super(CurrencyField, self).__init__(max_digits=12,
-            decimal_places=2, default=default, **kwargs)
+        defaults = {
+            'max_digits': 30,
+            'decimal_places': 10,
+            'default': Decimal('0.0')
+        }
+        defaults.update(kwargs)
+        super(CurrencyField, self).__init__(**defaults)
 
     def south_field_triple(self):  # pragma: no cover
         """
