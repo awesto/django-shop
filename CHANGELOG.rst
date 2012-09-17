@@ -1,5 +1,5 @@
-Version NEXT
-============
+Version 0.1.1
+=============
 
 * Changed CurrencyField default decimal precision back to 2
 
