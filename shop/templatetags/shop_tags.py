@@ -61,7 +61,7 @@ register.tag(Products)
 
 def priceformat(price):
     FORMAT = '%0.2f'
-    if not price:
+    if not price and price != 0:
         return ''
     return FORMAT % price
 register.filter(priceformat)
