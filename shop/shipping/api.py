@@ -59,7 +59,7 @@ class ShippingAPI(ShopAPI):
         is finished i.e. shipping costs are added to the order.
         This will redirect to the "select a payment method" page.
         """
-        order.status = Order.CONFIRMED
+        order.status = Order.PAYMENT
         order.save()
         # Emit the signal to say we're now selecting payment
         payment_selection.send(self, order=order)
