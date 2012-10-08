@@ -17,7 +17,7 @@ urlpatterns = patterns('',
         name='checkout_shipping'  # second step of the checkout process
         ),
     url(r'^confirm/$', OrderConfirmView.as_view(),
-        name='checkout_shipping'  # third step of the checkout process
+        name='checkout_confirm'  # third step of the checkout process
         ),
     url(r'^pay/$', PaymentBackendRedirectView.as_view(),
         name='checkout_payment'  # fourth step of the checkout process
