@@ -230,6 +230,8 @@ class CheckoutCartToOrderTestCase(TestCase):
         setattr(self.request, 'user', self.user)
         setattr(self.request, 'session', {})
         setattr(self.request, 'method', 'GET')
+        self.product = Product(name='pizza', slug='pizza', unit_price='1.45')
+        self.product.save()
         self.cart = Cart()
         self.cart.user = self.user
         self.cart.save()
@@ -238,6 +240,15 @@ class CheckoutCartToOrderTestCase(TestCase):
         view = CheckoutSelectionView(request=self.request)
         res = view.create_order_object_from_cart()
         self.assertEqual(res.order_total, Decimal('0'))
+
+    def test_orders_are_created_and_cleaned_up(self):
+        view = CheckoutSelectionView(request=self.request)
+        # create a new order
+        old_order = view.create_order_object_from_cart()
+        # then create a different new order, from a different cart
+        self.cart.add_product(self.product)
+        new_order = view.create_order_object_from_cart()
+        self.assertNotEqual(old_order.order_total, new_order.order_total)
 
     def test_processing_signal(self):
         view = CheckoutSelectionView(request=self.request)
