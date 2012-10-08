@@ -1,7 +1,10 @@
 Version NEXT
 ============
 
-* 
+* Added OrderConfirmView after the shipping backend views that can be easily
+  extended to display a confirmation page
+* Added example payment backend to the example shop
+* Added example OrderConfirmView to the example shop
 
 Version 0.1.1
 =============
