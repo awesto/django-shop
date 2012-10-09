@@ -68,12 +68,14 @@ class OrderManager(models.Manager):
         else:
             return None
 
+    def get_unconfirmed_for_cart(self, cart):
+        return self.filter(cart_pk=cart.pk, status__lt=self.model.CONFIRMED)
+
     def remove_old_orders(self, cart):
         """
         Removes all old unconfirmed order objects.
         """
-        from shop.util.order import get_unconfirmed_orders_from_cart
-        old_orders = get_unconfirmed_orders_from_cart(cart)
+        old_orders = self.get_unconfirmed_for_cart(cart)
         old_orders.delete()
 
     @transaction.commit_on_success

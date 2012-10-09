@@ -3,14 +3,6 @@ from django.contrib.auth.models import AnonymousUser
 from shop.models.ordermodel import Order
 
 
-def get_unconfirmed_orders_from_cart(cart):
-    """
-    Returns unconfirmed orders that were created from the provided cart.
-    """
-    orders = Order.objects.filter(cart_pk=cart.pk, status__lt=Order.COMPLETED)
-    return orders
-
-
 def get_orders_from_request(request):
     """
     Returns all the Orders created from the provided request.
