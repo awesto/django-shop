@@ -243,11 +243,15 @@ class CheckoutCartToOrderTestCase(TestCase):
 
     def test_orders_are_created_and_cleaned_up(self):
         view = CheckoutSelectionView(request=self.request)
-        # create a new order
+        # create a new order with pk 1
         old_order = view.create_order_object_from_cart()
-        # then create a different new order, from a different cart
+        # create order with pk 2 so sqlite doesn't reuse pk 1
+        Order.objects.create()
+        # then create a different new order, from a different cart with pk 3
+        # order pk 1 should be deleted here
         self.cart.add_product(self.product)
         new_order = view.create_order_object_from_cart()
+        self.assertFalse(Order.objects.filter(pk=old_order.pk).exists()) # check it was deleted
         self.assertNotEqual(old_order.order_total, new_order.order_total)
 
     def test_processing_signal(self):
