@@ -181,7 +181,7 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
                 self.request.session['payment_backend'] = \
                     billingshipping_form.cleaned_data['payment_method']
                 self.request.session['shipping_backend'] = \
-                    billingshipping_form.cleaned_data['shipping_method']
+                    billingshipping_form.cleaned_data.get('shipping_method', None)
                 return HttpResponseRedirect(reverse('checkout_shipping'))
 
         return self.get(self, *args, **kwargs)
@@ -225,6 +225,11 @@ class ShippingBackendRedirectView(LoginMixin, ShopView):
     def get(self, *args, **kwargs):
         try:
             backend_namespace = self.request.session.pop('shipping_backend')
+            if backend_namespace is None:
+                order = get_order_from_request(self.request)
+                order.status = Order.CONFIRMING
+                order.save()
+                return HttpResponseRedirect(reverse('checkout_confirm'))
             return HttpResponseRedirect(reverse(backend_namespace))
         except KeyError:
             return HttpResponseRedirect(reverse('cart'))

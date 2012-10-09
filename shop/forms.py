@@ -24,6 +24,11 @@ class BillingShippingForm(forms.Form):
     defined in settings.SHOP_SHIPPING_BACKENDS and
     settings.SHOP_PAYMENT_BACKENDS)
     """
+    def __init__(self, *args, **kwargs):
+        super(BillingShippingForm, self).__init__(*args, **kwargs)
+        if not get_shipping_backends_choices():
+            del(self.fields['shipping_method'])
+
     shipping_method = forms.ChoiceField(choices=get_shipping_backends_choices(), label=_('Shipping method'))
     payment_method = forms.ChoiceField(choices=get_billing_backends_choices(), label=_('Payment method'))
 
