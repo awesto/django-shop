@@ -5,6 +5,7 @@ Version NEXT
   extended to display a confirmation page
 * Added example payment backend to the example shop
 * Added example OrderConfirmView to the example shop
+* Unconfirmed orders are now deleted from the database automatically
 
 Version 0.1.1
 =============

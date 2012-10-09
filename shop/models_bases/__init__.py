@@ -343,6 +343,7 @@ class BaseOrder(models.Model):
             verbose_name=_('Created'))
     modified = models.DateTimeField(auto_now=True,
             verbose_name=_('Updated'))
+    cart_pk = models.PositiveIntegerField(_('Cart primary key'), blank=True, null=True)
 
     class Meta(object):
         abstract = True
