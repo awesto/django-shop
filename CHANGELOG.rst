@@ -6,6 +6,10 @@ Version NEXT
 * Added example payment backend to the example shop
 * Added example OrderConfirmView to the example shop
 * Unconfirmed orders are now deleted from the database automatically
+* Refactored order status (requires data migration)
+    * removed PAYMENT and added CONFIRMING
+    * assignment of statuses is now linear
+    * moved cart.empty() to the PaymentAPI
 
 Version 0.1.1
 =============
