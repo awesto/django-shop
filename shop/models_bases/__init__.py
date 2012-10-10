@@ -319,6 +319,8 @@ class BaseOrder(models.Model):
     SHIPPED = 50 # The order was shipped to client
     CANCELLED = 60 # The order was cancelled
 
+    PAYMENT = 30 # DEPRECATED!
+
     STATUS_CODES = (
         (PROCESSING, _('Processing')),
         (CONFIRMING, _('Confirming')),
