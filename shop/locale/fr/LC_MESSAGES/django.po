@@ -108,7 +108,7 @@ msgstr "Etiquette"
 
 #: models/ordermodel.py:61 models/ordermodel.py:79 models/ordermodel.py:94
 msgid "Amount"
-msgstr "Quantité"
+msgstr "Montant"
 
 #: models/ordermodel.py:64
 msgid "Is shipping"
