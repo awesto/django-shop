@@ -178,7 +178,7 @@ class BaseCart(models.Model):
         Returns updated cart items after update() has been called and
         cart modifiers have been processed for all cart items.
         """
-        assert self._updated_cart_items is not None, ('Cart needs to be'
+        assert self._updated_cart_items is not None, ('Cart needs to be '
             'updated before calling get_updated_cart_items.')
         return self._updated_cart_items
 
