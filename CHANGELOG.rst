@@ -1,7 +1,7 @@
 Version NEXT
 ============
 
-* 
+* Unconfirmed orders are now deleted from the database automatically
 
 Version 0.1.1
 =============
