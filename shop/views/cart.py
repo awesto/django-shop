@@ -133,7 +133,7 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
         product_quantity = self.request.POST.get('add_item_quantity')
         if not product_quantity:
             product_quantity = 1
-        product = Product.objects.get(pk=product_id)
+        product = Product.objects.get(pk=product_id, active=True)
         cart_object = get_or_create_cart(self.request, save=True)
         cart_item = cart_object.add_product(product, product_quantity)
         cart_object.save()
