@@ -68,7 +68,7 @@ class OrderManager(models.Manager):
             return None
 
     @transaction.commit_on_success
-    def create_from_cart(self, cart):
+    def create_from_cart(self, cart, state=None):
         """
         This creates a new Order object (and all the rest) from a passed Cart
         object.
@@ -78,6 +78,10 @@ class OrderManager(models.Manager):
 
         This will only actually commit the transaction once the function exits
         to minimize useless database access.
+
+        The `state` parameter is further passed to process_cart_item,
+        process_cart, and post_process_cart, so it can be used as a way to
+        store per-request arbitrary information.
 
         Emits the ``processing`` signal.
         """
@@ -109,7 +113,7 @@ class OrderManager(models.Manager):
         # There, now move on to the order items.
         cart_items = CartItem.objects.filter(cart=cart)
         for item in cart_items:
-            item.update(cart)
+            item.update(state)
             order_item = OrderItem()
             order_item.order = order
             order_item.product_reference = item.product.get_product_reference()
