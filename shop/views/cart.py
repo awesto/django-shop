@@ -119,7 +119,8 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
         this only extends the mixin and not templateview.
         """
         context = self.get_context_data(**kwargs)
-        formset = get_cart_item_formset(cart_items=context['cart_items'])
+        cart_items = context['cart_items'].order_by('pk')
+        formset = get_cart_item_formset(cart_items=cart_items)
         context.update({'formset': formset, })
         return self.render_to_response(context)
 
