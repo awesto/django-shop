@@ -1,7 +1,9 @@
 Version NEXT
 ============
 
-* 
+* Separation of Concern in OrderManager.create_from_cart:
+  It now is easier to extend the Order class with customized
+  data.
 
 Version 0.1.1
 =============
