@@ -92,14 +92,9 @@ class OrderManager(models.Manager):
             OrderItem,
         )
         from shop.models.cartmodel import CartItem
-        # Let's create the Order itself:
-        order = self.model()
-        order.user = cart.user
-        order.status = self.model.PROCESSING  # Processing
 
-        order.order_subtotal = cart.subtotal_price
-        order.order_total = cart.total_price
-
+        # Create an empty order object
+        order = self.create_order_object(cart, state)
         order.save()
 
         # Let's serialize all the extra price arguments in DB
@@ -134,4 +129,15 @@ class OrderManager(models.Manager):
                 eoi.save()
 
         processing.send(self.model, order=order, cart=cart)
+        return order
+
+    def create_order_object(self, cart, state):
+        """
+        Create an empty order object and fill it with the given cart data.
+        """
+        order = self.model()
+        order.user = cart.user
+        order.status = self.model.PROCESSING  # Processing
+        order.order_subtotal = cart.subtotal_price
+        order.order_total = cart.total_price
         return order
