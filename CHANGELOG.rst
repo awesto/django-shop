@@ -1,7 +1,10 @@
 Version NEXT
 ============
 
-* 
+* Fixed a problem, when the cart was transformed into an order using 
+  OrderManager.create_from_cart
+  Here instead of a free form state argument, the cart object itself
+  has been passed to the CartModifier. This was inconsistent behavior.
 
 Version 0.1.1
 =============
