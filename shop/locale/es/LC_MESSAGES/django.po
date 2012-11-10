@@ -18,7 +18,6 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: forms.py:27
-#, fuzzy
 msgid "Shipping method"
 msgstr "Dirección de Envío"
 
