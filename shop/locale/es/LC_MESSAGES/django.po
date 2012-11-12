@@ -18,7 +18,6 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: forms.py:27
-#, fuzzy
 msgid "Shipping method"
 msgstr "Dirección de Envío"
 
@@ -37,14 +36,6 @@ msgid ""
 "State: %(state)s,\n"
 "Country: %(country)s\n"
 msgstr ""
-"\n"
-"Nombre: %(name)s,\n"
-"Dirección: %(address)s,\n"
-"CP: %(zipcode)s,\n"
-"Madrid: %(city)s,\n"
-"Estado: %(state)s,\n"
-"País: %(country)s\n"
-
 
 #: addressmodel/models.py:32 addressmodel/models.py:48
 msgid "Country"
@@ -155,7 +146,7 @@ msgstr "Pago de pedido"
 
 #: models/ordermodel.py:105
 msgid "Order payments"
-msgstr ""
+msgstr "Pagos de pedido"
 
 #: models/defaults/bases.py:27
 msgid "Slug"
@@ -205,7 +196,7 @@ msgstr "Artículos en carro"
 
 #: models/defaults/bases.py:323
 msgid "Processing"
-msgstr "Procesando"
+msgstr "En proceso"
 
 #: models/defaults/bases.py:324
 msgid "Selecting payment"
@@ -284,11 +275,11 @@ msgstr "Cantidad"
 
 #: models/defaults/bases.py:438
 msgid "Line subtotal"
-msgstr "Total línea"
+msgstr "Subtotal"
 
 #: models/defaults/bases.py:439
 msgid "Line total"
-msgstr "Subtotal línea"
+msgstr "Total"
 
 #: models/defaults/bases.py:445 models/defaults/orderitem.py:12
 msgid "Order items"
