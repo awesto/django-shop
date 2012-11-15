@@ -102,7 +102,7 @@ class OrderManager(models.Manager):
         for label, value in cart.extra_price_fields:
             eoi = ExtraOrderPriceField()
             eoi.order = order
-            eoi.label = str(label)
+            eoi.label = unicode(label)
             eoi.value = value
             eoi.save()
 
