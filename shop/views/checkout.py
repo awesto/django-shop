@@ -5,6 +5,7 @@ This models the checkout process using views.
 from django.core.urlresolvers import reverse
 from django.forms import models as model_forms
 from django.http import HttpResponseRedirect
+from django.views.generic import RedirectView
 
 from shop.forms import BillingShippingForm
 from shop.models import AddressModel
@@ -202,6 +203,13 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
         })
         return ctx
 
+
+class OrderConfirmView(RedirectView):
+    url_name = 'checkout_payment'
+
+    def get_redirect_url(self, **kwargs):
+        self.url = reverse(self.url_name)
+        return super(OrderConfirmView, self).get_redirect_url(**kwargs)
 
 class ThankYouView(LoginMixin, ShopTemplateView):
     template_name = 'shop/checkout/thank_you.html'
