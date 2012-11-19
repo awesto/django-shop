@@ -9,7 +9,7 @@ class OrderListView(ShopListView):
     """
     Display list or orders for logged in user.
     """
-    queryset = Order.objects.all()
+    queryset = Order.objects.all().order_by('-created')
 
     def get_queryset(self):
         queryset = super(OrderListView, self).get_queryset()
