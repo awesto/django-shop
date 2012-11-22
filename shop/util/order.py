@@ -20,7 +20,7 @@ def get_order_from_request(request):
             order = None
     else:
         session = getattr(request, 'session', None)
-        if session != None:
+        if session is not None:
             # There is a session
             order_id = session.get('order_id')
             if order_id:

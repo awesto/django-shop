@@ -134,7 +134,7 @@ class BaseCart(models.Model):
         # also saves cart object if it is not saved
         self.save()
 
-        if queryset == None:
+        if queryset is None:
             queryset = CartItem.objects.filter(cart=self, product=product)
         item = queryset
         # Let's see if we already have an Item with the same product ID
@@ -210,7 +210,7 @@ class BaseCart(models.Model):
 
         # This will hold extra information that cart modifiers might want to
         # pass to each other
-        if state == None:
+        if state is None:
             state = {}
 
         # This calls all the pre_process_cart methods (if any), before the cart

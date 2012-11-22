@@ -27,7 +27,7 @@ def get_shipping_address_from_request(request):
         session = getattr(request, 'session', None)
         shipping_address = None
         session_address_id = session.get('shipping_address_id')
-        if session != None and session_address_id:
+        if session is not None and session_address_id:
             shipping_address = AddressModel.objects.get(pk=session_address_id)
     return shipping_address
 
@@ -51,7 +51,7 @@ def get_billing_address_from_request(request):
         # The client is a guest - let's use the session instead.
         session = getattr(request, 'session', None)
         session_billing_id = session.get('billing_address_id')
-        if session != None and session_billing_id:
+        if session is not None and session_billing_id:
             billing_address = AddressModel.objects.get(pk=session_billing_id)
     return billing_address
 
