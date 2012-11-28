@@ -3,31 +3,35 @@ from django.contrib.auth.models import AnonymousUser
 from shop.models.ordermodel import Order
 
 
-def get_order_from_request(request):
+def get_orders_from_request(request):
     """
-    Returns the currently processing Order from a request (switches between
-    user or session mode) if any.
+    Returns all the Orders created from the provided request.
     """
-    order = None
+    orders = None
     if request.user and not isinstance(request.user, AnonymousUser):
         # There is a logged in user
         orders = Order.objects.filter(user=request.user)
         orders = orders.order_by('-created')
-        if len(orders) >= 1:  # The queryset returns a list
-            order = orders[0]
-        else:
-            # There is a logged in user but he has no pending order
-            order = None
     else:
         session = getattr(request, 'session', None)
         if session != None:
             # There is a session
             order_id = session.get('order_id')
             if order_id:
-                try:
-                    order = Order.objects.get(pk=order_id)
-                except Order.DoesNotExist:
-                    return None
+                orders = Order.objects.filter(pk=order_id)
+    return orders
+
+
+def get_order_from_request(request):
+    """
+    Returns the currently processing Order from a request (switches between
+    user or session mode) if any.
+    """
+    orders = get_orders_from_request(request)
+    if orders and len(orders) >= 1:
+        order = orders[0]
+    else:
+        order = None
     return order
 
 

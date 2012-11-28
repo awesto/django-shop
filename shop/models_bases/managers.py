@@ -10,6 +10,7 @@ from shop.order_signals import processing
 #==============================================================================
 # Product
 #==============================================================================
+
 class ProductStatisticsManager(PolymorphicManager):
     """
     A Manager for all the non-object manipulation needs, mostly statistics and
@@ -67,6 +68,16 @@ class OrderManager(models.Manager):
         else:
             return None
 
+    def get_unconfirmed_for_cart(self, cart):
+        return self.filter(cart_pk=cart.pk, status__lt=self.model.CONFIRMED)
+
+    def remove_old_orders(self, cart):
+        """
+        Removes all old unconfirmed order objects.
+        """
+        old_orders = self.get_unconfirmed_for_cart(cart)
+        old_orders.delete()
+
     @transaction.commit_on_success
     def create_from_cart(self, cart):
         """
@@ -88,8 +99,13 @@ class OrderManager(models.Manager):
             OrderItem,
         )
         from shop.models.cartmodel import CartItem
+
+        # First, let's remove old orders
+        self.remove_old_orders(cart)
+
         # Let's create the Order itself:
         order = self.model()
+        order.cart_pk = cart.pk
         order.user = cart.user
         order.status = self.model.PROCESSING  # Processing
 
