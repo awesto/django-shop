@@ -367,6 +367,9 @@ class BaseOrder(models.Model):
     def is_completed(self):
         return self.status == self.COMPLETED
 
+    def get_status_name(self):
+        return dict(self.STATUS_CODES)[self.status]
+
     @property
     def amount_paid(self):
         """
