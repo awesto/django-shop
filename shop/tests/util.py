@@ -90,7 +90,7 @@ class CartUtilsTestCase(TestCase):
         self.assertNotEqual(ret, self.cart)
 
     def test_passing_session_returns_proper_cart(self):
-        setattr(self.request, 'session', {'cart_id': self.cart.id})
+        setattr(self.request, 'session', {'cart_id': self.cart.pk})
         ret = get_or_create_cart(self.request)
         self.assertNotEqual(ret, None)
         self.assertEqual(ret, self.cart)
@@ -102,7 +102,7 @@ class CartUtilsTestCase(TestCase):
 
     def test_having_two_empty_carts_returns_database_cart(self):
         setattr(self.request, 'user', self.user)
-        setattr(self.request, 'session', {'cart_id': self.cart.id})
+        setattr(self.request, 'session', {'cart_id': self.cart.pk})
         database_cart = Cart.objects.create(user=self.user)
         ret = get_or_create_cart(self.request)
         self.assertNotEqual(ret, None)
@@ -111,7 +111,7 @@ class CartUtilsTestCase(TestCase):
 
     def test_having_filled_session_cart_and_empty_database_cart_returns_session_cart(self):
         setattr(self.request, 'user', self.user)
-        setattr(self.request, 'session', {'cart_id': self.cart.id})
+        setattr(self.request, 'session', {'cart_id': self.cart.pk})
         database_cart = Cart.objects.create(user=self.user)
         product = Product.objects.create(name='pizza', slug='pizza', unit_price=0)
         CartItem.objects.create(cart=self.cart, quantity=1, product=product)
@@ -125,7 +125,7 @@ class CartUtilsTestCase(TestCase):
 
     def test_having_empty_session_cart_and_filled_database_cart_returns_database_cart(self):
         setattr(self.request, 'user', self.user)
-        setattr(self.request, 'session', {'cart_id': self.cart.id})
+        setattr(self.request, 'session', {'cart_id': self.cart.pk})
         database_cart = Cart.objects.create(user=self.user)
         product = Product.objects.create(name='pizza', slug='pizza', unit_price=0)
         CartItem.objects.create(cart=database_cart, quantity=1, product=product)
@@ -136,7 +136,7 @@ class CartUtilsTestCase(TestCase):
 
     def test_having_two_filled_carts_returns_session_cart(self):
         setattr(self.request, 'user', self.user)
-        setattr(self.request, 'session', {'cart_id': self.cart.id})
+        setattr(self.request, 'session', {'cart_id': self.cart.pk})
         database_cart = Cart.objects.create(user=self.user)
         product = Product.objects.create(name='pizza', slug='pizza', unit_price=0)
         CartItem.objects.create(cart=database_cart, quantity=1, product=product)

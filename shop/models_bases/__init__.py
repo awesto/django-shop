@@ -60,7 +60,7 @@ class BaseProduct(PolymorphicModel):
         """
         Return product reference of this Product (provided for extensibility).
         """
-        return unicode(self.id)
+        return unicode(self.pk)
 
 
 #==============================================================================
@@ -354,7 +354,7 @@ class BaseOrder(models.Model):
         verbose_name_plural = _('Orders')
 
     def __unicode__(self):
-        return _('Order ID: %(id)s') % {'id': self.id}
+        return _('Order ID: %(id)s') % {'id': self.pk}
 
     def get_absolute_url(self):
         return reverse('order_detail', kwargs={'pk': self.pk})
@@ -366,6 +366,9 @@ class BaseOrder(models.Model):
 
     def is_completed(self):
         return self.status == self.COMPLETED
+
+    def get_status_name(self):
+        return dict(self.STATUS_CODES)[self.status]
 
     @property
     def amount_paid(self):
