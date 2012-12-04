@@ -2,7 +2,7 @@
 from django import template
 
 from classytags.helpers import InclusionTag
-from classytags.core import Options
+from classytags.core import Options, Tag
 from classytags.arguments import Argument
 
 from shop.util.cart import get_or_create_cart
@@ -65,3 +65,31 @@ def priceformat(price):
         return ''
     return FORMAT % price
 register.filter(priceformat)
+
+class Thecart(Tag):
+    options = Options(
+        'as',
+        Argument('varname', required=True, resolve=False)
+    )
+
+    def render_tag(self, context, varname):
+        cart = get_or_create_cart(context['request'])
+        cart.update()
+        context[varname] = cart
+        return ''
+register.tag(Thecart)
+
+
+class Theproducts(Tag):
+    options = Options(
+        Argument('objects', required=False, resolve=True),
+        'as',
+        Argument('varname', required=True, resolve=False)
+    )
+
+    def render_tag(self, context, objects, varname):
+        if objects is None:
+            objects = Product.objects.filter(active=True)
+        context[varname] = objects
+        return ''
+register.tag(Theproducts)
