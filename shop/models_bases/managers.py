@@ -10,6 +10,7 @@ from shop.order_signals import processing
 #==============================================================================
 # Product
 #==============================================================================
+
 class ProductStatisticsManager(PolymorphicManager):
     """
     A Manager for all the non-object manipulation needs, mostly statistics and
@@ -67,6 +68,28 @@ class OrderManager(models.Manager):
         else:
             return None
 
+    def get_unconfirmed_for_cart(self, cart):
+        return self.filter(cart_pk=cart.pk, status__lt=self.model.CONFIRMED)
+
+    def remove_old_orders(self, cart):
+        """
+        Removes all old unconfirmed order objects.
+        """
+        old_orders = self.get_unconfirmed_for_cart(cart)
+        old_orders.delete()
+
+    def create_order_object(self, cart, state):
+        """
+        Create an empty order object and fill it with the given cart data.
+        """
+        order = self.model()
+        order.cart_pk = cart.pk
+        order.user = cart.user
+        order.status = self.model.PROCESSING  # Processing
+        order.order_subtotal = cart.subtotal_price
+        order.order_total = cart.total_price
+        return order
+
     @transaction.commit_on_success
     def create_from_cart(self, cart, state=None):
         """
@@ -93,6 +116,9 @@ class OrderManager(models.Manager):
         )
         from shop.models.cartmodel import CartItem
 
+        # First, let's remove old orders
+        self.remove_old_orders(cart)
+
         # Create an empty order object
         order = self.create_order_object(cart, state)
         order.save()
@@ -101,7 +127,7 @@ class OrderManager(models.Manager):
         for label, value in cart.extra_price_fields:
             eoi = ExtraOrderPriceField()
             eoi.order = order
-            eoi.label = str(label)
+            eoi.label = unicode(label)
             eoi.value = value
             eoi.save()
 
@@ -129,15 +155,4 @@ class OrderManager(models.Manager):
                 eoi.save()
 
         processing.send(self.model, order=order, cart=cart)
-        return order
-
-    def create_order_object(self, cart, state):
-        """
-        Create an empty order object and fill it with the given cart data.
-        """
-        order = self.model()
-        order.user = cart.user
-        order.status = self.model.PROCESSING  # Processing
-        order.order_subtotal = cart.subtotal_price
-        order.order_total = cart.total_price
         return order

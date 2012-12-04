@@ -16,6 +16,8 @@ CONTRIBUTORS
 * Bojan Mihelac
 * Chris Morgan
 * fivethreeo
+* German Larrain
+* ikresoft
 * Issac Kelly
 * Jacob Rief
 * Jonas Obrist

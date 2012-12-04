@@ -4,6 +4,15 @@ Version NEXT
 * Separation of Concern in OrderManager.create_from_cart:
   It now is easier to extend the Order class with customized
   data.
+* Added OrderConfirmView after the shipping backend views that can be easily
+  extended to display a confirmation page
+* Added example payment backend to the example shop
+* Added example OrderConfirmView to the example shop
+* Unconfirmed orders are now deleted from the database automatically
+* Refactored order status (requires data migration)
+    * removed PAYMENT and added CONFIRMING
+    * assignment of statuses is now linear
+    * moved cart.empty() to the PaymentAPI
 
 Version 0.1.1
 =============

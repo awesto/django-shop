@@ -5,10 +5,11 @@ This models the checkout process using views.
 from django.core.urlresolvers import reverse
 from django.forms import models as model_forms
 from django.http import HttpResponseRedirect
+from django.views.generic import RedirectView
 
 from shop.forms import BillingShippingForm
 from shop.models import AddressModel
-from shop.models.ordermodel import Order
+from shop.models import Order
 from shop.util.address import (
     assign_address_to_request,
     get_billing_address_from_request,
@@ -203,6 +204,22 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
         return ctx
 
 
+class OrderConfirmView(RedirectView):
+    url_name = 'checkout_payment'
+
+    def confirm_order(self):
+        order = get_order_from_request(self.request)
+        order.status = Order.CONFIRMED
+        order.save()
+
+    def get(self, request, *args, **kwargs):
+        self.confirm_order()
+        return super(OrderConfirmView, self).get(request, *args, **kwargs)
+
+    def get_redirect_url(self, **kwargs):
+        self.url = reverse(self.url_name)
+        return super(OrderConfirmView, self).get_redirect_url(**kwargs)
+
 class ThankYouView(LoginMixin, ShopTemplateView):
     template_name = 'shop/checkout/thank_you.html'
 
@@ -213,10 +230,6 @@ class ThankYouView(LoginMixin, ShopTemplateView):
         order = get_order_from_request(self.request)
         if order and order.status == Order.COMPLETED:
             ctx.update({'order': order, })
-            # Empty the customers basket, to reflect that the purchase was
-            # completed
-            cart_object = get_or_create_cart(self.request)
-            cart_object.empty()
 
         return ctx
 

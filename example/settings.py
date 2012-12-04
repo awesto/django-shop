@@ -112,7 +112,8 @@ SHOP_SHIPPING_BACKENDS = (
 )
 
 SHOP_PAYMENT_BACKENDS = (
-    'shop.payment.backends.pay_on_delivery.PayOnDeliveryBackend',
+    #'shop.payment.backends.pay_on_delivery.PayOnDeliveryBackend',
+    'myshop.payment.ExamplePayment',
 )
 
 SHOP_SHIPPING_FLAT_RATE = "10.00"

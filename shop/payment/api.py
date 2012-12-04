@@ -5,6 +5,7 @@ This file defines the interfaces one should implement when either creating a
 new payment module or willing to use modules with another shop system.
 """
 from decimal import Decimal
+from shop.models import Cart
 from shop.models.ordermodel import OrderPayment
 from shop.models.ordermodel import Order
 from shop.shop_api import ShopAPI
@@ -47,6 +48,14 @@ class PaymentAPI(ShopAPI):
             # Set the order status:
             order.status = Order.COMPLETED
             order.save()
+
+            # empty the related cart
+            try:
+                cart = Cart.objects.get(pk=order.cart_pk)
+                cart.empty()
+            except Cart.DoesNotExist:
+                pass
+
             completed.send(sender=self, order=order)
 
 
