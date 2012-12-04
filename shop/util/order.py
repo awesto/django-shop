@@ -48,4 +48,4 @@ def add_order_to_request(request, order):
     else:
         # Add the order_id to the session There has to be a session. Otherwise
         # it's fine to get an AttributeError
-        request.session['order_id'] = order.id
+        request.session['order_id'] = order.pk
