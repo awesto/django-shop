@@ -44,7 +44,7 @@ class CartItemModelForm(forms.ModelForm):
         items from the cart when the quantity is set to 0.
         """
         quantity = self.cleaned_data['quantity']
-        instance = self.instance.cart.update_quantity(self.instance.id,
+        instance = self.instance.cart.update_quantity(self.instance.pk,
                 quantity)
         return instance
 
@@ -67,6 +67,6 @@ def get_cart_item_formset(cart_items=None, data=None):
     # would lose the updated line_subtotals
     for form in form_set:
         for cart_item in cart_items:
-            if form.instance.id == cart_item.id:
+            if form.instance.pk == cart_item.pk:
                 form.instance = cart_item
     return form_set

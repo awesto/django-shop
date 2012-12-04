@@ -168,7 +168,7 @@ class CartTestCase(TestCase):
             self.cart.save()
 
             self.assertEqual(len(self.cart.items.all()), 1)
-            self.cart.update_quantity(self.cart.items.all()[0].id, 0)
+            self.cart.update_quantity(self.cart.items.all()[0].pk, 0)
             self.assertEqual(len(self.cart.items.all()), 0)
 
     def test_custom_queryset_is_used_when_passed_to_method(self):

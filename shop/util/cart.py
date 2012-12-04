@@ -59,7 +59,7 @@ def get_or_create_cart(request, save=False):
                 cart = get_cart_from_database(request)
                 if cart:
                     # and save it to the session
-                    request.session['cart_id'] = cart.id
+                    request.session['cart_id'] = cart.pk
         else:
             # not authenticated? cart might be in session
             cart = get_cart_from_session(request)
@@ -73,7 +73,7 @@ def get_or_create_cart(request, save=False):
 
         if save and not cart.pk:
             cart.save()
-            request.session['cart_id'] = cart.id
+            request.session['cart_id'] = cart.pk
 
         setattr(request, '_cart', cart)
 
