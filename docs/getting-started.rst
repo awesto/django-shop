@@ -167,7 +167,7 @@ file in your project, for example ``modifiers.py``, and add the following::
         example.
         """
         
-        def add_extra_cart_price_field(self, cart):
+        def get_extra_cart_price_field(self, cart):
             taxes = decimal.Decimal('0.07') * cart.subtotal_price
             to_append = ('Taxes total', taxes)
             cart.extra_price_fields.append(to_append)
