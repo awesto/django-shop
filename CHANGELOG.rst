@@ -11,9 +11,25 @@ Version NEXT
 * Added example OrderConfirmView to the example shop
 * Unconfirmed orders are now deleted from the database automatically
 * Refactored order status (requires data migration)
-    * removed PAYMENT and added CONFIRMING
+    * removed PAYMENT and added CONFIRMING status
     * assignment of statuses is now linear
     * moved cart.empty() to the PaymentAPI
+    * orders now store the pk of the originating cart
+* Checkout process works like this:
+    1. CartDetails
+    2. CheckoutSelectionView
+        * POST --> Order.objects.create_from_cart(cart) removes all orders
+        originating from this cart that have status < CONFIRMED(30)
+        * creates a new Order with status PROCESSING(10)
+    3. ShippingBackend
+        * self.finished() sets the status to CONFIRMING(20)
+    4. OrderConfirmView
+        * self.confirm_order() sets the status to CONFIRMED(30)
+    5. PaymentBackend
+        * self.confirm_payment() sets the status to COMPLETED(40)
+        * empties the related cart
+    6. ThankYouView
+        * does nothing!
 
 Version 0.1.1
 =============
