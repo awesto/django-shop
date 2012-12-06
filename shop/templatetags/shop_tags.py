@@ -8,6 +8,8 @@ from classytags.arguments import Argument
 from shop.util.cart import get_or_create_cart
 from shop.models.productmodel import Product
 
+from django.conf import settings
+
 
 register = template.Library()
 
@@ -60,7 +62,7 @@ class Products(InclusionTag):
 register.tag(Products)
 
 def priceformat(price):
-    FORMAT = '%0.2f'
+    FORMAT = getattr(settings, 'SHOP_PRICE_FORMAT', '%0.2f')
     if not price and price != 0:
         return ''
     return FORMAT % price

@@ -1,6 +1,7 @@
 Version NEXT
 ============
 
+* Added setting `SHOP_PRICE_FORMAT` used in the `priceformat` filter
 * Separation of Concern in OrderManager.create_from_cart:
   It now is easier to extend the Order class with customized
   data.
