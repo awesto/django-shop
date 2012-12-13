@@ -1,6 +1,8 @@
 Version NEXT
 ============
 
+* cart_required and order_required decorators now accept a reversible url
+  name instead and redirect to cart by default
 * Added setting `SHOP_PRICE_FORMAT` used in the `priceformat` filter
 * Separation of Concern in OrderManager.create_from_cart:
   It now is easier to extend the Order class with customized

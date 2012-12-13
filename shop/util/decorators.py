@@ -3,6 +3,7 @@ from functools import wraps
 
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import user_passes_test
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from shop.util.cart import get_or_create_cart
 
@@ -44,24 +45,24 @@ def shop_login_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME,
         return actual_decorator(function)
     return actual_decorator
 
-def order_required(redirect_url='/'):
+def order_required(url_name='cart'):
     """
     Ensures that an non-complete order exists before carrying out any
     additional functions that rely on one.
 
     If an order does not exist the browser will be redirected to another page
-    supplied in the optional keyword argument `redirect_url`.
+    supplied in the optional keyword argument `url_name`.
 
     Usage:
     @order_required
     def some_view(...
 
     OR:
-    @order_required(redirect_url='/some/path/')
+    @order_required(url_name='cart')
     def some_view(...
     """
-    if callable(redirect_url):
-        func = redirect_url
+    if callable(url_name):
+        func = url_name
         decorator = order_required()
         return decorator(func)
 
@@ -69,28 +70,28 @@ def order_required(redirect_url='/'):
         def inner(request, *args, **kwargs):
             order = get_order_from_request(request)
             if order is None or getattr(order, 'status', Order.COMPLETED) >= Order.COMPLETED:
-                return HttpResponseRedirect(redirect_url)
+                return HttpResponseRedirect(reverse(url_name))
             return func(request, *args, **kwargs)
         return wraps(func)(inner)
     return decorator
 
-def cart_required(redirect_url='/'):
+def cart_required(url_name='cart'):
     """
     Ensures that a non-empty cart is present.
 
     If a cart does not exist the browser will be redirected to another page
-    supplied in the optional keyword argument `redirect_url`.
+    supplied in the optional keyword argument `url_name`.
 
     Usage:
     @cart_required
     def some_view(...
 
     OR:
-    @cart_required(redirect_url='/some/path/')
+    @cart_required(url_name='cart')
     def some_view(...
     """
-    if callable(redirect_url):
-        func = redirect_url
+    if callable(url_name):
+        func = url_name
         decorator = cart_required()
         return decorator(func)
 
@@ -98,7 +99,7 @@ def cart_required(redirect_url='/'):
         def inner(request, *args, **kwargs):
             cart = get_or_create_cart(request)
             if cart.total_quantity <= 0:
-                return HttpResponseRedirect(redirect_url)
+                return HttpResponseRedirect(reverse(url_name))
             return func(request, *args, **kwargs)
         return wraps(func)(inner)
     return decorator
