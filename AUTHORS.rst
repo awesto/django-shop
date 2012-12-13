@@ -39,3 +39,4 @@ TRANSLATORS
 * Mikhail Kolesnik (Russian)
 * Pavel Zhukov (Russian)
 * Pedro Gracia (Spanish)
+* Arturo Fernandez (Spanish)
