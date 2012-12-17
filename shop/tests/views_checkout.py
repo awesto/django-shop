@@ -230,7 +230,7 @@ class CheckoutCartToOrderTestCase(TestCase):
         setattr(self.request, 'user', self.user)
         setattr(self.request, 'session', {})
         setattr(self.request, 'method', 'GET')
-        self.product = Product(name='pizza', slug='pizza', unit_price='1.45')
+        self.product = Product(name='pizza', slug='pizza', unit_price='1.45', active=True)
         self.product.save()
         self.cart = Cart()
         self.cart.user = self.user
