@@ -201,3 +201,10 @@ class CartTestCase(TestCase):
     def test_get_updated_cart_items_without_updating_cart(self):
         with self.assertRaises(AssertionError):
             self.cart.get_updated_cart_items()
+
+    def test_adding_inactive_product_does_nothing(self):
+        self.cart.add_product(self.product)
+        self.cart.add_product(self.inactive_product)
+        self.cart.update()
+        self.assertEqual(len(self.cart.items.all()), 1)
+
