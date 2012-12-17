@@ -1,6 +1,10 @@
 Version NEXT
 ============
 
+
+Version 0.1.2
+=============
+
 * cart_required and order_required decorators now accept a reversible url
   name instead and redirect to cart by default
 * Added setting `SHOP_PRICE_FORMAT` used in the `priceformat` filter
