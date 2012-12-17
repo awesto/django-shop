@@ -21,6 +21,7 @@ class ProductDetailViewTestCase(TestCase):
         self.product.short_description = 'test'
         self.product.long_description = 'test'
         self.product.unit_price = Decimal('1.0')
+        self.product.active = True
         self.product.save()
 
         self.view = ProductDetailView(kwargs={'pk': self.product.pk})
@@ -46,7 +47,7 @@ class CartDetailsViewTestCase(TestCase):
                                         last_name="Tester")
 
         self.cart = Cart.objects.create()
-        self.product = Product.objects.create()
+        self.product = Product.objects.create(active=True)
         self.item = CartItem.objects.create(cart=self.cart, quantity=1,
                                             product=self.product)
 
@@ -123,7 +124,7 @@ class CartDetailsViewTestCase(TestCase):
 class CartViewTestCase(TestCase):
 
     def setUp(self):
-        self.product = Product.objects.create()
+        self.product = Product.objects.create(active=True)
 
     def add_product_to_cart(self, product):
         post = {

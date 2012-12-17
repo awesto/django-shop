@@ -33,6 +33,8 @@ class CartTestCase(TestCase):
         self.product.active = True
         self.product.unit_price = self.PRODUCT_PRICE
         self.product.save()
+        self.inactive_product = Product(name='InactiveProduct', slug='InactiveProduct', active=False)
+        self.inactive_product.save()
 
         self.cart = Cart()
         self.cart.user = self.user
@@ -152,7 +154,7 @@ class CartTestCase(TestCase):
         base_product = BaseProduct.objects.create(
             unit_price=self.PRODUCT_PRICE)
         variation = base_product.productvariation_set.create(
-            name="Variation 1")
+            name="Variation 1", active=True)
         with SettingsOverride(SHOP_CART_MODIFIERS=[]):
             self.cart.add_product(variation)
             self.cart.update()
@@ -201,3 +203,10 @@ class CartTestCase(TestCase):
     def test_get_updated_cart_items_without_updating_cart(self):
         with self.assertRaises(AssertionError):
             self.cart.get_updated_cart_items()
+
+    def test_adding_inactive_product_does_nothing(self):
+        self.cart.add_product(self.product)
+        self.cart.add_product(self.inactive_product)
+        self.cart.update()
+        self.assertEqual(len(self.cart.items.all()), 1)
+

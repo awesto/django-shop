@@ -62,6 +62,10 @@ class BaseProduct(PolymorphicModel):
         """
         return unicode(self.pk)
 
+    @property
+    def can_be_added_to_cart(self):
+        return self.active
+
 
 #==============================================================================
 # Carts
@@ -129,6 +133,10 @@ class BaseCart(models.Model):
         1
         """
         from shop.models import CartItem
+
+        # check if product can be added at all
+        if not getattr(product, 'can_be_added_to_cart', True):
+            return None
 
         # get the last updated timestamp
         # also saves cart object if it is not saved

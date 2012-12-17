@@ -1,6 +1,8 @@
 Version NEXT
 ============
 
+* Product model now has property ``can_be_added_to_cart`` which is checked before adding the product to cart
+
 
 Version 0.1.2
 =============
