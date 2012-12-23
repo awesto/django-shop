@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
 from decimal import Decimal
 from distutils.version import LooseVersion
-from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.aggregates import Sum
@@ -12,6 +12,7 @@ from shop.util.fields import CurrencyField
 from shop.util.loader import get_model_string
 import django
 
+User = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
 #==============================================================================
 # Product
