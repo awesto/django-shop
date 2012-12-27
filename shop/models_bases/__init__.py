@@ -10,7 +10,6 @@ from polymorphic.polymorphic_model import PolymorphicModel
 from shop.cart.modifiers_pool import cart_modifiers_pool
 from shop.util.fields import CurrencyField
 from shop.util.loader import get_model_string
-from shop.order_signals import confirmed
 import django
 
 
@@ -364,11 +363,6 @@ class BaseOrder(models.Model):
 
     def __unicode__(self):
         return _('Order ID: %(id)s') % {'id': self.pk}
-
-    def save(self, *args, **kwargs):
-        if self.status == self.CONFIRMED:
-            confirmed.send(sender=None, order=self)
-        super(BaseOrder, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse('order_detail', kwargs={'pk': self.pk})
