@@ -19,6 +19,7 @@ from shop.util.cart import get_or_create_cart
 from shop.util.order import add_order_to_request, get_order_from_request
 from shop.views import ShopTemplateView, ShopView
 from shop.util.login_mixin import LoginMixin
+from shop.order_signals import confirmed
 
 
 class CheckoutSelectionView(LoginMixin, ShopTemplateView):
@@ -240,6 +241,7 @@ class OrderConfirmView(RedirectView):
     def confirm_order(self):
         order = get_order_from_request(self.request)
         order.status = Order.CONFIRMED
+        confirmed.send(sender=None, order=self)
         order.save()
 
     def get(self, request, *args, **kwargs):
