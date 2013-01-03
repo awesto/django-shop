@@ -12,7 +12,7 @@ from shop.util.fields import CurrencyField
 from shop.util.loader import get_model_string
 import django
 
-User = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
+USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
 #==============================================================================
 # Product
@@ -78,7 +78,7 @@ class BaseCart(models.Model):
     without having to register with us.
     """
     # If the user is null, that means this is used for a session
-    user = models.OneToOneField(User, null=True, blank=True)
+    user = models.OneToOneField(USER_MODEL, null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
 
@@ -340,7 +340,7 @@ class BaseOrder(models.Model):
     )
 
     # If the user is null, the order was created with a session
-    user = models.ForeignKey(User, blank=True, null=True,
+    user = models.ForeignKey(USER_MODEL, blank=True, null=True,
             verbose_name=_('User'))
     status = models.IntegerField(choices=STATUS_CODES, default=PROCESSING,
             verbose_name=_('Status'))
