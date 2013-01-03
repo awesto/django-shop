@@ -1,4 +1,5 @@
 {% extends "shop/base.html" %}
+{% load url from future %}
 {% block body %}
 
   <h1>Product detail:</h1>
@@ -20,7 +21,7 @@
   {% endif %}
   <br />
 
-  <form method="post" action="{% url cart %}">{% csrf_token %}
+  <form method="post" action="{% url 'cart' %}">{% csrf_token %}
   <input type="hidden" name="add_item_id" value="{{object.pk}}">
   <input type="hidden" name="add_item_quantity" value="1">
   <input type="submit" value="Add to cart">
