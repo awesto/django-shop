@@ -170,8 +170,7 @@ file in your project, for example ``modifiers.py``, and add the following::
         def get_extra_cart_price_field(self, cart):
             taxes = decimal.Decimal('0.07') * cart.subtotal_price
             to_append = ('Taxes total', taxes)
-            cart.extra_price_fields.append(to_append)
-            return cart
+            return to_append
             
 You can now use this newly created tax modifier in your shop! To do so, simply
 add the class to the list of cart modifiers defined in your ``settings.py`` file::
