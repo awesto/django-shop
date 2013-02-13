@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-shop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-13 12:18+0300\n"
+"POT-Creation-Date: 2012-12-13 07:39-0600\n"
 "PO-Revision-Date: 2011-07-13 16:16+0000\n"
 "Last-Translator: chrisglass <tribaal@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -54,7 +54,7 @@ msgstr "Страна"
 msgid "Countries"
 msgstr "Страны"
 
-#: addressmodel/models.py:42 models/defaults/bases.py:26
+#: addressmodel/models.py:42 models_bases/__init__.py:26
 msgid "Name"
 msgstr "Название"
 
@@ -82,17 +82,17 @@ msgstr "Регион"
 msgid "Addresses"
 msgstr "Адреса"
 
-#: admin/orderadmin.py:44
+#: admin/orderadmin.py:46
 msgid "Shipping"
 msgstr "Доставка"
 
-#: admin/orderadmin.py:47
+#: admin/orderadmin.py:49
 msgid "Billing"
 msgstr "Оплата"
 
 #: models/ordermodel.py:45 models/ordermodel.py:59 models/ordermodel.py:92
-#: models/defaults/bases.py:350 models/defaults/bases.py:429
-#: models/defaults/order.py:13
+#: models/defaults/order.py:13 models_bases/__init__.py:353
+#: models_bases/__init__.py:435
 msgid "Order"
 msgstr "Заказ"
 
@@ -124,8 +124,8 @@ msgstr "Дополнительное поле цены заказа"
 msgid "Extra order price fields"
 msgstr "Дополнительные поля цены заказа"
 
-#: models/ordermodel.py:77 models/defaults/bases.py:444
-#: models/defaults/orderitem.py:11
+#: models/ordermodel.py:77 models/defaults/orderitem.py:11
+#: models_bases/__init__.py:450
 msgid "Order item"
 msgstr "Элемент заказа"
 
@@ -157,142 +157,147 @@ msgstr "Оплата заказа"
 msgid "Order payments"
 msgstr "Оплаты заказов"
 
-#: models/defaults/bases.py:27
-msgid "Slug"
-msgstr "Метка"
-
-#: models/defaults/bases.py:28
-msgid "Active"
-msgstr "Активен"
-
-#: models/defaults/bases.py:30
-msgid "Date added"
-msgstr "Дата добавления"
-
-#: models/defaults/bases.py:32
-msgid "Last modified"
-msgstr "Дата изменения"
-
-#: models/defaults/bases.py:33 models/defaults/bases.py:436
-#: templates/shop/cart.html:18 templates/shop/templatetags/_order.html:28
-msgid "Unit price"
-msgstr "Стоимость единицы"
-
-#: models/defaults/bases.py:38 models/defaults/bases.py:435
-#: models/defaults/product.py:17
-msgid "Product"
-msgstr "Название продукта"
-
-#: models/defaults/bases.py:39 models/defaults/product.py:18
-msgid "Products"
-msgstr "Название продуктов"
-
-#: models/defaults/bases.py:83 models/defaults/cart.py:10
+#: models/defaults/cart.py:10 models_bases/__init__.py:83
 msgid "Cart"
 msgstr "Корзина"
 
-#: models/defaults/bases.py:84 models/defaults/cart.py:11
+#: models/defaults/cart.py:11 models_bases/__init__.py:84
 msgid "Carts"
 msgstr "Корзины"
 
-#: models/defaults/bases.py:274 models/defaults/cartitem.py:10
+#: models/defaults/cartitem.py:10 models_bases/__init__.py:274
 msgid "Cart item"
 msgstr "Элемент заказа"
 
-#: models/defaults/bases.py:275 models/defaults/cartitem.py:11
+#: models/defaults/cartitem.py:11 models_bases/__init__.py:275
 msgid "Cart items"
 msgstr "Элементы заказа"
 
-#: models/defaults/bases.py:323
-msgid "Processing"
-msgstr "Обрабатывается"
-
-#: models/defaults/bases.py:324
-msgid "Selecting payment"
-msgstr "Выбор способа оплаты"
-
-#: models/defaults/bases.py:325
-msgid "Confirmed"
-msgstr "Подтверждён"
-
-#: models/defaults/bases.py:326
-msgid "Completed"
-msgstr "Завершён"
-
-#: models/defaults/bases.py:327
-msgid "Shipped"
-msgstr "Доставлен"
-
-#: models/defaults/bases.py:328
-msgid "Cancelled"
-msgstr "Отменён"
-
-#: models/defaults/bases.py:333
-msgid "User"
-msgstr "Пользователь"
-
-#: models/defaults/bases.py:335
-msgid "Status"
-msgstr "Статус"
-
-#: models/defaults/bases.py:336
-msgid "Order subtotal"
-msgstr "Подитог заказа"
-
-#: models/defaults/bases.py:337 templates/shop/templatetags/_order.html:62
-msgid "Order Total"
-msgstr "Итог заказа"
-
-#: models/defaults/bases.py:338
-msgid "Shipping address"
-msgstr "Адрес доставки"
-
-#: models/defaults/bases.py:340
-msgid "Billing address"
-msgstr "Адрес плательщика"
-
-#: models/defaults/bases.py:343
-msgid "Created"
-msgstr "Дата создания"
-
-#: models/defaults/bases.py:345
-msgid "Updated"
-msgstr "Обновлено"
-
-#: models/defaults/bases.py:351 models/defaults/order.py:14
+#: models/defaults/order.py:14 models_bases/__init__.py:354
 msgid "Orders"
 msgstr "Заказы"
 
-#: models/defaults/bases.py:354
+#: models/defaults/orderitem.py:12 models_bases/__init__.py:451
+msgid "Order items"
+msgstr "Элементы заказа"
+
+#: models/defaults/product.py:17 models_bases/__init__.py:38
+#: models_bases/__init__.py:441
+msgid "Product"
+msgstr "Название продукта"
+
+#: models/defaults/product.py:18 models_bases/__init__.py:39
+msgid "Products"
+msgstr "Название продуктов"
+
+#: models_bases/__init__.py:27
+msgid "Slug"
+msgstr "Метка"
+
+#: models_bases/__init__.py:28
+msgid "Active"
+msgstr "Активен"
+
+#: models_bases/__init__.py:30
+msgid "Date added"
+msgstr "Дата добавления"
+
+#: models_bases/__init__.py:32
+msgid "Last modified"
+msgstr "Дата изменения"
+
+#: models_bases/__init__.py:33 models_bases/__init__.py:442
+#: templates/shop/cart.html:15 templates/shop/templatetags/_order.html:28
+msgid "Unit price"
+msgstr "Стоимость единицы"
+
+#: models_bases/__init__.py:325
+msgid "Processing"
+msgstr "Обрабатывается"
+
+#: models_bases/__init__.py:326
+#, fuzzy
+msgid "Confirming"
+msgstr "Подтверждён"
+
+#: models_bases/__init__.py:327
+msgid "Confirmed"
+msgstr "Подтверждён"
+
+#: models_bases/__init__.py:328
+msgid "Completed"
+msgstr "Завершён"
+
+#: models_bases/__init__.py:329
+msgid "Shipped"
+msgstr "Доставлен"
+
+#: models_bases/__init__.py:330
+msgid "Cancelled"
+msgstr "Отменён"
+
+#: models_bases/__init__.py:335
+msgid "User"
+msgstr "Пользователь"
+
+#: models_bases/__init__.py:337
+msgid "Status"
+msgstr "Статус"
+
+#: models_bases/__init__.py:338
+msgid "Order subtotal"
+msgstr "Подитог заказа"
+
+#: models_bases/__init__.py:339 templates/shop/templatetags/_order.html:62
+msgid "Order Total"
+msgstr "Итог заказа"
+
+#: models_bases/__init__.py:340
+msgid "Shipping address"
+msgstr "Адрес доставки"
+
+#: models_bases/__init__.py:342
+msgid "Billing address"
+msgstr "Адрес плательщика"
+
+#: models_bases/__init__.py:345
+msgid "Created"
+msgstr "Дата создания"
+
+#: models_bases/__init__.py:347
+msgid "Updated"
+msgstr "Обновлено"
+
+#: models_bases/__init__.py:348
+msgid "Cart primary key"
+msgstr ""
+
+#: models_bases/__init__.py:357
 #, python-format
 msgid "Order ID: %(id)s"
 msgstr "ID заказа: %(id)s"
 
-#: models/defaults/bases.py:431
+#: models_bases/__init__.py:437
 msgid "Product reference"
 msgstr "Описание товара"
 
-#: models/defaults/bases.py:433 templates/shop/cart.html:17
+#: models_bases/__init__.py:439 templates/shop/cart.html:14
 #: templates/shop/templatetags/_order.html:27
 msgid "Product name"
 msgstr "Название товара"
 
-#: models/defaults/bases.py:437 templates/shop/cart.html:19
+#: models_bases/__init__.py:443 templates/shop/cart.html:16
 #: templates/shop/templatetags/_order.html:29
 msgid "Quantity"
 msgstr "Количество"
 
-#: models/defaults/bases.py:438
+#: models_bases/__init__.py:444
 msgid "Line subtotal"
 msgstr "Стоимость товаров"
 
-#: models/defaults/bases.py:439
+#: models_bases/__init__.py:445
 msgid "Line total"
 msgstr "Всего к оплате за товары"
-
-#: models/defaults/bases.py:445 models/defaults/orderitem.py:12
-msgid "Order items"
-msgstr "Элементы заказа"
 
 #: payment/backends/pay_on_delivery.py:11
 msgid "Pay On Delivery"
@@ -306,31 +311,31 @@ msgstr "Единая цена"
 msgid "Your shopping cart"
 msgstr "Ваша корзина"
 
-#: templates/shop/cart.html:42 templates/shop/templatetags/_order.html:49
+#: templates/shop/cart.html:39 templates/shop/templatetags/_order.html:49
 msgid "Line Total"
 msgstr "Всего к оплате за товары"
 
-#: templates/shop/cart.html:48
+#: templates/shop/cart.html:45
 msgid "Cart Subtotal"
 msgstr "Стоимость корзины"
 
-#: templates/shop/cart.html:56
+#: templates/shop/cart.html:53
 msgid "Cart Total"
 msgstr "Всего к оплате за товары в корзине"
 
-#: templates/shop/cart.html:60
+#: templates/shop/cart.html:57
 msgid "Update Shopping Cart"
 msgstr "Обновить корзину"
 
-#: templates/shop/cart.html:65
+#: templates/shop/cart.html:62
 msgid "Empty Shopping Cart"
 msgstr "Очистить корзину"
 
-#: templates/shop/cart.html:69
+#: templates/shop/cart.html:66
 msgid "Proceed to checkout"
 msgstr "Перейти к оплате"
 
-#: templates/shop/cart.html:74
+#: templates/shop/cart.html:71
 msgid "Shopping cart is empty"
 msgstr "Корзина пуста"
 
@@ -365,3 +370,6 @@ msgstr "Адрес оплаты"
 #: templates/shop/templatetags/_order.html:54
 msgid "Order Subtotal"
 msgstr "Стоимость заказа"
+
+#~ msgid "Selecting payment"
+#~ msgstr "Выбор способа оплаты"

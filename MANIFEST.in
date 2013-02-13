@@ -8,3 +8,4 @@ recursive-include shop/locale *
 recursive-include shop/templates *
 recursive-include shop/media *
 recursive-include tests *
+recursive-exclude * *.pyc

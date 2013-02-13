@@ -43,7 +43,7 @@ class OrderExtraInfo(models.Model):
     """
     order = models.ForeignKey(Order, related_name="extra_info",
             verbose_name=_('Order'))
-    text = models.TextField(verbose_name=_('Extra info'))
+    text = models.TextField(verbose_name=_('Extra info'), blank=True)
 
     class Meta(object):
         app_label = 'shop'

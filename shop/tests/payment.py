@@ -203,7 +203,7 @@ class PayOnDeliveryTestCase(TestCase):
         # Session only (no order)
         response = self.client.get(reverse('pay-on-delivery'))
         self.assertEqual(302, response.status_code)
-        self.assertEqual('http://testserver/', response._headers['location'][1])
+        self.assertEqual('http://testserver/shop/cart/', response._headers['location'][1])
 
         # User logged in (no order)
         username = 'user'
@@ -213,7 +213,7 @@ class PayOnDeliveryTestCase(TestCase):
         self.assertTrue(logged_in)
         response = self.client.get(reverse('pay-on-delivery'))
         self.assertEqual(302, response.status_code)
-        self.assertEqual('http://testserver/', response._headers['location'][1])
+        self.assertEqual('http://testserver/shop/cart/', response._headers['location'][1])
         self.client.logout()
 
         # User logged in and has order

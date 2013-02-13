@@ -1,7 +1,42 @@
 Version NEXT
 ============
 
-* 
+* Product model now has property ``can_be_added_to_cart`` which is checked before adding the product to cart
+
+
+Version 0.1.2
+=============
+
+* cart_required and order_required decorators now accept a reversible url
+  name instead and redirect to cart by default
+* Added setting `SHOP_PRICE_FORMAT` used in the `priceformat` filter
+* Separation of Concern in OrderManager.create_from_cart:
+  It now is easier to extend the Order class with customized
+  data.
+* Added OrderConfirmView after the shipping backend views that can be easily
+  extended to display a confirmation page
+* Added example payment backend to the example shop
+* Added example OrderConfirmView to the example shop
+* Unconfirmed orders are now deleted from the database automatically
+* Refactored order status (requires data migration)
+    * removed PAYMENT and added CONFIRMING status
+    * assignment of statuses is now linear
+    * moved cart.empty() to the PaymentAPI
+    * orders now store the pk of the originating cart
+* Checkout process works like this:
+    1. CartDetails
+    2. CheckoutSelectionView
+        * POST --> Order.objects.create_from_cart(cart) removes all orders originating from this cart that have status < CONFIRMED(30)
+        * creates a new Order with status PROCESSING(10)
+    3. ShippingBackend
+        * self.finished() sets the status to CONFIRMING(20)
+    4. OrderConfirmView
+        * self.confirm_order() sets the status to CONFIRMED(30)
+    5. PaymentBackend
+        * self.confirm_payment() sets the status to COMPLETED(40)
+        * empties the related cart
+    6. ThankYouView
+        * does nothing!
 
 Version 0.1.1
 =============

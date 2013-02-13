@@ -62,7 +62,7 @@ class ShopAPI(object):
         A short name for the order, to be displayed on the payment processor's
         website. Should be human-readable, as much as possible
         """
-        return "%s-%s" % (order.id, order.order_total)
+        return "%s-%s" % (order.pk, order.order_total)
 
     def get_order_unique_id(self, order):
         """
@@ -70,7 +70,7 @@ class ShopAPI(object):
         number. This is sent back by the payment processor when confirming
         payment, for example.
         """
-        return order.id
+        return order.pk
 
     def get_order_for_id(self, id):
         """
