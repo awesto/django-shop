@@ -7,8 +7,7 @@ class LocalizeDecimalFieldsForm(forms.ModelForm):
         new_class = super(LocalizeDecimalFieldsForm, cls).__new__(cls)
         if hasattr(new_class, 'base_fields'):
             for field in new_class.base_fields.values():
-                if isinstance(field, forms.DecimalField) \
-                    or isinstance(field, forms.FloatField):
+                if isinstance(field, forms.DecimalField, forms.FloatField):
                     field.localize = True
                     field.widget.is_localized = True
         return new_class
