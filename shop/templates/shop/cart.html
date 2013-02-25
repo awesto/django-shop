@@ -8,9 +8,6 @@
       <form method="post" action="{% url cart_update %}">
         {% csrf_token %}
         {{ formset.management_form }}
-        {% for form in formset %}
-          {{ form.id }}
-        {% endfor %}
         <table border="1">
           <thead>
             <tr>

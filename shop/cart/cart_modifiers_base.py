@@ -71,7 +71,7 @@ class BaseCartModifier(object):
         information to pass between cart_item_modifers and cart_modifiers
         """
         field = self.get_extra_cart_item_price_field(cart_item)
-        if field != None:
+        if field is not None:
             price = field[1]
             cart_item.current_total = cart_item.current_total + price
             cart_item.extra_price_fields.append(field)
@@ -94,7 +94,7 @@ class BaseCartModifier(object):
         information to pass between cart_item_modifers and cart_modifiers
         """
         field = self.get_extra_cart_price_field(cart)
-        if field != None:
+        if field is not None:
             price = field[1]
             cart.current_total = cart.current_total + price
             cart.extra_price_fields.append(field)

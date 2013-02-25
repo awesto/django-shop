@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-13 12:10+0300\n"
+"POT-Creation-Date: 2012-12-13 07:39-0600\n"
 "PO-Revision-Date: 2011-02-15 02:47\n"
 "Last-Translator:   <bmihelac@mihelac.org>\n"
 "Language-Team: Bojan Mihelac <bmihelac@mihelac.org>\n"
@@ -47,7 +47,7 @@ msgstr "Država"
 msgid "Countries"
 msgstr "Države"
 
-#: addressmodel/models.py:42 models/defaults/bases.py:26
+#: addressmodel/models.py:42 models_bases/__init__.py:26
 msgid "Name"
 msgstr "Naziv"
 
@@ -75,17 +75,17 @@ msgstr "Država"
 msgid "Addresses"
 msgstr "Adrese"
 
-#: admin/orderadmin.py:44
+#: admin/orderadmin.py:46
 msgid "Shipping"
 msgstr "Dostava"
 
-#: admin/orderadmin.py:47
+#: admin/orderadmin.py:49
 msgid "Billing"
 msgstr "Naplata"
 
 #: models/ordermodel.py:45 models/ordermodel.py:59 models/ordermodel.py:92
-#: models/defaults/bases.py:350 models/defaults/bases.py:429
-#: models/defaults/order.py:13
+#: models/defaults/order.py:13 models_bases/__init__.py:353
+#: models_bases/__init__.py:435
 msgid "Order"
 msgstr "Narudžba"
 
@@ -117,8 +117,8 @@ msgstr "Dodatno polje s cijenom za narudžbu"
 msgid "Extra order price fields"
 msgstr "Dodatna polja s cijenama za narudžbu"
 
-#: models/ordermodel.py:77 models/defaults/bases.py:444
-#: models/defaults/orderitem.py:11
+#: models/ordermodel.py:77 models/defaults/orderitem.py:11
+#: models_bases/__init__.py:450
 msgid "Order item"
 msgstr "Stavka narudžbe"
 
@@ -150,142 +150,147 @@ msgstr "Plaćanje narudžbe"
 msgid "Order payments"
 msgstr "Plaćanja narudžbe"
 
-#: models/defaults/bases.py:27
-msgid "Slug"
-msgstr "Slug"
-
-#: models/defaults/bases.py:28
-msgid "Active"
-msgstr "Aktivno"
-
-#: models/defaults/bases.py:30
-msgid "Date added"
-msgstr "Datum dodano"
-
-#: models/defaults/bases.py:32
-msgid "Last modified"
-msgstr "Zadnja promjena"
-
-#: models/defaults/bases.py:33 models/defaults/bases.py:436
-#: templates/shop/cart.html:18 templates/shop/templatetags/_order.html:28
-msgid "Unit price"
-msgstr "Jedinična cijena"
-
-#: models/defaults/bases.py:38 models/defaults/bases.py:435
-#: models/defaults/product.py:17
-msgid "Product"
-msgstr "Artikal"
-
-#: models/defaults/bases.py:39 models/defaults/product.py:18
-msgid "Products"
-msgstr "Artikli"
-
-#: models/defaults/bases.py:83 models/defaults/cart.py:10
+#: models/defaults/cart.py:10 models_bases/__init__.py:83
 msgid "Cart"
 msgstr "Košarica"
 
-#: models/defaults/bases.py:84 models/defaults/cart.py:11
+#: models/defaults/cart.py:11 models_bases/__init__.py:84
 msgid "Carts"
 msgstr "Košarice"
 
-#: models/defaults/bases.py:274 models/defaults/cartitem.py:10
+#: models/defaults/cartitem.py:10 models_bases/__init__.py:274
 msgid "Cart item"
 msgstr "Stavka košarice"
 
-#: models/defaults/bases.py:275 models/defaults/cartitem.py:11
+#: models/defaults/cartitem.py:11 models_bases/__init__.py:275
 msgid "Cart items"
 msgstr "Stavke košarice"
 
-#: models/defaults/bases.py:323
-msgid "Processing"
-msgstr "Obrada"
-
-#: models/defaults/bases.py:324
-msgid "Selecting payment"
-msgstr "Izbor plaćanja"
-
-#: models/defaults/bases.py:325
-msgid "Confirmed"
-msgstr "Potvrđeno"
-
-#: models/defaults/bases.py:326
-msgid "Completed"
-msgstr "Završeno"
-
-#: models/defaults/bases.py:327
-msgid "Shipped"
-msgstr "Dostavljeno"
-
-#: models/defaults/bases.py:328
-msgid "Cancelled"
-msgstr "Otkazano"
-
-#: models/defaults/bases.py:333
-msgid "User"
-msgstr "Korisnik"
-
-#: models/defaults/bases.py:335
-msgid "Status"
-msgstr "Status"
-
-#: models/defaults/bases.py:336
-msgid "Order subtotal"
-msgstr "Međuzbroj"
-
-#: models/defaults/bases.py:337 templates/shop/templatetags/_order.html:62
-msgid "Order Total"
-msgstr "Ukupno"
-
-#: models/defaults/bases.py:338
-msgid "Shipping address"
-msgstr "Adresa za dostavu"
-
-#: models/defaults/bases.py:340
-msgid "Billing address"
-msgstr "Adresa za izdavanje računa"
-
-#: models/defaults/bases.py:343
-msgid "Created"
-msgstr "Kreirano"
-
-#: models/defaults/bases.py:345
-msgid "Updated"
-msgstr "Promjenjeno"
-
-#: models/defaults/bases.py:351 models/defaults/order.py:14
+#: models/defaults/order.py:14 models_bases/__init__.py:354
 msgid "Orders"
 msgstr "Narudžbe"
 
-#: models/defaults/bases.py:354
+#: models/defaults/orderitem.py:12 models_bases/__init__.py:451
+msgid "Order items"
+msgstr "Stavke narudžbe"
+
+#: models/defaults/product.py:17 models_bases/__init__.py:38
+#: models_bases/__init__.py:441
+msgid "Product"
+msgstr "Artikal"
+
+#: models/defaults/product.py:18 models_bases/__init__.py:39
+msgid "Products"
+msgstr "Artikli"
+
+#: models_bases/__init__.py:27
+msgid "Slug"
+msgstr "Slug"
+
+#: models_bases/__init__.py:28
+msgid "Active"
+msgstr "Aktivno"
+
+#: models_bases/__init__.py:30
+msgid "Date added"
+msgstr "Datum dodano"
+
+#: models_bases/__init__.py:32
+msgid "Last modified"
+msgstr "Zadnja promjena"
+
+#: models_bases/__init__.py:33 models_bases/__init__.py:442
+#: templates/shop/cart.html:15 templates/shop/templatetags/_order.html:28
+msgid "Unit price"
+msgstr "Jedinična cijena"
+
+#: models_bases/__init__.py:325
+msgid "Processing"
+msgstr "Obrada"
+
+#: models_bases/__init__.py:326
+#, fuzzy
+msgid "Confirming"
+msgstr "Potvrđeno"
+
+#: models_bases/__init__.py:327
+msgid "Confirmed"
+msgstr "Potvrđeno"
+
+#: models_bases/__init__.py:328
+msgid "Completed"
+msgstr "Završeno"
+
+#: models_bases/__init__.py:329
+msgid "Shipped"
+msgstr "Dostavljeno"
+
+#: models_bases/__init__.py:330
+msgid "Cancelled"
+msgstr "Otkazano"
+
+#: models_bases/__init__.py:335
+msgid "User"
+msgstr "Korisnik"
+
+#: models_bases/__init__.py:337
+msgid "Status"
+msgstr "Status"
+
+#: models_bases/__init__.py:338
+msgid "Order subtotal"
+msgstr "Međuzbroj"
+
+#: models_bases/__init__.py:339 templates/shop/templatetags/_order.html:62
+msgid "Order Total"
+msgstr "Ukupno"
+
+#: models_bases/__init__.py:340
+msgid "Shipping address"
+msgstr "Adresa za dostavu"
+
+#: models_bases/__init__.py:342
+msgid "Billing address"
+msgstr "Adresa za izdavanje računa"
+
+#: models_bases/__init__.py:345
+msgid "Created"
+msgstr "Kreirano"
+
+#: models_bases/__init__.py:347
+msgid "Updated"
+msgstr "Promjenjeno"
+
+#: models_bases/__init__.py:348
+msgid "Cart primary key"
+msgstr ""
+
+#: models_bases/__init__.py:357
 #, python-format
 msgid "Order ID: %(id)s"
 msgstr "Narudžba broj: %(id)s"
 
-#: models/defaults/bases.py:431
+#: models_bases/__init__.py:437
 msgid "Product reference"
 msgstr "Referenca na artikal"
 
-#: models/defaults/bases.py:433 templates/shop/cart.html:17
+#: models_bases/__init__.py:439 templates/shop/cart.html:14
 #: templates/shop/templatetags/_order.html:27
 msgid "Product name"
 msgstr "Naziv artikla"
 
-#: models/defaults/bases.py:437 templates/shop/cart.html:19
+#: models_bases/__init__.py:443 templates/shop/cart.html:16
 #: templates/shop/templatetags/_order.html:29
 msgid "Quantity"
 msgstr "Količina"
 
-#: models/defaults/bases.py:438
+#: models_bases/__init__.py:444
 msgid "Line subtotal"
 msgstr "Stavka međuzbroj"
 
-#: models/defaults/bases.py:439
+#: models_bases/__init__.py:445
 msgid "Line total"
 msgstr "Stavka ukupno"
-
-#: models/defaults/bases.py:445 models/defaults/orderitem.py:12
-msgid "Order items"
-msgstr "Stavke narudžbe"
 
 #: payment/backends/pay_on_delivery.py:11
 msgid "Pay On Delivery"
@@ -299,31 +304,31 @@ msgstr ""
 msgid "Your shopping cart"
 msgstr "Vaša košarica"
 
-#: templates/shop/cart.html:42 templates/shop/templatetags/_order.html:49
+#: templates/shop/cart.html:39 templates/shop/templatetags/_order.html:49
 msgid "Line Total"
 msgstr "Ukupno"
 
-#: templates/shop/cart.html:48
+#: templates/shop/cart.html:45
 msgid "Cart Subtotal"
 msgstr "Međuzbroj"
 
-#: templates/shop/cart.html:56
+#: templates/shop/cart.html:53
 msgid "Cart Total"
 msgstr "Ukupno"
 
-#: templates/shop/cart.html:60
+#: templates/shop/cart.html:57
 msgid "Update Shopping Cart"
 msgstr "Osvježi košaricu"
 
-#: templates/shop/cart.html:65
+#: templates/shop/cart.html:62
 msgid "Empty Shopping Cart"
 msgstr "Isprazni košaricu"
 
-#: templates/shop/cart.html:69
+#: templates/shop/cart.html:66
 msgid "Proceed to checkout"
 msgstr "Nastavak na blagajnu"
 
-#: templates/shop/cart.html:74
+#: templates/shop/cart.html:71
 msgid "Shopping cart is empty"
 msgstr "Košarica je prazna"
 
@@ -358,3 +363,6 @@ msgstr "Adresa za izdavanje računa"
 #: templates/shop/templatetags/_order.html:54
 msgid "Order Subtotal"
 msgstr "Međuzbroj narudžbe"
+
+#~ msgid "Selecting payment"
+#~ msgstr "Izbor plaćanja"

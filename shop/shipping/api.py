@@ -57,10 +57,10 @@ class ShippingAPI(ShopAPI):
         """
         A helper for backends, so that they can call this when their job
         is finished i.e. shipping costs are added to the order.
-        This will redirect to the "select a payment method" page.
+        This will redirect to the "order confirmation" page.
         """
-        order.status = Order.CONFIRMED
+        order.status = Order.CONFIRMING
         order.save()
         # Emit the signal to say we're now selecting payment
         payment_selection.send(self, order=order)
-        return redirect('checkout_payment')
+        return redirect('checkout_confirm')

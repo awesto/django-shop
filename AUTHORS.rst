@@ -16,6 +16,8 @@ CONTRIBUTORS
 * Bojan Mihelac
 * Chris Morgan
 * fivethreeo
+* German Larrain
+* ikresoft
 * Issac Kelly
 * Jacob Rief
 * Jonas Obrist
@@ -37,3 +39,4 @@ TRANSLATORS
 * Mikhail Kolesnik (Russian)
 * Pavel Zhukov (Russian)
 * Pedro Gracia (Spanish)
+* Arturo Fernandez (Spanish)

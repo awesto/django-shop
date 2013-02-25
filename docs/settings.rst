@@ -32,7 +32,12 @@ If ``True``, all views after the :class:`~shop.views.cart.CartDetails` view will
 need the user to be authenticated. An anonymous user will be redirected to your
 login url. Please read more on authentication in Django's official
 `authentication documentation <https://docs.djangoproject.com/en/dev/topics/auth/>`_
-.
+. By default it's set to ``False``.
+
+SHOP_PRICE_FORMAT
+=================
+
+Used by the `priceformat` template filter to format the price. Default is ``'%0.2f'``
 
 ==========================
 Backend specific Settings

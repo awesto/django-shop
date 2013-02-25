@@ -10,6 +10,7 @@ from shop.order_signals import processing
 #==============================================================================
 # Product
 #==============================================================================
+
 class ProductStatisticsManager(PolymorphicManager):
     """
     A Manager for all the non-object manipulation needs, mostly statistics and
@@ -67,8 +68,30 @@ class OrderManager(models.Manager):
         else:
             return None
 
+    def get_unconfirmed_for_cart(self, cart):
+        return self.filter(cart_pk=cart.pk, status__lt=self.model.CONFIRMED)
+
+    def remove_old_orders(self, cart):
+        """
+        Removes all old unconfirmed order objects.
+        """
+        old_orders = self.get_unconfirmed_for_cart(cart)
+        old_orders.delete()
+
+    def create_order_object(self, cart, state):
+        """
+        Create an empty order object and fill it with the given cart data.
+        """
+        order = self.model()
+        order.cart_pk = cart.pk
+        order.user = cart.user
+        order.status = self.model.PROCESSING  # Processing
+        order.order_subtotal = cart.subtotal_price
+        order.order_total = cart.total_price
+        return order
+
     @transaction.commit_on_success
-    def create_from_cart(self, cart):
+    def create_from_cart(self, cart, state=None):
         """
         This creates a new Order object (and all the rest) from a passed Cart
         object.
@@ -79,6 +102,10 @@ class OrderManager(models.Manager):
         This will only actually commit the transaction once the function exits
         to minimize useless database access.
 
+        The `state` parameter is further passed to process_cart_item,
+        process_cart, and post_process_cart, so it can be used as a way to
+        store per-request arbitrary information.
+
         Emits the ``processing`` signal.
         """
         # must be imported here!
@@ -88,28 +115,26 @@ class OrderManager(models.Manager):
             OrderItem,
         )
         from shop.models.cartmodel import CartItem
-        # Let's create the Order itself:
-        order = self.model()
-        order.user = cart.user
-        order.status = self.model.PROCESSING  # Processing
 
-        order.order_subtotal = cart.subtotal_price
-        order.order_total = cart.total_price
+        # First, let's remove old orders
+        self.remove_old_orders(cart)
 
+        # Create an empty order object
+        order = self.create_order_object(cart, state)
         order.save()
 
         # Let's serialize all the extra price arguments in DB
         for label, value in cart.extra_price_fields:
             eoi = ExtraOrderPriceField()
             eoi.order = order
-            eoi.label = str(label)
+            eoi.label = unicode(label)
             eoi.value = value
             eoi.save()
 
         # There, now move on to the order items.
         cart_items = CartItem.objects.filter(cart=cart)
         for item in cart_items:
-            item.update(cart)
+            item.update(state)
             order_item = OrderItem()
             order_item.order = order
             order_item.product_reference = item.product.get_product_reference()

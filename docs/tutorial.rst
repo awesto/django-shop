@@ -12,7 +12,18 @@ The steps outlined in this tutorial are meant to be followed in order.
 Installation
 ============
 
-(TODO)
+* Install from pypi
+::
+
+  pip install django-shop
+
+* Add ``'shop'`` to your `INSTALLED_APPS`
+* Add the shop to your `urls.py`
+::
+
+  (r'^shop/', include('shop.urls')),
+
+
 
 Defining your products
 ======================

@@ -70,3 +70,19 @@ products instead of all active products.
 In order to define your own template, override the template
 ``shop/templatetags/_products.html``. The tag adds a variable called
 ``products`` to the context.
+
+Filters
+=======
+
+priceformat
+-----------
+
+Renders the float using the ``SHOP_PRICE_FORMAT`` format. This should be used whenever
+displaying prices in the templates.
+
+::
+
+  {{ product.get_price|priceformat }}
+
+
+
