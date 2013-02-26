@@ -20,6 +20,6 @@ class LocalizeDecimalFieldsMixin(object):
     of type DecimalField in the admin interface.
     If your class derived from ModelAdmin wants to override the form attribute,
     make sure that this form is derived from LocalizeDecimalFieldsForm and not
-    from forms.ModelForm. 
+    from forms.ModelForm.
     '''
     form = LocalizeDecimalFieldsForm
