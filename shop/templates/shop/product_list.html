@@ -1,10 +1,11 @@
 {% extends "shop/base.html" %}
+{% load url from future %}
 
 {% block body %}
   <h1>Product list:</h1>
   <hr />
   {% for object in object_list %}
-  <a href="{% url product_detail object.slug %}">{{object.get_name}}</a><br />
+  <a href="{% url 'product_detail' object.slug %}">{{object.get_name}}</a><br />
   {{object.slug}}<br />
   {{object.short_description}}<br />
   {{object.long_description}}<br />
