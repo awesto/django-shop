@@ -31,6 +31,7 @@ CONTRIBUTORS
 * Raúl Cumplido
 * Rolo Mawlabaux
 * Simon Luijk
+* Sławomir Ehlert
 * Stephen Muss
 * Thomas Woolford
 
