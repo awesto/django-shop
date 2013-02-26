@@ -138,11 +138,14 @@ class MockCartModifierWithNothing(BaseCartModifier):
 
 
 class MockCartModifierWithSimpleString(BaseCartModifier):
+    stdstr = 'plain ASCII'
+    unicodestr = u'unicode ÄÖÜäöüáàéèêóòñ'
+
     def get_extra_cart_price_field(self, cart):
-        return ('Total', Decimal(10), 'extra data')
+        return ('Total', Decimal(10), str(self.stdstr))
 
     def get_extra_cart_item_price_field(self, cart_item):
-        return ('Item', Decimal(1), 'extra item data')
+        return ('Item', Decimal(1), self.unicodestr)
 
 
 class MockCartModifierWithDictionaries(BaseCartModifier):
@@ -302,9 +305,11 @@ class OrderConversionTestCase(TestCase):
         self.assertEqual(o.billing_address_text, self.address2.as_text())
 
     def test_create_order_with_extra_data_in_cart_modifier(self):
-        MODIFIERS = ['shop.tests.order.MockCartModifierWithNothing',
+        MODIFIERS = [
+            'shop.tests.order.MockCartModifierWithNothing',
             'shop.tests.order.MockCartModifierWithSimpleString',
-            'shop.tests.order.MockCartModifierWithDictionaries']
+            'shop.tests.order.MockCartModifierWithDictionaries'
+        ]
 
         with SettingsOverride(SHOP_CART_MODIFIERS=MODIFIERS):
             self.cart.add_product(self.product)
@@ -314,13 +319,13 @@ class OrderConversionTestCase(TestCase):
             extra_order_fields = ExtraOrderPriceField.objects.filter(order=order)
             self.assertEqual(len(extra_order_fields), 3)
             self.assertEqual(extra_order_fields[0].data, None)
-            self.assertEqual(extra_order_fields[1].data, 'extra data')
+            self.assertEqual(extra_order_fields[1].data, MockCartModifierWithSimpleString.stdstr)
             self.assertEqual(Decimal(extra_order_fields[2].data[0].get('rate')), Decimal(9.8))
 
             extra_order_fields = ExtraOrderItemPriceField.objects.filter(order_item__order=order)
             self.assertEqual(len(extra_order_fields), 3)
             self.assertEqual(extra_order_fields[0].data, None)
-            self.assertEqual(extra_order_fields[1].data, 'extra item data')
+            self.assertEqual(extra_order_fields[1].data, MockCartModifierWithSimpleString.unicodestr)
             self.assertEqual(Decimal(extra_order_fields[2].data.get('discount')), Decimal(0.2))
 
     def test_create_order_respects_product_specific_get_price_method(self):
