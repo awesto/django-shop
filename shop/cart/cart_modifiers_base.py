@@ -70,7 +70,7 @@ class BaseCartModifier(object):
         The state parameter is only used to let implementations store temporary
         information to pass between cart_item_modifers and cart_modifiers
         """
-        field = self.get_extra_cart_item_price_field(cart_item)
+        field = self.get_extra_cart_item_price_field(cart_item, state)
         if field is not None:
             price = field[1]
             cart_item.current_total = cart_item.current_total + price
@@ -93,7 +93,7 @@ class BaseCartModifier(object):
         The state parameter is only used to let implementations store temporary
         information to pass between cart_item_modifers and cart_modifiers
         """
-        field = self.get_extra_cart_price_field(cart)
+        field = self.get_extra_cart_price_field(cart, state)
         if field is not None:
             price = field[1]
             cart.current_total = cart.current_total + price
@@ -104,7 +104,7 @@ class BaseCartModifier(object):
     # Simple methods
     #==========================================================================
 
-    def get_extra_cart_item_price_field(self, cart_item):
+    def get_extra_cart_item_price_field(self, cart_item, state=None):
         """
         Get an extra price field tuple for the current cart_item:
 
@@ -127,7 +127,7 @@ class BaseCartModifier(object):
         """
         return None  # Does nothing by default
 
-    def get_extra_cart_price_field(self, cart):
+    def get_extra_cart_price_field(self, cart, state=None):
         """
         Get an extra price field tuple for the current cart:
 
