@@ -29,7 +29,7 @@ setup(
         'django-classy-tags>=0.3.3',
         'django-polymorphic>=0.2',
         'south>=0.7.2',
-        'jsonfield==0.9,jsonfield==0.9.2'
+        'jsonfield>=0.9.6'
     ],
     packages=find_packages(exclude=["example", "example.*"]),
     include_package_data=True,
