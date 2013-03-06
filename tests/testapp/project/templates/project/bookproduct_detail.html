@@ -1,3 +1,4 @@
+{% load url fom future %}
 <h1>Book Product detail:</h1>
 {{object.name}}<br />
 {{object.slug}}<br />
@@ -22,7 +23,7 @@ ISBN: {{object.isbn}}<br />
 Pages: {{object.number_of_pages}}<br />
 
 
-<form method="post" action="{% url cart %}">{% csrf_token %}
+<form method="post" action="{% url 'cart' %}">{% csrf_token %}
 <input type="hidden" name="add_item_id" value="{{object.pk}}">
 <input type="hidden" name="add_item_quantity" value="1">
 <input type="submit" value="Add to cart">

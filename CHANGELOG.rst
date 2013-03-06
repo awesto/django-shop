@@ -1,6 +1,8 @@
 Version NEXT
 ============
 
+* models.FloatField are now automatically localized.
+* Support for Django 1.2 dropped.
 * Product model now has property ``can_be_added_to_cart`` which is checked before adding the product to cart
 
 

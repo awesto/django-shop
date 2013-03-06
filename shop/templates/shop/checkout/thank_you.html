@@ -1,7 +1,8 @@
 {% extends "shop/base.html" %}
+{% load url from future %}
 
 {% block body %}
   <h1>Thank you for your order!</h1>
   <p>Your order has been placed</p>
-  <a href="{% url shop_welcome %}">Back to the main page</a>
+  <a href="{% url 'shop_welcome' %}">Back to the main page</a>
 {% endblock %}

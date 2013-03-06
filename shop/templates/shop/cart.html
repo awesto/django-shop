@@ -1,11 +1,12 @@
 {% extends "shop/base.html" %}
 {% load i18n %}
+{% load url from future %}
 
 {% block body %}
   <h1>{% trans "Your shopping cart" %}</h1>
   {% if cart_items %}
 
-      <form method="post" action="{% url cart_update %}">
+      <form method="post" action="{% url 'cart_update' %}">
         {% csrf_token %}
         {{ formset.management_form }}
         <table border="1">
@@ -25,6 +26,7 @@
                   <td>{{ form.instance.product.get_name }}</td>
                   <td>{{ form.instance.product.get_price }}</td>
                   <td>
+                      {{ form.id }}
                       {{ field.errors }}
                       {{ field }}</td>
                   <td>{{ form.instance.line_subtotal }}</td>
@@ -57,13 +59,13 @@
         <p><input type="submit" value="{% trans "Update Shopping Cart" %}"/></p>
       </form>
 
-      <form action="{% url cart_delete %}" method="post">
+      <form action="{% url 'cart_delete' %}" method="post">
         {% csrf_token %}
         <p><input type="submit" value="{% trans "Empty Shopping Cart" %}"/></p>
       </form>
 
       <p>
-        <a href="{% url checkout_selection %}">{% trans "Proceed to checkout" %}</a>
+        <a href="{% url 'checkout_selection' %}">{% trans "Proceed to checkout" %}</a>
       </p>
 
   {% else %}
