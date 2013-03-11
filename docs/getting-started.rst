@@ -22,7 +22,8 @@ django-cbv if you're using 1.3.
     pip install django-cbv # only if using django<1.3
     pip install south
     pip install django-shop
-    
+    pip install jsonfield
+
 .. highlight:: python
 
 3. Go to your settings.py and configure your DB like the following, or anything
