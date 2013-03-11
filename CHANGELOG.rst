@@ -5,6 +5,9 @@ Version NEXT
 * Support for Django 1.2 dropped.
 * Product model now has property ``can_be_added_to_cart`` which is checked before adding the product to cart
 
+* Cart modifiers can add an optional ``data`` field beside ``label`` and ``value``
+  for both, the ExtraOrderPriceField and the ExtraOrderItemPriceField model.
+  This extra ``data`` field can contain anything serializable as JSON.
 
 Version 0.1.2
 =============

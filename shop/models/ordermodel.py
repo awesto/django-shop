@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db import models
 from django.db.models.signals import pre_delete
 from django.utils.translation import ugettext_lazy as _
+from jsonfield.fields import JSONField
 from shop.models.productmodel import Product
 from shop.util.fields import CurrencyField
 from shop.util.loader import load_class
@@ -59,6 +60,7 @@ class ExtraOrderPriceField(models.Model):
     order = models.ForeignKey(Order, verbose_name=_('Order'))
     label = models.CharField(max_length=255, verbose_name=_('Label'))
     value = CurrencyField(verbose_name=_('Amount'))
+    data = JSONField(null=True, blank=True, verbose_name=_('Serialized extra data'))
     # Does this represent shipping costs?
     is_shipping = models.BooleanField(default=False, editable=False,
             verbose_name=_('Is shipping'))
@@ -77,6 +79,7 @@ class ExtraOrderItemPriceField(models.Model):
     order_item = models.ForeignKey(OrderItem, verbose_name=_('Order item'))
     label = models.CharField(max_length=255, verbose_name=_('Label'))
     value = CurrencyField(verbose_name=_('Amount'))
+    data = JSONField(null=True, blank=True, verbose_name=_('Serialized extra data'))
 
     class Meta(object):
         app_label = 'shop'
