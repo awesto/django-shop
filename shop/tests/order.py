@@ -4,10 +4,11 @@ from decimal import Decimal
 from django.contrib.auth.models import User
 from django.test.testcases import TestCase
 from shop.cart.modifiers_pool import cart_modifiers_pool
+from shop.cart.cart_modifiers_base import BaseCartModifier
 from shop.models.cartmodel import Cart, CartItem
 from shop.addressmodel.models import Address, Country
-from shop.models.ordermodel import Order, OrderItem, ExtraOrderPriceField, \
-    OrderPayment
+from shop.models.ordermodel import Order, OrderItem, OrderPayment, \
+    ExtraOrderPriceField, ExtraOrderItemPriceField
 from shop.models.productmodel import Product
 from shop.tests.util import Mock
 from shop.tests.utils.context_managers import SettingsOverride
@@ -126,6 +127,33 @@ class OrderTestCase(TestCase):
         self.assertEqual(ret, False)
         ret = self.order.is_paid()
         self.assertEqual(ret, False)
+
+
+class MockCartModifierWithNothing(BaseCartModifier):
+    def get_extra_cart_price_field(self, cart):
+        return ('Total', Decimal(10))
+
+    def get_extra_cart_item_price_field(self, cart_item):
+        return ('Item', Decimal(1))
+
+
+class MockCartModifierWithSimpleString(BaseCartModifier):
+    stdstr = 'plain ASCII'
+    unicodestr = u'unicode ÄÖÜäöüáàéèêóòñ'
+
+    def get_extra_cart_price_field(self, cart):
+        return ('Total', Decimal(10), str(self.stdstr))
+
+    def get_extra_cart_item_price_field(self, cart_item):
+        return ('Item', Decimal(1), self.unicodestr)
+
+
+class MockCartModifierWithDictionaries(BaseCartModifier):
+    def get_extra_cart_price_field(self, cart):
+        return ('Total', Decimal(10), [{'rate': Decimal(9.8)}, {'discount': Decimal(0.2)}])
+
+    def get_extra_cart_item_price_field(self, cart_item):
+        return ('Item', Decimal(1), {'rate': Decimal(9.8), 'discount': Decimal(0.2)})
 
 
 class OrderConversionTestCase(TestCase):
@@ -275,6 +303,30 @@ class OrderConversionTestCase(TestCase):
 
         self.assertEqual(o.shipping_address_text, self.address.as_text())
         self.assertEqual(o.billing_address_text, self.address2.as_text())
+
+    def test_create_order_with_extra_data_in_cart_modifier(self):
+        MODIFIERS = [
+            'shop.tests.order.MockCartModifierWithNothing',
+            'shop.tests.order.MockCartModifierWithSimpleString',
+            'shop.tests.order.MockCartModifierWithDictionaries'
+        ]
+
+        with SettingsOverride(SHOP_CART_MODIFIERS=MODIFIERS):
+            self.cart.add_product(self.product)
+            self.cart.update()
+            self.cart.save()
+            order = Order.objects.create_from_cart(self.cart,)
+            extra_order_fields = ExtraOrderPriceField.objects.filter(order=order)
+            self.assertEqual(len(extra_order_fields), 3)
+            self.assertEqual(extra_order_fields[0].data, None)
+            self.assertEqual(extra_order_fields[1].data, MockCartModifierWithSimpleString.stdstr)
+            self.assertEqual(Decimal(extra_order_fields[2].data[0].get('rate')), Decimal(9.8))
+
+            extra_order_fields = ExtraOrderItemPriceField.objects.filter(order_item__order=order)
+            self.assertEqual(len(extra_order_fields), 3)
+            self.assertEqual(extra_order_fields[0].data, None)
+            self.assertEqual(extra_order_fields[1].data, MockCartModifierWithSimpleString.unicodestr)
+            self.assertEqual(Decimal(extra_order_fields[2].data.get('discount')), Decimal(0.2))
 
     def test_create_order_respects_product_specific_get_price_method(self):
         if SKIP_BASEPRODUCT_TEST:
