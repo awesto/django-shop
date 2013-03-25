@@ -62,7 +62,10 @@ class ShopAPI(object):
         A short name for the order, to be displayed on the payment processor's
         website. Should be human-readable, as much as possible
         """
-        return "%s-%s" % (order.pk, order.order_total)
+        try:
+            return order.short_name
+        except AttributeError:
+            return "%s-%s" % (order.pk, order.order_total)
 
     def get_order_unique_id(self, order):
         """
