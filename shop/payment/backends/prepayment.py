@@ -34,7 +34,7 @@ class ForwardFundBackend(object):
         """
         order = self.shop.get_order(request)
         amount = self.shop.get_order_total(order)
-        transaction_id = _('Transaction %s-%s') % (date.today().strftime('%Y'), order.id)
+        transaction_id = date.today().strftime('%Y') + '%06d' % order.id
         self._create_confirmed_order(order, transaction_id)
         context = RequestContext(request, {'order': order, 'amount': amount,
             'transaction_id': transaction_id, 'next_url': self.shop.get_finished_url()})
