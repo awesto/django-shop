@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import redirect
+from django.core.exceptions import ObjectDoesNotExist
 
 from shop.forms import get_cart_item_formset
 from shop.models.productmodel import Product
@@ -62,8 +63,11 @@ class CartItemDetail(ShopView):
         """
         cart_object = get_or_create_cart(self.request)
         item_id = self.kwargs.get('id')
-        cart_object.delete_item(item_id)
-        return self.delete_success()
+        try:
+            cart_object.delete_item(item_id)
+            return self.delete_success()
+        except ObjectDoesNotExist:
+            raise Http404
 
     # success hooks
     def success(self):
