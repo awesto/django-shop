@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls.defaults import patterns, url
+try:
+    from django.conf.urls import patterns, url
+except ImportError:
+    from django.conf.urls.defaults import patterns, url
 from django.http import HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _
 from shop.util.decorators import on_method, shop_login_required, order_required
