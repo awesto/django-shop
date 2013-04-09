@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
 from datetime import date
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import patterns, url
 from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render_to_response
