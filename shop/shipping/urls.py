@@ -6,7 +6,10 @@ http://www.example.com/shop/ship/dhl
 http://www.example.com/shop/ship/fedex
 ...
 """
-from django.conf.urls.defaults import patterns, include
+try:
+	from django.conf.urls import patterns, include
+except ImportError:
+	from django.conf.urls.defaults import patterns, include
 from shop.backends_pool import backends_pool
 
 
