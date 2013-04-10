@@ -403,6 +403,14 @@ class BaseOrder(models.Model):
             sum_ += cost.value
         return sum_
 
+    @property
+    def short_name(self):
+        """
+        A short name for the order, to be displayed on the payment processor's
+        website. Should be human-readable, as much as possible
+        """
+        return "%s-%s" % (self.pk, self.order_total)
+
     def set_billing_address(self, billing_address):
         """
         Process billing_address trying to get as_text method from address
