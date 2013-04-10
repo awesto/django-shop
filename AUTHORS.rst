@@ -21,6 +21,7 @@ CONTRIBUTORS
 * German Larrain
 * ikresoft
 * Issac Kelly
+* Jacek Mitręga
 * Jacob Rief
 * Jonas Obrist
 * Justin Steward 
