@@ -5,9 +5,7 @@ Getting started
 Installation
 =============
 
-Here's the 1 minute guide to getting started with django SHOP and Django 1.2.x. 
-Instructions for Django 1.3 will follow, but basically it means you don't need
-django-cbv if you're using 1.3.
+Here's the 1 minute guide to getting started with django SHOP.
 
 .. highlight:: bash
 
@@ -19,7 +17,6 @@ django-cbv if you're using 1.3.
 2. You'll want to use virtualenv::
 
     virtualenv . ; source bin/activate
-    pip install django-cbv # only if using django<1.3
     pip install south
     pip install django-shop
     pip install jsonfield
@@ -50,10 +47,6 @@ django-cbv if you're using 1.3.
         'django.contrib.auth.middleware.AuthenticationMiddleware',
         'django.contrib.messages.middleware.MessageMiddleware',
     ] # <-- Notice how it's a square bracket (a list)? It makes life easier.
-    
-    import django # A quick and very dirty test to see if it's 1.3 yet...
-    if django.VERSION[0] < 1 or django.VERSION[1] < 3:
-        MIDDLEWARE_CLASSES.append('cbv.middleware.DeferredRenderingMiddleware')
 
 
 5. Obviously, you need to add shop and myshop to your INSTALLED_APPS too::
@@ -74,13 +67,13 @@ django-cbv if you're using 1.3.
         'shop.addressmodel', # The default Address and country models
         'myshop', # the project we just created
     ]
-    
+
 6. Make the urls.py contain the following::
 
     from shop import urls as shop_urls # <-- Add this at the top
-    
+
     # Other stuff here
-    
+
     urlpatterns = patterns('',
         # Example:
         #(r'^example/', include('example.foo.urls')),
@@ -96,14 +89,14 @@ django-cbv if you're using 1.3.
 
 7. Most of the stuff you'll have to do is styling and template work, so go ahead
    and create a templates directory in your project::
-   
+
     cd example/myshop; mkdir -p templates/myshop
-    
+
 8. Lock and load::
 
     cd .. ; python manage.py syncdb --all ; python manage.py migrate --fake
     python manage.py runserver
-    
+
 9. Point your browser and marvel at the absence of styling::
 
     x-www-browser localhost:8000/shop
@@ -117,23 +110,23 @@ Adding a custom product
 Having a shop running is a good start, but you'll probably want to add at least
 one product class that you can use to sell to clients!
 
-The process is really simple: you simply need to create a class representing 
+The process is really simple: you simply need to create a class representing
 your object in your project's ``models.py``. Let's start with a very simple model
 describing a book::
 
     from shop.models import Product
     from django.db import models
-    
+
     class Book(Product):
         # The author should probably be a foreign key in the real world, but
         # this is just an example
         author = models.CharField(max_length=255)
-        cover_picture = models.ImageField(upload_to='img/book') 
+        cover_picture = models.ImageField(upload_to='img/book')
         isbn = models.CharField(max_length=255)
 
         class Meta:
             ordering = ['author']
-        
+
 
 .. note:: The only limitation is that your product subclass must define a
    ``Meta`` class.
@@ -142,12 +135,12 @@ Like a normal Django model, you might want to register it in the admin interface
 to allow for easy editing by your admin users. In an ``admin.py`` file::
 
     from django.contrib import admin
-    
+
     from models import Book
-    
+
     admin.site.register(Book)
 
-That's it! 
+That's it!
 
 Adding taxes
 =============
@@ -156,10 +149,10 @@ Adding tax calculations according to local regulations is also something that
 you will likely have to do. It is relatively easy as well: create a new
 file in your project, for example ``modifiers.py``, and add the following::
 
-    import decimal    
+    import decimal
 
     from shop.cart.cart_modifiers_base import BaseCartModifier
-    
+
     class Fixed7PercentTaxRate(BaseCartModifier):
         """
         This will add 7% of the subtotal of the order to the total.
@@ -167,17 +160,17 @@ file in your project, for example ``modifiers.py``, and add the following::
         It is of course not very useful in the real world, but this is an
         example.
         """
-        
+
         def get_extra_cart_price_field(self, cart):
             taxes = decimal.Decimal('0.07') * cart.subtotal_price
             to_append = ('Taxes total', taxes)
             return to_append
-            
+
 You can now use this newly created tax modifier in your shop! To do so, simply
 add the class to the list of cart modifiers defined in your ``settings.py`` file::
 
     SHOP_CART_MODIFIERS = ['myshop.modifiers.Fixed7PercentTaxRate']
-    
+
 Restart your server, and you should now see that a cart's total is dynamically
 augmented to reflect this new rule.
 

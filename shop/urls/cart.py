@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import url, patterns
+from django.conf.urls import patterns, url
 
 from shop.views.cart import CartDetails, CartItemDetail
 

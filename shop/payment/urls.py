@@ -6,7 +6,7 @@ http://www.example.com/shop/pay/paypal
 http://www.example.com/shop/pay/pay-on-delivery
 ...
 """
-from django.conf.urls.defaults import patterns, include
+from django.conf.urls import patterns, include
 from shop.backends_pool import backends_pool
 
 
