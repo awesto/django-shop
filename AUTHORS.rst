@@ -10,6 +10,7 @@ CONTRIBUTORS
 * Adrien Lemaire
 * airtonix
 * Aleš Kocjančič
+* Anders Petersson
 * Andrés Reyes Monge
 * Audrey Roy
 * Ben Lopatin
