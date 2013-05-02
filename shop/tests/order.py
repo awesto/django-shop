@@ -212,7 +212,7 @@ class OrderConversionTestCase(TestCase):
         self.cart.update(self.request)
         self.cart.save()
 
-        o = Order.objects.create_from_cart(self.cart)
+        o = Order.objects.create_from_cart(self.cart, self.request)
 
         self.assertNotEqual(o, None)
 
@@ -240,7 +240,7 @@ class OrderConversionTestCase(TestCase):
         self.cart.update(self.request)
         self.cart.save()
 
-        o = Order.objects.create_from_cart(self.cart)
+        o = Order.objects.create_from_cart(self.cart, self.request)
         ois = OrderItem.objects.filter(order=o)
         self.assertEqual(ois[0].product_name, "Table - white")
 
@@ -257,7 +257,7 @@ class OrderConversionTestCase(TestCase):
             self.cart.update(self.request)
             self.cart.save()
 
-            o = Order.objects.create_from_cart(self.cart,)
+            o = Order.objects.create_from_cart(self.cart, self.request)
 
             # Must not return None, obviously
             self.assertNotEqual(o, None)
@@ -290,7 +290,7 @@ class OrderConversionTestCase(TestCase):
         self.address.is_billing = False
         self.address.save()
 
-        o = Order.objects.create_from_cart(self.cart)
+        o = Order.objects.create_from_cart(self.cart, self.request)
         # Must not return None, obviously
         self.assertNotEqual(o, None)
 
@@ -311,7 +311,7 @@ class OrderConversionTestCase(TestCase):
             self.cart.add_product(self.product)
             self.cart.update(self.request)
             self.cart.save()
-            order = Order.objects.create_from_cart(self.cart,)
+            order = Order.objects.create_from_cart(self.cart, self.request)
             extra_order_fields = ExtraOrderPriceField.objects.filter(order=order)
             self.assertEqual(len(extra_order_fields), 3)
             self.assertEqual(extra_order_fields[0].data, None)
@@ -333,7 +333,7 @@ class OrderConversionTestCase(TestCase):
         self.cart.add_product(product)
         self.cart.update(self.request)
         self.cart.save()
-        o = Order.objects.create_from_cart(self.cart)
+        o = Order.objects.create_from_cart(self.cart, self.request)
         oi = OrderItem.objects.filter(order=o)[0]
         self.assertEqual(oi.unit_price, baseproduct.unit_price)
 
@@ -342,7 +342,7 @@ class OrderConversionTestCase(TestCase):
         self.cart.update(self.request)
         self.cart.save()
 
-        o = Order.objects.create_from_cart(self.cart)
+        o = Order.objects.create_from_cart(self.cart, self.request)
         oi = OrderItem.objects.filter(order=o)[0]
         self.assertEqual(oi.product_reference, self.product.get_product_reference())
 

@@ -294,7 +294,7 @@ class BaseCartItem(models.Model):
         self.line_total = Decimal('0.0')
         self.current_total = Decimal('0.0')  # Used by cart modifiers
 
-    def update(self, state):
+    def update(self, request):
         self.extra_price_fields = []  # Reset the price fields
         self.line_subtotal = self.product.get_price() * self.quantity
         self.current_total = self.line_subtotal
@@ -302,7 +302,7 @@ class BaseCartItem(models.Model):
         for modifier in cart_modifiers_pool.get_modifiers_list():
             # We now loop over every registered price modifier,
             # most of them will simply add a field to extra_payment_fields
-            modifier.process_cart_item(self, state)
+            modifier.process_cart_item(self, request)
 
         self.line_total = self.current_total
         return self.line_total
