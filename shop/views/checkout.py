@@ -50,7 +50,7 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
         a reference to the Order on either the User object or the session.
         """
         cart = get_or_create_cart(self.request)
-        cart.update()
+        cart.update(self.request)
         order = Order.objects.create_from_cart(cart)
         request = self.request
         add_order_to_request(request, order)

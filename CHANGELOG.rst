@@ -2,11 +2,20 @@ Version NEXT
 ============
 
 * models.FloatField are now automatically localized.
-* Support for Django 1.2 dropped.
+* Support for Django 1.2 and Django 1.3 dropped.
 * Product model now has property ``can_be_added_to_cart`` which is checked before adding the product to cart
 * In cart_modifiers methods ``get_extra_cart_price_field`` and ``get_extra_cart_item_price_field``
-  accepts the additional field ``state`` to pass customized data from ``Cart.update()``
-  down to these methods.
+  accepts the additional object ``request`` which can be used to calculate the price
+  according to the state of a session, the IP-address or whatever might be useful.
+  Note for backwards compatibility: Until version 0.1.2, instead of the ``request``
+  object, an empty Python dictionary named ``state`` was passed into the cart
+  modifiers. This ``state`` object could contain arbitrary data to exchange information
+  between the cart modifiers. This Python dict now is a temporary attribute of the
+  ``request`` object named ``cart_modifier_state``. Use it instead of the
+  ``state`` object.
+* Cart modifiers can add an optional ``data`` field beside ``label`` and ``value``
+  for both, the ExtraOrderPriceField and the ExtraOrderItemPriceField model.
+  This extra ``data`` field can contain anything serializable as JSON.
 
 Version 0.1.2
 =============
@@ -55,14 +64,14 @@ Version 0.1.0
 * Made Backends internationalizable, as well as the BillingShippingForm
   thanks to the introduciton of a new optional backend_verbose_name attribute
   to backends.
-* Added order_required decorator to fix bug #84, which should be used on all 
+* Added order_required decorator to fix bug #84, which should be used on all
   payment and shipping views
 * Added cart_required decorator that checks for a cart on the checkout view #172
 * Added get_product_reference method to Product (for extensibility)
 * Cart object is not saved to database if it is empty (#147)
 * Before adding items to cart you now have to use get_or_create_cart with save=True
-* Changed spelling mistakes in methods from `payed` to `paid` on the Order 
-  model and on the API. This is potentially not backwards compatible in some 
+* Changed spelling mistakes in methods from `payed` to `paid` on the Order
+  model and on the API. This is potentially not backwards compatible in some
   border cases.
 * Added a mixin class which helps to localize model fields of type DecimalField
   in Django admin view.
@@ -70,9 +79,9 @@ Version 0.1.0
   are handled with the correct localization.
 * Order status is now directly modified in the shop API
 * CartItem URLs were too greedy, they now match less.
-* In case a user has two carts, one bound to the session and one to the user, 
+* In case a user has two carts, one bound to the session and one to the user,
   the one from the session will be used (#169)
-* Fixed circular import errors by moving base models to shop.models_bases and 
+* Fixed circular import errors by moving base models to shop.models_bases and
   base managers to shop.models_bases.managers
 
 Version 0.0.13
@@ -88,7 +97,7 @@ Version 0.0.12
   urls shubfolder.
 * Made templates extend a common base template
 * Using a dynamically generated form for the cart now to validate user input.
-  This will break your cart.html template. Please refer to the changes in 
+  This will break your cart.html template. Please refer to the changes in
   cart.html shipped by the shop to see how you can update your own template.
   Basically you need to iterate over a formset now instead of cart_items.
 * Fixed a circular import problem when user overrode their own models
@@ -113,8 +122,8 @@ Version 0.0.10
   deleting).
 * Changed the version definition mechanism. You can now: import shop;
   shop.__version__. Also, it now conforms to PEP 386
-* [API Change] Changed the payment backend API to let get_finished_url 
-  and get_cancel_url return strings instead of HttpResponse objects (this 
+* [API Change] Changed the payment backend API to let get_finished_url
+  and get_cancel_url return strings instead of HttpResponse objects (this
   was confusing)
 * Tests for the shop are now runnable from any project
 * added URL to CartItemView.delete()
@@ -142,7 +151,7 @@ Version 0.0.7
 
 * Fixed bug in the extensibility section of CartItem
 * Added complete German translations
-* Added verbose names to the Address model in order to have shipping and 
+* Added verbose names to the Address model in order to have shipping and
   billing forms that has multilingual labels.
 
 Version 0.0.6

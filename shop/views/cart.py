@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import redirect
+from django.core.exceptions import ObjectDoesNotExist
 
 from shop.forms import get_cart_item_formset
 from shop.models.productmodel import Product
@@ -62,8 +63,11 @@ class CartItemDetail(ShopView):
         """
         cart_object = get_or_create_cart(self.request)
         item_id = self.kwargs.get('id')
-        cart_object.delete_item(item_id)
-        return self.delete_success()
+        try:
+            cart_object.delete_item(item_id)
+            return self.delete_success()
+        except ObjectDoesNotExist:
+            raise Http404
 
     # success hooks
     def success(self):
@@ -108,11 +112,10 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
     def get_context_data(self, **kwargs):
         # There is no get_context_data on super(), we inherit from the mixin!
         ctx = {}
-        state = {}
-        cart_object = get_or_create_cart(self.request)
-        cart_object.update(state)
-        ctx.update({'cart': cart_object})
-        ctx.update({'cart_items': cart_object.get_updated_cart_items()})
+        cart = get_or_create_cart(self.request)
+        cart.update(self.request)
+        ctx.update({'cart': cart})
+        ctx.update({'cart_items': cart.get_updated_cart_items()})
         return ctx
 
     def get(self, request, *args, **kwargs):

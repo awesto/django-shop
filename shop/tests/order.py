@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-from __future__ import with_statement
 from decimal import Decimal
 from django.contrib.auth.models import User
 from django.test.testcases import TestCase
 from shop.cart.modifiers_pool import cart_modifiers_pool
+from shop.cart.cart_modifiers_base import BaseCartModifier
 from shop.models.cartmodel import Cart, CartItem
 from shop.addressmodel.models import Address, Country
-from shop.models.ordermodel import Order, OrderItem, ExtraOrderPriceField, \
-    OrderPayment
+from shop.models.ordermodel import Order, OrderItem, OrderPayment, \
+    ExtraOrderPriceField, ExtraOrderItemPriceField
 from shop.models.productmodel import Product
 from shop.tests.util import Mock
 from shop.tests.utils.context_managers import SettingsOverride
@@ -128,6 +128,33 @@ class OrderTestCase(TestCase):
         self.assertEqual(ret, False)
 
 
+class MockCartModifierWithNothing(BaseCartModifier):
+    def get_extra_cart_price_field(self, cart, request):
+        return ('Total', Decimal(10))
+
+    def get_extra_cart_item_price_field(self, cart_item, request):
+        return ('Item', Decimal(1))
+
+
+class MockCartModifierWithSimpleString(BaseCartModifier):
+    stdstr = 'plain ASCII'
+    unicodestr = u'unicode ÄÖÜäöüáàéèêóòñ'
+
+    def get_extra_cart_price_field(self, cart, request):
+        return ('Total', Decimal(10), str(self.stdstr))
+
+    def get_extra_cart_item_price_field(self, cart_item, request):
+        return ('Item', Decimal(1), self.unicodestr)
+
+
+class MockCartModifierWithDictionaries(BaseCartModifier):
+    def get_extra_cart_price_field(self, cart, request):
+        return ('Total', Decimal(10), [{'rate': Decimal(9.8)}, {'discount': Decimal(0.2)}])
+
+    def get_extra_cart_item_price_field(self, cart_item, request):
+        return ('Item', Decimal(1), {'rate': Decimal(9.8), 'discount': Decimal(0.2)})
+
+
 class OrderConversionTestCase(TestCase):
 
     PRODUCT_PRICE = Decimal('100')
@@ -135,10 +162,10 @@ class OrderConversionTestCase(TestCase):
 
     def setUp(self):
         cart_modifiers_pool.USE_CACHE = False
-        self.user = User.objects.create(username="test",
-                                        email="test@example.com",
-                                        first_name="Test",
-                                        last_name="Toto")
+        user = User.objects.create(username="test", email="test@example.com",
+                                   first_name="Test", last_name="Toto")
+        self.request = Mock()
+        setattr(self.request, 'user', user)
         self.product = Product()
         self.product.name = "TestPrduct"
         self.product.slug = "TestPrduct"
@@ -149,11 +176,8 @@ class OrderConversionTestCase(TestCase):
         self.product.save()
 
         self.cart = Cart()
-        self.cart.user = self.user
+        self.cart.user = user
         self.cart.save()
-
-        #self.client.user = self.user
-        #self.client.save()
 
         self.country = Country.objects.create(name='CH')
 
@@ -185,7 +209,7 @@ class OrderConversionTestCase(TestCase):
         Order.objects.create_from_cart()
         """
         self.cart.add_product(self.product)
-        self.cart.update()
+        self.cart.update(self.request)
         self.cart.save()
 
         o = Order.objects.create_from_cart(self.cart)
@@ -213,7 +237,7 @@ class OrderConversionTestCase(TestCase):
                 active=True
                 )
         self.cart.add_product(variation)
-        self.cart.update()
+        self.cart.update(self.request)
         self.cart.save()
 
         o = Order.objects.create_from_cart(self.cart)
@@ -230,7 +254,7 @@ class OrderConversionTestCase(TestCase):
         with SettingsOverride(SHOP_CART_MODIFIERS=MODIFIERS):
 
             self.cart.add_product(self.product)
-            self.cart.update()
+            self.cart.update(self.request)
             self.cart.save()
 
             o = Order.objects.create_from_cart(self.cart,)
@@ -260,7 +284,7 @@ class OrderConversionTestCase(TestCase):
 
     def test_order_addresses_match_user_preferences(self):
         self.cart.add_product(self.product)
-        self.cart.update()
+        self.cart.update(self.request)
         self.cart.save()
 
         self.address.is_billing = False
@@ -276,6 +300,30 @@ class OrderConversionTestCase(TestCase):
         self.assertEqual(o.shipping_address_text, self.address.as_text())
         self.assertEqual(o.billing_address_text, self.address2.as_text())
 
+    def test_create_order_with_extra_data_in_cart_modifier(self):
+        MODIFIERS = [
+            'shop.tests.order.MockCartModifierWithNothing',
+            'shop.tests.order.MockCartModifierWithSimpleString',
+            'shop.tests.order.MockCartModifierWithDictionaries'
+        ]
+
+        with SettingsOverride(SHOP_CART_MODIFIERS=MODIFIERS):
+            self.cart.add_product(self.product)
+            self.cart.update(self.request)
+            self.cart.save()
+            order = Order.objects.create_from_cart(self.cart,)
+            extra_order_fields = ExtraOrderPriceField.objects.filter(order=order)
+            self.assertEqual(len(extra_order_fields), 3)
+            self.assertEqual(extra_order_fields[0].data, None)
+            self.assertEqual(extra_order_fields[1].data, MockCartModifierWithSimpleString.stdstr)
+            self.assertEqual(Decimal(extra_order_fields[2].data[0].get('rate')), Decimal(9.8))
+
+            extra_order_fields = ExtraOrderItemPriceField.objects.filter(order_item__order=order)
+            self.assertEqual(len(extra_order_fields), 3)
+            self.assertEqual(extra_order_fields[0].data, None)
+            self.assertEqual(extra_order_fields[1].data, MockCartModifierWithSimpleString.unicodestr)
+            self.assertEqual(Decimal(extra_order_fields[2].data.get('discount')), Decimal(0.2))
+
     def test_create_order_respects_product_specific_get_price_method(self):
         if SKIP_BASEPRODUCT_TEST:
             return
@@ -283,7 +331,7 @@ class OrderConversionTestCase(TestCase):
         product = ProductVariation.objects.create(baseproduct=baseproduct, active=True)
 
         self.cart.add_product(product)
-        self.cart.update()
+        self.cart.update(self.request)
         self.cart.save()
         o = Order.objects.create_from_cart(self.cart)
         oi = OrderItem.objects.filter(order=o)[0]
@@ -291,7 +339,7 @@ class OrderConversionTestCase(TestCase):
 
     def test_create_from_cart_respects_get_product_reference(self):
         self.cart.add_product(self.product)
-        self.cart.update()
+        self.cart.update(self.request)
         self.cart.save()
 
         o = Order.objects.create_from_cart(self.cart)

@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, include, url
 from example.myshop.views import MyOrderConfirmView
 
 from shop import urls as shop_urls

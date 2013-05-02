@@ -10,6 +10,7 @@ CONTRIBUTORS
 * Adrien Lemaire
 * airtonix
 * Aleš Kocjančič
+* Anders Petersson
 * Andrés Reyes Monge
 * Audrey Roy
 * Ben Lopatin
@@ -20,6 +21,7 @@ CONTRIBUTORS
 * German Larrain
 * ikresoft
 * Issac Kelly
+* Jacek Mitręga
 * Jacob Rief
 * Jonas Obrist
 * Justin Steward 

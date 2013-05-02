@@ -2,7 +2,7 @@
 """
 Holds all the information relevant to the client (addresses for instance)
 """
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -20,7 +20,7 @@ Country: %(country)s
 
 ADDRESS_TEMPLATE = getattr(settings, 'SHOP_ADDRESS_TEMPLATE',
                            BASE_ADDRESS_TEMPLATE)
-
+USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
 class Country(models.Model):
     name = models.CharField(max_length=255)
@@ -34,9 +34,9 @@ class Country(models.Model):
 
 
 class Address(models.Model):
-    user_shipping = models.OneToOneField(User, related_name='shipping_address',
+    user_shipping = models.OneToOneField(USER_MODEL, related_name='shipping_address',
                                          blank=True, null=True)
-    user_billing = models.OneToOneField(User, related_name='billing_address',
+    user_billing = models.OneToOneField(USER_MODEL, related_name='billing_address',
                                         blank=True, null=True)
 
     name = models.CharField(_('Name'), max_length=255)

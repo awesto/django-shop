@@ -1,5 +1,4 @@
 #-*- coding: utf-8 -*-
-from __future__ import with_statement
 from decimal import Decimal
 from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured
@@ -10,6 +9,7 @@ from shop.cart.modifiers.tax_modifiers import TenPercentPerItemTaxModifier
 from shop.cart.modifiers_pool import cart_modifiers_pool
 from shop.models.cartmodel import Cart
 from shop.models.productmodel import Product
+from shop.tests.util import Mock
 from shop.tests.utils.context_managers import SettingsOverride
 
 
@@ -17,12 +17,12 @@ class CarModifierUsingStatePassing(BaseCartModifier):
     """
     A test cart modifier that uses the state variable to pass things around
     """
-    def process_cart_item(self, cart_item, state):
-        state['TEST'] = 'VALID'
+    def process_cart_item(self, cart_item, request):
+        request.cart_modifier_state['TEST'] = 'VALID'
         return cart_item
 
-    def process_cart(self, cart, state):
-        result = state['TEST']
+    def process_cart(self, cart, request):
+        result = request.cart_modifier_state['TEST']
         assert result == 'VALID'
         return cart
 
@@ -33,8 +33,9 @@ class CartModifiersTestCase(TestCase):
 
     def setUp(self):
         cart_modifiers_pool.USE_CACHE = False
-        self.user = User.objects.create(username="test",
-            email="test@example.com")
+        user = User.objects.create(username="test", email="test@example.com")
+        self.request = Mock()
+        setattr(self.request, 'user', user)
         self.product = Product()
         self.product.name = "TestPrduct"
         self.product.slug = "TestPrduct"
@@ -45,7 +46,7 @@ class CartModifiersTestCase(TestCase):
         self.product.save()
 
         self.cart = Cart()
-        self.cart.user = self.user
+        self.cart.user = user
         self.cart.save()
 
     def test_01_cart_modifier_pool_loads_modifiers_properly(self):
@@ -96,10 +97,15 @@ class CartModifiersTestCase(TestCase):
         with SettingsOverride(SHOP_CART_MODIFIERS=MODIFIERS):
             self.cart.add_product(self.product)
             self.cart.save()
-            self.cart.update()  # This should raise if the state isn't passed
+            self.cart.update(self.request)
 
 
 class TenPercentPerItemTaxModifierTestCase(TestCase):
+
+    def setUp(self):
+        user = User.objects.create(username="test", email="test@example.com")
+        self.request = Mock()
+        setattr(self.request, 'user', user)
 
     class MockItem(object):
         """ A simple mock object to assert the tax modifier works properly"""
@@ -111,7 +117,7 @@ class TenPercentPerItemTaxModifierTestCase(TestCase):
     def test_tax_amount_is_correct(self):
         modifier = TenPercentPerItemTaxModifier()
         item = self.MockItem()
-        field = modifier.get_extra_cart_item_price_field(item)
+        field = modifier.get_extra_cart_item_price_field(item, self.request)
         self.assertTrue(field[1] == Decimal('10'))
 
     def test_tax_amount_is_correct_after_modifier(self):
@@ -120,5 +126,5 @@ class TenPercentPerItemTaxModifierTestCase(TestCase):
         previous_option = ('Some option', 10)
         item.extra_price_fields.append(previous_option)
         item.current_total = item.current_total + previous_option[1]
-        field = modifier.get_extra_cart_item_price_field(item)
+        field = modifier.get_extra_cart_item_price_field(item, self.request)
         self.assertTrue(field[1] == Decimal('11'))
