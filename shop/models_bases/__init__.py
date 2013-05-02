@@ -322,13 +322,14 @@ class BaseOrder(models.Model):
     """
 
     PROCESSING = 10  # New order, addresses and shipping/payment methods chosen (user is in the shipping backend)
-    CONFIRMING = 20 # The order is pending confirmation (user is on the confirm view)
-    CONFIRMED = 30 # The order was confirmed (user is in the payment backend)
-    COMPLETED = 40 # Payment backend successfully completed
-    SHIPPED = 50 # The order was shipped to client
-    CANCELLED = 60 # The order was cancelled
+    CONFIRMING = 20  # The order is pending confirmation (user is on the confirm view)
+    CONFIRMED = 30  # The order was confirmed (user is in the payment backend)
+    COMPLETED = 40  # Payment backend successfully completed
+    SHIPPED = 50  # The order was shipped to client
+    CANCELED = 60  # The order was canceled
+    CANCELLED = CANCELED  # DEPRECATED SPELLING
 
-    PAYMENT = 30 # DEPRECATED!
+    PAYMENT = 30  # DEPRECATED!
 
     STATUS_CODES = (
         (PROCESSING, _('Processing')),
@@ -336,7 +337,7 @@ class BaseOrder(models.Model):
         (CONFIRMED, _('Confirmed')),
         (COMPLETED, _('Completed')),
         (SHIPPED, _('Shipped')),
-        (CANCELLED, _('Cancelled')),
+        (CANCELED, _('Canceled')),
     )
 
     # If the user is null, the order was created with a session
