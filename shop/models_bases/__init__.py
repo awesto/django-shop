@@ -419,7 +419,7 @@ class BaseOrder(models.Model):
         e.g. you can copy address instance and save FK to it in your order
         class.
         """
-        if  hasattr(billing_address, 'as_text'):
+        if hasattr(billing_address, 'as_text') and callable(billing_address.as_text):
             self.billing_address_text = billing_address.as_text()
             self.save()
 
@@ -431,7 +431,7 @@ class BaseOrder(models.Model):
         e.g. you can copy address instance and save FK to it in your order
         class.
         """
-        if hasattr(shipping_address, 'as_text'):
+        if hasattr(shipping_address, 'as_text') and callable(shipping_address.as_text):
             self.shipping_address_text = shipping_address.as_text()
             self.save()
 
