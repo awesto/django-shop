@@ -14,8 +14,6 @@ The current state is a roughly functional and highly modular system.
 Please refer to docs/plugins.rst to figure out what plugin types are available,
 and what the do
 
-[![Build Status](https://travis-ci.org/jrief/django-shop.png)](https://travis-ci.org/jrief/django-shop)
-
 You'll find the detailed doc on
 `RTD <http://readthedocs.org/projects/django-shop/>`_
 
