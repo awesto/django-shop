@@ -1,0 +1,10 @@
+language: python
+python:
+  - "2.7"
+env:
+  - DJANGO=1.4.5
+  - DJANGO=1.5.1
+install:
+  - pip install -q Django==$DJANGO --use-mirrors
+  - python setup.py -q install
+script: cd tests/testapp/ && ./manage.py test shop addressmodel
