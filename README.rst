@@ -17,6 +17,13 @@ and what the do
 You'll find the detailed doc on
 `RTD <http://readthedocs.org/projects/django-shop/>`_
 
+Build status
+============
+.. |travisci| image:: https://api.travis-ci.org/divio/django-shop.png
+.. _travisci https://travis-ci.org/divio/django-shop
+
+|travisci|
+
 How to help:
 ============
 
