@@ -1,5 +1,5 @@
-Version NEXT
-============
+Version 0.2.0
+=============
 
 * models.FloatField are now automatically localized.
 * Support for Django 1.2 and Django 1.3 dropped.
