@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 
 from shop.forms import CartItemModelForm, get_cart_item_formset
+from shop.tests.util import Mock
 from shop.models.cartmodel import Cart, CartItem
 from shop.models.productmodel import Product
 
@@ -12,10 +13,10 @@ class BaseCartItemFormsTestCase(TestCase):
     """Base class for tests related to ``CartItem`` forms and formsets."""
 
     def setUp(self):
-        self.user = User.objects.create(username="test",
-                                        email="test@example.com",
-                                        first_name="Test",
-                                        last_name="Tester")
+        user = User.objects.create(username="test", email="test@example.com",
+                                   first_name="Test", last_name="Tester")
+        self.request = Mock()
+        setattr(self.request, 'user', user)
         self.cart = Cart.objects.create()
         self.product = Product.objects.create(unit_price=123)
         self.item = CartItem.objects.create(cart=self.cart, quantity=2,
@@ -44,7 +45,7 @@ class GetCartItemFormsetTestCase(BaseCartItemFormsTestCase):
         self.assertTrue('quantity' in formset.forms[0].fields)
 
     def test_cart_items_should_have_updated_values(self):
-        self.cart.update()
+        self.cart.update(self.request)
         items = self.cart.get_updated_cart_items()
         formset = get_cart_item_formset(cart_items=items)
         self.assertEqual(formset.forms[0].instance.line_subtotal, 246)

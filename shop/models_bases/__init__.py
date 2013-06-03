@@ -191,7 +191,7 @@ class BaseCart(models.Model):
             'updated before calling get_updated_cart_items.')
         return self._updated_cart_items
 
-    def update(self, state=None):
+    def update(self, request):
         """
         This should be called whenever anything is changed in the cart (added
         or removed).
@@ -217,27 +217,27 @@ class BaseCart(models.Model):
         self.extra_price_fields = []  # Reset the price fields
         self.subtotal_price = Decimal('0.0')  # Reset the subtotal
 
-        # This will hold extra information that cart modifiers might want to
-        # pass to each other
-        if state is None:
-            state = {}
+        # The request object holds extra information in a dict named 'cart_modifier_state'.
+        # Cart modifiers can use this dict to pass arbitrary data from and to each other.
+        if not hasattr(request, 'cart_modifier_state'):
+            setattr(request, 'cart_modifier_state', {})
 
         # This calls all the pre_process_cart methods (if any), before the cart
         # is processed. This allows for data collection on the cart for
         # example)
         for modifier in cart_modifiers_pool.get_modifiers_list():
-            modifier.pre_process_cart(self, state)
+            modifier.pre_process_cart(self, request)
 
         for item in items:  # For each CartItem (order line)...
             # This is still the ghetto select_related
             item.product = products_dict[item.product_id]
-            self.subtotal_price = self.subtotal_price + item.update(state)
+            self.subtotal_price = self.subtotal_price + item.update(request)
 
         self.current_total = self.subtotal_price
         # Now we have to iterate over the registered modifiers again
         # (unfortunately) to pass them the whole Order this time
         for modifier in cart_modifiers_pool.get_modifiers_list():
-            modifier.process_cart(self, state)
+            modifier.process_cart(self, request)
 
         self.total_price = self.current_total
 
@@ -245,7 +245,7 @@ class BaseCart(models.Model):
         # It allows for a last bit of processing on the "finished" cart, before
         # it is displayed
         for modifier in cart_modifiers_pool.get_modifiers_list():
-            modifier.post_process_cart(self, state)
+            modifier.post_process_cart(self, request)
 
         # Cache updated cart items
         self._updated_cart_items = items
@@ -294,7 +294,7 @@ class BaseCartItem(models.Model):
         self.line_total = Decimal('0.0')
         self.current_total = Decimal('0.0')  # Used by cart modifiers
 
-    def update(self, state):
+    def update(self, request):
         self.extra_price_fields = []  # Reset the price fields
         self.line_subtotal = self.product.get_price() * self.quantity
         self.current_total = self.line_subtotal
@@ -302,7 +302,7 @@ class BaseCartItem(models.Model):
         for modifier in cart_modifiers_pool.get_modifiers_list():
             # We now loop over every registered price modifier,
             # most of them will simply add a field to extra_payment_fields
-            modifier.process_cart_item(self, state)
+            modifier.process_cart_item(self, request)
 
         self.line_total = self.current_total
         return self.line_total

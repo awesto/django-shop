@@ -5,7 +5,7 @@ from shop.cart.cart_modifiers_base import BaseCartModifier
 
 class BulkRebateModifier(BaseCartModifier):
 
-    def get_extra_cart_item_price_field(self, cart_item):
+    def get_extra_cart_item_price_field(self, cart_item, request):
         """
         Add a rebate to a line item depending on the quantity ordered:
 
