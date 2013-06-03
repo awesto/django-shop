@@ -78,7 +78,7 @@ class OrderManager(models.Manager):
         old_orders = self.get_unconfirmed_for_cart(cart)
         old_orders.delete()
 
-    def create_order_object(self, cart, state):
+    def create_order_object(self, cart, request):
         """
         Create an empty order object and fill it with the given cart data.
         """
@@ -91,7 +91,7 @@ class OrderManager(models.Manager):
         return order
 
     @transaction.commit_on_success
-    def create_from_cart(self, cart, state=None):
+    def create_from_cart(self, cart, request):
         """
         This creates a new Order object (and all the rest) from a passed Cart
         object.
@@ -120,7 +120,7 @@ class OrderManager(models.Manager):
         self.remove_old_orders(cart)
 
         # Create an empty order object
-        order = self.create_order_object(cart, state)
+        order = self.create_order_object(cart, request)
         order.save()
 
         # Let's serialize all the extra price arguments in DB
@@ -136,7 +136,7 @@ class OrderManager(models.Manager):
         # There, now move on to the order items.
         cart_items = CartItem.objects.filter(cart=cart)
         for item in cart_items:
-            item.update(state)
+            item.update(request)
             order_item = OrderItem()
             order_item.order = order
             order_item.product_reference = item.product.get_product_reference()
