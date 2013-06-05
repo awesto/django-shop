@@ -209,7 +209,7 @@ class BaseCart(models.Model):
         from shop.models import CartItem, Product
 
         # This is a ghetto "select_related" for polymorphic models.
-        items = CartItem.objects.filter(cart=self)
+        items = CartItem.objects.filter(cart=self).order_by('pk')
         product_ids = [item.product_id for item in items]
         products = Product.objects.filter(pk__in=product_ids)
         products_dict = dict([(p.pk, p) for p in products])
