@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: django-shop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-12-13 07:39-0600\n"
-"PO-Revision-Date: 2011-07-13 16:16+0000\n"
-"Last-Translator: chrisglass <tribaal@gmail.com>\n"
+"PO-Revision-Date: 2013-02-13 11:49+0100\n"
+"Last-Translator: Sylvain Fankhauser <sylvain.fankhauser@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
 
 #: forms.py:27
-#, fuzzy
 msgid "Shipping method"
-msgstr "Livraison"
+msgstr "Méthode de livraison"
 
-#: forms.py:28 models/ordermodel.py:99
+#: forms.py:28
+#: models/ordermodel.py:99
 msgid "Payment method"
 msgstr "Méthode de payment"
 
@@ -44,7 +44,8 @@ msgstr ""
 "Region: %(state)s,\n"
 "Pays: %(country)s\n"
 
-#: addressmodel/models.py:32 addressmodel/models.py:48
+#: addressmodel/models.py:32
+#: addressmodel/models.py:48
 msgid "Country"
 msgstr "Pays"
 
@@ -52,11 +53,13 @@ msgstr "Pays"
 msgid "Countries"
 msgstr "Pays"
 
-#: addressmodel/models.py:42 models_bases/__init__.py:26
+#: addressmodel/models.py:42
+#: models_bases/__init__.py:26
 msgid "Name"
 msgstr "Nom"
 
-#: addressmodel/models.py:43 addressmodel/models.py:52
+#: addressmodel/models.py:43
+#: addressmodel/models.py:52
 msgid "Address"
 msgstr "Adresse"
 
@@ -88,8 +91,11 @@ msgstr "Livraison"
 msgid "Billing"
 msgstr "Facturation"
 
-#: models/ordermodel.py:45 models/ordermodel.py:59 models/ordermodel.py:92
-#: models/defaults/order.py:13 models_bases/__init__.py:353
+#: models/ordermodel.py:45
+#: models/ordermodel.py:59
+#: models/ordermodel.py:92
+#: models/defaults/order.py:13
+#: models_bases/__init__.py:353
 #: models_bases/__init__.py:435
 msgid "Order"
 msgstr "Commande"
@@ -98,17 +104,21 @@ msgstr "Commande"
 msgid "Extra info"
 msgstr "Informations supplémentaires"
 
-#: models/ordermodel.py:50 models/ordermodel.py:51
+#: models/ordermodel.py:50
+#: models/ordermodel.py:51
 msgid "Order extra info"
 msgstr "Informations de commande supplémentaires"
 
-#: models/ordermodel.py:60 models/ordermodel.py:78
+#: models/ordermodel.py:60
+#: models/ordermodel.py:78
 msgid "Label"
 msgstr "Etiquette"
 
-#: models/ordermodel.py:61 models/ordermodel.py:79 models/ordermodel.py:94
+#: models/ordermodel.py:61
+#: models/ordermodel.py:79
+#: models/ordermodel.py:94
 msgid "Amount"
-msgstr "Quantité"
+msgstr "Montant"
 
 #: models/ordermodel.py:64
 msgid "Is shipping"
@@ -122,7 +132,8 @@ msgstr "Champ de prix supplémentaire (Commande)"
 msgid "Extra order price fields"
 msgstr "Champs de prix supplémentaires (Commande)"
 
-#: models/ordermodel.py:77 models/defaults/orderitem.py:11
+#: models/ordermodel.py:77
+#: models/defaults/orderitem.py:11
 #: models_bases/__init__.py:450
 msgid "Order item"
 msgstr "Objet commandé"
@@ -155,36 +166,44 @@ msgstr "Payment"
 msgid "Order payments"
 msgstr "Payments"
 
-#: models/defaults/cart.py:10 models_bases/__init__.py:83
+#: models/defaults/cart.py:10
+#: models_bases/__init__.py:83
 msgid "Cart"
 msgstr "Panier"
 
-#: models/defaults/cart.py:11 models_bases/__init__.py:84
+#: models/defaults/cart.py:11
+#: models_bases/__init__.py:84
 msgid "Carts"
 msgstr "Paniers"
 
-#: models/defaults/cartitem.py:10 models_bases/__init__.py:274
+#: models/defaults/cartitem.py:10
+#: models_bases/__init__.py:274
 msgid "Cart item"
 msgstr "Objet"
 
-#: models/defaults/cartitem.py:11 models_bases/__init__.py:275
+#: models/defaults/cartitem.py:11
+#: models_bases/__init__.py:275
 msgid "Cart items"
 msgstr "Objets"
 
-#: models/defaults/order.py:14 models_bases/__init__.py:354
+#: models/defaults/order.py:14
+#: models_bases/__init__.py:354
 msgid "Orders"
 msgstr "Commandes"
 
-#: models/defaults/orderitem.py:12 models_bases/__init__.py:451
+#: models/defaults/orderitem.py:12
+#: models_bases/__init__.py:451
 msgid "Order items"
 msgstr "Objets commandés"
 
-#: models/defaults/product.py:17 models_bases/__init__.py:38
+#: models/defaults/product.py:17
+#: models_bases/__init__.py:38
 #: models_bases/__init__.py:441
 msgid "Product"
 msgstr "Produit"
 
-#: models/defaults/product.py:18 models_bases/__init__.py:39
+#: models/defaults/product.py:18
+#: models_bases/__init__.py:39
 msgid "Products"
 msgstr "Produits"
 
@@ -204,35 +223,36 @@ msgstr "Date ajoutée"
 msgid "Last modified"
 msgstr "Dernière mise-à-jour"
 
-#: models_bases/__init__.py:33 models_bases/__init__.py:442
-#: templates/shop/cart.html:15 templates/shop/templatetags/_order.html:28
+#: models_bases/__init__.py:33
+#: models_bases/__init__.py:442
+#: templates/shop/cart.html:15
+#: templates/shop/templatetags/_order.html:28
 msgid "Unit price"
 msgstr "Prix unitaire"
 
 #: models_bases/__init__.py:325
 msgid "Processing"
-msgstr ""
+msgstr "En traitement"
 
 #: models_bases/__init__.py:326
 msgid "Confirming"
-msgstr ""
+msgstr "En attente de confirmation"
 
 #: models_bases/__init__.py:327
 msgid "Confirmed"
-msgstr ""
+msgstr "Confirmé"
 
 #: models_bases/__init__.py:328
 msgid "Completed"
-msgstr ""
+msgstr "Terminé"
 
 #: models_bases/__init__.py:329
-#, fuzzy
 msgid "Shipped"
-msgstr "Livraison"
+msgstr "Expédié"
 
 #: models_bases/__init__.py:330
 msgid "Cancelled"
-msgstr ""
+msgstr "Annulé"
 
 #: models_bases/__init__.py:335
 msgid "User"
@@ -246,7 +266,8 @@ msgstr "Status"
 msgid "Order subtotal"
 msgstr "Sous-total"
 
-#: models_bases/__init__.py:339 templates/shop/templatetags/_order.html:62
+#: models_bases/__init__.py:339
+#: templates/shop/templatetags/_order.html:62
 msgid "Order Total"
 msgstr "Total de commande"
 
@@ -279,12 +300,14 @@ msgstr "Numéro de commande: %(id)s"
 msgid "Product reference"
 msgstr "Réference produit"
 
-#: models_bases/__init__.py:439 templates/shop/cart.html:14
+#: models_bases/__init__.py:439
+#: templates/shop/cart.html:14
 #: templates/shop/templatetags/_order.html:27
 msgid "Product name"
 msgstr "Nom du produit"
 
-#: models_bases/__init__.py:443 templates/shop/cart.html:16
+#: models_bases/__init__.py:443
+#: templates/shop/cart.html:16
 #: templates/shop/templatetags/_order.html:29
 msgid "Quantity"
 msgstr "Quantité"
@@ -299,7 +322,7 @@ msgstr "Total de ligne"
 
 #: payment/backends/pay_on_delivery.py:11
 msgid "Pay On Delivery"
-msgstr ""
+msgstr "Paiement à la réception"
 
 #: shipping/backends/flat_rate.py:20
 msgid "Flat rate"
@@ -309,7 +332,8 @@ msgstr ""
 msgid "Your shopping cart"
 msgstr "Votre panier"
 
-#: templates/shop/cart.html:39 templates/shop/templatetags/_order.html:49
+#: templates/shop/cart.html:39
+#: templates/shop/templatetags/_order.html:49
 msgid "Line Total"
 msgstr "Total de ligne"
 

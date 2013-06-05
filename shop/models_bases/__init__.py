@@ -26,7 +26,7 @@ class BaseProduct(PolymorphicModel):
 
     name = models.CharField(max_length=255, verbose_name=_('Name'))
     slug = models.SlugField(verbose_name=_('Slug'), unique=True)
-    active = models.BooleanField(default=False, verbose_name=_('Active'))
+    active = models.BooleanField(default=True, verbose_name=_('Active'))
     date_added = models.DateTimeField(auto_now_add=True,
         verbose_name=_('Date added'))
     last_modified = models.DateTimeField(auto_now=True,
@@ -209,7 +209,7 @@ class BaseCart(models.Model):
         from shop.models import CartItem, Product
 
         # This is a ghetto "select_related" for polymorphic models.
-        items = CartItem.objects.filter(cart=self)
+        items = CartItem.objects.filter(cart=self).order_by('pk')
         product_ids = [item.product_id for item in items]
         products = Product.objects.filter(pk__in=product_ids)
         products_dict = dict([(p.pk, p) for p in products])
