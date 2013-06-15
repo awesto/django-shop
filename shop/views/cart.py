@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -50,8 +50,11 @@ class CartItemDetail(ShopView):
         # with PUT request, data is in GET variable
         # TODO: test in real client
         # quantity = self.request.POST['item_quantity']
-        quantity = self.request.POST['item_quantity']
-        cart_object.update_quantity(item_id, int(quantity))
+        try:
+            quantity = int(self.request.POST['item_quantity'])
+        except (KeyError, ValueError):
+            return HttpResponseBadRequest("The quantity has to be a number")
+        cart_object.update_quantity(item_id, quantity)
         return self.put_success()
 
     def delete(self, request, *args, **kwargs):
@@ -134,10 +137,11 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
         quantity parameter to specify how many you wish to add at once
         (defaults to 1)
         """
-        product_id = self.request.POST['add_item_id']
-        product_quantity = self.request.POST.get('add_item_quantity')
-        if not product_quantity:
-            product_quantity = 1
+        try:
+            product_id = int(self.request.POST['add_item_id'])
+            product_quantity = int(self.request.POST.get('add_item_quantity', 1))
+        except (KeyError, ValueError):
+            return HttpResponseBadRequest("The quantity and ID have to be numbers")
         product = Product.objects.get(pk=product_id)
         cart_object = get_or_create_cart(self.request, save=True)
         cart_item = cart_object.add_product(product, product_quantity)
