@@ -236,6 +236,7 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
 
 class OrderConfirmView(RedirectView):
     url_name = 'checkout_payment'
+    permanent = False
 
     def confirm_order(self):
         order = get_order_from_request(self.request)
