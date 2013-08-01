@@ -43,7 +43,7 @@ def get_or_create_cart(request, save=False):
             if session_cart and session_cart.user == request.user:
                 # and the session cart already belongs to us, we are done
                 cart = session_cart
-            elif session_cart and session_cart.total_quantity > 0 and session_cart.user != request.user:
+            elif session_cart and not session_cart.is_empty and session_cart.user != request.user:
                 # if it does not belong to us yet
                 database_cart = get_cart_from_database(request)
                 if database_cart:

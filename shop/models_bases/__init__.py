@@ -265,6 +265,10 @@ class BaseCart(models.Model):
         """
         return sum([ci.quantity for ci in self.items.all()])
 
+    @property
+    def is_empty(self):
+        return self.total_quantity == 0
+
 
 class BaseCartItem(models.Model):
     """
