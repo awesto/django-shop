@@ -5,6 +5,10 @@ from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
 
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
+
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
@@ -19,8 +23,8 @@ class Migration(SchemaMigration):
         # Adding model 'Address'
         db.create_table('addressmodel_address', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user_shipping', self.gf('django.db.models.fields.related.OneToOneField')(blank=True, related_name='shipping_address', unique=True, null=True, to=orm['auth.User'])),
-            ('user_billing', self.gf('django.db.models.fields.related.OneToOneField')(blank=True, related_name='billing_address', unique=True, null=True, to=orm['auth.User'])),
+            ('user_shipping', self.gf('django.db.models.fields.related.OneToOneField')(blank=True, related_name='shipping_address', unique=True, null=True, to=User)),
+            ('user_billing', self.gf('django.db.models.fields.related.OneToOneField')(blank=True, related_name='billing_address', unique=True, null=True, to=User)),
             ('address', self.gf('django.db.models.fields.CharField')(max_length=255)),
             ('address2', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
             ('zip_code', self.gf('django.db.models.fields.CharField')(max_length=20)),
