@@ -5,6 +5,11 @@ from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
 
+
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
+
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
@@ -27,7 +32,7 @@ class Migration(SchemaMigration):
         # Adding model 'Cart'
         db.create_table('shop_cart', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['auth.User'], unique=True, null=True, blank=True)),
+            ('user', self.gf('django.db.models.fields.related.OneToOneField')(to=User, unique=True, null=True, blank=True)),
             ('date_created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('last_updated', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
         ))
@@ -45,7 +50,7 @@ class Migration(SchemaMigration):
         # Adding model 'Client'
         db.create_table('shop_client', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.OneToOneField')(related_name='client', unique=True, to=orm['auth.User'])),
+            ('user', self.gf('django.db.models.fields.related.OneToOneField')(related_name='client', unique=True, to=User)),
             ('date_of_birth', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
             ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
         ))
@@ -76,7 +81,7 @@ class Migration(SchemaMigration):
         # Adding model 'Order'
         db.create_table('shop_order', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], null=True, blank=True)),
+            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=User, null=True, blank=True)),
             ('status', self.gf('django.db.models.fields.IntegerField')(default=1)),
             ('order_subtotal', self.gf('django.db.models.fields.DecimalField')(default='0.00', max_digits=12, decimal_places=2)),
             ('order_total', self.gf('django.db.models.fields.DecimalField')(default='0.00', max_digits=12, decimal_places=2)),
