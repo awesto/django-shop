@@ -3,6 +3,7 @@
 Holds all the information relevant to the client (addresses for instance)
 """
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -20,7 +21,7 @@ Country: %(country)s
 
 ADDRESS_TEMPLATE = getattr(settings, 'SHOP_ADDRESS_TEMPLATE',
                            BASE_ADDRESS_TEMPLATE)
-USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
+USER_MODEL = get_user_model()
 
 class Country(models.Model):
     name = models.CharField(max_length=255)
