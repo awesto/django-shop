@@ -13,4 +13,4 @@ class Book(Product):
     objects = BookManager()
     
     class Meta:
-        pass
+        app_label = 'myshop'
