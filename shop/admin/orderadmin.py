@@ -52,8 +52,9 @@ class OrderAdmin(LocalizeDecimalFieldsMixin, ModelAdmin):
                 }),
             )
 
-    def save_model(self, request, order, form, change):
-        super(OrderAdmin, self).save_model(request, order, form, change)
+    def save_related(self, request, form, formsets, change):
+        super(OrderAdmin, self).save_related(request, form, formsets, change)
+        order = self.get_object(request, form.instance.id)
         if not order.is_completed() and order.is_paid():
             order.status = Order.COMPLETED
             order.save()
