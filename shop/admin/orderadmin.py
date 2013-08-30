@@ -59,14 +59,15 @@ class OrderAdmin(LocalizeDecimalFieldsMixin, ModelAdmin):
             post_save_status = order.status
 
         super(OrderAdmin, self).save_model(request, order, form, change)
-
-        if post_save_status == Order.SHIPPED and pre_save_status != Order.SHIPPED:
-            shipped.send(sender=self, order=order)
+        
+        if change:
+            if post_save_status == Order.SHIPPED and pre_save_status != Order.SHIPPED:
+                shipped.send(sender=self, order=order)
 
     def save_related(self, request, form, formset, change):
         super(OrderAdmin, self).save_related(request, form, formset, change)
 
-        if form.instance:
+        if change:
             if form.instance.status != Order.SHIPPED:
                 if not form.instance.is_completed() and form.instance.is_paid():
                     form.instance.status = Order.COMPLETED
