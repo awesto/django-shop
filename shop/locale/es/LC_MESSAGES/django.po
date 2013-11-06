@@ -18,9 +18,8 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: forms.py:27
-#, fuzzy
 msgid "Shipping method"
-msgstr "Dirección de Envío"
+msgstr "Método de envío"
 
 #: forms.py:28 models/ordermodel.py:99
 msgid "Payment method"
@@ -41,7 +40,7 @@ msgstr ""
 "Nombre: %(name)s,\n"
 "Dirección: %(address)s,\n"
 "Código postal: %(zipcode)s,\n"
-"Ciudad: %(city)s,\n"
+"Localidad: %(city)s,\n"
 "Provincia: %(state)s,\n"
 "País: %(country)s\n"
 
@@ -71,7 +70,7 @@ msgstr "Código postal"
 
 #: addressmodel/models.py:46
 msgid "City"
-msgstr "Ciudad"
+msgstr "Localidad"
 
 #: addressmodel/models.py:47
 msgid "State"
@@ -215,9 +214,8 @@ msgid "Processing"
 msgstr "En proceso"
 
 #: models_bases/__init__.py:326
-#, fuzzy
 msgid "Confirming"
-msgstr "Confirmado"
+msgstr "Confirmando"
 
 #: models_bases/__init__.py:327
 msgid "Confirmed"

@@ -1,12 +1,19 @@
 # -*- coding: utf-8 -*-
 """Tests for the forms of the django-shop app."""
 from django.contrib.auth.models import User
+from django import forms
 from django.test import TestCase
+from django.test.utils import override_settings
 
-from shop.forms import CartItemModelForm, get_cart_item_formset
+from shop.forms import (CartItemModelForm, get_cart_item_modelform_class,
+                        get_cart_item_formset)
 from shop.tests.util import Mock
 from shop.models.cartmodel import Cart, CartItem
 from shop.models.productmodel import Product
+
+
+class CartItemModelForm(CartItemModelForm):
+    quantity = forms.IntegerField(min_value=5, max_value=9999)
 
 
 class BaseCartItemFormsTestCase(TestCase):
@@ -26,11 +33,29 @@ class BaseCartItemFormsTestCase(TestCase):
 class CartItemModelFormTestCase(BaseCartItemFormsTestCase):
     """Tests for the ``CartItemModelForm`` form class."""
 
+    @override_settings(SHOP_CART_ITEM_FORM="shop.tests.forms.CartItemModelForm")
+    def test_custom_cartitem_modelform(self):
+        data = {
+            'quantity': '0',
+        }
+        form = get_cart_item_modelform_class()(instance=self.item, data=data)
+        self.assertEqual(len(form.errors), 1)
+        self.assertTrue(unicode(form.errors).find("quantity") > -1)
+        self.assertTrue(unicode(form.errors).find("greater than or equal to 5") > -1)
+
+        data = {
+            'quantity': '6',
+        }
+        form = get_cart_item_modelform_class()(instance=self.item, data=data)
+        self.assertEqual(len(form.errors), 0)
+        form.save()
+        self.assertEqual(1, CartItem.objects.all().count())
+
     def test_setting_quantity_to_0_removes_cart_item(self):
         data = {
             'quantity': '0',
         }
-        form = CartItemModelForm(instance=self.item, data=data)
+        form = get_cart_item_modelform_class()(instance=self.item, data=data)
         self.assertEqual(len(form.errors), 0)
         form.save()
         self.assertEqual(0, CartItem.objects.all().count())
