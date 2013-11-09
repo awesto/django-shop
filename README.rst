@@ -47,3 +47,9 @@ Todo:
 * Refactoring tests to make creating test environments less messy (fixtures?)
 * If you feel like you could solve having multiple currencies in an elegant
   manner, we would really be interested to hear from you
+
+
+.. image:: https://d2weczhvl823v0.cloudfront.net/divio/django-shop/trend.png
+   :alt: Bitdeli badge
+   :target: https://bitdeli.com/free
+
