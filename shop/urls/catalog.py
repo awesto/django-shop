@@ -1,13 +1,10 @@
 from django.conf.urls import patterns, url
-
-from shop.views import ShopListView
-from shop.views.product import ProductDetailView
-from shop.models.productmodel import Product
+from shop.views.product import (ProductListView, ProductDetailView)
 
 
 urlpatterns = patterns('',
     url(r'^$',
-        ShopListView.as_view(model=Product),
+        ProductListView.as_view(),
         name='product_list'
         ),
     url(r'^(?P<slug>[0-9A-Za-z-_.//]+)/$',
