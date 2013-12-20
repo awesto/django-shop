@@ -210,3 +210,8 @@ class CartTestCase(TestCase):
         self.cart.add_product(self.inactive_product)
         self.cart.update(self.request)
         self.assertEqual(len(self.cart.items.all()), 1)
+
+    def test_cart_with_product_is_not_empty(self):
+        self.assertTrue(self.cart.is_empty)
+        self.cart.add_product(self.product)
+        self.assertFalse(self.cart.is_empty)
