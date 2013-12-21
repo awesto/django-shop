@@ -18,7 +18,7 @@ def load_class(class_path, setting_name=None):
     The setting_name parameter is only there for pretty error output, and
     therefore is optional
     """
-    if not isinstance(class_path, basestring):
+    if not isinstance(class_path, str):
         try:
             class_path, app_label = class_path
         except:
@@ -41,13 +41,13 @@ def load_class(class_path, setting_name=None):
 
     try:
         mod = import_module(class_module)
-    except ImportError, e:
+    except ImportError as e:
         if setting_name:
             txt = 'Error importing backend %s: "%s". Check your %s setting' % (
                 class_module, e, setting_name)
         else:
             txt = 'Error importing backend %s: "%s".' % (class_module, e)
-        raise exceptions.ImproperlyConfigured(txt), None, sys.exc_info()[2]
+        raise exceptions.ImproperlyConfigured(txt).with_traceback(sys.exc_info()[2])
 
     try:
         clazz = getattr(mod, class_name)
@@ -75,11 +75,11 @@ def get_model_string(model_name):
 
     if not class_path:
         return 'shop.%s' % model_name
-    elif isinstance(class_path, basestring):
+    elif isinstance(class_path, str):
         parts = class_path.split('.')
         try:
             index = parts.index('models') - 1
-        except ValueError, e:
+        except ValueError as e:
             raise exceptions.ImproperlyConfigured(CLASS_PATH_ERROR % (
                 setting_name, setting_name))
         app_label, model_name = parts[index], parts[-1]

@@ -25,7 +25,7 @@ def cart(context):
 @register.inclusion_tag('shop/templatetags/_order.html', takes_context=True)
 def order(context, order):
     """Inclusion tag for displaying order."""
-    if context.has_key("order"):
+    if "order" in context:
         # do not overwrite already presented order
         duplicate = copy(context)
         duplicate.update({"order": order,})

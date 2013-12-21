@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 from django.conf import settings
+from django.utils.encoding import force_text
 from shop.payment.api import PaymentAPI
 from shop.shipping.api import ShippingAPI
 from shop.util.loader import load_class
@@ -62,7 +63,7 @@ class BackendsPool(object):
         """
         backend_name = getattr(backend_instance, 'backend_name', "")
         if not backend_name:
-            d_tuple = (str(backend_instance), str(type(backend_instance)))
+            d_tuple = (force_text(backend_instance), force_text(type(backend_instance)))
             raise NotImplementedError(
                 'One of your backends ("%s" of type "%s") lacks a name, please'
                 ' define one.' % d_tuple)

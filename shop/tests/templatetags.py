@@ -19,19 +19,19 @@ class ProductsTestCase(TestCase):
     def test01_should_return_all_active_products(self):
         self._create_fixture()
         context = Context({})
-        Template(u"{% load shop_tags %} {% products %}").render(context)
+        Template("{% load shop_tags %} {% products %}").render(context)
         self.assertTrue('products' in context)
         self.assertEqual(len(context['products']), 2)
 
     def test02_should_return_objects_given_as_argument(self):
         self._create_fixture()
         context = Context({"ps": Product.objects.filter(unit_price=42)})
-        result = Template(u"{% load shop_tags %} {% products ps %}").render(context)
+        result = Template("{% load shop_tags %} {% products ps %}").render(context)
         self.assertTrue('products' in context)
         self.assertEqual(len(context['products']), 3)
 
     def test03_should_return_empty_array_if_no_objects_found(self):
         self._create_fixture()
         context = Context({"ps": Product.objects.filter(slug='non-existant-slug')})
-        result = Template(u"{% load shop_tags %} {% products ps %}").render(context)
+        result = Template("{% load shop_tags %} {% products ps %}").render(context)
         self.assertEqual(len(context['products']), 0)

@@ -11,6 +11,7 @@ from shop.cart.modifiers_pool import cart_modifiers_pool
 from shop.util.fields import CurrencyField
 from shop.util.loader import get_model_string
 import django
+import collections
 
 USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
@@ -62,7 +63,7 @@ class BaseProduct(PolymorphicModel):
         """
         Returns product reference of this Product (provided for extensibility).
         """
-        return unicode(self.pk)
+        return str(self.pk)
 
     @property
     def can_be_added_to_cart(self):
@@ -428,7 +429,7 @@ class BaseOrder(models.Model):
         e.g. you can copy address instance and save FK to it in your order
         class.
         """
-        if hasattr(billing_address, 'as_text') and callable(billing_address.as_text):
+        if hasattr(billing_address, 'as_text') and isinstance(billing_address.as_text, collections.Callable):
             self.billing_address_text = billing_address.as_text()
             self.save()
 
@@ -440,7 +441,7 @@ class BaseOrder(models.Model):
         e.g. you can copy address instance and save FK to it in your order
         class.
         """
-        if hasattr(shipping_address, 'as_text') and callable(shipping_address.as_text):
+        if hasattr(shipping_address, 'as_text') and isinstance(shipping_address.as_text, collections.Callable):
             self.shipping_address_text = shipping_address.as_text()
             self.save()
 
