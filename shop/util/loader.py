@@ -48,7 +48,9 @@ def load_class(class_path, setting_name=None):
                 class_module, e, setting_name)
         else:
             txt = 'Error importing backend %s: "%s".' % (class_module, e)
-        six.reraise(exceptions.ImproperlyConfigured, txt, sys.exc_info()[2])
+        if six.PY3:
+            raise exceptions.ImproperlyConfigured(txt).with_traceback(sys.exc_info()[2])
+        raise exceptions.ImproperlyConfigured(txt, None, sys.exc_info()[2])
 
     try:
         clazz = getattr(mod, class_name)
