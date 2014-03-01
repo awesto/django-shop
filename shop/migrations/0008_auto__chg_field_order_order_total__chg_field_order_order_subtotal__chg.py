@@ -22,7 +22,7 @@ class Migration(SchemaMigration):
         db.alter_column('shop_extraorderpricefield', 'value', self.gf('django.db.models.fields.DecimalField')(max_digits=30, decimal_places=10))
 
         # Changing field 'OrderItem.product'
-        db.alter_column('shop_orderitem', 'product_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['shop.Product'], null=True, on_delete=models.SET_NULL))
+        db.alter_column('shop_orderitem', 'product_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['shop.Product'], null=True, on_delete=models.SET_NULL), ignore_constraints=True)
 
         # Changing field 'OrderItem.line_total'
         db.alter_column('shop_orderitem', 'line_total', self.gf('django.db.models.fields.DecimalField')(max_digits=30, decimal_places=10))
@@ -54,7 +54,7 @@ class Migration(SchemaMigration):
         db.alter_column('shop_extraorderpricefield', 'value', self.gf('django.db.models.fields.DecimalField')(max_digits=12, decimal_places=2))
 
         # Changing field 'OrderItem.product'
-        db.alter_column('shop_orderitem', 'product_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['shop.Product'], null=True))
+        db.alter_column('shop_orderitem', 'product_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['shop.Product'], null=True), ignore_constraints=True)
 
         # Changing field 'OrderItem.line_total'
         db.alter_column('shop_orderitem', 'line_total', self.gf('django.db.models.fields.DecimalField')(max_digits=12, decimal_places=2))
