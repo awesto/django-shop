@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.aggregates import Sum
 from django.utils.translation import ugettext_lazy as _
+from django.template.defaultfilters import slugify
 from polymorphic.polymorphic_model import PolymorphicModel
 from shop.cart.modifiers_pool import cart_modifiers_pool
 from shop.util.fields import CurrencyField
@@ -26,7 +27,7 @@ class BaseProduct(PolymorphicModel):
     """
 
     name = models.CharField(max_length=255, verbose_name=_('Name'))
-    slug = models.SlugField(verbose_name=_('Slug'), unique=True)
+    slug = models.SlugField(max_length=255, verbose_name=_('Slug'))
     active = models.BooleanField(default=False, verbose_name=_('Active'))
     date_added = models.DateTimeField(auto_now_add=True,
         verbose_name=_('Date added'))
@@ -40,6 +41,13 @@ class BaseProduct(PolymorphicModel):
         verbose_name = _('Product')
         verbose_name_plural = _('Products')
 
+	def save(self, *args, **kwargs):
+	    if not self.id:
+	        # Newly created object, so set slug
+	        self.slug = slugify(self.id)
+	    super(BaseProduct, self).save(*args, **kwargs)
+        
+    
     def __unicode__(self):
         return self.name
 
