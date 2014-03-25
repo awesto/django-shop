@@ -41,11 +41,11 @@ class BaseProduct(PolymorphicModel):
         verbose_name = _('Product')
         verbose_name_plural = _('Products')
 
-	def save(self, *args, **kwargs):
-	    if not self.id:
-	        # Newly created object, so set slug
-	        self.slug = slugify(self.id)
-	    super(BaseProduct, self).save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+	if not self.id:
+	    # Newly created object, so set slug
+	    self.slug = slugify(self.id)
+	super(BaseProduct, self).save(*args, **kwargs)
         
     
     def __unicode__(self):
