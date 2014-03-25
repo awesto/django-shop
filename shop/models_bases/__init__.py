@@ -44,7 +44,7 @@ class BaseProduct(PolymorphicModel):
     def save(self, *args, **kwargs):
 	if not self.id:
 	    # Newly created object, so set slug
-	    self.slug = slugify(self.id)
+	    self.slug = slugify(self.name)
 	super(BaseProduct, self).save(*args, **kwargs)
         
     
