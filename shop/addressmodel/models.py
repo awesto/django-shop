@@ -53,7 +53,7 @@ class Address(models.Model):
         verbose_name_plural = _("Addresses")
 
     def __unicode__(self):
-        return '%s (%s, %s)' % (self.name, self.zip_code, self.city)
+        return u'%s (%s, %s)' % (self.name, self.zip_code, self.city)
 
     def clone(self):
         new_kwargs = dict([(fld.name, getattr(self, fld.name))

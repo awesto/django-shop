@@ -1,2 +1,3 @@
 # flake8: noqa
-import orderadmin
+from __future__ import absolute_import
+from . import orderadmin
