@@ -19,7 +19,7 @@ def load_class(class_path, setting_name=None):
     The setting_name parameter is only there for pretty error output, and
     therefore is optional
     """
-    if not isinstance(class_path, str):
+    if not isinstance(class_path, six.string_types):
         try:
             class_path, app_label = class_path
         except:
@@ -78,7 +78,7 @@ def get_model_string(model_name):
 
     if not class_path:
         return 'shop.%s' % model_name
-    elif isinstance(class_path, str):
+    elif isinstance(class_path, six.string_types):
         parts = class_path.split('.')
         try:
             index = parts.index('models') - 1

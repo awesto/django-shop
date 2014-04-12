@@ -62,7 +62,7 @@ def order_required(url_name='cart'):
     @order_required(url_name='cart')
     def some_view(...
     """
-    if isinstance(url_name, collections.Callable):
+    if callable(url_name):
         func = url_name
         decorator = order_required()
         return decorator(func)
@@ -91,7 +91,7 @@ def cart_required(url_name='cart'):
     @cart_required(url_name='cart')
     def some_view(...
     """
-    if isinstance(url_name, collections.Callable):
+    if callable(url_name):
         func = url_name
         decorator = cart_required()
         return decorator(func)
