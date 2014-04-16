@@ -3,6 +3,7 @@ from decimal import Decimal
 from shop.models.productmodel import Product
 from shop.models.ordermodel import Order, OrderItem
 from django.test.testcases import TestCase
+from django.utils.encoding import force_text
 
 
 class ProductTestCase(TestCase):
@@ -14,7 +15,7 @@ class ProductTestCase(TestCase):
         self.product.save()
 
     def test_unicode_returns_proper_stuff(self):
-        ret = self.product.__unicode__()
+        ret = force_text(self.product)
         self.assertEqual(ret, self.product.name)
 
     def test_active_filter_returns_only_active_products(self):
