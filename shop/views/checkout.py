@@ -240,8 +240,10 @@ class OrderConfirmView(RedirectView):
 
     def confirm_order(self):
         order = get_order_from_request(self.request)
-        order.status = Order.CONFIRMED
-        order.save()
+        if order:
+            # Confirm the order, if there is one
+            order.status = Order.CONFIRMED
+            order.save()
 
     def get(self, request, *args, **kwargs):
         self.confirm_order()
