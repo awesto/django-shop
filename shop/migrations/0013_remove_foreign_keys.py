@@ -3,13 +3,13 @@ from south.utils import datetime_utils as datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
-
+from shop.models import Product
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        db.delete_foreign_key('shop_cartitem', 'product_id')
-        db.delete_foreign_key('shop_orderitem', 'product_id')
+        db.alter_column('shop_cartitem', 'product_id', models.ForeignKey(Product))
+        db.alter_column('shop_orderitem', 'product_id', models.ForeignKey(Product))
 
     def backwards(self, orm):
         db.alter_column('shop_cartitem', 'product_id', models.ForeignKey(orm['shop.product']))
