@@ -88,11 +88,11 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
                 # We should either have an instance, or None
                 if not shipping_address:
                     # The user or guest doesn't already have a favorite
-                    # address. Instanciate a blank one, and use this as the
+                    # address. Instantiate a blank one, and use this as the
                     # default value for the form.
                     shipping_address = AddressModel()
 
-                # Instanciate the form
+                # Instantiate the form
                 form = form_class(instance=shipping_address, prefix="ship")
             setattr(self, '_shipping_form', form)
         return form
@@ -120,11 +120,11 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
                 # We should either have an instance, or None
                 if not billing_address:
                     # The user or guest doesn't already have a favorite
-                    # address. Instansiate a blank one, and use this as the
+                    # address. Instantiate a blank one, and use this as the
                     # default value for the form.
                     billing_address = AddressModel()
 
-                #Instanciate the form
+                #Instantiate the form
                 form = form_class(instance=billing_address, prefix="bill")
             setattr(self, '_billing_form', form)
         return form

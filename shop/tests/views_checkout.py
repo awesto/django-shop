@@ -14,7 +14,7 @@ from shop.order_signals import processing
 from shop.payment.api import PaymentAPI
 from shop.tests.util import Mock
 from shop.tests.utils.context_managers import SettingsOverride
-from shop.views.checkout import CheckoutSelectionView, ThankYouView
+from shop.views.checkout import CheckoutSelectionView, ThankYouView, CheckoutSelectionView
 
 
 class ShippingBillingViewTestCase(TestCase):
@@ -294,3 +294,33 @@ class ThankYouViewTestCase(TestCase):
         ctx_order = res.get('order', None)
         self.assertNotEqual(ctx_order, None)
         self.assertEqual(ctx_order, self.order)
+
+
+class CheckoutSelectionViewTestCase(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create(username="test",
+                                        email="test@example.com",
+                                        first_name="John",
+                                        last_name="Cleese")
+        self.request = Mock()
+        setattr(self.request, 'user', self.user)
+        setattr(self.request, 'session', {})
+        setattr(self.request, 'method', 'GET')
+
+    def test_create_order_object_from_cart(self):
+        pass
+
+    def test_order_added_to_request(self):
+        pass
+
+    def test_extra_info_saved_to_order(self):
+        pass
+
+    def test_get_shipping_address_form(self):
+        pass
+
+    def test_get_billing_address_form(self):
+        pass
+
+
