@@ -98,7 +98,7 @@ import django # A quick and very dirty test to see if it's 1.3 yet...
 if django.VERSION[0] < 1 or django.VERSION[1] < 3:
     MIDDLEWARE_CLASSES.append('cbv.middleware.DeferredRenderingMiddleware')
 
-ROOT_URLCONF = 'example.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
