@@ -35,6 +35,7 @@ from views import (
     CartDetailsViewTestCase,
     CartViewTestCase,
     OrderListViewTestCase,
+    ProductListViewTestCase,
     ProductDetailViewTestCase,
 )
 from views_checkout import (

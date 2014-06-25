@@ -37,6 +37,14 @@ Extending the Product model in django SHOP works like this::
    Otherwise, it will inherit its parent's :class:`Meta`, which will break
    things. The :class:`Meta` class does not need to do anything important - it
    just has to be there.
+
+.. note:: The above example is intentionally *not* using the same module as
+   the examples given earlier in this documentation (myproject versus
+   myshop).  If MyProduct and Book were defined in the same module a circular 
+   import will result culminating in an error similar to:
+   ``django.core.exceptions.ImproperlyConfigured: Error importing backend
+   myshop.models: "cannot import name Product". Check your SHOP_PRODUCT_MODEL
+   setting``.
     
 From a django interactive shell, you should now be able to do::
 

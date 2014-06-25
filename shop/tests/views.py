@@ -10,7 +10,41 @@ from shop.models.ordermodel import Order
 from shop.models.productmodel import Product
 from shop.tests.util import Mock
 from shop.views.cart import CartDetails
+from shop.views.product import ProductListView
 from shop.views.product import ProductDetailView
+
+
+class ProductListViewTestCase(TestCase):
+    def setUp(self):
+        self.product1 = Product()
+        self.product1.name = 'test1'
+        self.product1.slug = 'test1'
+        self.product1.short_description = 'test1'
+        self.product1.long_description = 'test1'
+        self.product1.unit_price = Decimal('1.0')
+        self.product1.active = True
+        self.product1.save()
+
+        self.product2 = Product()
+        self.product2.name = 'test2'
+        self.product2.slug = 'test2'
+        self.product2.short_description = 'test2'
+        self.product2.long_description = 'test2'
+        self.product2.unit_price = Decimal('1.0')
+        self.product2.active = False
+        self.product2.save()
+
+    def test_get_queryset(self):
+        """
+        Test that ProductListView.get_queryset() returns
+        only active products, filtering inactive ones.
+        """
+        view = ProductListView()
+        active_products = view.get_queryset()
+        self.assertEquals(len(active_products), 1)
+
+        for product in active_products:
+            self.assertEquals(product.active, True)
 
 
 class ProductDetailViewTestCase(TestCase):
