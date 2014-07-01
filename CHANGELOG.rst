@@ -1,7 +1,29 @@
-Version NEXT
+Version 1.0.0
 ============
 
-(It's awefully quiet in here, why don't you commit something?)
+* Python3 fully supported (dropped dependency for ClassyTags)
+
+* PaymentBackend model added. The whole concept of ShopAPI was either not properly
+  incorporated or just wrong. Now every payment backend has to register in the DB
+  where it states it's `url_name` which will be used in calling/redirects to this
+  backend. The URL registration is up to the payemnts module and is not done by
+  django-shop anymore. The change brings simplicity so you can focus on what is
+  actually important when writing a payment backend
+
+* Since ShopAPI is being removed the signal for Order state change was moved to
+  the Order object itself. Since now please use :method:`Order.mark_as`
+  to change state of an Order. This method knows the best what to do when state
+  is changing and you don't need to search for reference to a ShopAPI just to properly
+  change the state of an Order.
+
+* Clearing the cart is responsibility of the payment backends (not SHOP API).
+
+* Creating a payment is responsibility of the payment backends (not SHOP API).
+  This change was introduced because of misunderstand order status COMPLETED which
+  means that we have he money physically in hand. That's not the case of pay-on-delivery
+  because there will append COMPLETED and SHIPPED at the same time. Therefor we cannot
+  force any payment backend to mark every order as COMPLETED by default (ShopAPI).
+
 
 Version 0.2.0
 =============

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from os import path
 from django.conf import settings
 from decimal import Decimal
 from distutils.version import LooseVersion
@@ -9,6 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 from polymorphic.polymorphic_model import PolymorphicModel
 from shop.cart.modifiers_pool import cart_modifiers_pool
+from shop.order_signals import confirmed, completed, cancelled, shipped
 from shop.util.fields import CurrencyField
 from shop.util.loader import get_model_string
 import django
@@ -339,9 +341,15 @@ class BaseOrder(models.Model):
     COMPLETED = 40  # Payment backend successfully completed
     SHIPPED = 50  # The order was shipped to client
     CANCELED = 60  # The order was canceled
-    CANCELLED = CANCELED  # DEPRECATED SPELLING
 
-    PAYMENT = 30  # DEPRECATED!
+    STATUSES = (
+        PROCESSING,
+        CONFIRMING,
+        CONFIRMED,
+        COMPLETED,
+        SHIPPED,
+        CANCELED
+    )
 
     STATUS_CODES = (
         (PROCESSING, _('Processing')),
@@ -352,6 +360,13 @@ class BaseOrder(models.Model):
         (CANCELED, _('Canceled')),
     )
 
+    STATUS_TO_SIGNALS = {
+        CONFIRMED: confirmed,
+        COMPLETED: completed,
+        SHIPPED: shipped,
+        CANCELED: cancelled,
+    }
+
     # If the user is null, the order was created with a session
     user = models.ForeignKey(USER_MODEL, blank=True, null=True,
             verbose_name=_('User'))
@@ -359,10 +374,14 @@ class BaseOrder(models.Model):
             verbose_name=_('Status'))
     order_subtotal = CurrencyField(verbose_name=_('Order subtotal'))
     order_total = CurrencyField(verbose_name=_('Order Total'))
-    shipping_address_text = models.TextField(_('Shipping address'), blank=True,
-        null=True)
-    billing_address_text = models.TextField(_('Billing address'), blank=True,
-        null=True)
+    shipping_address_text = models.TextField(_('Shipping address'),
+        blank=True, null=True)
+    shipping_backend = models.ForeignKey(get_model_string('ShippingBackend'),
+        blank=True, null=True)
+    billing_address_text = models.TextField(_('Billing address'),
+        blank=True, null=True)
+    payment_backend = models.ForeignKey(get_model_string('PaymentBackend'),
+        blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True,
             verbose_name=_('Created'))
     modified = models.DateTimeField(auto_now=True,
@@ -384,13 +403,36 @@ class BaseOrder(models.Model):
     def is_paid(self):
         """Has this order been integrally paid for?"""
         return self.amount_paid >= self.order_total
-    is_payed = is_paid #Backward compatability, deprecated spelling
 
     def is_completed(self):
         return self.status == self.COMPLETED
 
     def get_status_name(self):
         return dict(self.STATUS_CODES)[self.status]
+
+    def mark_as(self, status, save=True):
+        '''
+        Function designed for changing state of the order. Avoid changing the
+        status outside this function.
+        '''
+        if status not in self.STATUSES:
+            raise KeyError("Status not listed in Order.STATUS_CODES")
+        self.status = status
+        if save: self.save()
+        if status in self.STATUS_TO_SIGNALS.keys():
+            self.STATUS_TO_SIGNALS[status](self)
+
+    def mark_as_confirmed(self, save=True):
+        self.mark_as(self.CONFIRMED, save)
+
+    def mark_as_completed(self, save=True):
+        self.mark_as(self.COMPLETED, save)
+
+    def mark_as_shipped(self, save=True):
+        self.mark_as(self.SHIPPED, save)
+
+    def mark_as_canceled(self, save=True):
+        self.mark_as(self.CANCELED, save)
 
     @property
     def amount_paid(self):
@@ -404,7 +446,19 @@ class BaseOrder(models.Model):
         if result is None:
             result = Decimal(0)
         return result
-    amount_payed = amount_paid #Backward compatability, deprecated spelling
+
+    def add_shipping_costs(self, name, amount):
+        from shop.models import ExtraOrderPriceField
+        if isinstance(amount, float):
+            value = Decimal("%.2f".format(amount))
+        else:
+            value = amount
+        ExtraOrderPriceField.objects.create(
+            order=self,
+            label=name,
+            is_shipping=True,
+            value=value
+        )
 
     @property
     def shipping_costs(self):
@@ -449,13 +503,6 @@ class BaseOrder(models.Model):
             self.save()
 
 
-# We need some magic to support django < 1.3 that has no support
-# models.on_delete option
-f_kwargs = {}
-if LooseVersion(django.get_version()) >= LooseVersion('1.3'):
-    f_kwargs['on_delete'] = models.SET_NULL
-
-
 class BaseOrderItem(models.Model):
     """
     A line Item for an order.
@@ -468,7 +515,7 @@ class BaseOrderItem(models.Model):
     product_name = models.CharField(max_length=255, null=True, blank=True,
             verbose_name=_('Product name'))
     product = models.ForeignKey(get_model_string('Product'),
-        verbose_name=_('Product'), null=True, blank=True, **f_kwargs)
+        verbose_name=_('Product'), null=True, blank=True)
     unit_price = CurrencyField(verbose_name=_('Unit price'))
     quantity = models.IntegerField(verbose_name=_('Quantity'))
     line_subtotal = CurrencyField(verbose_name=_('Line subtotal'))
@@ -484,3 +531,57 @@ class BaseOrderItem(models.Model):
         if not self.product_name and self.product:
             self.product_name = self.product.get_name()
         super(BaseOrderItem, self).save(*args, **kwargs)
+
+
+@python_2_unicode_compatible
+class BasePaymentBackend(models.Model):
+    '''
+    Payment option proposed to a customer. Every payment backend has to have an
+    entry in the DB as a PaymentBackend model. It will be always referred by
+    it's `url_name` therefor the form of URL is optional but the registration of
+    the URL is up to the backend itself. Usually the payment backend contains
+    either from one (redirect) view which signes all orders as
+    CONFIRMED/COMPLETED or two views when the first one calls external API and
+    the second one receives callback from the API.
+    '''
+    name = models.CharField(max_length=50)
+    url_name = models.SlugField(max_length=20)
+    active = models.BooleanField(default=True)
+    description = models.TextField(null=True, blank=True)
+    logo = models.ImageField(null=True, blank=True, 
+                             upload_to=path.join(settings.MEDIA_ROOT, 'backends'))
+
+    class Meta(object):
+        abstract = True
+        app_label = 'shop'
+        verbose_name = _('Payment backend')
+        verbose_name_plural = _('Payment backends')
+
+    def __str__(self):
+        return self.name
+
+@python_2_unicode_compatible
+class BaseShippingBackend(models.Model):
+    '''
+    Shipping option proposed to a customer. Every shipping backend has to have
+    an entry in the DB as a ShippingBackend model. It will be always referred by
+    it's `url_name` therefor the form of URL is optional but the registration of
+    the URL is up to the backend itself. Shipping will be selected during
+    checkout and a checkout view will redirect using (reversed) url_name. The
+    order will remain in the state CONFIRMING.
+    '''
+    name = models.CharField(max_length=50)
+    url_name = models.SlugField(max_length=20)
+    active = models.BooleanField(default=True)
+    description = models.TextField(null=True, blank=True)
+    logo = models.ImageField(null=True, blank=True,
+                             upload_to=path.join(settings.MEDIA_ROOT, 'backends'))
+
+    class Meta(object):
+        abstract = True
+        app_label = 'shop'
+        verbose_name = _('Shipping backend')
+        verbose_name_plural = _('Shipping backends')
+
+    def __str__(self):
+        return self.name
