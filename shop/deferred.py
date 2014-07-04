@@ -2,32 +2,42 @@
 import six
 from django.db.models.base import ModelBase
 from django.db import models
-from django.core.exceptions import ImproperlyConfigured
 
 
-class DeferredForeignKey(object):
-    """
-    Use this class to specify foreign keys in abstract classes. They will be converted into a real
-    ``ForeignKey`` whenever a real model class is derived from a given abstract class.
-    """
-    def __init__(self, abstract_model, **kwargs):
+class DeferredRelatedField(object):
+    def __init__(self, to, **kwargs):
         try:
-            abstract_model = abstract_model._meta.object_name
+            self.abstract_model = to._meta.object_name
         except AttributeError:
-            assert isinstance(abstract_model, six.string_types), "%s(%r) is invalid. First parameter to ForeignKey must be either a model or a model name" % (self.__class__.__name__, abstract_model)
+            assert isinstance(to, six.string_types), "%s(%r) is invalid. First parameter must be either a model or a model name" % (self.__class__.__name__, to)
+            self.abstract_model = to
         else:
-            assert abstract_model._meta.abstract, "%s can only define a relation with abstract class %s" % (self.__class__.__name__, abstract_model._meta.object_name)
-        self.abstract_model = abstract_model
+            assert to._meta.abstract, "%s can only define a relation with abstract class %s" % (self.__class__.__name__, to._meta.object_name)
         self.options = kwargs
 
 
-class DeferredManyToManyField(object):
+class DeferredOneToOneField(DeferredRelatedField):
+    """
+    Use this class to specify a one-to-one key in abstract classes. It will be converted into a real
+    ``OneToOneField`` whenever a real model class is derived from a given abstract class.
+    """
+    MaterializedField = models.OneToOneField
+
+
+class DeferredForeignKey(DeferredRelatedField):
+    """
+    Use this class to specify foreign keys in abstract classes. It will be converted into a real
+    ``ForeignKey`` whenever a real model class is derived from a given abstract class.
+    """
+    MaterializedField = models.ForeignKey
+
+
+class DeferredManyToManyField(DeferredRelatedField):
     """
     Use this class to specify many-to-many keys in abstract classes. They will be converted into a
     real ``ManyToManyField`` whenever a real model class is derived from a given abstract class.
     """
-    def __init__(self, model, *args, **kwargs):
-        print "DeferredManyToManyField:", model
+    MaterializedField = models.ManyToManyField
 
 
 class ForeignKeyBuilder(ModelBase):
@@ -44,7 +54,7 @@ class ForeignKeyBuilder(ModelBase):
                 continue
             if baseclass.__name__ in cls._derived_models:
                 if model.__name__ != cls._derived_models[baseclass.__name__]:
-                    raise ImproperlyConfigured("Both Model classes '{0}' and '{1}' inherited" +
+                    raise AssertionError("Both Model classes '{0}' and '{1}' inherited" +
                         "from abstract base class {2}, which is disallowed in this configuration.")
             else:
                 cls._derived_models[baseclass.__name__] = model.__name__
@@ -52,9 +62,16 @@ class ForeignKeyBuilder(ModelBase):
                 new_mappings = []
                 for mapping in cls._pending_mappings:
                     if mapping[2].abstract_model == baseclass.__name__:
-                        if isinstance(mapping[2], DeferredForeignKey):
-                            field = models.ForeignKey(model.__name__, **mapping[2].options)
-                            field.contribute_to_class(mapping[0], mapping[1])
+#                         if isinstance(mapping[2], DeferredOneToOneField):
+#                             field = models.ForeignKey(model.__name__, **mapping[2].options)
+#                         elif isinstance(mapping[2], DeferredForeignKey):
+#                             field = models.ForeignKey(model.__name__, **mapping[2].options)
+#                         elif isinstance(mapping[2], DeferredManyToManyField):
+#                             field = models.ManyToManyField(model.__name__, **mapping[2].options)
+#                         else:
+#                             raise AssertionError('Unknown class type %s' % mapping[2].__class__.__name__)
+                        field = mapping[2].MaterializedField(model.__name__, **mapping[2].options)
+                        field.contribute_to_class(mapping[0], mapping[1])
                     else:
                         new_mappings.append(mapping)
                 cls._pending_mappings = new_mappings
@@ -63,14 +80,23 @@ class ForeignKeyBuilder(ModelBase):
 
         for attrname in dir(model):
             member = getattr(model, attrname)
-            if isinstance(member, DeferredForeignKey):
-                mapmodel = cls._derived_models.get(member.abstract_model)
-                print "map ", member.abstract_model, " -> ", mapmodel
-                if mapmodel:
-                    field = models.ForeignKey(mapmodel, **member.options)
-                    field.contribute_to_class(model, attrname)
-                else:
-                    cls._pending_mappings.append((model, attrname, member,))
+            if not isinstance(member, DeferredRelatedField):
+                continue
+            mapmodel = cls._derived_models.get(member.abstract_model)
+            print "map ", member.abstract_model, " -> ", mapmodel
+            if mapmodel:
+#                 if isinstance(member, DeferredOneToOneField):
+#                     field = models.OneToOneField(mapmodel, **member.options)
+#                 elif isinstance(member, DeferredForeignKey):
+#                     field = models.ForeignKey(mapmodel, **member.options)
+#                 elif isinstance(member, DeferredManyToManyField):
+#                     field = models.ManyToManyField(mapmodel, **member.options)
+#                 else:
+#                     raise AssertionError('Unknown class type %s' % member.__class__.__name__)
+                field = member.MaterializedField(mapmodel, **member.options)
+                field.contribute_to_class(model, attrname)
+            else:
+                cls._pending_mappings.append((model, attrname, member,))
         return model
 
 
@@ -92,4 +118,12 @@ class AbstractModel2(six.with_metaclass(ForeignKeyBuilder, models.Model)):
         abstract = True
 
     identifier = models.CharField(max_length=20)
-    other = DeferredForeignKey('AbstractModel1', blank=True, null=True)
+    other = DeferredForeignKey(AbstractModel1, blank=True, null=True)
+    ref = DeferredManyToManyField('AbstractModel3', blank=True, null=True)
+
+
+class AbstractModel3(six.with_metaclass(ForeignKeyBuilder, models.Model)):
+    class Meta:
+        abstract = True
+
+    identifier = models.CharField(max_length=20)
