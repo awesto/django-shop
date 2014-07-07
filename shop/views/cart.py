@@ -114,11 +114,10 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
 
     def get_context_data(self, **kwargs):
         # There is no get_context_data on super(), we inherit from the mixin!
-        ctx = {}
-        cart = get_or_create_cart(self.request)
-        cart.update(self.request)
-        ctx.update({'cart': cart})
-        ctx.update({'cart_items': cart.get_updated_cart_items()})
+        ctx = kwargs  # receive params from subclasses
+        self.cart.update(self.request)
+        ctx.update({'cart': self.cart})
+        ctx.update({'cart_items': self.cart.get_updated_cart_items()})
         return ctx
 
     def get(self, request, *args, **kwargs):
@@ -126,6 +125,7 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
         This is lifted from the TemplateView - we don't get this behavior since
         this only extends the mixin and not templateview.
         """
+        self.cart = get_or_create_cart(self.request)
         context = self.get_context_data(**kwargs)
         formset = get_cart_item_formset(cart_items=context['cart_items'])
         context.update({'formset': formset, })
@@ -137,6 +137,7 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
         quantity parameter to specify how many you wish to add at once
         (defaults to 1)
         """
+        self.cart = get_or_create_cart(self.request)
         try:
             product_id = int(self.request.POST['add_item_id'])
             product_quantity = int(self.request.POST.get('add_item_quantity', 1))
