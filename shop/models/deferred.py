@@ -16,7 +16,7 @@ class DeferredRelatedField(object):
         self.options = kwargs
 
 
-class DeferredOneToOneField(DeferredRelatedField):
+class OneToOneField(DeferredRelatedField):
     """
     Use this class to specify a one-to-one key in abstract classes. It will be converted into a real
     ``OneToOneField`` whenever a real model class is derived from a given abstract class.
@@ -24,7 +24,7 @@ class DeferredOneToOneField(DeferredRelatedField):
     MaterializedField = models.OneToOneField
 
 
-class DeferredForeignKey(DeferredRelatedField):
+class ForeignKey(DeferredRelatedField):
     """
     Use this class to specify foreign keys in abstract classes. It will be converted into a real
     ``ForeignKey`` whenever a real model class is derived from a given abstract class.
@@ -32,7 +32,7 @@ class DeferredForeignKey(DeferredRelatedField):
     MaterializedField = models.ForeignKey
 
 
-class DeferredManyToManyField(DeferredRelatedField):
+class ManyToManyField(DeferredRelatedField):
     """
     Use this class to specify many-to-many keys in abstract classes. They will be converted into a
     real ``ManyToManyField`` whenever a real model class is derived from a given abstract class.
