@@ -154,7 +154,6 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
         quantity parameter to specify how many you wish to add at once
         (defaults to 1)
         """
-        self.cart = get_or_create_cart(self.request)
         try:
             product_id = int(self.request.POST['add_item_id'])
             product_quantity = int(self.request.POST.get('add_item_quantity', 1))
