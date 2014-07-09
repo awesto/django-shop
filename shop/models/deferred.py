@@ -45,31 +45,45 @@ class ForeignKeyBuilder(ModelBase):
     _pending_mappings = []
 
     def __new__(cls, name, bases, attrs):
+        meta = attrs.setdefault('Meta', type('Meta', (), {}))
+        if not hasattr(meta, 'app_label'):
+            meta.app_label = cls.app_label
         model = super(ForeignKeyBuilder, cls).__new__(cls, name, bases, attrs)
         if model._meta.abstract:
             return model
         for baseclass in bases:
-            if not issubclass(model, baseclass):
-                continue
-            if baseclass.__name__ in cls._derived_models:
-                if model.__name__ != cls._derived_models[baseclass.__name__]:
-                    raise AssertionError("Both Model classes '{0}' and '{1}' inherited" +
-                        "from abstract base class {2}, which is disallowed in this configuration.")
+            # classes which materialize an abstract model are added to a mapping dictionary
+            try:
+                basename = None
+                if issubclass(model, baseclass) and baseclass._meta.abstract:
+                    basename = baseclass.__name__
+            except AttributeError:
+                pass
             else:
-                cls._derived_models[baseclass.__name__] = model.__name__
-                # check for pending mappings and in case, process them
-                new_mappings = []
-                for mapping in cls._pending_mappings:
-                    if mapping[2].abstract_model == baseclass.__name__:
-                        field = mapping[2].MaterializedField(model.__name__, **mapping[2].options)
-                        field.contribute_to_class(mapping[0], mapping[1])
-                    else:
-                        new_mappings.append(mapping)
-                cls._pending_mappings = new_mappings
+                if basename in cls._derived_models:
+                    if model.__name__ != cls._derived_models[basename]:
+                        raise AssertionError("Both Model classes '%s' and '%s' inherited from abstract"
+                            "base class %s, which is disallowed in this configuration." %
+                            (model.__name__, cls._derived_models[basename], basename))
+                elif basename:
+                    cls._derived_models[basename] = model.__name__
+
+            # check for pending mappings and in case, process them
+            new_mappings = []
+            for mapping in cls._pending_mappings:
+                if mapping[2].abstract_model == baseclass.__name__:
+                    field = mapping[2].MaterializedField(model, **mapping[2].options)
+                    field.contribute_to_class(mapping[0], mapping[1])
+                else:
+                    new_mappings.append(mapping)
+            cls._pending_mappings = new_mappings
 
         # search for deferred foreign fields in our model
         for attrname in dir(model):
-            member = getattr(model, attrname)
+            try:
+                member = getattr(model, attrname)
+            except AttributeError:
+                continue
             if not isinstance(member, DeferredRelatedField):
                 continue
             mapmodel = cls._derived_models.get(member.abstract_model)
