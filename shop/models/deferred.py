@@ -41,7 +41,7 @@ class ManyToManyField(DeferredRelatedField):
 
 
 class ForeignKeyBuilder(ModelBase):
-    _derived_models = {}
+    _materialized_models = {}
     _pending_mappings = []
 
     def __new__(cls, name, bases, attrs):
@@ -53,20 +53,22 @@ class ForeignKeyBuilder(ModelBase):
             return model
         for baseclass in bases:
             # classes which materialize an abstract model are added to a mapping dictionary
+            basename = baseclass.__name__
             try:
-                basename = None
-                if issubclass(model, baseclass) and baseclass._meta.abstract:
-                    basename = baseclass.__name__
-            except AttributeError:
+                if not issubclass(model, baseclass) or not baseclass._meta.abstract:
+                    raise NotImplementedError()
+            except (AttributeError, NotImplementedError):
                 pass
             else:
-                if basename in cls._derived_models:
-                    if model.__name__ != cls._derived_models[basename]:
+                if basename in cls._materialized_models:
+                    if model.__name__ != cls._materialized_models[basename]:
                         raise AssertionError("Both Model classes '%s' and '%s' inherited from abstract"
                             "base class %s, which is disallowed in this configuration." %
-                            (model.__name__, cls._derived_models[basename], basename))
-                elif basename:
-                    cls._derived_models[basename] = model.__name__
+                            (model.__name__, cls._materialized_models[basename], basename))
+                else:
+                    cls._materialized_models[basename] = model.__name__
+                    # remember the materialized model mapping in the base class for further usage
+                    baseclass.materialized_model = model
 
             # check for pending mappings and in case, process them
             new_mappings = []
@@ -86,7 +88,7 @@ class ForeignKeyBuilder(ModelBase):
                 continue
             if not isinstance(member, DeferredRelatedField):
                 continue
-            mapmodel = cls._derived_models.get(member.abstract_model)
+            mapmodel = cls._materialized_models.get(member.abstract_model)
             if mapmodel:
                 field = member.MaterializedField(mapmodel, **member.options)
                 field.contribute_to_class(model, attrname)
