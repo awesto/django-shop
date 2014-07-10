@@ -109,8 +109,6 @@ class BaseCart(six.with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         >>> self.items[1].quantity
         1
         """
-        #from shop.models import CartItem
-
         # check if product can be added at all
         if not getattr(product, 'can_be_added_to_cart', True):
             return None
@@ -183,7 +181,6 @@ class BaseCart(six.with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         that for the order items (since they are legally binding after the
         "purchase" button was pressed)
         """
-        #from shop.models import CartItem, Product
 
         # This is a ghetto "select_related" for polymorphic models.
         items = BaseCartItem.objects.filter(cart=self).order_by('pk')

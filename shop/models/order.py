@@ -10,6 +10,7 @@ from jsonfield.fields import JSONField
 from shop.util.fields import CurrencyField
 from shop.order_signals import processing
 from .user import USER_MODEL
+from .cart import BaseCartItem
 from . import deferred
 
 
@@ -64,10 +65,8 @@ class OrderManager(models.Manager):
 
         Emits the ``processing`` signal.
         """
-        derived_models = deferred.ForeignKeyBuilder._derived_models
-        if 'CartItem' not in derived_models or 'OrderItem' not in derived_models:
-            raise AssertionError('OrderManager does not know how to map CartItem or OrderItem')
-        CartItem, OrderItem = derived_models['CartItem'], derived_models['OrderItem']
+        CartItem = getattr(BaseCartItem, 'materialized_model')
+        OrderItem = getattr(BaseOrderItem, 'materialized_model')
 
         # First, let's remove old orders
         self.remove_old_orders(cart)
@@ -115,7 +114,7 @@ class OrderManager(models.Manager):
         return order
 
 
-class BaseOrder(models.Model):
+class BaseOrder(six.with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     A model representing an Order.
 
@@ -293,7 +292,6 @@ class BaseOrderItem(six.with_metaclass(deferred.ForeignKeyBuilder, models.Model)
     """
     A line Item for an order.
     """
-
     order = deferred.ForeignKey(BaseOrder, related_name='items', verbose_name=_('Order'))
     product_reference = models.CharField(max_length=255, verbose_name=_('Product reference'))
     product_name = models.CharField(max_length=255, null=True, blank=True,
