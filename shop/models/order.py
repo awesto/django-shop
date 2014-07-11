@@ -10,7 +10,6 @@ from jsonfield.fields import JSONField
 from shop.util.fields import CurrencyField
 from shop.order_signals import processing
 from .user import USER_MODEL
-from .cart import BaseCartItem
 from . import deferred
 
 
@@ -65,6 +64,7 @@ class OrderManager(models.Manager):
 
         Emits the ``processing`` signal.
         """
+        from .cart import BaseCartItem
         CartItem = getattr(BaseCartItem, 'materialized_model')
         OrderItem = getattr(BaseOrderItem, 'materialized_model')
 
