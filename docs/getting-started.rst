@@ -4,102 +4,156 @@ Getting started
 
 Installation
 =============
-
-Here's the 1 minute guide to getting started with django SHOP.
-
-.. highlight:: bash
-
-1. Create a normal Django project (we'll call it ``myshop`` for now)::
-
-    django-admin startproject example
-    cd example; django-admin startapp myshop
-
-2. You'll want to use virtualenv::
-
-    virtualenv . ; source bin/activate
-    pip install south
-    pip install django-shop
-    pip install jsonfield
-
-.. highlight:: python
-
-3. Go to your settings.py and configure your DB like the following, or anything
-   matching your setup::
-
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'test.sqlite',
-            'USER': '',
-            'PASSWORD': '',
-            'HOST': '',
-            'PORT': '',
-        }
-    }
+Here's the 5 minutes guide to getting started with django SHOP.
 
 
-4. Add the following stuff to middlewares::
+Virtualenv
+----------
+I strongly recommend to use virtualenv_, otherwise install it using the OS tool of choice:
 
-    MIDDLEWARE_CLASSES = [
-        'django.middleware.common.CommonMiddleware',
-        'django.contrib.sessions.middleware.SessionMiddleware',
-        'django.middleware.csrf.CsrfViewMiddleware',
-        'django.contrib.auth.middleware.AuthenticationMiddleware',
-        'django.contrib.messages.middleware.MessageMiddleware',
-    ] # <-- Notice how it's a square bracket (a list)? It makes life easier.
+.. _virtualenv: http://virtualenv.readthedocs.org/en/latest/
+
+.. code-block:: bash
+
+	sudo aptitude install virtualenv  # on Ubuntu or Debian
+	sudo yum install virtualenv  # on Fedora, RedHat or CentOS
+	sudo port install virtualenv  # on MacOS
 
 
-5. Obviously, you need to add shop and myshop to your INSTALLED_APPS too::
+Other Dependencies
+------------------
+Into the newly created virtual environment, install other Python software this project depends on:
 
-    INSTALLED_APPS = [
-        'django.contrib.auth',
-        'django.contrib.contenttypes',
-        'django.contrib.sessions',
-        'django.contrib.sites',
-        'django.contrib.messages',
-        # Uncomment the next line to enable the admin:
-        'django.contrib.admin',
-        # Uncomment the next line to enable admin documentation:
-        'django.contrib.admindocs',
-        'polymorphic', # We need polymorphic installed for the shop
-        'south',
-        'shop', # The django SHOP application
-        'shop.addressmodel', # The default Address and country models
-        'myshop', # the project we just created
-    ]
+.. code-block:: bash
 
-6. Make the urls.py contain the following::
+	virtualenv . ; source bin/activate
+	pip install south
+	pip install django-shop
+	pip install jsonfield
 
-    from shop import urls as shop_urls # <-- Add this at the top
+Optionally you may want to install an alternative Database connector such as ``mysqlclient`` or
+``psycopg2``.
 
-    # Other stuff here
+Since chances are high that you need a CMS in combination with this shop, let me mention that
+Django-SHOP plays well together with Django-CMS.
 
-    urlpatterns = patterns('',
-        # Example:
-        #(r'^example/', include('example.foo.urls')),
-        # Uncomment the admin/doc line below to enable admin documentation:
-        (r'^admin/doc/', include('django.contrib.admindocs.urls')),
-        # Uncomment the next line to enable the admin:
-        (r'^admin/', include(admin.site.urls)),
-        (r'^shop/', include(shop_urls)), # <-- That's the important bit
-        # You can obviously mount this somewhere else
-    )
+Quite often
 
-.. highlight:: bash
 
-7. Most of the stuff you'll have to do is styling and template work, so go ahead
-   and create a templates directory in your project::
+Create a Django App
+-------------------
+Create a normal Django project, we'll call it ``myshop`` for now:
 
-    cd example/myshop; mkdir -p templates/myshop
+.. code-block:: bash
 
-8. Lock and load::
+	django-admin startproject myshop
+	cd myshop
+	mkdir -p myshop/{admin,models,views}
+	touch myshop/{admin,models,views}/__init__.py
 
-    cd .. ; python manage.py syncdb --all ; python manage.py migrate --fake
-    python manage.py runserver
 
-9. Point your browser and marvel at the absence of styling::
+Materialize abstract models from Django-SHOP
+--------------------------------------------
+This is not a software out-of-the-box, but rather a framework helping you to create a customized
+shop. Chances are very high, that you will override one ore more database models. Therefore all
+models shipped with the shop are abstract and must be “materialized” by ``myshop``. Add these
+stubs to your project:
 
-    x-www-browser localhost:8000/shop
+``myshop/models/shopmodels.py``:
+
+.. literalinclude:: samples/shopmodels.py
+
+
+``myshop/admin/order.py``:
+
+.. literalinclude:: samples/admin_order.py
+
+and don't forget to import these Python modules in ``myshop/models/__init__.py`` and
+``myshop/admin/__init__.py`` respectively.
+
+
+
+Edit your application's ``settings.py``
+---------------------------------------
+Configure your DB connector:
+
+.. code-block:: python
+
+	DATABASES = {
+	    'default': {
+	        'ENGINE': 'django.db.backends.sqlite3',
+	        'NAME': 'test.sqlite',
+	        'USER': '',
+	        'PASSWORD': '',
+	        'HOST': '',
+	        'PORT': '',
+	    }
+	}
+
+
+Add the following stuff to the middleware classes:
+
+.. code-block:: python
+
+	MIDDLEWARE_CLASSES = [
+	    'django.middleware.common.CommonMiddleware',
+	    'django.contrib.sessions.middleware.SessionMiddleware',
+	    'django.middleware.csrf.CsrfViewMiddleware',
+	    'django.contrib.auth.middleware.AuthenticationMiddleware',
+	    'django.contrib.messages.middleware.MessageMiddleware',
+	] # <-- Notice how it's a square bracket (a list)? It makes life easier.
+
+
+Obviously, you need to add shop and myshop to your INSTALLED_APPS too:
+
+.. code-block:: python
+
+	INSTALLED_APPS = [
+	    'django.contrib.auth',
+	    'django.contrib.contenttypes',
+	    'django.contrib.sessions',
+	    'django.contrib.sites',
+	    'django.contrib.messages',
+	    # Uncomment the next line to enable the admin:
+	    'django.contrib.admin',
+	    # Uncomment the next line to enable admin documentation:
+	    'django.contrib.admindocs',
+	    'polymorphic', # We need polymorphic installed for the shop
+	    'south',
+	    'shop', # The django SHOP application
+	    'shop.addressmodel', # The default Address and country models
+	    'myshop', # the project we just created
+	]
+
+Configure the URL routing
+
+.. code-block:: python
+
+	from shop import urls as shop_urls
+	
+	# Other stuff here
+	
+	urlpatterns = patterns('',
+	    # Example:
+	    #(r'^example/', include('example.foo.urls')),
+	    # Uncomment the admin/doc line below to enable admin documentation:
+	    (r'^admin/doc/', include('django.contrib.admindocs.urls')),
+	    # Uncomment the next line to enable the admin:
+	    (r'^admin/', include(admin.site.urls)),
+	    (r'^shop/', include(shop_urls)), # <-- That's the important bit
+	    # You can obviously mount this somewhere else
+	)
+
+Create the database models and load them
+
+.. code-block:: bash
+
+	python manage.py schemamigration myshop
+	python manage.py syncdb
+	python manage.py migrate
+	python manage.py runserver
+
+Finally point your browser onto http://localhost:8000/shop and marvel at the absence of styling
 
 You now have a running but very empty django SHOP installation.
 
