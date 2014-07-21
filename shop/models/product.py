@@ -55,8 +55,7 @@ class BaseProduct(PolymorphicModel):
     Most of the already existing fields here should be generic enough to reside
     on the "base model" and not on an added property.
     """
-    name = models.CharField(max_length=255, verbose_name=_('Name'))
-    slug = models.SlugField(verbose_name=_('Slug'), unique=True)
+    product_code = models.CharField(max_length=255, verbose_name=_("Product code"))
     active = models.BooleanField(default=False, verbose_name=_('Active'))
     date_added = models.DateTimeField(auto_now_add=True,
         verbose_name=_('Date added'))
