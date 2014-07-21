@@ -3,9 +3,19 @@ Version NEXT
 
 (It's awefully quiet in here, why don't you commit something?)
 
+
+NEXT MAJOR RELEASE
+==================
+* From now on, in Django-SHOP all models are abstract. This liberates the programmer to override
+  models using a configuration directive. Foreign keys onto other abstract models now are
+  materialized by the users application. There is no more implicit model creation in Django-SHOP.
+* In ``BaseProduct`` the field ``name`` has been renamed into ``item_code``. The field ``slug``
+  has been removed. A field ``name`` and ``slug`` shall be added by ``Product`` which is the
+  polymorphic base class for all products of the application. There they might be embedded into
+  a ``TranslatedField`` from **django-parler**.
+
 Version 0.2.0
 =============
-
 * models.FloatField are now automatically localized.
 * Support for Django 1.2 and Django 1.3 dropped.
 * Product model now has property ``can_be_added_to_cart`` which is checked before adding the product to cart
