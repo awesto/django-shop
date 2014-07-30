@@ -84,13 +84,15 @@ class CartItemDetail(ShopView):
             }
             if cart_object:
                 cart_object.update(self.request)
+                items = cart_object.get_updated_cart_items()
                 data.update(
                     cart={
                         "items": [{
                             "pk": cart_item.pk,
                             "line_subtotal": str(cart_item.line_subtotal),
                             "line_total": str(cart_item.line_total)
-                        } for cart_item in cart_object.get_updated_cart_items()],
+                        } for cart_item in items],
+                        "count": sum([cart_item.quantity for cart_item in items]),
                         "subtotal_price": str(cart_object.subtotal_price),
                         "total_price": str(cart_object.total_price)
                     }
@@ -99,11 +101,11 @@ class CartItemDetail(ShopView):
         else:
             return HttpResponseRedirect(reverse('cart'))
 
-    def post_success(self, product, cart_item):
+    def post_success(self, product, cart_item, cart_object=None):
         """
         Post success hook
         """
-        return self.success()
+        return self.success(cart_object=cart_object)
 
     def delete_success(self):
         """
@@ -163,7 +165,7 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
         cart_object = get_or_create_cart(self.request, save=True)
         cart_item = cart_object.add_product(product, product_quantity)
         cart_object.save()
-        return self.post_success(product, cart_item)
+        return self.post_success(product, cart_item, cart_object=cart_object)
 
     def delete(self, *args, **kwargs):
         """
