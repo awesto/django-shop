@@ -71,7 +71,8 @@ class CartItemDetail(ShopView):
             cart_object.delete_item(item_id)
             return self.delete_success()
         except ObjectDoesNotExist:
-            raise Http404
+            # don't care if it is already gone
+            return self.delete_success()
 
     # success hooks
     def success(self, cart_object=None):
