@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from django import template
-
 from classytags.helpers import InclusionTag
 from classytags.core import Options
 from classytags.arguments import Argument
@@ -61,6 +60,7 @@ class Products(InclusionTag):
         context.update({'products': objects, })
         return context
 register.tag(Products)
+
 
 def priceformat(price):
     FORMAT = getattr(settings, 'SHOP_PRICE_FORMAT', '%0.2f')
