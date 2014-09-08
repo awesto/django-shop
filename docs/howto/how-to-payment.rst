@@ -16,63 +16,63 @@ The reference interface for payment backends is located at
 
 .. module:: shop.payment.api
 
-.. class:: ShopPaymentAPI
+.. class:: PaymentAPI
 
 Currently, the shop interface defines the following methods:
 
 Common with shipping
 ---------------------
 
-.. method:: ShopPaymentAPI.get_order(request)
+.. method:: PaymentAPI.get_order(request)
 
     Returns the order currently being processed.
 
     :param request: a Django request object
     :rtype: an :class:`~shop.models.Order` instance
 
-.. method:: ShopPaymentAPI.add_extra_info(order, text)
+.. method:: PaymentAPI.add_extra_info(order, text)
 
     Adds an extra info field to the order (whatever)
 
     :param order: an :class:`~shop.models.Order` instance
     :param text: a string containing the extra order information
 
-.. method:: ShopPaymentAPI.is_order_payed(order)
+.. method:: PaymentAPI.is_order_payed(order)
 
     Whether the passed order is fully paid or not
 
     :param order: an :class:`~shop.models.Order` instance
     :rtype: :class:`bool`
 
-.. method:: ShopPaymentAPI.is_order_complete(order)
+.. method:: PaymentAPI.is_order_complete(order)
 
     Whether the passed order is in a "finished" state
 
     :param order: an :class:`~shop.models.Order` instance
     :rtype: :class:`bool`
 
-.. method:: ShopPaymentAPI.get_order_total(order)
+.. method:: PaymentAPI.get_order_total(order)
 
     Returns the order's grand total.
 
     :param order: an :class:`~shop.models.Order` instance
     :rtype: :class:`~decimal.Decimal`
 
-.. method:: ShopPaymentAPI.get_order_subtotal(order)
+.. method:: PaymentAPI.get_order_subtotal(order)
 
     Returns the order's sum of item prices (without taxes or S&H)
 
     :param order: an :class:`~shop.models.Order` instance
     :rtype: :class:`~decimal.Decimal`
 
-.. method:: ShopPaymentAPI.get_order_short_name(order)
+.. method:: PaymentAPI.get_order_short_name(order)
 
     A short human-readable description of the order
 
     :param order: an :class:`~shop.models.Order` instance
     :rtype: a string with the short name of the order
 
-.. method:: ShopPaymentAPI.get_order_unique_id(order)
+.. method:: PaymentAPI.get_order_unique_id(order)
 
     The order's unique identifier for this shop system
 
@@ -80,7 +80,7 @@ Common with shipping
     :rtype: the primary key of the :class:`~shop.models.Order` (in the default
         implementation)
     
-.. method:: ShopPaymentAPI.get_order_for_id(id)
+.. method:: PaymentAPI.get_order_for_id(id)
 
     Returns an :class:`~shop.models.Order` object given a unique identifier (this
     is the reverse of :meth:`get_order_unique_id`)
@@ -90,7 +90,7 @@ Common with shipping
 
 Specific to payment
 --------------------
-.. method:: ShopPaymentAPI.confirm_payment(order, amount, transaction_id, save=True)
+.. method:: PaymentAPI.confirm_payment(order, amount, transaction_id, save=True)
 
     This should be called when the confirmation from the payment processor was
     called and that the payment was confirmed for a given amount. The processor's
