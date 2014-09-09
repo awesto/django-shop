@@ -20,8 +20,8 @@ class PaymentAPI(ShopAPI):
 
     This implementation is the interface reference for django SHOP
 
-    Don't forget that since plenty of methods are common to both ShopPaymentAPI
-    and ShopShippingAPI(), they are defined in the ShopAPI base class!
+    Don't forget that since plenty of methods are common to both PaymentAPI
+    and ShippingAPI(), they are defined in the ShopAPI base class!
     """
 
     #==========================================================================
