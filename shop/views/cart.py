@@ -55,7 +55,10 @@ class CartItemDetail(ShopView):
             quantity = int(self.request.POST['item_quantity'])
         except (KeyError, ValueError):
             return HttpResponseBadRequest("The quantity has to be a number")
-        cart_object.update_quantity(item_id, quantity)
+        try:
+            cart_object.update_quantity(item_id, quantity)
+        except ObjectDoesNotExist:
+            pass
         return self.put_success(cart_object)
 
     def delete(self, request, *args, **kwargs):
