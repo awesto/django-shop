@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-import six
 from django.db.models.base import ModelBase
 from django.db import models
+from django.utils import six
 
 
 class DeferredRelatedField(object):

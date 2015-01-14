@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-import six
 from decimal import Decimal
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import AnonymousUser
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
+from django.utils import six
 from django.utils.translation import ugettext_lazy as _
 from jsonfield.fields import JSONField
 from shop.util.fields import CurrencyField

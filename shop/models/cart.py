@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-import six
 from decimal import Decimal
 from django.db import models
+from django.utils import six
 from django.utils.translation import ugettext_lazy as _
 from shop.cart.modifiers_pool import cart_modifiers_pool
 from .product import BaseProduct

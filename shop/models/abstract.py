@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-import six
 from django.db import models
+from django.utils import six
 from shop.models import deferred
 
 
