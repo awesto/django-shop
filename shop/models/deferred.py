@@ -41,13 +41,23 @@ class ManyToManyField(DeferredRelatedField):
 
 
 class ForeignKeyBuilder(ModelBase):
+    """
+    Here the magic happens: All known and deferred foreign keys are mapped to their correct model's
+    counterpart.
+    If the main application stores its models in its own directory, the ForeignKeyBuilder has to
+    be monkey patched with:
+    from shop.models.deferred import ForeignKeyBuilder
+    ForeignKeyBuilder.app_label = 'myshop'
+    """
     _materialized_models = {}
     _pending_mappings = []
 
     def __new__(cls, name, bases, attrs):
-        meta = attrs.setdefault('Meta', type('Meta', (), {}))
-        if not hasattr(meta, 'app_label'):
-            meta.app_label = cls.app_label
+        class Meta:
+            app_label = getattr(attrs, 'app_label', cls.app_label)
+
+        attrs.setdefault('Meta', Meta)
+        attrs.setdefault('__module__', getattr(bases[-1], '__module__'))
         model = super(ForeignKeyBuilder, cls).__new__(cls, name, bases, attrs)
         if model._meta.abstract:
             return model
