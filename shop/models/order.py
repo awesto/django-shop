@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
+from six import with_metaclass
 from decimal import Decimal
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import AnonymousUser
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
-from django.utils import six
 from django.utils.translation import ugettext_lazy as _
 from jsonfield.fields import JSONField
 from shop.util.fields import CurrencyField
@@ -114,7 +114,7 @@ class OrderManager(models.Manager):
         return order
 
 
-class BaseOrder(six.with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
+class BaseOrder(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     A model representing an Order.
 
@@ -240,7 +240,7 @@ class BaseOrder(six.with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
             self.save()
 
 
-class OrderPayment(six.with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
+class OrderPayment(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     A class to hold basic payment information. Backends should define their own
     more complex payment types should they need to store more informtion
@@ -258,7 +258,7 @@ class OrderPayment(six.with_metaclass(deferred.ForeignKeyBuilder, models.Model))
         verbose_name_plural = _('Order payments')
 
 
-class ExtraOrderPriceField(six.with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
+class ExtraOrderPriceField(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     This will make Cart-provided extra price fields persistent since we want
     to "snapshot" their statuses at the time when the order was made
@@ -276,7 +276,7 @@ class ExtraOrderPriceField(six.with_metaclass(deferred.ForeignKeyBuilder, models
         verbose_name_plural = _('Extra order price fields')
 
 
-class OrderExtraInfo(six.with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
+class OrderExtraInfo(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     A holder for extra textual information to attach to this order.
     """
@@ -288,7 +288,7 @@ class OrderExtraInfo(six.with_metaclass(deferred.ForeignKeyBuilder, models.Model
         verbose_name_plural = _('Order extra info')
 
 
-class BaseOrderItem(six.with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
+class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     A line Item for an order.
     """
@@ -314,7 +314,7 @@ class BaseOrderItem(six.with_metaclass(deferred.ForeignKeyBuilder, models.Model)
         super(BaseOrderItem, self).save(*args, **kwargs)
 
 
-class ExtraOrderItemPriceField(six.with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
+class ExtraOrderItemPriceField(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     This will make Cart-provided extra price fields persistent since we want
     to "snapshot" their statuses at the time when the order was made

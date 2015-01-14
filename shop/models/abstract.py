@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
+from six import with_metaclass
 from django.db import models
 from django.utils import six
 from shop.models import deferred
 
 
-class AbstractModel1(six.with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
+class AbstractModel1(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     class Meta:
         abstract = True
 
@@ -13,7 +14,7 @@ class AbstractModel1(six.with_metaclass(deferred.ForeignKeyBuilder, models.Model
     that = deferred.ForeignKey('AbstractModel2', blank=True, null=True, related_name='rel_that')
 
 
-class AbstractModel2(six.with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
+class AbstractModel2(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     class Meta:
         abstract = True
 
@@ -22,7 +23,7 @@ class AbstractModel2(six.with_metaclass(deferred.ForeignKeyBuilder, models.Model
     ref = deferred.ManyToManyField('AbstractModel3', blank=True, null=True)
 
 
-class AbstractModel3(six.with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
+class AbstractModel3(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     class Meta:
         abstract = True
 

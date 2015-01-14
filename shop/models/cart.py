@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+from six import with_metaclass
 from decimal import Decimal
 from django.db import models
-from django.utils import six
 from django.utils.translation import ugettext_lazy as _
 from shop.cart.modifiers_pool import cart_modifiers_pool
 from .product import BaseProduct
@@ -9,7 +9,7 @@ from .user import USER_MODEL
 from . import deferred
 
 
-class BaseCartItem(six.with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
+class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     This is a holder for the quantity of items in the cart and, obviously, a
     pointer to the actual Product being purchased :)
@@ -48,7 +48,7 @@ class BaseCartItem(six.with_metaclass(deferred.ForeignKeyBuilder, models.Model))
         return self.line_total
 
 
-class BaseCart(six.with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
+class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     The fundamental parts of a shopping cart. It refers to a rather simple list of items.
     Ideally it should be bound to a session and not to a User is we want to let
