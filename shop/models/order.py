@@ -154,10 +154,8 @@ class BaseOrder(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         null=True)
     billing_address_text = models.TextField(_('Billing address'), blank=True,
         null=True)
-    created = models.DateTimeField(auto_now_add=True,
-            verbose_name=_('Created'))
-    modified = models.DateTimeField(auto_now=True,
-            verbose_name=_('Updated'))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
     cart_pk = models.PositiveIntegerField(_('Cart primary key'), blank=True, null=True)
 
     # override manager

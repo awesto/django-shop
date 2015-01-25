@@ -57,10 +57,8 @@ class BaseProduct(PolymorphicModel):
     """
     product_code = models.CharField(max_length=255, verbose_name=_("Product code"))
     active = models.BooleanField(default=False, verbose_name=_('Active'))
-    date_added = models.DateTimeField(auto_now_add=True,
-        verbose_name=_('Date added'))
-    last_modified = models.DateTimeField(auto_now=True,
-        verbose_name=_('Last modified'))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
     unit_price = CurrencyField(verbose_name=_('Unit price'))
     objects = ProductManager()
 

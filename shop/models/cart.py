@@ -56,8 +56,8 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     # If the user is null, that means this is used for a session
     user = models.OneToOneField(USER_MODEL, null=True, blank=True)
-    date_created = models.DateTimeField(auto_now_add=True)
-    last_updated = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
 
     class Meta:
         abstract = True
