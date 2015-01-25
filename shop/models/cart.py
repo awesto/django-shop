@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from six import with_metaclass
 from decimal import Decimal
+from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from shop.cart.modifiers_pool import cart_modifiers_pool
 from .product import BaseProduct
-from .user import USER_MODEL
 from . import deferred
 
 
@@ -55,14 +55,14 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     people buy from our shop without having to register with us.
     """
     # If the user is null, that means this is used for a session
-    user = models.OneToOneField(USER_MODEL, null=True, blank=True)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
 
     class Meta:
         abstract = True
-        verbose_name = _('Cart')
-        verbose_name_plural = _('Carts')
+        verbose_name = _("Shopping Cart")
+        verbose_name_plural = _("Shopping Carts")
 
     def __init__(self, *args, **kwargs):
         super(BaseCart, self).__init__(*args, **kwargs)

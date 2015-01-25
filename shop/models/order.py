@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from six import with_metaclass
 from decimal import Decimal
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import AnonymousUser
 from django.db import models, transaction
@@ -9,7 +10,6 @@ from django.utils.translation import ugettext_lazy as _
 from jsonfield.fields import JSONField
 from shop.util.fields import CurrencyField
 from shop.order_signals import processing
-from .user import USER_MODEL
 from . import deferred
 
 
@@ -144,12 +144,12 @@ class BaseOrder(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     )
 
     # If the user is null, the order was created with a session
-    user = models.ForeignKey(USER_MODEL, blank=True, null=True,
-            verbose_name=_('User'))
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True,
+            verbose_name=_("User"))
     status = models.IntegerField(choices=STATUS_CODES, default=PROCESSING,
-            verbose_name=_('Status'))
-    order_subtotal = CurrencyField(verbose_name=_('Order subtotal'))
-    order_total = CurrencyField(verbose_name=_('Order Total'))
+            verbose_name=_("Status"))
+    order_subtotal = CurrencyField(verbose_name=_("Order subtotal"))
+    order_total = CurrencyField(verbose_name=_("Order Total"))
     shipping_address_text = models.TextField(_('Shipping address'), blank=True,
         null=True)
     billing_address_text = models.TextField(_('Billing address'), blank=True,
