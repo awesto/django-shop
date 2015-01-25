@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.aggregates import Count
 from django.utils import six
+from django.utils.encoding import python_2_unicode_compatible, force_text
 from django.utils.translation import ugettext_lazy as _
 from polymorphic.manager import PolymorphicManager
 from polymorphic.polymorphic_model import PolymorphicModel
@@ -83,6 +84,7 @@ class PolymorphicProductMetaclass(PolymorphicModelBase):
         return model
 
 
+@python_2_unicode_compatible
 class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicModel)):
     """
     A basic product for the shop.
@@ -102,8 +104,8 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         verbose_name = _('Product')
         verbose_name_plural = _('Products')
 
-    def __unicode__(self):
-        return self.name
+    def __str__(self):
+        return force_text(self.product_code)
 
     def get_absolute_url(self):
         return reverse('product_detail', args=[self.slug])

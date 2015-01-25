@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import AnonymousUser
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
+from django.utils.encoding import python_2_unicode_compatible, force_text
 from django.utils.translation import ugettext_lazy as _
 from jsonfield.fields import JSONField
 from shop.util.fields import CurrencyField
@@ -114,6 +115,7 @@ class OrderManager(models.Manager):
         return order
 
 
+@python_2_unicode_compatible
 class BaseOrder(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     A model representing an Order.
@@ -166,8 +168,8 @@ class BaseOrder(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         verbose_name = _('Order')
         verbose_name_plural = _('Orders')
 
-    def __unicode__(self):
-        return _('Order ID: %(id)s') % {'id': self.pk}
+    def __str__(self):
+        return _("Order ID: {id}").format(id=self.pk)
 
     def get_absolute_url(self):
         return reverse('order_detail', kwargs={'pk': self.pk})
