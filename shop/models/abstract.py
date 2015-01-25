@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+# TODO: use this for our unit tests
 from six import with_metaclass
 from django.db import models
-from django.utils import six
 from shop.models import deferred
 
 

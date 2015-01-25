@@ -13,4 +13,4 @@ urlpatterns = patterns('',
     (r'^checkout/', include('shop.urls.checkout')),
     (r'^cart/', include('shop.urls.cart')),
     (r'^products/', include('shop.urls.catalog')),
-    )
+)
