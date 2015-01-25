@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """Forms for the django-shop app."""
 from django import forms
 from django.conf import settings
@@ -6,7 +6,7 @@ from django.forms.models import modelformset_factory
 from django.utils.translation import ugettext_lazy as _
 
 from shop.backends_pool import backends_pool
-from shop.models.cartmodel import CartItem
+from shop.models.cart import BaseCartItem
 from shop.util.loader import load_class
 
 
@@ -36,7 +36,7 @@ class CartItemModelForm(forms.ModelForm):
     quantity = forms.IntegerField(min_value=0, max_value=9999)
 
     class Meta:
-        model = CartItem
+        model = BaseCartItem.materialized_model
         fields = ('quantity', )
 
     def save(self, *args, **kwargs):
@@ -72,7 +72,7 @@ def get_cart_item_formset(cart_items=None, data=None):
     :param data: Optional POST data to be bound to this formset.
     """
     assert(cart_items is not None)
-    CartItemFormSet = modelformset_factory(CartItem, form=get_cart_item_modelform_class(),
+    CartItemFormSet = modelformset_factory(BaseCartItem.materialized_model, form=get_cart_item_modelform_class(),
             extra=0)
     kwargs = {'queryset': cart_items, }
     form_set = CartItemFormSet(data, **kwargs)

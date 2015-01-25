@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from shop.models.cartmodel import Cart
+from shop.models.cart import BaseCart
 from django.contrib.auth.models import AnonymousUser
 
 def get_cart_from_database(request):
-    database_cart = Cart.objects.filter(user=request.user)
+    database_cart = BaseCart.materialized_model.objects.filter(user=request.user)
     if database_cart:
         database_cart = database_cart[0]
     else:
@@ -17,8 +17,8 @@ def get_cart_from_session(request):
         cart_id = session.get('cart_id')
         if cart_id:
             try:
-                session_cart = Cart.objects.get(pk=cart_id)
-            except Cart.DoesNotExist:
+                session_cart = BaseCart.materialized_model.objects.get(pk=cart_id)
+            except BaseCart.DoesNotExist:
                 session_cart = None
     return session_cart
 
@@ -67,9 +67,9 @@ def get_or_create_cart(request, save=False):
         if not cart:
             # in case it's our first visit and no cart was created yet
             if is_logged_in:
-                cart = Cart(user=request.user)
+                cart = BaseCart(user=request.user)
             elif getattr(request, 'session', None) is not None:
-                cart = Cart()
+                cart = BaseCart()
 
         if save and not cart.pk:
             cart.save()

@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 from django.contrib import admin
 from django.contrib.admin.options import ModelAdmin
-from shop.addressmodel.models import Country, Address
+from shop.models.address import Country, Address
 
 #class ClientAdmin(ModelAdmin):
 #    pass

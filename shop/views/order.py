@@ -1,15 +1,14 @@
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-
+from shop.models.order import BaseOrder
 from shop.views import ShopListView, ShopDetailView
-from shop.models import Order
 
 
 class OrderListView(ShopListView):
     """
     Display list or orders for logged in user.
     """
-    queryset = Order.objects.all()
+    queryset = BaseOrder.materialized_model.objects.all()
 
     def get_queryset(self):
         queryset = super(OrderListView, self).get_queryset()
@@ -25,7 +24,7 @@ class OrderDetailView(ShopDetailView):
     """
     Display order for logged in user.
     """
-    queryset = Order.objects.all()
+    queryset = BaseOrder.materialized_model.objects.all()
 
     def get_queryset(self):
         queryset = super(OrderDetailView, self).get_queryset()

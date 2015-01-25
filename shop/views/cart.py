@@ -6,7 +6,7 @@ from django.shortcuts import redirect
 from django.core.exceptions import ObjectDoesNotExist
 
 from shop.forms import get_cart_item_formset
-from shop.models.productmodel import Product
+from shop.models.product import BaseProduct
 from shop.util.cart import get_or_create_cart
 from shop.views import ShopView, ShopTemplateResponseMixin
 
@@ -142,7 +142,7 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
             product_quantity = int(self.request.POST.get('add_item_quantity', 1))
         except (KeyError, ValueError):
             return HttpResponseBadRequest("The quantity and ID have to be numbers")
-        product = Product.objects.get(pk=product_id)
+        product = BaseProduct.objects.get(pk=product_id)
         cart_object = get_or_create_cart(self.request, save=True)
         cart_item = cart_object.add_product(product, product_quantity)
         cart_object.save()

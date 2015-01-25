@@ -9,7 +9,7 @@ from shop.util.cart import get_or_create_cart
 
 from shop.util.login_mixin import get_test_func
 from shop.util.order import get_order_from_request
-from shop.models.ordermodel import Order
+from shop.models.order import BaseOrder
 
 
 def on_method(function_decorator):
@@ -69,7 +69,7 @@ def order_required(url_name='cart'):
     def decorator(func):
         def inner(request, *args, **kwargs):
             order = get_order_from_request(request)
-            if order is None or getattr(order, 'status', Order.COMPLETED) >= Order.COMPLETED:
+            if order is None or getattr(order, 'status', BaseOrder.COMPLETED) >= BaseOrder.COMPLETED:
                 return HttpResponseRedirect(reverse(url_name))
             return func(request, *args, **kwargs)
         return wraps(func)(inner)

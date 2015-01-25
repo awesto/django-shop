@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.core.exceptions import ImproperlyConfigured
 from django.db.models.base import ModelBase
 from django.db import models
 from django.utils import six
@@ -66,7 +67,7 @@ class ForeignKeyBuilder(ModelBase):
             basename = baseclass.__name__
             try:
                 if not issubclass(model, baseclass) or not baseclass._meta.abstract:
-                    raise NotImplementedError()
+                    raise ImproperlyConfigured("Base class %s is not abstract." % basename)
             except (AttributeError, NotImplementedError):
                 pass
             else:

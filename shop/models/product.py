@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
+from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.aggregates import Count
+from django.utils import six
 from django.utils.translation import ugettext_lazy as _
 from polymorphic.manager import PolymorphicManager
 from polymorphic.polymorphic_model import PolymorphicModel
+from polymorphic.base import PolymorphicModelBase
 from shop.util.fields import CurrencyField
 from .order import BaseOrderItem
 
@@ -48,7 +51,39 @@ class ProductStatisticsManager(PolymorphicManager):
         return top_products_list
 
 
-class BaseProduct(PolymorphicModel):
+class PolymorphicProductMetaclass(PolymorphicModelBase):
+    """
+    The BaseProduct class must refer to their materialized model definition, for instance when
+    accessing its model manager. Since polymoriphic product classes, normally are materialized
+    by more than one model, this metaclass finds the most generic one and associates its
+    materialized_model with it.
+    For instance,``BaseProduct.materialized_model.objects.all()`` returns all available products
+    from the shop.
+    """
+    def __new__(cls, name, bases, attrs):
+        model = super(PolymorphicProductMetaclass, cls).__new__(cls, name, bases, attrs)
+        if model._meta.abstract:
+            return model
+        for baseclass in bases:
+            basename = baseclass.__name__
+            # since base classes have no valid model.Manager, refer to the materialized Model class
+            print 'class: {0} with base {1}'.format(name, basename)
+            if isinstance(baseclass, cls):
+                materialized_model = getattr(baseclass, 'materialized_model', None)
+                if materialized_model is None:
+                    baseclass.materialized_model = model
+                else:
+                    if issubclass(materialized_model, model):
+                        # as the materialized model, use the most generic one
+                        baseclass.materialized_model = model
+                    elif not issubclass(model, materialized_model):
+                        raise ImproperlyConfigured("Abstract base class %s has been associated already "
+                            "with a model %s, which is different or not a submodel of %s." % (name, model, materialized_model))
+                print 'Copy manager {0} to {1}'.format(name, basename)
+        return model
+
+
+class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicModel)):
     """
     A basic product for the shop.
 

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from shop.models.productmodel import Product
+from shop.models.product import BaseProduct
 from shop.views import (ShopListView, ShopDetailView)
 
 
@@ -14,7 +14,7 @@ class ProductListView(ShopListView):
         """
         Return all active products.
         """
-        return Product.objects.filter(active=True)
+        return BaseProduct.objects.filter(active=True)
 
 
 class ProductDetailView(ShopDetailView):
@@ -25,7 +25,7 @@ class ProductDetailView(ShopDetailView):
     fallback to using the default product template in case no template is
     found for the subclass.
     """
-    model = Product  # It must be the biggest ancestor of the inheritance tree.
+    model = BaseProduct  # It must be the biggest ancestor of the inheritance tree.
     generic_template = 'shop/product_detail.html'
 
     def get_template_names(self):

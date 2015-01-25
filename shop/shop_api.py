@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-from shop.models.ordermodel import OrderExtraInfo, Order
+from shop.models.order import OrderExtraInfo, BaseOrder
 from shop.util.order import get_order_from_request
 
 

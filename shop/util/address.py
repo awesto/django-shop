@@ -1,6 +1,6 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from django.contrib.auth.models import AnonymousUser
-from shop.models import AddressModel
+from shop.models.address import BaseAddress
 
 
 #==============================================================================
@@ -18,9 +18,9 @@ def get_shipping_address_from_request(request):
         # There is a logged-in user here, but he might not have an address
         # defined.
         try:
-            shipping_address = AddressModel.objects.get(
+            shipping_address = BaseAddress.materialized_model.objects.get(
                 user_shipping=request.user)
-        except AddressModel.DoesNotExist:
+        except BaseAddress.DoesNotExist:
             shipping_address = None
     else:
         # The client is a guest - let's use the session instead.
@@ -28,7 +28,7 @@ def get_shipping_address_from_request(request):
         shipping_address = None
         session_address_id = session.get('shipping_address_id')
         if session is not None and session_address_id:
-            shipping_address = AddressModel.objects.get(pk=session_address_id)
+            shipping_address = BaseAddress.materialized_model.objects.get(pk=session_address_id)
     return shipping_address
 
 
@@ -43,16 +43,16 @@ def get_billing_address_from_request(request):
         # There is a logged-in user here, but he might not have an address
         # defined.
         try:
-            billing_address = AddressModel.objects.get(
+            billing_address = BaseAddress.materialized_model.objects.get(
                 user_billing=request.user)
-        except AddressModel.DoesNotExist:
+        except BaseAddress.DoesNotExist:
             billing_address = None
     else:
         # The client is a guest - let's use the session instead.
         session = getattr(request, 'session', None)
         session_billing_id = session.get('billing_address_id')
         if session is not None and session_billing_id:
-            billing_address = AddressModel.objects.get(pk=session_billing_id)
+            billing_address = BaseAddress.materialized_model.objects.get(pk=session_billing_id)
     return billing_address
 
 

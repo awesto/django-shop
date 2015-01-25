@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
-
 """
-This file defines the interfaces one should implement when either creating a
-new payment module or willing to use modules with another shop system.
+Define interfaces one should implement when either creating a new payment module or willing to use
+modules with another shop system.
 """
 from decimal import Decimal
-from shop.models import Cart
-from shop.models.ordermodel import OrderPayment
-from shop.models.ordermodel import Order
+from shop.models.cart import BaseCart
+from shop.models.order import BaseOrder, OrderPayment
 from shop.shop_api import ShopAPI
 from shop.order_signals import completed
 from django.core.urlresolvers import reverse
+
 
 class PaymentAPI(ShopAPI):
     """
@@ -43,17 +42,17 @@ class PaymentAPI(ShopAPI):
             amount=Decimal(amount),
             transaction_id=transaction_id,
             payment_method=payment_method)
-        
+
         if save and self.is_order_paid(order):
             # Set the order status:
-            order.status = Order.COMPLETED
+            order.status = BaseOrder.COMPLETED
             order.save()
 
             # empty the related cart
             try:
-                cart = Cart.objects.get(pk=order.cart_pk)
+                cart = BaseCart.objects.get(pk=order.cart_pk)
                 cart.empty()
-            except Cart.DoesNotExist:
+            except BaseCart.DoesNotExist:
                 pass
 
             completed.send(sender=self, order=order)

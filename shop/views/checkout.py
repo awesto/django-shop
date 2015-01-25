@@ -8,8 +8,8 @@ from django.http import HttpResponseRedirect
 from django.views.generic import RedirectView
 
 from shop.forms import BillingShippingForm
-from shop.models import AddressModel, OrderExtraInfo
-from shop.models import Order
+from shop.models.address import BaseAddress
+from shop.models.order import BaseOrder, OrderExtraInfo
 from shop.util.address import (
     assign_address_to_request,
     get_billing_address_from_request,
@@ -29,7 +29,7 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
         Returns a dynamic ModelForm from the loaded AddressModel
         """
         form_class = model_forms.modelform_factory(
-            AddressModel, exclude=['user_shipping', 'user_billing'])
+            BaseAddress.materialized_model, exclude=['user_shipping', 'user_billing'])
         return form_class
 
     def get_shipping_form_class(self):
@@ -51,7 +51,7 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
         """
         cart = get_or_create_cart(self.request)
         cart.update(self.request)
-        order = Order.objects.create_from_cart(cart, self.request)
+        order = BaseOrder.materialized_model.objects.create_from_cart(cart, self.request)
         request = self.request
         add_order_to_request(request, order)
         return order
@@ -90,7 +90,7 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
                     # The user or guest doesn't already have a favorite
                     # address. Instanciate a blank one, and use this as the
                     # default value for the form.
-                    shipping_address = AddressModel()
+                    shipping_address = Address()
 
                 # Instanciate the form
                 form = form_class(instance=shipping_address, prefix="ship")
@@ -122,7 +122,7 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
                     # The user or guest doesn't already have a favorite
                     # address. Instansiate a blank one, and use this as the
                     # default value for the form.
-                    billing_address = AddressModel()
+                    billing_address = Address()
 
                 #Instanciate the form
                 form = form_class(instance=billing_address, prefix="bill")
@@ -240,7 +240,7 @@ class OrderConfirmView(RedirectView):
 
     def confirm_order(self):
         order = get_order_from_request(self.request)
-        order.status = Order.CONFIRMED
+        order.status = BaseOrder.CONFIRMED
         order.save()
 
     def get(self, request, *args, **kwargs):
@@ -251,6 +251,7 @@ class OrderConfirmView(RedirectView):
         self.url = reverse(self.url_name)
         return super(OrderConfirmView, self).get_redirect_url(**kwargs)
 
+
 class ThankYouView(LoginMixin, ShopTemplateView):
     template_name = 'shop/checkout/thank_you.html'
 
@@ -259,7 +260,7 @@ class ThankYouView(LoginMixin, ShopTemplateView):
 
         # put the latest order in the context only if it is completed
         order = get_order_from_request(self.request)
-        if order and order.status == Order.COMPLETED:
+        if order and order.status == BaseOrder.COMPLETED:
             ctx.update({'order': order, })
 
         return ctx

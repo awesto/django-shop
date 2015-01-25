@@ -1,6 +1,6 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from django.contrib.auth.models import AnonymousUser
-from shop.models.ordermodel import Order
+from shop.models.order import BaseOrder
 
 
 def get_orders_from_request(request):
@@ -10,7 +10,7 @@ def get_orders_from_request(request):
     orders = None
     if request.user and not isinstance(request.user, AnonymousUser):
         # There is a logged in user
-        orders = Order.objects.filter(user=request.user)
+        orders = BaseOrder.objects.filter(user=request.user)
         orders = orders.order_by('-created')
     else:
         session = getattr(request, 'session', None)
@@ -18,7 +18,7 @@ def get_orders_from_request(request):
             # There is a session
             order_id = session.get('order_id')
             if order_id:
-                orders = Order.objects.filter(pk=order_id)
+                orders = BaseOrder.objects.filter(pk=order_id)
     return orders
 
 
