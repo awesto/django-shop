@@ -11,7 +11,7 @@ class CurrencyField(DecimalField):
     def __init__(self, **kwargs):
         defaults = {
             'max_digits': 30,
-            'decimal_places': 2,
+            'decimal_places': 3,  # intentionally 3 to avoid rounding errors when adding tax
             'default': Decimal('0.0')
         }
         defaults.update(kwargs)
