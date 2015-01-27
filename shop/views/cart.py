@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseBadRequest
 from django.shortcuts import redirect
-from django.core.exceptions import ObjectDoesNotExist
-
 from shop.forms import get_cart_item_formset
 from shop.models.product import BaseProduct
 from shop.util.cart import get_or_create_cart

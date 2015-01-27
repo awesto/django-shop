@@ -66,8 +66,8 @@ class OrderManager(models.Manager):
         Emits the ``processing`` signal.
         """
         from .cart import BaseCartItem
-        CartItem = getattr(BaseCartItem, 'materialized_model')
-        OrderItem = getattr(BaseOrderItem, 'materialized_model')
+        CartItem = getattr(BaseCartItem, 'MaterializedModel')
+        OrderItem = getattr(BaseOrderItem, 'MaterializedModel')
 
         # First, let's remove old orders
         self.remove_old_orders(cart)

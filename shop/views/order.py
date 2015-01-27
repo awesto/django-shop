@@ -8,7 +8,7 @@ class OrderListView(ShopListView):
     """
     Display list or orders for logged in user.
     """
-    queryset = BaseOrder.materialized_model.objects.all()
+    queryset = BaseOrder.MaterializedModel.objects.all()
 
     def get_queryset(self):
         queryset = super(OrderListView, self).get_queryset()
@@ -24,7 +24,7 @@ class OrderDetailView(ShopDetailView):
     """
     Display order for logged in user.
     """
-    queryset = BaseOrder.materialized_model.objects.all()
+    queryset = BaseOrder.MaterializedModel.objects.all()
 
     def get_queryset(self):
         queryset = super(OrderDetailView, self).get_queryset()

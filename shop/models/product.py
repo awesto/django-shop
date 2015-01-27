@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from django.core.exceptions import ImproperlyConfigured
-from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.aggregates import Count
 from django.utils import six
@@ -9,7 +8,6 @@ from django.utils.translation import ugettext_lazy as _
 from polymorphic.manager import PolymorphicManager
 from polymorphic.polymorphic_model import PolymorphicModel
 from polymorphic.base import PolymorphicModelBase
-from shop.util.fields import CurrencyField
 from .order import BaseOrderItem
 
 
@@ -33,7 +31,7 @@ class ProductStatisticsManager(PolymorphicManager):
         products (of a size equal to the quantity parameter), ordered by how
         many times they have been purchased.
         """
-        OrderItem = getattr(BaseOrderItem, 'materialized_model')
+        OrderItem = getattr(BaseOrderItem, 'MaterializedModel')
 
         # Get an aggregate of product references and their respective counts
         top_products_data = OrderItem.objects.values('product') \
@@ -57,31 +55,29 @@ class PolymorphicProductMetaclass(PolymorphicModelBase):
     The BaseProduct class must refer to their materialized model definition, for instance when
     accessing its model manager. Since polymoriphic product classes, normally are materialized
     by more than one model, this metaclass finds the most generic one and associates its
-    materialized_model with it.
-    For instance,``BaseProduct.materialized_model.objects.all()`` returns all available products
+    MaterializedModel with it.
+    For instance,``BaseProduct.MaterializedModel.objects.all()`` returns all available products
     from the shop.
     """
     def __new__(cls, name, bases, attrs):
-        model = super(PolymorphicProductMetaclass, cls).__new__(cls, name, bases, attrs)
-        if model._meta.abstract:
-            return model
+        Model = super(PolymorphicProductMetaclass, cls).__new__(cls, name, bases, attrs)
+        if Model._meta.abstract:
+            return Model
         for baseclass in bases:
-            basename = baseclass.__name__
-            # since base classes have no valid model.Manager, refer to the materialized Model class
-            print 'class: {0} with base {1}'.format(name, basename)
+            # since an abstract base class does not have no valid model.Manager,
+            # refer to it via a MaterializedModel.
             if isinstance(baseclass, cls):
-                materialized_model = getattr(baseclass, 'materialized_model', None)
-                if materialized_model is None:
-                    baseclass.materialized_model = model
-                else:
-                    if issubclass(materialized_model, model):
+                try:
+                    if issubclass(baseclass.MaterializedModel, Model):
                         # as the materialized model, use the most generic one
-                        baseclass.materialized_model = model
-                    elif not issubclass(model, materialized_model):
-                        raise ImproperlyConfigured("Abstract base class %s has been associated already "
-                            "with a model %s, which is different or not a submodel of %s." % (name, model, materialized_model))
-                print 'Copy manager {0} to {1}'.format(name, basename)
-        return model
+                        baseclass.MaterializedModel = Model
+                    elif not issubclass(Model, baseclass.MaterializedModel):
+                        raise ImproperlyConfigured("Abstract base class {0} has been associated already "
+                            "with a model {1}, which is different or not a submodel of {2}." %
+                            (name, Model, baseclass.MaterializedModel))
+                except (AttributeError, TypeError):
+                    baseclass.MaterializedModel = Model
+        return Model
 
 
 @python_2_unicode_compatible
@@ -92,11 +88,9 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
     Most of the already existing fields here should be generic enough to reside
     on the "base model" and not on an added property.
     """
-    product_code = models.CharField(max_length=255, verbose_name=_("Product code"))
     active = models.BooleanField(default=False, verbose_name=_('Active'))
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
-    unit_price = CurrencyField(verbose_name=_('Unit price'))
     objects = ProductManager()
 
     class Meta:
@@ -105,28 +99,25 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         verbose_name_plural = _('Products')
 
     def __str__(self):
-        return force_text(self.product_code)
+        return force_text(self.get_name())
 
     def get_absolute_url(self):
-        return reverse('product_detail', args=[self.slug])
-
-    def get_price(self):
         """
-        Returns the price for this item (provided for extensibility).
+        Hook for returning the canonical URL of this product.
         """
-        return self.unit_price
+        raise NotImplementedError('Method get_absolute_url() must be implemented by subclass: {0}'.format(self.__class__.__name__))
 
     def get_name(self):
         """
-        Returns the name of this Product (provided for extensibility).
+        Hook for returning the unique name this product.
         """
-        return self.name
+        raise NotImplementedError('Method get_name() must be implemented by subclass: {0}'.format(self.__class__.__name__))
 
-    def get_product_reference(self):
+    def get_price(self, request):
         """
-        Returns product reference of this Product (provided for extensibility).
+        Hook for returning the current price of this product.
         """
-        return unicode(self.pk)
+        raise NotImplementedError('Method get_price() must be implemented by subclass: {0}'.format(self.__class__.__name__))
 
     @property
     def can_be_added_to_cart(self):

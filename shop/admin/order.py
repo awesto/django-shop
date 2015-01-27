@@ -21,7 +21,7 @@ class ExtraOrderPriceFieldInline(admin.TabularInline):
 
 
 class OrderItemInline(admin.TabularInline):
-    model = getattr(BaseOrderItem, 'materialized_model')
+    model = getattr(BaseOrderItem, 'MaterializedModel')
     extra = 0
     raw_id_fields = ('product',)
 
@@ -29,16 +29,16 @@ class OrderItemInline(admin.TabularInline):
 
 
 class BaseOrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'status', 'order_total', 'created')
+    list_display = ('id', 'user', 'status', 'order_total', 'created_at')
     list_filter = ('status', 'user')
     search_fields = ('id', 'shipping_address_text', 'user__username')
-    date_hierarchy = 'created'
+    date_hierarchy = 'created_at'
     inlines = (OrderItemInline, OrderExtraInfoInline, ExtraOrderPriceFieldInline, OrderPaymentInline)
-    readonly_fields = ('created', 'modified',)
+    readonly_fields = ('created_at', 'updated_at',)
     raw_id_fields = ('user',)
     fieldsets = (
-        (None, {'fields': ('user', 'status', 'order_total', 'order_subtotal', 'created',
-                           'modified',)}),
+        (None, {'fields': ('user', 'status', 'order_total', 'order_subtotal', 'created_at',
+                           'updated_at',)}),
         (_('Shipping'), {'fields': ('shipping_address_text',)}),
         (_('Billing'), {'fields': ('billing_address_text',)}),
     )

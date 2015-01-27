@@ -36,7 +36,7 @@ class CartItemModelForm(forms.ModelForm):
     quantity = forms.IntegerField(min_value=0, max_value=9999)
 
     class Meta:
-        model = BaseCartItem.materialized_model
+        model = BaseCartItem.MaterializedModel
         fields = ('quantity', )
 
     def save(self, *args, **kwargs):
@@ -72,7 +72,7 @@ def get_cart_item_formset(cart_items=None, data=None):
     :param data: Optional POST data to be bound to this formset.
     """
     assert(cart_items is not None)
-    CartItemFormSet = modelformset_factory(BaseCartItem.materialized_model, form=get_cart_item_modelform_class(),
+    CartItemFormSet = modelformset_factory(BaseCartItem.MaterializedModel, form=get_cart_item_modelform_class(),
             extra=0)
     kwargs = {'queryset': cart_items, }
     form_set = CartItemFormSet(data, **kwargs)

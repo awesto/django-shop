@@ -59,42 +59,42 @@ class ForeignKeyBuilder(ModelBase):
 
         attrs.setdefault('Meta', Meta)
         attrs.setdefault('__module__', getattr(bases[-1], '__module__'))
-        model = super(ForeignKeyBuilder, cls).__new__(cls, name, bases, attrs)
-        if model._meta.abstract:
-            return model
+        Model = super(ForeignKeyBuilder, cls).__new__(cls, name, bases, attrs)
+        if Model._meta.abstract:
+            return Model
         for baseclass in bases:
             # classes which materialize an abstract model are added to a mapping dictionary
             basename = baseclass.__name__
             try:
-                if not issubclass(model, baseclass) or not baseclass._meta.abstract:
+                if not issubclass(Model, baseclass) or not baseclass._meta.abstract:
                     raise ImproperlyConfigured("Base class %s is not abstract." % basename)
             except (AttributeError, NotImplementedError):
                 pass
             else:
                 if basename in cls._materialized_models:
-                    if model.__name__ != cls._materialized_models[basename]:
+                    if Model.__name__ != cls._materialized_models[basename]:
                         raise AssertionError("Both Model classes '%s' and '%s' inherited from abstract"
                             "base class %s, which is disallowed in this configuration." %
-                            (model.__name__, cls._materialized_models[basename], basename))
+                            (Model.__name__, cls._materialized_models[basename], basename))
                 else:
-                    cls._materialized_models[basename] = model.__name__
+                    cls._materialized_models[basename] = Model.__name__
                     # remember the materialized model mapping in the base class for further usage
-                    baseclass.materialized_model = model
+                    baseclass.MaterializedModel = Model
 
             # check for pending mappings and in case, process them
             new_mappings = []
             for mapping in cls._pending_mappings:
                 if mapping[2].abstract_model == baseclass.__name__:
-                    field = mapping[2].MaterializedField(model, **mapping[2].options)
+                    field = mapping[2].MaterializedField(Model, **mapping[2].options)
                     field.contribute_to_class(mapping[0], mapping[1])
                 else:
                     new_mappings.append(mapping)
             cls._pending_mappings = new_mappings
 
-        # search for deferred foreign fields in our model
-        for attrname in dir(model):
+        # search for deferred foreign fields in our Model
+        for attrname in dir(Model):
             try:
-                member = getattr(model, attrname)
+                member = getattr(Model, attrname)
             except AttributeError:
                 continue
             if not isinstance(member, DeferredRelatedField):
@@ -102,7 +102,7 @@ class ForeignKeyBuilder(ModelBase):
             mapmodel = cls._materialized_models.get(member.abstract_model)
             if mapmodel:
                 field = member.MaterializedField(mapmodel, **member.options)
-                field.contribute_to_class(model, attrname)
+                field.contribute_to_class(Model, attrname)
             else:
-                cls._pending_mappings.append((model, attrname, member,))
-        return model
+                cls._pending_mappings.append((Model, attrname, member,))
+        return Model

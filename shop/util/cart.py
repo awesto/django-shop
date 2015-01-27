@@ -3,7 +3,7 @@ from shop.models.cart import BaseCart
 from django.contrib.auth.models import AnonymousUser
 
 def get_cart_from_database(request):
-    database_cart = BaseCart.materialized_model.objects.filter(user=request.user)
+    database_cart = BaseCart.MaterializedModel.objects.filter(user=request.user)
     if database_cart:
         database_cart = database_cart[0]
     else:
@@ -17,7 +17,7 @@ def get_cart_from_session(request):
         cart_id = session.get('cart_id')
         if cart_id:
             try:
-                session_cart = BaseCart.materialized_model.objects.get(pk=cart_id)
+                session_cart = BaseCart.MaterializedModel.objects.get(pk=cart_id)
             except BaseCart.DoesNotExist:
                 session_cart = None
     return session_cart

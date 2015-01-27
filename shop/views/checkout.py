@@ -29,7 +29,7 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
         Returns a dynamic ModelForm from the loaded AddressModel
         """
         form_class = model_forms.modelform_factory(
-            BaseAddress.materialized_model, exclude=['user_shipping', 'user_billing'])
+            BaseAddress.MaterializedModel, exclude=['user_shipping', 'user_billing'])
         return form_class
 
     def get_shipping_form_class(self):
@@ -51,7 +51,7 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
         """
         cart = get_or_create_cart(self.request)
         cart.update(self.request)
-        order = BaseOrder.materialized_model.objects.create_from_cart(cart, self.request)
+        order = BaseOrder.MaterializedModel.objects.create_from_cart(cart, self.request)
         request = self.request
         add_order_to_request(request, order)
         return order

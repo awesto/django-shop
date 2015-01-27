@@ -18,7 +18,7 @@ def get_shipping_address_from_request(request):
         # There is a logged-in user here, but he might not have an address
         # defined.
         try:
-            shipping_address = BaseAddress.materialized_model.objects.get(
+            shipping_address = BaseAddress.MaterializedModel.objects.get(
                 user_shipping=request.user)
         except BaseAddress.DoesNotExist:
             shipping_address = None
@@ -28,7 +28,7 @@ def get_shipping_address_from_request(request):
         shipping_address = None
         session_address_id = session.get('shipping_address_id')
         if session is not None and session_address_id:
-            shipping_address = BaseAddress.materialized_model.objects.get(pk=session_address_id)
+            shipping_address = BaseAddress.MaterializedModel.objects.get(pk=session_address_id)
     return shipping_address
 
 
@@ -43,7 +43,7 @@ def get_billing_address_from_request(request):
         # There is a logged-in user here, but he might not have an address
         # defined.
         try:
-            billing_address = BaseAddress.materialized_model.objects.get(
+            billing_address = BaseAddress.MaterializedModel.objects.get(
                 user_billing=request.user)
         except BaseAddress.DoesNotExist:
             billing_address = None
@@ -52,7 +52,7 @@ def get_billing_address_from_request(request):
         session = getattr(request, 'session', None)
         session_billing_id = session.get('billing_address_id')
         if session is not None and session_billing_id:
-            billing_address = BaseAddress.materialized_model.objects.get(pk=session_billing_id)
+            billing_address = BaseAddress.MaterializedModel.objects.get(pk=session_billing_id)
     return billing_address
 
 
