@@ -30,16 +30,16 @@ each base model in the shop software.
 For instance, materialize the cart by using this code snippet inside your own shop's
 ``models/shopmodels.py`` files:
 
-```
-from shop.models import cart
+.. code-block:: python
 
-class Cart(cart.BaseCart):
+  from shop.models import cart
+  
+  class Cart(cart.BaseCart):
+      pass
+  
+  
+  class CartItem(cart.BaseCartItem):
     pass
-
-
-class CartItem(cart.BaseCartItem):
-    pass
-```
 
 Of course, you can add as many extra model fields to this concrete cart model, as you wish.
 All shop models, now are managed through your shop instance. This means that **Cart**, **Order**,
