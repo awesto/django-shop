@@ -11,14 +11,6 @@ from polymorphic.base import PolymorphicModelBase
 from .order import BaseOrderItem
 
 
-class ProductManager(PolymorphicManager):
-    """
-    A more classic manager for Product filtering and manipulation.
-    """
-    def active(self):
-        return self.filter(active=True)
-
-
 class ProductStatisticsManager(PolymorphicManager):
     """
     A Manager for all the non-object manipulation needs, mostly statistics and
@@ -88,18 +80,24 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
     Most of the already existing fields here should be generic enough to reside
     on the "base model" and not on an added property.
     """
-    active = models.BooleanField(default=False, verbose_name=_('Active'))
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
-    objects = ProductManager()
+    objects = PolymorphicManager()
 
     class Meta:
         abstract = True
-        verbose_name = _('Product')
-        verbose_name_plural = _('Products')
+        verbose_name = _("Product")
+        verbose_name_plural = _("Products")
 
     def __str__(self):
         return force_text(self.get_name())
+
+    def product_type(self):
+        """
+        Returns the polymorphic type of the product.
+        """
+        return force_text(self.polymorphic_ctype)
+    product_type.short_description = _("Product type")
 
     def get_absolute_url(self):
         """
@@ -120,5 +118,8 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         raise NotImplementedError('Method get_price() must be implemented by subclass: {0}'.format(self.__class__.__name__))
 
     @property
-    def can_be_added_to_cart(self):
-        return self.active
+    def is_available(self):
+        """
+        Hook for returning the availability of a product.
+        """
+        return True
