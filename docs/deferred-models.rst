@@ -1,8 +1,8 @@
 Using the deferred model pattern
 ================================
 
-Until **django-shop** version 0.2, there were concrete and abstract models: ``BaseProduct``and
-``Product``, ``BaseCart``and ``Cart``, ``BaseCartItem`` and ``CartItem``, ``BaseOrder``and ``Order``
+Until **django-shop** version 0.2, there were concrete and abstract models: ``BaseProduct`` and
+``Product``, ``BaseCart`` and ``Cart``, ``BaseCartItem`` and ``CartItem``, ``BaseOrder``and ``Order``
 and finally, ``BaseOrderItem`` and ``OrderItem``.
 
 The concrete models were stored in ``shop.models``, whereas abstract models were stored in
@@ -14,29 +14,32 @@ Additionally, if someone wanted to override a model, he had to use a configurati
 This made configuration quite complicate and causes other drawbacks:
 
 * Unless *all* models have been overridden, the native ones appeared in the administration backend
-  below the category **Show**, while the customized ones appeared under the given application name.
+  below the category **Shop**, while the customized ones appeared under the given project's name.
   To a customer, this backend inconsistency was quite difficult to explain.
 * In the past, mixing overriden with native models caused many issues with circular dependencies.
 
-Therefore in **django-shop** version 0.3 all concrete models, ``Product``, ``Order``, ``OrderItem``,
+Therefore in **django-shop**, since version 0.3 all concrete models, ``Product``, ``Order``, ``OrderItem``,
 ``Cart``, ``CartItem`` have been removed. These model definitions now all are abstract and named
-``BaseProduct``, ``BaseOrder``, ``BaseOrderItem``, etc. They all have been moved into the directory
-``shop/models/`` and this is where a programmer expects them.
+``BaseProduct``, ``BaseOrder``, ``BaseOrderItem``, etc. They all have been moved into the folder
+``shop/models/``, because this is the location a programmer expects them.
 
-To materialize such an abstract base model, ie. create a database table, the concrete shop
-implementation must derive from them. For instance, materialize the cart by using this code
-snippet inside your own shop's ``models/shopmodels.py`` files:
+Materialize such an abstract base model, means to create a concrete model with associated database
+table. This model creation is performed in the concrete shop implementation and must be done for
+each base model in the shop software.
 
-.. code-block::
-	from shop.models import cart
+For instance, materialize the cart by using this code snippet inside your own shop's
+``models/shopmodels.py`` files:
 
-	class Cart(cart.BaseCart):
-	    pass
+```
+from shop.models import cart
+
+class Cart(cart.BaseCart):
+    pass
 
 
-	class CartItem(cart.BaseCartItem):
-	    pass
-
+class CartItem(cart.BaseCartItem):
+    pass
+```
 
 Of course, you can add as many extra model fields to this concrete cart model, as you wish.
 All shop models, now are managed through your shop instance. This means that **Cart**, **Order**,
@@ -44,9 +47,8 @@ etc. models now all are managed by the common database migrations tools, such as
 ``./manage.py makemigration my_shop_instance`` and ``./manage.py migrate my_shop_instance``. This
 also means that these models are visible under your shop's group in the admin interface.
 
-.. note:: All the configuration settings ``PRODUCT_MODEL``, ``ORDER_MODEL``, ``ORDER_MODEL_ITEM``,
-		etc. are not required anymore and can safely be removed from **django-shop**.
-
+Note, all the configuration settings ``PRODUCT_MODEL``, ``ORDER_MODEL``, ``ORDER_MODEL_ITEM``,
+etc. are not required anymore and can safely be removed from **django-shop**.
 
 For an application using **django-shop** this should not be a big deal. Each application simply
 derives each model from one of the abstract base models and thus creates its concrete model.
