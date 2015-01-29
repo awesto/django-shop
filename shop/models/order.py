@@ -6,9 +6,8 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import AnonymousUser
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
-from django.utils.encoding import python_2_unicode_compatible, force_text
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
-from jsonfield.fields import JSONField
 from shop.util.fields import CurrencyField
 from shop.order_signals import processing
 from . import deferred
@@ -68,6 +67,8 @@ class OrderManager(models.Manager):
         from .cart import BaseCartItem
         CartItem = getattr(BaseCartItem, 'MaterializedModel')
         OrderItem = getattr(BaseOrderItem, 'MaterializedModel')
+        OrderExtraRow = getattr(BaseOrderExtraRow, 'MaterializedModel')
+        ItemExtraRow = getattr(BaseItemExtraRow, 'MaterializedModel')
 
         # First, let's remove old orders
         self.remove_old_orders(cart)
@@ -78,7 +79,7 @@ class OrderManager(models.Manager):
 
         # Let's serialize all the extra price arguments in DB
         for field in cart.extra_price_fields:
-            eoi = ExtraOrderPriceField()
+            eoi = OrderExtraRow()
             eoi.order = order
             eoi.label = unicode(field[0])
             eoi.value = field[1]
@@ -102,7 +103,7 @@ class OrderManager(models.Manager):
             order_item.save()
             # For each order item, we save the extra_price_fields to DB
             for field in item.extra_price_fields:
-                eoi = ExtraOrderItemPriceField()
+                eoi = ItemExtraRow()
                 eoi.order_item = order_item
                 # Force unicode, in case it has àö...
                 eoi.label = unicode(field[0])
@@ -199,15 +200,6 @@ class BaseOrder(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     amount_payed = amount_paid  # deprecated spelling
 
     @property
-    def shipping_costs(self):
-        sum_ = Decimal('0.0')
-        cost_list = ExtraOrderPriceField.objects.filter(order=self).filter(
-                is_shipping=True)
-        for cost in cost_list:
-            sum_ += cost.value
-        return sum_
-
-    @property
     def short_name(self):
         """
         A short name for the order, to be displayed on the payment processor's
@@ -259,7 +251,7 @@ class OrderPayment(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
             help_text=_("The payment backend used to process the purchase"))
 
 
-class BaseExtraOrderRow(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
+class BaseOrderExtraRow(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     This will make Cart-provided extra row fields persistent, since we want to "snapshot" their
     statuses at the time when the order was made.
@@ -297,7 +289,7 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         verbose_name_plural = _("Order items")
 
     order = deferred.ForeignKey(BaseOrder, related_name='items', verbose_name=_("Order"))
-    product_code = models.CharField(max_length=255, verbose_name=_("Product reference"))
+    product_reference = models.CharField(max_length=255, verbose_name=_("Product reference"))
     product_name = models.CharField(max_length=255, null=True, blank=True,
         verbose_name=_("Product name"))
     product = models.ForeignKey('Product', null=True, blank=True, on_delete=models.SET_NULL,
@@ -313,7 +305,7 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         super(BaseOrderItem, self).save(*args, **kwargs)
 
 
-class BaseExtraOrderItemRow(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
+class BaseItemExtraRow(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     This will make Cart-provided extra price fields persistent since we want
     to "snapshot" their statuses at the time when the order was made

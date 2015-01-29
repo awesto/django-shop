@@ -2,11 +2,11 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 from shop.order_signals import completed
-from shop.models.order import BaseOrder, BaseOrderItem, OrderExtraInfo, ExtraOrderPriceField, OrderPayment
+from shop.models.order import BaseOrder, BaseOrderItem, BaseOrderExtraRow, OrderPayment, OrderAnnotation
 
 
-class OrderExtraInfoInline(admin.TabularInline):
-    model = OrderExtraInfo
+class OrderAnnotationInline(admin.TabularInline):
+    model = OrderAnnotation
     extra = 0
 
 
@@ -15,8 +15,8 @@ class OrderPaymentInline(admin.TabularInline):
     extra = 0
 
 
-class ExtraOrderPriceFieldInline(admin.TabularInline):
-    model = ExtraOrderPriceField
+class OrderExtraRowInline(admin.TabularInline):
+    model = getattr(BaseOrderExtraRow, 'MaterializedModel')
     extra = 0
 
 
@@ -33,7 +33,7 @@ class BaseOrderAdmin(admin.ModelAdmin):
     list_filter = ('status', 'user')
     search_fields = ('id', 'shipping_address_text', 'user__username')
     date_hierarchy = 'created_at'
-    inlines = (OrderItemInline, OrderExtraInfoInline, ExtraOrderPriceFieldInline, OrderPaymentInline)
+    inlines = (OrderItemInline, OrderAnnotationInline, OrderExtraRowInline, OrderPaymentInline)
     readonly_fields = ('created_at', 'updated_at',)
     raw_id_fields = ('user',)
     fieldsets = (
