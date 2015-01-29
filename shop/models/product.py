@@ -107,9 +107,15 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
 
     def get_name(self):
         """
-        Hook for returning the unique name this product.
+        Hook for returning the spoken name of this product.
         """
         raise NotImplementedError('Method get_name() must be implemented by subclass: {0}'.format(self.__class__.__name__))
+
+    def get_reference(self):
+        """
+        Hook for returning the unique reference of this product.
+        """
+        raise NotImplementedError('Method get_reference() must be implemented by subclass: {0}'.format(self.__class__.__name__))
 
     def get_price(self, request):
         """
