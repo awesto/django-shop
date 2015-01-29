@@ -13,6 +13,9 @@ Therefore don't try to upgrade. Install this version of **django-shop** and migr
   * Billing -> Invoice
   * date_created -> created_at
   * last_updated -> updated_at
+  * ExtraOrderPriceField -> BaseOrderExtraRow
+  * ExtraOrderItemPriceField -> BaseItemExtraRow
+  * OrderExtraInfo -> OrderAnnotation
 * Changed the two OneToOne relations from model Address to User, one was used for shipping, one for
   billing. Now abstract BaseAddress refers to the User by a single ForeignKey giving the ability to
   link more than one address to each user. Additionally each address has a priority field for
