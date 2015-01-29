@@ -54,10 +54,6 @@ class ForeignKeyBuilder(ModelBase):
     _pending_mappings = []
 
     def __new__(cls, name, bases, attrs):
-        class Meta:
-            app_label = getattr(attrs, 'app_label', cls.app_label)
-
-        attrs.setdefault('Meta', Meta)
         attrs.setdefault('__module__', getattr(bases[-1], '__module__'))
         Model = super(ForeignKeyBuilder, cls).__new__(cls, name, bases, attrs)
         if Model._meta.abstract:

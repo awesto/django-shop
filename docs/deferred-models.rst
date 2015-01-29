@@ -18,10 +18,10 @@ This made configuration quite complicate and causes other drawbacks:
   To a customer, this backend inconsistency was quite difficult to explain.
 * In the past, mixing overriden with native models caused many issues with circular dependencies.
 
-Therefore in **django-shop**, since version 0.3 all concrete models, ``Product``, ``Order``, ``OrderItem``,
-``Cart``, ``CartItem`` have been removed. These model definitions now all are abstract and named
-``BaseProduct``, ``BaseOrder``, ``BaseOrderItem``, etc. They all have been moved into the folder
-``shop/models/``, because this is the location a programmer expects them.
+Therefore in **django-shop**, since version 0.3 all concrete models, ``Product``, ``Order``,
+``OrderItem``, ``Cart``, ``CartItem`` have been removed. These model definitions now all are
+abstract and named ``BaseProduct``, ``BaseOrder``, ``BaseOrderItem``, etc. They all have been moved
+into the folder ``shop/models/``, because this is the location a programmer expects them.
 
 Materialize such an abstract base model, means to create a concrete model with associated database
 table. This model creation is performed in the concrete shop implementation and must be done for
@@ -32,14 +32,15 @@ For instance, materialize the cart by using this code snippet inside your own sh
 
 .. code-block:: python
 
-  from shop.models import cart
-  
-  class Cart(cart.BaseCart):
-      pass
-  
-  
-  class CartItem(cart.BaseCartItem):
-    pass
+	from shop.models import cart
+	
+	class Cart(cart.BaseCart):
+	    class Meta:
+	        app_label = 'my_shop'
+
+	class CartItem(cart.BaseCartItem):
+	    class Meta:
+	        app_label = 'my_shop'
 
 Of course, you can add as many extra model fields to this concrete cart model, as you wish.
 All shop models, now are managed through your shop instance. This means that **Cart**, **Order**,
