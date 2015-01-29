@@ -3,9 +3,14 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseBadRequest
 from django.shortcuts import redirect
+from rest_framework.generics import RetrieveUpdateDestroyAPIView
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 from shop.forms import get_cart_item_formset
+from shop.models.cart import BaseCart, BaseCartItem
 from shop.models.product import BaseProduct
-from shop.util.cart import get_or_create_cart
+from shop.serializers.cart import CartSerializer, CartItemSerializer
 from shop.views import ShopView, ShopTemplateResponseMixin
 
 
@@ -172,3 +177,22 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
             return self.put_success()
         context.update({'formset': formset, })
         return self.render_to_response(context)
+
+
+class CartView(APIView):
+    def get(self, request, format=None):
+        cart = getattr(BaseCart, 'MaterializedModel').objects.get(request._request)
+        serializer = CartSerializer(cart)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = SnippetSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CartItemView(RetrieveUpdateDestroyAPIView):
+    queryset = getattr(BaseCartItem, 'MaterializedModel').objects.all()
+    serializer_class = CartItemSerializer

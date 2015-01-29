@@ -9,13 +9,12 @@ from django.views.generic import RedirectView
 
 from shop.forms import BillingShippingForm
 from shop.models.address import BaseAddress
-from shop.models.order import BaseOrder, OrderExtraInfo
+from shop.models.order import BaseOrder, OrderAnnotation
 from shop.util.address import (
     assign_address_to_request,
     get_billing_address_from_request,
     get_shipping_address_from_request,
 )
-from shop.util.cart import get_or_create_cart
 from shop.util.order import add_order_to_request, get_order_from_request
 from shop.views import ShopTemplateView, ShopView
 from shop.util.login_mixin import LoginMixin
