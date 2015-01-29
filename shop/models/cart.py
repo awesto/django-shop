@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
+import json
 from six import with_metaclass
+from collections import namedtuple
 from decimal import Decimal
+from hashlib import sha1
 from django.conf import settings
+from django.contrib.auth.models import AnonymousUser
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from jsonfield.fields import JSONField
 from shop.cart.modifiers_pool import cart_modifiers_pool
 from .product import BaseProduct
 from . import deferred
@@ -14,20 +20,24 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     This is a holder for the quantity of items in the cart and, obviously, a
     pointer to the actual Product being purchased :)
     """
-    cart = deferred.ForeignKey('BaseCart', related_name="items")
-    quantity = models.IntegerField()
-    product = deferred.ForeignKey('BaseProduct')
-
     class Meta:
         abstract = True
         verbose_name = _('Cart item')
         verbose_name_plural = _('Cart items')
 
+    # the inheriting class may override this and add additional values to this dataset
+    ExtraItemRow = namedtuple('ExtraItemRow', ('label', 'amount',))
+
+    cart = deferred.ForeignKey('BaseCart', related_name="items")
+    quantity = models.IntegerField()
+    product = deferred.ForeignKey('BaseProduct')
+    variation = JSONField(null=True, blank=True)
+    variation_hash = models.CharField(max_length=64, null=True)
+
     def __init__(self, *args, **kwargs):
-        # That will hold extra fields to display to the user
-        # (ex. taxes, discount)
+        # That will hold extra fields to display to the user (ex. taxes, discount)
         super(BaseCartItem, self).__init__(*args, **kwargs)
-        self.extra_price_fields = []  # list of tuples (label, value)
+        self.extra_item_rows = []  # list of ExtraItemRow
         # These must not be stored, since their components can be changed
         # between sessions / logins etc...
         self.line_subtotal = Decimal('0.0')
@@ -35,7 +45,7 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         self.current_total = Decimal('0.0')  # Used by cart modifiers
 
     def update(self, request):
-        self.extra_price_fields = []  # Reset the price fields
+        self.extra_item_rows = []  # Reset the price fields
         self.line_subtotal = self.product.get_price() * self.quantity
         self.current_total = self.line_subtotal
 
@@ -48,21 +58,47 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         return self.line_total
 
 
+class CartManager(models.Manager):
+    def get(self, request):
+        """
+        Return the cart for current visitor. The visitor is determined through the request object.
+        If the visitor is logged in, find the cart through the user model. Otherwise use its
+        session_key. If no cart object was found, create an empty one and return it.
+        """
+        if request.user.is_authenticated():
+            try:
+                cart = super(CartManager, self).get(user=request.user)
+            except self.model.DoesNotExist:
+                cart, _ = super(CartManager, self).get_or_create(user=request.user, session_key=request.session.session_key)
+        else:
+            try:
+                cart = super(CartManager, self).get(session_key=request.session.session_key)
+            except self.model.DoesNotExist:
+                cart, _ = super(CartManager, self).get_or_create(user=AnonymousUser, session_key=request.session.session_key)
+        return cart
+
+
 class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     The fundamental parts of a shopping cart. It refers to a rather simple list of items.
     Ideally it should be bound to a session and not to a User is we want to let
     people buy from our shop without having to register with us.
     """
-    # If the user is null, that means this is used for a session
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
-    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
-
     class Meta:
         abstract = True
         verbose_name = _("Shopping Cart")
         verbose_name_plural = _("Shopping Carts")
+
+    # the inheriting class may override this and add additional values to this dataset
+    ExtraRow = namedtuple('ExtraRow', ('label', 'amount',))
+
+    # If user is None, this cart is associated with a session
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, null=True, default=None)
+    session_key = models.CharField(max_length=40, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
+
+    objects = CartManager()
 
     def __init__(self, *args, **kwargs):
         super(BaseCart, self).__init__(*args, **kwargs)
@@ -70,66 +106,32 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         self.subtotal_price = Decimal('0.0')
         self.total_price = Decimal('0.0')
         self.current_total = Decimal('0.0')  # used by cart modifiers
-        self.extra_price_fields = []  # List of tuples (label, value)
+        self.extra_rows = []  # list of ExtraRow
         self._updated_cart_items = None
 
-    def add_product(self, product, quantity=1, merge=True, queryset=None):
+    def add_product(self, product, quantity=1, variation=None):
         """
         Adds a (new) product to the cart.
 
-        The parameter `merge` controls whether we should merge the added
-        CartItem with another already existing sharing the same
-        product_id. This is useful when you have products with variations
-        (for example), and you don't want to have your products merge (to loose
-        their specific variations, for example).
-
-        A drawback is that generally  setting `merge` to ``False`` for
-        products with variations can be a problem if users can buy thousands of
-        products at a time (that would mean we would create thousands of
-        CartItems as well which all have the same variation).
-
-        The parameter `queryset` can be used to override the standard queryset
-        that is being used to find the CartItem that should be merged into.
-        If you use variations, just finding the first CartItem that
-        belongs to this cart and the given product is not sufficient. You will
-        want to find the CartItem that already has the same variations that the
-        user chose for this request.
-
-        Example with merge = True:
-        >>> self.items[0] = CartItem.objects.create(..., product=MyProduct())
-        >>> self.add_product(MyProduct())
-        >>> self.items[0].quantity
-        2
-
-        Example with merge=False:
-        >>> self.items[0] = CartItem.objects.create(..., product=MyProduct())
-        >>> self.add_product(MyProduct())
-        >>> self.items[0].quantity
-        1
-        >>> self.items[1].quantity
-        1
+        The parameter `variation`, can be any kind of JSON serializable Python
+        object.
+        If a product with exactly this variation already exists, the quantity
+        is increased in the cart. Otherwise a new product is added to the cart.
         """
+        CartItemModel = getattr(BaseCartItem, 'MaterializedModel')
+
         # check if product can be added at all
-        if not getattr(product, 'can_be_added_to_cart', True):
+        if not product.get_availability():
             return None
 
-        # get the last updated timestamp
-        # also saves cart object if it is not saved
-        self.save()
-
-        if queryset is None:
-            queryset = BaseCartItem.objects.filter(cart=self, product=product)
-        item = queryset
-        # Let's see if we already have an Item with the same product ID
-        if item.exists() and merge:
-            cart_item = item[0]
-            cart_item.quantity = cart_item.quantity + int(quantity)
-            cart_item.save()
+        # search for an item with the same product and the same variation, otherwise create it
+        variation_hash = variation and sha1(json.dumps(variation, cls=DjangoJSONEncoder, sort_keys=True)).hexdigest()
+        cart_item, created = CartItemModel.objects.get_or_create(cart=self, product=product, variation_hash=variation_hash)
+        if created:
+            cart_item.quantity = int(quantity)
         else:
-            cart_item = BaseCartItem.objects.create(
-                cart=self, quantity=quantity, product=product)
-            cart_item.save()
-
+            cart_item.quantity += int(quantity)
+        cart_item.save()
         return cart_item
 
     def update_quantity(self, cart_item_id, quantity):
@@ -188,7 +190,7 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         products = BaseProduct.objects.filter(pk__in=product_ids)
         products_dict = dict([(p.pk, p) for p in products])
 
-        self.extra_price_fields = []  # Reset the price fields
+        self.extra_rows = []  # Reset list of ExtraRows
         self.subtotal_price = Decimal('0.0')  # Reset the subtotal
 
         # The request object holds extra information in a dict named 'cart_modifier_state'.
