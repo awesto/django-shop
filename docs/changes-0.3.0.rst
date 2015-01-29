@@ -2,6 +2,9 @@
 Changes for 0.3.0
 =================
 
+Please note that starting with version 0.3, the **django-shop** API will break a lot of stuff.
+Therefore don't try to upgrade. Install this version of **django-shop** and migrate your models.
+
 * Using a completly different approach on handling abstract models, see issue ..
   * Every time, django shop internally referrs to another abstract base class, the corresponding
     materialized model is used. This
