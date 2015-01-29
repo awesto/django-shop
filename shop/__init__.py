@@ -11,4 +11,4 @@ Release logic:
 6. git commit
 7. push to github (to avoid confusion)
 """
-__version__ = '0.2.1.dev0'
+__version__ = '0.3.0.dev'
