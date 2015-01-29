@@ -263,7 +263,7 @@ class BaseOrderExtraRow(with_metaclass(deferred.ForeignKeyBuilder, models.Model)
 
     order = deferred.ForeignKey(BaseOrder, verbose_name=_("Order"))
     label = models.CharField(max_length=255, verbose_name=_("Label"))
-    value = CurrencyField(verbose_name=_("Amount"))
+    amount = CurrencyField(verbose_name=_("Amount"))
 
 
 class OrderAnnotation(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
