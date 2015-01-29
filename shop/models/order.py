@@ -253,9 +253,9 @@ class OrderPayment(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     order = deferred.ForeignKey(BaseOrder, verbose_name=_('Order'))
     # How much was paid with this particular transfer
     amount = CurrencyField(verbose_name=_('Amount'))
-    transaction_id = models.CharField(max_length=255, verbose_name=_('Transaction ID'),
+    transaction_id = models.CharField(max_length=255, verbose_name=_("Transaction ID"),
             help_text=_("The transaction processor's reference"))
-    payment_method = models.CharField(max_length=255, verbose_name=_('Payment method'),
+    payment_method = models.CharField(max_length=255, verbose_name=_("Payment method"),
             help_text=_("The payment backend used to process the purchase"))
 
 
@@ -269,9 +269,9 @@ class BaseExtraOrderRow(with_metaclass(deferred.ForeignKeyBuilder, models.Model)
         verbose_name = _("Extra order row")
         verbose_name_plural = _("Extra order rows")
 
-    order = deferred.ForeignKey(BaseOrder, verbose_name=_('Order'))
-    label = models.CharField(max_length=255, verbose_name=_('Label'))
-    value = CurrencyField(verbose_name=_('Amount'))
+    order = deferred.ForeignKey(BaseOrder, verbose_name=_("Order"))
+    label = models.CharField(max_length=255, verbose_name=_("Label"))
+    value = CurrencyField(verbose_name=_("Amount"))
 
 
 class OrderAnnotation(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
