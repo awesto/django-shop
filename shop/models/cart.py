@@ -22,8 +22,8 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     class Meta:
         abstract = True
-        verbose_name = _('Cart item')
-        verbose_name_plural = _('Cart items')
+        verbose_name = _("Cart item")
+        verbose_name_plural = _("Cart items")
 
     # the inheriting class may override this and add additional values to this dataset
     ExtraItemRow = namedtuple('ExtraItemRow', ('label', 'amount',))
@@ -31,8 +31,6 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     cart = deferred.ForeignKey('BaseCart', related_name="items")
     quantity = models.IntegerField()
     product = deferred.ForeignKey('BaseProduct')
-    variation = JSONField(null=True, blank=True)
-    variation_hash = models.CharField(max_length=64, null=True)
 
     def __init__(self, *args, **kwargs):
         # That will hold extra fields to display to the user (ex. taxes, discount)
@@ -56,6 +54,19 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
         self.line_total = self.current_total
         return self.line_total
+
+
+class BaseCartVariableItem(BaseCartItem):
+    """
+    This is an enriched implementation, in case your products allow variations.
+    """
+    class Meta:
+        abstract = True
+
+    variation = JSONField(null=True, blank=True,
+        verbose_name=_("Configured product variation"))
+    variation_hash = models.CharField(max_length=64, null=True,
+        verbose_name=_("A hash for the above variation"))
 
 
 class CartManager(models.Manager):
@@ -118,15 +129,18 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         If a product with exactly this variation already exists, the quantity
         is increased in the cart. Otherwise a new product is added to the cart.
         """
-        CartItemModel = getattr(BaseCartItem, 'MaterializedModel')
-
         # check if product can be added at all
         if not product.get_availability():
             return None
 
+        CartItemModel = getattr(BaseCartItem, 'MaterializedModel')
+
         # search for an item with the same product and the same variation, otherwise create it
-        variation_hash = variation and sha1(json.dumps(variation, cls=DjangoJSONEncoder, sort_keys=True)).hexdigest()
-        cart_item, created = CartItemModel.objects.get_or_create(cart=self, product=product, variation_hash=variation_hash)
+        if hasattr(CartItemModel, 'variation_hash'):
+            variation_hash = variation and sha1(json.dumps(variation, cls=DjangoJSONEncoder, sort_keys=True)).hexdigest()
+            cart_item, created = CartItemModel.objects.get_or_create(cart=self, product=product, variation_hash=variation_hash)
+        else:
+            cart_item, created = CartItemModel.objects.get_or_create(cart=self, product=product)
         if created:
             cart_item.quantity = int(quantity)
         else:
@@ -183,9 +197,10 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         that for the order items (since they are legally binding after the
         "purchase" button was pressed)
         """
+        CartItemModel = getattr(BaseCartItem, 'MaterializedModel')
 
         # This is a ghetto "select_related" for polymorphic models.
-        items = BaseCartItem.objects.filter(cart=self).order_by('pk')
+        items = CartItemModel.objects.filter(cart=self).order_by('pk')
         product_ids = [item.product_id for item in items]
         products = BaseProduct.objects.filter(pk__in=product_ids)
         products_dict = dict([(p.pk, p) for p in products])
