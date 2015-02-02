@@ -290,7 +290,7 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     product_reference = models.CharField(max_length=255, verbose_name=_("Product reference"))
     product_name = models.CharField(max_length=255, null=True, blank=True,
         verbose_name=_("Product name"))
-    product = models.ForeignKey('Product', null=True, blank=True, on_delete=models.SET_NULL,
+    product = deferred.ForeignKey('BaseProduct', null=True, blank=True, on_delete=models.SET_NULL,
         verbose_name=_("Product"))
     unit_price = CurrencyField(verbose_name=_("Unit price"))
     quantity = models.IntegerField(verbose_name=_("Quantity"))

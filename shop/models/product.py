@@ -9,6 +9,7 @@ from polymorphic.manager import PolymorphicManager
 from polymorphic.polymorphic_model import PolymorphicModel
 from polymorphic.base import PolymorphicModelBase
 from .order import BaseOrderItem
+from .deferred import ForeignKeyBuilder
 
 
 class ProductStatisticsManager(PolymorphicManager):
@@ -16,7 +17,6 @@ class ProductStatisticsManager(PolymorphicManager):
     A Manager for all the non-object manipulation needs, mostly statistics and
     other "data-mining" toys.
     """
-
     def top_selling_products(self, quantity):
         """
         This method "mines" the previously passed orders, and gets a list of
@@ -58,17 +58,21 @@ class PolymorphicProductMetaclass(PolymorphicModelBase):
         for baseclass in bases:
             # since an abstract base class does not have no valid model.Manager,
             # refer to it via a MaterializedModel.
-            if isinstance(baseclass, cls):
-                try:
-                    if issubclass(baseclass.MaterializedModel, Model):
-                        # as the materialized model, use the most generic one
-                        baseclass.MaterializedModel = Model
-                    elif not issubclass(Model, baseclass.MaterializedModel):
-                        raise ImproperlyConfigured("Abstract base class {0} has been associated already "
-                            "with a model {1}, which is different or not a submodel of {2}." %
-                            (name, Model, baseclass.MaterializedModel))
-                except (AttributeError, TypeError):
+            if not isinstance(baseclass, cls):
+                continue
+            try:
+                if issubclass(baseclass.MaterializedModel, Model):
+                    # as the materialized model, use the most generic one
                     baseclass.MaterializedModel = Model
+                elif not issubclass(Model, baseclass.MaterializedModel):
+                    raise ImproperlyConfigured("Abstract base class {0} has been associated already "
+                        "with a model {1}, which is different or not a submodel of {2}." %
+                        (name, Model, baseclass.MaterializedModel))
+            except (AttributeError, TypeError):
+                baseclass.MaterializedModel = Model
+
+            # check for pending mappings in the ForeignKeyBuilder and in case, process them
+            ForeignKeyBuilder.process_pending_mappings(Model, baseclass.__name__)
         return Model
 
 

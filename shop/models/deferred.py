@@ -82,16 +82,7 @@ class ForeignKeyBuilder(ModelBase):
                     cls._materialized_models[basename] = Model.__name__
                     # remember the materialized model mapping in the base class for further usage
                     baseclass.MaterializedModel = Model
-
-            # check for pending mappings and in case, process them
-            new_mappings = []
-            for mapping in cls._pending_mappings:
-                if mapping[2].abstract_model == baseclass.__name__:
-                    field = mapping[2].MaterializedField(Model, **mapping[2].options)
-                    field.contribute_to_class(mapping[0], mapping[1])
-                else:
-                    new_mappings.append(mapping)
-            cls._pending_mappings = new_mappings
+            ForeignKeyBuilder.process_pending_mappings(Model, basename)
 
         # search for deferred foreign fields in our Model
         for attrname in dir(Model):
@@ -106,5 +97,17 @@ class ForeignKeyBuilder(ModelBase):
                 field = member.MaterializedField(mapmodel, **member.options)
                 field.contribute_to_class(Model, attrname)
             else:
-                cls._pending_mappings.append((Model, attrname, member,))
+                ForeignKeyBuilder._pending_mappings.append((Model, attrname, member,))
         return Model
+
+    @staticmethod
+    def process_pending_mappings(Model, basename):
+        # check for pending mappings and in case, process them and remove them from the list
+        remaining_mappings = []
+        for mapping in ForeignKeyBuilder._pending_mappings:
+            if mapping[2].abstract_model == basename:
+                field = mapping[2].MaterializedField(Model, **mapping[2].options)
+                field.contribute_to_class(mapping[0], mapping[1])
+            else:
+                remaining_mappings.append(mapping)
+        ForeignKeyBuilder._pending_mappings = remaining_mappings
