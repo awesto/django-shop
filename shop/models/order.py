@@ -238,7 +238,6 @@ class OrderPayment(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     more complex payment types should they need to store more informtion
     """
     class Meta:
-        app_label = 'shop'
         verbose_name = _('Order payment')
         verbose_name_plural = _('Order payments')
 
@@ -271,7 +270,6 @@ class OrderAnnotation(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     A holder for extra textual information to attach to this order.
     """
     class Meta:
-        app_label = 'shop'
         verbose_name = _("Order annotation")
         verbose_name_plural = _("Order annotations")
 
