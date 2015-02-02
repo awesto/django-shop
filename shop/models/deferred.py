@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models.base import ModelBase
 from django.db import models
@@ -45,19 +46,20 @@ class ForeignKeyBuilder(ModelBase):
     """
     Here the magic happens: All known and deferred foreign keys are mapped to their correct model's
     counterpart.
-    If the main application stores its models in its own directory, the ForeignKeyBuilder has to
-    be monkey patched with:
-    from shop.models.deferred import ForeignKeyBuilder
-    ForeignKeyBuilder.app_label = 'myshop'
+    If the main application stores its models in its own directory, add to settings.py:
+    SHOP_APP_LABEL = 'myshop'
+    so that the models are created inside your own shop instatiation.
     """
     _materialized_models = {}
     _pending_mappings = []
 
     def __new__(cls, name, bases, attrs):
         class Meta:
-            app_label = getattr(attrs, 'app_label', cls.app_label)
+            app_label = getattr(settings, 'SHOP_APP_LABEL', 'shop')
 
         attrs.setdefault('Meta', Meta)
+        if not hasattr(attrs['Meta'], 'app_label') and not getattr(attrs['Meta'], 'abstract', False):
+            attrs['Meta'].app_label = Meta.app_label
         attrs.setdefault('__module__', getattr(bases[-1], '__module__'))
         Model = super(ForeignKeyBuilder, cls).__new__(cls, name, bases, attrs)
         if Model._meta.abstract:
