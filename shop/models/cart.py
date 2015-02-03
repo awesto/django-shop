@@ -28,9 +28,9 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     # the inheriting class may override this and add additional values to this dataset
     ExtraItemRow = namedtuple('ExtraItemRow', ('label', 'amount',))
 
-    cart = deferred.ForeignKey('BaseCart', related_name="items")
+    cart = deferred.ForeignKey('BaseCart', related_name='items')
     quantity = models.IntegerField()
-    product = deferred.ForeignKey('BaseProduct')
+    product = deferred.ForeignKey(BaseProduct)
 
     def __init__(self, *args, **kwargs):
         # That will hold extra fields to display to the user (ex. taxes, discount)
