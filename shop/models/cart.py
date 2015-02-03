@@ -60,13 +60,13 @@ class BaseCartVariableItem(BaseCartItem):
     """
     This is an enriched implementation, in case your products allow variations.
     """
-    class Meta:
-        abstract = True
-
     variation = JSONField(null=True, blank=True,
         verbose_name=_("Configured product variation"))
     variation_hash = models.CharField(max_length=64, null=True,
         verbose_name=_("A hash for the above variation"))
+
+    class Meta:
+        abstract = True
 
 
 class CartManager(models.Manager):
@@ -109,6 +109,7 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
 
+    # our CartManager determines the cart object from the request.
     objects = CartManager()
 
     def __init__(self, *args, **kwargs):
@@ -124,7 +125,7 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         """
         Adds a (new) product to the cart.
 
-        The parameter `variation`, can be any kind of JSON serializable Python
+        The optional parameter `variation`, can be any kind of JSON serializable Python
         object.
         If a product with exactly this variation already exists, the quantity
         is increased in the cart. Otherwise a new product is added to the cart.
