@@ -6,6 +6,7 @@ from decimal import Decimal
 from hashlib import sha1
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
+from django.core.validators import MinValueValidator
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -24,7 +25,7 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     ExtraItemRow = namedtuple('ExtraItemRow', ('label', 'amount',))
 
     cart = deferred.ForeignKey('BaseCart', related_name='items')
-    quantity = models.IntegerField()
+    quantity = models.IntegerField(validators=[MinValueValidator(0)])
     product = deferred.ForeignKey(BaseProduct)
 
     class Meta:
