@@ -4,8 +4,8 @@ from classytags.helpers import InclusionTag
 from classytags.core import Options
 from classytags.arguments import Argument
 
-from shop.util.cart import get_or_create_cart
-from shop.models.productmodel import Product
+from shop.models.cart import BaseCart
+from shop.models.product import BaseProduct
 
 from django.conf import settings
 
