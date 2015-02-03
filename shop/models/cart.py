@@ -70,7 +70,7 @@ class BaseCartVariableItem(BaseCartItem):
 
 
 class CartManager(models.Manager):
-    def get(self, request):
+    def get_from_request(self, request):
         """
         Return the cart for current visitor. The visitor is determined through the request object.
         If the visitor is logged in, find the cart through the user model. Otherwise use its
@@ -78,14 +78,14 @@ class CartManager(models.Manager):
         """
         if request.user.is_authenticated():
             try:
-                cart = super(CartManager, self).get(user=request.user)
+                cart = self.get(user=request.user)
             except self.model.DoesNotExist:
-                cart, _ = super(CartManager, self).get_or_create(user=request.user, session_key=request.session.session_key)
+                cart, _ = self.get_or_create(user=request.user, session_key=request.session.session_key)
         else:
             try:
-                cart = super(CartManager, self).get(session_key=request.session.session_key)
+                cart = self.get(session_key=request.session.session_key)
             except self.model.DoesNotExist:
-                cart, _ = super(CartManager, self).get_or_create(user=AnonymousUser, session_key=request.session.session_key)
+                cart, _ = self.get_or_create(user=AnonymousUser.id, session_key=request.session.session_key)
         return cart
 
 
