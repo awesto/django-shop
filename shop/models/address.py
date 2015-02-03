@@ -10,17 +10,17 @@ from . import deferred
 
 
 class BaseAddress(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
-    class Meta(object):
-        abstract = True
-        verbose_name = _("Address")
-        verbose_name_plural = _("Addresses")
-        ordering = ('priority_delivery', 'priority_invoice')
-
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     priority_delivery = models.SmallIntegerField(default=0,
         help_text=_("Priority of using this address for delivery"))
     priority_invoice = models.SmallIntegerField(default=0,
         help_text=_("Priority of using this address for invoicing"))
+
+    class Meta(object):
+        abstract = True
+        verbose_name = _("Address")
+        verbose_name_plural = _("Addresses")
+        ordering = ('priority_delivery', 'priority_invoice')
 
     def save(self, *args, **kwargs):
         return super(BaseAddress).save(*args, **kwargs)

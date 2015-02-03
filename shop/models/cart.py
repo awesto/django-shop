@@ -20,17 +20,17 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     This is a holder for the quantity of items in the cart and, obviously, a
     pointer to the actual Product being purchased :)
     """
-    class Meta:
-        abstract = True
-        verbose_name = _("Cart item")
-        verbose_name_plural = _("Cart items")
-
     # the inheriting class may override this and add additional values to this dataset
     ExtraItemRow = namedtuple('ExtraItemRow', ('label', 'amount',))
 
     cart = deferred.ForeignKey('BaseCart', related_name='items')
     quantity = models.IntegerField()
     product = deferred.ForeignKey(BaseProduct)
+
+    class Meta:
+        abstract = True
+        verbose_name = _("Cart item")
+        verbose_name_plural = _("Cart items")
 
     def __init__(self, *args, **kwargs):
         # That will hold extra fields to display to the user (ex. taxes, discount)
@@ -95,11 +95,6 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     Ideally it should be bound to a session and not to a User is we want to let
     people buy from our shop without having to register with us.
     """
-    class Meta:
-        abstract = True
-        verbose_name = _("Shopping Cart")
-        verbose_name_plural = _("Shopping Carts")
-
     # the inheriting class may override this and add additional values to this dataset
     ExtraRow = namedtuple('ExtraRow', ('label', 'amount',))
 
@@ -111,6 +106,11 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     # our CartManager determines the cart object from the request.
     objects = CartManager()
+
+    class Meta:
+        abstract = True
+        verbose_name = _("Shopping Cart")
+        verbose_name_plural = _("Shopping Carts")
 
     def __init__(self, *args, **kwargs):
         super(BaseCart, self).__init__(*args, **kwargs)

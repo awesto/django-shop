@@ -237,10 +237,6 @@ class OrderPayment(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     A class to hold basic payment information. Backends should define their own
     more complex payment types should they need to store more informtion
     """
-    class Meta:
-        verbose_name = _('Order payment')
-        verbose_name_plural = _('Order payments')
-
     order = deferred.ForeignKey(BaseOrder, verbose_name=_('Order'))
     # How much was paid with this particular transfer
     amount = CurrencyField(verbose_name=_('Amount'))
@@ -249,43 +245,42 @@ class OrderPayment(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     payment_method = models.CharField(max_length=255, verbose_name=_("Payment method"),
             help_text=_("The payment backend used to process the purchase"))
 
+    class Meta:
+        verbose_name = _('Order payment')
+        verbose_name_plural = _('Order payments')
+
 
 class BaseOrderExtraRow(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     This will make Cart-provided extra row fields persistent, since we want to "snapshot" their
     statuses at the time when the order was made.
     """
+    order = deferred.ForeignKey(BaseOrder, verbose_name=_("Order"))
+    label = models.CharField(max_length=255, verbose_name=_("Label"))
+    amount = CurrencyField(verbose_name=_("Amount"))
+
     class Meta:
         abstract = True
         verbose_name = _("Extra order row")
         verbose_name_plural = _("Extra order rows")
-
-    order = deferred.ForeignKey(BaseOrder, verbose_name=_("Order"))
-    label = models.CharField(max_length=255, verbose_name=_("Label"))
-    amount = CurrencyField(verbose_name=_("Amount"))
 
 
 class OrderAnnotation(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     A holder for extra textual information to attach to this order.
     """
+    order = deferred.ForeignKey(BaseOrder, related_name="extra_info", verbose_name=_("Order"))
+    text = models.TextField(verbose_name=_("Annotation text"), blank=True)
+
     class Meta:
         verbose_name = _("Order annotation")
         verbose_name_plural = _("Order annotations")
-
-    order = deferred.ForeignKey(BaseOrder, related_name="extra_info", verbose_name=_("Order"))
-    text = models.TextField(verbose_name=_("Annotation text"), blank=True)
 
 
 class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     An item for an order.
     """
-    class Meta:
-        abstract = True
-        verbose_name = _("Order item")
-        verbose_name_plural = _("Order items")
-
     order = deferred.ForeignKey(BaseOrder, related_name='items', verbose_name=_("Order"))
     product_reference = models.CharField(max_length=255, verbose_name=_("Product reference"))
     product_name = models.CharField(max_length=255, null=True, blank=True,
@@ -296,6 +291,11 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     quantity = models.IntegerField(verbose_name=_("Quantity"))
     line_subtotal = CurrencyField(verbose_name=_("Line subtotal"))
     line_total = CurrencyField(verbose_name=_("Line total"))
+
+    class Meta:
+        abstract = True
+        verbose_name = _("Order item")
+        verbose_name_plural = _("Order items")
 
     def save(self, *args, **kwargs):
         if not self.product_name and self.product:
@@ -308,11 +308,11 @@ class BaseItemExtraRow(with_metaclass(deferred.ForeignKeyBuilder, models.Model))
     This will make Cart-provided extra price fields persistent since we want
     to "snapshot" their statuses at the time when the order was made
     """
+    order_item = deferred.ForeignKey(BaseOrderItem, verbose_name=_("Order item"))
+    label = models.CharField(max_length=255, verbose_name=_("Label"))
+    amount = CurrencyField(verbose_name=_("Amount"))
+
     class Meta:
         abstract = True
         verbose_name = _('Extra order item price field')
         verbose_name_plural = _('Extra order item price fields')
-
-    order_item = deferred.ForeignKey(BaseOrderItem, verbose_name=_("Order item"))
-    label = models.CharField(max_length=255, verbose_name=_("Label"))
-    amount = CurrencyField(verbose_name=_("Amount"))
