@@ -198,11 +198,12 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         "purchase" button was pressed)
         """
         CartItemModel = getattr(BaseCartItem, 'MaterializedModel')
+        ProductModel = getattr(BaseProduct, 'MaterializedModel')
 
         # This is a ghetto "select_related" for polymorphic models.
         items = CartItemModel.objects.filter(cart=self).order_by('pk')
         product_ids = [item.product_id for item in items]
-        products = BaseProduct.objects.filter(pk__in=product_ids)
+        products = ProductModel.objects.filter(pk__in=product_ids)
         products_dict = dict([(p.pk, p) for p in products])
 
         self.extra_rows = []  # Reset list of ExtraRows
