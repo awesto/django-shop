@@ -81,12 +81,12 @@ class CartManager(models.Manager):
             try:
                 cart = self.get(user=request.user)
             except self.model.DoesNotExist:
-                cart, _ = self.get_or_create(user=request.user, session_key=request.session.session_key)
+                cart = self.create(user=request.user, session_key=request.session.session_key)
         else:
             try:
                 cart = self.get(session_key=request.session.session_key)
             except self.model.DoesNotExist:
-                cart, _ = self.get_or_create(user=AnonymousUser.id, session_key=request.session.session_key)
+                cart = self.create(user=AnonymousUser.id, session_key=request.session.session_key)
         return cart
 
 
