@@ -3,14 +3,11 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseBadRequest
 from django.shortcuts import redirect
-from rest_framework.generics import RetrieveUpdateDestroyAPIView
-from rest_framework.views import APIView
+from rest_framework import serializers, viewsets
 from rest_framework.response import Response
-from rest_framework import status
 from shop.forms import get_cart_item_formset
 from shop.models.cart import BaseCart, BaseCartItem
 from shop.models.product import BaseProduct
-from shop.serializers.cart import CartSerializer, CartItemSerializer
 from shop.views import ShopView, ShopTemplateResponseMixin
 
 
@@ -179,20 +176,37 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
         return self.render_to_response(context)
 
 
-class CartView(APIView):
-    def get(self, request, format=None):
-        cart = getattr(BaseCart, 'MaterializedModel').objects.get(request._request)
-        serializer = CartSerializer(cart)
-        return Response(serializer.data)
+class CartItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = getattr(BaseCartItem, 'MaterializedModel')
+        fields = ('id', 'quantity', 'product',)
 
-    def post(self, request, format=None):
-        serializer = SnippetSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    CartModel = getattr(BaseCart, 'MaterializedModel')
+    CartItemModel = getattr(BaseCartItem, 'MaterializedModel')
+
+    def create(self, validated_data):
+        validated_data['cart'] = self.CartModel.objects.get_from_request(self.context['request'])
+        cart_item = self.CartItemModel(**validated_data)
+        cart_item.save()
+        return cart_item
 
 
-class CartItemView(RetrieveUpdateDestroyAPIView):
-    queryset = getattr(BaseCartItem, 'MaterializedModel').objects.all()
+class CartViewSet(viewsets.ModelViewSet):
     serializer_class = CartItemSerializer
+    queryset = getattr(BaseCartItem, 'MaterializedModel').objects.all()
+
+    def get_queryset(self):
+        cart = getattr(BaseCart, 'MaterializedModel').objects.get_from_request(self.request)
+        cart_items = self.queryset.filter(cart=cart)
+        return cart_items
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        if serializer.validated_data['quantity'] == 0:
+            # when quantity drops to zero, remote the item from the cart
+            self.perform_destroy(instance)
+        return Response(serializer.data)
