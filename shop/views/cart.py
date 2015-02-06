@@ -4,12 +4,76 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseBadRequest
 from django.shortcuts import redirect
 from rest_framework import serializers, viewsets
-from rest_framework.response import Response
 from shop.forms import get_cart_item_formset
 from shop.models.cart import BaseCart, BaseCartItem
 from shop.models.product import BaseProduct
 from shop.views import ShopView, ShopTemplateResponseMixin
+from shop.serializers.product import BaseProductSerializer
 
+
+class CartItemSerializer(serializers.ModelSerializer):
+    details = BaseProductSerializer(source='product', read_only=True)
+    line_subtotal = serializers.CharField(read_only=True)
+    line_total = serializers.CharField(read_only=True)
+    current_total = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = getattr(BaseCartItem, 'MaterializedModel')
+        exclude = ('cart',)
+
+    CartModel = getattr(BaseCart, 'MaterializedModel')
+    CartItemModel = getattr(BaseCartItem, 'MaterializedModel')
+
+    def create(self, validated_data):
+        validated_data['cart'] = self.CartModel.objects.get_from_request(self.context['request'])
+        cart_item = self.CartItemModel(**validated_data)
+        cart_item.save()
+        return cart_item
+
+    def to_representation(self, cart_item):
+        if cart_item.is_dirty:
+            cart_item.update(self.context['request'])
+        representation = super(CartItemSerializer, self).to_representation(cart_item)
+        return representation
+
+
+class CartSerializer(serializers.ModelSerializer):
+    subtotal_price = serializers.CharField()
+    total_price = serializers.CharField()
+    items = CartItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = getattr(BaseCart, 'MaterializedModel')
+        fields = ('id', 'items', 'subtotal_price', 'total_price')
+
+    def to_representation(self, cart):
+        if cart.is_dirty:
+            cart.update(self.context['request'])
+        representation = super(CartSerializer, self).to_representation(cart)
+        return representation
+
+
+class CartViewSet(viewsets.ModelViewSet):
+    serializer_class = None  # CartSerializer
+    queryset = getattr(BaseCartItem, 'MaterializedModel').objects.all()
+
+    def get_queryset(self):
+        cart = getattr(BaseCart, 'MaterializedModel').objects.get_from_request(self.request)
+        if self.kwargs.get(self.lookup_field):
+            # we're interest only into cart items
+            return self.queryset.filter(cart=cart)
+        # otherwise the CartSerializer will list its items
+        return cart
+
+    def get_serializer(self, *args, **kwargs):
+        kwargs['context'] = self.get_serializer_context()
+        many = kwargs.pop('many', False)
+        if many:
+            return CartSerializer(*args, **kwargs)
+        return CartItemSerializer(*args, **kwargs)
+
+
+####### obsolete old classes #########
 
 class CartItemDetail(ShopView):
     """
@@ -174,39 +238,3 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
             return self.put_success()
         context.update({'formset': formset, })
         return self.render_to_response(context)
-
-
-class CartItemSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = getattr(BaseCartItem, 'MaterializedModel')
-        fields = ('id', 'quantity', 'product',)
-
-    CartModel = getattr(BaseCart, 'MaterializedModel')
-    CartItemModel = getattr(BaseCartItem, 'MaterializedModel')
-
-    def create(self, validated_data):
-        validated_data['cart'] = self.CartModel.objects.get_from_request(self.context['request'])
-        cart_item = self.CartItemModel(**validated_data)
-        cart_item.save()
-        return cart_item
-
-
-class CartViewSet(viewsets.ModelViewSet):
-    serializer_class = CartItemSerializer
-    queryset = getattr(BaseCartItem, 'MaterializedModel').objects.all()
-
-    def get_queryset(self):
-        cart = getattr(BaseCart, 'MaterializedModel').objects.get_from_request(self.request)
-        cart_items = self.queryset.filter(cart=cart)
-        return cart_items
-
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        if serializer.validated_data['quantity'] == 0:
-            # when quantity drops to zero, remote the item from the cart
-            self.perform_destroy(instance)
-        return Response(serializer.data)

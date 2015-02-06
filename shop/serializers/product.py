@@ -8,10 +8,13 @@ from rest_framework import status
 from shop.models.cart import BaseProduct
 
 
-class ProductSerializer(serializers.ModelSerializer):
+class BaseProductSerializer(serializers.ModelSerializer):
+    url = serializers.CharField(source='get_absolute_url', read_only=True)
+    #price = serializers.CharField(source='get_price', read_only=True)
+
     class Meta:
         model = getattr(BaseProduct, 'MaterializedModel')
-        fields = ('product_code', 'unit_price',)
+        fields = ('url',) + model.serialize_fields
 
 
 class JSONResponse(HttpResponse):
