@@ -19,7 +19,7 @@ from . import deferred
 class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     This is a holder for the quantity of items in the cart and, obviously, a
-    pointer to the actual Product being purchased :)
+    pointer to the actual Product being purchased
     """
     # the inheriting class may override this and add additional values to this dataset
     ExtraItemRow = namedtuple('ExtraItemRow', ('label', 'amount',))
@@ -37,29 +37,36 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         # That will hold extra fields to display to the user (ex. taxes, discount)
         super(BaseCartItem, self).__init__(*args, **kwargs)
         self.extra_item_rows = []  # list of ExtraItemRow
-        # These must not be stored, since their components can be changed
-        # between sessions / logins etc...
-        self.line_subtotal = Decimal('0.0')
-        self.line_total = Decimal('0.0')
-        self.current_total = Decimal('0.0')  # Used by cart modifiers
+        self._dirty = True
+
+    @property
+    def is_dirty(self):
+        return self._dirty
+
+    def save(self):
+        self._dirty = True
+        self.cart._dirty = True
 
     def update(self, request):
+        """
+        Loop over all registered cart modifier and change the price per item accordingly.
+        """
+        if not self._dirty:
+            return
         self.extra_item_rows = []  # Reset the price fields
-        self.line_subtotal = self.product.get_price() * self.quantity
+        self.line_subtotal = self.product.get_price(request) * self.quantity
         self.current_total = self.line_subtotal
 
         for modifier in cart_modifiers_pool.get_modifiers_list():
-            # We now loop over every registered price modifier,
-            # most of them will simply add a field to extra_payment_fields
             modifier.process_cart_item(self, request)
-
         self.line_total = self.current_total
-        return self.line_total
+        self._dirty = False
 
 
 class BaseCartVariableItem(BaseCartItem):
     """
-    This is an enriched implementation, in case your products allow variations.
+    Use this enriched implementation, in case a Product can be added to the cart in different
+    variations.
     """
     variation = JSONField(null=True, blank=True,
         verbose_name=_("Configured product variation"))
@@ -116,11 +123,86 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     def __init__(self, *args, **kwargs):
         super(BaseCart, self).__init__(*args, **kwargs)
         # That will hold things like tax totals or total discount
-        self.subtotal_price = Decimal('0.0')
-        self.total_price = Decimal('0.0')
-        self.current_total = Decimal('0.0')  # used by cart modifiers
+        #self.subtotal_price = Decimal('0.0')
+        #self.total_price = Decimal('0.0')
+        #self.current_total = Decimal('0.0')  # used by cart modifiers
         self.extra_rows = []  # list of ExtraRow
-        self._updated_cart_items = None
+        self._cached_cart_items = None
+        self._dirty = True
+
+    @property
+    def is_dirty(self):
+        return self._dirty
+
+    def save(self):
+        self._dirty = True
+
+    def update(self, request):
+        """
+        This should be called after a cart item changed quantity, has been added or removed.
+
+        It will loop on all line items in the cart, and call all the price
+        modifiers on each row.
+        After doing this, it will compute and update the order's total and
+        subtotal fields, along with any payment field added along the way by
+        modifiers.
+
+        Note that theses added fields are not stored - we actually want to
+        reflect rebate and tax changes on the *cart* items, but we don't want
+        that for the order items (since they are legally binding after the
+        "purchase" button was pressed)
+        """
+        if not self._dirty:
+            return
+
+        CartItemModel = getattr(BaseCartItem, 'MaterializedModel')
+        ProductModel = getattr(BaseProduct, 'MaterializedModel')
+
+        # This is a ghetto "select_related" for polymorphic models.
+        items = CartItemModel.objects.filter(cart=self).order_by('pk')
+        product_ids = [item.product_id for item in items]
+        products = ProductModel.objects.filter(pk__in=product_ids)
+        products_dict = dict([(p.pk, p) for p in products])
+
+        self.extra_rows = []  # Reset list of ExtraRows
+        self.subtotal_price = Decimal('0.0')  # Reset the subtotal
+
+        # The request object holds extra information in a dict named 'cart_modifier_state'.
+        # Cart modifiers can use this dict to pass arbitrary data from and to each other.
+        if not hasattr(request, 'cart_modifier_state'):
+            setattr(request, 'cart_modifier_state', {})
+
+        # This calls all the pre_process_cart methods (if any), before the cart
+        # is processed. This allows for data collection on the cart for
+        # example)
+        for modifier in cart_modifiers_pool.get_modifiers_list():
+            modifier.pre_process_cart(self, request)
+
+        for item in items:  # For each CartItem (order line)...
+            # This is still the ghetto select_related
+            item.update(request)
+            item.product = products_dict[item.product_id]
+            self.subtotal_price += item.line_total
+
+        self.current_total = self.subtotal_price
+        # Now we have to iterate over the registered modifiers again
+        # (unfortunately) to pass them the whole Order this time
+        for modifier in cart_modifiers_pool.get_modifiers_list():
+            modifier.process_cart(self, request)
+
+        self.total_price = self.current_total
+
+        # This calls the post_process_cart method from cart modifiers, if any.
+        # It allows for a last bit of processing on the "finished" cart, before
+        # it is displayed
+        for modifier in cart_modifiers_pool.get_modifiers_list():
+            modifier.post_process_cart(self, request)
+
+        # Cache updated cart items
+        self._cached_cart_items = items
+        self._dirty = False
+
+    ####### old obsolete methods #######
 
     def add_product(self, product, quantity=1, variation=None):
         """
@@ -182,67 +264,6 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         assert self._updated_cart_items is not None, ('Cart needs to be '
             'updated before calling get_updated_cart_items.')
         return self._updated_cart_items
-
-    def update(self, request):
-        """
-        This should be called whenever anything is changed in the cart (added
-        or removed).
-
-        It will loop on all line items in the cart, and call all the price
-        modifiers on each row.
-        After doing this, it will compute and update the order's total and
-        subtotal fields, along with any payment field added along the way by
-        modifiers.
-
-        Note that theses added fields are not stored - we actually want to
-        reflect rebate and tax changes on the *cart* items, but we don't want
-        that for the order items (since they are legally binding after the
-        "purchase" button was pressed)
-        """
-        CartItemModel = getattr(BaseCartItem, 'MaterializedModel')
-        ProductModel = getattr(BaseProduct, 'MaterializedModel')
-
-        # This is a ghetto "select_related" for polymorphic models.
-        items = CartItemModel.objects.filter(cart=self).order_by('pk')
-        product_ids = [item.product_id for item in items]
-        products = ProductModel.objects.filter(pk__in=product_ids)
-        products_dict = dict([(p.pk, p) for p in products])
-
-        self.extra_rows = []  # Reset list of ExtraRows
-        self.subtotal_price = Decimal('0.0')  # Reset the subtotal
-
-        # The request object holds extra information in a dict named 'cart_modifier_state'.
-        # Cart modifiers can use this dict to pass arbitrary data from and to each other.
-        if not hasattr(request, 'cart_modifier_state'):
-            setattr(request, 'cart_modifier_state', {})
-
-        # This calls all the pre_process_cart methods (if any), before the cart
-        # is processed. This allows for data collection on the cart for
-        # example)
-        for modifier in cart_modifiers_pool.get_modifiers_list():
-            modifier.pre_process_cart(self, request)
-
-        for item in items:  # For each CartItem (order line)...
-            # This is still the ghetto select_related
-            item.product = products_dict[item.product_id]
-            self.subtotal_price = self.subtotal_price + item.update(request)
-
-        self.current_total = self.subtotal_price
-        # Now we have to iterate over the registered modifiers again
-        # (unfortunately) to pass them the whole Order this time
-        for modifier in cart_modifiers_pool.get_modifiers_list():
-            modifier.process_cart(self, request)
-
-        self.total_price = self.current_total
-
-        # This calls the post_process_cart method from cart modifiers, if any.
-        # It allows for a last bit of processing on the "finished" cart, before
-        # it is displayed
-        for modifier in cart_modifiers_pool.get_modifiers_list():
-            modifier.post_process_cart(self, request)
-
-        # Cache updated cart items
-        self._updated_cart_items = items
 
     def empty(self):
         """
