@@ -26,3 +26,15 @@ Therefore don't try to upgrade. Install this version of **django-shop** and migr
   based carts and database carts. Carts for anonymous users are retrieved using the visitor's
   session_key. Therefore we don't need any utility function ``get_or_create_cart`` anymore.
   Everything is handled by the new CartManager.
+* If the quantity of a cart item drops to zero, this items is not automatically removed from the
+  cart. There are plenty of reasons, why it can make sense to have a quantity of zero. For instance,
+  then the cart may function as a wish-list.
+
+
+
+
+Some ideas
+----------
+Volatile data in the cart and the cart items, such as sub- and line-totals, as computed by the Cart
+Modifiers, is cached with the model objects. This knowledge of course is lost with each new request.
+Therefore it would be better to keep it inside the Django cache.
