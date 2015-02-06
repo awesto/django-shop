@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from django.conf import settings
 from django.core import exceptions
 from django.utils.importlib import import_module
@@ -40,7 +40,7 @@ class CartModifiersPool(object):
             except AttributeError:
                 raise exceptions.ImproperlyConfigured(
                     'Price modifier module "%s" does not define a "%s" class' %
-                        (mod_module, mod_classname))
+                    (mod_module, mod_classname))
             mod_instance = mod_class()
             result.append(mod_instance)
 
