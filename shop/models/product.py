@@ -133,3 +133,8 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         Hook for returning the availability of a product.
         """
         return True
+
+
+class ProductNotAvailable(Exception):
+    def __init__(self, product):
+        super(ProductNotAvailable, self).__init__("Product '%s' is not available for being added to the cart." % product.get_name())

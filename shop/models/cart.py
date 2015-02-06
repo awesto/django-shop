@@ -12,8 +12,35 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from jsonfield.fields import JSONField
 from shop.cart.modifiers_pool import cart_modifiers_pool
-from .product import BaseProduct
+from .product import BaseProduct, ProductNotAvailable
 from . import deferred
+
+
+class CartItemManager(models.Manager):
+    """
+    Customized model manager for our CartItem model.
+    """
+    def get_or_create(self, **kwargs):
+        """
+        Create a unique cart item. If the same product exists already in the given cart,
+        augment its quantity.
+        """
+        cart = kwargs.pop('cart')
+        product = kwargs.pop('product')
+        quantity = int(kwargs.pop('quantity'))
+        if not product.is_available:
+            raise ProductNotAvailable(product)
+        try:
+            cart_item = self.model.objects.get(cart=cart, product=product)
+            cart_item.quantity += quantity
+            created = False
+        except self.model.DoesNotExist:
+            cart_item = self.model(cart=cart, product=product, quantity=quantity)
+            created = True
+        for key, attr in kwargs.items():
+            setattr(cart_item, key, attr)
+        cart_item.save()
+        return cart_item, created
 
 
 class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
@@ -27,6 +54,8 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     cart = deferred.ForeignKey('BaseCart', related_name='items')
     quantity = models.IntegerField(validators=[MinValueValidator(0)])
     product = deferred.ForeignKey(BaseProduct)
+
+    objects = CartItemManager()
 
     class Meta:
         abstract = True
@@ -43,7 +72,8 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     def is_dirty(self):
         return self._dirty
 
-    def save(self):
+    def save(self, *args, **kwargs):
+        super(BaseCartItem, self).save(*args, **kwargs)
         self._dirty = True
         self.cart._dirty = True
 
@@ -63,6 +93,32 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         self._dirty = False
 
 
+class CartVariableItemManager(models.Manager):
+    """
+    Customized model manager for our CartVariableItem model.
+    """
+    def get_or_create(self, **kwargs):
+        # TODO: there is too much code diplication here
+        cart = kwargs.pop('cart')
+        product = kwargs.pop('product')
+        quantity = int(kwargs.pop('quantity'))
+        variation = kwargs.pop('variation', None)
+        variation_hash = variation and sha1(json.dumps(variation, cls=DjangoJSONEncoder, sort_keys=True)).hexdigest()
+        if not product.is_available:
+            raise ProductNotAvailable(product)
+        try:
+            cart_item = self.model.objects.get(cart=cart, product=product, variation_hash=variation_hash)
+            cart_item.quantity += quantity
+            created = False
+        except self.model.DoesNotExist:
+            cart_item = self.model(cart=cart, product=product, variation_hash=variation_hash, quantity=quantity)
+            created = True
+        for key, attr in kwargs.items():
+            setattr(cart_item, key, attr)
+        cart_item.save()
+        return cart_item, created
+
+
 class BaseCartVariableItem(BaseCartItem):
     """
     Use this enriched implementation, in case a Product can be added to the cart in different
@@ -72,6 +128,8 @@ class BaseCartVariableItem(BaseCartItem):
         verbose_name=_("Configured product variation"))
     variation_hash = models.CharField(max_length=64, null=True,
         verbose_name=_("A hash for the above variation"))
+
+    objects = CartVariableItemManager()
 
     class Meta:
         abstract = True
@@ -134,7 +192,8 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     def is_dirty(self):
         return self._dirty
 
-    def save(self):
+    def save(self, *args, **kwargs):
+        super(BaseCart, self).save(*args, **kwargs)
         self._dirty = True
 
     def update(self, request):
@@ -202,6 +261,25 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         self._cached_cart_items = items
         self._dirty = False
 
+    def empty(self):
+        """
+        Remove all cart items
+        """
+        if self.pk:
+            self.items.all().delete()
+            self.delete()
+
+    @property
+    def total_quantity(self):
+        """
+        Returns the total quantity of all items in the cart.
+        """
+        return sum([ci.quantity for ci in self.items.all()])
+
+    @property
+    def is_empty(self):
+        return self.total_quantity == 0
+
     ####### old obsolete methods #######
 
     def add_product(self, product, quantity=1, variation=None):
@@ -264,22 +342,3 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         assert self._updated_cart_items is not None, ('Cart needs to be '
             'updated before calling get_updated_cart_items.')
         return self._updated_cart_items
-
-    def empty(self):
-        """
-        Remove all cart items
-        """
-        if self.pk:
-            self.items.all().delete()
-            self.delete()
-
-    @property
-    def total_quantity(self):
-        """
-        Returns the total quantity of all items in the cart.
-        """
-        return sum([ci.quantity for ci in self.items.all()])
-
-    @property
-    def is_empty(self):
-        return self.total_quantity == 0
