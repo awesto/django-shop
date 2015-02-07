@@ -23,13 +23,21 @@ class CartItemManager(models.Manager):
     def get_or_create(self, **kwargs):
         """
         Create a unique cart item. If the same product exists already in the given cart,
-        augment its quantity.
+        augment its quantity, if the product in the cart seems to be the same.
         """
         cart = kwargs.pop('cart')
         product = kwargs.pop('product')
-        quantity = int(kwargs.pop('quantity'))
         if not product.is_available:
             raise ProductNotAvailable(product)
+        surplus = dict(**kwargs)
+        cart_item, created = self._get_or_create_item(cart, product, surplus)
+        for key, attr in surplus.items():
+            setattr(cart_item, key, attr)
+        cart_item.save()
+        return cart_item, created
+
+    def _get_or_create_item(self, cart, product, surplus):
+        quantity = int(surplus.pop('quantity'))
         try:
             cart_item = self.model.objects.get(cart=cart, product=product)
             cart_item.quantity += quantity
@@ -37,9 +45,6 @@ class CartItemManager(models.Manager):
         except self.model.DoesNotExist:
             cart_item = self.model(cart=cart, product=product, quantity=quantity)
             created = True
-        for key, attr in kwargs.items():
-            setattr(cart_item, key, attr)
-        cart_item.save()
         return cart_item, created
 
 
@@ -93,19 +98,14 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         self._dirty = False
 
 
-class CartVariableItemManager(models.Manager):
+class CartVariableItemManager(CartItemManager):
     """
     Customized model manager for our CartVariableItem model.
     """
-    def get_or_create(self, **kwargs):
-        # TODO: there is too much code diplication here
-        cart = kwargs.pop('cart')
-        product = kwargs.pop('product')
-        quantity = int(kwargs.pop('quantity'))
-        variation = kwargs.pop('variation', None)
+    def _get_or_create_item(self, cart, product, surplus):
+        quantity = int(surplus.pop('quantity'))
+        variation = surplus.pop('variation', None)
         variation_hash = variation and sha1(json.dumps(variation, cls=DjangoJSONEncoder, sort_keys=True)).hexdigest()
-        if not product.is_available:
-            raise ProductNotAvailable(product)
         try:
             cart_item = self.model.objects.get(cart=cart, product=product, variation_hash=variation_hash)
             cart_item.quantity += quantity
@@ -113,9 +113,6 @@ class CartVariableItemManager(models.Manager):
         except self.model.DoesNotExist:
             cart_item = self.model(cart=cart, product=product, variation_hash=variation_hash, quantity=quantity)
             created = True
-        for key, attr in kwargs.items():
-            setattr(cart_item, key, attr)
-        cart_item.save()
         return cart_item, created
 
 
