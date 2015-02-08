@@ -9,12 +9,11 @@ from shop.models.cart import BaseProduct
 
 
 class BaseProductSerializer(serializers.ModelSerializer):
-    url = serializers.CharField(source='get_absolute_url', read_only=True)
-    #price = serializers.CharField(source='get_price', read_only=True)
+    product_url = serializers.CharField(source='get_absolute_url', read_only=True)
 
     class Meta:
         model = getattr(BaseProduct, 'MaterializedModel')
-        fields = ('url',) + model.serialize_fields
+        fields = ('product_url',) + model.serialize_fields
 
 
 class JSONResponse(HttpResponse):

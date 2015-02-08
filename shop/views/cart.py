@@ -12,14 +12,15 @@ from shop.serializers.product import BaseProductSerializer
 
 
 class CartItemSerializer(serializers.ModelSerializer):
-    details = BaseProductSerializer(source='product', read_only=True)
+    cart_item = serializers.HyperlinkedIdentityField(lookup_field='pk', view_name='shop-api:cart-detail')
     line_subtotal = serializers.CharField(read_only=True)
     line_total = serializers.CharField(read_only=True)
     current_total = serializers.CharField(read_only=True)
+    details = BaseProductSerializer(source='product', read_only=True)
 
     class Meta:
         model = getattr(BaseCartItem, 'MaterializedModel')
-        exclude = ('cart',)
+        exclude = ('cart', 'id',)
 
     CartModel = getattr(BaseCart, 'MaterializedModel')
     CartItemModel = getattr(BaseCartItem, 'MaterializedModel')
@@ -44,7 +45,7 @@ class CartSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = getattr(BaseCart, 'MaterializedModel')
-        fields = ('id', 'items', 'subtotal_price', 'total_price')
+        fields = ('items', 'subtotal_price', 'total_price',)
 
     def to_representation(self, cart):
         if cart.is_dirty:
