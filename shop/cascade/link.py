@@ -14,20 +14,21 @@ from shop.models.product import BaseProduct
 
 class TextLinkFormBase(TextLinkForm):
     """
-    Alternative implementation of ``cmsplugin_cascade.TextLinkForm`` to be used with the modified
-    implementation of ``cmsplugin_cascade.TextLinkPlugin``.
-    In this form class the field ``product`` is missing. It is added later, when the shop's Product
-    knows about its MaterializedModel.
+    Alternative implementation of ``cmsplugin_cascade.TextLinkForm``, which allows to link onto
+    the Product model, using its method ``get_absolute_url``.
+
+    Note: In this form class the field ``product`` is missing. It is added later, when the shop's
+    Product knows about its MaterializedModel.
     """
     LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")), ('product', _("Product")),
                          ('exturl', _("External URL")), ('email', _("Mail To")),)
 
     def clean_product(self):
         if self.cleaned_data.get('link_type') == 'product':
-            model = '{0}.{1}'.format(self.ProductModel.__module__.split('.')[0], self.ProductModel.__name__)
+            app = self.ProductModel.__module__.split('.')[0]
             self.cleaned_data['link_data'] = {
                 'type': 'product',
-                'model': model,
+                'model': '{0}.{1}'.format(app, self.ProductModel.__name__),
                 'pk': self.cleaned_data['product'] and self.cleaned_data['product'].pk or None,
             }
 
