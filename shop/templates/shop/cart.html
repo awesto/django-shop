@@ -2,20 +2,10 @@
 
 {% verbatim %}
 <script id="template/shop/cart.html" type="text/ng-template">
-<div>
-	<div ng-repeat="item in cart.items"><p>{{ item.details.product_code }}</p></div>
-</div>
-</script>
-
-<script id="template/shop/cart-bak.html" type="text/ng-template">
-<div>
-	<shop-cart-item ng-repeat="item in cart.items" ng-style="item.style" ng-include src="item.template_url">
-	</shop-cart-item>
-</div>
+	<shop-cart-item ng-repeat="item in cart.items" ></shop-cart-item>
 </script>
 
 <script id="template/shop/cart-item.html" type="text/ng-template">
-	<h1>A cart item</h1>
-	<p>{{ item.details.product_code }}</p>
+	<ng-include src="item.url + 'render-item-template'"></ng-include>
 </script>
 {% endverbatim %}

@@ -23,7 +23,6 @@ djangoShopModule.directive('shopCart', function() {
 	return {
 		restrict: 'EA',
 		templateUrl: 'template/shop/cart.html',
-		replace: true,
 		controller: 'CartController',
 		link: function(scope, element, attrs, cartCtrl) {
 			cartCtrl.loadCart();
@@ -35,12 +34,7 @@ djangoShopModule.directive('shopCartItem', function() {
 	return {
 		require: '^shopCart',
 		restrict: 'EA',
-		templateUrl: 'template/shop/cart-item.html',
-		/*
-		link: function(scope, element, attrs) {
-			console.log('cart item');
-		}
-		*/
+		templateUrl: 'template/shop/cart-item.html'
 	};
 });
 

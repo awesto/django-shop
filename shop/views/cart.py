@@ -2,8 +2,10 @@
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseBadRequest
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render_to_response
+from django.template import RequestContext
 from rest_framework import serializers, viewsets
+from rest_framework.decorators import detail_route
 from shop.forms import get_cart_item_formset
 from shop.models.cart import BaseCart, BaseCartItem
 from shop.models.product import BaseProduct
@@ -12,7 +14,7 @@ from shop.serializers.product import BaseProductSerializer
 
 
 class CartItemSerializer(serializers.ModelSerializer):
-    cart_item = serializers.HyperlinkedIdentityField(lookup_field='pk', view_name='shop-api:cart-detail')
+    url = serializers.HyperlinkedIdentityField(lookup_field='pk', view_name='shop-api:cart-detail')
     line_subtotal = serializers.CharField(read_only=True)
     line_total = serializers.CharField(read_only=True)
     current_total = serializers.CharField(read_only=True)
@@ -55,15 +57,15 @@ class CartSerializer(serializers.ModelSerializer):
 
 
 class CartViewSet(viewsets.ModelViewSet):
-    serializer_class = None  # CartSerializer
+    serializer_class = None  # otherwise DRF complains
     queryset = getattr(BaseCartItem, 'MaterializedModel').objects.all()
 
     def get_queryset(self):
         cart = getattr(BaseCart, 'MaterializedModel').objects.get_from_request(self.request)
         if self.kwargs.get(self.lookup_field):
-            # we're interest only into cart items
+            # we're interest only into a certain cart item
             return self.queryset.filter(cart=cart)
-        # otherwise the CartSerializer will list its items
+        # otherwise the CartSerializer will list all its items
         return cart
 
     def get_serializer(self, *args, **kwargs):
@@ -72,6 +74,17 @@ class CartViewSet(viewsets.ModelViewSet):
         if many:
             return CartSerializer(*args, **kwargs)
         return CartItemSerializer(*args, **kwargs)
+
+    @detail_route(url_path='render-item-template')
+    def render_item_template(self, request, pk=None, **kwargs):
+        """
+        Return the AngularJS template to render the cart item for this product type.
+        """
+        cart_item = self.get_object()
+        product = getattr(BaseProduct, 'MaterializedModel').objects.get(pk=cart_item.product_id)
+        template = product.get_cart_item_template()
+        context = RequestContext(request, {'cart_item': cart_item, 'product': product})
+        return render_to_response(template, context)
 
 
 ####### obsolete old classes #########

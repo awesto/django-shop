@@ -86,7 +86,9 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
     """
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
+
     objects = PolymorphicManager()
+    cart_item_template = 'shop/cart-item.html'
 
     class Meta:
         abstract = True
@@ -126,6 +128,12 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         Hook for returning the current price of this product.
         """
         raise NotImplementedError('Method get_price() must be implemented by subclass: {0}'.format(self.__class__.__name__))
+
+    def get_cart_item_template(self):
+        """
+        Hook for returning the AngularJS template to render the cart item for this product.
+        """
+        return self.cart_item_template
 
     @property
     def is_available(self):
