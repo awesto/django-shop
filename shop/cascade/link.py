@@ -25,10 +25,10 @@ class TextLinkFormBase(TextLinkForm):
 
     def clean_product(self):
         if self.cleaned_data.get('link_type') == 'product':
-            app = self.ProductModel.__module__.split('.')[0]
+            app_label = self.ProductModel._meta.app_label
             self.cleaned_data['link_data'] = {
                 'type': 'product',
-                'model': '{0}.{1}'.format(app, self.ProductModel.__name__),
+                'model': '{0}.{1}'.format(app_label, self.ProductModel.__name__),
                 'pk': self.cleaned_data['product'] and self.cleaned_data['product'].pk or None,
             }
 
