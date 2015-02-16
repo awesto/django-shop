@@ -79,16 +79,24 @@ class PolymorphicProductMetaclass(PolymorphicModelBase):
 @python_2_unicode_compatible
 class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicModel)):
     """
-    A basic product for the shop.
+    An abstract basic product model for the shop. It is intended to be overridden by one or
+    more polymorphic models, adding all the fields and relations, required to describe this
+    type of product.
 
-    Most of the already existing fields here should be generic enough to reside
-    on the "base model" and not on an added property.
+    Some attributes for this class are mandatory. They can either be implemented as class element,
+    or as property method. The following fields MUST be implemented by the inheriting class:
+    `name`: Return the pronounced name for this product in its localized language.
+    `identifier`: Return a language independent unique identifier of this product,
+                  for instance an article number.
+
+    Additionally the inheriting class MUST implement the following methods `get_absolute_url()`
+    and `get_price()`. See below for details.
     """
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
 
     objects = PolymorphicManager()
-    cart_item_template = 'shop/cart-item.html'
+    cart_summary_template = 'shop/cart-product-summary.html'
 
     class Meta:
         abstract = True

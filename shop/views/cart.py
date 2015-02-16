@@ -78,13 +78,14 @@ class CartViewSet(viewsets.ModelViewSet):
             return CartSerializer(*args, **kwargs)
         return CartItemSerializer(*args, **kwargs)
 
-    @detail_route(url_path='render-item-template')
-    def render_item_template(self, request, pk=None, **kwargs):
+    @detail_route(url_path='render-product-summary')
+    def render_product_summary(self, request, pk=None, **kwargs):
         """
-        Return the AngularJS template to render the cart item for this product type.
+        Returns a summary of the product, to be rendered as item in the cart.
         """
         cart_item = self.get_object()
         product = getattr(BaseProduct, 'MaterializedModel').objects.get(pk=cart_item.product_id)
-        template = product.get_cart_item_template()
+        product.price = product.get_price(request)
+        product.availability = product.get_availability(request)
         context = RequestContext(request, {'cart_item': cart_item, 'product': product})
-        return render_to_response(template, context)
+        return render_to_response(product.cart_summary_template, context)

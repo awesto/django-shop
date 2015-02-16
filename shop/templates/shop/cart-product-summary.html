@@ -1,5 +1,18 @@
-
-{% verbatim %}
-<h1>Default cart item</h1>
-<p>{{ item.details.product_code }}</p>
-{% endverbatim %}
+{% load i18n %}
+<div class="media">
+	<div class="media-left">
+		<a href="#">
+			<img class="media-object" src="http://icons.iconarchive.com/icons/custom-icon-design/flatastic-2/72/product-icon.png" style="width: 72px; height: 72px;">
+		</a>
+	</div>
+	<div class="media-body">
+		<h4 class="media-heading"><a href="#">{{ product.name }}</a></h4>
+		<h5 class="media-heading">{% trans "Art-No.:" %} <a href="#">{{ product.identifier }}</a></h5>
+		<span>{% trans "Status:" %}</span>
+		{% if product.availability %}
+		<span class="text-success"><strong>In Stock</strong></span>
+		{% else %}
+		<span class="text-warn"><strong>In Stock</strong></span>
+		{% endif %}
+	</div>
+</div>
