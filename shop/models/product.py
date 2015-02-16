@@ -96,7 +96,7 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         verbose_name_plural = _("Products")
 
     def __str__(self):
-        return force_text(self.get_name())
+        return force_text(self.name)
 
     def product_type(self):
         """
@@ -107,21 +107,9 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
 
     def get_absolute_url(self):
         """
-        Hook for returning the canonical URL of this product.
+        Hook for returning the canonical Django URL of this product.
         """
         raise NotImplementedError('Method get_absolute_url() must be implemented by subclass: {0}'.format(self.__class__.__name__))
-
-    def get_name(self):
-        """
-        Hook for returning the spoken name of this product.
-        """
-        raise NotImplementedError('Method get_name() must be implemented by subclass: {0}'.format(self.__class__.__name__))
-
-    def get_reference(self):
-        """
-        Hook for returning the unique reference of this product.
-        """
-        raise NotImplementedError('Method get_reference() must be implemented by subclass: {0}'.format(self.__class__.__name__))
 
     def get_price(self, request):
         """
@@ -129,14 +117,7 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         """
         raise NotImplementedError('Method get_price() must be implemented by subclass: {0}'.format(self.__class__.__name__))
 
-    def get_cart_item_template(self):
-        """
-        Hook for returning the AngularJS template to render the cart item for this product.
-        """
-        return self.cart_item_template
-
-    @property
-    def is_available(self):
+    def get_availability(self, request):
         """
         Hook for returning the availability of a product.
         """
