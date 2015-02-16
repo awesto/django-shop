@@ -25,6 +25,11 @@ class CartItemSerializer(serializers.ModelSerializer):
     CartModel = getattr(BaseCart, 'MaterializedModel')
     CartItemModel = getattr(BaseCartItem, 'MaterializedModel')
 
+    def validate_product(self, product):
+        if not product.get_availability(self.context['request']):
+            raise serializers.ValidationError("Product '{0}' can not be added to the cart.".format(product))
+        return product
+
     def create(self, validated_data):
         validated_data['cart'] = self.CartModel.objects.get_from_request(self.context['request'])
         cart_item, _ = self.CartItemModel.objects.get_or_create(**validated_data)

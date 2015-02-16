@@ -12,7 +12,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from jsonfield.fields import JSONField
 from shop.cart.modifiers_pool import cart_modifiers_pool
-from .product import BaseProduct, ProductNotAvailable
+from .product import BaseProduct
 from . import deferred
 
 
@@ -27,8 +27,6 @@ class CartItemManager(models.Manager):
         """
         cart = kwargs.pop('cart')
         product = kwargs.pop('product')
-        if not product.is_available:
-            raise ProductNotAvailable(product)
         surplus = dict(**kwargs)
         cart_item, created = self._get_or_create_item(cart, product, surplus)
         for key, attr in surplus.items():
