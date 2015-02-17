@@ -92,3 +92,8 @@ class CartViewSet(viewsets.ModelViewSet):
         product.availability = product.get_availability(request)
         context = RequestContext(request, {'cart_item': cart_item, 'product': product})
         return render_to_response(product.cart_summary_template, context)
+
+    def finalize_response(self, request, response, *args, **kwargs):
+        if self.action != 'render_product_summary':
+            add_never_cache_headers(response)
+        return super(CartViewSet, self).finalize_response(request, response, *args, **kwargs)
