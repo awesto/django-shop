@@ -8,6 +8,9 @@ from shop.models.cart import BaseCart, BaseCartItem
 from shop.models.product import BaseProduct
 from shop.serializers.product import BaseProductSerializer
 
+CartModel = getattr(BaseCart, 'MaterializedModel')
+CartItemModel = getattr(BaseCartItem, 'MaterializedModel')
+
 
 class CartItemSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(lookup_field='pk', view_name='shop-api:cart-detail')
@@ -17,11 +20,9 @@ class CartItemSerializer(serializers.ModelSerializer):
     details = BaseProductSerializer(source='product', read_only=True)
 
     class Meta:
-        model = getattr(BaseCartItem, 'MaterializedModel')
+        model = CartItemModel
         exclude = ('cart', 'id',)
 
-    CartModel = getattr(BaseCart, 'MaterializedModel')
-    CartItemModel = getattr(BaseCartItem, 'MaterializedModel')
 
     def validate_product(self, product):
         if not product.get_availability(self.context['request']):
