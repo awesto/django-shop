@@ -54,7 +54,7 @@ class CartSerializer(serializers.ModelSerializer):
         if cart.is_dirty:
             cart.update(self.context['request'])
         if 'digest' in self.context['request'].query_params:
-            # by settings `CartItemSerializer.write_only` to True, we can skip the list serialization
+            # by settings `CartItemSerializer.write_only` to True, we skip the list serialization
             self.fields['items'].write_only = True
         representation = super(CartSerializer, self).to_representation(cart)
         return representation
@@ -67,8 +67,8 @@ class CartViewSet(viewsets.ModelViewSet):
         cart = CartModel.objects.get_from_request(self.request)
         if self.kwargs.get(self.lookup_field):
             # we're interest only into a certain cart item
-        # otherwise the CartSerializer will list all its items
             return CartItemModel.objects.filter(cart=cart)
+        # otherwise the CartSerializer will show its detail and list all its items
         return cart
 
     def get_serializer(self, *args, **kwargs):
