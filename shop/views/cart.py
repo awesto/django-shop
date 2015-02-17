@@ -47,7 +47,7 @@ class CartSerializer(serializers.ModelSerializer):
     items = CartItemSerializer(many=True, read_only=True)
 
     class Meta:
-        model = getattr(BaseCart, 'MaterializedModel')
+        model = CartModel
         fields = ('items', 'subtotal_price', 'total_price',)
 
     def to_representation(self, cart):
@@ -65,7 +65,7 @@ class CartViewSet(viewsets.ModelViewSet):
     queryset = getattr(BaseCartItem, 'MaterializedModel').objects.all()
 
     def get_queryset(self):
-        cart = getattr(BaseCart, 'MaterializedModel').objects.get_from_request(self.request)
+        cart = CartModel.objects.get_from_request(self.request)
         if self.kwargs.get(self.lookup_field):
             # we're interest only into a certain cart item
             return self.queryset.filter(cart=cart)
