@@ -1,11 +1,75 @@
-<shop-cart></shop-cart>
 
-{% verbatim %}
-<script id="template/shop/cart.html" type="text/ng-template">
-	<shop-cart-item ng-repeat="item in cart.items" ></shop-cart-item>
+<table shop-cart class="table table-hover">
+	<!-- content is rendered via template "shop/cart.html" -->
+</table>
+
+<script id="shop/cart.html" type="text/ng-template">
+	<thead>
+		<tr>
+			<th class="col-sm-8 col-md-6">Product</th>
+			<th class="col-sm-1 col-md-1 text-center">Quantity</th>
+			<th class="col-sm-1 col-md-1 text-center">Price</th>
+			<th class="col-sm-1 col-md-1 text-center">Total</th>
+			<th class="col-sm-1 col-md-1"></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr shop-cart-item ng-repeat="cart_item in cart.items">
+			<!-- content is rendered via template "shop/cart-item.html" -->
+		</tr>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td></td>
+			<td colspan="2"><h5>Subtotal</h5></td>
+			<td class="text-center"><h5><strong>$24.59</strong></h5></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td colspan="3"></td>
+			<td><h5>Estimated shipping</h5></td>
+			<td class="text-right"><h5><strong>$6.94</strong></h5></td>
+		</tr>
+		<tr>
+			<td> </td>
+			<td> </td>
+			<td> </td>
+			<td><h3>Total</h3></td>
+			<td class="text-right"><h3><strong>$31.53</strong></h3></td>
+		</tr>
+		<tr>
+			<td> </td>
+			<td> </td>
+			<td> </td>
+			<td>
+					<button type="button" class="btn btn-default">
+							<span class="glyphicon glyphicon-shopping-cart"></span> Continue Shopping
+					</button>
+			</td>
+			<td>
+					<button type="button" class="btn btn-success">
+							Checkout <span class="glyphicon glyphicon-play"></span>
+					</button>
+			</td>
+		</tr>
+	</tfoot>
 </script>
 
-<script id="template/shop/cart-item.html" type="text/ng-template">
-	<ng-include src="item.url + 'render-item-template'"></ng-include>
+<script id="shop/cart-item.html" type="text/ng-template">
+	<td ng-include src="cart_item.url + 'render-product-summary'">
+		<!-- content is rendered via products template "" -->
+	</td>
+	<td class="text-center">
+		<input type="number" class="form-control" min="1" ng-model="cart_item.quantity" ng-change="updateCartItem(cart_item)">
+	</td>
+	<td class="text-center"><strong ng-bind="cart_item.details.price"></strong></td>
+	<td class="text-center"><strong ng-bind="cart_item.line_total"></strong></td>
+	<td>
+		<button type="button" class="btn btn-sm btn-danger btn-block" ng-click="deleteCartItem(cart_item)">
+			<span class="glyphicon glyphicon-remove-circle"></span> Remove
+		</button>
+		<button type="button" class="btn btn-sm btn-info btn-block" ng-click="watchCartItem(cart_item)">
+			<span class="glyphicon glyphicon-ok-circle"></span> Watch
+		</button>
+	</td>
 </script>
-{% endverbatim %}
