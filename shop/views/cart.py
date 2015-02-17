@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.db import models
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.cache import add_never_cache_headers
@@ -12,6 +13,20 @@ CartModel = getattr(BaseCart, 'MaterializedModel')
 CartItemModel = getattr(BaseCartItem, 'MaterializedModel')
 
 
+class CartListSerializer(serializers.ListSerializer):
+    def get_attribute(self, instance):
+        data = super(CartListSerializer, self).get_attribute(instance)
+        assert isinstance(data, models.Manager) and issubclass(data.model, BaseCartItem)
+        return data.filter(quantity__gt=0)
+
+
+class WatchListSerializer(serializers.ListSerializer):
+    def get_attribute(self, instance):
+        data = super(WatchListSerializer, self).get_attribute(instance)
+        assert isinstance(data, models.Manager) and issubclass(data.model, BaseCartItem)
+        return data.filter(quantity=0)
+
+
 class CartItemSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(lookup_field='pk', view_name='shop-api:cart-detail')
     line_subtotal = serializers.CharField(read_only=True)
@@ -21,7 +36,7 @@ class CartItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = CartItemModel
         exclude = ('cart', 'id',)
-
+        list_serializer_class = CartListSerializer
 
     def validate_product(self, product):
         if not product.get_availability(self.context['request']):
