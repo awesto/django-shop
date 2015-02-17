@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseBadRequest
-from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
 from rest_framework import serializers, viewsets
 from rest_framework.decorators import detail_route
