@@ -62,14 +62,13 @@ class CartSerializer(serializers.ModelSerializer):
 
 class CartViewSet(viewsets.ModelViewSet):
     serializer_class = None  # otherwise DRF complains
-    queryset = getattr(BaseCartItem, 'MaterializedModel').objects.all()
 
     def get_queryset(self):
         cart = CartModel.objects.get_from_request(self.request)
         if self.kwargs.get(self.lookup_field):
             # we're interest only into a certain cart item
-            return self.queryset.filter(cart=cart)
         # otherwise the CartSerializer will list all its items
+            return CartItemModel.objects.filter(cart=cart)
         return cart
 
     def get_serializer(self, *args, **kwargs):
