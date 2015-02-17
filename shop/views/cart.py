@@ -16,7 +16,6 @@ class CartItemSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(lookup_field='pk', view_name='shop-api:cart-detail')
     line_subtotal = serializers.CharField(read_only=True)
     line_total = serializers.CharField(read_only=True)
-    current_total = serializers.CharField(read_only=True)
     details = BaseProductSerializer(source='product', read_only=True)
 
     class Meta:
