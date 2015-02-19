@@ -151,23 +151,23 @@ class BaseOrder(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
             verbose_name=_("User"))
     status = models.IntegerField(choices=STATUS_CODES, default=PROCESSING,
             verbose_name=_("Status"))
-    order_subtotal = CurrencyField(verbose_name=_("Order subtotal"))
-    order_total = CurrencyField(verbose_name=_("Order Total"))
-    shipping_address_text = models.TextField(_('Shipping address'), blank=True,
+    order_subtotal = MoneyField(verbose_name=_("Order subtotal"))
+    order_total = MoneyField(verbose_name=_("Order Total"))
+    shipping_address_text = models.TextField(_("Shipping address"), blank=True,
         null=True)
-    billing_address_text = models.TextField(_('Billing address'), blank=True,
+    invoice_address_text = models.TextField(_("Invoice address"), blank=True,
         null=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
-    cart_pk = models.PositiveIntegerField(_('Cart primary key'), blank=True, null=True)
+    cart_pk = models.PositiveIntegerField(_("Cart primary key"), blank=True, null=True)
 
     # override manager
     objects = OrderManager()
 
     class Meta:
         abstract = True
-        verbose_name = _('Order')
-        verbose_name_plural = _('Orders')
+        verbose_name = _("Order")
+        verbose_name_plural = _("Orders")
 
     def __str__(self):
         return _("Order ID: {id}").format(id=self.pk)
@@ -237,7 +237,7 @@ class OrderPayment(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     A class to hold basic payment information. Backends should define their own
     more complex payment types should they need to store more informtion
     """
-    order = deferred.ForeignKey(BaseOrder, verbose_name=_('Order'))
+    order = deferred.ForeignKey(BaseOrder, verbose_name=_("Order"))
     # How much was paid with this particular transfer
     amount = CurrencyField(verbose_name=_('Amount'))
     transaction_id = models.CharField(max_length=255, verbose_name=_("Transaction ID"),
@@ -246,8 +246,8 @@ class OrderPayment(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
             help_text=_("The payment backend used to process the purchase"))
 
     class Meta:
-        verbose_name = _('Order payment')
-        verbose_name_plural = _('Order payments')
+        verbose_name = _("Order payment")
+        verbose_name_plural = _("Order payments")
 
 
 class BaseOrderExtraRow(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
