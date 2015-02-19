@@ -122,6 +122,8 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
     def get_price(self, request):
         """
         Hook for returning the current price of this product.
+        The price shall be of type Money. Read the appropriate section on how to create a Money
+        type for the chosen currency.
         """
         raise NotImplementedError('Method get_price() must be implemented by subclass: {0}'.format(self.__class__.__name__))
 

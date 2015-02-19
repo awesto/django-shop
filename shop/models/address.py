@@ -11,8 +11,8 @@ from . import deferred
 
 class BaseAddress(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    priority_delivery = models.SmallIntegerField(default=0,
-        help_text=_("Priority of using this address for delivery"))
+    priority_shipping = models.SmallIntegerField(default=0,
+        help_text=_("Priority of using this address for shipping"))
     priority_invoice = models.SmallIntegerField(default=0,
         help_text=_("Priority of using this address for invoicing"))
 
@@ -20,8 +20,8 @@ class BaseAddress(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         abstract = True
         verbose_name = _("Address")
         verbose_name_plural = _("Addresses")
-        ordering = ('priority_delivery', 'priority_invoice')
+        ordering = ('priority_shipping', 'priority_invoice')
 
     def save(self, *args, **kwargs):
         return super(BaseAddress).save(*args, **kwargs)
-        # max_priority = self.model.objects.filter().aggregate(max=Max(self.priority_delivery))['max'] or 0
+        # max_priority = self.model.objects.filter().aggregate(max=Max(self.priority_shipping))['max'] or 0
