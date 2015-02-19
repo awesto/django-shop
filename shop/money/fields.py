@@ -23,7 +23,7 @@ class MoneyField(six.with_metaclass(SubfieldBase, DecimalField)):
             'max_digits': 30,
             'decimal_places': CURRENCIES[currency_code][1],
         }
-        defaults.update(kwargs, default=self.Money('0'))
+        defaults.update(kwargs, default=self.Money())
         super(MoneyField, self).__init__(**defaults)
 
     def __str__(self):
@@ -43,8 +43,8 @@ class MoneyField(six.with_metaclass(SubfieldBase, DecimalField)):
         """
         Required for Django migrations.
         """
-        name, path, args, kwargs = super(MoneyField, self).deconstruct()
-        # TODO: Django-1.7
+        name, _, args, kwargs = super(MoneyField, self).deconstruct()
+        path = 'django.db.models.fields.DecimalField'
         return name, path, args, kwargs
 
     def south_field_triple(self):  # pragma: no cover
@@ -56,7 +56,6 @@ class MoneyField(six.with_metaclass(SubfieldBase, DecimalField)):
         """
         # We'll just introspect the _actual_ field.
         from south.modelsinspector import introspector
-        field_class = "django.db.models.fields.DecimalField"
+        field_class = 'django.db.models.fields.DecimalField'
         args, kwargs = introspector(self)
-        # That's our definition!
         return field_class, args, kwargs
