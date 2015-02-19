@@ -10,6 +10,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from shop.util.fields import CurrencyField
 from shop.order_signals import processing
+from shop.money.fields import MoneyField
 from . import deferred
 
 
@@ -239,7 +240,7 @@ class OrderPayment(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     order = deferred.ForeignKey(BaseOrder, verbose_name=_("Order"))
     # How much was paid with this particular transfer
-    amount = CurrencyField(verbose_name=_('Amount'))
+    amount = MoneyField(verbose_name=_("Amount paid"))
     transaction_id = models.CharField(max_length=255, verbose_name=_("Transaction ID"),
             help_text=_("The transaction processor's reference"))
     payment_method = models.CharField(max_length=255, verbose_name=_("Payment method"),
@@ -257,7 +258,7 @@ class BaseOrderExtraRow(with_metaclass(deferred.ForeignKeyBuilder, models.Model)
     """
     order = deferred.ForeignKey(BaseOrder, verbose_name=_("Order"))
     label = models.CharField(max_length=255, verbose_name=_("Label"))
-    amount = CurrencyField(verbose_name=_("Amount"))
+    amount = MoneyField(verbose_name=_("Amount"))
 
     class Meta:
         abstract = True
@@ -282,15 +283,17 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     An item for an order.
     """
     order = deferred.ForeignKey(BaseOrder, related_name='items', verbose_name=_("Order"))
-    product_reference = models.CharField(max_length=255, verbose_name=_("Product reference"))
-    product_name = models.CharField(max_length=255, null=True, blank=True,
-        verbose_name=_("Product name"))
+    product_identifier = models.CharField(max_length=255, verbose_name=_("Product identifier"),
+                                    help_text=_("Product identifier at the time of ordering."))
+    product_name = models.CharField(max_length=255, null=True, blank=True, verbose_name=_("Product name"),
+                                    help_text=_("Product name at the time of ordering."))
     product = deferred.ForeignKey('BaseProduct', null=True, blank=True, on_delete=models.SET_NULL,
         verbose_name=_("Product"))
-    unit_price = CurrencyField(verbose_name=_("Unit price"))
-    quantity = models.IntegerField(verbose_name=_("Quantity"))
-    line_subtotal = CurrencyField(verbose_name=_("Line subtotal"))
-    line_total = CurrencyField(verbose_name=_("Line total"))
+    unit_price = MoneyField(verbose_name=_("Unit price"),
+                            help_text=_("Products unit price at the time of ordering."))
+    quantity = models.IntegerField(verbose_name=_("Ordered quantity"))
+    line_subtotal = MoneyField(verbose_name=_("Line Subtotal"))
+    line_total = MoneyField(verbose_name=_("Line Total"))
 
     class Meta:
         abstract = True
@@ -310,9 +313,9 @@ class BaseItemExtraRow(with_metaclass(deferred.ForeignKeyBuilder, models.Model))
     """
     order_item = deferred.ForeignKey(BaseOrderItem, verbose_name=_("Order item"))
     label = models.CharField(max_length=255, verbose_name=_("Label"))
-    amount = CurrencyField(verbose_name=_("Amount"))
+    amount = MoneyField(verbose_name=_("Amount"))
 
     class Meta:
         abstract = True
-        verbose_name = _('Extra order item price field')
-        verbose_name_plural = _('Extra order item price fields')
+        verbose_name = _("Extra order item price field")
+        verbose_name_plural = _("Extra order item price fields")

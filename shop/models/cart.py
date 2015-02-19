@@ -2,7 +2,6 @@
 import json
 from six import with_metaclass
 from collections import namedtuple
-from decimal import Decimal
 from hashlib import sha1
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
@@ -176,9 +175,6 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     def __init__(self, *args, **kwargs):
         super(BaseCart, self).__init__(*args, **kwargs)
         # That will hold things like tax totals or total discount
-        #self.subtotal_price = Decimal('0.0')
-        #self.total_price = Decimal('0.0')
-        #self.current_total = Decimal('0.0')  # used by cart modifiers
         self.extra_rows = []  # list of ExtraRow
         self._cached_cart_items = None
         self._dirty = True
@@ -215,11 +211,9 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         # This is a ghetto "select_related" for polymorphic models.
         items = CartItemModel.objects.filter(cart=self).order_by('pk')
         product_ids = [item.product_id for item in items]
-        products = ProductModel.objects.filter(pk__in=product_ids)
-        products_dict = dict([(p.pk, p) for p in products])
+        products = dict([(p.pk, p) for p in ProductModel.objects.filter(pk__in=product_ids)])
 
         self.extra_rows = []  # Reset list of ExtraRows
-        self.subtotal_price = Decimal('0.0')  # Reset the subtotal
 
         # The request object holds extra information in a dict named 'cart_modifier_state'.
         # Cart modifiers can use this dict to pass arbitrary data from and to each other.
@@ -235,8 +229,9 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         for item in items:  # For each CartItem (order line)...
             # This is still the ghetto select_related
             item.update(request)
-            item.product = products_dict[item.product_id]
-            self.subtotal_price += item.line_total
+            item.product = products[item.product_id]
+        # since we know the Money type only after start iterating, sum() or += doesn't work here
+        self.subtotal_price = reduce(lambda l, r: l + r, (item.line_total for item in items))
 
         self.current_total = self.subtotal_price
         # Now we have to iterate over the registered modifiers again
