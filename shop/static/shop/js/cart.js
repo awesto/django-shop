@@ -36,6 +36,11 @@ djangoShopModule.controller('CartController', ['$scope', '$http', 'shopConfig', 
 	$scope.deleteCartItem = function(cart_item) {
 		postCartItem(cart_item, 'DELETE');
 	}
+
+	$scope.watchCartItem = function(cart_item) {
+		cart_item.quantity = 0;
+		postCartItem(cart_item, 'PUT');
+	}
 }]);
 
 // Directive <shop-cart>
