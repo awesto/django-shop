@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from decimal import Decimal, InvalidOperation
+from django.utils.functional import Promise
 from django.utils.formats import number_format
 from django.utils.encoding import force_text
 from shop import settings as shop_settings
@@ -104,8 +105,11 @@ class MoneyMaker(type):
         """
         if currency_code is None:
             currency_code = shop_settings.DEFAULT_CURRENCY
+        if currency_code not in CURRENCIES:
+            raise ValueError("'{}' is an unknown currency code. Please check shop/money/iso4217.py".format(currency_code))
         name = str('MoneyIn' + currency_code)
-        bases = (Decimal,)
+        # the Promise is required so that the REST JSONEncoder serializes our money type
+        bases = (Promise, Decimal)
         cents = Decimal('.' + CURRENCIES[currency_code][1] * '0')
         attrs = dict((k, v) for k, v in cls.__dict__.items() if k != '__new__')
         attrs.update(_currency_code=currency_code, _currency=CURRENCIES[currency_code], _cents=cents)
