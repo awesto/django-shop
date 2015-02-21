@@ -39,8 +39,8 @@ class BaseOrderAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {'fields': ('user', 'status', 'order_total', 'order_subtotal', 'created_at',
                            'updated_at',)}),
-        (_('Shipping'), {'fields': ('shipping_address_text',)}),
-        (_('Billing'), {'fields': ('billing_address_text',)}),
+        (_("Shipping"), {'fields': ('shipping_address_text',)}),
+        (_("Invoice"), {'fields': ('invoice_address_text',)}),
     )
 
     def save_model(self, request, order, form, change):
