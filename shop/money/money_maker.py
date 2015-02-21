@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from decimal import Decimal, InvalidOperation
-from django.utils.formats import number_format
+from django.utils import six
 from django.utils.encoding import force_text
 from shop import settings as shop_settings
 from iso4217 import CURRENCIES
 
 
 class AbstractMoney(Decimal):
+    MONEY_FORMAT = six.u(getattr(shop_settings, 'MONEY_FORMAT'))
+
     def __new__(cls, value):
         raise TypeError("Can not instantiate {} as AbstractMoney.".format(value))
 
@@ -16,12 +19,12 @@ class AbstractMoney(Decimal):
         Renders the price localized and formatted in its current currency.
         """
         try:
-            amount = number_format(self.quantize(self._cents))
+            amount = Decimal.__str__(self.quantize(self._cents))
         except InvalidOperation:
             raise ValueError("Can not represent {} as Money type.".format(self.__repr__()))
         context = dict(code=self._currency_code, symbol=self._currency[2],
                        currency=self._currency[3], amount=amount)
-        return force_text(getattr(shop_settings, 'MONEY_FORMAT').format(**context))
+        return self.MONEY_FORMAT.format(**context)
 
     def __str__(self):
         return self.__unicode__().encode('utf-8')
@@ -29,6 +32,12 @@ class AbstractMoney(Decimal):
     def __repr__(self):
         value = Decimal.__str__(self)
         return "{}('{}')".format(self.__class__.__name__, value)
+
+    def __format__(self, specifier, context=None, _localeconv=None):
+        amount = Decimal.__format__(self, specifier, context, _localeconv)
+        context = dict(code=self._currency_code, symbol=self._currency[2],
+                       currency=self._currency[3], amount=amount)
+        return force_text(self.MONEY_FORMAT.format(**context))
 
     def __add__(self, other, context=None):
         self._assert_addable(other)
