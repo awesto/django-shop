@@ -22,9 +22,9 @@ class AbstractMoney(Decimal):
             amount = Decimal.__str__(self.quantize(self._cents))
         except InvalidOperation:
             raise ValueError("Can not represent {} as Money type.".format(self.__repr__()))
-        context = dict(code=self._currency_code, symbol=self._currency[2],
-                       currency=self._currency[3], amount=amount)
-        return self.MONEY_FORMAT.format(**context)
+        vals = dict(code=self._currency_code, symbol=self._currency[2],
+                    currency=self._currency[3], amount=amount)
+        return self.MONEY_FORMAT.format(**vals)
 
     def __str__(self):
         return self.__unicode__().encode('utf-8')
@@ -34,10 +34,13 @@ class AbstractMoney(Decimal):
         return "{}('{}')".format(self.__class__.__name__, value)
 
     def __format__(self, specifier, context=None, _localeconv=None):
-        amount = Decimal.__format__(self, specifier, context, _localeconv)
-        context = dict(code=self._currency_code, symbol=self._currency[2],
-                       currency=self._currency[3], amount=amount)
-        return force_text(self.MONEY_FORMAT.format(**context))
+        if context is None:
+            amount = self.quantize(self._cents).__format__(specifier, context, _localeconv)
+        else:
+            amount = Decimal.__format__(self, specifier, context, _localeconv)
+        vals = dict(code=self._currency_code, symbol=self._currency[2],
+                    currency=self._currency[3], amount=amount)
+        return force_text(self.MONEY_FORMAT.format(**vals))
 
     def __add__(self, other, context=None):
         self._assert_addable(other)
@@ -124,7 +127,7 @@ class MoneyMaker(type):
     quite easily in a separate shop plugin.
     """
     def __new__(cls, currency_code=None):
-        def my_new(cls, value='0', context=None):
+        def new_money(cls, value='0', context=None):
             """
             Build a class named MoneyIn<currency_code> inheriting from Decimal.
             """
@@ -155,6 +158,6 @@ class MoneyMaker(type):
             # Currencies with no decimal places, ex. JPY
             cents = Decimal()
         attrs = {'_currency_code': currency_code, '_currency': CURRENCIES[currency_code],
-                 '_cents': cents, '__new__': my_new}
+                 '_cents': cents, '__new__': new_money}
         new_class = type(name, bases, attrs)
         return new_class
