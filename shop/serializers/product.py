@@ -10,7 +10,7 @@ class BaseProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = getattr(BaseProduct, 'MaterializedModel')
-        fields = ('name', 'identifier', 'product_url', 'price', 'availability',) + model.serialize_fields
+        fields = ('name', 'identifier', 'product_url', 'price', 'availability',) + getattr(model, 'serialize_fields', ())
 
     def get_price(self, obj):
         return obj.get_price(self.context['request'])

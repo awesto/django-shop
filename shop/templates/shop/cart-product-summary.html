@@ -1,8 +1,8 @@
-{% load i18n %}
+{% load i18n thumbnail %}
 <div class="media">
 	<div class="media-left">
 		<a href="#">
-			<img class="media-object" src="http://icons.iconarchive.com/icons/custom-icon-design/flatastic-2/72/product-icon.png" style="width: 72px; height: 72px;">
+			<img class="media-object" src="{% thumbnail product.sample_image 80x80 crop %}" width="80" height="80" />
 		</a>
 	</div>
 	<div class="media-body">
