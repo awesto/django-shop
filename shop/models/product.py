@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.db.models.aggregates import Count
@@ -94,6 +95,8 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
     """
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
+    active = models.BooleanField(default=True, verbose_name=_("Active"),
+        help_text=_("Is this product publicly visible."))
 
     objects = PolymorphicManager()
     cart_summary_template = 'shop/cart-product-summary.html'
@@ -129,6 +132,12 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
 
     def get_availability(self, request):
         """
-        Hook for returning the availability of a product.
+        Hook for checking the availability of a product. It returns a list of tuples with this
+        notation:
+        - Number of items available for this product until the specified period expires.
+          If this value is ``True``, then infinitely many items are available.
+        - Until which timestamp, in UTC, the specified number of items are available.
+        This function can return more than one tuple. If the list is empty, then the product is
+        considered as not available.
         """
-        return True
+        return [(True, datetime.max)]  # Infinite number of products available until eternity

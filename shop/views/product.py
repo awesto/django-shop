@@ -1,36 +1,22 @@
 # -*- coding: utf-8 -*-
+from django.views.generic import ListView, DetailView
 from shop.models.product import BaseProduct
-from shop.views import (ShopListView, ShopDetailView)
 
 
-class ProductListView(ShopListView):
+class ProductViewMixin(object):
     """
-    This view handles displaying the product catalogue to customers.
-    It filters out inactive products and shows only those that are active.
+    This view handles displaying the products to customers.
+    It filters out inactive products.
     """
-    generic_template = 'shop/product_list.html'
+    model = getattr(BaseProduct, 'MaterializedModel')
 
     def get_queryset(self):
-        """
-        Return all active products.
-        """
-        return BaseProduct.objects.filter(active=True)
+        return self.model.objects.filter(active=True)
 
 
-class ProductDetailView(ShopDetailView):
-    """
-    This view handles displaying the right template for the subclasses of
-    Product.
-    It will look for a template at the normal (conventional) place, but will
-    fallback to using the default product template in case no template is
-    found for the subclass.
-    """
-    model = BaseProduct  # It must be the biggest ancestor of the inheritance tree.
-    generic_template = 'shop/product_detail.html'
+class ProductListView(ProductViewMixin, ListView):
+    pass
 
-    def get_template_names(self):
-        ret = super(ProductDetailView, self).get_template_names()
-        if not self.generic_template in ret:
-            ret.append(self.generic_template)
-        return ret
 
+class ProductDetailView(ProductViewMixin, DetailView):
+    pass

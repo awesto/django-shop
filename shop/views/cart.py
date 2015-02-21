@@ -38,8 +38,8 @@ class BaseItemSerializer(serializers.ModelSerializer):
         model = CartItemModel
 
     def validate_product(self, product):
-        if not product.get_availability(self.context['request']):
-            raise serializers.ValidationError("Product '{0}' can not be added to the cart.".format(product))
+        if not product.active:
+            raise serializers.ValidationError("Product '{0}' is inactive, and can not be added to the cart.".format(product))
         return product
 
     def create(self, validated_data):
