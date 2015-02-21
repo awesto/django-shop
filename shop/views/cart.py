@@ -8,6 +8,7 @@ from rest_framework.decorators import detail_route
 from shop.models.cart import BaseCart, BaseCartItem
 from shop.models.product import BaseProduct
 from shop.serializers.product import BaseProductSerializer
+from shop.money.rest import MoneyField
 
 CartModel = getattr(BaseCart, 'MaterializedModel')
 CartItemModel = getattr(BaseCartItem, 'MaterializedModel')
@@ -29,8 +30,8 @@ class WatchListSerializer(serializers.ListSerializer):
 
 class BaseItemSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(lookup_field='pk', view_name='shop-api:cart-detail')
-    line_subtotal = serializers.CharField(read_only=True)
-    line_total = serializers.CharField(read_only=True)
+    line_subtotal = MoneyField()
+    line_total = MoneyField()
     details = BaseProductSerializer(source='product', read_only=True)
 
     class Meta:
@@ -67,8 +68,8 @@ class WatchItemSerializer(BaseItemSerializer):
 
 
 class BaseCartSerializer(serializers.ModelSerializer):
-    subtotal_price = serializers.CharField()
-    total_price = serializers.CharField()
+    subtotal_price = MoneyField()
+    total_price = MoneyField()
 
     class Meta:
         model = CartModel
