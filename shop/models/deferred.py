@@ -103,7 +103,7 @@ class ForeignKeyBuilder(ModelBase):
     @staticmethod
     def process_pending_mappings(Model, basename):
         # check for pending mappings and in case, process them and remove them from the list
-        mapping = ForeignKeyBuilder._pending_mappings.pop(basename, [])
-        if mapping:
-            field = mapping[2].MaterializedField(Model, **mapping[2].options)
-            field.contribute_to_class(mapping[0], mapping[1])
+        if basename in ForeignKeyBuilder._pending_mappings:
+            mapmodel, attrname, member = ForeignKeyBuilder._pending_mappings.pop(basename)
+            field = member.MaterializedField(Model, **member.options)
+            field.contribute_to_class(mapmodel, attrname)
