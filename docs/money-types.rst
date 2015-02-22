@@ -50,8 +50,75 @@ Create a Money type
 
 How does this work?
 
-By calling ``MoneyMaker()`` a type accepting amounts in the default currency is created. The default
-currency can be changed in ``settings.py`` with ``SHOP_DEFAULT_CURRENCY = 'USD'``, using one of the
-official ISO-4217 currency codes.
+By calling ``MoneyMaker()`` a type accepting amounts in the *default currency* is created.
+The default currency can be changed in ``settings.py`` with ``SHOP_DEFAULT_CURRENCY = 'USD'``,
+using one of the official ISO-4217 currency codes.
 
 Alternatively, you can create your own money type, for example ``Yen``.
+
+
+Printing Money
+--------------
+
+When the amount of a money type is printed, or forced to text using ``str(price)``, it is prefixed
+by the currency symbol. This is fine, if you work with only a few currencies. However, some symbols
+are ambiguous.
+
+With the setting ``SHOP_MONEY_FORMAT`` you can style how money is going to be printed. This
+settings defaults to ``{symbol} {amount}``. The following format strings are allowed:
+
+ * ``{symbol}``: The short symbol for a currency, for instance ``$``, ``£``, ``€``, ``¥``, etc.
+ * ``{code}``: The international currency code, for instance USD, GBP, EUR, JPY, etc.
+ * ``{currency}``: The spoken currency description, for instance “US Dollar”, “Pound Sterling”, etc.
+ * ``{amount}``: The amount, unlocalized.
+
+Thus, if you prefer to print ``9.98 US Dollar``, then use ``{amount} {currency}`` as formatting
+string.
+
+
+Localizing Money
+================
+
+Since the Money class doesn't know anything about your current locale setting, amounts always are
+printed unlocalized. To localize a money type, use ``django.utils.numberformat.format(someamount)``.
+This function will return the amount, localized according to your current HTTP request.
+
+
+Money Database Fields
+=====================
+
+Money can be stored in the database, keeping the currency information together with the field type.
+Internally, the database uses the Decimal type, but such a field knows its currency and will return
+an amount as ``MoneyIn...`` type. This prevent from implicit, but accidental currency conversions.
+
+In your database model, declare a field as:
+
+.. code-block:: python
+
+	class Product(models.Model):
+	    ...
+	    unit_price = MoneyField(currency='GBP')
+
+This field stores its amounts as British Pounds and returns them typed as ``MoneyInGBP``.
+If the ``currency`` argument is omitted, then the default currency is used.
+
+
+Money Representation in JSON
+============================
+
+An additional REST SerializerField has been added to convert amounts into JSON strings. When
+writing REST serializers, use:
+
+.. code-block:: python
+
+	from rest_framework import serializers
+	from shop.money.rest import MoneyField
+	
+	class SomeSerializer(serializers.ModelSerializer):
+	    price = MoneyField()
+
+The default REST behavior, is to serialize Decimal types as floats. This is fine if you want to
+do some calculations in the browser. However, than the currency information is lost, and must
+be somehow readded to the output strings. It also is a bad idea to do commercial calculations using
+floats, but JavaScript does not have any built-in Decimal type. I therefore recommend to always
+do your commerce calculations on the server and pass amount information using JSON strings.
