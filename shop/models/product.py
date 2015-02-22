@@ -66,9 +66,9 @@ class PolymorphicProductMetaclass(PolymorphicModelBase):
                     # as the materialized model, use the most generic one
                     baseclass.MaterializedModel = Model
                 elif not issubclass(Model, baseclass.MaterializedModel):
-                    raise ImproperlyConfigured("Abstract base class {0} has already been associated "
-                        "with a model {1}, which is different or not a submodel of {2}." %
-                        (name, Model, baseclass.MaterializedModel))
+                    raise ImproperlyConfigured("Abstract base class {} has already been associated "
+                        "with a model {}, which is different or not a submodel of {}."
+                        .format(name, Model, baseclass.MaterializedModel))
             except (AttributeError, TypeError):
                 baseclass.MaterializedModel = Model
 
