@@ -1,8 +1,0 @@
-{% load shop_tags %}
-<h1>Please confirm you order before proceeding to payment</h1>
-{% order order %}
-<form action="" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Confirm" />
-</form>

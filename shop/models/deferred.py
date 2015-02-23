@@ -51,7 +51,7 @@ class ForeignKeyBuilder(ModelBase):
     so that the models are created inside your own shop instatiation.
     """
     _materialized_models = {}
-    _pending_mappings = {}
+    _pending_mappings = []
 
     def __new__(cls, name, bases, attrs):
         class Meta:
@@ -97,13 +97,18 @@ class ForeignKeyBuilder(ModelBase):
                 field = member.MaterializedField(mapmodel, **member.options)
                 field.contribute_to_class(Model, attrname)
             else:
-                ForeignKeyBuilder._pending_mappings[member.abstract_model] = (Model, attrname, member,)
+                ForeignKeyBuilder._pending_mappings.append((Model, attrname, member,))
         return Model
 
     @staticmethod
     def process_pending_mappings(Model, basename):
         # check for pending mappings and in case, process them and remove them from the list
-        if basename in ForeignKeyBuilder._pending_mappings:
-            mapmodel, attrname, member = ForeignKeyBuilder._pending_mappings.pop(basename)
-            field = member.MaterializedField(Model, **member.options)
-            field.contribute_to_class(mapmodel, attrname)
+        remaining_mappings = []
+        for mapping in ForeignKeyBuilder._pending_mappings:
+            if mapping[2].abstract_model == basename:
+                field = mapping[2].MaterializedField(Model, **mapping[2].options)
+                field.contribute_to_class(mapping[0], mapping[1])
+            else:
+                remaining_mappings.append(mapping)
+        ForeignKeyBuilder._pending_mappings = remaining_mappings
+
