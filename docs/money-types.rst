@@ -118,7 +118,7 @@ writing REST serializers, use:
 	    price = MoneyField()
 
 The default REST behavior, is to serialize Decimal types as floats. This is fine if you want to
-do some calculations in the browser. However, than the currency information is lost, and must
-be somehow readded to the output strings. It also is a bad idea to do commercial calculations using
+do some calculations in the browser. However, then the currency information is lost, and must
+somehow be readded to the output strings. It also is a bad idea to do commercial calculations using
 floats, but JavaScript does not have any built-in Decimal type. I therefore recommend to always
 do your commerce calculations on the server and pass amount information using JSON strings.
