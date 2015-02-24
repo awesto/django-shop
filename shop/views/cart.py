@@ -101,6 +101,7 @@ class WatchSerializer(BaseCartSerializer):
 
 class BaseViewSet(viewsets.ModelViewSet):
     serializer_class = None  # otherwise DRF complains
+    paginate_by = None
 
     def get_queryset(self):
         cart = CartModel.objects.get_from_request(self.request)
