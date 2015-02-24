@@ -99,7 +99,6 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         help_text=_("Is this product publicly visible."))
 
     objects = PolymorphicManager()
-    cart_summary_template = 'shop/cart-product-summary.html'
 
     class Meta:
         abstract = True
