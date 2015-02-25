@@ -94,32 +94,6 @@ class ProductRetrieveView(generics.RetrieveAPIView):
         return self.retrieve(request, *args, **kwargs)
 
 
-# class ProductSummaryMixin(object):
-#     def get_summary_template_names(self, product):
-#         """
-#         Return a list of template names to render to product summary of a cart item.
-#         This list is sorted to first look for the most specialized template for the
-#         referenced product and finally returning the most generic template.
-#         """
-#         app_label = product._meta.app_label.lower()
-#         basename = '{}-summary.html'.format(product.__class__.__name__.lower())
-#         return [
-#             os.path.join(app_label, basename),
-#             os.path.join(app_label, 'product-summary.html'),
-#             'shop/product-summary.html',
-#         ]
-# 
-#     def render_product_summary(self, context):
-#         """
-#         Returns a summary of the product using a HTML template.
-#         """
-#         product = context['product']
-#         product.price = product.get_price(context['request'])
-#         product.availability = product.get_availability(context['request'])
-#         template = self.get_summary_template_names(product)
-#         return render_to_response(template, context)
-
-
 class ProductListView(generics.ListAPIView):
     serializer_class = ProductSummarySerializer
     renderer_classes = (TemplateHTMLRenderer, JSONRenderer, BrowsableAPIRenderer)
