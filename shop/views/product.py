@@ -11,25 +11,35 @@ from shop.money.rest import JSONRenderer
 from shop.models.product import BaseProduct
 
 
-class ProductSummarySerializer(serializers.ModelSerializer):
+class ProductSerializerBase(serializers.ModelSerializer):
     """
-    Serialize a subset of the Product model, suitable for list views.
+    Common serializer for the Product model, both for the ProductSummarySerializer and the
+    ProductDetailSerializer.
     """
-    product_url = serializers.CharField(source='get_absolute_url', read_only=True)
     price = serializers.SerializerMethodField()
     availability = serializers.SerializerMethodField()
-    html = serializers.SerializerMethodField()
 
     class Meta:
         model = getattr(BaseProduct, 'MaterializedModel')
-        fields = ('name', 'identifier', 'product_url', 'price', 'availability', 'html') \
-            + getattr(model, 'summary_fields', ())
+        fields = ('name', 'identifier', 'price', 'availability')
 
     def get_price(self, product):
         return product.get_price(self.context['request'])
 
     def get_availability(self, product):
         return product.get_availability(self.context['request'])
+
+
+class ProductSummarySerializer(ProductSerializerBase):
+    """
+    Serialize a subset of the Product model, suitable for list views, cart- and order-lists.
+    """
+    product_url = serializers.CharField(source='get_absolute_url', read_only=True)
+    html = serializers.SerializerMethodField()
+
+    class Meta(ProductSerializerBase.Meta):
+        fields = ProductSerializerBase.Meta.fields + ('product_url', 'html') \
+            + getattr(ProductSerializerBase.Meta.model, 'summary_fields', ())
 
     def find_template(self, product):
         app_label = product._meta.app_label.lower()
@@ -52,13 +62,24 @@ class ProductSummarySerializer(serializers.ModelSerializer):
         return template.render(context)
 
 
+class ProductDetailSerializer(ProductSerializerBase):
+    """
+    Serialize all fields of the Product model, for the products detail view.
+    """
+    infix = 'detail'
+
+    class Meta(ProductSerializerBase.Meta):
+        fields = ProductSerializerBase.Meta.fields \
+            + getattr(ProductSerializerBase.Meta.model, 'detail_fields', ())
+
+
 class ProductRetrieveView(generics.RetrieveAPIView):
     """
     View responsible for rendering the products details.
     Additionally an extra method as shown in products lists, cart lists
     and order item lists.
     """
-    serializer_class = ProductSummarySerializer
+    serializer_class = ProductDetailSerializer
     renderer_classes = (TemplateHTMLRenderer, JSONRenderer, BrowsableAPIRenderer)
 
     def get_object(self):
@@ -115,6 +136,7 @@ class ProductListView(generics.ListAPIView):
 
     def get_renderer_context(self):
         context = super(ProductListView, self).get_renderer_context()
+        # The RESTframework does not add the paginator to the rendering context
         context['request'].paginator = self.paginator
         return context
 
