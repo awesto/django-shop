@@ -11,17 +11,24 @@ CartItemModel = getattr(BaseCartItem, 'MaterializedModel')
 
 
 class CartListSerializer(serializers.ListSerializer):
+    """
+    This serializes a list of cart items, whose quantity is non-zero.
+    """
     def get_attribute(self, instance):
-        data = super(CartListSerializer, self).get_attribute(instance)
-        assert isinstance(data, models.Manager) and issubclass(data.model, BaseCartItem)
-        return data.filter(quantity__gt=0)
+        manager = super(CartListSerializer, self).get_attribute(instance)
+        assert isinstance(manager, models.Manager) and issubclass(manager.model, BaseCartItem)
+        return manager.filter(quantity__gt=0)
 
 
 class WatchListSerializer(serializers.ListSerializer):
+    """
+    This serializes a list of cart items, whose quantity is zero. Thus these items are considered
+    to be in the watch list, which effectively is the cart.
+    """
     def get_attribute(self, instance):
-        data = super(WatchListSerializer, self).get_attribute(instance)
-        assert isinstance(data, models.Manager) and issubclass(data.model, BaseCartItem)
-        return data.filter(quantity=0)
+        manager = super(WatchListSerializer, self).get_attribute(instance)
+        assert isinstance(manager, models.Manager) and issubclass(manager.model, BaseCartItem)
+        return manager.filter(quantity=0)
 
 
 class BaseItemSerializer(serializers.ModelSerializer):
@@ -35,7 +42,7 @@ class BaseItemSerializer(serializers.ModelSerializer):
 
     def validate_product(self, product):
         if not product.active:
-            raise serializers.ValidationError("Product '{0}' is inactive, and can not be added to the cart.".format(product))
+            raise serializers.ValidationError("Product '{}' is inactive, and can not be added to the cart.".format(product))
         return product
 
     def create(self, validated_data):
