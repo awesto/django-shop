@@ -99,10 +99,14 @@ class ProductListView(generics.ListAPIView):
     renderer_classes = (TemplateHTMLRenderer, JSONRenderer, BrowsableAPIRenderer)
 
     def get_queryset(self):
-        return getattr(BaseProduct, 'MaterializedModel').objects.filter(self.limit_choices_to)
+        qs = getattr(BaseProduct, 'MaterializedModel').objects.filter(self.limit_choices_to)
 
-    def get_template_names(self):
-        return ['shop/products-list.html']
+        # restrict products for current CMS page
+        current_page = self.request._request.current_page
+        if current_page.publisher_is_draft:
+            current_page = current_page.publisher_public
+        qs = qs.filter(cms_pages=current_page)
+        return qs
 
     def get(self, request, *args, **kwargs):
         self.limit_choices_to = kwargs.pop('limit_choices_to')
