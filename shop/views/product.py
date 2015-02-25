@@ -110,4 +110,5 @@ class ProductListView(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         self.limit_choices_to = kwargs.pop('limit_choices_to')
+        self.template_name = kwargs.pop('template_name', 'shop/products-list.html')
         return self.list(request, *args, **kwargs)
