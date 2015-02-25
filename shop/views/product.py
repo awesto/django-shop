@@ -79,12 +79,12 @@ class ProductRetrieveView(generics.RetrieveAPIView):
             'shop/product-detail.html',
         ]
 
-    def get_serializer_context(self):
-        context = super(ProductRetrieveView, self).get_serializer_context()
+    def get_renderer_context(self):
+        context = super(ProductRetrieveView, self).get_renderer_context()
         # if the used renderer is a `TemplateHTMLRenderer`, then enrich the
         # context with some unserializable Python objects
-        if self.request.accepted_renderer.format == 'html':
-            context.update(passo='passo')  # TODO: add what we need here
+        if context['request'].accepted_renderer.format == 'html':
+            context['request'].passo = 'passo'  # TODO: add what we need here
         return context
 
     def get(self, request, *args, **kwargs):
@@ -92,6 +92,32 @@ class ProductRetrieveView(generics.RetrieveAPIView):
         self.lookup_url_kwarg = kwargs.pop('lookup_url_kwarg')
         self.lookup_field = kwargs.pop('lookup_field')
         return self.retrieve(request, *args, **kwargs)
+
+
+# class ProductSummaryMixin(object):
+#     def get_summary_template_names(self, product):
+#         """
+#         Return a list of template names to render to product summary of a cart item.
+#         This list is sorted to first look for the most specialized template for the
+#         referenced product and finally returning the most generic template.
+#         """
+#         app_label = product._meta.app_label.lower()
+#         basename = '{}-summary.html'.format(product.__class__.__name__.lower())
+#         return [
+#             os.path.join(app_label, basename),
+#             os.path.join(app_label, 'product-summary.html'),
+#             'shop/product-summary.html',
+#         ]
+# 
+#     def render_product_summary(self, context):
+#         """
+#         Returns a summary of the product using a HTML template.
+#         """
+#         product = context['product']
+#         product.price = product.get_price(context['request'])
+#         product.availability = product.get_availability(context['request'])
+#         template = self.get_summary_template_names(product)
+#         return render_to_response(template, context)
 
 
 class ProductListView(generics.ListAPIView):
@@ -107,6 +133,16 @@ class ProductListView(generics.ListAPIView):
             current_page = current_page.publisher_public
         qs = qs.filter(cms_pages=current_page)
         return qs
+
+    def paginate_queryset(self, queryset):
+        page = super(ProductListView, self).paginate_queryset(queryset)
+        self.paginator = page.paginator
+        return page
+
+    def get_renderer_context(self):
+        context = super(ProductListView, self).get_renderer_context()
+        context['request'].paginator = self.paginator
+        return context
 
     def get(self, request, *args, **kwargs):
         self.limit_choices_to = kwargs.pop('limit_choices_to')
