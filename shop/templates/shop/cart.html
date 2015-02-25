@@ -50,8 +50,8 @@
 </script>
 
 <script id="shop/cart-item.html" type="text/ng-template">
-	<td ng-include src="cart_item.url + 'render-product-summary'">
-		<!-- content is rendered via products template "" -->
+	<td ng-bind-html="cart_item.details.html">
+		<!-- content is rendered via template "cart-product-summary.html" -->
 	</td>
 	<td class="text-center">
 		<input type="number" class="form-control" min="1" ng-model="cart_item.quantity" ng-change="updateCartItem(cart_item)">

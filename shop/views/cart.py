@@ -1,13 +1,8 @@
 # -*- coding: utf-8 -*-
-import os
 from django.db import models
-from django.shortcuts import render_to_response
-from django.template import RequestContext
 from django.utils.cache import add_never_cache_headers
 from rest_framework import serializers, viewsets
-from rest_framework.decorators import detail_route
 from shop.models.cart import BaseCart, BaseCartItem
-from shop.models.product import BaseProduct
 from shop.money.rest import MoneyField
 from .product import ProductSummarySerializer
 
@@ -78,6 +73,7 @@ class BaseCartSerializer(serializers.ModelSerializer):
     def to_representation(self, cart):
         if cart.is_dirty:
             cart.update(self.context['request'])
+        self.context['serializer_name'] = 'cart'
         representation = super(BaseCartSerializer, self).to_representation(cart)
         return representation
 
@@ -108,41 +104,8 @@ class BaseViewSet(viewsets.ModelViewSet):
         # otherwise the CartSerializer will show its detail and list all its items
         return cart
 
-    def get_template_names(self):
-        """
-        Return a list of template names to render to product summary of a cart item.
-        This list is sorted to first look for the most specialized template for the
-        referenced product and finally returning the most generic template.
-        """
-        app_label = self.product._meta.app_label.lower()
-        basename = '{}-summary.html'.format(self.product.__class__.__name__.lower())
-        return [
-            os.path.join(app_label, 'cart-' + basename),
-            os.path.join(app_label, basename),
-            os.path.join(app_label, 'cart-product-summary.html'),
-            os.path.join(app_label, 'product-summary.html'),
-            'shop/cart-product-summary.html',
-            'shop/product-summary.html',
-        ]
-
-    @detail_route(url_path='render-product-summary')
-    def render_product_summary(self, request, pk=None, **kwargs):
-        """
-        Returns a summary of the product, to be rendered as item in the cart.
-        """
-        cart_item = self.get_object()
-        product = getattr(BaseProduct, 'MaterializedModel').objects.get(pk=cart_item.product_id)
-        self.product = product
-        product.price = product.get_price(request)
-        product.availability = product.get_availability(request)
-        template = self.get_template_names()
-        context = RequestContext(request, {'cart_item': cart_item, 'product': product})
-        return render_to_response(template, context)
-
     def finalize_response(self, request, response, *args, **kwargs):
-        """
-        Set headers to not cache this view.
-        """
+        """Set HTTP headers to not cache this view"""
         if self.action != 'render_product_summary':
             add_never_cache_headers(response)
         return super(BaseViewSet, self).finalize_response(request, response, *args, **kwargs)
