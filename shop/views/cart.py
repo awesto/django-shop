@@ -78,9 +78,6 @@ class BaseCartSerializer(serializers.ModelSerializer):
     def to_representation(self, cart):
         if cart.is_dirty:
             cart.update(self.context['request'])
-        if 'digest' in self.context['request'].query_params:
-            # by settings `CartItemSerializer.write_only` to True, we skip the list serialization
-            self.fields['items'].write_only = True
         representation = super(BaseCartSerializer, self).to_representation(cart)
         return representation
 
