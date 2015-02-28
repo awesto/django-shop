@@ -150,32 +150,19 @@ class AddToCartView(views.APIView):
     Handle the "Add to Cart" dialog on the products detail page.
     """
     renderer_classes = (TemplateHTMLRenderer, JSONRenderer, BrowsableAPIRenderer)
-    #lookup_field = None
-    #lookup_url_kwarg = 'slug'
-    #limit_choices_to = Q()
-
-    def X__init__(self, **kwargs):
-        for key, attr in kwargs.items():
-            setattr(self, key, attr)
-        assert self.lookup_url_kwarg in kwargs
-        filter_kwargs = {lookup_field: kwargs.pop(lookup_url_kwarg)}
-        queryset = getattr(BaseProduct, 'MaterializedModel').objects
-        queryset = queryset.filter(limit_choices_to, **filter_kwargs)
-        product = get_object_or_404(queryset)
-        return {'product': product, 'request': request}
+    lookup_field = lookup_url_kwarg = 'slug'
+    limit_choices_to = Q()
 
     def get_context(self, request, **kwargs):
-        lookup_field = kwargs.pop('lookup_field')
-        lookup_url_kwarg = kwargs.pop('lookup_url_kwarg')
-        limit_choices_to = kwargs.pop('limit_choices_to')
-        assert lookup_url_kwarg in kwargs
-        filter_kwargs = {lookup_field: kwargs.pop(lookup_url_kwarg)}
+        assert self.lookup_url_kwarg in kwargs
+        filter_kwargs = {self.lookup_field: kwargs.pop(self.lookup_url_kwarg)}
         queryset = getattr(BaseProduct, 'MaterializedModel').objects
-        queryset = queryset.filter(limit_choices_to, **filter_kwargs)
+        queryset = queryset.filter(self.limit_choices_to, **filter_kwargs)
         product = get_object_or_404(queryset)
         return {'product': product, 'request': request}
 
     def get_template_names(self):
+        # TODO: more templates
         return ['shop/product-add2cart.html']
 
     def get(self, request, *args, **kwargs):
@@ -197,9 +184,6 @@ class ProductListView(generics.ListAPIView):
     limit_choices_to = Q()
     template_name = 'shop/products-list.html'
 
-    def __init__(self, *args, **kwargs):
-        pass
-
     def get_queryset(self):
         qs = getattr(BaseProduct, 'MaterializedModel').objects.filter(self.limit_choices_to)
 
@@ -220,8 +204,3 @@ class ProductListView(generics.ListAPIView):
         # The RESTframework does not add the paginator to the rendering context
         context['request'].paginator = self.paginator
         return context
-
-    def get(self, request, *args, **kwargs):
-        self.limit_choices_to = kwargs.pop('limit_choices_to')
-        self.template_name = kwargs.pop('template_name', 'shop/products-list.html')
-        return self.list(request, *args, **kwargs)
