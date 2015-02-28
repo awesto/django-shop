@@ -66,11 +66,8 @@ class ProductDetailSerializer(ProductSerializerBase):
     """
     Serialize all fields of the Product model, for the products detail view.
     """
-    infix = 'detail'
-
     class Meta(ProductSerializerBase.Meta):
-        fields = ProductSerializerBase.Meta.fields \
-            + getattr(ProductSerializerBase.Meta.model, 'detail_fields', ())
+        exclude = ()
 
 
 class ProductRetrieveView(generics.RetrieveAPIView):
@@ -81,15 +78,6 @@ class ProductRetrieveView(generics.RetrieveAPIView):
     """
     serializer_class = ProductDetailSerializer
     renderer_classes = (TemplateHTMLRenderer, JSONRenderer, BrowsableAPIRenderer)
-
-    def get_object(self):
-        assert self.lookup_url_kwarg in self.kwargs
-        filter_kwargs = {self.lookup_field: self.kwargs[self.lookup_url_kwarg]}
-        queryset = getattr(BaseProduct, 'MaterializedModel').objects
-        queryset = queryset.filter(self.limit_choices_to, **filter_kwargs)
-        product = get_object_or_404(queryset)
-        self.product = product
-        return product
 
     def get_template_names(self):
         app_label = self.product._meta.app_label.lower()
@@ -107,6 +95,15 @@ class ProductRetrieveView(generics.RetrieveAPIView):
         if context['request'].accepted_renderer.format == 'html':
             context['request'].passo = 'passo'  # TODO: add what we need here
         return context
+
+    def get_object(self):
+        assert self.lookup_url_kwarg in self.kwargs
+        filter_kwargs = {self.lookup_field: self.kwargs[self.lookup_url_kwarg]}
+        queryset = getattr(BaseProduct, 'MaterializedModel').objects
+        queryset = queryset.filter(self.limit_choices_to, **filter_kwargs)
+        product = get_object_or_404(queryset)
+        self.product = product
+        return product
 
     def get(self, request, *args, **kwargs):
         self.limit_choices_to = kwargs.pop('limit_choices_to')
