@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 import os
 import itertools
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -11,7 +12,7 @@ from rest_framework import generics
 from rest_framework import status
 from rest_framework import views
 from rest_framework.fields import empty
-from rest_framework.renderers import TemplateHTMLRenderer, BrowsableAPIRenderer, HTMLFormRenderer
+from rest_framework.renderers import TemplateHTMLRenderer, BrowsableAPIRenderer
 from rest_framework.response import Response
 from shop.money.rest import JSONRenderer, MoneyField
 from shop.models.product import BaseProduct
@@ -124,23 +125,24 @@ class AddToCartSerializer(serializers.Serializer):
     """
     quantity = serializers.IntegerField(default=1, min_value=1)
     unit_price = MoneyField(read_only=True)
-    subtotal = MoneyField(required=False)
+    subtotal = MoneyField(read_only=True)
+    product = serializers.IntegerField(read_only=True, help_text="The product's primary key")
 
-    def __init__(self, instance=None, data=empty, **kwargs):
-        assert isinstance(instance, dict), "Instance must by a dict"
-        if data != empty:
-            instance['quantity'] = data['quantity']
+    def __init__(self, data=empty, **kwargs):
+        context = kwargs.get('context', {})
+        if 'product' not in context or 'request' not in context:
+            raise ValueError("A context is required for this serializer and must contain the `product` and the `request` object.")
+        instance = {'product': context['product'].id}
+        unit_price = context['product'].get_price(context['request'])
+        if data == empty:
+            quantity = self.fields['quantity'].default
         else:
-            instance.setdefault('quantity', self.fields['quantity'].default)
-        instance['subtotal'] = instance['unit_price'] * instance['quantity']
+            quantity = data['quantity']
+        instance.update(quantity=quantity, unit_price=unit_price, subtotal=quantity * unit_price)
         super(AddToCartSerializer, self).__init__(instance, data, **kwargs)
 
     def validate_quantity(self, data):
         return data
-
-    def X_update(self, instance, validated_data):
-        super(AddToCartSerializer, self).update(instance, validated_data)
-        return instance
 
 
 class AddToCartView(views.APIView):
@@ -148,8 +150,21 @@ class AddToCartView(views.APIView):
     Handle the "Add to Cart" dialog on the products detail page.
     """
     renderer_classes = (TemplateHTMLRenderer, JSONRenderer, BrowsableAPIRenderer)
+    #lookup_field = None
+    #lookup_url_kwarg = 'slug'
+    #limit_choices_to = Q()
 
-    def get_instance(self, request, **kwargs):
+    def X__init__(self, **kwargs):
+        for key, attr in kwargs.items():
+            setattr(self, key, attr)
+        assert self.lookup_url_kwarg in kwargs
+        filter_kwargs = {lookup_field: kwargs.pop(lookup_url_kwarg)}
+        queryset = getattr(BaseProduct, 'MaterializedModel').objects
+        queryset = queryset.filter(limit_choices_to, **filter_kwargs)
+        product = get_object_or_404(queryset)
+        return {'product': product, 'request': request}
+
+    def get_context(self, request, **kwargs):
         lookup_field = kwargs.pop('lookup_field')
         lookup_url_kwarg = kwargs.pop('lookup_url_kwarg')
         limit_choices_to = kwargs.pop('limit_choices_to')
@@ -158,19 +173,19 @@ class AddToCartView(views.APIView):
         queryset = getattr(BaseProduct, 'MaterializedModel').objects
         queryset = queryset.filter(limit_choices_to, **filter_kwargs)
         product = get_object_or_404(queryset)
-        return {'unit_price': product.get_price(request)}
+        return {'product': product, 'request': request}
 
     def get_template_names(self):
         return ['shop/product-add2cart.html']
 
     def get(self, request, *args, **kwargs):
-        instance = self.get_instance(request, **kwargs)
-        serializer = AddToCartSerializer(instance)
+        context = self.get_context(request, **kwargs)
+        serializer = AddToCartSerializer(context=context)
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
-        instance = self.get_instance(request, **kwargs)
-        serializer = AddToCartSerializer(instance, data=request.data)
+        context = self.get_context(request, **kwargs)
+        serializer = AddToCartSerializer(data=request.data, context=context)
         if serializer.is_valid():
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -179,6 +194,11 @@ class AddToCartView(views.APIView):
 class ProductListView(generics.ListAPIView):
     serializer_class = ProductSummarySerializer
     renderer_classes = (TemplateHTMLRenderer, JSONRenderer, BrowsableAPIRenderer)
+    limit_choices_to = Q()
+    template_name = 'shop/products-list.html'
+
+    def __init__(self, *args, **kwargs):
+        pass
 
     def get_queryset(self):
         qs = getattr(BaseProduct, 'MaterializedModel').objects.filter(self.limit_choices_to)
