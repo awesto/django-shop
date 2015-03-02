@@ -2,9 +2,10 @@
 from django.db import models
 from django.utils.cache import add_never_cache_headers
 from rest_framework import serializers, viewsets
-from shop.models.cart import BaseCart, BaseCartItem
-from shop.money.rest import MoneyField
-from .product import ProductSummarySerializer
+from shop.models.cart import BaseCart, BaseCartItem, BaseProduct
+from shop.rest.money import MoneyField
+from shop.rest.serializers import ProductSummarySerializerBase
+
 
 CartModel = getattr(BaseCart, 'MaterializedModel')
 CartItemModel = getattr(BaseCartItem, 'MaterializedModel')
@@ -29,6 +30,13 @@ class WatchListSerializer(serializers.ListSerializer):
         manager = super(WatchListSerializer, self).get_attribute(instance)
         assert isinstance(manager, models.Manager) and issubclass(manager.model, BaseCartItem)
         return manager.filter(quantity=0)
+
+
+class ProductSummarySerializer(ProductSummarySerializerBase):
+    # TODO: see if we can reuse the existing ProductSummarySerializer
+    class Meta:
+        model = getattr(BaseProduct, 'MaterializedModel')
+        fields = ('name', 'identifier', 'price', 'availability', 'product_url', 'html', 'description')
 
 
 class BaseItemSerializer(serializers.ModelSerializer):

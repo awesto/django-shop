@@ -3,7 +3,7 @@ from django.utils.formats import number_format
 from rest_framework import renderers
 from rest_framework import serializers
 from rest_framework.utils import encoders
-from .money_maker import AbstractMoney
+from shop.money import AbstractMoney
 
 
 class JSONEncoder(encoders.JSONEncoder):
