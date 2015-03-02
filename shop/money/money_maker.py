@@ -43,7 +43,7 @@ class AbstractMoney(Decimal):
         return force_text(self.MONEY_FORMAT.format(**vals))
 
     def __add__(self, other, context=None):
-        self._assert_addable(other)
+        other = self._assert_addable(other)
         amount = Decimal.__add__(self, other, context)
         return self.__class__(amount)
 
@@ -51,7 +51,7 @@ class AbstractMoney(Decimal):
         return self.__add__(other, context)
 
     def __sub__(self, other, context=None):
-        self._assert_addable(other)
+        other = self._assert_addable(other)
         # self - other is computed as self + other.copy_negate()
         amount = Decimal.__add__(self, other.copy_negate(), context=context)
         return self.__class__(amount)
@@ -64,7 +64,7 @@ class AbstractMoney(Decimal):
         return self.__class__(amount)
 
     def __mul__(self, other, context=None):
-        self._assert_multipliable(other)
+        other = self._assert_multipliable(other)
         amount = Decimal.__mul__(self, other, context)
         return self.__class__(amount)
 
@@ -72,7 +72,7 @@ class AbstractMoney(Decimal):
         return self.__mul__(other, context)
 
     def __div__(self, other, context=None):
-        self._assert_dividable(other)
+        other = self._assert_dividable(other)
         amount = Decimal.__div__(self, other, context)
         return self.__class__(amount)
 
@@ -80,7 +80,7 @@ class AbstractMoney(Decimal):
         raise ValueError("Can not divide through a currency.")
 
     def __truediv__(self, other, context=None):
-        self._assert_dividable(other)
+        other = self._assert_dividable(other)
         amount = Decimal.__truediv__(self, other, context)
         return self.__class__(amount)
 
@@ -105,16 +105,26 @@ class AbstractMoney(Decimal):
         return cls._currency_code
 
     def _assert_addable(self, other):
+        if isinstance(other, (int, float)) and other == 0:
+            # so that we can add/substract zero to any currency
+            return self.__class__()
         if self._currency_code != getattr(other, '_currency_code', None):
             raise ValueError("Can not add/substract money in different currencies.")
+        return other
 
     def _assert_multipliable(self, other):
         if hasattr(other, '_currency_code'):
             raise ValueError("Can not multiply currencies.")
+        if isinstance(other, float):
+            return Decimal(other)
+        return other
 
     def _assert_dividable(self, other):
         if hasattr(other, '_currency_code'):
             raise ValueError("Can not divide through a currency.")
+        if isinstance(other, float):
+            return Decimal(other)
+        return other
 
 
 class MoneyMaker(type):
