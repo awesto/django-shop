@@ -9,7 +9,9 @@
 				<th>{% trans "Quantity" %}</th><th>{% trans "Unit Price" %}</th><th>{% trans "Subtotal" %}</th>
 			</tr>
 			<tr>
-				<td><input id="id_quantity" class="form-control" type="number" min="1" ng-model="context.quantity" ng-change="updateContext()" /></td>
+				<td>
+					<input id="id_quantity" class="form-control" type="number" min="1" ng-model="context.quantity" ng-change="updateContext()" />
+				</td>
 				<td ng-bind="context.unit_price"></td>
 				<td ng-bind="context.subtotal"></td>
 			</tr>
