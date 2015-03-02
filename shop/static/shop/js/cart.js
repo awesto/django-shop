@@ -2,11 +2,13 @@
 'use strict';
 
 // module: django.shop, TODO: move this into a summary JS file
-var djangoShopModule = angular.module('django.shop', []);
+var djangoShopModule = angular.module('django.shop.cart', []);
 
-djangoShopModule.controller('CartController', ['$scope', '$http', 'shopConfig', function($scope, $http, shopConfig) {
+djangoShopModule.controller('CartController', ['$scope', '$http', 'djangoUrl', function($scope, $http, djangoUrl) {
+	var cartListURL = djangoUrl.reverse('shop-api:cart-list');
+
 	this.loadCart = function() {
-		$http.get(shopConfig.cartListURL).success(function(cart) {
+		$http.get(cartListURL).success(function(cart) {
 			console.log('loaded cart: ');
 			console.log(cart);
 			$scope.cart = cart;
@@ -20,7 +22,7 @@ djangoShopModule.controller('CartController', ['$scope', '$http', 'shopConfig', 
 		var config = {headers: {'X-HTTP-Method-Override': method}};
 		$http.post(cart_item.url, cart_item, config).then(function(response) {
 			console.log(response);
-			return $http.get(shopConfig.cartListURL/* + '?digest'*/);
+			return $http.get(cartListURL);
 		}).then(function(response) {
 			console.log(response);
 			angular.copy(response.data, $scope.cart);
@@ -45,7 +47,7 @@ djangoShopModule.controller('CartController', ['$scope', '$http', 'shopConfig', 
 
 // Directive <shop-cart>
 // handle a djangoSHOP's cart
-djangoShopModule.directive('shopCart', function(shopConfig) {
+djangoShopModule.directive('shopCart', function() {
 	return {
 		restrict: 'EA',
 		templateUrl: 'shop/cart.html',
@@ -58,7 +60,7 @@ djangoShopModule.directive('shopCart', function(shopConfig) {
 
 // Directive <shop-cart-item>
 // handle a djangoSHOP's cart item
-djangoShopModule.directive('shopCartItem', function(shopConfig) {
+djangoShopModule.directive('shopCartItem', function() {
 	return {
 		require: '^shopCart',
 		restrict: 'EA',

@@ -4,7 +4,6 @@ import os
 import itertools
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import select_template
 from rest_framework import serializers
@@ -12,9 +11,10 @@ from rest_framework import generics
 from rest_framework import status
 from rest_framework import views
 from rest_framework.fields import empty
-from rest_framework.renderers import TemplateHTMLRenderer, BrowsableAPIRenderer
+from rest_framework.renderers import BrowsableAPIRenderer, TemplateHTMLRenderer
 from rest_framework.response import Response
 from shop.money.rest import JSONRenderer, MoneyField
+from shop.rest_renderers import CMSPageRenderer
 from shop.models.product import BaseProduct
 
 
@@ -25,10 +25,6 @@ class ProductSerializerBase(serializers.ModelSerializer):
     """
     price = serializers.SerializerMethodField()
     availability = serializers.SerializerMethodField()
-
-    class Meta:
-        model = getattr(BaseProduct, 'MaterializedModel')
-        fields = ('name', 'identifier', 'price', 'availability')
 
     def get_price(self, product):
         return product.get_price(self.context['request'])
@@ -44,9 +40,10 @@ class ProductSummarySerializer(ProductSerializerBase):
     product_url = serializers.CharField(source='get_absolute_url', read_only=True)
     html = serializers.SerializerMethodField()
 
-    class Meta(ProductSerializerBase.Meta):
-        fields = ProductSerializerBase.Meta.fields + ('product_url', 'html') \
-            + getattr(ProductSerializerBase.Meta.model, 'summary_fields', ())
+    class Meta:
+        model = getattr(BaseProduct, 'MaterializedModel')
+        fields = ('name', 'identifier', 'price', 'availability', 'product_url', 'html') \
+            + getattr(model, 'summary_fields', ())
 
     def find_template(self, product):
         app_label = product._meta.app_label.lower()
@@ -69,54 +66,33 @@ class ProductSummarySerializer(ProductSerializerBase):
         return template.render(context)
 
 
-class ProductDetailSerializer(ProductSerializerBase):
-    """
-    Serialize all fields of the Product model, for the products detail view.
-    """
-    class Meta(ProductSerializerBase.Meta):
-        exclude = ()
+class ProductListView(generics.ListAPIView):
+    serializer_class = ProductSummarySerializer
+    renderer_classes = (CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer)
+    limit_choices_to = Q()
+    template_name = 'shop/products-list.html'
 
+    def get_queryset(self):
+        qs = getattr(BaseProduct, 'MaterializedModel').objects.filter(self.limit_choices_to)
 
-class ProductRetrieveView(generics.RetrieveAPIView):
-    """
-    View responsible for rendering the products details.
-    Additionally an extra method as shown in products lists, cart lists
-    and order item lists.
-    """
-    serializer_class = ProductDetailSerializer
-    renderer_classes = (TemplateHTMLRenderer, JSONRenderer, BrowsableAPIRenderer)
+        # restrict products for current CMS page
+        current_page = self.request._request.current_page
+        if current_page.publisher_is_draft:
+            current_page = current_page.publisher_public
+        qs = qs.filter(cms_pages=current_page)
+        return qs
 
-    def get_template_names(self):
-        app_label = self.product._meta.app_label.lower()
-        basename = '{}-detail.html'.format(self.product.__class__.__name__.lower())
-        return [
-            os.path.join(app_label, basename),
-            os.path.join(app_label, 'product-detail.html'),
-            'shop/product-detail.html',
-        ]
+    def paginate_queryset(self, queryset):
+        page = super(ProductListView, self).paginate_queryset(queryset)
+        self.paginator = page.paginator
+        return page
 
     def get_renderer_context(self):
-        context = super(ProductRetrieveView, self).get_renderer_context()
-        # if the used renderer is a `TemplateHTMLRenderer`, then enrich the
-        # context with some unserializable Python objects
-        if context['request'].accepted_renderer.format == 'html':
-            context['request'].passo = 'passo'  # TODO: add what we need here
-        return context
-
-    def get_object(self):
-        assert self.lookup_url_kwarg in self.kwargs
-        filter_kwargs = {self.lookup_field: self.kwargs[self.lookup_url_kwarg]}
-        queryset = getattr(BaseProduct, 'MaterializedModel').objects
-        queryset = queryset.filter(self.limit_choices_to, **filter_kwargs)
-        product = get_object_or_404(queryset)
-        self.product = product
-        return product
-
-    def get(self, request, *args, **kwargs):
-        self.limit_choices_to = kwargs.pop('limit_choices_to')
-        self.lookup_url_kwarg = kwargs.pop('lookup_url_kwarg')
-        self.lookup_field = kwargs.pop('lookup_field')
-        return self.retrieve(request, *args, **kwargs)
+        renderer_context = super(ProductListView, self).get_renderer_context()
+        if renderer_context['request'].accepted_renderer.format == 'html':
+            # add the paginator as Python object to the context
+            renderer_context['paginator'] = self.paginator
+        return renderer_context
 
 
 class AddToCartSerializer(serializers.Serializer):
@@ -178,29 +154,60 @@ class AddToCartView(views.APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ProductListView(generics.ListAPIView):
-    serializer_class = ProductSummarySerializer
-    renderer_classes = (TemplateHTMLRenderer, JSONRenderer, BrowsableAPIRenderer)
+class ProductDetailSerializerBase(ProductSerializerBase):
+    """
+    Serialize all fields of the Product model, for the products detail view.
+    """
+    def to_representation(self, obj):
+        product = super(ProductDetailSerializerBase, self).to_representation(obj)
+        # add a serialized representation of the product to the context
+        return {'product': dict(product)}
+
+
+class ProductRetrieveView(generics.RetrieveAPIView):
+    """
+    View responsible for rendering the products details.
+    Additionally an extra method as shown in products lists, cart lists
+    and order item lists.
+    """
+    renderer_classes = (CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer)
+    lookup_field = lookup_url_kwarg = 'slug'
     limit_choices_to = Q()
-    template_name = 'shop/products-list.html'
 
-    def get_queryset(self):
-        qs = getattr(BaseProduct, 'MaterializedModel').objects.filter(self.limit_choices_to)
+    def get_serializer_class(self):
+        product = self.get_object()
+        class_name = product.__class__.__name__ + str('Serializer')
 
-        # restrict products for current CMS page
-        current_page = self.request._request.current_page
-        if current_page.publisher_is_draft:
-            current_page = current_page.publisher_public
-        qs = qs.filter(cms_pages=current_page)
-        return qs
+        class Meta:
+            model = product.__class__
+            exclude = ('active',)
 
-    def paginate_queryset(self, queryset):
-        page = super(ProductListView, self).paginate_queryset(queryset)
-        self.paginator = page.paginator
-        return page
+        Serializer = type(class_name, (ProductDetailSerializerBase,), {'Meta': Meta})
+        return Serializer
+
+    def get_template_names(self):
+        product = self.get_object()
+        app_label = product._meta.app_label.lower()
+        basename = '{}-detail.html'.format(product.__class__.__name__.lower())
+        return [
+            os.path.join(app_label, basename),
+            os.path.join(app_label, 'product-detail.html'),
+            'shop/product-detail.html',
+        ]
 
     def get_renderer_context(self):
-        context = super(ProductListView, self).get_renderer_context()
-        # The RESTframework does not add the paginator to the rendering context
-        context['request'].paginator = self.paginator
-        return context
+        renderer_context = super(ProductRetrieveView, self).get_renderer_context()
+        if renderer_context['request'].accepted_renderer.format == 'html':
+            # add the product as Python object to the context
+            renderer_context['product'] = self.get_object()
+        return renderer_context
+
+    def get_object(self):
+        if not hasattr(self, '_product'):
+            assert self.lookup_url_kwarg in self.kwargs
+            filter_kwargs = {self.lookup_field: self.kwargs[self.lookup_url_kwarg]}
+            queryset = getattr(BaseProduct, 'MaterializedModel').objects
+            queryset = queryset.filter(self.limit_choices_to, **filter_kwargs)
+            product = get_object_or_404(queryset)
+            self._product = product
+        return self._product

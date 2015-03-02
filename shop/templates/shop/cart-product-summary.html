@@ -1,18 +1,3 @@
-{% load i18n thumbnail %}
-<div class="media">
-	<div class="media-left">
-		<a href="#">
-			<img class="media-object" src="{% thumbnail product.sample_image 80x80 crop %}" width="80" height="80" />
-		</a>
-	</div>
-	<div class="media-body">
-		<h4 class="media-heading"><a href="#">{{ product.name }}</a></h4>
-		<h5 class="media-heading">{% trans "Art-No.:" %} <a href="#">{{ product.identifier }}</a></h5>
-		<span>{% trans "Status:" %}</span>
-		{% if product.availability %}
-		<span class="text-success"><strong>In Stock</strong></span>
-		{% else %}
-		<span class="text-warn"><strong>In Stock</strong></span>
-		{% endif %}
-	</div>
-</div>
+{% load i18n %}
+<h3><a href="{{ product.product_url }}">{{ product.name }}</a></h4>
+<h5>{% trans "Art-No.:" %} <a href="#">{{ product.identifier }}</a></h5>

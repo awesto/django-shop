@@ -9,13 +9,13 @@
 				<th>{% trans "Quantity" %}</th><th>{% trans "Unit Price" %}</th><th>{% trans "Subtotal" %}</th>
 			</tr>
 			<tr>
-				<td><input id="id_quantity" class="form-control" type="number" min="1" ng-model="quantity" /></td>
-				<td>{{ unit_price }}</td>
-				<td>{{ subtotal }}</td>
+				<td><input id="id_quantity" class="form-control" type="number" min="1" ng-model="context.quantity" ng-change="updateContext()" /></td>
+				<td ng-bind="context.unit_price"></td>
+				<td ng-bind="context.subtotal"></td>
 			</tr>
 			<tr>
 				<td colspan="3">
-					<button class="btn btn-primary pull-right" ng-click="add_to_cart('{% url 'shop-api:cart-list' %}')">{% trans "Add to cart" %}</button>
+					<button class="btn btn-primary pull-right" ng-click="addToCart('{% url 'shop-api:cart-list' %}')">{% trans "Add to cart" %}</button>
 				</td>
 			</tr>
 		</tbody>
