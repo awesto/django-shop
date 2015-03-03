@@ -7,9 +7,11 @@ from rest_framework import renderers
 class CMSPageRenderer(renderers.TemplateHTMLRenderer):
     """
     Modified TemplateHTMLRenderer, which is able to render CMS pages containing the templatetag
-    ``{% render_placeholder ... %}``, and which accept ordinary Python objects in their rendering
-    context. The serialized data object, as available to other renderers is explicitly added to
-    the context as ``data``.
+    `{% render_placeholder ... %}`, and which accept ordinary Python objects in their rendering
+    context.
+    The serialized data object, as available to other REST renderers is explicitly added to the
+    context as ``data``. Therefore keep in mind that templates for the `TemplateHTMLRenderer`
+    are not compatible with this renderer.
     """
     def render(self, data, accepted_media_type=None, context=None):
         view = context.pop('view')
