@@ -47,7 +47,8 @@ class AddToCartView(views.APIView):
     """
     Handle the "Add to Cart" dialog on the products detail page.
     """
-    renderer_classes = (TemplateHTMLRenderer, JSONRenderer, BrowsableAPIRenderer)
+    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
+    serializer_class = AddToCartSerializer
     lookup_field = lookup_url_kwarg = 'slug'
     limit_choices_to = Q()
 
@@ -59,18 +60,14 @@ class AddToCartView(views.APIView):
         product = get_object_or_404(queryset)
         return {'product': product, 'request': request}
 
-    def get_template_names(self):
-        # TODO: more templates
-        return ['shop/product-add2cart.html']
-
     def get(self, request, *args, **kwargs):
         context = self.get_context(request, **kwargs)
-        serializer = AddToCartSerializer(context=context)
+        serializer = self.serializer_class(context=context)
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
         context = self.get_context(request, **kwargs)
-        serializer = AddToCartSerializer(data=request.data, context=context)
+        serializer = self.serializer_class(data=request.data, context=context)
         if serializer.is_valid():
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -84,19 +81,8 @@ class ProductRetrieveView(generics.RetrieveAPIView):
     """
     renderer_classes = (CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer)
     lookup_field = lookup_url_kwarg = 'slug'
-    serializer_class = None
+    serializer_class = None  # must be set by method `as_view()`
     limit_choices_to = Q()
-
-#     def get_serializer_class(self):
-#         product = self.get_object()
-#         class_name = product.__class__.__name__ + str('Serializer')
-# 
-#         class Meta:
-#             model = product.__class__
-#             exclude = ('active',)
-# 
-#         Serializer = type(class_name, (ProductDetailSerializerBase,), {'Meta': Meta})
-#         return Serializer
 
     def get_template_names(self):
         product = self.get_object()
