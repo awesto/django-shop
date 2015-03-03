@@ -29,6 +29,8 @@ class ProductSummarySerializerBase(ProductCommonSerializer):
     Serialize a subset of the Product model, suitable for list views, cart- and order-lists.
     """
     product_url = serializers.CharField(source='get_absolute_url', read_only=True)
+    product_type = serializers.CharField(read_only=True)
+    product_model = serializers.CharField(read_only=True)
     html = serializers.SerializerMethodField()  # HTML snippet for product's summary
 
     def find_template(self, product):
