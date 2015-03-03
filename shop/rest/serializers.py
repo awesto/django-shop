@@ -73,7 +73,7 @@ class AddToCartSerializer(serializers.Serializer):
     subtotal = MoneyField(read_only=True)
     product = serializers.IntegerField(read_only=True, help_text="The product's primary key")
 
-    def __init__(self, data=empty, **kwargs):
+    def __init__(self, instance=None, data=empty, **kwargs):
         context = kwargs.get('context', {})
         if 'product' not in context or 'request' not in context:
             raise ValueError("A context is required for this serializer and must contain the `product` and the `request` object.")
@@ -85,6 +85,3 @@ class AddToCartSerializer(serializers.Serializer):
             quantity = data['quantity']
         instance.update(quantity=quantity, unit_price=unit_price, subtotal=quantity * unit_price)
         super(AddToCartSerializer, self).__init__(instance, data, **kwargs)
-
-    def validate_quantity(self, data):
-        return data
