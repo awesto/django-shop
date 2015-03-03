@@ -1,4 +1,6 @@
 {% load cms_tags i18n %}
+
+{% block "add-product-to-cart-panel" %}
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<h3 class="panel-title">{% trans "Order Product" %}</h3>
@@ -22,18 +24,30 @@
 			</tr>
 		</tbody>
 	</table>
-	<script id="AddToCartModalDialog.html" type="text/ng-template">
-		<div class="modal-header">
-			<h4 class="modal-title">{% trans "The product has been successfully placed in the shopping cart:" %}</h4>
-		</div>
-		<div class="modal-body">
-			{% verbatim %}{{ context.quantity|number }} &times; {{ context.product_name }}{% endverbatim %}
-			{% trans "for {{ context.unit_price }} per piece: {{ context.subtotal }}" %}
-		</div>
-		<div class="modal-footer">
-			<button class="btn btn-primary" ng-click="proceed('{# % url 'shop:cart' % #}')">{% trans "Show Cart" %}</button>
-			<button class="btn btn-primary" ng-click="proceed('{% page_url request.current_page %}')">{% trans "Continue Shopping" %}</button>
-			<button class="btn btn-warning" ng-click="cancel()">{% trans "Cancel" %}</button>
-		</div>
-	</script>
 </div>
+{% endblock "add-product-to-cart-panel" %}
+
+{% block "add-to-cart-modal-dialog" %}
+<script id="AddToCartModalDialog.html" type="text/ng-template">
+	{% block "add-to-cart-modal-header" %}
+	<div class="modal-header">
+		<h4 class="modal-title">{% trans "The product has been successfully placed in the shopping cart:" %}</h4>
+	</div>
+	{% endblock "add-to-cart-modal-header" %}
+
+	{% block "add-to-cart-modal-body" %}
+	<div class="modal-body">
+		{% verbatim %}{{ context.quantity|number }} &times; {% endverbatim %}{{ product.name }}
+		{% trans "for {{ context.unit_price }} per piece: {{ context.subtotal }}" %}
+	</div>
+	{% endblock "add-to-cart-modal-body" %}
+
+	{% block "add-to-cart-modal-footer" %}
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="proceed('{% page_url "shop-cart" %}')">{% trans "Show Cart" %}</button>
+		<button class="btn btn-primary" ng-click="proceed('{% page_url request.current_page %}')">{% trans "Continue Shopping" %}</button>
+		<button class="btn btn-warning" ng-click="cancel()">{% trans "Cancel" %}</button>
+	</div>
+	{% endblock "add-to-cart-modal-footer" %}
+</script>
+{% endblock "add-to-cart-modal-dialog" %}

@@ -1,23 +1,33 @@
 {% load i18n %}
+
+{% block "shop-cart-table" %}
 <table shop-cart class="table table-hover">
 	<!-- content is rendered via template "shop/cart.html" -->
 </table>
+{% endblock "shop-cart-table" %}
 
 <script id="shop/cart.html" type="text/ng-template">
+{% block "shop-cart-thead" %}
 	<thead>
 		<tr>
 			<th class="col-xs-8 col-md-6">{% trans "Product" %}</th>
 			<th class="col-xs-1 text-center">{% trans "Quantity" %}</th>
 			<th class="col-xs-1 text-center">{% trans "Price" %}</th>
-			<th class="col-xs-1 col-md-2 text-center">{% trans "Total" %}</th>
+			<th class="col-xs-1 col-md-2 text-right">{% trans "Total" %}</th>
 			<th class="col-xs-1"></th>
 		</tr>
 	</thead>
+{% endblock "shop-cart-thead" %}
+
+{% block "shop-cart-tbody" %}
 	<tbody>
 		<tr shop-cart-item ng-repeat="cart_item in cart.items">
 			<!-- content is rendered via template "shop/cart-item.html" -->
 		</tr>
 	</tbody>
+{% endblock "shop-cart-tbody" %}
+
+{% block "shop-cart-tfoot" %}
 	<tfoot>
 		<tr>
 			<td></td>
@@ -47,9 +57,11 @@
 			<td></td>
 		</tr>
 	</tfoot>
+{% endblock "shop-cart-tfoot" %}
 </script>
 
 <script id="shop/cart-item.html" type="text/ng-template">
+{% block "shop-cart-item" %}
 	<td ng-bind-html="cart_item.details.html">
 		<!-- content is rendered via template "cart-product-summary.html" -->
 	</td>
@@ -66,4 +78,5 @@
 			<span class="glyphicon glyphicon-ok-circle"></span>&nbsp;{% trans "Watch Item" %}
 		</button>
 	</td>
+{% endblock "shop-cart-item" %}
 </script>
