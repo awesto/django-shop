@@ -7,6 +7,7 @@ var djangoShopModule = angular.module('django.shop.product', ['ui.bootstrap']);
 djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$modal',
                                                function($scope, $http, $window, $modal) {
 	var updateUrl = $window.location.pathname + '/add-to-cart' + $window.location.search;
+	var isLoading = false;
 
 	this.loadContext = function() {
 		$http.get(updateUrl).success(function(context) {
@@ -19,11 +20,16 @@ djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$mo
 	}
 
 	$scope.updateContext = function() {
+		if (isLoading)
+			return;
+		isLoading = true;
 		$http.post(updateUrl, $scope.context).success(function(context) {
+			isLoading = false;
 			console.log('loaded product:');
 			console.log(context);
 			$scope.context = context;
 		}).error(function(msg) {
+			isLoading = false;
 			console.error('Unable to update context: ' + msg);
 		});
 	}
@@ -38,7 +44,7 @@ djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$mo
 				}
 			}
 		}).result.then(function(next_url) {
-			console.log(next_url);
+			$window.location.href = next_url;
 		});
 	}
 
