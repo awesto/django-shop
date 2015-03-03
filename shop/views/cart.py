@@ -36,7 +36,8 @@ class ProductSummarySerializer(ProductSummarySerializerBase):
     # TODO: see if we can reuse the existing ProductSummarySerializer
     class Meta:
         model = getattr(BaseProduct, 'MaterializedModel')
-        fields = ('name', 'identifier', 'price', 'availability', 'product_url', 'html', 'description')
+        fields = ('name', 'identifier', 'price', 'availability', 'product_url', 'product_type',
+                  'product_model', 'html', 'description')
 
 
 class BaseItemSerializer(serializers.ModelSerializer):

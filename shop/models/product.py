@@ -115,6 +115,12 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         return force_text(self.polymorphic_ctype)
     product_type.short_description = _("Product type")
 
+    def product_model(self):
+        """
+        Returns the polymorphic model name of the product's class.
+        """
+        return self.polymorphic_ctype.model
+
     def get_absolute_url(self):
         """
         Hook for returning the canonical Django URL of this product.
