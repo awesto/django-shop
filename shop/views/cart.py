@@ -109,7 +109,6 @@ class WatchSerializer(BaseCartSerializer):
 
 
 class BaseViewSet(viewsets.ModelViewSet):
-    serializer_class = None  # otherwise DRF complains
     paginate_by = None
 
     def get_queryset(self):
@@ -120,6 +119,13 @@ class BaseViewSet(viewsets.ModelViewSet):
         # otherwise the CartSerializer will show its detail and list all its items
         return cart
 
+    def get_serializer(self, *args, **kwargs):
+        kwargs['context'] = self.get_serializer_context()
+        many = kwargs.pop('many', False)
+        if many:
+            return self.serializer_class(*args, **kwargs)
+        return self.item_serializer_class(*args, **kwargs)
+
     def finalize_response(self, request, response, *args, **kwargs):
         """Set HTTP headers to not cache this view"""
         if self.action != 'render_product_summary':
@@ -128,18 +134,10 @@ class BaseViewSet(viewsets.ModelViewSet):
 
 
 class CartViewSet(BaseViewSet):
-    def get_serializer(self, *args, **kwargs):
-        kwargs['context'] = self.get_serializer_context()
-        many = kwargs.pop('many', False)
-        if many:
-            return CartSerializer(*args, **kwargs)
-        return CartItemSerializer(*args, **kwargs)
+    serializer_class = CartSerializer
+    item_serializer_class = CartItemSerializer
 
 
 class WatchViewSet(BaseViewSet):
-    def get_serializer(self, *args, **kwargs):
-        kwargs['context'] = self.get_serializer_context()
-        many = kwargs.pop('many', False)
-        if many:
-            return WatchSerializer(*args, **kwargs)
-        return WatchItemSerializer(*args, **kwargs)
+    serializer_class = WatchSerializer
+    item_serializer_class = WatchItemSerializer
