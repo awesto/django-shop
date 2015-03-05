@@ -1,155 +1,98 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
 
 class BaseCartModifier(object):
     """
     Price modifiers are the cart's counterpart to backends.
-    It allows to implement Taxes and rebates / bulk prices in an elegant
-    manner:
+    It allows to implement Taxes and rebates / bulk prices in an elegant manner:
 
-    Every time the cart is refreshed (via it's update() method), the cart will
-    call all subclasses of this class registered with their full path in the
-    settings.SHOP_CART_MODIFIERS setting, calling methods defined here are
-    in the following sequence:
+    Every time the cart is refreshed (via it's update() method), the cart will call all subclasses
+    of this modifier class registered with their full path in `settings.SHOP_CART_MODIFIERS`.
 
-    1. pre_process_cart: Totals are not computed, the cart is "rough": only
-        relations and quantities are available
-    2. process_cart_item: Called for each cart_item in the cart. The current
-       total for this item is available as current_total
-    (2.a). get_extra_cart_item_price_field: A helper method provided for simple
-           use cases. It returns a tuple of (description, value) to add to the
-           current cart_item
-    3. process_cart: Called once for the whole cart. Here, all fields relative
-       to cart items are filled, as well as the cart subtotal. The current
-       total is available as Cart.current_total (it includes modifications from
-       previous calls to this method, in other modifiers)
-    (3.a). get_extra_cart_price_field: A helper method for simple use cases. It
-           returns a tuple of (description, value) to add to the current
-           cart_item
-    4. post_process_cart: all totals are up-to-date, the cart is ready to be
-       displayed. Any change you make here must be consistent!
+    The methods defined here are called in the following sequence:
+
+    1.  `pre_process_cart`: Totals are not computed, the cart is "rough": only relations and
+        quantities are available
+    2.  `process_cart_item`: Called for each cart_item in the cart. The modifier may change the
+        amount in `cart_item.line_total`.
+    2a. `add_extra_cart_item_row`: It optionally adds an object of type `ExtraCartRow` to the
+        current cart item. This object adds additional information displayed on each cart items
+        line.
+    3.  `process_cart`: Called once for the whole cart. Here, all fields relative to cart items are
+        filled. Here the carts subtotal is used to computer the carts total.
+    3a. `add_extra_cart_row`: It optionally adds an object of type `ExtraCartRow` to the current
+        cart. This object adds additional information displayed in the carts footer section.
+    4.  `post_process_cart`: all totals are up-to-date, the cart is ready to be displayed. Any
+        change you make here must be consistent!
+    Each method accepts the HTTP `request` object. It shall be used to let implementations
+    determine their prices according to the session, and other request information. The `request`
+    object also can be used to store arbitrary data to be passed between modifers using the
+    temporary dict `request.cart_modifiers_state`.
     """
 
-    #==========================================================================
-    # Processing hooks
-    #==========================================================================
+    def __init__(self, identifier=None):
+        """
+        Initialize the modifier with a named identifier. Defaults to its classname.
+        """
+        self.identifier = identifier or getattr(self, 'identifier', self.__class__.__name__.lower())
 
     def pre_process_cart(self, cart, request):
         """
-        This method will be called before the cart starts being processed.
+        This method will be called before the Cart starts being processed.
         Totals are not updated yet (obviously), but this method can be useful
         to gather some information on products in the cart.
-
-        The ``request`` object is further passed to process_cart_item,
-        process_cart, and post_process_cart. If you have to store per-request
-        arbitrary information, add them the the temporary dict ``request.cart_modifiers_state``.
         """
         pass
 
     def post_process_cart(self, cart, request):
         """
         This method will be called after the cart was processed.
-        The Cart object is "final" and all the fields are computed. Remember
-        that anything changed at this point should be consistent: if updating
-        the price you should also update all relevant totals (for example).
+        The Cart object is "final" and all the fields are computed. Remember that anything changed
+        at this point should be consistent: If updating the price you should also update all
+        relevant totals (for example).
         """
         pass
 
     def process_cart_item(self, cart_item, request):
         """
         This will be called for every line item in the Cart:
-        Line items typically contain: product, unit_price, quantity...
+        Line items typically contain: product, unit_price, quantity and optional extra row
+        information.
 
-        Subtotal for every line (unit price * quantity) is already computed,
-        but the line total is 0, and is expected to be calculated in the Cart's
-        update() method. Subtotal and total should NOT be written by this.
+        If configured, the starting line total for every line (unit price * quantity) is computed
+        by the `DefaultCartModifier`, which typically is listed as the first modifier. Posterior
+        modifiers can optionally change the cart items line total.
 
-        Overrides of this method should however update cart_item.current_total,
-        since it will potentially be used by other modifiers.
-
-        The request object is used to let implementations determine their
-        prices according to session, and other request information and to
-        use this object to store arbitrary data to be passed between
-        cart_item_modifers and cart_modifiers.
+        After processing all cart items with all modifiers, these line totals are summed up to form
+        the carts subtotal, which is used by method `process_cart`.
         """
-        field = self.get_extra_cart_item_price_field(cart_item, request)
-        if field is not None:
-            price = field[1]
-            cart_item.current_total = cart_item.current_total + price
-            cart_item.extra_price_fields.append(field)
-        return cart_item
+        self.add_extra_cart_item_row(cart_item, request)
 
     def process_cart(self, cart, request):
         """
-        This will be called once per Cart, after every line item was treated
-        The subtotal for the cart is already known, but the Total is 0.
-        Like for the line items, total is expected to be calculated in the
-        cart's update() method.
+        This will be called once per Cart, after every line item was treated by method
+        `process_cart_item`.
 
-        Line items should be complete by now, so all of their fields are
-        accessible.
-
-        Subtotal is accessible, but total is still 0.0. Overrides are expected
-        to update cart.current_total.
-
-        The ``request`` object is used to let implementations determine their
-        prices according to session, and other request information. Use the
-        Python dict ``request.cart_modifier_state`` to pass arbitrary data between
-        cart_item_modifers and cart_modifiers.
+        The subtotal for the cart is already known, but the total is still unknown.
+        Like for the line items, the total is expected to be calculated by the first cart modifier,
+        which typically is the `DefaultCartModifier`. Posterior modifiers can optionally change the
+        total and add additional information to the cart using an object of type `ExtraCartRow`.
         """
-        field = self.get_extra_cart_price_field(cart, request)
-        if field is not None:
-            price = field[1]
-            cart.current_total = cart.current_total + price
-            cart.extra_price_fields.append(field)
-        return cart
+        self.add_extra_cart_row(cart, request)
 
-    #==========================================================================
-    # Simple methods
-    #==========================================================================
-
-    def get_extra_cart_item_price_field(self, cart_item, request):
+    def add_extra_cart_item_row(self, cart_item, request):
         """
-        Get an extra price field tuple for the current cart_item:
+        Optionally add an `ExtraCartRow` object to the current cart item.
 
-        This allows to modify the price easily, simply return a
-        ('Label', Decimal('amount')) from an override. This is expected to be
-        a tuple. The decimal should be the amount that should get added to the
-        current subtotal. It can be a negative value.
-
-        An optional third tuple element can be used to store extra data of any
-        kind, which must be serializable as JSON.
-
-        In case your modifier is based on the current price (for example in
-        order to compute value added tax for this cart item only) your
-        override can access that price via ``cart_item.current_total``.
-
-        A tax modifier would do something like this:
-        >>> return ('taxes', Decimal(9), {'rate': Decimal(10), 'identifier': 'V.A.T.'})
-        Note that the third element in this tuple is optional.
-
-        And a rebate modifier would do something along the lines of:
-        >>> return ('rebate', Decimal(-9), {'rate': Decimal(3), 'identifier': 'Discount'})
-        Note that the third element in this tuple is optional.
-
-        More examples can be found in shop.cart.modifiers.*
+        This allows to add an additional row description to a cart item line.
+        This method optionally utilizes or modifies the amount in `cart_item.line_total`.
         """
-        return None  # Does nothing by default
 
-    def get_extra_cart_price_field(self, cart, request):
+    def add_extra_cart_row(self, cart, request):
         """
-        Get an extra price field tuple for the current cart:
+        Optionally add an `ExtraCartRow` object to the current cart.
 
-        This allows to modify the price easily, simply return a
-        ('Label', Decimal('amount')) from an override. This is expected to be
-        a tuple. The decimal should be the amount that should get added to the
-        current subtotal. It can be a negative value.
-
-        In case your modifier is based on the current price (for example in
-        order to compute value added tax for the whole current price) your
-        override can access that price via ``cart.current_total``. That is the
-        subtotal, updated with all cart modifiers so far)
-
-        >>> return ('Taxes total', 19.00)
+        This allows to add an additional row description to the cart.
+        This method optionally utilizes `cart.subtotal` and modifies the amount in `cart.total`.
         """
-        return None

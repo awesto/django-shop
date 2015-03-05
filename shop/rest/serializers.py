@@ -85,3 +85,19 @@ class AddToCartSerializer(serializers.Serializer):
             quantity = data['quantity']
         instance.update(quantity=quantity, unit_price=unit_price, subtotal=quantity * unit_price)
         super(AddToCartSerializer, self).__init__(instance, data, **kwargs)
+
+
+class ExtraCartRow(serializers.Serializer):
+    """
+    This data structure holds extra information for each item, or for the whole cart, while
+    processing the cart using their modifiers.
+    """
+    label = serializers.CharField(read_only=True,
+        help_text="A short description of this row in a natural language.")
+    amount = MoneyField(read_only=True,
+        help_text="The price difference, if applied.")
+
+
+class ExtraCartRowList(serializers.Serializer):
+    def to_representation(self, obj):
+        return [dict(ecr.data, modifier=modifier) for modifier, ecr in obj.items()]

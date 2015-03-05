@@ -4,7 +4,7 @@ from django.utils.cache import add_never_cache_headers
 from rest_framework import serializers, viewsets
 from shop.models.cart import BaseCart, BaseCartItem, BaseProduct
 from shop.rest.money import MoneyField
-from shop.rest.serializers import ProductSummarySerializerBase
+from shop.rest.serializers import ProductSummarySerializerBase, ExtraCartRowList
 
 
 CartModel = getattr(BaseCart, 'MaterializedModel')
@@ -42,16 +42,17 @@ class ProductSummarySerializer(ProductSummarySerializerBase):
 
 class BaseItemSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(lookup_field='pk', view_name='shop-api:cart-detail')
-    line_subtotal = MoneyField()
     line_total = MoneyField()
     details = ProductSummarySerializer(source='product', read_only=True)
+    extra_rows = ExtraCartRowList(read_only=True)
 
     class Meta:
         model = CartItemModel
 
     def validate_product(self, product):
         if not product.active:
-            raise serializers.ValidationError("Product '{}' is inactive, and can not be added to the cart.".format(product))
+            msg = "Product `{}` is inactive, and can not be added to the cart."
+            raise serializers.ValidationError(msg.format(product))
         return product
 
     def create(self, validated_data):
@@ -80,8 +81,9 @@ class WatchItemSerializer(BaseItemSerializer):
 
 
 class BaseCartSerializer(serializers.ModelSerializer):
-    subtotal_price = MoneyField()
-    total_price = MoneyField()
+    subtotal = MoneyField()
+    total = MoneyField()
+    extra_rows = ExtraCartRowList(read_only=True)
 
     class Meta:
         model = CartModel
@@ -98,7 +100,7 @@ class CartSerializer(BaseCartSerializer):
     items = CartItemSerializer(many=True, read_only=True)
 
     class Meta(BaseCartSerializer.Meta):
-        fields = ('items', 'subtotal_price', 'total_price',)
+        fields = ('items', 'subtotal', 'extra_rows', 'total',)
 
 
 class WatchSerializer(BaseCartSerializer):

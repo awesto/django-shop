@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from decimal import Decimal
 from django.conf import settings
 
 
@@ -10,3 +11,7 @@ DECIMAL_PLACES = getattr(settings, 'SHOP_DECIMAL_PLACES', 2)
 """
 Number of decimal places for the internal representation of a price. Not visible to the customer.
 """
+
+CART_MODIFIERS = getattr(settings, 'SHOP_CART_MODIFIERS', ('shop.cart.modifiers.DefaultCartModifier',))
+
+VALUE_ADDED_TAX = getattr(settings, 'SHOP_VALUE_ADDED_TAX', Decimal('20'))

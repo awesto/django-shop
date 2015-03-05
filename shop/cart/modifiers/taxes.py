@@ -1,41 +1,46 @@
 # -*- coding: utf-8 -*-
-from decimal import Decimal
-from shop.cart.cart_modifiers_base import BaseCartModifier
+from django.utils.translation import ugettext
+from shop import settings
+from shop.rest.serializers import ExtraCartRow
+from shop.cart.modifiers.base import BaseCartModifier
 
 
-class TenPercentGlobalTaxModifier(BaseCartModifier):
+class CartIncludeTaxModifier(BaseCartModifier):
     """
-    A basic Tax calculator: it simply adds a taxes field to the *order*,
-    and makes it a fixed percentage of the subtotal (10%)
-
-    Obviously, this is only provided as an example, and anything serious should
-    use a more dynamic configuration system, such as settings or models to
-    hold the tax values...
+    This tax calculator presumes that unit prices are net prices, hence also the subtotal,
+    and that the tax is added globally to the carts total.
+    By placing this modifier before the shipping modifiers, one can add tax to
+    the shipping costs. Otherwise shipping cost are considered tax free.
     """
-    TAX_PERCENTAGE = Decimal('10')
+    taxes = settings.VALUE_ADDED_TAX / 100
 
-    def get_extra_cart_price_field(self, cart, request):
+    def add_extra_cart_row(self, cart, request):
         """
         Add a field on cart.extra_price_fields:
         """
-        taxes = (self.TAX_PERCENTAGE / 100) * cart.current_total
-        result_tuple = ('Taxes total', taxes)
-        return result_tuple
+        amount = cart.subtotal * self.taxes
+        instance = {
+            'label': ugettext("+ {}% V.A.T").format(settings.VALUE_ADDED_TAX),
+            'amount': amount,
+        }
+        cart.extra_rows[self.identifier] = ExtraCartRow(instance)
+        cart.total += amount
 
 
-class TenPercentPerItemTaxModifier(BaseCartModifier):
+class CartExcludedTaxModifier(BaseCartModifier):
     """
-    This adds a 10% tax cart modifier, calculated on the item's base price,
-    plus any modifier applied to the cart item *so far* (order matters!).
-
-    Make sure the moment you apply taxes comply with your local regulations!
-    Some countries insist that taxes are calculated after/before discounts, and
-    so forth
+    This tax calculator presumes that unit prices are gross prices, hence also the subtotal,
+    and that the tax is identified per cart but not added.
     """
-    TAX_PERCENTAGE = Decimal("10")
+    taxes = 1 - 1 / (1 + settings.VALUE_ADDED_TAX / 100)
 
-    def get_extra_cart_item_price_field(self, cart_item, request):
-        tax_amount = (self.TAX_PERCENTAGE / 100) * cart_item.current_total
-
-        result_tuple = ('Taxes (10%)', tax_amount)
-        return result_tuple
+    def add_extra_cart_row(self, cart, request):
+        """
+        Add a field on cart.extra_price_fields:
+        """
+        amount = cart.subtotal * self.taxes
+        instance = {
+            'label': ugettext("{}% V.A.T incl.").format(settings.VALUE_ADDED_TAX),
+            'amount': amount,
+        }
+        cart.extra_rows[self.identifier] = ExtraCartRow(instance)
