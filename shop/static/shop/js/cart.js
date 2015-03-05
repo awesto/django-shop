@@ -6,6 +6,7 @@ var djangoShopModule = angular.module('django.shop.cart', []);
 
 djangoShopModule.controller('CartController', ['$scope', '$http', 'djangoUrl', function($scope, $http, djangoUrl) {
 	var cartListURL = djangoUrl.reverse('shop-api:cart-list');
+	var isLoading = false;
 
 	this.loadCart = function() {
 		$http.get(cartListURL).success(function(cart) {
@@ -18,15 +19,19 @@ djangoShopModule.controller('CartController', ['$scope', '$http', 'djangoUrl', f
 	}
 
 	function postCartItem(cart_item, method) {
-		console.log(cart_item);
 		var config = {headers: {'X-HTTP-Method-Override': method}};
+		if (isLoading)
+			return;
+		isLoading = true;
 		$http.post(cart_item.url, cart_item, config).then(function(response) {
 			console.log(response);
 			return $http.get(cartListURL);
 		}).then(function(response) {
+			isLoading = false;
 			console.log(response);
 			angular.copy(response.data, $scope.cart);
 		}, function(error) {
+			isLoading = false;
 			console.error(error);
 		});
 	}

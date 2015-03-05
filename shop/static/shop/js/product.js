@@ -52,11 +52,17 @@ djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$mo
 
 djangoShopModule.controller('ModalInstanceCtrl', ['$scope', '$http', '$modalInstance', 'modal_context',
                                         function($scope, $http, $modalInstance, modal_context) {
+	var isLoading = false;
 	console.log(modal_context);
 	$scope.proceed = function(next_url) {
+		if (isLoading)
+			return;
+		isLoading = true;
 		$http.post(modal_context.cart_url, $scope.context).success(function() {
+			isLoading = false;
 			$modalInstance.close(next_url);
 		}).error(function() {
+			isLoading = false;
 			// TODO: tell us something went wrong
 			$modalInstance.dismiss('cancel');
 		});
