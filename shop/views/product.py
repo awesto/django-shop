@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from shop.rest.money import JSONRenderer
 from shop.rest.serializers import AddToCartSerializer
 from shop.rest.renderers import CMSPageRenderer
-from shop.models.product import BaseProduct
+from shop.models.product import ProductModel
 
 
 class ProductListView(generics.ListAPIView):
@@ -21,7 +21,7 @@ class ProductListView(generics.ListAPIView):
     template_name = 'shop/products-list.html'
 
     def get_queryset(self):
-        qs = getattr(BaseProduct, 'MaterializedModel').objects.filter(self.limit_choices_to)
+        qs = ProductModel.objects.filter(self.limit_choices_to)
 
         # restrict products for current CMS page
         current_page = self.request._request.current_page
@@ -55,8 +55,7 @@ class AddToCartView(views.APIView):
     def get_context(self, request, **kwargs):
         assert self.lookup_url_kwarg in kwargs
         filter_kwargs = {self.lookup_field: kwargs.pop(self.lookup_url_kwarg)}
-        queryset = getattr(BaseProduct, 'MaterializedModel').objects
-        queryset = queryset.filter(self.limit_choices_to, **filter_kwargs)
+        queryset = ProductModel.objects.filter(self.limit_choices_to, **filter_kwargs)
         product = get_object_or_404(queryset)
         return {'product': product, 'request': request}
 
@@ -105,8 +104,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
         if not hasattr(self, '_product'):
             assert self.lookup_url_kwarg in self.kwargs
             filter_kwargs = {self.lookup_field: self.kwargs[self.lookup_url_kwarg]}
-            queryset = getattr(BaseProduct, 'MaterializedModel').objects
-            queryset = queryset.filter(self.limit_choices_to, **filter_kwargs)
+            queryset = ProductModel.objects.filter(self.limit_choices_to, **filter_kwargs)
             product = get_object_or_404(queryset)
             self._product = product
         return self._product

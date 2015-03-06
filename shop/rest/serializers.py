@@ -6,6 +6,8 @@ from django.template import RequestContext
 from django.template.loader import select_template
 from rest_framework import serializers
 from rest_framework.fields import empty
+from shop.models.cart import CartModel, CartItemModel, BaseCartItem
+from shop.models.product import ProductModel
 from shop.rest.money import MoneyField
 
 

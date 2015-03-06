@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.core.validators import MinValueValidator
 from django.core.serializers.json import DjangoJSONEncoder
+from django.utils.functional import SimpleLazyObject
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from jsonfield.fields import JSONField
@@ -87,6 +88,8 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         for modifier in cart_modifiers_pool.get_modifiers_list():
             modifier.process_cart_item(self, request)
         self._dirty = False
+
+CartItemModel = SimpleLazyObject(lambda: getattr(BaseCartItem, 'MaterializedModel'))
 
 
 class CartVariableItemManager(CartItemManager):
@@ -246,3 +249,5 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     @property
     def is_empty(self):
         return self.total_quantity == 0
+
+CartModel = SimpleLazyObject(lambda: getattr(BaseCart, 'MaterializedModel'))

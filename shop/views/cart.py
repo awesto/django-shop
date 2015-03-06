@@ -2,7 +2,6 @@
 from django.db import models
 from django.utils.cache import add_never_cache_headers
 from rest_framework import serializers, viewsets
-from shop.models.cart import BaseCart, BaseCartItem, BaseProduct
 from shop.rest.money import MoneyField
 from shop.rest.serializers import ProductSummarySerializerBase, ExtraCartRowList
 
@@ -108,6 +107,7 @@ class WatchSerializer(BaseCartSerializer):
 
     class Meta(BaseCartSerializer.Meta):
         fields = ('items',)
+from shop.models.cart import CartModel, CartItemModel
 
 
 class BaseViewSet(viewsets.ModelViewSet):

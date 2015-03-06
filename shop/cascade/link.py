@@ -9,7 +9,7 @@ from cmsplugin_cascade.link.fields import LinkSearchField
 from cmsplugin_cascade.link.plugin_base import LinkPluginBase, LinkElementMixin
 from cmsplugin_cascade.fields import PartialFormField
 from cmsplugin_cascade.utils import resolve_dependencies
-from shop.models.product import BaseProduct
+from shop.models.product import ProductModel
 
 
 class TextLinkFormBase(TextLinkForm):
@@ -63,7 +63,6 @@ class TextLinkPlugin(LinkPluginBase):
         js = resolve_dependencies('shop/js/admin/shoplinkplugin.js')
 
     def get_form(self, request, obj=None, **kwargs):
-        ProductModel = getattr(BaseProduct, 'MaterializedModel')
         # must add field `product` on the fly, because during the declaration of TextLinkFormBase
         # the MaterializedModel of the product is not known yet.
         product_field = LinkSearchField(required=False, label='',

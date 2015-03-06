@@ -4,6 +4,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.db.models.aggregates import Count
 from django.utils import six
+from django.utils.functional import SimpleLazyObject
 from django.utils.encoding import python_2_unicode_compatible, force_text
 from django.utils.translation import ugettext_lazy as _
 from polymorphic.manager import PolymorphicManager
@@ -49,8 +50,7 @@ class PolymorphicProductMetaclass(PolymorphicModelBase):
     accessing its model manager. Since polymoriphic product classes, normally are materialized
     by more than one model, this metaclass finds the most generic one and associates its
     MaterializedModel with it.
-    For instance,``BaseProduct.MaterializedModel.objects.all()`` returns all available products
-    from the shop.
+    For instance,``ProductModel.objects.all()`` returns all available products from the shop.
     """
     def __new__(cls, name, bases, attrs):
         Model = super(PolymorphicProductMetaclass, cls).__new__(cls, name, bases, attrs)
@@ -146,3 +146,5 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         considered as not available.
         """
         return [(True, datetime.max)]  # Infinite number of products available until eternity
+
+ProductModel = SimpleLazyObject(lambda: getattr(BaseProduct, 'MaterializedModel'))
