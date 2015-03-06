@@ -99,5 +99,8 @@ class ExtraCartRow(serializers.Serializer):
 
 
 class ExtraCartRowList(serializers.Serializer):
+    """
+    Represent a list of `ExtraCartRow`s. Additionally add the modifiers identifier to each element.
+    """
     def to_representation(self, obj):
         return [dict(ecr.data, modifier=modifier) for modifier, ecr in obj.items()]
