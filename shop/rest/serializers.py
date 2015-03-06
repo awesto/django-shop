@@ -39,10 +39,10 @@ class ProductSummarySerializerBase(ProductCommonSerializer):
     def find_template(self, product):
         app_label = product._meta.app_label.lower()
         basename = '{}-summary.html'.format(product.__class__.__name__.lower())
-        prefix = self.context.get('serializer_name')
         templates = [(app_label, basename), (app_label, 'product-summary.html'), ('shop', 'product-summary.html')]
-        if prefix:
-            prefixed_templates = [(base, prefix + '-' + leaf) for base, leaf in templates]
+        if self.root.label:
+            # with this label we can distinguish between different serializer instantiations
+            prefixed_templates = [(base, self.root.label + '-' + leaf) for base, leaf in templates]
             templates = itertools.chain.from_iterable(zip(prefixed_templates, templates))
         templates = [os.path.join(base, leaf) for base, leaf in templates]
         return select_template(templates)
@@ -189,7 +189,6 @@ class BaseCartSerializer(serializers.ModelSerializer):
     def to_representation(self, cart):
         if cart.is_dirty:
             cart.update(self.context['request'])
-        self.context['serializer_name'] = 'cart'
         representation = super(BaseCartSerializer, self).to_representation(cart)
         return representation
 

@@ -17,7 +17,7 @@ class BaseViewSet(viewsets.ModelViewSet):
         return cart
 
     def get_serializer(self, *args, **kwargs):
-        kwargs['context'] = self.get_serializer_context()
+        kwargs.update(context=self.get_serializer_context(), label=self.serializer_label)
         many = kwargs.pop('many', False)
         if many:
             return self.serializer_class(*args, **kwargs)
@@ -31,10 +31,12 @@ class BaseViewSet(viewsets.ModelViewSet):
 
 
 class CartViewSet(BaseViewSet):
+    serializer_label = 'cart'
     serializer_class = serializers.CartSerializer
     item_serializer_class = serializers.CartItemSerializer
 
 
 class WatchViewSet(BaseViewSet):
+    serializer_label = 'watch'
     serializer_class = serializers.WatchSerializer
     item_serializer_class = serializers.WatchItemSerializer
