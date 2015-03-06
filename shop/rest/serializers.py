@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 import os
 import itertools
+from django.db import models
 from django.template import RequestContext
 from django.template.loader import select_template
 from rest_framework import serializers
@@ -106,3 +107,102 @@ class ExtraCartRowList(serializers.Serializer):
     """
     def to_representation(self, obj):
         return [dict(ecr.data, modifier=modifier) for modifier, ecr in obj.items()]
+
+
+class CartListSerializer(serializers.ListSerializer):
+    """
+    This serializes a list of cart items, whose quantity is non-zero.
+    """
+    def get_attribute(self, instance):
+        manager = super(CartListSerializer, self).get_attribute(instance)
+        assert isinstance(manager, models.Manager) and issubclass(manager.model, BaseCartItem)
+        return manager.filter(quantity__gt=0)
+
+
+class WatchListSerializer(serializers.ListSerializer):
+    """
+    This serializes a list of cart items, whose quantity is zero. Thus these items are considered
+    to be in the watch list, which effectively is the cart.
+    """
+    def get_attribute(self, instance):
+        manager = super(WatchListSerializer, self).get_attribute(instance)
+        assert isinstance(manager, models.Manager) and issubclass(manager.model, BaseCartItem)
+        return manager.filter(quantity=0)
+
+
+class ProductSummarySerializer(ProductSummarySerializerBase):
+    # TODO: see if we can reuse the existing ProductSummarySerializer
+    class Meta:
+        model = ProductModel
+        fields = ('name', 'identifier', 'price', 'availability', 'product_url', 'product_type',
+                  'product_model', 'html', 'description')
+
+
+class BaseItemSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(lookup_field='pk', view_name='shop-api:cart-detail')
+    line_total = MoneyField()
+    details = ProductSummarySerializer(source='product', read_only=True)
+    extra_rows = ExtraCartRowList(read_only=True)
+
+    class Meta:
+        model = CartItemModel
+
+    def validate_product(self, product):
+        if not product.active:
+            msg = "Product `{}` is inactive, and can not be added to the cart."
+            raise serializers.ValidationError(msg.format(product))
+        return product
+
+    def create(self, validated_data):
+        validated_data['cart'] = CartModel.objects.get_from_request(self.context['request'])
+        cart_item, _ = CartItemModel.objects.get_or_create(**validated_data)
+        cart_item.save()
+        return cart_item
+
+    def to_representation(self, cart_item):
+        if cart_item.is_dirty:
+            cart_item.update(self.context['request'])
+        representation = super(BaseItemSerializer, self).to_representation(cart_item)
+        return representation
+
+
+class CartItemSerializer(BaseItemSerializer):
+    class Meta(BaseItemSerializer.Meta):
+        list_serializer_class = CartListSerializer
+        exclude = ('cart', 'id',)
+
+
+class WatchItemSerializer(BaseItemSerializer):
+    class Meta(BaseItemSerializer.Meta):
+        list_serializer_class = WatchListSerializer
+        fields = ('url', 'details', 'quantity',)
+
+
+class BaseCartSerializer(serializers.ModelSerializer):
+    subtotal = MoneyField()
+    total = MoneyField()
+    extra_rows = ExtraCartRowList(read_only=True)
+
+    class Meta:
+        model = CartModel
+
+    def to_representation(self, cart):
+        if cart.is_dirty:
+            cart.update(self.context['request'])
+        self.context['serializer_name'] = 'cart'
+        representation = super(BaseCartSerializer, self).to_representation(cart)
+        return representation
+
+
+class CartSerializer(BaseCartSerializer):
+    items = CartItemSerializer(many=True, read_only=True)
+
+    class Meta(BaseCartSerializer.Meta):
+        fields = ('items', 'subtotal', 'extra_rows', 'total',)
+
+
+class WatchSerializer(BaseCartSerializer):
+    items = WatchItemSerializer(many=True, read_only=True)
+
+    class Meta(BaseCartSerializer.Meta):
+        fields = ('items',)
