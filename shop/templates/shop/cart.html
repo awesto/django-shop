@@ -71,7 +71,7 @@
 		<!-- content is rendered via template "cart-product-summary.html" -->
 	</td>
 	<td class="text-center">
-		<input type="number" class="form-control" min="1" ng-model="cart_item.quantity" ng-blur="updateCartItem(cart_item)">
+		<input type="number" class="form-control" min="1" ng-model="cart_item.quantity" ng-mouseleave="updateCartItem(cart_item)" />
 		<div ng-repeat="extra_row in cart_item.extra_rows" ng-bind="extra_row.label"></div>
 	</td>
 	<td class="text-right">
