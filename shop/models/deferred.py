@@ -108,3 +108,9 @@ class ForeignKeyBuilder(ModelBase):
                 field = mapping[2].MaterializedField(Model, **mapping[2].options)
                 field.contribute_to_class(mapping[0], mapping[1])
                 ForeignKeyBuilder._pending_mappings.remove(mapping)
+
+    def __getattr__(self, key):
+        if key == 'MaterializedModel':
+            msg = "No class implements abstract base model: `{}`"
+            raise ImproperlyConfigured(msg.format(self.__name__))
+        return object.__getattribute__(self, key)
