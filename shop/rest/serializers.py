@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import os
-import itertools
+from django.core import exceptions
 from django.db import models
 from django.template import RequestContext
 from django.template.loader import select_template
+from django.utils import six
+from django.utils.html import strip_spaces_between_tags
+from django.utils.safestring import mark_safe
 from rest_framework import serializers
 from rest_framework.fields import empty
 from shop.models.cart import CartModel, CartItemModel, BaseCartItem
-from shop.models.product import ProductModel
 from shop.rest.money import MoneyField
 
 
@@ -26,35 +27,58 @@ class ProductCommonSerializer(serializers.ModelSerializer):
     def get_availability(self, product):
         return product.get_availability(self.context['request'])
 
+    def render_html(self, product, postfix):
+        """
+        Return a HTML snippet containing a rendered summary for this product.
+        Build a template search path with `postfix` distinction.
+        """
+        if not self.label:
+            msg = "The Product Serializer must be configured using a `label` field."
+            raise exceptions.ImproperlyConfigured(msg)
+        app_label = product._meta.app_label.lower()
+        product_type = product.__class__.__name__.lower()
+        params = [
+            (app_label, self.label, product_type, postfix),
+            (app_label, self.label, 'product', postfix),
+            ('shop', self.label, 'product', postfix),
+        ]
+        template = select_template(['{}/{}/{}-{}.html'.format(*p) for p in params])
+        request = self.context['request']
+        context = RequestContext(request, {'product': product})
+        content = strip_spaces_between_tags(template.render(context).strip())
+        return mark_safe(content)
 
-class ProductSummarySerializerBase(ProductCommonSerializer):
+
+class SerializerRegistryMetaclass(serializers.SerializerMetaclass):
     """
-    Serialize a subset of the Product model, suitable for list views, cart- and order-lists.
+    Keep a global reference onto the class implementing `ProductSummarySerializerBase`.
+    There can be only one class instance.
+    """
+    def __new__(cls, clsname, bases, attrs):
+        global product_summary_serializer_class
+        if product_summary_serializer_class:
+            msg = "Class `{}` inheriting from `ProductSummarySerializerBase` already registred."
+            raise exceptions.ImproperlyConfigured(msg.format(product_summary_serializer_class.__name__))
+        new_class = super(cls, SerializerRegistryMetaclass).__new__(cls, clsname, bases, attrs)
+        if clsname != 'ProductSummarySerializerBase':
+            product_summary_serializer_class = new_class
+        return new_class
+
+product_summary_serializer_class = None
+
+
+class ProductSummarySerializerBase(six.with_metaclass(SerializerRegistryMetaclass, ProductCommonSerializer)):
+    """
+    Serialize a summary of the polymorphic Product model, suitable for product list views,
+    cart-lists, checkout-lists and order-lists.
     """
     product_url = serializers.CharField(source='get_absolute_url', read_only=True)
     product_type = serializers.CharField(read_only=True)
     product_model = serializers.CharField(read_only=True)
-    html = serializers.SerializerMethodField()  # HTML snippet for product's summary
 
-    def find_template(self, product):
-        app_label = product._meta.app_label.lower()
-        basename = '{}-summary.html'.format(product.__class__.__name__.lower())
-        templates = [(app_label, basename), (app_label, 'product-summary.html'), ('shop', 'product-summary.html')]
-        if self.root.label:
-            # with this label we can distinguish between different serializer instantiations
-            prefixed_templates = [(base, self.root.label + '-' + leaf) for base, leaf in templates]
-            templates = itertools.chain.from_iterable(zip(prefixed_templates, templates))
-        templates = [os.path.join(base, leaf) for base, leaf in templates]
-        return select_template(templates)
-
-    def get_html(self, product):
-        """
-        Return a HTML snippet containing a rendered summary for this product.
-        """
-        template = self.find_template(product)
-        request = self.context['request']
-        context = RequestContext(request, {'product': product})
-        return template.render(context)
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('label', 'overview')
+        super(ProductSummarySerializerBase, self).__init__(*args, **kwargs)
 
 
 class ProductDetailSerializerBase(ProductCommonSerializer):
@@ -79,7 +103,8 @@ class AddToCartSerializer(serializers.Serializer):
     def __init__(self, instance=None, data=empty, **kwargs):
         context = kwargs.get('context', {})
         if 'product' not in context or 'request' not in context:
-            raise ValueError("A context is required for this serializer and must contain the `product` and the `request` object.")
+            msg = "A context is required for this serializer and must contain the `product` and the `request` object."
+            raise ValueError(msg)
         instance = {'product': context['product'].id}
         unit_price = context['product'].get_price(context['request'])
         if data == empty:
@@ -130,18 +155,11 @@ class WatchListSerializer(serializers.ListSerializer):
         return manager.filter(quantity=0)
 
 
-class ProductSummarySerializer(ProductSummarySerializerBase):
-    # TODO: see if we can reuse the existing ProductSummarySerializer
-    class Meta:
-        model = ProductModel
-        fields = ('name', 'identifier', 'price', 'availability', 'product_url', 'product_type',
-                  'product_model', 'html', 'description')
-
-
 class BaseItemSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(lookup_field='pk', view_name='shop-api:cart-detail')
     line_total = MoneyField()
-    details = ProductSummarySerializer(source='product', read_only=True)
+    summary = serializers.SerializerMethodField(
+        help_text="Sub-serializer for fields to be shown in the product's summary.")
     extra_rows = ExtraCartRowList(read_only=True)
 
     class Meta:
@@ -165,6 +183,11 @@ class BaseItemSerializer(serializers.ModelSerializer):
         representation = super(BaseItemSerializer, self).to_representation(cart_item)
         return representation
 
+    def get_summary(self, cart_item):
+        serializer = product_summary_serializer_class(cart_item.product, context=self.context,
+                                                      read_only=True, label=self.root.label)
+        return serializer.data
+
 
 class CartItemSerializer(BaseItemSerializer):
     class Meta(BaseItemSerializer.Meta):
@@ -175,7 +198,7 @@ class CartItemSerializer(BaseItemSerializer):
 class WatchItemSerializer(BaseItemSerializer):
     class Meta(BaseItemSerializer.Meta):
         list_serializer_class = WatchListSerializer
-        fields = ('url', 'details', 'quantity',)
+        fields = ('url', 'summary', 'quantity',)
 
 
 class BaseCartSerializer(serializers.ModelSerializer):
