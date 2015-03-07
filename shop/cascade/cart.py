@@ -20,8 +20,8 @@ class ShopCartPlugin(CascadePluginBase):
     @property
     def render_template(self):
         template_names = [
-            '{}/cart.html'.format(settings.SHOP_APP_LABEL),
-            'shop/cart.html',
+            '{}/cart/main.html'.format(settings.SHOP_APP_LABEL),
+            'shop/cart/main.html',
         ]
         return select_template(template_names)
 
