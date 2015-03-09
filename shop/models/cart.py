@@ -7,7 +7,6 @@ from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.core.validators import MinValueValidator
 from django.core.serializers.json import DjangoJSONEncoder
-from django.utils.functional import SimpleLazyObject
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from jsonfield.fields import JSONField
@@ -89,7 +88,7 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
             modifier.process_cart_item(self, request)
         self._dirty = False
 
-CartItemModel = SimpleLazyObject(lambda: getattr(BaseCartItem, 'MaterializedModel'))
+CartItemModel = deferred.MaterializedModel(BaseCartItem)
 
 
 class CartVariableItemManager(CartItemManager):
@@ -197,7 +196,6 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         if not self._dirty:
             return
 
-        CartItemModel = getattr(BaseCartItem, 'MaterializedModel')
         items = CartItemModel.objects.filter(cart=self, quantity__gt=0).order_by('pk')
 
         # The request object holds extra information in a dict named 'cart_modifier_state'.
@@ -250,4 +248,4 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     def is_empty(self):
         return self.total_quantity == 0
 
-CartModel = SimpleLazyObject(lambda: getattr(BaseCart, 'MaterializedModel'))
+CartModel = deferred.MaterializedModel(BaseCart)

@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
+import copy
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models.base import ModelBase
 from django.db import models
 from django.utils import six
+from django.utils.functional import SimpleLazyObject, _super, empty
 
 
 class DeferredRelatedField(object):
@@ -81,7 +83,7 @@ class ForeignKeyBuilder(ModelBase):
                 else:
                     cls._materialized_models[basename] = Model.__name__
                     # remember the materialized model mapping in the base class for further usage
-                    baseclass.MaterializedModel = Model
+                    baseclass._materialized_model = Model
             ForeignKeyBuilder.process_pending_mappings(Model, basename)
 
         # search for deferred foreign fields in our Model
@@ -110,7 +112,40 @@ class ForeignKeyBuilder(ModelBase):
                 ForeignKeyBuilder._pending_mappings.remove(mapping)
 
     def __getattr__(self, key):
-        if key == 'MaterializedModel':
-            msg = "No class implements abstract base model: `{}`"
+        if key == '_materialized_model':
+            msg = "No class implements abstract base model: `{}`."
             raise ImproperlyConfigured(msg.format(self.__name__))
         return object.__getattribute__(self, key)
+
+
+class MaterializedModel(SimpleLazyObject):
+    """
+    Wrap the base model into a lazy object, so that we can refer to the materialized model
+    using lazy evaluation.
+    """
+    def __init__(self, base_model):
+        self.__dict__['_base_model'] = base_model
+        _super(SimpleLazyObject, self).__init__()
+
+    def _setup(self):
+        self._wrapped = getattr(self._base_model, '_materialized_model')
+
+    def __call__(self, *args, **kwargs):
+        # calls the constructor of the materialized model
+        self._wrapped(*args, **kwargs)
+
+    def __deepcopy__(self, memo):
+        if self._wrapped is empty:
+            # We have to use SimpleLazyObject, not self.__class__, because the latter is proxied.
+            result = MaterializedModel(self._base_model)
+            memo[id(self)] = result
+            return result
+        else:
+            return copy.deepcopy(self._wrapped, memo)
+
+    def __repr__(self):
+        if self._wrapped is empty:
+            repr_attr = self._base_model
+        else:
+            repr_attr = self._wrapped
+        return '<MaterializedModel: {}>'.format(repr_attr)

@@ -25,3 +25,6 @@ class BaseAddress(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     def save(self, *args, **kwargs):
         return super(BaseAddress).save(*args, **kwargs)
         # max_priority = self.model.objects.filter().aggregate(max=Max(self.priority_shipping))['max'] or 0
+
+AddressModel = deferred.MaterializedModel(BaseAddress)
+

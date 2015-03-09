@@ -7,8 +7,8 @@ from django.contrib.auth.models import AnonymousUser
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
 from django.utils.encoding import python_2_unicode_compatible
+from django.utils.functional import SimpleLazyObject
 from django.utils.translation import ugettext_lazy as _
-from shop.util.fields import CurrencyField
 from shop.order_signals import processing
 from shop.money.fields import MoneyField
 from . import deferred
@@ -304,6 +304,8 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         if not self.product_name and self.product:
             self.product_name = self.product.get_name()
         super(BaseOrderItem, self).save(*args, **kwargs)
+
+OrderItemModel = deferred.MaterializedModel(BaseOrderItem)
 
 
 class BaseItemExtraRow(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):

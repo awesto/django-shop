@@ -10,8 +10,8 @@ from django.utils.translation import ugettext_lazy as _
 from polymorphic.manager import PolymorphicManager
 from polymorphic.polymorphic_model import PolymorphicModel
 from polymorphic.base import PolymorphicModelBase
-from .order import BaseOrderItem
-from .deferred import ForeignKeyBuilder
+from .order import OrderItemModel
+from . import deferred
 
 
 class ProductStatisticsManager(PolymorphicManager):
@@ -25,10 +25,10 @@ class ProductStatisticsManager(PolymorphicManager):
         products (of a size equal to the quantity parameter), ordered by how
         many times they have been purchased.
         """
-        OrderItem = getattr(BaseOrderItem, 'MaterializedModel')
+        #OrderItem = getattr(BaseOrderItem, 'MaterializedModel')
 
         # Get an aggregate of product references and their respective counts
-        top_products_data = OrderItem.objects.values('product') \
+        top_products_data = OrderItemModel.objects.values('product') \
             .annotate(product_count=Count('product')) \
             .order_by('product_count')[:quantity]
 
@@ -58,22 +58,22 @@ class PolymorphicProductMetaclass(PolymorphicModelBase):
             return Model
         for baseclass in bases:
             # since an abstract base class does not have no valid model.Manager,
-            # refer to it via a MaterializedModel.
+            # refer to it via its materialized Product model.
             if not isinstance(baseclass, cls):
                 continue
             try:
-                if issubclass(baseclass.MaterializedModel, Model):
+                if issubclass(baseclass._materialized_model, Model):
                     # as the materialized model, use the most generic one
-                    baseclass.MaterializedModel = Model
-                elif not issubclass(Model, baseclass.MaterializedModel):
+                    baseclass._materialized_model = Model
+                elif not issubclass(Model, baseclass._materialized_model):
                     raise ImproperlyConfigured("Abstract base class {} has already been associated "
                         "with a model {}, which is different or not a submodel of {}."
-                        .format(name, Model, baseclass.MaterializedModel))
+                        .format(name, Model, baseclass._materialized_model))
             except (AttributeError, TypeError):
-                baseclass.MaterializedModel = Model
+                baseclass._materialized_model = Model
 
             # check for pending mappings in the ForeignKeyBuilder and in case, process them
-            ForeignKeyBuilder.process_pending_mappings(Model, baseclass.__name__)
+            deferred.ForeignKeyBuilder.process_pending_mappings(Model, baseclass.__name__)
         return Model
 
 
@@ -125,7 +125,8 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         """
         Hook for returning the canonical Django URL of this product.
         """
-        raise NotImplementedError('Method get_absolute_url() must be implemented by subclass: {0}'.format(self.__class__.__name__))
+        msg = "Method get_absolute_url() must be implemented by subclass: {}"
+        raise NotImplementedError(msg.format(self.__class__.__name__))
 
     def get_price(self, request):
         """
@@ -133,7 +134,8 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         The price shall be of type Money. Read the appropriate section on how to create a Money
         type for the chosen currency.
         """
-        raise NotImplementedError('Method get_price() must be implemented by subclass: {0}'.format(self.__class__.__name__))
+        msg = "Method get_price() must be implemented by subclass: `{}`"
+        raise NotImplementedError(msg.format(self.__class__.__name__))
 
     def get_availability(self, request):
         """
@@ -147,4 +149,5 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         """
         return [(True, datetime.max)]  # Infinite number of products available until eternity
 
-ProductModel = SimpleLazyObject(lambda: getattr(BaseProduct, 'MaterializedModel'))
+#ProductModel = SimpleLazyObject(lambda: getattr(BaseProduct, 'MaterializedModel'))
+ProductModel = deferred.MaterializedModel(BaseProduct)
