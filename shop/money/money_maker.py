@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 
 from decimal import Decimal, InvalidOperation
 from django.utils import six
-from django.utils.encoding import force_text
 from shop import settings as shop_settings
 from iso4217 import CURRENCIES
 
@@ -18,12 +17,13 @@ class AbstractMoney(Decimal):
         """
         Renders the price localized and formatted in its current currency.
         """
+        vals = dict(code=self._currency_code, symbol=self._currency[2], currency=self._currency[3])
+        if self.is_nan():
+            return self.MONEY_FORMAT.format(amount='–', **vals)
         try:
-            amount = Decimal.__str__(self.quantize(self._cents))
+            vals.update(amount=Decimal.__str__(self.quantize(self._cents)))
         except InvalidOperation:
             raise ValueError("Can not represent {} as Money type.".format(self.__repr__()))
-        vals = dict(code=self._currency_code, symbol=self._currency[2],
-                    currency=self._currency[3], amount=amount)
         return self.MONEY_FORMAT.format(**vals)
 
     def __str__(self):
@@ -40,7 +40,7 @@ class AbstractMoney(Decimal):
             amount = Decimal.__format__(self, specifier, context, _localeconv)
         vals = dict(code=self._currency_code, symbol=self._currency[2],
                     currency=self._currency[3], amount=amount)
-        return force_text(self.MONEY_FORMAT.format(**vals))
+        return self.MONEY_FORMAT.format(**vals)
 
     def __add__(self, other, context=None):
         other = self._assert_addable(other)
@@ -107,9 +107,11 @@ class AbstractMoney(Decimal):
     def _assert_addable(self, other):
         if isinstance(other, (int, float)) and other == 0:
             # so that we can add/substract zero to any currency
-            return self.__class__()
+            return self.__class__('0')
         if self._currency_code != getattr(other, '_currency_code', None):
             raise ValueError("Can not add/substract money in different currencies.")
+        if other.is_nan():
+            return self.__class__('0')
         return other
 
     def _assert_multipliable(self, other):
@@ -137,7 +139,7 @@ class MoneyMaker(type):
     quite easily in a separate shop plugin.
     """
     def __new__(cls, currency_code=None):
-        def new_money(cls, value='0', context=None):
+        def new_money(cls, value='NaN', context=None):
             """
             Build a class named MoneyIn<currency_code> inheriting from Decimal.
             """

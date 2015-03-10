@@ -25,6 +25,18 @@ Additionally it restricts operations on the current Money type. For instance, yo
 Dollars with Euros. You also can't multiply two money types with each other.
 
 
+Not a Number
+------------
+
+In special occurrences you'd rather want to specify “no amount” rather than an amount of zero. The
+Decimal type denotes this kind of special value a ``NaN`` – for “Not a Number”. A Money type also
+knows about this special value, and when rendered, ``€ –`` is printed out.
+
+Declaring a Money object without a value, say ``m = Money()`` creates such a special value. The big
+difference to the ``Decimal`` type is, that when adding or substracting a ``NaN`` to a valid value,
+then it is considered zero, rather than changing the result to ``NaN``.
+
+
 Create a Money type
 -------------------
 
