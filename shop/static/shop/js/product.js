@@ -8,26 +8,29 @@ djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$mo
                                                function($scope, $http, $window, $modal) {
 	var updateUrl = $window.location.pathname + '/add-to-cart' + $window.location.search;
 	var isLoading = false;
+	var prevContext = null;
 
 	this.loadContext = function() {
 		$http.get(updateUrl).success(function(context) {
 			console.log('loaded product:');
 			console.log(context);
-			$scope.context = context;
+			prevContext = context;
+			$scope.context = angular.copy(context);
 		}).error(function(msg) {
 			console.error('Unable to get context: ' + msg);
 		});
 	}
 
 	$scope.updateContext = function() {
-		if (isLoading)
+		if (isLoading || angular.equals($scope.context, prevContext))
 			return;
 		isLoading = true;
 		$http.post(updateUrl, $scope.context).success(function(context) {
 			isLoading = false;
 			console.log('loaded product:');
 			console.log(context);
-			$scope.context = context;
+			prevContext = context;
+			$scope.context = angular.copy(context);
 		}).error(function(msg) {
 			isLoading = false;
 			console.error('Unable to update context: ' + msg);
