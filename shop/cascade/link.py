@@ -18,7 +18,7 @@ class TextLinkFormBase(TextLinkForm):
     the Product model, using its method ``get_absolute_url``.
 
     Note: In this form class the field ``product`` is missing. It is added later, when the shop's
-    Product knows about its MaterializedModel.
+    Product knows about its materialized model.
     """
     LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")), ('product', _("Product")),
                          ('exturl', _("External URL")), ('email', _("Mail To")),)
