@@ -27,22 +27,22 @@ class CustomerManager(BaseUserManager):
 
 
 @python_2_unicode_compatible
-class Customer(AbstractBaseUser, PermissionsMixin):
+class BaseCustomer(AbstractBaseUser, PermissionsMixin):
     """
-    Override Django User model with a much longer username and email fields, and some other additional
-    information.
+    Override Django User model with a much longer username and email fields, and a salutation
+    field.
     """
     SALUTATION = (('mrs', _("Mrs.")), ('mr', _("Mr.")))
     USERNAME_FIELD = 'username'
 
-    username = models.CharField(max_length=255, unique=True,
+    username = models.CharField(max_length=254, unique=True,
         help_text=_("Required. Maximum 254 letters, numbers and the symbols: @ + - _ ."),
         validators=[validators.RegexValidator(re.compile('^[\w.@+-]+$'), _("Enter a valid username."), 'invalid')])
 
     salutation = models.CharField(max_length=5, choices=SALUTATION)
-    first_name = models.CharField(_("First Name"), max_length=30, blank=True)
-    last_name = models.CharField(_("Last Name"), max_length=30, blank=True)
-    email = models.EmailField(_("email Address"), max_length=254, blank=True)
+    first_name = models.CharField(_("First Name"), max_length=50)
+    last_name = models.CharField(_("Last Name"), max_length=50)
+    email = models.EmailField(_("email Address"), max_length=254)
     is_staff = models.BooleanField(_("Staff status"), default=False,
         help_text=_("Designates whether the user can log into this admin site."))
     is_active = models.BooleanField(_("Active"), default=True,
@@ -51,17 +51,18 @@ class Customer(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(_("Date joined"), default=timezone.now)
 
     class Meta:
-        app_label = 'shop'
+        abstract = True
 
     objects = CustomerManager()
 
     def get_full_name(self):
         # The user is identified by their email address
-        return self.email
+        return "{}, {}".format(self.last_name, self.first_name)
 
     def get_short_name(self):
         # The user is identified by their email address
-        return self.email
+        return self.first_name
 
     def __str__(self):
-        return self.email
+        return self.get_short_name()
+
