@@ -1,6 +1,8 @@
 {% load i18n %}
 
-<table class="table table-condensed">
+<table shop-checkout-summary class="table table-condensed">
+
+{% block "shop-checkout-summary-thead" %}
 	<thead>
 		<tr>
 			<th class="text-center">{% trans "Product" %}</th>
@@ -9,7 +11,9 @@
 			<th class="text-right">{% trans "Total" %}</th>
 		</tr>
 	</thead>
+{% endblock "shop-checkout-summary-thead" %}
 
+{% block "shop-checkout-summary-tbody" %}
 	<tbody>
 	{% for cart_item in cart.items %}
 		<tr>
@@ -23,7 +27,27 @@
 		</tr>
 	{% endfor %}
 	</tbody>
+{% endblock "shop-checkout-summary-tbody" %}
 
+{% block "shop-checkout-summary-tfoot" %}
 	<tfoot>
+		<tr>
+			<td></td>
+			<td colspan="2"><h5>{% trans "Subtotal" %}</h5></td>
+			<td class="text-right"><h5><strong ng-bind="cart.subtotal"><!-- Subtotal --></strong></h5></td>
+		</tr>
+		<tr ng-repeat="extra_row in cart.extra_rows">
+			<td></td>
+			<td colspan="2"><h5 ng-bind="extra_row.label"></h5></td>
+			<td class="text-right"><h5><strong ng-bind="extra_row.amount"></strong></h5></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td colspan="2"><h4>{% trans "Total" %}</h4></td>
+			<td class="text-right"><h4><strong ng-bind="cart.total"><!-- Total --></strong></h4></td>
+			<td></td>
+		</tr>
 	</tfoot>
+{% endblock "shop-checkout-summary-tfoot" %}
+
 </table>
