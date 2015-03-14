@@ -10,20 +10,22 @@ from shop.models.cart import CartModel
 from shop.rest.serializers import CartSerializer
 
 
-class ShopCheckoutPlugin(CascadePluginBase):
+
+class ShopCheckoutSummaryPlugin(CascadePluginBase):
     module = 'Shop'
-    name = _("Checkout")
+    name = _("Checkout Summary")
     require_parent = False
+    parent_classes = ('BootstrapColumnPlugin',)
+    cache = False
 
     @classmethod
     def get_identifier(cls, obj):
-        return mark_safe(_("The Checkout Form"))
+        return mark_safe(cls.name)
 
-    @property
-    def render_template(self):
+    def get_render_template(self, context, instance, placeholder):
         template_names = [
-            '{}/checkout/main.html'.format(settings.SHOP_APP_LABEL),
-            'shop/checkout/main.html',
+            '{}/checkout/summary.html'.format(settings.SHOP_APP_LABEL),
+            'shop/checkout/summary.html',
         ]
         return select_template(template_names)
 
@@ -31,6 +33,32 @@ class ShopCheckoutPlugin(CascadePluginBase):
         cart = CartModel.objects.get_from_request(context['request'])
         cart_serializer = CartSerializer(cart, context=context, label='checkout')
         context['cart'] = cart_serializer.data
-        return super(ShopCheckoutPlugin, self).render(context, instance, placeholder)
+        return super(ShopCheckoutSummaryPlugin, self).render(context, instance, placeholder)
 
-plugin_pool.register_plugin(ShopCheckoutPlugin)
+plugin_pool.register_plugin(ShopCheckoutSummaryPlugin)
+
+
+class ShopCheckoutAddressPlugin(CascadePluginBase):
+    module = 'Shop'
+    name = _("Checkout Address")
+    require_parent = False
+    parent_classes = ('BootstrapColumnPlugin',)
+
+    @classmethod
+    def get_identifier(cls, obj):
+        return mark_safe(cls.name)
+
+    def get_render_template(self, context, instance, placeholder):
+        template_names = [
+            '{}/checkout/address.html'.format(settings.SHOP_APP_LABEL),
+            'shop/checkout/address.html',
+        ]
+        return select_template(template_names)
+
+    def render(self, context, instance, placeholder):
+        from shop.forms.address import AddressForm
+        context['address'] = AddressForm()
+        #print context['shipping_address'].as_div()
+        return super(ShopCheckoutAddressPlugin, self).render(context, instance, placeholder)
+
+plugin_pool.register_plugin(ShopCheckoutAddressPlugin)
