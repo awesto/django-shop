@@ -4,7 +4,7 @@ from django.core import exceptions
 from django.db import models
 from django.template import RequestContext
 from django.template.loader import select_template
-from django.utils import six
+from django.utils.six import with_metaclass
 from django.utils.html import strip_spaces_between_tags
 from django.utils.safestring import mark_safe
 from rest_framework import serializers
@@ -67,7 +67,7 @@ class SerializerRegistryMetaclass(serializers.SerializerMetaclass):
 product_summary_serializer_class = None
 
 
-class ProductSummarySerializerBase(six.with_metaclass(SerializerRegistryMetaclass, ProductCommonSerializer)):
+class ProductSummarySerializerBase(with_metaclass(SerializerRegistryMetaclass, ProductCommonSerializer)):
     """
     Serialize a summary of the polymorphic Product model, suitable for product list views,
     cart-lists, checkout-lists and order-lists.
@@ -228,3 +228,8 @@ class WatchSerializer(BaseCartSerializer):
 
     class Meta(BaseCartSerializer.Meta):
         fields = ('items',)
+
+
+class CheckoutSerializer(BaseCartSerializer):
+    class Meta(BaseCartSerializer.Meta):
+        fields = ('subtotal', 'extra_rows', 'total',)
