@@ -4,7 +4,6 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.db.models.aggregates import Count
 from django.utils import six
-from django.utils.functional import SimpleLazyObject
 from django.utils.encoding import python_2_unicode_compatible, force_text
 from django.utils.translation import ugettext_lazy as _
 from polymorphic.manager import PolymorphicManager
@@ -149,5 +148,4 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         """
         return [(True, datetime.max)]  # Infinite number of products available until eternity
 
-#ProductModel = SimpleLazyObject(lambda: getattr(BaseProduct, 'MaterializedModel'))
 ProductModel = deferred.MaterializedModel(BaseProduct)
