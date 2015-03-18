@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from shop.money import AbstractMoney, Money
 from .base import BaseCartModifier
 
 
@@ -15,5 +16,8 @@ class DefaultCartModifier(BaseCartModifier):
         return super(DefaultCartModifier, self).process_cart_item(cart_item, request)
 
     def process_cart(self, cart, request):
+        if not isinstance(cart.subtotal, AbstractMoney):
+            # if we don't know the currency, use the default
+            cart.subtotal = Money(cart.subtotal)
         cart.total = cart.subtotal
         return super(DefaultCartModifier, self).process_cart(cart, request)
