@@ -77,3 +77,36 @@ class ShopCheckoutAddressPlugin(CascadePluginBase):
         return super(ShopCheckoutAddressPlugin, self).render(context, instance, placeholder)
 
 plugin_pool.register_plugin(ShopCheckoutAddressPlugin)
+
+
+class ShopCheckoutButton(CascadePluginBase):
+    module = 'Shop'
+    name = _("Checkout Button")
+    require_parent = True
+    parent_classes = ('BootstrapColumnPlugin',)
+    allow_children = False
+    text_enabled = True
+    glossary_fields = (
+        PartialFormField('button_content',
+            widgets.Input(),
+            label=_('Button Content'),
+            help_text=_("Display Buy Buttom")
+        ),
+    )
+
+    @classmethod
+    def get_identifier(cls, obj):
+        content = obj.glossary.get('button_content', _("No content"))
+        return force_text(content)
+
+    def get_render_template(self, context, instance, placeholder):
+        template_names = [
+            '{}/checkout/button.html'.format(settings.SHOP_APP_LABEL),
+            'shop/checkout/button.html',
+        ]
+        return select_template(template_names)
+
+    def render(self, context, instance, placeholder):
+        return super(ShopCheckoutButton, self).render(context, instance, placeholder)
+
+plugin_pool.register_plugin(ShopCheckoutButton)
