@@ -20,7 +20,6 @@ class BaseAddress(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         abstract = True
         verbose_name = _("Address")
         verbose_name_plural = _("Addresses")
-        ordering = ('priority_shipping', 'priority_invoice')
 
     def save(self, *args, **kwargs):
         return super(BaseAddress).save(*args, **kwargs)
