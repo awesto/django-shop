@@ -45,7 +45,7 @@
 	{% block "add-to-cart-modal-footer" %}
 	<div class="modal-footer">
 		<button class="btn btn-primary" ng-click="proceed('{% page_url "shop-cart" %}')">{% trans "Show Cart" %}</button>
-		<button class="btn btn-primary" ng-click="proceed('{% page_url request.current_page %}')">{% trans "Continue Shopping" %}</button>
+		<button class="btn btn-primary" ng-click="proceed('{{ request.current_page.get_absolute_url }}')">{% trans "Continue Shopping" %}</button>
 		<button class="btn btn-warning" ng-click="cancel()">{% trans "Cancel" %}</button>
 	</div>
 	{% endblock "add-to-cart-modal-footer" %}
