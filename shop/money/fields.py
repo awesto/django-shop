@@ -59,7 +59,7 @@ class MoneyFormField(forms.DecimalField):
 class MoneyField(six.with_metaclass(SubfieldBase, DecimalField)):
     """
     A MoneyField shall be used to store money related amounts in the database, keeping track of
-    the used currency. Accessing a model field of type MoneyField, returns a MoneyIn... type.
+    the used currency. Accessing a model field of type MoneyField, returns a MoneyIn<CURRENCY> type.
     """
     def __init__(self, *args, **kwargs):
         currency_code = kwargs.pop('currency', shop_settings.DEFAULT_CURRENCY)
