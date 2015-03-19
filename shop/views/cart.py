@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from django.conf import settings
 from django.utils.cache import add_never_cache_headers
-from rest_framework.decorators import detail_route, list_route
+from django.utils.module_loading import import_by_path
+from rest_framework.decorators import list_route
 from rest_framework import viewsets
 from shop.models.cart import CartModel, CartItemModel
 from shop.rest import serializers
-from shop.forms.address import AddressForm
 from shop.forms.auth import CustomerForm
 
 
@@ -53,7 +54,7 @@ class CheckoutViewSet(BaseViewSet):
 
     def __init__(self, **kwargs):
         super(CheckoutViewSet, self).__init__(**kwargs)
-        pass
+        self.AddressForm = import_by_path(settings.SHOP_ADDRESS_FORM)
 
     @list_route()
     def summary(self, request):
