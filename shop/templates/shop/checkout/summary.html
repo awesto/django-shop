@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<table shop-checkout-summary class="table table-condensed">
+<table class="table table-condensed">
 
 {% block "shop-checkout-summary-thead" %}
 	<thead>
@@ -34,17 +34,26 @@
 		<tr>
 			<td></td>
 			<td colspan="2"><h5>{% trans "Subtotal" %}</h5></td>
-			<td class="text-right"><h5><strong ng-bind="cart.subtotal"><!-- Subtotal --></strong></h5></td>
+			<td class="text-right"><h5>
+				<strong ng-if="!cart">{{ cart.subtotal }}</strong>
+				<strong ng-if="cart" ng-bind="cart.subtotal"></strong>
+			</h5></td>
 		</tr>
-		<tr ng-repeat="extra_row in cart.extra_rows">
-			<td></td>
-			<td colspan="2"><h5 ng-bind="extra_row.label"></h5></td>
-			<td class="text-right"><h5><strong ng-bind="extra_row.amount"></strong></h5></td>
+	{% for extra_row in cart.extra_rows %}
+		<tr ng-if="!cart">
+		{% include 'shop/checkout/cart-extra-row.html' with ng=0 %}
+		</tr>
+	{% endfor %}
+		<tr ng-cloak ng-if="cart" ng-repeat="extra_row in cart.extra_rows">
+		{% include 'shop/checkout/cart-extra-row.html' with ng=1 %}
 		</tr>
 		<tr>
 			<td></td>
 			<td colspan="2"><h4>{% trans "Total" %}</h4></td>
-			<td class="text-right"><h4><strong ng-bind="cart.total"><!-- Total --></strong></h4></td>
+			<td class="text-right"><h4>
+				<strong ng-if="!cart">{{ cart.total }}</strong>
+				<strong ng-if="cart" ng-bind="cart.total"></strong>
+			</h4></td>
 			<td></td>
 		</tr>
 	</tfoot>

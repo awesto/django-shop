@@ -4,63 +4,49 @@
 // module: django.shop, TODO: move this into a summary JS file
 var djangoShopModule = angular.module('django.shop.checkout', []);
 
-// Directive <shop-checkout>
-// handle a djangoSHOP's cart
-djangoShopModule.directive('shopCheckoutSummary', ['$http', 'djangoUrl', function($http, djangoUrl) {
-	var cartListURL = djangoUrl.reverse('shop-api:checkout-summary');
-	var scope, isLoading = false;
 
-	function loadCheckout() {
-		$http.get(cartListURL).success(function(cart) {
-			console.log('loaded cart: ');
-			console.log(cart);
-			scope.cart = cart;
+// Directive <form shop-checkout-form> (must be an attribute of the <form> element)
+// handle checkout updates
+djangoShopModule.directive('shopCheckoutForm', ['$http', 'djangoUrl', 'djangoForm', function($http, djangoUrl, djangoForm) {
+	var updateURL = djangoUrl.reverse('shop-api:checkout-update');
+	var $scope, isLoading = false;
+
+	function update() {
+		if (isLoading)
+			return;
+		isLoading = true;
+		$http.post(updateURL, $scope.data).success(function(response) {
+			delete response.errors;
+			$scope.cart = response;
 		}).error(function(msg) {
-			console.error("Unable to fetch shopping cart: " + msg);
+			console.error("Unable to update checkout forms: " + msg);
+		}).finally(function() {
+			isLoading = false;
 		});
 	}
 
 	return {
-		restrict: 'EA',
-		link: function($scope, element, attrs) {
-			scope = $scope;
-			loadCheckout();
+		restrict: 'A',
+		require: 'form',
+		link: function(scope, element, attrs) {
+			$scope = scope;
+			$scope.update = update;
 		}
 	};
 }]);
 
-
-
-djangoShopModule.directive('shopCheckoutForms', ['$http', 'djangoUrl', 'djangoForm', function($http, djangoUrl, djangoForm) {
-	var checkoutFormsURL = djangoUrl.reverse('shop-api:checkout-address-form-submit');
-	var scope, isLoading = false;
-
-	function fetchForms() {
-		$http.get(checkoutFormsURL).success(function(cart) {
-			scope.cart = cart;
-		}).error(function(msg) {
-			console.error("Unable to fetch checkout forms: " + msg);
-		});
-	}
-
-	return {
-		restrict: 'EA',
-		link: function($scope, element, attrs, controller) {
-			scope = $scope;
-		}
-	};
-}]);
 
 djangoShopModule.directive('shopCheckoutButton', ['$http', 'djangoUrl', 'djangoForm', function($http, djangoUrl, djangoForm) {
-	var checkoutURL = djangoUrl.reverse('shop-api:checkout-submit');
+	var checkoutUpdateURL = djangoUrl.reverse('shop-api:checkout-update');
 	var element, scope, isLoading = false;
 
-	function submit() {
-		$http.post(checkoutURL, scope.data).success(function(response) {
+	function purchase() {
+		$http.post(checkoutUpdateURL, scope.data).success(function(response) {
 			angular.forEach(response.errors, function(errors, key) {
 				djangoForm.setErrors(scope[key], errors);
 			});
-			// djangoForm.setErrors(scope.shipping_addr_form, response.errors.shipping_addr_form);
+			delete response.errors;
+			scope.cart = response;
 		}).error(function(msg) {
 			console.error("Unable to submit checkout forms: " + msg);
 		});
@@ -77,7 +63,7 @@ djangoShopModule.directive('shopCheckoutButton', ['$http', 'djangoUrl', 'djangoF
 			scope = $scope;
 			element = $element;
 			element.on('$destroy', destroy);
-			element.on('click', submit);
+			element.on('click', purchase);
 		}
 	};
 }]);

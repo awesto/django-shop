@@ -59,20 +59,33 @@ class CheckoutViewSet(BaseViewSet):
     def summary(self, request):
         return self.list(request)
 
-    @list_route(methods=['post'], url_path='submit')
-    def submit(self, request):
-        cart = self.get_queryset()
+    @list_route(methods=['post'], url_path='update')
+    def update(self, request):
+        """
+        During checkout, a customer can chose from different shipping and payment options, which
+        themselves have an influence on the final total. Therefore the cart modifiers must run
+        after each of those changes.
+        """
         errors = {}
-        customer = CustomerForm(data=request.data['customer'])
-        print customer.instance
-        if not customer.is_valid():
-            errors[customer.form_name] = dict(customer.errors)
-        shipping_address = AddressForm('shipping', data=request.data['shipping_address'])
-        if not shipping_address.is_valid():
-            errors[shipping_address.form_name] = dict(shipping_address.errors)
-        invoice_address = AddressForm('invoice', data=request.data['invoice_address'])
-        if not invoice_address.is_valid():
-            errors[invoice_address.form_name] = dict(invoice_address.errors)
+        if 'customer' in request.data:
+            customer = CustomerForm(data=request.data['customer'])
+            if not customer.is_valid():
+                errors[customer.form_name] = dict(customer.errors)
+        if 'shipping_address' in request.data:
+            shipping_address = self.AddressForm('shipping', data=request.data['shipping_address'])
+            if not shipping_address.is_valid():
+                errors[shipping_address.form_name] = dict(shipping_address.errors)
+            request.shipping_address = shipping_address.cleaned_data
+        if 'invoice_address' in request.data:
+            invoice_address = self.AddressForm('invoice', data=request.data['invoice_address'])
+            if not invoice_address.is_valid():
+                errors[invoice_address.form_name] = dict(invoice_address.errors)
+
+        # with information about the shipping address and the payment method, update the cart modifiers
+        cart = self.get_queryset()
+        cart.update(request)
+
+        # add possible form errors for giving feedback to the customer
         response = self.list(request)
         response.data.update(errors=errors)
         return response
