@@ -50,6 +50,7 @@ djangoShopModule.controller('CartController', ['$scope', '$http', 'djangoUrl', f
 	}
 }]);
 
+
 // Directive <shop-cart>
 // handle a djangoSHOP's cart
 djangoShopModule.directive('shopCart', function() {
