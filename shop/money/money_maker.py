@@ -34,7 +34,9 @@ class AbstractMoney(Decimal):
         return "{}('{}')".format(self.__class__.__name__, value)
 
     def __format__(self, specifier, context=None, _localeconv=None):
-        if context is None:
+        if self.is_nan():
+            amount = '–'
+        elif context is None:
             amount = self.quantize(self._cents).__format__(specifier, context, _localeconv)
         else:
             amount = Decimal.__format__(self, specifier, context, _localeconv)
