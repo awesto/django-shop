@@ -26,14 +26,14 @@ djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$mo
 			return;
 		isLoading = true;
 		$http.post(updateUrl, $scope.context).success(function(context) {
-			isLoading = false;
 			console.log('loaded product:');
 			console.log(context);
 			prevContext = context;
 			$scope.context = angular.copy(context);
 		}).error(function(msg) {
-			isLoading = false;
 			console.error('Unable to update context: ' + msg);
+		}).finally(function() {
+			isLoading = false;
 		});
 	}
 
@@ -62,12 +62,12 @@ djangoShopModule.controller('ModalInstanceCtrl', ['$scope', '$http', '$modalInst
 			return;
 		isLoading = true;
 		$http.post(modal_context.cart_url, $scope.context).success(function() {
-			isLoading = false;
 			$modalInstance.close(next_url);
 		}).error(function() {
-			isLoading = false;
 			// TODO: tell us something went wrong
 			$modalInstance.dismiss('cancel');
+		}).finally(function() {
+			isLoading = false;
 		});
 	};
 

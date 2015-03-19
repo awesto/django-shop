@@ -27,12 +27,12 @@ djangoShopModule.controller('CartController', ['$scope', '$http', 'djangoUrl', f
 			console.log(response);
 			return $http.get(cartListURL);
 		}).then(function(response) {
-			isLoading = false;
 			console.log(response);
 			angular.copy(response.data, $scope.cart);
 		}, function(error) {
-			isLoading = false;
 			console.error(error);
+		}, function() {
+			isLoading = false;
 		});
 	}
 
