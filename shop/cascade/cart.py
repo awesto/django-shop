@@ -17,8 +17,7 @@ class ShopCartPlugin(CascadePluginBase):
     def get_identifier(cls, obj):
         return mark_safe(_("The Shopping Cart"))
 
-    @property
-    def render_template(self):
+    def get_render_template(self, context, instance, placeholder):
         template_names = [
             '{}/cart/cart.html'.format(settings.SHOP_APP_LABEL),
             'shop/cart/cart.html',
