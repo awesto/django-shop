@@ -36,34 +36,26 @@ djangoShopModule.directive('shopCheckoutForm', ['$http', 'djangoUrl', 'djangoFor
 }]);
 
 
-djangoShopModule.directive('shopCheckoutButton', ['$http', 'djangoUrl', 'djangoForm', function($http, djangoUrl, djangoForm) {
-	var checkoutUpdateURL = djangoUrl.reverse('shop-api:checkout-update');
-	var element, scope, isLoading = false;
-
-	function purchase() {
-		$http.post(checkoutUpdateURL, scope.data).success(function(response) {
-			angular.forEach(response.errors, function(errors, key) {
-				djangoForm.setErrors(scope[key], errors);
-			});
-			delete response.errors;
-			scope.cart = response;
-		}).error(function(msg) {
-			console.error("Unable to submit checkout forms: " + msg);
-		});
-	}
-
-	function destroy() {
-		console.error("Destroy button");
-		element.off('click');
-	}
-
+djangoShopModule.directive('shopPurchaseButton', ['$http', 'djangoUrl', 'djangoForm', function($http, djangoUrl, djangoForm) {
+	var purchaseURL = djangoUrl.reverse('shop-api:checkout-purchase');
 	return {
 		restrict: 'EA',
-		link: function($scope, $element, attrs, controller) {
-			scope = $scope;
-			element = $element;
-			element.on('$destroy', destroy);
-			element.on('click', purchase);
+		link: function(scope, element, attrs) {
+			var isLoading = false;
+			element.on('$destroy', function() {
+				element.off('click');
+			});
+			element.on('click', function() {
+				$http.post(purchaseURL, scope.data).success(function(response) {
+					angular.forEach(response.errors, function(errors, key) {
+						djangoForm.setErrors(scope[key], errors);
+					});
+					delete response.errors;
+					scope.cart = response;
+				}).error(function(msg) {
+					console.error("Unable to submit checkout forms: " + msg);
+				});
+			});
 		}
 	};
 }]);
