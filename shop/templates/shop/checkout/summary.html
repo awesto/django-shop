@@ -35,8 +35,7 @@
 			<td></td>
 			<td colspan="2"><h5>{% trans "Subtotal" %}</h5></td>
 			<td class="text-right"><h5>
-				<strong ng-if="!cart">{{ cart.subtotal }}</strong>
-				<strong ng-if="cart" ng-bind="cart.subtotal"></strong>
+				<strong djng-bind-if="cart.subtotal">{{ cart.subtotal }}</strong>
 			</h5></td>
 		</tr>
 	{% for extra_row in cart.extra_rows %}
@@ -51,8 +50,7 @@
 			<td></td>
 			<td colspan="2"><h4>{% trans "Total" %}</h4></td>
 			<td class="text-right"><h4>
-				<strong ng-if="!cart">{{ cart.total }}</strong>
-				<strong ng-if="cart" ng-bind="cart.total"></strong>
+				<strong djng-bind-if="cart.total">{{ cart.total }}</strong>
 			</h4></td>
 			<td></td>
 		</tr>
