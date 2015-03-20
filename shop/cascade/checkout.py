@@ -5,6 +5,7 @@ from django.forms import widgets
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import force_text
+from django.utils.module_loading import import_by_path
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.plugin_base import CascadePluginBase
 from cmsplugin_cascade.fields import PartialFormField
@@ -53,6 +54,11 @@ class ShopCheckoutAddressPlugin(CascadePluginBase):
         ),
     )
 
+    def __init__(self, *args, **kwargs):
+        super(ShopCheckoutAddressPlugin, self).__init__(*args, **kwargs)
+        self.AddressForm = import_by_path(settings.SHOP_ADDRESS_FORM)
+        pass
+
     @classmethod
     def get_identifier(cls, obj):
         address_type = obj.glossary.get('address_type')
@@ -67,13 +73,11 @@ class ShopCheckoutAddressPlugin(CascadePluginBase):
         return select_template(template_names)
 
     def render(self, context, instance, placeholder):
-        from shop.forms.address import AddressForm
-        from shop.models.address import AddressModel
         addr_type = instance.glossary.get('address_type', 'shipping')
         user = context['request'].user
         priority = 'priority_{}'.format(addr_type)
-        address = AddressModel.objects.filter(user=user).order_by(priority).first()
-        context['address'] = AddressForm(addr_type, instance=address)
+        address = self.AddressForm._meta.model.objects.filter(user=user).order_by(priority).first()
+        context['address'] = self.AddressForm(addr_type, instance=address)
         return super(ShopCheckoutAddressPlugin, self).render(context, instance, placeholder)
 
 plugin_pool.register_plugin(ShopCheckoutAddressPlugin)
