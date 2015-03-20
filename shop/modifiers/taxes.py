@@ -2,7 +2,7 @@
 from django.utils.translation import ugettext as _
 from shop import settings
 from shop.rest.serializers import ExtraCartRow
-from shop.cart.modifiers.base import BaseCartModifier
+from .base import BaseCartModifier
 
 
 class CartIncludeTaxModifier(BaseCartModifier):
