@@ -1,0 +1,7 @@
+{% load i18n %}
+
+<form shop-customer-form name="{{ customer.form_name }}" novalidate>
+	{{ customer.as_div }}
+</form>
+
+{#<a class="btn btn-primary" href="{% url 'rest_framework:logout' %}?next={{ request.current_page.get_absolute_url }}">Logout</a>#}

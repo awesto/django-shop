@@ -1,0 +1,29 @@
+{% load i18n %}
+
+<div class="panel panel-info">
+	<div class="panel-heading">
+		<div class="panel-title">{% trans "Sign In" %}</div>
+	</div>
+
+	<div style="padding-top: 30px" class="panel-body">
+		<form action="{% url 'rest_framework:login' %}" class="form-horizontal" role="form" method="post">
+			{% csrf_token %}
+			<input type="hidden" name="next" value="{{ request.current_page.get_absolute_url }}" />
+			<div style="margin-bottom: 25px" class="input-group">
+				<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+				<input type="text" class="form-control" name="username" value="" placeholder="{% trans 'Email' %}" />
+			</div>
+
+			<div style="margin-bottom: 25px" class="input-group">
+				<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+				<input type="password" class="form-control" name="password" placeholder="{% trans 'Password' %}" />
+			</div>
+
+			<div style="margin-top: 10px" class="form-group">
+				<div class="col-sm-12 controls">
+					<button type="submit" class="btn btn-primary">{% trans "Login" %}</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
