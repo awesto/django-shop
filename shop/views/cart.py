@@ -66,32 +66,15 @@ class CheckoutViewSet(BaseViewSet):
         """
         cart = self.get_queryset()
         errors = {}
-        if 'customer' in request.data:
-            customer = self.CustomerForm(data=request.data['customer'], instance=request.user)
-            if customer.is_valid():
-                customer.save()
-            else:
-                errors[customer.form_name] = customer.errors
-        if 'shipping_address' in request.data:
-            # search for the associated address DB instance or create a new one
-            AddressModel = self.ShippingAddressForm.get_model()
-            priority = request.data['shipping_address'].get('priority')
-            instance = AddressModel.objects.filter(user=request.user, priority_shipping=priority).first()
-            shipping_address = self.ShippingAddressForm(data=request.data['shipping_address'], instance=instance)
-            if shipping_address.is_valid():
-                if not instance:
-                    instance = shipping_address.save(commit=False)
-                    instance.user = request.user
-                    instance.priority_shipping = priority
-                assert shipping_address.instance == instance
-                instance.save()
-                cart.shipping_address = instance
-            else:
-                errors[shipping_address.form_name] = dict(shipping_address.errors)
-        if 'invoice_address' in request.data:
-            invoice_address = self.InvoiceAddressForm(data=request.data['invoice_address'])
-            if not invoice_address.is_valid():
-                errors[invoice_address.form_name] = dict(invoice_address.errors)
+        customer = request.data.pop('customer', None)
+        if customer:
+            errors.update(self.CustomerForm.update_model(request, customer, cart))
+        shipping_address = request.data.pop('shipping_address', None)
+        if shipping_address:
+            errors.update(self.ShippingAddressForm.update_model(request, shipping_address, cart))
+        invoice_address = request.data.pop('invoice_address', None)
+        if invoice_address:
+            errors.update(self.InvoiceAddressForm.update_model(request, invoice_address, cart))
 
         # with information about the shipping address and the payment method, update the cart modifiers
         cart.save()

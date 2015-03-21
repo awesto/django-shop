@@ -19,8 +19,14 @@ class CustomerForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelForm)
         exclude = ('username', 'password', 'last_login', 'is_superuser', 'is_staff', 'is_active',
             'groups', 'user_permissions', 'date_joined',)
 
-    def __init__(self, *args, **kwargs):
-        super(CustomerForm, self).__init__(*args, **kwargs)
+    @classmethod
+    def update_model(cls, request, data, cart):
+        customer_form = cls(data=data, instance=request.user)
+        if customer_form.is_valid():
+            customer_form.save()
+            return {}
+        else:
+            return {cls.form_name: customer_form.errors}
 
 
 class AddressForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelForm):
@@ -52,11 +58,28 @@ class AddressForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelForm):
         return cls.Meta.model
 
     @classmethod
-    def update_model(cls, request):
+    def update_model(cls, request, data, cart):
         """
         From the given request, update the database model.
         If the form data is invalid, return an error dictionary to update the response.
         """
+        # search for the associated address DB instance or create a new one
+        priority = data.get('priority')
+        priority_field = 'priority_{}'.format(cls.addr_type)
+        filter_args = {'user': request.user, priority_field: priority}
+        instance = cls.get_model().objects.filter(**filter_args).first()
+        address_form = cls(data=data, instance=instance)
+        if address_form.is_valid():
+            if not instance:
+                instance = address_form.save(commit=False)
+                instance.user = request.user
+                setattr(instance, priority_field, priority)
+            assert address_form.instance == instance
+            instance.save()
+            setattr(cart, '{}_address'.format(cls.addr_type), instance)
+            return {}
+        else:
+            return {address_form.form_name: dict(address_form.errors)}
 
 
 class ShippingAddressForm(AddressForm):

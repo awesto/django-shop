@@ -77,18 +77,19 @@ class ShopCheckoutAddressPlugin(CascadePluginBase):
     def render(self, context, instance, placeholder):
         if instance.glossary.get('address_type') == 'shipping':
             AddressForm = self.ShippingAddressForm
-            priority = 'priority_shipping'
+            priority_field = 'priority_shipping'
         else:
             AddressForm = self.InvoiceAddressForm
-            priority = 'priority_invoice'
+            priority_field = 'priority_invoice'
         user = context['request'].user
         AddressModel = AddressForm.get_model()
-        address = AddressModel.objects.filter(user=user).order_by(priority).first()
+        filter_args = {'user': user, '{}__isnull'.format(priority_field): False}
+        address = AddressModel.objects.filter(**filter_args).order_by(priority_field).first()
         if address:
             context['address'] = AddressForm(instance=address)
         else:
-            aggr = AddressModel.objects.filter(user=user).aggregate(Max('priority_shipping'))
-            initial = {'priority': aggr['priority_shipping__max'] or 0}
+            aggr = AddressModel.objects.filter(user=user).aggregate(Max(priority_field))
+            initial = {'priority': aggr['{}__max'.format(priority_field)] or 0}
             context['address'] = AddressForm(initial=initial)
         return super(ShopCheckoutAddressPlugin, self).render(context, instance, placeholder)
 
