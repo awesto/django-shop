@@ -96,3 +96,25 @@ class BaseCartModifier(object):
         This allows to add an additional row description to the cart.
         This method optionally utilizes `cart.subtotal` and modifies the amount in `cart.total`.
         """
+
+
+class PaymentModifier(BaseCartModifier):
+    """
+    Base class for all payment modifiers.
+    """
+    def get_choice(self):
+        """
+        Returns the tuple used by the payment forms dialog to display the choice.
+        """
+        raise NotImplemented("Must be implemented by the inheriting class")
+
+
+class ShippingModifier(BaseCartModifier):
+    """
+    Base class for all shipping modifiers.
+    """
+    def get_choice(self):
+        """
+        Returns the tuple used by the shipping forms dialog to display the choice
+        """
+        raise NotImplemented("Must be implemented by the inheriting class")

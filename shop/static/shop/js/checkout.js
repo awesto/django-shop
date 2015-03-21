@@ -5,8 +5,8 @@
 var djangoShopModule = angular.module('django.shop.checkout', []);
 
 
-// Directive <form shop-checkout-form> (must be an attribute of the <form> element)
-// handle checkout updates
+// Directive <form shop-checkout-form> (must be added as attribute to the <form> element)
+// It is used to handle updates on the checkout forms
 djangoShopModule.directive('shopCheckoutForm', ['$http', 'djangoUrl', 'djangoForm', function($http, djangoUrl, djangoForm) {
 	var updateURL = djangoUrl.reverse('shop-api:checkout-update');
 	var $scope, isLoading = false;

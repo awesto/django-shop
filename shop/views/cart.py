@@ -7,7 +7,6 @@ from rest_framework import viewsets
 from shop import settings as shop_settings
 from shop.models.cart import CartModel, CartItemModel
 from shop.rest import serializers
-from shop.forms.auth import CustomerForm
 
 
 class BaseViewSet(viewsets.ModelViewSet):
@@ -65,26 +64,44 @@ class CheckoutViewSet(BaseViewSet):
         themselves have an influence on the final total. Therefore the cart modifiers must run
         after each of those changes.
         """
+        cart = self.get_queryset()
         errors = {}
         if 'customer' in request.data:
-            customer = CustomerForm(data=request.data['customer'])
-            if not customer.is_valid():
-                errors[customer.form_name] = dict(customer.errors)
+            customer = self.CustomerForm(data=request.data['customer'], instance=request.user)
+            if customer.is_valid():
+                customer.save()
+            else:
+                errors[customer.form_name] = customer.errors
         if 'shipping_address' in request.data:
-            shipping_address = self.AddressForm('shipping', data=request.data['shipping_address'])
-            if not shipping_address.is_valid():
+            # search for the associated address DB instance or create a new one
+            AddressModel = self.ShippingAddressForm.get_model()
+            priority = request.data['shipping_address'].get('priority')
+            instance = AddressModel.objects.filter(user=request.user, priority_shipping=priority).first()
+            shipping_address = self.ShippingAddressForm(data=request.data['shipping_address'], instance=instance)
+            if shipping_address.is_valid():
+                if not instance:
+                    instance = shipping_address.save(commit=False)
+                    instance.user = request.user
+                    instance.priority_shipping = priority
+                assert shipping_address.instance == instance
+                instance.save()
+                cart.shipping_address = instance
+            else:
                 errors[shipping_address.form_name] = dict(shipping_address.errors)
-            request.shipping_address = shipping_address.cleaned_data
         if 'invoice_address' in request.data:
-            invoice_address = self.AddressForm('invoice', data=request.data['invoice_address'])
+            invoice_address = self.InvoiceAddressForm(data=request.data['invoice_address'])
             if not invoice_address.is_valid():
                 errors[invoice_address.form_name] = dict(invoice_address.errors)
 
         # with information about the shipping address and the payment method, update the cart modifiers
-        cart = self.get_queryset()
-        cart.update(request)
+        cart.save()
 
         # add possible form errors for giving feedback to the customer
         response = self.list(request)
         response.data.update(errors=errors)
+        return response
+
+    @list_route(methods=['post'], url_path='purchase')
+    def purchase(self, request):
+        response = self.list(request)
         return response
