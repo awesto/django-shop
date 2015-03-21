@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.conf import settings
+from django.db.models import Max
 from django.forms import widgets
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
@@ -9,8 +9,10 @@ from django.utils.module_loading import import_by_path
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.plugin_base import CascadePluginBase
 from cmsplugin_cascade.fields import PartialFormField
+from shop import settings as shop_settings
 from shop.models.cart import CartModel
 from shop.rest.serializers import CartSerializer
+from shop.modifiers.pool import cart_modifiers_pool
 
 
 class ShopCheckoutSummaryPlugin(CascadePluginBase):
@@ -26,7 +28,7 @@ class ShopCheckoutSummaryPlugin(CascadePluginBase):
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
-            '{}/checkout/summary.html'.format(settings.SHOP_APP_LABEL),
+            '{}/checkout/summary.html'.format(shop_settings.APP_LABEL),
             'shop/checkout/summary.html',
         ]
         return select_template(template_names)
@@ -56,8 +58,8 @@ class ShopCheckoutAddressPlugin(CascadePluginBase):
 
     def __init__(self, *args, **kwargs):
         super(ShopCheckoutAddressPlugin, self).__init__(*args, **kwargs)
-        self.AddressForm = import_by_path(settings.SHOP_ADDRESS_FORM)
-        pass
+        self.ShippingAddressForm = import_by_path(shop_settings.SHIPPING_ADDRESS_FORM)
+        self.InvoiceAddressForm = import_by_path(shop_settings.INVOICE_ADDRESS_FORM)
 
     @classmethod
     def get_identifier(cls, obj):
@@ -67,20 +69,86 @@ class ShopCheckoutAddressPlugin(CascadePluginBase):
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
-            '{}/checkout/address.html'.format(settings.SHOP_APP_LABEL),
+            '{}/checkout/address.html'.format(shop_settings.APP_LABEL),
             'shop/checkout/address.html',
         ]
         return select_template(template_names)
 
     def render(self, context, instance, placeholder):
-        addr_type = instance.glossary.get('address_type', 'shipping')
+        if instance.glossary.get('address_type') == 'shipping':
+            AddressForm = self.ShippingAddressForm
+            priority = 'priority_shipping'
+        else:
+            AddressForm = self.InvoiceAddressForm
+            priority = 'priority_invoice'
         user = context['request'].user
-        priority = 'priority_{}'.format(addr_type)
-        address = self.AddressForm._meta.model.objects.filter(user=user).order_by(priority).first()
-        context['address'] = self.AddressForm(addr_type, instance=address)
+        AddressModel = AddressForm.get_model()
+        address = AddressModel.objects.filter(user=user).order_by(priority).first()
+        if address:
+            context['address'] = AddressForm(instance=address)
+        else:
+            aggr = AddressModel.objects.filter(user=user).aggregate(Max('priority_shipping'))
+            initial = {'priority': aggr['priority_shipping__max'] or 0}
+            context['address'] = AddressForm(initial=initial)
         return super(ShopCheckoutAddressPlugin, self).render(context, instance, placeholder)
 
 plugin_pool.register_plugin(ShopCheckoutAddressPlugin)
+
+
+class ShopPaymentPlugin(CascadePluginBase):
+    module = 'Shop'
+    name = _("Payment Method")
+    require_parent = True
+    parent_classes = ('BootstrapColumnPlugin',)
+    allow_children = False
+
+    def __init__(self, *args, **kwargs):
+        super(ShopPaymentPlugin, self).__init__(*args, **kwargs)
+        self.PaymentMethodForm = import_by_path(shop_settings.PAYMENT_METHOD_FORM)
+
+    def get_render_template(self, context, instance, placeholder):
+        template_names = [
+            getattr(self.PaymentMethodForm, 'template_name', None),
+            '{}/checkout/payment-method.html'.format(shop_settings.APP_LABEL),
+            'shop/checkout/payment-method.html',
+        ]
+        return select_template(template_names)
+
+    def render(self, context, instance, placeholder):
+        context['payment_method'] = self.PaymentMethodForm()  # TODO: set initial
+        return super(ShopPaymentPlugin, self).render(context, instance, placeholder)
+
+if cart_modifiers_pool.get_payment_choices():
+    # Plugin is registered only if at least one payment modifier exists
+    plugin_pool.register_plugin(ShopPaymentPlugin)
+
+
+class ShopShippingPlugin(CascadePluginBase):
+    module = 'Shop'
+    name = _("Shipping Method")
+    require_parent = True
+    parent_classes = ('BootstrapColumnPlugin',)
+    allow_children = False
+
+    def __init__(self, *args, **kwargs):
+        super(ShopShippingPlugin, self).__init__(*args, **kwargs)
+        self.ShippingMethodForm = import_by_path(shop_settings.SHIPPING_METHOD_FORM)
+
+    def get_render_template(self, context, instance, placeholder):
+        template_names = [
+            getattr(self.ShippingMethodForm, 'template_name', None),
+            '{}/checkout/shipping-method.html'.format(shop_settings.APP_LABEL),
+            'shop/checkout/shipping-method.html',
+        ]
+        return select_template(template_names)
+
+    def render(self, context, instance, placeholder):
+        context['shipping_method'] = self.ShippingMethodForm()  # TODO: set initial
+        return super(ShopShippingPlugin, self).render(context, instance, placeholder)
+
+if cart_modifiers_pool.get_shipping_choices():
+    # Plugin is registered only if at least one shipping modifier exists
+    plugin_pool.register_plugin(ShopShippingPlugin)
 
 
 class ShopCheckoutButton(CascadePluginBase):
@@ -89,7 +157,7 @@ class ShopCheckoutButton(CascadePluginBase):
     require_parent = True
     parent_classes = ('BootstrapColumnPlugin',)
     allow_children = False
-    text_enabled = True
+    # text_enabled = True
     glossary_fields = (
         PartialFormField('button_content',
             widgets.Input(),
@@ -105,7 +173,7 @@ class ShopCheckoutButton(CascadePluginBase):
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
-            '{}/checkout/button.html'.format(settings.SHOP_APP_LABEL),
+            '{}/checkout/button.html'.format(shop_settings.APP_LABEL),
             'shop/checkout/button.html',
         ]
         return select_template(template_names)

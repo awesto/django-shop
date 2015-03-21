@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 import copy
-from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models.base import ModelBase
 from django.db import models
 from django.utils import six
 from django.utils.functional import SimpleLazyObject, _super, empty
+from shop import settings as shop_settings
 
 
 class DeferredRelatedField(object):
@@ -57,7 +57,7 @@ class ForeignKeyBuilder(ModelBase):
 
     def __new__(cls, name, bases, attrs):
         class Meta:
-            app_label = getattr(settings, 'SHOP_APP_LABEL', 'shop')
+            app_label = shop_settings.APP_LABEL
 
         attrs.setdefault('Meta', Meta)
         if not hasattr(attrs['Meta'], 'app_label') and not getattr(attrs['Meta'], 'abstract', False):
