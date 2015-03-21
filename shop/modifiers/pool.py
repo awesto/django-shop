@@ -2,6 +2,7 @@
 from django.core import exceptions
 from django.utils.importlib import import_module
 from shop import settings
+from .base import ShippingModifier, PaymentModifier
 
 
 class CartModifiersPool(object):
@@ -12,9 +13,24 @@ class CartModifiersPool(object):
         self._modifiers_list = []
 
     def get_modifiers_list(self):
+        """
+        Returns all registered modifiers of this shop instance.
+        """
         if not self.USE_CACHE or not self._modifiers_list:
             self._modifiers_list = self._load_modifiers_list()
         return self._modifiers_list
+
+    def get_shipping_choices(self):
+        """
+        Return the choices for all registered shipping modifiers.
+        """
+        return [m.get_choice() for m in self.get_modifiers_list() if isinstance(m, ShippingModifier)]
+
+    def get_payment_choices(self):
+        """
+        Return the choices for all registered payment modifiers.
+        """
+        return [m.get_choice() for m in self.get_modifiers_list() if isinstance(m, PaymentModifier)]
 
     def _load_modifiers_list(self):
         """
