@@ -17,8 +17,11 @@ CART_MODIFIERS = getattr(settings, 'SHOP_CART_MODIFIERS', ('shop.cart.modifiers.
 
 VALUE_ADDED_TAX = getattr(settings, 'SHOP_VALUE_ADDED_TAX', Decimal('20'))
 
-CUSTOMER_FORM = getattr(settings, 'SHOP_CUSTOMER_FORM', 'shop.forms.checkout.CustomerForm')
-SHIPPING_ADDRESS_FORM = getattr(settings, 'SHOP_SHIPPING_ADDRESS_FORM', 'shop.forms.checkout.ShippingAddressForm')
-INVOICE_ADDRESS_FORM = getattr(settings, 'SHOP_INVOICE_ADDRESS_FORM', 'shop.forms.checkout.InvoiceAddressForm')
-PAYMENT_METHOD_FORM = getattr(settings, 'SHOP_PAYMENT_METHOD_FORM', 'shop.forms.checkout.PaymentMethodForm')
-SHIPPING_METHOD_FORM = getattr(settings, 'SHOP_SHIPPING_METHOD_FORM', 'shop.forms.checkout.ShippingMethodForm')
+CHECKOUT_FORMS = getattr(settings, 'SHOP_CHECKOUT_FORMS', (
+    'shop.forms.checkout.CustomerForm',
+    'shop.forms.checkout.ShippingAddressForm',
+    'shop.forms.checkout.InvoiceAddressForm',
+    'shop.forms.checkout.PaymentMethodForm',
+    'shop.forms.checkout.ShippingMethodForm',
+    'shop.forms.checkout.AnnotationForm',
+))

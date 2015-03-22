@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 import re
 from django.core import validators
 from django.db import models
-#from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _

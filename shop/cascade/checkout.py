@@ -1,13 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.db.models import Max
+from django.core.exceptions import ImproperlyConfigured
+from django.db.models import get_model, Max
+from django.forms import fields
 from django.forms import widgets
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import force_text
+from django.utils.safestring import mark_safe
 from django.utils.module_loading import import_by_path
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.fields import PartialFormField
+from cmsplugin_cascade.link.forms import LinkForm
+from cmsplugin_cascade.link.plugin_base import LinkElementMixin
+from cmsplugin_cascade.utils import resolve_dependencies
 from shop import settings as shop_settings
 from shop.models.cart import CartModel
 from shop.rest.serializers import CartSerializer
@@ -20,10 +25,6 @@ class ShopCheckoutSummaryPlugin(ShopPluginBase):
     require_parent = True
     parent_classes = ('BootstrapColumnPlugin',)
     cache = False
-
-    @classmethod
-    def get_identifier(cls, obj):
-        return force_text(cls.name)
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
@@ -41,43 +42,158 @@ class ShopCheckoutSummaryPlugin(ShopPluginBase):
 plugin_pool.register_plugin(ShopCheckoutSummaryPlugin)
 
 
+class ShopPurchaseButton(ShopPluginBase):
+    name = _("Purchase Button")
+    require_parent = True
+    parent_classes = ('BootstrapColumnPlugin',)
+    glossary_fields = (
+        PartialFormField('button_content',
+            widgets.Input(),
+            label=_('Content'),
+            help_text=_("Purchase buttons content")
+        ),
+    )
+
+    @classmethod
+    def get_identifier(cls, obj):
+        return mark_safe(obj.glossary.get('button_content', ''))
+
+    def get_render_template(self, context, instance, placeholder):
+        template_names = [
+            '{}/checkout/purchase-button.html'.format(shop_settings.APP_LABEL),
+            'shop/checkout/purchase-button.html',
+        ]
+        return select_template(template_names)
+
+plugin_pool.register_plugin(ShopPurchaseButton)
+
+
+class ButtonForm(LinkForm):
+    LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")),)
+
+    button_content = fields.CharField(required=False, label=_("Content"),
+                                      help_text=_("Proceed buttons content"))
+
+    def clean(self):
+        cleaned_data = super(ButtonForm, self).clean()
+        if self.is_valid():
+            cleaned_data['glossary'].update(button_content=cleaned_data['button_content'])
+        return cleaned_data
+
+
+class ShopProceedButton(ShopPluginBase):
+    module = 'Shop'
+    name = _("Proceed Button")
+    form = ButtonForm
+    parent_classes = ('BootstrapColumnPlugin',)
+    allow_children = False
+    model_mixins = (LinkElementMixin,)
+    fields = ('button_content', ('link_type', 'cms_page'), 'glossary',)
+    glossary_field_map = {'link': ('link_type', 'cms_page',)}
+
+    class Media:
+        js = resolve_dependencies('cascade/js/admin/linkpluginbase.js')
+
+    @classmethod
+    def get_identifier(cls, obj):
+        return mark_safe(obj.glossary.get('button_content', ''))
+
+    @classmethod
+    def get_link(cls, obj):
+        link = obj.glossary.get('link', {})
+        if 'model' in link and 'pk' in link:
+            if not hasattr(obj, '_link_model'):
+                Model = get_model(*link['model'].split('.'))
+                try:
+                    obj._link_model = Model.objects.get(pk=link['pk'])
+                except Model.DoesNotExist:
+                    obj._link_model = None
+            if obj._link_model:
+                return obj._link_model.get_absolute_url()
+
+    def get_render_template(self, context, instance, placeholder):
+        template_names = [
+            '{}/checkout/proceed-button.html'.format(shop_settings.APP_LABEL),
+            'shop/checkout/proceed-button.html',
+        ]
+        return select_template(template_names)
+
+plugin_pool.register_plugin(ShopProceedButton)
+
+
 class CheckoutDialogPlugin(ShopPluginBase):
     """
-    Base class for all plugins adding a dialog to the checkout page(s).
+    Base class for all plugins adding a dialog form to the checkout page(s).
+    Registered Cascade plugins derived from this class, require a form class in
+    `settings.SHOP_CHECKOUT_FORMS` named exactly as this plugin class without the
+    postfix `...Plugin`.
     """
     require_parent = True
     parent_classes = ('BootstrapColumnPlugin',)
-    CHOICES = (('form', _("Render as form dialog")), ('summary', _("Render as summary")),)
+    CHOICES = (('form', _("Form dialog")), ('summary', _("Summary")),)
     glossary_fields = (
         PartialFormField('render_type',
             widgets.RadioSelect(choices=CHOICES),
             label=_("Render as"),
+            initial='form',
+            help_text=_("A dialog can also be rendered as a box containing a read-only summary."),
         ),
     )
-
-
-class ShopCheckoutAddressPlugin(CheckoutDialogPlugin):
-    name = _("Checkout Address")
-    CHOICES = (('shipping', _("Shipping Address")), ('invoice', _("Invoice Address")),)
-    glossary_fields = CheckoutDialogPlugin.glossary_fields + (
-        PartialFormField('address_type',
-            widgets.RadioSelect(choices=CHOICES),
-            label=_("Address type"),
-            help_text=_("Use this address form for shipping or as invoice."),
-        ),
-    )
-
-    def __init__(self, *args, **kwargs):
-        super(ShopCheckoutAddressPlugin, self).__init__(*args, **kwargs)
-        self.ShippingAddressForm = import_by_path(shop_settings.SHIPPING_ADDRESS_FORM)
-        self.InvoiceAddressForm = import_by_path(shop_settings.INVOICE_ADDRESS_FORM)
 
     @classmethod
-    def get_identifier(cls, obj):
-        address_type = obj.glossary.get('address_type')
-        address_type = dict(cls.CHOICES).get(address_type)
-        return force_text(address_type)
+    def register_plugin(cls, plugin):
+        """
+        Register plugins derived from this class with this function instead of
+        `plugin_pool.register_plugin`, so that dialog plugins without a corresponding
+        form class are not registered.
+        """
+        if not issubclass(plugin, cls):
+            msg = "Can not register plugin class `{}`, since is does not inherit from `{}`.".format(plugin.__name__, cls.__name__)
+            raise ImproperlyConfigured(msg)
+        for form_class in shop_settings.CHECKOUT_FORMS:
+            class_name = form_class.rsplit('.', 1)[1]
+            if '{}Plugin'.format(class_name) == plugin.__name__:
+                plugin_pool.register_plugin(plugin)
+                break
 
+    def __init__(self, *args, **kwargs):
+        super(CheckoutDialogPlugin, self).__init__(*args, **kwargs)
+        # search for the corresponding form class
+        for form_class in shop_settings.CHECKOUT_FORMS:
+            class_name = form_class.rsplit('.', 1)[1]
+            if '{}Plugin'.format(class_name) == self.__class__.__name__:
+                self.FormClass = import_by_path(form_class)
+                break
+        else:
+            msg = "No corresponding form class could be found for plugin `{}`".format(self.__class__.__name__)
+            raise ImproperlyConfigured(msg)
+
+
+class CustomerFormPlugin(CheckoutDialogPlugin):
+    """
+    A placeholder plugin which provides a login box to be added to any placeholder.
+    """
+    name = _("Customer Form")
+    cache = False
+
+    def get_render_template(self, context, instance, placeholder):
+        template_names = [
+            '{}/checkout/customer.html'.format(shop_settings.APP_LABEL),
+            'shop/checkout/customer.html',
+        ]
+        return select_template(template_names)
+
+    def render(self, context, instance, placeholder):
+        user = context['request'].user
+        if user.is_authenticated():
+            context['customer'] = self.FormClass(instance=user)
+        # anonymous users get a template without customer form, see `get_render_template`
+        return super(CustomerFormPlugin, self).render(context, instance, placeholder)
+
+CheckoutDialogPlugin.register_plugin(CustomerFormPlugin)
+
+
+class CheckoutAddressPluginBase(CheckoutDialogPlugin):
     def get_render_template(self, context, instance, placeholder):
         template_names = [
             '{}/checkout/address.html'.format(shop_settings.APP_LABEL),
@@ -86,100 +202,83 @@ class ShopCheckoutAddressPlugin(CheckoutDialogPlugin):
         return select_template(template_names)
 
     def render(self, context, instance, placeholder):
-        if instance.glossary.get('address_type') == 'shipping':
-            AddressForm = self.ShippingAddressForm
-            priority_field = 'priority_shipping'
-        else:
-            AddressForm = self.InvoiceAddressForm
-            priority_field = 'priority_invoice'
         user = context['request'].user
-        AddressModel = AddressForm.get_model()
-        filter_args = {'user': user, '{}__isnull'.format(priority_field): False}
-        address = AddressModel.objects.filter(**filter_args).order_by(priority_field).first()
+        AddressModel = self.FormClass.get_model()
+        filter_args = {'user': user, '{}__isnull'.format(self.FormClass.priority_field): False}
+        address = AddressModel.objects.filter(**filter_args).order_by(self.FormClass.priority_field).first()
         if address:
-            context['address'] = AddressForm(instance=address)
+            context['address'] = self.FormClass(instance=address)
         else:
-            aggr = AddressModel.objects.filter(user=user).aggregate(Max(priority_field))
-            initial = {'priority': aggr['{}__max'.format(priority_field)] or 0}
-            context['address'] = AddressForm(initial=initial)
-        return super(ShopCheckoutAddressPlugin, self).render(context, instance, placeholder)
-
-plugin_pool.register_plugin(ShopCheckoutAddressPlugin)
+            aggr = AddressModel.objects.filter(user=user).aggregate(Max(self.FormClass.priority_field))
+            initial = {'priority': aggr['{}__max'.format(self.FormClass.priority_field)] or 0}
+            context['address'] = self.FormClass(initial=initial)
+        return super(CheckoutAddressPluginBase, self).render(context, instance, placeholder)
 
 
-class ShopPaymentPlugin(CheckoutDialogPlugin):
-    name = _("Payment Method")
+class ShippingAddressFormPlugin(CheckoutAddressPluginBase):
+    name = _("Shipping Address Dialog")
+CheckoutDialogPlugin.register_plugin(ShippingAddressFormPlugin)
 
-    def __init__(self, *args, **kwargs):
-        super(ShopPaymentPlugin, self).__init__(*args, **kwargs)
-        self.PaymentMethodForm = import_by_path(shop_settings.PAYMENT_METHOD_FORM)
+
+class InvoiceAddressFormPlugin(CheckoutAddressPluginBase):
+    name = _("Invoice Address Dialog")
+CheckoutDialogPlugin.register_plugin(InvoiceAddressFormPlugin)
+
+
+class PaymentMethodFormPlugin(CheckoutDialogPlugin):
+    name = _("Payment Method Dialog")
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
-            getattr(self.PaymentMethodForm, 'template_name', None),
             '{}/checkout/payment-method.html'.format(shop_settings.APP_LABEL),
             'shop/checkout/payment-method.html',
         ]
         return select_template(template_names)
 
     def render(self, context, instance, placeholder):
-        context['payment_method'] = self.PaymentMethodForm()  # TODO: set initial
-        return super(ShopPaymentPlugin, self).render(context, instance, placeholder)
+        cart = CartModel.objects.get_from_request(context['request'])
+        context['payment_method'] = self.FormClass(initial=cart.payment_method)
+        return super(PaymentMethodFormPlugin, self).render(context, instance, placeholder)
 
 if cart_modifiers_pool.get_payment_choices():
     # Plugin is registered only if at least one payment modifier exists
-    plugin_pool.register_plugin(ShopPaymentPlugin)
+    CheckoutDialogPlugin.register_plugin(PaymentMethodFormPlugin)
 
 
-class ShopShippingPlugin(CheckoutDialogPlugin):
-    name = _("Shipping Method")
-
-    def __init__(self, *args, **kwargs):
-        super(ShopShippingPlugin, self).__init__(*args, **kwargs)
-        self.ShippingMethodForm = import_by_path(shop_settings.SHIPPING_METHOD_FORM)
+class ShippingMethodFormPlugin(CheckoutDialogPlugin):
+    name = _("Shipping Method Dialog")
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
-            getattr(self.ShippingMethodForm, 'template_name', None),
             '{}/checkout/shipping-method.html'.format(shop_settings.APP_LABEL),
             'shop/checkout/shipping-method.html',
         ]
         return select_template(template_names)
 
     def render(self, context, instance, placeholder):
-        context['shipping_method'] = self.ShippingMethodForm()  # TODO: set initial
-        return super(ShopShippingPlugin, self).render(context, instance, placeholder)
+        cart = CartModel.objects.get_from_request(context['request'])
+        context['shipping_method'] = self.FormClass(initial=cart.shipping_method)
+        return super(ShippingMethodFormPlugin, self).render(context, instance, placeholder)
 
 if cart_modifiers_pool.get_shipping_choices():
     # Plugin is registered only if at least one shipping modifier exists
-    plugin_pool.register_plugin(ShopShippingPlugin)
+    CheckoutDialogPlugin.register_plugin(ShippingMethodFormPlugin)
 
 
-class ShopCheckoutButton(ShopPluginBase):
-    name = _("Checkout Button")
-    require_parent = True
-    parent_classes = ('BootstrapColumnPlugin',)
-    glossary_fields = (
-        PartialFormField('button_content',
-            widgets.Input(),
-            label=_('Button Content'),
-            help_text=_("Display Buy Buttom")
-        ),
-    )
-
-    @classmethod
-    def get_identifier(cls, obj):
-        content = obj.glossary.get('button_content', _("No content"))
-        return force_text(content)
+class AnnotationFormPlugin(CheckoutDialogPlugin):
+    name = _("Annotation Dialog")
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
-            '{}/checkout/button.html'.format(shop_settings.APP_LABEL),
-            'shop/checkout/button.html',
+            '{}/checkout/annotation.html'.format(shop_settings.APP_LABEL),
+            'shop/checkout/annotation.html',
         ]
         return select_template(template_names)
 
     def render(self, context, instance, placeholder):
-        return super(ShopCheckoutButton, self).render(context, instance, placeholder)
+        cart = CartModel.objects.get_from_request(context['request'])
+        initial = {'annotation': cart.annotation}
+        context['annotation'] = self.FormClass(initial=initial)
+        return super(AnnotationFormPlugin, self).render(context, instance, placeholder)
 
-plugin_pool.register_plugin(ShopCheckoutButton)
+CheckoutDialogPlugin.register_plugin(AnnotationFormPlugin)

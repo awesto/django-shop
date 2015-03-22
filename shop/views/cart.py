@@ -53,9 +53,9 @@ class CheckoutViewSet(BaseViewSet):
 
     def __init__(self, **kwargs):
         super(CheckoutViewSet, self).__init__(**kwargs)
-        self.CustomerForm = import_by_path(shop_settings.CUSTOMER_FORM)
-        self.ShippingAddressForm = import_by_path(shop_settings.SHIPPING_ADDRESS_FORM)
-        self.InvoiceAddressForm = import_by_path(shop_settings.INVOICE_ADDRESS_FORM)
+        self.checkout_forms = []
+        for form_class in shop_settings.CHECKOUT_FORMS:
+            self.checkout_forms.append(import_by_path(form_class))
 
     @list_route(methods=['post'], url_path='update')
     def update(self, request):
@@ -66,17 +66,12 @@ class CheckoutViewSet(BaseViewSet):
         """
         cart = self.get_queryset()
         errors = {}
-        customer = request.data.pop('customer', None)
-        if customer:
-            errors.update(self.CustomerForm.update_model(request, customer, cart))
-        shipping_address = request.data.pop('shipping_address', None)
-        if shipping_address:
-            errors.update(self.ShippingAddressForm.update_model(request, shipping_address, cart))
-        invoice_address = request.data.pop('invoice_address', None)
-        if invoice_address:
-            errors.update(self.InvoiceAddressForm.update_model(request, invoice_address, cart))
-
-        # with information about the shipping address and the payment method, update the cart modifiers
+        for FormClass in self.checkout_forms:
+            data = request.data.pop(FormClass.identifier, None)
+            if data:
+                reply = FormClass.update_model(request, data, cart)
+                if isinstance(reply, dict):
+                    errors.update(reply)
         cart.save()
 
         # add possible form errors for giving feedback to the customer
