@@ -4,14 +4,12 @@ from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import mark_safe
 from cms.plugin_pool import plugin_pool
-from cmsplugin_cascade.plugin_base import CascadePluginBase
 from shop import settings as shop_settings
+from .plugin_base import ShopPluginBase
 
 
-class ShopCartPlugin(CascadePluginBase):
-    module = 'Shop'
+class ShopCartPlugin(ShopPluginBase):
     name = _("Cart")
-    require_parent = False
 
     @classmethod
     def get_identifier(cls, obj):

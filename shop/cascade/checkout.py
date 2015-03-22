@@ -7,16 +7,15 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import force_text
 from django.utils.module_loading import import_by_path
 from cms.plugin_pool import plugin_pool
-from cmsplugin_cascade.plugin_base import CascadePluginBase
 from cmsplugin_cascade.fields import PartialFormField
 from shop import settings as shop_settings
 from shop.models.cart import CartModel
 from shop.rest.serializers import CartSerializer
 from shop.modifiers.pool import cart_modifiers_pool
+from .plugin_base import ShopPluginBase
 
 
-class ShopCheckoutSummaryPlugin(CascadePluginBase):
-    module = 'Shop'
+class ShopCheckoutSummaryPlugin(ShopPluginBase):
     name = _("Checkout Summary")
     require_parent = True
     parent_classes = ('BootstrapColumnPlugin',)
@@ -42,13 +41,25 @@ class ShopCheckoutSummaryPlugin(CascadePluginBase):
 plugin_pool.register_plugin(ShopCheckoutSummaryPlugin)
 
 
-class ShopCheckoutAddressPlugin(CascadePluginBase):
-    module = 'Shop'
-    name = _("Checkout Address")
+class CheckoutDialogPlugin(ShopPluginBase):
+    """
+    Base class for all plugins adding a dialog to the checkout page(s).
+    """
     require_parent = True
     parent_classes = ('BootstrapColumnPlugin',)
-    CHOICES = (('shipping', _("Shipping Address")), ('invoice', _("Invoice Address")),)
+    CHOICES = (('form', _("Render as form dialog")), ('summary', _("Render as summary")),)
     glossary_fields = (
+        PartialFormField('render_type',
+            widgets.RadioSelect(choices=CHOICES),
+            label=_("Render as"),
+        ),
+    )
+
+
+class ShopCheckoutAddressPlugin(CheckoutDialogPlugin):
+    name = _("Checkout Address")
+    CHOICES = (('shipping', _("Shipping Address")), ('invoice', _("Invoice Address")),)
+    glossary_fields = CheckoutDialogPlugin.glossary_fields + (
         PartialFormField('address_type',
             widgets.RadioSelect(choices=CHOICES),
             label=_("Address type"),
@@ -96,12 +107,8 @@ class ShopCheckoutAddressPlugin(CascadePluginBase):
 plugin_pool.register_plugin(ShopCheckoutAddressPlugin)
 
 
-class ShopPaymentPlugin(CascadePluginBase):
-    module = 'Shop'
+class ShopPaymentPlugin(CheckoutDialogPlugin):
     name = _("Payment Method")
-    require_parent = True
-    parent_classes = ('BootstrapColumnPlugin',)
-    allow_children = False
 
     def __init__(self, *args, **kwargs):
         super(ShopPaymentPlugin, self).__init__(*args, **kwargs)
@@ -124,12 +131,8 @@ if cart_modifiers_pool.get_payment_choices():
     plugin_pool.register_plugin(ShopPaymentPlugin)
 
 
-class ShopShippingPlugin(CascadePluginBase):
-    module = 'Shop'
+class ShopShippingPlugin(CheckoutDialogPlugin):
     name = _("Shipping Method")
-    require_parent = True
-    parent_classes = ('BootstrapColumnPlugin',)
-    allow_children = False
 
     def __init__(self, *args, **kwargs):
         super(ShopShippingPlugin, self).__init__(*args, **kwargs)
@@ -152,13 +155,10 @@ if cart_modifiers_pool.get_shipping_choices():
     plugin_pool.register_plugin(ShopShippingPlugin)
 
 
-class ShopCheckoutButton(CascadePluginBase):
-    module = 'Shop'
+class ShopCheckoutButton(ShopPluginBase):
     name = _("Checkout Button")
     require_parent = True
     parent_classes = ('BootstrapColumnPlugin',)
-    allow_children = False
-    # text_enabled = True
     glossary_fields = (
         PartialFormField('button_content',
             widgets.Input(),

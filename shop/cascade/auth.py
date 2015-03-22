@@ -5,17 +5,15 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.html import mark_safe
 from django.utils.module_loading import import_by_path
 from cms.plugin_pool import plugin_pool
-from cmsplugin_cascade.plugin_base import CascadePluginBase
 from shop import settings as shop_settings
+from .plugin_base import ShopPluginBase
 
 
-class ShopLoginPlugin(CascadePluginBase):
+class ShopLoginPlugin(ShopPluginBase):
     """
     A placeholder plugin which provides a login box to be added to any placeholder.
     """
-    module = 'Shop'
     name = _("Login Form")
-    require_parent = False
     parent_classes = ('BootstrapColumnPlugin',)
     cache = False
 
