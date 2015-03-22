@@ -34,7 +34,7 @@ class BaseCustomer(AbstractBaseUser, PermissionsMixin):
     SALUTATION = (('mrs', _("Mrs.")), ('mr', _("Mr.")))
     USERNAME_FIELD = 'username'
 
-    username = models.CharField(max_length=254, unique=True,
+    username = models.CharField(max_length=254, unique=True, null=True, blank=True,  # NULL for anonymous customers
         help_text=_("Required. Maximum 254 letters, numbers and the symbols: @ + - _ ."),
         validators=[validators.RegexValidator(re.compile('^[\w.@+-]+$'), _("Enter a valid username."), 'invalid')])
 
@@ -65,3 +65,6 @@ class BaseCustomer(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.get_short_name()
 
+
+# Migrate from auth_user table:
+# INSERT INTO stofferia_customer (id,password,last_login,is_superuser,username,first_name,last_name,email,is_staff,is_active,date_joined) SELECT id,password,last_login,is_superuser,username,first_name,last_name,email,is_staff,is_active,date_joined from auth_user;
