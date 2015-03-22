@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from shop.models import cart
+from django.db import models
+from jsonfield.fields import JSONField
+from shop.models import deferred
+from shop.models.address import BaseAddress
+from shop.models.cart import BaseCart
 
 
-class Cart(cart.BaseCart):
-    """Default materialized model for Cart"""
-
-
-class CartItem(cart.BaseCartItem):
-    """Default materialized model for CartItem"""
+class Cart(BaseCart):
+    """
+    Default materialized model for BaseCart containing common fields
+    """
+    shipping_address = deferred.ForeignKey(BaseAddress, null=True, default=None, related_name='+')
+    invoice_address = deferred.ForeignKey(BaseAddress, null=True, default=None, related_name='+')
+    payment_method = JSONField(blank=True, null=True)
+    shipping_method = JSONField(blank=True, null=True)
+    annotation = models.TextField(blank=True, null=True)

@@ -11,7 +11,6 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from jsonfield.fields import JSONField
 from shop.modifiers.pool import cart_modifiers_pool
-from .address import BaseAddress
 from .product import BaseProduct
 from . import deferred
 
@@ -155,10 +154,6 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     # If user is None, this cart is associated with a session
     user = models.OneToOneField(settings.AUTH_USER_MODEL, null=True, default=None)
     session_key = models.CharField(max_length=40, unique=True)
-    shipping_address = deferred.ForeignKey(BaseAddress, null=True, default=None, related_name='+')
-    invoice_address = deferred.ForeignKey(BaseAddress, null=True, default=None, related_name='+')
-    payment_method = JSONField(blank=True, null=True)
-    shipping_method = JSONField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
 
