@@ -6,31 +6,29 @@ var djangoShopModule = angular.module('django.shop.checkout', []);
 
 
 // Directive <form shop-checkout-form> (must be added as attribute to the <form> element)
-// It is used to handle updates on the checkout forms
-djangoShopModule.directive('shopCheckoutForm', ['$http', 'djangoUrl', 'djangoForm', function($http, djangoUrl, djangoForm) {
+// It is used to handle updates on the checkout forms.
+djangoShopModule.directive('shopCheckoutForm', ['$http', 'djangoUrl', function($http, djangoUrl) {
 	var updateURL = djangoUrl.reverse('shop-api:checkout-update');
-	var $scope, isLoading = false;
-
-	function update() {
-		if (isLoading)
-			return;
-		isLoading = true;
-		$http.post(updateURL, $scope.data).success(function(response) {
-			delete response.errors;
-			$scope.cart = response;
-		}).error(function(msg) {
-			console.error("Unable to update checkout forms: " + msg);
-		}).finally(function() {
-			isLoading = false;
-		});
-	}
 
 	return {
 		restrict: 'A',
 		require: 'form',
 		link: function(scope, element, attrs) {
-			$scope = scope;
-			$scope.update = update;
+			var isLoading = false;
+
+			scope.update = function() {
+				if (isLoading)
+					return;
+				isLoading = true;
+				$http.post(updateURL, scope.data).success(function(response) {
+					delete response.errors;
+					scope.cart = response;
+				}).error(function(msg) {
+					console.error("Unable to update checkout forms: " + msg);
+				}).finally(function() {
+					isLoading = false;
+				});
+			};
 		}
 	};
 }]);
@@ -42,6 +40,7 @@ djangoShopModule.directive('shopPurchaseButton', ['$http', 'djangoUrl', 'djangoF
 		restrict: 'EA',
 		link: function(scope, element, attrs) {
 			var isLoading = false;
+
 			element.on('$destroy', function() {
 				element.off('click');
 			});
