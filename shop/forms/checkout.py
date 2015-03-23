@@ -118,13 +118,14 @@ class ShippingMethodForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3Form
         cart.shipping_method = data
 
 
-class AnnotationForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3Form):
-    identifier = 'annotation'
-    scope_prefix = 'data.annotation'
-    form_name = 'annotation_form'
+class ExtrasForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3Form):
+    identifier = 'extras'
+    scope_prefix = 'data.extras'
+    form_name = 'extras_form'
 
     annotation = fields.CharField(required=False, widget=widgets.Textarea)
 
     @classmethod
     def update_model(cls, request, data, cart):
-        cart.annotation = data.get('annotation')
+        cart.extras = cart.extras or {}
+        cart.extras.update(data or {})

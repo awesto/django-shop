@@ -265,20 +265,20 @@ if cart_modifiers_pool.get_shipping_choices():
     CheckoutDialogPlugin.register_plugin(ShippingMethodFormPlugin)
 
 
-class AnnotationFormPlugin(CheckoutDialogPlugin):
-    name = _("Annotation Dialog")
+class ExtrasFormPlugin(CheckoutDialogPlugin):
+    name = _("Extras Dialog")
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
-            '{}/checkout/annotation.html'.format(shop_settings.APP_LABEL),
-            'shop/checkout/annotation.html',
+            '{}/checkout/extras.html'.format(shop_settings.APP_LABEL),
+            'shop/checkout/extras.html',
         ]
         return select_template(template_names)
 
     def render(self, context, instance, placeholder):
         cart = CartModel.objects.get_from_request(context['request'])
-        initial = {'annotation': cart.annotation}
-        context['annotation'] = self.FormClass(initial=initial)
-        return super(AnnotationFormPlugin, self).render(context, instance, placeholder)
+        initial = cart.extras or {}
+        context['extras'] = self.FormClass(initial=initial)
+        return super(ExtrasFormPlugin, self).render(context, instance, placeholder)
 
-CheckoutDialogPlugin.register_plugin(AnnotationFormPlugin)
+CheckoutDialogPlugin.register_plugin(ExtrasFormPlugin)

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.db import models
 from jsonfield.fields import JSONField
 from shop.models import deferred
 from shop.models.address import BaseAddress
@@ -15,4 +14,4 @@ class Cart(BaseCart):
     invoice_address = deferred.ForeignKey(BaseAddress, null=True, default=None, related_name='+')
     payment_method = JSONField(blank=True, null=True)
     shipping_method = JSONField(blank=True, null=True)
-    annotation = models.TextField(blank=True, null=True)
+    extras = JSONField(blank=True, null=True)
