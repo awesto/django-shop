@@ -41,9 +41,6 @@ class AddressForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelForm):
     class Meta:
         model = AddressModel
         exclude = ('user', 'priority_shipping', 'priority_invoice',)
-        widgets = {
-            'country': widgets.Select(attrs={'ng-change': 'update()'}),
-        }
 
     def __init__(self, initial=None, instance=None, *args, **kwargs):
         if instance:
@@ -83,6 +80,11 @@ class ShippingAddressForm(AddressForm):
     scope_prefix = 'data.shipping_address'
     form_name = 'shipping_addr_form'
     priority_field = 'priority_shipping'
+
+    class Meta(AddressForm.Meta):
+        widgets = {
+            'country': widgets.Select(attrs={'ng-change': 'update()'}),
+        }
 
 
 class InvoiceAddressForm(AddressForm):
