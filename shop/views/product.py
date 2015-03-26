@@ -16,12 +16,14 @@ from shop.models.product import ProductModel
 
 class ProductListView(generics.ListAPIView):
     renderer_classes = (CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer)
-    serializer_class = None
+    product_model = ProductModel
+    serializer_class = None  # must be overridden by ProductListView.as_view
+    filter_class = None  # may be overridden by ProductListView.as_view
     limit_choices_to = Q()
     template_name = 'shop/products-list.html'
 
     def get_queryset(self):
-        qs = ProductModel.objects.filter(self.limit_choices_to)
+        qs = self.product_model.objects.filter(self.limit_choices_to)
 
         # restrict products for current CMS page
         current_page = self.request._request.current_page
@@ -35,11 +37,24 @@ class ProductListView(generics.ListAPIView):
         self.paginator = page.paginator
         return page
 
+    def filter_queryset(self, queryset):
+        self.filter_context = None
+        if self.filter_class:
+            filter_instance = self.filter_class(self.request.query_params, queryset=queryset)
+            if callable(getattr(filter_instance, 'get_render_context', None)):
+                self.filter_context = filter_instance.get_render_context()
+            elif hasattr(filter_instance, 'render_context'):
+                self.filter_context = filter_instance.render_context
+        qs = super(ProductListView, self).filter_queryset(queryset)
+        print qs.query
+        return qs
+
     def get_renderer_context(self):
         renderer_context = super(ProductListView, self).get_renderer_context()
         if renderer_context['request'].accepted_renderer.format == 'html':
             # add the paginator as Python object to the context
             renderer_context['paginator'] = self.paginator
+            renderer_context['filter'] = self.filter_context
         return renderer_context
 
 
@@ -48,6 +63,7 @@ class AddToCartView(views.APIView):
     Handle the "Add to Cart" dialog on the products detail page.
     """
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
+    product_model = ProductModel
     serializer_class = AddToCartSerializer
     lookup_field = lookup_url_kwarg = 'slug'
     limit_choices_to = Q()
@@ -55,7 +71,7 @@ class AddToCartView(views.APIView):
     def get_context(self, request, **kwargs):
         assert self.lookup_url_kwarg in kwargs
         filter_kwargs = {self.lookup_field: kwargs.pop(self.lookup_url_kwarg)}
-        queryset = ProductModel.objects.filter(self.limit_choices_to, **filter_kwargs)
+        queryset = self.product_model.objects.filter(self.limit_choices_to, **filter_kwargs)
         product = get_object_or_404(queryset)
         return {'product': product, 'request': request}
 
@@ -80,7 +96,8 @@ class ProductRetrieveView(generics.RetrieveAPIView):
     """
     renderer_classes = (CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer)
     lookup_field = lookup_url_kwarg = 'slug'
-    serializer_class = None  # must be set by method `as_view()`
+    product_model = ProductModel
+    serializer_class = None  # must be overridden by ProductListView.as_view
     limit_choices_to = Q()
 
     def get_template_names(self):
@@ -104,7 +121,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
         if not hasattr(self, '_product'):
             assert self.lookup_url_kwarg in self.kwargs
             filter_kwargs = {self.lookup_field: self.kwargs[self.lookup_url_kwarg]}
-            queryset = ProductModel.objects.filter(self.limit_choices_to, **filter_kwargs)
+            queryset = self.product_model.objects.filter(self.limit_choices_to, **filter_kwargs)
             product = get_object_or_404(queryset)
             self._product = product
         return self._product
