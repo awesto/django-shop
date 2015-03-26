@@ -7,7 +7,6 @@ from django.contrib.auth.models import AnonymousUser
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
 from django.utils.encoding import python_2_unicode_compatible
-from django.utils.functional import SimpleLazyObject
 from django.utils.translation import ugettext_lazy as _
 from shop.order_signals import processing
 from shop.money.fields import MoneyField
@@ -50,7 +49,7 @@ class OrderManager(models.Manager):
     @transaction.commit_on_success
     def create_from_cart(self, cart, request):
         """
-        This creates a new Order object (and all the rest) from a passed Cart
+        This creates a new Order object with all its OrderItems,  all the rest) from a passed Cart
         object.
 
         Specifically, it creates an Order with corresponding OrderItems and
