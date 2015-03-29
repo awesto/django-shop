@@ -19,7 +19,7 @@ djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$mo
 		}).error(function(msg) {
 			console.error('Unable to get context: ' + msg);
 		});
-	}
+	};
 
 	$scope.updateContext = function() {
 		if (isLoading || angular.equals($scope.context, prevContext))
@@ -35,7 +35,7 @@ djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$mo
 		}).finally(function() {
 			isLoading = false;
 		});
-	}
+	};
 
 	$scope.addToCart = function(cart_url) {
 		$modal.open({
@@ -49,7 +49,7 @@ djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$mo
 		}).result.then(function(next_url) {
 			$window.location.href = next_url;
 		});
-	}
+	};
 
 }]);
 
