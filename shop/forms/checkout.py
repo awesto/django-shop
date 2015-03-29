@@ -6,6 +6,7 @@ from django.forms import widgets
 from djangular.forms import NgModelFormMixin, NgFormValidationMixin
 from djangular.styling.bootstrap3.forms import Bootstrap3Form, Bootstrap3ModelForm
 from djangular.styling.bootstrap3.widgets import RadioSelect, RadioFieldRenderer
+from shop.models.auth import get_customer
 from shop.models.address import AddressModel
 from shop.modifiers.pool import cart_modifiers_pool
 
@@ -60,13 +61,14 @@ class AddressForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelForm):
         """
         # search for the associated address DB instance or create a new one
         priority = data.get('priority')
-        filter_args = {'user': request.user, cls.priority_field: priority}
+        user = get_customer(request)
+        filter_args = {'user': user, cls.priority_field: priority}
         instance = cls.get_model().objects.filter(**filter_args).first()
         address_form = cls(data=data, instance=instance)
         if address_form.is_valid():
             if not instance:
                 instance = address_form.save(commit=False)
-                instance.user = request.user
+                instance.user = user
                 setattr(instance, cls.priority_field, priority)
             assert address_form.instance == instance
             instance.save()

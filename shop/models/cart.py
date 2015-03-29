@@ -4,13 +4,13 @@ from six import with_metaclass
 from collections import OrderedDict
 from hashlib import sha1
 from django.conf import settings
-from django.contrib.auth.models import AnonymousUser
 from django.core.validators import MinValueValidator
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from jsonfield.fields import JSONField
 from shop.modifiers.pool import cart_modifiers_pool
+from .auth import get_customer
 from .product import BaseProduct
 from . import deferred
 
@@ -128,20 +128,10 @@ class BaseCartVariableItem(BaseCartItem):
 class CartManager(models.Manager):
     def get_from_request(self, request):
         """
-        Return the cart for current visitor. The visitor is determined through the request object.
-        If the visitor is logged in, find the cart through the user model. Otherwise use its
-        session_key. If no cart object was found, create an empty one and return it.
+        Return the cart for current user. Anonymous users also must have a primary key,
+        thats why djangoSHOP requires its own authentication middleware.
         """
-        if request.user.is_authenticated():
-            try:
-                cart = self.get(user=request.user)
-            except self.model.DoesNotExist:
-                cart = self.create(user=request.user, session_key=request.session.session_key)
-        else:
-            try:
-                cart = self.get(session_key=request.session.session_key)
-            except self.model.DoesNotExist:
-                cart = self.create(user=AnonymousUser.id, session_key=request.session.session_key)
+        cart = self.get_or_create(user=get_customer(request))[0]
         return cart
 
 
@@ -153,7 +143,6 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     # If user is None, this cart is associated with a session
     user = models.OneToOneField(settings.AUTH_USER_MODEL, null=True, default=None)
-    session_key = models.CharField(max_length=40, unique=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
 

@@ -3,18 +3,34 @@ from __future__ import unicode_literals
 import re
 from django.core import validators
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AnonymousUser, AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 
 
+def get_customer(request):
+    """
+    Always return a Customer object, regardless if the request.user is anonymous or authenticated.
+    """
+    if isinstance(request.user, AnonymousUser):
+        return get_user_model().objects.get_from_request(request)
+    else:
+        return request.user
+
+
 class CustomerManager(BaseUserManager):
-    def create_user(self, username, password=None):
-        if not username:
-            raise ValueError(_("Users must have a valid username."))
-        user = self.model(username=self.normalize_email(username))
-        user.set_password(password)
+    def create_user(self, username=None, session_key=None, password=None):
+        if username:
+            # TODO: use BaseUserManager.normalize_email
+            user = self.model(username=username)
+            user.is_active = True
+            user.set_password(password)
+        else:
+            user = self.model(session_key=session_key)
+            user.is_active = False
+            user.set_unusable_password()
         user.save(using=self._db)
         return user
 
@@ -23,6 +39,15 @@ class CustomerManager(BaseUserManager):
         user.is_admin = True
         user.save(using=self._db)
         return user
+
+    def get_from_request(self, request):
+        """
+        Return the user for the current visitor. The visitor is determined through the session key.
+        """
+        try:
+            return self.get(session_key=request.session.session_key)
+        except self.model.DoesNotExist:
+            return self.create_user(session_key=request.session.session_key)
 
 
 @python_2_unicode_compatible
@@ -37,6 +62,8 @@ class BaseCustomer(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=254, unique=True, null=True, blank=True,  # NULL for anonymous customers
         help_text=_("Required. Maximum 254 letters, numbers and the symbols: @ + - _ ."),
         validators=[validators.RegexValidator(re.compile('^[\w.@+-]+$'), _("Enter a valid username."), 'invalid')])
+    session_key = models.CharField(max_length=40, unique=True, null=True, blank=True, editable=False,
+        help_text=_("Anonymous customers are identified by their session key"))
 
     salutation = models.CharField(max_length=5, choices=SALUTATION)
     first_name = models.CharField(_("First Name"), max_length=50)
@@ -64,6 +91,18 @@ class BaseCustomer(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.get_short_name()
+
+    def is_anonymous(self):
+        """
+        Returns True for users without a username.
+        """
+        return self.username is None
+
+    def is_authenticated(self):
+        """
+        Returns True for users whose username is not None.
+        """
+        return self.username is not None
 
 
 # Migrate from auth_user table:

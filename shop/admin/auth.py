@@ -15,3 +15,9 @@ class CustomerAdmin(UserAdmin):
     list_display = ('username', 'email', 'salutation', 'first_name', 'last_name', 'is_staff')
     ordering = ('email',)
 
+    def get_queryset(self, request):
+        """
+        Restrict queryset to real users.
+        """
+        qs = super(CustomerAdmin, self).get_queryset(request)
+        return qs.filter(username__isnull=False)

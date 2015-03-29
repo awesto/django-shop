@@ -14,6 +14,7 @@ from cmsplugin_cascade.link.forms import LinkForm
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.utils import resolve_dependencies
 from shop import settings as shop_settings
+from shop.models.auth import get_customer
 from shop.models.cart import CartModel
 from shop.rest.serializers import CartSerializer
 from shop.modifiers.pool import cart_modifiers_pool
@@ -187,7 +188,9 @@ class CustomerFormPlugin(CheckoutDialogPlugin):
         user = context['request'].user
         if user.is_authenticated():
             context['customer'] = self.FormClass(instance=user)
-        # anonymous users get a template without customer form, see `get_render_template`
+        else:
+            # anonymous users get a template without customer form, see `get_render_template`
+            pass
         return super(CustomerFormPlugin, self).render(context, instance, placeholder)
 
 CheckoutDialogPlugin.register_plugin(CustomerFormPlugin)
@@ -202,9 +205,9 @@ class CheckoutAddressPluginBase(CheckoutDialogPlugin):
         return select_template(template_names)
 
     def render(self, context, instance, placeholder):
-        user = context['request'].user
-        AddressModel = self.FormClass.get_model()
+        user = get_customer(context['request'])
         filter_args = {'user': user, '{}__isnull'.format(self.FormClass.priority_field): False}
+        AddressModel = self.FormClass.get_model()
         address = AddressModel.objects.filter(**filter_args).order_by(self.FormClass.priority_field).first()
         if address:
             context['address'] = self.FormClass(instance=address)
