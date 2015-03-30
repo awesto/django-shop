@@ -23,7 +23,8 @@ class CustomerForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelForm)
 
     @classmethod
     def update_model(cls, request, data, cart):
-        customer_form = cls(data=data, instance=request.user)
+        user = get_customer(request)
+        customer_form = cls(data=data, instance=user)
         if customer_form.is_valid():
             customer_form.save()
         else:

@@ -185,12 +185,9 @@ class CustomerFormPlugin(CheckoutDialogPlugin):
         return select_template(template_names)
 
     def render(self, context, instance, placeholder):
-        user = context['request'].user
-        if user.is_authenticated():
-            context['customer'] = self.FormClass(instance=user)
-        else:
-            # anonymous users get a template without customer form, see `get_render_template`
-            pass
+        user = get_customer(context['request'])
+        context['customer'] = self.FormClass(instance=user)
+        # anonymous users get a template without customer form, see `get_render_template`
         return super(CustomerFormPlugin, self).render(context, instance, placeholder)
 
 CheckoutDialogPlugin.register_plugin(CustomerFormPlugin)

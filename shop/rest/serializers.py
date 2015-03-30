@@ -173,7 +173,7 @@ class BaseItemSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data['cart'] = CartModel.objects.get_from_request(self.context['request'])
-        cart_item, _ = CartItemModel.objects.get_or_create(**validated_data)
+        cart_item = CartItemModel.objects.get_or_create(**validated_data)[0]
         cart_item.save()
         return cart_item
 

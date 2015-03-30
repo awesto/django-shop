@@ -9,48 +9,48 @@ var djangoShopModule = angular.module('django.shop.checkout', []);
 // all forms are valid, proceed. Since this controller does not make any presumption on how
 // and where to proceed to, the caller has to set the controllers `deferred` to a `$q.deferred()`
 // object.
-djangoShopModule.controller('CheckoutCtrl', ['$scope', '$http', 'djangoUrl', 'djangoForm',
-                                             function($scope, $http, djangoUrl, djangoForm) {
+djangoShopModule.controller('CheckoutCtrl', ['$scope', '$http', '$q', 'djangoUrl', 'djangoForm',
+                                             function($scope, $http, $q, djangoUrl, djangoForm) {
 	var self = this, updateURL = djangoUrl.reverse('shop-api:checkout-update');
 	this.isLoading = true;  // prevent premature updates and re-triggering
-	this.deferred = null;
 	$scope.update = update;
 
-	function update() {
-//		if (self.isLoading)
-//			return;
+	function update(deferred) {
+		if (self.isLoading)
+			return;
 		self.isLoading = true;
 		$http.post(updateURL, $scope.data).success(function(response) {
 			var hasErrors = false;
-			if (self.deferred) {
+			console.log(response);
+			if (deferred) {
 				// only report errors, when the customer wishes to proceed
 				angular.forEach(response.errors, function(errors, key) {
-					hasErrors = hasErrors || djangoForm.setErrors($scope[key], errors);
+					hasErrors = djangoForm.setErrors($scope[key], errors) || hasErrors;
 				});
-				if (hasErrors) {
-					self.deferred.reject();
+				if (true || hasErrors) {
+					deferred.notify(response.errors);
 				} else {
-					self.deferred.resolve();
+					deferred.resolve();
 				}
 			}
 			delete response.errors;
 			$scope.cart = response;
-			if (self.deferred) return self.deferred.promise;
 		}).error(function(msg) {
 			console.error("Unable to update checkout forms: " + msg);
-//		})['finally'](function() {
-//			console.log('called finally');
-//			self.isLoading = false;
+		})['finally'](function() {
+			self.isLoading = false;
 		});
 	}
 
 	this.registerButton = function(element) {
+		var deferred = $q.defer();
+		element.on('click', function() {
+			update(deferred);
+		});
 		element.on('$destroy', function() {
 			element.off('click');
 		});
-		element.on('click', function() {
-			update();
-		});
+		return deferred.promise;
 	};
 
 }]);
@@ -69,21 +69,18 @@ djangoShopModule.directive('shopCheckoutForm', function() {
 });
 
 
-djangoShopModule.directive('shopCheckoutProceed', ['$window', '$q', function($window, $q) {
+djangoShopModule.directive('shopCheckoutProceed', ['$window', function($window) {
 	return {
 		restrict: 'EA',
 		controller: 'CheckoutCtrl',
 		link: function(scope, element, attrs, CheckoutCtrl) {
 			CheckoutCtrl.isLoading = false;
-			CheckoutCtrl.registerButton(element);
-			// build a deferred object to proceed with the buttons action
-			CheckoutCtrl.deferred = $q.defer();
-			CheckoutCtrl.deferred.promise.then(function() {
-				console.log("Redirect on page " + attrs.shopCheckoutProceed);
-				//$window.location.href = attrs.shopCheckoutProceed;
-				return CheckoutCtrl.deferred.promise;
-			}, function() {
-				console.error("The checkout form contains errors");
+			CheckoutCtrl.registerButton(element).then(function() {
+				console.log("Redirect on page " + attrs.href);
+				//$window.location.href = attrs.href;
+			}, null, function(errs) {
+				console.error("The checkout form contains errors:");
+				console.log(errs);
 			});
 		}
 	};
