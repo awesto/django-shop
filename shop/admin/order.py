@@ -16,12 +16,12 @@ class OrderPaymentInline(admin.TabularInline):
 
 
 class OrderExtraRowInline(admin.TabularInline):
-    model = getattr(BaseOrderExtraRow, 'MaterializedModel')
+    model = getattr(BaseOrderExtraRow, '_materialized_model')
     extra = 0
 
 
 class OrderItemInline(admin.TabularInline):
-    model = getattr(BaseOrderItem, 'MaterializedModel')
+    model = getattr(BaseOrderItem, '_materialized_model')
     extra = 0
     raw_id_fields = ('product',)
 
