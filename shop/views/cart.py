@@ -46,6 +46,7 @@ class WatchViewSet(BaseViewSet):
     item_serializer_class = serializers.WatchItemSerializer
 
 
+# TODO: move this into views/checkout.py
 class CheckoutViewSet(BaseViewSet):
     serializer_label = 'checkout'
     serializer_class = serializers.CheckoutSerializer
@@ -66,12 +67,12 @@ class CheckoutViewSet(BaseViewSet):
         """
         cart = self.get_queryset()
         errors = {}
-        for FormClass in self.checkout_forms:
-            data = request.data.get(FormClass.identifier)
-            if data:
-                reply = FormClass.update_model(request, data, cart)
-                if isinstance(reply, dict):
-                    errors.update(reply)
+        # iterate over all given forms and collect potential errors
+        for form_class in self.checkout_forms:
+            data = request.data.get(form_class.identifier)
+            reply = form_class.form_factory(request, data, cart)
+            if isinstance(reply, dict):
+                errors.update(reply)
         cart.save()
 
         # add possible form errors for giving feedback to the customer

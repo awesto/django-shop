@@ -23,7 +23,7 @@ class CustomerForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelForm)
             'groups', 'user_permissions', 'date_joined',)
 
     @classmethod
-    def update_model(cls, request, data, cart):
+    def form_factory(cls, request, data, cart):
         user = get_customer(request)
         customer_form = cls(data=data, instance=user)
         if customer_form.is_valid():
@@ -56,16 +56,16 @@ class AddressForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelForm):
         return cls.Meta.model
 
     @classmethod
-    def update_model(cls, request, data, cart):
+    def form_factory(cls, request, data, cart):
         """
         From the given request, update the database model.
         If the form data is invalid, return an error dictionary to update the response.
         """
         # search for the associated address DB instance or create a new one
-        priority = data.get('priority')
+        priority = data and data.get('priority') or 0
         user = get_customer(request)
         filter_args = {'user': user, cls.priority_field: priority}
-        instance = cls.get_model().objects.filter(**filter_args).first()
+        instance = cls.Meta.model.objects.filter(**filter_args).first()
         address_form = cls(data=data, instance=instance)
         if address_form.is_valid():
             if not instance:
@@ -106,14 +106,14 @@ class InvoiceAddressForm(AddressForm):
         return super(InvoiceAddressForm, self).as_div()
 
     @classmethod
-    def update_model(cls, request, data, cart):
+    def form_factory(cls, request, data, cart):
         """
         Overridden method to reuse data from ShippingAddressForm in case the checkbox for
         `use_shipping_address` is active.
         """
-        if data.pop('use_shipping_address', False):
+        if data and data.pop('use_shipping_address', False):
             data = request.data.get(ShippingAddressForm.identifier)
-        return super(InvoiceAddressForm, cls).update_model(request, data, cart)
+        return super(InvoiceAddressForm, cls).form_factory(request, data, cart)
 
 
 class PaymentMethodForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3Form):
@@ -125,7 +125,7 @@ class PaymentMethodForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3Form)
         widget=RadioSelect(renderer=RadioFieldRenderer, attrs={'ng-change': 'update()'}))
 
     @classmethod
-    def update_model(cls, request, data, cart):
+    def form_factory(cls, request, data, cart):
         cart.payment_method = data
 
 
@@ -138,7 +138,7 @@ class ShippingMethodForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3Form
         widget=RadioSelect(renderer=RadioFieldRenderer, attrs={'ng-change': 'update()'}))
 
     @classmethod
-    def update_model(cls, request, data, cart):
+    def form_factory(cls, request, data, cart):
         cart.shipping_method = data
 
 
@@ -150,6 +150,6 @@ class ExtrasForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3Form):
     annotation = fields.CharField(required=False, widget=widgets.Textarea)
 
     @classmethod
-    def update_model(cls, request, data, cart):
+    def form_factory(cls, request, data, cart):
         cart.extras = cart.extras or {}
         cart.extras.update(data or {})
