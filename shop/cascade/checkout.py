@@ -22,6 +22,9 @@ from .plugin_base import ShopPluginBase
 
 
 class ShopCheckoutSummaryPlugin(ShopPluginBase):
+    """
+    Renders a read-only summary of the cart to be displayed during the checkout.
+    """
     name = _("Checkout Summary")
     require_parent = True
     parent_classes = ('BootstrapColumnPlugin',)
@@ -175,10 +178,23 @@ class CheckoutDialogPlugin(ShopPluginBase):
             msg = "No corresponding form class could be found for plugin `{}`".format(self.__class__.__name__)
             raise ImproperlyConfigured(msg)
 
+    def get_form_data(self, request):
+        """
+        Returns data to initialize the corresponding dialog form.
+        This method must return a dictionary containing either `instance` - an object to initialize
+        the form class for this plugin, or `initial` - a dict containing initial form data.
+        """
+        return {}
+
+    def render(self, context, instance, placeholder):
+        form_data = self.get_form_data(context['request'])
+        context[self.FormClass.identifier] = self.FormClass(**form_data)
+        return super(CheckoutDialogPlugin, self).render(context, instance, placeholder)
+
 
 class CustomerFormPlugin(CheckoutDialogPlugin):
     """
-    A placeholder plugin which provides a login box to be added to any placeholder.
+    provides the form to edit customer specific data stored in model `Customer`.
     """
     name = _("Customer Form")
     cache = False
@@ -190,28 +206,24 @@ class CustomerFormPlugin(CheckoutDialogPlugin):
         ]
         return select_template(template_names)
 
-    def render(self, context, instance, placeholder):
-        user = get_customer(context['request'])
-        context['customer'] = self.FormClass(instance=user)
-        # anonymous users get a template without customer form, see `get_render_template`
-        return super(CustomerFormPlugin, self).render(context, instance, placeholder)
+    def get_form_data(self, request):
+        return {'instance': get_customer(request)}
 
 CheckoutDialogPlugin.register_plugin(CustomerFormPlugin)
 
 
 class CheckoutAddressPluginBase(CheckoutDialogPlugin):
-    def render(self, context, instance, placeholder):
-        user = get_customer(context['request'])
+    def get_form_data(self, request):
+        user = get_customer(request)
         filter_args = {'user': user, '{}__isnull'.format(self.FormClass.priority_field): False}
         AddressModel = self.FormClass.get_model()
         address = AddressModel.objects.filter(**filter_args).order_by(self.FormClass.priority_field).first()
         if address:
-            context['address'] = self.FormClass(instance=address)
+            return {'instance': address}
         else:
             aggr = AddressModel.objects.filter(user=user).aggregate(Max(self.FormClass.priority_field))
             initial = {'priority': aggr['{}__max'.format(self.FormClass.priority_field)] or 0}
-            context['address'] = self.FormClass(initial=initial)
-        return super(CheckoutAddressPluginBase, self).render(context, instance, placeholder)
+            return {'initial': initial}
 
 
 class ShippingAddressFormPlugin(CheckoutAddressPluginBase):
@@ -220,9 +232,7 @@ class ShippingAddressFormPlugin(CheckoutAddressPluginBase):
     def get_render_template(self, context, instance, placeholder):
         template_names = [
             '{}/checkout/shipping-address.html'.format(shop_settings.APP_LABEL),
-            '{}/checkout/address.html'.format(shop_settings.APP_LABEL),
             'shop/checkout/shipping-address.html',
-            'shop/checkout/address.html',
         ]
         return select_template(template_names)
 
@@ -235,9 +245,7 @@ class InvoiceAddressFormPlugin(CheckoutAddressPluginBase):
     def get_render_template(self, context, instance, placeholder):
         template_names = [
             '{}/checkout/invoice-address.html'.format(shop_settings.APP_LABEL),
-            '{}/checkout/address.html'.format(shop_settings.APP_LABEL),
             'shop/checkout/invoice-address.html',
-            'shop/checkout/address.html',
         ]
         return select_template(template_names)
 
@@ -254,10 +262,9 @@ class PaymentMethodFormPlugin(CheckoutDialogPlugin):
         ]
         return select_template(template_names)
 
-    def render(self, context, instance, placeholder):
-        cart = CartModel.objects.get_from_request(context['request'])
-        context['payment_method'] = self.FormClass(initial=cart.payment_method)
-        return super(PaymentMethodFormPlugin, self).render(context, instance, placeholder)
+    def get_form_data(self, request):
+        cart = CartModel.objects.get_from_request(request)
+        return {'initial': cart.payment_method}
 
 if cart_modifiers_pool.get_payment_choices():
     # Plugin is registered only if at least one payment modifier exists
@@ -274,10 +281,9 @@ class ShippingMethodFormPlugin(CheckoutDialogPlugin):
         ]
         return select_template(template_names)
 
-    def render(self, context, instance, placeholder):
-        cart = CartModel.objects.get_from_request(context['request'])
-        context['shipping_method'] = self.FormClass(initial=cart.shipping_method)
-        return super(ShippingMethodFormPlugin, self).render(context, instance, placeholder)
+    def get_form_data(self, request):
+        cart = CartModel.objects.get_from_request(request)
+        return {'initial': cart.shipping_method}
 
 if cart_modifiers_pool.get_shipping_choices():
     # Plugin is registered only if at least one shipping modifier exists
@@ -294,10 +300,8 @@ class ExtrasFormPlugin(CheckoutDialogPlugin):
         ]
         return select_template(template_names)
 
-    def render(self, context, instance, placeholder):
-        cart = CartModel.objects.get_from_request(context['request'])
-        initial = cart.extras or {}
-        context['extras'] = self.FormClass(initial=initial)
-        return super(ExtrasFormPlugin, self).render(context, instance, placeholder)
+    def get_form_data(self, request):
+        cart = CartModel.objects.get_from_request(request)
+        return {'initial': cart.extras or {}}
 
 CheckoutDialogPlugin.register_plugin(ExtrasFormPlugin)
