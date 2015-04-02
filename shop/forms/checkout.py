@@ -3,9 +3,10 @@ from __future__ import unicode_literals
 from django.contrib.auth import get_user_model
 from django.forms import fields
 from django.forms import widgets
+from django.utils.translation import ugettext_lazy as _
 from djangular.forms import NgModelFormMixin, NgFormValidationMixin
 from djangular.styling.bootstrap3.forms import Bootstrap3Form, Bootstrap3ModelForm
-from djangular.styling.bootstrap3.widgets import RadioSelect, RadioFieldRenderer
+from djangular.styling.bootstrap3.widgets import RadioSelect, RadioFieldRenderer, CheckboxInput
 from shop.models.auth import get_customer
 from shop.models.address import AddressModel
 from shop.modifiers.pool import cart_modifiers_pool
@@ -95,6 +96,24 @@ class InvoiceAddressForm(AddressForm):
     scope_prefix = 'data.invoice_address'
     form_name = 'invoice_addr_form'
     priority_field = 'priority_invoice'
+
+    use_shipping_address = fields.BooleanField(required=False, initial=True,
+        widget=CheckboxInput(_("Use shipping address for invoice")))
+
+    def as_div(self):
+        # Intentionally rendered without field `use_shipping_address`
+        self.fields.pop('use_shipping_address', None)
+        return super(InvoiceAddressForm, self).as_div()
+
+    @classmethod
+    def update_model(cls, request, data, cart):
+        """
+        Overridden method to reuse data from ShippingAddressForm in case the checkbox for
+        `use_shipping_address` is active.
+        """
+        if data.pop('use_shipping_address', False):
+            data = request.data.get(ShippingAddressForm.identifier)
+        return super(InvoiceAddressForm, cls).update_model(request, data, cart)
 
 
 class PaymentMethodForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3Form):

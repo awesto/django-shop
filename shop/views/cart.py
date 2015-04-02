@@ -67,7 +67,7 @@ class CheckoutViewSet(BaseViewSet):
         cart = self.get_queryset()
         errors = {}
         for FormClass in self.checkout_forms:
-            data = request.data.pop(FormClass.identifier, None)
+            data = request.data.get(FormClass.identifier)
             if data:
                 reply = FormClass.update_model(request, data, cart)
                 if isinstance(reply, dict):
