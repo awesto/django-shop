@@ -90,9 +90,13 @@ materialization of a model, these pseudo-fields are replaced against real foreig
 Accessing the materialized model
 --------------------------------
 
-While programming with abstract model classes, sometimes they require to access their model manager
+While programming with abstract model classes, sometimes they must access their model manager
 or their concrete model definition. A query such as ``BaseCartItem.objects.filter(cart=cart)``
-therefore will throw an exception. To facilitate this, the deferred model metaclasses add the
-additional member ``MaterializedModel`` to their base class, while building the model class.
-This field then can be accessed and used to perform the above query:
-``BaseCartItem.MaterialzedModel.objects.filter(cart=cart)``.
+therefore can not function and will throw an exception. To facilitate this, the deferred model
+metaclasses adds an additional member ``_materialized_model`` to their base class, while building
+the model class. This field then can be accessed and used to perform the above query:
+``BaseCartItem._materialized_model.objects.filter(cart=cart)``.
+
+However, you normally should need to access the materialized model this way. The deferred module
+offers a helper class to access the materialized model using lazy evaluation.
+
