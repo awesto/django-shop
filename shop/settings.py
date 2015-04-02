@@ -24,4 +24,5 @@ CHECKOUT_FORMS = getattr(settings, 'SHOP_CHECKOUT_FORMS', (
     'shop.forms.checkout.PaymentMethodForm',
     'shop.forms.checkout.ShippingMethodForm',
     'shop.forms.checkout.ExtrasForm',
+    'shop.forms.checkout.TermsAndConditionsForm',
 ))
