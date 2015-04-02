@@ -2,9 +2,11 @@ language: python
 python:
   - "2.7"
 env:
-  - DJANGO=1.4.5
-  - DJANGO=1.5.1
+  - TOXENV=py27-1.4
+  - TOXENV=py27-1.5
+  - TOXENV=py27-1.6
+  - TOXENV=py27-1.7
+  - TOXENV=py27-trunk
 install:
-  - pip install -q Django==$DJANGO --use-mirrors
-  - python setup.py -q install
-script: cd tests/testapp/ && ./manage.py test shop addressmodel
+  - pip install -q --use-mirrors tox
+script: tox
