@@ -305,3 +305,19 @@ class ExtrasFormPlugin(CheckoutDialogPlugin):
         return {'initial': cart.extras or {}}
 
 CheckoutDialogPlugin.register_plugin(ExtrasFormPlugin)
+
+
+class TermsAndConditionsFormPlugin(CheckoutDialogPlugin):
+    """
+    Provides the form to accept terms and conditions.
+    """
+    name = _("Terms and Conditions")
+
+    def get_render_template(self, context, instance, placeholder):
+        template_names = [
+            '{}/checkout/terms-and-conditions.html'.format(shop_settings.APP_LABEL),
+            'shop/checkout/terms-and-conditions.html',
+        ]
+        return select_template(template_names)
+
+CheckoutDialogPlugin.register_plugin(TermsAndConditionsFormPlugin)

@@ -153,3 +153,19 @@ class ExtrasForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3Form):
     def form_factory(cls, request, data, cart):
         cart.extras = cart.extras or {}
         cart.extras.update(data or {})
+
+
+class TermsAndConditionsForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3Form):
+    identifier = 'terms_and_conditions'
+    scope_prefix = 'data.terms_and_conditions'
+    form_name = 'terms_and_conditions_form'
+
+    accept = fields.BooleanField(required=True,
+        widget=CheckboxInput(_("Accept terms and conditions.")))
+
+    @classmethod
+    def form_factory(cls, request, data, cart):
+        data = data or {'accept': False}
+        accept_form = cls(data=data)
+        if not accept_form.is_valid():
+            return {accept_form.form_name: dict(accept_form.errors)}
