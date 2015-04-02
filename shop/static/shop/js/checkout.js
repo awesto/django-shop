@@ -76,10 +76,10 @@ djangoShopModule.directive('shopCheckoutProceed', ['$window', function($window) 
 		link: function(scope, element, attrs, CheckoutCtrl) {
 			CheckoutCtrl.isLoading = false;
 			CheckoutCtrl.registerButton(element).then(function() {
-				console.log("Redirect on page " + attrs.href);
-				//$window.location.href = attrs.href;
+				console.log("Proceed to: " + attrs.action);
+				//$window.location.href = attrs.action;
 			}, null, function(errs) {
-				console.error("The checkout form contains errors:");
+				console.error("The checkout form contains errors.");
 				console.log(errs);
 			});
 		}
