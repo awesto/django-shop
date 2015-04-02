@@ -43,32 +43,6 @@ class ShopCheckoutSummaryPlugin(ShopPluginBase):
 plugin_pool.register_plugin(ShopCheckoutSummaryPlugin)
 
 
-class ShopPurchaseButton(ShopPluginBase):
-    name = _("Purchase Button")
-    require_parent = True
-    parent_classes = ('BootstrapColumnPlugin',)
-    glossary_fields = (
-        PartialFormField('button_content',
-            widgets.Input(),
-            label=_('Content'),
-            help_text=_("Purchase buttons content")
-        ),
-    )
-
-    @classmethod
-    def get_identifier(cls, obj):
-        return mark_safe(obj.glossary.get('button_content', ''))
-
-    def get_render_template(self, context, instance, placeholder):
-        template_names = [
-            '{}/checkout/purchase-button.html'.format(shop_settings.APP_LABEL),
-            'shop/checkout/purchase-button.html',
-        ]
-        return select_template(template_names)
-
-plugin_pool.register_plugin(ShopPurchaseButton)
-
-
 class ButtonForm(LinkForm):
     LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")),)
 
@@ -83,6 +57,9 @@ class ButtonForm(LinkForm):
 
 
 class ShopProceedButton(ShopPluginBase):
+    """
+    This button is used to proceed from one checkout step to the next one.
+    """
     module = 'Shop'
     name = _("Proceed Button")
     form = ButtonForm
@@ -120,6 +97,35 @@ class ShopProceedButton(ShopPluginBase):
         return select_template(template_names)
 
 plugin_pool.register_plugin(ShopProceedButton)
+
+
+class ShopPurchaseButton(ShopPluginBase):
+    """
+    This button is used as a final step to convert the Cart object into an Order object.
+    """
+    name = _("Purchase Button")
+    require_parent = True
+    parent_classes = ('BootstrapColumnPlugin',)
+    glossary_fields = (
+        PartialFormField('button_content',
+            widgets.Input(),
+            label=_('Content'),
+            help_text=_("Purchase buttons content")
+        ),
+    )
+
+    @classmethod
+    def get_identifier(cls, obj):
+        return mark_safe(obj.glossary.get('button_content', ''))
+
+    def get_render_template(self, context, instance, placeholder):
+        template_names = [
+            '{}/checkout/purchase-button.html'.format(shop_settings.APP_LABEL),
+            'shop/checkout/purchase-button.html',
+        ]
+        return select_template(template_names)
+
+plugin_pool.register_plugin(ShopPurchaseButton)
 
 
 class CheckoutDialogPlugin(ShopPluginBase):
@@ -194,13 +200,6 @@ CheckoutDialogPlugin.register_plugin(CustomerFormPlugin)
 
 
 class CheckoutAddressPluginBase(CheckoutDialogPlugin):
-    def get_render_template(self, context, instance, placeholder):
-        template_names = [
-            '{}/checkout/address.html'.format(shop_settings.APP_LABEL),
-            'shop/checkout/address.html',
-        ]
-        return select_template(template_names)
-
     def render(self, context, instance, placeholder):
         user = get_customer(context['request'])
         filter_args = {'user': user, '{}__isnull'.format(self.FormClass.priority_field): False}
@@ -217,11 +216,31 @@ class CheckoutAddressPluginBase(CheckoutDialogPlugin):
 
 class ShippingAddressFormPlugin(CheckoutAddressPluginBase):
     name = _("Shipping Address Dialog")
+
+    def get_render_template(self, context, instance, placeholder):
+        template_names = [
+            '{}/checkout/shipping-address.html'.format(shop_settings.APP_LABEL),
+            '{}/checkout/address.html'.format(shop_settings.APP_LABEL),
+            'shop/checkout/shipping-address.html',
+            'shop/checkout/address.html',
+        ]
+        return select_template(template_names)
+
 CheckoutDialogPlugin.register_plugin(ShippingAddressFormPlugin)
 
 
 class InvoiceAddressFormPlugin(CheckoutAddressPluginBase):
     name = _("Invoice Address Dialog")
+
+    def get_render_template(self, context, instance, placeholder):
+        template_names = [
+            '{}/checkout/invoice-address.html'.format(shop_settings.APP_LABEL),
+            '{}/checkout/address.html'.format(shop_settings.APP_LABEL),
+            'shop/checkout/invoice-address.html',
+            'shop/checkout/address.html',
+        ]
+        return select_template(template_names)
+
 CheckoutDialogPlugin.register_plugin(InvoiceAddressFormPlugin)
 
 
