@@ -108,6 +108,15 @@ class PaymentModifier(BaseCartModifier):
         """
         raise NotImplemented("Must be implemented by the inheriting class")
 
+    def is_active(self, cart):
+        """
+        Returns true if this payment modifier is active.
+        """
+        try:
+            return cart.payment_method['modifier'] == self.identifier
+        except (TypeError, AttributeError, KeyError):
+            return False
+
 
 class ShippingModifier(BaseCartModifier):
     """
@@ -118,3 +127,12 @@ class ShippingModifier(BaseCartModifier):
         Returns the tuple used by the shipping forms dialog to display the choice
         """
         raise NotImplemented("Must be implemented by the inheriting class")
+
+    def is_active(self, cart):
+        """
+        Returns true if this shipping modifier is active.
+        """
+        try:
+            return cart.shipping_method['modifier'] == self.identifier
+        except (TypeError, AttributeError, KeyError):
+            return False

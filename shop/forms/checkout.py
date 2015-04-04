@@ -121,8 +121,10 @@ class PaymentMethodForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3Form)
     scope_prefix = 'data.payment_method'
     form_name = 'payment_method_form'
 
-    payment_method = fields.ChoiceField(choices=cart_modifiers_pool.get_payment_choices(),
-        widget=RadioSelect(renderer=RadioFieldRenderer, attrs={'ng-change': 'update()'}))
+    modifier = fields.ChoiceField(
+        choices=[m.get_choice() for m in cart_modifiers_pool.get_payment_modifiers()],
+        widget=RadioSelect(renderer=RadioFieldRenderer, attrs={'ng-change': 'update()'})
+    )
 
     @classmethod
     def form_factory(cls, request, data, cart):
@@ -134,8 +136,10 @@ class ShippingMethodForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3Form
     scope_prefix = 'data.shipping_method'
     form_name = 'shipping_method_form'
 
-    shipping_method = fields.ChoiceField(choices=cart_modifiers_pool.get_shipping_choices(),
-        widget=RadioSelect(renderer=RadioFieldRenderer, attrs={'ng-change': 'update()'}))
+    modifier = fields.ChoiceField(
+        choices=[m.get_choice() for m in cart_modifiers_pool.get_shipping_modifiers()],
+        widget=RadioSelect(renderer=RadioFieldRenderer, attrs={'ng-change': 'update()'})
+    )
 
     @classmethod
     def form_factory(cls, request, data, cart):

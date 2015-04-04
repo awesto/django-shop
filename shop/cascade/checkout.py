@@ -266,7 +266,7 @@ class PaymentMethodFormPlugin(CheckoutDialogPlugin):
         cart = CartModel.objects.get_from_request(request)
         return {'initial': cart.payment_method}
 
-if cart_modifiers_pool.get_payment_choices():
+if cart_modifiers_pool.get_payment_modifiers():
     # Plugin is registered only if at least one payment modifier exists
     CheckoutDialogPlugin.register_plugin(PaymentMethodFormPlugin)
 
@@ -285,7 +285,7 @@ class ShippingMethodFormPlugin(CheckoutDialogPlugin):
         cart = CartModel.objects.get_from_request(request)
         return {'initial': cart.shipping_method}
 
-if cart_modifiers_pool.get_shipping_choices():
+if cart_modifiers_pool.get_shipping_modifiers():
     # Plugin is registered only if at least one shipping modifier exists
     CheckoutDialogPlugin.register_plugin(ShippingMethodFormPlugin)
 

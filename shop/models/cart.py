@@ -84,7 +84,7 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         if not self._dirty:
             return
         self.extra_rows = OrderedDict()  # reset the dictionary containing `ExtraCartRow`s
-        for modifier in cart_modifiers_pool.get_modifiers_list():
+        for modifier in cart_modifiers_pool.get_all_modifiers():
             modifier.process_cart_item(self, request)
         self._dirty = False
 
@@ -194,7 +194,7 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
         # This calls all the pre_process_cart methods (if any), before the cart is processed.
         # This for example allows for data collection on the cart.
-        for modifier in cart_modifiers_pool.get_modifiers_list():
+        for modifier in cart_modifiers_pool.get_all_modifiers():
             modifier.pre_process_cart(self, request)
 
         self.extra_rows = OrderedDict()  # reset the dictionary containing `ExtraCartRow`s
@@ -205,13 +205,13 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
             self.subtotal += item.line_total
 
         # Iterate over the registered modifiers, to process the cart's summary
-        for modifier in cart_modifiers_pool.get_modifiers_list():
+        for modifier in cart_modifiers_pool.get_all_modifiers():
             modifier.process_cart(self, request)
 
         # This calls the post_process_cart method from cart modifiers, if any.
         # It allows for a last bit of processing on the "finished" cart, before
         # it is displayed
-        for modifier in cart_modifiers_pool.get_modifiers_list():
+        for modifier in cart_modifiers_pool.get_all_modifiers():
             modifier.post_process_cart(self, request)
 
         # Cache updated cart items

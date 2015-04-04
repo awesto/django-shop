@@ -12,7 +12,7 @@ class CartModifiersPool(object):
     def __init__(self):
         self._modifiers_list = []
 
-    def get_modifiers_list(self):
+    def get_all_modifiers(self):
         """
         Returns all registered modifiers of this shop instance.
         """
@@ -20,17 +20,17 @@ class CartModifiersPool(object):
             self._modifiers_list = self._load_modifiers_list()
         return self._modifiers_list
 
-    def get_shipping_choices(self):
+    def get_shipping_modifiers(self):
         """
-        Return the choices for all registered shipping modifiers.
+        Returns all registered shipping modifiers of this shop instance.
         """
-        return [m.get_choice() for m in self.get_modifiers_list() if isinstance(m, ShippingModifier)]
+        return [m for m in self.get_all_modifiers() if isinstance(m, ShippingModifier)]
 
-    def get_payment_choices(self):
+    def get_payment_modifiers(self):
         """
-        Return the choices for all registered payment modifiers.
+        Returns all registered payment modifiers of this shop instance.
         """
-        return [m.get_choice() for m in self.get_modifiers_list() if isinstance(m, PaymentModifier)]
+        return [m for m in self.get_all_modifiers() if isinstance(m, PaymentModifier)]
 
     def _load_modifiers_list(self):
         """
