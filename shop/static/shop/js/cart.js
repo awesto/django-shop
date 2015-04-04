@@ -5,7 +5,7 @@
 var djangoShopModule = angular.module('django.shop.cart', []);
 
 djangoShopModule.controller('CartController', ['$scope', '$http', 'djangoUrl', function($scope, $http, djangoUrl) {
-	var cartListURL = djangoUrl.reverse('shop-api:cart-list');
+	var cartListURL = djangoUrl.reverse('shop:cart-list');
 	var isLoading = false;
 
 	this.loadCart = function() {

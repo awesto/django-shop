@@ -11,7 +11,7 @@ var djangoShopModule = angular.module('django.shop.checkout', []);
 // object.
 djangoShopModule.controller('CheckoutCtrl', ['$scope', '$http', '$q', 'djangoUrl', 'djangoForm',
                                              function($scope, $http, $q, djangoUrl, djangoForm) {
-	var self = this, updateURL = djangoUrl.reverse('shop-api:checkout-update');
+	var self = this, updateURL = djangoUrl.reverse('shop:checkout-update');
 	this.isLoading = true;  // prevent premature updates and re-triggering
 	$scope.update = update;
 
@@ -23,14 +23,15 @@ djangoShopModule.controller('CheckoutCtrl', ['$scope', '$http', '$q', 'djangoUrl
 			var hasErrors = false;
 			console.log(response);
 			if (deferred) {
-				// only report errors, when the customer wishes to proceed
+				// only report errors, when the customer clicked onto <button shop-checkout-proceed>
+				// or onto <shop-purchase-button>, but not on ordinary update events.
 				angular.forEach(response.errors, function(errors, key) {
 					hasErrors = djangoForm.setErrors($scope[key], errors) || hasErrors;
 				});
-				if (true || hasErrors) {
+				if (hasErrors) {
 					deferred.notify(response.errors);
 				} else {
-					deferred.resolve();
+					deferred.resolve(response);
 				}
 			}
 			delete response.errors;
@@ -57,7 +58,8 @@ djangoShopModule.controller('CheckoutCtrl', ['$scope', '$http', '$q', 'djangoUrl
 
 
 // Directive <form shop-checkout-form> (must be added as attribute to the <form> element)
-// It is used to handle updates on the checkout forms.
+// It is used to add an update() method to the scope's controller, so that `ng-change="update()"`
+// can be added to elements, which require to rerun modifiers over the cart.
 djangoShopModule.directive('shopCheckoutForm', function() {
 	return {
 		restrict: 'A',
@@ -89,16 +91,27 @@ djangoShopModule.directive('shopCheckoutProceed', ['$window', function($window) 
 
 djangoShopModule.directive('shopPurchaseButton', ['$window', '$http', '$q', 'djangoUrl',
                                                   function($window, $http, $q, djangoUrl) {
-	var purchaseURL = djangoUrl.reverse('shop-api:checkout-purchase');
+	var purchaseURL = djangoUrl.reverse('shop:checkout-purchase');
 	return {
 		restrict: 'EA',
 		controller: 'CheckoutCtrl',
 		link: function(scope, element, attrs, CheckoutCtrl) {
-			var isLoading = false;
 			CheckoutCtrl.isLoading = false;
-			CheckoutCtrl.registerButton(element);
+			CheckoutCtrl.registerButton(element).then(function() {
+				// cart update succeeded, the next step is to convert the cart into an order object
+				return $http.post(purchaseURL, scope.data);
+			}, null, function(errs) {
+				console.error("Purchase form contains errors.");
+				console.log(errs);
+			}).then(function(response) {
+				console.log(response);
+				console.log("puchased");
+			}, function(errs) {
+				console.error("Unable to purchase.");
+				console.log(errs);
+			});
+/*
 			// build a deferred object to proceed with the buttons action
-			CheckoutCtrl.deferred = $q.defer();
 			CheckoutCtrl.deferred.promise.then(function() {
 				// the next step finally converts the cart into an order object
 				return $http.post(purchaseURL, scope.data);
@@ -111,6 +124,7 @@ djangoShopModule.directive('shopPurchaseButton', ['$window', '$http', '$q', 'dja
 //			})['finally'](function() {
 //				isLoading = false;
 			});
+*/
 		}
 	};
 }]);

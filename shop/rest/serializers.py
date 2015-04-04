@@ -156,7 +156,7 @@ class WatchListSerializer(serializers.ListSerializer):
 
 
 class BaseItemSerializer(serializers.ModelSerializer):
-    url = serializers.HyperlinkedIdentityField(lookup_field='pk', view_name='shop-api:cart-detail')
+    url = serializers.HyperlinkedIdentityField(lookup_field='pk', view_name='shop:cart-detail')
     line_total = MoneyField()
     summary = serializers.SerializerMethodField(
         help_text="Sub-serializer for fields to be shown in the product's summary.")
