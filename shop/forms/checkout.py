@@ -20,7 +20,7 @@ class CustomerForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelForm)
     class Meta:
         model = get_user_model()
         exclude = ('username', 'password', 'last_login', 'is_superuser', 'is_staff', 'is_active',
-            'groups', 'user_permissions', 'date_joined',)
+            'is_registered', 'groups', 'user_permissions', 'date_joined',)
 
     @classmethod
     def form_factory(cls, request, data, cart):
