@@ -74,12 +74,24 @@ class BaseCustomer(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(_("Active"), default=True,
         help_text=_("Designates whether this user should be treated as active. "
                     "Unselect this instead of deleting accounts."))
+    is_registered = models.BooleanField(_("Registered"), default=False,
+        help_text=_("Designates whether this customer registered his account or, if he is "
+                    "unauthenticated and is is considered as anonymous user."))
     date_joined = models.DateTimeField(_("Date joined"), default=timezone.now)
 
     class Meta:
         abstract = True
 
     objects = CustomerManager()
+
+    def identifier(self):
+        if self.is_registered:
+            return self.username
+        elif self.email:
+            return self.email
+        elif self.username:
+            return self.username
+        return _("anonymous")
 
     def get_full_name(self):
         # The user is identified by their email address
@@ -96,13 +108,17 @@ class BaseCustomer(AbstractBaseUser, PermissionsMixin):
         """
         Returns True for users without a username.
         """
-        return self.username is None
+        return not self.is_registered
 
     def is_authenticated(self):
         """
         Returns True for users whose username is not None.
         """
-        return self.username is not None
+        return self.is_registered
+
+    def save(self, *args, **kwargs):
+        self.is_registered = self.is_registered or self.is_staff
+        super(BaseCustomer, self).save(*args, **kwargs)
 
 
 # Migrate from auth_user table:

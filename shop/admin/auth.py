@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.contrib.auth.admin import UserAdmin
+from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -12,12 +13,13 @@ class CustomerAdmin(UserAdmin):
                                        'groups', 'user_permissions')}),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )
-    list_display = ('username', 'email', 'salutation', 'first_name', 'last_name', 'is_staff')
+    list_display = ('identifier', 'first_name', 'last_name', 'is_staff')
+    list_filter = ('is_staff', 'is_registered', 'groups')
     ordering = ('email',)
 
-    def get_queryset(self, request):
-        """
-        Restrict queryset to real users.
-        """
-        qs = super(CustomerAdmin, self).get_queryset(request)
-        return qs.filter(username__isnull=False)
+    def identifier(self, obj):
+        if obj.is_registered:
+            return format_html('<strong>{}</strong>', obj.identifier())
+        else:
+            return format_html('<em>{}</em>', obj.identifier())
+    identifier.allow_tags = True
