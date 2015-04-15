@@ -1,2 +1,2 @@
 # -*- coding: utf-8 -*-
-CASCADE_PLUGINS = ('cart', 'checkout', 'link',)
+CASCADE_PLUGINS = ('auth', 'cart', 'checkout', 'link',)

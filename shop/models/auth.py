@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 import re
 from django.core import validators
+from django.contrib.auth.models import User as DjangoUser
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser, AbstractBaseUser, BaseUserManager, PermissionsMixin
@@ -21,16 +22,22 @@ def get_customer(request):
 
 
 class CustomerManager(BaseUserManager):
-    def create_user(self, username=None, session_key=None, password=None):
+    def create_user(self, username=None, session_key=None, password=None, **extra_fields):
         if username:
-            # TODO: use BaseUserManager.normalize_email
-            user = self.model(username=username)
-            user.is_active = True
-            user.set_password(password)
-        else:
+            if len(username) < 30 and '@' not in username:
+                # this is a staff user, add it to Django's default auth.User model
+                DjangoUser.objects.create_user(username=username, password=password, **extra_fields)
+            else:
+                # TODO: use BaseUserManager.normalize_email
+                user = self.model(username=username)
+                user.is_active = True
+                user.set_password(password)
+        elif session_key:
             user = self.model(session_key=session_key)
             user.is_active = False
             user.set_unusable_password()
+        else:
+            raise ValueError("Neither `username` nor `session_key` have been set.")
         user.save(using=self._db)
         return user
 
@@ -44,6 +51,9 @@ class CustomerManager(BaseUserManager):
         """
         Return the user for the current visitor. The visitor is determined through the session key.
         """
+        if not request.session.session_key:
+            request.session.cycle_key()
+            assert request.session.session_key
         try:
             return self.get(session_key=request.session.session_key)
         except self.model.DoesNotExist:
@@ -105,15 +115,9 @@ class BaseCustomer(AbstractBaseUser, PermissionsMixin):
         return self.get_short_name()
 
     def is_anonymous(self):
-        """
-        Returns True for users without a username.
-        """
         return not self.is_registered
 
     def is_authenticated(self):
-        """
-        Returns True for users whose username is not None.
-        """
         return self.is_registered
 
     def save(self, *args, **kwargs):

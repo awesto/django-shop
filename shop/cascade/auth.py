@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from cms.plugin_pool import plugin_pool
 from shop import settings as shop_settings
 from shop.models.auth import get_customer
-from .plugin_base import ShopPluginBase
+from .plugin_base import ShopPluginBase, DialogFormPlugin
 
 
 class ShopLoginPlugin(ShopPluginBase):
@@ -29,3 +29,26 @@ class ShopLoginPlugin(ShopPluginBase):
             return super(ShopLoginPlugin, self).render(context, instance, placeholder)
 
 plugin_pool.register_plugin(ShopLoginPlugin)
+
+
+class RegisterFormPlugin(DialogFormPlugin):
+    """
+    A placeholder plugin which provides a form, so that a customer may register an account.
+    """
+    name = _("Register Form")
+
+    def get_render_template(self, context, instance, placeholder):
+        template_names = [
+            '{}/auth/register.html'.format(shop_settings.APP_LABEL),
+            'shop/auth/register.html',
+        ]
+        return select_template(template_names)
+
+    def get_form_data(self, request):
+        return {'instance': get_customer(request)}
+
+    def render(self, context, instance, placeholder):
+        context = super(RegisterFormPlugin, self).render(context, instance, placeholder)
+        return context
+
+plugin_pool.register_plugin(RegisterFormPlugin)
