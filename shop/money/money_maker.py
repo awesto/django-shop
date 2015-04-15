@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
 from decimal import Decimal, InvalidOperation
-from django.utils import six
 from shop import settings as shop_settings
 from iso4217 import CURRENCIES
 
 
 class AbstractMoney(Decimal):
-    MONEY_FORMAT = six.u(getattr(shop_settings, 'MONEY_FORMAT'))
+    MONEY_FORMAT = getattr(shop_settings, 'MONEY_FORMAT')
 
     def __new__(cls, value):
         raise TypeError("Can not instantiate {} as AbstractMoney.".format(value))
