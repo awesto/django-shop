@@ -8,6 +8,7 @@ from django.db import models, transaction
 from django.db.models.aggregates import Sum
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
+from jsonfield.fields import JSONField
 from shop.order_signals import processing
 from shop.money.fields import MoneyField
 from . import deferred
@@ -160,6 +161,8 @@ class BaseOrder(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
     cart_pk = models.PositiveIntegerField(_("Cart primary key"), blank=True, null=True)
+    annotations = JSONField(null=True, blank=True,
+        verbose_name=_("Annotations for this order"))
 
     # override manager
     objects = OrderManager()
