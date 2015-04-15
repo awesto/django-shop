@@ -7,6 +7,7 @@ from rest_framework import viewsets
 from shop import settings as shop_settings
 from shop.models.cart import CartModel, CartItemModel
 from shop.rest import serializers
+from shop.modifiers.pool import cart_modifiers_pool
 
 
 class BaseViewSet(viewsets.ModelViewSet):
@@ -54,25 +55,30 @@ class CheckoutViewSet(BaseViewSet):
 
     def __init__(self, **kwargs):
         super(CheckoutViewSet, self).__init__(**kwargs)
-        self.checkout_forms = []
-        for form_class in shop_settings.CHECKOUT_FORMS:
-            self.checkout_forms.append(import_by_path(form_class))
+        self.dialog_forms = []
+        for form_class in shop_settings.DIALOG_FORMS:
+            self.dialog_forms.append(import_by_path(form_class))
 
     @list_route(methods=['post'], url_path='update')
     def update(self, request):
         """
-        During checkout, a customer can chose from different shipping and payment options, which
-        themselves have an influence on the final total. Therefore the cart modifiers must run
-        after each of those changes.
+        All forms using the AngularJS directive `shop-dialog-form` have an implicit scope containing
+        an `update()` function. This function then may be connected to any input element, say
+        `ng-change="update()"`. If such an event triggers, the scope data is send to this
+        method using an Ajax POST request. This `update()` method then dispatches the form data
+        to all forms registered in `settings.SHOP_DIALOG_FORMS`.
+        Afterwards the cart is updated, so that all cart modifiers run and adopt those changes.
         """
         cart = self.get_queryset()
         errors = {}
         # iterate over all given forms and collect potential errors
-        for form_class in self.checkout_forms:
+        for form_class in self.dialog_forms:
             data = request.data.get(form_class.identifier)
             reply = form_class.form_factory(request, data, cart)
             if isinstance(reply, dict):
                 errors.update(reply)
+
+        # update the cart running the modifiers
         cart.save()
 
         # add possible form errors for giving feedback to the customer
@@ -82,5 +88,15 @@ class CheckoutViewSet(BaseViewSet):
 
     @list_route(methods=['post'], url_path='purchase')
     def purchase(self, request):
+        cart = self.get_queryset()
+        cart.update(request)
         response = self.list(request)
+        # Iterate over the registered modifiers, and search for the active payment service provider
+        for modifier in cart_modifiers_pool.get_payment_modifiers():
+            if modifier.is_active(cart):
+                payment_service_provider = getattr(modifier, 'payment_service', None)
+                if payment_service_provider:
+                    expression = payment_service_provider.get_payment_request(cart, request)
+                    response.data.update(expression=expression)
+                break
         return response

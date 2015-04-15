@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 from decimal import Decimal
 from django.conf import settings
 
@@ -17,7 +18,8 @@ CART_MODIFIERS = getattr(settings, 'SHOP_CART_MODIFIERS', ('shop.cart.modifiers.
 
 VALUE_ADDED_TAX = getattr(settings, 'SHOP_VALUE_ADDED_TAX', Decimal('20'))
 
-CHECKOUT_FORMS = getattr(settings, 'SHOP_CHECKOUT_FORMS', (
+DIALOG_FORMS = getattr(settings, 'SHOP_DIALOG_FORMS', (
+    'shop.forms.auth.RegisterForm',
     'shop.forms.checkout.CustomerForm',
     'shop.forms.checkout.ShippingAddressForm',
     'shop.forms.checkout.InvoiceAddressForm',

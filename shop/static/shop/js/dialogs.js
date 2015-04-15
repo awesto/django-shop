@@ -1,15 +1,16 @@
 (function(angular, undefined) {
+
 'use strict';
 
 // module: django.shop, TODO: move this into a summary JS file
-var djangoShopModule = angular.module('django.shop.checkout', []);
+var djangoShopModule = angular.module('django.shop.dialogs', []);
 
 
-// Shared controller for the checkout view, used to update the cart, and optionally, if
-// all forms are valid, proceed. Since this controller does not make any presumption on how
-// and where to proceed to, the caller has to set the controllers `deferred` to a `$q.deferred()`
-// object.
-djangoShopModule.controller('CheckoutCtrl', ['$scope', '$http', '$q', 'djangoUrl', 'djangoForm',
+// Shared controller for all forms, links and buttons using shop-dialog elements. It just adds
+// an `update` function to the scope, so that all forms can send their gathered data to the
+// server. Since this controller does not make any presumption on how and where to proceed to,
+// the caller has to set the controllers `deferred` to a `$q.deferred()` object.
+djangoShopModule.controller('DialogCtrl', ['$scope', '$http', '$q', 'djangoUrl', 'djangoForm',
                                              function($scope, $http, $q, djangoUrl, djangoForm) {
 	var self = this, updateURL = djangoUrl.reverse('shop:checkout-update');
 	this.isLoading = true;  // prevent premature updates and re-triggering
@@ -23,13 +24,14 @@ djangoShopModule.controller('CheckoutCtrl', ['$scope', '$http', '$q', 'djangoUrl
 			var hasErrors = false;
 			console.log(response);
 			if (deferred) {
-				// only report errors, when the customer clicked onto <button shop-checkout-proceed>
-				// or onto <shop-purchase-button>, but not on ordinary update events.
+				// only report errors, when the customer clicked onto a button using the
+				// directive `shop-dialog-proceed` or `shop-purchase-button`, but not on
+				// ordinary update events.
 				angular.forEach(response.errors, function(errors, key) {
 					hasErrors = djangoForm.setErrors($scope[key], errors) || hasErrors;
 				});
 				if (hasErrors) {
-					deferred.notify(response.errors);
+					deferred.notify(response);
 				} else {
 					deferred.resolve(response);
 				}
@@ -57,29 +59,30 @@ djangoShopModule.controller('CheckoutCtrl', ['$scope', '$http', '$q', 'djangoUrl
 }]);
 
 
-// Directive <form shop-checkout-form> (must be added as attribute to the <form> element)
+// Directive <form shop-dialog-form> (must be added as attribute to the <form> element)
 // It is used to add an update() method to the scope's controller, so that `ng-change="update()"`
-// can be added to elements, which require to rerun modifiers over the cart.
-djangoShopModule.directive('shopCheckoutForm', function() {
+// can be added to any input element. Use it to update the models on the server.
+djangoShopModule.directive('shopDialogForm', function() {
 	return {
 		restrict: 'A',
-		controller: 'CheckoutCtrl',
-		link: function(scope, element, attrs, CheckoutCtrl) {
-			CheckoutCtrl.isLoading = false;
+		controller: 'DialogCtrl',
+		link: function(scope, element, attrs, DialogCtrl) {
+			DialogCtrl.isLoading = false;
 		}
 	};
 });
 
 
-djangoShopModule.directive('shopCheckoutProceed', ['$window', function($window) {
+// Directive to be added to button elements.
+djangoShopModule.directive('shopDialogProceed', ['$window', function($window) {
 	return {
 		restrict: 'EA',
-		controller: 'CheckoutCtrl',
-		link: function(scope, element, attrs, CheckoutCtrl) {
-			CheckoutCtrl.isLoading = false;
-			CheckoutCtrl.registerButton(element).then(function() {
+		controller: 'DialogCtrl',
+		link: function(scope, element, attrs, DialogCtrl) {
+			DialogCtrl.isLoading = false;
+			DialogCtrl.registerButton(element).then(function() {
 				console.log("Proceed to: " + attrs.action);
-				//$window.location.href = attrs.action;
+				$window.location.href = attrs.action;
 			}, null, function(errs) {
 				console.error("The checkout form contains errors.");
 				console.log(errs);
@@ -94,37 +97,24 @@ djangoShopModule.directive('shopPurchaseButton', ['$window', '$http', '$q', 'dja
 	var purchaseURL = djangoUrl.reverse('shop:checkout-purchase');
 	return {
 		restrict: 'EA',
-		controller: 'CheckoutCtrl',
-		link: function(scope, element, attrs, CheckoutCtrl) {
-			CheckoutCtrl.isLoading = false;
-			CheckoutCtrl.registerButton(element).then(function() {
+		controller: 'DialogCtrl',
+		link: function(scope, element, attrs, DialogCtrl) {
+			DialogCtrl.isLoading = false;
+			DialogCtrl.registerButton(element).then(function() {
 				// cart update succeeded, the next step is to convert the cart into an order object
 				return $http.post(purchaseURL, scope.data);
 			}, null, function(errs) {
 				console.error("Purchase form contains errors.");
 				console.log(errs);
 			}).then(function(response) {
-				console.log(response);
-				console.log("puchased");
+				var expr = '$window.location.href="https://www.google.com/";'
+				console.log(response.data.expression);
+				// proceed on the PSPs server
+				eval(response.data.expression);
 			}, function(errs) {
 				console.error("Unable to purchase.");
 				console.log(errs);
 			});
-/*
-			// build a deferred object to proceed with the buttons action
-			CheckoutCtrl.deferred.promise.then(function() {
-				// the next step finally converts the cart into an order object
-				return $http.post(purchaseURL, scope.data);
-			}).then(function(response) {
-				console.log(response);
-				console.log("puchased");
-				return CheckoutCtrl.deferred.promise;
-			}, function(msg) {
-				console.error("Unable purchase cart items: " + msg);
-//			})['finally'](function() {
-//				isLoading = false;
-			});
-*/
 		}
 	};
 }]);
