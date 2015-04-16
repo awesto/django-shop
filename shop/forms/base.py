@@ -1,0 +1,29 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+from django.contrib.formtools.wizard.views import normalize_name
+from django.forms import fields
+from cms.utils.helpers import classproperty
+from djangular.forms import NgModelFormMixin, NgFormValidationMixin
+from djangular.styling.bootstrap3.forms import Bootstrap3Form, Bootstrap3ModelForm
+
+
+class DialogFormMixin(NgModelFormMixin, NgFormValidationMixin):
+    @classproperty
+    def form_name(cls):
+        return normalize_name(cls.__name__)
+
+
+class DialogForm(DialogFormMixin, Bootstrap3Form):
+    """
+    Base class for all dialog forms used with a DialogFormPlugin.
+    """
+    plugin_id = fields.CharField(widget=fields.HiddenInput)
+    plugin_order = fields.CharField(widget=fields.HiddenInput)
+
+
+class DialogModelForm(DialogFormMixin, Bootstrap3ModelForm):
+    """
+    Base class for all dialog model forms used with a DialogFormPlugin.
+    """
+    plugin_id = fields.CharField(widget=fields.HiddenInput)
+    plugin_order = fields.CharField(widget=fields.HiddenInput)

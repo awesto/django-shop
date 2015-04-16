@@ -36,6 +36,7 @@ class RegisterFormPlugin(DialogFormPlugin):
     A placeholder plugin which provides a form, so that a customer may register an account.
     """
     name = _("Register Form")
+    form_class = 'shop.forms.auth.RegisterForm'
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [

@@ -4,7 +4,8 @@ from django.utils.cache import add_never_cache_headers
 from django.utils.module_loading import import_by_path
 from rest_framework.decorators import list_route
 from rest_framework import viewsets
-from shop import settings as shop_settings
+from cms.plugin_pool import plugin_pool
+from shop.cascade.plugin_base import DialogFormPlugin
 from shop.models.cart import CartModel, CartItemModel
 from shop.rest import serializers
 from shop.modifiers.pool import cart_modifiers_pool
@@ -56,8 +57,9 @@ class CheckoutViewSet(BaseViewSet):
     def __init__(self, **kwargs):
         super(CheckoutViewSet, self).__init__(**kwargs)
         self.dialog_forms = []
-        for form_class in shop_settings.DIALOG_FORMS:
-            self.dialog_forms.append(import_by_path(form_class))
+        for p in plugin_pool.get_all_plugins():
+            if issubclass(p, DialogFormPlugin):
+                self.dialog_forms.append(import_by_path(p.form_class))
 
     @list_route(methods=['post'], url_path='update')
     def update(self, request):
@@ -66,19 +68,26 @@ class CheckoutViewSet(BaseViewSet):
         an `update()` function. This function then may be connected to any input element, say
         `ng-change="update()"`. If such an event triggers, the scope data is send to this
         method using an Ajax POST request. This `update()` method then dispatches the form data
-        to all forms registered in `settings.SHOP_DIALOG_FORMS`.
+        to all forms registered through a DialogFormPlugin.
         Afterwards the cart is updated, so that all cart modifiers run and adopt those changes.
         """
         cart = self.get_queryset()
+
+        # sort posted form data by plugin order
+        dialog_data = [(fc, request.data.get(fc.scope_prefix.split('.', 1)[1], {})) for fc in self.dialog_forms]
+        dialog_data = sorted(dialog_data, key=lambda tpl: int(tpl[1]['plugin_order']))
+
+        # collect potential errors
         errors = {}
-        # iterate over all given forms and collect potential errors
-        for form_class in self.dialog_forms:
-            data = request.data.get(form_class.identifier)
+        for form_class, data in dialog_data:
+            plugin_instance = DialogFormPlugin.model.objects.get(id=data['plugin_id'])
             reply = form_class.form_factory(request, data, cart)
             if isinstance(reply, dict):
                 errors.update(reply)
+                if plugin_instance.glossary.get('stop_on_error'):
+                    break
 
-        # update the cart running the modifiers
+        # update the cart and run its modifiers
         cart.save()
 
         # add possible form errors for giving feedback to the customer

@@ -17,14 +17,3 @@ Number of decimal places for the internal representation of a price. Not visible
 CART_MODIFIERS = getattr(settings, 'SHOP_CART_MODIFIERS', ('shop.cart.modifiers.DefaultCartModifier',))
 
 VALUE_ADDED_TAX = getattr(settings, 'SHOP_VALUE_ADDED_TAX', Decimal('20'))
-
-DIALOG_FORMS = getattr(settings, 'SHOP_DIALOG_FORMS', (
-    'shop.forms.auth.RegisterForm',
-    'shop.forms.checkout.CustomerForm',
-    'shop.forms.checkout.ShippingAddressForm',
-    'shop.forms.checkout.InvoiceAddressForm',
-    'shop.forms.checkout.PaymentMethodForm',
-    'shop.forms.checkout.ShippingMethodForm',
-    'shop.forms.checkout.ExtrasForm',
-    'shop.forms.checkout.TermsAndConditionsForm',
-))

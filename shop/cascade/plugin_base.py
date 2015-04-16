@@ -7,7 +7,6 @@ from django.utils.module_loading import import_by_path
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.fields import PartialFormField
 from cmsplugin_cascade.plugin_base import CascadePluginBase
-from shop import settings as shop_settings
 
 
 class ShopPluginBase(CascadePluginBase):
@@ -19,10 +18,6 @@ class ShopPluginBase(CascadePluginBase):
 class DialogFormPlugin(ShopPluginBase):
     """
     Base class for all plugins adding a dialog form to a placeholder field.
-
-    Registered plugins derived from `DialogFormPlugin`, require a form class in
-    `settings.SHOP_DIALOG_FORMS` named exactly as its plugin class, but without
-    ending in `...Plugin`.
     """
     require_parent = True
     parent_classes = ('BootstrapColumnPlugin',)
@@ -33,6 +28,12 @@ class DialogFormPlugin(ShopPluginBase):
             label=_("Render as"),
             initial='form',
             help_text=_("A dialog can also be rendered as a box containing a read-only summary."),
+        ),
+        PartialFormField('stop_on_error',
+            widgets.CheckboxInput(),
+            label=_("Stop on error"),
+            initial=False,
+            help_text=_("Activate, if processing shall stop immediately on invalid form data."),
         ),
     )
 
@@ -46,34 +47,29 @@ class DialogFormPlugin(ShopPluginBase):
         if not issubclass(plugin, cls):
             msg = "Can not register plugin class `{}`, since is does not inherit from `{}`."
             raise ImproperlyConfigured(msg.format(plugin.__name__, cls.__name__))
-        for form_class in shop_settings.DIALOG_FORMS:
-            class_name = form_class.rsplit('.', 1)[1]
-            if '{}Plugin'.format(class_name) == plugin.__name__:
-                plugin_pool.register_plugin(plugin)
-                break
+        if not getattr(plugin, 'form_class', None):
+            msg = "Can not register plugin class `{}`, since is does not define a `form_class`."
+            raise ImproperlyConfigured(msg.format(plugin.__name__))
+        plugin_pool.register_plugin(plugin)
 
     def __init__(self, *args, **kwargs):
         super(DialogFormPlugin, self).__init__(*args, **kwargs)
-        # search for the corresponding form class
-        for form_class in shop_settings.DIALOG_FORMS:
-            class_name = form_class.rsplit('.', 1)[1]
-            if '{}Plugin'.format(class_name) == self.__class__.__name__:
-                self.FormClass = import_by_path(form_class)
-                break
-        else:
-            msg = "No corresponding form class could be found for plugin `{}` in settings.DIALOG_FORMS"
-            raise ImproperlyConfigured(msg.format(self.__class__.__name__))
+        self.FormClass = import_by_path(self.form_class)
 
     def get_form_data(self, request):
         """
         Returns data to initialize the corresponding dialog form.
         This method must return a dictionary containing either `instance` - a Python object to
         initialize the form class for this plugin, or `initial` - a dictionary containing initial
-        form data.
+        form data, or both.
         """
         return {}
 
     def render(self, context, instance, placeholder):
-        form_data = self.get_form_data(context['request'])
-        context[self.FormClass.identifier] = self.FormClass(**form_data)
+        request = context['request']
+        form_data = self.get_form_data(request)
+        request._plugin_order = getattr(request, '_plugin_order', 0) + 1
+        initial = form_data.pop('initial', {})
+        initial.update(plugin_id=instance.id, plugin_order=request._plugin_order)
+        context[self.FormClass.form_name] = self.FormClass(initial=initial, **form_data)
         return super(DialogFormPlugin, self).render(context, instance, placeholder)

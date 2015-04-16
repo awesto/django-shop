@@ -135,6 +135,7 @@ class CustomerFormPlugin(DialogFormPlugin):
     """
     name = _("Customer Form")
     cache = False
+    form_class = 'shop.forms.checkout.CustomerForm'
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
@@ -165,6 +166,7 @@ class CheckoutAddressPluginBase(DialogFormPlugin):
 
 class ShippingAddressFormPlugin(CheckoutAddressPluginBase):
     name = _("Shipping Address Dialog")
+    form_class = 'shop.forms.checkout.ShippingAddressForm'
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
@@ -178,6 +180,7 @@ DialogFormPlugin.register_plugin(ShippingAddressFormPlugin)
 
 class InvoiceAddressFormPlugin(CheckoutAddressPluginBase):
     name = _("Invoice Address Dialog")
+    form_class = 'shop.forms.checkout.InvoiceAddressForm'
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
@@ -191,6 +194,7 @@ DialogFormPlugin.register_plugin(InvoiceAddressFormPlugin)
 
 class PaymentMethodFormPlugin(DialogFormPlugin):
     name = _("Payment Method Dialog")
+    form_class = 'shop.forms.checkout.PaymentMethodForm'
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
@@ -210,6 +214,7 @@ if cart_modifiers_pool.get_payment_modifiers():
 
 class ShippingMethodFormPlugin(DialogFormPlugin):
     name = _("Shipping Method Dialog")
+    form_class = 'shop.forms.checkout.ShippingMethodForm'
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
@@ -229,6 +234,7 @@ if cart_modifiers_pool.get_shipping_modifiers():
 
 class ExtrasFormPlugin(DialogFormPlugin):
     name = _("Extras Dialog")
+    form_class = 'shop.forms.checkout.ExtrasForm'
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
@@ -249,6 +255,7 @@ class TermsAndConditionsFormPlugin(DialogFormPlugin):
     Provides the form to accept terms and conditions.
     """
     name = _("Terms and Conditions")
+    form_class = 'shop.forms.checkout.TermsAndConditionsForm'
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [

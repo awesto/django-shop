@@ -4,18 +4,16 @@ from django.contrib.auth import get_user_model
 from django.forms import fields
 from django.forms import widgets
 from django.utils.translation import ugettext_lazy as _
-from djangular.forms import NgModelFormMixin, NgFormValidationMixin
-from djangular.styling.bootstrap3.forms import Bootstrap3Form, Bootstrap3ModelForm
+from djangular.styling.bootstrap3.forms import Bootstrap3ModelForm
 from djangular.styling.bootstrap3.widgets import RadioSelect, RadioFieldRenderer, CheckboxInput
 from shop.models.auth import get_customer
 from shop.models.address import AddressModel
 from shop.modifiers.pool import cart_modifiers_pool
+from .base import DialogForm, DialogModelForm
 
 
-class CustomerForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelForm):
-    identifier = 'customer'
+class CustomerForm(DialogModelForm):
     scope_prefix = 'data.customer'
-    form_name = 'customer_form'
 
     class Meta:
         model = get_user_model()
@@ -32,7 +30,7 @@ class CustomerForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelForm)
             return {cls.form_name: customer_form.errors}
 
 
-class AddressForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelForm):
+class AddressForm(DialogModelForm):
     field_css_classes = {
         '*': getattr(Bootstrap3ModelForm, 'field_css_classes'),
         'zip_code': ['form-group', 'frmgrp-zip_code'],
@@ -74,15 +72,13 @@ class AddressForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelForm):
                 setattr(instance, cls.priority_field, priority)
             assert address_form.instance == instance
             instance.save()
-            setattr(cart, cls.identifier, instance)
+            cls.set_address(cart, instance)
         else:
             return {address_form.form_name: dict(address_form.errors)}
 
 
 class ShippingAddressForm(AddressForm):
-    identifier = 'shipping_address'
     scope_prefix = 'data.shipping_address'
-    form_name = 'shipping_addr_form'
     priority_field = 'priority_shipping'
 
     class Meta(AddressForm.Meta):
@@ -90,11 +86,13 @@ class ShippingAddressForm(AddressForm):
             'country': widgets.Select(attrs={'ng-change': 'update()'}),
         }
 
+    @classmethod
+    def set_address(cls, cart, address):
+        cart.shipping_address = address
+
 
 class InvoiceAddressForm(AddressForm):
-    identifier = 'invoice_address'
     scope_prefix = 'data.invoice_address'
-    form_name = 'invoice_addr_form'
     priority_field = 'priority_invoice'
 
     use_shipping_address = fields.BooleanField(required=False, initial=True,
@@ -112,14 +110,17 @@ class InvoiceAddressForm(AddressForm):
         `use_shipping_address` is active.
         """
         if data and data.pop('use_shipping_address', False):
-            data = request.data.get(ShippingAddressForm.identifier)
+            scope_prefix = cls.scope_prefix.split('.', 1)[1]
+            data = request.data.get(scope_prefix)
         return super(InvoiceAddressForm, cls).form_factory(request, data, cart)
 
+    @classmethod
+    def set_address(cls, cart, address):
+        cart.invoice_address = address
 
-class PaymentMethodForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3Form):
-    identifier = 'payment_method'
+
+class PaymentMethodForm(DialogForm):
     scope_prefix = 'data.payment_method'
-    form_name = 'payment_method_form'
 
     modifier = fields.ChoiceField(
         choices=[m.get_choice() for m in cart_modifiers_pool.get_payment_modifiers()],
@@ -131,10 +132,8 @@ class PaymentMethodForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3Form)
         cart.payment_method = data
 
 
-class ShippingMethodForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3Form):
-    identifier = 'shipping_method'
+class ShippingMethodForm(DialogForm):
     scope_prefix = 'data.shipping_method'
-    form_name = 'shipping_method_form'
 
     modifier = fields.ChoiceField(
         choices=[m.get_choice() for m in cart_modifiers_pool.get_shipping_modifiers()],
@@ -146,10 +145,8 @@ class ShippingMethodForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3Form
         cart.shipping_method = data
 
 
-class ExtrasForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3Form):
-    identifier = 'extras'
+class ExtrasForm(DialogForm):
     scope_prefix = 'data.extras'
-    form_name = 'extras_form'
 
     annotation = fields.CharField(required=False, widget=widgets.Textarea)
 
@@ -159,10 +156,8 @@ class ExtrasForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3Form):
         cart.extras.update(data or {})
 
 
-class TermsAndConditionsForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3Form):
-    identifier = 'terms_and_conditions'
+class TermsAndConditionsForm(DialogForm):
     scope_prefix = 'data.terms_and_conditions'
-    form_name = 'terms_and_conditions_form'
 
     accept = fields.BooleanField(required=True,
         widget=CheckboxInput(_("Accept terms and conditions.")))

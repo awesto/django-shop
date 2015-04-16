@@ -1,8 +1,8 @@
-<form name="{{ invoice_address.form_name }}" novalidate>
+<form name="{{ invoice_address_form.form_name }}" novalidate>
 	<div class="has-feedback form-group">
-	{{ invoice_address.use_shipping_address }}
+	{{ invoice_address_form.use_shipping_address }}
 	</div>
 	<div ng-hide="data.invoice_address.use_shipping_address">
-	{{ invoice_address.as_div }}
+	{{ invoice_address_form.as_div }}
 	</div>
 </form>
