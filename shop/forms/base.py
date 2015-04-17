@@ -12,6 +12,12 @@ class DialogFormMixin(NgModelFormMixin, NgFormValidationMixin):
     def form_name(cls):
         return normalize_name(cls.__name__)
 
+    def clean(self):
+        cleaned_data = dict(super(DialogFormMixin, self).clean())
+        cleaned_data.pop('plugin_id')
+        cleaned_data.pop('plugin_order')
+        return cleaned_data
+
 
 class DialogForm(DialogFormMixin, Bootstrap3Form):
     """

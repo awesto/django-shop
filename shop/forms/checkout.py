@@ -129,7 +129,11 @@ class PaymentMethodForm(DialogForm):
 
     @classmethod
     def form_factory(cls, request, data, cart):
-        cart.payment_method = data
+        payment_method_form = cls(data=data)
+        if payment_method_form.is_valid():
+            cart.payment_method = payment_method_form.cleaned_data
+        else:
+            return {cls.form_name: payment_method_form.errors}
 
 
 class ShippingMethodForm(DialogForm):
@@ -142,7 +146,11 @@ class ShippingMethodForm(DialogForm):
 
     @classmethod
     def form_factory(cls, request, data, cart):
-        cart.shipping_method = data
+        shipping_method_form = cls(data=data)
+        if shipping_method_form.is_valid():
+            cart.shipping_method = shipping_method_form.cleaned_data
+        else:
+            return {cls.form_name: shipping_method_form.errors}
 
 
 class ExtrasForm(DialogForm):
