@@ -82,7 +82,11 @@ djangoShopModule.directive('shopDialogProceed', ['$window', function($window) {
 			DialogCtrl.isLoading = false;
 			DialogCtrl.registerButton(element).then(function() {
 				console.log("Proceed to: " + attrs.action);
-				$window.location.href = attrs.action;
+				if (attrs.action === 'RELOAD_PAGE') {
+					$window.location.reload();
+				} else {
+					$window.location.href = attrs.action;
+				}
 			}, null, function(errs) {
 				console.error("The checkout form contains errors.");
 				console.log(errs);

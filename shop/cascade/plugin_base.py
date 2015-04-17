@@ -61,11 +61,14 @@ class DialogFormPlugin(ShopPluginBase):
         Returns data to initialize the corresponding dialog form.
         This method must return a dictionary containing either `instance` - a Python object to
         initialize the form class for this plugin, or `initial` - a dictionary containing initial
-        form data, or both.
+        form data, or if both are set, values from `initial` override those of `instance`.
         """
         return {}
 
     def render(self, context, instance, placeholder):
+        """
+        Return the context to render a DialogFormPlugin
+        """
         request = context['request']
         form_data = self.get_form_data(request)
         request._plugin_order = getattr(request, '_plugin_order', 0) + 1

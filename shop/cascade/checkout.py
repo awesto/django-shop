@@ -45,7 +45,7 @@ plugin_pool.register_plugin(ShopCheckoutSummaryPlugin)
 
 
 class ButtonForm(LinkForm):
-    LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")),)
+    LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")), ('RELOAD_PAGE', _("Reload Page")),)
 
     button_content = fields.CharField(required=False, label=_("Content"),
                                       help_text=_("Proceed buttons content"))
@@ -71,7 +71,7 @@ class ShopProceedButton(ShopPluginBase):
     glossary_field_map = {'link': ('link_type', 'cms_page',)}
 
     class Media:
-        js = resolve_dependencies('cascade/js/admin/linkpluginbase.js')
+        js = resolve_dependencies('cascade/js/admin/linkplugin.js')
 
     @classmethod
     def get_identifier(cls, obj):
@@ -80,6 +80,10 @@ class ShopProceedButton(ShopPluginBase):
     @classmethod
     def get_link(cls, obj):
         link = obj.glossary.get('link', {})
+        if link.get('type') == 'RELOAD_PAGE':
+            return 'RELOAD_PAGE'
+
+        # otherwise try to resolve by model
         if 'model' in link and 'pk' in link:
             if not hasattr(obj, '_link_model'):
                 Model = get_model(*link['model'].split('.'))
@@ -96,6 +100,11 @@ class ShopProceedButton(ShopPluginBase):
             'shop/checkout/proceed-button.html',
         ]
         return select_template(template_names)
+
+    def get_ring_bases(self):
+        bases = super(ShopProceedButton, self).get_ring_bases()
+        bases.append('LinkPluginBase')
+        return bases
 
 plugin_pool.register_plugin(ShopProceedButton)
 
