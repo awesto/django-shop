@@ -69,7 +69,8 @@ class DialogFormPlugin(ShopPluginBase):
         request = context['request']
         form_data = self.get_form_data(request)
         request._plugin_order = getattr(request, '_plugin_order', 0) + 1
-        initial = form_data.pop('initial', {})
-        initial.update(plugin_id=instance.id, plugin_order=request._plugin_order)
-        context[self.FormClass.form_name] = self.FormClass(initial=initial, **form_data)
+        if not isinstance(form_data.get('initial'), dict):
+            form_data['initial'] = {}
+        form_data['initial'].update(plugin_id=instance.id, plugin_order=request._plugin_order)
+        context[self.FormClass.form_name] = self.FormClass(**form_data)
         return super(DialogFormPlugin, self).render(context, instance, placeholder)
