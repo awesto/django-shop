@@ -5,7 +5,7 @@ from django.utils.module_loading import import_by_path
 from rest_framework.decorators import list_route
 from rest_framework import viewsets
 from cms.plugin_pool import plugin_pool
-from shop.cascade.plugin_base import DialogFormPlugin
+from shop.cascade.plugin_base import DialogFormPluginBase
 from shop.models.cart import CartModel, CartItemModel
 from shop.rest import serializers
 from shop.modifiers.pool import cart_modifiers_pool
@@ -58,7 +58,7 @@ class CheckoutViewSet(BaseViewSet):
         super(CheckoutViewSet, self).__init__(**kwargs)
         self.dialog_forms = []
         for p in plugin_pool.get_all_plugins():
-            if issubclass(p, DialogFormPlugin):
+            if issubclass(p, DialogFormPluginBase):
                 self.dialog_forms.append(import_by_path(p.form_class))
 
     @list_route(methods=['post'], url_path='update')
@@ -68,7 +68,7 @@ class CheckoutViewSet(BaseViewSet):
         an `update()` function. This function then may be connected to any input element, say
         `ng-change="update()"`. If such an event triggers, the scope data is send to this
         method using an Ajax POST request. This `update()` method then dispatches the form data
-        to all forms registered through a DialogFormPlugin.
+        to all forms registered through a `DialogFormPluginBase`.
         Afterwards the cart is updated, so that all cart modifiers run and adopt those changes.
         """
         cart = self.get_queryset()
@@ -80,7 +80,7 @@ class CheckoutViewSet(BaseViewSet):
         # collect potential errors
         errors = {}
         for form_class, data in dialog_data:
-            plugin_instance = DialogFormPlugin.model.objects.get(id=data['plugin_id'])
+            plugin_instance = DialogFormPluginBase.model.objects.get(id=data['plugin_id'])
             reply = form_class.form_factory(request, data, cart)
             if isinstance(reply, dict):
                 errors.update(reply)

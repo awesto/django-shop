@@ -49,7 +49,7 @@ class DialogBookletPlugin(ShopPluginBase):
     def save_model(self, request, obj, form, change):
         wanted_children = int(form.cleaned_data.get('num_children'))
         super(DialogBookletPlugin, self).save_model(request, obj, form, change)
-        self.extend_children(obj, wanted_children, DialogPlugin)
+        self.extend_children(obj, wanted_children, DialogPagePlugin)
 
 plugin_pool.register_plugin(DialogBookletPlugin)
 
@@ -59,7 +59,7 @@ class BookletPageModelMixin(object):
         return self.glossary.get('slug', '')
 
 
-class DialogPlugin(ShopPluginBase):
+class DialogPagePlugin(ShopPluginBase):
     name = _("Dialog Page")
     parent_classes = ('DialogBookletPlugin',)
     require_parent = True
@@ -82,7 +82,7 @@ class DialogPlugin(ShopPluginBase):
 
     @classmethod
     def get_identifier(cls, obj):
-        identifier = super(DialogPlugin, cls).get_identifier(obj)
+        identifier = super(DialogPagePlugin, cls).get_identifier(obj)
         content = obj.glossary.get('page_title', '')
         if content:
             content = unicode(Truncator(content).words(3, truncate=' ...'))
@@ -100,11 +100,11 @@ class DialogPlugin(ShopPluginBase):
             child_classes = super(DialogBookletPlugin, self).get_child_classes(slot, page)
         return child_classes
 
-plugin_pool.register_plugin(DialogPlugin)
+plugin_pool.register_plugin(DialogPagePlugin)
 
 
 class BookletProceedButtonPlugin(ShopPluginBase):
-    parent_classes = ('DialogPlugin',)
+    parent_classes = ('DialogPagePlugin',)
     require_parent = True
     render_template = 'cascade/bootstrap3/button.html'
     allow_children = False

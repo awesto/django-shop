@@ -16,7 +16,7 @@ from shop.models.auth import get_customer
 from shop.models.cart import CartModel
 from shop.rest.serializers import CartSerializer
 from shop.modifiers.pool import cart_modifiers_pool
-from .plugin_base import ShopPluginBase, DialogFormPlugin
+from .plugin_base import ShopPluginBase, DialogFormPluginBase, ButtonPluginBase
 
 
 class ShopCheckoutSummaryPlugin(ShopPluginBase):
@@ -44,38 +44,32 @@ class ShopCheckoutSummaryPlugin(ShopPluginBase):
 plugin_pool.register_plugin(ShopCheckoutSummaryPlugin)
 
 
-class ButtonForm(LinkForm):
+class ProceedButtonForm(LinkForm):
     LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")), ('RELOAD_PAGE', _("Reload Page")),)
 
     button_content = fields.CharField(required=False, label=_("Content"),
                                       help_text=_("Proceed buttons content"))
 
     def clean(self):
-        cleaned_data = super(ButtonForm, self).clean()
+        cleaned_data = super(ProceedButtonForm, self).clean()
         if self.is_valid():
             cleaned_data['glossary'].update(button_content=cleaned_data['button_content'])
         return cleaned_data
 
 
-class ShopProceedButton(ShopPluginBase):
+class ShopProceedButton(ButtonPluginBase):
     """
     This button is used to proceed from one checkout step to the next one.
     """
-    module = 'Shop'
     name = _("Proceed Button")
-    form = ButtonForm
+    form = ProceedButtonForm
     parent_classes = ('BootstrapColumnPlugin',)
-    allow_children = False
     model_mixins = (LinkElementMixin,)
     fields = ('button_content', ('link_type', 'cms_page'), 'glossary',)
     glossary_field_map = {'link': ('link_type', 'cms_page',)}
 
     class Media:
         js = resolve_dependencies('cascade/js/admin/linkplugin.js')
-
-    @classmethod
-    def get_identifier(cls, obj):
-        return mark_safe(obj.glossary.get('button_content', ''))
 
     @classmethod
     def get_link(cls, obj):
@@ -138,7 +132,7 @@ class ShopPurchaseButton(ShopPluginBase):
 plugin_pool.register_plugin(ShopPurchaseButton)
 
 
-class CustomerFormPlugin(DialogFormPlugin):
+class CustomerFormPlugin(DialogFormPluginBase):
     """
     provides the form to edit customer specific data stored in model `Customer`.
     """
@@ -156,10 +150,10 @@ class CustomerFormPlugin(DialogFormPlugin):
     def get_form_data(self, request):
         return {'instance': get_customer(request)}
 
-DialogFormPlugin.register_plugin(CustomerFormPlugin)
+DialogFormPluginBase.register_plugin(CustomerFormPlugin)
 
 
-class CheckoutAddressPluginBase(DialogFormPlugin):
+class CheckoutAddressPluginBase(DialogFormPluginBase):
     def get_form_data(self, request):
         user = get_customer(request)
         filter_args = {'user': user, '{}__isnull'.format(self.FormClass.priority_field): False}
@@ -184,7 +178,7 @@ class ShippingAddressFormPlugin(CheckoutAddressPluginBase):
         ]
         return select_template(template_names)
 
-DialogFormPlugin.register_plugin(ShippingAddressFormPlugin)
+DialogFormPluginBase.register_plugin(ShippingAddressFormPlugin)
 
 
 class InvoiceAddressFormPlugin(CheckoutAddressPluginBase):
@@ -198,10 +192,10 @@ class InvoiceAddressFormPlugin(CheckoutAddressPluginBase):
         ]
         return select_template(template_names)
 
-DialogFormPlugin.register_plugin(InvoiceAddressFormPlugin)
+DialogFormPluginBase.register_plugin(InvoiceAddressFormPlugin)
 
 
-class PaymentMethodFormPlugin(DialogFormPlugin):
+class PaymentMethodFormPlugin(DialogFormPluginBase):
     name = _("Payment Method Dialog")
     form_class = 'shop.forms.checkout.PaymentMethodForm'
 
@@ -218,10 +212,10 @@ class PaymentMethodFormPlugin(DialogFormPlugin):
 
 if cart_modifiers_pool.get_payment_modifiers():
     # Plugin is registered only if at least one payment modifier exists
-    DialogFormPlugin.register_plugin(PaymentMethodFormPlugin)
+    DialogFormPluginBase.register_plugin(PaymentMethodFormPlugin)
 
 
-class ShippingMethodFormPlugin(DialogFormPlugin):
+class ShippingMethodFormPlugin(DialogFormPluginBase):
     name = _("Shipping Method Dialog")
     form_class = 'shop.forms.checkout.ShippingMethodForm'
 
@@ -238,10 +232,10 @@ class ShippingMethodFormPlugin(DialogFormPlugin):
 
 if cart_modifiers_pool.get_shipping_modifiers():
     # Plugin is registered only if at least one shipping modifier exists
-    DialogFormPlugin.register_plugin(ShippingMethodFormPlugin)
+    DialogFormPluginBase.register_plugin(ShippingMethodFormPlugin)
 
 
-class ExtrasFormPlugin(DialogFormPlugin):
+class ExtrasFormPlugin(DialogFormPluginBase):
     name = _("Extras Dialog")
     form_class = 'shop.forms.checkout.ExtrasForm'
 
@@ -256,10 +250,10 @@ class ExtrasFormPlugin(DialogFormPlugin):
         cart = CartModel.objects.get_from_request(request)
         return {'initial': cart.extras or {}}
 
-DialogFormPlugin.register_plugin(ExtrasFormPlugin)
+DialogFormPluginBase.register_plugin(ExtrasFormPlugin)
 
 
-class TermsAndConditionsFormPlugin(DialogFormPlugin):
+class TermsAndConditionsFormPlugin(DialogFormPluginBase):
     """
     Provides the form to accept terms and conditions.
     """
@@ -273,4 +267,4 @@ class TermsAndConditionsFormPlugin(DialogFormPlugin):
         ]
         return select_template(template_names)
 
-DialogFormPlugin.register_plugin(TermsAndConditionsFormPlugin)
+DialogFormPluginBase.register_plugin(TermsAndConditionsFormPlugin)
