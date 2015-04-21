@@ -1,0 +1,22 @@
+{% load static cms_tags sekizai_tags %}
+
+{% addtoblock "css" %}<link href="{% static 'shop/css/btn-breadcrumb.css' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+{% addtoblock "js" %}<script src="{% static 'shop/js/dialogs.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+
+<shop-dialog-booklet>
+{% with instance_inline_styles=instance.inline_styles %}
+	<div class="{{ instance.css_classes }}"{% if instance_inline_styles %} style="{{ instance_inline_styles }}"{% endif %}>
+	{% for child in instance.child_plugin_instances %}
+		<a href="#{{ child.slug }}" class="btn" ng-class="breadcrumbClass('{{ child.slug }}')" ng-disabled="disabledBreadcrumb('{{ child.slug }}')">
+			{{ child.glossary.page_title|default:"&nbsp;" }}
+		</a>
+	{% endfor %}
+	</div>
+
+	{% for child in instance.child_plugin_instances %}{% with css_classes=child.css_classes inline_styles=child.inline_styles %}
+	<div ng-show="displayBookletPage('{{ child.slug }}')"{% if css_classes %} class="{{ css_classes }}"{% endif %}{% if inline_styles %} style="{{ inline_styles }}"{% endif %}>
+		{% render_plugin child %}
+	</div>
+	{% endwith %}{% endfor %}
+{% endwith %}
+</shop-dialog-booklet>

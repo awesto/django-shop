@@ -6,6 +6,48 @@
 var djangoShopModule = angular.module('django.shop.dialogs', []);
 
 
+// Directive <shop-dialog-booklet>
+// It is used to add display the active booklet page and hide the remaining ones.
+djangoShopModule.directive('shopDialogBooklet', ['$location', function($location) {
+	var slugs = [];
+
+	function breadcrumbClass(slug) {
+		var current = slugs.indexOf(slug);
+		var until = slugs.indexOf($location.path().replace('/', ''));
+		return (current === 0 || until >= current) ? "btn-success" : "btn-default";
+	}
+
+	function disabledBreadcrumb(slug) {
+		return false;
+		var current = slugs.indexOf(slug);
+		var until = slugs.indexOf($location.path().replace('/', ''));
+		return (current !== 0 && until < current);
+	}
+
+	function displayBookletPage(slug) {
+		var until = $location.path().replace('/', '');
+		return !until || until === slug;
+	}
+
+	function collectSlug(anchor) {
+		var elem = angular.element(anchor);
+		if (elem.hasClass('btn')) {
+			slugs.push(elem.attr('href').replace('#', ''));
+		}
+	}
+
+	return {
+		restrict: 'E',
+		link: function(scope, element, attrs) {
+			angular.forEach(element.find("a"), collectSlug);
+			scope.breadcrumbClass = breadcrumbClass;
+			scope.disabledBreadcrumb = disabledBreadcrumb;
+			scope.displayBookletPage = displayBookletPage;
+		}
+	};
+}]);
+
+
 // Shared controller for all forms, links and buttons using shop-dialog elements. It just adds
 // an `update` function to the scope, so that all forms can send their gathered data to the
 // server. Since this controller does not make any presumption on how and where to proceed to,

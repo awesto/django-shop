@@ -1,2 +1,4 @@
 # -*- coding: utf-8 -*-
-CASCADE_PLUGINS = ('auth', 'cart', 'checkout', 'link',)
+from __future__ import unicode_literals
+
+CASCADE_PLUGINS = ('auth', 'cart', 'checkout', 'link', 'booklet',)
