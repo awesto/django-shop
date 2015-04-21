@@ -10,6 +10,8 @@ from .plugin_base import ShopPluginBase
 
 class ShopCartPlugin(ShopPluginBase):
     name = _("Cart")
+    require_parent = True
+    parent_classes = ('BootstrapColumnPlugin',)
 
     @classmethod
     def get_identifier(cls, obj):

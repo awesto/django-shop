@@ -1,11 +1,9 @@
 {% load i18n %}
 
 {% block "shop-cart-table" %}
-<div class="row">
-	<table shop-cart class="table table-hover">
-		<!-- content is rendered via template "shop/cart.html" -->
-	</table>
-</div>
+<table shop-cart class="table table-hover">
+	<!-- content is rendered via ng-template "shop/cart.html" -->
+</table>
 {% endblock "shop-cart-table" %}
 
 <script id="shop/cart.html" type="text/ng-template">
@@ -24,7 +22,7 @@
 {% block "shop-cart-tbody" %}
 	<tbody>
 		<tr shop-cart-item ng-repeat="cart_item in cart.items">
-			<!-- content is rendered via template "shop/cart-item.html" -->
+			<!-- content is rendered via ng-template "shop/cart-item.html" -->
 		</tr>
 	</tbody>
 {% endblock "shop-cart-tbody" %}
