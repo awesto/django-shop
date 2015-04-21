@@ -33,6 +33,9 @@
 .btn-breadcrumb .btn {
   padding:6px 12px 6px 24px;
 }
+.btn-breadcrumb .btn.disabled {
+  opacity: 1;
+}
 .btn-breadcrumb .btn:first-child {
   padding:6px 6px 6px 10px;
 }
@@ -53,6 +56,7 @@
 .btn-breadcrumb .btn.btn-default:hover:not(:last-child):before {
   border-left: 10px solid #adadad;
 }
+
 
 /** Primary button **/
 .btn-breadcrumb .btn.btn-primary:not(:last-child):after {
@@ -77,9 +81,11 @@
 }
 .btn-breadcrumb .btn.btn-success:hover:not(:last-child):after {
   border-left: 10px solid #47a447;
+  opacity: 0.75;
 }
 .btn-breadcrumb .btn.btn-success:hover:not(:last-child):before {
   border-left: 10px solid #398439;
+  opacity: 0.75;
 }
 
 /** Danger button **/

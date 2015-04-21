@@ -98,7 +98,6 @@ class DialogPlugin(ShopPluginBase):
             child_classes = plugin_class().get_child_classes(slot, page)
         else:
             child_classes = super(DialogBookletPlugin, self).get_child_classes(slot, page)
-        print child_classes
         return child_classes
 
 plugin_pool.register_plugin(DialogPlugin)

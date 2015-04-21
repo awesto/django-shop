@@ -6,43 +6,94 @@
 var djangoShopModule = angular.module('django.shop.dialogs', []);
 
 
-// Directive <shop-dialog-booklet>
-// It is used to add display the active booklet page and hide the remaining ones.
-djangoShopModule.directive('shopDialogBooklet', ['$location', function($location) {
-	var slugs = [];
-
-	function breadcrumbClass(slug) {
-		var current = slugs.indexOf(slug);
-		var until = slugs.indexOf($location.path().replace('/', ''));
-		return (current === 0 || until >= current) ? "btn-success" : "btn-default";
+// Shared controller for directives `shopDialogBookletSlug` and `shopDialogBookletPage`.
+djangoShopModule.controller('DialogBookletCtrl', ['$scope', '$rootScope', function($scope, $rootScope) {
+	if (!angular.isObject($rootScope.observerdForms)) {
+		$rootScope.observerdForms = {_slugs: []};
 	}
+	$rootScope.observerdForms[$scope.slug] = [];
 
-	function disabledBreadcrumb(slug) {
-		return false;
-		var current = slugs.indexOf(slug);
-		var until = slugs.indexOf($location.path().replace('/', ''));
-		return (current !== 0 && until < current);
-	}
+	// add a form element to the list of observed forms, so that they can be checked for validity
+	this.observeForms = function(formElem) {
+		$rootScope.observerdForms[$scope.slug].push(formElem.name);
+	};
 
-	function displayBookletPage(slug) {
-		var until = $location.path().replace('/', '');
-		return !until || until === slug;
-	}
+	this.pushSlug = function() {
+		$rootScope.observerdForms._slugs.push($scope.slug);
+	};
 
-	function collectSlug(anchor) {
-		var elem = angular.element(anchor);
-		if (elem.hasClass('btn')) {
-			slugs.push(elem.attr('href').replace('#', ''));
+	// Return true if all forms on this booklet page are valid
+	function areFormsValid(slug) {
+		var valid = true;
+		angular.forEach($rootScope.observerdForms[slug], function(form_name) {
+			valid = valid && $rootScope[form_name].$valid;
+		});
+		return valid;
+	};
+
+	// Return true if all forms on this booklet page are valid
+	this.isFormPageValid = function() {
+		var valid = true, k, slug;
+		for (k = 0; k < $rootScope.observerdForms._slugs.length; k++) {
+			slug = $rootScope.observerdForms._slugs[k];
+			valid = areFormsValid(slug);
+			if (!valid || slug == $scope.slug)
+				break;
 		}
-	}
+		return valid;
+	};
 
+}]);
+
+
+// Directive <a shop-dialog-booklet-slug="slug" ...>
+// It is used to display the active booklet button.
+djangoShopModule.directive('shopDialogBookletButton', ['$compile', '$location', function($compile, $location) {
 	return {
 		restrict: 'E',
-		link: function(scope, element, attrs) {
-			angular.forEach(element.find("a"), collectSlug);
-			scope.breadcrumbClass = breadcrumbClass;
-			scope.disabledBreadcrumb = disabledBreadcrumb;
-			scope.displayBookletPage = displayBookletPage;
+		controller: 'DialogBookletCtrl',
+		scope: {
+			slug: '@'
+		},
+		link: function(scope, element, attrs, ctrl) {
+			var template = '<a ng-class="btnClass()" ng-click="btnClick()">' +
+				angular.element(element).html() + '</a>';
+			element.replaceWith($compile(template)(scope));
+			ctrl.pushSlug();
+
+			scope.btnClass = function() {
+				return ctrl.isFormPageValid() ? "btn btn-success" : "btn btn-default disabled";
+			};
+
+			scope.btnClick = function() {
+				if (ctrl.isFormPageValid()) {
+					$location.path(scope.slug);
+				}
+			};
+		}
+	};
+}]);
+
+
+// Directive <TAG shop-dialog-booklet-page>
+// It is used to display the active booklet page and to hide the remaining ones.
+djangoShopModule.directive('shopDialogBookletPage', ['$compile', '$location', function($compile, $location) {
+	return {
+		restrict: 'E',
+		controller: 'DialogBookletCtrl',
+		scope: {
+			slug: '@'
+		},
+		link: function(scope, element, attrs, ctrl) {
+			var cssClass = attrs['class'] || '', cssStyle = attrs['style'] || '';
+			var template = '<div ng-show="displayBookletPage()" class="' + cssClass + '" style="' + cssStyle + '">'
+				+ angular.element(element).html() + '</div>';
+			element.replaceWith($compile(template)(scope));
+			angular.forEach(element.find("form"), ctrl.observeForms);
+
+			scope.displayBookletPage = function() {
+				return $location.path().substr(1) === scope.slug;
+			};
 		}
 	};
 }]);
