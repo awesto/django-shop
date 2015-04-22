@@ -80,12 +80,9 @@ class CheckoutViewSet(BaseViewSet):
         # collect potential errors
         errors = {}
         for form_class, data in dialog_data:
-            plugin_instance = DialogFormPluginBase.model.objects.get(id=data['plugin_id'])
             reply = form_class.form_factory(request, data, cart)
             if isinstance(reply, dict):
                 errors.update(reply)
-                if plugin_instance.glossary.get('stop_on_error'):
-                    break
 
         # update the cart and run its modifiers
         cart.save()

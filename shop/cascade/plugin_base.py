@@ -31,12 +31,6 @@ class DialogFormPluginBase(ShopPluginBase):
             initial='form',
             help_text=_("A dialog can also be rendered as a box containing a read-only summary."),
         ),
-        PartialFormField('stop_on_error',
-            widgets.CheckboxInput(),
-            label=_("Stop on error"),
-            initial=False,
-            help_text=_("Activate, if processing shall stop immediately on invalid form data."),
-        ),
     )
 
     @classmethod
