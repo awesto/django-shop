@@ -2,12 +2,9 @@
 from __future__ import unicode_literals
 from django.db.models import get_model, Max
 from django.forms import fields
-from django.forms import widgets
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
-from django.utils.safestring import mark_safe
 from cms.plugin_pool import plugin_pool
-from cmsplugin_cascade.fields import PartialFormField
 from cmsplugin_cascade.link.forms import LinkForm
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.utils import resolve_dependencies
@@ -141,7 +138,7 @@ class CheckoutAddressPluginBase(DialogFormPluginBase):
 
 
 class ShippingAddressFormPlugin(CheckoutAddressPluginBase):
-    name = _("Shipping Address Dialog")
+    name = _("Shipping Address Form")
     form_class = 'shop.forms.checkout.ShippingAddressForm'
 
     def get_render_template(self, context, instance, placeholder):
@@ -155,7 +152,7 @@ DialogFormPluginBase.register_plugin(ShippingAddressFormPlugin)
 
 
 class InvoiceAddressFormPlugin(CheckoutAddressPluginBase):
-    name = _("Invoice Address Dialog")
+    name = _("Invoice Address Form")
     form_class = 'shop.forms.checkout.InvoiceAddressForm'
 
     def get_render_template(self, context, instance, placeholder):
@@ -169,7 +166,7 @@ DialogFormPluginBase.register_plugin(InvoiceAddressFormPlugin)
 
 
 class PaymentMethodFormPlugin(DialogFormPluginBase):
-    name = _("Payment Method Dialog")
+    name = _("Payment Method Form")
     form_class = 'shop.forms.checkout.PaymentMethodForm'
 
     def get_render_template(self, context, instance, placeholder):
@@ -189,7 +186,7 @@ if cart_modifiers_pool.get_payment_modifiers():
 
 
 class ShippingMethodFormPlugin(DialogFormPluginBase):
-    name = _("Shipping Method Dialog")
+    name = _("Shipping Method Form")
     form_class = 'shop.forms.checkout.ShippingMethodForm'
 
     def get_render_template(self, context, instance, placeholder):
@@ -209,7 +206,7 @@ if cart_modifiers_pool.get_shipping_modifiers():
 
 
 class ExtrasFormPlugin(DialogFormPluginBase):
-    name = _("Extras Dialog")
+    name = _("Extra Annotation Form")
     form_class = 'shop.forms.checkout.ExtrasForm'
 
     def get_render_template(self, context, instance, placeholder):
