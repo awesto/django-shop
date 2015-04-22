@@ -48,8 +48,4 @@ class RegisterFormPlugin(DialogFormPluginBase):
     def get_form_data(self, request):
         return {'instance': get_customer(request)}
 
-    def render(self, context, instance, placeholder):
-        context = super(RegisterFormPlugin, self).render(context, instance, placeholder)
-        return context
-
 plugin_pool.register_plugin(RegisterFormPlugin)
