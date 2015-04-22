@@ -45,7 +45,7 @@ plugin_pool.register_plugin(ShopCheckoutSummaryPlugin)
 
 
 class ProceedButtonForm(LinkForm):
-    LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")), ('RELOAD_PAGE', _("Reload Page")),)
+    LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")), ('RELOAD_PAGE', _("Reload Page")), ('PURCHASE_NOW', _("Purchase Now")),)
 
     button_content = fields.CharField(required=False, label=_("Content"),
                                       help_text=_("Proceed buttons content"))
@@ -67,6 +67,8 @@ class ShopProceedButton(ButtonPluginBase):
     model_mixins = (LinkElementMixin,)
     fields = ('button_content', ('link_type', 'cms_page'), 'glossary',)
     glossary_field_map = {'link': ('link_type', 'cms_page',)}
+    default_css_class = 'btn'
+    default_css_attributes = ('button-type', 'button-size', 'button-options', 'quick-float',)
 
     class Media:
         js = resolve_dependencies('cascade/js/admin/linkplugin.js')
@@ -74,19 +76,19 @@ class ShopProceedButton(ButtonPluginBase):
     @classmethod
     def get_link(cls, obj):
         link = obj.glossary.get('link', {})
-        if link.get('type') == 'RELOAD_PAGE':
-            return 'RELOAD_PAGE'
-
-        # otherwise try to resolve by model
-        if 'model' in link and 'pk' in link:
-            if not hasattr(obj, '_link_model'):
-                Model = get_model(*link['model'].split('.'))
-                try:
-                    obj._link_model = Model.objects.get(pk=link['pk'])
-                except Model.DoesNotExist:
-                    obj._link_model = None
-            if obj._link_model:
-                return obj._link_model.get_absolute_url()
+        if link.get('type') == 'cmspage':
+            if 'model' in link and 'pk' in link:
+                if not hasattr(obj, '_link_model'):
+                    Model = get_model(*link['model'].split('.'))
+                    try:
+                        obj._link_model = Model.objects.get(pk=link['pk'])
+                    except Model.DoesNotExist:
+                        obj._link_model = None
+                if obj._link_model:
+                    return obj._link_model.get_absolute_url()
+        else:
+            # use the link type as special action keyword
+            return link.get('type')
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
@@ -101,35 +103,6 @@ class ShopProceedButton(ButtonPluginBase):
         return bases
 
 plugin_pool.register_plugin(ShopProceedButton)
-
-
-class ShopPurchaseButton(ShopPluginBase):
-    """
-    This button is used as a final step to convert the Cart object into an Order object.
-    """
-    name = _("Purchase Button")
-    require_parent = True
-    parent_classes = ('BootstrapColumnPlugin',)
-    glossary_fields = (
-        PartialFormField('button_content',
-            widgets.Input(),
-            label=_('Content'),
-            help_text=_("Purchase buttons content")
-        ),
-    )
-
-    @classmethod
-    def get_identifier(cls, obj):
-        return mark_safe(obj.glossary.get('button_content', ''))
-
-    def get_render_template(self, context, instance, placeholder):
-        template_names = [
-            '{}/checkout/purchase-button.html'.format(shop_settings.APP_LABEL),
-            'shop/checkout/purchase-button.html',
-        ]
-        return select_template(template_names)
-
-plugin_pool.register_plugin(ShopPurchaseButton)
 
 
 class CustomerFormPlugin(DialogFormPluginBase):

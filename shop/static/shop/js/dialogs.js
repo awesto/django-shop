@@ -167,7 +167,8 @@ djangoShopModule.directive('shopDialogForm', function() {
 
 
 // Directive to be added to button elements.
-djangoShopModule.directive('shopDialogProceed', ['$window', function($window) {
+djangoShopModule.directive('shopDialogProceed', ['$window', '$http', 'djangoUrl',function($window, $http, djangoUrl) {
+	var purchaseURL = djangoUrl.reverse('shop:checkout-purchase');
 	return {
 		restrict: 'EA',
 		controller: 'DialogCtrl',
@@ -177,36 +178,19 @@ djangoShopModule.directive('shopDialogProceed', ['$window', function($window) {
 				console.log("Proceed to: " + attrs.action);
 				if (attrs.action === 'RELOAD_PAGE') {
 					$window.location.reload();
+				} else if (attrs.action === 'PURCHASE_NOW') {
+					// convert the cart into an order object, this will propagate the promise
+					return $http.post(purchaseURL, scope.data);
 				} else {
 					$window.location.href = attrs.action;
 				}
 			}, null, function(errs) {
 				console.error("The checkout form contains errors.");
 				console.log(errs);
-			});
-		}
-	};
-}]);
-
-
-djangoShopModule.directive('shopPurchaseButton', ['$window', '$http', '$q', 'djangoUrl',
-                                                  function($window, $http, $q, djangoUrl) {
-	var purchaseURL = djangoUrl.reverse('shop:checkout-purchase');
-	return {
-		restrict: 'EA',
-		controller: 'DialogCtrl',
-		link: function(scope, element, attrs, DialogCtrl) {
-			DialogCtrl.isLoading = false;
-			DialogCtrl.registerButton(element).then(function() {
-				// cart update succeeded, the next step is to convert the cart into an order object
-				return $http.post(purchaseURL, scope.data);
-			}, null, function(errs) {
-				console.error("Purchase form contains errors.");
-				console.log(errs);
 			}).then(function(response) {
 				var expr = '$window.location.href="https://www.google.com/";'
 				console.log(response.data.expression);
-				// proceed on the PSPs server
+				// evaluate expression to proceed on the PSP's server
 				eval(response.data.expression);
 			}, function(errs) {
 				console.error("Unable to purchase.");
@@ -215,5 +199,6 @@ djangoShopModule.directive('shopPurchaseButton', ['$window', '$http', '$q', 'dja
 		}
 	};
 }]);
+
 
 })(window.angular);
