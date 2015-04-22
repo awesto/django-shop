@@ -8,39 +8,54 @@ var djangoShopModule = angular.module('django.shop.dialogs', []);
 
 // Shared controller for directives `shopDialogBookletSlug` and `shopDialogBookletPage`.
 djangoShopModule.controller('DialogBookletCtrl', ['$scope', '$rootScope', function($scope, $rootScope) {
-	if (!angular.isObject($rootScope.observerdForms)) {
-		$rootScope.observerdForms = {_slugs: []};
+	if (!angular.isObject($rootScope.observedForms)) {
+		$rootScope.observedForms = {_slugs: []};
 	}
-	$rootScope.observerdForms[$scope.slug] = [];
+	$rootScope.observedForms[$scope.slug] = [];
 
 	// add a form element to the list of observed forms, so that they can be checked for validity
 	this.observeForms = function(formElem) {
-		$rootScope.observerdForms[$scope.slug].push(formElem.name);
+		$rootScope.observedForms[$scope.slug].push(formElem.name);
 	};
 
 	this.pushSlug = function() {
-		$rootScope.observerdForms._slugs.push($scope.slug);
+		$rootScope.observedForms._slugs.push($scope.slug);
 	};
 
 	// Return true if all forms on this booklet page are valid
 	function areFormsValid(slug) {
 		var valid = true;
-		angular.forEach($rootScope.observerdForms[slug], function(form_name) {
+		angular.forEach($rootScope.observedForms[slug], function(form_name) {
 			valid = valid && $rootScope[form_name].$valid;
 		});
 		return valid;
 	};
 
-	// Return true if all forms on this booklet page are valid
-	this.isFormPageValid = function() {
-		var valid = true, k, slug;
-		for (k = 0; k < $rootScope.observerdForms._slugs.length; k++) {
-			slug = $rootScope.observerdForms._slugs[k];
-			valid = areFormsValid(slug);
-			if (!valid || slug == $scope.slug)
+	// Return true if this booklet page shall be editable. This implies that all previous
+	// booklet pages have validated forms.
+	this.bookletPageActive = function() {
+		var active = true, k, slug;
+		for (k = 0; k < $rootScope.observedForms._slugs.length; k++) {
+			slug = $rootScope.observedForms._slugs[k];
+			if (slug === $scope.slug || !active)
 				break;
+			active = areFormsValid(slug);
+			console.log(slug + ': ' + active);
 		}
-		return valid;
+		console.log($scope.slug + '= ' + active);
+		console.log($rootScope);
+		return active;
+	};
+
+	this.defaultPageActive = function() {
+		console.log('defaultPageActive');
+		var k, slug;
+		for (k = 0; k < $rootScope.observedForms._slugs.length; k++) {
+			slug = $rootScope.observedForms._slugs[k];
+			if (!areFormsValid(slug))
+				return slug === $scope.slug;
+		}
+		return slug === $scope.slug;
 	};
 
 }]);
@@ -62,11 +77,11 @@ djangoShopModule.directive('shopDialogBookletButton', ['$compile', '$location', 
 			ctrl.pushSlug();
 
 			scope.btnClass = function() {
-				return ctrl.isFormPageValid() ? "btn btn-success" : "btn btn-default disabled";
+				return ctrl.bookletPageActive() ? "btn btn-success" : "btn btn-default disabled";
 			};
 
 			scope.btnClick = function() {
-				if (ctrl.isFormPageValid()) {
+				if (ctrl.bookletPageActive()) {
 					$location.path(scope.slug);
 				}
 			};
@@ -92,7 +107,8 @@ djangoShopModule.directive('shopDialogBookletPage', ['$compile', '$location', fu
 			angular.forEach(element.find("form"), ctrl.observeForms);
 
 			scope.displayBookletPage = function() {
-				return $location.path().substr(1) === scope.slug;
+				var slug = $location.path().substr(1);
+				return slug === scope.slug || !slug && ctrl.defaultPageActive();
 			};
 		}
 	};
@@ -167,7 +183,8 @@ djangoShopModule.directive('shopDialogForm', function() {
 
 
 // Directive to be added to button elements.
-djangoShopModule.directive('shopDialogProceed', ['$window', '$http', 'djangoUrl',function($window, $http, djangoUrl) {
+djangoShopModule.directive('shopDialogProceed', ['$window', '$location', '$http', '$q', 'djangoUrl',
+                            function($window, $location, $http, $q, djangoUrl) {
 	var purchaseURL = djangoUrl.reverse('shop:checkout-purchase');
 	return {
 		restrict: 'EA',
@@ -181,7 +198,11 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', 'djangoUrl'
 				} else if (attrs.action === 'PURCHASE_NOW') {
 					// convert the cart into an order object, this will propagate the promise
 					return $http.post(purchaseURL, scope.data);
+				} else if (attrs.action.substr(0, 1) === '#') {
+					$location.path(attrs.action.substr(1));
+					return $q.reject();
 				} else {
+					// proceed with new page
 					$window.location.href = attrs.action;
 				}
 			}, null, function(errs) {
@@ -193,8 +214,9 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', 'djangoUrl'
 				// evaluate expression to proceed on the PSP's server
 				eval(response.data.expression);
 			}, function(errs) {
-				console.error("Unable to purchase.");
-				console.log(errs);
+				if (errs) {
+					console.error(errs);
+				}
 			});
 		}
 	};
