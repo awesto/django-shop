@@ -10,9 +10,9 @@ from django.template.loader import select_template
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.forms import ManageChildrenFormMixin
 from cmsplugin_cascade.fields import PartialFormField
+from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.widgets import NumberInputWidget
-from cmsplugin_cascade.bootstrap3.buttons import ButtonSizeRenderer, ButtonTypeRenderer
-from shop.cascade.plugin_base import ShopPluginBase
+from shop.cascade.plugin_base import ShopPluginBase, ButtonPluginBase
 from shop import settings as shop_settings
 
 
@@ -98,49 +98,48 @@ class DialogPagePlugin(ShopPluginBase):
             child_classes = plugin_class().get_child_classes(slot, page)
         else:
             child_classes = super(DialogBookletPlugin, self).get_child_classes(slot, page)
+        child_classes += ('BookletProceedButtonPlugin',)
         return child_classes
 
 plugin_pool.register_plugin(DialogPagePlugin)
 
 
-class BookletProceedButtonPlugin(ShopPluginBase):
+class BookletProceedButtonPlugin(ButtonPluginBase):
+    name = _("Booklet Proceed Button")
     parent_classes = ('DialogPagePlugin',)
-    require_parent = True
-    render_template = 'cascade/bootstrap3/button.html'
-    allow_children = False
-    text_enabled = True
-    tag_type = None
-    default_css_class = 'btn'
-    default_css_attributes = ('button-type', 'button-size', 'button-options', 'quick-float',)
-    fields = ('link_content', ('link_type', 'cms_page', 'ext_url', 'mail_to'), 'glossary',)
+    model_mixins = (LinkElementMixin,)
     glossary_fields = (
-        PartialFormField('button-type',
-            widgets.RadioSelect(choices=((k, v) for k, v in ButtonTypeRenderer.BUTTON_TYPES.items()),
-                                renderer=ButtonTypeRenderer),
-            label=_('Button Type'),
-            initial='btn-default',
-            help_text=_("Display Link using this Button Style")
+        PartialFormField('button_content',
+            widgets.TextInput(),
+            label=_("Content"),
+            help_text=_("Proceed to next page of this booklet."),
         ),
-        PartialFormField('button-size',
-            widgets.RadioSelect(choices=((k, v) for k, v in ButtonSizeRenderer.BUTTON_SIZES.items()),
-                                renderer=ButtonSizeRenderer),
-            label=_('Button Size'),
-            initial='',
-            help_text=_("Display Link using this Button Size")
-        ),
-        PartialFormField('button-options',
-            widgets.CheckboxSelectMultiple(choices=(('btn-block', _('Block level')), ('disabled', _('Disabled')),)),
-            label=_('Button Options'),
-        ),
-        PartialFormField('quick-float',
-            widgets.RadioSelect(choices=(('', _("Do not float")), ('pull-left', _("Pull left")), ('pull-right', _("Pull right")),)),
-            label=_('Quick Float'),
-            initial='',
-            help_text=_("Float the button to the left or right.")
-        ),
-    )
+    ) + ButtonPluginBase.glossary_fields
 
-    class Media:
-        css = {'all': ('cascade/css/admin/bootstrap.min.css', 'cascade/css/admin/bootstrap-theme.min.css',)}
+    @classmethod
+    def get_link(cls, obj):
+        try:
+            while True:
+                parent = obj.parent
+                if issubclass(parent.get_plugin_class(), DialogPagePlugin):
+                    return parent.get_next_sibling().get_plugin_instance()[0].slug()
+        except AttributeError:
+            return ''
+
+    def get_render_template(self, context, instance, placeholder):
+        template_names = [
+            '{}/checkout/booklet-next-page.html'.format(shop_settings.APP_LABEL),
+            'shop/checkout/booklet-next-page.html',
+        ]
+        return select_template(template_names)
+
+    def render(self, context, instance, placeholder):
+        context = super(BookletProceedButtonPlugin, self).render(context, instance, placeholder)
+        while True:
+            parent = instance.parent
+            if issubclass(parent.get_plugin_class(), DialogPagePlugin):
+                break
+        context['slug'] = parent.get_plugin_instance()[0].slug()
+        return context
 
 plugin_pool.register_plugin(BookletProceedButtonPlugin)

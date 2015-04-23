@@ -12,7 +12,7 @@
 </div>
 
 	{% for child in instance.child_plugin_instances %}{% with css_classes=child.css_classes inline_styles=child.inline_styles %}
-<shop-dialog-booklet-page slug="{{ child.slug }}"{% if css_classes %} class="{{ css_classes }}"{% endif %}{% if inline_styles %} style="{{ inline_styles }}"{% endif %}>
+<shop-dialog-booklet-page slug="{{ child.slug }}"{% if css_classes %} class="{{ css_classes }}"{% endif %}{% if inline_styles %} style="{{ inline_styles }}"{% endif %} ng-cloak>
 		{% render_plugin child %}
 </shop-dialog-booklet-page>
 	{% endwith %}{% endfor %}
