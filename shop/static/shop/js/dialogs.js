@@ -7,34 +7,21 @@ var djangoShopModule = angular.module('django.shop.dialogs', []);
 
 
 // Shared controller for all forms, links and buttons using shop-dialog elements. It just adds
-// an `update` function to the scope, so that all forms can send their gathered data to the
+// an `upload` function to the scope, so that all forms can send their gathered data to the
 // server. Since this controller does not make any presumption on how and where to proceed to,
 // the caller has to set the controllers `deferred` to a `$q.deferred()` object.
 djangoShopModule.controller('DialogCtrl', ['$scope', '$rootScope', '$http', '$q', 'djangoUrl', 'djangoForm',
-                                          function($scope, $rootScope, $http, $q, djangoUrl, djangoForm) {
-	var self = this, updateURL = djangoUrl.reverse('shop:checkout-update');
-	this.isLoading = true;  // prevent premature updates and re-triggering
+                                   function($scope, $rootScope, $http, $q, djangoUrl, djangoForm) {
+	var self = this, uploadURL = djangoUrl.reverse('shop:checkout-upload');
 
-	// keep a list of forms to observe in our $rootScope
-	if (!angular.isObject($rootScope.observedForms)) {
-		$rootScope.observedForms = {_slugs: []};
-	}
-	$rootScope.observedForms[$scope.slug] = [];
-
-	$scope.update = update;
-
-	function update(deferred) {
-		//if (self.isLoading)
-		//	return;
-		self.isLoading = true;
-		$http.post(updateURL, $scope.data).success(function(response) {
+	this.uploadScope = function(scope, deferred) {
+		$http.post(uploadURL, scope.data).success(function(response) {
 			var hasErrors = false;
-			console.log(response);
 			if (deferred) {
 				// only report errors, when the customer clicked onto a button using the
-				// directive `shop-dialog-proceed`, but not on ordinary update events.
+				// directive `shop-dialog-proceed`, but not on ordinary upload events.
 				angular.forEach(response.errors, function(errors, key) {
-					hasErrors = djangoForm.setErrors($scope[key], errors) || hasErrors;
+					hasErrors = djangoForm.setErrors(scope[key], errors) || hasErrors;
 				});
 				if (hasErrors) {
 					deferred.notify(response);
@@ -43,27 +30,16 @@ djangoShopModule.controller('DialogCtrl', ['$scope', '$rootScope', '$http', '$q'
 				}
 			}
 			delete response.errors;
-			$scope.cart = response;
+			// TODO: find where to put $scope.cart = response;
 		}).error(function(msg) {
-			console.error("Unable to update checkout forms: " + msg);
-		})['finally'](function() {
-			self.isLoading = false;
+			console.error("Unable to upload checkout forms: " + msg);
 		});
 	}
-
-	// Return true if all forms on a booklet page are valid
-	this.areFormsValid = function(slug) {
-		var valid = true;
-		angular.forEach($rootScope.observedForms[slug], function(form_name) {
-			valid = valid && ($scope[form_name] ? $scope[form_name].$valid : $rootScope[form_name].$valid);
-		});
-		return valid;
-	};
 
 	this.registerButton = function(element) {
 		var deferred = $q.defer();
 		element.on('click', function() {
-			update(deferred);
+			self.uploadScope($scope, deferred);
 		});
 		element.on('$destroy', function() {
 			element.off('click');
@@ -71,15 +47,11 @@ djangoShopModule.controller('DialogCtrl', ['$scope', '$rootScope', '$http', '$q'
 		return deferred;
 	};
 
-	// add a form element to the list of observed forms, so that they can be checked for validity
-	this.observeForms = function(formElem) {
-		$rootScope.observedForms[$scope.slug].push(formElem.name);
+	this.getActivePage = function() {
+		return $scope.activepage;
 	};
 
-	this.pushSlug = function() {
-		$rootScope.observedForms._slugs.push($scope.slug);
-	};
-
+/*
 	// Return true if this booklet page shall be editable. This implies that all previous
 	// booklet pages have validated forms.
 	this.bookletPageActive = function() {
@@ -106,34 +78,72 @@ djangoShopModule.controller('DialogCtrl', ['$scope', '$rootScope', '$http', '$q'
 		}
 		return slug === $scope.slug;
 	};
+*/
 
 }]);
 
 
-// Directive <shop-dialog-booklet-button slug="slug" ...>
-// It is used to display the active booklet button.
-djangoShopModule.directive('shopDialogBookletButton', ['$compile', '$location', function($compile, $location) {
+// Directive <shop-booklet-wrapper ...>
+djangoShopModule.directive('shopBookletWrapper', ['$controller', function($controller) {
 	return {
 		restrict: 'E',
-		controller: 'DialogCtrl',
-		scope: {
-			slug: '@'
-		},
-		link: function(scope, element, attrs, DialogCtrl) {
-			var template = '<a ng-class="btnClass()" ng-click="btnClick()">' +
-				angular.element(element).html() + '</a>';
-			element.replaceWith($compile(template)(scope));
-			DialogCtrl.pushSlug();
+		scope: true,
+		controller: function($scope) {
+			var self = this;
+			console.log($scope);
 
-			scope.btnClass = function() {
-				return DialogCtrl.bookletPageActive() ? "btn btn-success" : "btn btn-default disabled";
+			// add a form elements to the list of observed forms, so that they can be checked for validity
+			self.observeForms = function(formElem) {
+				if (!angular.isArray($scope.observedForms[this.pagenum])) {
+					$scope.observedForms[this.pagenum] = {formElems: []};
+				}
+				$scope.observedForms[this.pagenum].formElems.push(formElem);
 			};
 
-			scope.btnClick = function() {
-				if (DialogCtrl.bookletPageActive()) {
-					$location.path(scope.slug);
+			self.setValidity = function(pagenum, validity) {
+				$scope.observedForms[pagenum].validity = validity;
+			}
+
+			self.getActivePage = function() {
+				return $scope.activePage;
+			};
+
+			self.defaultActivePage = function() {
+				for (var k = 0;; k++) {
+					if (!angular.isObject($scope.observedForms[k]))
+						return k - 1;
+					if (!$scope.observedForms[k].validity)
+						return k;
+				}
+				return 0;
+			};
+
+			$scope.breadcrumbClass = function(pagenum) {
+				if (pagenum <= $scope.activePage) {
+					if ($scope.observedForms[pagenum].validity)
+						return "btn btn-success";
+					if (pagenum == 0 || $scope.observedForms[pagenum - 1].validity)
+						return "btn btn-primary";
+				}
+				return "btn btn-default"; // disabled";
+			};
+
+			$scope.breadcrumbClick = function(pagenum) {
+				if (self.areFormsValid(scope)) {
+					$scope.activepage = scope.pagenum;
 				}
 			};
+
+		},
+		link: {
+			pre: function(scope, element, attrs, controller) {
+				controller.dialogCtrl = $controller('DialogCtrl', {$scope: scope});
+				scope.observedForms = {};
+			},
+			post: function(scope, element, attrs, controller) {
+				scope.activePage = controller.defaultActivePage();
+				console.log(scope);
+			}
 		}
 	};
 }]);
@@ -141,48 +151,79 @@ djangoShopModule.directive('shopDialogBookletButton', ['$compile', '$location', 
 
 // Directive <TAG shop-dialog-booklet-page>
 // It is used to display the active booklet page and to hide the remaining ones.
-djangoShopModule.directive('shopDialogBookletPage', ['$compile', '$location', function($compile, $location) {
+djangoShopModule.directive('shopBookletPage', ['$compile', '$q', function($compile, $q) {
 	return {
 		restrict: 'E',
-		controller: 'DialogCtrl',
-		scope: {
-			slug: '@'
+		require: ['^shopBookletWrapper', 'shopBookletPage'],
+		scope: true,
+		controller: function($scope) {
+			var self = this;
+
+			// return true if all forms for this booklet wrapper are valid
+			self.areFormsValid = function(pagenum) {
+				var valid = true;
+				angular.forEach($scope.observedForms[pagenum].formElems, function(formElem) {
+					//valid = valid && (scope[formElem.name] ? scope[formElem.name].$valid : $rootScope[formElem.name].$valid);
+					valid = valid && $scope[formElem.name].$valid;
+				});
+				return valid;
+			};
 		},
-		link: function(scope, element, attrs, DialogCtrl) {
-			var cssClass = attrs['class'] || '', cssStyle = attrs['style'] || '';
-			var template = '<div ng-show="displayBookletPage()" class="' + cssClass + '" style="' + cssStyle + '">'
-				+ angular.element(element).html() + '</div>';
-			element.replaceWith($compile(template)(scope));
-			angular.forEach(element.find("form"), DialogCtrl.observeForms);
+		link: {
+			pre: function(scope, element, attrs, controllers) {
+				controllers[1].bookletCtrl = controllers[0];
+				//controllers[1].prototype = Object.create(controllers[0].prototype);
+				angular.forEach(element.find("form"), controllers[0].observeForms, attrs);
+				scope.pagenum = attrs.pagenum;  // TODO, maybe we don't need this
+			},
+			post: function(scope, element, attrs, controllers) {
+				var controller = controllers[1];
+				var cssClass = attrs['class'] || '', cssStyle = attrs['style'] || '';
+				var template = '<div ng-show="showBookletPage()" class="' + cssClass + '" style="' + cssStyle + '">'
+					+ angular.element(element).html() + '</div>';
+				element.replaceWith($compile(template)(scope));
+				console.log(scope);
+				controller.bookletCtrl.setValidity(attrs.pagenum, controller.areFormsValid(attrs.pagenum));
+				//controller.setValidity(attrs.pagenum, controller.areFormsValid(attrs.pagenum));
 
-			scope.displayBookletPage = function() {
-				var slug = $location.path().substr(1);
-				return slug === scope.slug || !slug && DialogCtrl.defaultPageActive();
-			};
+				scope.showBookletPage = function() {
+					return controller.bookletCtrl.getActivePage() == attrs.pagenum;
+					//return controller.getActivePage() == attrs.pagenum;
+				};
 
-			scope.btnNextPage = function(link) {
-				scope.update();
-				$location.path(link);
-			};
+				scope.buttonClass = function() {
+					return controller.areFormsValid(attrs.pagenum) ? "" : "disabled";
+				};
 
-			scope.btnNextClass = function() {
-				return DialogCtrl.areFormsValid(scope.slug) ? "" : "disabled";
-			};
+				scope.submitPage = function() {
+					var deferred = $q.defer();
+					if (controller.areFormsValid(attrs.pagenum)) {
+						controller.bookletCtrl.dialogCtrl.uploadScope(scope, deferred);
+						//controller.uploadScope(scope, deferred);
+						deferred.promise.then(function(response) {
+							console.log('goto next page: ' + response);
+							
+						});
+					}
+				};
 
+			}
 		}
 	};
 }]);
 
 
 // Directive <form shop-dialog-form> (must be added as attribute to the <form> element)
-// It is used to add an update() method to the scope's controller, so that `ng-change="update()"`
-// can be added to any input element. Use it to update the models on the server.
+// It is used to add an `upload()` method to the scope, so that `ng-change="upload()"`
+// can be added to any input element. Use it to upload the models on the server.
 djangoShopModule.directive('shopDialogForm', function() {
 	return {
 		restrict: 'A',
 		controller: 'DialogCtrl',
 		link: function(scope, element, attrs, DialogCtrl) {
-			DialogCtrl.isLoading = false;
+			scope.upload = function() {
+				DialogCtrl.uploadScope(scope);
+			};
 		}
 	};
 });
@@ -195,9 +236,8 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$location', '$http'
 	return {
 		restrict: 'EA',
 		controller: 'DialogCtrl',
-		scope: true,
+		//scope: true,
 		link: function(scope, element, attrs, DialogCtrl) {
-			DialogCtrl.isLoading = false;
 			DialogCtrl.registerButton(element).promise.then(function() {
 				console.log("Proceed to: " + attrs.action);
 				if (attrs.action === 'RELOAD_PAGE') {
@@ -223,10 +263,6 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$location', '$http'
 					console.error(errs);
 				}
 			});
-
-			scope.areFormsInvalid = function(slug) {
-				return !DialogCtrl.areFormsValid(slug);
-			}
 		}
 	};
 }]);
