@@ -47,10 +47,6 @@ djangoShopModule.controller('DialogCtrl', ['$scope', '$rootScope', '$http', '$q'
 		return deferred;
 	};
 
-	this.getActivePage = function() {
-		return $scope.activepage;
-	};
-
 /*
 	// Return true if this booklet page shall be editable. This implies that all previous
 	// booklet pages have validated forms.
@@ -90,7 +86,6 @@ djangoShopModule.directive('shopBookletWrapper', ['$controller', function($contr
 		scope: true,
 		controller: function($scope) {
 			var self = this;
-			console.log($scope);
 
 			// add a form elements to the list of observed forms, so that they can be checked for validity
 			self.observeForms = function(formElem) {
@@ -108,29 +103,29 @@ djangoShopModule.directive('shopBookletWrapper', ['$controller', function($contr
 				return $scope.activePage;
 			};
 
-			self.defaultActivePage = function() {
+			// set active page to first page with non-validated forms
+			self.setDefaultActivePage = function() {
+				$scope.activePage = 0;
 				for (var k = 0;; k++) {
-					if (!angular.isObject($scope.observedForms[k]))
-						return k - 1;
-					if (!$scope.observedForms[k].validity)
-						return k;
+					if (angular.isObject($scope.observedForms[k]) && $scope.observedForms[k].validity)
+						continue;
+					$scope.activePage =  k;
+					break;
 				}
-				return 0;
 			};
 
 			$scope.breadcrumbClass = function(pagenum) {
-				if (pagenum <= $scope.activePage) {
-					if ($scope.observedForms[pagenum].validity)
-						return "btn btn-success";
-					if (pagenum == 0 || $scope.observedForms[pagenum - 1].validity)
-						return "btn btn-primary";
-				}
-				return "btn btn-default"; // disabled";
+				if ($scope.observedForms[pagenum].validity)
+					return "btn btn-success";
+				if (pagenum == 0 || $scope.observedForms[pagenum - 1].validity)
+					return "btn btn-primary";
+				return "btn btn-default disabled";
 			};
 
 			$scope.breadcrumbClick = function(pagenum) {
-				if (self.areFormsValid(scope)) {
-					$scope.activepage = scope.pagenum;
+				console.log($scope.observedForms);
+				if (pagenum == 0 || $scope.observedForms[pagenum - 1].validity || $scope.observedForms[pagenum].validity) {
+					$scope.activePage = pagenum;
 				}
 			};
 
@@ -141,7 +136,7 @@ djangoShopModule.directive('shopBookletWrapper', ['$controller', function($contr
 				scope.observedForms = {};
 			},
 			post: function(scope, element, attrs, controller) {
-				scope.activePage = controller.defaultActivePage();
+				controller.setDefaultActivePage();
 				console.log(scope);
 			}
 		}
@@ -151,7 +146,7 @@ djangoShopModule.directive('shopBookletWrapper', ['$controller', function($contr
 
 // Directive <TAG shop-dialog-booklet-page>
 // It is used to display the active booklet page and to hide the remaining ones.
-djangoShopModule.directive('shopBookletPage', ['$compile', '$q', function($compile, $q) {
+djangoShopModule.directive('shopBookletPage', ['$compile', '$q', '$timeout', function($compile, $q, $timeout) {
 	return {
 		restrict: 'E',
 		require: ['^shopBookletWrapper', 'shopBookletPage'],
@@ -163,7 +158,6 @@ djangoShopModule.directive('shopBookletPage', ['$compile', '$q', function($compi
 			self.areFormsValid = function(pagenum) {
 				var valid = true;
 				angular.forEach($scope.observedForms[pagenum].formElems, function(formElem) {
-					//valid = valid && (scope[formElem.name] ? scope[formElem.name].$valid : $rootScope[formElem.name].$valid);
 					valid = valid && $scope[formElem.name].$valid;
 				});
 				return valid;
@@ -183,12 +177,14 @@ djangoShopModule.directive('shopBookletPage', ['$compile', '$q', function($compi
 					+ angular.element(element).html() + '</div>';
 				element.replaceWith($compile(template)(scope));
 				console.log(scope);
-				controller.bookletCtrl.setValidity(attrs.pagenum, controller.areFormsValid(attrs.pagenum));
-				//controller.setValidity(attrs.pagenum, controller.areFormsValid(attrs.pagenum));
+
+				$timeout(function() {
+					// wait until every form is ready
+					controller.bookletCtrl.setValidity(attrs.pagenum, controller.areFormsValid(attrs.pagenum));
+				});
 
 				scope.showBookletPage = function() {
 					return controller.bookletCtrl.getActivePage() == attrs.pagenum;
-					//return controller.getActivePage() == attrs.pagenum;
 				};
 
 				scope.buttonClass = function() {
@@ -199,10 +195,10 @@ djangoShopModule.directive('shopBookletPage', ['$compile', '$q', function($compi
 					var deferred = $q.defer();
 					if (controller.areFormsValid(attrs.pagenum)) {
 						controller.bookletCtrl.dialogCtrl.uploadScope(scope, deferred);
-						//controller.uploadScope(scope, deferred);
 						deferred.promise.then(function(response) {
-							console.log('goto next page: ' + response);
-							
+							console.log(response);
+							controller.bookletCtrl.setValidity(attrs.pagenum, true);
+							controller.bookletCtrl.setDefaultActivePage();
 						});
 					}
 				};

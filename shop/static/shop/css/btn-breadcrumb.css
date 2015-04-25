@@ -44,6 +44,9 @@
 }
 
 /** Default button **/
+.btn-breadcrumb .btn.btn-default.disabled {
+  color: #666;
+}
 .btn-breadcrumb .btn.btn-default:not(:last-child):after {
   border-left: 10px solid #fff;
 }
