@@ -83,7 +83,7 @@ class ShippingAddressForm(AddressForm):
 
     class Meta(AddressForm.Meta):
         widgets = {
-            'country': widgets.Select(attrs={'ng-change': 'update()'}),
+            'country': widgets.Select(attrs={'ng-change': 'upload()'}),
         }
 
     @classmethod
@@ -124,7 +124,7 @@ class PaymentMethodForm(DialogForm):
 
     modifier = fields.ChoiceField(
         choices=[m.get_choice() for m in cart_modifiers_pool.get_payment_modifiers()],
-        widget=RadioSelect(renderer=RadioFieldRenderer, attrs={'ng-change': 'update()'})
+        widget=RadioSelect(renderer=RadioFieldRenderer, attrs={'ng-change': 'upload()'})
     )
 
     @classmethod
@@ -141,7 +141,7 @@ class ShippingMethodForm(DialogForm):
 
     modifier = fields.ChoiceField(
         choices=[m.get_choice() for m in cart_modifiers_pool.get_shipping_modifiers()],
-        widget=RadioSelect(renderer=RadioFieldRenderer, attrs={'ng-change': 'update()'})
+        widget=RadioSelect(renderer=RadioFieldRenderer, attrs={'ng-change': 'upload()'})
     )
 
     @classmethod
