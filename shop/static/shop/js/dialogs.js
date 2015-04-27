@@ -123,7 +123,6 @@ djangoShopModule.directive('shopBookletWrapper', ['$controller', function($contr
 			};
 
 			$scope.breadcrumbClick = function(pagenum) {
-				console.log($scope.observedForms);
 				if (pagenum == 0 || $scope.observedForms[pagenum - 1].validity || $scope.observedForms[pagenum].validity) {
 					$scope.activePage = pagenum;
 				}
@@ -204,6 +203,36 @@ djangoShopModule.directive('shopBookletPage', ['$compile', '$q', '$timeout', fun
 				};
 
 			}
+		}
+	};
+}]);
+
+
+// Directive <TAG shop-form-validate>
+// It is used to override the validation of nested ng-forms.
+djangoShopModule.directive('shopFormValidate', ['$timeout', function($timeout) {
+	return {
+		restrict: 'A',
+		require: 'form',
+		link: function(scope, element, attrs, formCtrl) {
+			if (!attrs.shopFormValidate)
+				return;
+			scope.$watch(attrs.shopFormValidate, function() {
+				var validateExpr = scope.$eval(attrs.shopFormValidate);
+				angular.forEach(formCtrl, function(instance) {
+					// iterate over form controller and remove potential errors if form shall not be validated 
+					if (angular.isObject(instance) && instance.hasOwnProperty('$setValidity')) {
+						console.log(instance);
+						if (validateExpr) {
+							instance.$setViewValue(instance.$viewValue);
+						} else {
+							angular.forEach(instance.$error, function(val, key) {
+								instance.$setValidity(key, true);
+							});
+						}
+					}
+				});
+			});
 		}
 	};
 }]);
