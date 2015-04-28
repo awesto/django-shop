@@ -67,8 +67,8 @@ class DialogBookletPlugin(ShopPluginBase):
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
-            '{}/booklet.html'.format(shop_settings.APP_LABEL),
-            'shop/booklet.html',
+            '{}/checkout/booklet.html'.format(shop_settings.APP_LABEL),
+            'shop/checkout/booklet.html',
         ]
         return select_template(template_names)
 
