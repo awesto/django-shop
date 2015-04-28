@@ -50,7 +50,62 @@ djangoShopModule.controller('DialogCtrl', ['$scope', '$http', '$q', 'djangoUrl',
 }]);
 
 
-// Directive <shop-booklet-wrapper ...>
+//Directive <form shop-dialog-form> (must be added as attribute to the <form> element)
+//It is used to add an `upload()` method to the scope, so that `ng-change="upload()"`
+//can be added to any input element. Use it to upload the models on the server.
+djangoShopModule.directive('shopDialogForm', function() {
+	return {
+		restrict: 'A',
+		controller: 'DialogCtrl',
+		link: function(scope, element, attrs, DialogCtrl) {
+			scope.upload = function() {
+				DialogCtrl.uploadScope(scope);
+			};
+		}
+	};
+});
+
+
+//Directive to be added to button elements.
+djangoShopModule.directive('shopDialogProceed', ['$window', '$http', 'djangoUrl',
+                         function($window, $http, djangoUrl) {
+	var purchaseURL = djangoUrl.reverse('shop:checkout-purchase');
+	return {
+		restrict: 'EA',
+		controller: 'DialogCtrl',
+		//scope: true,
+		link: function(scope, element, attrs, DialogCtrl) {
+			DialogCtrl.registerButton(element).promise.then(function() {
+				console.log("Proceed to: " + attrs.action);
+				if (attrs.action === 'RELOAD_PAGE') {
+					$window.location.reload();
+				} else if (attrs.action === 'PURCHASE_NOW') {
+					// Convert the cart into an order object.
+					// This will propagate the promise to the success handler below.
+					return $http.post(purchaseURL, scope.data);
+				} else {
+					// Proceed as usual and load another page
+					$window.location.href = attrs.action;
+				}
+			}, null, function(errs) {
+				console.error("The checkout form contains errors.");
+				console.log(errs);
+			}).then(function(response) {
+				var expr = '$window.location.href="https://www.google.com/";'
+				console.log(response.data.expression);
+				// evaluate expression to proceed on the PSP's server
+				eval(response.data.expression);
+			}, function(errs) {
+				if (errs) {
+					console.error(errs);
+				}
+			});
+		}
+	};
+}]);
+
+
+// Directive <shop-booklet-wrapper ...> to be used with booklet forms.
 djangoShopModule.directive('shopBookletWrapper', ['$controller', '$window', '$http', '$q',
                                           function($controller, $window, $http, $q) {
 	return {
@@ -237,61 +292,6 @@ djangoShopModule.directive('shopFormValidate', function() {
 		}
 	};
 });
-
-
-// Directive <form shop-dialog-form> (must be added as attribute to the <form> element)
-// It is used to add an `upload()` method to the scope, so that `ng-change="upload()"`
-// can be added to any input element. Use it to upload the models on the server.
-djangoShopModule.directive('shopDialogForm', function() {
-	return {
-		restrict: 'A',
-		controller: 'DialogCtrl',
-		link: function(scope, element, attrs, DialogCtrl) {
-			scope.upload = function() {
-				DialogCtrl.uploadScope(scope);
-			};
-		}
-	};
-});
-
-
-// Directive to be added to button elements.
-djangoShopModule.directive('shopDialogProceed', ['$window', '$http', 'djangoUrl',
-                            function($window, $http, djangoUrl) {
-	var purchaseURL = djangoUrl.reverse('shop:checkout-purchase');
-	return {
-		restrict: 'EA',
-		controller: 'DialogCtrl',
-		//scope: true,
-		link: function(scope, element, attrs, DialogCtrl) {
-			DialogCtrl.registerButton(element).promise.then(function() {
-				console.log("Proceed to: " + attrs.action);
-				if (attrs.action === 'RELOAD_PAGE') {
-					$window.location.reload();
-				} else if (attrs.action === 'PURCHASE_NOW') {
-					// Convert the cart into an order object.
-					// This will propagate the promise to the success handler below.
-					return $http.post(purchaseURL, scope.data);
-				} else {
-					// Proceed as usual and load another page
-					$window.location.href = attrs.action;
-				}
-			}, null, function(errs) {
-				console.error("The checkout form contains errors.");
-				console.log(errs);
-			}).then(function(response) {
-				var expr = '$window.location.href="https://www.google.com/";'
-				console.log(response.data.expression);
-				// evaluate expression to proceed on the PSP's server
-				eval(response.data.expression);
-			}, function(errs) {
-				if (errs) {
-					console.error(errs);
-				}
-			});
-		}
-	};
-}]);
 
 
 })(window.angular);
