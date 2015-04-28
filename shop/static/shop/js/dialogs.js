@@ -10,8 +10,8 @@ var djangoShopModule = angular.module('django.shop.dialogs', []);
 // an `upload` function to the scope, so that all forms can send their gathered data to the
 // server. Since this controller does not make any presumption on how and where to proceed to,
 // the caller has to set the controllers `deferred` to a `$q.deferred()` object.
-djangoShopModule.controller('DialogCtrl', ['$scope', '$rootScope', '$http', '$q', 'djangoUrl', 'djangoForm',
-                                   function($scope, $rootScope, $http, $q, djangoUrl, djangoForm) {
+djangoShopModule.controller('DialogCtrl', ['$scope', '$http', '$q', 'djangoUrl', 'djangoForm',
+                                   function($scope, $http, $q, djangoUrl, djangoForm) {
 	var self = this, uploadURL = djangoUrl.reverse('shop:checkout-upload');
 
 	this.uploadScope = function(scope, deferred) {
@@ -47,40 +47,12 @@ djangoShopModule.controller('DialogCtrl', ['$scope', '$rootScope', '$http', '$q'
 		return deferred;
 	};
 
-/*
-	// Return true if this booklet page shall be editable. This implies that all previous
-	// booklet pages have validated forms.
-	this.bookletPageActive = function() {
-		var active = true, k, slug;
-		for (k = 0; k < $rootScope.observedForms._slugs.length; k++) {
-			slug = $rootScope.observedForms._slugs[k];
-			if (slug === $scope.slug || !active)
-				break;
-			active = self.areFormsValid(slug);
-			console.log(slug + ': ' + active);
-		}
-		console.log($scope.slug + '= ' + active);
-		console.log($rootScope);
-		return active;
-	};
-
-	this.defaultPageActive = function() {
-		console.log('defaultPageActive');
-		var k, slug;
-		for (k = 0; k < $rootScope.observedForms._slugs.length; k++) {
-			slug = $rootScope.observedForms._slugs[k];
-			if (!self.areFormsValid(slug))
-				return slug === $scope.slug;
-		}
-		return slug === $scope.slug;
-	};
-*/
-
 }]);
 
 
 // Directive <shop-booklet-wrapper ...>
-djangoShopModule.directive('shopBookletWrapper', ['$controller', function($controller) {
+djangoShopModule.directive('shopBookletWrapper', ['$controller', '$window', '$http', '$q',
+                                          function($controller, $window, $http, $q) {
 	return {
 		restrict: 'E',
 		scope: true,
@@ -103,14 +75,11 @@ djangoShopModule.directive('shopBookletWrapper', ['$controller', function($contr
 				return $scope.activePage;
 			};
 
-			// set active page to first page with non-validated forms
-			self.setDefaultActivePage = function() {
-				$scope.activePage = 0;
-				for (var k = 0;; k++) {
-					if (angular.isObject($scope.observedForms[k]) && $scope.observedForms[k].validity)
-						continue;
-					$scope.activePage =  k;
-					break;
+			self.setNextActivePage = function() {
+				if (angular.isObject($scope.observedForms[$scope.activePage + 1])) {
+					// proceed with next booklet page
+					$scope.activePage++;
+					return true;
 				}
 			};
 
@@ -135,8 +104,8 @@ djangoShopModule.directive('shopBookletWrapper', ['$controller', function($contr
 				scope.observedForms = {};
 			},
 			post: function(scope, element, attrs, controller) {
-				controller.setDefaultActivePage();
-				console.log(scope);
+				scope.activePage = 0;
+				scope.bookletAction = attrs.action;
 			}
 		}
 	};
@@ -145,16 +114,16 @@ djangoShopModule.directive('shopBookletWrapper', ['$controller', function($contr
 
 // Directive <TAG shop-dialog-booklet-page>
 // It is used to display the active booklet page and to hide the remaining ones.
-djangoShopModule.directive('shopBookletPage', ['$compile', '$q', '$timeout', function($compile, $q, $timeout) {
+djangoShopModule.directive('shopBookletPage', ['$compile', '$window', '$http', '$q', '$timeout', 'djangoUrl',
+                                       function($compile, $window, $http, $q, $timeout, djangoUrl) {
+	var purchaseURL = djangoUrl.reverse('shop:checkout-purchase');
 	return {
 		restrict: 'E',
 		require: ['^shopBookletWrapper', 'shopBookletPage'],
 		scope: true,
 		controller: function($scope) {
-			var self = this;
-
 			// return true if all forms for this booklet wrapper are valid
-			self.areFormsValid = function(pagenum) {
+			this.areFormsValid = function(pagenum) {
 				var valid = true;
 				angular.forEach($scope.observedForms[pagenum].formElems, function(formElem) {
 					valid = valid && $scope[formElem.name].$valid;
@@ -197,7 +166,39 @@ djangoShopModule.directive('shopBookletPage', ['$compile', '$q', '$timeout', fun
 						deferred.promise.then(function(response) {
 							console.log(response);
 							controller.bookletCtrl.setValidity(attrs.pagenum, true);
-							controller.bookletCtrl.setDefaultActivePage();
+							controller.bookletCtrl.setNextActivePage();
+						});
+					}
+				};
+
+				scope.submitBooklet = function() {
+					var deferred = $q.defer();
+					if (controller.areFormsValid(attrs.pagenum)) {
+						controller.bookletCtrl.dialogCtrl.uploadScope(scope, deferred);
+						deferred.promise.then(function(response) {
+							console.log(response);
+							// finally, proceed with link as specified in booklet wrapper
+							if (scope.bookletAction === 'RELOAD_PAGE') {
+								$window.location.reload();
+							} else if (scope.bookletAction === 'PURCHASE_NOW') {
+								// Convert the cart into an order object.
+								// This will propagate the promise to the success handler below.
+								return $http.post(purchaseURL, {});
+							} else {
+								// Proceed as usual and load another page
+								$window.location.href = scope.bookletAction;
+							}
+						}).then(function(response) {
+							var expr = '$window.location.href="https://www.google.com/";'
+							console.log(response);
+							// evaluate expression to proceed on the PSP's server
+							eval(response.data.expression);
+						}, function(errs) {
+							if (errs) {
+								console.error(errs);
+							}
+						}, function() {
+							console.log('notified');
 						});
 					}
 				};
@@ -210,7 +211,7 @@ djangoShopModule.directive('shopBookletPage', ['$compile', '$q', '$timeout', fun
 
 // Directive <TAG shop-form-validate>
 // It is used to override the validation of nested ng-forms.
-djangoShopModule.directive('shopFormValidate', ['$timeout', function($timeout) {
+djangoShopModule.directive('shopFormValidate', function() {
 	return {
 		restrict: 'A',
 		require: 'form',
@@ -235,7 +236,7 @@ djangoShopModule.directive('shopFormValidate', ['$timeout', function($timeout) {
 			});
 		}
 	};
-}]);
+});
 
 
 // Directive <form shop-dialog-form> (must be added as attribute to the <form> element)
@@ -255,8 +256,8 @@ djangoShopModule.directive('shopDialogForm', function() {
 
 
 // Directive to be added to button elements.
-djangoShopModule.directive('shopDialogProceed', ['$window', '$location', '$http', 'djangoUrl',
-                            function($window, $location, $http, djangoUrl) {
+djangoShopModule.directive('shopDialogProceed', ['$window', '$http', 'djangoUrl',
+                            function($window, $http, djangoUrl) {
 	var purchaseURL = djangoUrl.reverse('shop:checkout-purchase');
 	return {
 		restrict: 'EA',
