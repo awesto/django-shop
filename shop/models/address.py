@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 """
 Holds all the information relevant to the client (addresses for instance)
 """
