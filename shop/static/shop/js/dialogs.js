@@ -29,7 +29,6 @@ djangoShopModule.controller('DialogCtrl', ['$scope', '$http', '$q', 'djangoUrl',
 					deferred.resolve(response);
 				}
 			}
-			delete response.errors;
 			// TODO: find where to put $scope.cart = response;
 		}).error(function(msg) {
 			console.error("Unable to upload checkout forms: " + msg);
@@ -87,9 +86,9 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', 'djangoUrl'
 					// Proceed as usual and load another page
 					$window.location.href = attrs.action;
 				}
-			}, null, function(errs) {
-				console.error("The checkout form contains errors.");
-				console.log(errs);
+			}, null, function(response) {
+				console.error("The checkout form contains errors:");
+				console.log(response.errors);
 			}).then(function(response) {
 				var expr = '$window.location.href="https://www.google.com/";'
 				console.log(response.data.expression);
