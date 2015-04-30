@@ -29,29 +29,18 @@ djangoShopModule.controller('DialogCtrl', ['$scope', '$http', '$q', 'djangoUrl',
 					deferred.resolve(response);
 				}
 			}
-			// TODO: find where to put $scope.cart = response;
+			$scope.cart = response;
 		}).error(function(msg) {
 			console.error("Unable to upload checkout forms: " + msg);
 		});
-	}
-
-	this.registerButton = function(element) {
-		var deferred = $q.defer();
-		element.on('click', function() {
-			self.uploadScope($scope, deferred);
-		});
-		element.on('$destroy', function() {
-			element.off('click');
-		});
-		return deferred;
 	};
 
 }]);
 
 
-//Directive <form shop-dialog-form> (must be added as attribute to the <form> element)
-//It is used to add an `upload()` method to the scope, so that `ng-change="upload()"`
-//can be added to any input element. Use it to upload the models on the server.
+// Directive <form shop-dialog-form> (must be added as attribute to the <form> element)
+// It is used to add an `upload()` method to the scope, so that `ng-change="upload()"`
+// can be added to any input element. Use it to upload the models on the server.
 djangoShopModule.directive('shopDialogForm', function() {
 	return {
 		restrict: 'A',
@@ -65,40 +54,40 @@ djangoShopModule.directive('shopDialogForm', function() {
 });
 
 
-//Directive to be added to button elements.
-djangoShopModule.directive('shopDialogProceed', ['$window', '$http', 'djangoUrl',
-                         function($window, $http, djangoUrl) {
+// Directive to be added to button elements.
+djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djangoUrl',
+                         function($window, $http, $q, djangoUrl) {
 	var purchaseURL = djangoUrl.reverse('shop:checkout-purchase');
 	return {
 		restrict: 'EA',
 		controller: 'DialogCtrl',
-		//scope: true,
 		link: function(scope, element, attrs, DialogCtrl) {
-			DialogCtrl.registerButton(element).promise.then(function() {
-				console.log("Proceed to: " + attrs.action);
-				if (attrs.action === 'RELOAD_PAGE') {
-					$window.location.reload();
-				} else if (attrs.action === 'PURCHASE_NOW') {
-					// Convert the cart into an order object.
-					// This will propagate the promise to the success handler below.
-					return $http.post(purchaseURL, scope.data);
-				} else {
-					// Proceed as usual and load another page
-					$window.location.href = attrs.action;
-				}
-			}, null, function(response) {
-				console.error("The checkout form contains errors:");
-				console.log(response.errors);
-			}).then(function(response) {
-				var expr = '$window.location.href="https://www.google.com/";'
-				console.log(response.data.expression);
-				// evaluate expression to proceed on the PSP's server
-				eval(response.data.expression);
-			}, function(errs) {
-				if (errs) {
-					console.error(errs);
-				}
-			});
+			scope.proceedWith = function(action) {
+				var deferred = $q.defer();
+				DialogCtrl.uploadScope(scope, deferred);
+				deferred.promise.then(function() {
+					console.log("Proceed to: " + action);
+					if (action === 'RELOAD_PAGE') {
+						$window.location.reload();
+					} else if (action === 'PURCHASE_NOW') {
+						// Convert the cart into an order object.
+						return $http.post(purchaseURL, scope.data);
+					} else {
+						// Proceed as usual and load another page
+						$window.location.href = action;
+					}
+				}).then(function(response) {
+					var expr = '$window.location.href="https://www.google.com/";'
+					console.log(response.data.expression);
+					// evaluate expression to proceed on the PSP's server
+					eval(response.data.expression);
+				}, function(errs) {
+					if (errs) {
+						console.error(errs);
+					}
+				});
+			};
+
 		}
 	};
 }]);
