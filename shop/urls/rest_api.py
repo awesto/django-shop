@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 from django.conf.urls import url, include
 from shop.views.cart import CartViewSet, WatchViewSet, CheckoutViewSet
 from rest_framework import routers

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 from django.utils.formats import number_format
 from rest_framework import renderers
 from rest_framework import serializers

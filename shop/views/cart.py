@@ -98,6 +98,12 @@ class CheckoutViewSet(BaseViewSet):
 
     @list_route(methods=['post'], url_path='purchase')
     def purchase(self, request):
+        """
+        This is the final step on converting a cart into an order. It normally is used in
+        combination with the AngularJS directive `shop-dialog-proceed` used as an attribute
+        together with `action="PURCHASE_NOW"`. The `ProceedButtonPlugin` offers such a button
+        to be used in any placeholder field.
+        """
         cart = self.get_queryset()
         cart.update(request)
         response = self.list(request)
