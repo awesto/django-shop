@@ -64,6 +64,7 @@ djangoShopModule.directive('shopCart', function() {
 	};
 });
 
+
 // Directive <shop-cart-item>
 // handle a djangoSHOP's cart item
 djangoShopModule.directive('shopCartItem', function() {
