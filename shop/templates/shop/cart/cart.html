@@ -10,8 +10,8 @@
 {% block "shop-cart-thead" %}
 	<thead>
 		<tr>
-			<th class="col-xs-8 col-md-6">{% trans "Product" %}</th>
-			<th class="col-xs-1 text-center">{% trans "Quantity" %}</th>
+			<th class="col-xs-7">{% trans "Product" %}</th>
+			<th class="col-xs-2 col-md-1 text-center">{% trans "Quantity" %}</th>
 			<th class="col-xs-1 text-center">{% trans "Price" %}</th>
 			<th class="col-xs-1 col-md-2 text-right">{% trans "Total" %}</th>
 			<th class="col-xs-1"></th>
@@ -44,20 +44,7 @@
 		<tr>
 			<td></td>
 			<td colspan="2"><h4>{% trans "Total" %}</h4></td>
-			<td></td>
-		</tr>
-		<tr>
-			<td></td>
-			<td colspan="2">
-				<button type="button" class="btn btn-default">
-					<span class="glyphicon glyphicon-shopping-cart"></span> {% trans "Continue Shopping" %}
-				</button>
-			</td>
-			<td>
-				<button type="button" class="btn btn-success">
-					{% trans "Checkout" %} <span class="glyphicon glyphicon-play"></span>
-				</button>
-			</td>
+			<td class="text-right text-nowrap"><h4><strong ng-bind="cart.total"><!-- Total --></strong></h4></td>
 			<td></td>
 		</tr>
 	</tfoot>
