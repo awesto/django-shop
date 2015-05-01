@@ -102,7 +102,17 @@ class AbstractMoney(Decimal):
 
     @classmethod
     def get_currency(cls):
+        """
+        Return the currency in ISO-4217
+        """
         return cls._currency_code
+
+    def as_integer(self):
+        """
+        Return the amount multiplied by its decimal places for integer representation
+        """
+        to_integer = 10**CURRENCIES[self._currency_code][1]
+        return int(self * to_integer)
 
     def _assert_addable(self, other):
         if isinstance(other, (int, float)) and other == 0:
