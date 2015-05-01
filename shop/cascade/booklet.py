@@ -5,6 +5,7 @@ from django.db.models import get_model
 from django.utils.translation import ungettext_lazy, ugettext_lazy as _
 from django.utils.text import Truncator
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from django.forms.fields import IntegerField
 from django.template.loader import select_template
 from cms.plugin_pool import plugin_pool
@@ -14,7 +15,8 @@ from cmsplugin_cascade.fields import PartialFormField
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.link.forms import LinkForm
 from cmsplugin_cascade.widgets import NumberInputWidget
-from shop.cascade.plugin_base import ShopPluginBase, ButtonPluginBase
+from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
+from shop.cascade.plugin_base import ShopPluginBase
 from shop import settings as shop_settings
 
 
@@ -122,7 +124,7 @@ class DialogPagePlugin(ShopPluginBase):
 plugin_pool.register_plugin(DialogPagePlugin)
 
 
-class BookletProceedButtonPlugin(ButtonPluginBase):
+class BookletProceedButtonPlugin(BootstrapButtonMixin, ShopPluginBase):
     name = _("Booklet Proceed Button")
     parent_classes = ('DialogPagePlugin',)
     model_mixins = (LinkElementMixin,)
@@ -132,7 +134,14 @@ class BookletProceedButtonPlugin(ButtonPluginBase):
             label=_("Content"),
             help_text=_("Proceed to next page of this booklet."),
         ),
-    ) + ButtonPluginBase.glossary_fields
+    ) + BootstrapButtonMixin.glossary_fields
+
+    class Media:
+        css = {'all': ('cascade/css/admin/bootstrap.min.css', 'cascade/css/admin/bootstrap-theme.min.css',)}
+
+    @classmethod
+    def get_identifier(cls, obj):
+        return mark_safe(obj.glossary.get('button_content', ''))
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [

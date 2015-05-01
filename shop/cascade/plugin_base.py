@@ -4,9 +4,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.forms import widgets
 from django.utils.translation import ugettext_lazy as _
 from django.utils.module_loading import import_by_path
-from django.utils.safestring import mark_safe
 from cms.plugin_pool import plugin_pool
-from cmsplugin_cascade.bootstrap3.buttons import ButtonSizeRenderer, ButtonTypeRenderer
 from cmsplugin_cascade.fields import PartialFormField
 from cmsplugin_cascade.plugin_base import CascadePluginBase
 
@@ -73,45 +71,3 @@ class DialogFormPluginBase(ShopPluginBase):
         form_data['initial'].update(plugin_id=instance.id, plugin_order=request._plugin_order)
         context[self.FormClass.form_name] = self.FormClass(**form_data)
         return super(DialogFormPluginBase, self).render(context, instance, placeholder)
-
-
-class ButtonPluginBase(ShopPluginBase):
-    require_parent = True
-    allow_children = False
-    text_enabled = True
-    tag_type = None
-    default_css_class = 'btn'
-    default_css_attributes = ('button-type', 'button-size', 'button-options', 'quick-float',)
-    glossary_fields = (
-        PartialFormField('button-type',
-            widgets.RadioSelect(choices=((k, v) for k, v in ButtonTypeRenderer.BUTTON_TYPES.items()),
-                                renderer=ButtonTypeRenderer),
-            label=_('Button Type'),
-            initial='btn-default',
-            help_text=_("Display Link using this Button Style")
-        ),
-        PartialFormField('button-size',
-            widgets.RadioSelect(choices=((k, v) for k, v in ButtonSizeRenderer.BUTTON_SIZES.items()),
-                                renderer=ButtonSizeRenderer),
-            label=_('Button Size'),
-            initial='',
-            help_text=_("Display Link using this Button Size")
-        ),
-        PartialFormField('button-options',
-            widgets.CheckboxSelectMultiple(choices=(('btn-block', _('Block level')), ('disabled', _('Disabled')),)),
-            label=_('Button Options'),
-        ),
-        PartialFormField('quick-float',
-            widgets.RadioSelect(choices=(('', _("Do not float")), ('pull-left', _("Pull left")), ('pull-right', _("Pull right")),)),
-            label=_('Quick Float'),
-            initial='',
-            help_text=_("Float the button to the left or right.")
-        ),
-    )
-
-    class Media:
-        css = {'all': ('cascade/css/admin/bootstrap.min.css', 'cascade/css/admin/bootstrap-theme.min.css',)}
-
-    @classmethod
-    def get_identifier(cls, obj):
-        return mark_safe(obj.glossary.get('button_content', ''))

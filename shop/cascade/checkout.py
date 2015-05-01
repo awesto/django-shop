@@ -3,17 +3,19 @@ from __future__ import unicode_literals
 from django.db.models import get_model, Max
 from django.forms import fields
 from django.template.loader import select_template
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.link.forms import LinkForm
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.utils import resolve_dependencies
+from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
 from shop import settings as shop_settings
 from shop.models.auth import get_customer
 from shop.models.cart import CartModel
 from shop.rest.serializers import CartSerializer
 from shop.modifiers.pool import cart_modifiers_pool
-from .plugin_base import ShopPluginBase, DialogFormPluginBase, ButtonPluginBase
+from .plugin_base import ShopPluginBase, DialogFormPluginBase
 
 
 class ShopCheckoutSummaryPlugin(ShopPluginBase):
@@ -54,7 +56,7 @@ class ProceedButtonForm(LinkForm):
         return cleaned_data
 
 
-class ShopProceedButton(ButtonPluginBase):
+class ShopProceedButton(BootstrapButtonMixin, ShopPluginBase):
     """
     This button is used to proceed from one checkout step to the next one.
     """
@@ -64,11 +66,14 @@ class ShopProceedButton(ButtonPluginBase):
     model_mixins = (LinkElementMixin,)
     fields = ('button_content', ('link_type', 'cms_page'), 'glossary',)
     glossary_field_map = {'link': ('link_type', 'cms_page',)}
-    default_css_class = 'btn'
-    default_css_attributes = ('button-type', 'button-size', 'button-options', 'quick-float',)
 
     class Media:
+        css = {'all': ('cascade/css/admin/bootstrap.min.css', 'cascade/css/admin/bootstrap-theme.min.css',)}
         js = resolve_dependencies('cascade/js/admin/linkplugin.js')
+
+    @classmethod
+    def get_identifier(cls, obj):
+        return mark_safe(obj.glossary.get('button_content', ''))
 
     @classmethod
     def get_link(cls, obj):
