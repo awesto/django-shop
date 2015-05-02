@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from collections import OrderedDict
 from django.core import exceptions
 from django.db import models
 from django.template import RequestContext
@@ -10,6 +11,7 @@ from django.utils.safestring import mark_safe
 from rest_framework import serializers
 from rest_framework.fields import empty
 from shop.models.cart import CartModel, CartItemModel, BaseCartItem
+from shop.models.order import OrderModel, OrderItemModel
 from shop.rest.money import MoneyField
 
 
@@ -42,7 +44,7 @@ class ProductCommonSerializer(serializers.ModelSerializer):
             (app_label, self.label, 'product', postfix),
             ('shop', self.label, 'product', postfix),
         ]
-        template = select_template(['{}/{}/{}-{}.html'.format(*p) for p in params])
+        template = select_template(['{0}/{1}/{2}-{3}.html'.format(*p) for p in params])
         request = self.context['request']
         context = RequestContext(request, {'product': product})
         content = strip_spaces_between_tags(template.render(context).strip())
@@ -129,7 +131,8 @@ class ExtraCartRow(serializers.Serializer):
 
 class ExtraCartRowList(serializers.Serializer):
     """
-    Represent a list of `ExtraCartRow`s. Additionally add the modifiers identifier to each element.
+    Represent the OrderedDict used for cart.extra_rows and cart_item.extra_rows.
+    Additionally add the modifiers identifier to each element.
     """
     def to_representation(self, obj):
         return [dict(ecr.data, modifier=modifier) for modifier, ecr in obj.items()]
@@ -156,21 +159,9 @@ class WatchListSerializer(serializers.ListSerializer):
         return manager.filter(quantity=0)
 
 
-class BaseItemSerializer(serializers.ModelSerializer):
-    url = serializers.HyperlinkedIdentityField(lookup_field='pk', view_name='shop:cart-detail')
-    line_total = MoneyField()
-    summary = serializers.SerializerMethodField(
-        help_text="Sub-serializer for fields to be shown in the product's summary.")
-    extra_rows = ExtraCartRowList(read_only=True)
-
+class ItemModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = CartItemModel
-
-    def validate_product(self, product):
-        if not product.active:
-            msg = "Product `{}` is inactive, and can not be added to the cart."
-            raise serializers.ValidationError(msg.format(product))
-        return product
 
     def create(self, validated_data):
         validated_data['cart'] = CartModel.objects.get_from_request(self.context['request'])
@@ -179,10 +170,23 @@ class BaseItemSerializer(serializers.ModelSerializer):
         return cart_item
 
     def to_representation(self, cart_item):
-        if cart_item.is_dirty:
-            cart_item.update(self.context['request'])
-        representation = super(BaseItemSerializer, self).to_representation(cart_item)
+        cart_item.update(self.context['request'])
+        representation = super(ItemModelSerializer, self).to_representation(cart_item)
         return representation
+
+
+class BaseItemSerializer(ItemModelSerializer):
+    url = serializers.HyperlinkedIdentityField(lookup_field='pk', view_name='shop:cart-detail')
+    line_total = MoneyField()
+    summary = serializers.SerializerMethodField(
+        help_text="Sub-serializer for fields to be shown in the product's summary.")
+    extra_rows = ExtraCartRowList(read_only=True)
+
+    def validate_product(self, product):
+        if not product.active:
+            msg = "Product `{}` is inactive, and can not be added to the cart."
+            raise serializers.ValidationError(msg.format(product))
+        return product
 
     def get_summary(self, cart_item):
         serializer = product_summary_serializer_class(cart_item.product, context=self.context,
@@ -211,8 +215,7 @@ class BaseCartSerializer(serializers.ModelSerializer):
         model = CartModel
 
     def to_representation(self, cart):
-        if cart.is_dirty:
-            cart.update(self.context['request'])
+        cart.update(self.context['request'])
         representation = super(BaseCartSerializer, self).to_representation(cart)
         return representation
 
@@ -234,3 +237,27 @@ class WatchSerializer(BaseCartSerializer):
 class CheckoutSerializer(BaseCartSerializer):
     class Meta(BaseCartSerializer.Meta):
         fields = ('subtotal', 'extra_rows', 'total',)
+
+
+class ExtraOrderRowList(serializers.Serializer):
+    def to_representation(self, obj):
+        return OrderedDict(obj)
+
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    line_total = MoneyField()
+    extra_rows = ExtraOrderRowList(read_only=True)
+
+    class Meta:
+        model = OrderItemModel
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    subtotal = MoneyField()
+    total = MoneyField()
+    items = OrderItemSerializer(many=True, read_only=True)
+    extra_rows = ExtraOrderRowList(read_only=True)
+
+    class Meta:
+        model = OrderModel
+        exclude = ('user',)
