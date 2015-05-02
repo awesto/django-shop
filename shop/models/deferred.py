@@ -132,6 +132,8 @@ class MaterializedModel(SimpleLazyObject):
 
     def __call__(self, *args, **kwargs):
         # calls the constructor of the materialized model
+        if self._wrapped is empty:
+            self._setup()
         return self._wrapped(*args, **kwargs)
 
     def __deepcopy__(self, memo):
