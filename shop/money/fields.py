@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 from decimal import Decimal
 from django.core.exceptions import ValidationError
 from django import forms
@@ -67,7 +68,7 @@ class MoneyField(six.with_metaclass(SubfieldBase, DecimalField)):
         defaults = {
             'max_digits': 30,
             'decimal_places': CURRENCIES[currency_code][1],
-            'default': self.Money(),
+            'default': '0',
         }
         defaults.update(kwargs)
         super(MoneyField, self).__init__(**defaults)
