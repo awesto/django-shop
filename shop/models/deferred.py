@@ -120,8 +120,8 @@ class ForeignKeyBuilder(ModelBase):
 
 class MaterializedModel(SimpleLazyObject):
     """
-    Wrap the base model into a lazy object, so that we can refer to the materialized model
-    using lazy evaluation.
+    Wrap the base model into a lazy object, so that we can refer to members of its
+    materialized model using lazy evaluation.
     """
     def __init__(self, base_model):
         self.__dict__['_base_model'] = base_model

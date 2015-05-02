@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import warnings
 from django.conf.urls import patterns, include
 from shop.modifiers.pool import cart_modifiers_pool
 
@@ -16,5 +17,5 @@ for modifier in cart_modifiers_pool.get_payment_modifiers():
             (regexp, include(urls, namespace=namespace))
         )
         urlpatterns = pattern + urlpatterns
-    except AttributeError:
-        pass
+    except AttributeError as err:
+        warnings.warn(err.message)
