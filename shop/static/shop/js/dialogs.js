@@ -77,8 +77,7 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 						$window.location.href = action;
 					}
 				}).then(function(response) {
-					var expr = '$window.location.href="https://www.google.com/";'
-					console.log(response.data.expression);
+					console.log(response.data);
 					// evaluate expression to proceed on the PSP's server
 					eval(response.data.expression);
 				}, function(errs) {
@@ -226,14 +225,13 @@ djangoShopModule.directive('shopBookletPage', ['$compile', '$window', '$http', '
 							} else if (scope.bookletAction === 'PURCHASE_NOW') {
 								// Convert the cart into an order object.
 								// This will propagate the promise to the success handler below.
-								return $http.post(purchaseURL, {});
+								return $http.post(purchaseURL, scope.data);
 							} else {
 								// Proceed as usual and load another page
 								$window.location.href = scope.bookletAction;
 							}
 						}).then(function(response) {
-							var expr = '$window.location.href="https://www.google.com/";'
-							console.log(response);
+							console.log(response.data);
 							// evaluate expression to proceed on the PSP's server
 							eval(response.data.expression);
 						}, function(errs) {
