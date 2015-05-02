@@ -65,12 +65,8 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     def __init__(self, *args, **kwargs):
         # That will hold extra fields to display to the user (ex. taxes, discount)
         super(BaseCartItem, self).__init__(*args, **kwargs)
-        self.extra_rows = OrderedDict()  # ordered dictionary of `ExtraCartRow`s
+        self.extra_rows = OrderedDict()
         self._dirty = True
-
-    @property
-    def is_dirty(self):
-        return self._dirty
 
     def save(self, *args, **kwargs):
         super(BaseCartItem, self).save(*args, **kwargs)
@@ -84,7 +80,7 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         """
         if not self._dirty:
             return
-        self.extra_rows = OrderedDict()  # reset the dictionary containing `ExtraCartRow`s
+        self.extra_rows = OrderedDict()  # reset the dictionary
         for modifier in cart_modifiers_pool.get_all_modifiers():
             modifier.process_cart_item(self, request)
         self._dirty = False
@@ -132,7 +128,8 @@ class CartManager(models.Manager):
         Return the cart for current user. Anonymous users also must have a primary key,
         thats why djangoSHOP requires its own authentication middleware.
         """
-        cart = self.get_or_create(user=get_customer(request))[0]
+        user = get_customer(request)
+        cart = self.get_or_create(user=user)[0]
         return cart
 
 
@@ -142,8 +139,7 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     Ideally it should be bound to a session and not to a User is we want to let
     people buy from our shop without having to register with us.
     """
-    # If user is None, this cart is associated with a session
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, null=True, default=None)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
 
@@ -158,13 +154,9 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     def __init__(self, *args, **kwargs):
         super(BaseCart, self).__init__(*args, **kwargs)
         # That will hold things like tax totals or total discount
-        self.extra_rows = OrderedDict()  # ordered dictionary of `ExtraCartRow`s
+        self.extra_rows = OrderedDict()
         self._cached_cart_items = None
         self._dirty = True
-
-    @property
-    def is_dirty(self):
-        return self._dirty
 
     def save(self, *args, **kwargs):
         super(BaseCart, self).save(*args, **kwargs)
@@ -198,7 +190,7 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         for modifier in cart_modifiers_pool.get_all_modifiers():
             modifier.pre_process_cart(self, request)
 
-        self.extra_rows = OrderedDict()  # reset the dictionary containing `ExtraCartRow`s
+        self.extra_rows = OrderedDict()  # reset the dictionary
         self.subtotal = 0  # reset the subtotal
         for item in items:
             # item.update iterates over all cart modifiers and invokes method `process_cart_item`
@@ -221,7 +213,7 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     def empty(self):
         """
-        Remove all cart items
+        Remove the cart with all its items.
         """
         if self.pk:
             self.items.all().delete()
