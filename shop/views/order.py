@@ -1,36 +1,23 @@
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-from shop.models.order import BaseOrder
-from shop.views import ShopListView, ShopDetailView
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+from rest_framework import viewsets
+from shop.rest.serializers import OrderSerializer, OrderItemSerializer
+from shop.models.order import OrderModel
 
 
-class OrderListView(ShopListView):
-    """
-    Display list or orders for logged in user.
-    """
-    queryset = BaseOrder.MaterializedModel.objects.all()
+class OrderViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = OrderSerializer
 
     def get_queryset(self):
-        queryset = super(OrderListView, self).get_queryset()
-        queryset = queryset.filter(user=self.request.user)
-        return queryset
+        return OrderModel.objects.filter(user=self.request.user)
 
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(OrderListView, self).dispatch(*args, **kwargs)
+    def X_retrieve(self, request, *args, **kwargs):
+        order = super(OrderViewSet, self).retrieve(self, request, *args, **kwargs)
+        
 
-
-class OrderDetailView(ShopDetailView):
-    """
-    Display order for logged in user.
-    """
-    queryset = BaseOrder.MaterializedModel.objects.all()
-
-    def get_queryset(self):
-        queryset = super(OrderDetailView, self).get_queryset()
-        queryset = queryset.filter(user=self.request.user)
-        return queryset
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(OrderDetailView, self).dispatch(*args, **kwargs)
+    def X_get_serializer(self, *args, **kwargs):
+        kwargs.update(context=self.get_serializer_context(), label='order')
+        many = kwargs.pop('many', False)
+        if many:
+            return OrderSerializer(*args, **kwargs)
+        return OrderItemSerializer(*args, **kwargs)
