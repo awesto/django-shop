@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 from django.core import exceptions
 from django.utils.importlib import import_module
 from shop import settings
