@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 from shop.order_signals import completed
-from shop.models.order import BaseOrder, BaseOrderItem, BaseOrderExtraRow, OrderPayment, OrderAnnotation
+from shop.models.order import BaseOrder, BaseOrderItem, OrderPayment
 
 
-class OrderAnnotationInline(admin.TabularInline):
-    model = OrderAnnotation
-    extra = 0
+# class OrderAnnotationInline(admin.TabularInline):
+#     model = OrderAnnotation
+#     extra = 0
 
 
 class OrderPaymentInline(admin.TabularInline):
@@ -15,9 +16,9 @@ class OrderPaymentInline(admin.TabularInline):
     extra = 0
 
 
-class OrderExtraRowInline(admin.TabularInline):
-    model = getattr(BaseOrderExtraRow, '_materialized_model')
-    extra = 0
+# class OrderExtraRowInline(admin.TabularInline):
+#     model = getattr(BaseOrderExtraRow, '_materialized_model')
+#     extra = 0
 
 
 class OrderItemInline(admin.TabularInline):
@@ -29,15 +30,15 @@ class OrderItemInline(admin.TabularInline):
 
 
 class BaseOrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'status', 'order_total', 'created_at')
+    list_display = ('id', 'user', 'status', 'total', 'created_at')
     list_filter = ('status', 'user')
     search_fields = ('id', 'shipping_address_text', 'user__username')
     date_hierarchy = 'created_at'
-    inlines = (OrderItemInline, OrderAnnotationInline, OrderExtraRowInline, OrderPaymentInline)
+    inlines = (OrderItemInline, OrderPaymentInline)
     readonly_fields = ('created_at', 'updated_at',)
     raw_id_fields = ('user',)
     fieldsets = (
-        (None, {'fields': ('user', 'status', 'order_total', 'order_subtotal', 'created_at',
+        (None, {'fields': ('user', 'status', 'total', 'subtotal', 'created_at',
                            'updated_at',)}),
         (_("Shipping"), {'fields': ('shipping_address_text',)}),
         (_("Invoice"), {'fields': ('invoice_address_text',)}),
