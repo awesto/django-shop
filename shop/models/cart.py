@@ -23,7 +23,7 @@ class CartItemManager(models.Manager):
     def get_or_create(self, **kwargs):
         """
         Create a unique cart item. If the same product exists already in the given cart,
-        augment its quantity, if the product in the cart seems to be the same.
+        increase its quantity, if the product in the cart seems to be the same.
         """
         cart = kwargs.pop('cart')
         product = kwargs.pop('product')

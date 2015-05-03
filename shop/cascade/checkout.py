@@ -18,31 +18,6 @@ from shop.modifiers.pool import cart_modifiers_pool
 from .plugin_base import ShopPluginBase, DialogFormPluginBase
 
 
-class ShopCheckoutSummaryPlugin(ShopPluginBase):
-    """
-    Renders a read-only summary of the cart to be displayed during the checkout.
-    """
-    name = _("Checkout Summary")
-    require_parent = True
-    parent_classes = ('BootstrapColumnPlugin',)
-    cache = False
-
-    def get_render_template(self, context, instance, placeholder):
-        template_names = [
-            '{}/checkout/summary.html'.format(shop_settings.APP_LABEL),
-            'shop/checkout/summary.html',
-        ]
-        return select_template(template_names)
-
-    def render(self, context, instance, placeholder):
-        cart = CartModel.objects.get_from_request(context['request'])
-        cart_serializer = CartSerializer(cart, context=context, label='checkout')
-        context['cart'] = cart_serializer.data
-        return super(ShopCheckoutSummaryPlugin, self).render(context, instance, placeholder)
-
-plugin_pool.register_plugin(ShopCheckoutSummaryPlugin)
-
-
 class ProceedButtonForm(LinkForm):
     LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")), ('RELOAD_PAGE', _("Reload Page")), ('PURCHASE_NOW', _("Purchase Now")),)
 
