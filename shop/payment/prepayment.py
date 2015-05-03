@@ -12,4 +12,4 @@ class ForwardFundPayment(PaymentProvider):
 
     def get_payment_request(self, cart, request):
         order = OrderModel.objects.create_from_cart(cart, request)
-        return '$window.location.href="{}";'.format(self.get_purchase_confirmation_url())
+        return '$window.location.href="{}";'.format(order.get_absolute_url())

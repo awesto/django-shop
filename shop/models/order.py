@@ -4,7 +4,6 @@ from six import with_metaclass
 from decimal import Decimal
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import AnonymousUser
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
 from django.utils.encoding import python_2_unicode_compatible
@@ -17,15 +16,6 @@ from . import deferred
 
 
 class OrderManager(models.Manager):
-    def get_latest_for_user(self, user):
-        """
-        Returns the last Order (from a time perspective) a given user has placed.
-        """
-        if user and not isinstance(user, AnonymousUser):
-            return self.filter(user=user).order_by('-modified')[0]
-        else:
-            return None
-
     @transaction.commit_on_success
     def create_from_cart(self, cart, request):
         """
@@ -61,7 +51,8 @@ class BaseOrder(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     total = MoneyField(verbose_name=_("Total"))
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
-    extra_rows = JSONField(null=True, blank=True, verbose_name=_("Extra rows for this order"))
+    extra_rows = JSONField(null=True, blank=True,
+        verbose_name=_("Extra rows for this order"))
     objects = OrderManager()
 
     class Meta:
@@ -73,7 +64,7 @@ class BaseOrder(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         return _("Order ID: {}").format(self.pk)
 
     def get_absolute_url(self):
-        return reverse('order_detail', kwargs={'pk': self.pk})
+        return reverse('shop:order-detail', kwargs={'pk': self.pk})
 
     def populate_from_cart(self, cart, request):
         """
@@ -149,7 +140,8 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         help_text=_("Products unit price at the moment of purchase."))
     line_total = MoneyField(verbose_name=_("Line Total"))
     quantity = models.IntegerField(verbose_name=_("Ordered quantity"))
-    extra_rows = JSONField(null=True, blank=True, verbose_name=_("Extra rows for this order item"))
+    extra_rows = JSONField(null=True, blank=True,
+        verbose_name=_("Extra rows for this order item"))
 
     class Meta:
         abstract = True

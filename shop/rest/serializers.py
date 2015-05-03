@@ -8,11 +8,38 @@ from django.template.loader import select_template
 from django.utils.six import with_metaclass
 from django.utils.html import strip_spaces_between_tags
 from django.utils.safestring import mark_safe
+from jsonfield.fields import JSONField
 from rest_framework import serializers
 from rest_framework.fields import empty
 from shop.models.cart import CartModel, CartItemModel, BaseCartItem
 from shop.models.order import OrderModel, OrderItemModel
 from shop.rest.money import MoneyField
+
+
+class OrderedDictField(serializers.Field):
+    """
+    Serializer field which transparently bypasses the internal representation of an OrderedDict.
+    """
+    def to_representation(self, obj):
+        return OrderedDict(obj)
+
+    def to_internal_value(self, data):
+        return OrderedDict(data)
+
+
+class JSONSerializerField(serializers.Field):
+    """
+    Serializer field which transparently bypasses its object instead of serializing/deserializing.
+    """
+    def to_representation(self, obj):
+        return obj
+
+    def to_internal_value(self, data):
+        return data
+
+
+# add JSONField to the map of customized serializers
+serializers.ModelSerializer._field_mapping[JSONField] = JSONSerializerField
 
 
 class ProductCommonSerializer(serializers.ModelSerializer):
@@ -42,9 +69,11 @@ class ProductCommonSerializer(serializers.ModelSerializer):
         params = [
             (app_label, self.label, product_type, postfix),
             (app_label, self.label, 'product', postfix),
+            (app_label, 'common', 'product', postfix),
             ('shop', self.label, 'product', postfix),
+            ('shop', 'common', 'product', postfix),
         ]
-        template = select_template(['{0}/{1}/{2}-{3}.html'.format(*p) for p in params])
+        template = select_template(['{0}/products/{1}-{2}-{3}.html'.format(*p) for p in params])
         request = self.context['request']
         context = RequestContext(request, {'product': product})
         content = strip_spaces_between_tags(template.render(context).strip())
@@ -74,7 +103,7 @@ class ProductSummarySerializerBase(with_metaclass(SerializerRegistryMetaclass, P
     Serialize a summary of the polymorphic Product model, suitable for product list views,
     cart-lists, checkout-lists and order-lists.
     """
-    product_url = serializers.CharField(source='get_absolute_url', read_only=True)
+    product_url = serializers.URLField(source='get_absolute_url', read_only=True)
     product_type = serializers.CharField(read_only=True)
     product_model = serializers.CharField(read_only=True)
 
@@ -197,7 +226,7 @@ class BaseItemSerializer(ItemModelSerializer):
 class CartItemSerializer(BaseItemSerializer):
     class Meta(BaseItemSerializer.Meta):
         list_serializer_class = CartListSerializer
-        exclude = ('cart', 'id',)
+        exclude = ('cart', 'id', 'product',)
 
 
 class WatchItemSerializer(BaseItemSerializer):
@@ -239,25 +268,35 @@ class CheckoutSerializer(BaseCartSerializer):
         fields = ('subtotal', 'extra_rows', 'total',)
 
 
-class ExtraOrderRowList(serializers.Serializer):
-    def to_representation(self, obj):
-        return OrderedDict(obj)
-
-
 class OrderItemSerializer(serializers.ModelSerializer):
     line_total = MoneyField()
-    extra_rows = ExtraOrderRowList(read_only=True)
+    summary = serializers.SerializerMethodField(
+        help_text="Sub-serializer for fields to be shown in the product's summary.")
+    extra_rows = OrderedDictField()
 
     class Meta:
         model = OrderItemModel
+        exclude = ('id', 'product')
+
+    def get_summary(self, order_item):
+        serializer = product_summary_serializer_class(order_item.product, context=self.context,
+                                                      read_only=True, label=self.root.label)
+        return serializer.data
 
 
 class OrderSerializer(serializers.ModelSerializer):
     subtotal = MoneyField()
     total = MoneyField()
-    items = OrderItemSerializer(many=True, read_only=True)
-    extra_rows = ExtraOrderRowList(read_only=True)
+    extra_rows = OrderedDictField()
 
     class Meta:
         model = OrderModel
-        exclude = ('user',)
+        exclude = ('id', 'user',)
+
+
+class OrderListSerializer(OrderSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='shop:order-detail')
+
+
+class OrderDetailSerializer(OrderSerializer):
+    items = OrderItemSerializer(many=True, read_only=True)
