@@ -162,6 +162,8 @@ class MoneyMaker(type):
                 self._int = value._int
                 self._is_special = value._is_special
                 return self
+            if value is None:
+                value = 'NaN'
             try:
                 self = Decimal.__new__(cls, value, context)
             except Exception as err:
