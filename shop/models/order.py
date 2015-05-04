@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from six import with_metaclass
-from decimal import Decimal
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models, transaction
@@ -10,7 +9,6 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from jsonfield.fields import JSONField
 from django_fsm import FSMField, transition
-from shop.order_signals import processing
 from shop.money.fields import MoneyField
 from . import deferred
 
@@ -34,7 +32,6 @@ class OrderManager(models.Manager):
         order.populate_from_cart(cart, request)
         order.save()
         cart.delete()
-        #processing.send(self.model, order=order, cart=cart)
         return order
 
 
@@ -46,7 +43,7 @@ class BaseOrder(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     and keeps all the additional entities, as determined by the cart modifiers.
     """
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_("Customer"))
-    status = FSMField(default='new', verbose_name=_("Status"))
+    status = FSMField(default='new', protected=True, verbose_name=_("Status"))
     subtotal = MoneyField(verbose_name=_("Subtotal"))
     total = MoneyField(verbose_name=_("Total"))
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
@@ -66,35 +63,33 @@ class BaseOrder(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     def get_absolute_url(self):
         return reverse('shop:order-detail', kwargs={'pk': self.pk})
 
+    @transition(field=status, source='new', target='created')
     def populate_from_cart(self, cart, request):
         """
         Populate the order object with the fields from the given cart. Override this method,
         in case a customized cart has some fields which have to be transfered to the cart.
         """
-        self.status = 'created'
         self.subtotal = cart.subtotal
         self.total = cart.total
         self.extra_rows = [(modifier, extra_row.data) for modifier, extra_row in cart.extra_rows.items()]
 
-    def is_paid(self):
-        """Has this order been integrally paid for?"""
-        return self.amount_paid >= self.order_total
+    def applyme(self):
+        # Just a test to deactivate `payment_deposited`.
+        return False
+    applyme.hint = _("Test if condition can be applied")
 
-    def is_completed(self):
-        raise NotImplemented
+    @transition(field=status, source=['created', 'deposited'], target='deposited', conditions=[applyme])
+    def payment_deposited(self, transaction_id, amount):
+        self.orderpayment_set.all()
 
-    @property
-    def amount_paid(self):
+    def get_amount_paid(self):
         """
         The amount paid is the sum of related orderpayments
         """
-        sum_ = OrderPayment.objects.filter(order=self).aggregate(
-                sum=Sum('amount'))
-        result = sum_.get('sum')
-        if result is None:
-            result = Decimal(0)
-        return result
-    amount_payed = amount_paid  # deprecated spelling
+        amount = self.orderpayment_set.aggregate(amount=Sum('amount'))['amount']
+        if amount is None:
+            amount = type(self.total)(0)
+        return amount
 
     @property
     def short_name(self):
@@ -113,12 +108,12 @@ class OrderPayment(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     more complex payment types should they need to store more informtion
     """
     order = deferred.ForeignKey(BaseOrder, verbose_name=_("Order"))
-    # How much was paid with this particular transfer
-    amount = MoneyField(verbose_name=_("Amount paid"))
+    amount = MoneyField(verbose_name=_("Amount paid"),
+        help_text=_("How much was paid with this particular transfer."))
     transaction_id = models.CharField(max_length=255, verbose_name=_("Transaction ID"),
-            help_text=_("The transaction processor's reference"))
+        help_text=_("The transaction processor's reference"))
     payment_method = models.CharField(max_length=255, verbose_name=_("Payment method"),
-            help_text=_("The payment backend used to process the purchase"))
+        help_text=_("The payment backend used to process the purchase"))
 
     class Meta:
         verbose_name = _("Order payment")
