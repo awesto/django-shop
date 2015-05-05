@@ -112,7 +112,7 @@ class BaseCustomer(AbstractBaseUser, PermissionsMixin):
         return self.first_name
 
     def __str__(self):
-        return self.get_short_name()
+        return self.identifier()
 
     def is_anonymous(self):
         return not self.is_registered
