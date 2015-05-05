@@ -6,9 +6,11 @@ from django.core.urlresolvers import reverse
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
 from django.utils.encoding import python_2_unicode_compatible
+from django.utils.module_loading import import_by_path
 from django.utils.translation import ugettext_lazy as _
 from jsonfield.fields import JSONField
 from django_fsm import FSMField, transition
+from shop import settings as shop_settings
 from shop.money.fields import MoneyField
 from . import deferred
 
@@ -35,8 +37,20 @@ class OrderManager(models.Manager):
         return order
 
 
+class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
+    """
+    Add configured Workflow mixin classes to the OrderModel to customize all kinds of state
+    transitions in a pluggable manner.
+    """
+    def __new__(cls, name, bases, attrs):
+        if 'BaseOrder' in (b.__name__ for b in bases):
+            bases = tuple(import_by_path(mc) for mc in shop_settings.ORDER_WORKFLOW_MIXINS) + bases
+        Model = super(WorkflowMixinMetaclass, cls).__new__(cls, name, bases, attrs)
+        return Model
+
+
 @python_2_unicode_compatible
-class BaseOrder(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
+class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     """
     An Order is the "in process" counterpart of the shopping cart, which freezes the state of the
     cart on the moment of purchase. It also holds stuff like the shipping and invoice addresses,
@@ -72,15 +86,6 @@ class BaseOrder(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         self.subtotal = cart.subtotal
         self.total = cart.total
         self.extra_rows = [(modifier, extra_row.data) for modifier, extra_row in cart.extra_rows.items()]
-
-    def applyme(self):
-        # Just a test to deactivate `payment_deposited`.
-        return False
-    applyme.hint = _("Test if condition can be applied")
-
-    @transition(field=status, source=['created', 'deposited'], target='deposited', conditions=[applyme])
-    def payment_deposited(self, transaction_id, amount):
-        self.orderpayment_set.all()
 
     def get_amount_paid(self):
         """
