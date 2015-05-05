@@ -101,7 +101,7 @@ product_summary_serializer_class = None
 class ProductSummarySerializerBase(with_metaclass(SerializerRegistryMetaclass, ProductCommonSerializer)):
     """
     Serialize a summary of the polymorphic Product model, suitable for product list views,
-    cart-lists, checkout-lists and order-lists.
+    cart-lists and order-lists.
     """
     product_url = serializers.URLField(source='get_absolute_url', read_only=True)
     product_type = serializers.CharField(read_only=True)
@@ -179,8 +179,9 @@ class CartListSerializer(serializers.ListSerializer):
 
 class WatchListSerializer(serializers.ListSerializer):
     """
-    This serializes a list of cart items, whose quantity is zero. Thus these items are considered
-    to be in the watch list, which effectively is the cart.
+    This serializes a list of cart items, whose quantity is zero. An item in the cart with quantity
+    zero is considered as being watched. Thus we can reuse the cart as watch-list without having
+    to implement another model.
     """
     def get_attribute(self, instance):
         manager = super(WatchListSerializer, self).get_attribute(instance)
@@ -226,7 +227,7 @@ class BaseItemSerializer(ItemModelSerializer):
 class CartItemSerializer(BaseItemSerializer):
     class Meta(BaseItemSerializer.Meta):
         list_serializer_class = CartListSerializer
-        exclude = ('cart', 'id', 'product',)
+        exclude = ('cart', 'id',)
 
 
 class WatchItemSerializer(BaseItemSerializer):
@@ -276,7 +277,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderItemModel
-        exclude = ('id', 'product')
+        exclude = ('id',)
 
     def get_summary(self, order_item):
         serializer = product_summary_serializer_class(order_item.product, context=self.context,
