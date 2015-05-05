@@ -13,6 +13,9 @@ from .iso4217 import CURRENCIES
 
 
 class MoneyFieldWidget(forms.widgets.NumberInput):
+    """
+    Replacement for NumberInput widget adding the currency suffix.
+    """
     def __init__(self, attrs=None):
         defaults = {'style': 'width: 75px; text-align: right'}
         try:
@@ -28,14 +31,15 @@ class MoneyFieldWidget(forms.widgets.NumberInput):
 
 
 class MoneyFormField(forms.DecimalField):
+    """
+    Use this field type in Django Forms instead of a DecimalField, whenever a input field for
+    the Money representation is required.
+    """
     def __init__(self, money_class=None, **kwargs):
         self.Money = money_class
         super(MoneyFormField, self).__init__(**kwargs)
 
     def prepare_value(self, value):
-        """
-        For input fields, use the Decimal rather than the Money representation.
-        """
         if isinstance(value, AbstractMoney):
             return Decimal(value)
         return value
@@ -49,12 +53,6 @@ class MoneyFormField(forms.DecimalField):
             raise ValidationError("Can not convert different Money types.")
         super(MoneyFormField, self).validate(Decimal(value))
         return value
-
-    # can we use this?
-    def widget_attrs(self, widget):
-        attrs = super(MoneyFormField, self).widget_attrs(widget)
-        print attrs
-        return attrs
 
 
 class MoneyField(six.with_metaclass(SubfieldBase, DecimalField)):
