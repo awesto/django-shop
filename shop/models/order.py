@@ -2,14 +2,15 @@
 from __future__ import unicode_literals
 from six import with_metaclass
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.module_loading import import_by_path
 from django.utils.translation import ugettext_lazy as _
+from django.utils.six.moves.urllib.parse import urljoin
 from jsonfield.fields import JSONField
 from django_fsm import FSMField, transition
+from cms.models import Page
 from shop import settings as shop_settings
 from shop.money.fields import MoneyField
 from . import deferred
@@ -71,11 +72,19 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         verbose_name = _("Order")
         verbose_name_plural = _("Orders")
 
+    def __init__(self, *args, **kwargs):
+        super(BaseOrder, self).__init__(*args, **kwargs)
+        # find the page used for Order list views
+        try:
+            self.order_page = Page.objects.public().get(reverse_id='shop-order')
+        except Page.DoesNotExist:
+            self.order_page = Page.objects.public().filter(application_urls='OrderApp').first()
+
     def __str__(self):
         return _("Order ID: {}").format(self.pk)
 
     def get_absolute_url(self):
-        return reverse('shop:order-detail', kwargs={'pk': self.pk})
+        return urljoin(self.order_page.get_absolute_url(), str(self.id))
 
     @transition(field=status, source='new', target='created')
     def populate_from_cart(self, cart, request):
