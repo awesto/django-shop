@@ -1,5 +1,11 @@
 {% load i18n cms_tags %}
 
+{% if thank_you %}
+	<h1>{% trans "Thank You for your order" %}</h1>
+{% else %}
+	<h2>{% trans "Your Order purchased on" %} <span shop-timestamp="{{ data.created_at }}"></span></h2>
+{% endif %}
+
 <table class="table table-condensed">
 	<caption>{% placeholder "order-detail-caption" %}</caption>
 {% block shop-order-thead %}

@@ -13,6 +13,7 @@ class GenericOrderView(generics.GenericAPIView):
     Base View class to render the fulfilled orders for the current user.
     """
     renderer_classes = (CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer)
+    thank_you = False  # if true render a "Thank You" view, rather than a normal order object
 
     def get_queryset(self):
         return OrderModel.objects.filter(user=self.request.user).order_by('-updated_at',)
@@ -20,7 +21,7 @@ class GenericOrderView(generics.GenericAPIView):
     def get_renderer_context(self):
         renderer_context = super(GenericOrderView, self).get_renderer_context()
         if renderer_context['request'].accepted_renderer.format == 'html':
-            renderer_context.update(many=isinstance(self, mixins.ListModelMixin))
+            renderer_context.update(many=isinstance(self, mixins.ListModelMixin), thank_you=self.thank_you)
         return renderer_context
 
     def get_template_names(self):
@@ -36,12 +37,11 @@ class OrderListView(mixins.ListModelMixin, GenericOrderView):
 
 class OrderRetrieveView(mixins.RetrieveModelMixin, GenericOrderView):
     serializer_class = OrderDetailSerializer
-    fetch_last = False
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
 
     def get_object(self):
-        if self.fetch_last:
+        if self.thank_you:
             return self.get_queryset().last()
         return super(OrderRetrieveView, self).get_object()
