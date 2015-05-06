@@ -20,17 +20,19 @@ class ProductListView(generics.ListAPIView):
     serializer_class = None  # must be overridden by ProductListView.as_view
     filter_class = None  # may be overridden by ProductListView.as_view
     limit_choices_to = Q()
-    template_name = 'shop/products-list.html'
 
     def get_queryset(self):
         qs = self.product_model.objects.filter(self.limit_choices_to)
 
         # restrict products for current CMS page
-        current_page = self.request._request.current_page
+        current_page = self.request.current_page
         if current_page.publisher_is_draft:
             current_page = current_page.publisher_public
         qs = qs.filter(cms_pages=current_page)
         return qs
+
+    def get_template_names(self):
+        return [self.request.current_page.get_template()]
 
     def paginate_queryset(self, queryset):
         page = super(ProductListView, self).paginate_queryset(queryset)
@@ -103,11 +105,11 @@ class ProductRetrieveView(generics.RetrieveAPIView):
     def get_template_names(self):
         product = self.get_object()
         app_label = product._meta.app_label.lower()
-        basename = '{}-detail.html'.format(product.__class__.__name__.lower())
+        basename = 'catalog-{}-detail.html'.format(product.__class__.__name__.lower())
         return [
-            os.path.join(app_label, basename),
-            os.path.join(app_label, 'product-detail.html'),
-            'shop/product-detail.html',
+            os.path.join(app_label, 'pages', basename),
+            os.path.join(app_label, 'pages/catalog-product-detail.html'),
+            'shop/pages/catalog-product-detail.html',
         ]
 
     def get_renderer_context(self):

@@ -69,9 +69,7 @@ class ProductCommonSerializer(serializers.ModelSerializer):
         params = [
             (app_label, self.label, product_type, postfix),
             (app_label, self.label, 'product', postfix),
-            (app_label, 'common', 'product', postfix),
             ('shop', self.label, 'product', postfix),
-            ('shop', 'common', 'product', postfix),
         ]
         template = select_template(['{0}/products/{1}-{2}-{3}.html'.format(*p) for p in params])
         request = self.context['request']
@@ -281,7 +279,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
     def get_summary(self, order_item):
         serializer = product_summary_serializer_class(order_item.product, context=self.context,
-                                                      read_only=True, label=self.root.label)
+                                                      read_only=True, label='order')
         return serializer.data
 
 
@@ -296,7 +294,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 class OrderListSerializer(OrderSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='shop:order-detail')
+    url = serializers.URLField(source='get_absolute_url', read_only=True)
 
 
 class OrderDetailSerializer(OrderSerializer):

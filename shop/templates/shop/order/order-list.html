@@ -1,0 +1,29 @@
+{% load i18n cms_tags %}
+
+<table class="table table-condensed">
+	<caption>{% placeholder "order-list-caption" %}</caption>
+{% block shop-order-thead %}
+	<thead>
+		<tr>
+			<th class="text-center">{% trans "Order Date" %}</th>
+			<th class="text-center">{% trans "Sum" %}</th>
+			<th class="text-center">{% trans "Shipping Address" %}</th>
+			<th class="text-right">{% trans "Status" %}</th>
+		</tr>
+	</thead>
+{% endblock shop-order-thead %}
+
+{% block shop-order-tbody %}
+	<tbody>
+	{% for order in data.results %}
+		<tr>
+			<td class="text-center text-nowrap"><a href="{{ order.url }}" shop-timestamp="{{ order.created_at }}" time-format="d. MMM yyyy"></a></td>
+			<td class="text-center text-nowrap">{{ order.total }}</td>
+			<td class="text-center">{{ order.shipping_address_text }}</td>
+			<td class="text-right">{{ order.status }}</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+{% endblock shop-order-tbody %}
+
+</table>

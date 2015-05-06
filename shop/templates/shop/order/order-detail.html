@@ -1,0 +1,32 @@
+{% load i18n cms_tags %}
+
+<table class="table table-condensed">
+	<caption>{% placeholder "order-detail-caption" %}</caption>
+{% block shop-order-thead %}
+	<thead>
+		<tr>
+			<th class="text-center">{% trans "Product" %}</th>
+			<th class="text-center">{% trans "Quantity" %}</th>
+			<th class="text-center">{% trans "Unit Price" %}</th>
+			<th class="text-right">{% trans "Total" %}</th>
+		</tr>
+	</thead>
+{% endblock shop-order-thead %}
+
+{% block shop-order-tbody %}
+	<tbody>
+	{% for order_item in data.items %}
+		<tr>
+			<td rowspan="2" class="text-center">{{ order_item.summary.media }}</td>
+			<td class="text-center">{{ order_item.quantity }}</td>
+			<td class="text-center">{{ order_item.summary.price }}</td>
+			<td class="text-right">{{ order_item.line_total }}</td>
+		</tr>
+		<tr class="no-border">
+			<td colspan="3">{{ order_item.summary.body }}</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+{% endblock shop-order-tbody %}
+
+</table>
