@@ -24,7 +24,7 @@ djangoShopModule.controller('DialogCtrl', ['$scope', '$http', '$q', 'djangoUrl',
 					hasErrors = djangoForm.setErrors(scope[key], errors) || hasErrors;
 				});
 				if (hasErrors) {
-					deferred.notify(response);
+					deferred.reject(response);
 				} else {
 					deferred.resolve(response);
 				}
@@ -234,9 +234,9 @@ djangoShopModule.directive('shopBookletPage', ['$compile', '$window', '$http', '
 							console.log(response.data);
 							// evaluate expression to proceed on the PSP's server
 							eval(response.data.expression);
-						}, function(errs) {
-							if (errs) {
-								console.error(errs);
+						}, function(response) {
+							if (response.errors) {
+								console.error(response.errors);
 							}
 						}, function() {
 							console.log('notified');
@@ -255,19 +255,25 @@ djangoShopModule.directive('shopBookletPage', ['$compile', '$window', '$http', '
 djangoShopModule.directive('shopFormValidate', function() {
 	return {
 		restrict: 'A',
-		require: 'form',
+		require: '^form',
 		link: function(scope, element, attrs, formCtrl) {
 			if (!attrs.shopFormValidate)
 				return;
 			scope.$watch(attrs.shopFormValidate, function() {
 				var validateExpr = scope.$eval(attrs.shopFormValidate);
 				angular.forEach(formCtrl, function(instance) {
-					// iterate over form controller and remove potential errors if form shall not be validated 
-					if (angular.isObject(instance) && instance.hasOwnProperty('$setValidity')) {
+					// iterate over form controller and move active parsers to inactive
+					if (angular.isObject(instance) && instance.hasOwnProperty('$parsers')) {
 						console.log(instance);
 						if (validateExpr) {
-							instance.$setViewValue(instance.$viewValue);
+							if (angular.isArray(instance.$inactiveParsers)) {
+								instance.$parsers = instance.$inactiveParsers;
+							}
+							instance.$inactiveParsers = [];
 						} else {
+							instance.$inactiveParsers = instance.$parsers;
+							instance.$parsers = [];
+							// reset all possible errors for this input element
 							angular.forEach(instance.$error, function(val, key) {
 								instance.$setValidity(key, true);
 							});
