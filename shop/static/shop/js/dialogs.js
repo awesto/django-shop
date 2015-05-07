@@ -106,7 +106,10 @@ djangoShopModule.directive('shopBookletWrapper', ['$controller', '$window', '$ht
 				if (!angular.isArray($scope.observedForms[this.pagenum])) {
 					$scope.observedForms[this.pagenum] = {formElems: []};
 				}
-				$scope.observedForms[this.pagenum].formElems.push(formElem);
+				if (formElem.attributes.action === undefined) {
+					// only observe forms, which do not know how to handle their own POST submissions
+					$scope.observedForms[this.pagenum].formElems.push(formElem);
+				}
 			};
 
 			self.setValidity = function(pagenum, validity) {
@@ -186,7 +189,6 @@ djangoShopModule.directive('shopBookletPage', ['$compile', '$window', '$http', '
 				var template = '<div ng-show="showBookletPage()" class="' + cssClass + '" style="' + cssStyle + '">'
 					+ angular.element(element).html() + '</div>';
 				element.replaceWith($compile(template)(scope));
-				console.log(scope);
 
 				$timeout(function() {
 					// wait until every form is ready
@@ -250,8 +252,10 @@ djangoShopModule.directive('shopBookletPage', ['$compile', '$window', '$http', '
 }]);
 
 
-// Directive <TAG shop-form-validate>
-// It is used to override the validation of nested ng-forms.
+// Directive <TAG shop-form-validate="model-to-watch">
+// It is used to override the validation of hidden form fragments.
+// If model-to-watch is false, then input elements inside this DOM tree are not validated.
+// This is useful, if a form fragment shall be validated only under certain conditions.
 djangoShopModule.directive('shopFormValidate', function() {
 	return {
 		restrict: 'A',
@@ -264,7 +268,6 @@ djangoShopModule.directive('shopFormValidate', function() {
 				angular.forEach(formCtrl, function(instance) {
 					// iterate over form controller and move active parsers to inactive
 					if (angular.isObject(instance) && instance.hasOwnProperty('$parsers')) {
-						console.log(instance);
 						if (validateExpr) {
 							if (angular.isArray(instance.$inactiveParsers)) {
 								instance.$parsers = instance.$inactiveParsers;
