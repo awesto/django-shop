@@ -1,15 +1,32 @@
 {% load i18n %}
 
-{% if user.is_anonymous %}
 <div class="panel panel-info">
+{% if user.is_authenticated %}
+	<div class="panel-heading">
+		<div class="panel-title">{% blocktrans with user_name=user.get_full_name %}Authenticated as: {{ user_name }}.{% endblocktrans %}</div>
+	</div>
+
+	<div style="padding-top: 30px" class="panel-body">
+		<form shop-auth-form action="{{ instance.link }}" class="form-horizontal" role="form">
+			<div style="margin-top: 10px" class="form-group">
+				<div class="col-sm-12 controls">
+					<a ng-click="submit('{% url 'rest_logout' %}')" class="btn btn-primary">{% trans "Logout" %}</a>
+				</div>
+			</div>
+		</form>
+	</div>
+{% else %}
 	<div class="panel-heading">
 		<div class="panel-title">{% trans "Sign In" %}</div>
 	</div>
 
 	<div style="padding-top: 30px" class="panel-body">
 		<form shop-auth-form action="{{ instance.link }}" class="form-horizontal" role="form">
-			<div class="alert alert-error">
-				<a class="close" data-dismiss="alert" href="#">×</a>Incorrect Username or Password!
+			<div class="alert alert-success" ng-show="success_message">
+				<a class="close" ng-click="dismiss()">×</a>{% verbatim %}{{ success_message }}{% endverbatim %}
+			</div>
+			<div class="alert alert-danger" ng-show="error_message">
+				<a class="close" ng-click="dismiss()">×</a>{% verbatim %}{{ error_message }}{% endverbatim %}
 			</div>
 
 			<div style="margin-bottom: 25px" class="input-group">
@@ -29,5 +46,5 @@
 			</div>
 		</form>
 	</div>
-</div>
 {% endif %}
+</div>

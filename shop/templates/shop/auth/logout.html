@@ -1,0 +1,19 @@
+{% load i18n %}
+
+{% if user.is_authenticated %}
+<div class="panel panel-info">
+	<div class="panel-heading">
+		<div class="panel-title">{% blocktrans with user_name=user.get_full_name %}Authenticated as: {{ user_name }}.{% endblocktrans %}</div>
+	</div>
+
+	<div style="padding-top: 30px" class="panel-body">
+		<form shop-auth-form action="{{ instance.link }}" class="form-horizontal" role="form">
+			<div style="margin-top: 10px" class="form-group">
+				<div class="col-sm-12 controls">
+					<a ng-click="submit('{% url 'rest_logout' %}')" class="btn btn-primary">{% trans "Logout" %}</a>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+{% endif %}

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.forms import widgets
-from django.db.models import get_model
 from django.utils.translation import ungettext_lazy, ugettext_lazy as _
 from django.utils.text import Truncator
 from django.utils.html import format_html
@@ -42,7 +41,7 @@ class DialogBookletPlugin(ShopLinkPluginBase):
     def get_identifier(cls, obj):
         identifier = super(DialogBookletPlugin, cls).get_identifier(obj)
         num_cols = obj.get_children().count()
-        content = ungettext_lazy('with {0} page', 'with {0} pages', num_cols).format(num_cols)
+        content = ungettext_lazy('with {} page', 'with {} pages', num_cols).format(num_cols)
         return format_html('{0}{1}', identifier, content)
 
     def get_render_template(self, context, instance, placeholder):
