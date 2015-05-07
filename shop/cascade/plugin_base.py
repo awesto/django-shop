@@ -1,18 +1,58 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from django.db.models import get_model
 from django.core.exceptions import ImproperlyConfigured
 from django.forms import widgets
 from django.utils.translation import ugettext_lazy as _
 from django.utils.module_loading import import_by_path
 from cms.plugin_pool import plugin_pool
+from cmsplugin_cascade.utils import resolve_dependencies
 from cmsplugin_cascade.fields import PartialFormField
 from cmsplugin_cascade.plugin_base import CascadePluginBase
+from cmsplugin_cascade.link.forms import LinkForm
 
 
 class ShopPluginBase(CascadePluginBase):
     module = 'Shop'
     require_parent = False
     allow_children = False
+
+
+class ShopLinkForm(LinkForm):
+    LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")), ('RELOAD_PAGE', _("Reload Page")), ('PURCHASE_NOW', _("Purchase Now")),)
+
+
+class ShopLinkPluginBase(ShopPluginBase):
+    """
+    Base plugin if a link must be offered
+    """
+    form = ShopLinkForm
+    fields = (('link_type', 'cms_page'), 'glossary',)
+
+    class Media:
+        js = resolve_dependencies('cascade/js/admin/linkplugin.js')
+
+    @classmethod
+    def get_link(cls, obj):
+        link = obj.glossary.get('link', {})
+        if link.get('type') == 'cmspage':
+            if 'model' in link and 'pk' in link:
+                if not hasattr(obj, '_link_model'):
+                    Model = get_model(*link['model'].split('.'))
+                    try:
+                        obj._link_model = Model.objects.get(pk=link['pk'])
+                    except Model.DoesNotExist:
+                        obj._link_model = None
+                if obj._link_model:
+                    return obj._link_model.get_absolute_url()
+        else:
+            # use the link type as special action keyword
+            return link.get('type')
+
+    def get_ring_bases(self):
+        bases = super(ShopLinkPluginBase, self).get_ring_bases()
+        bases.append('LinkPluginBase')
+        return bases
 
 
 class DialogFormPluginBase(ShopPluginBase):

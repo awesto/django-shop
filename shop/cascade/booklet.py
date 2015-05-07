@@ -9,14 +9,13 @@ from django.utils.safestring import mark_safe
 from django.forms.fields import IntegerField
 from django.template.loader import select_template
 from cms.plugin_pool import plugin_pool
-from cmsplugin_cascade.utils import resolve_dependencies
 from cmsplugin_cascade.forms import ManageChildrenFormMixin
 from cmsplugin_cascade.fields import PartialFormField
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.link.forms import LinkForm
 from cmsplugin_cascade.widgets import NumberInputWidget
 from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
-from shop.cascade.plugin_base import ShopPluginBase
+from shop.cascade.plugin_base import ShopPluginBase, ShopLinkPluginBase
 from shop import settings as shop_settings
 
 
@@ -29,19 +28,15 @@ class BookletForm(ManageChildrenFormMixin, LinkForm):
         help_text=_("Number of pages for this booklet."))
 
 
-class DialogBookletPlugin(ShopPluginBase):
+class DialogBookletPlugin(ShopLinkPluginBase):
     name = _("Dialog Booklet")
     form = BookletForm
     default_css_class = 'btn-group btn-breadcrumb'
     parent_classes = ('BootstrapRowPlugin', 'BootstrapColumnPlugin',)
     require_parent = True
     allow_children = True
-    fields = ('num_children', 'glossary',)
     model_mixins = (LinkElementMixin,)
     fields = (('link_type', 'cms_page'), 'num_children', 'glossary',)
-
-    class Media:
-        js = resolve_dependencies('cascade/js/admin/linkplugin.js')
 
     @classmethod
     def get_identifier(cls, obj):
@@ -50,34 +45,12 @@ class DialogBookletPlugin(ShopPluginBase):
         content = ungettext_lazy('with {0} page', 'with {0} pages', num_cols).format(num_cols)
         return format_html('{0}{1}', identifier, content)
 
-    @classmethod
-    def get_link(cls, obj):
-        link = obj.glossary.get('link', {})
-        if link.get('type') == 'cmspage':
-            if 'model' in link and 'pk' in link:
-                if not hasattr(obj, '_link_model'):
-                    Model = get_model(*link['model'].split('.'))
-                    try:
-                        obj._link_model = Model.objects.get(pk=link['pk'])
-                    except Model.DoesNotExist:
-                        obj._link_model = None
-                if obj._link_model:
-                    return obj._link_model.get_absolute_url()
-        else:
-            # use the link type as special action keyword
-            return link.get('type')
-
     def get_render_template(self, context, instance, placeholder):
         template_names = [
             '{}/checkout/booklet.html'.format(shop_settings.APP_LABEL),
             'shop/checkout/booklet.html',
         ]
         return select_template(template_names)
-
-    def get_ring_bases(self):
-        bases = super(DialogBookletPlugin, self).get_ring_bases()
-        bases.append('LinkPluginBase')
-        return bases
 
     def save_model(self, request, obj, form, change):
         wanted_children = int(form.cleaned_data.get('num_children'))

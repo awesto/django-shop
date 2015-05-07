@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.db.models import get_model, Max
+from django.db.models import Max
 from django.forms import fields
 from django.template.loader import select_template
 from django.utils.safestring import mark_safe
@@ -8,14 +8,12 @@ from django.utils.translation import ugettext_lazy as _
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.link.forms import LinkForm
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
-from cmsplugin_cascade.utils import resolve_dependencies
 from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
 from shop import settings as shop_settings
 from shop.models.auth import get_customer
 from shop.models.cart import CartModel
-from shop.rest.serializers import CartSerializer
 from shop.modifiers.pool import cart_modifiers_pool
-from .plugin_base import ShopPluginBase, DialogFormPluginBase
+from .plugin_base import ShopLinkPluginBase, DialogFormPluginBase
 
 
 class ProceedButtonForm(LinkForm):
@@ -31,7 +29,7 @@ class ProceedButtonForm(LinkForm):
         return cleaned_data
 
 
-class ShopProceedButton(BootstrapButtonMixin, ShopPluginBase):
+class ShopProceedButton(BootstrapButtonMixin, ShopLinkPluginBase):
     """
     This button is used to proceed from one checkout step to the next one.
     """
@@ -44,28 +42,10 @@ class ShopProceedButton(BootstrapButtonMixin, ShopPluginBase):
 
     class Media:
         css = {'all': ('cascade/css/admin/bootstrap.min.css', 'cascade/css/admin/bootstrap-theme.min.css',)}
-        js = resolve_dependencies('cascade/js/admin/linkplugin.js')
 
     @classmethod
     def get_identifier(cls, obj):
         return mark_safe(obj.glossary.get('button_content', ''))
-
-    @classmethod
-    def get_link(cls, obj):
-        link = obj.glossary.get('link', {})
-        if link.get('type') == 'cmspage':
-            if 'model' in link and 'pk' in link:
-                if not hasattr(obj, '_link_model'):
-                    Model = get_model(*link['model'].split('.'))
-                    try:
-                        obj._link_model = Model.objects.get(pk=link['pk'])
-                    except Model.DoesNotExist:
-                        obj._link_model = None
-                if obj._link_model:
-                    return obj._link_model.get_absolute_url()
-        else:
-            # use the link type as special action keyword
-            return link.get('type')
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
@@ -73,11 +53,6 @@ class ShopProceedButton(BootstrapButtonMixin, ShopPluginBase):
             'shop/checkout/proceed-button.html',
         ]
         return select_template(template_names)
-
-    def get_ring_bases(self):
-        bases = super(ShopProceedButton, self).get_ring_bases()
-        bases.append('LinkPluginBase')
-        return bases
 
 plugin_pool.register_plugin(ShopProceedButton)
 
