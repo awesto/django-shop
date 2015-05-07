@@ -40,11 +40,11 @@
 		</tr>
 	{% for extra_row in cart.extra_rows %}
 		<tr ng-if="!cart">
-		{% include 'shop/checkout/cart-extra-row.html' with ng=0 %}
+		{% include 'shop/cart/extra-row.html' with ng=0 %}
 		</tr>
 	{% endfor %}
 		<tr ng-cloak ng-if="cart" ng-repeat="extra_row in cart.extra_rows">
-		{% include 'shop/checkout/cart-extra-row.html' with ng=1 %}
+		{% include 'shop/cart/extra-row.html' with ng=1 %}
 		</tr>
 		<tr>
 			<td></td>
