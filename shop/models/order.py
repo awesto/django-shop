@@ -40,12 +40,14 @@ class OrderManager(models.Manager):
 
 class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
     """
-    Add configured Workflow mixin classes to the OrderModel to customize all kinds of state
-    transitions in a pluggable manner.
+    Add configured Workflow mixin classes to `OrderModel` and `OrderPayment` to customize all kinds
+    of state transitions in a pluggable manner.
     """
     def __new__(cls, name, bases, attrs):
         if 'BaseOrder' in (b.__name__ for b in bases):
-            bases = tuple(import_by_path(mc) for mc in shop_settings.ORDER_WORKFLOW_MIXINS) + bases
+            bases = tuple(import_by_path(mc) for mc in shop_settings.ORDER_WORKFLOWS) + bases
+        elif name == 'OrderPayment':
+            bases = tuple(import_by_path(mc) for mc in shop_settings.PAYMENT_WORKFLOWS) + bases
         Model = super(WorkflowMixinMetaclass, cls).__new__(cls, name, bases, attrs)
         return Model
 
@@ -116,12 +118,13 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
 OrderModel = deferred.MaterializedModel(BaseOrder)
 
 
-class OrderPayment(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
+class OrderPayment(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     """
     A class to hold basic payment information. Backends should define their own
     more complex payment types should they need to store more informtion
     """
     order = deferred.ForeignKey(BaseOrder, verbose_name=_("Order"))
+    status = FSMField(default='new', protected=True, verbose_name=_("Status"))
     amount = MoneyField(verbose_name=_("Amount paid"),
         help_text=_("How much was paid with this particular transfer."))
     transaction_id = models.CharField(max_length=255, verbose_name=_("Transaction ID"),

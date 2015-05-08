@@ -18,4 +18,6 @@ CART_MODIFIERS = getattr(settings, 'SHOP_CART_MODIFIERS', ('shop.cart.modifiers.
 
 VALUE_ADDED_TAX = getattr(settings, 'SHOP_VALUE_ADDED_TAX', Decimal('20'))
 
-ORDER_WORKFLOW_MIXINS = getattr(settings, 'SHOP_ORDER_WORKFLOW_MIXINS', ())
+ORDER_WORKFLOWS = getattr(settings, 'SHOP_ORDER_WORKFLOWS', ())
+
+PAYMENT_WORKFLOWS = getattr(settings, 'SHOP_PAYMENT_WORKFLOWS', ())
