@@ -5,6 +5,7 @@ from rest_framework.renderers import BrowsableAPIRenderer
 from shop.rest.serializers import OrderListSerializer, OrderDetailSerializer
 from shop.rest.money import JSONRenderer
 from shop.rest.renderers import CMSPageRenderer
+from shop.models.auth import get_customer
 from shop.models.order import OrderModel
 
 
@@ -16,7 +17,8 @@ class GenericOrderView(generics.GenericAPIView):
     thank_you = False  # if true render a "Thank You" view, rather than a normal order object
 
     def get_queryset(self):
-        return OrderModel.objects.filter(user=self.request.user).order_by('-updated_at',)
+        user = get_customer(self.request)
+        return OrderModel.objects.filter(user=user).order_by('-updated_at',)
 
     def get_renderer_context(self):
         renderer_context = super(GenericOrderView, self).get_renderer_context()
