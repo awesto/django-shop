@@ -1,0 +1,19 @@
+{% if user.is_anonymous %}
+<div class="panel panel-info">
+	<div class="panel-heading">
+		<div class="panel-title">{% block form_title %}Panel Title{% endblock %}</div>
+	</div>
+
+	<div style="padding-top: 30px" class="panel-body">
+		<form shop-auth-form action="{{ instance.link }}" class="form-horizontal" role="form">
+	{% block form_content %}
+			<div style="margin-top: 10px" class="form-group">
+				<div class="col-sm-12 controls">
+					<a href="#" class="btn btn-primary">Submit</a>
+				</div>
+			</div>
+	{% endblock form_content %}
+		</form>
+	</div>
+</div>
+{% endif %}

@@ -1,33 +1,29 @@
+{% extends "shop/auth/anonymous-base.html" %}
 {% load i18n %}
 
-{% if user.is_anonymous %}
-<div class="panel panel-info">
-	<div class="panel-heading">
-		<div class="panel-title">{% trans "Sign In" %}</div>
-	</div>
+{% block form_title %}{% trans "Sign In" %}{% endblock %}
 
-	<div style="padding-top: 30px" class="panel-body">
-		<form shop-auth-form action="{{ instance.link }}" class="form-horizontal" role="form">
-			<div class="alert alert-error">
-				<a class="close" data-dismiss="alert" href="#">×</a>Incorrect Username or Password!
-			</div>
+{% block form_content %}
+<div class="alert alert-success" ng-show="success_message">
+	<a class="close" ng-click="dismiss()">×</a>{% verbatim %}{{ success_message }}{% endverbatim %}
+</div>
+<div class="alert alert-danger" ng-show="error_message">
+	<a class="close" ng-click="dismiss()">×</a>{% verbatim %}{{ error_message }}{% endverbatim %}
+</div>
 
-			<div style="margin-bottom: 25px" class="input-group">
-				<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-				<input type="text" class="form-control" name="username" ng-model="form_data.username" value="" placeholder="{% trans 'Email' %}" />
-			</div>
+<div style="margin-bottom: 25px" class="input-group">
+	<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+	<input type="text" class="form-control" name="username" ng-model="form_data.username" value="" placeholder="{% trans 'Email' %}" />
+</div>
 
-			<div style="margin-bottom: 25px" class="input-group">
-				<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-				<input type="password" class="form-control" name="password" ng-model="form_data.password" placeholder="{% trans 'Password' %}" />
-			</div>
+<div style="margin-bottom: 25px" class="input-group">
+	<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+	<input type="password" class="form-control" name="password" ng-model="form_data.password" placeholder="{% trans 'Password' %}" />
+</div>
 
-			<div style="margin-top: 10px" class="form-group">
-				<div class="col-sm-12 controls">
-					<a ng-click="submit('{% url 'rest_login' %}')" class="btn btn-primary">{% trans "Login" %}</a>
-				</div>
-			</div>
-		</form>
+<div style="margin-top: 10px" class="form-group">
+	<div class="col-sm-12 controls">
+		<a ng-click="submit('{% url 'rest_login' %}')" class="btn btn-primary">{% trans "Login" %}</a>
 	</div>
 </div>
-{% endif %}
+{% endblock %}

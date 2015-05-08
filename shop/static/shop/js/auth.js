@@ -22,7 +22,11 @@ djangoShopModule.directive('shopAuthForm', ['$window', '$http', function($window
 						$window.location.href = attrs.action;
 					}
 				}).error(function(response) {
-					scope.error_message = response.non_field_errors[0];
+					// merge errors messages into a single one
+					scope.error_message = '';
+					angular.forEach(response, function(vals) {
+						scope.error_message = scope.error_message.concat(vals);
+					});
 				});
 			};
 
