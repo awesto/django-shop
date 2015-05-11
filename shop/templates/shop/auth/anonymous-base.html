@@ -4,14 +4,15 @@
 		<div class="panel-title">{% block form_title %}Panel Title{% endblock %}</div>
 	</div>
 
-	<div style="padding-top: 30px" class="panel-body">
+	<div class="panel-body">
 		<form shop-auth-form action="{{ instance.link }}" class="form-horizontal" role="form">
 	{% block form_content %}
-			<div style="margin-top: 10px" class="form-group">
-				<div class="col-sm-12 controls">
-					<a href="#" class="btn btn-primary">Submit</a>
-				</div>
-			</div>
+		<div class="alert alert-success" ng-show="success_message" ng-cloak>
+			<a class="close" ng-click="dismiss()">×</a>{% verbatim %}{{ success_message }}{% endverbatim %}
+		</div>
+		<div class="alert alert-danger" ng-show="error_message" ng-cloak>
+			<a class="close" ng-click="dismiss()">×</a>{% verbatim %}{{ error_message }}{% endverbatim %}
+		</div>
 	{% endblock form_content %}
 		</form>
 	</div>

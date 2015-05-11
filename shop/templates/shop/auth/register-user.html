@@ -1,3 +1,26 @@
-<form name="{{ register_form.form_name }}" novalidate>
-	{{ register_form.as_div }}
-</form>
+{% extends "shop/auth/anonymous-base.html" %}
+{% load i18n %}
+
+{% block form_title %}{% trans "Register Customer" %}{% endblock %}
+
+{% block form_content %}
+	{{ block.super }}
+<div class="has-feedback input-group">
+	{{ register_user_form.email.label_tag }}{{ register_user_form.email }}
+</div>
+
+<div class="has-feedback input-group">
+	{{ register_user_form.preset_password }}
+	<span class="help-block">{{ register_user_form.preset_password.help_text }}</span>
+</div>
+
+<div shop-form-validate="!form_data.preset_password" ng-hide="form_data.preset_password">
+	{{ register_user_form.as_div }}
+</div>
+
+<div style="margin-top: 10px" class="form-group">
+	<div class="col-sm-12 controls">
+		<a ng-click="submit('{% url 'shop:register-user' %}')" class="btn btn-primary">{% trans "Register" %}</a>
+	</div>
+</div>
+{% endblock form_content %}

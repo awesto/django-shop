@@ -4,21 +4,26 @@ from django.forms import fields
 from django.template.loader import select_template
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
+from django.utils.module_loading import import_by_path
 from cms.plugin_pool import plugin_pool
 from shop import settings as shop_settings
-from shop.models.auth import get_customer
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.link.forms import LinkForm
 from .plugin_base import ShopLinkPluginBase, DialogFormPluginBase
 
+AUTH_FORM_TYPES = (
+    ('login', _("Login Form")),
+    ('logout', _("Logout Form")),
+    ('login-logout', _("Shared Login/Logout Form")),
+    ('reset', _("Password Reset Form")),
+    ('change', _("Change Password Form")),
+    ('register-user', _("Register User"), 'shop.forms.auth.RegisterUserForm'),
+)
+
 
 class ShopAuthForm(LinkForm):
     LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")), ('RELOAD_PAGE', _("Reload Page")), ('DO_NOTHING', _("Do Nothing")))
-    FORM_TYPE_COICES = (('login', _("Login Form")), ('logout', _("Logout Form")),
-        ('login-logout', _("Shared Login/Logout Form")), ('reset', _("Password Forgotten Form")),
-        ('change', _("Change Password Form")),)
-
-    form_type = fields.ChoiceField(label=_("Rendered Form"), choices=FORM_TYPE_COICES,
+    form_type = fields.ChoiceField(label=_("Rendered Form"), choices=(ft[:2] for ft in AUTH_FORM_TYPES),
         help_text=_("Select the appropriate form for various authentication purposes."))
 
     def clean(self):
@@ -43,7 +48,7 @@ class ShopAuthenticationPlugin(ShopLinkPluginBase):
     @classmethod
     def get_identifier(cls, obj):
         identifier = super(ShopAuthenticationPlugin, cls).get_identifier(obj)
-        content = dict(ShopAuthForm.FORM_TYPE_COICES).get(obj.glossary.get('form_type'))
+        content = dict(ft[:2] for ft in AUTH_FORM_TYPES).get(obj.glossary.get('form_type'), _("unknown"))
         return format_html('{0}{1}', identifier, content)
 
     def get_render_template(self, context, instance, placeholder):
@@ -54,24 +59,39 @@ class ShopAuthenticationPlugin(ShopLinkPluginBase):
         ]
         return select_template(template_names)
 
+    def render(self, context, instance, placeholder):
+        """
+        Return the context to render a DialogFormPlugin
+        """
+        form_type = instance.glossary.get('form_type')
+        if form_type:
+            form_type = AUTH_FORM_TYPES[[ft[0] for ft in AUTH_FORM_TYPES].index(form_type)]
+            try:
+                FormClass = import_by_path(form_type[2])
+            except (ImportError, IndexError):
+                pass
+            else:
+                context[FormClass.form_name] = FormClass()
+        return super(ShopAuthenticationPlugin, self).render(context, instance, placeholder)
+
 plugin_pool.register_plugin(ShopAuthenticationPlugin)
 
 
-class RegisterFormPlugin(DialogFormPluginBase):
+class RegisterUserPlugin(DialogFormPluginBase):
     """
     A placeholder plugin which provides a form, so that a customer may register an account.
     """
     name = _("Register Form")
-    form_class = 'shop.forms.auth.RegisterForm'
+    form_class = 'shop.forms.auth.RegisterUserForm'
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
-            '{}/auth/register.html'.format(shop_settings.APP_LABEL),
-            'shop/auth/register.html',
+            '{}/auth/register-user.html'.format(shop_settings.APP_LABEL),
+            'shop/auth/register-user.html',
         ]
         return select_template(template_names)
 
     def get_form_data(self, request):
-        return {'instance': get_customer(request)}
+        return {'instance': request.user}
 
-plugin_pool.register_plugin(RegisterFormPlugin)
+#plugin_pool.register_plugin(RegisterUserPlugin)

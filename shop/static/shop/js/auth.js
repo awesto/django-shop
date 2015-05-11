@@ -10,6 +10,7 @@ djangoShopModule.directive('shopAuthForm', ['$window', '$http', function($window
 	return {
 		restrict: 'A',
 		require: 'form',
+		scope: true,
 		link: function(scope, element, attrs, formCtrl) {
 			if (attrs.action === undefined)
 				throw new Error("Form does not contain an `action` keyword");
@@ -18,7 +19,9 @@ djangoShopModule.directive('shopAuthForm', ['$window', '$http', function($window
 				$http.post(submitURL, scope.form_data).success(function(response) {
 					if (attrs.action === 'RELOAD_PAGE') {
 						$window.location.reload();
-					} else if (attrs.action !== 'DO_NOTHING') {
+					} else if (attrs.action === 'DO_NOTHING') {
+						scope.success_message = response.success;
+					} else {
 						$window.location.href = attrs.action;
 					}
 				}).error(function(response) {
