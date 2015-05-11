@@ -11,7 +11,6 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from jsonfield.fields import JSONField
 from shop.modifiers.pool import cart_modifiers_pool
-from .auth import get_customer
 from .product import BaseProduct
 from . import deferred
 
@@ -128,8 +127,7 @@ class CartManager(models.Manager):
         Return the cart for current user. Anonymous users also must have a primary key,
         thats why djangoSHOP requires its own authentication middleware.
         """
-        user = get_customer(request)
-        cart = self.get_or_create(user=user)[0]
+        cart = self.get_or_create(user=request.user)[0]
         return cart
 
 

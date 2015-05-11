@@ -10,7 +10,6 @@ from cmsplugin_cascade.link.forms import LinkForm
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
 from shop import settings as shop_settings
-from shop.models.auth import get_customer
 from shop.models.cart import CartModel
 from shop.modifiers.pool import cart_modifiers_pool
 from .plugin_base import ShopLinkPluginBase, DialogFormPluginBase
@@ -73,21 +72,20 @@ class CustomerFormPlugin(DialogFormPluginBase):
         return select_template(template_names)
 
     def get_form_data(self, request):
-        return {'instance': get_customer(request)}
+        return {'instance': request.user}
 
 DialogFormPluginBase.register_plugin(CustomerFormPlugin)
 
 
 class CheckoutAddressPluginBase(DialogFormPluginBase):
     def get_form_data(self, request):
-        user = get_customer(request)
-        filter_args = {'user': user, '{}__isnull'.format(self.FormClass.priority_field): False}
+        filter_args = {'user': request.user, '{}__isnull'.format(self.FormClass.priority_field): False}
         AddressModel = self.FormClass.get_model()
         address = AddressModel.objects.filter(**filter_args).order_by(self.FormClass.priority_field).first()
         if address:
             return {'instance': address}
         else:
-            aggr = AddressModel.objects.filter(user=user).aggregate(Max(self.FormClass.priority_field))
+            aggr = AddressModel.objects.filter(user=request.user).aggregate(Max(self.FormClass.priority_field))
             initial = {'priority': aggr['{}__max'.format(self.FormClass.priority_field)] or 0}
             return {'initial': initial}
 

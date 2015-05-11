@@ -4,21 +4,10 @@ import re
 from django.core import validators
 from django.contrib.auth.models import User as DjangoUser
 from django.db import models
-from django.contrib.auth import get_user_model
-from django.contrib.auth.models import AnonymousUser, AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
-
-
-def get_customer(request):
-    """
-    Always return a Customer object, regardless if the request.user is anonymous or authenticated.
-    """
-    if isinstance(request.user, AnonymousUser):
-        return get_user_model().objects.get_from_request(request)
-    else:
-        return request.user
 
 
 class CustomerManager(BaseUserManager):
@@ -34,7 +23,8 @@ class CustomerManager(BaseUserManager):
                 user.set_password(password)
         elif session_key:
             user = self.model(session_key=session_key)
-            user.is_active = False
+            # even faked anonymous users must be active, otherwise restframework overrides them as AnonymousUser
+            user.is_active = True
             user.set_unusable_password()
         else:
             raise ValueError("Neither `username` nor `session_key` have been set.")

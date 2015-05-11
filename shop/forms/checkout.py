@@ -6,7 +6,6 @@ from django.forms import fields, widgets
 from django.utils.translation import ugettext_lazy as _
 from djangular.styling.bootstrap3.forms import Bootstrap3ModelForm
 from djangular.styling.bootstrap3.widgets import RadioSelect, RadioFieldRenderer, CheckboxInput
-from shop.models.auth import get_customer
 from shop.models.address import AddressModel
 from shop.modifiers.pool import cart_modifiers_pool
 from .base import DialogForm, DialogModelForm
@@ -22,8 +21,7 @@ class CustomerForm(DialogModelForm):
 
     @classmethod
     def form_factory(cls, request, data, cart):
-        user = get_customer(request)
-        customer_form = cls(data=data, instance=user)
+        customer_form = cls(data=data, instance=request.user)
         if customer_form.is_valid():
             customer_form.save()
         else:
@@ -61,14 +59,13 @@ class AddressForm(DialogModelForm):
         """
         # search for the associated address DB instance or create a new one
         priority = data and data.get('priority') or 0
-        user = get_customer(request)
-        filter_args = {'user': user, cls.priority_field: priority}
+        filter_args = {'user': request.user, cls.priority_field: priority}
         instance = cls.get_model().objects.filter(**filter_args).first()
         address_form = cls(data=data, instance=instance)
         if address_form.is_valid():
             if not instance:
                 instance = address_form.save(commit=False)
-                instance.user = user
+                instance.user = request.user
                 setattr(instance, cls.priority_field, priority)
             assert address_form.instance == instance
             instance.save()
