@@ -75,16 +75,16 @@ relations are fundamental for a properly working software. Imagine a ``CartItem`
 relation to ``Cart``.
 
 Fortunately there is a neat trick to solve this problem. By deferring the mapping onto a real model,
-instead of using a real ``ForeignKey``, one can use a special placeholder field defining a relation
+instead of using a real ``ForeignKey``, one can use a special “lazy” field, declaring a relation
 with an abstract model. Now, whenever the models are “materialized”, then these abstract relations
 are converted into real foreign keys. The only drawback for this solution is, that one may derive
 from an abstract model only once, but that's a non-issue and doesn't differ from the current
 situation, where one for instance, also can override ``Cart`` only once.
 
 Therefore, when using this deferred model pattern, instead of using ``models.ForeignKey``,
-``models.OneToOneField`` or ``models.ManyToManyField``, use the special pseudo-fields:
-``DeferredForeignKey``, ``DeferredOneToOneField`` and ``DeferredManyToManyField``. During the
-materialization of a model, these pseudo-fields are replaced against real foreign keys.
+``models.OneToOneField`` or ``models.ManyToManyField``, use the special fields
+``deferred.ForeignKey``, ``deferred.OneToOneField`` and ``deferred.ManyToManyField``. When
+Django materializes the model, these deferred fields are resolved into real foreign keys.
 
 
 Accessing the materialized model
@@ -94,9 +94,8 @@ While programming with abstract model classes, sometimes they must access their 
 or their concrete model definition. A query such as ``BaseCartItem.objects.filter(cart=cart)``
 therefore can not function and will throw an exception. To facilitate this, the deferred model
 metaclasses adds an additional member ``_materialized_model`` to their base class, while building
-the model class. This field then can be accessed and used to perform the above query:
-``BaseCartItem._materialized_model.objects.filter(cart=cart)``.
-
-However, you normally should need to access the materialized model this way. The deferred module
-offers a helper class to access the materialized model using lazy evaluation.
-
+the model class. This model class then can be accessed through a special class ``MaterializedModel``
+handling lazy evaluation.
+**django-shop** for instance, accesses all cart items belonging the the cart, using the expression
+``CartItemModel.objects.filter(cart=cart)``, without knowing the exact definition of the
+materialzed ``CartItem``.
