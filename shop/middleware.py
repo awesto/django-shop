@@ -5,10 +5,9 @@ from django.utils.functional import SimpleLazyObject
 from django.contrib.auth import get_user_model
 
 
-def get_user(request):
+def get_user(request, force=False):
     from django.contrib.auth.models import AnonymousUser
-
-    if not hasattr(request, '_cached_user'):
+    if force or not hasattr(request, '_cached_user'):
         request._cached_user = auth.get_user(request)
     if isinstance(request._cached_user, AnonymousUser):
         request._cached_user = get_user_model().objects.get_from_request(request)
