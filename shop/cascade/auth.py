@@ -9,7 +9,7 @@ from cms.plugin_pool import plugin_pool
 from shop import settings as shop_settings
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.link.forms import LinkForm
-from .plugin_base import ShopLinkPluginBase, DialogFormPluginBase
+from .plugin_base import ShopLinkPluginBase
 
 AUTH_FORM_TYPES = (
     ('login', _("Login Form")),
@@ -75,23 +75,3 @@ class ShopAuthenticationPlugin(ShopLinkPluginBase):
         return super(ShopAuthenticationPlugin, self).render(context, instance, placeholder)
 
 plugin_pool.register_plugin(ShopAuthenticationPlugin)
-
-
-class RegisterUserPlugin(DialogFormPluginBase):
-    """
-    A placeholder plugin which provides a form, so that a customer may register an account.
-    """
-    name = _("Register Form")
-    form_class = 'shop.forms.auth.RegisterUserForm'
-
-    def get_render_template(self, context, instance, placeholder):
-        template_names = [
-            '{}/auth/register-user.html'.format(shop_settings.APP_LABEL),
-            'shop/auth/register-user.html',
-        ]
-        return select_template(template_names)
-
-    def get_form_data(self, request):
-        return {'instance': request.user}
-
-#plugin_pool.register_plugin(RegisterUserPlugin)
