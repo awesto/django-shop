@@ -4,14 +4,15 @@
 {% block form_title %}{% trans "Password Forgotten?" %}{% endblock %}
 
 {% block form_content %}
-<div style="margin-bottom: 25px" class="input-group">
+	{{ block.super }}
+<div style="margin-bottom: 25px" class="input-group" ng-hide="success_message">
 	<span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
 	<input type="text" class="form-control" name="email" ng-model="form_data.email" value="" placeholder="{% trans 'Email' %}" />
 </div>
 
-<div style="margin-top: 10px" class="form-group">
+<div style="margin-top: 10px" class="form-group" ng-hide="success_message">
 	<div class="col-sm-12 controls">
-		<a ng-click="submit('{% url 'rest_password_reset' %}')" class="btn btn-primary">{% trans "Reset Password" %}</a>
+		<a ng-click="submit('{% url 'shop:password-reset' %}')" class="btn btn-primary">{% trans "Reset Password" %}</a>
 	</div>
 </div>
 {% endblock %}
