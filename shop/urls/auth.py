@@ -1,20 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.conf.urls import patterns, url
-from rest_auth.views import (
-    Login, PasswordChange,
-    PasswordReset, PasswordResetConfirm
-)
+from rest_auth.views import Login, PasswordChange
 from shop.forms.auth import RegisterUserForm
-from shop.views.auth import AuthFormsView, LogoutView
+from shop.views.auth import AuthFormsView, LogoutView, PasswordResetView, PasswordResetConfirm
 
 urlpatterns = patterns(
     '',
     # URLs that do not require a session or valid token
-    url(r'^password/reset/$', PasswordReset.as_view(),
+    url(r'^password/reset/$', PasswordResetView.as_view(),
         name='password-reset'),
-    url(r'^password/reset/confirm/$', PasswordResetConfirm.as_view(),
-        name='password-reset-confirm'),
+    #url(r'^password-reset-confirm/$', PasswordResetConfirm.as_view(),
+    #    name='password-reset-confirm'),
     url(r'^login/$', Login.as_view(),
         name='login'),
     url(r'^register/$', AuthFormsView.as_view(form_class=RegisterUserForm),
