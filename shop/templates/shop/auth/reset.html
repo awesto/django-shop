@@ -3,7 +3,7 @@
 
 {% block form_title %}{% trans "Password Forgotten?" %}{% endblock %}
 
-{% block form_content %}
+{% with action=instance.link %}{% block form_content %}
 	{{ block.super }}
 <div style="margin-bottom: 25px" class="input-group" ng-hide="success_message">
 	<span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
@@ -15,4 +15,4 @@
 		<a ng-click="submit('{% url 'shop:password-reset' %}')" class="btn btn-primary">{% trans "Reset Password" %}</a>
 	</div>
 </div>
-{% endblock %}
+{% endblock %}{% endwith %}

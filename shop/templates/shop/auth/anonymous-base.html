@@ -5,10 +5,10 @@
 	</div>
 
 	<div class="panel-body">
-		<form shop-auth-form action="{{ instance.link }}" class="form-horizontal" role="form">
+		<form shop-auth-form action="{{ action }}" class="form-horizontal" role="form">
 	{% block form_content %}
 		<div class="alert alert-success" ng-show="success_message" ng-cloak>
-			<a class="close" ng-click="dismiss()">×</a>{% verbatim %}{{ success_message }}{% endverbatim %}
+			<a class="close" ng-click="proceedWithAction()">×</a>{% verbatim %}{{ success_message }}{% endverbatim %}
 		</div>
 		<div class="alert alert-danger" ng-show="error_message" ng-cloak>
 			<a class="close" ng-click="dismiss()">×</a>{% verbatim %}{{ error_message }}{% endverbatim %}

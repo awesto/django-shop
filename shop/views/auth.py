@@ -95,30 +95,18 @@ class PasswordResetConfirm(GenericAPIView):
     token_generator = default_token_generator
 
     def get(self, request, uidb64=None, token=None):
-        user = self.get_user_from_tokens(uidb64, token)
-        if user is None:
+        data = {'uid': uidb64, 'token': token, 'new_password1': 'dummy', 'new_password2': 'dummy'}
+        serializer = self.get_serializer(data=data)
+        if not serializer.is_valid():
             return Response({'validlink': False})
-        return Response({'validlink': True, 'user_name': force_text(user)})
+        return Response({'validlink': True, 'user_name': force_text(serializer.user)})
 
     def post(self, request, uidb64=None, token=None):
-        serializer = self.get_serializer(data=request.DATA)
+        data = dict(request.DATA, uid=uidb64, token=token)
+        serializer = self.get_serializer(data=data)
         if not serializer.is_valid():
             return Response(
                 serializer.errors, status=status.HTTP_400_BAD_REQUEST
             )
         serializer.save()
-        return Response({"success": "Password has been reset with the new password."})
-
-    def get_user_from_tokens(self, uidb64, token):
-        """
-        If URL tokens are valid, return the corresponding user. Otherwise return None.
-        """
-        UserModel = get_user_model()
-        assert uidb64 is not None and token is not None  # checked by URLconf
-        try:
-            uid = urlsafe_base64_decode(uidb64)
-            user = UserModel._default_manager.get(pk=uid)
-        except (TypeError, ValueError, OverflowError, UserModel.DoesNotExist):
-            user = None
-        if user is not None and self.token_generator.check_token(user, token):
-            return user
+        return Response({"success": _("Password has been reset with the new password.")})
