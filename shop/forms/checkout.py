@@ -142,7 +142,7 @@ class InvoiceAddressForm(AddressForm):
 class PaymentMethodForm(DialogForm):
     scope_prefix = 'data.payment_method'
 
-    modifier = fields.ChoiceField(
+    payment_modifier = fields.ChoiceField(label=_("Payment Method"),
         choices=[m.get_choice() for m in cart_modifiers_pool.get_payment_modifiers()],
         widget=RadioSelect(renderer=RadioFieldRenderer, attrs={'ng-change': 'upload()'})
     )
@@ -159,7 +159,7 @@ class PaymentMethodForm(DialogForm):
 class ShippingMethodForm(DialogForm):
     scope_prefix = 'data.shipping_method'
 
-    modifier = fields.ChoiceField(
+    shipping_modifier = fields.ChoiceField(label=_("Shipping Method"),
         choices=[m.get_choice() for m in cart_modifiers_pool.get_shipping_modifiers()],
         widget=RadioSelect(renderer=RadioFieldRenderer, attrs={'ng-change': 'upload()'})
     )

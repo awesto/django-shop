@@ -113,7 +113,7 @@ class PaymentModifier(BaseCartModifier):
         Returns true if this payment modifier is active.
         """
         try:
-            return cart.payment_method['modifier'] == self.identifier
+            return cart.payment_method['payment_modifier'] == self.identifier
         except (TypeError, AttributeError, KeyError):
             return False
 
@@ -133,6 +133,6 @@ class ShippingModifier(BaseCartModifier):
         Returns true if this shipping modifier is active.
         """
         try:
-            return cart.shipping_method['modifier'] == self.identifier
+            return cart.shipping_method['shipping_modifier'] == self.identifier
         except (TypeError, AttributeError, KeyError):
             return False
