@@ -1,12 +1,14 @@
 {% extends "shop/auth/anonymous-base.html" %}
 {% load i18n %}
 
-{% block form_title %}{% trans "Register Customer" %}{% endblock %}
+{% block form_title %}{% trans "Register Yourself" %}{% endblock %}
 
-{% with action=instance.link %}{% block form_content %}
-	{{ block.super }}
-<div class="has-feedback input-group">
-	{{ register_user_form.email.label_tag }}{{ register_user_form.email }}
+{% block form_content %}
+{{ block.super }}
+{{ register_user_form.email.label_tag }}
+<div style="margin-bottom: 10px" class="has-feedback input-group">
+	<span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+	{{ register_user_form.email }}
 </div>
 
 <div class="has-feedback input-group">
@@ -21,4 +23,4 @@
 <div class="input-group">
 	<a ng-click="submit('{% url 'shop:register-user' %}')" class="btn btn-primary">{% trans "Register" %}</a>
 </div>
-{% endblock form_content %}{% endwith %}
+{% endblock form_content %}

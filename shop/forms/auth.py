@@ -11,7 +11,7 @@ from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
 from djangular.forms import NgModelFormMixin, NgFormValidationMixin
 from shop import settings as shop_settings
-from djangular.styling.bootstrap3.forms import Bootstrap3Form, Bootstrap3ModelForm
+from djangular.styling.bootstrap3.forms import Bootstrap3ModelForm
 
 
 class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelForm):
@@ -27,7 +27,7 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelF
     password1 = fields.CharField(label=_("Choose a password"), widget=widgets.PasswordInput,
                                  min_length=6, help_text=_("Minimum length is 6 characters."))
     password2 = fields.CharField(label=_("Repeat password"), widget=widgets.PasswordInput,
-                                 min_length=6, help_text=_("Must match other password."))
+                                 min_length=6, help_text=_("Confirm password."))
 
     class Meta:
         model = get_user_model()

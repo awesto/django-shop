@@ -3,8 +3,8 @@
 
 {% block form_title %}{% blocktrans %}Authenticated as: {{ user }}{% endblocktrans %}{% endblock %}
 
-{% with action=instance.link %}{% block form_content %}
+{% block form_content %}
 <div class="input-group">
 	<a ng-click="submit('{% url 'shop:logout' %}')" class="btn btn-primary">{% trans "Logout" %}</a>
 </div>
-{% endblock %}{% endwith %}
+{% endblock %}

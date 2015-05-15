@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.contrib.auth import logout, get_user_model
+from django.contrib.auth import logout
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
-from django.utils.http import urlsafe_base64_decode
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer, BrowsableAPIRenderer
 from rest_framework.response import Response
-from rest_auth.app_settings import PasswordResetConfirmSerializer
-from shop.rest.auth import PasswordResetSerializer
+from shop.rest.auth import PasswordResetSerializer, PasswordResetConfirmSerializer
 from shop.middleware import get_user
 
 
@@ -95,8 +93,11 @@ class PasswordResetConfirm(GenericAPIView):
     token_generator = default_token_generator
 
     def get(self, request, uidb64=None, token=None):
-        data = {'uid': uidb64, 'token': token, 'new_password1': 'dummy', 'new_password2': 'dummy'}
-        serializer = self.get_serializer(data=data)
+        data = {'uid': uidb64, 'token': token}
+        serializer_class = self.get_serializer_class()
+        password = 'x' * serializer_class._declared_fields['new_password1']._kwargs.get('min_length', 3)
+        data.update(new_password1=password, new_password2=password)
+        serializer = serializer_class(data=data, context=self.get_serializer_context())
         if not serializer.is_valid():
             return Response({'validlink': False})
         return Response({'validlink': True, 'user_name': force_text(serializer.user)})

@@ -30,8 +30,9 @@ djangoShopModule.controller('DialogCtrl', ['$scope', '$http', '$q', 'djangoUrl',
 				}
 			}
 			$scope.cart = response;
-		}).error(function(msg) {
-			console.error("Unable to upload checkout forms: " + msg);
+		}).error(function(errors) {
+			console.error("Unable to upload checkout forms:");
+			console.log(errors);
 		});
 	};
 
