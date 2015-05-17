@@ -61,15 +61,8 @@ class CustomerFormPlugin(DialogFormPluginBase):
     provides the form to edit customer specific data stored in model `Customer`.
     """
     name = _("Customer Form")
-    cache = False
     form_class = 'shop.forms.checkout.CustomerForm'
-
-    def get_render_template(self, context, instance, placeholder):
-        template_names = [
-            '{}/checkout/customer.html'.format(shop_settings.APP_LABEL),
-            'shop/checkout/customer.html',
-        ]
-        return select_template(template_names)
+    template_leaf_name = 'customer.html'
 
     def get_form_data(self, request):
         return {'instance': request.user}
@@ -100,13 +93,7 @@ class CheckoutAddressPluginBase(DialogFormPluginBase):
 class ShippingAddressFormPlugin(CheckoutAddressPluginBase):
     name = _("Shipping Address Form")
     form_class = 'shop.forms.checkout.ShippingAddressForm'
-
-    def get_render_template(self, context, instance, placeholder):
-        template_names = [
-            '{}/checkout/shipping-address.html'.format(shop_settings.APP_LABEL),
-            'shop/checkout/shipping-address.html',
-        ]
-        return select_template(template_names)
+    template_leaf_name = 'shipping-address.html'
 
 DialogFormPluginBase.register_plugin(ShippingAddressFormPlugin)
 
@@ -114,13 +101,7 @@ DialogFormPluginBase.register_plugin(ShippingAddressFormPlugin)
 class InvoiceAddressFormPlugin(CheckoutAddressPluginBase):
     name = _("Invoice Address Form")
     form_class = 'shop.forms.checkout.InvoiceAddressForm'
-
-    def get_render_template(self, context, instance, placeholder):
-        template_names = [
-            '{}/checkout/invoice-address.html'.format(shop_settings.APP_LABEL),
-            'shop/checkout/invoice-address.html',
-        ]
-        return select_template(template_names)
+    template_leaf_name = 'invoice-address.html'
 
 DialogFormPluginBase.register_plugin(InvoiceAddressFormPlugin)
 
@@ -128,13 +109,7 @@ DialogFormPluginBase.register_plugin(InvoiceAddressFormPlugin)
 class PaymentMethodFormPlugin(DialogFormPluginBase):
     name = _("Payment Method Form")
     form_class = 'shop.forms.checkout.PaymentMethodForm'
-
-    def get_render_template(self, context, instance, placeholder):
-        template_names = [
-            '{}/checkout/payment-method.html'.format(shop_settings.APP_LABEL),
-            'shop/checkout/payment-method.html',
-        ]
-        return select_template(template_names)
+    template_leaf_name = 'payment-method.html'
 
     def get_form_data(self, request):
         cart = CartModel.objects.get_from_request(request)
@@ -148,13 +123,7 @@ if cart_modifiers_pool.get_payment_modifiers():
 class ShippingMethodFormPlugin(DialogFormPluginBase):
     name = _("Shipping Method Form")
     form_class = 'shop.forms.checkout.ShippingMethodForm'
-
-    def get_render_template(self, context, instance, placeholder):
-        template_names = [
-            '{}/checkout/shipping-method.html'.format(shop_settings.APP_LABEL),
-            'shop/checkout/shipping-method.html',
-        ]
-        return select_template(template_names)
+    template_leaf_name = 'shipping-method.html'
 
     def get_form_data(self, request):
         cart = CartModel.objects.get_from_request(request)
@@ -168,13 +137,7 @@ if cart_modifiers_pool.get_shipping_modifiers():
 class ExtrasFormPlugin(DialogFormPluginBase):
     name = _("Extra Annotation Form")
     form_class = 'shop.forms.checkout.ExtrasForm'
-
-    def get_render_template(self, context, instance, placeholder):
-        template_names = [
-            '{}/checkout/extras.html'.format(shop_settings.APP_LABEL),
-            'shop/checkout/extras.html',
-        ]
-        return select_template(template_names)
+    template_leaf_name = 'extras.html'
 
     def get_form_data(self, request):
         cart = CartModel.objects.get_from_request(request)
@@ -189,12 +152,6 @@ class TermsAndConditionsFormPlugin(DialogFormPluginBase):
     """
     name = _("Terms and Conditions")
     form_class = 'shop.forms.checkout.TermsAndConditionsForm'
-
-    def get_render_template(self, context, instance, placeholder):
-        template_names = [
-            '{}/checkout/terms-and-conditions.html'.format(shop_settings.APP_LABEL),
-            'shop/checkout/terms-and-conditions.html',
-        ]
-        return select_template(template_names)
+    template_leaf_name = 'terms-and-conditions.html'
 
 DialogFormPluginBase.register_plugin(TermsAndConditionsFormPlugin)

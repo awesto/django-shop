@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.db.models import get_model
 from django.core.exceptions import ImproperlyConfigured
 from django.forms import widgets
+from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
 from django.utils.module_loading import import_by_path
 from cms.plugin_pool import plugin_pool
@@ -10,6 +11,7 @@ from cmsplugin_cascade.utils import resolve_dependencies
 from cmsplugin_cascade.fields import PartialFormField
 from cmsplugin_cascade.plugin_base import CascadePluginBase
 from cmsplugin_cascade.link.forms import LinkForm
+from shop import settings as shop_settings
 
 
 class ShopPluginBase(CascadePluginBase):
@@ -81,14 +83,18 @@ class DialogFormPluginBase(ShopPluginBase):
         if not issubclass(plugin, cls):
             msg = "Can not register plugin class `{}`, since is does not inherit from `{}`."
             raise ImproperlyConfigured(msg.format(plugin.__name__, cls.__name__))
-        if not getattr(plugin, 'form_class', None):
+        if plugin.get_form_class() is None:
             msg = "Can not register plugin class `{}`, since is does not define a `form_class`."
             raise ImproperlyConfigured(msg.format(plugin.__name__))
         plugin_pool.register_plugin(plugin)
 
+    @classmethod
+    def get_form_class(cls):
+        return getattr(cls, 'form_class', None)
+
     def __init__(self, *args, **kwargs):
         super(DialogFormPluginBase, self).__init__(*args, **kwargs)
-        self.FormClass = import_by_path(self.form_class)
+        self.FormClass = import_by_path(self.get_form_class())
 
     def get_form_data(self, request):
         """
@@ -98,6 +104,13 @@ class DialogFormPluginBase(ShopPluginBase):
         form data, or if both are set, values from `initial` override those of `instance`.
         """
         return {}
+
+    def get_render_template(self, context, instance, placeholder):
+        template_names = [
+            '{0}/checkout/{1}'.format(shop_settings.APP_LABEL, self.template_leaf_name),
+            'shop/checkout/{}'.format(self.template_leaf_name),
+        ]
+        return select_template(template_names)
 
     def render(self, context, instance, placeholder):
         """
