@@ -13,6 +13,7 @@ from .plugin_base import ShopLinkPluginBase
 
 AUTH_FORM_TYPES = (
     ('login', _("Login Form")),
+    ('login-reset', _("Login & Reset Form")),
     ('logout', _("Logout Form")),
     ('login-logout', _("Shared Login/Logout Form")),
     ('reset', _("Password Reset Form")),

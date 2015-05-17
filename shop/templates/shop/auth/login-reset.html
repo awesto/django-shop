@@ -1,0 +1,37 @@
+{% extends "shop/auth/anonymous-base.html" %}
+{% load i18n %}
+
+{% block form_title %}{% trans "Sign In" %}{% endblock %}
+
+{% block form_content %}
+	{{ block.super }}
+<label class="control-label">{% trans "Your e-mail address" %}</label>
+<div style="margin-bottom: 10px" class="input-group">
+	<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+	<input type="text" class="form-control" name="username" ng-model="form_data.username" value="" placeholder="{% trans 'Email' %}" />
+</div>
+
+<label class="control-label">{% trans "Password" %}</label>
+<div style="margin-bottom: 20px" class="input-group">
+	<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+	<input type="password" class="form-control" name="password" ng-model="form_data.password" placeholder="{% trans 'Password' %}" />
+</div>
+
+<div class="form-group">
+	<a ng-click="submit('{% url 'shop:login' %}')" class="btn btn-primary">{% trans "Login" %}</a>
+	<a ng-click="showResetForm=!showResetForm;" class="btn btn-link pull-right">{% trans "Password Forgotten?" %}</a>
+</div>
+
+<div ng-show="showResetForm">
+	<label class="control-label">{% trans "Your e-mail address" %}</label>
+	<div style="margin-bottom: 20px" class="input-group">
+		<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+		<input type="text" class="form-control" name="email" ng-model="form_data.email" value="" placeholder="{% trans 'Email' %}" />
+	</div>
+	
+	<div class="form-group" ng-hide="success_message">
+		<a ng-click="submit('{% url 'shop:password-reset' %}')" class="btn btn-primary">{% trans "Reset Password" %}</a>
+	</div>
+</div>
+
+{% endblock %}
