@@ -74,9 +74,9 @@ class BaseCustomer(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(_("Active"), default=True,
         help_text=_("Designates whether this user should be treated as active. "
                     "Unselect this instead of deleting accounts."))
-    is_registered = models.BooleanField(_("Registered"), default=False,
-        help_text=_("Designates whether this customer registered his account or, if he is "
-                    "unauthenticated and is is considered as anonymous user."))
+    is_registered = models.NullBooleanField(_("Registered"), default=None,
+        help_text=_("Designates whether this customer registered his account, or if he is "
+                    "unauthenticated and considered a guest."))
     date_joined = models.DateTimeField(_("Date joined"), default=timezone.now)
 
     class Meta:
@@ -106,6 +106,9 @@ class BaseCustomer(AbstractBaseUser, PermissionsMixin):
 
     def is_anonymous(self):
         return not self.is_registered
+
+    def is_guest(self):
+        return self.is_registered is False
 
     def is_authenticated(self):
         return self.is_registered

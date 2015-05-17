@@ -19,6 +19,7 @@ AUTH_FORM_TYPES = (
     ('reset', _("Password Reset Form")),
     ('change', _("Change Password Form")),
     ('register-user', _("Register User"), 'shop.forms.auth.RegisterUserForm'),
+    ('continue-as-guest', _("Continue as guest")),
 )
 
 

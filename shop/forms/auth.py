@@ -4,8 +4,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.sites.models import get_current_site
 from django.core.exceptions import ValidationError
-from django.forms import fields
-from django.forms import widgets
+from django.forms import fields, widgets, ModelForm
 from django.template import Context
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
@@ -87,3 +86,17 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelF
             'shop/email/register-user-body.txt',
         ]).render(context)
         send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [context['email']])
+
+
+class ContinueAsGuestForm(ModelForm):
+    form_name = 'continue_as_guest_form'
+    scope_prefix = 'form_data'
+
+    class Meta:
+        model = get_user_model()
+        fields = ()  # this form doesn't show any fields
+
+    def save(self, request=None, commit=True):
+        self.instance.is_registered = False
+        self.instance.is_active = True
+        return super(ContinueAsGuestForm, self).save(commit)
