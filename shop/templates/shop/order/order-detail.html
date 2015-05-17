@@ -29,10 +29,41 @@
 			<td class="text-right">{{ order_item.line_total }}</td>
 		</tr>
 		<tr class="no-border">
-			<td colspan="3">{{ order_item.summary.body }}</td>
+			<td colspan="3">
+				{{ order_item.summary.body }}
+				{% for key, extra_row in order_item.extra_rows.items %}
+				<div>{{ extra_row.label }}: {{ extra_row.amount }}</div>
+				{% endfor %}
+			</td>
 		</tr>
 	{% endfor %}
 	</tbody>
 {% endblock shop-order-tbody %}
+
+{% block shop-order-tfoot %}
+	<tfoot>
+		<tr>
+			<td colspan="2"></td>
+			<td><h5>{% trans "Subtotal" %}</h5></td>
+			<td class="text-right">
+				<h5>{{ data.subtotal }}</h5>
+			</td>
+		</tr>
+	{% for key, extra_row in data.extra_rows.items %}
+		<tr>
+			<td colspan="2"></td>
+			<td>{{ extra_row.label }}</td>
+			<td class="text-right">{{ extra_row.amount }}</td>
+		</tr>
+	{% endfor %}
+		<tr>
+			<td colspan="2"></td>
+			<td><h4>{% trans "Total" %}</h4></td>
+			<td class="text-right">
+				<h4>{{ data.total }}</h4>
+			</td>
+		</tr>
+	</tfoot>
+{% endblock shop-order-tfoot %}
 
 </table>
