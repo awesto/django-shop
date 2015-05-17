@@ -6,12 +6,12 @@
 {% block form_content %}
 {{ block.super }}
 {{ register_user_form.email.label_tag }}
-<div style="margin-bottom: 10px" class="has-feedback input-group">
+<div style="margin-bottom: 10px" class="input-group">
 	<span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
 	{{ register_user_form.email }}
 </div>
 
-<div class="has-feedback input-group">
+<div class="input-group">
 	{{ register_user_form.preset_password }}
 	<span class="help-block">{{ register_user_form.preset_password.help_text }}</span>
 </div>
