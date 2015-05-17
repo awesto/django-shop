@@ -114,7 +114,8 @@ class BaseCustomer(AbstractBaseUser, PermissionsMixin):
         return self.is_registered
 
     def save(self, *args, **kwargs):
-        self.is_registered = self.is_registered or self.is_staff
+        if self.is_registered or self.is_staff or self.is_superuser:
+            self.is_registered = True
         super(BaseCustomer, self).save(*args, **kwargs)
 
 
