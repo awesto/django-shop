@@ -4,7 +4,7 @@
 {% block form_title %}{% blocktrans %}Authenticated as: {{ user }}{% endblocktrans %}{% endblock %}
 
 {% block form_content %}
-<div class="input-group">
+<div class="form-group">
 	<a ng-click="submit('{% url 'shop:logout' %}')" class="btn btn-primary">{% trans "Logout" %}</a>
 </div>
 {% endblock %}

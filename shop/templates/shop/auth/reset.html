@@ -11,7 +11,7 @@
 	<input type="text" class="form-control" name="email" ng-model="form_data.email" value="" placeholder="{% trans 'Email' %}" />
 </div>
 
-<div class="input-group" ng-hide="success_message">
+<div class="form-group" ng-hide="success_message">
 	<a ng-click="submit('{% url 'shop:password-reset' %}')" class="btn btn-primary">{% trans "Reset Password" %}</a>
 </div>
 {% endblock %}
