@@ -56,7 +56,7 @@ class DialogBookletPlugin(ShopLinkPluginBase):
         super(DialogBookletPlugin, self).save_model(request, obj, form, change)
         self.extend_children(obj, wanted_children, DialogPagePlugin)
 
-plugin_pool.register_plugin(DialogBookletPlugin)
+# TODO: reactivate plugin_pool.register_plugin(DialogBookletPlugin)
 
 
 class DialogPagePlugin(ShopPluginBase):
@@ -93,7 +93,7 @@ class DialogPagePlugin(ShopPluginBase):
         child_classes += ('BookletProceedButtonPlugin',)
         return child_classes
 
-plugin_pool.register_plugin(DialogPagePlugin)
+# TODO: reactivate plugin_pool.register_plugin(DialogPagePlugin)
 
 
 class BookletProceedButtonPlugin(BootstrapButtonMixin, ShopPluginBase):
@@ -122,4 +122,4 @@ class BookletProceedButtonPlugin(BootstrapButtonMixin, ShopPluginBase):
         ]
         return select_template(template_names)
 
-plugin_pool.register_plugin(BookletProceedButtonPlugin)
+# TODO: reactivate plugin_pool.register_plugin(BookletProceedButtonPlugin)
