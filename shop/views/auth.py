@@ -10,6 +10,8 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer, BrowsableAPIRenderer
 from rest_framework.response import Response
+from rest_auth.views import Login
+from shop.models.cart import CartModel
 from shop.rest.auth import PasswordResetSerializer, PasswordResetConfirmSerializer
 from shop.middleware import get_user
 
@@ -29,8 +31,18 @@ class AuthFormsView(GenericAPIView):
         return Response(dict(form.errors), status=status.HTTP_400_BAD_REQUEST)
 
 
-class LogoutView(APIView):
+class LoginView(Login):
+    def login(self):
+        """
+        Logs in as the given user, and moves the items from the current to the new cart.
+        """
+        anonymous_cart = CartModel.objects.get_from_request(self.request)
+        super(LoginView, self).login()
+        authenticated_cart = CartModel.objects.get_from_request(self.request)
+        anonymous_cart.items.update(cart=authenticated_cart)
 
+
+class LogoutView(APIView):
     """
     Calls Django logout method and delete the auth Token assigned to the current User object.
     """
