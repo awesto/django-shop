@@ -77,6 +77,13 @@ class CustomerFormPlugin(DialogFormPluginBase):
 DialogFormPluginBase.register_plugin(CustomerFormPlugin)
 
 
+class GuestFormPlugin(CustomerFormPlugin):
+    name = _("Guest Form")
+    form_class = 'shop.forms.checkout.GuestForm'
+
+DialogFormPluginBase.register_plugin(GuestFormPlugin)
+
+
 class CheckoutAddressPluginBase(DialogFormPluginBase):
     def get_form_data(self, request):
         filter_args = {'user': request.user, '{}__isnull'.format(self.FormClass.priority_field): False}

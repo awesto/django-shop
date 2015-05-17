@@ -28,6 +28,23 @@ class CustomerForm(DialogModelForm):
             return {cls.form_name: customer_form.errors}
 
 
+class GuestForm(DialogModelForm):
+    scope_prefix = 'data.guest'
+    form_name = 'customer_form'
+
+    class Meta:
+        model = get_user_model()
+        fields = ('email',)
+
+    @classmethod
+    def form_factory(cls, request, data, cart):
+        customer_form = cls(data=data, instance=request.user)
+        if customer_form.is_valid():
+            customer_form.save()
+        else:
+            return {cls.form_name: customer_form.errors}
+
+
 class AddressForm(DialogModelForm):
     field_css_classes = {
         '*': getattr(Bootstrap3ModelForm, 'field_css_classes'),
