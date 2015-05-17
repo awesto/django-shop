@@ -23,7 +23,12 @@
 			<td class="text-right">{{ cart_item.line_total }}</td>
 		</tr>
 		<tr class="no-border">
-			<td colspan="3">{{ cart_item.summary.body }}</td>
+			<td colspan="3">
+				{{ cart_item.summary.body }}
+				{% for extra_row in cart_item.extra_rows %}
+				<div>{{ extra_row.label }}: {{ extra_row.amount }}</div>
+				{% endfor %}
+			</td>
 		</tr>
 	{% endfor %}
 	</tbody>
