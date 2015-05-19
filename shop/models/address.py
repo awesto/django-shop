@@ -37,3 +37,11 @@ class BaseAddress(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         return template.render(context)
 
 AddressModel = deferred.MaterializedModel(BaseAddress)
+
+ISO_3166_CODES = (
+    ('AT', _("Austria")),
+    ('DE', _("Germany")),
+    ('DK', _("Denmark")),
+    ('CH', _("Switzerland")),
+    ('NL', _("Nederlands")),
+)
