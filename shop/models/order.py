@@ -56,7 +56,7 @@ class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
 class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     """
     An Order is the "in process" counterpart of the shopping cart, which freezes the state of the
-    cart on the moment of purchase. It also holds stuff like the shipping and invoice addresses,
+    cart on the moment of purchase. It also holds stuff like the shipping and billing addresses,
     and keeps all the additional entities, as determined by the cart modifiers.
     """
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_("Customer"))

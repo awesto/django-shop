@@ -1,8 +1,0 @@
-<form name="{{ invoice_address_form.form_name }}" novalidate>
-	<div class="has-feedback form-group">
-	{{ invoice_address_form.use_shipping_address }}
-	</div>
-	<div shop-form-validate="!data.invoice_address.use_shipping_address" ng-hide="data.invoice_address.use_shipping_address">
-		{{ invoice_address_form.as_div }}
-	</div>
-</form>

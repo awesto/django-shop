@@ -12,8 +12,8 @@ class Order(order.BaseOrder):
     shipping_method = JSONField(blank=True, null=True)
     shipping_address_text = models.TextField(_("Shipping address"), blank=True, null=True,
         help_text=_("Shipping address at the moment of purchase."))
-    invoice_address_text = models.TextField(_("Invoice address"), blank=True, null=True,
-        help_text=_("Invoice address at the moment of purchase."))
+    billing_address_text = models.TextField(_("Billing address"), blank=True, null=True,
+        help_text=_("Billing address at the moment of purchase."))
     annotations = JSONField(null=True, blank=True,
         verbose_name=_("Extra Annotations for this order"))
 
@@ -22,7 +22,7 @@ class Order(order.BaseOrder):
         self.payment_method = cart.payment_method
         self.shipping_method = cart.shipping_method
         self.shipping_address_text = cart.shipping_address.as_text()
-        self.invoice_address_text = cart.shipping_address.as_text()
+        self.billing_address_text = cart.shipping_address.as_text()
         annnotation = cart.extras.get('annotation', '')
         self.annotations = [(self.status, annnotation)]
 

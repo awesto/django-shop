@@ -9,7 +9,6 @@ Therefore don't try to upgrade. Install this version of **django-shop** and migr
   * Every time, django shop internally referrs to another abstract base class, the corresponding
     materialized model is used. This
 * Renamed for convention with other Django application:
-  * Billing -> Invoice
   * date_created -> created_at
   * last_updated -> updated_at
   * ExtraOrderPriceField -> BaseOrderExtraRow

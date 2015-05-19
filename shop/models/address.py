@@ -16,7 +16,7 @@ class BaseAddress(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     priority_shipping = models.SmallIntegerField(null=True, default=None,
         help_text=_("Priority of using this address for shipping"))
-    priority_invoice = models.SmallIntegerField(null=True, default=None,
+    priority_billing = models.SmallIntegerField(null=True, default=None,
         help_text=_("Priority of using this address for invoicing"))
 
     class Meta(object):

@@ -11,7 +11,7 @@ class Cart(BaseCart):
     Default materialized model for BaseCart containing common fields
     """
     shipping_address = deferred.ForeignKey(BaseAddress, null=True, default=None, related_name='+')
-    invoice_address = deferred.ForeignKey(BaseAddress, null=True, default=None, related_name='+')
+    billing_address = deferred.ForeignKey(BaseAddress, null=True, default=None, related_name='+')
     payment_method = JSONField(blank=True, null=True)
     shipping_method = JSONField(blank=True, null=True)
     extras = JSONField(blank=True, null=True)

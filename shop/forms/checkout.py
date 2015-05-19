@@ -56,7 +56,7 @@ class AddressForm(DialogModelForm):
 
     class Meta:
         model = AddressModel
-        exclude = ('user', 'priority_shipping', 'priority_invoice',)
+        exclude = ('user', 'priority_shipping', 'priority_billing',)
 
     def __init__(self, initial=None, instance=None, *args, **kwargs):
         if instance:
@@ -108,7 +108,7 @@ class AddressForm(DialogModelForm):
         data.update({'user': cart.user, '{}__isnull'.format(cls.priority_field): False})
         instance, created = cls.get_model().objects.get_or_create(**data)
         if created:
-            instance.priority_invoice = cls.get_max_priority(cart.user) + 1
+            instance.priority_billing = cls.get_max_priority(cart.user) + 1
             instance.save()
 
 
@@ -127,17 +127,17 @@ class ShippingAddressForm(AddressForm):
         cart.shipping_address = instance
 
 
-class InvoiceAddressForm(AddressForm):
-    scope_prefix = 'data.invoice_address'
-    priority_field = 'priority_invoice'
+class BillingAddressForm(AddressForm):
+    scope_prefix = 'data.billing_address'
+    priority_field = 'priority_billing'
 
     use_shipping_address = fields.BooleanField(required=False, initial=True,
-        widget=CheckboxInput(_("Use shipping address for invoice")))
+        widget=CheckboxInput(_("Use shipping address for billing")))
 
     def as_div(self):
         # Intentionally rendered without field `use_shipping_address`
         self.fields.pop('use_shipping_address', None)
-        return super(InvoiceAddressForm, self).as_div()
+        return super(BillingAddressForm, self).as_div()
 
     @classmethod
     def form_factory(cls, request, data, cart):
@@ -148,12 +148,12 @@ class InvoiceAddressForm(AddressForm):
         if data and data.pop('use_shipping_address', False):
             cls.set_address(cart, cart.shipping_address)
         else:
-            return super(InvoiceAddressForm, cls).form_factory(request, data, cart)
+            return super(BillingAddressForm, cls).form_factory(request, data, cart)
 
     @classmethod
     def set_address(cls, cart, instance):
-        # TODO: super(InvoiceAddressForm, cls).set_address(cart, instance)
-        cart.invoice_address = instance
+        # TODO: super(BillingAddressForm, cls).set_address(cart, instance)
+        cart.billing_address = instance
 
 
 class PaymentMethodForm(DialogForm):

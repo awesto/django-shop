@@ -98,12 +98,12 @@ class ShippingAddressFormPlugin(CheckoutAddressPluginBase):
 DialogFormPluginBase.register_plugin(ShippingAddressFormPlugin)
 
 
-class InvoiceAddressFormPlugin(CheckoutAddressPluginBase):
-    name = _("Invoice Address Form")
-    form_class = 'shop.forms.checkout.InvoiceAddressForm'
-    template_leaf_name = 'invoice-address.html'
+class BillingAddressFormPlugin(CheckoutAddressPluginBase):
+    name = _("Billing Address Form")
+    form_class = 'shop.forms.checkout.BillingAddressForm'
+    template_leaf_name = 'billing-address.html'
 
-DialogFormPluginBase.register_plugin(InvoiceAddressFormPlugin)
+DialogFormPluginBase.register_plugin(BillingAddressFormPlugin)
 
 
 class PaymentMethodFormPlugin(DialogFormPluginBase):

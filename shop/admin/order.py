@@ -61,5 +61,5 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
 
 
 class OrderAdmin(BaseOrderAdmin):
-    search_fields = BaseOrderAdmin.search_fields + ('shipping_address_text', 'invoice_address_text')
-    fields = BaseOrderAdmin.fields + (('shipping_address_text', 'invoice_address_text',),)
+    search_fields = BaseOrderAdmin.search_fields + ('shipping_address_text', 'billing_address_text')
+    fields = BaseOrderAdmin.fields + (('shipping_address_text', 'billing_address_text',),)
