@@ -2,7 +2,7 @@
 	<div class="has-feedback form-group">
 	{{ billing_address_form.use_shipping_address }}
 	</div>
-	<div shop-form-validate="!data.billing_address.use_shipping_address" ng-hide="data.billing_address.use_shipping_address">
+	<div shop-form-validate="!data.billing_address.use_shipping_address" ng-hide="data.billing_address.use_shipping_address" ng-cloak>
 		{{ billing_address_form.as_div }}
 	</div>
 </form>
