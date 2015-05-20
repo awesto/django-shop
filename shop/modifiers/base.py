@@ -117,6 +117,13 @@ class PaymentModifier(BaseCartModifier):
         except (TypeError, AttributeError, KeyError):
             return False
 
+    def update_render_context(self, context):
+        """
+        Hook to update the rendering context with payment specific data.
+        """
+        if 'payment_modifiers' not in context:
+            context['payment_modifiers'] = {}
+
 
 class ShippingModifier(BaseCartModifier):
     """
@@ -136,3 +143,10 @@ class ShippingModifier(BaseCartModifier):
             return cart.shipping_method['shipping_modifier'] == self.identifier
         except (TypeError, AttributeError, KeyError):
             return False
+
+    def update_render_context(self, context):
+        """
+        Hook to update the rendering context with shipping specific data.
+        """
+        if 'shipping_modifiers' not in context:
+            context['shipping_modifiers'] = {}

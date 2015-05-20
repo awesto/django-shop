@@ -115,6 +115,12 @@ class PaymentMethodFormPlugin(DialogFormPluginBase):
         cart = CartModel.objects.get_from_request(request)
         return {'initial': cart.payment_method}
 
+    def render(self, context, instance, placeholder):
+        super(PaymentMethodFormPlugin, self).render(context, instance, placeholder)
+        for payment_modifier in cart_modifiers_pool.get_payment_modifiers():
+            payment_modifier.update_render_context(context)
+        return context
+
 if cart_modifiers_pool.get_payment_modifiers():
     # Plugin is registered only if at least one payment modifier exists
     DialogFormPluginBase.register_plugin(PaymentMethodFormPlugin)
@@ -128,6 +134,12 @@ class ShippingMethodFormPlugin(DialogFormPluginBase):
     def get_form_data(self, request):
         cart = CartModel.objects.get_from_request(request)
         return {'initial': cart.shipping_method}
+
+    def render(self, context, instance, placeholder):
+        super(ShippingMethodFormPlugin, self).render(context, instance, placeholder)
+        for shipping_modifier in cart_modifiers_pool.get_shipping_modifiers():
+            shipping_modifier.update_render_context(context)
+        return context
 
 if cart_modifiers_pool.get_shipping_modifiers():
     # Plugin is registered only if at least one shipping modifier exists
