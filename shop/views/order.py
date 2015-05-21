@@ -8,40 +8,47 @@ from shop.rest.renderers import CMSPageRenderer
 from shop.models.order import OrderModel
 
 
-class GenericOrderView(generics.GenericAPIView):
+class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, generics.GenericAPIView):
     """
     Base View class to render the fulfilled orders for the current user.
     """
     renderer_classes = (CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer)
-    thank_you = False  # if true render a "Thank You" view, rather than a normal order object
+    many = True
 
     def get_queryset(self):
         return OrderModel.objects.filter(user=self.request.user).order_by('-updated_at',)
 
+    def get_serializer_class(self):
+        if self.many:
+            return OrderListSerializer
+        return OrderDetailSerializer
+
     def get_renderer_context(self):
-        renderer_context = super(GenericOrderView, self).get_renderer_context()
+        renderer_context = super(OrderView, self).get_renderer_context()
         if renderer_context['request'].accepted_renderer.format == 'html':
-            renderer_context.update(many=isinstance(self, mixins.ListModelMixin), thank_you=self.thank_you)
+            # in edit_mode, both tables, for list- and detail view are rendered
+            edit_mode = renderer_context['request'].current_page.publisher_is_draft
+            renderer_context.update(many=self.many, edit_mode=edit_mode)
         return renderer_context
 
     def get_template_names(self):
         return [self.request.current_page.get_template()]
 
-
-class OrderListView(mixins.ListModelMixin, GenericOrderView):
-    serializer_class = OrderListSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-
-class OrderRetrieveView(mixins.RetrieveModelMixin, GenericOrderView):
-    serializer_class = OrderDetailSerializer
+    def get_object(self):
+        if self.lookup_field not in self.kwargs:
+            return self.get_queryset().first()
+        return super(OrderView, self).get_object()
 
     def get(self, request, *args, **kwargs):
+        if self.is_last():
+            self.many = False
+        if self.many:
+            return self.list(request, *args, **kwargs)
         return self.retrieve(request, *args, **kwargs)
 
-    def get_object(self):
-        if self.thank_you:
-            return self.get_queryset().last()
-        return super(OrderRetrieveView, self).get_object()
+    def is_last(self):
+        """
+        Return true, if the last order shall be rendered.
+        Useful to render a Thank-You view immediately after a purchase.
+        """
+        return self.request.current_page.reverse_id == 'shop-order-last'
