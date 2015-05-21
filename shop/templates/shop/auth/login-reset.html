@@ -7,13 +7,13 @@
 	{{ block.super }}
 <label class="control-label">{% trans "Your e-mail address" %}</label>
 <div style="margin-bottom: 10px" class="input-group">
-	<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+	<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
 	<input type="text" class="form-control" name="username" ng-model="form_data.username" value="" placeholder="{% trans 'Email' %}" />
 </div>
 
 <label class="control-label">{% trans "Password" %}</label>
 <div style="margin-bottom: 20px" class="input-group">
-	<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+	<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
 	<input type="password" class="form-control" name="password" ng-model="form_data.password" placeholder="{% trans 'Password' %}" />
 </div>
 
@@ -25,7 +25,7 @@
 <div ng-show="showResetForm">
 	<label class="control-label">{% trans "Your e-mail address" %}</label>
 	<div style="margin-bottom: 20px" class="input-group">
-		<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+		<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
 		<input type="text" class="form-control" name="email" ng-model="form_data.email" value="" placeholder="{% trans 'Email' %}" />
 	</div>
 	
