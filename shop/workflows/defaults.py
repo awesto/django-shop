@@ -6,8 +6,8 @@ from django_fsm import transition
 
 class PayInAdvanceWorkflowMixin(object):
     """
-    Add this class to a model inheriting from `order.BaseOrder`. It adds all the methods
-    required for state transitions, when used in a shop with advanced payment.
+    This class is added automatically to a model inheriting from `order.BaseOrder`. It adds all
+    the methods required for state transitions, when used in a shop with advanced payment.
     """
     def applyme(self):
         # Just a test to deactivate `payment_deposited`.
