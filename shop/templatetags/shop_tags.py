@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 from django import template
+from django.template.loader import select_template
 from classytags.helpers import InclusionTag
 from classytags.core import Options
 from classytags.arguments import Argument
-
-from shop.models.cart import BaseCart
-from shop.models.product import BaseProduct
-
-from django.conf import settings
-
+from shop import settings as shop_settings
+from shop.models.cart import CartModel
 
 register = template.Library()
 
@@ -17,54 +15,16 @@ class Cart(InclusionTag):
     """
     Inclusion tag for displaying cart summary.
     """
-    template = 'shop/templatetags/_cart.html'
+    def get_template(self, context, **kwargs):
+        return select_template([
+            '{}/templatetags/cart.html'.format(shop_settings.APP_LABEL),
+            'shop/templatetags/cart.html',
+        ]).name
 
     def get_context(self, context):
         request = context['request']
-        cart = get_or_create_cart(request)
+        cart = CartModel.objects.get_from_request(request)
         cart.update(request)
-        return {
-            'cart': cart
-        }
-register.tag(Cart)
-
-
-class Order(InclusionTag):
-    """
-    Inclusion tag for displaying order.
-    """
-    template = 'shop/templatetags/_order.html'
-    options = Options(
-        Argument('order', resolve=True),
-        )
-
-    def get_context(self, context, order):
-        return {
-            'order': order
-        }
-register.tag(Order)
-
-
-class Products(InclusionTag):
-    """
-    Inclusion tag for displaying all products.
-    """
-    template = 'shop/templatetags/_products.html'
-    options = Options(
-        Argument('objects', resolve=True, required=False),
-    )
-
-    def get_context(self, context, objects):
-        if objects is None:
-            objects = Product.objects.filter(active=True)
-        context.update({'products': objects, })
+        context['cart'] = cart
         return context
-register.tag(Products)
-
-
-def priceformat(price):
-    FORMAT = getattr(settings, 'SHOP_PRICE_FORMAT', '%0.2f')
-    if not price and price != 0:
-        return ''
-    return FORMAT % price
-register.filter(priceformat)
+register.tag(Cart)

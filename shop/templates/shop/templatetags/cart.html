@@ -1,0 +1,8 @@
+{% load i18n cms_tags %}{% spaceless %}
+<li>
+	<a href="{% page_url 'shop-cart' %}">
+		<i class="fa fa-shopping-cart fa-fw fa-lg"></i>
+		{% blocktrans count quantity=cart.total_quantity %}{{ quantity }} Item{% plural %}{{ quantity }} Items{% endblocktrans %}
+	</a>
+</li>
+{% endspaceless %}
