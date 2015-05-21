@@ -24,8 +24,7 @@ class OrderManager(models.Manager):
         with its CartItems.
         """
         cart.update(request)
-        order = self.model()
-        order.user = cart.user
+        order = self.model(user=cart.user)
         order.save()
         for cart_item in cart.items.all():
             cart_item.update(request)
