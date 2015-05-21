@@ -179,6 +179,8 @@ class MoneyMaker(type):
 
         if currency_code is None:
             currency_code = shop_settings.DEFAULT_CURRENCY
+        else:
+            currency_code = currency_code.upper()
         if currency_code not in CURRENCIES:
             raise ValueError("'{}' is an unknown currency code. Please check shop/money/iso4217.py".format(currency_code))
         name = str('MoneyIn' + currency_code)
