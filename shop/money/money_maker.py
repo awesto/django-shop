@@ -109,10 +109,17 @@ class AbstractMoney(Decimal):
 
     def as_integer(self):
         """
-        Return the amount multiplied by its decimal places for integer representation
+        Return the amount multiplied by its subunits to be handled as integer.
+        This representation often is used by payment service providers.
         """
-        to_integer = 10**CURRENCIES[self._currency_code][1]
-        return int(self * to_integer)
+        return int(self * self.subunits)
+
+    @property
+    def subunits(self):
+        """
+        Return the subunits for the given currency.
+        """
+        return 10**CURRENCIES[self._currency_code][1]
 
     def _assert_addable(self, other):
         if isinstance(other, (int, float)) and other == 0:
