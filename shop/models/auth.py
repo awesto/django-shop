@@ -8,6 +8,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
+from jsonfield.fields import JSONField
 
 
 class CustomerManager(BaseUserManager):
@@ -78,6 +79,8 @@ class BaseCustomer(AbstractBaseUser, PermissionsMixin):
         help_text=_("Designates whether this customer registered his account, or if he is "
                     "unauthenticated and considered a guest."))
     date_joined = models.DateTimeField(_("Date joined"), default=timezone.now)
+    extra = JSONField(default={}, editable=False, null=True,
+        verbose_name=_("Extra information about this customer"))
 
     class Meta:
         abstract = True
@@ -117,7 +120,3 @@ class BaseCustomer(AbstractBaseUser, PermissionsMixin):
         if self.is_registered or self.is_staff or self.is_superuser:
             self.is_registered = True
         super(BaseCustomer, self).save(*args, **kwargs)
-
-
-# Migrate from auth_user table:
-# INSERT INTO stofferia_customer (id,password,last_login,is_superuser,username,first_name,last_name,email,is_staff,is_active,date_joined) SELECT id,password,last_login,is_superuser,username,first_name,last_name,email,is_staff,is_active,date_joined from auth_user;
