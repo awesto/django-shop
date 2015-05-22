@@ -64,6 +64,8 @@ class AbstractMoney(Decimal):
         return self.__class__(amount)
 
     def __mul__(self, other, context=None):
+        if other is None:
+            return self.__class__('NaN')
         other = self._assert_multipliable(other)
         amount = Decimal.__mul__(self, other, context)
         return self.__class__(amount)
