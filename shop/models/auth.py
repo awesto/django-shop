@@ -79,7 +79,7 @@ class BaseCustomer(AbstractBaseUser, PermissionsMixin):
         help_text=_("Designates whether this customer registered his account, or if he is "
                     "unauthenticated and considered a guest."))
     date_joined = models.DateTimeField(_("Date joined"), default=timezone.now)
-    extra = JSONField(default={}, editable=False, null=True,
+    extra = JSONField(default={}, editable=False,
         verbose_name=_("Extra information about this customer"))
 
     class Meta:
