@@ -72,8 +72,10 @@ class MoneyField(six.with_metaclass(SubfieldBase, DecimalField)):
         super(MoneyField, self).__init__(**defaults)
 
     def to_python(self, value):
-        if value is None or isinstance(value, AbstractMoney):
+        if isinstance(value, AbstractMoney):
             return value
+        if value is None:
+            return self.Money('NaN')
         value = super(MoneyField, self).to_python(value)
         return self.Money(value)
 
@@ -84,9 +86,10 @@ class MoneyField(six.with_metaclass(SubfieldBase, DecimalField)):
         formfield = super(MoneyField, self).formfield(**defaults)
         return formfield
 
-    def get_prep_value(self, value):
-        value = super(MoneyField, self).get_prep_value(value)
-        return value
+    def get_db_prep_save(self, value, connection):
+        if value.is_nan():
+            return None
+        return super(MoneyField, self).get_db_prep_save(value, connection)
 
     def value_to_string(self, obj):
         value = self._get_val_from_obj(obj)
