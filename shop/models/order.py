@@ -36,6 +36,26 @@ class OrderManager(models.Manager):
         cart.delete()
         return order
 
+    def get_summary_url(self):
+        """
+        Returns the URL of the page with the list view for all orders related to the current user
+        """
+        try:
+            return Page.objects.public().get(reverse_id='shop-order')
+        except Page.DoesNotExist:
+            return Page.objects.public().filter(application_urls='OrderApp').first()
+        return 'cms-page-with--reverse_id=shop-order--does-not-exist'
+
+    def get_latest_url(self):
+        """
+        Returns the URL of the page with the detail view for the latest order related to the current user
+        """
+        try:
+            return Page.objects.public().get(reverse_id='shop-order-last')
+        except Page.DoesNotExist:
+            pass  # TODO: could be retrieved by last order
+        return 'cms-page-with--reverse_id=shop-order-last--does-not-exist'
+
 
 class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
     """
@@ -73,19 +93,14 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         verbose_name = _("Order")
         verbose_name_plural = _("Orders")
 
-    def __init__(self, *args, **kwargs):
-        super(BaseOrder, self).__init__(*args, **kwargs)
-        # find the page used for Order list views
-        try:
-            self.order_page = Page.objects.public().get(reverse_id='shop-order')
-        except Page.DoesNotExist:
-            self.order_page = Page.objects.public().filter(application_urls='OrderApp').first()
-
     def __str__(self):
         return _("Order ID: {}").format(self.pk)
 
     def get_absolute_url(self):
-        return urljoin(self.order_page.get_absolute_url(), str(self.id))
+        """
+        Returns the URL of the page with the detail view for this order
+        """
+        return urljoin(self.objects.get_summary_url(), str(self.id))
 
     @transition(field=status, source='new', target='created')
     def populate_from_cart(self, cart, request):
@@ -147,9 +162,10 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         help_text=_("Product name at the moment of purchase."))
     product = deferred.ForeignKey('BaseProduct', null=True, blank=True, on_delete=models.SET_NULL,
         verbose_name=_("Product"))
-    unit_price = MoneyField(verbose_name=_("Unit price"),
+    unit_price = MoneyField(verbose_name=_("Unit price"), null=True,  # may be NaN
         help_text=_("Products unit price at the moment of purchase."))
-    line_total = MoneyField(verbose_name=_("Line Total"))
+    line_total = MoneyField(verbose_name=_("Line Total"), null=True,  # may be NaN
+        help_text=_("Line total on the invoice at the moment of purchase."))
     quantity = models.IntegerField(verbose_name=_("Ordered quantity"))
     extra_rows = JSONField(null=True, blank=True,
         verbose_name=_("Extra rows for this order item"))
