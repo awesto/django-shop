@@ -40,21 +40,24 @@ class OrderManager(models.Manager):
         """
         Returns the URL of the page with the list view for all orders related to the current user
         """
-        try:
-            return Page.objects.public().get(reverse_id='shop-order')
-        except Page.DoesNotExist:
-            return Page.objects.public().filter(application_urls='OrderApp').first()
-        return 'cms-page-with--reverse_id=shop-order--does-not-exist'
+        if not hasattr(self, '_summary_url'):
+            try:
+                page = Page.objects.public().get(reverse_id='shop-order')
+            except Page.DoesNotExist:
+                page = Page.objects.public().filter(application_urls='OrderApp').first()
+            finally:
+                self._summary_url = page and page.get_absolute_url() or 'cms-page-with--reverse_id=shop-order--does-not-exist/'
+        return self._summary_url
 
     def get_latest_url(self):
         """
         Returns the URL of the page with the detail view for the latest order related to the current user
         """
         try:
-            return Page.objects.public().get(reverse_id='shop-order-last')
+            return Page.objects.public().get(reverse_id='shop-order-last').get_absolute_url()
         except Page.DoesNotExist:
             pass  # TODO: could be retrieved by last order
-        return 'cms-page-with--reverse_id=shop-order-last--does-not-exist'
+        return 'cms-page-with--reverse_id=shop-order-last--does-not-exist/'
 
 
 class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
@@ -100,7 +103,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         """
         Returns the URL of the page with the detail view for this order
         """
-        return urljoin(self.objects.get_summary_url(), str(self.id))
+        return urljoin(OrderModel.objects.get_summary_url(), str(self.id))
 
     @transition(field=status, source='new', target='created')
     def populate_from_cart(self, cart, request):
@@ -127,7 +130,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         A short name for the order, to be displayed on the payment processor's
         website. Should be human-readable, as much as possible.
         """
-        return "%s-%s" % (self.pk, self.order_total)
+        return "{0}-{1}".format(self.pk, self.order_total)
 
 OrderModel = deferred.MaterializedModel(BaseOrder)
 

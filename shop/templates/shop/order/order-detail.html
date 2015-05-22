@@ -3,6 +3,7 @@
 {# Remember: placeholders for Order Detail View must be edited in Order List View mode #}
 
 {% placeholder "order-detail-heading" or %}
+	{# only available for Thank You view #}
 	<h2>{% trans "Your Order purchased on" %} <span shop-timestamp="{{ data.created_at }}"></span></h2>
 {% endplaceholder %}
 
