@@ -25,7 +25,3 @@ class Order(order.BaseOrder):
         self.billing_address_text = cart.shipping_address.as_text()
         annnotation = cart.extras.get('annotation', '')
         self.annotations = [(self.status, annnotation)]
-
-
-class OrderItem(order.BaseOrderItem):
-    """Default materialized model for OrderItem"""
