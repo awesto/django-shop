@@ -37,7 +37,6 @@ class JSONSerializerField(serializers.Field):
     def to_internal_value(self, data):
         return data
 
-
 # add JSONField to the map of customized serializers
 serializers.ModelSerializer._field_mapping[JSONField] = JSONSerializerField
 

@@ -67,8 +67,7 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     cart = deferred.ForeignKey('BaseCart', related_name='items')
     quantity = models.IntegerField(validators=[MinValueValidator(0)])
     product = deferred.ForeignKey(BaseProduct)
-    extra = JSONField(default={}, editable=False,
-        verbose_name=_("Arbitrary information for this cart item"))
+    extra = JSONField(default={}, verbose_name=_("Arbitrary information for this cart item"))
 
     objects = CartItemManager()
 
@@ -122,8 +121,7 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     user = models.OneToOneField(settings.AUTH_USER_MODEL)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
-    extra = JSONField(default={}, editable=False,
-        verbose_name=_("Arbitrary information for this cart"))
+    extra = JSONField(default={}, verbose_name=_("Arbitrary information for this cart"))
 
     # our CartManager determines the cart object from the request.
     objects = CartManager()
