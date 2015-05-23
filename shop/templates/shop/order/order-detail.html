@@ -32,7 +32,7 @@
 		<tr class="no-border">
 			<td colspan="3">
 				{{ order_item.summary.body }}
-				{% for key, extra_row in order_item.extra_rows.items %}
+				{% for key, extra_row in order_item.extra.rows.items %}
 				<div>{{ extra_row.label }}: {{ extra_row.amount }}</div>
 				{% endfor %}
 			</td>
@@ -50,7 +50,7 @@
 				<h5>{{ data.subtotal }}</h5>
 			</td>
 		</tr>
-	{% for key, extra_row in data.extra_rows.items %}
+	{% for key, extra_row in data.extra.rows.items %}
 		<tr>
 			<td colspan="2"></td>
 			<td>{{ extra_row.label }}</td>

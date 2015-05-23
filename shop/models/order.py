@@ -89,6 +89,8 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
     extra_rows = JSONField(null=True, blank=True,
         verbose_name=_("Extra rows for this order"))
+    extra = JSONField(default={}, editable=False,
+        verbose_name=_("Arbitrary information for this order object"))
     objects = OrderManager()
 
     class Meta:
@@ -113,7 +115,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         """
         self.subtotal = cart.subtotal
         self.total = cart.total
-        self.extra_rows = [(modifier, extra_row.data) for modifier, extra_row in cart.extra_rows.items()]
+        self.extra['rows'] = [(modifier, extra_row.data) for modifier, extra_row in cart.extra_rows.items()]
 
     def get_amount_paid(self):
         """
@@ -172,6 +174,8 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     quantity = models.IntegerField(verbose_name=_("Ordered quantity"))
     extra_rows = JSONField(null=True, blank=True,
         verbose_name=_("Extra rows for this order item"))
+    extra = JSONField(default={}, editable=False,
+        verbose_name=_("Arbitrary information for this order item"))
 
     class Meta:
         abstract = True
@@ -185,6 +189,6 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         self.unit_price = cart_item.product.get_price(request)
         self.line_total = cart_item.line_total
         self.quantity = cart_item.quantity
-        self.extra_rows = [(modifier, extra_row.data) for modifier, extra_row in cart_item.extra_rows.items()]
+        self.extra['rows'] = [(modifier, extra_row.data) for modifier, extra_row in cart_item.extra_rows.items()]
 
 OrderItemModel = deferred.MaterializedModel(BaseOrderItem)

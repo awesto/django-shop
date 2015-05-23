@@ -24,11 +24,11 @@ class OrderPaymentInline(admin.TabularInline):
 class OrderItemInline(admin.StackedInline):
     model = OrderItemModel
     extra = 0
-    readonly_fields = ('product_identifier', 'product_name', 'unit_price', 'line_total', 'extra_rows')
+    readonly_fields = ('product_identifier', 'product_name', 'unit_price', 'line_total',)
     fields = (
         ('product_identifier', 'product_name',),
         ('quantity', 'unit_price', 'line_total',),
-        ('extra_rows',),
+        'extra',
     )
 
     def get_formset(self, request, obj=None, **kwargs):
@@ -43,8 +43,8 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
     fsm_field = ('status',)
     date_hierarchy = 'created_at'
     inlines = (OrderPaymentInline, OrderItemInline,)
-    readonly_fields = ('status', 'user', 'total', 'subtotal', 'created_at', 'updated_at', 'extra_rows',)
-    fields = (('created_at', 'updated_at'), 'status', ('subtotal', 'total',), 'user', 'extra_rows',)
+    readonly_fields = ('status', 'user', 'total', 'subtotal', 'created_at', 'updated_at',)
+    fields = (('created_at', 'updated_at'), 'status', ('subtotal', 'total',), 'user', 'extra',)
 
     def save_model(self, request, obj, form, change):
         amount_paid = obj.get_amount_paid()
@@ -54,7 +54,7 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
             pass
 
     def get_form(self, request, obj=None, **kwargs):
-        # must add field `extra_rows` on the fly.
+        # must add field `extra` on the fly.
         #Form = type('TextLinkForm', (TextLinkFormBase,), {'ProductModel': ProductModel, 'product': product_field})
         #kwargs.update(form=Form)
         return super(BaseOrderAdmin, self).get_form(request, obj, **kwargs)
