@@ -112,10 +112,7 @@ class PaymentModifier(BaseCartModifier):
         """
         Returns true if this payment modifier is active.
         """
-        try:
-            return cart.extra.get('payment_modifier') == self.identifier
-        except (TypeError, AttributeError, KeyError):
-            return False
+        return cart.extra.get('payment_modifier') == self.identifier
 
     def update_render_context(self, context):
         """
@@ -139,10 +136,7 @@ class ShippingModifier(BaseCartModifier):
         """
         Returns true if this shipping modifier is active.
         """
-        try:
-            return cart.extra.get('shipping_modifier') == self.identifier
-        except (TypeError, AttributeError, KeyError):
-            return False
+        return cart.extra.get('shipping_modifier') == self.identifier
 
     def update_render_context(self, context):
         """

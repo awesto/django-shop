@@ -26,35 +26,47 @@ class CartItemManager(models.Manager):
         """
         cart = kwargs.pop('cart')
         product = kwargs.pop('product')
-        surplus = dict(**kwargs)
-        cart_item, created = self.get_or_create_item(cart, product, surplus)
-        for key, attr in surplus.items():
+        quantity = int(kwargs.pop('quantity', 1))
+        extra = kwargs.pop('extra', {})
+        variation = extra.pop('variation', None)
+        if variation:
+            cart_item, created = self.get_or_create_item_with_variation(cart, product, quantity, extra, variation)
+        else:
+            cart_item, created = self.get_or_create_item(cart, product, quantity, extra)
+        # assign the remaining attributes to the model
+        for key, attr in kwargs.items():
             setattr(cart_item, key, attr)
         cart_item.save()
         return cart_item, created
 
-    def get_or_create_item(self, cart, product, surplus):
-        quantity = int(surplus.pop('quantity'))
+    def get_or_create_item(self, cart, product, quantity, extra):
         try:
             cart_item = self.model.objects.get(cart=cart, product=product)
             cart_item.quantity += quantity
+            cart_item.extra.update(extra)
             created = False
         except self.model.DoesNotExist:
-            cart_item = self.model(cart=cart, product=product, quantity=quantity)
+            cart_item = self.model(cart=cart, product=product, quantity=quantity, extra=extra)
             created = True
         return cart_item, created
 
-    def get_or_create_item_with_variation(self, cart, product, surplus):
-        # deprecated implementation for adding items with variation to the cart
-        quantity = int(surplus.pop('quantity'))
-        variation = surplus.pop('variation', None)
-        variation_hash = variation and sha1(json.dumps(variation, cls=DjangoJSONEncoder, sort_keys=True)).hexdigest()
-        try:
-            cart_item = self.model.objects.get(cart=cart, product=product, variation_hash=variation_hash)
-            cart_item.quantity += quantity
-            created = False
-        except self.model.DoesNotExist:
-            cart_item = self.model(cart=cart, product=product, variation_hash=variation_hash, quantity=quantity)
+    def get_or_create_item_with_variation(self, cart, product, quantity, extra, variation):
+        """
+        Cart items representing a product with a variation can be added with this method.
+        If the given variation is equal to an item with the same variation, then the quantity is
+        increased, otherwise a new item is added to the cart.
+        """
+        variation_hash = sha1(json.dumps(variation, cls=DjangoJSONEncoder, sort_keys=True)).hexdigest()
+        extra.update(variation=variation, variation_hash=variation_hash)
+        # search for all cart items if one of them has the same variation
+        for cart_item in self.model.objects.filter(cart=cart, product=product):
+            if cart_item.extra.get('variation_hash') == variation_hash:
+                cart_item.quantity += quantity
+                cart_item.extra.update(extra)
+                created = False
+                break
+        else:
+            cart_item = self.model(cart=cart, product=product, quantity=quantity, extra=extra)
             created = True
         return cart_item, created
 
