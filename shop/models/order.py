@@ -87,8 +87,6 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     total = MoneyField(verbose_name=_("Total"))
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
-    extra_rows = JSONField(null=True, blank=True,
-        verbose_name=_("Extra rows for this order"))
     extra = JSONField(default={}, editable=False,
         verbose_name=_("Arbitrary information for this order object"))
     objects = OrderManager()
@@ -115,7 +113,8 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         """
         self.subtotal = cart.subtotal
         self.total = cart.total
-        self.extra['rows'] = [(modifier, extra_row.data) for modifier, extra_row in cart.extra_rows.items()]
+        self.extra = cart.extra
+        self.extra.update(rows=[(modifier, extra_row.data) for modifier, extra_row in cart.extra_rows.items()])
 
     def get_amount_paid(self):
         """
@@ -172,8 +171,6 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     line_total = MoneyField(verbose_name=_("Line Total"), null=True,  # may be NaN
         help_text=_("Line total on the invoice at the moment of purchase."))
     quantity = models.IntegerField(verbose_name=_("Ordered quantity"))
-    extra_rows = JSONField(null=True, blank=True,
-        verbose_name=_("Extra rows for this order item"))
     extra = JSONField(default={}, editable=False,
         verbose_name=_("Arbitrary information for this order item"))
 
@@ -189,6 +186,7 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         self.unit_price = cart_item.product.get_price(request)
         self.line_total = cart_item.line_total
         self.quantity = cart_item.quantity
-        self.extra['rows'] = [(modifier, extra_row.data) for modifier, extra_row in cart_item.extra_rows.items()]
+        self.extra = cart_item.extra
+        self.extra.update(rows=[(modifier, extra_row.data) for modifier, extra_row in cart_item.extra_rows.items()])
 
 OrderItemModel = deferred.MaterializedModel(BaseOrderItem)

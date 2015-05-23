@@ -270,7 +270,6 @@ class OrderItemSerializer(serializers.ModelSerializer):
     line_total = MoneyField()
     summary = serializers.SerializerMethodField(
         help_text="Sub-serializer for fields to be shown in the product's summary.")
-    extra_rows = OrderedDictField()
 
     class Meta:
         model = OrderItemModel
@@ -285,7 +284,6 @@ class OrderItemSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     subtotal = MoneyField()
     total = MoneyField()
-    extra_rows = OrderedDictField()
 
     class Meta:
         model = OrderModel
