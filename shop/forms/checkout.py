@@ -192,15 +192,18 @@ class ShippingMethodForm(DialogForm):
             return {cls.form_name: shipping_method_form.errors}
 
 
-class ExtrasForm(DialogForm):
-    scope_prefix = 'data.extras'
+class ExtraAnnotationForm(DialogForm):
+    scope_prefix = 'data.extra_annotation'
 
     annotation = fields.CharField(required=False, widget=widgets.Textarea)
 
     @classmethod
     def form_factory(cls, request, data, cart):
-        cart.extras = cart.extras or {}
-        cart.extras.update(data or {})
+        extra_annotation_form = cls(data=data)
+        if extra_annotation_form.is_valid():
+            cart.extra.update(extra_annotation_form.cleaned_data)
+        else:
+            return {cls.form_name: extra_annotation_form.errors}
 
 
 class TermsAndConditionsForm(DialogForm):

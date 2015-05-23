@@ -147,16 +147,17 @@ if cart_modifiers_pool.get_shipping_modifiers():
     DialogFormPluginBase.register_plugin(ShippingMethodFormPlugin)
 
 
-class ExtrasFormPlugin(DialogFormPluginBase):
+class ExtraAnnotationFormPlugin(DialogFormPluginBase):
     name = _("Extra Annotation Form")
-    form_class = 'shop.forms.checkout.ExtrasForm'
-    template_leaf_name = 'extras.html'
+    form_class = 'shop.forms.checkout.ExtraAnnotationForm'
+    template_leaf_name = 'extra-annotation.html'
 
     def get_form_data(self, request):
         cart = CartModel.objects.get_from_request(request)
-        return {'initial': cart.extras or {}}
+        initial = {'annotation': cart.extra.get('annotation', '')}
+        return {'initial': initial}
 
-DialogFormPluginBase.register_plugin(ExtrasFormPlugin)
+DialogFormPluginBase.register_plugin(ExtraAnnotationFormPlugin)
 
 
 class TermsAndConditionsFormPlugin(DialogFormPluginBase):
