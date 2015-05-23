@@ -44,6 +44,20 @@ class CartItemManager(models.Manager):
             created = True
         return cart_item, created
 
+    def get_or_create_item_with_variation(self, cart, product, surplus):
+        # deprecated implementation for adding items with variation to the cart
+        quantity = int(surplus.pop('quantity'))
+        variation = surplus.pop('variation', None)
+        variation_hash = variation and sha1(json.dumps(variation, cls=DjangoJSONEncoder, sort_keys=True)).hexdigest()
+        try:
+            cart_item = self.model.objects.get(cart=cart, product=product, variation_hash=variation_hash)
+            cart_item.quantity += quantity
+            created = False
+        except self.model.DoesNotExist:
+            cart_item = self.model(cart=cart, product=product, variation_hash=variation_hash, quantity=quantity)
+            created = True
+        return cart_item, created
+
 
 class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
@@ -87,40 +101,6 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         self._dirty = False
 
 CartItemModel = deferred.MaterializedModel(BaseCartItem)
-
-
-class CartVariableItemManager(CartItemManager):
-    """
-    Customized model manager for our CartVariableItem model.
-    """
-    def get_or_create_item(self, cart, product, surplus):
-        quantity = int(surplus.pop('quantity'))
-        variation = surplus.pop('variation', None)
-        variation_hash = variation and sha1(json.dumps(variation, cls=DjangoJSONEncoder, sort_keys=True)).hexdigest()
-        try:
-            cart_item = self.model.objects.get(cart=cart, product=product, variation_hash=variation_hash)
-            cart_item.quantity += quantity
-            created = False
-        except self.model.DoesNotExist:
-            cart_item = self.model(cart=cart, product=product, variation_hash=variation_hash, quantity=quantity)
-            created = True
-        return cart_item, created
-
-
-class BaseCartVariableItem(BaseCartItem):
-    """
-    Use this enriched implementation, in case a Product can be added to the cart in different
-    variations.
-    """
-    variation = JSONField(null=True, blank=True,
-        verbose_name=_("Configured product variation"))
-    variation_hash = models.CharField(max_length=64, null=True,
-        verbose_name=_("A hash for the above variation"))
-
-    objects = CartVariableItemManager()
-
-    class Meta:
-        abstract = True
 
 
 class CartManager(models.Manager):
