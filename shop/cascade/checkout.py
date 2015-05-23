@@ -134,7 +134,8 @@ class ShippingMethodFormPlugin(DialogFormPluginBase):
 
     def get_form_data(self, request):
         cart = CartModel.objects.get_from_request(request)
-        return {'initial': cart.shipping_method}
+        initial = {'shipping_modifier': cart.extra.get('shipping_modifier')}
+        return {'initial': initial}
 
     def render(self, context, instance, placeholder):
         super(ShippingMethodFormPlugin, self).render(context, instance, placeholder)

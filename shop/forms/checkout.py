@@ -187,7 +187,7 @@ class ShippingMethodForm(DialogForm):
     def form_factory(cls, request, data, cart):
         shipping_method_form = cls(data=data)
         if shipping_method_form.is_valid():
-            cart.shipping_method = shipping_method_form.cleaned_data
+            cart.extra.update(shipping_method_form.cleaned_data)
         else:
             return {cls.form_name: shipping_method_form.errors}
 
