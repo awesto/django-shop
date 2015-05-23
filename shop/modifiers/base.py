@@ -113,7 +113,7 @@ class PaymentModifier(BaseCartModifier):
         Returns true if this payment modifier is active.
         """
         try:
-            return cart.payment_method['payment_modifier'] == self.identifier
+            return cart.extra['payment_modifier'] == self.identifier
         except (TypeError, AttributeError, KeyError):
             return False
 
