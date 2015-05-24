@@ -16,8 +16,6 @@ djangoShopModule.directive('shopScrollSpy', ['$document', function($document) {
 			offsetBottom = angular.isNumber(attrs.shopOffsetBottom) ? parseInt(attrs.shopOffsetBottom) : 0;
 
 		$document.on('scroll', function(evt) {
-			console.log(body.scrollTop + docElem.clientHeight);
-			console.log(spyElem.offsetTop + spyElem.clientHeight + offsetBottom);
 			if (Math.ceil(body.scrollTop + docElem.clientHeight) >= Math.floor(spyElem.offsetTop + spyElem.clientHeight + offsetBottom)) {
 				scope.$apply(attrs.shopScrollSpy);
 			}
@@ -34,8 +32,6 @@ djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$mo
 
 	this.loadContext = function() {
 		$http.get(updateUrl).success(function(context) {
-			console.log('loaded product:');
-			console.log(context);
 			prevContext = context;
 			$scope.context = angular.copy(context);
 		}).error(function(msg) {
