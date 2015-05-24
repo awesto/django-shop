@@ -105,11 +105,11 @@ class ProductRetrieveView(generics.RetrieveAPIView):
     def get_template_names(self):
         product = self.get_object()
         app_label = product._meta.app_label.lower()
-        basename = 'catalog-{}-detail.html'.format(product.__class__.__name__.lower())
+        basename = 'catalog-detail-{}.html'.format(product.__class__.__name__.lower())
         return [
             os.path.join(app_label, 'pages', basename),
-            os.path.join(app_label, 'pages/catalog-product-detail.html'),
-            'shop/pages/catalog-product-detail.html',
+            os.path.join(app_label, 'pages/catalog-detail-product.html'),
+            'shop/pages/catalog-detail-product.html',
         ]
 
     def get_renderer_context(self):
