@@ -10,7 +10,6 @@ from django.utils.translation import ugettext_lazy as _
 from polymorphic.manager import PolymorphicManager
 from polymorphic.polymorphic_model import PolymorphicModel
 from polymorphic.base import PolymorphicModelBase
-from .order import OrderItemModel
 from . import deferred
 
 
@@ -25,7 +24,7 @@ class ProductStatisticsManager(PolymorphicManager):
         products (of a size equal to the quantity parameter), ordered by how
         many times they have been purchased.
         """
-        #OrderItem = getattr(BaseOrderItem, 'MaterializedModel')
+        from .order import OrderItemModel
 
         # Get an aggregate of product references and their respective counts
         top_products_data = OrderItemModel.objects.values('product') \
@@ -148,5 +147,14 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         considered as not available.
         """
         return [(True, datetime.max)]  # Infinite number of products available until eternity
+
+    def is_in_cart(self, cart):
+        """
+        Checks if the product is already in the given cart, and if returns the corresponding
+        cart_item, otherwise None.
+        """
+        from .cart import CartItemModel
+        cart_item = CartItemModel.objects.filter(cart=cart, product=self).first()
+        return cart_item
 
 ProductModel = deferred.MaterializedModel(BaseProduct)

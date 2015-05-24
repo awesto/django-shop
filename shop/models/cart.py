@@ -40,12 +40,12 @@ class CartItemManager(models.Manager):
         return cart_item, created
 
     def get_or_create_item(self, cart, product, quantity, extra):
-        try:
-            cart_item = self.model.objects.get(cart=cart, product=product)
+        cart_item = product.is_in_cart(cart=cart)
+        if cart_item:
             cart_item.quantity += quantity
             cart_item.extra.update(extra)
             created = False
-        except self.model.DoesNotExist:
+        else:
             cart_item = self.model(cart=cart, product=product, quantity=quantity, extra=extra)
             created = True
         return cart_item, created
