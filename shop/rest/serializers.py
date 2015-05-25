@@ -80,7 +80,8 @@ class ProductCommonSerializer(serializers.ModelSerializer):
 class SerializerRegistryMetaclass(serializers.SerializerMetaclass):
     """
     Keep a global reference onto the class implementing `ProductSummarySerializerBase`.
-    There can be only one class instance.
+    There can be only one class instance, because the products summary is the lowest common
+    denominator for all products of this shop instance.
     """
     def __new__(cls, clsname, bases, attrs):
         global product_summary_serializer_class
