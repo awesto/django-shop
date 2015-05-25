@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import json
 from six import with_metaclass
 from collections import OrderedDict
-from hashlib import sha1
 from django.conf import settings
 from django.core.validators import MinValueValidator
-from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from jsonfield.fields import JSONField
@@ -28,19 +25,9 @@ class CartItemManager(models.Manager):
         product = kwargs.pop('product')
         quantity = int(kwargs.pop('quantity', 1))
         extra = kwargs.pop('extra', {})
-        variation = extra.pop('variation', None)
-        if variation:
-            cart_item, created = self.get_or_create_item_with_variation(cart, product, quantity, extra, variation)
-        else:
-            cart_item, created = self.get_or_create_item(cart, product, quantity, extra)
-        # assign the remaining attributes to the model
-        for key, attr in kwargs.items():
-            setattr(cart_item, key, attr)
-        cart_item.save()
-        return cart_item, created
 
-    def get_or_create_item(self, cart, product, quantity, extra):
-        cart_item = product.is_in_cart(cart=cart)
+        # add a new item to the cart, or reuse an existing one, increasing the quantity
+        cart_item = product.is_in_cart(cart=cart, extra)
         if cart_item:
             cart_item.quantity += quantity
             cart_item.extra.update(extra)
@@ -48,26 +35,12 @@ class CartItemManager(models.Manager):
         else:
             cart_item = self.model(cart=cart, product=product, quantity=quantity, extra=extra)
             created = True
-        return cart_item, created
 
-    def get_or_create_item_with_variation(self, cart, product, quantity, extra, variation):
-        """
-        Cart items representing a product with a variation can be added with this method.
-        If the given variation is equal to an item with the same variation, then the quantity is
-        increased, otherwise a new item is added to the cart.
-        """
-        variation_hash = sha1(json.dumps(variation, cls=DjangoJSONEncoder, sort_keys=True)).hexdigest()
-        extra.update(variation=variation, variation_hash=variation_hash)
-        # search for all cart items if one of them has the same variation
-        for cart_item in self.model.objects.filter(cart=cart, product=product):
-            if cart_item.extra.get('variation_hash') == variation_hash:
-                cart_item.quantity += quantity
-                cart_item.extra.update(extra)
-                created = False
-                break
-        else:
-            cart_item = self.model(cart=cart, product=product, quantity=quantity, extra=extra)
-            created = True
+        # assign the remaining attributes to the model (applies only to overridden CartItem models)
+        for key, attr in kwargs.items():
+            setattr(cart_item, key, attr)
+
+        cart_item.save()
         return cart_item, created
 
 

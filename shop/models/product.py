@@ -148,10 +148,12 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         """
         return [(True, datetime.max)]  # Infinite number of products available until eternity
 
-    def is_in_cart(self, cart):
+    def is_in_cart(self, cart, extra):
         """
         Checks if the product is already in the given cart, and if returns the corresponding
-        cart_item, otherwise None.
+        cart_item, otherwise None. The dictionary `extra` is  used for passing arbitrary information
+        about the product. It can be used to determine if products with variations shall be
+        added to the cart or added as separate items.
         """
         from .cart import CartItemModel
         cart_item = CartItemModel.objects.filter(cart=cart, product=self).first()
