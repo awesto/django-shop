@@ -87,8 +87,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     total = MoneyField(verbose_name=_("Total"))
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
-    extra = JSONField(default={}, editable=False,
-        verbose_name=_("Arbitrary information for this order object"))
+    extra = JSONField(default={}, verbose_name=_("Arbitrary information for this order object"))
     objects = OrderManager()
 
     class Meta:
@@ -171,8 +170,7 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     line_total = MoneyField(verbose_name=_("Line Total"), null=True,  # may be NaN
         help_text=_("Line total on the invoice at the moment of purchase."))
     quantity = models.IntegerField(verbose_name=_("Ordered quantity"))
-    extra = JSONField(default={}, editable=False,
-        verbose_name=_("Arbitrary information for this order item"))
+    extra = JSONField(default={}, verbose_name=_("Arbitrary information for this order item"))
 
     class Meta:
         abstract = True

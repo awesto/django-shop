@@ -24,7 +24,7 @@ class OrderPaymentInline(admin.TabularInline):
 class OrderItemInline(admin.StackedInline):
     model = OrderItemModel
     extra = 0
-    readonly_fields = ('product_identifier', 'product_name', 'unit_price', 'line_total',)
+    readonly_fields = ('product_identifier', 'product_name', 'unit_price', 'line_total', 'extra',)
     fields = (
         ('product_identifier', 'product_name',),
         ('quantity', 'unit_price', 'line_total',),
@@ -43,7 +43,7 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
     fsm_field = ('status',)
     date_hierarchy = 'created_at'
     inlines = (OrderPaymentInline, OrderItemInline,)
-    readonly_fields = ('status', 'user', 'total', 'subtotal', 'created_at', 'updated_at',)
+    readonly_fields = ('status', 'user', 'total', 'subtotal', 'created_at', 'updated_at', 'extra',)
     fields = (('created_at', 'updated_at'), 'status', ('subtotal', 'total',), 'user', 'extra',)
 
     def save_model(self, request, obj, form, change):
