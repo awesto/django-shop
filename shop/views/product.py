@@ -23,8 +23,10 @@ class ProductListView(generics.ListAPIView):
     limit_choices_to = Q()
 
     def get_queryset(self):
-        lang = get_language_from_request(self.request)
-        qs = self.product_model.objects.filter(self.limit_choices_to, translations__language_code=lang)
+        filter_kwargs = {}
+        if hasattr(self.product_model, 'translations'):
+            filter_kwargs.update(translations__language_code=get_language_from_request(self.request))
+        qs = self.product_model.objects.filter(self.limit_choices_to, **filter_kwargs)
 
         # restrict products for current CMS page
         current_page = self.request.current_page
@@ -74,10 +76,9 @@ class AddToCartView(views.APIView):
 
     def get_context(self, request, **kwargs):
         assert self.lookup_url_kwarg in kwargs
-        filter_kwargs = {
-            self.lookup_field: kwargs.pop(self.lookup_url_kwarg),
-            'translations__language_code': get_language_from_request(self.request),
-        }
+        filter_kwargs = {self.lookup_field: kwargs.pop(self.lookup_url_kwarg)}
+        if hasattr(self.product_model, 'translations'):
+            filter_kwargs.update(translations__language_code=get_language_from_request(self.request))
         queryset = self.product_model.objects.filter(self.limit_choices_to, **filter_kwargs)
         product = get_object_or_404(queryset)
         return {'product': product, 'request': request}
@@ -127,10 +128,9 @@ class ProductRetrieveView(generics.RetrieveAPIView):
     def get_object(self):
         if not hasattr(self, '_product'):
             assert self.lookup_url_kwarg in self.kwargs
-            filter_kwargs = {
-                self.lookup_field: self.kwargs[self.lookup_url_kwarg],
-                'translations__language_code': get_language_from_request(self.request),
-            }
+            filter_kwargs = {self.lookup_field: self.kwargs[self.lookup_url_kwarg]}
+            if hasattr(self.product_model, 'translations'):
+                filter_kwargs.update(translations__language_code=get_language_from_request(self.request))
             queryset = self.product_model.objects.filter(self.limit_choices_to, **filter_kwargs)
             product = get_object_or_404(queryset)
             self._product = product
