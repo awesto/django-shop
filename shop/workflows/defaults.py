@@ -15,7 +15,7 @@ class PayInAdvanceWorkflowMixin(object):
     applyme.hint = _("Test if condition can be applied")
 
     @transition(field='status', source=['created', 'deposited'], target='deposited', conditions=[applyme],
-                custom=dict(transition_engine='admin'))
+                custom=dict(admin=True))
     def payment_deposited(self):
         #self.orderpayment_set.all()
         print 'payment_deposited'
