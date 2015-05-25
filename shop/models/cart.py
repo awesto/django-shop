@@ -27,7 +27,7 @@ class CartItemManager(models.Manager):
         extra = kwargs.pop('extra', {})
 
         # add a new item to the cart, or reuse an existing one, increasing the quantity
-        cart_item = product.is_in_cart(cart=cart, extra)
+        cart_item = product.is_in_cart(cart, extra)
         if cart_item:
             cart_item.quantity += quantity
             cart_item.extra.update(extra)
