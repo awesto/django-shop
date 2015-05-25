@@ -10,6 +10,7 @@ from shop.modifiers.pool import cart_modifiers_pool
 class OrderPaymentInline(admin.TabularInline):
     model = OrderPayment
     extra = 0
+    fields = ('amount', 'transaction_id', 'payment_method',)
 
     def get_formset(self, request, obj=None, **kwargs):
         """
@@ -37,9 +38,9 @@ class OrderItemInline(admin.StackedInline):
 
 
 class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
-    list_display = ('id', 'user', 'status', 'total', 'created_at')
-    list_filter = ('status', 'user')
-    search_fields = ('id', 'user__username', 'user__lastname')
+    list_display = ('id', 'user', 'status', 'total', 'created_at',)
+    list_filter = ('status', 'user',)
+    search_fields = ('id', 'user__username', 'user__lastname',)
     fsm_field = ('status',)
     date_hierarchy = 'created_at'
     inlines = (OrderPaymentInline, OrderItemInline,)
@@ -61,5 +62,8 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
 
 
 class OrderAdmin(BaseOrderAdmin):
-    search_fields = BaseOrderAdmin.search_fields + ('shipping_address_text', 'billing_address_text')
+    """
+    Admin class to be used with `shop.models.defauls.order`
+    """
+    search_fields = BaseOrderAdmin.search_fields + ('shipping_address_text', 'billing_address_text',)
     fields = BaseOrderAdmin.fields + (('shipping_address_text', 'billing_address_text',),)
