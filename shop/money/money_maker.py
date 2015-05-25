@@ -44,7 +44,7 @@ class AbstractMoney(Decimal):
 
     def __add__(self, other, context=None):
         other = self._assert_addable(other)
-        amount = Decimal.__add__(self, other, context)
+        amount = Decimal.__add__(self, other, context) if not self.is_nan() else other
         return self.__class__(amount)
 
     def __radd__(self, other, context=None):
