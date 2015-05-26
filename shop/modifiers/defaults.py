@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.utils.translation import ugettext as _
 from shop.modifiers.base import PaymentModifier, ShippingModifier
 from shop.money import AbstractMoney, Money
-from shop.payment.prepayment import ForwardFundPayment
+from shop.payment.defaults import ForwardFundPayment
 from .base import BaseCartModifier
 
 
