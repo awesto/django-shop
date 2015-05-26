@@ -15,6 +15,10 @@ from shop import settings as shop_settings
 from shop.money.fields import MoneyField
 from . import deferred
 
+ORDER_TRANSITION_TARGETS = {
+    'deposited': _("Payment deposited"),
+}
+
 
 class OrderManager(models.Manager):
     @transaction.commit_on_success
