@@ -2,11 +2,12 @@
 from __future__ import unicode_literals
 from six import with_metaclass
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.module_loading import import_by_path
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, pgettext
 from django.utils.six.moves.urllib.parse import urljoin
 from jsonfield.fields import JSONField
 from django_fsm import FSMField, transition
@@ -14,10 +15,6 @@ from cms.models import Page
 from shop import settings as shop_settings
 from shop.money.fields import MoneyField
 from . import deferred
-
-ORDER_TRANSITION_TARGETS = {
-    'deposited': _("Payment deposited"),
-}
 
 
 class OrderManager(models.Manager):
@@ -72,8 +69,14 @@ class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
     def __new__(cls, name, bases, attrs):
         if 'BaseOrder' in (b.__name__ for b in bases):
             bases = tuple(import_by_path(mc) for mc in shop_settings.ORDER_WORKFLOWS) + bases
-        elif name == 'OrderPayment':
-            bases = tuple(import_by_path(mc) for mc in shop_settings.PAYMENT_WORKFLOWS) + bases
+            # merge the dicts of TRANSITION_TARGETS
+            attrs['TRANSITION_TARGETS'] = {}
+            for b in reversed(bases):
+                TRANSITION_TARGETS = getattr(b, 'TRANSITION_TARGETS', {})
+                if set(TRANSITION_TARGETS.keys()).intersection(attrs['TRANSITION_TARGETS']):
+                    msg = "Mixin class {} already contains a transition named '{}'"
+                    raise ImproperlyConfigured(msg.format(b.__name__, ', '.join(TRANSITION_TARGETS.keys())))
+                attrs['TRANSITION_TARGETS'].update(TRANSITION_TARGETS)
         Model = super(WorkflowMixinMetaclass, cls).__new__(cls, name, bases, attrs)
         return Model
 
@@ -85,6 +88,10 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     cart on the moment of purchase. It also holds stuff like the shipping and billing addresses,
     and keeps all the additional entities, as determined by the cart modifiers.
     """
+    TRANSITION_TARGETS = {
+        'new': _("New order without content"),
+        'created': _("Order freshly created"),
+    }
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_("Customer"))
     status = FSMField(default='new', protected=True, verbose_name=_("Status"))
     subtotal = MoneyField(verbose_name=_("Subtotal"))
@@ -119,6 +126,11 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         self.extra = cart.extra
         self.extra.update(rows=[(modifier, extra_row.data) for modifier, extra_row in cart.extra_rows.items()])
 
+    @transition(field=status, source='*', target='created',
+                custom=dict(admin=True, button_name=_("Notify Customer")))
+    def notify_user(self, by=None):
+        print 'notify ', by
+
     def get_amount_paid(self):
         """
         The amount paid is the sum of related orderpayments
@@ -127,6 +139,16 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         if amount is None:
             amount = type(self.total)(0)
         return amount
+
+    @classmethod
+    def get_transition_name(cls, target):
+        """Return the human readable name for a given transition target"""
+        return cls.TRANSITION_TARGETS.get(target, target)
+
+    def status_name(self):
+        """Return the human readable name for the current transition state"""
+        return self.TRANSITION_TARGETS.get(self.status, self.status)
+    status_name.short_description = pgettext('status_name', "State")
 
     @property
     def short_name(self):
