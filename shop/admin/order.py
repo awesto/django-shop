@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 from django.contrib import admin
 from django.forms import widgets
+from django.utils.translation import ugettext_lazy as _
 from fsm_admin.mixins import FSMTransitionMixin
 from shop.models.order import OrderItemModel, OrderPayment
 from shop.modifiers.pool import cart_modifiers_pool
@@ -38,21 +39,14 @@ class OrderItemInline(admin.StackedInline):
 
 
 class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
-    list_display = ('id', 'user', 'status', 'total', 'created_at',)
+    list_display = ('id', 'user', 'status_name', 'total', 'created_at',)
     list_filter = ('status', 'user',)
     search_fields = ('id', 'user__username', 'user__lastname',)
     fsm_field = ('status',)
     date_hierarchy = 'created_at'
     inlines = (OrderPaymentInline, OrderItemInline,)
-    readonly_fields = ('status', 'user', 'total', 'subtotal', 'created_at', 'updated_at', 'extra',)
-    fields = (('created_at', 'updated_at'), 'status', ('subtotal', 'total',), 'user', 'extra',)
-
-    def save_model(self, request, obj, form, change):
-        amount_paid = obj.get_amount_paid()
-        obj.payment_deposited()
-        super(BaseOrderAdmin, self).save_model(request, obj, form, change)
-        if obj.get_amount_paid() > amount_paid:
-            pass
+    readonly_fields = ('status_name', 'user', 'total', 'subtotal', 'created_at', 'updated_at', 'extra',)
+    fields = ('status_name', ('created_at', 'updated_at'), ('subtotal', 'total',), 'user', 'extra',)
 
     def get_form(self, request, obj=None, **kwargs):
         # must add field `extra` on the fly.
