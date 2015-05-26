@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from collections import OrderedDict
 from django.core import exceptions
 from django.db import models
-from django.template import RequestContext
+from django.template import Context
 from django.template.loader import select_template
 from django.utils.six import with_metaclass
 from django.utils.html import strip_spaces_between_tags
@@ -50,10 +50,10 @@ class ProductCommonSerializer(serializers.ModelSerializer):
     availability = serializers.SerializerMethodField()
 
     def get_price(self, product):
-        return product.get_price(self.context['request'])
+        return product.get_price(request=self.context.get('request'))
 
     def get_availability(self, product):
-        return product.get_availability(self.context['request'])
+        return product.get_availability(request=self.context.get('request'))
 
     def render_html(self, product, postfix):
         """
@@ -71,8 +71,7 @@ class ProductCommonSerializer(serializers.ModelSerializer):
             ('shop', self.label, 'product', postfix),
         ]
         template = select_template(['{0}/products/{1}-{2}-{3}.html'.format(*p) for p in params])
-        request = self.context['request']
-        context = RequestContext(request, {'product': product})
+        context = Context({'product': product})
         content = strip_spaces_between_tags(template.render(context).strip())
         return mark_safe(content)
 

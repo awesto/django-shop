@@ -127,16 +127,19 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         msg = "Method get_absolute_url() must be implemented by subclass: {}"
         raise NotImplementedError(msg.format(self.__class__.__name__))
 
-    def get_price(self, request):
+    def get_price(self, request=None):
         """
         Hook for returning the current price of this product.
         The price shall be of type Money. Read the appropriate section on how to create a Money
         type for the chosen currency.
+        Optionally use the `request` object to vary the price according to the logged in user,
+        its country code or language. The `request` object is not available, when rendering
+        the order.
         """
         msg = "Method get_price() must be implemented by subclass: `{}`"
         raise NotImplementedError(msg.format(self.__class__.__name__))
 
-    def get_availability(self, request):
+    def get_availability(self, request=None):
         """
         Hook for checking the availability of a product. It returns a list of tuples with this
         notation:
@@ -145,6 +148,9 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         - Until which timestamp, in UTC, the specified number of items are available.
         This function can return more than one tuple. If the list is empty, then the product is
         considered as not available.
+        Optionally use the `request` object to vary the availability according to the logged in
+        user, its country code or language. The `request` object is not available, when rendering
+        the order.
         """
         return [(True, datetime.max)]  # Infinite number of products available until eternity
 
