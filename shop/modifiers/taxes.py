@@ -10,7 +10,7 @@ class CartIncludeTaxModifier(BaseCartModifier):
     """
     This tax calculator presumes that unit prices are net prices, hence also the subtotal,
     and that the tax is added globally to the carts total.
-    By placing this modifier before the shipping modifiers, one can add tax to
+    By placing this modifier after the shipping modifiers, one can add tax to
     the shipping costs. Otherwise shipping cost are considered tax free.
     """
     taxes = settings.VALUE_ADDED_TAX / 100
@@ -31,7 +31,7 @@ class CartIncludeTaxModifier(BaseCartModifier):
 class CartExcludedTaxModifier(BaseCartModifier):
     """
     This tax calculator presumes that unit prices are gross prices, hence also the subtotal,
-    and that the tax is identified per cart but not added.
+    and that the tax is calculated per cart but not added to the cart.
     """
     taxes = 1 - 1 / (1 + settings.VALUE_ADDED_TAX / 100)
 
