@@ -7,9 +7,10 @@ from django.db import models, transaction
 from django.db.models.aggregates import Sum
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.module_loading import import_by_path
-from django.utils.translation import ugettext_lazy as _, pgettext
+from django.utils.translation import ugettext_lazy as _, pgettext, get_language_from_request
 from django.utils.six.moves.urllib.parse import urljoin
 from jsonfield.fields import JSONField
+from ipware.ip import get_ip
 from django_fsm import FSMField, transition
 from cms.models import Page
 from shop import settings as shop_settings
@@ -25,7 +26,7 @@ class OrderManager(models.Manager):
         with its CartItems.
         """
         cart.update(request)
-        order = self.model(user=cart.user)
+        order = self.model(user=cart.user, stored_request=self.stored_request(request))
         order.save()
         for cart_item in cart.items.all():
             cart_item.update(request)
@@ -36,6 +37,18 @@ class OrderManager(models.Manager):
         order.save()
         cart.delete()
         return order
+
+    def stored_request(self, request):
+        """
+        Extract useful information about the request to be used for emulating a Django request
+        during offline rendering.
+        """
+        return {
+            'language': get_language_from_request(request),
+            'absolute_base_uri': request.build_absolute_uri('/'),
+            'remote_ip': get_ip(request),
+            'user_agent': request.META.get('HTTP_USER_AGENT'),
+        }
 
     def get_summary_url(self):
         """
@@ -98,7 +111,10 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     total = MoneyField(verbose_name=_("Total"))
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
-    extra = JSONField(default={}, verbose_name=_("Arbitrary information for this order object"))
+    extra = JSONField(default={}, verbose_name=_("Extra fields"),
+        help_text=_("Arbitrary information for this order object on the moment of purchase."))
+    stored_request = JSONField(default={},
+        help_text=_("Request information on the moment of purchase."))
     objects = OrderManager()
 
     class Meta:

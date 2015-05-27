@@ -10,7 +10,7 @@ class CMSPageRenderer(renderers.TemplateHTMLRenderer):
     `{% render_placeholder ... %}`, and which accept ordinary Python objects in their rendering
     context.
     The serialized data object, as available to other REST renderers is explicitly added to the
-    context as ``data``. Therefore keep in mind that templates for the `TemplateHTMLRenderer`
+    context as ``data``. Therefore keep in mind that templates for REST's `TemplateHTMLRenderer`
     are not compatible with this renderer.
     """
     def render(self, data, accepted_media_type=None, context=None):

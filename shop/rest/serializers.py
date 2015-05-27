@@ -2,8 +2,9 @@
 from __future__ import unicode_literals
 from collections import OrderedDict
 from django.core import exceptions
+from django.contrib.auth import get_user_model
 from django.db import models
-from django.template import Context
+from django.template import RequestContext
 from django.template.loader import select_template
 from django.utils.six import with_metaclass
 from django.utils.html import strip_spaces_between_tags
@@ -50,10 +51,10 @@ class ProductCommonSerializer(serializers.ModelSerializer):
     availability = serializers.SerializerMethodField()
 
     def get_price(self, product):
-        return product.get_price(request=self.context.get('request'))
+        return product.get_price(self.context['request'])
 
     def get_availability(self, product):
-        return product.get_availability(request=self.context.get('request'))
+        return product.get_availability(self.context['request'])
 
     def render_html(self, product, postfix):
         """
@@ -71,7 +72,9 @@ class ProductCommonSerializer(serializers.ModelSerializer):
             ('shop', self.label, 'product', postfix),
         ]
         template = select_template(['{0}/products/{1}-{2}-{3}.html'.format(*p) for p in params])
-        context = Context({'product': product})
+        request = self.context['request']
+        absolute_base_uri = request.build_absolute_uri('/').rstrip('/')
+        context = RequestContext(request, {'product': product, 'ABSOLUTE_BASE_URI': absolute_base_uri})
         content = strip_spaces_between_tags(template.render(context).strip())
         return mark_safe(content)
 
@@ -287,7 +290,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderModel
-        exclude = ('id', 'user',)
+        exclude = ('id', 'user', 'stored_request',)
 
 
 class OrderListSerializer(OrderSerializer):
@@ -296,3 +299,11 @@ class OrderListSerializer(OrderSerializer):
 
 class OrderDetailSerializer(OrderSerializer):
     items = OrderItemSerializer(many=True, read_only=True)
+
+
+class CustomerSerializer(serializers.ModelSerializer):
+    salutation = serializers.CharField(source='get_salutation_display')
+
+    class Meta:
+        model = get_user_model()
+        fields = ('salutation', 'first_name', 'last_name', 'email', 'extra',)

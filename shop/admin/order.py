@@ -45,8 +45,10 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
     fsm_field = ('status',)
     date_hierarchy = 'created_at'
     inlines = (OrderPaymentInline, OrderItemInline,)
-    readonly_fields = ('status_name', 'user', 'total', 'subtotal', 'created_at', 'updated_at', 'extra',)
-    fields = ('status_name', ('created_at', 'updated_at'), ('subtotal', 'total',), 'user', 'extra',)
+    readonly_fields = ('status_name', 'user', 'total', 'subtotal', 'created_at', 'updated_at',
+        'extra', 'stored_request',)
+    fields = ('status_name', ('created_at', 'updated_at'), ('subtotal', 'total',), 'user',
+        'extra', 'stored_request',)
 
     def get_form(self, request, obj=None, **kwargs):
         # must add field `extra` on the fly.
