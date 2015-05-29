@@ -5,7 +5,7 @@
 {% block shop-order-header %}
 {% placeholder "order-detail-heading" or %}
 	{# only available for Thank You view #}
-	<h3>{% trans "Your Order purchased on" %} <span shop-timestamp="{{ data.created_at }}"></span></h3>
+	<h3>{% trans "Your Order" %}: {{ data.identifier }} <small> {% trans "from" %} </small><small shop-timestamp="{{ data.created_at }}"></small></h3>
 {% endplaceholder %}
 {% endblock shop-order-header %}
 

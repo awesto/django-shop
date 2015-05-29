@@ -286,6 +286,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    identifier = serializers.CharField()
     subtotal = MoneyField()
     total = MoneyField()
 

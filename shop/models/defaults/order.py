@@ -12,6 +12,10 @@ class Order(order.BaseOrder):
     billing_address_text = models.TextField(_("Billing address"), blank=True, null=True,
         help_text=_("Billing address at the moment of purchase."))
 
+    @property
+    def identifier(self):
+        return "{}-{}".format(self.created_at.year, self.pk)
+
     def populate_from_cart(self, cart, request):
         super(Order, self).populate_from_cart(cart, request)
         self.shipping_address_text = cart.shipping_address.as_text()

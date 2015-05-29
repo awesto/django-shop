@@ -130,7 +130,18 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         verbose_name_plural = _("Orders")
 
     def __str__(self):
-        return _("Order ID: {}").format(self.pk)
+        return self.identifier
+
+    def __repr__(self):
+        return "<{}(pk={})>".format(self.__class__.__name__, self.pk)
+
+    @property
+    def identifier(self):
+        """
+        Return a unique identifier representing this Order object.
+        """
+        msg = "Property method identifier() must be implemented by subclass: `{}`"
+        raise NotImplementedError(msg.format(self.__class__.__name__))
 
     @property
     def subtotal(self):
