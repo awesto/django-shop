@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from six import with_metaclass
+from decimal import Decimal
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models, transaction
@@ -14,7 +15,7 @@ from ipware.ip import get_ip
 from django_fsm import FSMField, transition
 from cms.models import Page
 from shop import settings as shop_settings
-from shop.money.fields import MoneyField
+from shop.money.fields import MoneyField, MoneyMaker
 from . import deferred
 
 
@@ -26,7 +27,8 @@ class OrderManager(models.Manager):
         with its CartItems.
         """
         cart.update(request)
-        order = self.model(user=cart.user, stored_request=self.stored_request(request))
+        order = self.model(user=cart.user, currency=cart.total.get_currency(),
+            _subtotal=0, _total=0, stored_request=self.stored_request(request))
         order.save()
         for cart_item in cart.items.all():
             cart_item.update(request)
@@ -105,10 +107,15 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         'new': _("New order without content"),
         'created': _("Order freshly created"),
     }
+    decimalfield_kwargs = {
+        'max_digits': 30,
+        'decimal_places': 3,
+    }
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_("Customer"))
     status = FSMField(default='new', protected=True, verbose_name=_("Status"))
-    subtotal = MoneyField(verbose_name=_("Subtotal"))
-    total = MoneyField(verbose_name=_("Total"))
+    currency = models.CharField(max_length=7, help_text=_("Currency in which the order was concluded"))
+    _subtotal = models.DecimalField(verbose_name=_("Subtotal"), **decimalfield_kwargs)
+    _total = models.DecimalField(verbose_name=_("Total"), **decimalfield_kwargs)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
     extra = JSONField(default={}, verbose_name=_("Extra fields"),
@@ -125,6 +132,14 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     def __str__(self):
         return _("Order ID: {}").format(self.pk)
 
+    @property
+    def subtotal(self):
+        return MoneyMaker(self.currency)(self._subtotal)
+
+    @property
+    def total(self):
+        return MoneyMaker(self.currency)(self._total)
+
     def get_absolute_url(self):
         """
         Returns the URL of the page with the detail view for this order
@@ -137,9 +152,9 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         Populate the order object with the fields from the given cart. Override this method,
         in case a customized cart has some fields which have to be transfered to the cart.
         """
-        self.subtotal = cart.subtotal
-        self.total = cart.total
-        self.extra = cart.extra
+        self._subtotal = Decimal(cart.subtotal)
+        self._total = Decimal(cart.total)
+        self.extra = dict(cart.extra)
         self.extra.update(rows=[(modifier, extra_row.data) for modifier, extra_row in cart.extra_rows.items()])
 
     @transition(field=status, source='*', target='created',
@@ -153,7 +168,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         """
         amount = self.orderpayment_set.aggregate(amount=Sum('amount'))['amount']
         if amount is None:
-            amount = type(self.total)(0)
+            amount = MoneyMaker(self.currency)(0)
         return amount
 
     @classmethod
@@ -165,14 +180,6 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         """Return the human readable name for the current transition state"""
         return self.TRANSITION_TARGETS.get(self.status, self.status)
     status_name.short_description = pgettext('status_name', "State")
-
-    @property
-    def short_name(self):
-        """
-        A short name for the order, to be displayed on the payment processor's
-        website. Should be human-readable, as much as possible.
-        """
-        return "{0}-{1}".format(self.pk, self.order_total)
 
 OrderModel = deferred.MaterializedModel(BaseOrder)
 
@@ -207,10 +214,10 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         help_text=_("Product name at the moment of purchase."))
     product = deferred.ForeignKey('BaseProduct', null=True, blank=True, on_delete=models.SET_NULL,
         verbose_name=_("Product"))
-    unit_price = MoneyField(verbose_name=_("Unit price"), null=True,  # may be NaN
-        help_text=_("Products unit price at the moment of purchase."))
-    line_total = MoneyField(verbose_name=_("Line Total"), null=True,  # may be NaN
-        help_text=_("Line total on the invoice at the moment of purchase."))
+    _unit_price = models.DecimalField(verbose_name=_("Unit price"), null=True,  # may be NaN
+        help_text=_("Products unit price at the moment of purchase."), **BaseOrder.decimalfield_kwargs)
+    _line_total = models.DecimalField(verbose_name=_("Line Total"), null=True,  # may be NaN
+        help_text=_("Line total on the invoice at the moment of purchase."), **BaseOrder.decimalfield_kwargs)
     quantity = models.IntegerField(verbose_name=_("Ordered quantity"))
     extra = JSONField(default={}, verbose_name=_("Arbitrary information for this order item"))
 
@@ -219,14 +226,22 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         verbose_name = _("Order item")
         verbose_name_plural = _("Order items")
 
+    @property
+    def unit_price(self):
+        return MoneyMaker(self.order.currency)(self._unit_price)
+
+    @property
+    def line_total(self):
+        return MoneyMaker(self.order.currency)(self._line_total)
+
     def populate_from_cart_item(self, cart_item, request):
         self.product = cart_item.product
         self.product_name = cart_item.product.name  # store the name on the moment of purchase, in case it changes
         self.product_identifier = cart_item.product.identifier
-        self.unit_price = cart_item.product.get_price(request)
-        self.line_total = cart_item.line_total
+        self._unit_price = Decimal(cart_item.product.get_price(request))
+        self._line_total = Decimal(cart_item.line_total)
         self.quantity = cart_item.quantity
-        self.extra = cart_item.extra
+        self.extra = dict(cart_item.extra)
         self.extra.update(rows=[(modifier, extra_row.data) for modifier, extra_row in cart_item.extra_rows.items()])
 
 OrderItemModel = deferred.MaterializedModel(BaseOrderItem)

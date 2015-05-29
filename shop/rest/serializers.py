@@ -271,6 +271,7 @@ class CheckoutSerializer(BaseCartSerializer):
 
 class OrderItemSerializer(serializers.ModelSerializer):
     line_total = MoneyField()
+    unit_price = MoneyField()
     summary = serializers.SerializerMethodField(
         help_text="Sub-serializer for fields to be shown in the product's summary.")
 
