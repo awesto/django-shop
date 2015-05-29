@@ -32,6 +32,13 @@ class Cart(InclusionTag):
 register.tag(Cart)
 
 
+def from_iso8601(value):
+    try:
+        return datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%fZ")
+    except ValueError:
+        return datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ")
+
+
 @register.filter(expects_localtime=True, is_safe=False)
 def date(value, arg=None):
     """
@@ -41,7 +48,7 @@ def date(value, arg=None):
     if value in (None, ''):
         return ''
     if not isinstance(value, datetime):
-        value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ")
+        value = from_iso8601(value)
     if arg is None:
         arg = settings.DATE_FORMAT
     try:
@@ -62,7 +69,7 @@ def time(value, arg=None):
     if value in (None, ''):
         return ''
     if not isinstance(value, datetime):
-        value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ")
+        value = from_iso8601(value)
     if arg is None:
         arg = settings.TIME_FORMAT
     try:
