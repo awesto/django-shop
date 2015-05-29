@@ -5,15 +5,15 @@ Changes for 0.3.0
 Please note that starting with version 0.3, the **django-shop** API will break a lot of stuff.
 Therefore don't try to upgrade. Install this version of **django-shop** and migrate your models.
 
-* Using a completly different approach on handling abstract models, see issue ..
-  * Every time, django shop internally referrs to another abstract base class, the corresponding
+* Using a completely different approach on handling abstract models, see issue ..
+  * Every time, django shop internally refers to another abstract base class, the corresponding
     materialized model is used. This
 * Renamed for convention with other Django application:
   * date_created -> created_at
   * last_updated -> updated_at
   * ExtraOrderPriceField -> BaseOrderExtraRow
   * ExtraOrderItemPriceField -> BaseItemExtraRow
-  * OrderExtraInfo -> OrderAnnotation
+  * OrderExtraInfo -> Order.annotations
 * Changed the two OneToOne relations from model Address to User, one was used for shipping, one for
   billing. Now abstract BaseAddress refers to the User by a single ForeignKey giving the ability to
   link more than one address to each user. Additionally each address has a priority field for
@@ -38,10 +38,12 @@ Therefore don't try to upgrade. Install this version of **django-shop** and migr
 * The templatetags ``shop_tags`` have been removed, since they don't make sense anymore.
 * Cart and CartItem are available through a REST interface. This allows us to build MVC on top of
   that.
+* Delegated responsibility to Cart modifiers. 
 * Backend pools for Payment and Shipping have been removed. Instead, a Cart Modifier can inherit
   from ``PaymentModifier`` or ``ShippingModifier``. This allows to reuse the Cart Modifier Pool for
   these backends and use the modifiers logic for added extra rows to he carts total.
-
+* The table OrderExtraRow and OrderItemExtraRow has been replaced by a JSONField extra_rows in
+  model OrderModel and OrderItemModel.
 
 Some ideas
 ----------
