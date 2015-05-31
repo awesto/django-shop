@@ -113,7 +113,8 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     }
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_("Customer"))
     status = FSMField(default='new', protected=True, verbose_name=_("Status"))
-    currency = models.CharField(max_length=7, help_text=_("Currency in which the order was concluded"))
+    currency = models.CharField(max_length=7, editable=False,
+        help_text=_("Currency in which this order was concluded"))
     _subtotal = models.DecimalField(verbose_name=_("Subtotal"), **decimalfield_kwargs)
     _total = models.DecimalField(verbose_name=_("Total"), **decimalfield_kwargs)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
@@ -121,7 +122,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     extra = JSONField(default={}, verbose_name=_("Extra fields"),
         help_text=_("Arbitrary information for this order object on the moment of purchase."))
     stored_request = JSONField(default={},
-        help_text=_("Request information on the moment of purchase."))
+        help_text=_("Parts of the Request objects on the moment of purchase."))
     objects = OrderManager()
 
     class Meta:
