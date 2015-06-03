@@ -10,6 +10,7 @@ from polymorphic.polymorphic_model import PolymorphicModel
 from shop.cart.modifiers_pool import cart_modifiers_pool
 from shop.util.fields import CurrencyField
 from shop.util.loader import get_model_string
+from django.utils.encoding import python_2_unicode_compatible
 import django
 
 USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
@@ -17,6 +18,7 @@ USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 #==============================================================================
 # Product
 #==============================================================================
+@python_2_unicode_compatible
 class BaseProduct(PolymorphicModel):
     """
     A basic product for the shop.
@@ -40,7 +42,7 @@ class BaseProduct(PolymorphicModel):
         verbose_name = _('Product')
         verbose_name_plural = _('Products')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_absolute_url(self):
@@ -62,7 +64,10 @@ class BaseProduct(PolymorphicModel):
         """
         Returns product reference of this Product (provided for extensibility).
         """
-        return unicode(self.pk)
+        try:
+            return unicode(self.pk)
+        except NameError:
+            return str(self.pk)
 
     @property
     def can_be_added_to_cart(self):
@@ -319,6 +324,7 @@ class BaseCartItem(models.Model):
 #==============================================================================
 # Orders
 #==============================================================================
+@python_2_unicode_compatible
 class BaseOrder(models.Model):
     """
     A model representing an Order.
@@ -371,7 +377,7 @@ class BaseOrder(models.Model):
         verbose_name = _('Order')
         verbose_name_plural = _('Orders')
 
-    def __unicode__(self):
+    def __str__(self):
         return _('Order ID: %(id)s') % {'id': self.pk}
 
     def get_absolute_url(self):

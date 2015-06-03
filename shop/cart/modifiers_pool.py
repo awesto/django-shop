@@ -32,7 +32,7 @@ class CartModifiersPool(object):
                     '%s isn\'t a price modifier module' % modifier_path)
             try:
                 mod = import_module(mod_module)
-            except ImportError, e:
+            except ImportError as e:
                 raise exceptions.ImproperlyConfigured(
                     'Error importing modifier %s: "%s"' % (mod_module, e))
             try:

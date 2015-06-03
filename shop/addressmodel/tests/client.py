@@ -43,6 +43,6 @@ class ClientTestCase(TestCase):
         u = User.objects.create(username="test2",
                                 email="test2@example.com")
         expected = "test2"
-        text = u.__unicode__()
+        text = str(u)
         self.assertEqual(expected, text)
         u.delete()

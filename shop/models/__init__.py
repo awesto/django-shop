@@ -1,8 +1,8 @@
 from django.conf import settings
 
-from cartmodel import *  # NOQA
-from ordermodel import *  # NOQA
-from productmodel import *  # NOQA
+from .cartmodel import *  # NOQA
+from .ordermodel import *  # NOQA
+from .productmodel import *  # NOQA
 from shop.order_signals import *  # NOQA
 from shop.util.loader import load_class
 

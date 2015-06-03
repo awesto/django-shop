@@ -40,8 +40,8 @@ class CartItemModelFormTestCase(BaseCartItemFormsTestCase):
         }
         form = get_cart_item_modelform_class()(instance=self.item, data=data)
         self.assertEqual(len(form.errors), 1)
-        self.assertTrue(unicode(form.errors).find("quantity") > -1)
-        self.assertTrue(unicode(form.errors).find("greater than or equal to 5") > -1)
+        self.assertTrue(str(form.errors).find("quantity") > -1)
+        self.assertTrue(str(form.errors).find("greater than or equal to 5") > -1)
 
         data = {
             'quantity': '6',
