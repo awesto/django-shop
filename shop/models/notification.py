@@ -7,7 +7,6 @@ from django.http.request import HttpRequest
 from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
 from django.utils.six.moves.urllib.parse import urlparse
-from django.utils import translation
 from django_fsm.signals import post_transition
 from post_office import mail
 from post_office.models import EmailTemplate
@@ -83,8 +82,7 @@ def order_event_notification(sender, instance=None, target=None, **kwargs):
             'customer': serializers.CustomerSerializer(instance.user).data,
             'data': order_serializer.data,
         }
-        request_context = RequestContext(emulated_request, context)
-        with translation.override(instance.stored_request.get('language')):
-            mail.send(recipient, template=notification.mail_template, context=request_context)
+        mail.send(recipient, template=notification.mail_template, context=context,
+                  language=instance.stored_request.get('language'), render_on_delivery=True)
 
 post_transition.connect(order_event_notification)
