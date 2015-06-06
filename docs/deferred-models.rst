@@ -1,7 +1,8 @@
+================================
 Using the deferred model pattern
 ================================
 
-Until **django-shop** version 0.2, there were concrete and abstract models: ``BaseProduct`` and
+Until **django-shop** version 0.2, there were abstract and concrete and models: ``BaseProduct`` and
 ``Product``, ``BaseCart`` and ``Cart``, ``BaseCartItem`` and ``CartItem``, ``BaseOrder``and ``Order``
 and finally, ``BaseOrderItem`` and ``OrderItem``.
 
@@ -15,7 +16,7 @@ This made configuration quite complicate and causes other drawbacks:
 
 * Unless *all* models have been overridden, the native ones appeared in the administration backend
   below the category **Shop**, while the customized ones appeared under the given project's name.
-  To a customer, this backend inconsistency was quite difficult to explain.
+  To customers, this inconsistency in the backend was quite difficult to explain.
 * In the past, mixing overriden with native models caused many issues with circular dependencies.
 
 Therefore in **django-shop**, since version 0.3 all concrete models, ``Product``, ``Order``,
@@ -23,9 +24,9 @@ Therefore in **django-shop**, since version 0.3 all concrete models, ``Product``
 abstract and named ``BaseProduct``, ``BaseOrder``, ``BaseOrderItem``, etc. They all have been moved
 into the folder ``shop/models/``, because this is the location a programmer expects them.
 
-Materialize such an abstract base model, means to create a concrete model with associated database
-table. This model creation is performed in the concrete shop implementation and must be done for
-each base model in the shop software.
+Materializing such an abstract base model, means to create a concrete model with an associated
+database table. This model creation is performed in the concrete shop implementation and must be
+done for each base model in the shop software.
 
 For instance, materialize the cart by using this code snippet inside your own shop's
 ``models/shopmodels.py`` files:
@@ -35,10 +36,14 @@ For instance, materialize the cart by using this code snippet inside your own sh
 	from shop.models import cart
 	
 	class Cart(cart.BaseCart):
+	    my_extra_field = ...
+	
 	    class Meta:
 	        app_label = 'my_shop'
 
 	class CartItem(cart.BaseCartItem):
+	    other_field = ...
+
 	    class Meta:
 	        app_label = 'my_shop'
 
@@ -48,29 +53,51 @@ etc. models now all are managed by the common database migrations tools, such as
 ``./manage.py makemigration my_shop_instance`` and ``./manage.py migrate my_shop_instance``. This
 also means that these models are visible under your shop's group in the admin interface.
 
-Note, all the configuration settings ``PRODUCT_MODEL``, ``ORDER_MODEL``, ``ORDER_MODEL_ITEM``,
-etc. are not required anymore and can safely be removed from **django-shop**.
+Often you don't need extra fields, hence the abstract shop base model is enough. Then,
+materializing the models can be done using some convenience classes as found in
+``shop/models/defaults``. Simply import them into ``models.py`` from your shop instance:
 
-For an application using **django-shop** this should not be a big deal. Each application simply
-derives each model from one of the abstract base models and thus creates its concrete model.
-This also avoids another problem, one might easily encounter: Say, one starts with **django-shop**
-and uses the built-in ``Cart`` model. In the database this is handled by a table named ``shop_cart``.
-Sometimes later, he decides to add an extra field to the model ``Cart``. He then has to create 
-a customized cart model in his own application, but now the database table will have a different
-name and it is not possible to override this using ``app_name`` in the model's ``Meta`` class.
-These kinds of migration are not handled by South and therefore he has to write a migration for
-renaming the table by hand.
+.. code-block:: python
+
+	from shop.models.defaults.cart import Cart  # nopyflakes
+	from shop.models.defaults.cart_item import CartItem  # nopyflakes
+
+.. note:: The comment ``nopyflakes`` has been added to suppress warnings, since these classes
+		arern't used anywhere in ``models.py``.
+
+All the configuration settings from **django-shop** <0.3: ``PRODUCT_MODEL``, ``ORDER_MODEL``,
+``ORDER_MODEL_ITEM``, etc. are not required anymore and can safely be removed from **djangoSHOP**.
+
+Accessing the deferred models
+=============================
+
+Since models in djangoSHOP** are yet unknown during instantiation, one has to access their
+materialized instance using the `lazy object pattern`_. For instance in order to access the Cart,
+use:
+
+.. code-block:: python
+
+	from shop.models.cart import CartModel
+
+	def my_view(request):
+	    cart = CartModel.objects.get_from_request(request)
+	    cart.items.all()  # contains the queryset for all items in the cart
+
+Here ``CartModel`` is a lazy object resolved during runtime and pointing on the materialized, or,
+to say it in other words, real Cart model.
+
+..lazy object pattern: _https://docs.djangoproject.com/en/dev/_modules/django/utils/functional/
 
 
-Technical Details
-=================
+Technical Internals
+===================
 
 Mapping of Foreign Keys
 -----------------------
 
 One might argue, that this can't work, since foreign keys must refer to a real model, not to
 abstract ones! Therefore one can not add a field ``ForeignKey``, ``OneToOneField`` or
-``ManyToManyField`` which refers an abstract model in the **django-shop** project. However, these
+``ManyToManyField`` which refers an abstract model in the **djangoSHOP** project. But
 relations are fundamental for a properly working software. Imagine a ``CartItem`` without a foreign
 relation to ``Cart``.
 
@@ -78,8 +105,8 @@ Fortunately there is a neat trick to solve this problem. By deferring the mappin
 instead of using a real ``ForeignKey``, one can use a special “lazy” field, declaring a relation
 with an abstract model. Now, whenever the models are “materialized”, then these abstract relations
 are converted into real foreign keys. The only drawback for this solution is, that one may derive
-from an abstract model only once, but that's a non-issue and doesn't differ from the current
-situation, where one for instance, also can override ``Cart`` only once.
+from an abstract model only once, but for **djangoSHOP** that's a non-issue and doesn't differ from
+the current situation, where one can override ``BaseCart`` only once anyway.
 
 Therefore, when using this deferred model pattern, instead of using ``models.ForeignKey``,
 ``models.OneToOneField`` or ``models.ManyToManyField``, use the special fields
@@ -92,10 +119,7 @@ Accessing the materialized model
 
 While programming with abstract model classes, sometimes they must access their model manager
 or their concrete model definition. A query such as ``BaseCartItem.objects.filter(cart=cart)``
-therefore can not function and will throw an exception. To facilitate this, the deferred model
+therefore can not function and will throw an exception. To facilitate this, the deferred model's
 metaclasses adds an additional member ``_materialized_model`` to their base class, while building
-the model class. This model class then can be accessed through a special class ``MaterializedModel``
-handling lazy evaluation.
-**django-shop** for instance, accesses all cart items belonging the the cart, using the expression
-``CartItemModel.objects.filter(cart=cart)``, without knowing the exact definition of the
-materialzed ``CartItem``.
+the model class. This model class then can be accessed through lazy evaluation, using ``CartModel``,
+``CartItemModel``, ``OrderModel``, ``OrderItemModel``, etc.
