@@ -48,10 +48,10 @@ class GuestForm(DialogModelForm):
 class AddressForm(DialogModelForm):
     field_css_classes = {
         '*': getattr(Bootstrap3ModelForm, 'field_css_classes'),
-        'zip_code': ['form-group', 'frmgrp-zip_code'],
-        'location': ['form-group', 'frmgrp-location'],
-        'street_name': ['form-group', 'frmgrp-street_name'],
-        'street_number': ['form-group', 'frmgrp-street_number'],
+        'zip_code': ['has-feedback', 'form-group', 'frmgrp-zip_code'],
+        'location': ['has-feedback', 'form-group', 'frmgrp-location'],
+        'street_name': ['has-feedback', 'form-group', 'frmgrp-street_name'],
+        'street_number': ['has-feedback', 'form-group', 'frmgrp-street_number'],
     }
 
     priority = fields.IntegerField(widget=widgets.HiddenInput())  # TODO: use a choice field for selection
