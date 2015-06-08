@@ -292,7 +292,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderModel
-        exclude = ('id', 'user', 'stored_request',)
+        exclude = ('id', 'user', 'stored_request', '_subtotal', '_total',)
 
 
 class OrderListSerializer(OrderSerializer):
