@@ -254,8 +254,6 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         help_text=_("Products unit price at the moment of purchase."), **BaseOrder.decimalfield_kwargs)
     _line_total = models.DecimalField(verbose_name=_("Line Total"), null=True,  # may be NaN
         help_text=_("Line total on the invoice at the moment of purchase."), **BaseOrder.decimalfield_kwargs)
-    shipped_with = deferred.ForeignKey(BaseOrderShipping, null=True, blank=True, on_delete=models.SET_NULL,
-        verbose_name=_("Shipped with"))
     quantity = models.IntegerField(verbose_name=_("Ordered quantity"))
     extra = JSONField(default={}, verbose_name=_("Arbitrary information for this order item"))
 
