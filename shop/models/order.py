@@ -204,8 +204,7 @@ OrderModel = deferred.MaterializedModel(BaseOrder)
 
 class OrderPayment(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     """
-    A class to hold basic payment information. Backends should define their own
-    more complex payment types should they need to store more informtion
+    A model to hold received payments for a given order.
     """
     order = deferred.ForeignKey(BaseOrder, verbose_name=_("Order"))
     status = FSMField(default='new', protected=True, verbose_name=_("Status"))
@@ -219,6 +218,25 @@ class OrderPayment(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     class Meta:
         verbose_name = _("Order payment")
         verbose_name_plural = _("Order payments")
+
+
+class BaseOrderShipping(with_metaclass(WorkflowMixinMetaclass, models.Model)):
+    """
+    A model to keep track on the shipping of each order's item.
+    """
+    order = deferred.ForeignKey(BaseOrder, verbose_name=_("Order"))
+    status = FSMField(default='new', protected=True, verbose_name=_("Status"))
+    shipping_id = models.CharField(max_length=255, verbose_name=_("Shipping ID"),
+        help_text=_("The transaction processor's reference"))
+    shipping_method = models.CharField(max_length=255, verbose_name=_("Shipping method"),
+        help_text=_("The shipping backend used to deliver the items for this order"))
+
+    class Meta:
+        abstract = True
+        verbose_name = _("Shipping order")
+        verbose_name_plural = _("Shipping orders")
+
+OrderShippingModel = deferred.MaterializedModel(BaseOrderShipping)
 
 
 class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
@@ -236,6 +254,8 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         help_text=_("Products unit price at the moment of purchase."), **BaseOrder.decimalfield_kwargs)
     _line_total = models.DecimalField(verbose_name=_("Line Total"), null=True,  # may be NaN
         help_text=_("Line total on the invoice at the moment of purchase."), **BaseOrder.decimalfield_kwargs)
+    shipped_with = deferred.ForeignKey(BaseOrderShipping, null=True, blank=True, on_delete=models.SET_NULL,
+        verbose_name=_("Shipped with"))
     quantity = models.IntegerField(verbose_name=_("Ordered quantity"))
     extra = JSONField(default={}, verbose_name=_("Arbitrary information for this order item"))
 
