@@ -68,7 +68,7 @@ INSTALLED_APPS = (
     'easy_thumbnails.optimize',
     'parler',
     'shop',
-    'aldrynshop',
+    'myshop',
 )
 
 # Language code for this installation. All choices can be found here:
@@ -76,8 +76,8 @@ INSTALLED_APPS = (
 LANGUAGE_CODE = 'de-de'
 
 LANGUAGES = (
-    ('de', 'Deutsch'),
     ('en', 'English'),
+    ('de', 'Deutsch'),
 )
 
 # If you set this to False, Django will make some optimizations so as not
@@ -301,23 +301,16 @@ CKEDITOR_SETTINGS = {
 ###############################
 # django-shop specific settings
 
-SHOP_SHIPPING_BACKENDS = (
-    'shop.shipping.backends.flat_rate.FlatRateShipping',
-)
-
-SHOP_PAYMENT_BACKENDS = (
-    #'shop.payment.backends.pay_on_delivery.PayOnDeliveryBackend',
-    'aldrynshop.payment.ExamplePayment',
-)
-
-SHOP_SHIPPING_FLAT_RATE = "10.00"
-
 SHOP_CART_MODIFIERS = (
-    'shop.cart.modifiers.tax_modifiers.TenPercentGlobalTaxModifier',
-    'shop.cart.modifiers.rebate_modifiers.BulkRebateModifier',
+    'stofferia.modifiers.StofferiaCartModifier',
+    'shop.modifiers.taxes.CartExcludedTaxModifier',
+    'shop.modifiers.defaults.SelfCollectionModifier',
+    'stofferia.modifiers.PostalShippingModifier',
+    'shop.modifiers.defaults.PayInAdvanceModifier',
+    'stofferia.stripe_payment.StripePaymentModifier',
 )
 
-SHOP_APP_LABEL = 'stofferia'
+SHOP_APP_LABEL = 'myshop'
 SHOP_VALUE_ADDED_TAX = Decimal(19)
 SHOP_DEFAULT_CURRENCY = 'EUR'
 
