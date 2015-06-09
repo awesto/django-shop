@@ -3,7 +3,7 @@ Using the deferred model pattern
 ================================
 
 Until **django-shop** version 0.2, there were abstract and concrete and models: ``BaseProduct`` and
-``Product``, ``BaseCart`` and ``Cart``, ``BaseCartItem`` and ``CartItem``, ``BaseOrder``and ``Order``
+``Product``, ``BaseCart`` and ``Cart``, ``BaseCartItem`` and ``CartItem``, ``BaseOrder`` and ``Order``
 and finally, ``BaseOrderItem`` and ``OrderItem``.
 
 The concrete models were stored in ``shop.models``, whereas abstract models were stored in
