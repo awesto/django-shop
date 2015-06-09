@@ -2,7 +2,7 @@
 Using the deferred model pattern
 ================================
 
-Until **django-shop** version 0.2, there were abstract and concrete and models: ``BaseProduct`` and
+Until **djangoSHOP** version 0.2, there were abstract and concrete and models: ``BaseProduct`` and
 ``Product``, ``BaseCart`` and ``Cart``, ``BaseCartItem`` and ``CartItem``, ``BaseOrder``and ``Order``
 and finally, ``BaseOrderItem`` and ``OrderItem``.
 
@@ -15,11 +15,11 @@ Additionally, if someone wanted to override a model, he had to use a configurati
 This made configuration quite complicate and causes other drawbacks:
 
 * Unless *all* models have been overridden, the native ones appeared in the administration backend
-  below the category **Shop**, while the customized ones appeared under the given project's name.
+  below the category *Shop*, while the customized ones appeared under the given project's name.
   To customers, this inconsistency in the backend was quite difficult to explain.
 * In the past, mixing overriden with native models caused many issues with circular dependencies.
 
-Therefore in **django-shop**, since version 0.3 all concrete models, ``Product``, ``Order``,
+Therefore in **djangoSHOP**, since version 0.3 all concrete models, ``Product``, ``Order``,
 ``OrderItem``, ``Cart``, ``CartItem`` have been removed. These model definitions now all are
 abstract and named ``BaseProduct``, ``BaseOrder``, ``BaseOrderItem``, etc. They all have been moved
 into the folder ``shop/models/``, because this is the location a programmer expects them.
@@ -48,14 +48,15 @@ For instance, materialize the cart by using this code snippet inside your own sh
 	        app_label = 'my_shop'
 
 Of course, you can add as many extra model fields to this concrete cart model, as you wish.
-All shop models, now are managed through your shop instance. This means that **Cart**, **Order**,
-etc. models now all are managed by the common database migrations tools, such as
+All shop models, now are managed through *your* shop instance. This means that the models **Cart**,
+**Order**, etc. now are managed by the common database migrations tools, such as
 ``./manage.py makemigration my_shop_instance`` and ``./manage.py migrate my_shop_instance``. This
-also means that these models are visible under your shop's group in the admin interface.
+also means that these models in the admin interface are visible under **my_shop**.
 
 Often you don't need extra fields, hence the abstract shop base model is enough. Then,
 materializing the models can be done using some convenience classes as found in
-``shop/models/defaults``. Simply import them into ``models.py`` from your shop instance:
+``shop/models/defaults``. Simply import them into ``models.py`` or ``models/__init__.py`` in your
+shop instance:
 
 .. code-block:: python
 
@@ -65,13 +66,15 @@ materializing the models can be done using some convenience classes as found in
 .. note:: The comment ``nopyflakes`` has been added to suppress warnings, since these classes
 		arern't used anywhere in ``models.py``.
 
-All the configuration settings from **django-shop** <0.3: ``PRODUCT_MODEL``, ``ORDER_MODEL``,
-``ORDER_MODEL_ITEM``, etc. are not required anymore and can safely be removed from **djangoSHOP**.
+All the configuration settings from **djangoSHOP** <0.3: ``PRODUCT_MODEL``, ``ORDER_MODEL``,
+``ORDER_MODEL_ITEM``, etc. are not required anymore and can safely be removed from your
+``settings.py``.
+
 
 Accessing the deferred models
 =============================
 
-Since models in djangoSHOP** are yet unknown during instantiation, one has to access their
+Since models in **djangoSHOP** are yet unknown during instantiation, one has to access their
 materialized instance using the `lazy object pattern`_. For instance in order to access the Cart,
 use:
 
