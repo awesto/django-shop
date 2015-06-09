@@ -146,10 +146,16 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
 
     @property
     def subtotal(self):
+        """
+        The summed up amount for all ordered items excluding extra order lines.
+        """
         return MoneyMaker(self.currency)(self._subtotal)
 
     @property
     def total(self):
+        """
+        The final total to charge for this order.
+        """
         return MoneyMaker(self.currency)(self._total)
 
     def get_absolute_url(self):
