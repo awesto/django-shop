@@ -14,6 +14,7 @@ class ProductIndex(indexes.SearchIndex):
     Abstract base class used to index all products for this shop
     """
     text = indexes.CharField(document=True, use_template=True)
+    autocomplete = indexes.EdgeNgramField(use_template=True)
     name = indexes.CharField(stored=True, indexed=False)
     product_url = indexes.CharField(stored=True, indexed=False, model_attr='get_absolute_url')
 
@@ -24,6 +25,7 @@ class ProductIndex(indexes.SearchIndex):
                 data = super(ProductIndex, self).prepare(product)
         else:
             data = super(ProductIndex, self).prepare(product)
+        #print data
         return data
 
     def prepare_name(self, product):

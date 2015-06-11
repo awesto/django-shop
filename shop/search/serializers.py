@@ -6,19 +6,30 @@ from drf_haystack.serializers import HaystackSerializer
 
 class ProductSearchSerializer(HaystackSerializer):
     """
-    The base serializer to represent one or more product fields for beeing returned as a
+    The base serializer to represent one or more product fields for being returned as a
     result list during searches.
     """
-    text = serializers.SerializerMethodField()
+    text = serializers.SerializerMethodField()  # dummy fields to bypass serialization
+    autocomplete = serializers.SerializerMethodField()
+    price = serializers.SerializerMethodField()
 
     class Meta:
-        fields = ('text', 'name', 'product_url',)
-        field_aliases = {'q': 'text'}
+        fields = ('text', 'autocomplete', 'name', 'product_url', 'price',)
 
     def get_text(self, obj):
         pass
 
+    def get_autocomplete(self, obj):
+        pass
+
+    def get_price(self, search_result):
+        """
+        The price can't be stored inside the index but must be fetched from the resolved model.
+        """
+        return search_result.object.get_price(self.context['request'])
+
     def to_representation(self, instance):
         representation = super(ProductSearchSerializer, self).to_representation(instance)
         representation.pop('text')
+        representation.pop('autocomplete')
         return representation
