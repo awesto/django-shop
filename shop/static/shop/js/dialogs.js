@@ -107,10 +107,10 @@ djangoShopModule.directive('shopBookletWrapper', ['$controller', '$window', '$ht
 				if (!angular.isArray($scope.observedForms[this.pagenum])) {
 					$scope.observedForms[this.pagenum] = {formElems: []};
 				}
-				if (formElem.attributes.action === undefined) {
-					// only observe forms, which do not know how to handle their own POST submissions
+				//if (formElem.attributes.nonalidate) {
+					// only observe forms, which do not know how to validate themselves
 					$scope.observedForms[this.pagenum].formElems.push(formElem);
-				}
+				//}
 			};
 
 			self.setValidity = function(pagenum, validity) {
@@ -130,9 +130,16 @@ djangoShopModule.directive('shopBookletWrapper', ['$controller', '$window', '$ht
 			};
 
 			$scope.breadcrumbClass = function(pagenum) {
-				if ($scope.observedForms[pagenum].validity)
+				var display_as_valid = true, display_as_valid_prev, k;
+				//console.log(' pagenum = ', pagenum);
+				//console.log($scope.observedForms[pagenum]);
+				for (k = 0; k <= pagenum; k++) {
+					display_as_valid_prev = display_as_valid;
+					display_as_valid = display_as_valid && $scope.observedForms[k] && $scope.observedForms[k].validity;
+				}
+				if (display_as_valid)
 					return "btn btn-success";
-				if (pagenum == 0 || $scope.observedForms[pagenum - 1].validity)
+				if (display_as_valid_prev)
 					return "btn btn-primary";
 				return "btn btn-default disabled";
 			};
@@ -152,13 +159,14 @@ djangoShopModule.directive('shopBookletWrapper', ['$controller', '$window', '$ht
 			post: function(scope, element, attrs, controller) {
 				scope.activePage = 0;
 				scope.bookletAction = attrs.action;
+				console.log(scope.observedForms);
 			}
 		}
 	};
 }]);
 
 
-// Directive <TAG shop-dialog-booklet-page>
+// Directive <TAG shop-booklet-page>
 // It is used to display the active booklet page and to hide the remaining ones.
 djangoShopModule.directive('shopBookletPage', ['$compile', '$window', '$http', '$q', '$timeout', 'djangoUrl',
                                        function($compile, $window, $http, $q, $timeout, djangoUrl) {
@@ -170,56 +178,66 @@ djangoShopModule.directive('shopBookletPage', ['$compile', '$window', '$http', '
 		controller: function($scope) {
 			// return true if all forms for this booklet wrapper are valid
 			this.areFormsValid = function(pagenum) {
+				return true;
+
 				var valid = true;
 				angular.forEach($scope.observedForms[pagenum].formElems, function(formElem) {
-					valid = valid && $scope[formElem.name].$valid;
+					if (formElem.noValidate) {
+						valid = valid && $scope[formElem.name].$valid;
+					}
 				});
 				return valid;
 			};
 		},
 		link: {
 			pre: function(scope, element, attrs, controllers) {
-				controllers[1].bookletCtrl = controllers[0];
-				//controllers[1].prototype = Object.create(controllers[0].prototype);
-				angular.forEach(element.find("form"), controllers[0].observeForms, attrs);
-				scope.pagenum = attrs.pagenum;  // TODO, maybe we don't need this
+				//console.log(element); console.log(element.find("form"));
+				//angular.forEach(element.find("form"), controllers[0].observeForms, attrs);
+				// scope.pagenum = attrs.pagenum; we don't need this
 			},
 			post: function(scope, element, attrs, controllers) {
-				var controller = controllers[1];
-				var cssClass = attrs['class'] || '', cssStyle = attrs['style'] || '';
-				var template = '<div ng-show="showBookletPage()" class="' + cssClass + '" style="' + cssStyle + '">'
+				var bookletCtrl = controllers[0], pageController = controllers[1];
+				var cssClasses = attrs['class'] ? ' class="' + attrs['class'] + '"' : '';
+				var cssStyles = attrs['style'] ? ' style="' + attrs['style'] + '"' : '';
+				var template = '<div ng-show="showBookletPage()"' + cssClasses + cssStyles + '>'
 					+ angular.element(element).html() + '</div>';
 				element.replaceWith($compile(template)(scope));
 
 				$timeout(function() {
 					// wait until every form is ready
-					controller.bookletCtrl.setValidity(attrs.pagenum, controller.areFormsValid(attrs.pagenum));
+					//bookletCtrl.setValidity(attrs.pagenum, pageController.areFormsValid(attrs.pagenum));
+					angular.forEach(element.find("form"), function(formElem) {
+						console.log(formElem);
+						console.log(scope[formElem.name]);
+					});
 				});
 
 				scope.showBookletPage = function() {
-					return controller.bookletCtrl.getActivePage() == attrs.pagenum;
+					return bookletCtrl.getActivePage() == attrs.pagenum;
 				};
 
 				scope.buttonClass = function() {
-					return controller.areFormsValid(attrs.pagenum) ? "" : "disabled";
+					return pageController.areFormsValid(attrs.pagenum) ? "" : "disabled";
 				};
 
 				scope.submitPage = function() {
 					var deferred = $q.defer();
-					if (controller.areFormsValid(attrs.pagenum)) {
-						controller.bookletCtrl.dialogCtrl.uploadScope(scope, deferred);
+					if (pageController.areFormsValid(attrs.pagenum)) {
+						bookletCtrl.dialogCtrl.uploadScope(scope, deferred);
 						deferred.promise.then(function(response) {
 							console.log(response);
-							controller.bookletCtrl.setValidity(attrs.pagenum, true);
-							controller.bookletCtrl.setNextActivePage();
+							bookletCtrl.setValidity(attrs.pagenum, true);
+							bookletCtrl.setNextActivePage();
+						}, function(response) {
+							console.log(response);
 						});
 					}
 				};
 
 				scope.submitBooklet = function() {
 					var deferred = $q.defer();
-					if (controller.areFormsValid(attrs.pagenum)) {
-						controller.bookletCtrl.dialogCtrl.uploadScope(scope, deferred);
+					if (pageController.areFormsValid(attrs.pagenum)) {
+						bookletCtrl.dialogCtrl.uploadScope(scope, deferred);
 						deferred.promise.then(function(response) {
 							console.log(response);
 							// finally, proceed with link as specified in booklet wrapper
