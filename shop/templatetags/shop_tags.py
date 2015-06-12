@@ -3,12 +3,15 @@ from __future__ import unicode_literals
 from datetime import datetime
 from django import template
 from django.conf import settings
-from django.utils import formats
 from django.template.loader import select_template
+from django.utils import formats
+from django.utils.safestring import mark_safe
 from django.utils.dateformat import format, time_format
+from rest_framework.utils.serializer_helpers import ReturnDict
 from classytags.helpers import InclusionTag
 from shop import settings as shop_settings
 from shop.models.cart import CartModel
+from shop.rest.money import JSONRenderer
 
 register = template.Library()
 
@@ -79,3 +82,14 @@ def time(value, arg=None):
             return time_format(value, arg)
         except AttributeError:
             return ''
+
+
+@register.filter
+def rest_json(value, arg=None):
+    """
+    Renders a `ReturnDict` as used by the REST framework into a safe JSON string.
+    """
+    if not isinstance(value, ReturnDict):
+        raise ValueError("Given value must be of type `ReturnDict`")
+    data = JSONRenderer().render(value)
+    return mark_safe(data)
