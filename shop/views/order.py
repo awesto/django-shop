@@ -26,9 +26,7 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, generics.Gener
     def get_renderer_context(self):
         renderer_context = super(OrderView, self).get_renderer_context()
         if renderer_context['request'].accepted_renderer.format == 'html':
-            # in edit_mode, both tables, for list- and detail view are rendered
-            edit_mode = renderer_context['request'].current_page.publisher_is_draft
-            renderer_context.update(many=self.many, edit_mode=edit_mode)
+            renderer_context['many'] = self.many
         return renderer_context
 
     def get_template_names(self):
