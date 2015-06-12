@@ -2,8 +2,7 @@
 'use strict';
 
 // module: django.shop, TODO: move this into a summary JS file
-var djangoShopModule = angular.module('django.shop.product', ['ui.bootstrap']);
-
+var djangoShopModule = angular.module('django.shop.catalog', ['ui.bootstrap']);
 
 // Infinite scroll directive <ANY shop-scroll-spy="loadMore()">
 // Add this directive to a DOM element, wrapping the list views.
