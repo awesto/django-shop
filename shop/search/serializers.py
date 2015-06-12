@@ -14,7 +14,7 @@ class ProductSearchSerializer(HaystackSerializer):
     price = serializers.SerializerMethodField()
 
     class Meta:
-        fields = ('text', 'autocomplete', 'name', 'product_url', 'price',)
+        fields = ('text', 'autocomplete', 'name', 'product_url', 'price', 'body')
 
     def get_text(self, obj):
         pass

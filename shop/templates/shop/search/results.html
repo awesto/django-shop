@@ -1,0 +1,27 @@
+{% load i18n %}
+
+{% block search-results-table %}
+<table class="table table-hover">
+
+	{% block search-results-thead %}
+	<thead>
+		<tr>
+			<th class="col-xs-9 text-center">{% trans "{{ search_data.count }} matching products found" %}</th>
+			<th class="col-xs-3 text-center">{% trans "Unit Price" %}</th>
+		</tr>
+	</thead>
+	{% endblock search-results-thead %}
+
+	{% block search-results-tbody %}
+	<tbody>
+		<tr ng-repeat="result_line in search_data.results">
+			<td ng-bind-html="result_line.body"></td>
+			<td class="text-center text-nowrap">
+				<strong ng-bind="result_line.price"></strong>
+			</td>
+		</tr>
+	</tbody>
+	{% endblock search-results-tbody %}
+
+</table>
+{% endblock search-results-table %}
