@@ -212,6 +212,7 @@ class OrderPayment(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         help_text=_("How much was paid with this particular transfer."))
     transaction_id = models.CharField(max_length=255, verbose_name=_("Transaction ID"),
         help_text=_("The transaction processor's reference"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Received at"))
     payment_method = models.CharField(max_length=255, verbose_name=_("Payment method"),
         help_text=_("The payment backend used to process the purchase"))
 

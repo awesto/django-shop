@@ -11,7 +11,8 @@ from shop.modifiers.pool import cart_modifiers_pool
 class OrderPaymentInline(admin.TabularInline):
     model = OrderPayment
     extra = 0
-    fields = ('amount', 'transaction_id', 'payment_method',)
+    fields = ('amount', 'transaction_id', 'payment_method', 'created_at',)
+    readonly_fields = ('created_at',)
 
     def get_formset(self, request, obj=None, **kwargs):
         """
@@ -44,7 +45,7 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
     search_fields = ('id', 'user__username', 'user__lastname',)
     fsm_field = ('status',)
     date_hierarchy = 'created_at'
-    inlines = (OrderPaymentInline, OrderItemInline,)
+    inlines = (OrderItemInline, OrderPaymentInline,)
     readonly_fields = ('status_name', 'user', 'total', 'subtotal', 'created_at', 'updated_at',
         'extra', 'stored_request',)
     fields = ('status_name', ('created_at', 'updated_at'), ('subtotal', 'total',), 'user',
