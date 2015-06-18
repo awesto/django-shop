@@ -18,13 +18,13 @@ from .plugin_base import ShopLinkPluginBase, DialogFormPluginBase
 class ProceedButtonForm(LinkForm):
     LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")), ('RELOAD_PAGE', _("Reload Page")), ('PURCHASE_NOW', _("Purchase Now")),)
 
-    button_content = fields.CharField(required=False, label=_("Content"),
-                                      help_text=_("Proceed buttons content"))
+    link_content = fields.CharField(required=False, label=_("Content"),
+                                    help_text=_("Proceed buttons content"))
 
     def clean(self):
         cleaned_data = super(ProceedButtonForm, self).clean()
         if self.is_valid():
-            cleaned_data['glossary'].update(button_content=cleaned_data['button_content'])
+            cleaned_data['glossary'].update(link_content=cleaned_data['link_content'])
         return cleaned_data
 
 
@@ -36,7 +36,7 @@ class ShopProceedButton(BootstrapButtonMixin, ShopLinkPluginBase):
     form = ProceedButtonForm
     parent_classes = ('BootstrapColumnPlugin',)
     model_mixins = (LinkElementMixin,)
-    fields = ('button_content', ('link_type', 'cms_page'), 'glossary',)
+    fields = ('link_content', ('link_type', 'cms_page'), 'glossary',)
     glossary_field_map = {'link': ('link_type', 'cms_page',)}
 
     class Media:
@@ -44,7 +44,7 @@ class ShopProceedButton(BootstrapButtonMixin, ShopLinkPluginBase):
 
     @classmethod
     def get_identifier(cls, obj):
-        return mark_safe(obj.glossary.get('button_content', ''))
+        return mark_safe(obj.glossary.get('link_content', ''))
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
