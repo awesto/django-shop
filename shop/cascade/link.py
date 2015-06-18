@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.utils.translation import ugettext_lazy as _
+from django.utils.safestring import mark_safe
 from django.db.models import get_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms import widgets
@@ -48,7 +49,7 @@ class TextLinkPlugin(LinkPluginBase):
     """
     name = _("Link")
     model_mixins = (LinkElementMixin,)
-    render_template = 'cascade/plugins/link.html'
+    render_template = 'cascade/link/text-link.html'
     glossary_fields = (
         PartialFormField('title',
             widgets.TextInput(),
@@ -63,6 +64,10 @@ class TextLinkPlugin(LinkPluginBase):
     class Media:
         js = resolve_dependencies('shop/js/admin/shoplinkplugin.js')
 
+    @classmethod
+    def get_identifier(cls, obj):
+        return mark_safe(obj.glossary.get('link_content', ''))
+
     def get_form(self, request, obj=None, **kwargs):
         # must add field `product` on the fly, because during the declaration of TextLinkFormBase
         # the MaterializedModel of the product is not known yet.
@@ -70,7 +75,7 @@ class TextLinkPlugin(LinkPluginBase):
             queryset=ProductModel.objects.all(),
             search_fields=getattr(ProductModel, 'search_fields'),
             help_text=_("An internal link onto a product from the shop"))
-        Form = type('TextLinkForm', (TextLinkFormBase,), {'ProductModel': ProductModel, 'product': product_field})
+        Form = type(str('TextLinkForm'), (TextLinkFormBase,), {'ProductModel': ProductModel, 'product': product_field})
         kwargs.update(form=Form)
         return super(TextLinkPlugin, self).get_form(request, obj, **kwargs)
 
