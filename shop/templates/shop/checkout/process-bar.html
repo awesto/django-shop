@@ -1,0 +1,20 @@
+{% load static cms_tags sekizai_tags %}
+
+{% addtoblock "css" %}<link href="{% static 'angular-bootstrap-plus/src/processbar/processbar.css' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+
+<bsp-process-bar action="{{ instance.link }}">
+	{% for child in instance.child_plugin_instances %}
+	<bsp-process-step title="{{ child.glossary.step_title }}">{% render_plugin child %}</bsp-process-step>
+	{% endfor %}
+</bsp-process-bar>
+
+<script id="bsp/process-bar.html" type="text/ng-template">
+	<div class="stepwizard">
+		<div class="stepwizard-row">
+			<div class="stepwizard-step" ng-repeat="($id, step) in bspProcessSteps" style="width: {{ step_css_width }};">
+				<button type="button" class="btn btn-circle" ng-class="stepButtonClass($id)" ng-disabled="stepButtonDisabled($id)" ng-click="selectStep($id)"><strong ng-bind="$index+1"></strong></button>
+				<p ng-bind="step.title"></p>
+			</div>
+		</div>
+	</div>
+</script>
