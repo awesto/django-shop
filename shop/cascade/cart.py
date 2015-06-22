@@ -15,9 +15,9 @@ from .plugin_base import ShopPluginBase
 class ShopCartPlugin(ShopPluginBase):
     name = _("Cart")
     require_parent = True
-    parent_classes = ('BootstrapColumnPlugin',)
+    parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin',)
     cache = False
-    CHOICES = (('editable', _("Editable cart")), ('static', _("Static cart summary")),)
+    CHOICES = (('editable', _("Editable cart")), ('static', _("Static cart")), ('summary', _("Cart summary")),)
     glossary_fields = (
         PartialFormField('render_type',
             widgets.RadioSelect(choices=CHOICES),
@@ -33,10 +33,16 @@ class ShopCartPlugin(ShopPluginBase):
         return mark_safe(dict(cls.CHOICES).get(render_type, ''))
 
     def get_render_template(self, context, instance, placeholder):
-        if instance.glossary.get('render_type') == 'static':
+        render_type = instance.glossary.get('render_type')
+        if render_type == 'static':
             template_names = [
                 '{}/cart/static-cart.html'.format(shop_settings.APP_LABEL),
                 'shop/cart/static-cart.html',
+            ]
+        elif render_type == 'summary':
+            template_names = [
+                '{}/cart/cart-summary.html'.format(shop_settings.APP_LABEL),
+                'shop/cart/cart-summary.html',
             ]
         else:
             template_names = [
@@ -46,11 +52,15 @@ class ShopCartPlugin(ShopPluginBase):
         return select_template(template_names)
 
     def render(self, context, instance, placeholder):
-        if instance.glossary.get('render_type') == 'static':
+        render_type = instance.glossary.get('render_type')
+        if render_type in ('static', 'summary',):
             # update context for static cart rendering, if editable the form is updated via Ajax
             cart = CartModel.objects.get_from_request(context['request'])
             cart_serializer = CartSerializer(cart, context=context, label='cart')
             context['cart'] = cart_serializer.data
+            if render_type == 'summary':
+                # for a cart summary we're only interested into the number of items
+                context['cart']['items'] = len(context['cart']['items'])
         return super(ShopCartPlugin, self).render(context, instance, placeholder)
 
 plugin_pool.register_plugin(ShopCartPlugin)
