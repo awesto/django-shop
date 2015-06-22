@@ -93,17 +93,16 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 }]);
 
 
+/*
 // Directive <shop-booklet-wrapper ...> to be used with booklet forms.
 djangoShopModule.directive('shopBookletWrapper', ['$controller', '$window', '$http', '$q',
                                           function($controller, $window, $http, $q) {
 	return {
 		restrict: 'E',
 		scope: true,
-		controller: function($scope) {
-			var self = this;
-
+		controller: ['$scope', function($scope) {
 			// add a form elements to the list of observed forms, so that they can be checked for validity
-			self.observeForms = function(formElem) {
+			this.observeForms = function(formElem) {
 				if (!angular.isArray($scope.observedForms[this.pagenum])) {
 					$scope.observedForms[this.pagenum] = {formElems: []};
 				}
@@ -113,15 +112,15 @@ djangoShopModule.directive('shopBookletWrapper', ['$controller', '$window', '$ht
 				//}
 			};
 
-			self.setValidity = function(pagenum, validity) {
+			this.setValidity = function(pagenum, validity) {
 				$scope.observedForms[pagenum].validity = validity;
 			}
 
-			self.getActivePage = function() {
+			this.getActivePage = function() {
 				return $scope.activePage;
 			};
 
-			self.setNextActivePage = function() {
+			this.setNextActivePage = function() {
 				if (angular.isObject($scope.observedForms[$scope.activePage + 1])) {
 					// proceed with next booklet page
 					$scope.activePage++;
@@ -150,7 +149,7 @@ djangoShopModule.directive('shopBookletWrapper', ['$controller', '$window', '$ht
 				}
 			};
 
-		},
+		}],
 		link: {
 			pre: function(scope, element, attrs, controller) {
 				controller.dialogCtrl = $controller('DialogCtrl', {$scope: scope});
@@ -269,7 +268,7 @@ djangoShopModule.directive('shopBookletPage', ['$compile', '$window', '$http', '
 		}
 	};
 }]);
-
+*/
 
 // Directive <TAG shop-form-validate="model-to-watch">
 // It is used to override the validation of hidden form fragments.
