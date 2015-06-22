@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.db.models import Max
-from django.forms import fields
 from django.template.loader import select_template
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from cms.plugin_pool import plugin_pool
-from cmsplugin_cascade.link.forms import LinkForm
+from cmsplugin_cascade.link.forms import TextLinkForm
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
 from shop import settings as shop_settings
@@ -15,17 +14,8 @@ from shop.modifiers.pool import cart_modifiers_pool
 from .plugin_base import ShopLinkPluginBase, DialogFormPluginBase
 
 
-class ProceedButtonForm(LinkForm):
+class ProceedButtonForm(TextLinkForm):
     LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")), ('RELOAD_PAGE', _("Reload Page")), ('PURCHASE_NOW', _("Purchase Now")),)
-
-    link_content = fields.CharField(required=False, label=_("Content"),
-                                    help_text=_("Proceed buttons content"))
-
-    def clean(self):
-        cleaned_data = super(ProceedButtonForm, self).clean()
-        if self.is_valid():
-            cleaned_data['glossary'].update(link_content=cleaned_data['link_content'])
-        return cleaned_data
 
 
 class ShopProceedButton(BootstrapButtonMixin, ShopLinkPluginBase):
