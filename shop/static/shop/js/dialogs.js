@@ -1,5 +1,4 @@
 (function(angular, undefined) {
-
 'use strict';
 
 // module: django.shop, TODO: move this into a summary JS file
@@ -12,7 +11,7 @@ var djangoShopModule = angular.module('django.shop.dialogs', []);
 // the caller has to set the controllers `deferred` to a `$q.deferred()` object.
 djangoShopModule.controller('DialogCtrl', ['$scope', '$http', '$q', 'djangoUrl', 'djangoForm',
                                    function($scope, $http, $q, djangoUrl, djangoForm) {
-	var self = this, uploadURL = djangoUrl.reverse('shop:checkout-upload');
+	var uploadURL = djangoUrl.reverse('shop:checkout-upload');
 
 	this.uploadScope = function(scope, deferred) {
 		$http.post(uploadURL, scope.data).success(function(response) {
@@ -63,10 +62,24 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 		restrict: 'EA',
 		controller: 'DialogCtrl',
 		link: function(scope, element, attrs, DialogCtrl) {
+			// add ng-click="proceed()" to button elements wishing to post the content of the
+			// current scope. Returns a promise for further processing.
+			scope.proceed = function() {
+				var deferred = $q.defer();
+				DialogCtrl.uploadScope(scope, deferred);
+				return deferred.promise;
+			};
+
+			// add ng-click="proceedWith(action)" to button elements wishing to
+			// proceed after having posted the content of the current scope.
 			scope.proceedWith = function(action) {
 				var deferred = $q.defer();
 				DialogCtrl.uploadScope(scope, deferred);
-				deferred.promise.then(function() {
+				performAction(deferred.promise, action);
+			};
+
+			function performAction(promise, action) {
+				$q.when(promise).then(function() {
 					console.log("Proceed to: " + action);
 					if (action === 'RELOAD_PAGE') {
 						$window.location.reload();
@@ -86,13 +99,6 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 						console.error(errs);
 					}
 				});
-			};
-
-		}
-	};
-}]);
-
-
 			}
 		}
 	};
