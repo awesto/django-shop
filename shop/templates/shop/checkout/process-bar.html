@@ -4,7 +4,7 @@
 
 <bsp-process-bar action="{{ instance.link }}">
 	{% for child in instance.child_plugin_instances %}
-	<bsp-process-step title="{{ child.glossary.step_title }}">{% render_plugin child %}</bsp-process-step>
+	<bsp-process-step title="{{ child.glossary.step_title }}" ng-cloak>{% render_plugin child %}</bsp-process-step>
 	{% endfor %}
 </bsp-process-bar>
 
