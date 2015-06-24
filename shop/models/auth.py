@@ -94,7 +94,7 @@ class BaseCustomer(AbstractBaseUser, PermissionsMixin):
             return self.email
         elif self.username:
             return self.username
-        return _("anonymous")
+        return '<anonymous>'
 
     def get_full_name(self):
         # The user is identified by their email address
