@@ -11,7 +11,7 @@ djangoShopModule.directive('shopAuthForm', ['$window', '$http', '$timeout',
 	return {
 		restrict: 'A',
 		require: 'form',
-		scope: true,
+		scope: false,  // do not change this
 		link: function(scope, element, attrs, formCtrl) {
 			var timer = null;
 			if (attrs.action === undefined)
@@ -28,7 +28,7 @@ djangoShopModule.directive('shopAuthForm', ['$window', '$http', '$timeout',
 				}
 			}
 
-			scope.submit = function(submitURL) {
+			scope.submitForm = function(submitURL) {
 				$http.post(submitURL, scope.form_data).success(function(response) {
 					if (response.success) {
 						scope.success_message = response.success;

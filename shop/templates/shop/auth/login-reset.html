@@ -18,8 +18,8 @@
 </div>
 
 <div class="form-group">
-	<a ng-click="submit('{% url 'shop:login' %}')" class="btn btn-primary">{% trans "Login" %}</a>
-	<a ng-click="showResetForm=!showResetForm;" class="btn btn-link pull-right">{% trans "Password Forgotten?" %}</a>
+	<button type="button" ng-click="submitForm('{% url 'shop:login' %}')" class="btn btn-primary">{% trans "Login" %}</button>
+	<button type="button" ng-click="showResetForm=!showResetForm;" class="btn btn-link pull-right">{% trans "Password Forgotten?" %}</button>
 </div>
 
 <div ng-show="showResetForm">
@@ -30,8 +30,7 @@
 	</div>
 	
 	<div class="form-group" ng-hide="success_message">
-		<a ng-click="submit('{% url 'shop:password-reset' %}')" class="btn btn-primary">{% trans "Reset Password" %}</a>
+		<button type="button" ng-click="submitForm('{% url 'shop:password-reset' %}')" class="btn btn-primary">{% trans "Reset Password" %}</button>
 	</div>
 </div>
-
 {% endblock %}

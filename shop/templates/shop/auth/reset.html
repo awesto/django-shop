@@ -12,6 +12,6 @@
 </div>
 
 <div class="form-group" ng-hide="success_message">
-	<a ng-click="submit('{% url 'shop:password-reset' %}')" class="btn btn-primary">{% trans "Reset Password" %}</a>
+	<button type="button" ng-click="submitForm('{% url 'shop:password-reset' %}')" class="btn btn-primary">{% trans "Reset Password" %}</button>
 </div>
 {% endblock %}

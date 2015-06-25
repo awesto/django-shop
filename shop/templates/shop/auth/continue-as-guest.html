@@ -7,6 +7,6 @@
 {{ block.super }}
 
 <div class="form-group">
-	<a ng-click="submit('{% url 'shop:continue-as-guest' %}')" class="btn btn-primary">{% trans "Continue as guest" %}</a>
+	<button type="button" ng-click="submitForm('{% url 'shop:continue-as-guest' %}')" class="btn btn-primary">{% trans "Continue as guest" %}</button>
 </div>
 {% endblock form_content %}

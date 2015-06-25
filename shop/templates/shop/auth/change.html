@@ -18,6 +18,6 @@
 </div>
 
 <div class="form-group">
-	<a ng-click="submit('{% url 'shop:password-change' %}')" class="btn btn-primary">{% trans "Submit Changes" %}</a>
+	<button type="button" ng-click="submitForm('{% url 'shop:password-change' %}')" class="btn btn-primary">{% trans "Submit Changes" %}</button>
 </div>
 {% endblock form_content %}

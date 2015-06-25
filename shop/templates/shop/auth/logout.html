@@ -5,6 +5,6 @@
 
 {% block form_content %}
 <div class="form-group">
-	<a ng-click="submit('{% url 'shop:logout' %}')" class="btn btn-primary">{% trans "Logout" %}</a>
+	<button type="button" ng-click="submitForm('{% url 'shop:logout' %}')" class="btn btn-primary">{% trans "Logout" %}</button>
 </div>
 {% endblock %}
