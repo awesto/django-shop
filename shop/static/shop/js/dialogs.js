@@ -91,9 +91,11 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 						$window.location.href = action;
 					}
 				}).then(function(response) {
-					console.log(response.data);
-					// evaluate expression to proceed on the PSP's server
-					eval(response.data.expression);
+					if (response) {
+						console.log(response);
+						// evaluate expression to proceed on the PSP's server
+						eval(response.data.expression);
+					}
 				}, function(errs) {
 					if (errs) {
 						console.error(errs);
