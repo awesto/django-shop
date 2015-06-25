@@ -67,6 +67,7 @@ class ShopAuthenticationPlugin(ShopLinkPluginBase):
         """
         form_type = instance.glossary.get('form_type')
         if form_type:
+            # prevent a malicious database entry to import an ineligible file
             form_type = AUTH_FORM_TYPES[[ft[0] for ft in AUTH_FORM_TYPES].index(form_type)]
             try:
                 FormClass = import_by_path(form_type[2])
