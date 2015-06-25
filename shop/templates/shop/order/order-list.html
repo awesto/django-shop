@@ -1,9 +1,10 @@
-{% load i18n cms_tags %}
+{% load i18n %}
 
-{% placeholder "order-list-heading" %}
+{% block shop-order-heading %}{% endblock %}
 
 <table class="table table-condensed">
-	<caption>{% placeholder "order-list-caption" %}</caption>
+{% block shop-order-caption %}<!-- table caption -->{% endblock %}
+
 {% block shop-order-thead %}
 	<thead>
 		<tr>
@@ -30,4 +31,4 @@
 
 </table>
 
-{% placeholder "order-list-footer" %}
+{% block shop-order-footer %}{% endblock %}

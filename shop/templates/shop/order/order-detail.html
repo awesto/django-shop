@@ -1,16 +1,12 @@
-{% load i18n cms_tags %}
+{% load i18n %}
 
-{# Remember: placeholders for Order Detail View must be edited in Order List View mode #}
-
-{% block shop-order-header %}
-{% placeholder "order-detail-heading" or %}
-	{# only available for Thank You view #}
+{% block shop-order-heading %}
 	<h3>{% trans "Your Order" %}: {{ data.identifier }} <small> {% trans "from" %} </small><small shop-timestamp="{{ data.created_at }}"></small></h3>
-{% endplaceholder %}
-{% endblock shop-order-header %}
+{% endblock shop-order-heading %}
 
 <table class="table table-condensed">
-	<caption>{% placeholder "order-detail-caption" %}</caption>
+{% block shop-order-caption %}<!-- table caption -->{% endblock %}
+
 {% block shop-order-thead %}
 	<thead>
 		<tr>
@@ -71,4 +67,4 @@
 
 </table>
 
-{% placeholder "order-detail-footer" %}
+{% block shop-order-footer %}{% endblock %}
