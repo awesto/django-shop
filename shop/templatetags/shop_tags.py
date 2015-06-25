@@ -89,6 +89,8 @@ def rest_json(value, arg=None):
     """
     Renders a `ReturnDict` as used by the REST framework into a safe JSON string.
     """
+    if not value:
+        return mark_safe('{}')
     if not isinstance(value, ReturnDict):
         raise ValueError("Given value must be of type `ReturnDict`")
     data = JSONRenderer().render(value)
