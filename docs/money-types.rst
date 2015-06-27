@@ -131,6 +131,6 @@ writing REST serializers, use:
 
 The default REST behavior, is to serialize Decimal types as floats. This is fine if you want to
 do some calculations in the browser. However, then the currency information is lost, and must
-somehow be readded to the output strings. It also is a bad idea to do commercial calculations using
-floats, but JavaScript does not have any built-in Decimal type. I therefore recommend to always
+be re added somehow to the output strings. It also is a bad idea to do commercial calculations using
+floats, but JavaScript does not offer any Decimal-like type. I therefore recommend to always
 do your commerce calculations on the server and pass amount information using JSON strings.
