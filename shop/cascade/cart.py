@@ -36,8 +36,8 @@ class ShopCartPlugin(ShopPluginBase):
         render_type = instance.glossary.get('render_type')
         if render_type == 'static':
             template_names = [
-                '{}/cart/static-cart.html'.format(shop_settings.APP_LABEL),
-                'shop/cart/static-cart.html',
+                '{}/cart/static.html'.format(shop_settings.APP_LABEL),
+                'shop/cart/static.html',
             ]
         elif render_type == 'summary':
             template_names = [
@@ -46,8 +46,8 @@ class ShopCartPlugin(ShopPluginBase):
             ]
         else:
             template_names = [
-                '{}/cart/editable-cart.html'.format(shop_settings.APP_LABEL),
-                'shop/cart/editable-cart.html',
+                '{}/cart/editable.html'.format(shop_settings.APP_LABEL),
+                'shop/cart/editable.html',
             ]
         return select_template(template_names)
 
