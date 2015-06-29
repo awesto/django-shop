@@ -28,7 +28,8 @@ djangoShopModule.directive('shopAuthForm', ['$window', '$http', '$timeout',
 				}
 			}
 
-			scope.submitForm = function(submitURL) {
+			// Submit auth form data. Use `delay` in milliseconds to postpone final action.
+			scope.submitForm = function(submitURL, delay) {
 				$http.post(submitURL, scope.form_data).success(function(response) {
 					if (response.success) {
 						scope.success_message = response.success;
@@ -36,7 +37,7 @@ djangoShopModule.directive('shopAuthForm', ['$window', '$http', '$timeout',
 						timer = $timeout(function() {
 							proceedWithAction(response);
 							timer = null;
-						}, 5000);
+						}, delay);
 					} else {
 						proceedWithAction(response);
 					}
