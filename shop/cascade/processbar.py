@@ -15,6 +15,7 @@ from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.link.forms import TextLinkForm
 from cmsplugin_cascade.widgets import NumberInputWidget
 from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
+from cmsplugin_cascade.mixins import TransparentMixin
 from shop.cascade.plugin_base import ShopPluginBase, ShopLinkPluginBase
 from shop import settings as shop_settings
 
@@ -26,7 +27,7 @@ class ProcessBarForm(ManageChildrenFormMixin, ModelForm):
         help_text=_("Number of steps for this proceed bar."))
 
 
-class ProcessBarPlugin(ShopPluginBase):
+class ProcessBarPlugin(TransparentMixin, ShopPluginBase):
     name = _("Process Bar")
     form = ProcessBarForm
     parent_classes = ('BootstrapRowPlugin', 'BootstrapColumnPlugin',)
@@ -62,12 +63,13 @@ class ProcessBarPlugin(ShopPluginBase):
 plugin_pool.register_plugin(ProcessBarPlugin)
 
 
-class ProcessStepPlugin(ShopPluginBase):
+class ProcessStepPlugin(TransparentMixin, ShopPluginBase):
     name = _("Process Step")
     parent_classes = ('ProcessBarPlugin',)
     require_parent = True
     allow_children = True
     alien_child_classes = True
+    render_template = 'cascade/generic/wrapper.html'
     glossary_fields = (
         PartialFormField('step_title',
             widgets.TextInput(attrs={'size': 150}),
@@ -84,15 +86,7 @@ class ProcessStepPlugin(ShopPluginBase):
         return format_html('{0}{1}', identifier, content)
 
     def get_child_classes(self, slot, page):
-        """
-        Bypass allowed children from grandparent plugin.
-        """
-        instance = self.cms_plugin_instance
-        try:
-            plugin_class = instance.parent.parent.get_plugin_class()
-            child_classes = plugin_class().get_child_classes(slot, page)
-        except AttributeError:
-            child_classes = super(ProcessStepPlugin, self).get_child_classes(slot, page)
+        child_classes = super(ProcessStepPlugin, self).get_child_classes(slot, page)
         child_classes += ('ProcessNextStepPlugin',)
         return child_classes
 
