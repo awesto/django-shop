@@ -235,7 +235,7 @@ class CartItemSerializer(BaseItemSerializer):
 class WatchItemSerializer(BaseItemSerializer):
     class Meta(BaseItemSerializer.Meta):
         list_serializer_class = WatchListSerializer
-        fields = ('product', 'url', 'summary', 'quantity',)
+        fields = ('product', 'url', 'summary', 'quantity', 'extra',)
 
 
 class BaseCartSerializer(serializers.ModelSerializer):
