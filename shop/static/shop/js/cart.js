@@ -4,12 +4,11 @@
 // module: django.shop, TODO: move this into a summary JS file
 var djangoShopModule = angular.module('django.shop.cart', []);
 
-djangoShopModule.controller('CartController', ['$scope', '$http', 'djangoUrl', function($scope, $http, djangoUrl) {
-	var cartListURL = djangoUrl.reverse('shop:cart-list');
+djangoShopModule.controller('CartController', ['$scope', '$http', function($scope, $http) {
 	var isLoading = false;
 
 	this.loadCart = function() {
-		$http.get(cartListURL).success(function(cart) {
+		$http.get($scope.cartListURL).success(function(cart) {
 			console.log('loaded cart: ');
 			console.log(cart);
 			$scope.cart = cart;
@@ -25,7 +24,7 @@ djangoShopModule.controller('CartController', ['$scope', '$http', 'djangoUrl', f
 		isLoading = true;
 		$http.post(cart_item.url, cart_item, config).then(function(response) {
 			console.log(response);
-			return $http.get(cartListURL);
+			return $http.get($scope.$parent.cartListURL);
 		}).then(function(response) {
 			console.log(response);
 			angular.copy(response.data, $scope.cart);
@@ -44,25 +43,37 @@ djangoShopModule.controller('CartController', ['$scope', '$http', 'djangoUrl', f
 		postCartItem(cart_item, 'DELETE');
 	}
 
+	// put a cart item into the watch list
 	$scope.watchCartItem = function(cart_item) {
 		cart_item.quantity = 0;
+		postCartItem(cart_item, 'PUT');
+	}
+
+	// readd a cart item from the watch list to the cart
+	$scope.addCartItem = function(cart_item) {
 		postCartItem(cart_item, 'PUT');
 	}
 }]);
 
 
 // Directive <shop-cart>
-// handle a djangoSHOP's cart
-djangoShopModule.directive('shopCart', function() {
+// Handle a djangoSHOP's cart. Directive <shop-cart watch="watch"> renders the cart as watch-list.
+djangoShopModule.directive('shopCart', ['djangoUrl', function(djangoUrl) {
+	var cartListURL = djangoUrl.reverse('shop:cart-list'), watchListURL = djangoUrl.reverse('shop:watch-list');
 	return {
 		restrict: 'EA',
 		templateUrl: 'shop/cart.html',
 		controller: 'CartController',
-		link: function(scope, element, attrs, cartCtrl) {
-			cartCtrl.loadCart();
+		link: {
+			pre: function(scope, element, attrs) {
+				scope.cartListURL = attrs.watch ? watchListURL : cartListURL;
+			},
+			post: function(scope, element, attrs, cartCtrl) {
+				cartCtrl.loadCart();
+			}
 		}
 	};
-});
+}]);
 
 
 // Directive <shop-cart-item>
@@ -73,11 +84,6 @@ djangoShopModule.directive('shopCartItem', function() {
 		restrict: 'EA',
 		templateUrl: 'shop/cart-item.html',
 		controller: 'CartController'
-		/*
-		scope: {
-			cart_item: '=cart_item'
-		}
-		*/
 	};
 });
 

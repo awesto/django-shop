@@ -8,7 +8,7 @@ from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.fields import PartialFormField
 from shop import settings as shop_settings
 from shop.models.cart import CartModel
-from shop.rest.serializers import CartSerializer
+from shop.rest.serializers import CartSerializer, WatchSerializer
 from .plugin_base import ShopPluginBase
 
 
@@ -17,7 +17,8 @@ class ShopCartPlugin(ShopPluginBase):
     require_parent = True
     parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin',)
     cache = False
-    CHOICES = (('editable', _("Editable cart")), ('static', _("Static cart")), ('summary', _("Cart summary")),)
+    CHOICES = (('editable', _("Editable Cart")), ('static', _("Static Cart")),
+        ('summary', _("Cart Summary")), ('watch', _("Watch List")),)
     glossary_fields = (
         PartialFormField('render_type',
             widgets.RadioSelect(choices=CHOICES),
@@ -44,6 +45,11 @@ class ShopCartPlugin(ShopPluginBase):
                 '{}/cart/cart-summary.html'.format(shop_settings.APP_LABEL),
                 'shop/cart/cart-summary.html',
             ]
+        elif render_type == 'watch':
+            template_names = [
+                '{}/cart/watch.html'.format(shop_settings.APP_LABEL),
+                'shop/cart/watch.html',
+            ]
         else:
             template_names = [
                 '{}/cart/editable.html'.format(shop_settings.APP_LABEL),
@@ -54,7 +60,7 @@ class ShopCartPlugin(ShopPluginBase):
     def render(self, context, instance, placeholder):
         render_type = instance.glossary.get('render_type')
         if render_type in ('static', 'summary',):
-            # update context for static cart rendering, if editable the form is updated via Ajax
+            # update context for static and summary cart rendering since items are rendered in HTML
             cart = CartModel.objects.get_from_request(context['request'])
             cart_serializer = CartSerializer(cart, context=context, label='cart')
             context['cart'] = cart_serializer.data
