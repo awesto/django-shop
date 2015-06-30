@@ -32,7 +32,8 @@
 <script id="AddToCartModalDialog.html" type="text/ng-template">
 	{% block add-to-cart-modal-header %}
 	<div class="modal-header">
-		<h4 class="modal-title">{% trans "The product has been successfully placed in the shopping cart:" %}</h4>
+		<h4 class="modal-title" ng-if="!context.watch">{% trans "The product has been successfully placed in the shopping cart:" %}</h4>
+		<h4 class="modal-title" ng-if="context.watch">{% trans "Watching this product" %}</h4>
 	</div>
 	{% endblock add-to-cart-modal-header %}
 
