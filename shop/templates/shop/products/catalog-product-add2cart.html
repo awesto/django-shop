@@ -20,6 +20,7 @@
 			<tr>
 				<td colspan="3">
 					<button class="btn btn-primary pull-right" ng-click="addToCart('{% url 'shop:cart-list' %}')">{% trans "Add to cart" %}</button>
+					<button class="btn btn-info btn-block btn-xs pull-right" ng-click="addToCart('{% url 'shop:watch-list' %}', {watch: true})">{% trans "Watch product" %}</button>
 				</td>
 			</tr>
 		</tbody>

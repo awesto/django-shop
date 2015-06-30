@@ -237,6 +237,10 @@ class WatchItemSerializer(BaseItemSerializer):
         list_serializer_class = WatchListSerializer
         fields = ('product', 'url', 'summary', 'quantity', 'extra',)
 
+    def create(self, validated_data):
+        validated_data['quantity'] = 0
+        return super(WatchItemSerializer, self).create(validated_data)
+
 
 class BaseCartSerializer(serializers.ModelSerializer):
     subtotal = MoneyField()

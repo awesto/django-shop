@@ -54,13 +54,16 @@ djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$mo
 		});
 	};
 
-	$scope.addToCart = function(cart_url) {
+	$scope.addToCart = function(cart_url, extra_context) {
 		$modal.open({
 			templateUrl: 'AddToCartModalDialog.html',
 			controller: 'ModalInstanceCtrl',
 			resolve: {
 				modal_context: function() {
-					return {cart_url: cart_url, context: $scope.context};
+					return {
+						cart_url: cart_url,
+						context: angular.extend(angular.isObject(extra_context) ? extra_context : {}, $scope.context)
+					};
 				}
 			}
 		}).result.then(function(next_url) {
