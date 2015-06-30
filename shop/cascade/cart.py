@@ -42,8 +42,8 @@ class ShopCartPlugin(ShopPluginBase):
             ]
         elif render_type == 'summary':
             template_names = [
-                '{}/cart/cart-summary.html'.format(shop_settings.APP_LABEL),
-                'shop/cart/cart-summary.html',
+                '{}/cart/summary.html'.format(shop_settings.APP_LABEL),
+                'shop/cart/summary.html',
             ]
         elif render_type == 'watch':
             template_names = [
