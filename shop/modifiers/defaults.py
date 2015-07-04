@@ -15,7 +15,8 @@ class DefaultCartModifier(BaseCartModifier):
     entry in `SHOP_CART_MODIFIERS`.
     """
     def process_cart_item(self, cart_item, request):
-        cart_item.line_total = cart_item.product.get_price(request) * cart_item.quantity
+        cart_item.unit_price = cart_item.product.get_price(request)
+        cart_item.line_total = cart_item.unit_price * cart_item.quantity
         return super(DefaultCartModifier, self).process_cart_item(cart_item, request)
 
     def process_cart(self, cart, request):

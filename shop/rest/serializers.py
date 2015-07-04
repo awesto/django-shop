@@ -209,6 +209,7 @@ class ItemModelSerializer(serializers.ModelSerializer):
 
 class BaseItemSerializer(ItemModelSerializer):
     url = serializers.HyperlinkedIdentityField(lookup_field='pk', view_name='shop:cart-detail')
+    unit_price = MoneyField()
     line_total = MoneyField()
     summary = serializers.SerializerMethodField(
         help_text="Sub-serializer for fields to be shown in the product's summary.")
