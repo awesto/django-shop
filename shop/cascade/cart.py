@@ -8,7 +8,7 @@ from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.fields import PartialFormField
 from shop import settings as shop_settings
 from shop.models.cart import CartModel
-from shop.rest.serializers import CartSerializer, WatchSerializer
+from shop.rest.serializers import CartSerializer
 from .plugin_base import ShopPluginBase
 
 
@@ -67,6 +67,8 @@ class ShopCartPlugin(ShopPluginBase):
             if render_type == 'summary':
                 # for a cart summary we're only interested into the number of items
                 context['cart']['items'] = len(context['cart']['items'])
+        else:
+            context['ng_model_options'] = shop_settings.CART_NG_MODEL_OPTIONS
         return super(ShopCartPlugin, self).render(context, instance, placeholder)
 
 plugin_pool.register_plugin(ShopCartPlugin)

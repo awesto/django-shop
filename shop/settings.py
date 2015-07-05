@@ -19,3 +19,9 @@ CART_MODIFIERS = getattr(settings, 'SHOP_CART_MODIFIERS', ('shop.cart.modifiers.
 VALUE_ADDED_TAX = getattr(settings, 'SHOP_VALUE_ADDED_TAX', Decimal('20'))
 
 ORDER_WORKFLOWS = getattr(settings, 'SHOP_ORDER_WORKFLOWS', ())
+
+CART_NG_MODEL_OPTIONS = getattr(settings, 'SHOP_CART_NG_MODEL_OPTIONS', "{updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}")
+"""
+Use ``SHOP_CART_NG_MODEL_OPTIONS`` to configure the update behavior when changing the quantity of
+a cart item. For more information refer to the AngularJS docs: https://code.angularjs.org/1.3.7/docs/api/ng/directive/ngModelOptions
+"""

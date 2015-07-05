@@ -9,6 +9,7 @@ from rest_framework import status
 from rest_framework import views
 from rest_framework.renderers import BrowsableAPIRenderer
 from rest_framework.response import Response
+from shop import settings as shop_settings
 from shop.rest.money import JSONRenderer
 from shop.rest.serializers import AddToCartSerializer
 from shop.rest.renderers import CMSPageRenderer
@@ -123,6 +124,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
         if renderer_context['request'].accepted_renderer.format == 'html':
             # add the product as Python object to the context
             renderer_context['product'] = self.get_object()
+            renderer_context['ng_model_options'] = shop_settings.CART_NG_MODEL_OPTIONS
         return renderer_context
 
     def get_object(self):
