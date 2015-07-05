@@ -125,10 +125,16 @@ class ProcessNextStepPlugin(BootstrapButtonMixin, ShopLinkPluginBase):
         return form
 
     def get_render_template(self, context, instance, placeholder):
-        if instance.glossary.get('link', {}).get('type') == 'NEXT_STEP':
+        link_type = instance.glossary.get('link', {}).get('type')
+        if link_type == 'NEXT_STEP':
             template_names = [
                 '{}/checkout/process-next-step.html'.format(shop_settings.APP_LABEL),
                 'shop/checkout/process-next-step.html',
+            ]
+        elif link_type == 'PURCHASE_NOW':
+            template_names = [
+                '{}/checkout/process-final-step.html'.format(shop_settings.APP_LABEL),
+                'shop/checkout/process-final-step.html',
             ]
         else:
             template_names = [
