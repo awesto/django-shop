@@ -5,6 +5,8 @@ from django.template.loader import select_template
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from cms.plugin_pool import plugin_pool
+from djangocms_text_ckeditor.widgets import TextEditorWidget
+from cmsplugin_cascade.fields import PartialFormField
 from cmsplugin_cascade.link.forms import TextLinkForm
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
@@ -160,3 +162,29 @@ class TermsAndConditionsFormPlugin(DialogFormPluginBase):
     template_leaf_name = 'terms-and-conditions.html'
 
 DialogFormPluginBase.register_plugin(TermsAndConditionsFormPlugin)
+
+
+class AcceptConditionFormPlugin(DialogFormPluginBase):
+    """
+    Provides the form to accept any condition.
+    """
+    name = _("Accept Condition")
+    form_class = 'shop.forms.checkout.AcceptConditionForm'
+    template_leaf_name = 'accept-condition.html'
+    glossary_fields = (
+        PartialFormField('html_content',
+            TextEditorWidget(),
+            label=_("HTML content")
+        ),
+    )
+
+    def render(self, context, instance, placeholder):
+        # method probaly useless
+        print 'AcceptConditionFormPlugin.render()'
+        super(AcceptConditionFormPlugin, self).render(context, instance, placeholder)
+        html_content = instance.glossary.get('html_content')
+        accept_condition_form = context['accept_condition_form-{}'.format(instance.id)]
+        context['accept_condition_form'] = accept_condition_form
+        return context
+
+DialogFormPluginBase.register_plugin(AcceptConditionFormPlugin)

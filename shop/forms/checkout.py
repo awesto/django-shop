@@ -218,3 +218,24 @@ class TermsAndConditionsForm(DialogForm):
         accept_form = cls(data=data)
         if not accept_form.is_valid():
             return {accept_form.form_name: dict(accept_form.errors)}
+
+
+class AcceptConditionForm(DialogForm):
+    scope_prefix = 'data.accept_condition'
+
+    accept = fields.BooleanField(required=True,
+        widget=CheckboxInput(_("Accept condition.")))
+
+    def __init__(self, initial=None, instance=None, *args, **kwargs):
+        scope_prefix = '{0}.plugin_{plugin_id}'.format(self.scope_prefix, **initial)
+        super(AcceptConditionForm, self).__init__(initial=initial, scope_prefix=scope_prefix, *args, **kwargs)
+        self.form_name = '{0}-{plugin_id}'.format(self.form_name, **initial)
+        pass
+
+    @classmethod
+    def form_factory(cls, request, data, cart):
+        print 'AcceptConditionForm.form_factory()'
+        data = data or {'accept': False}
+        accept_form = cls(data=data)
+        if not accept_form.is_valid():
+            return {accept_form.form_name: dict(accept_form.errors)}
