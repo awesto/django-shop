@@ -59,14 +59,16 @@ djangoShopModule.controller('CartController', ['$scope', '$http', function($scop
 // Directive <shop-cart>
 // Handle a djangoSHOP's cart. Directive <shop-cart watch="watch"> renders the cart as watch-list.
 djangoShopModule.directive('shopCart', ['djangoUrl', function(djangoUrl) {
-	var cartListURL = djangoUrl.reverse('shop:cart-list'), watchListURL = djangoUrl.reverse('shop:watch-list');
+	var cartListURL = djangoUrl.reverse('shop:cart-list');
+	var watchListURL = djangoUrl.reverse('shop:watch-list');
 	return {
 		restrict: 'EA',
 		templateUrl: 'shop/cart.html',
 		controller: 'CartController',
 		link: {
 			pre: function(scope, element, attrs) {
-				scope.cartListURL = attrs.watch ? watchListURL : cartListURL;
+				console.log(attrs);
+				scope.cartListURL = attrs.watch === 'watch' ? watchListURL : cartListURL;
 			},
 			post: function(scope, element, attrs, cartCtrl) {
 				cartCtrl.loadCart();
