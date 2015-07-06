@@ -38,7 +38,11 @@ class CheckoutViewSet(BaseViewSet):
         for fc in self.dialog_forms:
             key = fc.scope_prefix.split('.', 1)[1]
             if key in request.data:
-                dialog_data.append((fc, request.data[key]))
+                if 'plugin_order' in request.data[key]:
+                    dialog_data.append((fc, request.data[key]))
+                else:
+                    for data in request.data[key].values():
+                        dialog_data.append((fc, data))
         dialog_data = sorted(dialog_data, key=lambda tpl: int(tpl[1]['plugin_order']))
 
         # collect potential errors

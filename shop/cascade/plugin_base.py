@@ -122,5 +122,6 @@ class DialogFormPluginBase(ShopPluginBase):
         if not isinstance(form_data.get('initial'), dict):
             form_data['initial'] = {}
         form_data['initial'].update(plugin_id=instance.id, plugin_order=request._plugin_order)
-        context[self.FormClass.form_name] = self.FormClass(**form_data)
+        bound_form = self.FormClass(**form_data)
+        context[bound_form.form_name] = bound_form
         return super(DialogFormPluginBase, self).render(context, instance, placeholder)

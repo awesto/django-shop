@@ -3,7 +3,10 @@ from __future__ import unicode_literals
 from django.db.models import Max
 from django.contrib.auth import get_user_model
 from django.forms import fields, widgets
+from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
+#from djangular.forms.widgets import CheckboxChoiceInput
 from djangular.styling.bootstrap3.forms import Bootstrap3ModelForm
 from djangular.styling.bootstrap3.widgets import RadioSelect, RadioFieldRenderer, CheckboxInput
 from shop.models.address import AddressModel
@@ -223,18 +226,16 @@ class TermsAndConditionsForm(DialogForm):
 class AcceptConditionForm(DialogForm):
     scope_prefix = 'data.accept_condition'
 
-    accept = fields.BooleanField(required=True,
-        widget=CheckboxInput(_("Accept condition.")))
+    accept = fields.BooleanField(required=True, widget=CheckboxInput(None))
 
-    def __init__(self, initial=None, instance=None, *args, **kwargs):
-        scope_prefix = '{0}.plugin_{plugin_id}'.format(self.scope_prefix, **initial)
-        super(AcceptConditionForm, self).__init__(initial=initial, scope_prefix=scope_prefix, *args, **kwargs)
-        self.form_name = '{0}-{plugin_id}'.format(self.form_name, **initial)
-        pass
+    def __init__(self, data=None, initial=None, *args, **kwargs):
+        plugin_id = data and data.get('plugin_id') or initial and initial.get('plugin_id') or 'none'
+        scope_prefix = '{0}.plugin_{1}'.format(self.scope_prefix, plugin_id)
+        self.form_name = '{0}.plugin_{1}'.format(self.form_name, plugin_id)
+        super(AcceptConditionForm, self).__init__(data=data, initial=initial, scope_prefix=scope_prefix, *args, **kwargs)
 
     @classmethod
     def form_factory(cls, request, data, cart):
-        print 'AcceptConditionForm.form_factory()'
         data = data or {'accept': False}
         accept_form = cls(data=data)
         if not accept_form.is_valid():

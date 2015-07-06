@@ -2,8 +2,14 @@
 from __future__ import unicode_literals
 from django.db.models import Max
 from django.template.loader import select_template
+from django.utils.html import format_html, strip_tags, strip_entities
 from django.utils.safestring import mark_safe
+from django.utils.text import Truncator
 from django.utils.translation import ugettext_lazy as _
+try:
+    from html.parser import HTMLParser  # py3
+except ImportError:
+    from HTMLParser import HTMLParser  # py2
 from cms.plugin_pool import plugin_pool
 from djangocms_text_ckeditor.widgets import TextEditorWidget
 from cmsplugin_cascade.fields import PartialFormField
@@ -177,13 +183,28 @@ class AcceptConditionFormPlugin(DialogFormPluginBase):
             label=_("HTML content")
         ),
     )
+    html_parser = HTMLParser()
+
+    @classmethod
+    def get_identifier(cls, instance):
+        identifier = super(AcceptConditionFormPlugin, cls).get_identifier(instance)
+        html_content = cls.html_parser.unescape(instance.glossary.get('html_content', ''))
+        html_content = strip_entities(strip_tags(html_content))
+        html_content = Truncator(html_content).words(3, truncate=' ...')
+        return format_html('{}{}', identifier, html_content)
+
+    def get_form(self, request, obj=None, **kwargs):
+        if obj:
+            html_content = self.html_parser.unescape(obj.glossary.get('html_content', ''))
+            obj.glossary.update(html_content=html_content)
+        return super(AcceptConditionFormPlugin, self).get_form(request, obj, **kwargs)
 
     def render(self, context, instance, placeholder):
-        # method probaly useless
-        print 'AcceptConditionFormPlugin.render()'
         super(AcceptConditionFormPlugin, self).render(context, instance, placeholder)
-        html_content = instance.glossary.get('html_content')
-        accept_condition_form = context['accept_condition_form-{}'.format(instance.id)]
+        accept_condition_form = context['accept_condition_form.plugin_{}'.format(instance.id)]
+        # transfer the stored HTML content into the widget
+        html_content = self.html_parser.unescape(instance.glossary.get('html_content', ''))
+        accept_condition_form['accept'].field.widget.choice_label = mark_safe(html_content)
         context['accept_condition_form'] = accept_condition_form
         return context
 
