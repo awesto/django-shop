@@ -3,10 +3,7 @@ from __future__ import unicode_literals
 from django.db.models import Max
 from django.contrib.auth import get_user_model
 from django.forms import fields, widgets
-from django.utils.html import format_html
-from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
-#from djangular.forms.widgets import CheckboxChoiceInput
 from djangular.styling.bootstrap3.forms import Bootstrap3ModelForm
 from djangular.styling.bootstrap3.widgets import RadioSelect, RadioFieldRenderer, CheckboxInput
 from shop.models.address import AddressModel
