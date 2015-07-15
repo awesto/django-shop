@@ -155,17 +155,6 @@ class ExtraAnnotationFormPlugin(DialogFormPluginBase):
 DialogFormPluginBase.register_plugin(ExtraAnnotationFormPlugin)
 
 
-class TermsAndConditionsFormPlugin(DialogFormPluginBase):
-    """
-    Provides the form to accept terms and conditions.
-    """
-    name = _("Terms and Conditions")
-    form_class = 'shop.forms.checkout.TermsAndConditionsForm'
-    template_leaf_name = 'terms-and-conditions.html'
-
-DialogFormPluginBase.register_plugin(TermsAndConditionsFormPlugin)
-
-
 class AcceptConditionFormPlugin(DialogFormPluginBase):
     """
     Provides the form to accept any condition.

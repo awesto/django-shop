@@ -13,6 +13,14 @@ djangoShopModule.controller('DialogCtrl', ['$scope', '$http', '$q', 'djangoUrl',
                                    function($scope, $http, $q, djangoUrl, djangoForm) {
 	var uploadURL = djangoUrl.reverse('shop:checkout-upload');
 
+	function getProperty(obj, prop) {
+		var parts = prop.split('.'), part;
+		for (part = parts.shift(); obj && part; part = parts.shift()) {
+			obj = obj[part];
+		}
+		return obj;
+	}
+
 	this.uploadScope = function(scope, deferred) {
 		$http.post(uploadURL, scope.data).success(function(response) {
 			var hasErrors = false;
@@ -20,7 +28,8 @@ djangoShopModule.controller('DialogCtrl', ['$scope', '$http', '$q', 'djangoUrl',
 				// only report errors, when the customer clicked onto a button using the
 				// directive `shop-dialog-proceed`, but not on ordinary upload events.
 				angular.forEach(response.errors, function(errors, key) {
-					hasErrors = djangoForm.setErrors(scope[key], errors) || hasErrors;
+					var errProp = getProperty(scope, key);
+					hasErrors = djangoForm.setErrors(errProp, errors) || hasErrors;
 				});
 				if (hasErrors) {
 					deferred.reject(response);

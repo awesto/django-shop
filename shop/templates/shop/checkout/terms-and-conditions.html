@@ -1,7 +1,0 @@
-<form name="{{ terms_and_conditions_form.form_name }}" novalidate>
-	<div class="has-feedback form-group">
-	{{ terms_and_conditions_form.accept.errors }}
-	{{ terms_and_conditions_form.accept }}
-	{% for hidden in terms_and_conditions_form.hidden_fields %}{{ hidden }}{% endfor %}
-	</div>
-</form>
