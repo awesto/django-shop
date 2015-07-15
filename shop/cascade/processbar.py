@@ -1,22 +1,22 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.forms import widgets
+from django.forms.fields import CharField
 from django.forms.models import ModelForm
 from django.utils.translation import ungettext_lazy, ugettext_lazy as _
 from django.utils.text import Truncator
 from django.utils.html import format_html
-from django.utils.safestring import mark_safe
 from django.forms.fields import IntegerField
 from django.template.loader import select_template
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.forms import ManageChildrenFormMixin
 from cmsplugin_cascade.fields import PartialFormField
+from cmsplugin_cascade.link.forms import LinkForm, TextLinkFormMixin
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
-from cmsplugin_cascade.link.forms import TextLinkForm
 from cmsplugin_cascade.widgets import NumberInputWidget
 from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
 from cmsplugin_cascade.mixins import TransparentMixin
-from shop.cascade.plugin_base import ShopPluginBase, ShopLinkPluginBase
+from shop.cascade.plugin_base import ShopPluginBase, ShopButtonPluginBase
 from shop import settings as shop_settings
 
 
@@ -93,36 +93,26 @@ class ProcessStepPlugin(TransparentMixin, ShopPluginBase):
 plugin_pool.register_plugin(ProcessStepPlugin)
 
 
-class ProcessNextStepForm(TextLinkForm):
-        LINK_TYPE_CHOICES = (('NEXT_STEP', ("Next Step")), ('cmspage', _("CMS Page")),
-            ('RELOAD_PAGE', _("Reload Page")), ('PURCHASE_NOW', _("Purchase Now")),)
-
-
-class ProcessFinalStepForm(TextLinkForm):
-        LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")), ('RELOAD_PAGE', _("Reload Page")),
-            ('PURCHASE_NOW', _("Purchase Now")),)
-
-
-class ProcessNextStepPlugin(BootstrapButtonMixin, ShopLinkPluginBase):
+class ProcessNextStepPlugin(BootstrapButtonMixin, ShopButtonPluginBase):
     name = _("Next Step Button")
     parent_classes = ('ProcessStepPlugin',)
     model_mixins = (LinkElementMixin,)
-    fields = ('link_content', ('link_type', 'cms_page',), 'glossary',)
-
-    class Media:
-        css = {'all': ('cascade/css/admin/bootstrap.min.css', 'cascade/css/admin/bootstrap-theme.min.css',)}
-
-    @classmethod
-    def get_identifier(cls, obj):
-        return mark_safe(obj.glossary.get('link_content', ''))
 
     def get_form(self, request, obj=None, **kwargs):
-        if obj is None or obj.get_parent() is None or obj.get_parent().get_next_sibling():
-            kwargs.update(form=ProcessNextStepForm)
+        """
+        Build edit form during runtime, since the link type depends on the position of this plugin.
+        """
+        link_content = CharField(label=_("Button Content"))
+        if obj and obj.get_parent() and obj.get_parent().get_next_sibling():
+            LINK_TYPE_CHOICES = (('NEXT_STEP', ("Next Step")), ('cmspage', _("CMS Page")),
+                ('RELOAD_PAGE', _("Reload Page")), ('PURCHASE_NOW', _("Purchase Now")),)
         else:
-            kwargs.update(form=ProcessFinalStepForm)
-        form = super(ProcessNextStepPlugin, self).get_form(request, obj, **kwargs)
-        return form
+            LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")), ('RELOAD_PAGE', _("Reload Page")),
+                ('PURCHASE_NOW', _("Purchase Now")),)
+        Form = type(str('ProcessNextStepForm'), (TextLinkFormMixin, LinkForm.get_form_class(),),
+            {'link_content': link_content, 'LINK_TYPE_CHOICES': LINK_TYPE_CHOICES})
+        kwargs.update(form=Form)
+        return super(ProcessNextStepPlugin, self).get_form(request, obj, **kwargs)
 
     def get_render_template(self, context, instance, placeholder):
         link_type = instance.glossary.get('link', {}).get('type')
@@ -133,8 +123,8 @@ class ProcessNextStepPlugin(BootstrapButtonMixin, ShopLinkPluginBase):
             ]
         elif link_type == 'PURCHASE_NOW':
             template_names = [
-                '{}/checkout/process-final-step.html'.format(shop_settings.APP_LABEL),
-                'shop/checkout/process-final-step.html',
+                '{}/checkout/process-purchase-now.html'.format(shop_settings.APP_LABEL),
+                'shop/checkout/process-purchase-now.html',
             ]
         else:
             template_names = [

@@ -1,38 +1,49 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.db.models import get_model
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.forms import widgets
 from django.template.loader import select_template
-from django.utils.translation import ugettext_lazy as _
 from django.utils.module_loading import import_by_path
+from django.utils.translation import ugettext_lazy as _
+from django.utils.safestring import mark_safe
 from cms.plugin_pool import plugin_pool
-from cmsplugin_cascade.utils import resolve_dependencies
+from cms.utils.compat.dj import python_2_unicode_compatible
 from cmsplugin_cascade.fields import PartialFormField
 from cmsplugin_cascade.plugin_base import CascadePluginBase
 from cmsplugin_cascade.link.forms import LinkForm
+from cmsplugin_cascade.link.fields import LinkSearchField
+from cmsplugin_cascade.link.plugin_base import LinkPluginBase, LinkElementMixin
+from cmsplugin_cascade.utils import resolve_dependencies
 from shop import settings as shop_settings
+from shop.models.product import ProductModel
 
 
 class ShopPluginBase(CascadePluginBase):
-    module = 'Shop'
+    module = "Shop"
     require_parent = False
     allow_children = False
 
 
-class ShopLinkForm(LinkForm):
-    LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")), ('RELOAD_PAGE', _("Reload Page")), ('PURCHASE_NOW', _("Purchase Now")),)
+@python_2_unicode_compatible
+class ShopLinkElementMixin(LinkElementMixin):
+    def __str__(self):
+        return self.plugin_class.get_identifier(self)
 
 
 class ShopLinkPluginBase(ShopPluginBase):
     """
-    Base plugin if a link must be offered
+    Base plugin for arbitrary buttons used during various checkout pages.
     """
-    form = ShopLinkForm
-    fields = (('link_type', 'cms_page'), 'glossary',)
+    allow_children = False
+    fields = (('link_type', 'cms_page',), 'glossary',)
+    glossary_field_map = {'link': ('link_type', 'cms_page',)}
+    allow_children = False
+    parent_classes = []
+    require_parent = False
 
     class Media:
-        js = resolve_dependencies('cascade/js/admin/linkplugin.js')
+        js = resolve_dependencies('shop/js/admin/shoplinkplugin.js')
 
     @classmethod
     def get_link(cls, obj):
@@ -55,6 +66,77 @@ class ShopLinkPluginBase(ShopPluginBase):
         bases = super(ShopLinkPluginBase, self).get_ring_bases()
         bases.append('LinkPluginBase')
         return bases
+
+
+class ShopButtonPluginBase(ShopLinkPluginBase):
+    """
+    Base plugin for arbitrary buttons used during various checkout pages.
+    """
+    fields = ('link_content', ('link_type', 'cms_page',), 'glossary',)
+
+    class Media:
+        css = {'all': ('cascade/css/admin/bootstrap.min.css', 'cascade/css/admin/bootstrap-theme.min.css',)}
+        js = resolve_dependencies('shop/js/admin/shoplinkplugin.js')
+
+    @classmethod
+    def get_identifier(cls, obj):
+        return mark_safe(obj.glossary.get('link_content', ''))
+
+
+class CatalogLinkForm(LinkForm):
+    """
+    Alternative implementation of `cmsplugin_cascade.TextLinkForm`, which allows to link onto
+    the Product model, using its method ``get_absolute_url``.
+
+    Note: In this form class the field ``product`` is missing. It is added later, when the shop's
+    Product knows about its materialized model.
+    """
+    LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")), ('product', _("Product")),
+                         ('exturl', _("External URL")), ('email', _("Mail To")),)
+
+    def clean_product(self):
+        if self.cleaned_data.get('link_type') == 'product':
+            app_label = self.ProductModel._meta.app_label
+            self.cleaned_data['link_data'] = {
+                'type': 'product',
+                'model': '{0}.{1}'.format(app_label, self.ProductModel.__name__),
+                'pk': self.cleaned_data['product'] and self.cleaned_data['product'].pk or None,
+            }
+
+    def set_initial_product(self, initial):
+        try:
+            Model = get_model(*initial['link']['model'].split('.'))
+            initial['product'] = Model.objects.get(pk=initial['link']['pk'])
+        except (KeyError, ObjectDoesNotExist):
+            pass
+
+    @classmethod
+    def get_form_class(cls):
+        # must add field `product` on the fly, because during the declaration this form class
+        # the MaterializedModel of the product is not known yet.
+        product = LinkSearchField(required=False, label='',
+            queryset=ProductModel.objects.all(),
+            search_fields=getattr(ProductModel, 'search_fields'),
+            help_text=_("An internal link onto a product from the shop"))
+        return type(str('LinkForm'), (cls,), {'ProductModel': ProductModel, 'product': product})
+
+
+class CatalogLinkPluginBase(LinkPluginBase):
+    """
+    Modified implementation of ``cmsplugin_cascade.link.LinkPluginBase`` which adds link type
+    "Product", to set links onto arbitrary products of this shop.
+    """
+#     glossary_fields = (
+#         PartialFormField('title',
+#             widgets.TextInput(),
+#             label=_("Title"),
+#             help_text=_("Link's Title")
+#         ),
+#     ) + LinkPluginBase.glossary_fields
+    glossary_field_map = {'link': ('link_type', 'cms_page', 'product', 'ext_url', 'mail_to',)}
+
+    class Media:
+        js = resolve_dependencies('shop/js/admin/shoplinkplugin.js')
 
 
 class DialogFormPluginBase(ShopPluginBase):

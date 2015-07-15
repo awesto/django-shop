@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.db.models import Max
+from django.forms.fields import CharField
 from django.template.loader import select_template
 from django.utils.html import format_html, strip_tags, strip_entities
 from django.utils.safestring import mark_safe
@@ -13,36 +14,31 @@ except ImportError:
 from cms.plugin_pool import plugin_pool
 from djangocms_text_ckeditor.widgets import TextEditorWidget
 from cmsplugin_cascade.fields import PartialFormField
-from cmsplugin_cascade.link.forms import TextLinkForm
+from cmsplugin_cascade.link.forms import LinkForm, TextLinkFormMixin
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
 from shop import settings as shop_settings
 from shop.models.cart import CartModel
 from shop.modifiers.pool import cart_modifiers_pool
-from .plugin_base import ShopLinkPluginBase, DialogFormPluginBase
+from .plugin_base import ShopButtonPluginBase, DialogFormPluginBase
 
 
-class ProceedButtonForm(TextLinkForm):
+class ProceedButtonForm(TextLinkFormMixin, LinkForm):
+    link_content = CharField(label=_("Putton Content"))
     LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")), ('RELOAD_PAGE', _("Reload Page")), ('PURCHASE_NOW', _("Purchase Now")),)
 
 
-class ShopProceedButton(BootstrapButtonMixin, ShopLinkPluginBase):
+class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
     """
     This button is used to proceed from one checkout step to the next one.
     """
     name = _("Proceed Button")
-    form = ProceedButtonForm
     parent_classes = ('BootstrapColumnPlugin',)
     model_mixins = (LinkElementMixin,)
-    fields = ('link_content', ('link_type', 'cms_page'), 'glossary',)
-    glossary_field_map = {'link': ('link_type', 'cms_page',)}
 
-    class Media:
-        css = {'all': ('cascade/css/admin/bootstrap.min.css', 'cascade/css/admin/bootstrap-theme.min.css',)}
-
-    @classmethod
-    def get_identifier(cls, obj):
-        return mark_safe(obj.glossary.get('link_content', ''))
+    def get_form(self, request, obj=None, **kwargs):
+        kwargs.update(form=ProceedButtonForm)
+        return super(ShopProceedButton, self).get_form(request, obj, **kwargs)
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [

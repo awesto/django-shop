@@ -24,7 +24,7 @@ django.jQuery(function($) {
 				$field_product.hide();
 				$field_exturl.hide();
 				$field_mailto.hide();
-				$link_target.show();
+				$link_target.hide();
 				break;
 			case 'product':
 				$field_cmspage.hide();
@@ -45,7 +45,7 @@ django.jQuery(function($) {
 				$field_product.hide();
 				$field_exturl.hide();
 				$field_mailto.show();
-				$link_target.show();
+				$link_target.hide();
 				break;
 			default:
 				$field_cmspage.hide();

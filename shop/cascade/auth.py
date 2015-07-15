@@ -7,9 +7,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.module_loading import import_by_path
 from cms.plugin_pool import plugin_pool
 from shop import settings as shop_settings
-from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.link.forms import LinkForm
-from .plugin_base import ShopLinkPluginBase
+from .plugin_base import ShopLinkPluginBase, ShopLinkElementMixin
 
 AUTH_FORM_TYPES = (
     ('login', _("Login Form")),
@@ -41,9 +40,8 @@ class ShopAuthenticationPlugin(ShopLinkPluginBase):
     register-, and other forms. They can be added any placeholder using the Cascade framework.
     """
     name = _("Authentication")
-    form = ShopAuthForm
     parent_classes = ('BootstrapColumnPlugin',)
-    model_mixins = (LinkElementMixin,)
+    model_mixins = (ShopLinkElementMixin,)
     fields = ('form_type', ('link_type', 'cms_page'), 'glossary',)
     cache = False
 
@@ -52,6 +50,10 @@ class ShopAuthenticationPlugin(ShopLinkPluginBase):
         identifier = super(ShopAuthenticationPlugin, cls).get_identifier(obj)
         content = dict(ft[:2] for ft in AUTH_FORM_TYPES).get(obj.glossary.get('form_type'), _("unknown"))
         return format_html('{0}{1}', identifier, content)
+
+    def get_form(self, request, obj=None, **kwargs):
+        kwargs.update(form=ShopAuthForm)
+        return super(ShopAuthenticationPlugin, self).get_form(request, obj, **kwargs)
 
     def get_render_template(self, context, instance, placeholder):
         form_type = instance.glossary.get('form_type')
