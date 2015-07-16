@@ -9,8 +9,8 @@ var djangoShopModule = angular.module('django.shop.dialogs', []);
 // an `upload` function to the scope, so that all forms can send their gathered data to the
 // server. Since this controller does not make any presumption on how and where to proceed to,
 // the caller has to set the controllers `deferred` to a `$q.deferred()` object.
-djangoShopModule.controller('DialogCtrl', ['$scope', '$http', '$q', 'djangoUrl', 'djangoForm',
-                                   function($scope, $http, $q, djangoUrl, djangoForm) {
+djangoShopModule.controller('DialogCtrl', ['$scope', '$rootScope', '$http', '$q', 'djangoUrl', 'djangoForm',
+                                   function($scope, $rootScope, $http, $q, djangoUrl, djangoForm) {
 	var uploadURL = djangoUrl.reverse('shop:checkout-upload');
 
 	function getProperty(obj, prop) {
@@ -37,7 +37,7 @@ djangoShopModule.controller('DialogCtrl', ['$scope', '$http', '$q', 'djangoUrl',
 					deferred.resolve(response);
 				}
 			}
-			$scope.cart = response;
+			$rootScope.cart = response;
 		}).error(function(errors) {
 			console.error("Unable to upload checkout forms:");
 			console.log(errors);
