@@ -206,20 +206,6 @@ class ExtraAnnotationForm(DialogForm):
             return {cls.form_name: extra_annotation_form.errors}
 
 
-class TermsAndConditionsForm(DialogForm):
-    scope_prefix = 'data.terms_and_conditions'
-
-    accept = fields.BooleanField(required=True,
-        widget=CheckboxInput(_("Accept terms and conditions.")))
-
-    @classmethod
-    def form_factory(cls, request, data, cart):
-        data = data or {'accept': False}
-        accept_form = cls(data=data)
-        if not accept_form.is_valid():
-            return {accept_form.form_name: dict(accept_form.errors)}
-
-
 class AcceptConditionForm(DialogForm):
     scope_prefix = 'data.accept_condition'
 
