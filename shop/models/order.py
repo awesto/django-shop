@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from six import with_metaclass
-from decimal import Decimal
+from decimal import Decimal, ROUND_UP
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models, transaction
@@ -28,7 +28,7 @@ class OrderManager(models.Manager):
         """
         cart.update(request)
         order = self.model(user=cart.user, currency=cart.total.get_currency(),
-            _subtotal=0, _total=0, stored_request=self.stored_request(request))
+            _subtotal=Decimal(0), _total=Decimal(0), stored_request=self.stored_request(request))
         order.save()
         for cart_item in cart.items.all():
             cart_item.update(request)
@@ -111,6 +111,8 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         'max_digits': 30,
         'decimal_places': 3,
     }
+    decimal_exp = Decimal('.' + '0' * decimalfield_kwargs['decimal_places'])
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_("Customer"))
     status = FSMField(default='new', protected=True, verbose_name=_("Status"))
     currency = models.CharField(max_length=7, editable=False,
@@ -179,6 +181,14 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
                 custom=dict(admin=True, button_name=_("Notify Customer")))
     def notify_user(self, by=None):
         print 'notify ', by
+
+    def save(self, *args, **kwargs):
+        """
+        Before saving the Order object to the database, round the total to the given decimal_places
+        """
+        self._subtotal = self._subtotal.quantize(self.decimal_exp, ROUND_UP)
+        self._total = self._total.quantize(self.decimal_exp, ROUND_UP)
+        super(BaseOrder, self).save(*args, **kwargs)
 
     def get_amount_paid(self):
         """
