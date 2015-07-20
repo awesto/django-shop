@@ -13,7 +13,9 @@ except ImportError:
     from HTMLParser import HTMLParser  # py2
 from cms.plugin_pool import plugin_pool
 from djangocms_text_ckeditor.widgets import TextEditorWidget
+from djangocms_text_ckeditor.utils import plugin_tags_to_user_html
 from cmsplugin_cascade.fields import PartialFormField
+from cmsplugin_cascade.link.cms_plugins import TextLinkPlugin
 from cmsplugin_cascade.link.forms import LinkForm, TextLinkFormMixin
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
@@ -162,13 +164,8 @@ class AcceptConditionFormPlugin(DialogFormPluginBase):
     name = _("Accept Condition")
     form_class = 'shop.forms.checkout.AcceptConditionForm'
     template_leaf_name = 'accept-condition.html'
-    glossary_fields = (
-        PartialFormField('html_content',
-            TextEditorWidget(),
-            label=_("HTML content")
-        ),
-    )
     html_parser = HTMLParser()
+    change_form_template = 'cascade/admin/text_plugin_change_form.html'
 
     @classmethod
     def get_identifier(cls, instance):
@@ -182,13 +179,19 @@ class AcceptConditionFormPlugin(DialogFormPluginBase):
         if obj:
             html_content = self.html_parser.unescape(obj.glossary.get('html_content', ''))
             obj.glossary.update(html_content=html_content)
+            text_editor_widget = TextEditorWidget(installed_plugins=[TextLinkPlugin], pk=obj.pk,
+                                           placeholder=obj.placeholder, plugin_language=obj.language)
+            kwargs['glossary_fields'] = (
+                PartialFormField('html_content', text_editor_widget, label=_("HTML content")),
+            )
         return super(AcceptConditionFormPlugin, self).get_form(request, obj, **kwargs)
 
     def render(self, context, instance, placeholder):
         super(AcceptConditionFormPlugin, self).render(context, instance, placeholder)
         accept_condition_form = context['accept_condition_form.plugin_{}'.format(instance.id)]
-        # transfer the stored HTML content into the widget
         html_content = self.html_parser.unescape(instance.glossary.get('html_content', ''))
+        html_content = plugin_tags_to_user_html(html_content, context, placeholder)
+        # transfer the stored HTML content into the widget's label
         accept_condition_form['accept'].field.widget.choice_label = mark_safe(html_content)
         context['accept_condition_form'] = accept_condition_form
         return context
