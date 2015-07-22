@@ -13,7 +13,7 @@ The goal of this list is to sort out stuff which should be done in
 some kind of extension package or app on their own.
 
 This list will have to be sorted in some way to (hopefully) become
-useful imput.
+useful input.
 
 
 Core Stuff
@@ -29,7 +29,7 @@ Products
 --------
 
 Shops normally sell some kind of product. These products may be very
-differnt, so the trick here is to stay very flexible and
+different, so the trick here is to stay very flexible and
 extensible.
 
 See :ref:`products` for current discussion details.

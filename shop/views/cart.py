@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseBadRequest
@@ -54,8 +55,11 @@ class CartItemDetail(ShopView):
             quantity = int(self.request.POST['item_quantity'])
         except (KeyError, ValueError):
             return HttpResponseBadRequest("The quantity has to be a number")
-        cart_object.update_quantity(item_id, quantity)
-        return self.put_success()
+        try:
+            cart_object.update_quantity(item_id, quantity)
+        except ObjectDoesNotExist:
+            pass
+        return self.put_success(cart_object)
 
     def delete(self, request, *args, **kwargs):
         """
@@ -70,23 +74,42 @@ class CartItemDetail(ShopView):
             cart_object.delete_item(item_id)
             return self.delete_success()
         except ObjectDoesNotExist:
-            raise Http404
+            # don't care if it is already gone
+            return self.delete_success()
 
     # success hooks
-    def success(self):
+    def success(self, cart_object=None):
         """
         Generic hook by default redirects to cart
         """
         if self.request.is_ajax():
-            return HttpResponse('Ok<br />')
+            data = {
+                "status": "success"
+            }
+            if cart_object:
+                cart_object.update(self.request)
+                items = cart_object.get_updated_cart_items()
+                data.update(
+                    cart={
+                        "items": [{
+                            "pk": cart_item.pk,
+                            "line_subtotal": str(cart_item.line_subtotal),
+                            "line_total": str(cart_item.line_total)
+                        } for cart_item in items],
+                        "count": sum([cart_item.quantity for cart_item in items]),
+                        "subtotal_price": str(cart_object.subtotal_price),
+                        "total_price": str(cart_object.total_price)
+                    }
+                )
+            return HttpResponse(json.dumps(data), content_type="application/json")
         else:
             return HttpResponseRedirect(reverse('cart'))
 
-    def post_success(self, product, cart_item):
+    def post_success(self, product, cart_item, cart_object=None):
         """
         Post success hook
         """
-        return self.success()
+        return self.success(cart_object=cart_object)
 
     def delete_success(self):
         """
@@ -94,11 +117,11 @@ class CartItemDetail(ShopView):
         """
         return self.success()
 
-    def put_success(self):
+    def put_success(self, cart_object=None):
         """
         Post put hook
         """
-        return self.success()
+        return self.success(cart_object=cart_object)
 
     # TODO: add failure hooks
 
@@ -114,11 +137,10 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
 
     def get_context_data(self, **kwargs):
         # There is no get_context_data on super(), we inherit from the mixin!
-        ctx = {}
-        cart = get_or_create_cart(self.request)
-        cart.update(self.request)
-        ctx.update({'cart': cart})
-        ctx.update({'cart_items': cart.get_updated_cart_items()})
+        ctx = kwargs  # receive params from subclasses
+        self.cart.update(self.request)
+        ctx.update({'cart': self.cart})
+        ctx.update({'cart_items': self.cart.get_updated_cart_items()})
         return ctx
 
     def get(self, request, *args, **kwargs):
@@ -126,6 +148,7 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
         This is lifted from the TemplateView - we don't get this behavior since
         this only extends the mixin and not templateview.
         """
+        self.cart = get_or_create_cart(self.request)
         context = self.get_context_data(**kwargs)
         formset = get_cart_item_formset(cart_items=context['cart_items'])
         context.update({'formset': formset, })
@@ -146,7 +169,7 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
         cart_object = get_or_create_cart(self.request, save=True)
         cart_item = cart_object.add_product(product, product_quantity)
         cart_object.save()
-        return self.post_success(product, cart_item)
+        return self.post_success(product, cart_item, cart_object=cart_object)
 
     def delete(self, *args, **kwargs):
         """

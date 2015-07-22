@@ -1,9 +1,16 @@
 # -*- coding: utf-8 -*-
 from shop.models.cartmodel import Cart
 from django.contrib.auth.models import AnonymousUser
+from ..order_signals import fetching
+
 
 def get_cart_from_database(request):
-    database_cart = Cart.objects.filter(user=request.user)
+    filters = dict(user=request.user)
+    fetching.send(
+        sender="get_cart_from_database",
+        request=request,
+        filters=filters)
+    database_cart = Cart.objects.filter(**filters)
     if database_cart:
         database_cart = database_cart[0]
     else:
