@@ -2,6 +2,9 @@ import django.dispatch
 
 # Order-related signals
 
+"""Emitted when fetching the Cart from the database"""
+fetching = django.dispatch.Signal(providing_args=['request', 'filters'])
+
 """Emitted when the Cart was converted to an Order"""
 processing = django.dispatch.Signal(providing_args=['order', 'cart'])
 
