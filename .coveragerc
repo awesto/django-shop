@@ -1,0 +1,3 @@
+[run]
+source = shop
+omit = */tests/*, */migrations/*, */admin.py
