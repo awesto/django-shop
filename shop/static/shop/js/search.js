@@ -15,18 +15,16 @@ djangoShopModule.directive('shopProductSearch', ['$window', function($window) {
 		}],
 		link: function(scope, element, attrs, formController) {
 			var i, search = {}, splitted, queries;
+			scope.searchQuery = '';
 
 			// convert query string to object
 			queries = $window.location.search.replace(/^\?/, '').split('&');
 			for (i = 0; i < queries.length; i++) {
 				splitted = queries[i].split('=');
-				if (splitted.length) {
-					search[splitted[0]] = decodeURIComponent(splitted[1].split('+').join('%20'));
-				} else {
-					search['q'] = '';
+				if (splitted[0] === 'q') {
+					scope.searchQuery = decodeURIComponent(splitted[1].split('+').join('%20'));
 				}
 			}
-			scope.searchQuery = search['q'];
 
 			scope.submit = function() {
 				if (scope.searchQuery.length > 1 && scope.searchQuery !== search['q']) {
