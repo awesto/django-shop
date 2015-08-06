@@ -124,7 +124,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
         if renderer_context['request'].accepted_renderer.format == 'html':
             # add the product as Python object to the context
             renderer_context['product'] = self.get_object()
-            renderer_context['ng_model_options'] = shop_settings.CART_NG_MODEL_OPTIONS
+            renderer_context['ng_model_options'] = shop_settings.ADD2CART_NG_MODEL_OPTIONS
         return renderer_context
 
     def get_object(self):

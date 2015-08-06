@@ -68,7 +68,7 @@ class ShopCartPlugin(ShopPluginBase):
                 # for a cart summary we're only interested into the number of items
                 context['cart']['items'] = len(context['cart']['items'])
         else:
-            context['ng_model_options'] = shop_settings.CART_NG_MODEL_OPTIONS
+            context['ng_model_options'] = shop_settings.EDITCART_NG_MODEL_OPTIONS
         return super(ShopCartPlugin, self).render(context, instance, placeholder)
 
 plugin_pool.register_plugin(ShopCartPlugin)
