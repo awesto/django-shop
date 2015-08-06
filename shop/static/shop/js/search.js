@@ -14,13 +14,13 @@ djangoShopModule.directive('shopProductSearch', ['$window', function($window) {
 			$scope.autocomplete = function() {};
 		}],
 		link: function(scope, element, attrs, formController) {
-			var i, search = {}, split, queries;
+			var i, search = {}, splitted, queries;
 
 			// convert query string to object
 			queries = $window.location.search.replace(/^\?/, '').split('&');
 			for (i = 0; i < queries.length; i++) {
-				split = queries[i].split('=');
-				search[split[0]] = split[1];
+				splitted = queries[i].split('=');
+				search[splitted[0]] = decodeURIComponent(splitted[1].split('+').join('%20'));
 			}
 			scope.searchQuery = search['q'] || '';
 
