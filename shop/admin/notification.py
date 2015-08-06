@@ -9,7 +9,7 @@ from shop.models.order import OrderModel
 
 
 class NotificationAdmin(admin.ModelAdmin):
-    USER_CHOICES = ((None, _("Nobody")), (0, _("Customer")),)
+    USER_CHOICES = (('', _("Nobody")), (0, _("Customer")),)
     list_display = ('name', 'transition_name', 'recipient')
 
     def get_form(self, request, obj=None, **kwargs):
@@ -41,5 +41,5 @@ class NotificationAdmin(admin.ModelAdmin):
                 return '{0} {1} <{2}>'.format(user.first_name, user.last_name, user.email)
             else:
                 return OrderedDict(self.USER_CHOICES)[obj.mail_to]
-        except get_user_model().DoesNotExist:
-            return _("Recipient is gone")
+        except (get_user_model().DoesNotExist, KeyError):
+            return _("Nobody")

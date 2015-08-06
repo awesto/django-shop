@@ -3,8 +3,8 @@ from __future__ import unicode_literals
 from six import with_metaclass
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models import Q
 from django.http.request import HttpRequest
-from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
 from django.utils.six.moves.urllib.parse import urlparse
 from django_fsm.signals import post_transition
@@ -20,8 +20,10 @@ class Notification(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     name = models.CharField(max_length=50, verbose_name=_("Name"))
     transition_target = models.CharField(max_length=50, verbose_name=_("Event"))
-    mail_to = models.PositiveIntegerField(verbose_name=_("Mail to"), null=True, default=None)
-    mail_template = models.ForeignKey(EmailTemplate, verbose_name=_("Template"))
+    mail_to = models.PositiveIntegerField(verbose_name=_("Mail to"), null=True, blank=True,
+                                          default=None)
+    mail_template = models.ForeignKey(EmailTemplate, verbose_name=_("Template"),
+                            limit_choices_to=Q(language__isnull=True) | Q(language=''))
 
     class Meta:
         verbose_name = _("Notification")
@@ -82,7 +84,11 @@ def order_event_notification(sender, instance=None, target=None, **kwargs):
             'customer': serializers.CustomerSerializer(instance.user).data,
             'data': order_serializer.data,
         }
-        mail.send(recipient, template=notification.mail_template, context=context,
-                  language=instance.stored_request.get('language'), render_on_delivery=True)
+        language = instance.stored_request.get('language')
+        try:
+            template = notification.mail_template.translated_templates.get(language=language)
+        except EmailTemplate.DoesNotExist:
+            template = notification.mail_template
+        mail.send(recipient, template=notification.mail_template, context=context, render_on_delivery=True)
 
 post_transition.connect(order_event_notification)
