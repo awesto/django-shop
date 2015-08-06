@@ -20,9 +20,13 @@ djangoShopModule.directive('shopProductSearch', ['$window', function($window) {
 			queries = $window.location.search.replace(/^\?/, '').split('&');
 			for (i = 0; i < queries.length; i++) {
 				splitted = queries[i].split('=');
-				search[splitted[0]] = decodeURIComponent(splitted[1].split('+').join('%20'));
+				if (splitted.length) {
+					search[splitted[0]] = decodeURIComponent(splitted[1].split('+').join('%20'));
+				} else {
+					search['q'] = '';
+				}
 			}
-			scope.searchQuery = search['q'] || '';
+			scope.searchQuery = search['q'];
 
 			scope.submit = function() {
 				if (scope.searchQuery.length > 1 && scope.searchQuery !== search['q']) {
