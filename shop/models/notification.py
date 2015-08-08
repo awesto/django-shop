@@ -83,6 +83,7 @@ def order_event_notification(sender, instance=None, target=None, **kwargs):
         context = {
             'customer': serializers.CustomerSerializer(instance.user).data,
             'data': order_serializer.data,
+            'ABSOLUTE_BASE_URI': emulated_request.build_absolute_uri().rstrip('/'),
         }
         language = instance.stored_request.get('language')
         try:
