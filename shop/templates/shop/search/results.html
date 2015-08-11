@@ -18,6 +18,7 @@
 			<td ng-bind-html="result_line.body"></td>
 			<td class="text-center text-nowrap">
 				<strong ng-bind="result_line.price"></strong>
+				<p><a class="btn btn-primary btn-sm" href="{% verbatim %}{{ result_line.product_url }}{% endverbatim %}">{% trans "Details" %}&nbsp;<i class="glyphicon glyphicon-menu-right"></i></a></p>
 			</td>
 		</tr>
 	</tbody>
