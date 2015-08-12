@@ -292,8 +292,9 @@ class OrderItemSerializer(serializers.ModelSerializer):
         return serializer.data
 
 
-class OrderSerializer(serializers.ModelSerializer):
+class OrderListSerializer(serializers.ModelSerializer):
     identifier = serializers.CharField()
+    url = serializers.URLField(source='get_absolute_url', read_only=True)
     subtotal = MoneyField()
     total = MoneyField()
 
@@ -302,11 +303,7 @@ class OrderSerializer(serializers.ModelSerializer):
         exclude = ('id', 'user', 'stored_request', '_subtotal', '_total',)
 
 
-class OrderListSerializer(OrderSerializer):
-    url = serializers.URLField(source='get_absolute_url', read_only=True)
-
-
-class OrderDetailSerializer(OrderSerializer):
+class OrderDetailSerializer(OrderListSerializer):
     items = OrderItemSerializer(many=True, read_only=True)
 
 
