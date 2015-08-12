@@ -33,8 +33,8 @@ class OrderManager(models.Manager):
         for cart_item in cart.items.all():
             cart_item.update(request)
             order_item = OrderItemModel(order=order)
-            order_item.populate_from_cart_item(cart_item, request)
-            order_item.save()
+            if order_item.populate_from_cart_item(cart_item, request):
+                order_item.save()
         order.populate_from_cart(cart, request)
         order.save()
         cart.delete()
@@ -254,6 +254,7 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     An item for an order.
     """
+    # TODO: add foreign key to OrderShipping
     order = deferred.ForeignKey(BaseOrder, related_name='items', verbose_name=_("Order"))
     product_identifier = models.CharField(max_length=255, verbose_name=_("Product identifier"),
         help_text=_("Product identifier at the moment of purchase."))
@@ -282,6 +283,10 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         return MoneyMaker(self.order.currency)(self._line_total)
 
     def populate_from_cart_item(self, cart_item, request):
+        """
+        From a given cart item, populate the current order item.
+        Return True if operation was successful, otherwise the order item is discarded.
+        """
         self.product = cart_item.product
         self.product_name = cart_item.product.name  # store the name on the moment of purchase, in case it changes
         self.product_identifier = cart_item.product.identifier
@@ -290,5 +295,6 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         self.quantity = cart_item.quantity
         self.extra = dict(cart_item.extra)
         self.extra.update(rows=[(modifier, extra_row.data) for modifier, extra_row in cart_item.extra_rows.items()])
+        return True
 
 OrderItemModel = deferred.MaterializedModel(BaseOrderItem)
