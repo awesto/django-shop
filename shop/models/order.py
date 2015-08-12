@@ -109,7 +109,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     }
     decimalfield_kwargs = {
         'max_digits': 30,
-        'decimal_places': 3,
+        'decimal_places': 2,
     }
     decimal_exp = Decimal('.' + '0' * decimalfield_kwargs['decimal_places'])
 
@@ -160,9 +160,14 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         """
         return MoneyMaker(self.currency)(self._total)
 
+    @classmethod
+    def round_amount(cls, amount):
+        if amount.is_finite():
+            return Decimal(amount).quantize(cls.decimal_exp, ROUND_UP)
+
     def get_absolute_url(self):
         """
-        Returns the URL of the page with the detail view for this order
+        Returns the URL for the detail view of this order
         """
         return urljoin(OrderModel.objects.get_summary_url(), str(self.id))
 
@@ -186,8 +191,8 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         """
         Before saving the Order object to the database, round the total to the given decimal_places
         """
-        self._subtotal = self._subtotal.quantize(self.decimal_exp, ROUND_UP)
-        self._total = self._total.quantize(self.decimal_exp, ROUND_UP)
+        self._subtotal = BaseOrder.round_amount(self._subtotal)
+        self._total = BaseOrder.round_amount(self._total)
         super(BaseOrder, self).save(*args, **kwargs)
 
     def get_amount_paid(self):
@@ -296,5 +301,13 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         self.extra = dict(cart_item.extra)
         self.extra.update(rows=[(modifier, extra_row.data) for modifier, extra_row in cart_item.extra_rows.items()])
         return True
+
+    def save(self, *args, **kwargs):
+        """
+        Before saving the OrderItem object to the database, round the amounts to the given decimal places
+        """
+        self._unit_price = BaseOrder.round_amount(self._unit_price)
+        self._line_total = BaseOrder.round_amount(self._line_total)
+        super(BaseOrderItem, self).save(*args, **kwargs)
 
 OrderItemModel = deferred.MaterializedModel(BaseOrderItem)
