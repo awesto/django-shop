@@ -78,8 +78,8 @@ class OrderManager(models.Manager):
 
 class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
     """
-    Add configured Workflow mixin classes to `OrderModel` and `OrderPayment` to customize all kinds
-    of state transitions in a pluggable manner.
+    Add configured Workflow mixin classes to `OrderModel` and `OrderPayment` to customize
+    all kinds of state transitions in a pluggable manner.
     """
     def __new__(cls, name, bases, attrs):
         if 'BaseOrder' in (b.__name__ for b in bases):
