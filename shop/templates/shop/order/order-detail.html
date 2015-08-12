@@ -20,17 +20,17 @@
 
 {% block shop-order-tbody %}
 	<tbody>
-	{% for order_item in data.items %}
+	{% for item in data.items %}
 		<tr>
-			<td rowspan="2" class="text-center">{{ order_item.summary.media|safe }}</td>
-			<td class="text-center">{{ order_item.quantity }}</td>
-			<td class="text-center">{{ order_item.unit_price }}</td>
-			<td class="text-right">{{ order_item.line_total }}</td>
+			<td rowspan="2" class="text-center">{{ item.summary.media|safe }}</td>
+			<td class="text-center">{{ item.quantity }}</td>
+			<td class="text-center">{{ item.unit_price }}</td>
+			<td class="text-right">{{ item.line_total }}</td>
 		</tr>
 		<tr class="no-border">
 			<td colspan="3">
-				{{ order_item.summary.body|safe }}
-				{% for key, extra_row in order_item.extra.rows %}
+				{{ item.summary.body|safe }}
+				{% for key, extra_row in item.extra.rows %}
 				<div>{{ extra_row.label }}: {{ extra_row.amount }}</div>
 				{% endfor %}
 			</td>
