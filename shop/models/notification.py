@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from six import with_metaclass
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Q
@@ -10,11 +9,11 @@ from django.utils.six.moves.urllib.parse import urlparse
 from django_fsm.signals import post_transition
 from post_office import mail
 from post_office.models import EmailTemplate
-from . import deferred
+from filer.fields.file import FilerFileField
 from .order import OrderModel
 
 
-class Notification(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
+class Notification(models.Model):
     """
     A task executed on receiving a signal.
     """
@@ -26,6 +25,7 @@ class Notification(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
                             limit_choices_to=Q(language__isnull=True) | Q(language=''))
 
     class Meta:
+        app_label = 'shop'
         verbose_name = _("Notification")
         verbose_name_plural = _("Notifications")
 
@@ -45,6 +45,14 @@ class Notification(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         if self.mail_to == 0:
             return order.user.email
         return get_user_model().objects.get(id=self.mail_to).email
+
+
+class NotificationAttachment(models.Model):
+    notification = models.ForeignKey(Notification)
+    attachment = FilerFileField(null=True, blank=True, related_name='email_attachment')
+
+    class Meta:
+        app_label = 'shop'
 
 
 class EmulateHttpRequest(HttpRequest):
@@ -90,6 +98,10 @@ def order_event_notification(sender, instance=None, target=None, **kwargs):
             template = notification.mail_template.translated_templates.get(language=language)
         except EmailTemplate.DoesNotExist:
             template = notification.mail_template
-        mail.send(recipient, template=notification.mail_template, context=context, render_on_delivery=True)
+        attachments = {}
+        for notiatt in notification.notificationattachment_set.all():
+            attachments[notiatt.attachment.original_filename] = notiatt.attachment.file.file
+        mail.send(recipient, template=notification.mail_template, context=context,
+                  attachments=attachments, render_on_delivery=True)
 
 post_transition.connect(order_event_notification)

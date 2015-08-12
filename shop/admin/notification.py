@@ -5,12 +5,19 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.forms import widgets
 from django.utils.translation import ugettext_lazy as _
+from shop.models.notification import Notification, NotificationAttachment
 from shop.models.order import OrderModel
+
+
+class NotificationAttachmentAdmin(admin.TabularInline):
+    model = NotificationAttachment
+    extra = 0
 
 
 class NotificationAdmin(admin.ModelAdmin):
     USER_CHOICES = (('', _("Nobody")), (0, _("Customer")),)
     list_display = ('name', 'transition_name', 'recipient')
+    inlines = (NotificationAttachmentAdmin,)
 
     def get_form(self, request, obj=None, **kwargs):
         kwargs.update(widgets={
@@ -43,3 +50,5 @@ class NotificationAdmin(admin.ModelAdmin):
                 return OrderedDict(self.USER_CHOICES)[obj.mail_to]
         except (get_user_model().DoesNotExist, KeyError):
             return _("Nobody")
+
+admin.site.register(Notification, NotificationAdmin)
