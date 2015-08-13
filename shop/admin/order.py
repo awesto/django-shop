@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 from django.contrib import admin
 from django.forms import widgets
-from django.utils.translation import ugettext_lazy as _
 from fsm_admin.mixins import FSMTransitionMixin
 from shop.models.order import OrderItemModel, OrderPayment
 from shop.modifiers.pool import cart_modifiers_pool
