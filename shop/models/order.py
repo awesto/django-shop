@@ -182,11 +182,6 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         self.extra = dict(cart.extra)
         self.extra.update(rows=[(modifier, extra_row.data) for modifier, extra_row in cart.extra_rows.items()])
 
-    @transition(field=status, source='*', target='created',
-                custom=dict(admin=True, button_name=_("Notify Customer")))
-    def notify_user(self, by=None):
-        print 'notify ', by
-
     def save(self, *args, **kwargs):
         """
         Before saving the Order object to the database, round the total to the given decimal_places
