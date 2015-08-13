@@ -295,6 +295,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 class OrderListSerializer(serializers.ModelSerializer):
     identifier = serializers.CharField()
     url = serializers.URLField(source='get_absolute_url', read_only=True)
+    status = serializers.CharField(source='status_name', read_only=True)
     subtotal = MoneyField()
     total = MoneyField()
 
