@@ -17,6 +17,6 @@ class Order(order.BaseOrder):
         return "{}-{}".format(self.created_at.year, self.pk)
 
     def populate_from_cart(self, cart, request):
-        super(Order, self).populate_from_cart(cart, request)
         self.shipping_address_text = cart.shipping_address.as_text()
         self.billing_address_text = cart.shipping_address.as_text()
+        super(Order, self).populate_from_cart(cart, request)
