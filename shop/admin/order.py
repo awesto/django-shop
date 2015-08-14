@@ -1,10 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from django.conf.urls import patterns, url
 from django.contrib import admin
+from django.core.urlresolvers import reverse
 from django.forms import widgets
+from django.template import RequestContext
+from django.shortcuts import render_to_response
+from django.utils.html import format_html
+from django.utils.translation import ugettext_lazy as _
 from fsm_admin.mixins import FSMTransitionMixin
 from shop.models.order import OrderItemModel, OrderPayment
 from shop.modifiers.pool import cart_modifiers_pool
+from shop.rest import serializers
 
 
 class OrderPaymentInline(admin.TabularInline):
@@ -55,6 +62,61 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
         #Form = type('TextLinkForm', (TextLinkFormBase,), {'ProductModel': ProductModel, 'product': product_field})
         #kwargs.update(form=Form)
         return super(BaseOrderAdmin, self).get_form(request, obj, **kwargs)
+
+
+class PrintOrderAdminMixin(object):
+    """
+    A customized OrderAdmin class shall inherit from this mixin class, to add
+    methods for printing the delivery note and the invoice.
+    """
+    def __init__(self, *args, **kwargs):
+        self.fields += ('print_out',)
+        self.readonly_fields += ('print_out',)
+        super(PrintOrderAdminMixin, self).__init__(*args, **kwargs)
+
+    def get_urls(self):
+        my_urls = patterns('',
+            url(r'^(?P<pk>\d+)/print_delivery_note/$', self.admin_site.admin_view(self.render_delivery_note),
+                name='print_delivery_note'),
+            url(r'^(?P<pk>\d+)/print_invoice/$', self.admin_site.admin_view(self.render_invoice),
+                name='print_invoice'),
+        )
+        return my_urls + super(PrintOrderAdminMixin, self).get_urls()
+
+    def render_delivery_note(self, request, pk=None):
+        order = self.get_object(request, pk)
+        order_serializer = serializers.OrderDetailSerializer(order, context={'request': request})
+        context = {
+            'customer': serializers.CustomerSerializer(order.user).data,
+            'data': order_serializer.data,
+        }
+        return render_to_response('shop/printing/delivery-note.html', context,
+            context_instance=RequestContext(request))
+
+    def render_invoice(self, request, pk=None):
+        order = self.get_object(request, pk)
+        order_serializer = serializers.OrderDetailSerializer(order, context={'request': request})
+        context = {
+            'customer': serializers.CustomerSerializer(order.user).data,
+            'data': order_serializer.data,
+        }
+        return render_to_response('shop/printing/delivery-note.html', context,
+            context_instance=RequestContext(request))
+
+    def print_out(self, obj):
+        if obj.status == 'pick_goods':
+            button = reverse('admin:print_delivery_note', args=(obj.id,)), _("Delivery Note")
+        elif obj.status == 'pack_goods':
+            button = reverse('admin:print_invoice', args=(obj.id,)), _("Invoice")
+        else:
+            button = None
+        if button:
+            return format_html(
+                '<span class="object-tools"><a href="{0}" class="viewsitelink" target="_new">{1}</a></span>',
+                *button)
+        return ''
+    print_out.short_description = _("Print out")
+    print_out.allow_tags = True
 
 
 class OrderAdmin(BaseOrderAdmin):

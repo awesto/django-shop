@@ -1,0 +1,12 @@
+{% extends "shop/email/base.html" %}
+{% load i18n %}
+
+{% block email-thead %}
+	{{ block.super }}
+	{% block email-title %}{% trans "Delivery note for" %} {{ data.identifier }}{% endblock %}
+{% endblock %}
+
+{% block email-tbody %}
+	{% include "shop/order/email-list-items.html" %}
+	{#% include "shop/order/customer-information.html" %#}
+{% endblock %}

@@ -61,19 +61,20 @@ class PayInAdvanceWorkflowMixin(object):
 class CommissionGoodsWorkflowMixin(object):
     """
     Add this class to `settings.SHOP_ORDER_WORKFLOWS` to mix it into your `OrderModel`.
-    It adds all the methods required for state transitions, while picking the
+    It adds all the methods required for state transitions, while picking and packing the
     ordered goods for delivery.
     """
     TRANSITION_TARGETS = {
-        'commission_goods': _("Commission the goods"),
+        'pick_goods': _("Picking goods"),
+        'pack_goods': _("Packing goods"),
     }
 
     @transition(field='status', source=['prepayment_deposited', 'charge_credit_card'],
-        target='commission_goods', custom=dict(admin=True, button_name=_("Print Delivery Note")))
-    def print_delivery_note(self, by=None):
-        """Use the Notification model to print the delivery note."""
+        target='pick_goods', custom=dict(admin=True, button_name=_("Pick the goods")))
+    def pick_goods(self, by=None):
+        """Change status to 'pick_goods'."""
 
-    @transition(field='status', source=['commission_goods'], target='commission_goods',
-                custom=dict(admin=True, button_name=_("Reprint Delivery Note")))
-    def reprint_delivery_note(self, by=None):
-        """Use the Notification model to print the delivery note."""
+    @transition(field='status', source=['pick_goods'],
+        target='pack_goods', custom=dict(admin=True, button_name=_("Pack the goods")))
+    def pack_goods(self, by=None):
+        """Change status to 'pack_goods'."""
