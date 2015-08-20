@@ -108,8 +108,14 @@ class PaymentMethodFormPlugin(DialogFormPluginBase):
     template_leaf_name = 'payment-method.html'
 
     def get_form_data(self, request):
+        # if there is only one payment method available, always set it as default
+        payment_modifier_choices = self.FormClass.base_fields['payment_modifier'].choices
+        if len(payment_modifier_choices) == 1:
+            default_payment_modifier = payment_modifier_choices[0][0]
+        else:
+            default_payment_modifier = None
         cart = CartModel.objects.get_from_request(request)
-        initial = {'payment_modifier': cart.extra.get('payment_modifier')}
+        initial = {'payment_modifier': cart.extra.get('payment_modifier', default_payment_modifier)}
         return {'initial': initial}
 
     def render(self, context, instance, placeholder):
@@ -129,8 +135,14 @@ class ShippingMethodFormPlugin(DialogFormPluginBase):
     template_leaf_name = 'shipping-method.html'
 
     def get_form_data(self, request):
+        # if there is only one shipping method available, always set it as default
+        shipping_modifier_choices = self.FormClass.base_fields['shipping_modifier'].choices
+        if len(shipping_modifier_choices) == 1:
+            default_shipping_modifier = shipping_modifier_choices[0][0]
+        else:
+            default_shipping_modifier = None
         cart = CartModel.objects.get_from_request(request)
-        initial = {'shipping_modifier': cart.extra.get('shipping_modifier')}
+        initial = {'shipping_modifier': cart.extra.get('shipping_modifier', default_shipping_modifier)}
         return {'initial': initial}
 
     def render(self, context, instance, placeholder):
