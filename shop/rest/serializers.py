@@ -5,10 +5,11 @@ from django.core import exceptions
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.template import RequestContext
+from django.template.base import TemplateDoesNotExist
 from django.template.loader import select_template
 from django.utils.six import with_metaclass
 from django.utils.html import strip_spaces_between_tags
-from django.utils.safestring import mark_safe
+from django.utils.safestring import mark_safe, SafeText
 from jsonfield.fields import JSONField
 from rest_framework import serializers
 from rest_framework.fields import empty
@@ -71,7 +72,10 @@ class ProductCommonSerializer(serializers.ModelSerializer):
             (app_label, self.label, 'product', postfix),
             ('shop', self.label, 'product', postfix),
         ]
-        template = select_template(['{0}/products/{1}-{2}-{3}.html'.format(*p) for p in params])
+        try:
+            template = select_template(['{0}/products/{1}-{2}-{3}.html'.format(*p) for p in params])
+        except TemplateDoesNotExist:
+            return SafeText()
         request = self.context['request']
         # when rendering emails, we require an absolute URI, so that media can be accessed from
         # the mail client
