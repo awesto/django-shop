@@ -1,7 +1,7 @@
 {% load i18n %}
 
 {% block search-results-table %}
-<table class="table table-hover" ng-cloak>
+<table class="table table-hover shop-search-results" ng-cloak>
 
 	{% block search-results-thead %}
 	<thead>
@@ -18,7 +18,7 @@
 			<td ng-bind-html="result_line.body"></td>
 			<td class="text-center text-nowrap">
 				<strong ng-bind="result_line.price"></strong>
-				<p><a class="btn btn-primary btn-sm" href="{% verbatim %}{{ result_line.product_url }}{% endverbatim %}">{% trans "Details" %}&nbsp;<i class="glyphicon glyphicon-menu-right"></i></a></p>
+				<a class="btn btn-primary btn-sm" href="{% verbatim %}{{ result_line.product_url }}{% endverbatim %}">{% trans "Details" %}&nbsp;<i class="glyphicon glyphicon-menu-right"></i></a>
 			</td>
 		</tr>
 	</tbody>
