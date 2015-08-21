@@ -31,6 +31,10 @@ class AbstractMoney(Decimal):
         value = Decimal.__str__(self)
         return "{}('{}')".format(self.__class__.__name__, value)
 
+    def __reduce__(self):
+        """Required for pickling MoneyInCUR type"""
+        return _make_money, (self._currency_code, Decimal.__str__(self))
+
     def __format__(self, specifier, context=None, _localeconv=None):
         if self.is_nan():
             amount = '–'
@@ -196,3 +200,10 @@ class MoneyMaker(type):
                  '_cents': cents, '__new__': new_money}
         new_class = type(name, bases, attrs)
         return new_class
+
+
+def _make_money(currency_code, value):
+    """
+    Function which curries currency and value
+    """
+    return MoneyMaker(currency_code)(value)
