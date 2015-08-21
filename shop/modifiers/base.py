@@ -37,17 +37,19 @@ class BaseCartModifier(object):
         """
         self.identifier = identifier or getattr(self, 'identifier', self.__class__.__name__.lower())
 
-    def pre_process_cart(self, cart, request):
+    def pre_process_cart(self, cart, cart_items, request):
         """
         This method will be called before the Cart starts being processed.
-        Totals are not updated yet (obviously), but this method can be useful
-        to gather some information on products in the cart.
+        Totals are not updated yet, but this method can be useful to gather some information
+        on products, modify the cart and its items via the extra dictionaries, and to reorder
+        the cart items if necessary.
         """
-        pass
+        return cart_items
 
     def post_process_cart(self, cart, request):
         """
-        This method will be called after the cart was processed.
+        This method will be called after the cart was processed in reverse order of the
+        registered cart modifiers.
         The Cart object is "final" and all the fields are computed. Remember that anything changed
         at this point should be consistent: If updating the price you should also update all
         relevant totals (for example).

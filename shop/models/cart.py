@@ -145,17 +145,15 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         if not self._dirty:
             return
 
-        items = CartItemModel.objects.filter(cart=self, quantity__gt=0).order_by('pk')
-
-        # The request object holds extra information in a dict named 'cart_modifier_state'.
-        # Cart modifiers can use this dict to pass arbitrary data from and to each other.
-        if not hasattr(request, 'cart_modifier_state'):
-            setattr(request, 'cart_modifier_state', {})
+        if self._cached_cart_items:
+            items = self._cached_cart_items
+        else:
+            items = CartItemModel.objects.filter(cart=self, quantity__gt=0).order_by('pk')
 
         # This calls all the pre_process_cart methods (if any), before the cart is processed.
         # This for example allows for data collection on the cart.
         for modifier in cart_modifiers_pool.get_all_modifiers():
-            modifier.pre_process_cart(self, request)
+            items = modifier.pre_process_cart(self, items, request) or items
 
         self.extra_rows = OrderedDict()  # reset the dictionary
         self.subtotal = 0  # reset the subtotal
@@ -171,7 +169,7 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         # This calls the post_process_cart method from cart modifiers, if any.
         # It allows for a last bit of processing on the "finished" cart, before
         # it is displayed
-        for modifier in cart_modifiers_pool.get_all_modifiers():
+        for modifier in reversed(cart_modifiers_pool.get_all_modifiers()):
             modifier.post_process_cart(self, request)
 
         # Cache updated cart items
