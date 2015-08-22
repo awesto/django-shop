@@ -1,3 +1,1 @@
-coverage==4.0b1
-pytest==2.7.2
-pytest-cover==3.0.0
+-r testing.txt

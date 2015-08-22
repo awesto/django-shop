@@ -1,0 +1,6 @@
+-r common.txt
+flake8==2.4.1
+pytest==2.7.2
+coverage==4.0b1
+pytest-cover==3.0.0
+pytest-django==2.8.0
