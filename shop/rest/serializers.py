@@ -192,7 +192,16 @@ class WatchListSerializer(serializers.ListSerializer):
     def get_attribute(self, instance):
         manager = super(WatchListSerializer, self).get_attribute(instance)
         assert isinstance(manager, models.Manager) and issubclass(manager.model, BaseCartItem)
-        return manager.filter(quantity=0)
+        return self.remove_duplicates(manager.filter(quantity=0))
+
+    def remove_duplicates(self, watch_items):
+        prev_product_id = None
+        exclude_item_ids = []
+        for item_id, product_id in watch_items.order_by('product').values_list('id', 'product'):
+            if product_id == prev_product_id:
+                exclude_item_ids.append(item_id)
+            prev_product_id = product_id
+        return watch_items.exclude(id__in=exclude_item_ids)
 
 
 class ItemModelSerializer(serializers.ModelSerializer):
