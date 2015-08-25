@@ -209,7 +209,7 @@ class ItemModelSerializer(serializers.ModelSerializer):
         model = CartItemModel
 
     def create(self, validated_data):
-        validated_data['cart'] = CartModel.objects.get_from_request(self.context['request'])
+        assert 'cart' in validated_data
         cart_item = CartItemModel.objects.get_or_create(**validated_data)[0]
         cart_item.save()
         return cart_item
@@ -245,6 +245,10 @@ class CartItemSerializer(BaseItemSerializer):
         list_serializer_class = CartListSerializer
         exclude = ('cart', 'id',)
 
+    def create(self, validated_data):
+        validated_data['cart'] = CartModel.objects.get_from_request(self.context['request'])
+        return super(CartItemSerializer, self).create(validated_data)
+
 
 class WatchItemSerializer(BaseItemSerializer):
     class Meta(BaseItemSerializer.Meta):
@@ -252,7 +256,8 @@ class WatchItemSerializer(BaseItemSerializer):
         fields = ('product', 'url', 'summary', 'quantity', 'extra',)
 
     def create(self, validated_data):
-        validated_data['quantity'] = 0
+        cart = CartModel.objects.get_from_request(self.context['request'])
+        validated_data.update(cart=cart, quantity=0)
         return super(WatchItemSerializer, self).create(validated_data)
 
 
@@ -264,11 +269,6 @@ class BaseCartSerializer(serializers.ModelSerializer):
     class Meta:
         model = CartModel
 
-    def to_representation(self, cart):
-        cart.update(self.context['request'])
-        representation = super(BaseCartSerializer, self).to_representation(cart)
-        return representation
-
 
 class CartSerializer(BaseCartSerializer):
     items = CartItemSerializer(many=True, read_only=True)
@@ -276,12 +276,21 @@ class CartSerializer(BaseCartSerializer):
     class Meta(BaseCartSerializer.Meta):
         fields = ('items', 'subtotal', 'extra_rows', 'total',)
 
+    def to_representation(self, cart):
+        cart.update(self.context['request'])
+        representation = super(BaseCartSerializer, self).to_representation(cart)
+        return representation
+
 
 class WatchSerializer(BaseCartSerializer):
     items = WatchItemSerializer(many=True, read_only=True)
 
     class Meta(BaseCartSerializer.Meta):
         fields = ('items',)
+
+    def to_representation(self, cart):
+        representation = super(BaseCartSerializer, self).to_representation(cart)
+        return representation
 
 
 class CheckoutSerializer(BaseCartSerializer):

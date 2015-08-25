@@ -148,7 +148,7 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         if self._cached_cart_items:
             items = self._cached_cart_items
         else:
-            items = CartItemModel.objects.filter(cart=self, quantity__gt=0).order_by('pk')
+            items = CartItemModel.objects.filter(cart=self, quantity__gt=0)
 
         # This calls all the pre_process_cart methods (if any), before the cart is processed.
         # This for example allows for data collection on the cart.
