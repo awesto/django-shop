@@ -2,6 +2,7 @@
 """Forms for the django-shop app."""
 from django import forms
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.forms.models import modelformset_factory
 from django.forms.util import ErrorList, ErrorDict
 from django.utils.translation import ugettext_lazy as _
@@ -41,7 +42,7 @@ class AddressesForm(forms.Form):
 
     def __init__(self, data=None, files=None, billing=None, shipping=None,
                  billing_form_class=None, shipping_form_class=None,
-                 auto_id='id_%s', prefix=None, initial=None, error_class=ErrorList,
+                 auto_id='id_%s', prefix=None, initial={}, error_class=ErrorList,
                  label_suffix=None, empty_permitted=False):
 
         bform = (billing_form_class or AddressForm)
@@ -53,6 +54,8 @@ class AddressesForm(forms.Form):
         self.shipping = sform(data, files, prefix="shipping",
                               instance=shipping if shipping != billing else None,
                               initial=initial.pop("shipping", None), label_suffix=label_suffix)
+
+        self.billing_empty = False  # helper in save method (bcs Form does not have is_empty method)
 
         super(AddressesForm, self).__init__(data, files,
                                             initial={"addresses_the_same": (shipping == billing)},
@@ -70,8 +73,7 @@ class AddressesForm(forms.Form):
             if not self.empty_permitted:
                 raise ValidationError(_('An address is required'))
             self.billing_empty = True
-
-            # if there is some data in billing then it was not intended to be empty
+            # if there were some data then it was not intended to be empty
             if self.billing.cleaned_data.get("street"):
                 self.shipping._errors = ErrorDict()
                 raise ValidationError()

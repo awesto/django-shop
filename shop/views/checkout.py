@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic import RedirectView
 from django.utils.functional import cached_property
 
-from shop.forms import BillingShippingForm
+from shop.forms import AddressesForm, BillingShippingForm
 from shop.models import AddressModel, OrderExtraInfo
 from shop.models import Order, ShippingBackend
 from shop.util.address import (
@@ -58,7 +58,7 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
         return order
 
     @cached_property
-    def get_addresses_form(self):
+    def addresses_form(self):
         """Creates an form which handles all the complexity behind selecting
         the two addresses
         """
@@ -74,7 +74,7 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
         )
 
     @cached_property
-    def get_billing_and_shipping_selection_form(self):
+    def billing_and_shipping_selection_form(self):
         """
         Get (and cache) the BillingShippingForm instance
         """
@@ -95,7 +95,7 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
         order.save()
 
     @cached_property
-    def get_extra_info_form(self):
+    def extra_info_form(self):
         """
         Initializes and handles the form for order extra info.
         """
@@ -114,8 +114,8 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
 
     def post(self, *args, **kwargs):
         """ Called when view is POSTed """
-        addresses_form = self.get_addresses_form(data=self.request.POST, )
-        extra_info_form = self.get_extra_info_form()
+        addresses_form = self.addresses_form  # the POST data are automatically passed to the form
+        extra_info_form = self.extra_info_form
         if addresses_form.is_valid() and extra_info_form.is_valid():
 
             # Add the address to the order
@@ -127,7 +127,7 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
                 shipping_address=shipping_address,
                 billing_address=billing_address,)
 
-            bs_form = self.get_billing_and_shipping_selection_form()
+            bs_form = self.billing_and_shipping_selection_form
 
             if bs_form.is_valid():
                 # save selected billing and shipping methods
@@ -147,9 +147,9 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
         """
         ctx = super(CheckoutSelectionView, self).get_context_data(**kwargs)
 
-        addresses_form = self.get_addresses_form()
-        bs_form = self.get_billing_and_shipping_selection_form()
-        extra_info_form = self.get_extra_info_form()
+        addresses_form = self.addresses_form
+        bs_form = self.billing_and_shipping_selection_form
+        extra_info_form = self.extra_info_form
         ctx.update({
             'addresses_form': addresses_form,
             'billing_shipping_form': bs_form,

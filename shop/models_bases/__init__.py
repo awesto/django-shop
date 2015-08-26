@@ -407,6 +407,15 @@ class BaseOrder(models.Model):
     def is_completed(self):
         return self.status == self.COMPLETED
 
+    def is_shipped(self):
+        return self.status == self.SHIPPED
+
+    def is_confirmed(self):
+        return self.status == self.CONFIRMED
+
+    def is_confirming(self):
+        return self.status == self.CONFIRMING
+
     def get_status_name(self):
         return dict(self.STATUS_CODES)[self.status]
 
@@ -421,6 +430,9 @@ class BaseOrder(models.Model):
         if save: self.save()
         if status in self.STATUS_TO_SIGNALS.keys():
             self.STATUS_TO_SIGNALS[status](self)
+
+    def mark_as_confirming(self, save=True):
+        self.mark_as(self.CONFIRMING, save)
 
     def mark_as_confirmed(self, save=True):
         self.mark_as(self.CONFIRMED, save)

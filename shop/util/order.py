@@ -1,5 +1,8 @@
 #-*- coding: utf-8 -*-
 from django.contrib.auth.models import AnonymousUser
+from django.core.urlresolvers import reverse
+from django.http.response import HttpResponseRedirect
+
 from shop.models.ordermodel import Order
 
 
