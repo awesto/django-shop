@@ -1,0 +1,9 @@
+Django==1.6.11
+django-fsm==2.2.1
+django-post-office==2.0.1
+django-filer==0.9.11
+six==1.9.0
+django-ipware==1.1.0
+django-cms==3.1.2
+djangorestframework==3.0.5
+git+https://github.com/Tivix/django-rest-auth.git@bd97eee65a223d7ade0055d3778678a023d7d866#egg=django_rest_auth-master
