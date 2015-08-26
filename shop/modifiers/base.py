@@ -14,6 +14,8 @@ class BaseCartModifier(object):
 
     1.  `pre_process_cart`: Totals are not computed, the cart is "rough": only relations and
         quantities are available
+    1a. `pre_process_cart_item`: Line totals are not computed, the cart and its items are "rough":
+        only relations and quantities are available
     2.  `process_cart_item`: Called for each cart_item in the cart. The modifier may change the
         amount in `cart_item.line_total`.
     2a. `add_extra_cart_item_row`: It optionally adds an object of type `ExtraCartRow` to the
@@ -53,29 +55,24 @@ class BaseCartModifier(object):
         """
         return cart_items
 
-    def pre_process_cart(self, cart, cart_items, request):
+    def pre_process_cart(self, cart, request):
         """
         This method will be called before the Cart starts being processed.
-        Totals are not updated yet, but this method can be useful to gather some information
-        on products, modify the cart and its items via the extra dictionaries, and to reorder
-        the cart items if necessary.
+        It shall be used to populate the cart with initial values, but not to compute
+        the cart's totals.
         """
-        return cart_items
 
-    def post_process_cart(self, cart, request):
+    def pre_process_cart_item(self, cart, item, request):
         """
-        This method will be called after the cart was processed in reverse order of the
-        registered cart modifiers.
-        The Cart object is "final" and all the fields are computed. Remember that anything changed
-        at this point should be consistent: If updating the price you should also update all
-        relevant totals (for example).
+        This method will be called for each item before the Cart starts being processed.
+        It shall be used to populate the cart item with initial values, but not to compute
+        the item's linetotal.
         """
-        pass
 
     def process_cart_item(self, cart_item, request):
         """
         This will be called for every line item in the Cart:
-        Line items typically contain: product, unit_price, quantity and optional extra row
+        Line items typically contain: product, unit_price, quantity and a dictionary with extra row
         information.
 
         If configured, the starting line total for every line (unit price * quantity) is computed
@@ -98,6 +95,15 @@ class BaseCartModifier(object):
         total and add additional information to the cart using an object of type `ExtraCartRow`.
         """
         self.add_extra_cart_row(cart, request)
+
+    def post_process_cart(self, cart, request):
+        """
+        This method will be called after the cart was processed in reverse order of the
+        registered cart modifiers.
+        The Cart object is "final" and all the fields are computed. Remember that anything changed
+        at this point should be consistent: If updating the price you should also update all
+        relevant totals (for example).
+        """
 
     def add_extra_cart_item_row(self, cart_item, request):
         """

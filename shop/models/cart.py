@@ -170,10 +170,12 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         else:
             items = CartItemModel.objects.filter_cart_items(self, request)
 
-        # This calls all the pre_process_cart methods (if any), before the cart is processed.
-        # This for example allows for data collection on the cart.
+        # This calls all the pre_process_cart methods and the pre_process_cart_item for each item,
+        # before processing the cart. This allows to prepare and collect data on the cart.
         for modifier in cart_modifiers_pool.get_all_modifiers():
-            items = modifier.pre_process_cart(self, items, request) or items
+            modifier.pre_process_cart(self, request)
+            for item in items:
+                modifier.pre_process_cart_item(self, item, request)
 
         self.extra_rows = OrderedDict()  # reset the dictionary
         self.subtotal = 0  # reset the subtotal
