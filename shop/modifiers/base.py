@@ -37,6 +37,22 @@ class BaseCartModifier(object):
         """
         self.identifier = identifier or getattr(self, 'identifier', self.__class__.__name__.lower())
 
+    def arrange_watch_items(self, watch_items, request):
+        """
+        Arrange all items, which are being watched.
+        Override this method to resort and regroup the returned items.
+        """
+        return watch_items
+
+    # these methods are only used for the cart items
+
+    def arrange_cart_items(self, cart_items, request):
+        """
+        Arrange all items, which are intended for the shopping cart.
+        Override this method to resort and regroup the returned items.
+        """
+        return cart_items
+
     def pre_process_cart(self, cart, cart_items, request):
         """
         This method will be called before the Cart starts being processed.

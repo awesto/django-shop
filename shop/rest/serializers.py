@@ -180,7 +180,7 @@ class CartListSerializer(serializers.ListSerializer):
     def get_attribute(self, instance):
         manager = super(CartListSerializer, self).get_attribute(instance)
         assert isinstance(manager, models.Manager) and issubclass(manager.model, BaseCartItem)
-        return manager.filter(quantity__gt=0)
+        return manager.filter_cart_items(instance, self.context['request'])
 
 
 class WatchListSerializer(serializers.ListSerializer):
@@ -192,16 +192,7 @@ class WatchListSerializer(serializers.ListSerializer):
     def get_attribute(self, instance):
         manager = super(WatchListSerializer, self).get_attribute(instance)
         assert isinstance(manager, models.Manager) and issubclass(manager.model, BaseCartItem)
-        return self.remove_duplicates(manager.filter(quantity=0))
-
-    def remove_duplicates(self, watch_items):
-        prev_product_id = None
-        exclude_item_ids = []
-        for item_id, product_id in watch_items.order_by('product').values_list('id', 'product'):
-            if product_id == prev_product_id:
-                exclude_item_ids.append(item_id)
-            prev_product_id = product_id
-        return watch_items.exclude(id__in=exclude_item_ids)
+        return manager.filter_watch_items(instance, self.context['request'])
 
 
 class ItemModelSerializer(serializers.ModelSerializer):
@@ -287,10 +278,6 @@ class WatchSerializer(BaseCartSerializer):
 
     class Meta(BaseCartSerializer.Meta):
         fields = ('items',)
-
-    def to_representation(self, cart):
-        representation = super(BaseCartSerializer, self).to_representation(cart)
-        return representation
 
 
 class CheckoutSerializer(BaseCartSerializer):

@@ -45,6 +45,26 @@ class CartItemManager(models.Manager):
         cart_item.save()
         return cart_item, created
 
+    def filter_cart_items(self, cart, request):
+        """
+        Use this method to fetch items for shopping from the cart. It rearranges the result set
+        according to the defined modifiers.
+        """
+        cart_items = self.filter(cart=cart, quantity__gt=0)
+        for modifier in cart_modifiers_pool.get_all_modifiers():
+            cart_items = modifier.arrange_cart_items(cart_items, request)
+        return cart_items
+
+    def filter_watch_items(self, cart, request):
+        """
+        Use this method to fetch items from the watch list. It rearranges the result set
+        according to the defined modifiers.
+        """
+        watch_items = self.filter(cart=cart, quantity=0)
+        for modifier in cart_modifiers_pool.get_all_modifiers():
+            watch_items = modifier.arrange_watch_items(watch_items, request)
+        return watch_items
+
 
 class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
@@ -148,7 +168,7 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         if self._cached_cart_items:
             items = self._cached_cart_items
         else:
-            items = CartItemModel.objects.filter(cart=self, quantity__gt=0)
+            items = CartItemModel.objects.filter_cart_items(self, request)
 
         # This calls all the pre_process_cart methods (if any), before the cart is processed.
         # This for example allows for data collection on the cart.
