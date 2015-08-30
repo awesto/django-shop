@@ -1,6 +1,5 @@
 # flake8: noqa
 from __future__ import absolute_import
-from .api import ShopApiTestCase
 from .cart import CartTestCase
 from .cart_modifiers import (
     CartModifiersTestCase,
@@ -21,7 +20,6 @@ from .product import ProductTestCase, ProductStatisticsTestCase
 from .shipping import (
     FlatRateShippingTestCase,
     GeneralShippingBackendTestCase,
-    ShippingApiTestCase,
 )
 from .templatetags import ProductsTestCase
 from .util import (

@@ -25,9 +25,8 @@ setup(
     platforms=['OS Independent'],
     classifiers=CLASSIFIERS,
     install_requires=[
-        'Django>=1.5.1',
-        'django-polymorphic>=0.2',
-        'south>=0.7.2',
+        'Django>=1.8',
+        'django-polymorphic>=0.6',
         'jsonfield>=0.9.6'
     ],
     packages=find_packages(exclude=["example", "example.*"]),

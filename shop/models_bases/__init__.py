@@ -561,7 +561,7 @@ class BasePaymentBackend(models.Model):
     active = models.BooleanField(default=True)
     description = models.TextField(null=True, blank=True)
     logo = models.ImageField(null=True, blank=True, 
-                             upload_to=path.join(settings.MEDIA_ROOT, 'backends'))
+                             upload_to=path.join(settings.MEDIA_ROOT, 'payment-backend'))
 
     class Meta(object):
         abstract = True
