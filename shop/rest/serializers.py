@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 from collections import OrderedDict
 from django.core import exceptions
-from django.contrib.auth import get_user_model
 from django.db import models
 from django.template import RequestContext
 from django.template.base import TemplateDoesNotExist
@@ -14,6 +13,7 @@ from jsonfield.fields import JSONField
 from rest_framework import serializers
 from rest_framework.fields import empty
 from shop.models.cart import CartModel, CartItemModel, BaseCartItem
+from shop.models.customer import CustomerModel
 from shop.models.order import OrderModel, OrderItemModel
 from shop.rest.money import MoneyField
 
@@ -310,7 +310,7 @@ class OrderListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderModel
-        exclude = ('id', 'user', 'stored_request', '_subtotal', '_total',)
+        exclude = ('id', 'customer', 'stored_request', '_subtotal', '_total',)
 
 
 class OrderDetailSerializer(OrderListSerializer):
@@ -321,5 +321,5 @@ class CustomerSerializer(serializers.ModelSerializer):
     salutation = serializers.CharField(source='get_salutation_display')
 
     class Meta:
-        model = get_user_model()
-        fields = ('salutation', 'first_name', 'last_name', 'email', 'extra',)
+        model = CustomerModel
+        fields = ('salutation', 'user__first_name', 'user__last_name', 'user__email', 'extra',)

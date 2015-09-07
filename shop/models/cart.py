@@ -115,7 +115,7 @@ class CartManager(models.Manager):
         Return the cart for current user. Anonymous users also must have a primary key,
         thats why djangoSHOP requires its own authentication middleware.
         """
-        cart = self.get_or_create(user=request.user)[0]
+        cart = self.get_or_create(customer=request.customer)[0]
         return cart
 
 
@@ -125,7 +125,7 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     Ideally it should be bound to a session and not to a User is we want to let
     people buy from our shop without having to register with us.
     """
-    user = models.OneToOneField(settings.AUTH_USER_MODEL)
+    customer = deferred.OneToOneField('BaseCustomer', verbose_name=_("Customer") ,related_name='carts')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
     extra = JSONField(default={}, verbose_name=_("Arbitrary information for this cart"))

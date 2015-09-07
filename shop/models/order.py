@@ -113,7 +113,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     }
     decimal_exp = Decimal('.' + '0' * decimalfield_kwargs['decimal_places'])
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_("Customer"))
+    customer = deferred.ForeignKey('BaseCustomer', verbose_name=_("Customer"), related_name='orders')
     status = FSMField(default='new', protected=True, verbose_name=_("Status"))
     currency = models.CharField(max_length=7, editable=False,
         help_text=_("Currency in which this order was concluded"))

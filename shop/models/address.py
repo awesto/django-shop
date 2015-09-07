@@ -13,7 +13,7 @@ from . import deferred
 
 
 class BaseAddress(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    customer = deferred.ForeignKey('BaseCustomer')
     priority_shipping = models.SmallIntegerField(null=True, default=None,
         help_text=_("Priority of using this address for shipping"))
     priority_billing = models.SmallIntegerField(null=True, default=None,
