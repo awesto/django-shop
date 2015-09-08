@@ -25,11 +25,14 @@ class BaseCustomerManager(models.Manager):
             try:
                 return request.user.customer
             except CustomerModel.DoesNotExist:
-                return CustomerModel.objects.create(user=request.user)
+                 customer = CustomerModel.objects.create(user=request.user)
+                 customer.save()
+                 return customer
         try:
             return CustomerModel.objects.get(pk=request.session[SESSION_KEY])
         except KeyError:
             customer = CustomerModel.objects.create()
+            customer.save()
             request.session[SESSION_KEY] = customer.pk
             return customer
         

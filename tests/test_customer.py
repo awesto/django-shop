@@ -8,6 +8,7 @@ from django.test import Client, TestCase, RequestFactory
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth.signals import user_logged_in
 from shop.middleware import CustomerMiddleware
 from shop.models.cart import CartModel as Cart
 from shop.models.customer import CustomerModel as Customer
@@ -110,7 +111,6 @@ class CustomerTest(TestCase):
         is set on the request while the anonymous interim customer object is
         deleted.
         """
-        from django.contrib.auth.signals import user_logged_in
         request = self.factory.post('/shop/auth/login/', follow=True)
         request.user = self.bart
         request.session = {'session_key': 'bart_swap'}
@@ -127,11 +127,11 @@ class CustomerTest(TestCase):
         the anonymous interim customer object is associated with the logged-in
         user.
         """
-        from django.contrib.auth.signals import user_logged_in
         request = self.factory.post('/shop/auth/login/', follow=True)
         request.user = self.lisa
         request.session = {'session_key': 'lisa_swap'}
         customer = Customer()
+        customer.save()
         request.customer = customer
         user_logged_in.send(sender=self.lisa.__class__, request=request, user=self.lisa)
         self.assertEqual(request.customer, customer)
@@ -144,10 +144,19 @@ class CustomerTest(TestCase):
         """
         pass
 
-    def test_swap_cart_customer_on_login(self):
+    def test_keep_cart_on_login(self):
         """
         Test that when logging in, an existing cart's Customer reference is set
         to the new logged-in User's Customer
         """
-        pass
+        request = self.factory.post('/shop/auth/login', follow=True)
+        request.session = {'session_key': 'keep_cart'}
+        request.customer = Customer()
+        request.customer.save()
+        request.user = self.bart
+        old_cart = Cart.objects.get_from_request(request)
+        user_logged_in.send(sender=self.bart.__class__, request=request, user=self.bart)
+        new_cart = Cart.objects.get_from_request(request)
+        self.assertEqual(new_cart.customer, request.customer)
+        self.assertEqual(new_cart, old_cart)
 
