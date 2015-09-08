@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.contrib.auth import logout
+from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
@@ -13,7 +14,6 @@ from rest_framework.response import Response
 from rest_auth.views import LoginView as OriginalLoginView
 from shop.models.cart import CartModel
 from shop.rest.auth import PasswordResetSerializer, PasswordResetConfirmSerializer
-from shop.middleware import get_user
 
 
 class AuthFormsView(GenericAPIView):
@@ -32,14 +32,15 @@ class AuthFormsView(GenericAPIView):
 
 
 class LoginView(OriginalLoginView):
-    def login(self):
-        """
-        Logs in as the given user, and moves the items from the current to the new cart.
-        """
-        anonymous_cart = CartModel.objects.get_from_request(self.request)
-        super(LoginView, self).login()
-        authenticated_cart = CartModel.objects.get_from_request(self.request)
-        anonymous_cart.items.update(cart=authenticated_cart)
+    pass
+#    def login(self):
+#        """
+#        Logs in as the given user, and moves the items from the current to the new cart.
+#        """
+#        anonymous_cart = CartModel.objects.get_from_request(self.request)
+#        super(LoginView, self).login()
+#        authenticated_cart = CartModel.objects.get_from_request(self.request)
+#        anonymous_cart.items.update(cart=authenticated_cart)
 
 
 class LogoutView(APIView):
@@ -54,7 +55,7 @@ class LogoutView(APIView):
         except:
             pass
         logout(request)
-        request.user = get_user(request, True)
+        request.user = AnonymousUser()
         return Response({'success': _("Successfully logged out.")}, status=status.HTTP_200_OK)
 
 

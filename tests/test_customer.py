@@ -110,17 +110,16 @@ class CustomerTest(TestCase):
         is set on the request while the anonymous interim customer object is
         deleted.
         """
-        request = self.factory.get('/', follow=True)
-        request.user = AnonymousUser()
-        request.session = {'session_key': 'bart_swap'}
-        self.cm.process_request(request)
-        old_customer = request.customer
-        request = self.factory.get('/', follow=True)
+        from django.contrib.auth.signals import user_logged_in
+        request = self.factory.post('/shop/auth/login/', follow=True)
         request.user = self.bart
         request.session = {'session_key': 'bart_swap'}
-        self.cm.process_request(request)
-        self.assertEqual(request.customer.user, self.bart)
-        self.assertEqual(old_customer, None)
+        old_customer = Customer()
+        old_customer.save()
+        request.customer = old_customer
+        user_logged_in.send(sender=self.bart.__class__, request=request, user=self.bart)
+        self.assertEqual(old_customer.pk, None)
+        self.assertEqual(request.customer, self.bart.customer)
     
     def test_associate_customer_on_login(self):
         """
@@ -128,16 +127,14 @@ class CustomerTest(TestCase):
         the anonymous interim customer object is associated with the logged-in
         user.
         """
-        request = self.factory.get('/', follow=True)
-        request.user = AnonymousUser()
-        request.session = {'session_key': 'lisa_swap'}
-        self.cm.process_request(request)
-        old_customer = request.customer
-        request = self.factory.get('/', follow=True)
+        from django.contrib.auth.signals import user_logged_in
+        request = self.factory.post('/shop/auth/login/', follow=True)
         request.user = self.lisa
         request.session = {'session_key': 'lisa_swap'}
-        self.cm.process_request(request)
-        self.assertEqual(old_customer, request.customer)
+        customer = Customer()
+        request.customer = customer
+        user_logged_in.send(sender=self.lisa.__class__, request=request, user=self.lisa)
+        self.assertEqual(request.customer, customer)
         self.assertEqual(request.customer.user, self.lisa)
     
     def test_associate_customer_on_signup(self):
