@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from shop.models.customer import CustomerModel as Customer
 
 class CustomerAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('identifier', 'creation_date',)
 
 admin.site.register(Customer, CustomerAdmin)
 

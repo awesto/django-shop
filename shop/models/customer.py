@@ -52,7 +52,6 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, null=True)
     session_key = models.CharField(max_length=40, unique=True, null=True, blank=True, editable=False,
         help_text=_("Anonymous customers are identified by their session key"))
-
     salutation = models.CharField(max_length=5, choices=SALUTATION)
     is_guest = models.BooleanField(
         _("Customer has guest status"),
@@ -61,6 +60,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     )
     extra = JSONField(default={}, editable=False,
         verbose_name=_("Extra information about this customer"))
+    creation_date = models.DateTimeField(auto_now_add=True)
     
     objects = BaseCustomerManager()
     
