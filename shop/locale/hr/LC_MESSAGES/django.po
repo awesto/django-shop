@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-13 07:39-0600\n"
+"POT-Creation-Date: 2015-09-08 17:59+0200\n"
 "PO-Revision-Date: 2011-02-15 02:47\n"
 "Last-Translator:   <bmihelac@mihelac.org>\n"
 "Language-Team: Bojan Mihelac <bmihelac@mihelac.org>\n"
@@ -15,354 +15,1197 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2\n"
 
-#: forms.py:27
+#: cms_app.py:9
+#, fuzzy
+msgid "View Orders"
+msgstr "Narudžbe"
+
+#: admin/auth.py:11
+#, fuzzy
+msgid "Personal info"
+msgstr "Dodatne informacije"
+
+#: admin/auth.py:12
+msgid "Permissions"
+msgstr ""
+
+#: admin/auth.py:14
+msgid "Important dates"
+msgstr ""
+
+#: admin/notification.py:18 admin/notification.py:52
+msgid "Nobody"
+msgstr ""
+
+#: admin/notification.py:18 models/order.py:116
+msgid "Customer"
+msgstr ""
+
+#: admin/order.py:108
+msgid "Delivery Note"
+msgstr ""
+
+#: admin/order.py:110
+msgid "Invoice"
+msgstr ""
+
+#: admin/order.py:118
+msgid "Print out"
+msgstr ""
+
+#: cascade/auth.py:14
+msgid "Login Form"
+msgstr ""
+
+#: cascade/auth.py:15
+msgid "Login & Reset Form"
+msgstr ""
+
+#: cascade/auth.py:16
+msgid "Logout Form"
+msgstr ""
+
+#: cascade/auth.py:17
+msgid "Shared Login/Logout Form"
+msgstr ""
+
+#: cascade/auth.py:18
+msgid "Password Reset Form"
+msgstr ""
+
+#: cascade/auth.py:19
+msgid "Change Password Form"
+msgstr ""
+
+#: cascade/auth.py:20
+msgid "Register User"
+msgstr ""
+
+#: cascade/auth.py:21 templates/shop/auth/continue-as-guest.html:10
+msgid "Continue as guest"
+msgstr ""
+
+#: cascade/auth.py:26 cascade/checkout.py:30 cascade/plugin_base.py:94
+#: cascade/processbar.py:107 cascade/processbar.py:110
+msgid "CMS Page"
+msgstr ""
+
+#: cascade/auth.py:26 cascade/checkout.py:30 cascade/processbar.py:108
+#: cascade/processbar.py:110
+msgid "Reload Page"
+msgstr ""
+
+#: cascade/auth.py:26
+msgid "Do Nothing"
+msgstr ""
+
+#: cascade/auth.py:27
+msgid "Rendered Form"
+msgstr ""
+
+#: cascade/auth.py:28
+msgid "Select the appropriate form for various authentication purposes."
+msgstr ""
+
+#: cascade/auth.py:42
+msgid "Authentication"
+msgstr ""
+
+#: cascade/auth.py:51
+msgid "unknown"
+msgstr ""
+
+#: cascade/cart.py:16
+msgid "Cart"
+msgstr "Košarica"
+
+#: cascade/cart.py:20
+msgid "Editable Cart"
+msgstr ""
+
+#: cascade/cart.py:20
+msgid "Static Cart"
+msgstr ""
+
+#: cascade/cart.py:21
+#, fuzzy
+msgid "Cart Summary"
+msgstr "Međuzbroj"
+
+#: cascade/cart.py:21
+msgid "Watch List"
+msgstr ""
+
+#: cascade/cart.py:25 cascade/plugin_base.py:152
+msgid "Render as"
+msgstr ""
+
+#: cascade/cart.py:27
+msgid "Shall the cart be editable or a static summary?"
+msgstr ""
+
+#: cascade/checkout.py:29
+msgid "Putton Content"
+msgstr ""
+
+#: cascade/checkout.py:30 cascade/processbar.py:108 cascade/processbar.py:111
+msgid "Purchase Now"
+msgstr ""
+
+#: cascade/checkout.py:37
+#, fuzzy
+msgid "Proceed Button"
+msgstr "Nastavak na blagajnu"
+
+#: cascade/checkout.py:59
+msgid "Customer Form"
+msgstr ""
+
+#: cascade/checkout.py:70
+msgid "Guest Form"
+msgstr ""
+
+#: cascade/checkout.py:90
+#, fuzzy
+msgid "Shipping Address Form"
+msgstr "Adresa za dostavu"
+
+#: cascade/checkout.py:98
+#, fuzzy
+msgid "Billing Address Form"
+msgstr "Adresa za izdavanje računa"
+
+#: cascade/checkout.py:106
+#, fuzzy
+msgid "Payment Method Form"
+msgstr "Način plaćanja"
+
+#: cascade/checkout.py:133
+#, fuzzy
+msgid "Shipping Method Form"
+msgstr "Dostava"
+
+#: cascade/checkout.py:160
+msgid "Extra Annotation Form"
+msgstr ""
+
+#: cascade/checkout.py:176
+msgid "Accept Condition"
+msgstr ""
+
+#: cascade/checkout.py:197
+msgid "HTML content"
+msgstr ""
+
+#: cascade/plugin_base.py:94 models/order.py:264 models/product.py:104
+#: templates/shop/cart/editable.html:13 templates/shop/cart/static.html:8
+#: templates/shop/cart/watch.html:9
+#: templates/shop/order/email-list-items.html:10
+#: templates/shop/order/order-detail.html:13
+msgid "Product"
+msgstr "Artikal"
+
+#: cascade/plugin_base.py:95
+msgid "External URL"
+msgstr ""
+
+#: cascade/plugin_base.py:95
+msgid "Mail To"
+msgstr ""
+
+#: cascade/plugin_base.py:120
+msgid "An internal link onto a product from the shop"
+msgstr ""
+
+#: cascade/plugin_base.py:148
+msgid "Form dialog"
+msgstr ""
+
+#: cascade/plugin_base.py:148
+msgid "Summary"
+msgstr ""
+
+#: cascade/plugin_base.py:154
+msgid "A dialog can also be rendered as a box containing a read-only summary."
+msgstr ""
+
+#: cascade/processbar.py:26
+msgid "Steps"
+msgstr ""
+
+#: cascade/processbar.py:27
+msgid "Number of steps for this proceed bar."
+msgstr ""
+
+#: cascade/processbar.py:31
+#, fuzzy
+msgid "Process Bar"
+msgstr "Obrada"
+
+#: cascade/processbar.py:41
+msgid "with {} page"
+msgid_plural "with {} pages"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: cascade/processbar.py:67
+#, fuzzy
+msgid "Process Step"
+msgstr "Obrada"
+
+#: cascade/processbar.py:76
+msgid "Step Title"
+msgstr ""
+
+#: cascade/processbar.py:97
+msgid "Next Step Button"
+msgstr ""
+
+#: cascade/processbar.py:105
+msgid "Button Content"
+msgstr ""
+
+#: forms/auth.py:21 templates/shop/auth/login-reset.html:8
+#: templates/shop/auth/login-reset.html:26 templates/shop/auth/login.html:8
+#: templates/shop/auth/reset.html:8
+msgid "Your e-mail address"
+msgstr ""
+
+#: forms/auth.py:22
+msgid "Preset password"
+msgstr ""
+
+#: forms/auth.py:24
+msgid "Send a randomly generated password to your e-mail address."
+msgstr ""
+
+#: forms/auth.py:26
+msgid "Choose a password"
+msgstr ""
+
+#: forms/auth.py:27
+msgid "Minimum length is 6 characters."
+msgstr ""
+
+#: forms/auth.py:28
+msgid "Repeat password"
+msgstr ""
+
+#: forms/auth.py:29
+#, fuzzy
+msgid "Confirm password."
+msgstr "Potvrđeno"
+
+#: forms/auth.py:51
+msgid "Passwords do not match"
+msgstr ""
+
+#: forms/auth.py:54
+#, python-brace-format
+msgid ""
+"A customer with the e-mail address '{email}' already exists.\n"
+"If you have used this address previously, try to reset the password."
+msgstr ""
+
+#: forms/checkout.py:137
+#, fuzzy
+msgid "Use shipping address for billing"
+msgstr "Adresa za dostavu"
+
+#: forms/checkout.py:164
+#, fuzzy
+msgid "Payment Method"
+msgstr "Način plaćanja"
+
+#: forms/checkout.py:181
+#, fuzzy
+msgid "Shipping Method"
+msgstr "Dostava"
+
+#: management/commands/shop_customers.py:12
+msgid "Collect information about all customers which accessed this shop."
+msgstr ""
+
+#: management/commands/shop_customers.py:16
+msgid "Delete customers with expired sessions."
+msgstr ""
+
+#: management/commands/shop_customers.py:35
+#, python-brace-format
+msgid "Customers in this shop: total={total}, anonymous={anonymous}, expired={expired}, guests={guests}, registered={registered}."
+msgstr ""
+
+#: models/address.py:18
+msgid "Priority of using this address for shipping"
+msgstr ""
+
+#: models/address.py:20
+msgid "Priority of using this address for invoicing"
+msgstr ""
+
+#: models/address.py:24
+msgid "Address"
+msgstr "Adresa"
+
+#: models/address.py:25
+msgid "Addresses"
+msgstr "Adrese"
+
+#: models/address.py:42
+msgid "Austria"
+msgstr ""
+
+#: models/address.py:43
+msgid "Germany"
+msgstr ""
+
+#: models/address.py:44
+msgid "Denmark"
+msgstr ""
+
+#: models/address.py:45
+msgid "Switzerland"
+msgstr ""
+
+#: models/address.py:46
+msgid "Nederlands"
+msgstr ""
+
+#: models/auth.py:60
+msgid "Mrs."
+msgstr ""
+
+#: models/auth.py:60
+msgid "Mr."
+msgstr ""
+
+#: models/auth.py:64
+msgid "Required. Maximum 254 letters, numbers and the symbols: @ + - _ ."
+msgstr ""
+
+#: models/auth.py:65
+msgid "Enter a valid username."
+msgstr ""
+
+#: models/auth.py:67
+msgid "Anonymous customers are identified by their session key"
+msgstr ""
+
+#: models/auth.py:70
+msgid "First Name"
+msgstr ""
+
+#: models/auth.py:71
+#, fuzzy
+msgid "Last Name"
+msgstr "Zadnja promjena"
+
+#: models/auth.py:72
+#, fuzzy
+msgid "email Address"
+msgstr "Adresa za izdavanje računa"
+
+#: models/auth.py:73
+#, fuzzy
+msgid "Staff status"
+msgstr "Status"
+
+#: models/auth.py:74
+msgid "Designates whether the user can log into this admin site."
+msgstr ""
+
+#: models/auth.py:75 models/product.py:97
+msgid "Active"
+msgstr "Aktivno"
+
+#: models/auth.py:76
+msgid "Designates whether this user should be treated as active. Unselect this instead of deleting accounts."
+msgstr ""
+
+#: models/auth.py:78
+msgid "Registered"
+msgstr ""
+
+#: models/auth.py:79
+msgid "Designates whether this customer registered his account, or if he is unauthenticated and considered a guest."
+msgstr ""
+
+#: models/auth.py:81
+#, fuzzy
+msgid "Date joined"
+msgstr "Datum dodano"
+
+#: models/auth.py:83
+msgid "Extra information about this customer"
+msgstr ""
+
+#: models/cart.py:77
+msgid "Arbitrary information for this cart item"
+msgstr ""
+
+#: models/cart.py:83
+msgid "Cart item"
+msgstr "Stavka košarice"
+
+#: models/cart.py:84
+msgid "Cart items"
+msgstr "Stavke košarice"
+
+#: models/cart.py:129 models/order.py:122 models/product.py:95
+#, fuzzy
+msgid "Created at"
+msgstr "Kreirano"
+
+#: models/cart.py:130 models/order.py:123 models/product.py:96
+#, fuzzy
+msgid "Updated at"
+msgstr "Promjenjeno"
+
+#: models/cart.py:131
+msgid "Arbitrary information for this cart"
+msgstr ""
+
+#: models/cart.py:138
+#, fuzzy
+msgid "Shopping Cart"
+msgstr "Isprazni košaricu"
+
+#: models/cart.py:139
+#, fuzzy
+msgid "Shopping Carts"
+msgstr "Isprazni košaricu"
+
+#: models/notification.py:20
+msgid "Name"
+msgstr "Naziv"
+
+#: models/notification.py:21
+msgid "Event"
+msgstr ""
+
+#: models/notification.py:22
+msgid "Mail to"
+msgstr ""
+
+#: models/notification.py:24
+msgid "Template"
+msgstr ""
+
+#: models/notification.py:29
+msgid "Notification"
+msgstr ""
+
+#: models/notification.py:30
+msgid "Notifications"
+msgstr ""
+
+#: models/notification.py:39
+msgid "Does not exists"
+msgstr ""
+
+#: models/order.py:107
+msgid "New order without content"
+msgstr ""
+
+#: models/order.py:108
+msgid "Order freshly created"
+msgstr ""
+
+#: models/order.py:117 models/order.py:220 models/order.py:239
+#: templates/shop/order/order-list.html:14
+msgid "Status"
+msgstr "Status"
+
+#: models/order.py:119
+msgid "Currency in which this order was concluded"
+msgstr ""
+
+#: models/order.py:120 templates/shop/cart/editable.html:34
+#: templates/shop/cart/static.html:41 templates/shop/cart/summary.html:6
+#: templates/shop/order/email-list-items.html:40
+#: templates/shop/order/order-detail.html:46
+#: templates/shop/products/catalog-product-add2cart.html:11
+#, fuzzy
+msgid "Subtotal"
+msgstr "Međuzbroj"
+
+#: models/order.py:121 templates/shop/cart/editable.html:16
+#: templates/shop/cart/editable.html:46 templates/shop/cart/static.html:11
+#: templates/shop/cart/static.html.py:56 templates/shop/cart/summary.html:16
+#: templates/shop/order/email-list-items.html:50
+#: templates/shop/order/order-detail.html:16
+#: templates/shop/order/order-detail.html:60
+#, fuzzy
+msgid "Total"
+msgstr "Ukupno"
+
+#: models/order.py:124
+#, fuzzy
+msgid "Extra fields"
+msgstr "Dodatna polja s cijenama za narudžbu"
+
+#: models/order.py:125
+msgid "Arbitrary information for this order object on the moment of purchase."
+msgstr ""
+
+#: models/order.py:127
+msgid "Parts of the Request objects on the moment of purchase."
+msgstr ""
+
+#: models/order.py:132 models/order.py:219 models/order.py:238
+#: models/order.py:258
+msgid "Order"
+msgstr "Narudžba"
+
+#: models/order.py:133
+msgid "Orders"
+msgstr "Narudžbe"
+
+#: models/order.py:210
+#, fuzzy
+msgctxt "status_name"
+msgid "State"
+msgstr "Država"
+
+#: models/order.py:221
+#, fuzzy
+msgid "Amount paid"
+msgstr "Iznos"
+
+#: models/order.py:222
+msgid "How much was paid with this particular transfer."
+msgstr ""
+
+#: models/order.py:223
+msgid "Transaction ID"
+msgstr "ID transakcije"
+
+#: models/order.py:224 models/order.py:241
+msgid "The transaction processor's reference"
+msgstr "Referenca transakcije"
+
+#: models/order.py:225
+msgid "Received at"
+msgstr ""
+
+#: models/order.py:226
+msgid "Payment method"
+msgstr "Način plaćanja"
+
+#: models/order.py:227
+msgid "The payment backend used to process the purchase"
+msgstr "Backend za plaćanje koji se koristi za kupovinu"
+
+#: models/order.py:230
+msgid "Order payment"
+msgstr "Plaćanje narudžbe"
+
+#: models/order.py:231
+msgid "Order payments"
+msgstr "Plaćanja narudžbe"
+
+#: models/order.py:240
+#, fuzzy
+msgid "Shipping ID"
+msgstr "Dostava"
+
+#: models/order.py:242
 #, fuzzy
 msgid "Shipping method"
 msgstr "Dostava"
 
-#: forms.py:28 models/ordermodel.py:99
-msgid "Payment method"
-msgstr "Način plaćanja"
-
-#: addressmodel/models.py:12
-#, python-format
-msgid ""
-"\n"
-"Name: %(name)s,\n"
-"Address: %(address)s,\n"
-"Zip-Code: %(zipcode)s,\n"
-"City: %(city)s,\n"
-"State: %(state)s,\n"
-"Country: %(country)s\n"
-msgstr ""
-
-#: addressmodel/models.py:32 addressmodel/models.py:48
-msgid "Country"
-msgstr "Država"
-
-#: addressmodel/models.py:33
-msgid "Countries"
-msgstr "Države"
-
-#: addressmodel/models.py:42 models_bases/__init__.py:26
-msgid "Name"
-msgstr "Naziv"
-
-#: addressmodel/models.py:43 addressmodel/models.py:52
-msgid "Address"
-msgstr "Adresa"
-
-#: addressmodel/models.py:44
-msgid "Address2"
-msgstr "Adresa 2"
-
-#: addressmodel/models.py:45
-msgid "Zip Code"
-msgstr "Pošta"
-
-#: addressmodel/models.py:46
-msgid "City"
-msgstr "Grad"
-
-#: addressmodel/models.py:47
-msgid "State"
-msgstr "Država"
-
-#: addressmodel/models.py:53
-msgid "Addresses"
-msgstr "Adrese"
-
-#: admin/orderadmin.py:46
-msgid "Shipping"
-msgstr "Dostava"
-
-#: admin/orderadmin.py:49
-msgid "Billing"
-msgstr "Naplata"
-
-#: models/ordermodel.py:45 models/ordermodel.py:59 models/ordermodel.py:92
-#: models/defaults/order.py:13 models_bases/__init__.py:353
-#: models_bases/__init__.py:435
-msgid "Order"
-msgstr "Narudžba"
-
-#: models/ordermodel.py:46
-msgid "Extra info"
-msgstr "Dodatne informacije"
-
-#: models/ordermodel.py:50 models/ordermodel.py:51
-msgid "Order extra info"
-msgstr "Dodatni komentari"
-
-#: models/ordermodel.py:60 models/ordermodel.py:78
-msgid "Label"
-msgstr "Oznaka"
-
-#: models/ordermodel.py:61 models/ordermodel.py:79 models/ordermodel.py:94
-msgid "Amount"
-msgstr "Iznos"
-
-#: models/ordermodel.py:64
-msgid "Is shipping"
-msgstr "Za dostavu"
-
-#: models/ordermodel.py:68
-msgid "Extra order price field"
-msgstr "Dodatno polje s cijenom za narudžbu"
-
-#: models/ordermodel.py:69
-msgid "Extra order price fields"
-msgstr "Dodatna polja s cijenama za narudžbu"
-
-#: models/ordermodel.py:77 models/defaults/orderitem.py:11
-#: models_bases/__init__.py:450
-msgid "Order item"
-msgstr "Stavka narudžbe"
-
-#: models/ordermodel.py:83
-msgid "Extra order item price field"
-msgstr "Dodatno polje s cijenom za stavku narudžbe"
-
-#: models/ordermodel.py:84
-msgid "Extra order item price fields"
-msgstr "Dodatna polja s cijenama za stavku narudžbe"
-
-#: models/ordermodel.py:96
-msgid "Transaction ID"
-msgstr "ID transakcije"
-
-#: models/ordermodel.py:97
-msgid "The transaction processor's reference"
-msgstr "Referenca transakcije"
-
-#: models/ordermodel.py:100
-msgid "The payment backend used to process the purchase"
+#: models/order.py:243
+#, fuzzy
+msgid "The shipping backend used to deliver the items for this order"
 msgstr "Backend za plaćanje koji se koristi za kupovinu"
 
-#: models/ordermodel.py:104
-msgid "Order payment"
-msgstr "Plaćanje narudžbe"
-
-#: models/ordermodel.py:105
-msgid "Order payments"
-msgstr "Plaćanja narudžbe"
-
-#: models/defaults/cart.py:10 models_bases/__init__.py:83
-msgid "Cart"
-msgstr "Košarica"
-
-#: models/defaults/cart.py:11 models_bases/__init__.py:84
-msgid "Carts"
-msgstr "Košarice"
-
-#: models/defaults/cartitem.py:10 models_bases/__init__.py:274
-msgid "Cart item"
-msgstr "Stavka košarice"
-
-#: models/defaults/cartitem.py:11 models_bases/__init__.py:275
-msgid "Cart items"
-msgstr "Stavke košarice"
-
-#: models/defaults/order.py:14 models_bases/__init__.py:354
-msgid "Orders"
-msgstr "Narudžbe"
-
-#: models/defaults/orderitem.py:12 models_bases/__init__.py:451
-msgid "Order items"
-msgstr "Stavke narudžbe"
-
-#: models/defaults/product.py:17 models_bases/__init__.py:38
-#: models_bases/__init__.py:441
-msgid "Product"
-msgstr "Artikal"
-
-#: models/defaults/product.py:18 models_bases/__init__.py:39
-msgid "Products"
-msgstr "Artikli"
-
-#: models_bases/__init__.py:27
-msgid "Slug"
-msgstr "Slug"
-
-#: models_bases/__init__.py:28
-msgid "Active"
-msgstr "Aktivno"
-
-#: models_bases/__init__.py:30
-msgid "Date added"
-msgstr "Datum dodano"
-
-#: models_bases/__init__.py:32
-msgid "Last modified"
-msgstr "Zadnja promjena"
-
-#: models_bases/__init__.py:33 models_bases/__init__.py:442
-#: templates/shop/cart.html:15 templates/shop/templatetags/_order.html:28
-msgid "Unit price"
-msgstr "Jedinična cijena"
-
-#: models_bases/__init__.py:325
-msgid "Processing"
-msgstr "Obrada"
-
-#: models_bases/__init__.py:326
+#: models/order.py:247
 #, fuzzy
-msgid "Confirming"
-msgstr "Potvrđeno"
+msgid "Shipping order"
+msgstr "Dostava"
 
-#: models_bases/__init__.py:327
-msgid "Confirmed"
-msgstr "Potvrđeno"
-
-#: models_bases/__init__.py:328
-msgid "Completed"
-msgstr "Završeno"
-
-#: models_bases/__init__.py:329
-msgid "Shipped"
-msgstr "Dostavljeno"
-
-#: models_bases/__init__.py:330
-msgid "Cancelled"
-msgstr "Otkazano"
-
-#: models_bases/__init__.py:335
-msgid "User"
-msgstr "Korisnik"
-
-#: models_bases/__init__.py:337
-msgid "Status"
-msgstr "Status"
-
-#: models_bases/__init__.py:338
-msgid "Order subtotal"
-msgstr "Međuzbroj"
-
-#: models_bases/__init__.py:339 templates/shop/templatetags/_order.html:62
-msgid "Order Total"
-msgstr "Ukupno"
-
-#: models_bases/__init__.py:340
-msgid "Shipping address"
+#: models/order.py:248
+#, fuzzy
+msgid "Shipping orders"
 msgstr "Adresa za dostavu"
 
-#: models_bases/__init__.py:342
-msgid "Billing address"
-msgstr "Adresa za izdavanje računa"
-
-#: models_bases/__init__.py:345
-msgid "Created"
-msgstr "Kreirano"
-
-#: models_bases/__init__.py:347
-msgid "Updated"
-msgstr "Promjenjeno"
-
-#: models_bases/__init__.py:348
-msgid "Cart primary key"
-msgstr ""
-
-#: models_bases/__init__.py:357
-#, python-format
-msgid "Order ID: %(id)s"
-msgstr "Narudžba broj: %(id)s"
-
-#: models_bases/__init__.py:437
-msgid "Product reference"
+#: models/order.py:259
+#, fuzzy
+msgid "Product identifier"
 msgstr "Referenca na artikal"
 
-#: models_bases/__init__.py:439 templates/shop/cart.html:14
-#: templates/shop/templatetags/_order.html:27
+#: models/order.py:260
+msgid "Product identifier at the moment of purchase."
+msgstr ""
+
+#: models/order.py:261
 msgid "Product name"
 msgstr "Naziv artikla"
 
-#: models_bases/__init__.py:443 templates/shop/cart.html:16
-#: templates/shop/templatetags/_order.html:29
-msgid "Quantity"
-msgstr "Količina"
-
-#: models_bases/__init__.py:444
-msgid "Line subtotal"
-msgstr "Stavka međuzbroj"
-
-#: models_bases/__init__.py:445
-msgid "Line total"
-msgstr "Stavka ukupno"
-
-#: payment/backends/pay_on_delivery.py:11
-msgid "Pay On Delivery"
+#: models/order.py:262
+msgid "Product name at the moment of purchase."
 msgstr ""
 
-#: shipping/backends/flat_rate.py:20
-msgid "Flat rate"
+#: models/order.py:265
+msgid "Unit price"
+msgstr "Jedinična cijena"
+
+#: models/order.py:266
+msgid "Products unit price at the moment of purchase."
 msgstr ""
 
-#: templates/shop/cart.html:5
-msgid "Your shopping cart"
-msgstr "Vaša košarica"
-
-#: templates/shop/cart.html:39 templates/shop/templatetags/_order.html:49
+#: models/order.py:267
 msgid "Line Total"
 msgstr "Ukupno"
 
-#: templates/shop/cart.html:45
-msgid "Cart Subtotal"
-msgstr "Međuzbroj"
+#: models/order.py:268
+msgid "Line total on the invoice at the moment of purchase."
+msgstr ""
 
-#: templates/shop/cart.html:53
-msgid "Cart Total"
-msgstr "Ukupno"
+#: models/order.py:269
+#, fuzzy
+msgid "Ordered quantity"
+msgstr "Plaćanje narudžbe"
 
-#: templates/shop/cart.html:57
-msgid "Update Shopping Cart"
-msgstr "Osvježi košaricu"
+#: models/order.py:270
+msgid "Arbitrary information for this order item"
+msgstr ""
 
-#: templates/shop/cart.html:62
-msgid "Empty Shopping Cart"
-msgstr "Isprazni košaricu"
+#: models/order.py:274
+msgid "Order item"
+msgstr "Stavka narudžbe"
 
-#: templates/shop/cart.html:66
-msgid "Proceed to checkout"
+#: models/order.py:275
+msgid "Order items"
+msgstr "Stavke narudžbe"
+
+#: models/product.py:98
+msgid "Is this product publicly visible."
+msgstr ""
+
+#: models/product.py:105
+msgid "Products"
+msgstr "Artikli"
+
+#: models/product.py:115
+#, fuzzy
+msgid "Product type"
+msgstr "Naziv artikla"
+
+#: models/defaults/address.py:12
+#, fuzzy
+msgid "Addressee"
+msgstr "Adrese"
+
+#: models/defaults/address.py:13
+msgid "Supplement"
+msgstr ""
+
+#: models/defaults/address.py:14
+msgid "Street"
+msgstr ""
+
+#: models/defaults/address.py:15
+msgid "ZIP"
+msgstr ""
+
+#: models/defaults/address.py:16
+msgid "Location"
+msgstr ""
+
+#: models/defaults/order.py:10
+msgid "Shipping address"
+msgstr "Adresa za dostavu"
+
+#: models/defaults/order.py:11
+msgid "Shipping address at the moment of purchase."
+msgstr ""
+
+#: models/defaults/order.py:12
+msgid "Billing address"
+msgstr "Adresa za izdavanje računa"
+
+#: models/defaults/order.py:13
+msgid "Billing address at the moment of purchase."
+msgstr ""
+
+#: models/defaults/order_item.py:11
+#, fuzzy
+msgid "Shipped with"
+msgstr "Dostavljeno"
+
+#: models/defaults/order_item.py:12
+msgid "Refer to the delivery provider used to ship this item"
+msgstr ""
+
+#: modifiers/defaults.py:39
+msgid "Pay in advance"
+msgstr ""
+
+#: modifiers/defaults.py:50
+msgid "Self collection"
+msgstr ""
+
+#: modifiers/taxes.py:24
+msgid "+ {}% V.A.T"
+msgstr ""
+
+#: modifiers/taxes.py:44
+msgid "{}% V.A.T incl."
+msgstr ""
+
+#: money/iso4217.py:12
+msgid "Brazilian Real"
+msgstr ""
+
+#: money/iso4217.py:13
+msgid "Swiss Franc"
+msgstr ""
+
+#: money/iso4217.py:14
+msgid "Chinese Yuan"
+msgstr ""
+
+#: money/iso4217.py:15
+msgid "Euro"
+msgstr ""
+
+#: money/iso4217.py:16
+msgid "Pound Sterling"
+msgstr ""
+
+#: money/iso4217.py:17
+msgid "Israeli Sheqel"
+msgstr ""
+
+#: money/iso4217.py:18
+msgid "Japanese Yen"
+msgstr ""
+
+#: money/iso4217.py:19
+msgid "Russian Ruble"
+msgstr ""
+
+#: money/iso4217.py:20
+msgid "Ukrainian Hryvnia"
+msgstr ""
+
+#: money/iso4217.py:21
+msgid "US Dollar"
+msgstr ""
+
+#: payment/defaults.py:30
+msgid "Awaiting a forward fund payment"
+msgstr ""
+
+#: payment/defaults.py:31
+#, fuzzy
+msgid "Prepayment deposited"
+msgstr "Način plaćanja"
+
+#: payment/defaults.py:49
+#, fuzzy
+msgid "Add Payment"
+msgstr "Plaćanje narudžbe"
+
+#: payment/defaults.py:55
+msgid "Mark as Paid"
+msgstr ""
+
+#: payment/defaults.py:68
+msgid "Picking goods"
+msgstr ""
+
+#: payment/defaults.py:69
+msgid "Packing goods"
+msgstr ""
+
+#: payment/defaults.py:73
+msgid "Pick the goods"
+msgstr ""
+
+#: payment/defaults.py:78
+msgid "Pack the goods"
+msgstr ""
+
+#: templates/shop/auth/change.html:4
+msgid "Change Password"
+msgstr ""
+
+#: templates/shop/auth/change.html:8 templates/shop/auth/change.html.py:11
+#: templates/shop/auth/password-reset-confirm.html:10
+msgid "New Password"
+msgstr ""
+
+#: templates/shop/auth/change.html:14 templates/shop/auth/change.html.py:17
+#: templates/shop/auth/password-reset-confirm.html:16
+#, fuzzy
+msgid "Confirm Password"
+msgstr "Potvrđeno"
+
+#: templates/shop/auth/change.html:21
+msgid "Submit Changes"
+msgstr ""
+
+#: templates/shop/auth/continue-as-guest.html:4
+#, fuzzy
+msgid "Proceed as guest"
 msgstr "Nastavak na blagajnu"
 
-#: templates/shop/cart.html:71
-msgid "Shopping cart is empty"
-msgstr "Košarica je prazna"
+#: templates/shop/auth/login-reset.html:4 templates/shop/auth/login.html:4
+msgid "Sign In"
+msgstr ""
 
-#: templates/shop/order_list.html:5
-msgid "Order list"
-msgstr "Narudžbe"
+#: templates/shop/auth/login-reset.html:11
+#: templates/shop/auth/login-reset.html:29 templates/shop/auth/login.html:11
+#: templates/shop/auth/reset.html:11
+msgid "Email"
+msgstr ""
 
-#: templates/shop/welcome.html:11
-msgid "Hello"
-msgstr "Pozdrav"
+#: templates/shop/auth/login-reset.html:14
+#: templates/shop/auth/login-reset.html:17 templates/shop/auth/login.html:14
+#: templates/shop/auth/login.html.py:17
+msgid "Password"
+msgstr ""
 
-#: templates/shop/welcome.html:12
-msgid "Your orders"
+#: templates/shop/auth/login-reset.html:21 templates/shop/auth/login.html:21
+msgid "Login"
+msgstr ""
+
+#: templates/shop/auth/login-reset.html:22 templates/shop/auth/reset.html:4
+msgid "Password Forgotten?"
+msgstr ""
+
+#: templates/shop/auth/login-reset.html:33 templates/shop/auth/reset.html:15
+msgid "Reset Password"
+msgstr ""
+
+#: templates/shop/auth/logout.html:4
+#, python-format
+msgid "Authenticated as: %(user)s"
+msgstr ""
+
+#: templates/shop/auth/logout.html:8
+msgid "Logout"
+msgstr ""
+
+#: templates/shop/auth/password-reset-confirm.html:4
+#, python-format
+msgid "New password for '%(user_name)s'"
+msgstr ""
+
+#: templates/shop/auth/password-reset-confirm.html:9
+msgid "Please enter your new password twice so we can verify you typed it in correctly."
+msgstr ""
+
+#: templates/shop/auth/password-reset-confirm.html:13
+msgid "New password"
+msgstr ""
+
+#: templates/shop/auth/password-reset-confirm.html:19
+#, fuzzy
+msgid "Confirm password"
+msgstr "Potvrđeno"
+
+#: templates/shop/auth/password-reset-confirm.html:23
+msgid "Change my password"
+msgstr ""
+
+#: templates/shop/auth/password-reset-decline.html:4
+msgid "Password reset unsuccessful"
+msgstr ""
+
+#: templates/shop/auth/password-reset-decline.html:7
+msgid "The password reset link was invalid, possibly because it has already been used.  Please request a new password reset."
+msgstr ""
+
+#: templates/shop/auth/register-user.html:4
+msgid "Register Yourself"
+msgstr ""
+
+#: templates/shop/auth/register-user.html:24
+msgid "Register"
+msgstr ""
+
+#: templates/shop/cart/editable.html:14 templates/shop/cart/static.html:9
+#: templates/shop/cart/watch.html:10
+#: templates/shop/order/email-list-items.html:11
+#: templates/shop/order/order-detail.html:14
+#: templates/shop/products/catalog-product-add2cart.html:11
+msgid "Quantity"
+msgstr "Količina"
+
+#: templates/shop/cart/editable.html:15 templates/shop/cart/static.html:10
+#: templates/shop/cart/watch.html:11 templates/shop/order/order-detail.html:15
+#: templates/shop/products/catalog-product-add2cart.html:11
+#: templates/shop/search/results.html:10
+#, fuzzy
+msgid "Unit Price"
+msgstr "Jedinična cijena"
+
+#: templates/shop/cart/editable.html:73 templates/shop/cart/watch.html:47
+msgid "Remove"
+msgstr ""
+
+#: templates/shop/cart/editable.html:76
+msgid "Watch Item"
+msgstr ""
+
+#: templates/shop/cart/summary.html:5
+#, fuzzy
+msgid "Number of items"
+msgstr "Stavke narudžbe"
+
+#: templates/shop/cart/watch.html:44
+#: templates/shop/products/catalog-product-add2cart.html:22
+msgid "Add to cart"
+msgstr ""
+
+#: templates/shop/email/register-user-body.txt:2
+#, python-format
+msgid ""
+"You are receiving this email because you asked for a auto-generated password for your\n"
+"user account at %(site_name)s."
+msgstr ""
+
+#: templates/shop/email/register-user-body.txt:5
+#, python-format
+msgid ""
+"In the future, please use username %(email)s with password %(password)s to sign\n"
+"into %(protocol)s://%(domain)s."
+msgstr ""
+
+#: templates/shop/email/register-user-body.txt:8
+#: templates/shop/email/reset-password-body.txt:8
+msgid "Thanks for using our site!"
+msgstr ""
+
+#: templates/shop/email/register-user-body.txt:10
+#: templates/shop/email/reset-password-body.txt:10
+#, python-format
+msgid "The %(site_name)s team"
+msgstr ""
+
+#: templates/shop/email/register-user-subject.txt:2
+#, python-format
+msgid "Password set on %(site_name)s"
+msgstr ""
+
+#: templates/shop/email/reset-password-body.txt:2
+#, python-format
+msgid ""
+"You're receiving this email because you requested a password reset for your user\n"
+"account '%(user)s' at %(site_name)s."
+msgstr ""
+
+#: templates/shop/email/reset-password-body.txt:5
+msgid "Please go to the following page and choose a new password:"
+msgstr ""
+
+#: templates/shop/email/reset-password-subject.txt:2
+#, python-format
+msgid "Password reset on %(site_name)s"
+msgstr ""
+
+#: templates/shop/order/email-list-items.html:6
+msgid "Summary of Your Order"
+msgstr ""
+
+#: templates/shop/order/email-list-items.html:12
+msgid "Price"
+msgstr ""
+
+#: templates/shop/order/order-detail.html:4
+#, fuzzy
+msgid "Your Order"
 msgstr "Vaše narudžbe"
 
-#: templates/shop/templatetags/_order.html:4
-msgid "Order ID:"
-msgstr "Broj narudžbe:"
+#: templates/shop/order/order-detail.html:4
+msgid "from"
+msgstr ""
 
-#: templates/shop/templatetags/_order.html:8
-msgid "Order Status"
-msgstr "Status narudžbe"
+#: templates/shop/order/order-list.html:11
+#, fuzzy
+msgid "Order Date"
+msgstr "Stavka narudžbe"
 
-#: templates/shop/templatetags/_order.html:14
+#: templates/shop/order/order-list.html:12
+msgid "Sum"
+msgstr ""
+
+#: templates/shop/order/order-list.html:13
 msgid "Shipping Address"
 msgstr "Adresa za dostavu"
 
-#: templates/shop/templatetags/_order.html:18
-msgid "Billing Address"
-msgstr "Adresa za izdavanje računa"
+#: templates/shop/printing/delivery-note.html:6
+msgid "Delivery note for"
+msgstr ""
 
-#: templates/shop/templatetags/_order.html:54
-msgid "Order Subtotal"
-msgstr "Međuzbroj narudžbe"
+#: templates/shop/products/catalog-product-add2cart.html:6
+#, fuzzy
+msgid "Order Product"
+msgstr "Artikal"
+
+#: templates/shop/products/catalog-product-add2cart.html:23
+#, fuzzy
+msgid "Watch product"
+msgstr "Artikal"
+
+#: templates/shop/products/catalog-product-add2cart.html:35
+msgid "The product has been successfully placed in the shopping cart:"
+msgstr ""
+
+#: templates/shop/products/catalog-product-add2cart.html:36
+msgid "Watching this product"
+msgstr ""
+
+#: templates/shop/products/catalog-product-add2cart.html:43
+msgid "for {{ context.unit_price }} per piece: {{ context.subtotal }}"
+msgstr ""
+
+#: templates/shop/products/catalog-product-add2cart.html:49
+#, fuzzy
+msgid "Show Cart"
+msgstr "Košarica"
+
+#: templates/shop/products/catalog-product-add2cart.html:50
+msgid "Continue Shopping"
+msgstr ""
+
+#: templates/shop/products/catalog-product-add2cart.html:51
+#, fuzzy
+msgid "Cancel"
+msgstr "Otkazano"
+
+#: templates/shop/products/search-product-body.html:5
+msgid "Art-No.:"
+msgstr ""
+
+#: templates/shop/search/results.html:9
+msgid "{{ search_data.count }} matching products found"
+msgstr ""
+
+#: templates/shop/search/results.html:21
+msgid "Details"
+msgstr ""
+
+#: templates/shop/templatetags/cart.html:4
+#, python-format
+msgid "%(quantity)s Item"
+msgid_plural "%(quantity)s Items"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: views/auth.py:58
+msgid "Successfully logged out."
+msgstr ""
+
+#: views/auth.py:78
+#, python-brace-format
+msgid "Instructions on how to reset the password have been sent to '{email}'."
+msgstr ""
+
+#: views/auth.py:125
+msgid "Password has been reset with the new password."
+msgstr ""
+
+#~ msgid "Country"
+#~ msgstr "Država"
+
+#~ msgid "Countries"
+#~ msgstr "Države"
+
+#~ msgid "Address2"
+#~ msgstr "Adresa 2"
+
+#~ msgid "Zip Code"
+#~ msgstr "Pošta"
+
+#~ msgid "City"
+#~ msgstr "Grad"
+
+#~ msgid "Billing"
+#~ msgstr "Naplata"
+
+#~ msgid "Order extra info"
+#~ msgstr "Dodatni komentari"
+
+#~ msgid "Label"
+#~ msgstr "Oznaka"
+
+#~ msgid "Is shipping"
+#~ msgstr "Za dostavu"
+
+#~ msgid "Extra order price field"
+#~ msgstr "Dodatno polje s cijenom za narudžbu"
+
+#~ msgid "Extra order item price field"
+#~ msgstr "Dodatno polje s cijenom za stavku narudžbe"
+
+#~ msgid "Extra order item price fields"
+#~ msgstr "Dodatna polja s cijenama za stavku narudžbe"
+
+#~ msgid "Carts"
+#~ msgstr "Košarice"
+
+#~ msgid "Slug"
+#~ msgstr "Slug"
+
+#, fuzzy
+#~ msgid "Confirming"
+#~ msgstr "Potvrđeno"
+
+#~ msgid "Completed"
+#~ msgstr "Završeno"
+
+#~ msgid "User"
+#~ msgstr "Korisnik"
+
+#~ msgid "Order subtotal"
+#~ msgstr "Međuzbroj"
+
+#~ msgid "Order Total"
+#~ msgstr "Ukupno"
+
+#~ msgid "Order ID: %(id)s"
+#~ msgstr "Narudžba broj: %(id)s"
+
+#~ msgid "Line subtotal"
+#~ msgstr "Stavka međuzbroj"
+
+#~ msgid "Line total"
+#~ msgstr "Stavka ukupno"
+
+#~ msgid "Your shopping cart"
+#~ msgstr "Vaša košarica"
+
+#~ msgid "Cart Total"
+#~ msgstr "Ukupno"
+
+#~ msgid "Update Shopping Cart"
+#~ msgstr "Osvježi košaricu"
+
+#~ msgid "Shopping cart is empty"
+#~ msgstr "Košarica je prazna"
+
+#~ msgid "Order list"
+#~ msgstr "Narudžbe"
+
+#~ msgid "Hello"
+#~ msgstr "Pozdrav"
+
+#~ msgid "Order ID:"
+#~ msgstr "Broj narudžbe:"
+
+#~ msgid "Order Status"
+#~ msgstr "Status narudžbe"
+
+#~ msgid "Order Subtotal"
+#~ msgstr "Međuzbroj narudžbe"
 
 #~ msgid "Selecting payment"
 #~ msgstr "Izbor plaćanja"
