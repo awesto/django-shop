@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import os
+import operator
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.utils.translation import get_language_from_request
@@ -22,6 +23,7 @@ class ProductListView(generics.ListAPIView):
     serializer_class = None  # must be overridden by ProductListView.as_view
     filter_class = None  # may be overridden by ProductListView.as_view
     limit_choices_to = Q()
+    cms_pages_fields = ('cms_pages',)
 
     def get_queryset(self):
         filter_kwargs = {}
@@ -33,7 +35,8 @@ class ProductListView(generics.ListAPIView):
         current_page = self.request.current_page
         if current_page.publisher_is_draft:
             current_page = current_page.publisher_public
-        qs = qs.filter(cms_pages=current_page)
+        filter_by_cms_page = [Q((field, current_page)) for field in self.cms_pages_fields]
+        qs = qs.filter(reduce(operator.or_, filter_by_cms_page)).distinct()
         return qs
 
     def get_template_names(self):
