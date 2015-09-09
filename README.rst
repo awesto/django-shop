@@ -4,6 +4,12 @@ django SHOP
 
 This repository hosts the django SHOP code and documentation.
 
+**Please note:** This project may seem unmaintained.
+Currently a much more powerful version of djangoSHOP
+is under heavy development. The reason this new version is
+not yet merged is, because documentation and test
+coverage is not as good as it should be.
+
 Django SHOP aims to be the easy, fun and fast shop counterpart to django CMS.
 Specifically, we aim at providing a clean, modular and pythonic/djangonic
 implementation of a shop framework,
@@ -47,9 +53,3 @@ Todo:
 * Refactoring tests to make creating test environments less messy (fixtures?)
 * If you feel like you could solve having multiple currencies in an elegant
   manner, we would really be interested to hear from you
-
-
-.. image:: https://d2weczhvl823v0.cloudfront.net/divio/django-shop/trend.png
-   :alt: Bitdeli badge
-   :target: https://bitdeli.com/free
-
