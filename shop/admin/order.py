@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from django.conf import settings
 from django.conf.urls import patterns, url
 from django.contrib import admin
 from django.core.urlresolvers import reverse
 from django.forms import widgets
+from django.http import HttpResponse
 from django.template import RequestContext
-from django.shortcuts import render_to_response
+from django.template.loader import select_template
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 from fsm_admin.mixins import FSMTransitionMixin
@@ -83,25 +85,29 @@ class PrintOrderAdminMixin(object):
         )
         return my_urls + super(PrintOrderAdminMixin, self).get_urls()
 
-    def render_delivery_note(self, request, pk=None):
+    def _render_letter(self, request, pk, template):
         order = self.get_object(request, pk)
         order_serializer = serializers.OrderDetailSerializer(order, context={'request': request})
-        context = {
+        context = RequestContext(request, {
             'customer': serializers.CustomerSerializer(order.user).data,
             'data': order_serializer.data,
-        }
-        return render_to_response('shop/printing/delivery-note.html', context,
-            context_instance=RequestContext(request))
+        })
+        content = template.render(context)
+        return HttpResponse(content)
+
+    def render_delivery_note(self, request, pk=None):
+        template = select_template([
+            '{}/printing/delivery-note.html'.format(settings.SHOP_APP_LABEL.lower()),
+            'shop/printing/delivery-note.html'
+        ])
+        return self._render_letter(request, pk, template)
 
     def render_invoice(self, request, pk=None):
-        order = self.get_object(request, pk)
-        order_serializer = serializers.OrderDetailSerializer(order, context={'request': request})
-        context = {
-            'customer': serializers.CustomerSerializer(order.user).data,
-            'data': order_serializer.data,
-        }
-        return render_to_response('shop/printing/delivery-note.html', context,
-            context_instance=RequestContext(request))
+        template = select_template([
+            '{}/printing/invoice.html'.format(settings.SHOP_APP_LABEL.lower()),
+            'shop/printing/invoice.html'
+        ])
+        return self._render_letter(request, pk, template)
 
     def print_out(self, obj):
         if obj.status == 'pick_goods':
