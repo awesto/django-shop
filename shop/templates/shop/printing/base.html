@@ -15,6 +15,7 @@
 		.page .footer hr { margin: 1mm 0 5mm; border-color: #1a1a1a; }
 		.page address { width: 80mm; height: 40mm; margin-bottom: 8.46mm; font-size: 15px; }
 		.page address small { text-decoration: underline; }
+		/* use aside only in combination with address */
 		.page aside { position: absolute; top: 50mm; right: 10mm; text-align: right; font-size: 11px; }
 		@media screen {
 			body { background-color: rgb(204,204,204); }
@@ -22,8 +23,9 @@
 		}
 		@media print {
 			body { background-color: white; color: black; }
-			.page { margin: 0; box-shadow: 0; } /* to remove header and footer when printing */
+			.page { margin: 0; box-shadow: 0; }
 		}
+		/* to remove header and footer when printing */
 		@page { margin: 0; size: auto; }
 	{% block styles %}
 		#page_template { width: 210mm; height: 296mm; display: none; }
@@ -31,7 +33,7 @@
 		#page_template .footer { height: 20mm; }
 	{% endblock styles %}
 	</style>
-	<script type="text/javascript" src="{% static 'shop/js/admin/jquery.js' %}"></script>
+	<script type="text/javascript" src="{% static 'admin/js/jquery.js' %}"></script>
 	<script type="text/javascript" src="{% static 'shop/js/admin/jquery.columnizer.js' %}"></script>
 	<script type="text/javascript">
 	$(function() {
@@ -49,7 +51,7 @@
 				$page.find('.header').css('height', header_height);
 				$address = $('#letter_content').find('address');
 				if ($address) {
-					// reposition the address at 45mm from the page's top
+					// reposition the address at 45mm from the top edge of the page
 					$address.css('margin-top', pixel2mm_ratio * 45 - header_height);
 				}
 				$page.find('.content').css('height', content_height);
