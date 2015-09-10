@@ -8,7 +8,7 @@
 {% block shop-order-caption %}<!-- table caption -->{% endblock %}
 
 {% block shop-order-thead %}
-	<thead>
+	<thead class="dontsplit">
 		<tr>
 			<th class="text-center">{% trans "Product" %}</th>
 			<th class="text-center">{% trans "Quantity" %}</th>
@@ -21,13 +21,13 @@
 {% block shop-order-tbody %}
 	<tbody>
 	{% for item in data.items %}
-		<tr>
+		<tr class="dontsplit">
 			<td rowspan="2" class="text-center">{{ item.summary.media|safe }}</td>
 			<td class="text-center">{{ item.quantity }}</td>
 			<td class="text-center">{{ item.unit_price }}</td>
 			<td class="text-right">{{ item.line_total }}</td>
 		</tr>
-		<tr class="no-border">
+		<tr class="no-border dontsplit">
 			<td colspan="3">
 				{{ item.summary.body|safe }}
 				{% for key, extra_row in item.extra.rows %}
@@ -40,7 +40,7 @@
 {% endblock shop-order-tbody %}
 
 {% block shop-order-tfoot %}
-	<tfoot>
+	<tfoot class="dontsplit">
 		<tr>
 			<td colspan="2"></td>
 			<td><h5>{% trans "Subtotal" %}</h5></td>
