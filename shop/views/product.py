@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 import os
 import operator
+from functools import reduce
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.utils.translation import get_language_from_request
@@ -26,6 +27,7 @@ class ProductListView(generics.ListAPIView):
     cms_pages_fields = ('cms_pages',)
 
     def get_queryset(self):
+        # restrict queryset by language
         filter_kwargs = {}
         if hasattr(self.product_model, 'translations'):
             filter_kwargs.update(translations__language_code=get_language_from_request(self.request))
