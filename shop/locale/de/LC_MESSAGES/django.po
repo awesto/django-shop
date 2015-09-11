@@ -526,7 +526,6 @@ msgstr ""
 #: templates/shop/order/email-list-items.html:40
 #: templates/shop/order/order-detail.html:46
 #: templates/shop/products/catalog-product-add2cart.html:11
-#, fuzzy
 msgid "Subtotal"
 msgstr "Zwischensumme"
 
@@ -536,14 +535,12 @@ msgstr "Zwischensumme"
 #: templates/shop/order/email-list-items.html:50
 #: templates/shop/order/order-detail.html:16
 #: templates/shop/order/order-detail.html:60
-#, fuzzy
 msgid "Total"
 msgstr "Gesamtsumme"
 
 #: models/order.py:124
-#, fuzzy
 msgid "Extra fields"
-msgstr "Extra Preis-Felder der Bestellung"
+msgstr "Extra Felder"
 
 #: models/order.py:125
 msgid "Arbitrary information for this order object on the moment of purchase."
