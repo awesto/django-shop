@@ -40,9 +40,8 @@ class Order(InclusionTag):
         )
 
     def get_context(self, context, order):
-        return {
-            'order': order
-        }
+        context.update({'order': order, })
+        return context
 register.tag(Order)
 
 
