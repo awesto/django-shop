@@ -11,10 +11,10 @@ def handle_customer_login(sender, **kwargs):
     user = kwargs['user']
     current_cart = Cart.objects.get_from_request(request)
     if hasattr(user, 'customer'):
+        current_cart.customer = user.customer
         request.customer.delete()
         request.customer = user.customer
     else:
         request.customer.user = user
-        request.customer.save()
-    current_cart.customer = request.customer
+    request.customer.save()
     current_cart.save()
