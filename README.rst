@@ -5,10 +5,12 @@ django SHOP
 This repository hosts the django SHOP code and documentation.
 
 **Please note:** This project may seem unmaintained.
-Currently a much more powerful version of djangoSHOP
+Currently a much more powerful version of djangoSHOP_
 is under heavy development. The reason this new version is
 not yet merged is, because documentation and test
 coverage is not as good as it should be.
+
+.. _djangoSHOP: https://github.com/jrief/django-shop
 
 Django SHOP aims to be the easy, fun and fast shop counterpart to django CMS.
 Specifically, we aim at providing a clean, modular and pythonic/djangonic
