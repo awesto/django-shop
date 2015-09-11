@@ -14,25 +14,34 @@ SESSION_KEY = 'shop_anonymous_customer'
 
 
 class BaseCustomerManager(models.Manager):
-    def get_customer(self, request):
+    def get_customer(self, request, force_unauth=False):
         """
         If authenticated, return User-related Customer or create a new one.
         If anonymous, return Customer referenced in session or create a new one.
         
         Relating Customers on login is done via signals.
         """
-        if request.user.is_authenticated():
+        print "MANAGER get_customer"
+        print "user: {}".format(request.user)
+        if request.user.is_authenticated() and not force_unauth:
             try:
                 return request.user.customer
             except CustomerModel.DoesNotExist:
-                 customer = CustomerModel.objects.create(user=request.user)
-                 customer.save()
-                 return customer
+                # if User has no Customer yet, use anonymous one or create one
+                try:
+                    customer = CustomerModel.objects.get(pk=request.session[SESSION_KEY])
+                    assert customer.is_anonymous()
+                    customer.user = request.user
+                except KeyError:
+                    customer = CustomerModel.objects.create(user=request.user)
+                customer.save()
+                return customer
         try:
             return CustomerModel.objects.get(pk=request.session[SESSION_KEY])
         except KeyError:
             customer = CustomerModel.objects.create()
             customer.save()
+            print "session doesn't contain '{}', creating new customer #{}".format(SESSION_KEY, customer.pk)
             request.session[SESSION_KEY] = customer.pk
             return customer
         

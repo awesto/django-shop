@@ -112,8 +112,7 @@ CartItemModel = deferred.MaterializedModel(BaseCartItem)
 class CartManager(models.Manager):
     def get_from_request(self, request):
         """
-        Return the cart for current user. Anonymous users also must have a primary key,
-        thats why djangoSHOP requires its own authentication middleware.
+        Return the cart for current customer.
         """
         cart = self.get_or_create(customer=request.customer)[0]
         return cart
@@ -122,10 +121,10 @@ class CartManager(models.Manager):
 class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     The fundamental parts of a shopping cart. It refers to a rather simple list of items.
-    Ideally it should be bound to a session and not to a User is we want to let
+    Ideally it should be bound to a session and not to a User as we want to let
     people buy from our shop without having to register with us.
     """
-    customer = deferred.OneToOneField('BaseCustomer', verbose_name=_("Customer") ,related_name='carts')
+    customer = deferred.OneToOneField('BaseCustomer', verbose_name=_("Customer") ,related_name='cart')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
     extra = JSONField(default={}, verbose_name=_("Arbitrary information for this cart"))
@@ -205,7 +204,10 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         if self.pk:
             self.items.all().delete()
             self.delete()
-
+    
+    def __str__(self):
+        return "{}".format(self.pk) or '(unsaved)'
+    
     @property
     def total_quantity(self):
         """
