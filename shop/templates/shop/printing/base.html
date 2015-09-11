@@ -13,7 +13,7 @@
 		.page .content { padding: 0 20mm 0 25mm; }
 		.page .footer { text-align: center; position: absolute; bottom: 0; left: 0; right: 0; }
 		.page .footer hr { margin: 1mm 0 5mm; border-color: #1a1a1a; }
-		.page address { width: 80mm; height: 40mm; margin-bottom: 8.46mm; font-size: 15px; }
+		.page address { width: 80mm; height: 40mm; margin-bottom: 10mm; font-size: 15px; word-wrap: break-word; word-break: break-all; white-space: pre; }
 		.page address small { text-decoration: underline; }
 		/* use aside only in combination with address */
 		.page aside { position: absolute; top: 50mm; right: 10mm; text-align: right; font-size: 11px; }
@@ -24,6 +24,7 @@
 		@media print {
 			body { background-color: white; color: black; }
 			.page { margin: 0; box-shadow: 0; }
+			a[href]:after { content: none !important; }
 		}
 		/* to remove header and footer when printing */
 		@page { margin: 0; size: auto; }
@@ -66,10 +67,11 @@
 						doneFunc: render_content
 					}
 				});
+			} else {
+				window.print();
 			}
 		}
-		render_content(true);
-		//setTimeout(window.print, 3000);
+		render_content();
 	});
 	</script>
 </head>

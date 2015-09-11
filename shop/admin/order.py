@@ -91,6 +91,7 @@ class PrintOrderAdminMixin(object):
         context = RequestContext(request, {
             'customer': serializers.CustomerSerializer(order.user).data,
             'data': order_serializer.data,
+            'order': order,
         })
         content = template.render(context)
         return HttpResponse(content)
