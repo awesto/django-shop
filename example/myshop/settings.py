@@ -48,11 +48,13 @@ INSTALLED_APPS = (
     'django.contrib.sitemaps',
     'djangocms_text_ckeditor',
     'django_select2',
+    'post_office',
     'cmsplugin_cascade',
     'cmsplugin_cascade.sharable',
     'cmsplugin_cascade.extra_fields',
     'cms_bootstrap3',
-    'adminsortable',
+    'treebeard',
+    'adminsortable2',
     'rest_framework',
     'djangular',
     'cms',
@@ -364,6 +366,9 @@ THUMBNAIL_OPTIMIZE_COMMAND = {
     'gif': '/opt/local/bin/optipng {filename}',
     'jpeg': '/opt/local/bin/jpegoptim {filename}',
 }
+
+
+AUTH_USER_MODEL = 'myshop.Customer'
 
 
 ##############################
