@@ -17,6 +17,7 @@ share/
 *.sqlite
 database.db
 *.swp
+.DS_store
 *coverage.xml
 .idea
 .ropeproject
