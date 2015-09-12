@@ -10,7 +10,7 @@ from shop.models.customer import CustomerModel as Customer
 def handle_customer_login(sender, **kwargs):
     """
     If logged-in User already has a Customer, swap that one in and copy all
-    cart items (don't copy whole cart, as logged-in user's cart might already
+    cart items (don't replace whole cart, as logged-in user's cart might already
     contain items).
     Delete old customer (including cart).
     
@@ -33,9 +33,9 @@ def handle_customer_login(sender, **kwargs):
                     quantity=item.quantity,
                     extra=item.extra
                 )
-            old_customer.delete()
         except Cart.DoesNotExist:
             pass
+        old_customer.delete()
     #else:
     # anonymous Customer is assigned to existing User by CustomerManger, nothing to do here
 

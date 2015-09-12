@@ -9,6 +9,7 @@ from django.utils.six import with_metaclass
 from jsonfield.fields import JSONField
 
 from . import deferred
+from .cart import CartModel as Cart
 
 SESSION_KEY = 'shop_anonymous_customer'
 
@@ -21,8 +22,6 @@ class BaseCustomerManager(models.Manager):
         
         Relating Customers on login is done via signals.
         """
-        print "MANAGER get_customer"
-        print "user: {}".format(request.user)
         if request.user.is_authenticated() and not force_unauth:
             try:
                 return request.user.customer
@@ -41,7 +40,6 @@ class BaseCustomerManager(models.Manager):
         except KeyError:
             customer = CustomerModel.objects.create()
             customer.save()
-            print "session doesn't contain '{}', creating new customer #{}".format(SESSION_KEY, customer.pk)
             request.session[SESSION_KEY] = customer.pk
             return customer
         
@@ -113,6 +111,9 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         except AttributeError:
             pass
         super(BaseCustomer, self).save(*args, **kwargs)
+        if not hasattr(self, 'cart'):
+            cart = Cart.objects.create(customer=self)
+            cart.save()
 
 #class Customer(BaseCustomer):
 #    pass
