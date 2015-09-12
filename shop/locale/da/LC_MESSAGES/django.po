@@ -795,134 +795,131 @@ msgstr ""
 
 #: payment/defaults.py:30
 msgid "Awaiting a forward fund payment"
-msgstr ""
+msgstr "Erwarte einen Zahlungseingang"
 
 #: payment/defaults.py:31
-#, fuzzy
 msgid "Prepayment deposited"
-msgstr "Betalingsmetode"
+msgstr "Vorauszahlung eingegangen"
 
 #: payment/defaults.py:49
-#, fuzzy
 msgid "Add Payment"
-msgstr "Betaling"
+msgstr "Zahlung hinzufügen"
 
 #: payment/defaults.py:55
 msgid "Mark as Paid"
-msgstr ""
+msgstr "Als bezahlt markieren"
 
 #: payment/defaults.py:68
 msgid "Picking goods"
-msgstr ""
+msgstr "Ware kommisionieren"
 
 #: payment/defaults.py:69
 msgid "Packing goods"
-msgstr ""
+msgstr "Ware verpacken"
 
 #: payment/defaults.py:73
 msgid "Pick the goods"
-msgstr ""
+msgstr "Bestellte Waren kommisionieren"
 
 #: payment/defaults.py:78
 msgid "Pack the goods"
-msgstr ""
+msgstr "Bestellte Ware verpacken"
 
 #: templates/shop/auth/change.html:4
 msgid "Change Password"
-msgstr ""
+msgstr "Passwort ändern"
 
 #: templates/shop/auth/change.html:8 templates/shop/auth/change.html.py:11
 #: templates/shop/auth/password-reset-confirm.html:10
 msgid "New Password"
-msgstr ""
+msgstr "Neues Passwort"
 
 #: templates/shop/auth/change.html:14 templates/shop/auth/change.html.py:17
 #: templates/shop/auth/password-reset-confirm.html:16
 msgid "Confirm Password"
-msgstr ""
+msgstr "Passwort bestätigen"
 
 #: templates/shop/auth/change.html:21
 msgid "Submit Changes"
-msgstr ""
+msgstr "Änderungen Absenden"
 
 #: templates/shop/auth/continue-as-guest.html:4
-#, fuzzy
 msgid "Proceed as guest"
-msgstr "Fortsæt til checkout"
+msgstr "Als Gast fortfahren"
 
 #: templates/shop/auth/login-reset.html:4 templates/shop/auth/login.html:4
 msgid "Sign In"
-msgstr ""
+msgstr "Anmelden"
 
 #: templates/shop/auth/login-reset.html:11
 #: templates/shop/auth/login-reset.html:29 templates/shop/auth/login.html:11
 #: templates/shop/auth/reset.html:11
 msgid "Email"
-msgstr ""
+msgstr "E-Mail"
 
 #: templates/shop/auth/login-reset.html:14
 #: templates/shop/auth/login-reset.html:17 templates/shop/auth/login.html:14
 #: templates/shop/auth/login.html.py:17
 msgid "Password"
-msgstr ""
+msgstr "Passwort"
 
 #: templates/shop/auth/login-reset.html:21 templates/shop/auth/login.html:21
 msgid "Login"
-msgstr ""
+msgstr "Anmelden"
 
 #: templates/shop/auth/login-reset.html:22 templates/shop/auth/reset.html:4
 msgid "Password Forgotten?"
-msgstr ""
+msgstr "Passwort vergessen?"
 
 #: templates/shop/auth/login-reset.html:33 templates/shop/auth/reset.html:15
 msgid "Reset Password"
-msgstr ""
+msgstr "Passwort zurücksetzen"
 
 #: templates/shop/auth/logout.html:4
 #, python-format
 msgid "Authenticated as: %(user)s"
-msgstr ""
+msgstr "Als %(user)s authentifiziert"
 
 #: templates/shop/auth/logout.html:8
 msgid "Logout"
-msgstr ""
+msgstr "Abmelden"
 
 #: templates/shop/auth/password-reset-confirm.html:4
 #, python-format
 msgid "New password for '%(user_name)s'"
-msgstr ""
+msgstr "Neues Passwort für '%(user_name)s'"
 
 #: templates/shop/auth/password-reset-confirm.html:9
 msgid "Please enter your new password twice so we can verify you typed it in correctly."
-msgstr ""
+msgstr "Bitte geben Sie das Passwort ein zweites Mal ein, so dass wir es überprüfen können."
 
 #: templates/shop/auth/password-reset-confirm.html:13
 msgid "New password"
-msgstr ""
+msgstr "Neues Passwort"
 
 #: templates/shop/auth/password-reset-confirm.html:19
 msgid "Confirm password"
-msgstr ""
+msgstr "Passwort bestätigen"
 
 #: templates/shop/auth/password-reset-confirm.html:23
 msgid "Change my password"
-msgstr ""
+msgstr "Ändere mein Passwort"
 
 #: templates/shop/auth/password-reset-decline.html:4
 msgid "Password reset unsuccessful"
-msgstr ""
+msgstr "Passwort konnte nicht zurückgesetzt werden"
 
 #: templates/shop/auth/password-reset-decline.html:7
 msgid "The password reset link was invalid, possibly because it has already been used.  Please request a new password reset."
-msgstr ""
+msgstr "Dieser Link zum Zurücksetzen des Passwortes is ungültig, vermutlich weil er bereits verwendet wurde. Bitte beantragen Sie erneut ein Rücksetzen des Passwortes."
 
 #: templates/shop/auth/register-user.html:4
 msgid "Register Yourself"
-msgstr ""
+msgstr "Registrieren Sie sich"
 
 #: templates/shop/auth/register-user.html:24
 msgid "Register"
-msgstr ""
+msgstr "Registrieren"
 
 #: templates/shop/cart/editable.html:14 templates/shop/cart/static.html:9
 #: templates/shop/cart/watch.html:10
@@ -930,40 +927,39 @@ msgstr ""
 #: templates/shop/order/order-detail.html:14
 #: templates/shop/products/catalog-product-add2cart.html:11
 msgid "Quantity"
-msgstr "Anta"
+msgstr "Menge"
 
 #: templates/shop/cart/editable.html:15 templates/shop/cart/static.html:10
 #: templates/shop/cart/watch.html:11 templates/shop/order/order-detail.html:15
 #: templates/shop/products/catalog-product-add2cart.html:11
 #: templates/shop/search/results.html:10
-#, fuzzy
 msgid "Unit Price"
-msgstr "Enhedspris"
+msgstr "Stückpreis"
 
 #: templates/shop/cart/editable.html:73 templates/shop/cart/watch.html:47
 msgid "Remove"
-msgstr ""
+msgstr "Entfernen"
 
 #: templates/shop/cart/editable.html:76
 msgid "Watch Item"
-msgstr ""
+msgstr "Artikel Beobachten"
 
 #: templates/shop/cart/summary.html:5
-#, fuzzy
 msgid "Number of items"
-msgstr "Varer"
+msgstr "Anzahl der Artikel"
 
 #: templates/shop/cart/watch.html:44
 #: templates/shop/products/catalog-product-add2cart.html:22
 msgid "Add to cart"
-msgstr ""
+msgstr "Zum Warenkorb hinzufügen"
 
 #: templates/shop/email/register-user-body.txt:2
 #, python-format
 msgid ""
 "You are receiving this email because you asked for a auto-generated password for your\n"
 "user account at %(site_name)s."
-msgstr ""
+msgstr "Sie erhalten dieses E-Mail, weil Sie um ein auto-generiertes Passwort für Ihr\n"
+"Benutzerkonto auf %(site_name)s angefragt haben."
 
 #: templates/shop/email/register-user-body.txt:5
 #, python-format
