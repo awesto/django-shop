@@ -1,9 +1,9 @@
 {% load i18n %}
 
 <table class="table">
-{% block shop-order-caption %}<!-- table caption -->{% endblock %}
+{% block print-order-caption %}<!-- table caption -->{% endblock %}
 
-{% block shop-order-thead %}
+{% block print-order-thead %}
 	<thead class="dontsplit">
 		<tr>
 			<th class="text-center">{% trans "Product" %}</th>
@@ -12,9 +12,9 @@
 			<th class="text-right">{% trans "Total" %}</th>
 		</tr>
 	</thead>
-{% endblock shop-order-thead %}
+{% endblock print-order-thead %}
 
-{% block shop-order-tbody %}
+{% block print-order-tbody %}
 	<tbody>
 	{% for item in data.items %}
 		<div class="dontsplit"> {# just to give a hint to the columnizer #}
@@ -35,9 +35,9 @@
 		</div>
 	{% endfor %}
 	</tbody>
-{% endblock shop-order-tbody %}
+{% endblock print-order-tbody %}
 
-{% block shop-order-tfoot %}
+{% block print-order-tfoot %}
 	<tfoot class="dontsplit">
 		<tr>
 			<td colspan="2"></td>
@@ -61,6 +61,6 @@
 			</td>
 		</tr>
 	</tfoot>
-{% endblock shop-order-tfoot %}
+{% endblock print-order-tfoot %}
 
 </table>

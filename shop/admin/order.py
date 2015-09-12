@@ -98,15 +98,15 @@ class PrintOrderAdminMixin(object):
 
     def render_delivery_note(self, request, pk=None):
         template = select_template([
-            '{}/printing/delivery-note.html'.format(settings.SHOP_APP_LABEL.lower()),
-            'shop/printing/delivery-note.html'
+            '{}/print/delivery-note.html'.format(settings.SHOP_APP_LABEL.lower()),
+            'shop/print/delivery-note.html'
         ])
         return self._render_letter(request, pk, template)
 
     def render_invoice(self, request, pk=None):
         template = select_template([
-            '{}/printing/invoice.html'.format(settings.SHOP_APP_LABEL.lower()),
-            'shop/printing/invoice.html'
+            '{}/print/invoice.html'.format(settings.SHOP_APP_LABEL.lower()),
+            'shop/print/invoice.html'
         ])
         return self._render_letter(request, pk, template)
 
