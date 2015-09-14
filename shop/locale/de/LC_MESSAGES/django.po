@@ -510,7 +510,7 @@ msgstr ""
 
 #: models/order.py:108
 msgid "Order freshly created"
-msgstr ""
+msgstr "Bestellung soeben erzeugt"
 
 #: models/order.py:117 models/order.py:220 models/order.py:239
 #: templates/shop/order/order-list.html:14
@@ -519,7 +519,7 @@ msgstr "Status"
 
 #: models/order.py:119
 msgid "Currency in which this order was concluded"
-msgstr ""
+msgstr "Währung in der diese Bestellung abgeschlossen wurde"
 
 #: models/order.py:120 templates/shop/cart/editable.html:34
 #: templates/shop/cart/static.html:41 templates/shop/cart/summary.html:6
@@ -560,10 +560,9 @@ msgid "Orders"
 msgstr "Bestellungen"
 
 #: models/order.py:210
-#, fuzzy
 msgctxt "status_name"
 msgid "State"
-msgstr "Bundesland"
+msgstr "Status"
 
 #: models/order.py:221
 #, fuzzy
@@ -794,61 +793,57 @@ msgstr ""
 
 #: payment/defaults.py:30
 msgid "Awaiting a forward fund payment"
-msgstr ""
+msgstr "Erwarte einen Zahlungseingang"
 
 #: payment/defaults.py:31
-#, fuzzy
 msgid "Prepayment deposited"
-msgstr "Zahlungsmethode"
+msgstr "Vorauszahlung eingegangen"
 
 #: payment/defaults.py:49
-#, fuzzy
 msgid "Add Payment"
-msgstr "Zahlung"
+msgstr "Zahlung hinzufügen"
 
 #: payment/defaults.py:55
 msgid "Mark as Paid"
-msgstr ""
+msgstr "Als bezahlt markieren"
 
 #: payment/defaults.py:68
 msgid "Picking goods"
-msgstr ""
+msgstr "Ware kommisionieren"
 
 #: payment/defaults.py:69
 msgid "Packing goods"
-msgstr ""
+msgstr "Ware verpacken"
 
 #: payment/defaults.py:73
 msgid "Pick the goods"
-msgstr ""
+msgstr "Bestellte Waren kommisionieren"
 
 #: payment/defaults.py:78
 msgid "Pack the goods"
-msgstr ""
+msgstr "Bestellte Ware verpacken"
 
 #: templates/shop/auth/change.html:4
 msgid "Change Password"
-msgstr ""
+msgstr "Passwort ändern"
 
 #: templates/shop/auth/change.html:8 templates/shop/auth/change.html.py:11
 #: templates/shop/auth/password-reset-confirm.html:10
 msgid "New Password"
-msgstr ""
+msgstr "Neues Passwort"
 
 #: templates/shop/auth/change.html:14 templates/shop/auth/change.html.py:17
 #: templates/shop/auth/password-reset-confirm.html:16
-#, fuzzy
 msgid "Confirm Password"
-msgstr "Bestätigt"
+msgstr "Passwort bestätigen"
 
 #: templates/shop/auth/change.html:21
 msgid "Submit Changes"
-msgstr ""
+msgstr "Änderungen Absenden"
 
 #: templates/shop/auth/continue-as-guest.html:4
-#, fuzzy
 msgid "Proceed as guest"
-msgstr "Weiter zur Kasse"
+msgstr "Als Gast fortfahren"
 
 #: templates/shop/auth/login-reset.html:4 templates/shop/auth/login.html:4
 msgid "Sign In"
@@ -858,50 +853,49 @@ msgstr ""
 #: templates/shop/auth/login-reset.html:29 templates/shop/auth/login.html:11
 #: templates/shop/auth/reset.html:11
 msgid "Email"
-msgstr ""
+msgstr "E-Mail"
 
 #: templates/shop/auth/login-reset.html:14
 #: templates/shop/auth/login-reset.html:17 templates/shop/auth/login.html:14
 #: templates/shop/auth/login.html.py:17
 msgid "Password"
-msgstr ""
+msgstr "Passwort"
 
 #: templates/shop/auth/login-reset.html:21 templates/shop/auth/login.html:21
 msgid "Login"
-msgstr ""
+msgstr "Anmelden"
 
 #: templates/shop/auth/login-reset.html:22 templates/shop/auth/reset.html:4
 msgid "Password Forgotten?"
-msgstr ""
+msgstr "Passwort Vergessen?"
 
 #: templates/shop/auth/login-reset.html:33 templates/shop/auth/reset.html:15
 msgid "Reset Password"
-msgstr ""
+msgstr "Passwort zurücksetzen"
 
 #: templates/shop/auth/logout.html:4
 #, python-format
 msgid "Authenticated as: %(user)s"
-msgstr ""
+msgstr "Als %(user)s authentifiziert"
 
 #: templates/shop/auth/logout.html:8
 msgid "Logout"
-msgstr ""
+msgstr "Abmelden"
 
 #: templates/shop/auth/password-reset-confirm.html:4
 #, python-format
 msgid "New password for '%(user_name)s'"
-msgstr ""
+msgstr "Neues Passwort für '%(user_name)s'"
 
 #: templates/shop/auth/password-reset-confirm.html:9
 msgid "Please enter your new password twice so we can verify you typed it in correctly."
-msgstr ""
+msgstr "Bitte geben Sie das Passwort ein zweites Mal ein, so dass wir es überprüfen können."
 
 #: templates/shop/auth/password-reset-confirm.html:13
 msgid "New password"
-msgstr ""
+msgstr "Neues Passwort"
 
 #: templates/shop/auth/password-reset-confirm.html:19
-#, fuzzy
 msgid "Confirm password"
 msgstr "Bestätigt"
 
@@ -937,7 +931,6 @@ msgstr "Menge"
 #: templates/shop/cart/watch.html:11 templates/shop/order/order-detail.html:15
 #: templates/shop/products/catalog-product-add2cart.html:11
 #: templates/shop/search/results.html:10
-#, fuzzy
 msgid "Unit Price"
 msgstr "Stückpreis"
 
@@ -950,14 +943,13 @@ msgid "Watch Item"
 msgstr ""
 
 #: templates/shop/cart/summary.html:5
-#, fuzzy
 msgid "Number of items"
-msgstr "Bestellwaren"
+msgstr "Anzahl der Artikel"
 
 #: templates/shop/cart/watch.html:44
 #: templates/shop/products/catalog-product-add2cart.html:22
 msgid "Add to cart"
-msgstr ""
+msgstr "In den Warenkorb"
 
 #: templates/shop/email/register-user-body.txt:2
 #, python-format
@@ -976,18 +968,18 @@ msgstr ""
 #: templates/shop/email/register-user-body.txt:8
 #: templates/shop/email/reset-password-body.txt:8
 msgid "Thanks for using our site!"
-msgstr ""
+msgstr "Danke, dass Sie unseren Dienst nutzen"
 
 #: templates/shop/email/register-user-body.txt:10
 #: templates/shop/email/reset-password-body.txt:10
 #, python-format
 msgid "The %(site_name)s team"
-msgstr ""
+msgstr "Das Team von %(site_name)s"
 
 #: templates/shop/email/register-user-subject.txt:2
 #, python-format
 msgid "Password set on %(site_name)s"
-msgstr ""
+msgstr "Passwort für %(site_name)s wurde gesetzt"
 
 #: templates/shop/email/reset-password-body.txt:2
 #, python-format

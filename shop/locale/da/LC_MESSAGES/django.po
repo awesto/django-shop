@@ -795,61 +795,61 @@ msgstr ""
 
 #: payment/defaults.py:30
 msgid "Awaiting a forward fund payment"
-msgstr "Erwarte einen Zahlungseingang"
+msgstr ""
 
 #: payment/defaults.py:31
 msgid "Prepayment deposited"
-msgstr "Vorauszahlung eingegangen"
+msgstr ""
 
 #: payment/defaults.py:49
 msgid "Add Payment"
-msgstr "Zahlung hinzufügen"
+msgstr ""
 
 #: payment/defaults.py:55
 msgid "Mark as Paid"
-msgstr "Als bezahlt markieren"
+msgstr ""
 
 #: payment/defaults.py:68
 msgid "Picking goods"
-msgstr "Ware kommisionieren"
+msgstr ""
 
 #: payment/defaults.py:69
 msgid "Packing goods"
-msgstr "Ware verpacken"
+msgstr ""
 
 #: payment/defaults.py:73
 msgid "Pick the goods"
-msgstr "Bestellte Waren kommisionieren"
+msgstr ""
 
 #: payment/defaults.py:78
 msgid "Pack the goods"
-msgstr "Bestellte Ware verpacken"
+msgstr ""
 
 #: templates/shop/auth/change.html:4
 msgid "Change Password"
-msgstr "Passwort ändern"
+msgstr ""
 
 #: templates/shop/auth/change.html:8 templates/shop/auth/change.html.py:11
 #: templates/shop/auth/password-reset-confirm.html:10
 msgid "New Password"
-msgstr "Neues Passwort"
+msgstr ""
 
 #: templates/shop/auth/change.html:14 templates/shop/auth/change.html.py:17
 #: templates/shop/auth/password-reset-confirm.html:16
 msgid "Confirm Password"
-msgstr "Passwort bestätigen"
+msgstr ""
 
 #: templates/shop/auth/change.html:21
 msgid "Submit Changes"
-msgstr "Änderungen Absenden"
+msgstr ""
 
 #: templates/shop/auth/continue-as-guest.html:4
 msgid "Proceed as guest"
-msgstr "Als Gast fortfahren"
+msgstr ""
 
 #: templates/shop/auth/login-reset.html:4 templates/shop/auth/login.html:4
 msgid "Sign In"
-msgstr "Anmelden"
+msgstr ""
 
 #: templates/shop/auth/login-reset.html:11
 #: templates/shop/auth/login-reset.html:29 templates/shop/auth/login.html:11
@@ -865,37 +865,37 @@ msgstr "Passwort"
 
 #: templates/shop/auth/login-reset.html:21 templates/shop/auth/login.html:21
 msgid "Login"
-msgstr "Anmelden"
+msgstr ""
 
 #: templates/shop/auth/login-reset.html:22 templates/shop/auth/reset.html:4
 msgid "Password Forgotten?"
-msgstr "Passwort vergessen?"
+msgstr ""
 
 #: templates/shop/auth/login-reset.html:33 templates/shop/auth/reset.html:15
 msgid "Reset Password"
-msgstr "Passwort zurücksetzen"
+msgstr ""
 
 #: templates/shop/auth/logout.html:4
 #, python-format
 msgid "Authenticated as: %(user)s"
-msgstr "Als %(user)s authentifiziert"
+msgstr ""
 
 #: templates/shop/auth/logout.html:8
 msgid "Logout"
-msgstr "Abmelden"
+msgstr ""
 
 #: templates/shop/auth/password-reset-confirm.html:4
 #, python-format
 msgid "New password for '%(user_name)s'"
-msgstr "Neues Passwort für '%(user_name)s'"
+msgstr ""
 
 #: templates/shop/auth/password-reset-confirm.html:9
 msgid "Please enter your new password twice so we can verify you typed it in correctly."
-msgstr "Bitte geben Sie das Passwort ein zweites Mal ein, so dass wir es überprüfen können."
+msgstr ""
 
 #: templates/shop/auth/password-reset-confirm.html:13
 msgid "New password"
-msgstr "Neues Passwort"
+msgstr ""
 
 #: templates/shop/auth/password-reset-confirm.html:19
 msgid "Confirm password"
