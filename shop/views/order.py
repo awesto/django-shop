@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from django.views.decorators.cache import never_cache
 from rest_framework import generics, mixins
 from rest_framework.renderers import BrowsableAPIRenderer
 from shop.rest.serializers import OrderListSerializer, OrderDetailSerializer
@@ -37,6 +38,7 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, generics.Gener
             return self.get_queryset().first()
         return super(OrderView, self).get_object()
 
+    @never_cache
     def get(self, request, *args, **kwargs):
         if self.is_last():
             self.many = False
