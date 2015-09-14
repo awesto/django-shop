@@ -7,7 +7,7 @@
 	<title>{% block title %}Letter{% endblock %}</title>
 	<link rel="stylesheet" href="{% static 'shop/css/bootstrap-print.css' %}">
 	<style type="text/css">
-		.page { position: relative; background: white; }
+		.page { position: relative; background: white; page-break-after: always; }
 		.page .header { text-align: center; font-size: 18pt; padding: 7.5mm 0 0; }
 		.page .header hr { margin: 5mm 0 1mm; border-width: 2mm; }
 		.page .content { padding: 0 20mm 0 25mm; }
