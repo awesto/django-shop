@@ -527,7 +527,7 @@ msgstr "Währung in der diese Bestellung abgeschlossen wurde"
 #: templates/shop/order/order-detail.html:46
 #: templates/shop/products/catalog-product-add2cart.html:11
 msgid "Subtotal"
-msgstr "Zwischensumme"
+msgstr "Zwischen&shy;summe"
 
 #: models/order.py:121 templates/shop/cart/editable.html:16
 #: templates/shop/cart/editable.html:46 templates/shop/cart/static.html:11
