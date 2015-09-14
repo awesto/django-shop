@@ -738,19 +738,19 @@ msgstr ""
 
 #: modifiers/defaults.py:39
 msgid "Pay in advance"
-msgstr ""
+msgstr "Vorauskasse"
 
 #: modifiers/defaults.py:50
 msgid "Self collection"
-msgstr ""
+msgstr "Selbstabholung"
 
 #: modifiers/taxes.py:24
 msgid "+ {}% V.A.T"
-msgstr ""
+msgstr "zz. {}% V.A.T"
 
 #: modifiers/taxes.py:44
 msgid "{}% V.A.T incl."
-msgstr ""
+msgstr "inkl. {}% MWSt."
 
 #: money/iso4217.py:12
 msgid "Brazilian Real"
