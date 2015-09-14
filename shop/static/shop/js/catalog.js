@@ -4,25 +4,6 @@
 // module: django.shop, TODO: move this into a summary JS file
 var djangoShopModule = angular.module('django.shop.catalog', ['ui.bootstrap']);
 
-// Infinite scroll directive <ANY shop-scroll-spy="loadMore()">
-// Add this directive to a DOM element, wrapping the list views.
-// Whenever the client scrolls the browser window beyond the current height of the wrapping element,
-// the function `loadMore()` from the lists controller is invoked. This function then shall load
-// more elements to the list view and thus increase the height of the DOM element.
-djangoShopModule.directive('shopScrollSpy', ['$document', function($document) {
-	return function(scope, element, attrs) {
-		var body = $document.find('body')[0], docElem = $document[0].documentElement, spyElem = element[0],
-			offsetBottom = angular.isNumber(attrs.shopOffsetBottom) ? parseInt(attrs.shopOffsetBottom) : 0;
-
-		$document.on('scroll', function(evt) {
-			if (Math.ceil(body.scrollTop + docElem.clientHeight) >= Math.floor(spyElem.offsetTop + spyElem.clientHeight + offsetBottom)) {
-				scope.$apply(attrs.shopScrollSpy);
-			}
-		});
-	};
-}]);
-
-
 djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$modal',
                                                function($scope, $http, $window, $modal) {
 	var updateUrl = $window.location.pathname + '/add-to-cart' + $window.location.search;
