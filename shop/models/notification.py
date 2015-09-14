@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from bs4 import BeautifulSoup
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.db import models
@@ -8,7 +9,7 @@ from django.db.models import Q
 from django.http.request import HttpRequest
 from django.template import Context, Template
 from django.utils.encoding import smart_text
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, override as translation_override
 from django.utils.six.moves.urllib.parse import urlparse
 from django_fsm.signals import post_transition
 from post_office import mail
@@ -29,10 +30,12 @@ class Email(OriginalEmail):
         subject = smart_text(self.subject)
 
         if self.template is not None:
+            render_language = self.context.get('render_language', settings.LANGUAGE_CODE)
             context = Context(self.context)
-            subject = Template(self.template.subject).render(context)
-            message = Template(self.template.content).render(context)
-            html_message = Template(self.template.html_content).render(context)
+            with translation_override(render_language):
+                subject = Template(self.template.subject).render(context)
+                message = Template(self.template.content).render(context)
+                html_message = Template(self.template.html_content).render(context)
         else:
             subject = self.subject
             message = self.message
@@ -139,12 +142,13 @@ def order_event_notification(sender, instance=None, target=None, **kwargs):
         # emulate a request object which behaves similar to that one, when the customer submitted its order
         emulated_request = EmulateHttpRequest(instance.user, instance.stored_request)
         order_serializer = serializers.OrderDetailSerializer(instance, context={'request': emulated_request})
+        language = instance.stored_request.get('language')
         context = {
             'customer': serializers.CustomerSerializer(instance.user).data,
             'data': order_serializer.data,
             'ABSOLUTE_BASE_URI': emulated_request.build_absolute_uri().rstrip('/'),
+            'render_language': language,
         }
-        language = instance.stored_request.get('language')
         try:
             template = notification.mail_template.translated_templates.get(language=language)
         except EmailTemplate.DoesNotExist:
