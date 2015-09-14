@@ -2,26 +2,56 @@
 from __future__ import unicode_literals
 from django.db.models import Max
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ImproperlyConfigured
 from django.forms import fields, widgets
+from django.forms.models import fields_for_model
 from django.utils.translation import ugettext_lazy as _
+from django.utils import six
+from djangular.forms.angular_base import BaseFieldsModifierMetaclass
 from djangular.styling.bootstrap3.forms import Bootstrap3ModelForm
 from djangular.styling.bootstrap3.widgets import RadioSelect, RadioFieldRenderer, CheckboxInput
 from shop.models.address import AddressModel
+from shop.models.customer import CustomerModel as Customer
 from shop.modifiers.pool import cart_modifiers_pool
 from .base import DialogForm, DialogModelForm
 
 
+class UserFieldsFormMetaclass(BaseFieldsModifierMetaclass):
+    def __new__(cls, name, bases, attrs):
+        """
+        Add fields from User model to form.
+        
+        This cannot be done at runtime as Form fields are converted by
+        django-angular at instantiation.
+        """
+        attrs.update(fields_for_model(get_user_model(), ('first_name', 'last_name', 'email',)))
+        new_class = super(UserFieldsFormMetaclass, cls).__new__(cls, name, bases, attrs)
+        new_class.base_fields.update(user_fields)
+        return new_class
+
+# aim: use above metaclass for automatically creating adding User model's fields
+# with django's fields_for_model function. How to do this without metaclass
+# conflict?
+
 class CustomerForm(DialogModelForm):
     scope_prefix = 'data.customer'
-
+    
+    first_name = fields.CharField()
+    last_name = fields.CharField()
+    email = fields.EmailField()
+    
     class Meta:
-        model = get_user_model()
-        exclude = ('username', 'password', 'last_login', 'is_superuser', 'is_staff', 'is_active',
-            'is_registered', 'groups', 'user_permissions', 'date_joined',)
-
+        model = Customer
+        fields = ('salutation', )
+    
+    def clean(self):
+        """Also save fields belonging to User"""
+        cleaned_data = super(CustomerForm, self).clean()
+        
+    
     @classmethod
     def form_factory(cls, request, data, cart):
-        customer_form = cls(data=data, instance=request.user)
+        customer_form = cls(data=data, instance=request.customer)
         if customer_form.is_valid():
             customer_form.save()
         else:
@@ -38,7 +68,13 @@ class GuestForm(DialogModelForm):
 
     @classmethod
     def form_factory(cls, request, data, cart):
-        customer_form = cls(data=data, instance=request.user)
+        if request.customer.is_registered():
+            raise ImproperlyConfigured('GuestForm should only be used for unregistered Customers')
+        user = get_user_model().objects.create()
+        user.save()
+        request.customer.user = user
+        request.customer.save()
+        customer_form = cls(data=data, instance=user)
         if customer_form.is_valid():
             customer_form.save()
         else:
@@ -58,7 +94,7 @@ class AddressForm(DialogModelForm):
 
     class Meta:
         model = AddressModel
-        exclude = ('user', 'priority_shipping', 'priority_billing',)
+        exclude = ('customer', 'priority_shipping', 'priority_billing',)
 
     def __init__(self, initial=None, instance=None, *args, **kwargs):
         if instance:
@@ -78,13 +114,13 @@ class AddressForm(DialogModelForm):
         """
         # search for the associated address DB instance or create a new one
         priority = data and data.get('priority') or 0
-        filter_args = {'user': request.user, cls.priority_field: priority}
+        filter_args = {'customer': request.customer, cls.priority_field: priority}
         instance = cls.get_model().objects.filter(**filter_args).first()
         address_form = cls(data=data, instance=instance)
         if address_form.is_valid():
             if not instance:
                 instance = address_form.save(commit=False)
-                instance.user = request.user
+                instance.customer = request.customer
                 setattr(instance, cls.priority_field, priority)
             assert address_form.instance == instance
             instance.save()
@@ -93,11 +129,11 @@ class AddressForm(DialogModelForm):
             return {address_form.form_name: dict(address_form.errors)}
 
     @classmethod
-    def get_max_priority(cls, user):
+    def get_max_priority(cls, customer):
         """
         Return the maximum priority for this address model.
         """
-        aggr = cls.get_model().objects.filter(user=user).aggregate(Max(cls.priority_field))
+        aggr = cls.get_model().objects.filter(customer=customer).aggregate(Max(cls.priority_field))
         return aggr.get('{}__max'.format(cls.priority_field, 0))
 
     @classmethod
@@ -107,10 +143,10 @@ class AddressForm(DialogModelForm):
         data = address_form.initial
         data.pop('id', None)
         data.initial.pop('priority', None)
-        data.update({'user': cart.user, '{}__isnull'.format(cls.priority_field): False})
+        data.update({'customer': cart.customer, '{}__isnull'.format(cls.priority_field): False})
         instance, created = cls.get_model().objects.get_or_create(**data)
         if created:
-            instance.priority_billing = cls.get_max_priority(cart.user) + 1
+            instance.priority_billing = cls.get_max_priority(cart.customer) + 1
             instance.save()
 
 

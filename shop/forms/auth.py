@@ -9,8 +9,10 @@ from django.template import Context
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
 from djangular.forms import NgModelFormMixin, NgFormValidationMixin
-from shop import settings as shop_settings
 from djangular.styling.bootstrap3.forms import Bootstrap3ModelForm
+
+from shop import settings as shop_settings
+from shop.models.customer import CustomerModel as Customer
 
 
 class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelForm):
@@ -90,14 +92,17 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelF
 
 
 class ContinueAsGuestForm(ModelForm):
+    """
+    Handles Customer's decision to order as guest.
+    """
     form_name = 'continue_as_guest_form'
     scope_prefix = 'form_data'
 
     class Meta:
-        model = get_user_model()
+        model = Customer
         fields = ()  # this form doesn't show any fields
 
     def save(self, request=None, commit=True):
-        self.instance.is_registered = False
-        self.instance.is_active = True
+        self.instance.set_guest()
+        print self.instance.is_guest()
         return super(ContinueAsGuestForm, self).save(commit)

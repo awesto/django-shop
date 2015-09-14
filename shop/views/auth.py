@@ -24,7 +24,7 @@ class AuthFormsView(GenericAPIView):
     form_class = None
 
     def post(self, request, *args, **kwargs):
-        form = self.form_class(data=request.DATA, instance=request.user)
+        form = self.form_class(data=request.data, instance=request.customer)
         if form.is_valid():
             form.save(request=request)
             return Response(form.data, status=status.HTTP_200_OK)
@@ -70,8 +70,8 @@ class PasswordResetView(GenericAPIView):
     permission_classes = (AllowAny,)
 
     def post(self, request, *args, **kwargs):
-        # Create a serializer with request.DATA
-        serializer = self.get_serializer(data=request.DATA)
+        # Create a serializer with request.data
+        serializer = self.get_serializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         serializer.save()
@@ -116,7 +116,7 @@ class PasswordResetConfirm(GenericAPIView):
         return Response({'validlink': True, 'user_name': force_text(serializer.user)})
 
     def post(self, request, uidb64=None, token=None):
-        data = dict(request.DATA, uid=uidb64, token=token)
+        data = dict(request.data, uid=uidb64, token=token)
         serializer = self.get_serializer(data=data)
         if not serializer.is_valid():
             return Response(

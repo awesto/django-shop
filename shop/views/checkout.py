@@ -45,7 +45,7 @@ class CheckoutViewSet(BaseViewSet):
                         dialog_data.append((fc, data))
         dialog_data = sorted(dialog_data, key=lambda tpl: int(tpl[1]['plugin_order']))
 
-        # collect potential errors
+        # save data and collect potential errors
         errors = {}
         for form_class, data in dialog_data:
             reply = form_class.form_factory(request, data, cart)

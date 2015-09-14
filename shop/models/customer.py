@@ -33,6 +33,9 @@ class BaseCustomerManager(models.Manager):
                     customer.user = request.user
                 except KeyError:
                     customer = CustomerModel.objects.create(user=request.user)
+                    # Customer belongs now to existing User account, therefore
+                    # we reguard it as registered
+                    customer.is_registered = True
                 customer.save()
                 return customer
         try:
@@ -54,16 +57,16 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     the django User model if a customer is authenticated. On checkout, a User
     object is created for anonymous customers also (with unusable password).
     """
-    SALUTATION = (('mrs', _("Mrs.")), ('mr', _("Mr.")))
+    SALUTATION = (('mrs', _("Mrs.")), ('mr', _("Mr.")), ('na', _("(n/a)")))
     
     user = models.OneToOneField(settings.AUTH_USER_MODEL, null=True)
     session_key = models.CharField(max_length=40, unique=True, null=True, blank=True, editable=False,
         help_text=_("Anonymous customers are identified by their session key"))
     salutation = models.CharField(max_length=5, choices=SALUTATION)
-    is_guest = models.BooleanField(
-        _("Customer has guest status"),
+    is_registered = models.BooleanField(
+        _("Customer has chosen to register"),
         default=False,
-        help_text=_("True if the customer has chosen to place an order as a guest")
+        help_text=_("True if the customer has registered or placed first order with existing User account")
     )
     extra = JSONField(default={}, editable=False,
         verbose_name=_("Extra information about this customer"))
@@ -90,19 +93,31 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         Anonymous customers have accessed the shop, but not registered or placed
         an order.
         """
-        return not self.user
+        return not hasattr(self, 'user')
     
     def is_guest(self):
         """
         Return true if the customer has chosen to place an order as a guest.
         """
-        return self._is_guest
+        return not (self.is_anonymous() and self.is_registered)
     
-    def is_authenticated(self):
+    def set_guest(self, **userkwargs):
         """
-        Return true if the customer is registered.
+        Set guest state if value=True. This means that the customer has chosen
+        to place an order as a guest. A User object will be created and
+        referenced, is_registered still set to false.
         """
-        return not self.is_guest and self.user
+        if self.is_anonymous():
+            user = get_user_model().objects.create(**userkwargs)
+            user.save()
+            self.user = user
+            self.save()
+    
+#    def is_authenticated(self):
+#        """
+#        Return true if the customer is registered.
+#        """
+#        return not self.is_guest and self.user
     
     def save(self, *args, **kwargs):
         try:

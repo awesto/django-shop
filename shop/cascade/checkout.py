@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Max
 from django.forms.fields import CharField
 from django.template.loader import select_template
@@ -61,7 +62,10 @@ class CustomerFormPlugin(DialogFormPluginBase):
     template_leaf_name = 'customer.html'
 
     def get_form_data(self, request):
-        return {'instance': request.user}
+        if request.customer.is_anonymous():
+            msg = "CustomerFormPlugin may only be called for Customers which are already registered or have guest status: {}".format(request.customer)
+            raise ImproperlyConfigured(msg)
+        return {'instance': request.customer}
 
 DialogFormPluginBase.register_plugin(CustomerFormPlugin)
 
@@ -75,13 +79,13 @@ DialogFormPluginBase.register_plugin(GuestFormPlugin)
 
 class CheckoutAddressPluginBase(DialogFormPluginBase):
     def get_form_data(self, request):
-        filter_args = {'user': request.user, '{}__isnull'.format(self.FormClass.priority_field): False}
+        filter_args = {'customer': request.customer, '{}__isnull'.format(self.FormClass.priority_field): False}
         AddressModel = self.FormClass.get_model()
         address = AddressModel.objects.filter(**filter_args).order_by(self.FormClass.priority_field).first()
         if address:
             return {'instance': address}
         else:
-            aggr = AddressModel.objects.filter(user=request.user).aggregate(Max(self.FormClass.priority_field))
+            aggr = AddressModel.objects.filter(customer=request.customer).aggregate(Max(self.FormClass.priority_field))
             initial = {'priority': aggr['{}__max'.format(self.FormClass.priority_field)] or 0}
             return {'initial': initial}
 
