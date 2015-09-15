@@ -678,37 +678,35 @@ msgstr "Bestellwaren"
 
 #: models/product.py:98
 msgid "Is this product publicly visible."
-msgstr ""
+msgstr "Ist dieses Produkt öffentlich sichtbar."
 
 #: models/product.py:105
 msgid "Products"
 msgstr "Produkte"
 
 #: models/product.py:115
-#, fuzzy
 msgid "Product type"
-msgstr "Produktname"
+msgstr "Produkttype"
 
 #: models/defaults/address.py:12
-#, fuzzy
 msgid "Addressee"
-msgstr "Adressen"
+msgstr "Adressat"
 
 #: models/defaults/address.py:13
 msgid "Supplement"
-msgstr ""
+msgstr "Adresszusatz"
 
 #: models/defaults/address.py:14
 msgid "Street"
-msgstr ""
+msgstr "Straße"
 
 #: models/defaults/address.py:15
 msgid "ZIP"
-msgstr ""
+msgstr "PLZ"
 
 #: models/defaults/address.py:16
 msgid "Location"
-msgstr ""
+msgstr "Stadt"
 
 #: models/defaults/order.py:10
 msgid "Shipping address"
@@ -847,7 +845,7 @@ msgstr "Als Gast fortfahren"
 
 #: templates/shop/auth/login-reset.html:4 templates/shop/auth/login.html:4
 msgid "Sign In"
-msgstr ""
+msgstr "Anmelden"
 
 #: templates/shop/auth/login-reset.html:11
 #: templates/shop/auth/login-reset.html:29 templates/shop/auth/login.html:11
@@ -897,7 +895,7 @@ msgstr "Neues Passwort"
 
 #: templates/shop/auth/password-reset-confirm.html:19
 msgid "Confirm password"
-msgstr "Bestätigt"
+msgstr "Passwort bestätigen"
 
 #: templates/shop/auth/password-reset-confirm.html:23
 msgid "Change my password"
@@ -913,11 +911,11 @@ msgstr ""
 
 #: templates/shop/auth/register-user.html:4
 msgid "Register Yourself"
-msgstr ""
+msgstr "Registrieren Sie sich"
 
 #: templates/shop/auth/register-user.html:24
 msgid "Register"
-msgstr ""
+msgstr "Registrieren"
 
 #: templates/shop/cart/editable.html:14 templates/shop/cart/static.html:9
 #: templates/shop/cart/watch.html:10
@@ -936,11 +934,11 @@ msgstr "Stückpreis"
 
 #: templates/shop/cart/editable.html:73 templates/shop/cart/watch.html:47
 msgid "Remove"
-msgstr ""
+msgstr "Entfernen"
 
 #: templates/shop/cart/editable.html:76
 msgid "Watch Item"
-msgstr ""
+msgstr "Artikel beobachten"
 
 #: templates/shop/cart/summary.html:5
 msgid "Number of items"
@@ -990,7 +988,7 @@ msgstr ""
 
 #: templates/shop/email/reset-password-body.txt:5
 msgid "Please go to the following page and choose a new password:"
-msgstr ""
+msgstr "Bitte gehen Sie auf folgende Seite und wählen ein neues Passwort:"
 
 #: templates/shop/email/reset-password-subject.txt:2
 #, python-format
@@ -1027,7 +1025,7 @@ msgstr "Lieferadresse"
 
 #: templates/shop/printing/delivery-note.html:6
 msgid "Delivery note for"
-msgstr ""
+msgstr "Lieferschein für"
 
 #: templates/shop/products/catalog-product-add2cart.html:6
 msgid "Order Product"
@@ -1058,21 +1056,20 @@ msgid "Continue Shopping"
 msgstr "Weiter Einkaufen"
 
 #: templates/shop/products/catalog-product-add2cart.html:51
-#, fuzzy
 msgid "Cancel"
-msgstr "Abgebrochen"
+msgstr "Abbrechen"
 
 #: templates/shop/products/search-product-body.html:5
 msgid "Art-No.:"
-msgstr ""
+msgstr "Art-Nr.:"
 
 #: templates/shop/search/results.html:9
 msgid "{{ search_data.count }} matching products found"
-msgstr ""
+msgstr "{{ search_data.count }} passende Produkte gefunden"
 
 #: templates/shop/search/results.html:21
 msgid "Details"
-msgstr ""
+msgstr "Details"
 
 #: templates/shop/templatetags/cart.html:4
 #, python-format
@@ -1088,11 +1085,11 @@ msgstr "Erfolgreich abgemeldet"
 #: views/auth.py:78
 #, python-brace-format
 msgid "Instructions on how to reset the password have been sent to '{email}'."
-msgstr ""
+msgstr "Anleitung zum Zurücksetzen des Passwortes wurde an '{email}' gesendet."
 
 #: views/auth.py:125
 msgid "Password has been reset with the new password."
-msgstr ""
+msgstr "Passwort wurde mit neuem Passwort zurückgesetzt"
 
 #~ msgid ""
 #~ "\n"
