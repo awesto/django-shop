@@ -18,6 +18,7 @@ class NotificationAdmin(admin.ModelAdmin):
     USER_CHOICES = (('', _("Nobody")), (0, _("Customer")),)
     list_display = ('name', 'transition_name', 'recipient')
     inlines = (NotificationAttachmentAdmin,)
+    save_as = True
 
     def get_form(self, request, obj=None, **kwargs):
         kwargs.update(widgets={
