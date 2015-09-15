@@ -35,9 +35,6 @@ class LoginView(OriginalLoginView):
     def login(self):
         """
         Logs in as the given user, and moves the items from the current to the new cart.
-        This View is intentionally exempted from CSRF protection, because a) the Login Form
-        retains an expired CSRF token immediately after logging out and b) because a
-        malicious client can't abuse the Login Form anyway.
         """
         anonymous_cart = CartModel.objects.get_from_request(self.request)
         super(LoginView, self).login()
