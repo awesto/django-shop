@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 from django.contrib.auth import logout
 from django.contrib.auth.tokens import default_token_generator
-from django.views.decorators.csrf import csrf_exempt
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import status
@@ -32,7 +31,6 @@ class AuthFormsView(GenericAPIView):
         return Response(dict(form.errors), status=status.HTTP_400_BAD_REQUEST)
 
 
-@csrf_exempt
 class LoginView(OriginalLoginView):
     def login(self):
         """
