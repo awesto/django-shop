@@ -6,18 +6,69 @@ Unique Features of djangoSHOP
 djangoSHOP requires to describe your products instead of prescribing prefabricated models
 =========================================================================================
 
+Products can vary wildly, and modeling them is not always trivial. Some products are salable in
+pieces, while others are continues. Trying to define a set of product models, capable for describing
+all such scenarios is impossible – describe your product by customizing the model and not vice
+versa.
 
-djangoSHOP plugs directly into djangoCMS
+
+E-commerce solutions, claiming to be plug-and-play, normally use one of these (anti-)patterns
+---------------------------------------------------------------------------------------------
+
+Either, they offer a field for every possible variation, or they use the Entity-Attribute-Value
+pattern to add meta-data for each of your models. This at a first glance seems to be easy. But both
+approaches are unwieldy and have serious drawbacks. They both apply a different "physical schema" –
+the way data is stored, rather than a "logical schema" – the way users and applications require that
+data. As soon as you have to combine your e-commerce solution with some Enterprise-Resource-Planning
+software, additional back-and-forward conversion routines have to be added.
+
+
+In djangoSHOP, the physical representation of a product corresponds to its logical
+----------------------------------------------------------------------------------
+
+**djangoSHOP**'s approach to this problem is to have minimal set of models. These abstract models
+are stubs provided to subclass the physical models. Hence the logical representation of the
+product conforms to their physical one. Moreover, it is even possible to represent various types of
+products by subclassing polymorphically from an abstract base model. Thanks to the Django framework,
+modeling the logical representation for a set of products, together with an administration backend,
+becomes almost effortless. 
+
+
+djangoSHOP is multilingual
+==========================
+
+Products offered in various regions, normally require attributes in different natural languages.
+For such a set of products, these attributes can be easily modelled using translatable fields.
+This lets you seamlessly built a multilingual e-commerce site.
+
+
+djangoSHOP supports multiple currencies
+=======================================
+
+djangoSHOP is shipped with a set of currency types, bringing their own money arithmetic. This
+adds an additional layer of security, because one can not accidentally sum up different currencies.
+These money types always know how to represent themselves in different local environments, prefixing
+their amount with the correct currency symbol. They also offer the special amount “no price”
+(represented by ``–``), which behaves like zero but is handy for gratuitous items.
+
+
+djangoSHOP directly plugs into djangoCMS
 ========================================
-* Product detail pages may use all templatetags from djangoCMS, such as the ``{% placeholder ... %}``,
-  the ``{% static_placeholder ... %}``, or other CMS tags.
-* djangoSHOP does not presuppose categories to organize product list views. Instead djangoCMS
-  pages can be specialized to handle product lists via a CMS app. This allows the merchant to
-  organize products into categories, using the existing page hierarchy from the CMS. It also allows
-  to offer single products from a CMS page, without requiring any category.
 
-djangoSHOP uses the Django REST framework and hence does not require any Django View
-====================================================================================
+Product detail pages may use all templatetags from djangoCMS, such as the ``{% placeholder ... %}``,
+the ``{% static_placeholder ... %}``, or other CMS tags.
+
+**djangoSHOP** does not presuppose categories to organize product list views. Instead djangoCMS
+pages can be specialized to handle product lists via a CMS app. This allows the merchant to organize
+products into categories, using the existing page hierarchy from the CMS. It also allows to offer
+single products from a CMS page, without requiring any category.
+
+
+djangoSHOP is based on REST
+===========================
+
+* djangoSHOP uses the Django REST framework and hence does not require any Django View
+
 * Django Views are used to encapsulate the business logic of your products. Since djangoSHOP wants
   
 
