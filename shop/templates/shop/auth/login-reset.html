@@ -28,7 +28,7 @@
 		<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
 		<input type="text" class="form-control" name="email" ng-model="form_data.email" value="" placeholder="{% trans 'Email' %}" />
 	</div>
-	
+
 	<div class="form-group" ng-hide="success_message">
 		<button type="button" ng-click="submitForm('{% url 'shop:password-reset' %}', 5000)" class="btn btn-primary">{% trans "Reset Password" %}</button>
 	</div>
