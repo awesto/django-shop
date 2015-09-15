@@ -26,7 +26,7 @@ from .plugin_base import ShopButtonPluginBase, DialogFormPluginBase
 
 
 class ProceedButtonForm(TextLinkFormMixin, LinkForm):
-    link_content = CharField(label=_("Putton Content"))
+    link_content = CharField(label=_("Button Content"))
     LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")), ('RELOAD_PAGE', _("Reload Page")), ('PURCHASE_NOW', _("Purchase Now")),)
 
 
