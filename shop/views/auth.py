@@ -10,7 +10,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer, BrowsableAPIRenderer
 from rest_framework.response import Response
-from rest_auth.views import Login
+from rest_auth.views import LoginView as OriginalLoginView
 from shop.models.cart import CartModel
 from shop.rest.auth import PasswordResetSerializer, PasswordResetConfirmSerializer
 from shop.middleware import get_user
@@ -31,7 +31,7 @@ class AuthFormsView(GenericAPIView):
         return Response(dict(form.errors), status=status.HTTP_400_BAD_REQUEST)
 
 
-class LoginView(Login):
+class LoginView(OriginalLoginView):
     def login(self):
         """
         Logs in as the given user, and moves the items from the current to the new cart.
