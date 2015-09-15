@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 from django.contrib.auth import logout
 from django.contrib.auth.tokens import default_token_generator
+from django.views.decorators.csrf import csrf_exempt
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import status
@@ -31,10 +32,14 @@ class AuthFormsView(GenericAPIView):
         return Response(dict(form.errors), status=status.HTTP_400_BAD_REQUEST)
 
 
+@csrf_exempt
 class LoginView(OriginalLoginView):
     def login(self):
         """
         Logs in as the given user, and moves the items from the current to the new cart.
+        This View is intentionally exempted from CSRF protection, because a) the Login Form
+        retains an expired CSRF token immediately after logging out and b) because a
+        malicious client can't abuse the Login Form anyway.
         """
         anonymous_cart = CartModel.objects.get_from_request(self.request)
         super(LoginView, self).login()
