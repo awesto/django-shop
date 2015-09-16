@@ -235,7 +235,7 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
 
 
 class OrderConfirmView(RedirectView):
-    url_name = 'checkout_payment'
+    pattern_name = 'checkout_payment'
     permanent = False
 
     def confirm_order(self):
@@ -248,7 +248,6 @@ class OrderConfirmView(RedirectView):
         return super(OrderConfirmView, self).get(request, *args, **kwargs)
 
     def get_redirect_url(self, **kwargs):
-        self.url = reverse(self.url_name)
         return super(OrderConfirmView, self).get_redirect_url(**kwargs)
 
 class ThankYouView(LoginMixin, ShopTemplateView):
