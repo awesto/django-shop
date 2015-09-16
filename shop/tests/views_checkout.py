@@ -7,17 +7,21 @@ from django.core.urlresolvers import reverse
 from django.test.testcases import TestCase
 
 from shop.addressmodel.models import Country, Address
-from shop.models import Product
+from shop.models import Product, OrderExtraInfo
 from shop.models.cartmodel import Cart
 from shop.models.ordermodel import Order
 from shop.order_signals import processing
 from shop.payment.api import PaymentAPI
 from shop.tests.util import Mock
 from shop.tests.utils.context_managers import SettingsOverride
-from shop.views.checkout import CheckoutSelectionView, ThankYouView
+from shop.views.checkout import (
+    CheckoutSelectionView,
+    ThankYouView,
+    OrderConfirmView
+)
 
 
-class ShippingBillingViewTestCase(TestCase):
+class CheckoutSelectionViewTestCase(TestCase):
 
     def setUp(self):
         self.user = User.objects.create(username="test",
@@ -162,6 +166,37 @@ class ShippingBillingViewTestCase(TestCase):
         self.assertEqual(resp.status_code, 302)
         self.assertEqual('http://testserver/shop/cart/', resp._headers['location'][1])
 
+    def test_save_extra_info_to_order(self):
+        """
+        Check that extra info associated with the order is saved.
+        """
+        # Set the request to a POST and add data for the form to parse.
+        setattr(self.request, 'method', 'POST')
+        setattr(self.request, 'POST', {"text": "blah blah"})
+
+        view = CheckoutSelectionView(request=self.request)
+        form = view.get_extra_info_form()
+        self.assertTrue(form.is_valid())
+        order = view.create_order_object_from_cart()
+        view.save_extra_info_to_order(order, form)
+        self.assertTrue(OrderExtraInfo.objects.filter(order=order).exists())
+
+        # Set the request back to how it was in setUp()
+        setattr(self.request, 'method', 'GET')
+        del self.request.POST
+
+    def test_order_added_to_session_if_no_user(self):
+        """
+        Check that the order_id is saved on the session if
+        no user is available.
+        """
+        setattr(self.request, 'user', None)
+        self.request.session["cart_id"] = self.cart.pk
+        view = CheckoutSelectionView(request=self.request)
+        order = view.create_order_object_from_cart()
+        self.assertEquals(self.request.session.get("order_id"), order.pk)
+        setattr(self.request, 'user', self.user)
+
 
 class ShippingBillingViewOrderStuffTestCase(TestCase):
 
@@ -256,8 +291,8 @@ class CheckoutCartToOrderTestCase(TestCase):
 
     def test_processing_signal(self):
         view = CheckoutSelectionView(request=self.request)
-
         order_from_signal = []
+
         def receiver(sender, order=None, **kwargs):
             order_from_signal.append(order)
 
@@ -294,3 +329,28 @@ class ThankYouViewTestCase(TestCase):
         ctx_order = res.get('order', None)
         self.assertNotEqual(ctx_order, None)
         self.assertEqual(ctx_order, self.order)
+
+
+class OrderConfirmViewTestCase(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create(username="test",
+                                        email="test@example.com",
+                                        first_name="Test",
+                                        last_name="User")
+        self.request = Mock()
+        self.order = Order.objects.create(user=self.user, order_total=10)
+        setattr(self.request, 'user', self.user)
+        setattr(self.request, 'session', {})
+        setattr(self.request, 'method', 'GET')
+
+    def test_confirm_order(self):
+        """
+        Check that confirming an order changes its status from
+        Order.PROCESSING (10) to Order.CONFIRMED (30).
+        """
+        view = OrderConfirmView(request=self.request)
+        self.assertEquals(self.order.status, Order.PROCESSING)
+        view.confirm_order()
+        self.order = Order.objects.get(id=self.order.id)
+        self.assertEquals(self.order.status, Order.CONFIRMED)

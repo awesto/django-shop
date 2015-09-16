@@ -41,6 +41,7 @@ from views import (
 from views_checkout import (
     CheckoutCartToOrderTestCase,
     ShippingBillingViewOrderStuffTestCase,
-    ShippingBillingViewTestCase,
+    CheckoutSelectionViewTestCase,
     ThankYouViewTestCase,
+    OrderConfirmViewTestCase,
 )
