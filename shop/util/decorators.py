@@ -10,6 +10,7 @@ from shop.util.cart import get_or_create_cart
 from shop.util.login_mixin import get_test_func
 from shop.util.order import get_order_from_request
 from shop.models.ordermodel import Order
+import collections
 
 
 def on_method(function_decorator):

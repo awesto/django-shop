@@ -2,32 +2,130 @@
 """Forms for the django-shop app."""
 from django import forms
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.forms.models import modelformset_factory
+from django.forms.util import ErrorList, ErrorDict
 from django.utils.translation import ugettext_lazy as _
 
-from shop.backends_pool import backends_pool
 from shop.models.cartmodel import CartItem
+from shop.models import PaymentBackend, ShippingBackend
 from shop.util.loader import load_class
-
-
-def get_shipping_backends_choices():
-    shipping_backends = backends_pool.get_shipping_backends_list()
-    return tuple([(x.url_namespace, getattr(x, 'backend_verbose_name', x.backend_name)) for x in shipping_backends])
-
-
-def get_billing_backends_choices():
-    billing_backends = backends_pool.get_payment_backends_list()
-    return tuple([(x.url_namespace, getattr(x, 'backend_verbose_name', x.backend_name)) for x in billing_backends])
 
 
 class BillingShippingForm(forms.Form):
     """
-    A form displaying all available payment and shipping methods (the ones
-    defined in settings.SHOP_SHIPPING_BACKENDS and
-    settings.SHOP_PAYMENT_BACKENDS)
+    A form displaying all available payment and shipping methods 
     """
-    shipping_method = forms.ChoiceField(choices=get_shipping_backends_choices(), label=_('Shipping method'))
-    payment_method = forms.ChoiceField(choices=get_billing_backends_choices(), label=_('Payment method'))
+    shipping_backend = forms.ModelChoiceField(
+        queryset=ShippingBackend.objects.filter(active=True),
+        empty_label=None, label=_('Shipping method'))
+    payment_backend = forms.ModelChoiceField(
+        queryset=PaymentBackend.objects.filter(active=True),
+        empty_label=None, label=_('Payment method'))
+
+
+class AddressesForm(forms.Form):
+    '''Uberform which manages shipping and billing addresses. It provides the
+    option for the addresses to be the same.
+
+    You can pass `billing` (resp. `shipping`) models instances to edit them.
+    You can pass your own `billing_form_class` and `shipping_form_class` which
+    have to be `ModelForm` subclasses. This form also supports `empty_permitted`.
+    The form takes optional keyword `required`. If it's True, then validation 
+    will fail if neither address is filled in.
+    
+    This form contains one own field - `addresses_the_same` and two subforms -
+    `billing`, `shipping`
+    '''
+
+    addresses_the_same = forms.BooleanField(label=_("Shipping is the same as billing"), required=False)
+
+    def __init__(self, data=None, files=None, billing=None, shipping=None,
+                 billing_form_class=None, shipping_form_class=None,
+                 auto_id='id_%s', prefix=None, initial={}, error_class=ErrorList,
+                 label_suffix=None, empty_permitted=False):
+
+        bform = (billing_form_class or AddressForm)
+        sform = (shipping_form_class or AddressForm)
+
+        self.billing = bform(data, files, instance=billing, prefix="billing",
+                             initial=initial.pop("billing", None), label_suffix=label_suffix)
+
+        self.shipping = sform(data, files, prefix="shipping",
+                              instance=shipping if shipping != billing else None,
+                              initial=initial.pop("shipping", None), label_suffix=label_suffix)
+
+        self.billing_empty = False  # helper in save method (bcs Form does not have is_empty method)
+
+        super(AddressesForm, self).__init__(data, files,
+                                            initial={"addresses_the_same": (shipping == billing)},
+                                            label_suffix=label_suffix)
+
+    def clean(self):
+        '''The form is valid even when both addresses are empty'''
+        data = self.cleaned_data
+        if not data.get('addresses_the_same', True):
+            # both has to be valid
+            if not (self.shipping.is_valid() and billing.is_valid()):  # shipping has to be filled in
+                raise ValidationError(_('Shipping address has to be filled when marked different'))
+
+        if not self.billing.is_valid():
+            if not self.empty_permitted:
+                raise ValidationError(_('An address is required'))
+            self.billing_empty = True
+            # if there were some data then it was not intended to be empty
+            if self.billing.cleaned_data.get("street"):
+                self.shipping._errors = ErrorDict()
+                raise ValidationError()
+
+        # in all other cases are valid
+        self.billing._errors = ErrorDict()
+        self.shipping._errors = ErrorDict()
+
+        data['billing'] = getattr(self.billing, "cleaned_data", {})
+        data['shipping'] = getattr(self.shipping, "cleaned_data", {})
+
+        return data
+
+    def save(self, commit=True):
+        '''This method returns tuple with address models.
+        In the case when empty form was allowed (`required=False` in the constructor)
+        tuple `(None, None)` might be returned.'''
+        billing = None
+        shipping = None
+
+        if not self.billing_empty:
+            billing = self.billing.save(commit=commit)
+
+        if self.cleaned_data['addresses_the_same']:
+            shipping = billing
+        else:
+            shipping = self.shipping.save(commit=commit)
+        return (billing, shipping)
+
+    def save_to_request(self, request):
+        if request.user.is_authenticated():
+            billing, shipping = self.save(commit=False)
+            if shipping:
+                shipping.user_shipping = request.user
+                if not shipping.name:
+                    shipping.name = request.user.get_full_name()
+                if shipping != billing:
+                    # reset billing address because it could have changed
+                    shipping.user_billing = None
+                shipping.save()
+            if billing:
+                billing.user_billing = request.user
+                if not billing.name:
+                    billing.name = request.user.get_full_name()
+                billing.save()
+        else:
+            billing, shipping = self.save(commit=True)
+            if shipping:
+                request.session['shipping_address_id'] = shipping.pk
+            if billing:
+                request.session['billing_address_id'] = billing.pk
+        return billing, shipping
 
 
 class CartItemModelForm(forms.ModelForm):

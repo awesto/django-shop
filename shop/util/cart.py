@@ -79,3 +79,16 @@ def get_or_create_cart(request, save=False):
 
     cart = getattr(request, '_cart')  # There we *must* have a cart
     return cart
+
+
+def clean_cart(request):
+    '''
+    Cleans cart items if a corresponding cart exists.
+    '''
+    cart = None
+    if request.user.is_authenticated():
+        cart = get_cart_from_database(request)
+    else:
+        cart = get_cart_from_session(request)
+    if cart is not None:
+        cart.empty()

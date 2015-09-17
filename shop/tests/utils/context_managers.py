@@ -25,12 +25,12 @@ class SettingsOverride(object):
 
     def __enter__(self):
         self.old = {}
-        for key, value in self.overrides.items():
+        for key, value in list(self.overrides.items()):
             self.old[key] = getattr(settings, key, NULL)
             setattr(settings, key, value)
 
     def __exit__(self, type, value, traceback):
-        for key, value in self.old.items():
+        for key, value in list(self.old.items()):
             if value is not NULL:
                 setattr(settings, key, value)
             else:
