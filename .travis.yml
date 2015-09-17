@@ -6,7 +6,7 @@ env:
   - TOXENV=py27-1.5
   - TOXENV=py27-1.6
   - TOXENV=py27-1.7
-  - TOXENV=py27-trunk
+  #- TOXENV=py27-trunk
 install:
   - pip install -q --use-mirrors tox
 script: tox
