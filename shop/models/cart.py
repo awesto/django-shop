@@ -204,10 +204,10 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         if self.pk:
             self.items.all().delete()
             self.delete()
-    
+
     def __str__(self):
         return "{}".format(self.pk) or '(unsaved)'
-    
+
     @property
     def total_quantity(self):
         """

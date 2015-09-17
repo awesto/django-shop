@@ -32,15 +32,14 @@ class AuthFormsView(GenericAPIView):
 
 
 class LoginView(OriginalLoginView):
-    pass
-#    def login(self):
-#        """
-#        Logs in as the given user, and moves the items from the current to the new cart.
-#        """
-#        anonymous_cart = CartModel.objects.get_from_request(self.request)
-#        super(LoginView, self).login()
-#        authenticated_cart = CartModel.objects.get_from_request(self.request)
-#        anonymous_cart.items.update(cart=authenticated_cart)
+    def login(self):
+        """
+        Logs in as the given user, and moves the items from the current to the new cart.
+        """
+        anonymous_cart = CartModel.objects.get_from_request(self.request)
+        super(LoginView, self).login()  # this rotates the session_key
+        authenticated_cart = CartModel.objects.get_from_request(self.request)
+        anonymous_cart.items.update(cart=authenticated_cart)
 
 
 class LogoutView(APIView):

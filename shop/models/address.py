@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 Holds all the information relevant to the client (addresses for instance)
 """
 from six import with_metaclass
-from django.conf import settings
 from django.db import models
 from django.template.loader import select_template, Context
 from django.utils.translation import ugettext_lazy as _

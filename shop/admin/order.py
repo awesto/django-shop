@@ -50,7 +50,7 @@ class OrderItemInline(admin.StackedInline):
 class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
     list_display = ('id', 'customer', 'status_name', 'total', 'created_at',)
     list_filter = ('status', 'customer',)
-    search_fields = ('id', 'customer__user__username', 'customer__user__lastname',)
+    search_fields = ('id', 'customer__user__email', 'customer__user__lastname',)
     fsm_field = ('status',)
     date_hierarchy = 'created_at'
     inlines = (OrderItemInline, OrderPaymentInline,)
