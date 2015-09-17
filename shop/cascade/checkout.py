@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Max
+from django.core.exceptions import ImproperlyConfigured
 from django.forms.fields import CharField
 from django.template.loader import select_template
 from django.utils.html import format_html, strip_tags, strip_entities
