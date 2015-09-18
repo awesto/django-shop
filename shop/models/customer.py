@@ -105,9 +105,9 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         return self.identifier()
 
     def identifier(self):
-        if self.is_registered:
-            return self.user.email
-        return '<anonymous>'
+        if self.is_registered is None:
+            return '<anonymous>'
+        return self.user.email
 
     @property
     def first_name(self):

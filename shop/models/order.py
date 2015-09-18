@@ -27,7 +27,7 @@ class OrderManager(models.Manager):
         with its CartItems.
         """
         cart.update(request)
-        order = self.model(user=cart.user, currency=cart.total.get_currency(),
+        order = self.model(customer=cart.customer, currency=cart.total.get_currency(),
             _subtotal=Decimal(0), _total=Decimal(0), stored_request=self.stored_request(request))
         order.save()
         for cart_item in cart.items.all():
@@ -54,7 +54,7 @@ class OrderManager(models.Manager):
 
     def get_summary_url(self):
         """
-        Returns the URL of the page with the list view for all orders related to the current user
+        Returns the URL of the page with the list view for all orders related to the current customer
         """
         if not hasattr(self, '_summary_url'):
             try:
@@ -67,7 +67,7 @@ class OrderManager(models.Manager):
 
     def get_latest_url(self):
         """
-        Returns the URL of the page with the detail view for the latest order related to the current user
+        Returns the URL of the page with the detail view for the latest order related to the current customer
         """
         try:
             return Page.objects.public().get(reverse_id='shop-order-last').get_absolute_url()

@@ -17,7 +17,7 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, generics.Gener
     many = True
 
     def get_queryset(self):
-        return OrderModel.objects.filter(user=self.request.user).order_by('-updated_at',)
+        return OrderModel.objects.filter(customer=self.request.customer).order_by('-updated_at',)
 
     def get_serializer_class(self):
         if self.many:

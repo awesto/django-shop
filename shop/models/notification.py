@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from bs4 import BeautifulSoup
 from django.conf import settings
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AnonymousUser
 from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.db import models
 from django.db.models import Q
@@ -15,6 +15,7 @@ from django_fsm.signals import post_transition
 from post_office import mail
 from post_office.models import Email as OriginalEmail, EmailTemplate
 from filer.fields.file import FilerFileField
+from .customer import CustomerModel
 from .order import OrderModel
 
 
@@ -97,8 +98,8 @@ class Notification(models.Model):
         if self.mail_to is None:
             return
         if self.mail_to == 0:
-            return order.user.email
-        return get_user_model().objects.get(id=self.mail_to).email
+            return order.customer.email
+        return CustomerModel.objects.get(pk=self.mail_to).email
 
 
 class NotificationAttachment(models.Model):
@@ -114,7 +115,7 @@ class EmulateHttpRequest(HttpRequest):
     Use this class to emulate a HttpRequest object, when templates must be rendered
     asynchronously, for instance when an email must be generated out of an Order object.
     """
-    def __init__(self, user, stored_request):
+    def __init__(self, customer, stored_request):
         super(EmulateHttpRequest, self).__init__()
         parsedurl = urlparse(stored_request.get('absolute_base_uri'))
         self.path = self.path_info = parsedurl.path
@@ -128,7 +129,8 @@ class EmulateHttpRequest(HttpRequest):
         self.META['REMOTE_ADDR'] = stored_request.get('remote_ip')
         self.method = 'GET'
         self.LANGUAGE_CODE = self.COOKIES['django_language'] = stored_request.get('language')
-        self.user = user
+        self.customer = customer
+        self.user = customer.is_anonymous() and AnonymousUser or customer.user
         self.current_page = None
 
 
@@ -140,11 +142,11 @@ def order_event_notification(sender, instance=None, target=None, **kwargs):
             continue
 
         # emulate a request object which behaves similar to that one, when the customer submitted its order
-        emulated_request = EmulateHttpRequest(instance.user, instance.stored_request)
+        emulated_request = EmulateHttpRequest(instance.customer, instance.stored_request)
         order_serializer = serializers.OrderDetailSerializer(instance, context={'request': emulated_request})
         language = instance.stored_request.get('language')
         context = {
-            'customer': serializers.CustomerSerializer(instance.user).data,
+            'customer': serializers.CustomerSerializer(instance.customer).data,
             'data': order_serializer.data,
             'ABSOLUTE_BASE_URI': emulated_request.build_absolute_uri().rstrip('/'),
             'render_language': language,
