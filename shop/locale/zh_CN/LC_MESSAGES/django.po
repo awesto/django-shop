@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-08 17:59+0200\n"
+"POT-Creation-Date: 2015-09-18 10:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,41 +17,34 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: apps.py:8
+msgid "shop"
+msgstr ""
+
 #: cms_app.py:9
 #, fuzzy
 msgid "View Orders"
 msgstr "订单"
 
-#: admin/auth.py:11
-#, fuzzy
-msgid "Personal info"
-msgstr "附加信息"
-
-#: admin/auth.py:12
-msgid "Permissions"
-msgstr ""
-
-#: admin/auth.py:14
-msgid "Important dates"
-msgstr ""
-
-#: admin/notification.py:18 admin/notification.py:52
+#: admin/notification.py:18 admin/notification.py:53
 msgid "Nobody"
 msgstr ""
 
-#: admin/notification.py:18 models/order.py:116
+#: admin/notification.py:18 models/cart.py:126 models/order.py:116
+#: models/defaults/auth.py:60
 msgid "Customer"
 msgstr ""
 
-#: admin/order.py:108
+#: admin/order.py:115 templates/shop/print/delivery-note.html:10
 msgid "Delivery Note"
 msgstr ""
 
-#: admin/order.py:110
+#: admin/order.py:117 templates/shop/print/invoice.html:4
+#: templates/shop/print/invoice.html:7
 msgid "Invoice"
 msgstr ""
 
-#: admin/order.py:118
+#: admin/order.py:125
 msgid "Print out"
 msgstr ""
 
@@ -87,12 +80,12 @@ msgstr ""
 msgid "Continue as guest"
 msgstr ""
 
-#: cascade/auth.py:26 cascade/checkout.py:30 cascade/plugin_base.py:94
+#: cascade/auth.py:26 cascade/checkout.py:31 cascade/plugin_base.py:94
 #: cascade/processbar.py:107 cascade/processbar.py:110
 msgid "CMS Page"
 msgstr ""
 
-#: cascade/auth.py:26 cascade/checkout.py:30 cascade/processbar.py:108
+#: cascade/auth.py:26 cascade/checkout.py:31 cascade/processbar.py:108
 #: cascade/processbar.py:110
 msgid "Reload Page"
 msgstr ""
@@ -146,64 +139,63 @@ msgstr ""
 msgid "Shall the cart be editable or a static summary?"
 msgstr ""
 
-#: cascade/checkout.py:29
-msgid "Putton Content"
+#: cascade/checkout.py:30 cascade/processbar.py:105
+msgid "Button Content"
 msgstr ""
 
-#: cascade/checkout.py:30 cascade/processbar.py:108 cascade/processbar.py:111
+#: cascade/checkout.py:31 cascade/processbar.py:108 cascade/processbar.py:111
 msgid "Purchase Now"
 msgstr ""
 
-#: cascade/checkout.py:37
+#: cascade/checkout.py:38
 #, fuzzy
 msgid "Proceed Button"
 msgstr "进行结帐"
 
-#: cascade/checkout.py:59
+#: cascade/checkout.py:60
 msgid "Customer Form"
 msgstr ""
 
-#: cascade/checkout.py:70
+#: cascade/checkout.py:74
 msgid "Guest Form"
 msgstr ""
 
-#: cascade/checkout.py:90
+#: cascade/checkout.py:94
 #, fuzzy
 msgid "Shipping Address Form"
 msgstr "物流地址"
 
-#: cascade/checkout.py:98
+#: cascade/checkout.py:102
 #, fuzzy
 msgid "Billing Address Form"
 msgstr "账单地址"
 
-#: cascade/checkout.py:106
+#: cascade/checkout.py:110
 #, fuzzy
 msgid "Payment Method Form"
 msgstr "支付方法"
 
-#: cascade/checkout.py:133
+#: cascade/checkout.py:137
 #, fuzzy
 msgid "Shipping Method Form"
 msgstr "物流"
 
-#: cascade/checkout.py:160
+#: cascade/checkout.py:164
 msgid "Extra Annotation Form"
 msgstr ""
 
-#: cascade/checkout.py:176
+#: cascade/checkout.py:180
 msgid "Accept Condition"
 msgstr ""
 
-#: cascade/checkout.py:197
+#: cascade/checkout.py:201
 msgid "HTML content"
 msgstr ""
 
 #: cascade/plugin_base.py:94 models/order.py:264 models/product.py:104
 #: templates/shop/cart/editable.html:13 templates/shop/cart/static.html:8
-#: templates/shop/cart/watch.html:9
-#: templates/shop/order/email-list-items.html:10
-#: templates/shop/order/order-detail.html:13
+#: templates/shop/cart/watch.html:9 templates/shop/email/order.html:11
+#: templates/shop/order/order-detail.html:13 templates/shop/print/order.html:9
 msgid "Product"
 msgstr "产品"
 
@@ -261,62 +253,58 @@ msgstr ""
 msgid "Next Step Button"
 msgstr ""
 
-#: cascade/processbar.py:105
-msgid "Button Content"
-msgstr ""
-
-#: forms/auth.py:21 templates/shop/auth/login-reset.html:8
+#: forms/auth.py:23 templates/shop/auth/login-reset.html:8
 #: templates/shop/auth/login-reset.html:26 templates/shop/auth/login.html:8
 #: templates/shop/auth/reset.html:8
 msgid "Your e-mail address"
 msgstr ""
 
-#: forms/auth.py:22
+#: forms/auth.py:24
 msgid "Preset password"
 msgstr ""
 
-#: forms/auth.py:24
+#: forms/auth.py:26
 msgid "Send a randomly generated password to your e-mail address."
 msgstr ""
 
-#: forms/auth.py:26
+#: forms/auth.py:28
 msgid "Choose a password"
 msgstr ""
 
-#: forms/auth.py:27
+#: forms/auth.py:29
 msgid "Minimum length is 6 characters."
 msgstr ""
 
-#: forms/auth.py:28
+#: forms/auth.py:30
 msgid "Repeat password"
 msgstr ""
 
-#: forms/auth.py:29
+#: forms/auth.py:31
 msgid "Confirm password."
 msgstr ""
 
-#: forms/auth.py:51
+#: forms/auth.py:53
 msgid "Passwords do not match"
 msgstr ""
 
-#: forms/auth.py:54
+#: forms/auth.py:56
 #, python-brace-format
 msgid ""
 "A customer with the e-mail address '{email}' already exists.\n"
 "If you have used this address previously, try to reset the password."
 msgstr ""
 
-#: forms/checkout.py:137
+#: forms/checkout.py:153
 #, fuzzy
 msgid "Use shipping address for billing"
 msgstr "物流地址"
 
-#: forms/checkout.py:164
+#: forms/checkout.py:180
 #, fuzzy
 msgid "Payment Method"
 msgstr "支付方法"
 
-#: forms/checkout.py:181
+#: forms/checkout.py:197
 #, fuzzy
 msgid "Shipping Method"
 msgstr "物流"
@@ -334,171 +322,127 @@ msgstr ""
 msgid "Customers in this shop: total={total}, anonymous={anonymous}, expired={expired}, guests={guests}, registered={registered}."
 msgstr ""
 
-#: models/address.py:18
+#: models/address.py:17
 msgid "Priority of using this address for shipping"
 msgstr ""
 
-#: models/address.py:20
+#: models/address.py:19
 msgid "Priority of using this address for invoicing"
 msgstr ""
 
-#: models/address.py:24
+#: models/address.py:23
 msgid "Address"
 msgstr "地址"
 
-#: models/address.py:25
+#: models/address.py:24
 msgid "Addresses"
 msgstr "地址列表"
 
-#: models/address.py:42
+#: models/address.py:41
 msgid "Austria"
 msgstr ""
 
-#: models/address.py:43
+#: models/address.py:42
 msgid "Germany"
 msgstr ""
 
-#: models/address.py:44
+#: models/address.py:43
 msgid "Denmark"
 msgstr ""
 
-#: models/address.py:45
+#: models/address.py:44
 msgid "Switzerland"
 msgstr ""
 
-#: models/address.py:46
+#: models/address.py:45
 msgid "Nederlands"
 msgstr ""
 
-#: models/auth.py:60
-msgid "Mrs."
-msgstr ""
-
-#: models/auth.py:60
-msgid "Mr."
-msgstr ""
-
-#: models/auth.py:64
-msgid "Required. Maximum 254 letters, numbers and the symbols: @ + - _ ."
-msgstr ""
-
-#: models/auth.py:65
-msgid "Enter a valid username."
-msgstr ""
-
-#: models/auth.py:67
-msgid "Anonymous customers are identified by their session key"
-msgstr ""
-
-#: models/auth.py:70
-msgid "First Name"
-msgstr ""
-
-#: models/auth.py:71
-#, fuzzy
-msgid "Last Name"
-msgstr "上次修改"
-
-#: models/auth.py:72
-#, fuzzy
-msgid "email Address"
-msgstr "账单地址"
-
-#: models/auth.py:73
-#, fuzzy
-msgid "Staff status"
-msgstr "状态"
-
-#: models/auth.py:74
-msgid "Designates whether the user can log into this admin site."
-msgstr ""
-
-#: models/auth.py:75 models/product.py:97
-msgid "Active"
-msgstr "活跃的"
-
-#: models/auth.py:76
-msgid "Designates whether this user should be treated as active. Unselect this instead of deleting accounts."
-msgstr ""
-
-#: models/auth.py:78
-msgid "Registered"
-msgstr ""
-
-#: models/auth.py:79
-msgid "Designates whether this customer registered his account, or if he is unauthenticated and considered a guest."
-msgstr ""
-
-#: models/auth.py:81
-#, fuzzy
-msgid "Date joined"
-msgstr "添加日期"
-
-#: models/auth.py:83
-msgid "Extra information about this customer"
-msgstr ""
-
-#: models/cart.py:77
+#: models/cart.py:76
 msgid "Arbitrary information for this cart item"
 msgstr ""
 
-#: models/cart.py:83
+#: models/cart.py:82
 msgid "Cart item"
 msgstr "购书车项"
 
-#: models/cart.py:84
+#: models/cart.py:83
 msgid "Cart items"
 msgstr "购物车总项"
 
-#: models/cart.py:129 models/order.py:122 models/product.py:95
+#: models/cart.py:127 models/order.py:122 models/product.py:95
 #, fuzzy
 msgid "Created at"
 msgstr "创建"
 
-#: models/cart.py:130 models/order.py:123 models/product.py:96
+#: models/cart.py:128 models/order.py:123 models/product.py:96
 #, fuzzy
 msgid "Updated at"
 msgstr "更新"
 
-#: models/cart.py:131
+#: models/cart.py:129
 msgid "Arbitrary information for this cart"
 msgstr ""
 
-#: models/cart.py:138
+#: models/cart.py:136
 #, fuzzy
 msgid "Shopping Cart"
 msgstr "置空购物车"
 
-#: models/cart.py:139
+#: models/cart.py:137
 #, fuzzy
 msgid "Shopping Carts"
 msgstr "置空购物车"
 
-#: models/notification.py:20
+#: models/customer.py:89
+msgid "Mrs."
+msgstr ""
+
+#: models/customer.py:89
+msgid "Mr."
+msgstr ""
+
+#: models/customer.py:89
+msgid "(n/a)"
+msgstr ""
+
+#: models/customer.py:93
+msgid "Registered"
+msgstr ""
+
+#: models/customer.py:94
+msgid "Designates whether this customer registered his account and is authenticated,if he is unauthenticated but considered a guest, or if he did not declare its affiliation."
+msgstr ""
+
+#: models/customer.py:97
+msgid "Extra information about this customer"
+msgstr ""
+
+#: models/notification.py:75
 msgid "Name"
 msgstr "姓名"
 
-#: models/notification.py:21
+#: models/notification.py:76
 msgid "Event"
 msgstr ""
 
-#: models/notification.py:22
+#: models/notification.py:77
 msgid "Mail to"
 msgstr ""
 
-#: models/notification.py:24
+#: models/notification.py:79
 msgid "Template"
 msgstr ""
 
-#: models/notification.py:29
+#: models/notification.py:84
 msgid "Notification"
 msgstr ""
 
-#: models/notification.py:30
+#: models/notification.py:85
 msgid "Notifications"
 msgstr ""
 
-#: models/notification.py:39
+#: models/notification.py:94
 msgid "Does not exists"
 msgstr ""
 
@@ -521,8 +465,8 @@ msgstr ""
 
 #: models/order.py:120 templates/shop/cart/editable.html:34
 #: templates/shop/cart/static.html:41 templates/shop/cart/summary.html:6
-#: templates/shop/order/email-list-items.html:40
-#: templates/shop/order/order-detail.html:46
+#: templates/shop/email/order.html:41 templates/shop/order/order-detail.html:46
+#: templates/shop/print/order.html:44
 #: templates/shop/products/catalog-product-add2cart.html:11
 #, fuzzy
 msgid "Subtotal"
@@ -531,9 +475,9 @@ msgstr "购物车附属总计"
 #: models/order.py:121 templates/shop/cart/editable.html:16
 #: templates/shop/cart/editable.html:46 templates/shop/cart/static.html:11
 #: templates/shop/cart/static.html.py:56 templates/shop/cart/summary.html:16
-#: templates/shop/order/email-list-items.html:50
-#: templates/shop/order/order-detail.html:16
-#: templates/shop/order/order-detail.html:60
+#: templates/shop/email/order.html:51 templates/shop/order/order-detail.html:16
+#: templates/shop/order/order-detail.html:60 templates/shop/print/order.html:12
+#: templates/shop/print/order.html.py:58
 #, fuzzy
 msgid "Total"
 msgstr "行数总计"
@@ -678,6 +622,10 @@ msgstr "订单项"
 msgid "Order items"
 msgstr "订单项"
 
+#: models/product.py:97
+msgid "Active"
+msgstr "活跃的"
+
 #: models/product.py:98
 msgid "Is this product publicly visible."
 msgstr ""
@@ -712,8 +660,56 @@ msgstr ""
 msgid "Location"
 msgstr ""
 
+#: models/defaults/auth.py:39
+#, fuzzy
+msgid "Email address"
+msgstr "账单地址"
+
+#: models/defaults/auth.py:42
+msgid "username"
+msgstr ""
+
+#: models/defaults/auth.py:45
+#, fuzzy
+msgid "First name"
+msgstr "产品名称"
+
+#: models/defaults/auth.py:46
+#, fuzzy
+msgid "Last name"
+msgstr "上次修改"
+
+#: models/defaults/auth.py:47
+#, fuzzy
+msgid "staff status"
+msgstr "状态"
+
+#: models/defaults/auth.py:48
+msgid "Designates whether the user can log into this admin site."
+msgstr ""
+
+#: models/defaults/auth.py:49
+#, fuzzy
+msgid "active"
+msgstr "活跃的"
+
+#: models/defaults/auth.py:50
+msgid "Designates whether this user should be treated as active.Unselect this instead of deleting accounts."
+msgstr ""
+
+#: models/defaults/auth.py:52
+#, fuzzy
+msgid "date joined"
+msgstr "添加日期"
+
+#: models/defaults/auth.py:61
+msgid "Customers"
+msgstr ""
+
 #: models/defaults/order.py:10
-msgid "Shipping address"
+#: templates/shop/email/customer-information.html:14
+#: templates/shop/order/order-list.html:13
+msgid "Shipping Address"
 msgstr "物流地址"
 
 #: models/defaults/order.py:11
@@ -721,7 +717,9 @@ msgid "Shipping address at the moment of purchase."
 msgstr ""
 
 #: models/defaults/order.py:12
-msgid "Billing address"
+#: templates/shop/email/customer-information.html:10
+#, fuzzy
+msgid "Billing Address"
 msgstr "账单地址"
 
 #: models/defaults/order.py:13
@@ -832,12 +830,12 @@ msgid "Change Password"
 msgstr ""
 
 #: templates/shop/auth/change.html:8 templates/shop/auth/change.html.py:11
-#: templates/shop/auth/password-reset-confirm.html:10
+#: templates/shop/auth/password-reset-confirm.html:12
 msgid "New Password"
 msgstr ""
 
 #: templates/shop/auth/change.html:14 templates/shop/auth/change.html.py:17
-#: templates/shop/auth/password-reset-confirm.html:16
+#: templates/shop/auth/password-reset-confirm.html:18
 msgid "Confirm Password"
 msgstr ""
 
@@ -887,24 +885,24 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
-#: templates/shop/auth/password-reset-confirm.html:4
+#: templates/shop/auth/password-reset-confirm.html:5
 #, python-format
 msgid "New password for '%(user_name)s'"
 msgstr ""
 
-#: templates/shop/auth/password-reset-confirm.html:9
+#: templates/shop/auth/password-reset-confirm.html:11
 msgid "Please enter your new password twice so we can verify you typed it in correctly."
 msgstr ""
 
-#: templates/shop/auth/password-reset-confirm.html:13
+#: templates/shop/auth/password-reset-confirm.html:15
 msgid "New password"
 msgstr ""
 
-#: templates/shop/auth/password-reset-confirm.html:19
+#: templates/shop/auth/password-reset-confirm.html:21
 msgid "Confirm password"
 msgstr ""
 
-#: templates/shop/auth/password-reset-confirm.html:23
+#: templates/shop/auth/password-reset-confirm.html:25
 msgid "Change my password"
 msgstr ""
 
@@ -925,15 +923,15 @@ msgid "Register"
 msgstr ""
 
 #: templates/shop/cart/editable.html:14 templates/shop/cart/static.html:9
-#: templates/shop/cart/watch.html:10
-#: templates/shop/order/email-list-items.html:11
-#: templates/shop/order/order-detail.html:14
+#: templates/shop/cart/watch.html:10 templates/shop/email/order.html:12
+#: templates/shop/order/order-detail.html:14 templates/shop/print/order.html:10
 #: templates/shop/products/catalog-product-add2cart.html:11
 msgid "Quantity"
 msgstr "数量"
 
 #: templates/shop/cart/editable.html:15 templates/shop/cart/static.html:10
 #: templates/shop/cart/watch.html:11 templates/shop/order/order-detail.html:15
+#: templates/shop/print/order.html:11
 #: templates/shop/products/catalog-product-add2cart.html:11
 #: templates/shop/search/results.html:10
 #, fuzzy
@@ -956,6 +954,22 @@ msgstr "订单项"
 #: templates/shop/cart/watch.html:44
 #: templates/shop/products/catalog-product-add2cart.html:22
 msgid "Add to cart"
+msgstr ""
+
+#: templates/shop/email/customer-information.html:4
+msgid "Your Details"
+msgstr ""
+
+#: templates/shop/email/customer-information.html:6
+msgid "E-Mail"
+msgstr ""
+
+#: templates/shop/email/order.html:7
+msgid "Summary of Your Order"
+msgstr ""
+
+#: templates/shop/email/order.html:13
+msgid "Price"
 msgstr ""
 
 #: templates/shop/email/register-user-body.txt:2
@@ -1004,14 +1018,6 @@ msgstr ""
 msgid "Password reset on %(site_name)s"
 msgstr ""
 
-#: templates/shop/order/email-list-items.html:6
-msgid "Summary of Your Order"
-msgstr ""
-
-#: templates/shop/order/email-list-items.html:12
-msgid "Price"
-msgstr ""
-
 #: templates/shop/order/order-detail.html:4
 #, fuzzy
 msgid "Your Order"
@@ -1030,11 +1036,7 @@ msgstr "订单项"
 msgid "Sum"
 msgstr ""
 
-#: templates/shop/order/order-list.html:13
-msgid "Shipping Address"
-msgstr "物流地址"
-
-#: templates/shop/printing/delivery-note.html:6
+#: templates/shop/print/delivery-note.html:6
 msgid "Delivery note for"
 msgstr ""
 
@@ -1104,6 +1106,16 @@ msgstr ""
 #: views/auth.py:125
 msgid "Password has been reset with the new password."
 msgstr ""
+
+#~ msgid "Shipping address"
+#~ msgstr "物流地址"
+
+#~ msgid "Billing address"
+#~ msgstr "账单地址"
+
+#, fuzzy
+#~ msgid "Personal info"
+#~ msgstr "附加信息"
 
 #~ msgid ""
 #~ "\n"
