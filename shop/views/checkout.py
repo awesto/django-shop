@@ -52,7 +52,6 @@ class CheckoutViewSet(BaseViewSet):
             if isinstance(reply, dict):
                 errors.update(reply)
 
-        # update the cart and run its modifiers
         cart.save()
 
         # add possible form errors for giving feedback to the customer

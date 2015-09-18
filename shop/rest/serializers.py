@@ -284,6 +284,11 @@ class CheckoutSerializer(BaseCartSerializer):
     class Meta(BaseCartSerializer.Meta):
         fields = ('subtotal', 'extra_rows', 'total',)
 
+    def to_representation(self, cart):
+        cart.update(self.context['request'])
+        representation = super(BaseCartSerializer, self).to_representation(cart)
+        return representation
+
 
 class OrderItemSerializer(serializers.ModelSerializer):
     line_total = MoneyField()
