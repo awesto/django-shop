@@ -194,10 +194,18 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         """
         The amount paid is the sum of related orderpayments
         """
-        amount = self.orderpayment_set.aggregate(amount=Sum('amount'))['amount']
-        if amount is None:
-            amount = MoneyMaker(self.currency)(0)
-        return amount
+        if not hasattr(self, '_amount_paid'):
+            amount = self.orderpayment_set.aggregate(amount=Sum('amount'))['amount']
+            if amount is None:
+                amount = 0
+            self._amount_paid = MoneyMaker(self.currency)(amount)
+        return self._amount_paid
+
+    def get_outstanding_amount(self):
+        """
+        Return the outstanding amount paid for this order
+        """
+        return self.total - self.get_amount_paid()
 
     @classmethod
     def get_transition_name(cls, target):

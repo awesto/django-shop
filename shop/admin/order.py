@@ -54,16 +54,20 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
     fsm_field = ('status',)
     date_hierarchy = 'created_at'
     inlines = (OrderItemInline, OrderPaymentInline,)
-    readonly_fields = ('status_name', 'customer', 'total', 'subtotal', 'created_at', 'updated_at',
-        'extra', 'stored_request',)
-    fields = ('status_name', ('created_at', 'updated_at'), ('subtotal', 'total',), 'customer',
-        'extra', 'stored_request',)
+    readonly_fields = ('status_name', 'customer', 'total', 'subtotal', 'outstanding_amount',
+        'created_at', 'updated_at', 'extra', 'stored_request',)
+    fields = ('status_name', ('created_at', 'updated_at'), ('subtotal', 'total', 'outstanding_amount',),
+        'customer', 'extra', 'stored_request',)
 
     def get_form(self, request, obj=None, **kwargs):
         # must add field `extra` on the fly.
         #Form = type('TextLinkForm', (TextLinkFormBase,), {'ProductModel': ProductModel, 'product': product_field})
         #kwargs.update(form=Form)
         return super(BaseOrderAdmin, self).get_form(request, obj, **kwargs)
+
+    def outstanding_amount(self, obj):
+        return obj.get_outstanding_amount()
+    outstanding_amount.short_description = _("Outstanding amount")
 
 
 class PrintOrderAdminMixin(object):

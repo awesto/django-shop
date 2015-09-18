@@ -55,11 +55,18 @@
 			<td class="text-right">{{ extra_row.amount }}</td>
 		</tr>
 	{% endfor %}
-		<tr>
+		<tr style="border-top-style: double;">
 			<td colspan="2"></td>
 			<td><h4>{% trans "Total" %}</h4></td>
 			<td class="text-right">
 				<h4>{{ data.total }}</h4>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"></td>
+			<td><h5>{% trans "Thereof Paid" %}</h5></td>
+			<td class="text-right">
+				<h5>{{ data.amount_paid }}</h5>
 			</td>
 		</tr>
 	</tfoot>
