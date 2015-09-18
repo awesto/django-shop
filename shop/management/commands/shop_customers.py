@@ -4,7 +4,6 @@ from optparse import make_option
 from importlib import import_module
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -17,20 +16,25 @@ class Command(BaseCommand):
     )
 
     def handle(self, verbosity, delete_expired, *args, **options):
-        SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
-        Customer = get_user_model()
-        data = dict(total=0, anonymous=0, guests=0, registered=0, expired=0)
-        for customer in Customer.objects.iterator():
+        from shop.models.customer import CustomerModel, CustomerManager
+        SessionStore = import_module(settings.SESSION_ENGINE).SessionStore()
+        data = dict(total=0, anonymous=0, active=0, staff=0, guests=0, registered=0, expired=0)
+        for customer in CustomerModel.objects.iterator():
             data['total'] += 1
-            if customer.is_anonymous():
+            if customer.user.is_active:
+                data['active'] += 1
+            if customer.user.is_staff:
+                data['staff'] += 1
+            if customer.is_registered():
+                data['registered'] += 1
+            elif customer.is_guest():
+                data['guests'] += 1
+            elif customer.is_anonymous():
                 data['anonymous'] += 1
-                if customer.session_key and not SessionStore().exists(customer.session_key):
+                session_key = CustomerManager.decode_session_key(customer.user.username)
+                if not SessionStore.exists(session_key):
                     data['expired'] += 1
                     if delete_expired:
                         customer.delete()
-            elif customer.is_guest():
-                data['guests'] += 1
-            elif customer.is_registered:
-                data['registered'] += 1
-        msg = _("Customers in this shop: total={total}, anonymous={anonymous}, expired={expired}, guests={guests}, registered={registered}.")
+        msg = _("Customers in this shop: total={total}, anonymous={anonymous}, expired={expired}, active={active}, guests={guests}, registered={registered}, staff={staff}.")
         self.stdout.write(msg.format(**data))

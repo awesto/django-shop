@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import re
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.core import validators
 from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
@@ -39,7 +41,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_("Email address"), blank=False, unique=True, max_length=254)
 
     # some authentication require the username, regardless of the USERNAME_FIELD setting below
-    username = models.CharField(_('username'), max_length=30, blank=True)
+    username = models.CharField(_("Username"), max_length=30, unique=True,
+        help_text=_("Required. 30 characters or fewer. Letters, numbers and @/./+/-/_ characters"),
+        validators=[validators.RegexValidator(re.compile('^[\w.@+-]+$'), _("Enter a valid username."), 'invalid')])
 
     # copied from django.contrib.auth.models.AbstractUser
     first_name = models.CharField(_("First name"), max_length=30, blank=True)

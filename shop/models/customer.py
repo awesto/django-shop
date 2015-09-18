@@ -13,6 +13,8 @@ from django.utils.six import with_metaclass
 from jsonfield.fields import JSONField
 from . import deferred
 
+SESSION_BASED_USERNAME_PREFIX = '!'  # This will identify a customer by its session key
+
 
 class CustomerManager(models.Manager):
     BASE64_ALPHABET = string.digits + string.ascii_uppercase + string.ascii_lowercase + '.@'
@@ -24,8 +26,7 @@ class CustomerManager(models.Manager):
         """
         Session keys have base 36 and length 32. Since the `username` field accepts only up
         to 30 characters, the session key is converted to a base 64 representation, resulting
-        in a length of approximately 28. The used alphabet is compatible with the validation
-        Regex for Django's User model username field.
+        in a length of approximately 28.
         """
         return cls._encode(int(session_key, 36), cls.BASE64_ALPHABET)
 
@@ -34,6 +35,7 @@ class CustomerManager(models.Manager):
         """
         Decode a compact session key back to its original length and base.
         """
+        compact_session_key = compact_session_key.lstrip(SESSION_BASED_USERNAME_PREFIX)
         base_length = len(cls.BASE64_ALPHABET)
         n = 0
         for c in compact_session_key:
@@ -53,9 +55,7 @@ class CustomerManager(models.Manager):
 
     def create_anonymous_customer(self, compact_session_key):
         user = get_user_model().objects.create(username=compact_session_key)
-        # even faked anonymous users must be active, otherwise Django Restframework
-        # overrides them as AnonymousUser
-        user.is_active = True
+        user.is_active = False
         user.set_unusable_password()
         customer = self.model(user=user)
         customer.save(using=self._db)
@@ -70,7 +70,7 @@ class CustomerManager(models.Manager):
         if not request.session.session_key:
             request.session.cycle_key()
             assert request.session.session_key
-        compact_session_key = '+' + self.encode_session_key(request.session.session_key)
+        compact_session_key = SESSION_BASED_USERNAME_PREFIX + self.encode_session_key(request.session.session_key)
         try:
             return self.get(user__username=compact_session_key)
         except self.model.DoesNotExist:
@@ -90,9 +90,6 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL, primary_key=True)
     salutation = models.CharField(max_length=5, choices=SALUTATION)
-    is_registered = models.NullBooleanField(_("Registered"), default=None,
-        help_text=_("Designates whether this customer registered his account and is authenticated,"
-            "if he is unauthenticated but considered a guest, or if he did not declare its affiliation."))
     extra = JSONField(default={}, editable=False,
         verbose_name=_("Extra information about this customer"))
 
@@ -105,9 +102,11 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         return self.identifier()
 
     def identifier(self):
-        if self.is_registered is None:
+        if self.is_anonymous():
             return '<anonymous>'
-        return self.user.email
+        if self.is_guest():
+            return self.user.email
+        return self.user.username
 
     @property
     def first_name(self):
@@ -144,29 +143,33 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     # There are three possible auth states:
     def is_anonymous(self):
         """
-        Return true if the customer isn't associated with a django User account.
-        Anonymous customers have accessed the shop, but not registered or placed
-        an order.
+        Return true if the customer isn't associated with valid User account.
+        Anonymous customers have accessed the shop, but did not register nor placed an order.
         """
-        return not self.is_registered
+        # TODO: remove 'not self.user.username or '
+        return self.user.username.startswith(SESSION_BASED_USERNAME_PREFIX) and not (self.user.email or self.user.is_active)
 
     def is_guest(self):
         """
-        Return true if the customer has chosen to place an order as a guest.
+        Return true if the customer isn't associated with valid User account, but declared
+        himself as a guest, leaving their email address.
         """
-        return self.is_registered is False
+        return self.user.username.startswith(SESSION_BASED_USERNAME_PREFIX) and self.user.email and not self.user.is_active
 
-    def is_authenticated(self):
+    def is_registered(self):
         """
-        Return true if the customer is registered.
+        Return true if the customer has registered himself.
         """
-        return self.is_registered
+        return self.user.is_active and not self.user.username.startswith(SESSION_BASED_USERNAME_PREFIX)
 
     def save(self, *args, **kwargs):
         self.user.save(*args, **kwargs)
-        if self.is_registered or self.user.is_staff or self.user.is_superuser:
-            self.is_registered = True
         super(BaseCustomer, self).save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        if self.is_registered():
+            super(BaseCustomer, self).delete(*args, **kwargs)
+        self.user.delete(*args, **kwargs)
 
 CustomerModel = deferred.MaterializedModel(BaseCustomer)
 
