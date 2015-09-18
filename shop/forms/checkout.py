@@ -47,12 +47,10 @@ class CustomerForm(DialogModelForm):
 class GuestForm(DialogModelForm):
     scope_prefix = 'data.guest'
     form_name = 'customer_form'
-    email = fields.EmailField()
 
     class Meta:
-        model = get_user_model()
+        model = get_user_model()  # since we only use the email field, use the User model directly
         fields = ('email',)
-        #exclude = ('salutation',)
 
     @classmethod
     def form_factory(cls, request, data, cart):
@@ -96,13 +94,13 @@ class AddressForm(DialogModelForm):
         """
         # search for the associated address DB instance or create a new one
         priority = data and data.get('priority') or 0
-        filter_args = {'user': request.user, cls.priority_field: priority}
+        filter_args = {'customer': request.customer, cls.priority_field: priority}
         instance = cls.get_model().objects.filter(**filter_args).first()
         address_form = cls(data=data, instance=instance)
         if address_form.is_valid():
             if not instance:
                 instance = address_form.save(commit=False)
-                instance.user = request.user
+                instance.customer = request.customer
                 setattr(instance, cls.priority_field, priority)
             assert address_form.instance == instance
             instance.save()
@@ -111,11 +109,11 @@ class AddressForm(DialogModelForm):
             return {address_form.form_name: dict(address_form.errors)}
 
     @classmethod
-    def get_max_priority(cls, user):
+    def get_max_priority(cls, customer):
         """
         Return the maximum priority for this address model.
         """
-        aggr = cls.get_model().objects.filter(user=user).aggregate(Max(cls.priority_field))
+        aggr = cls.get_model().objects.filter(customer=customer).aggregate(Max(cls.priority_field))
         return aggr.get('{}__max'.format(cls.priority_field, 0))
 
     @classmethod
@@ -125,10 +123,10 @@ class AddressForm(DialogModelForm):
         data = address_form.initial
         data.pop('id', None)
         data.initial.pop('priority', None)
-        data.update({'user': cart.user, '{}__isnull'.format(cls.priority_field): False})
+        data.update({'customer': cart.customer, '{}__isnull'.format(cls.priority_field): False})
         instance, created = cls.get_model().objects.get_or_create(**data)
         if created:
-            instance.priority_billing = cls.get_max_priority(cart.user) + 1
+            instance.priority_billing = cls.get_max_priority(cart.customer) + 1
             instance.save()
 
 
