@@ -40,13 +40,14 @@ class PayInAdvanceWorkflowMixin(object):
         pass
 
     def deposited_too_little(self):
-        return self.get_amount_paid() < self.total
+        amount_paid = self.get_amount_paid()
+        return amount_paid > 0 and amount_paid < self.total
 
     def deposited_enough(self):
-        return not self.deposited_too_little()
+        return self.get_amount_paid() >= self.total
 
     @transition(field='status', source=['awaiting_payment'], target='awaiting_payment',
-        conditions=[deposited_too_little], custom=dict(admin=True, button_name=_("Add Payment")))
+        conditions=[deposited_too_little], custom=dict(admin=True, button_name=_("Deposited too little")))
     def payment_partially_deposited(self):
         """Signals that an Order received a payment, which was not enough."""
         pass
