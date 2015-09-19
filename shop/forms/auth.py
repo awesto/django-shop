@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.contrib.auth import get_user_model, login, get_backends
+from django.contrib.auth import get_user_model, authenticate, login
 from django.contrib.sites.models import get_current_site
 from django.core.exceptions import ValidationError
 from django.forms import fields, widgets, ModelForm
@@ -69,10 +69,8 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelF
         customer = super(RegisterUserForm, self).save(commit)
         if self.cleaned_data['preset_password']:
             self._send_password(request, customer.user)
-        # since this is a self-registration, login without authentication
-        backend = get_backends()[0]
-        customer.user.backend = "%s.%s" % (backend.__module__, backend.__class__.__name__)
-        login(request, customer.user)
+        user = authenticate(customer.user.username, self.cleaned_data['password1'])
+        login(request, user)
         return customer
 
     def _send_password(self, request, user):
