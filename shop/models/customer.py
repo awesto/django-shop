@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.signals import user_logged_in, user_logged_out
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models, DEFAULT_DB_ALIAS
 from django.dispatch import receiver
 from django.utils.encoding import python_2_unicode_compatible
@@ -209,7 +210,10 @@ def handle_customer_login(sender, **kwargs):
     """
     Update request.customer to an authenticated Customer
     """
-    kwargs['request'].customer = kwargs['request'].user.customer
+    try:
+        kwargs['request'].customer = kwargs['request'].user.customer
+    except (AttributeError, ObjectDoesNotExist):
+        kwargs['request'].customer = SimpleLazyObject(lambda: CustomerModel.objects.get_from_request(kwargs['request']))
 
 
 @receiver(user_logged_out)
