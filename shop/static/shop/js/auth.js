@@ -4,15 +4,15 @@
 // module: django.shop, TODO: move this into a summary JS file
 var djangoShopModule = angular.module('django.shop.auth', []);
 
-// Directive <shop-auth-form>
+// Directive for element: <shop-auth-form ng-form action="...">
 // handle a djangoSHOP's forms related to authentication
 djangoShopModule.directive('shopAuthForm', ['$window', '$http', '$timeout',
                                    function($window, $http, $timeout) {
 	return {
-		restrict: 'A',
+		restrict: 'E',
 		require: 'form',
-		scope: false,  // do not change this
-		link: function(scope, element, attrs, formCtrl) {
+		scope: true,  // do not change this
+		link: function(scope, element, attrs) {
 			var timer = null;
 			if (attrs.action === undefined)
 				throw new Error("Form does not contain an `action` keyword");
