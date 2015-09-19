@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.db.models import Max
-from django.core.exceptions import ImproperlyConfigured
 from django.forms.fields import CharField
 from django.template.loader import select_template
 from django.utils.html import format_html, strip_tags, strip_entities
@@ -62,9 +61,6 @@ class CustomerFormPlugin(DialogFormPluginBase):
     template_leaf_name = 'customer.html'
 
     def get_form_data(self, request):
-        if request.customer.is_anonymous():
-            msg = "CustomerFormPlugin may only be called for Customers which are already registered or have guest status: {}".format(request.customer)
-            raise ImproperlyConfigured(msg)
         return {'instance': request.customer}
 
 DialogFormPluginBase.register_plugin(CustomerFormPlugin)

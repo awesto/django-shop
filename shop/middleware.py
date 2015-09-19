@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.contrib.auth.models import AnonymousUser
 from django.utils.functional import SimpleLazyObject
 from shop.models.customer import CustomerModel
 
 
 def get_customer(request, force=False):
     if force or not hasattr(request, '_cached_customer'):
-        if isinstance(request.user, AnonymousUser):
-            request._cached_customer = CustomerModel.objects.get_from_request(request)
-        else:
-            request._cached_customer = request.user.customer
+        request._cached_customer = CustomerModel.objects.get_from_request(request)
     return request._cached_customer
 
 

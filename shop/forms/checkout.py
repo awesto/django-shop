@@ -20,8 +20,7 @@ class CustomerForm(DialogModelForm):
 
     class Meta:
         model = CustomerModel
-        exclude = ('user', 'username', 'password', 'last_login', 'is_superuser', 'is_staff', 'is_active',
-            'is_registered', 'groups', 'user_permissions', 'date_joined',)
+        exclude = ('user', 'recognized',)
         custom_fields = ('email', 'first_name', 'last_name',)
 
     def __init__(self, initial=None, instance=None, *args, **kwargs):
@@ -52,9 +51,14 @@ class GuestForm(DialogModelForm):
         model = get_user_model()  # since we only use the email field, use the User model directly
         fields = ('email',)
 
+    def __init__(self, initial=None, instance=None, *args, **kwargs):
+        if isinstance(instance, CustomerModel._materialized_model):
+            instance = instance.user
+        super(GuestForm, self).__init__(initial=initial, instance=instance, *args, **kwargs)
+
     @classmethod
     def form_factory(cls, request, data, cart):
-        customer_form = cls(data=data, instance=request.user)
+        customer_form = cls(data=data, instance=request.customer.user)
         if customer_form.is_valid():
             customer_form.save()
         else:
