@@ -10,7 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 from djangular.forms import NgModelFormMixin, NgFormValidationMixin
 from djangular.styling.bootstrap3.forms import Bootstrap3ModelForm
 from shop import settings as shop_settings
-from shop.models.customer import CustomerModel, SESSION_BASED_USERNAME_PREFIX
+from shop.models.customer import CustomerModel
 
 
 class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelForm):
@@ -64,22 +64,22 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelF
         self.instance.recognized = CustomerModel.REGISTERED
         self.instance.user.is_active = True
         self.instance.user.email = self.cleaned_data['email']
-        self.instance.user.username = self.instance.user.username.lstrip(SESSION_BASED_USERNAME_PREFIX)
         self.instance.user.set_password(self.cleaned_data['password1'])
         customer = super(RegisterUserForm, self).save(commit)
+        password = self.cleaned_data['password1']
         if self.cleaned_data['preset_password']:
-            self._send_password(request, customer.user)
-        user = authenticate(customer.user.username, self.cleaned_data['password1'])
+            self._send_password(request, customer.user, password)
+        user = authenticate(username=customer.user.get_username(), password=password)
         login(request, user)
         return customer
 
-    def _send_password(self, request, user):
+    def _send_password(self, request, user, password):
         current_site = get_current_site(request)
         site_name = current_site.name
         domain = current_site.domain
         context = Context({
             'email': user.email,
-            'password': self.cleaned_data['password1'],  # still in cleartext
+            'password': password,
             'domain': domain,
             'site_name': site_name,
             'user': user,
