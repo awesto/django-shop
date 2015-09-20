@@ -3,7 +3,7 @@
 user account at {{ site_name }}.{% endblocktrans %}
 
 {% blocktrans %}In the future, please use username {{ email }} with password {{ password }} to sign
-into {{ protocol }}://{{ domain }}.{% endblocktrans %}
+into {{ absolute_base_uri }}.{% endblocktrans %}
 
 {% trans "Thanks for using our site!" %}
 

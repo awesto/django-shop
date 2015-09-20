@@ -75,15 +75,12 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelF
 
     def _send_password(self, request, user, password):
         current_site = get_current_site(request)
-        site_name = current_site.name
-        domain = current_site.domain
         context = Context({
+            'site_name': current_site.name,
+            'absolute_base_uri': request.build_absolute_uri('/'),
             'email': user.email,
             'password': password,
-            'domain': domain,
-            'site_name': site_name,
             'user': user,
-            'protocol': 'https' if request.is_secure() else 'http',
         })
         subject = select_template([
             '{}/email/register-user-subject.txt'.format(shop_settings.APP_LABEL),
