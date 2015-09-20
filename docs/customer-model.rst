@@ -37,7 +37,7 @@ Therefore djangoSHOP introduces a new database model – the ``Customer`` model.
 Properties of the Customer Model
 ================================
 
-The ``Customer`` model is an extension to the existing ``User`` model. They have a 1:1 relation, and
+The ``Customer`` model is an extension to the existing ``User`` model. It has a 1:1 relation, and
 for each customer, there always exists a user object. This approach allows us to do a few things:
 
 The built-in User object can be swapped out and replaced against another implementation. Such an
@@ -49,6 +49,46 @@ We can create faked users in the database, tagging them as anonymous users. This
 advantage. By storing the session key of the site visitor inside the User object, it is possible to
 establish a connection between a User object in the database with an otherwise anonymous visitor.
 This further allows the Cart and the Order models always refer to the User model, since they don't 
-have to care whether this user is logged in or not. It also keeps the workflow simple, whenever
-an anonymous users decides to register and authenticate himself.
+have to care about whether this user authenticated or not. It also keeps the workflow simple,
+whenever an anonymous users decides to register and authenticate himself.
+
+
+Authenticating against the Email Address
+----------------------------------------
+
+Nowadays it is quite common, to use the email address for authenticating, rather than an explicit
+account identifier. This in Django is not possible without replacing the built-in User model.
+For an e-commerce site this authentication variant is rather important, therefore **djangoSHOP**
+is shipped with an optional replacement for the built-in User model.
+
+This convenience User model is almost a copy of the existing ``User`` model as found in
+``django.contrib.auth.models.py``, but it uses the field ``email`` rather than ``username`` for
+looking up the credentials.
+
+You may optionally use it by importing the alternative implementation into ``models.py`` of your
+application:
+
+.. code-block:: python
+
+	from shop.models.defaults.auth import User
+
+and then using that model in your ``settings.py``: 
+
+	AUTH_USER_MODEL = 'my_application.User'
+
+
+Administration of Users and Customers
+-------------------------------------
+
+By keeping the Customer- and the User model tight together, it is possible to share Django's
+backend interface for both of them. All you have to do is to import and register the administration
+classes into ``admin.py`` of your application:
+
+.. code-block:: python
+
+	from django.contrib import admin
+	from django.contrib.auth import get_user_model
+	from shop.admin.customer import CustomerAdmin
+
+	admin.site.register(get_user_model(), CustomerAdmin)
 
