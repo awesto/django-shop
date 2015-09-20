@@ -133,10 +133,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     def identifier(self):
         if self.recognized:
-            if self.user.username.startswith(SESSION_BASED_USERNAME_PREFIX):
-                return self.user.email
-            else:
-                return self.user.username
+            return self.user.get_short_name()
         return '<anonymous>'
 
     @property

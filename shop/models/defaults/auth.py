@@ -38,12 +38,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     To activate, import this User model into the models.py of your your application and in
     settings.py, point ``AUTH_USER_MODEL`` onto this imported User model.
     """
+    USERNAME_REGEX = re.compile('^[\w.@+-]+$')
+
     email = models.EmailField(_("Email address"), blank=False, unique=True, max_length=254)
 
     # some authentication require the username, regardless of the USERNAME_FIELD setting below
     username = models.CharField(_("Username"), max_length=30, unique=True,
         help_text=_("Required. 30 characters or fewer. Letters, numbers and @/./+/-/_ characters"),
-        validators=[validators.RegexValidator(re.compile('^[\w.@+-]+$'), _("Enter a valid username."), 'invalid')])
+        validators=[(validators.RegexValidator(USERNAME_REGEX), _("Enter a valid username."), 'invalid')])
 
     # copied from django.contrib.auth.models.AbstractUser
     first_name = models.CharField(_("First name"), max_length=30, blank=True)
@@ -68,11 +70,16 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.get_username()
 
     def get_full_name(self):
-        full_name = '%s %s' % (self.first_name, self.last_name)
-        return full_name.strip()
+        full_name = '{} {}'.format(self.first_name, self.last_name)
+        full_name = full_name.strip()
+        if full_name:
+            return full_name
+        return self.get_short_name()
 
     def get_short_name(self):
-        return self.first_name
+        if self.USERNAME_REGEX.match(self.username):
+            return self.username
+        return self.email
 
     def email_user(self, subject, message, from_email=None):
         send_mail(subject, message, from_email, [self.email])
