@@ -19,7 +19,7 @@ from . import deferred
 
 
 class OrderManager(models.Manager):
-    @transaction.commit_on_success
+    @transaction.atomic
     def create_from_cart(self, cart, request):
         """
         This creates a new Order object with all its OrderItems using the current Cart object
