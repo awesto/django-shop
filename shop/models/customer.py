@@ -168,6 +168,12 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     def last_login(self):
         return self.user.last_login
 
+    def is_anonymous(self):
+        return self.user.is_anonymous()
+
+    def is_authenticated(self):
+        return self.user.is_authenticated()
+
     def is_recognized(self):
         """
         Return True if the customer is associated with a User account.
