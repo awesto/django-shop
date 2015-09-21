@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.conf import settings
-from shop.models.auth import BaseCustomer
+from shop.models.customer import BaseCustomer
 
 
 class Customer(BaseCustomer):
