@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from optparse import make_option
-from importlib import import_module
-from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils.translation import ugettext_lazy as _
 
@@ -16,8 +14,7 @@ class Command(BaseCommand):
     )
 
     def handle(self, verbosity, delete_expired, *args, **options):
-        from shop.models.customer import CustomerModel, CustomerManager
-        SessionStore = import_module(settings.SESSION_ENGINE).SessionStore()
+        from shop.models.customer import CustomerModel
         data = dict(total=0, anonymous=0, active=0, staff=0, guests=0, registered=0, expired=0)
         for customer in CustomerModel.objects.iterator():
             data['total'] += 1
@@ -31,10 +28,9 @@ class Command(BaseCommand):
                 data['guests'] += 1
             elif customer.is_anonymous():
                 data['anonymous'] += 1
-                session_key = CustomerManager.decode_session_key(customer.user.username)
-                if not SessionStore.exists(session_key):
-                    data['expired'] += 1
-                    if delete_expired:
-                        customer.delete()
+            if customer.is_expired():
+                data['expired'] += 1
+                if delete_expired:
+                    customer.delete()
         msg = _("Customers in this shop: total={total}, anonymous={anonymous}, expired={expired}, active={active}, guests={guests}, registered={registered}, staff={staff}.")
         self.stdout.write(msg.format(**data))

@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 import string
 import types
+from importlib import import_module
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
@@ -17,6 +18,7 @@ from jsonfield.fields import JSONField
 from . import deferred
 
 SESSION_BASED_USERNAME_PREFIX = '!'  # This will identify a customer by its session key
+SessionStore = import_module(settings.SESSION_ENGINE).SessionStore()
 
 
 class CustomerManager(models.Manager):
@@ -194,6 +196,15 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         Return true if the customer has registered himself.
         """
         return self.recognized == self.REGISTERED
+
+    def is_expired(self):
+        """
+        Return true if the session of an unregistered customer expired.
+        """
+        if self.recognized == self.REGISTERED:
+            return False
+        session_key = CustomerManager.decode_session_key(self.user.username)
+        return SessionStore.exists(session_key)
 
     def save(self, **kwargs):
         self.user.save(using=kwargs.get('using', DEFAULT_DB_ALIAS))
