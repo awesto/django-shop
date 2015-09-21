@@ -10,6 +10,7 @@ from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models, DEFAULT_DB_ALIAS
 from django.dispatch import receiver
+from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import SimpleLazyObject
 from django.utils.translation import ugettext_lazy as _
@@ -109,6 +110,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     recognized = models.PositiveSmallIntegerField(_("Recognized"), choices=CUSTOMER_STATES,
         help_text=_("Designates the state the customer is recognized as."), default=0)
     salutation = models.CharField(max_length=5, choices=SALUTATION)
+    last_access = models.DateTimeField(_("Last accessed"), default=timezone.now)
     extra = JSONField(default={}, editable=False,
         verbose_name=_("Extra information about this customer"))
 
