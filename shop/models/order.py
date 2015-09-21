@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 from six import with_metaclass
 from decimal import Decimal, ROUND_UP
-from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
