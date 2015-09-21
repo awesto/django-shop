@@ -1,4 +1,4 @@
-{% if user.is_anonymous %}
+{% if customer.is_anonymous %}
 	{% include "shop/auth/login-reset.html" %}
 {% else %}
 	{% include "shop/auth/logout.html" %}
