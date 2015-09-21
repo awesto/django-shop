@@ -53,6 +53,81 @@ have to care about whether this user authenticated or not. It also keeps the wor
 whenever an anonymous users decides to register and authenticate himself.
 
 
+Add the Customer model to your application
+------------------------------------------
+
+As almost all models in ***djangoSHOP*, the Customer itself is deferrable_. This means that
+the merchant has to materialize that model, whereby he can add arbitrary fields to the model.
+
+The simplest way is to materialize the given convenience class in the applications ``models.py``:
+
+.. code-block:: python
+
+	from shop.models.defaults.customer import Customer
+
+or, if you needs extra fields, then instead of the above, do:
+
+.. code-block:: python
+
+	from shop.models.customer import BaseCustomer
+
+	class (BaseCustomer):
+	    birth_date = models.DateField("Date of Birth")
+	    # other customer related fields
+
+Customers are created automatically with each unique visitor accessing the site. This is done in the
+djangoSHOP's customer middleware, which must be added to the ``settings.py`` of your application:
+
+.. code-block:: python
+
+	MIDDLEWARE_CLASSES = (
+	    ...
+	    'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'shop.middleware.CustomerMiddleware',
+	    ...
+	)
+
+Additionally, some templates may need to access the customer object through the ``RequestContext``.
+Therefore, in the ``settings.py`` of your application, add this context processor:
+
+.. code-block:: python
+
+	TEMPLATE_CONTEXT_PROCESSORS = (
+	    ...
+	    'shop.context_processors.customer',
+	    ...
+	)
+
+.. _deferrable: deferred-models
+
+
+Implementation Details
+----------------------
+
+The Customer model has a non-nullable one-to-one relation to the User model. Therefore, each
+Customer is associated with exactly one one User. For instance, accessing the hashed password can
+be achieved through ``customer.user.password``. Some common fields and methods from the User model,
+such as ``first_name``, ``last_name``, ``email``, ``is_anonymous()`` and ``is_authenticated()`` are
+accessible directly, when working with a customer object. Saving an instance of type Customer, also
+invokes method ``save()`` from the associated User model.
+
+The other direction – accessing the Customer model from a User – does not always work. Accessing
+an attribute that way, fails if the corresponding Customer is missing.
+
+.. code-block:: python
+
+	>>> from django.contrib.auth import get_user_model
+	>>> user = get_user_model().create(username='bobo')
+	>>> print user.customer.salutation
+	Traceback (most recent call last):
+	  File "<console>", line 1, in <module>
+	  File "django/db/models/fields/related.py", line 206, in __get__
+	    self.related.get_accessor_name()))
+	DoesNotExist: User has no customer.
+
+This can happen for Users objects added by other applications than **djangoSHOP**.
+
+
 Authenticating against the Email Address
 ----------------------------------------
 
@@ -92,3 +167,4 @@ classes into ``admin.py`` of your application:
 
 	admin.site.register(get_user_model(), CustomerAdmin)
 
+The 
