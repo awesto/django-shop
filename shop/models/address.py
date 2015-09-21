@@ -5,7 +5,8 @@ Holds all the information relevant to the client (addresses for instance)
 """
 from six import with_metaclass
 from django.db import models
-from django.template.loader import select_template, Context
+from django.template import Context
+from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
 from shop import settings as shop_settings
 from . import deferred
