@@ -46,7 +46,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
 
     class Meta:
-        app_label = 'shop'
+        #app_label = 'shop'
         db_table = 'auth_user'
         verbose_name = _("Customer")
         verbose_name_plural = _("Customers")

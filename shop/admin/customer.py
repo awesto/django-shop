@@ -76,3 +76,9 @@ class CustomerAdmin(UserAdmin):
         return not user.customer.is_expired()
     is_unexpired.short_description = _("Unexpired")
     is_unexpired.boolean = True
+
+try:
+    admin.site.unregister(get_user_model())
+except admin.sites.NotRegistered:
+    pass
+admin.site.register(get_user_model(), CustomerAdmin)
