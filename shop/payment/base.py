@@ -7,7 +7,7 @@ from cms.models import Page
 
 class PaymentProvider(object):
     """
-    Base class for all payment service providers.
+    Base class for all Payment Service Providers.
     """
     @property
     def namespace(self):
