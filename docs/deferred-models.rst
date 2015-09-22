@@ -16,10 +16,10 @@ This made configuration quite complicate and causes other drawbacks:
 
 * Unless *all* models have been overridden, the native ones appeared in the administration backend
   below the category *Shop*, while the customized ones appeared under the given project's name.
-  To customers, this inconsistency in the backend was quite difficult to explain.
+  To merchants, this inconsistency in the backend was quite difficult to explain.
 * In the past, mixing overriden with native models caused many issues with circular dependencies.
 
-Therefore in **djangoSHOP**, since version 0.3 all concrete models, ``Product``, ``Order``,
+Therefore in **djangoSHOP**, since version 0.3 *all* concrete models, ``Product``, ``Order``,
 ``OrderItem``, ``Cart``, ``CartItem`` have been removed. These model definitions now all are
 abstract and named ``BaseProduct``, ``BaseOrder``, ``BaseOrderItem``, etc. They all have been moved
 into the folder ``shop/models/``, because this is the location a programmer expects them.
