@@ -26,7 +26,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     username = models.CharField(_("Username"), max_length=30, unique=True,
         help_text=_("Required. 30 characters or fewer. Letters, numbers and @/./+/-/_ characters"),
-        validators=[(validators.RegexValidator(USERNAME_REGEX), _("Enter a valid username."), 'invalid')])
+        validators=[validators.RegexValidator(USERNAME_REGEX, _('Enter a valid username.'), 'invalid')])
 
     # copied from django.contrib.auth.models.AbstractUser
     first_name = models.CharField(_("First name"), max_length=30, blank=True)
