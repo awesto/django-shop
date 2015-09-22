@@ -46,10 +46,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
 
     class Meta:
-        #app_label = 'shop'
         db_table = 'auth_user'
         verbose_name = _("Customer")
         verbose_name_plural = _("Customers")
+
+    def get_username(self):
+        return self.email or '<anonymous>'
 
     def __str__(self):
         return self.get_username()
