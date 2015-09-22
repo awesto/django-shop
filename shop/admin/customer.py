@@ -77,8 +77,19 @@ class CustomerAdmin(UserAdmin):
     is_unexpired.short_description = _("Unexpired")
     is_unexpired.boolean = True
 
+
+class CustomerProxy(get_user_model()):
+    """
+    With this neat proxy model, we are able to place the Customer Model Admin into
+    the section “Shop” instead of section email_auth.
+    """
+    class Meta:
+        proxy = True
+        verbose_name = _("Customer")
+        verbose_name_plural = _("Customers")
+
 try:
     admin.site.unregister(get_user_model())
 except admin.sites.NotRegistered:
     pass
-admin.site.register(get_user_model(), CustomerAdmin)
+admin.site.register(CustomerProxy, CustomerAdmin)
