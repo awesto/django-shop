@@ -11,7 +11,7 @@ from django.template.loader import select_template
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 from fsm_admin.mixins import FSMTransitionMixin
-from shop.models.order import OrderItemModel, OrderPayment
+from shop.models.order import OrderModel, OrderItemModel, OrderPayment
 from shop.modifiers.pool import cart_modifiers_pool
 from shop.rest import serializers
 
@@ -136,3 +136,10 @@ class OrderAdmin(BaseOrderAdmin):
     """
     search_fields = BaseOrderAdmin.search_fields + ('shipping_address_text', 'billing_address_text',)
     fields = BaseOrderAdmin.fields + (('shipping_address_text', 'billing_address_text',),)
+
+
+class PrintableOrderAdmin(PrintOrderAdminMixin, OrderAdmin):
+    pass
+
+
+admin.site.register(OrderModel, PrintableOrderAdmin)
