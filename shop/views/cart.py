@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseBadRequest
@@ -55,7 +56,7 @@ class CartItemDetail(ShopView):
         except (KeyError, ValueError):
             return HttpResponseBadRequest("The quantity has to be a number")
         cart_object.update_quantity(item_id, quantity)
-        return self.put_success()
+        return self.put_success(cart_object)
 
     def delete(self, request, *args, **kwargs):
         """
@@ -73,12 +74,28 @@ class CartItemDetail(ShopView):
             raise Http404
 
     # success hooks
-    def success(self):
+    def success(self, cart_object=None):
         """
         Generic hook by default redirects to cart
         """
         if self.request.is_ajax():
-            return HttpResponse('Ok<br />')
+            data = {
+                "status": "success"
+            }
+            if cart_object:
+                cart_object.update(self.request)
+                data.update(
+                    cart={
+                        "items": [{
+                            "pk": cart_item.pk,
+                            "line_subtotal": str(cart_item.line_subtotal),
+                            "line_total": str(cart_item.line_total)
+                        } for cart_item in cart_object.get_updated_cart_items()],
+                        "subtotal_price": str(cart_object.subtotal_price),
+                        "total_price": str(cart_object.total_price)
+                    }
+                )
+            return HttpResponse(json.dumps(data), content_type="application/json")
         else:
             return HttpResponseRedirect(reverse('cart'))
 
@@ -94,11 +111,11 @@ class CartItemDetail(ShopView):
         """
         return self.success()
 
-    def put_success(self):
+    def put_success(self, cart_object=None):
         """
         Post put hook
         """
-        return self.success()
+        return self.success(cart_object=cart_object)
 
     # TODO: add failure hooks
 
