@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+"""
+Alternative implementation of Django's authentication model.
+"""
 import re
-from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.core import validators
 from django.core.mail import send_mail
@@ -40,7 +42,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     """
     USERNAME_REGEX = re.compile('^[\w.@+-]+$')
 
-    email = models.EmailField(_("Email address"), blank=False, unique=True, max_length=254)
+    email = models.EmailField(_("Email address"), null=True, default=None, unique=True, max_length=254)
 
     # some authentication require the username, regardless of the USERNAME_FIELD setting below
     username = models.CharField(_("Username"), max_length=30, unique=True,
@@ -62,7 +64,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
 
     class Meta:
-        app_label = settings.SHOP_APP_LABEL
+        app_label = 'shop'
+        db_table = 'auth_user'
         verbose_name = _("Customer")
         verbose_name_plural = _("Customers")
 
