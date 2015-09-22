@@ -62,7 +62,10 @@ class CustomerAdmin(UserAdmin):
     salutation.short_description = _("Salutation")
 
     def recognized(self, user):
-        return user.customer.get_recognized_display()
+        state = user.customer.get_recognized_display()
+        if user.is_staff:
+            state = '{}/{}'.format(state, _("Staff"))
+        return state
     recognized.short_description = _("State")
 
     def last_access(self, user):
