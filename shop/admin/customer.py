@@ -30,7 +30,7 @@ class CustomerChangeForm(UserChangeForm):
 
     def clean_email(self):
         # nullify empty email field in order to prevent unique index collisions
-        return self.cleaned_data.get('email') or None
+        return self.cleaned_data.get('email').strip() or None
 
     def save(self, commit=False):
         self.instance.email = self.cleaned_data['email']
