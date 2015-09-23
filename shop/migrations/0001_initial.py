@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('filer', '0002_auto_20150606_2003'),
-        ('post_office', '0003_auto_20150921_2113'),
+        ('post_office', '0002_add_i18n_and_backend_alias'),
     ]
 
     operations = [
