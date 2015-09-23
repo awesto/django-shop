@@ -18,7 +18,6 @@ from django.utils.six import with_metaclass
 from jsonfield.fields import JSONField
 from . import deferred
 
-SESSION_BASED_USERNAME_PREFIX = '!'  # This will identify a customer by its session key
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore()
 
 
@@ -30,7 +29,7 @@ class CustomerManager(models.Manager):
     @classmethod
     def encode_session_key(cls, session_key):
         """
-        Session keys have base 36 and length 32. Since the `username` field accepts only up
+        Session keys have base 36 and length 32. Since the field ``username`` accepts only up
         to 30 characters, the session key is converted to a base 64 representation, resulting
         in a length of approximately 28.
         """
@@ -41,7 +40,7 @@ class CustomerManager(models.Manager):
         """
         Decode a compact session key back to its original length and base.
         """
-        compact_session_key = compact_session_key.lstrip('!+-_')
+        compact_session_key = compact_session_key
         base_length = len(cls.BASE64_ALPHABET)
         n = 0
         for c in compact_session_key:
@@ -62,10 +61,10 @@ class CustomerManager(models.Manager):
     def get_or_create_anonymous_user(self, session_key):
         """
         Since the Customer has a 1:1 relation with the User object, get or create an
-        anonymous entity in model User. As its username (which must be unique), use
+        anonymous entity in models User. As its ``username`` (which must be unique), use
         a compressed representation of the given session key.
         """
-        username = SESSION_BASED_USERNAME_PREFIX + self.encode_session_key(session_key)
+        username = self.encode_session_key(session_key)
         user, created = get_user_model().objects.get_or_create(username=username)
         if created:
             user.is_active = False
