@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import os
-import operator
-from functools import reduce
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.utils.translation import get_language_from_request
@@ -24,7 +22,7 @@ class ProductListView(generics.ListAPIView):
     serializer_class = None  # must be overridden by ProductListView.as_view
     filter_class = None  # may be overridden by ProductListView.as_view
     limit_choices_to = Q()
-    cms_pages_fields = ('cms_pages',)
+    cms_pages_fields = None
 
     def get_queryset(self):
         # restrict queryset by language
@@ -32,13 +30,6 @@ class ProductListView(generics.ListAPIView):
         if hasattr(self.product_model, 'translations'):
             filter_kwargs.update(translations__language_code=get_language_from_request(self.request))
         qs = self.product_model.objects.filter(self.limit_choices_to, **filter_kwargs)
-
-        # restrict products for current CMS page
-        current_page = self.request.current_page
-        if current_page.publisher_is_draft:
-            current_page = current_page.publisher_public
-        filter_by_cms_page = [Q((field, current_page)) for field in self.cms_pages_fields]
-        qs = qs.filter(reduce(operator.or_, filter_by_cms_page)).distinct()
         return qs
 
     def get_template_names(self):
