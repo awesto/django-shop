@@ -22,7 +22,6 @@ class ProductListView(generics.ListAPIView):
     serializer_class = None  # must be overridden by ProductListView.as_view
     filter_class = None  # may be overridden by ProductListView.as_view
     limit_choices_to = Q()
-    cms_pages_fields = None
 
     def get_queryset(self):
         # restrict queryset by language
