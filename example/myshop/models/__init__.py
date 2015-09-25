@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from shop.models.defaults.order import Order  # nopyflakes - materialize the default models
-from shop.models.defaults.order_item import OrderItem  # nopyflakes - materialize the default models
-from shop.models.defaults.order_shipping import OrderShipping  # nopyflakes - materialize the default model
-from shop.models.defaults.cart import Cart  # nopyflakes - materialize the default model
-from shop.models.defaults.cart_item import CartItem  # nopyflakes - materialize the default model
-from shop.models.notification import Notification  # nopyflakes - materialize the default model
-from .auth import Customer
-from . import address
+# import default models from djangoSHOP to materialize them
+from shop.models.defaults.address import Address
+from shop.models.defaults.order import Order
+from shop.models.defaults.order_item import OrderItem
+from shop.models.defaults.order_shipping import OrderShipping
+from shop.models.defaults.cart import Cart
+from shop.models.defaults.cart_item import CartItem
+from shop.models.defaults.customer import Customer
+# models defined by the merchants shop instance itself
 from . import shopmodels
 from . import commodity
