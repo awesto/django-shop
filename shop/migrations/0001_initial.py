@@ -8,9 +8,9 @@ import filer.fields.file
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('post_office', '0003_auto_20150925_1147'),
         ('email_auth', '0001_initial'),
         ('filer', '0002_auto_20150606_2003'),
+        ('post_office', '0003_auto_20150925_1147'),
     ]
 
     operations = [
