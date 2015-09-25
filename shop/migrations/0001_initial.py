@@ -8,8 +8,9 @@ import filer.fields.file
 class Migration(migrations.Migration):
 
     dependencies = [
+        ('post_office', '0003_auto_20150925_1147'),
+        ('email_auth', '0001_initial'),
         ('filer', '0002_auto_20150606_2003'),
-        ('post_office', '0002_add_i18n_and_backend_alias'),
     ]
 
     operations = [
@@ -38,6 +39,17 @@ class Migration(migrations.Migration):
             options={
             },
             bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='CustomerProxy',
+            fields=[
+            ],
+            options={
+                'verbose_name': 'Customer',
+                'proxy': True,
+                'verbose_name_plural': 'Customers',
+            },
+            bases=('email_auth.user',),
         ),
         migrations.CreateModel(
             name='Email',
