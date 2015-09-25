@@ -11,7 +11,6 @@ from django.template import Context, Template
 from django.utils.encoding import smart_text
 from django.utils.translation import ugettext_lazy as _, override as translation_override
 from django.utils.six.moves.urllib.parse import urlparse
-from django_fsm.signals import post_transition
 from post_office import mail
 from post_office.models import Email as OriginalEmail, EmailTemplate
 from filer.fields.file import FilerFileField
@@ -160,5 +159,3 @@ def order_event_notification(sender, instance=None, target=None, **kwargs):
             attachments[notiatt.attachment.original_filename] = notiatt.attachment.file.file
         mail.send(recipient, template=notification.mail_template, context=context,
                   attachments=attachments, render_on_delivery=True)
-
-post_transition.connect(order_event_notification)
