@@ -1,8 +1,8 @@
+{% extends "shop/order/order-base.html" %}
 {% load i18n %}
 
-{% block shop-order-heading %}{% endblock %}
+{% block shop-order-table %}
 
-<table class="table table-condensed">
 {% block shop-order-caption %}<!-- table caption -->{% endblock %}
 
 {% block shop-order-thead %}
@@ -29,6 +29,4 @@
 	</tbody>
 {% endblock shop-order-tbody %}
 
-</table>
-
-{% block shop-order-footer %}{% endblock %}
+{% endblock shop-order-table %}

@@ -2,7 +2,7 @@
 'use strict';
 
 // module: django.shop, TODO: move this into a summary JS file
-var djangoShopModule = angular.module('django.shop.dialogs', []);
+var djangoShopModule = angular.module('django.shop.dialogs', ['ng.django.urls', 'ng.django.forms']);
 
 
 // Shared controller for all forms, links and buttons using shop-dialog elements. It just adds

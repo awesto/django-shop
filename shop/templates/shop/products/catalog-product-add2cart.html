@@ -1,4 +1,7 @@
-{% load cms_tags i18n %}
+{% load static i18n cms_tags sekizai_tags %}
+
+{% addtoblock "js" %}<script src="{% static 'shop/js/catalog.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+{% addtoblock "shop-ng-requires" %}django.shop.catalog{% endaddtoblock %}
 
 {% block add-product-to-cart-panel %}
 <div class="panel panel-default">

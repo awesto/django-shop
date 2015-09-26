@@ -1,3 +1,8 @@
+{% load static sekizai_tags %}
+
+{% addtoblock "js" %}<script src="{% static 'shop/js/auth.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+{% addtoblock "shop-ng-requires" %}django.shop.auth{% endaddtoblock %}
+
 {% if customer.is_authenticated %}
 <div class="panel panel-info">
 	<div class="panel-heading">
