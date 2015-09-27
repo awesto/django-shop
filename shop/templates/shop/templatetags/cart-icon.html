@@ -1,6 +1,6 @@
-{% load i18n cms_tags skizai_tags %}
+{% load i18n static cms_tags sekizai_tags %}
 {% addtoblock "js" %}<script src="{% static 'shop/js/cart-icon.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-{% addtoblock "shop-ng-requires" %}django.shop.cart{% endaddtoblock %}
+{% addtoblock "shop-ng-requires" %}django.shop.cart_icon{% endaddtoblock %}
 
 {% spaceless %}
 <a href="{% page_url 'shop-cart' %}" title="{% page_attribute 'page_title' 'shop-cart' %}">

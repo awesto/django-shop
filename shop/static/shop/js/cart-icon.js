@@ -2,7 +2,7 @@
 'use strict';
 
 // module: django.shop, TODO: move this into a summary JS file
-var djangoShopModule = angular.module('django.shop.cart', ['ng.django.urls']);
+var djangoShopModule = angular.module('django.shop.cart_icon', ['ng.django.urls']);
 
 // Directive <ANY shop-cart-count-items>{{ count_items }}</ANY>
 // To be used for updating the number of items in the cart whenever
