@@ -22,8 +22,8 @@ class Cart(InclusionTag):
     """
     def get_template(self, context, **kwargs):
         return select_template([
-            '{}/templatetags/cart.html'.format(shop_settings.APP_LABEL),
-            'shop/templatetags/cart.html',
+            '{}/templatetags/cart-icon.html'.format(shop_settings.APP_LABEL),
+            'shop/templatetags/cart-icon.html',
         ]).name
 
     def get_context(self, context):

@@ -1,4 +1,8 @@
-{% load i18n cms_tags %}{% spaceless %}
+{% load i18n cms_tags skizai_tags %}
+{% addtoblock "js" %}<script src="{% static 'shop/js/cart-icon.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+{% addtoblock "shop-ng-requires" %}django.shop.cart{% endaddtoblock %}
+
+{% spaceless %}
 <a href="{% page_url 'shop-cart' %}" title="{% page_attribute 'page_title' 'shop-cart' %}">
 	<i class="fa fa-shopping-cart fa-fw fa-lg"></i>
 	{% blocktrans count quantity=cart.total_quantity %}<span shop-cart-count-items>{{ quantity }}</span> Item{% plural %}<span shop-cart-count-items>{{ quantity }}</span> Items{% endblocktrans %}
