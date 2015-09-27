@@ -1,6 +1,6 @@
 {% load i18n cms_tags %}{% spaceless %}
 <a href="{% page_url 'shop-cart' %}" title="{% page_attribute 'page_title' 'shop-cart' %}">
 	<i class="fa fa-shopping-cart fa-fw fa-lg"></i>
-	{% blocktrans count quantity=cart.total_quantity %}{{ quantity }} Item{% plural %}{{ quantity }} Items{% endblocktrans %}
+	{% blocktrans count quantity=cart.total_quantity %}<span shop-cart-count-items>{{ quantity }}</span> Item{% plural %}<span shop-cart-count-items>{{ quantity }}</span> Items{% endblocktrans %}
 </a>
 {% endspaceless %}

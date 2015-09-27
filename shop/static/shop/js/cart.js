@@ -9,8 +9,6 @@ djangoShopModule.controller('CartController', ['$scope', '$http', function($scop
 
 	this.loadCart = function() {
 		$http.get($scope.cartListURL).success(function(cart) {
-			console.log('loaded cart: ');
-			console.log(cart);
 			$scope.cart = cart;
 		}).error(function(msg) {
 			console.error('Unable to fetch shopping cart: ' + msg);
@@ -23,11 +21,10 @@ djangoShopModule.controller('CartController', ['$scope', '$http', function($scop
 			return;
 		isLoading = true;
 		$http.post(cart_item.url, cart_item, config).then(function(response) {
-			console.log(response);
 			return $http.get($scope.$parent.cartListURL);
 		}).then(function(response) {
-			console.log(response);
 			angular.copy(response.data, $scope.cart);
+			$scope.$emit('shopUpdatedCartItems', $scope.cart.items.length);
 		}, function(error) {
 			console.error(error);
 		}, function() {
@@ -67,7 +64,6 @@ djangoShopModule.directive('shopCart', ['djangoUrl', function(djangoUrl) {
 		controller: 'CartController',
 		link: {
 			pre: function(scope, element, attrs) {
-				console.log(attrs);
 				scope.cartListURL = attrs.watch === 'watch' ? watchListURL : cartListURL;
 			},
 			post: function(scope, element, attrs, cartCtrl) {
@@ -88,5 +84,38 @@ djangoShopModule.directive('shopCartItem', function() {
 		controller: 'CartController'
 	};
 });
+
+// Directive <ANY shop-cart-count-items>{{ count_items }}</ANY>
+// To be used for updating the number of items in the cart whenever
+// this directive receives an event of type ``.
+djangoShopModule.directive('shopCartCountItems', ['$rootScope', '$http', 'djangoUrl', function($rootScope, $http, djangoUrl) {
+	var cartCountItemsURL = djangoUrl.reverse('shop:cart-count-items');
+
+	return {
+		link: function(scope, element, attrs) {
+			function fetchCountItems() {
+				$http.get(cartCountItemsURL).success(function(data) {
+					element.html(data.count_items);
+				}).error(function(msg) {
+					console.error('Unable to fetch shopping cart: ' + msg);
+				});
+			}
+
+			if (!parseInt(element.html())) {
+				fetchCountItems();
+			}
+
+			// listen on events of type `shopUpdatedCartItems`
+			$rootScope.$on('shopUpdatedCartItems', function(event, count_cart_items) {
+				if (angular.isNumber(count_cart_items)) {
+					element.html(count_cart_items);
+				} else {
+					// otherwise fetch the current number of cart items from the server
+					fetchCountItems();
+				}
+			});
+		}
+	};
+}]);
 
 })(window.angular);

@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 from django.utils.cache import add_never_cache_headers
 from rest_framework import viewsets
+from rest_framework.decorators import list_route
+from rest_framework.response import Response
 from shop.models.cart import CartModel, CartItemModel
 from shop.rest import serializers
 
@@ -16,6 +18,11 @@ class BaseViewSet(viewsets.ModelViewSet):
             return CartItemModel.objects.filter(cart=cart)
         # otherwise the CartSerializer will show its detail and list all its items
         return cart
+
+    @list_route(methods=['get'])
+    def count_items(self, request):
+        data = {'count_items': self.get_queryset().items.count()}
+        return Response(data)
 
     def get_serializer(self, *args, **kwargs):
         kwargs.update(context=self.get_serializer_context(), label=self.serializer_label)
