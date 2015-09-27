@@ -2,7 +2,7 @@
 import sys
 from django.conf import settings
 from django.core import exceptions
-from django.utils.importlib import import_module
+from importlib import import_module
 
 
 CLASS_PATH_ERROR = 'django-shop is unable to interpret settings value for %s. '\
