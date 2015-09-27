@@ -16,7 +16,7 @@ from shop.rest.money import JSONRenderer
 register = template.Library()
 
 
-class Cart(InclusionTag):
+class CartIcon(InclusionTag):
     """
     Inclusion tag for displaying cart summary.
     """
@@ -32,7 +32,7 @@ class Cart(InclusionTag):
         cart.update(request)
         context['cart'] = cart
         return context
-register.tag(Cart)
+register.tag(CartIcon)
 
 
 def from_iso8601(value):
