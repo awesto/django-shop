@@ -5,8 +5,8 @@
 {% spaceless %}
 <a href="{% page_url 'shop-cart' %}" title="{% page_attribute 'page_title' 'shop-cart' %}">
 	<i class="fa fa-shopping-cart fa-fw fa-lg"></i>
-	{% with count_items=cart.total_quantity %}
-	<span shop-cart-count-items="{{ count_items }}" ng-cloak>{% verbatim %}{{ count_items }}{% endverbatim %} {% trans "Item" context "cart icon" %}</span>
-	{% endwith %}
+	<span shop-cart-count-items="{{ cart.total_quantity }}" ng-cloak>
+		<ng-pluralize count="count_items" when="{'1': '{% trans "1 Item" context "cart icon" %}', 'other': '{% trans "{} Items" context "cart icon" %}'}"></ng-pluralize>
+	</span>
 </a>
 {% endspaceless %}

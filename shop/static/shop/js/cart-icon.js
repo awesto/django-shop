@@ -7,14 +7,11 @@ var djangoShopModule = angular.module('django.shop.cart_icon', ['ng.django.urls'
 // Directive <ANY shop-cart-count-items>{{ count_items }}</ANY>
 // To be used for updating the number of items in the cart whenever
 // this directive receives an event of type ``.
-djangoShopModule.directive('shopCartCountItems', ['$rootScope', '$compile', '$http', 'djangoUrl', function($rootScope, $compile, $http, djangoUrl) {
+djangoShopModule.directive('shopCartCountItems', ['$rootScope', '$http', 'djangoUrl', function($rootScope, $http, djangoUrl) {
 	var cartCountItemsURL = djangoUrl.reverse('shop:cart-count-items');
 
 	return {
 		link: function(scope, element, attrs) {
-			var template = element.clone().removeAttr('shop-cart-count-items');
-			element.replaceWith($compile(template)(scope));
-
 			function fetchCountItems() {
 				$http.get(cartCountItemsURL).success(function(data) {
 					scope.count_items = data.count_items;
