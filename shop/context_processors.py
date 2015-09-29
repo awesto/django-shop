@@ -13,6 +13,6 @@ def customer(request):
     if request.user.is_staff:
         try:
             context.update(customer=CustomerModel.objects.get(pk=request.session['emulate_user_id']))
-        except (CustomerModel.DoesNotExist, KeyError):
+        except (CustomerModel.DoesNotExist, KeyError, AttributeError):
             pass
     return context
