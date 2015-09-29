@@ -87,12 +87,24 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 				performAction(deferred.promise, action);
 			};
 
+			// Some actions, such as purchasing require a lot of time. This function replaces
+			// existing Glyphicons in the button against a spinning wheel.
+			function addSpinningGlyphicon() {
+				angular.forEach(element.find('span'), function(span) {
+					span = angular.element(span);
+					if (span.hasClass('glyphicon')) {
+						span.attr('class', 'glyphicon glyphicon-refresh glyphicon-refresh-animate');
+					}
+				});
+			}
+
 			function performAction(promise, action) {
 				$q.when(promise).then(function() {
 					console.log("Proceed to: " + action);
 					if (action === 'RELOAD_PAGE') {
 						$window.location.reload();
 					} else if (action === 'PURCHASE_NOW') {
+						addSpinningGlyphicon();
 						// Convert the cart into an order object.
 						return $http.post(purchaseURL, scope.data);
 					} else {
