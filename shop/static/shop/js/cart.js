@@ -2,15 +2,13 @@
 'use strict';
 
 // module: django.shop, TODO: move this into a summary JS file
-var djangoShopModule = angular.module('django.shop.cart', []);
+var djangoShopModule = angular.module('django.shop.cart', ['ng.django.urls']);
 
 djangoShopModule.controller('CartController', ['$scope', '$http', function($scope, $http) {
 	var isLoading = false;
 
 	this.loadCart = function() {
 		$http.get($scope.cartListURL).success(function(cart) {
-			console.log('loaded cart: ');
-			console.log(cart);
 			$scope.cart = cart;
 		}).error(function(msg) {
 			console.error('Unable to fetch shopping cart: ' + msg);
@@ -23,11 +21,10 @@ djangoShopModule.controller('CartController', ['$scope', '$http', function($scop
 			return;
 		isLoading = true;
 		$http.post(cart_item.url, cart_item, config).then(function(response) {
-			console.log(response);
 			return $http.get($scope.$parent.cartListURL);
 		}).then(function(response) {
-			console.log(response);
 			angular.copy(response.data, $scope.cart);
+			$scope.$emit('shopUpdatedCartItems', $scope.cart.items.length);
 		}, function(error) {
 			console.error(error);
 		}, function() {
@@ -67,7 +64,6 @@ djangoShopModule.directive('shopCart', ['djangoUrl', function(djangoUrl) {
 		controller: 'CartController',
 		link: {
 			pre: function(scope, element, attrs) {
-				console.log(attrs);
 				scope.cartListURL = attrs.watch === 'watch' ? watchListURL : cartListURL;
 			},
 			post: function(scope, element, attrs, cartCtrl) {

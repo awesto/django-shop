@@ -2,7 +2,7 @@
 'use strict';
 
 // module: django.shop, TODO: move this into a summary JS file
-var djangoShopModule = angular.module('django.shop.dialogs', []);
+var djangoShopModule = angular.module('django.shop.dialogs', ['ng.django.urls', 'ng.django.forms']);
 
 
 // Shared controller for all forms, links and buttons using shop-dialog elements. It just adds
@@ -87,12 +87,25 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 				performAction(deferred.promise, action);
 			};
 
+			// Some actions, such as purchasing require a lot of time. This function
+			// deactivates the button and replaces existing Glyphicons against a spinning wheel.
+			function deactivateButton() {
+				element.attr('disabled', 'disabled');
+				angular.forEach(element.find('span'), function(span) {
+					span = angular.element(span);
+					if (span.hasClass('glyphicon')) {
+						span.attr('class', 'glyphicon glyphicon-refresh glyphicon-refresh-animate');
+					}
+				});
+			}
+
 			function performAction(promise, action) {
 				$q.when(promise).then(function() {
 					console.log("Proceed to: " + action);
 					if (action === 'RELOAD_PAGE') {
 						$window.location.reload();
 					} else if (action === 'PURCHASE_NOW') {
+						deactivateButton();
 						// Convert the cart into an order object.
 						return $http.post(purchaseURL, scope.data);
 					} else {

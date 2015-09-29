@@ -1,10 +1,12 @@
+{% extends "shop/order/order-base.html" %}
 {% load i18n %}
 
 {% block shop-order-heading %}
 	<h3>{% trans "Your Order" %}: {{ data.identifier }} <small> {% trans "from" %} </small><small shop-timestamp="{{ data.created_at }}"></small></h3>
 {% endblock shop-order-heading %}
 
-<table class="table table-condensed">
+{% block shop-order-table %}
+
 {% block shop-order-caption %}<!-- table caption -->{% endblock %}
 
 {% block shop-order-thead %}
@@ -72,6 +74,4 @@
 	</tfoot>
 {% endblock shop-order-tfoot %}
 
-</table>
-
-{% block shop-order-footer %}{% endblock %}
+{% endblock shop-order-table %}
