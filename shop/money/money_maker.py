@@ -113,12 +113,19 @@ class AbstractMoney(Decimal):
         """
         return cls._currency_code
 
+    def as_decimal(self):
+        """
+        Return the amount as decimal quantized to its subunits.
+        This representation often is used by payment service providers.
+        """
+        return Decimal.quantize(self, self._cents)
+
     def as_integer(self):
         """
         Return the amount multiplied by its subunits to be handled as integer.
         This representation often is used by payment service providers.
         """
-        return int(self * self.subunits)
+        return int(self.as_decimal() * self.subunits)
 
     @property
     def subunits(self):
