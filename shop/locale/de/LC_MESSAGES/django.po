@@ -17,35 +17,30 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: admin/customer.py:41
-#, fuzzy
-#| msgid "Customer"
 msgid "Customer State"
-msgstr "Kunde"
+msgstr "Kundesstatus"
 
 #: admin/customer.py:76
-#, fuzzy
 msgid "Identifier"
 msgstr "Produktreferenz"
 
 #: admin/customer.py:80
 msgid "Salutation"
-msgstr ""
+msgstr "Anrede"
 
 #: admin/customer.py:85
 msgid "Staff"
 msgstr ""
 
 #: admin/customer.py:87
-#, fuzzy
 #| msgctxt "status_name"
 #| msgid "State"
 msgid "State"
 msgstr "Status"
 
 #: admin/customer.py:91 models/customer.py:112
-#, fuzzy
 msgid "Last accessed"
-msgstr "Letzte Änderung"
+msgstr "Letzter Besuch"
 
 #: admin/customer.py:95
 msgid "Unexpired"
@@ -58,7 +53,7 @@ msgstr "Kunde"
 
 #: admin/customer.py:107
 msgid "Customers"
-msgstr ""
+msgstr "Kunden"
 
 #: admin/notification.py:18 admin/notification.py:53
 msgid "Nobody"
@@ -66,7 +61,7 @@ msgstr "Unbekannt"
 
 #: admin/order.py:70
 msgid "Outstanding amount"
-msgstr ""
+msgstr "Offener Betrag"
 
 #: admin/order.py:119 templates/shop/print/delivery-note.html:10
 msgid "Delivery Note"
@@ -103,19 +98,19 @@ msgstr ""
 
 #: cascade/auth.py:18
 msgid "Password Reset Form"
-msgstr ""
+msgstr "Formular Passwort Rücksetzen"
 
 #: cascade/auth.py:19
 msgid "Change Password Form"
-msgstr ""
+msgstr "Formular Passwort Ändern"
 
 #: cascade/auth.py:20
 msgid "Register User"
-msgstr ""
+msgstr "Benutzer Registrieren"
 
 #: cascade/auth.py:21 templates/shop/auth/continue-as-guest.html:10
 msgid "Continue as guest"
-msgstr ""
+msgstr "Als Gast fortsetzen"
 
 #: cascade/auth.py:26 cascade/checkout.py:30 cascade/plugin_base.py:94
 #: cascade/processbar.py:107 cascade/processbar.py:110
@@ -125,11 +120,11 @@ msgstr ""
 #: cascade/auth.py:26 cascade/checkout.py:30 cascade/processbar.py:108
 #: cascade/processbar.py:110
 msgid "Reload Page"
-msgstr ""
+msgstr "Seite erneut Laden"
 
 #: cascade/auth.py:26
 msgid "Do Nothing"
-msgstr ""
+msgstr "Keine Aktion"
 
 #: cascade/auth.py:27
 msgid "Rendered Form"
@@ -1912,9 +1907,8 @@ msgid "Add to cart"
 msgstr "In den Warenkorb"
 
 #: templates/shop/email/customer-information.html:4
-#, fuzzy
 msgid "Your Details"
-msgstr "Details"
+msgstr "Ihre Details"
 
 #: templates/shop/email/customer-information.html:6
 msgid "E-Mail"
