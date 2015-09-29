@@ -311,19 +311,18 @@ msgstr ""
 
 #: forms/auth.py:28
 msgid "Repeat password"
-msgstr ""
+msgstr "Wiederhole Passwort"
 
 #: forms/auth.py:29
-#, fuzzy
 msgid "Confirm password."
-msgstr "Bestätigt"
+msgstr "Bestätige Passwort"
 
 #: forms/auth.py:53
 #, python-brace-format
 msgid ""
 "A customer with the e-mail address ‘{email}’ already exists.\n"
 "If you have used this address previously, try to reset the password."
-msgstr ""
+msgstr "Ein Benutzer mit der E-Mail Adresse ‘{email}’ existiert bereits.\nWenn Sie diese Adresse bereits verwendet haben, versuchen Sie bitte das Passwort zurückzusetzen."
 
 #: forms/auth.py:59
 msgid "Passwords do not match"
