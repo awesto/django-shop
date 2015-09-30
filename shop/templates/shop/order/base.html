@@ -4,10 +4,6 @@
 {% addtoblock "shop-ng-requires" %}django.shop.order{% endaddtoblock %}
 {% addtoblock "shop-ng-config" %}['translationProvider', function(translationProvider) { translationProvider.setDesignations('list-of-time-lemmas'); }]{% endaddtoblock %}
 
-{% block shop-order-heading %}{% endblock %}
-
 <table class="table table-condensed">
 {% block shop-order-table %}<!-- table content -->{% endblock %}
 </table>
-
-{% block shop-order-footer %}{% endblock %}

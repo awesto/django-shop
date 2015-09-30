@@ -1,10 +1,10 @@
 {% extends "shop/order/base.html" %}
-{% load i18n %}
+{% load i18n cms_tags %}
 
 {% block shop-order-table %}
 
 	{% block shop-order-caption %}
-	<caption><h3>{% trans "Your Orders" %}</h3></caption>
+	<caption><h4>{% page_attribute "page_title" %}</h4></caption>
 	{% endblock %}
 
 	{% block shop-order-thead %}
