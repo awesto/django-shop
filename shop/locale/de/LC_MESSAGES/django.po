@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-shop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-30 00:52+0200\n"
+"POT-Creation-Date: 2015-09-30 08:30+0200\n"
 "PO-Revision-Date: 2011-07-13 16:16+0000\n"
 "Last-Translator: chrisglass <tribaal@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -340,7 +340,6 @@ msgid "First Name"
 msgstr "Vorname"
 
 #: forms/checkout.py:19
-#| msgid "Last accessed"
 msgid "Last Name"
 msgstr "Nachname"
 
@@ -355,6 +354,11 @@ msgstr "Zahlungsmethode"
 #: forms/checkout.py:201
 msgid "Shipping Method"
 msgstr "Liefermethode"
+
+#: forms/checkout.py:218
+#| msgid "Arbitrary information for this order item"
+msgid "Extra annotation for this order"
+msgstr "Zusätzliche Anmerkung zu dieser Bestellung"
 
 #: management/commands/shop_customers.py:9
 msgid "Collect information about all customers which accessed this shop."
