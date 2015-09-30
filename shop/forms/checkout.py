@@ -14,9 +14,9 @@ from .base import DialogForm, DialogModelForm
 
 class CustomerForm(DialogModelForm):
     scope_prefix = 'data.customer'
-    email = fields.EmailField()
-    first_name = fields.CharField()
-    last_name = fields.CharField()
+    email = fields.EmailField(label=_("Email"))
+    first_name = fields.CharField(label=_("First Name"))
+    last_name = fields.CharField(label=_("Last Name"))
 
     class Meta:
         model = CustomerModel
@@ -215,7 +215,8 @@ class ShippingMethodForm(DialogForm):
 class ExtraAnnotationForm(DialogForm):
     scope_prefix = 'data.extra_annotation'
 
-    annotation = fields.CharField(required=False, widget=widgets.Textarea)
+    annotation = fields.CharField(label=_("Extra annotation for this order"), required=False,
+                                  widget=widgets.Textarea)
 
     @classmethod
     def form_factory(cls, request, data, cart):

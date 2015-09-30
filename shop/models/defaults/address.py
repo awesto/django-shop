@@ -9,9 +9,9 @@ class Address(address.BaseAddress):
     """
     Default materialized model for Address.
     """
-    addressee = models.CharField(max_length=50, verbose_name=_("Addressee"))
-    supplement = models.CharField(max_length=50, blank=True, null=True, verbose_name=_("Supplement"))
-    street = models.CharField(max_length=50, verbose_name=_("Street"))
-    zip_code = models.CharField(max_length=10, verbose_name=_("ZIP"))
-    location = models.CharField(max_length=50, verbose_name=_("Location"))
-    country = models.CharField(max_length=3, choices=address.ISO_3166_CODES)
+    addressee = models.CharField(_("Addressee"), max_length=50)
+    supplement = models.CharField(_("Supplement"), max_length=50, blank=True, null=True)
+    street = models.CharField(_("Street"), max_length=50)
+    zip_code = models.CharField(_("ZIP"), max_length=10)
+    location = models.CharField(_("Location"), max_length=50)
+    country = models.CharField(_("Country"), max_length=3, choices=address.ISO_3166_CODES)

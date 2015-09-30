@@ -108,7 +108,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, primary_key=True)
     recognized = models.PositiveSmallIntegerField(_("Recognized"), choices=CUSTOMER_STATES,
         help_text=_("Designates the state the customer is recognized as."), default=0)
-    salutation = models.CharField(max_length=5, choices=SALUTATION)
+    salutation = models.CharField(_("Salutation"), max_length=5, choices=SALUTATION)
     last_access = models.DateTimeField(_("Last accessed"), default=timezone.now)
     extra = JSONField(default={}, editable=False,
         verbose_name=_("Extra information about this customer"))

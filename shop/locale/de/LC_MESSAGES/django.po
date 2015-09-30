@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-shop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-28 14:12+0200\n"
+"POT-Creation-Date: 2015-09-30 08:30+0200\n"
 "PO-Revision-Date: 2011-07-13 16:16+0000\n"
 "Last-Translator: chrisglass <tribaal@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,7 +24,7 @@ msgstr "Kundesstatus"
 msgid "Identifier"
 msgstr "Produktreferenz"
 
-#: admin/customer.py:80
+#: admin/customer.py:80 models/customer.py:111
 msgid "Salutation"
 msgstr "Anrede"
 
@@ -33,8 +33,6 @@ msgid "Staff"
 msgstr ""
 
 #: admin/customer.py:87
-#| msgctxt "status_name"
-#| msgid "State"
 msgid "State"
 msgstr "Status"
 
@@ -311,12 +309,11 @@ msgstr ""
 
 #: forms/auth.py:28
 msgid "Repeat password"
-msgstr ""
+msgstr "Wiederhole Passwort"
 
 #: forms/auth.py:29
-#, fuzzy
 msgid "Confirm password."
-msgstr "Bestätigt"
+msgstr "Bestätige Passwort"
 
 #: forms/auth.py:53
 #, python-brace-format
@@ -324,14 +321,31 @@ msgid ""
 "A customer with the e-mail address ‘{email}’ already exists.\n"
 "If you have used this address previously, try to reset the password."
 msgstr ""
+"Ein Benutzer mit der E-Mail Adresse ‘{email}’ existiert bereits.\n"
+"Wenn Sie diese Adresse bereits verwendet haben, versuchen Sie bitte das Passwort zurückzusetzen."
 
 #: forms/auth.py:59
 msgid "Passwords do not match"
 msgstr ""
 
+#: forms/checkout.py:17 templates/shop/auth/login-reset.html:11
+#: templates/shop/auth/login-reset.html:29 templates/shop/auth/login.html:11
+#: templates/shop/auth/reset.html:11
+#: templates/shop/email/customer-information.html:6
+msgid "Email"
+msgstr "E-Mail"
+
+#: forms/checkout.py:18
+msgid "First Name"
+msgstr "Vorname"
+
+#: forms/checkout.py:19
+msgid "Last Name"
+msgstr "Nachname"
+
 #: forms/checkout.py:157
 msgid "Use shipping address for billing"
-msgstr "Verwende Lieferadresse als Rechnungsadresse"
+msgstr "Verwende Liefer- als Rechnungsadresse"
 
 #: forms/checkout.py:184
 msgid "Payment Method"
@@ -340,6 +354,11 @@ msgstr "Zahlungsmethode"
 #: forms/checkout.py:201
 msgid "Shipping Method"
 msgstr "Liefermethode"
+
+#: forms/checkout.py:218
+#| msgid "Arbitrary information for this order item"
+msgid "Extra annotation for this order"
+msgstr "Zusätzliche Anmerkung zu dieser Bestellung"
 
 #: management/commands/shop_customers.py:9
 msgid "Collect information about all customers which accessed this shop."
@@ -1455,6 +1474,10 @@ msgstr "PLZ"
 msgid "Location"
 msgstr "Stadt"
 
+#: models/defaults/address.py:17
+msgid "Country"
+msgstr "Land"
+
 #: models/defaults/order.py:10
 #: templates/shop/email/customer-information.html:14
 #: templates/shop/order/order-list.html:13
@@ -1644,7 +1667,7 @@ msgstr "Produktname zum Zeitpunkt der Bestellung."
 
 #: models/order.py:272
 msgid "Unit price"
-msgstr "Stückpreis"
+msgstr "Einheitspreis"
 
 #: models/order.py:273
 msgid "Products unit price at the moment of purchase."
@@ -1652,7 +1675,7 @@ msgstr ""
 
 #: models/order.py:274
 msgid "Line Total"
-msgstr "Gesamtsumme"
+msgstr "Zeilensumme"
 
 #: models/order.py:275
 msgid "Line total on the invoice at the moment of purchase."
@@ -1804,12 +1827,6 @@ msgstr "Als Gast fortfahren"
 msgid "Sign In"
 msgstr "Anmelden"
 
-#: templates/shop/auth/login-reset.html:11
-#: templates/shop/auth/login-reset.html:29 templates/shop/auth/login.html:11
-#: templates/shop/auth/reset.html:11
-msgid "Email"
-msgstr "E-Mail"
-
 #: templates/shop/auth/login-reset.html:14
 #: templates/shop/auth/login-reset.html:17 templates/shop/auth/login.html:14
 #: templates/shop/auth/login.html.py:17
@@ -1887,7 +1904,7 @@ msgstr "Menge"
 #: templates/shop/products/catalog-product-add2cart.html:14
 #: templates/shop/search/results.html:10
 msgid "Unit Price"
-msgstr "Stückpreis"
+msgstr "Einheitspreis"
 
 #: templates/shop/cart/editable.html:76 templates/shop/cart/watch.html:50
 msgid "Remove"
@@ -1909,10 +1926,6 @@ msgstr "In den Warenkorb"
 #: templates/shop/email/customer-information.html:4
 msgid "Your Details"
 msgstr "Ihre Details"
-
-#: templates/shop/email/customer-information.html:6
-msgid "E-Mail"
-msgstr ""
 
 #: templates/shop/email/order.html:7
 msgid "Summary of Your Order"
@@ -2064,10 +2077,6 @@ msgstr "Passwort wurde mit neuem Passwort zurückgesetzt"
 #~ msgstr "Rechnungsadresse"
 
 #, fuzzy
-#~ msgid "First name"
-#~ msgstr "Produktname"
-
-#, fuzzy
 #~ msgid "staff status"
 #~ msgstr "Status"
 
@@ -2091,24 +2100,6 @@ msgstr "Passwort wurde mit neuem Passwort zurückgesetzt"
 #~ "Stadt: %(city)s,\n"
 #~ "Bundesland: %(state)s,\n"
 #~ "Land: %(country)s\n"
-
-#~ msgid "Country"
-#~ msgstr "Land"
-
-#~ msgid "Countries"
-#~ msgstr "Länder"
-
-#~ msgid "Address2"
-#~ msgstr "Adresse2"
-
-#~ msgid "Zip Code"
-#~ msgstr "Postleitzahl"
-
-#~ msgid "City"
-#~ msgstr "Stadt"
-
-#~ msgid "Billing"
-#~ msgstr "Rechnungsadresse"
 
 #~ msgid "Order extra info"
 #~ msgstr "Extra Info der Bestellung"
