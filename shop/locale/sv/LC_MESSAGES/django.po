@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-28 14:12+0200\n"
+"POT-Creation-Date: 2015-09-30 00:52+0200\n"
 "PO-Revision-Date: 2012-02-14 13:05+0800\n"
 "Last-Translator: Per <per.rosengren@gmail.com>\n"
 "Language-Team: Stunning\n"
@@ -26,7 +26,7 @@ msgstr ""
 msgid "Identifier"
 msgstr "Produktreferens"
 
-#: admin/customer.py:80
+#: admin/customer.py:80 models/customer.py:111
 msgid "Salutation"
 msgstr ""
 
@@ -335,6 +335,23 @@ msgstr ""
 #: forms/auth.py:59
 msgid "Passwords do not match"
 msgstr ""
+
+#: forms/checkout.py:17 templates/shop/auth/login-reset.html:11
+#: templates/shop/auth/login-reset.html:29 templates/shop/auth/login.html:11
+#: templates/shop/auth/reset.html:11
+#: templates/shop/email/customer-information.html:6
+msgid "Email"
+msgstr ""
+
+#: forms/checkout.py:18
+#, fuzzy
+msgid "First Name"
+msgstr "Produktnamn"
+
+#: forms/checkout.py:19
+#, fuzzy
+msgid "Last Name"
+msgstr "Senast ändrad"
 
 #: forms/checkout.py:157
 #, fuzzy
@@ -1468,6 +1485,10 @@ msgstr ""
 msgid "Location"
 msgstr ""
 
+#: models/defaults/address.py:17
+msgid "Country"
+msgstr "Land"
+
 #: models/defaults/order.py:10
 #: templates/shop/email/customer-information.html:14
 #: templates/shop/order/order-list.html:13
@@ -1835,12 +1856,6 @@ msgstr "Gå till kassan"
 msgid "Sign In"
 msgstr ""
 
-#: templates/shop/auth/login-reset.html:11
-#: templates/shop/auth/login-reset.html:29 templates/shop/auth/login.html:11
-#: templates/shop/auth/reset.html:11
-msgid "Email"
-msgstr ""
-
 #: templates/shop/auth/login-reset.html:14
 #: templates/shop/auth/login-reset.html:17 templates/shop/auth/login.html:14
 #: templates/shop/auth/login.html.py:17
@@ -1942,10 +1957,6 @@ msgstr ""
 
 #: templates/shop/email/customer-information.html:4
 msgid "Your Details"
-msgstr ""
-
-#: templates/shop/email/customer-information.html:6
-msgid "E-Mail"
 msgstr ""
 
 #: templates/shop/email/order.html:7
@@ -2104,10 +2115,6 @@ msgstr ""
 #~ msgstr "Betalningsadress"
 
 #, fuzzy
-#~ msgid "First name"
-#~ msgstr "Produktnamn"
-
-#, fuzzy
 #~ msgid "staff status"
 #~ msgstr "Status"
 
@@ -2149,9 +2156,6 @@ msgstr ""
 #~ "Ort: %(city)s,\n"
 #~ "Län: %(state)s,\n"
 #~ "Land: %(country)s\n"
-
-#~ msgid "Country"
-#~ msgstr "Land"
 
 #~ msgid "Countries"
 #~ msgstr "Länder"
