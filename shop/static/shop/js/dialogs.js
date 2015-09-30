@@ -100,7 +100,7 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 				});
 			}
 
-			function reactivateButton(message) {
+			function reactivateButton() {
 				element.removeAttr('disabled');
 				angular.forEach(element.find('span'), function(span) {
 					span = angular.element(span);
@@ -109,9 +109,6 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 						span.removeAttr('deactivated-class');
 					}
 				});
-				if (message) {
-					console.error(message);
-				}
 			}
 
 			function performAction(promise, action) {
@@ -131,15 +128,14 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 					var result;
 					if (response) {
 						console.log(response);
-						// evaluate expression to proceed on the PSP's server ...
-						result = eval(response.data.expression);
-						// ... which itself may be a promise
-						$q.when(result).then(function() {}, function() {
-							reactivateButton("Error during purchase");
-						});
+						// evaluate expression to proceed on the PSP's server which itself may be a promise
+						return eval(response.data.expression);
 					}
-				}, function(errs) {
-					reactivateButton(errs);
+				}).then(function() {}, function(errs) {
+					if (errs) {
+						console.error(errs);
+					}
+					reactivateButton();
 				});
 			}
 		}
