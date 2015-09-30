@@ -134,9 +134,7 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 						// evaluate expression to proceed on the PSP's server ...
 						result = eval(response.data.expression);
 						// ... which itself may be a promise
-						$q.when(result).then(function() {
-							reactivateButton("Successfully purchased");
-						}, function() {
+						$q.when(result).then(function() {}, function() {
 							reactivateButton("Error during purchase");
 						});
 					}
