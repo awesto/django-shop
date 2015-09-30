@@ -1667,7 +1667,7 @@ msgstr "Produktname zum Zeitpunkt der Bestellung."
 
 #: models/order.py:272
 msgid "Unit price"
-msgstr "Stückpreis"
+msgstr "Einheitspreis"
 
 #: models/order.py:273
 msgid "Products unit price at the moment of purchase."
@@ -1675,7 +1675,7 @@ msgstr ""
 
 #: models/order.py:274
 msgid "Line Total"
-msgstr "Gesamtsumme"
+msgstr "Zeilensumme"
 
 #: models/order.py:275
 msgid "Line total on the invoice at the moment of purchase."
@@ -1904,7 +1904,7 @@ msgstr "Menge"
 #: templates/shop/products/catalog-product-add2cart.html:14
 #: templates/shop/search/results.html:10
 msgid "Unit Price"
-msgstr "Stückpreis"
+msgstr "Einheitspreis"
 
 #: templates/shop/cart/editable.html:76 templates/shop/cart/watch.html:50
 msgid "Remove"
