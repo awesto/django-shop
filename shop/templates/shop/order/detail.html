@@ -1,15 +1,15 @@
-{% extends "shop/order/order-base.html" %}
+{% extends "shop/order/base.html" %}
 {% load i18n %}
-
-{% block shop-order-heading %}
-	<h3>{% trans "Your Order" %}: {{ data.identifier }} <small> {% trans "from" %} </small><small shop-timestamp="{{ data.created_at }}"></small></h3>
-{% endblock shop-order-heading %}
 
 {% block shop-order-table %}
 
-{% block shop-order-caption %}<!-- table caption -->{% endblock %}
+	{% block shop-order-caption %}
+	<caption>
+		<h3>{% blocktrans with identifier=data.identifier %}Order {{ identifier }} <small>from{% endblocktrans %} <span shop-timestamp="{{ data.created_at }}"></span></small></h3>
+	</caption>
+	{% endblock %}
 
-{% block shop-order-thead %}
+	{% block shop-order-thead %}
 	<thead>
 		<tr>
 			<th class="text-center">{% trans "Product" %}</th>
@@ -18,11 +18,11 @@
 			<th class="text-right">{% trans "Total" %}</th>
 		</tr>
 	</thead>
-{% endblock shop-order-thead %}
+	{% endblock shop-order-thead %}
 
-{% block shop-order-tbody %}
+	{% block shop-order-tbody %}
 	<tbody>
-	{% for item in data.items %}
+		{% for item in data.items %}
 		<tr>
 			<td rowspan="2" class="text-center">{{ item.summary.media|safe }}</td>
 			<td class="text-center">{{ item.quantity }}</td>
@@ -37,11 +37,11 @@
 				{% endfor %}
 			</td>
 		</tr>
-	{% endfor %}
+		{% endfor %}
 	</tbody>
-{% endblock shop-order-tbody %}
+	{% endblock shop-order-tbody %}
 
-{% block shop-order-tfoot %}
+	{% block shop-order-tfoot %}
 	<tfoot>
 		<tr>
 			<td colspan="2"></td>
@@ -50,13 +50,13 @@
 				<h5>{{ data.subtotal }}</h5>
 			</td>
 		</tr>
-	{% for key, extra_row in data.extra.rows %}
+		{% for key, extra_row in data.extra.rows %}
 		<tr>
 			<td colspan="2"></td>
 			<td>{{ extra_row.label }}</td>
 			<td class="text-right">{{ extra_row.amount }}</td>
 		</tr>
-	{% endfor %}
+		{% endfor %}
 		<tr style="border-top-style: double;">
 			<td colspan="2"></td>
 			<td><h4>{% trans "Total" %}</h4></td>
@@ -72,6 +72,6 @@
 			</td>
 		</tr>
 	</tfoot>
-{% endblock shop-order-tfoot %}
+	{% endblock shop-order-tfoot %}
 
 {% endblock shop-order-table %}
