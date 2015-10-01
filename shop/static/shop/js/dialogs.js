@@ -94,7 +94,19 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 				angular.forEach(element.find('span'), function(span) {
 					span = angular.element(span);
 					if (span.hasClass('glyphicon')) {
+						span.attr('deactivated-class', span.attr('class'));
 						span.attr('class', 'glyphicon glyphicon-refresh glyphicon-refresh-animate');
+					}
+				});
+			}
+
+			function reactivateButton() {
+				element.removeAttr('disabled');
+				angular.forEach(element.find('span'), function(span) {
+					span = angular.element(span);
+					if (span.hasClass('glyphicon')) {
+						span.attr('class', span.attr('deactivated-class'));
+						span.removeAttr('deactivated-class');
 					}
 				});
 			}
@@ -113,15 +125,17 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 						$window.location.href = action;
 					}
 				}).then(function(response) {
+					var result;
 					if (response) {
 						console.log(response);
-						// evaluate expression to proceed on the PSP's server
-						eval(response.data.expression);
+						// evaluate expression to proceed on the PSP's server which itself may be a promise
+						return eval(response.data.expression);
 					}
-				}, function(errs) {
+				}).then(function() {}, function(errs) {
 					if (errs) {
 						console.error(errs);
 					}
+					reactivateButton();
 				});
 			}
 		}

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-shop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-30 08:30+0200\n"
+"POT-Creation-Date: 2015-09-30 18:10+0200\n"
 "PO-Revision-Date: 2011-07-13 16:16+0000\n"
 "Last-Translator: chrisglass <tribaal@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -218,10 +218,16 @@ msgstr ""
 msgid "HTML content"
 msgstr ""
 
+#: cascade/order.py:16
+#, fuzzy
+#| msgid "Order items"
+msgid "Order Views"
+msgstr "Bestellwaren"
+
 #: cascade/plugin_base.py:94 models/order.py:271 models/product.py:104
 #: templates/shop/cart/editable.html:16 templates/shop/cart/static.html:8
 #: templates/shop/cart/watch.html:12 templates/shop/email/order.html:11
-#: templates/shop/order/order-detail.html:15 templates/shop/print/order.html:9
+#: templates/shop/order/detail.html:15 templates/shop/print/order.html:9
 msgid "Product"
 msgstr "Produkt"
 
@@ -356,7 +362,6 @@ msgid "Shipping Method"
 msgstr "Liefermethode"
 
 #: forms/checkout.py:218
-#| msgid "Arbitrary information for this order item"
 msgid "Extra annotation for this order"
 msgstr "Zusätzliche Anmerkung zu dieser Bestellung"
 
@@ -1480,7 +1485,7 @@ msgstr "Land"
 
 #: models/defaults/order.py:10
 #: templates/shop/email/customer-information.html:14
-#: templates/shop/order/order-list.html:13
+#: templates/shop/order/list.html:15
 msgid "Shipping Address"
 msgstr "Lieferadresse"
 
@@ -1542,7 +1547,7 @@ msgid "Order freshly created"
 msgstr "Bestellung soeben erzeugt"
 
 #: models/order.py:116 models/order.py:227 models/order.py:246
-#: templates/shop/order/order-list.html:14
+#: templates/shop/order/list.html:16
 msgid "Status"
 msgstr "Status"
 
@@ -1552,7 +1557,7 @@ msgstr "Währung in der diese Bestellung abgeschlossen wurde"
 
 #: models/order.py:119 templates/shop/cart/editable.html:37
 #: templates/shop/cart/static.html:41 templates/shop/cart/summary.html:6
-#: templates/shop/email/order.html:41 templates/shop/order/order-detail.html:48
+#: templates/shop/email/order.html:41 templates/shop/order/detail.html:48
 #: templates/shop/print/order.html:44
 #: templates/shop/products/catalog-product-add2cart.html:14
 msgid "Subtotal"
@@ -1561,8 +1566,8 @@ msgstr "Zwischen&shy;summe"
 #: models/order.py:120 templates/shop/cart/editable.html:19
 #: templates/shop/cart/editable.html:49 templates/shop/cart/static.html:11
 #: templates/shop/cart/static.html.py:56 templates/shop/cart/summary.html:16
-#: templates/shop/email/order.html:51 templates/shop/order/order-detail.html:18
-#: templates/shop/order/order-detail.html:62 templates/shop/print/order.html:12
+#: templates/shop/email/order.html:51 templates/shop/order/detail.html:18
+#: templates/shop/order/detail.html:62 templates/shop/print/order.html:12
 #: templates/shop/print/order.html.py:58
 msgid "Total"
 msgstr "Gesamtsumme"
@@ -1580,7 +1585,7 @@ msgid "Parts of the Request objects on the moment of purchase."
 msgstr ""
 
 #: models/order.py:131 models/order.py:226 models/order.py:245
-#: models/order.py:265
+#: models/order.py:265 templates/shop/order/detail.html:8
 msgid "Order"
 msgstr "Bestellung"
 
@@ -1671,7 +1676,7 @@ msgstr "Einheitspreis"
 
 #: models/order.py:273
 msgid "Products unit price at the moment of purchase."
-msgstr ""
+msgstr "Einheitspreis zum Zeitpunkt der Bestellung"
 
 #: models/order.py:274
 msgid "Line Total"
@@ -1893,13 +1898,13 @@ msgstr "Registrieren"
 
 #: templates/shop/cart/editable.html:17 templates/shop/cart/static.html:9
 #: templates/shop/cart/watch.html:13 templates/shop/email/order.html:12
-#: templates/shop/order/order-detail.html:16 templates/shop/print/order.html:10
+#: templates/shop/order/detail.html:16 templates/shop/print/order.html:10
 #: templates/shop/products/catalog-product-add2cart.html:14
 msgid "Quantity"
 msgstr "Menge"
 
 #: templates/shop/cart/editable.html:18 templates/shop/cart/static.html:10
-#: templates/shop/cart/watch.html:14 templates/shop/order/order-detail.html:17
+#: templates/shop/cart/watch.html:14 templates/shop/order/detail.html:17
 #: templates/shop/print/order.html:11
 #: templates/shop/products/catalog-product-add2cart.html:14
 #: templates/shop/search/results.html:10
@@ -1981,23 +1986,25 @@ msgstr "Bitte gehen Sie auf folgende Seite und wählen ein neues Passwort:"
 msgid "Password reset on %(site_name)s"
 msgstr "Passwort für %(site_name)s zurücksetzen"
 
-#: templates/shop/order/order-detail.html:5
-msgid "Your Order"
-msgstr "Ihre Bestellungen"
-
-#: templates/shop/order/order-detail.html:5
+#: templates/shop/order/detail.html:8
+#| msgid "from"
+msgctxt "order-detail"
 msgid "from"
-msgstr "von"
+msgstr "vom"
 
-#: templates/shop/order/order-detail.html:69
+#: templates/shop/order/detail.html:69
 msgid "Thereof Paid"
 msgstr "Davon bezahlt"
 
-#: templates/shop/order/order-list.html:11
+#: templates/shop/order/list.html:7
+msgid "Your Orders"
+msgstr "Ihre Bestellungen"
+
+#: templates/shop/order/list.html:13
 msgid "Order Date"
 msgstr "Bestelldatum"
 
-#: templates/shop/order/order-list.html:12
+#: templates/shop/order/list.html:14
 msgid "Sum"
 msgstr "Summe"
 
