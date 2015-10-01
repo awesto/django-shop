@@ -4,7 +4,8 @@
 //module: django.shop, TODO: move this into a summary JS file
 var djangoShopModule = angular.module('django.shop.search', []);
 
-// Directive <form shop-product-search ...>
+// Directive <form shop-product-search ...> to be used in the form containing the input field
+// for entering the search query
 djangoShopModule.directive('shopProductSearch', ['$window', function($window) {
 	return {
 		require: 'form',

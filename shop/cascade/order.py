@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from django import forms
+from django.core.exceptions import ValidationError
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
 from cms.plugin_pool import plugin_pool
@@ -7,10 +9,19 @@ from shop import settings as shop_settings
 from .plugin_base import ShopPluginBase
 
 
+class ShopOrderViewsForm(forms.ModelForm):
+    def clean(self):
+        cleaned_data = super(ShopOrderViewsForm, self).clean()
+        if self.instance.page and self.instance.page.application_urls != 'OrderApp':
+            raise ValidationError("This plugin only makes sense if used on a CMS page with an application of type 'OrderApp'.")
+        return cleaned_data
+
+
 class ShopOrderViewsPlugin(ShopPluginBase):
     name = _("Order Views")
     require_parent = True
     parent_classes = ('BootstrapColumnPlugin',)
+    form = ShopOrderViewsForm
     cache = False
 
     def get_render_template(self, context, instance, placeholder):
