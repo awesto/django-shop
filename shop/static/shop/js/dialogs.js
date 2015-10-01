@@ -88,8 +88,8 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 			};
 
 			// Some actions, such as purchasing require a lot of time. This function
-			// deactivates the button and replaces existing Glyphicons against a spinning wheel.
-			function deactivateButton() {
+			// disables the button and replaces existing Glyphicons against a spinning wheel.
+			function disableButton() {
 				element.attr('disabled', 'disabled');
 				angular.forEach(element.find('span'), function(span) {
 					span = angular.element(span);
@@ -100,11 +100,11 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 				});
 			}
 
-			function reactivateButton() {
+			function reenableButton() {
 				element.removeAttr('disabled');
 				angular.forEach(element.find('span'), function(span) {
 					span = angular.element(span);
-					if (span.hasClass('glyphicon')) {
+					if (span.attr('deactivated-class')) {
 						span.attr('class', span.attr('deactivated-class'));
 						span.removeAttr('deactivated-class');
 					}
@@ -117,7 +117,7 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 					if (action === 'RELOAD_PAGE') {
 						$window.location.reload();
 					} else if (action === 'PURCHASE_NOW') {
-						deactivateButton();
+						disableButton();
 						// Convert the cart into an order object.
 						return $http.post(purchaseURL, scope.data);
 					} else {
@@ -128,14 +128,18 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 					var result;
 					if (response) {
 						console.log(response);
-						// evaluate expression to proceed on the PSP's server which itself may be a promise
+						// evaluate expression to proceed on the PSP's server which itself might be a promise
 						return eval(response.data.expression);
 					}
-				}).then(function() {}, function(errs) {
+				}).then(function() {
+					// should never reach this: `console.error` shall be replaced against `alert` 
+					console.error("An error occured while purchasing. Please reload the page and try again.");
+					reenableButton();
+				}, function(errs) {
 					if (errs) {
 						console.error(errs);
 					}
-					reactivateButton();
+					reenableButton();
 				});
 			}
 		}
