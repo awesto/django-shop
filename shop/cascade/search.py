@@ -33,4 +33,13 @@ class ShopSearchResultsPlugin(ShopPluginBase):
             ])
         return Template('<pre class="bg-danger">This {} plugin is used on a CMS page without an application of type "Search".</pre>'.format(self.name))
 
+    def render(self, context, instance, placeholder):
+        super(ShopSearchResultsPlugin, self).render(context, instance, placeholder)
+        try:
+            if context['edit_mode']:
+                # prevent scrolling while editing
+                context['data']['next'] = None
+        finally:
+            return context
+
 plugin_pool.register_plugin(ShopSearchResultsPlugin)
