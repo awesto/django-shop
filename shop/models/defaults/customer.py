@@ -10,12 +10,12 @@ class Customer(BaseCustomer):
 
     number = models.PositiveIntegerField(_("Customer Number"), null=True, default=None, unique=True)
 
-    def get_or_assign_number(self):
+    def get_number(self):
         """
-        Assign a number to be used as unique customer identifier.
+        Get or assign a number to be used as unique customer identifier.
         """
         if self.number is None:
-            number = Customer.objects.filter(number__isnull=False).aggregate(models.Max('number'))
-            self.number = number + 1
+            aggr = Customer.objects.filter(number__isnull=False).aggregate(models.Max('number'))
+            self.number = aggr['number__max'] or 0 + 1
             self.save()
         return self.number

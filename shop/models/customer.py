@@ -207,10 +207,11 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         session_key = CustomerManager.decode_session_key(self.user.username)
         return SessionStore.exists(session_key)
 
-    def get_or_assign_number(self):
+    def get_number(self):
         """
-        Hook for getting the customers number. It will be invoked, every time an Order object
-        is created. If you prefer to use a different customer number, then override this method.
+        Hook to get or to assign the customers number. It will be invoked, every time an Order
+        object is created. If you prefer to use a customer number which differs from the primary
+        key, then override this method.
         """
         return self.user_id
 
