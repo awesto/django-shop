@@ -20,7 +20,7 @@ class CustomerForm(DialogModelForm):
 
     class Meta:
         model = CustomerModel
-        exclude = ('user', 'recognized', 'last_access',)
+        exclude = ('user', 'recognized', 'number', 'last_access',)
         custom_fields = ('email', 'first_name', 'last_name',)
 
     def __init__(self, initial=None, instance=None, *args, **kwargs):
