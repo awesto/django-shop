@@ -1,7 +1,6 @@
 (function(angular, undefined) {
 'use strict';
 
-// module: django.shop, TODO: move this into a summary JS file
 var djangoShopModule = angular.module('django.shop.catalog', ['ui.bootstrap']);
 
 djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$modal',
