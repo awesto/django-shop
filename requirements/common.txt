@@ -20,7 +20,6 @@ django-reversion==1.8.5
 django-sass-processor==0.2.4
 django-sekizai==0.8.2
 Django-Select2==4.2.2
--e git+git@github.com:jrief/django-shop.git@35da529f35f3bd09c92e960d251c3da7b29d9e2b#egg=django_shop-0.3.0.dev
 django-softhyphen==1.0.2
 django-treebeard==3.0
 djangocms-admin-style==0.2.7
