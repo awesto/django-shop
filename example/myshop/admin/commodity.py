@@ -10,14 +10,15 @@ from parler.admin import TranslatableAdmin
 from polymorphic.admin import PolymorphicChildModelAdmin
 from reversion import VersionAdmin
 from myshop.models.shopmodels import Product
-from myshop.admin.image import ProductImageInline
+from .image import ProductImageInline
 
 
-class CommodityAdmin(TranslatableAdmin, VersionAdmin, FrontendEditableAdminMixin, PlaceholderAdminMixin, PolymorphicChildModelAdmin):
+class CommodityAdmin(TranslatableAdmin, VersionAdmin, FrontendEditableAdminMixin,
+                     PlaceholderAdminMixin, PolymorphicChildModelAdmin):
     base_model = Product
     fieldsets = (
         (None, {
-            'fields': ('identifier', ('unit_price', 'cost', 'availability', 'active',),)
+            'fields': ('identifier', ('unit_price', 'active',),)
         }),
         (_("Translatable Fields"), {
             'fields': ('name', 'slug', 'description',)
@@ -38,7 +39,7 @@ class CommodityAdmin(TranslatableAdmin, VersionAdmin, FrontendEditableAdminMixin
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         if db_field.name == 'cms_pages':
-            # restrict many-to-many field for cms_pages to TextilePanelsApp only
+            # restrict many-to-many field for cms_pages to ProductApp only
             limit_choices_to = {'publisher_is_draft': False, 'application_urls': 'CommodityListApp'}
             kwargs['queryset'] = Page.objects.filter(**limit_choices_to)
         return super(CommodityAdmin, self).formfield_for_manytomany(db_field, request, **kwargs)

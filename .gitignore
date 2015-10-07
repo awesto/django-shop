@@ -23,3 +23,6 @@ database.db
 .ropeproject
 OLD-out-of-date
 .tox
+workdir/
+node_modules/
+bower_components/
