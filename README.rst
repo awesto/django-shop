@@ -5,17 +5,15 @@ django SHOP
 This repository hosts the django SHOP code and documentation.
 
 Django SHOP aims to be the easy, fun and fast shop counterpart to django CMS.
-Specifically, we aim at providing a clean, modular and pythonic/djangonic
-implementation of a shop framework,
-that a moderately talented Django programmer should be able to pick up and run
-easily.
 
-The current state is a roughly functional and highly modular system.
-Please refer to docs/plugins.rst to figure out what plugin types are available,
-and what the do
+Specifically, we aim at providing a clean, modular and Pythonic/Djangonic implementation of a shop
+framework, that a moderately talented Django programmer should be able to pick up and run easily.
 
-You'll find the detailed doc on
-`RTD <http://readthedocs.org/projects/django-shop/>`_
+The current state is a roughly functional and highly modular system. Please refer to
+docs/plugins.rst to figure out what plugin types are available, and what the do.
+
+You'll find the detailed doc on `RTD <http://readthedocs.org/projects/django-shop/>`_
+
 
 Build status
 ============
@@ -24,6 +22,7 @@ Build status
 
 |travisci|
 
+
 How to help:
 ============
 
@@ -31,6 +30,7 @@ How to help:
 * Most of the discussion around architecture decisions / tools etc... take
   place on IRC (Freenode), on #django-shop
 * Pick a task from the list below :)
+
 
 Todo:
 =====
@@ -47,9 +47,3 @@ Todo:
 * Refactoring tests to make creating test environments less messy (fixtures?)
 * If you feel like you could solve having multiple currencies in an elegant
   manner, we would really be interested to hear from you
-
-
-.. image:: https://d2weczhvl823v0.cloudfront.net/divio/django-shop/trend.png
-   :alt: Bitdeli badge
-   :target: https://bitdeli.com/free
-
