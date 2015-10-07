@@ -1,8 +1,6 @@
 [run]
 branch = True
+source = shop
 
 [report]
 show_missing = True
-omit =
-    .tox/*
-    manage.py
