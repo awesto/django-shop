@@ -6,15 +6,16 @@ from rest_framework.settings import api_settings
 from shop.rest.filters import CMSPagesFilterBackend
 from shop.views.product import AddToCartView, ProductListView, ProductRetrieveView
 from shop.search.views import SearchView
+from shop.rest.serializers import AddToCartSerializer
 from myshop.models.commodity import Commodity
 from myshop.serializers import (ProductSummarySerializer, ProductDetailSerializer,
-    AddToCartSerializer, CommoditySearchSerializer)
+    CommoditySearchSerializer)
 
 limit_choices_to = Q(instance_of=Commodity, active=True)
 list_options = dict(
     product_model=Commodity,
     serializer_class=ProductSummarySerializer,
-    filter_backends=api_settings.DEFAULT_FILTER_BACKENDS + [CMSPagesFilterBackend],
+    filter_backends=api_settings.DEFAULT_FILTER_BACKENDS + [CMSPagesFilterBackend()],
     limit_choices_to=limit_choices_to,
 )
 detail_options = dict(

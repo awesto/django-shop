@@ -68,6 +68,66 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='CommodityProperty',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('multiple_tags', models.BooleanField(default=False, verbose_name='Customer can select multiple tags for this property')),
+            ],
+            options={
+                'verbose_name': 'Commodity Property',
+                'verbose_name_plural': 'Commodity Properties',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='CommodityPropertyTranslation',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('language_code', models.CharField(max_length=15, verbose_name='Language', db_index=True)),
+                ('property', models.CharField(help_text='One of some possible properties for commodities.', max_length=255, verbose_name='Property')),
+                ('master', models.ForeignKey(related_name='translations', editable=False, to='myshop.CommodityProperty', null=True)),
+            ],
+            options={
+                'managed': True,
+                'db_table': 'myshop_commodityproperty_translation',
+                'db_tablespace': '',
+                'default_permissions': (),
+                'verbose_name': 'Commodity Property Translation',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='CommodityTag',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('image', filer.fields.image.FilerImageField(related_name='tex_tag', blank=True, to='filer.Image', help_text='A sample image get an impression of this tag', null=True, verbose_name='Sample Image')),
+                ('property', models.ForeignKey(to='myshop.CommodityProperty')),
+            ],
+            options={
+                'verbose_name': 'Commodity Tag',
+                'verbose_name_plural': 'Commodity Tags',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='CommodityTagTranslation',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('language_code', models.CharField(max_length=15, verbose_name='Language', db_index=True)),
+                ('tag', models.CharField(help_text='A tag to describe the property of this commodity.', max_length=255, verbose_name='Tag')),
+                ('search_indices', models.CharField(help_text='Search Indices for describing this property tag', max_length=255, null=True, verbose_name='Search Indices', blank=True)),
+                ('master', models.ForeignKey(related_name='translations', editable=False, to='myshop.CommodityTag', null=True)),
+            ],
+            options={
+                'managed': True,
+                'db_table': 'myshop_commoditytag_translation',
+                'db_tablespace': '',
+                'default_permissions': (),
+                'verbose_name': 'Commodity Tag Translation',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='Customer',
             fields=[
                 ('user', models.OneToOneField(primary_key=True, serialize=False, to=settings.AUTH_USER_MODEL)),
@@ -168,6 +228,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('product_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='myshop.Product')),
                 ('cms_pages', models.ManyToManyField(help_text='Choose list view this commodity shall appear on.', to='cms.Page', blank=True)),
+                ('properties', models.ManyToManyField(help_text='Choose properties for this commodity.', to='myshop.CommodityTag', blank=True)),
             ],
             options={
                 'verbose_name': 'Commodity',
@@ -237,6 +298,14 @@ class Migration(migrations.Migration):
             name='shipped_with',
             field=models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, blank=True, to='myshop.OrderShipping', help_text='Refer to the delivery provider used to ship this item', null=True, verbose_name='Shipped with'),
             preserve_default=True,
+        ),
+        migrations.AlterUniqueTogether(
+            name='commoditytagtranslation',
+            unique_together=set([('language_code', 'master')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='commoditypropertytranslation',
+            unique_together=set([('language_code', 'master')]),
         ),
         migrations.AddField(
             model_name='cartitem',
