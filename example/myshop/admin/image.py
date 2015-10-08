@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
 from adminsortable2.admin import SortableInlineAdminMixin
-from myshop.models.shopmodels import ProductImage
+from myshop.models.product import ProductImage
 
 
 class ProductImageInline(SortableInlineAdminMixin, admin.StackedInline):

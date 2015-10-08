@@ -10,7 +10,7 @@ from cms.admin.placeholderadmin import PlaceholderAdminMixin, FrontendEditableAd
 from parler.admin import TranslatableAdmin, TranslatableTabularInline
 from polymorphic.admin import PolymorphicChildModelAdmin
 from reversion import VersionAdmin
-from myshop.models.shopmodels import Product
+from myshop.models.product import Product
 from myshop.models.commodity import CommodityProperty, CommodityTag
 from .image import ProductImageInline
 
