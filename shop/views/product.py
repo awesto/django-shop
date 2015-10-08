@@ -24,12 +24,12 @@ class ProductListView(generics.ListAPIView):
     limit_choices_to = Q()
 
     def get_queryset(self):
+        qs = self.product_model.objects.filter(self.limit_choices_to)
         # restrict queryset by language
-        filter_kwargs = {}
         if hasattr(self.product_model, 'translations'):
-            filter_kwargs.update(translations__language_code=get_language_from_request(self.request))
-        qs = self.product_model.objects.filter(self.limit_choices_to, **filter_kwargs)
-        return qs
+            language = get_language_from_request(self.request)
+            qs = qs.prefetch_related('translations').filter(translations__language_code=language)
+        return qs.select_related('polymorphic_ctype')
 
     def get_template_names(self):
         return [self.request.current_page.get_template()]
