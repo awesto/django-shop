@@ -65,16 +65,16 @@ class ProductCommonSerializer(serializers.ModelSerializer):
         Return a HTML snippet containing a rendered summary for this product.
         Build a template search path with `postfix` distinction.
         """
-        app_label = product._meta.app_label.lower()
-        product_type = product.__class__.__name__.lower()
-        request = self.context['request']
-        cache_key = '{0}-{1}-html-{2}-{3}:{4}'.format(app_label, product_type, postfix, product.id, get_language_from_request(request))
-        content = cache.get(cache_key)
-        if content:
-            return mark_safe(content)
         if not self.label:
             msg = "The Product Serializer must be configured using a `label` field."
             raise exceptions.ImproperlyConfigured(msg)
+        app_label = product._meta.app_label.lower()
+        product_type = product.__class__.__name__.lower()
+        request = self.context['request']
+        cache_key = 'product:{0}|{1}-{2}-{3}-{4}-{5}'.format(product.id, app_label, self.label, product_type, postfix, get_language_from_request(request))
+        content = cache.get(cache_key)
+        if content:
+            return mark_safe(content)
         params = [
             (app_label, self.label, product_type, postfix),
             (app_label, self.label, 'product', postfix),
