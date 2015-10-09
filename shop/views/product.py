@@ -29,7 +29,8 @@ class ProductListView(generics.ListAPIView):
         if hasattr(self.product_model, 'translations'):
             language = get_language_from_request(self.request)
             qs = qs.prefetch_related('translations').filter(translations__language_code=language)
-        return qs.select_related('polymorphic_ctype')
+        qs = qs.select_related('polymorphic_ctype')
+        return qs
 
     def get_template_names(self):
         return [self.request.current_page.get_template()]
