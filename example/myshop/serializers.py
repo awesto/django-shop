@@ -11,7 +11,7 @@ from rest_framework import serializers
 from rest_framework.fields import empty
 from shop.rest.serializers import ProductSummarySerializerBase, ProductDetailSerializerBase
 from shop.search.serializers import ProductSearchSerializer as ProductSearchSerializerBase
-from .models.shopmodels import Product
+from .models.product import Product
 from .search_indexes import CommodityIndex
 
 

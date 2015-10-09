@@ -1,3 +1,8 @@
 @import "variables";
 @import "bootstrap-sass/assets/stylesheets/bootstrap";
 @import "font-awesome/scss/font-awesome";
+
+// fixes https://github.com/twbs/bootstrap-sass/issues/919
+.breadcrumb > li + li:before {
+	content: "/";
+}

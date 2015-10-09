@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from adminsortable2.admin import SortableAdminMixin
 from polymorphic.admin import PolymorphicParentModelAdmin
 from reversion import VersionAdmin
-from myshop.models.shopmodels import Product
+from myshop.models.product import Product
 from myshop.models.commodity import Commodity
 from .commodity import CommodityAdmin
 
