@@ -216,7 +216,8 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         return self.user_id
 
     def save(self, **kwargs):
-        self.user.save(using=kwargs.get('using', DEFAULT_DB_ALIAS))
+        if 'update_fields' not in kwargs:
+            self.user.save(using=kwargs.get('using', DEFAULT_DB_ALIAS))
         super(BaseCustomer, self).save(**kwargs)
 
     def delete(self, *args, **kwargs):
