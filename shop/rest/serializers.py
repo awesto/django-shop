@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 from collections import OrderedDict
 from django.core import exceptions
+from django.core.cache import cache
 from django.db import models
 from django.template import RequestContext
 from django.template.base import TemplateDoesNotExist
@@ -9,9 +10,11 @@ from django.template.loader import select_template
 from django.utils.six import with_metaclass
 from django.utils.html import strip_spaces_between_tags
 from django.utils.safestring import mark_safe, SafeText
+from django.utils.translation import get_language_from_request
 from jsonfield.fields import JSONField
 from rest_framework import serializers
 from rest_framework.fields import empty
+from shop import settings as shop_settings
 from shop.models.cart import CartModel, CartItemModel, BaseCartItem
 from shop.models.customer import CustomerModel
 from shop.models.order import OrderModel, OrderItemModel
@@ -62,11 +65,16 @@ class ProductCommonSerializer(serializers.ModelSerializer):
         Return a HTML snippet containing a rendered summary for this product.
         Build a template search path with `postfix` distinction.
         """
+        app_label = product._meta.app_label.lower()
+        product_type = product.__class__.__name__.lower()
+        request = self.context['request']
+        cache_key = '{0}-{1}-html-{2}-{3}:{4}'.format(app_label, product_type, postfix, product.id, get_language_from_request(request))
+        content = cache.get(cache_key)
+        if content:
+            return mark_safe(content)
         if not self.label:
             msg = "The Product Serializer must be configured using a `label` field."
             raise exceptions.ImproperlyConfigured(msg)
-        app_label = product._meta.app_label.lower()
-        product_type = product.__class__.__name__.lower()
         params = [
             (app_label, self.label, product_type, postfix),
             (app_label, self.label, 'product', postfix),
@@ -76,12 +84,12 @@ class ProductCommonSerializer(serializers.ModelSerializer):
             template = select_template(['{0}/products/{1}-{2}-{3}.html'.format(*p) for p in params])
         except TemplateDoesNotExist:
             return SafeText()
-        request = self.context['request']
         # when rendering emails, we require an absolute URI, so that media can be accessed from
         # the mail client
         absolute_base_uri = request.build_absolute_uri('/').rstrip('/')
         context = RequestContext(request, {'product': product, 'ABSOLUTE_BASE_URI': absolute_base_uri})
         content = strip_spaces_between_tags(template.render(context).strip())
+        cache.set(cache_key, content, shop_settings.CACHE_DURATIONS['product_html_snippet'])
         return mark_safe(content)
 
 

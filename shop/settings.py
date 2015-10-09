@@ -27,3 +27,8 @@ Use ``SHOP_EDITCART_NG_MODEL_OPTIONS`` and ``SHOP_ADD2CART_NG_MODEL_OPTIONS`` to
 update behavior when changing the quantity of a cart item. For more information refer to the
 AngularJS docs: https://code.angularjs.org/1.3.7/docs/api/ng/directive/ngModelOptions
 """
+
+CACHE_DURATIONS = {
+    'product_html_snippet': 86400,
+}
+CACHE_DURATIONS.update(getattr(settings, 'SHOP_CACHE_DURATIONS', {}))
