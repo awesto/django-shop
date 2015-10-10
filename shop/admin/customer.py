@@ -12,7 +12,12 @@ from shop.models.customer import CustomerModel
 
 class CustomerInlineAdmin(admin.StackedInline):
     model = CustomerModel
-    fields = ('salutation',)
+    fields = ('salutation', 'get_number',)
+    readonly_fields = ('get_number',)
+
+    def get_number(self, obj):
+        return obj.get_number()
+    get_number.short_description = _("Number")
 
 
 class CustomerChangeForm(UserChangeForm):
