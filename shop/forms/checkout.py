@@ -182,13 +182,25 @@ class PaymentMethodForm(DialogForm):
     scope_prefix = 'data.payment_method'
 
     payment_modifier = fields.ChoiceField(label=_("Payment Method"),
-        choices=[m.get_choice() for m in cart_modifiers_pool.get_payment_modifiers()],
         widget=RadioSelect(renderer=RadioFieldRenderer, attrs={'ng-change': 'upload()'})
     )
 
+    def __init__(self, *args, **kwargs):
+        choices = [m.get_choice() for m in cart_modifiers_pool.get_payment_modifiers()
+                   if not m.is_disabled(kwargs['cart'])]
+        self.base_fields['payment_modifier'].choices = choices
+        if len(choices) == 1:
+            # if there is only one shipping method available, always set it as default
+            try:
+                kwargs['initial']['payment_modifier'] = choices[0][0]
+            except KeyError:
+                pass
+        super(PaymentMethodForm, self).__init__(*args, **kwargs)
+
     @classmethod
     def form_factory(cls, request, data, cart):
-        payment_method_form = cls(data=data)
+        cart.update(request)
+        payment_method_form = cls(data=data, cart=cart)
         if payment_method_form.is_valid():
             cart.extra.update(payment_method_form.cleaned_data)
         else:
@@ -199,13 +211,25 @@ class ShippingMethodForm(DialogForm):
     scope_prefix = 'data.shipping_method'
 
     shipping_modifier = fields.ChoiceField(label=_("Shipping Method"),
-        choices=[m.get_choice() for m in cart_modifiers_pool.get_shipping_modifiers()],
         widget=RadioSelect(renderer=RadioFieldRenderer, attrs={'ng-change': 'upload()'})
     )
 
+    def __init__(self, *args, **kwargs):
+        choices = [m.get_choice() for m in cart_modifiers_pool.get_shipping_modifiers()
+                   if not m.is_disabled(kwargs['cart'])]
+        self.base_fields['shipping_modifier'].choices = choices
+        if len(choices) == 1:
+            # with only one choice, initialize with it
+            try:
+                kwargs['initial']['shipping_modifier'] = choices[0][0]
+            except KeyError:
+                pass
+        super(ShippingMethodForm, self).__init__(*args, **kwargs)
+
     @classmethod
     def form_factory(cls, request, data, cart):
-        shipping_method_form = cls(data=data)
+        cart.update(request)
+        shipping_method_form = cls(data=data, cart=cart)
         if shipping_method_form.is_valid():
             cart.extra.update(shipping_method_form.cleaned_data)
         else:

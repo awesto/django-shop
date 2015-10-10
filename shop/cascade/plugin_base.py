@@ -16,6 +16,8 @@ from cmsplugin_cascade.link.fields import LinkSearchField
 from cmsplugin_cascade.link.plugin_base import LinkPluginBase, LinkElementMixin
 from cmsplugin_cascade.utils import resolve_dependencies
 from shop import settings as shop_settings
+from shop.forms.base import DialogFormMixin
+from shop.models.cart import CartModel
 from shop.models.product import ProductModel
 
 
@@ -200,6 +202,10 @@ class DialogFormPluginBase(ShopPluginBase):
         """
         request = context['request']
         form_data = self.get_form_data(request)
+        if issubclass(self.FormClass, DialogFormMixin):
+            cart = CartModel.objects.get_from_request(request)
+            cart.update(request)
+            form_data['cart'] = cart
         request._plugin_order = getattr(request, '_plugin_order', 0) + 1
         if not isinstance(form_data.get('initial'), dict):
             form_data['initial'] = {}
