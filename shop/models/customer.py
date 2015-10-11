@@ -122,19 +122,6 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     class Meta:
         abstract = True
 
-    def __init__(self, *args, **kwargs):
-        def is_anonymous(self):
-            return True
-
-        def is_authenticated(self):
-            return False
-
-        super(BaseCustomer, self).__init__(*args, **kwargs)
-        if hasattr(self, 'user') and self.recognized in (self.UNRECOGNIZED, self.GUEST):
-            # override these method to emulate an AnonymousUser object
-            self.user.is_anonymous = types.MethodType(is_anonymous, self.user)
-            self.user.is_authenticated = types.MethodType(is_authenticated, self.user)
-
     def __str__(self):
         return self.get_username()
 
@@ -174,10 +161,10 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         return self.user.last_login
 
     def is_anonymous(self):
-        return self.user.is_anonymous()
+        return self.recognized in (self.UNRECOGNIZED, self.GUEST)
 
     def is_authenticated(self):
-        return self.user.is_authenticated()
+        return self.recognized == self.REGISTERED
 
     def is_recognized(self):
         """
