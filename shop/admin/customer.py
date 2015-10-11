@@ -13,15 +13,11 @@ from shop.models.customer import CustomerModel
 class CustomerInlineAdmin(admin.StackedInline):
     model = CustomerModel
     fields = ('salutation', 'get_number', 'recognized')
-    readonly_fields = ('get_number', 'recognized')
+    readonly_fields = ('get_number',)
 
     def get_number(self, customer):
         return customer.get_number()
     get_number.short_description = _("Number")
-
-    def recognized(self, customer):
-        return customer.get_recognized_display()
-    recognized.short_description = _("State")
 
 
 class CustomerChangeForm(UserChangeForm):

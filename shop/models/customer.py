@@ -110,7 +110,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     CUSTOMER_STATES = ((UNRECOGNIZED, _("Unrecognized")), (GUEST, _("Guest")), (REGISTERED, _("Registered")))
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL, primary_key=True)
-    recognized = models.PositiveSmallIntegerField(_("Recognized"), choices=CUSTOMER_STATES,
+    recognized = models.PositiveSmallIntegerField(_("Recognized as"), choices=CUSTOMER_STATES,
         help_text=_("Designates the state the customer is recognized as."), default=0)
     salutation = models.CharField(_("Salutation"), max_length=5, choices=SALUTATION)
     last_access = models.DateTimeField(_("Last accessed"), default=timezone.now)
