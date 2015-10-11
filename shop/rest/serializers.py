@@ -122,8 +122,7 @@ class ProductSummarySerializerBase(with_metaclass(SerializerRegistryMetaclass, P
     product_model = serializers.CharField(read_only=True)
 
     def __init__(self, *args, **kwargs):
-        if not kwargs.get('label'):
-            kwargs.update(label='overview')
+        kwargs.setdefault('label', 'overview')
         super(ProductSummarySerializerBase, self).__init__(*args, **kwargs)
 
 
