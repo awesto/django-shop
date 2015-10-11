@@ -52,6 +52,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = _("Customers")
 
     def get_username(self):
+        if self.is_staff:
+            return self.username
         return self.email or '<anonymous>'
 
     def __str__(self):
@@ -65,8 +67,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.get_short_name()
 
     def get_short_name(self):
-        if self.is_staff:
-            return self.username
         if self.first_name:
             return self.first_name
         return self.email
