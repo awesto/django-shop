@@ -107,6 +107,10 @@ class ContinueAsGuestForm(ModelForm):
         fields = ()  # this form doesn't show any fields
 
     def save(self, request=None, commit=True):
-        self.instance.user.is_active = False
+        self.instance.user.is_active = shop_settings.GUEST_IS_ACTIVE_USER
+        if self.instance.user.is_active:
+            # set a usable password, otherwise the user can not reset the password
+            password = get_user_model().objects.make_random_password(length=30)
+            self.instance.user.set_password(password)
         self.instance.recognized = CustomerModel.GUEST
         return super(ContinueAsGuestForm, self).save(commit)
