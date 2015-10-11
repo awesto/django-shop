@@ -65,8 +65,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.get_short_name()
 
     def get_short_name(self):
-        if self.USERNAME_REGEX.match(self.username):
+        if self.is_staff:
             return self.username
+        if self.first_name:
+            return self.first_name
         return self.email
 
     def email_user(self, subject, message, from_email=None):
