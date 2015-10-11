@@ -7,8 +7,10 @@ This alternative implementation is activated by setting ``AUTH_USER_MODEL = 'sho
 settings.py, otherwise the default Django or another implementation is used.
 """
 import re
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 from django.core import validators
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
@@ -33,7 +35,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(_("Last name"), max_length=30, blank=True)
 
     # this is the only field, which differs from the default implementation
-    email = models.EmailField(_("Email address"), null=True, default=None, blank=True, unique=True, max_length=254)
+    email = models.EmailField(_("Email address"), null=True, default=None, blank=True, max_length=254)
     is_staff = models.BooleanField(_("staff status"), default=False,
         help_text=_("Designates whether the user can log into this admin site."))
     is_active = models.BooleanField(_("active"), default=True,
@@ -73,3 +75,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def email_user(self, subject, message, from_email=None):
         send_mail(subject, message, from_email, [self.email])
+
+    def validate_unique(self, exclude=None):
+        super(User, self).validate_unique(exclude)
+        if get_user_model().objects.filter(is_active=True, email__exact=self.email):
+            msg = _("A customer with the e-mail address ‘{email}’ already exists.\n"
+                    "If you have used this address previously, try to reset the password.")
+            raise ValidationError({'email': msg.format(email=self.email)})
