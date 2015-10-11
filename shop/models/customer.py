@@ -136,12 +136,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
             self.user.is_authenticated = types.MethodType(is_authenticated, self.user)
 
     def __str__(self):
-        return self.identifier()
-
-    def identifier(self):
-        if self.recognized:
-            return self.user.get_short_name()
-        return '<anonymous>'
+        return self.user.get_username()
 
     @property
     def first_name(self):

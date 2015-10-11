@@ -64,9 +64,9 @@ class CustomerAdmin(UserAdmin):
     """
     form = CustomerChangeForm
     inlines = (CustomerInlineAdmin,)
-    list_display = ('identifier', 'salutation', 'last_name', 'first_name', 'recognized',
+    list_display = ('get_username', 'salutation', 'last_name', 'first_name', 'recognized',
         'last_access', 'is_unexpired')
-    segmentation_list_display = ('identifier',)
+    segmentation_list_display = ('get_username',)
     list_filter = UserAdmin.list_filter + (CustomerListFilter,)
     readonly_fields = ('last_login', 'date_joined', 'last_access', 'recognized')
 
@@ -76,9 +76,9 @@ class CustomerAdmin(UserAdmin):
         fieldsets[3][1]['fields'] = ('date_joined', 'last_login', 'last_access',)
         return fieldsets
 
-    def identifier(self, user):
-        return user.customer.identifier()
-    identifier.short_description = _("Identifier")
+    def get_username(self, user):
+        return user.get_username()
+    get_username.short_description = _("Username")
 
     def salutation(self, user):
         return user.customer.get_salutation_display()
