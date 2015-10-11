@@ -19,7 +19,7 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelF
     field_css_classes = 'input-group has-feedback'
 
     email = fields.EmailField(label=_("Your e-mail address"))
-    preset_password = fields.BooleanField(required=False, initial=True, label=_("Preset password"),
+    preset_password = fields.BooleanField(required=False, label=_("Preset password"),
         widget=widgets.CheckboxInput(),
         help_text=_("Send a randomly generated password to your e-mail address."))
 
@@ -38,12 +38,6 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelF
             password = get_user_model().objects.make_random_password(pwd_length)
             data['password1'] = data['password2'] = password
         super(RegisterUserForm, self).__init__(data=data, instance=instance, *args, **kwargs)
-
-    def as_div(self):
-        # Intentionally rendered without fields `email` and `preset_password`
-        self.fields.pop('email', None)
-        self.fields.pop('preset_password', None)
-        return super(RegisterUserForm, self).as_div()
 
     def clean(self):
         cleaned_data = super(RegisterUserForm, self).clean()
