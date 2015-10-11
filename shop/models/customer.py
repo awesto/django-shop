@@ -136,6 +136,9 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
             self.user.is_authenticated = types.MethodType(is_authenticated, self.user)
 
     def __str__(self):
+        return self.get_username()
+
+    def get_username(self):
         return self.user.get_username()
 
     @property

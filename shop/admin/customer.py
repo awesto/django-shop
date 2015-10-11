@@ -77,7 +77,7 @@ class CustomerAdmin(UserAdmin):
         return fieldsets
 
     def get_username(self, user):
-        return user.get_username()
+        return user.customer.get_username()
     get_username.short_description = _("Username")
 
     def salutation(self, user):
