@@ -21,12 +21,14 @@
 		<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
 		{{ register_user_form.password1 }}
 	</div>
+	{{ register_user_form.password1.errors }}
 	<span class="help-block">{{ register_user_form.password1.help_text }}</span>
 
 	<div class="input-group">
 		<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
 		{{ register_user_form.password2 }}
 	</div>
+	{{ register_user_form.password2.errors }}
 	<span class="help-block">{{ register_user_form.password2.help_text }}</span>
 </div>
 
