@@ -58,6 +58,10 @@ class CustomerManager(models.Manager):
                 break
         return ''.join(reversed(s))
 
+    def get_queryset(self):
+        qs = super(CustomerManager, self).get_queryset().select_related('user')
+        return qs
+
     def get_or_create_anonymous_user(self, session_key):
         """
         Since the Customer has a 1:1 relation with the User object, get or create an
