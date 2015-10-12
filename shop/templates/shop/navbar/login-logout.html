@@ -10,13 +10,13 @@
 
 <li class="dropdown {{ dropdown_extra_class }}" dropdown auto-close="outsideClick">
 	<a class="dropdown-toggle" dropdown-toggle>
-	{% if user.is_authenticated %}
+	{% if customer.is_authenticated %}
 		<i class="fa fa-user"></i>&nbsp;{{ user.get_short_name }}
 	{% else %}
 		<i class="fa fa-sign-in"></i>&nbsp;{% trans "Sign in" %}
 	{% endif %}<b class="caret"></b></a>
 	<ul class="dropdown-menu shop-dropdown-forms">
-	{% if user.is_authenticated %}
+	{% if customer.is_authenticated %}
 		<shop-auth-form ng-form action="RELOAD_PAGE" role="form">
 			<button class="btn btn-primary btn-block" type="button" ng-click="submitForm('{% url "shop:logout" %}')">{% trans "Logout" %}</button>
 		</shop-auth-form>

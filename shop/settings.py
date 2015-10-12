@@ -27,3 +27,14 @@ Use ``SHOP_EDITCART_NG_MODEL_OPTIONS`` and ``SHOP_ADD2CART_NG_MODEL_OPTIONS`` to
 update behavior when changing the quantity of a cart item. For more information refer to the
 AngularJS docs: https://code.angularjs.org/1.3.7/docs/api/ng/directive/ngModelOptions
 """
+
+GUEST_IS_ACTIVE_USER = getattr(settings, 'SHOP_GUEST_IS_ACTIVE_USER', False)
+"""
+If ``SHOP_GUEST_IS_ACTIVE_USER`` is True, Customers which declared themselves as guests, may request
+a password reset, so that they can log into their account at a later time. The default is False.
+"""
+
+CACHE_DURATIONS = {
+    'product_html_snippet': 86400,
+}
+CACHE_DURATIONS.update(getattr(settings, 'SHOP_CACHE_DURATIONS', {}))

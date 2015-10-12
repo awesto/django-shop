@@ -10,7 +10,7 @@
 	</div>
 
 	<div class="panel-body">
-		<shop-auth-form ng-form action="{{ action }}" role="form">
+		<shop-auth-form ng-form name="{{ form_name }}" action="{{ action }}" role="form">
 	{% block form_content %}
 			<div class="alert alert-success" ng-show="success_message" ng-cloak>
 				<a class="close" ng-click="dismiss()">×</a>{% verbatim %}{{ success_message }}{% endverbatim %}

@@ -134,7 +134,7 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 				}).then(function() {
 					// should never reach this: `console.error` shall be replaced against `alert` 
 					console.error("An error occured while purchasing. Please reload the page and try again.");
-					reenableButton();
+					//reenableButton();
 				}, function(errs) {
 					if (errs) {
 						console.error(errs);

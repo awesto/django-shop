@@ -15,7 +15,6 @@ from post_office import mail
 from post_office.models import Email as OriginalEmail, EmailTemplate
 from filer.fields.file import FilerFileField
 from .customer import CustomerModel
-from .order import OrderModel
 
 
 class Email(OriginalEmail):
@@ -82,16 +81,7 @@ class Notification(models.Model):
         app_label = 'shop'
         verbose_name = _("Notification")
         verbose_name_plural = _("Notifications")
-
-    def transition_name(self):
-        if not hasattr(self, '_transition_name'):
-            try:
-                status_field = [f for f in OrderModel._meta.fields if f.name == 'status'].pop()
-                transition = [t for t in status_field.get_all_transitions(OrderModel)].pop()
-                self._transition_name = OrderModel.get_transition_name(transition.target)
-            except IndexError:
-                self._transition_name = _("Does not exists")
-        return self._transition_name
+        ordering = ('transition_target', 'mail_to')
 
     def get_recipient(self, order):
         if self.mail_to is None:

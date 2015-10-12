@@ -295,23 +295,23 @@ msgstr "Bestellungen"
 #: templates/shop/auth/login-reset.html:26 templates/shop/auth/login.html:8
 #: templates/shop/auth/reset.html:8
 msgid "Your e-mail address"
-msgstr ""
+msgstr "Ihre E-Mail Adresse"
 
 #: forms/auth.py:22
 msgid "Preset password"
-msgstr ""
+msgstr "Passwort vorwählen"
 
 #: forms/auth.py:24
 msgid "Send a randomly generated password to your e-mail address."
-msgstr ""
+msgstr "Zufälliges Passwort an Ihre E-Mail Adresse senden."
 
 #: forms/auth.py:26
 msgid "Choose a password"
-msgstr ""
+msgstr "Wählen Sie ein Passwort"
 
 #: forms/auth.py:27
 msgid "Minimum length is 6 characters."
-msgstr ""
+msgstr "Mindestlänge 6 Zeichen"
 
 #: forms/auth.py:28
 msgid "Repeat password"
@@ -332,7 +332,7 @@ msgstr ""
 
 #: forms/auth.py:59
 msgid "Passwords do not match"
-msgstr ""
+msgstr "Passwörter stimmen nicht überein"
 
 #: forms/checkout.py:17 templates/shop/auth/login-reset.html:11
 #: templates/shop/auth/login-reset.html:29 templates/shop/auth/login.html:11

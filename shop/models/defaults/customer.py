@@ -16,6 +16,6 @@ class Customer(BaseCustomer):
         """
         if self.number is None:
             aggr = Customer.objects.filter(number__isnull=False).aggregate(models.Max('number'))
-            self.number = aggr['number__max'] or 0 + 1
+            self.number = (aggr['number__max'] or 0) + 1
             self.save()
         return self.number

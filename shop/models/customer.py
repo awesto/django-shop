@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import string
-import types
 from importlib import import_module
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -58,6 +57,10 @@ class CustomerManager(models.Manager):
                 break
         return ''.join(reversed(s))
 
+    def get_queryset(self):
+        qs = super(CustomerManager, self).get_queryset().select_related('user')
+        return qs
+
     def get_or_create_anonymous_user(self, session_key):
         """
         Since the Customer has a 1:1 relation with the User object, get or create an
@@ -106,7 +109,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     CUSTOMER_STATES = ((UNRECOGNIZED, _("Unrecognized")), (GUEST, _("Guest")), (REGISTERED, _("Registered")))
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL, primary_key=True)
-    recognized = models.PositiveSmallIntegerField(_("Recognized"), choices=CUSTOMER_STATES,
+    recognized = models.PositiveSmallIntegerField(_("Recognized as"), choices=CUSTOMER_STATES,
         help_text=_("Designates the state the customer is recognized as."), default=0)
     salutation = models.CharField(_("Salutation"), max_length=5, choices=SALUTATION)
     last_access = models.DateTimeField(_("Last accessed"), default=timezone.now)
@@ -118,26 +121,11 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     class Meta:
         abstract = True
 
-    def __init__(self, *args, **kwargs):
-        def is_anonymous(self):
-            return True
-
-        def is_authenticated(self):
-            return False
-
-        super(BaseCustomer, self).__init__(*args, **kwargs)
-        if hasattr(self, 'user') and self.recognized in (self.UNRECOGNIZED, self.GUEST):
-            # override these method to emulate an AnonymousUser object
-            self.user.is_anonymous = types.MethodType(is_anonymous, self.user)
-            self.user.is_authenticated = types.MethodType(is_authenticated, self.user)
-
     def __str__(self):
-        return self.identifier()
+        return self.get_username()
 
-    def identifier(self):
-        if self.recognized:
-            return self.user.get_short_name()
-        return '<anonymous>'
+    def get_username(self):
+        return self.user.get_username()
 
     @property
     def first_name(self):
@@ -172,10 +160,10 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         return self.user.last_login
 
     def is_anonymous(self):
-        return self.user.is_anonymous()
+        return self.recognized in (self.UNRECOGNIZED, self.GUEST)
 
     def is_authenticated(self):
-        return self.user.is_authenticated()
+        return self.recognized == self.REGISTERED
 
     def is_recognized(self):
         """
@@ -216,7 +204,8 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         return self.user_id
 
     def save(self, **kwargs):
-        self.user.save(using=kwargs.get('using', DEFAULT_DB_ALIAS))
+        if 'update_fields' not in kwargs:
+            self.user.save(using=kwargs.get('using', DEFAULT_DB_ALIAS))
         super(BaseCustomer, self).save(**kwargs)
 
     def delete(self, *args, **kwargs):
