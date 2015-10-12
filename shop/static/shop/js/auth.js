@@ -13,7 +13,7 @@ djangoShopModule.directive('shopAuthForm', ['$window', '$http', '$timeout',
 		require: 'form',
 		scope: true,  // do not change this
 		link: function(scope, element, attrs) {
-			var timer = null;
+			var timer = null, form = scope[attrs.name];
 			if (attrs.action === undefined)
 				throw new Error("Form does not contain an `action` keyword");
 			scope.success_message = scope.error_message = '';
@@ -42,13 +42,42 @@ djangoShopModule.directive('shopAuthForm', ['$window', '$http', '$timeout',
 						proceedWithAction(response);
 					}
 				}).error(function(response) {
-					// merge errors messages into a single one
+					if (!form) {
+						console.error("Please provide a name for this form");
+						return;
+					}
 					scope.error_message = '';
-					angular.forEach(response, function(vals) {
-						scope.error_message = scope.error_message.concat(vals);
+					angular.forEach(response, function(vals, field) {
+						var message = vals[0];
+						if (angular.isObject(form[field])) {
+							if (message.length < 50) {
+								form[field].$message = message;
+							} else {
+								// display larger error messages inside the non-fields error box
+								scope.error_message = scope.error_message.concat(vals);
+							}
+							form[field].$setValidity('rejected', false);
+							form[field].$setPristine();
+						} else {
+							scope.error_message = scope.error_message.concat(vals);
+						}
 					});
 				});
 			};
+
+			scope.hasError = function(field) {
+				if (angular.isObject(form[field])) {
+					if (form[field].$pristine) {
+						if (form[field].$error.rejected)
+							return 'has-error';
+					} else {
+						form[field].$setValidity('rejected', true);
+						if (form[field].$invalid)
+							return 'has-error';
+					}
+				}
+			};
+
 
 			scope.dismiss = function() {
 				scope.error_message = scope.success_message = null;

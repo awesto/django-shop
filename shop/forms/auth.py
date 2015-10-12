@@ -39,14 +39,16 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelF
             data['password1'] = data['password2'] = password
         super(RegisterUserForm, self).__init__(data=data, instance=instance, *args, **kwargs)
 
+    def clean_email(self):
+        # check for uniqueness of email address
+        if get_user_model().objects.filter(email=self.cleaned_data['email']).exists():
+            msg = _("A customer with the e-mail address ‘{email}’ already exists.\n"
+                    "If you have used this address previously, try to reset the password.")
+            raise ValidationError(msg.format(**self.cleaned_data))
+        return self.cleaned_data['email']
+
     def clean(self):
         cleaned_data = super(RegisterUserForm, self).clean()
-        # check for uniqueness of email address
-        if 'email' not in self.errors:
-            if get_user_model().objects.filter(email=cleaned_data['email']).exists():
-                msg = _("A customer with the e-mail address ‘{email}’ already exists.\n"
-                        "If you have used this address previously, try to reset the password.")
-                raise ValidationError(msg.format(**cleaned_data))
         # check for matching passwords
         if 'password1' not in self.errors and 'password2' not in self.errors:
             if cleaned_data['password1'] != cleaned_data['password2']:
