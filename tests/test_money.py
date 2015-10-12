@@ -1,3 +1,6 @@
+# -*- coding: utf-8
+from __future__ import unicode_literals
+
 from decimal import Decimal
 
 from django.test import TestCase
@@ -20,7 +23,8 @@ class MoneyMakerTest(TestCase):
 
     def test_wrong_currency_raises_assertion_error(self):
         # If we try to call a money class with a value that has a
-        # different currency than the class, there should be an
+        # different currency than the class, and the value is an
+        # instance of the money class, there should be an
         # AssertionError.
         Money = MoneyMaker(currency_code='EUR')
         value = Money()
@@ -32,3 +36,8 @@ class MoneyMakerTest(TestCase):
         value = Decimal("1.2")
         inst = Money(value)
         self.assertEquals(inst, value)
+
+    def test_unicode(self):
+        Money = MoneyMaker()
+        value = Money(1)
+        self.assertEqual(unicode(value), "€ 1.00")
