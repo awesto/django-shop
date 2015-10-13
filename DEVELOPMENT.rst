@@ -35,6 +35,11 @@ report, all you have to do is this::
 
     tox
 
+If you work on a certain part of the code base and you want to run the related
+tests and get a coverage report, you can do something like this::
+
+    coverage run $(which py.test) tests/test_money.py && coverage report -m shop/money/*.py
+
 .. NOTE::
     Using tox and py.test is optional. If you prefer the conventional way of
     running tests, you can do this: ``django-admin.py test tests --settings shop.testsettings``
