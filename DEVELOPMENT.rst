@@ -37,7 +37,7 @@ report, all you have to do is this::
 
 .. NOTE::
     Using tox and py.test is optional. If you prefer the conventional way of
-    running tests, you can do this: ``django-admin.py test --settings shop.testsettings``
+    running tests, you can do this: ``django-admin.py test tests --settings shop.testsettings``
 
 .. _virtualenv: https://virtualenv.pypa.io/
 .. _tox: http://codespeak.net/tox/
