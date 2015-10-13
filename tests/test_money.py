@@ -117,4 +117,5 @@ class MoneyMakerTest(TestCase):
 
     def test_float(self):
         Money = MoneyMaker()
-        self.assertRaises(ValueError, lambda: Money().__float__())
+        money = Money(Decimal('sNan'))
+        self.assertRaises(ValueError, lambda: money.__float__())
