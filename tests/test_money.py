@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from decimal import Decimal, getcontext
+import math
 
 from django.test import TestCase
 
@@ -117,5 +118,15 @@ class MoneyMakerTest(TestCase):
 
     def test_float(self):
         Money = MoneyMaker()
-        money = Money(Decimal('sNan'))
+
+        money = Money(Decimal('sNaN'))
         self.assertRaises(ValueError, lambda: money.__float__())
+
+        money = Money(Decimal('NaN'))
+        self.assertTrue(math.isnan(money.__float__()))
+
+        money = Money(Decimal('-NaN'))
+        self.assertTrue(math.isnan(money.__float__()))
+
+        money = Money(Decimal('1.0'))
+        self.assertEqual(money.__float__(), 1.0)
