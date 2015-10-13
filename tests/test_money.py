@@ -79,7 +79,7 @@ class MoneyMakerTest(TestCase):
     def test_sub(self):
         Money = MoneyMaker()
         self.assertEqual(Money(1).__sub__(Money(2)), Money(-1))
-        self.assertRaises(ValueError, lambda : Money(1).__rsub__(Money(2)))
+        self.assertRaises(ValueError, lambda: Money(1).__rsub__(Money(2)))
 
     def test_neg(self):
         Money = MoneyMaker()
