@@ -98,46 +98,46 @@ class MoneyMakerTest(TestCase):
 
     def test_add(self):
         Money = MoneyMaker()
-        self.assertEqual(Money(1).__add__(Money(2)), Money(3))
-        self.assertEqual(Money(1).__add__(Money(0)), Money(1))
-        self.assertEqual(Money(1).__add__(Money(-1)), Money(0))
+        self.assertEqual(Money(1) + (Money(2)), Money(3))
+        self.assertEqual(Money(1) + (Money(0)), Money(1))
+        self.assertEqual(Money(1) + (Money(-1)), Money(0))
         self.assertEqual(Money(1).__radd__(Money(2)), Money(3))
 
-        self.assertEqual(Money(1).__add__(0), Money(1))
-        self.assertEqual(Money(1).__add__(0.0), Money(1))
-        self.assertRaises(ValueError, lambda: Money(1).__add__(1))
-        self.assertRaises(ValueError, lambda: Money(1).__add__(1.0))
+        self.assertEqual(Money(1) + (0), Money(1))
+        self.assertEqual(Money(1) + (0.0), Money(1))
+        self.assertRaises(ValueError, lambda: Money(1) + (1))
+        self.assertRaises(ValueError, lambda: Money(1) + (1.0))
 
-        self.assertEqual(Money(1).__add__(Money('NaN')), Money(1))
+        self.assertEqual(Money(1) + Money('NaN'), Money(1))
 
     def test_sub(self):
         Money = MoneyMaker()
-        self.assertEqual(Money(1).__sub__(Money(2)), Money(-1))
+        self.assertEqual(Money(1) - (Money(2)), Money(-1))
         self.assertRaises(ValueError, lambda: Money(1).__rsub__(Money(2)))
 
     def test_neg(self):
         Money = MoneyMaker()
-        self.assertEqual(Money(1).__neg__(), -1)
-        self.assertEqual(Money(-1).__neg__(), 1)
-        self.assertEqual(Money(0).__neg__(), 0)
+        self.assertEqual(- Money(1), -1)
+        self.assertEqual(- Money(-1), 1)
+        self.assertEqual(- Money(0), 0)
 
     def test_mul(self):
         Money = MoneyMaker()
-        self.assertEqual(Money(1).__mul__(1), Money(1))
-        self.assertEqual(Money(1).__mul__(0), Money(0))
-        self.assertEqual(Money(1).__mul__(-1), Money(-1))
-        self.assertEqual(Money(1).__rmul__(1), Money(1))
-        self.assertEqual(Money(1).__rmul__(0), Money(0))
+        self.assertEqual(Money(1) * 1, Money(1))
+        self.assertEqual(Money(1) * 0, Money(0))
+        self.assertEqual(Money(1) * -1, Money(-1))
+        self.assertEqual(Money(1) * 1, Money(1))
+        self.assertEqual(Money(1) * 0, Money(0))
         self.assertEqual(Money(1).__rmul__(-1), Money(-1))
         self.assertEqual(Money(1).__rmul__(1.0), Money(1))
-        self.assertEqual(unicode(Money(1).__mul__(None)), "€ –")
-        self.assertRaises(ValueError, lambda: Money(1).__mul__(Money(1)))
+        self.assertEqual(unicode(Money(1) * None), "€ –")
+        self.assertRaises(ValueError, lambda: Money(1) * (Money(1)))
 
     def test_div(self):
         Money = MoneyMaker()
-        self.assertEqual(Money(1).__div__(2), Money(0.5))
-        self.assertEqual(Money(1).__div__(2.0), Money(0.5))
-        self.assertRaises(ValueError, lambda: Money(1).__div__(Money(2)))
+        self.assertEqual(Money(1) / 2, Money(0.5))
+        self.assertEqual(Money(1) / 2.0, Money(0.5))
+        self.assertRaises(ValueError, lambda: Money(1) / Money(2))
         self.assertRaises(ValueError, lambda: Money(1).__rdiv__(2))
 
     def test_truediv(self):
@@ -149,22 +149,22 @@ class MoneyMakerTest(TestCase):
 
     def test_pow(self):
         Money = MoneyMaker()
-        self.assertRaises(ValueError, lambda: Money(1).__pow__(Money(2)))
+        self.assertRaises(ValueError, lambda: Money(1) ** Money(2))
 
     def test_float(self):
         Money = MoneyMaker()
 
         money = Money(Decimal('sNaN'))
-        self.assertRaises(ValueError, lambda: money.__float__())
+        self.assertRaises(ValueError, lambda: float(money))
 
         money = Money(Decimal('NaN'))
-        self.assertTrue(math.isnan(money.__float__()))
+        self.assertTrue(math.isnan(float(money)))
 
         money = Money(Decimal('-NaN'))
-        self.assertTrue(math.isnan(money.__float__()))
+        self.assertTrue(math.isnan(float(money)))
 
         money = Money(Decimal('1.0'))
-        self.assertEqual(money.__float__(), 1.0)
+        self.assertEqual(float(money), 1.0)
 
     def test_get_currency(self):
         Money = MoneyMaker()
