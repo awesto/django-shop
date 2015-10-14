@@ -70,7 +70,7 @@ class CommissionGoodsWorkflowMixin(object):
         'pack_goods': _("Packing goods"),
     }
 
-    @transition(field='status', source=['prepayment_deposited', 'charge_credit_card'],
+    @transition(field='status', source=['prepayment_deposited', 'charge_credit_card', 'paid_with_paypal'],
         target='pick_goods', custom=dict(admin=True, button_name=_("Pick the goods")))
     def pick_goods(self, by=None):
         """Change status to 'pick_goods'."""
