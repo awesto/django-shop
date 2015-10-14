@@ -47,9 +47,25 @@ class OrderItemInline(admin.StackedInline):
         return formset
 
 
+class StatusListFilter(admin.SimpleListFilter):
+    title = _("Status")
+    parameter_name = 'status'
+
+    def lookups(self, request, model_admin):
+        lookups = dict(model_admin.model._transition_targets)
+        lookups.pop('new')
+        lookups.pop('created')
+        return lookups.items()
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(status=self.value())
+        return queryset
+
+
 class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
     list_display = ('id', 'customer', 'status_name', 'total', 'created_at',)
-    list_filter = ('status', 'customer',)
+    list_filter = (StatusListFilter,)
     search_fields = ('id', 'customer__user__email', 'customer__user__lastname',)
     fsm_field = ('status',)
     date_hierarchy = 'created_at'
