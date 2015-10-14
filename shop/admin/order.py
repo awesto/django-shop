@@ -54,16 +54,22 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
     fsm_field = ('status',)
     date_hierarchy = 'created_at'
     inlines = (OrderItemInline, OrderPaymentInline,)
-    readonly_fields = ('status_name', 'customer', 'total', 'subtotal', 'outstanding_amount',
+    readonly_fields = ('status_name', 'total', 'subtotal', 'get_customer_link', 'outstanding_amount',
         'created_at', 'updated_at', 'extra', 'stored_request',)
     fields = ('status_name', ('created_at', 'updated_at'), ('subtotal', 'total', 'outstanding_amount',),
-        'customer', 'extra', 'stored_request',)
+        'get_customer_link', 'extra', 'stored_request',)
 
     def get_form(self, request, obj=None, **kwargs):
         # must add field `extra` on the fly.
         #Form = type('TextLinkForm', (TextLinkFormBase,), {'ProductModel': ProductModel, 'product': product_field})
         #kwargs.update(form=Form)
         return super(BaseOrderAdmin, self).get_form(request, obj, **kwargs)
+
+    def get_customer_link(self, obj):
+        url = reverse('admin:shop_customerproxy_change', args=(obj.customer.pk,))
+        return format_html('<a href="{0}" target="_new">{1}</a>'.format(url, obj.customer.get_username()))
+    get_customer_link.short_description = _("Customer")
+    get_customer_link.allow_tags = True
 
     def outstanding_amount(self, obj):
         return obj.get_outstanding_amount()
