@@ -78,32 +78,36 @@ class CustomerAdmin(UserAdmin):
         return fieldsets
 
     def get_username(self, user):
-        return user.customer.get_username()
+        if hasattr(user, 'customer'):
+            return user.customer.get_username()
+        return user.get_username()
     get_username.short_description = _("Username")
 
     def salutation(self, user):
-        return user.customer.get_salutation_display()
+        if hasattr(user, 'customer'):
+            return user.customer.get_salutation_display()
+        return ''
     salutation.short_description = _("Salutation")
 
     def recognized(self, user):
-        if user.customer is None:
-            return _("User")
-        state = user.customer.get_recognized_display()
-        if user.is_staff:
-            state = '{}/{}'.format(state, _("Staff"))
-        return state
+        if hasattr(user, 'customer'):
+            state = user.customer.get_recognized_display()
+            if user.is_staff:
+                state = '{}/{}'.format(state, _("Staff"))
+            return state
+        return _("User")
     recognized.short_description = _("State")
 
     def last_access(self, user):
-        if user.customer is None:
-            return _("No data")
-        return localtime(user.customer.last_access).strftime("%d %B %Y %H:%M:%S")
+        if hasattr(user, 'customer'):
+            return localtime(user.customer.last_access).strftime("%d %B %Y %H:%M:%S")
+        return _("No data")
     last_access.short_description = _("Last accessed")
 
     def is_unexpired(self, user):
-        if user.customer is None:
-            return True
-        return not user.customer.is_expired()
+        if hasattr(user, 'customer'):
+            return not user.customer.is_expired()
+        return True
     is_unexpired.short_description = _("Unexpired")
     is_unexpired.boolean = True
 
