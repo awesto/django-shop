@@ -7,6 +7,7 @@ from django.db import models, transaction
 from django.db.models.aggregates import Sum
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.module_loading import import_by_path
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _, pgettext, get_language_from_request
 from django.utils.six.moves.urllib.parse import urljoin
 from jsonfield.fields import JSONField
@@ -159,14 +160,14 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         msg = "Property method identifier() must be implemented by subclass: `{}`"
         raise NotImplementedError(msg.format(self.__class__.__name__))
 
-    @property
+    @cached_property
     def subtotal(self):
         """
         The summed up amount for all ordered items excluding extra order lines.
         """
         return MoneyMaker(self.currency)(self._subtotal)
 
-    @property
+    @cached_property
     def total(self):
         """
         The final total to charge for this order.
