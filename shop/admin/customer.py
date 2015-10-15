@@ -72,8 +72,9 @@ class CustomerAdmin(UserAdmin):
 
     def get_fieldsets(self, request, obj=None):
         fieldsets = super(CustomerAdmin, self).get_fieldsets(request, obj=obj)
-        fieldsets[0][1]['fields'] = ('username', 'recognized', 'password',)
-        fieldsets[3][1]['fields'] = ('date_joined', 'last_login', 'last_access',)
+        if obj:
+            fieldsets[0][1]['fields'] = ('username', 'recognized', 'password',)
+            fieldsets[3][1]['fields'] = ('date_joined', 'last_login', 'last_access',)
         return fieldsets
 
     def get_username(self, user):
@@ -85,6 +86,8 @@ class CustomerAdmin(UserAdmin):
     salutation.short_description = _("Salutation")
 
     def recognized(self, user):
+        if user.customer is None:
+            return _("User")
         state = user.customer.get_recognized_display()
         if user.is_staff:
             state = '{}/{}'.format(state, _("Staff"))
@@ -92,10 +95,14 @@ class CustomerAdmin(UserAdmin):
     recognized.short_description = _("State")
 
     def last_access(self, user):
+        if user.customer is None:
+            return _("No data")
         return localtime(user.customer.last_access).strftime("%d %B %Y %H:%M:%S")
     last_access.short_description = _("Last accessed")
 
     def is_unexpired(self, user):
+        if user.customer is None:
+            return True
         return not user.customer.is_expired()
     is_unexpired.short_description = _("Unexpired")
     is_unexpired.boolean = True
