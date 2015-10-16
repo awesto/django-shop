@@ -39,24 +39,27 @@ class PayInAdvanceWorkflowMixin(object):
         """
         pass
 
+    def deposited_enough(self):
+        return self.is_fully_paid()
+
     def deposited_too_little(self):
         amount_paid = self.get_amount_paid()
         return amount_paid > 0 and amount_paid < self.total
 
-    def deposited_enough(self):
-        return self.get_amount_paid() >= self.total
-
     @transition(field='status', source=['awaiting_payment'], target='awaiting_payment',
         conditions=[deposited_too_little], custom=dict(admin=True, button_name=_("Deposited too little")))
-    def payment_partially_deposited(self):
+    def prepayment_partially_deposited(self):
         """Signals that an Order received a payment, which was not enough."""
-        pass
 
     @transition(field='status', source=['awaiting_payment'], target='prepayment_deposited',
         conditions=[deposited_enough], custom=dict(admin=True, button_name=_("Mark as Paid")))
-    def payment_fully_deposited(self):
-        """Signals that an Order received a payment, which which fully covers the requested sum."""
-        pass
+    def prepayment_fully_deposited(self):
+        """Signals that an Order received a payment, which fully covers the requested sum."""
+
+    @transition(field='status', source='prepayment_deposited', custom=dict(auto=True))
+    def acknowledge_prepayment(self):
+        """Ackknowledge the payment. This method is invoked automatically."""
+        self.acknowledge_payment()
 
 
 class CommissionGoodsWorkflowMixin(object):
@@ -70,8 +73,8 @@ class CommissionGoodsWorkflowMixin(object):
         'pack_goods': _("Packing goods"),
     }
 
-    @transition(field='status', source=['prepayment_deposited', 'charge_credit_card', 'paid_with_paypal'],
-        target='pick_goods', custom=dict(admin=True, button_name=_("Pick the goods")))
+    @transition(field='status', source=['payment_confirmed'], target='pick_goods',
+        custom=dict(admin=True, button_name=_("Pick the goods")))
     def pick_goods(self, by=None):
         """Change status to 'pick_goods'."""
 

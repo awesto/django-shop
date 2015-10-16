@@ -7,6 +7,7 @@ from django.db import models, transaction
 from django.db.models.aggregates import Sum
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.module_loading import import_by_path
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _, pgettext, get_language_from_request
 from django.utils.six.moves.urllib.parse import urljoin
 from jsonfield.fields import JSONField
@@ -85,15 +86,27 @@ class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
         if 'BaseOrder' in (b.__name__ for b in bases):
             bases = tuple(import_by_path(mc) for mc in shop_settings.ORDER_WORKFLOWS) + bases
             # merge the dicts of TRANSITION_TARGETS
-            attrs['TRANSITION_TARGETS'] = {}
+            attrs.update(_transition_targets={}, _auto_transitions={})
             for b in reversed(bases):
                 TRANSITION_TARGETS = getattr(b, 'TRANSITION_TARGETS', {})
-                if set(TRANSITION_TARGETS.keys()).intersection(attrs['TRANSITION_TARGETS']):
+                delattr(b, 'TRANSITION_TARGETS')
+                if set(TRANSITION_TARGETS.keys()).intersection(attrs['_transition_targets']):
                     msg = "Mixin class {} already contains a transition named '{}'"
                     raise ImproperlyConfigured(msg.format(b.__name__, ', '.join(TRANSITION_TARGETS.keys())))
-                attrs['TRANSITION_TARGETS'].update(TRANSITION_TARGETS)
+                attrs['_transition_targets'].update(TRANSITION_TARGETS)
+                attrs['_auto_transitions'].update(cls.add_to_auto_transitions(b))
         Model = super(WorkflowMixinMetaclass, cls).__new__(cls, name, bases, attrs)
         return Model
+
+    @staticmethod
+    def add_to_auto_transitions(base):
+        result = {}
+        for name, method in base.__dict__.iteritems():
+            if callable(method) and hasattr(method, '_django_fsm'):
+                for name, transition in method._django_fsm.transitions.iteritems():
+                    if transition.custom.get('auto'):
+                        result.update({name: method})
+        return result
 
 
 @python_2_unicode_compatible
@@ -106,6 +119,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     TRANSITION_TARGETS = {
         'new': _("New order without content"),
         'created': _("Order freshly created"),
+        'payment_confirmed': _("Payment confirmed"),
     }
     decimalfield_kwargs = {
         'max_digits': 30,
@@ -146,14 +160,14 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         msg = "Property method identifier() must be implemented by subclass: `{}`"
         raise NotImplementedError(msg.format(self.__class__.__name__))
 
-    @property
+    @cached_property
     def subtotal(self):
         """
         The summed up amount for all ordered items excluding extra order lines.
         """
         return MoneyMaker(self.currency)(self._subtotal)
 
-    @property
+    @cached_property
     def total(self):
         """
         The final total to charge for this order.
@@ -182,13 +196,16 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         self.extra = dict(cart.extra)
         self.extra.update(rows=[(modifier, extra_row.data) for modifier, extra_row in cart.extra_rows.items()])
 
-    def save(self, *args, **kwargs):
+    def save(self, **kwargs):
         """
         Before saving the Order object to the database, round the total to the given decimal_places
         """
+        auto_transition = self._auto_transitions.get(self.status)
+        if callable(auto_transition):
+            auto_transition(self)
         self._subtotal = BaseOrder.round_amount(self._subtotal)
         self._total = BaseOrder.round_amount(self._total)
-        super(BaseOrder, self).save(*args, **kwargs)
+        super(BaseOrder, self).save(**kwargs)
 
     def get_amount_paid(self):
         """
@@ -207,14 +224,24 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         """
         return self.total - self.get_amount_paid()
 
+    def is_fully_paid(self):
+        return self.get_amount_paid() >= self.total
+
+    @transition(field='status', source='*', target='payment_confirmed', conditions=[is_fully_paid])
+    def acknowledge_payment(self, by=None):
+        """
+        Change status to 'payment_confirmed'. This status code can be used by all extarnal
+        plugins to check, if an Order has been fully paid.
+        """
+
     @classmethod
     def get_transition_name(cls, target):
         """Return the human readable name for a given transition target"""
-        return cls.TRANSITION_TARGETS.get(target, target)
+        return cls._transition_targets.get(target, target)
 
     def status_name(self):
         """Return the human readable name for the current transition state"""
-        return self.TRANSITION_TARGETS.get(self.status, self.status)
+        return self._transition_targets.get(self.status, self.status)
     status_name.short_description = pgettext('status_name', "State")
 
 OrderModel = deferred.MaterializedModel(BaseOrder)
