@@ -72,8 +72,8 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
     inlines = (OrderItemInline, OrderPaymentInline,)
     readonly_fields = ('identifier', 'status_name', 'total', 'subtotal', 'get_customer_link',
         'outstanding_amount', 'created_at', 'updated_at', 'extra', 'stored_request',)
-    fields = ('status_name', ('created_at', 'updated_at'), ('subtotal', 'total', 'outstanding_amount',),
-        'get_customer_link', 'extra', 'stored_request',)
+    fields = ('identifier', 'status_name', ('created_at', 'updated_at'),
+        ('subtotal', 'total', 'outstanding_amount',), 'get_customer_link', 'extra', 'stored_request',)
 
     def get_form(self, request, obj=None, **kwargs):
         # must add field `extra` on the fly.
