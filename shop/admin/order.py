@@ -64,14 +64,14 @@ class StatusListFilter(admin.SimpleListFilter):
 
 
 class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
-    list_display = ('id', 'customer', 'status_name', 'total', 'created_at',)
+    list_display = ('identifier', 'customer', 'status_name', 'total', 'created_at',)
     list_filter = (StatusListFilter,)
-    search_fields = ('id', 'customer__user__email', 'customer__user__lastname',)
+    search_fields = ('identifier', 'customer__user__email', 'customer__user__lastname',)
     fsm_field = ('status',)
     date_hierarchy = 'created_at'
     inlines = (OrderItemInline, OrderPaymentInline,)
-    readonly_fields = ('status_name', 'total', 'subtotal', 'get_customer_link', 'outstanding_amount',
-        'created_at', 'updated_at', 'extra', 'stored_request',)
+    readonly_fields = ('identifier', 'status_name', 'total', 'subtotal', 'get_customer_link',
+        'outstanding_amount', 'created_at', 'updated_at', 'extra', 'stored_request',)
     fields = ('status_name', ('created_at', 'updated_at'), ('subtotal', 'total', 'outstanding_amount',),
         'get_customer_link', 'extra', 'stored_request',)
 
