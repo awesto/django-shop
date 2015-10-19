@@ -75,12 +75,6 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
     fields = ('identifier', 'status_name', ('created_at', 'updated_at'),
         ('subtotal', 'total', 'outstanding_amount',), 'get_customer_link', 'extra', 'stored_request',)
 
-    def get_form(self, request, obj=None, **kwargs):
-        # must add field `extra` on the fly.
-        #Form = type('TextLinkForm', (TextLinkFormBase,), {'ProductModel': ProductModel, 'product': product_field})
-        #kwargs.update(form=Form)
-        return super(BaseOrderAdmin, self).get_form(request, obj, **kwargs)
-
     def get_customer_link(self, obj):
         url = reverse('admin:shop_customerproxy_change', args=(obj.customer.pk,))
         return format_html('<a href="{0}" target="_new">{1}</a>'.format(url, obj.customer.get_username()))
