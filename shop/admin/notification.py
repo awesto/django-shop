@@ -31,8 +31,9 @@ class NotificationAdmin(admin.ModelAdmin):
         choices = OrderedDict()
         status_field = [f for f in OrderModel._meta.fields if f.name == 'status'].pop()
         for transition in status_field.get_all_transitions(OrderModel):
-            transition_name = OrderModel.get_transition_name(transition.target)
-            choices[transition.target] = transition_name
+            if transition.target:
+                transition_name = OrderModel.get_transition_name(transition.target)
+                choices[transition.target] = transition_name
         return choices.items()
 
     def get_mailto_choices(self):
