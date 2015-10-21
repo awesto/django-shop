@@ -11,7 +11,7 @@
 <li class="dropdown {{ dropdown_extra_class }}" dropdown auto-close="outsideClick">
 	<a class="dropdown-toggle" dropdown-toggle>
 	{% if customer.is_authenticated %}
-		<i class="fa fa-user"></i>&nbsp;{{ user.get_short_name }}
+		<i class="fa fa-user"></i>&nbsp;{{ customer.first_name|default:customer }}
 	{% else %}
 		<i class="fa fa-sign-in"></i>&nbsp;{% trans "Sign in" %}
 	{% endif %}<b class="caret"></b></a>
