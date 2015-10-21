@@ -8,7 +8,7 @@ settings.py, otherwise the default Django or another implementation is used.
 """
 import re
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager as BaseUserManager
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
@@ -16,6 +16,11 @@ from django.db import models
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
+
+
+class UserManager(BaseUserManager):
+    def get_by_natural_key(self, username):
+        return self.get(is_active=True, **{self.model.USERNAME_FIELD: username})
 
 
 @python_2_unicode_compatible
