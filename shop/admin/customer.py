@@ -6,7 +6,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm
 from django.contrib import admin
 from django.utils.timezone import localtime
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import pgettext_lazy, ugettext_lazy as _
 from shop.models.customer import CustomerModel
 
 
@@ -17,7 +17,7 @@ class CustomerInlineAdmin(admin.StackedInline):
 
     def get_number(self, customer):
         return customer.get_number()
-    get_number.short_description = _("Number")
+    get_number.short_description = pgettext_lazy('customer', "Number")
 
 
 class CustomerChangeForm(UserChangeForm):
