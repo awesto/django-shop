@@ -11,7 +11,7 @@ from django.template.loader import select_template
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 from fsm_admin.mixins import FSMTransitionMixin
-from shop.models.order import OrderModel, OrderItemModel, OrderPayment
+from shop.models.order import OrderItemModel, OrderPayment
 from shop.modifiers.pool import cart_modifiers_pool
 from shop.rest import serializers
 
@@ -47,23 +47,39 @@ class OrderItemInline(admin.StackedInline):
         return formset
 
 
+class StatusListFilter(admin.SimpleListFilter):
+    title = _("Status")
+    parameter_name = 'status'
+
+    def lookups(self, request, model_admin):
+        lookups = dict(model_admin.model._transition_targets)
+        lookups.pop('new')
+        lookups.pop('created')
+        return lookups.items()
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(status=self.value())
+        return queryset
+
+
 class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
-    list_display = ('id', 'customer', 'status_name', 'total', 'created_at',)
-    list_filter = ('status', 'customer',)
-    search_fields = ('id', 'customer__user__email', 'customer__user__lastname',)
+    list_display = ('identifier', 'customer', 'status_name', 'total', 'created_at',)
+    list_filter = (StatusListFilter,)
+    search_fields = ('identifier', 'customer__user__email', 'customer__user__lastname',)
     fsm_field = ('status',)
     date_hierarchy = 'created_at'
     inlines = (OrderItemInline, OrderPaymentInline,)
-    readonly_fields = ('status_name', 'customer', 'total', 'subtotal', 'outstanding_amount',
-        'created_at', 'updated_at', 'extra', 'stored_request',)
-    fields = ('status_name', ('created_at', 'updated_at'), ('subtotal', 'total', 'outstanding_amount',),
-        'customer', 'extra', 'stored_request',)
+    readonly_fields = ('identifier', 'status_name', 'total', 'subtotal', 'get_customer_link',
+        'outstanding_amount', 'created_at', 'updated_at', 'extra', 'stored_request',)
+    fields = ('identifier', 'status_name', ('created_at', 'updated_at'),
+        ('subtotal', 'total', 'outstanding_amount',), 'get_customer_link', 'extra', 'stored_request',)
 
-    def get_form(self, request, obj=None, **kwargs):
-        # must add field `extra` on the fly.
-        #Form = type('TextLinkForm', (TextLinkFormBase,), {'ProductModel': ProductModel, 'product': product_field})
-        #kwargs.update(form=Form)
-        return super(BaseOrderAdmin, self).get_form(request, obj, **kwargs)
+    def get_customer_link(self, obj):
+        url = reverse('admin:shop_customerproxy_change', args=(obj.customer.pk,))
+        return format_html('<a href="{0}" target="_new">{1}</a>'.format(url, obj.customer.get_username()))
+    get_customer_link.short_description = _("Customer")
+    get_customer_link.allow_tags = True
 
     def outstanding_amount(self, obj):
         return obj.get_outstanding_amount()
@@ -136,10 +152,3 @@ class OrderAdmin(BaseOrderAdmin):
     """
     search_fields = BaseOrderAdmin.search_fields + ('shipping_address_text', 'billing_address_text',)
     fields = BaseOrderAdmin.fields + (('shipping_address_text', 'billing_address_text',),)
-
-
-class PrintableOrderAdmin(PrintOrderAdminMixin, OrderAdmin):
-    pass
-
-
-admin.site.register(OrderModel, PrintableOrderAdmin)

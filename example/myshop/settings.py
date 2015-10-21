@@ -92,7 +92,6 @@ INSTALLED_APPS = (
     'cms',
     'menus',
     'treebeard',
-    'nodebow',
     'compressor',
     'sekizai',
     'sass_processor',
@@ -258,11 +257,7 @@ EMAIL_BACKEND = 'post_office.EmailBackend'
 ############################################
 # settings for third party Django apps
 
-#NODEBOW_ROOT = os.path.abspath(os.path.join(BASE_DIR, os.path.pardir, os.path.pardir))
-
-NODEBOW_SERVE_UNMINIMIZED = DEBUG
-
-NODE_MODULES_URL = STATIC_URL + 'node_modules'
+NODE_MODULES_URL = STATIC_URL + 'node_modules/'
 
 SASS_PROCESSOR_INCLUDE_DIRS = (
     os.path.join(PROJECT_ROOT, 'node_modules'),

@@ -32,7 +32,7 @@ class CustomerManager(models.Manager):
         to 30 characters, the session key is converted to a base 64 representation, resulting
         in a length of approximately 28.
         """
-        return cls._encode(int(session_key, 36), cls.BASE64_ALPHABET)
+        return cls._encode(int(session_key[:32], 36), cls.BASE64_ALPHABET)
 
     @classmethod
     def decode_session_key(cls, compact_session_key):
@@ -190,10 +190,10 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         """
         Return true if the session of an unregistered customer expired.
         """
-        if self.recognized == self.REGISTERED:
+        if self.recognized in (self.GUEST, self.REGISTERED):
             return False
         session_key = CustomerManager.decode_session_key(self.user.username)
-        return SessionStore.exists(session_key)
+        return not SessionStore.exists(session_key)
 
     def get_number(self):
         """

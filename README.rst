@@ -2,6 +2,11 @@
 django SHOP
 ===========
 
+This version of django-shop is currently under development. If you want to help
+out, please have a look at our `Development documentation`_.
+
+.. _Development documentation: DEVELOPMENT.rst
+
 This repository hosts the django SHOP code and documentation.
 
 Django SHOP aims to be the easy, fun and fast shop counterpart to django CMS.
