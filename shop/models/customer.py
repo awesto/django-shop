@@ -61,15 +61,16 @@ class CustomerManager(models.Manager):
         qs = super(CustomerManager, self).get_queryset().select_related('user')
         return qs
 
-    def get_or_create_anonymous_user(self, session_key):
+    def get_unregistered_user(self, session_key):
         """
-        Since the Customer has a 1:1 relation with the User object, get or create an
-        anonymous entity in models User. As its ``username`` (which must be unique), use
-        a compressed representation of the given session key.
+        Since the Customer has a 1:1 relation with the User object, get an unregistered entity in
+        models User. As its ``username`` (which must be unique), use a compressed representation
+        of the given session key.
         """
         username = self.encode_session_key(session_key)
-        user, created = get_user_model().objects.get_or_create(username=username)
-        if created:
+        try:
+            user = get_user_model().objects.get_or_create(username=username)
+        except get_user_model().DoesNotExists:
             user.is_active = False
             user.set_unusable_password()
         return user
@@ -90,8 +91,9 @@ class CustomerManager(models.Manager):
             if user.customer:
                 return user.customer
         finally:
-            customer = self.get_or_create(user=user)[0]
-            return customer
+            return VisitingCustomer
+            #customer = self.get_or_create(user=user)[0]
+            #return customer
 
 
 @python_2_unicode_compatible
@@ -187,6 +189,12 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         """
         return self.recognized == self.REGISTERED
 
+    def is_visitor(self):
+        """
+        Always False for instantiated Customer objects.
+        """
+        return False
+
     def is_expired(self):
         """
         Return true if the session of an unregistered customer expired.
@@ -216,6 +224,32 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         self.user.delete(*args, **kwargs)
 
 CustomerModel = deferred.MaterializedModel(BaseCustomer)
+
+
+class VisitingCustomer(object):
+    """
+    This dummy object is used for customers which just visit the site. Whenever a VisitingCustomer
+    adds something to the cart, this object is replaced against a real Customer object.
+    """
+    user = AnonymousUser
+
+    def is_anonymous(self):
+        return True
+
+    def is_authenticated(self):
+        return False
+
+    def is_recognized(self):
+        return False
+
+    def is_guest(self):
+        return False
+
+    def is_registered(self):
+        return False
+
+    def is_visitor(self):
+        return True
 
 
 @receiver(user_logged_in)
