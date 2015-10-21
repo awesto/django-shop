@@ -38,4 +38,5 @@ class Order(order.BaseOrder):
     def populate_from_cart(self, cart, request):
         self.shipping_address_text = cart.shipping_address.as_text()
         self.billing_address_text = cart.shipping_address.as_text()
+        self.set_number()
         super(Order, self).populate_from_cart(cart, request)
