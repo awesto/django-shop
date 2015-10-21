@@ -39,7 +39,8 @@ class LoginView(OriginalLoginView):
         anonymous_cart = CartModel.objects.get_from_request(self.request)
         super(LoginView, self).login()  # this rotates the session_key
         authenticated_cart = CartModel.objects.get_from_request(self.request)
-        anonymous_cart.items.update(cart=authenticated_cart)
+        if anonymous_cart:
+            anonymous_cart.items.update(cart=authenticated_cart)
 
 
 class LogoutView(APIView):

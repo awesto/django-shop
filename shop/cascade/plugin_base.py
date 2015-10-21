@@ -204,8 +204,9 @@ class DialogFormPluginBase(ShopPluginBase):
         form_data = self.get_form_data(request)
         if issubclass(self.FormClass, DialogFormMixin):
             cart = CartModel.objects.get_from_request(request)
-            cart.update(request)
-            form_data['cart'] = cart
+            if cart:
+                cart.update(request)
+                form_data['cart'] = cart
         request._plugin_order = getattr(request, '_plugin_order', 0) + 1
         if not isinstance(form_data.get('initial'), dict):
             form_data['initial'] = {}

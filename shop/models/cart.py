@@ -9,6 +9,7 @@ from jsonfield.fields import JSONField
 from shop.modifiers.pool import cart_modifiers_pool
 from .product import BaseProduct
 from . import deferred
+from shop.models.customer import CustomerModel
 
 
 class CartItemManager(models.Manager):
@@ -113,6 +114,15 @@ class CartManager(models.Manager):
         """
         Return the cart for current customer.
         """
+        if request.customer.is_visitor():
+            cart = None
+        else:
+            cart = self.get_or_create(customer=request.customer)[0]
+        return cart
+
+    def get_or_create_from_request(self, request):
+        if request.customer.is_visitor():
+            request.customer = CustomerModel.objects.get_or_create_from_request(request)
         cart = self.get_or_create(customer=request.customer)[0]
         return cart
 

@@ -41,7 +41,7 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelF
 
     def clean_email(self):
         # check for uniqueness of email address
-        if get_user_model().objects.filter(email=self.cleaned_data['email']).exists():
+        if get_user_model().objects.filter(is_active=True, email=self.cleaned_data['email']).exists():
             msg = _("A customer with the e-mail address ‘{email}’ already exists.\n"
                     "If you have used this address previously, try to reset the password.")
             raise ValidationError(msg.format(**self.cleaned_data))
