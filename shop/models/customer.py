@@ -90,7 +90,8 @@ class CustomerManager(models.Manager):
             if user.customer:
                 return user.customer
         finally:
-            return self.get_or_create(user=user)[0]
+            customer = self.get_or_create(user=user)[0]
+            return customer
 
 
 @python_2_unicode_compatible
