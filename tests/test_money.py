@@ -1,11 +1,9 @@
 # -*- coding: utf-8
 from __future__ import unicode_literals
-
 from decimal import Decimal, getcontext
 import math
-
+from collections import namedtuple
 from django.test import TestCase
-
 from shop.money.money_maker import AbstractMoney, MoneyMaker, _make_money
 
 
