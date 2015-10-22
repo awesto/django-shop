@@ -224,6 +224,27 @@ other hand can not sign in, but they may return someday. By having a unique emai
 application ``email_auth`` would lock them out.
 
 
+Caveat for this User model
+--------------------------
+
+The savvy reader may have noticed that in ``email_auth.models.User``, the email field is not
+declared as unique. This by the way causes Django to complain during startup with:
+
+.. code-block::
+
+	WARNINGS:
+	email_auth.User: (auth.W004) 'User.email' is named as the 'USERNAME_FIELD', but it is not unique.
+	    HINT: Ensure that your authentication backend(s) can handle non-unique usernames.
+
+This warning can be silenced by adding ``SILENCED_SYSTEM_CHECKS = ['auth.W004']`` to the project's
+``settings.py``.
+
+The reason for this is twofold: First, Django's default user model has no unique constraint on the
+email field, so ``email_auth`` remains more compatible. Second, the uniqueness is only required for
+users which actually can sign in. Guest users on the other hand can not sign in, but they may return
+someday. By having a unique email field, the Django application ``email_auth`` would lock them out.
+
+
 Administration of Users and Customers
 -------------------------------------
 
@@ -234,6 +255,8 @@ DOCUMENTATION UNFINISHED
 ........................
 
 All you have to do is to import and register the administration
+backend interface for both of them. All you have to do is to import and register the administration
+
 classes into ``admin.py`` of your project:
 
 .. code-block:: python
