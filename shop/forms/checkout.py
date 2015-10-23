@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.db.models import Max
 from django.forms import fields, widgets
 from django.utils.translation import ugettext_lazy as _
@@ -64,6 +65,14 @@ class GuestForm(DialogModelForm):
             customer_form.save()
         else:
             return {cls.form_name: customer_form.errors}
+
+    def clean_email(self):
+        # check for uniqueness of email address
+        if get_user_model().objects.filter(is_active=True, email=self.cleaned_data['email']).exists():
+            msg = _("A customer with the e-mail address ‘{email}’ already exists.\n"
+                    "If you have used this address previously, try to reset the password.")
+            raise ValidationError(msg.format(**self.cleaned_data))
+        return self.cleaned_data['email']
 
 
 class AddressForm(DialogModelForm):

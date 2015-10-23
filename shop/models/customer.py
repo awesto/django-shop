@@ -61,36 +61,54 @@ class CustomerManager(models.Manager):
         qs = super(CustomerManager, self).get_queryset().select_related('user')
         return qs
 
-    def get_or_create_anonymous_user(self, session_key):
+    def get_visiting_user(self, session_key):
         """
-        Since the Customer has a 1:1 relation with the User object, get or create an
-        anonymous entity in models User. As its ``username`` (which must be unique), use
-        a compressed representation of the given session key.
+        Since the Customer has a 1:1 relation with the User object, look for an entity for a
+        User object. As its ``username`` (which must be unique), use a compressed representation
+        of the given session key.
         """
         username = self.encode_session_key(session_key)
-        user, created = get_user_model().objects.get_or_create(username=username)
-        if created:
-            user.is_active = False
-            user.set_unusable_password()
+        try:
+            user = get_user_model().objects.get(username=username)
+        except get_user_model().DoesNotExists:
+            user = AnonymousUser()
         return user
 
     def get_from_request(self, request):
         """
-        Return an Customer object for the current visitor.
+        Return an Customer object for the current User object.
         """
-        if isinstance(request.user, AnonymousUser):
+        if request.user.is_anonymous() and request.session.session_key:
             # the visitor is determined through the session key
-            if not request.session.session_key:
-                request.session.cycle_key()
-                assert request.session.session_key
-            user = self.get_or_create_anonymous_user(request.session.session_key)
+            user = self.get_visiting_user(request.session.session_key)
         else:
             user = request.user
         try:
             if user.customer:
                 return user.customer
-        finally:
-            return self.get_or_create(user=user)[0]
+        except AttributeError:
+            pass
+        if request.user.is_authenticated():
+            customer = self.get_or_create(user=user)[0]
+        else:
+            customer = VisitingCustomer()
+        return customer
+
+    def get_or_create_from_request(self, request):
+        if request.user.is_authenticated():
+            user = request.user
+        else:
+            if not request.session.session_key:
+                request.session.cycle_key()
+                assert request.session.session_key
+            username = self.encode_session_key(request.session.session_key)
+            # create an inactive intermediate user, which later can declare himself as
+            # guest, or register as a valid Django user
+            user = get_user_model().objects.create_user(username)
+            user.is_active = False
+            user.save()
+        customer = self.get_or_create(user=user)[0]
+        return customer
 
 
 @python_2_unicode_compatible
@@ -186,6 +204,12 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         """
         return self.recognized == self.REGISTERED
 
+    def is_visitor(self):
+        """
+        Always False for instantiated Customer objects.
+        """
+        return False
+
     def is_expired(self):
         """
         Return true if the session of an unregistered customer expired.
@@ -193,7 +217,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         if self.recognized == self.REGISTERED:
             return False
         session_key = CustomerManager.decode_session_key(self.user.username)
-        return SessionStore.exists(session_key)
+        return not SessionStore.exists(session_key)
 
     def get_number(self):
         """
@@ -217,6 +241,38 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 CustomerModel = deferred.MaterializedModel(BaseCustomer)
 
 
+class VisitingCustomer(object):
+    """
+    This dummy object is used for customers which just visit the site. Whenever a VisitingCustomer
+    adds something to the cart, this object is replaced against a real Customer object.
+    """
+    user = AnonymousUser()
+
+    def __str__(self):
+        return 'Visitor'
+
+    def is_anonymous(self):
+        return True
+
+    def is_authenticated(self):
+        return False
+
+    def is_recognized(self):
+        return False
+
+    def is_guest(self):
+        return False
+
+    def is_registered(self):
+        return False
+
+    def is_visitor(self):
+        return True
+
+    def save(self, **kwargs):
+        pass
+
+
 @receiver(user_logged_in)
 def handle_customer_login(sender, **kwargs):
     """
@@ -231,7 +287,7 @@ def handle_customer_login(sender, **kwargs):
 @receiver(user_logged_out)
 def handle_customer_logout(sender, **kwargs):
     """
-    Update request.customer to an anonymous Customer
+    Update request.customer to a visiting Customer
     """
     # defer assignment to anonymous customer, since the session_key is not yet rotated
     kwargs['request'].customer = SimpleLazyObject(lambda: CustomerModel.objects.get_from_request(kwargs['request']))

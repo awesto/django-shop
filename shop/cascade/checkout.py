@@ -109,7 +109,7 @@ class PaymentMethodFormPlugin(DialogFormPluginBase):
 
     def get_form_data(self, request):
         cart = CartModel.objects.get_from_request(request)
-        initial = {'payment_modifier': cart.extra.get('payment_modifier')}
+        initial = {'payment_modifier': getattr(cart, 'extra', {}).get('payment_modifier')}
         return {'initial': initial}
 
     def render(self, context, instance, placeholder):
@@ -130,7 +130,7 @@ class ShippingMethodFormPlugin(DialogFormPluginBase):
 
     def get_form_data(self, request):
         cart = CartModel.objects.get_from_request(request)
-        initial = {'shipping_modifier': cart.extra.get('shipping_modifier')}
+        initial = {'shipping_modifier': getattr(cart, 'extra', {}).get('shipping_modifier')}
         return {'initial': initial}
 
     def render(self, context, instance, placeholder):
@@ -151,7 +151,7 @@ class ExtraAnnotationFormPlugin(DialogFormPluginBase):
 
     def get_form_data(self, request):
         cart = CartModel.objects.get_from_request(request)
-        initial = {'annotation': cart.extra.get('annotation', '')}
+        initial = {'annotation': getattr(cart, 'extra', {}).get('annotation', '')}
         return {'initial': initial}
 
 DialogFormPluginBase.register_plugin(ExtraAnnotationFormPlugin)

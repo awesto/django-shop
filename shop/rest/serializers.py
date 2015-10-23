@@ -244,7 +244,7 @@ class CartItemSerializer(BaseItemSerializer):
         exclude = ('cart', 'id',)
 
     def create(self, validated_data):
-        validated_data['cart'] = CartModel.objects.get_from_request(self.context['request'])
+        validated_data['cart'] = CartModel.objects.get_or_create_from_request(self.context['request'])
         return super(CartItemSerializer, self).create(validated_data)
 
 
@@ -254,7 +254,7 @@ class WatchItemSerializer(BaseItemSerializer):
         fields = ('product', 'url', 'summary', 'quantity', 'extra',)
 
     def create(self, validated_data):
-        cart = CartModel.objects.get_from_request(self.context['request'])
+        cart = CartModel.objects.get_or_create_from_request(self.context['request'])
         validated_data.update(cart=cart, quantity=0)
         return super(WatchItemSerializer, self).create(validated_data)
 
