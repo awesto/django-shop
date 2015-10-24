@@ -23,3 +23,5 @@ DATABASES = {
         'NAME': ':memory:',
     }
 }
+
+SERIALIZATION_MODULES = {'shop': 'shop.money.serializers'}
