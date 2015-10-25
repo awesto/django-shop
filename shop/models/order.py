@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from six import with_metaclass
-from decimal import Decimal, ROUND_UP
+from decimal import Decimal
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
@@ -177,7 +177,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     @classmethod
     def round_amount(cls, amount):
         if amount.is_finite():
-            return Decimal(amount).quantize(cls.decimal_exp, ROUND_UP)
+            return Decimal(amount).quantize(cls.decimal_exp)
 
     def get_absolute_url(self):
         """
