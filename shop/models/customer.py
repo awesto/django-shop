@@ -58,6 +58,10 @@ class CustomerManager(models.Manager):
         return ''.join(reversed(s))
 
     def get_queryset(self):
+        """
+        Whenever we fetch from the Customer table, inner join with the User table to reduce the
+        number of queries to the database.
+        """
         qs = super(CustomerManager, self).get_queryset().select_related('user')
         return qs
 
@@ -70,7 +74,7 @@ class CustomerManager(models.Manager):
         username = self.encode_session_key(session_key)
         try:
             user = get_user_model().objects.get(username=username)
-        except get_user_model().DoesNotExists:
+        except get_user_model().DoesNotExist:
             user = AnonymousUser()
         return user
 
