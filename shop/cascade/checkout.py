@@ -49,6 +49,14 @@ class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
         ]
         return select_template(template_names)
 
+    def render(self, context, instance, placeholder):
+        super(ShopProceedButton, self).render(context, instance, placeholder)
+        cart = CartModel.objects.get_from_request(context['request'])
+        if cart:
+            cart.update(context['request'])
+            context['cart'] = cart
+        return context
+
 plugin_pool.register_plugin(ShopProceedButton)
 
 
