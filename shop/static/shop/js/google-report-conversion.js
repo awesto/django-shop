@@ -17,18 +17,18 @@ djangoShopModule.provider('googleReportConversion', function() {
 });
 
 djangoShopModule.directive('shopDialogProceed', ['googleReportConversion', function(googleReportConversion) {
+	var conv_handler = window['google_trackConversion'];
+
 	return {
 		link: function(scope, element, attrs) {
 			scope.proceedWithConversion = function(action) {
+				var opt = {
+					onload_callback: function() {
+						scope.proceedWith(action);
+					}
+				};
 				angular.extend(window, googleReportConversion.vars);
-				var opt = new Object();
-				opt.onload_callback = function() {
-					debugger;
-					scope.proceedWith(action);
-				}
-				var conv_handler = window['google_trackConversion'];
-				if (typeof(conv_handler) == 'function') {
-					debugger;
+				if (angular.isFunction(conv_handler)) {
 					conv_handler(opt);
 				}
 			};
