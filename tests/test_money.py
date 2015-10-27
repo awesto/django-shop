@@ -6,10 +6,11 @@ try:
     import cPickle as pickle
 except ImportError:
     import pickle
+import json
 from django.test import TestCase
 from rest_framework import serializers
 from shop.money.money_maker import AbstractMoney, MoneyMaker, _make_money
-from shop.rest.money import MoneyField
+from shop.rest.money import MoneyField, JSONRenderer
 
 
 class AbstractMoneyTest(TestCase):
@@ -173,11 +174,13 @@ class MoneyMakerTest(TestCase):
         money = Money(Decimal('1.0'))
         self.assertEqual(float(money), 1.0)
 
-    def test_get_currency(self):
+    def test_currency(self):
         Money = MoneyMaker('EUR')
-        self.assertEqual(Money.get_currency(), 'EUR')
+        self.assertEqual(Money.currency, 'EUR')
+        self.assertEqual(Money.subunits, 2)
         Money = MoneyMaker('JPY')
-        self.assertEqual(Money.get_currency(), 'JPY')
+        self.assertEqual(Money.currency, 'JPY')
+        self.assertEqual(Money.subunits, 0)
 
     def test_as_decimal(self):
         Money = MoneyMaker()
@@ -201,3 +204,10 @@ class MoneyMakerTest(TestCase):
         instance = type(b'TestMoney', (object,), {'amount': Money('1.23')})
         serializer = TestMoneySerializer(instance)
         self.assertDictEqual({'amount': '€ 1.23'}, serializer.data)
+
+    def test_json(self):
+        Money = MoneyMaker('EUR')
+        renderer = JSONRenderer()
+        data = {'amount': Money('1.23')}
+        rendered_json = renderer.render(data, 'application/json')
+        self.assertDictEqual({'amount': '€ 1.23'}, json.loads(rendered_json))
