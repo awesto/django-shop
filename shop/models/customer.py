@@ -206,11 +206,23 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         """
         return self.recognized == self.GUEST
 
+    def recognize_as_guest(self):
+        """
+        Recognize the current customer as guest customer.
+        """
+        self.recognized = self.GUEST
+
     def is_registered(self):
         """
         Return true if the customer has registered himself.
         """
         return self.recognized == self.REGISTERED
+
+    def recognize_as_registered(self):
+        """
+        Recognize the current customer as registered customer.
+        """
+        self.recognized = self.REGISTERED
 
     def is_visitor(self):
         """
