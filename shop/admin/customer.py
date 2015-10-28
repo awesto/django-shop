@@ -129,4 +129,3 @@ try:
     admin.site.unregister(get_user_model())
 except admin.sites.NotRegistered:
     pass
-admin.site.register(CustomerProxy, CustomerAdmin)
