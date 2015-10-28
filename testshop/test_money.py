@@ -106,21 +106,27 @@ class MoneyMakerTest(TestCase):
 
     def test_add(self):
         Money = MoneyMaker()
-        self.assertEqual(Money(1) + (Money(2)), Money(3))
-        self.assertEqual(Money(1) + (Money(0)), Money(1))
+        self.assertEqual(Money('1.23') + Money(2), Money('3.23'))
+        self.assertEqual(Money('1.23') + Money(0), Money('1.23'))
         self.assertEqual(Money(1) + (Money(-1)), Money(0))
         self.assertEqual(Money(1).__radd__(Money(2)), Money(3))
 
-        self.assertEqual(Money(1) + (0), Money(1))
-        self.assertEqual(Money(1) + (0.0), Money(1))
-        self.assertRaises(ValueError, lambda: Money(1) + (1))
-        self.assertRaises(ValueError, lambda: Money(1) + (1.0))
-
-        self.assertEqual(Money(1) + Money('NaN'), Money(1))
+    def test_add_zero(self):
+        Money = MoneyMaker()
+        self.assertEqual(Money('1.23') + 0, Money('1.23'))
+        self.assertEqual(Money('1.23') + 0.0, Money('1.23'))
+        self.assertEqual(Money('1.23') + Money('NaN'), Money('1.23'))
+        self.assertEqual(0 + Money('1.23'), Money('1.23'))
+        self.assertEqual(0.0 + Money('1.23'), Money('1.23'))
+        self.assertEqual(Money('NaN') + Money('1.23'), Money('1.23'))
+        self.assertRaises(ValueError, lambda: Money(1) + 1)
+        self.assertRaises(ValueError, lambda: Money(1) + 1.0)
+        self.assertRaises(ValueError, lambda: 1 + Money(1))
+        self.assertRaises(ValueError, lambda: 1.0 + Money(1))
 
     def test_sub(self):
         Money = MoneyMaker()
-        self.assertEqual(Money(1) - (Money(2)), Money(-1))
+        self.assertEqual(Money(1) - Money(2), Money(-1))
         self.assertRaises(ValueError, lambda: Money(1).__rsub__(Money(2)))
 
     def test_neg(self):
@@ -177,10 +183,10 @@ class MoneyMakerTest(TestCase):
     def test_currency(self):
         Money = MoneyMaker('EUR')
         self.assertEqual(Money.currency, 'EUR')
-        self.assertEqual(Money.subunits, 2)
+        self.assertEqual(Money.subunits, 100)
         Money = MoneyMaker('JPY')
         self.assertEqual(Money.currency, 'JPY')
-        self.assertEqual(Money.subunits, 0)
+        self.assertEqual(Money.subunits, 1)
 
     def test_as_decimal(self):
         Money = MoneyMaker()

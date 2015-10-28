@@ -1,18 +1,20 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-SECRET_KEY = 'test'
+SECRET_KEY = 'secret'
 
 INSTALLED_APPS = (
     'django.contrib.auth',
     'email_auth',
     'django.contrib.sites',
     'django.contrib.contenttypes',
+    'django.contrib.sessions',
     'treebeard',
     'cms',
     'post_office',
     'filer',
     'shop',
+    'testshop',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -36,6 +38,8 @@ DATABASES = {
         'NAME': ':memory:',
     }
 }
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 SERIALIZATION_MODULES = {'shop': 'shop.money.serializers'}
 
