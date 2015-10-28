@@ -14,9 +14,9 @@ right from the beginning.
 But when running an e-commerce site, this use-pattern has serious drawbacks. Normally, a visitor
 starts to look for interesting products, hopefully adding a few of them to her cart. Then on the way
 to the checkout, she decides whether to create a user account, use an existing one or continue as
-guest. Here things get complicated.
+guest. Here's where things get complicated.
 
-First of all, for non authenticated site visitors, the cart does not belong to anybody. But each
+First of all, for non-authenticated site visitors, the cart does not belong to anybody. But each
 cart must be associated with its site visitor, hence the generic anonymous user object is not
 appropriate for this purpose. Unfortunately the Django framework does not offer an explicit but
 anonymous user object based on its session-Id.
@@ -25,7 +25,7 @@ Secondly, at the latest when the cart is converted into an order, but the visito
 as guest (thus remaining anonymous), that order object *must* refer to a User object in the
 database. These kind of users would be regarded as fakes, unable to log in, reset their password,
 etc. The only information which must be stored for such a faked User, is her email address otherwise
-she couldn't be informed, whenever the state of her order changed.
+she couldn't be informed, whenever the state of her order changes.
 
 Django does not explicitly allow such users in its database models. But by using the boolean flag
 ``is_active``, we can fool an application to interpret such *guest visitors* as a faked anonymous
@@ -45,19 +45,19 @@ things:
 The built-in User object can be swapped out and replaced against another implementation. Such an
 alternative implementation has a small limitation. It must inherit from
 ``django.contrib.auth.models.AbstractBaseUser`` and from ``django.contrib.auth.models.PermissionMixin``.
-It also must define all the fields, which are available in the default model as found in
+It also must define all the fields which are available in the default model as found in
 ``django.contrib.auth.models.User``.
 
 By setting the flag ``is_active = False``, we can create guests inside Django's ``User`` model.
 Guests can not sign, they can not reset their password and can thus be considered as “materialized”
 anonymous users.
 
-Having guests with an entry in the database, gives us another advantage: By storing the session key
-of the site visitor inside the User object, it is possible to establish a connection between a User
-object in the database with an otherwise anonymous visitor. This further allows the Cart and the
-Order models always refer to the User model, since they don't have to care about whether a certain
-User authenticated himself or not. It also keeps the workflow simple, whenever an anonymous User
-decides to register and authenticate himself in the future.
+Having guests with an entry in the database, gives us another advantage: By using the session key
+of the site visitor as the User object's username, it is possible to establish a connection between
+a User object in the database with an otherwise anonymous visitor. This further allows the Cart and
+the Order models always refer to the User model, since they don't have to care about whether a
+certain User authenticated himself or not. It also keeps the workflow simple, whenever an anonymous
+User decides to register and authenticate himself in the future.
 
 
 Add the Customer model to your application
@@ -136,11 +136,11 @@ The Customer model has a non-nullable one-to-one relation to the User model. Hen
 associated with exactly one User. For instance, accessing the hashed password can be achieved
 through ``customer.user.password``. Some common fields and methods from the User model, such as
 ``first_name``, ``last_name``, ``email``, ``is_anonymous()`` and ``is_authenticated()`` are
-accessible directly, when working with a Customer object. Saving an instance of type Customer, also
-invokes method ``save()`` from the associated User model.
+accessible directly, when working with a Customer object. Saving an instance of type Customer also
+invokes the ``save()`` method from the associated User model.
 
 The other direction – accessing the Customer model from a User – does not always work. Accessing
-an attribute that way, fails if the corresponding Customer object is missing, ie. if there is no
+an attribute that way fails if the corresponding Customer object is missing, ie. if there is no
 reverse relation from a Customer pointing onto the given User object.
 
 .. code-block:: python
@@ -154,7 +154,7 @@ reverse relation from a Customer pointing onto the given User object.
 	    self.related.get_accessor_name()))
 	DoesNotExist: User has no customer.
 
-This can happen for Users objects added by other applications than **djangoSHOP**.
+This can happen for User objects added manually or by other applications.
 
 
 Anonymous Users and Visiting Customers
@@ -254,7 +254,7 @@ Therefore **djangoSHOP** offers two configurable options:
 Administration of Users and Customers
 -------------------------------------
 
-By keeping the Customer- and the User model tight together, it is possible to reuse the Django's
+By keeping the Customer and the User model tight together, it is possible to reuse the Django's
 administration backend for both of them. All you have to do is to import and register the
 Customer backend inside the project's ``admin.py``:
 
