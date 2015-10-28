@@ -48,19 +48,25 @@ alternative implementation has a small limitation. It must inherit from
 It also must define all the fields, which are available in the default model as found in
 ``django.contrib.auth.models.User``.
 
-Now we can create faked users with ``is_active = False`` in the database. This tags them as guests.
-This has another advantage. By storing the session key of the site visitor inside the User object,
-it is possible to establish a connection between a User object in the database with an otherwise
-anonymous visitor. This further allows the Cart and the Order models always refer to the User model,
-since they don't  have to care about whether this user authenticated or not. It also keeps the
-workflow simple, whenever an anonymous users decides to register and authenticate himself.
+By setting the flag ``is_active = False``, we can create guests inside Django's ``User`` model.
+Guests can not sign, they can not reset their password and can thus be considered as “materialized”
+anonymous users.
+
+Having guests with an entry in the database, gives us another advantage: By storing the session key
+of the site visitor inside the User object, it is possible to establish a connection between a User
+object in the database with an otherwise anonymous visitor. This further allows the Cart and the
+Order models always refer to the User model, since they don't  have to care about whether this user
+authenticated or not. It also keeps the workflow simple, whenever an anonymous user decides to
+register and authenticate himself.
 
 
 Add the Customer model to your application
 ==========================================
 
 As almost all models in ***djangoSHOP*, the Customer itself is deferrable_. This means that
-the merchant has to materialize that model, whereby he can add arbitrary fields to the model.
+the Django project is responsible for materializing that model. This allows the merchant to add
+arbitrary fields to the Customer model. Good choices are a phone number, a boolean to signal whether
+the customer shall receive newsletters, his rebate status, etc.
 
 The simplest way is to materialize the given convenience class in your project's ``models.py``:
 
@@ -154,7 +160,7 @@ This can happen for Users objects added by other applications than **djangoSHOP*
 Anonymous Users and Visiting Customers
 --------------------------------------
 
-Most requests to your site will be anonymous requests. They will not send a cookie containing a
+Most requests to your site will be of anonymous nature. They will not send a cookie containing a
 session_id to the client, and they won't create a session object on the server. Such requests
 contain a ``VisitingCustomer`` object associated with an ``AnonymousUser`` object.
 
@@ -164,12 +170,12 @@ Customer is considered as “unregistered” and invoking ``customer.is_authenti
 False; its associated User model is inactive and has an unusable password.
 
 On the way the the checkout, a customer must declare himself, whether to continue as guest, to
-sign in or to register himself with a new account. In the former case (customer becomes guest),
-the user object remains as it is: Inactive and with an unusable password. In the second case,
-the visitor signs in using Django's default authentication backends. Here the cart's content is
-merged with the already existing cart of that user object. In the latter case (customer registers
-himself), the user object is recycled and becomes an active Django User object, with a password
-and an email address.
+sign in using an existing account or to register himself with a new account. In the former case
+(customer wishes to proceed as guest), the user object remains as it is: Inactive and with an
+unusable password. In the second case, the visitor signs in using Django's default authentication
+backends. Here the cart's content is merged with the already existing cart of that user object.
+In the latter case (customer registers himself), the user object is recycled and becomes an active
+Django User object, with a password and an email address.
 
 
 Authenticating against the Email Address
@@ -224,45 +230,50 @@ other hand can not sign in, but they may return someday. By having a unique emai
 application ``email_auth`` would lock them out.
 
 
-Caveat for this User model
---------------------------
-
-The savvy reader may have noticed that in ``email_auth.models.User``, the email field is not
-declared as unique. This by the way causes Django to complain during startup with:
-
-.. code-block::
-
-	WARNINGS:
-	email_auth.User: (auth.W004) 'User.email' is named as the 'USERNAME_FIELD', but it is not unique.
-	    HINT: Ensure that your authentication backend(s) can handle non-unique usernames.
-
-This warning can be silenced by adding ``SILENCED_SYSTEM_CHECKS = ['auth.W004']`` to the project's
-``settings.py``.
-
-The reason for this is twofold: First, Django's default user model has no unique constraint on the
-email field, so ``email_auth`` remains more compatible. Second, the uniqueness is only required for
-users which actually can sign in. Guest users on the other hand can not sign in, but they may return
-someday. By having a unique email field, the Django application ``email_auth`` would lock them out.
-
-
 Administration of Users and Customers
 -------------------------------------
 
-By keeping the Customer- and the User model tight together, it is possible to share Django's
-backend interface for both of them.
-
-DOCUMENTATION UNFINISHED
-........................
-
-All you have to do is to import and register the administration
-backend interface for both of them. All you have to do is to import and register the administration
-
-classes into ``admin.py`` of your project:
+By keeping the Customer- and the User model tight together, it is possible to reuse the Django's
+administration backend for both of them. All you have to do is to import and register the
+Customer backend inside the project's ``admin.py``:
 
 .. code-block:: python
 
 	from django.contrib import admin
-	from django.contrib.auth import get_user_model
-	from shop.admin.customer import CustomerAdmin
+	from shop.admin.customer import CustomerProxy, CustomerAdmin
 
-	admin.site.register(get_user_model(), CustomerAdmin)
+	admin.site.register(CustomerProxy, CustomerAdmin)
+
+
+Summary for Customer to User mapping
+====================================
+
+This table summarizes to possible mappings between a Django User Model [1]_ and the Shop's Customer
+model:
+
++----------------------------------------+----------------------------------------+----------------+
+| Shop's Customer Model                  | Django's User Model                    | Active Session |
++========================================+========================================+================+
+| ``VisitingCustomer`` object            | ``AnonymousUser`` object               | No             |
++----------------------------------------+----------------------------------------+----------------+
+| Unrecognized ``Customer``              | Inactive User object with unusable     | Yes, but not   |
+|                                        | password                               | logged in      |
++----------------------------------------+----------------------------------------+----------------+
+| ``Customer`` recognized as guest [2]_  | Inactive User with valid email address | Yes, but not   |
+|                                        | but unusable password                  | logged in      |
++----------------------------------------+----------------------------------------+----------------+
+| ``Customer`` recognized as guest [3]_  | Active User with valid email address   | Yes, but not   |
+|                                        | and unknown, but resetable password    | logged in      |
++----------------------------------------+----------------------------------------+----------------+
+| Registered ``Customer``                | Active User with valid email address,  | Yes, logged in |
+|                                        | known password, optional salutation,   | using Django's |
+|                                        | first- and last names                  | authentication |
+|                                        |                                        | backend        |
++----------------------------------------+----------------------------------------+----------------+
+
+.. [1] or any other User model set by ``AUTH_USER_MODEL``.
+
+.. [2] if setting ``SHOP_GUEST_IS_ACTIVE_USER = False`` (the default).
+
+.. [3] if setting ``SHOP_GUEST_IS_ACTIVE_USER = True``.
+
