@@ -65,11 +65,10 @@ class CustomerManager(models.Manager):
         qs = super(CustomerManager, self).get_queryset().select_related('user')
         return qs
 
-    def get_visiting_user(self, session_key):
+    def _get_visiting_user(self, session_key):
         """
         Since the Customer has a 1:1 relation with the User object, look for an entity for a
-        User object. As its ``username`` (which must be unique), use a compressed representation
-        of the given session key.
+        User object. As its ``username`` (which must be unique), use the given session key.
         """
         username = self.encode_session_key(session_key)
         try:
@@ -84,7 +83,7 @@ class CustomerManager(models.Manager):
         """
         if request.user.is_anonymous() and request.session.session_key:
             # the visitor is determined through the session key
-            user = self.get_visiting_user(request.session.session_key)
+            user = self._get_visiting_user(request.session.session_key)
         else:
             user = request.user
         try:
