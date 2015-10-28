@@ -65,6 +65,12 @@ class CustomerManager(models.Manager):
         qs = super(CustomerManager, self).get_queryset().select_related('user')
         return qs
 
+    def create(self, *args, **kwargs):
+        customer = super(CustomerManager, self).create(*args, **kwargs)
+        if 'user' in kwargs and kwargs['user'].is_authenticated():
+            customer.recognized = self.model.REGISTERED
+        return customer
+
     def _get_visiting_user(self, session_key):
         """
         Since the Customer has a 1:1 relation with the User object, look for an entity for a
