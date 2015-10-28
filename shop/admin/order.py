@@ -107,13 +107,13 @@ class PrintOrderAdminMixin(object):
 
     def _render_letter(self, request, pk, template):
         order = self.get_object(request, pk)
-        order_serializer = serializers.OrderDetailSerializer(order, context={'request': request})
-        context = RequestContext(request, {
+        context = {'request': request, 'render_label': 'print'}
+        order_serializer = serializers.OrderDetailSerializer(order, context=context)
+        content = template.render(RequestContext(request, {
             'customer': serializers.CustomerSerializer(order.customer).data,
             'data': order_serializer.data,
             'order': order,
-        })
-        content = template.render(context)
+        }))
         return HttpResponse(content)
 
     def render_delivery_note(self, request, pk=None):

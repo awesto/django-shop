@@ -2,15 +2,25 @@
 from __future__ import unicode_literals
 from decimal import Decimal, getcontext
 import math
-from collections import namedtuple
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
+import json
 from django.test import TestCase
+from rest_framework import serializers
 from shop.money.money_maker import AbstractMoney, MoneyMaker, _make_money
+from shop.rest.money import MoneyField, JSONRenderer
 
 
 class AbstractMoneyTest(TestCase):
 
     def test_is_abstract(self):
         self.assertRaises(TypeError, lambda: AbstractMoney(1))
+
+
+class TestMoneySerializer(serializers.Serializer):
+    amount = MoneyField(read_only=True)
 
 
 class MoneyMakerTest(TestCase):
@@ -41,19 +51,19 @@ class MoneyMakerTest(TestCase):
         # different currency than the class, and the value is an
         # instance of the money class, there should be an
         # AssertionError.
-        Money = MoneyMaker(currency_code="EUR")
+        Money = MoneyMaker(currency_code='EUR')
         value = Money()
-        value._currency_code = "USD"
+        value._currency_code = 'USD'
         self.assertRaises(AssertionError, lambda: Money(value))
 
     def test_create_instance_from_decimal(self):
-        Money = MoneyMaker()
-        value = Decimal("1.2")
+        Money = MoneyMaker('EUR')
+        value = Decimal('1.2')
         inst = Money(value)
         self.assertEquals(inst, value)
 
     def test_unicode_with_value(self):
-        Money = MoneyMaker()
+        Money = MoneyMaker('EUR')
         value = Money(1)
         self.assertEqual(unicode(value), "€ 1.00")
 
@@ -70,12 +80,12 @@ class MoneyMakerTest(TestCase):
         self.assertRaises(ValueError, lambda: unicode(value))
 
     def test_str(self):
-        Money = MoneyMaker()
+        Money = MoneyMaker('EUR')
         value = Money()
         self.assertEqual(str(value), "€ –".encode("utf-8"))
 
     def test_reduce(self):
-        Money = MoneyMaker()
+        Money = MoneyMaker('EUR')
         value = Money()
         func, args = value.__reduce__()
         self.assertTrue(func is _make_money)
@@ -85,7 +95,7 @@ class MoneyMakerTest(TestCase):
         self.assertTrue(Money.is_nan())
 
     def test_format(self):
-        Money = MoneyMaker()
+        Money = MoneyMaker('EUR')
         self.assertEqual(format(Money()), "€ –")
         self.assertEqual(format(Money(1)), "€ 1.00")
 
@@ -96,21 +106,27 @@ class MoneyMakerTest(TestCase):
 
     def test_add(self):
         Money = MoneyMaker()
-        self.assertEqual(Money(1) + (Money(2)), Money(3))
-        self.assertEqual(Money(1) + (Money(0)), Money(1))
+        self.assertEqual(Money('1.23') + Money(2), Money('3.23'))
+        self.assertEqual(Money('1.23') + Money(0), Money('1.23'))
         self.assertEqual(Money(1) + (Money(-1)), Money(0))
         self.assertEqual(Money(1).__radd__(Money(2)), Money(3))
 
-        self.assertEqual(Money(1) + (0), Money(1))
-        self.assertEqual(Money(1) + (0.0), Money(1))
-        self.assertRaises(ValueError, lambda: Money(1) + (1))
-        self.assertRaises(ValueError, lambda: Money(1) + (1.0))
-
-        self.assertEqual(Money(1) + Money('NaN'), Money(1))
+    def test_add_zero(self):
+        Money = MoneyMaker()
+        self.assertEqual(Money('1.23') + 0, Money('1.23'))
+        self.assertEqual(Money('1.23') + 0.0, Money('1.23'))
+        self.assertEqual(Money('1.23') + Money('NaN'), Money('1.23'))
+        self.assertEqual(0 + Money('1.23'), Money('1.23'))
+        self.assertEqual(0.0 + Money('1.23'), Money('1.23'))
+        self.assertEqual(Money('NaN') + Money('1.23'), Money('1.23'))
+        self.assertRaises(ValueError, lambda: Money(1) + 1)
+        self.assertRaises(ValueError, lambda: Money(1) + 1.0)
+        self.assertRaises(ValueError, lambda: 1 + Money(1))
+        self.assertRaises(ValueError, lambda: 1.0 + Money(1))
 
     def test_sub(self):
         Money = MoneyMaker()
-        self.assertEqual(Money(1) - (Money(2)), Money(-1))
+        self.assertEqual(Money(1) - Money(2), Money(-1))
         self.assertRaises(ValueError, lambda: Money(1).__rsub__(Money(2)))
 
     def test_neg(self):
@@ -164,9 +180,13 @@ class MoneyMakerTest(TestCase):
         money = Money(Decimal('1.0'))
         self.assertEqual(float(money), 1.0)
 
-    def test_get_currency(self):
-        Money = MoneyMaker()
-        self.assertEqual(Money.get_currency(), 'EUR')
+    def test_currency(self):
+        Money = MoneyMaker('EUR')
+        self.assertEqual(Money.currency, 'EUR')
+        self.assertEqual(Money.subunits, 100)
+        Money = MoneyMaker('JPY')
+        self.assertEqual(Money.currency, 'JPY')
+        self.assertEqual(Money.subunits, 1)
 
     def test_as_decimal(self):
         Money = MoneyMaker()
@@ -178,3 +198,22 @@ class MoneyMakerTest(TestCase):
         Money = MoneyMaker()
         money = Money('1.23')
         self.assertEqual(money.as_integer(), 123)
+
+    def test_pickle(self):
+        Money = MoneyMaker()
+        money = Money('1.23')
+        pickled = pickle.dumps(money)
+        self.assertEqual(pickle.loads(pickled), money)
+
+    def test_rest(self):
+        Money = MoneyMaker('EUR')
+        instance = type(b'TestMoney', (object,), {'amount': Money('1.23')})
+        serializer = TestMoneySerializer(instance)
+        self.assertDictEqual({'amount': '€ 1.23'}, serializer.data)
+
+    def test_json(self):
+        Money = MoneyMaker('EUR')
+        renderer = JSONRenderer()
+        data = {'amount': Money('1.23')}
+        rendered_json = renderer.render(data, 'application/json')
+        self.assertDictEqual({'amount': '€ 1.23'}, json.loads(rendered_json))

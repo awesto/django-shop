@@ -308,8 +308,9 @@ class OrderItemSerializer(serializers.ModelSerializer):
         exclude = ('id',)
 
     def get_summary(self, order_item):
+        label = self.context.get('render_label', 'order')
         serializer = product_summary_serializer_class(order_item.product, context=self.context,
-                                                      read_only=True, label='order')
+                                                      read_only=True, label=label)
         return serializer.data
 
 

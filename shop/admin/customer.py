@@ -70,6 +70,9 @@ class CustomerAdmin(UserAdmin):
     list_filter = UserAdmin.list_filter + (CustomerListFilter,)
     readonly_fields = ('last_login', 'date_joined', 'last_access', 'recognized')
 
+    class Media:
+        js = ('shop/js/admin/customer.js',)
+
     def get_fieldsets(self, request, obj=None):
         fieldsets = super(CustomerAdmin, self).get_fieldsets(request, obj=obj)
         if obj:
@@ -126,4 +129,3 @@ try:
     admin.site.unregister(get_user_model())
 except admin.sites.NotRegistered:
     pass
-admin.site.register(CustomerProxy, CustomerAdmin)

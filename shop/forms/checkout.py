@@ -31,7 +31,7 @@ class CustomerForm(DialogModelForm):
         super(CustomerForm, self).__init__(initial=initial, instance=instance, *args, **kwargs)
 
     def save(self, commit=True):
-        self.instance.recognized = CustomerModel.REGISTERED
+        self.instance.recognize_as_registered()
         for f in self.Meta.custom_fields:
             setattr(self.instance, f, self.cleaned_data[f])
         return super(CustomerForm, self).save(commit)

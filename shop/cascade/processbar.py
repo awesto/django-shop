@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 from django.forms import widgets
 from django.forms.fields import CharField
 from django.forms.models import ModelForm
+from django.utils.safestring import mark_safe
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ungettext_lazy, ugettext_lazy as _
 from django.utils.text import Truncator
 from django.utils.html import format_html
@@ -11,12 +13,12 @@ from django.template.loader import select_template
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.forms import ManageChildrenFormMixin
 from cmsplugin_cascade.fields import PartialFormField
-from cmsplugin_cascade.link.forms import LinkForm, TextLinkFormMixin
+from cmsplugin_cascade.link.forms import TextLinkFormMixin
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.widgets import NumberInputWidget
 from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
 from cmsplugin_cascade.mixins import TransparentMixin
-from shop.cascade.plugin_base import ShopPluginBase, ShopButtonPluginBase
+from shop.cascade.plugin_base import ShopPluginBase
 from shop import settings as shop_settings
 
 
@@ -93,44 +95,49 @@ class ProcessStepPlugin(TransparentMixin, ShopPluginBase):
 plugin_pool.register_plugin(ProcessStepPlugin)
 
 
-class ProcessNextStepPlugin(BootstrapButtonMixin, ShopButtonPluginBase):
+class ProcessNextStepForm(TextLinkFormMixin, ModelForm):
+    link_content = CharField(required=False, label=_("Button Content"),
+        widget=widgets.TextInput(attrs={'id': 'id_name'}))
+
+    def __init__(self, raw_data=None, *args, **kwargs):
+        instance = kwargs.get('instance')
+        initial = instance and dict(instance.glossary) or {}
+        initial.update(kwargs.pop('initial', {}))
+        kwargs.update(initial=initial)
+        super(ProcessNextStepForm, self).__init__(raw_data, *args, **kwargs)
+
+
+@python_2_unicode_compatible
+class NextStepElementMixin(object):
+    def __str__(self):
+        return self.content
+
+    @property
+    def content(self):
+        return mark_safe(self.glossary.get('link_content', ''))
+
+
+class ProcessNextStepPlugin(BootstrapButtonMixin, ShopPluginBase):
     name = _("Next Step Button")
     parent_classes = ('ProcessStepPlugin',)
+    form = ProcessNextStepForm
+    fields = ('link_content', 'glossary',)
     model_mixins = (LinkElementMixin,)
 
-    def get_form(self, request, obj=None, **kwargs):
-        """
-        Build edit form during runtime, since the link type depends on the position of this plugin.
-        """
-        link_content = CharField(label=_("Button Content"))
-        if obj and obj.get_parent() and obj.get_parent().get_next_sibling():
-            LINK_TYPE_CHOICES = (('NEXT_STEP', ("Next Step")), ('cmspage', _("CMS Page")),
-                ('RELOAD_PAGE', _("Reload Page")), ('PURCHASE_NOW', _("Purchase Now")),)
-        else:
-            LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")), ('RELOAD_PAGE', _("Reload Page")),
-                ('PURCHASE_NOW', _("Purchase Now")),)
-        Form = type(str('ProcessNextStepForm'), (TextLinkFormMixin, LinkForm.get_form_class(),),
-            {'link_content': link_content, 'LINK_TYPE_CHOICES': LINK_TYPE_CHOICES})
-        kwargs.update(form=Form)
-        return super(ProcessNextStepPlugin, self).get_form(request, obj, **kwargs)
+    class Media:
+        css = {'all': ('cascade/css/admin/bootstrap.min.css', 'cascade/css/admin/bootstrap-theme.min.css',)}
+
+    @classmethod
+    def get_identifier(cls, obj):
+        identifier = super(ProcessNextStepPlugin, cls).get_identifier(obj)
+        content = obj.glossary.get('link_content', '')
+        return format_html('{0}{1}', identifier, content)
 
     def get_render_template(self, context, instance, placeholder):
-        link_type = instance.glossary.get('link', {}).get('type')
-        if link_type == 'NEXT_STEP':
-            template_names = [
-                '{}/checkout/process-next-step.html'.format(shop_settings.APP_LABEL),
-                'shop/checkout/process-next-step.html',
-            ]
-        elif link_type == 'PURCHASE_NOW':
-            template_names = [
-                '{}/checkout/process-purchase-now.html'.format(shop_settings.APP_LABEL),
-                'shop/checkout/process-purchase-now.html',
-            ]
-        else:
-            template_names = [
-                '{}/checkout/proceed-button.html'.format(shop_settings.APP_LABEL),
-                'shop/checkout/proceed-button.html',
-            ]
+        template_names = [
+            '{}/checkout/process-next-step.html'.format(shop_settings.APP_LABEL),
+            'shop/checkout/process-next-step.html',
+        ]
         return select_template(template_names)
 
 plugin_pool.register_plugin(ProcessNextStepPlugin)

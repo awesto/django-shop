@@ -58,19 +58,28 @@ class CustomerManager(models.Manager):
         return ''.join(reversed(s))
 
     def get_queryset(self):
+        """
+        Whenever we fetch from the Customer table, inner join with the User table to reduce the
+        number of queries to the database.
+        """
         qs = super(CustomerManager, self).get_queryset().select_related('user')
         return qs
 
-    def get_visiting_user(self, session_key):
+    def create(self, *args, **kwargs):
+        customer = super(CustomerManager, self).create(*args, **kwargs)
+        if 'user' in kwargs and kwargs['user'].is_authenticated():
+            customer.recognized = self.model.REGISTERED
+        return customer
+
+    def _get_visiting_user(self, session_key):
         """
         Since the Customer has a 1:1 relation with the User object, look for an entity for a
-        User object. As its ``username`` (which must be unique), use a compressed representation
-        of the given session key.
+        User object. As its ``username`` (which must be unique), use the given session key.
         """
         username = self.encode_session_key(session_key)
         try:
             user = get_user_model().objects.get(username=username)
-        except get_user_model().DoesNotExists:
+        except get_user_model().DoesNotExist:
             user = AnonymousUser()
         return user
 
@@ -80,7 +89,7 @@ class CustomerManager(models.Manager):
         """
         if request.user.is_anonymous() and request.session.session_key:
             # the visitor is determined through the session key
-            user = self.get_visiting_user(request.session.session_key)
+            user = self._get_visiting_user(request.session.session_key)
         else:
             user = request.user
         try:
@@ -89,7 +98,9 @@ class CustomerManager(models.Manager):
         except AttributeError:
             pass
         if request.user.is_authenticated():
-            customer = self.get_or_create(user=user)[0]
+            customer, created = self.get_or_create(user=user)
+            if created:
+                customer.recognized = self.model.REGISTERED
         else:
             customer = VisitingCustomer()
         return customer
@@ -97,6 +108,7 @@ class CustomerManager(models.Manager):
     def get_or_create_from_request(self, request):
         if request.user.is_authenticated():
             user = request.user
+            recognized = self.model.REGISTERED
         else:
             if not request.session.session_key:
                 request.session.cycle_key()
@@ -107,7 +119,9 @@ class CustomerManager(models.Manager):
             user = get_user_model().objects.create_user(username)
             user.is_active = False
             user.save()
+            recognized = self.model.UNRECOGNIZED
         customer = self.get_or_create(user=user)[0]
+        customer.recognized = recognized
         return customer
 
 
@@ -128,7 +142,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL, primary_key=True)
     recognized = models.PositiveSmallIntegerField(_("Recognized as"), choices=CUSTOMER_STATES,
-        help_text=_("Designates the state the customer is recognized as."), default=0)
+        help_text=_("Designates the state the customer is recognized as."), default=UNRECOGNIZED)
     salutation = models.CharField(_("Salutation"), max_length=5, choices=SALUTATION)
     last_access = models.DateTimeField(_("Last accessed"), default=timezone.now)
     extra = JSONField(default={}, editable=False,
@@ -198,11 +212,23 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         """
         return self.recognized == self.GUEST
 
+    def recognize_as_guest(self):
+        """
+        Recognize the current customer as guest customer.
+        """
+        self.recognized = self.GUEST
+
     def is_registered(self):
         """
         Return true if the customer has registered himself.
         """
         return self.recognized == self.REGISTERED
+
+    def recognize_as_registered(self):
+        """
+        Recognize the current customer as registered customer.
+        """
+        self.recognized = self.REGISTERED
 
     def is_visitor(self):
         """
@@ -233,10 +259,12 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         super(BaseCustomer, self).save(**kwargs)
 
     def delete(self, *args, **kwargs):
-        if self.user.is_active and not self.recognized:
-            # invalid state of customer
+        if self.user.is_active and self.recognized == self.UNRECOGNIZED:
+            # invalid state of customer, keep the referred User
             super(BaseCustomer, self).delete(*args, **kwargs)
-        self.user.delete(*args, **kwargs)
+        else:
+            # also delete self through cascading
+            self.user.delete(*args, **kwargs)
 
 CustomerModel = deferred.MaterializedModel(BaseCustomer)
 
