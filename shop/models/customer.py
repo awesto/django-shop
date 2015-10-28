@@ -259,10 +259,12 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         super(BaseCustomer, self).save(**kwargs)
 
     def delete(self, *args, **kwargs):
-        if self.user.is_active and not self.recognized:
-            # invalid state of customer
+        if self.user.is_active and self.recognized == self.UNRECOGNIZED:
+            # invalid state of customer, keep the referred User
             super(BaseCustomer, self).delete(*args, **kwargs)
-        self.user.delete(*args, **kwargs)
+        else:
+            # also delete self through cascading
+            self.user.delete(*args, **kwargs)
 
 CustomerModel = deferred.MaterializedModel(BaseCustomer)
 
