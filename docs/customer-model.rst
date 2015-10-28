@@ -265,6 +265,10 @@ Customer backend inside the project's ``admin.py``:
 
 	admin.site.register(CustomerProxy, CustomerAdmin)
 
+This administration backend recycles the built-in ``django.contrib.auth.admin.UserAdmin``, and
+enriches it by adding the Customer model as a ``StackedInlineAdmin`` on top of the detail page.
+By doing so, we can edit the Customer and User fields on the same page.
+
 
 Summary for Customer to User mapping
 ====================================
