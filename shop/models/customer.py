@@ -92,7 +92,9 @@ class CustomerManager(models.Manager):
         except AttributeError:
             pass
         if request.user.is_authenticated():
-            customer = self.get_or_create(user=user)[0]
+            customer, created = self.get_or_create(user=user)
+            if created:
+                customer.recognized = self.model.REGISTERED
         else:
             customer = VisitingCustomer()
         return customer
@@ -100,6 +102,7 @@ class CustomerManager(models.Manager):
     def get_or_create_from_request(self, request):
         if request.user.is_authenticated():
             user = request.user
+            recognized = self.model.REGISTERED
         else:
             if not request.session.session_key:
                 request.session.cycle_key()
@@ -110,7 +113,9 @@ class CustomerManager(models.Manager):
             user = get_user_model().objects.create_user(username)
             user.is_active = False
             user.save()
+            recognized = self.model.UNRECOGNIZED
         customer = self.get_or_create(user=user)[0]
+        customer.recognized = recognized
         return customer
 
 
@@ -131,7 +136,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL, primary_key=True)
     recognized = models.PositiveSmallIntegerField(_("Recognized as"), choices=CUSTOMER_STATES,
-        help_text=_("Designates the state the customer is recognized as."), default=0)
+        help_text=_("Designates the state the customer is recognized as."), default=UNRECOGNIZED)
     salutation = models.CharField(_("Salutation"), max_length=5, choices=SALUTATION)
     last_access = models.DateTimeField(_("Last accessed"), default=timezone.now)
     extra = JSONField(default={}, editable=False,
