@@ -154,12 +154,12 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
 
     def is_in_cart(self, cart, extra, watched=False):
         """
-        Checks if the product is already in the given cart, and if returns the corresponding
-        cart_item, otherwise None. The dictionary `extra` is  used for passing arbitrary
-        information about the product. It can be used to determine if products with variations
-        shall be added to the cart or added as separate items.
-        The boolean `watched` can be used to determine if this check shall only be performed
-        for the watch-list.
+        Checks if the product is already in the given cart, and if so, returns the corresponding
+        cart_item, otherwise this method returns None. The dictionary `extra` is  used for passing
+        arbitrary information about the product. It can be used to determine if products with
+        variations shall be added to the cart or added as separate items.
+        The boolean `watched` can be used to determine if this check shall only be performed for
+        the watch-list.
         """
         from .cart import CartItemModel
         cart_item_qs = CartItemModel.objects.filter(cart=cart, product=self)

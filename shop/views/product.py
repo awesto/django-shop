@@ -33,6 +33,7 @@ class ProductListView(generics.ListAPIView):
         return qs
 
     def get_template_names(self):
+        # TODO: let this be configurable through a View member variable
         return [self.request.current_page.get_template()]
 
     def paginate_queryset(self, queryset):
