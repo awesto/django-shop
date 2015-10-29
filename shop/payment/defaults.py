@@ -43,7 +43,6 @@ class PayInAdvanceWorkflowMixin(object):
         """
         Signals that an Order can proceed directly and by confirming a payment of value zero.
         """
-        self.acknowledge_payment()
 
     @transition(field='status', source=['created'], target='awaiting_payment')
     def awaiting_payment(self):
@@ -51,7 +50,6 @@ class PayInAdvanceWorkflowMixin(object):
         Signals that an Order awaits payments.
         Invoked by ForwardFundPayment.get_payment_request.
         """
-        pass
 
     def deposited_too_little(self):
         return self.amount_paid > 0 and self.amount_paid < self.total
@@ -66,7 +64,8 @@ class PayInAdvanceWorkflowMixin(object):
     def prepayment_fully_deposited(self):
         """Signals that an Order received a payment, which fully covers the requested sum."""
 
-    @transition(field='status', source='prepayment_deposited', custom=dict(auto=True))
+    @transition(field='status', source=['prepayment_deposited', 'no_payment_required'],
+        custom=dict(auto=True))
     def acknowledge_prepayment(self):
         """Ackknowledge the payment. This method is invoked automatically."""
         self.acknowledge_payment()
