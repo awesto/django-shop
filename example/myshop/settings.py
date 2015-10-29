@@ -14,11 +14,6 @@ import os
 from decimal import Decimal
 from django.utils.translation import ugettext_lazy as _
 
-# Patches backported from Django<1.8
-from django.utils import numberformat
-from shop.patches import numberformat as patched_numberformat
-numberformat.format = patched_numberformat.format
-
 SHOP_APP_LABEL = 'myshop'
 BASE_DIR = os.path.dirname(__file__)
 
@@ -240,6 +235,8 @@ LOGGING = {
     },
 }
 
+SILENCED_SYSTEM_CHECKS = ('auth.W004')
+
 
 ############################################
 # settings for sending mail
@@ -305,13 +302,13 @@ SERIALIZATION_MODULES = {'shop': b'shop.money.serializers'}
 ############################################
 # settings for storing data in memory
 
-X_CACHES = {
-    'default': {
-        'BACKEND': 'redis_cache.RedisCache',
-        'LOCATION': 'localhost:6379',
-        'KEY_PREFIX': SHOP_APP_LABEL + '-cache',
-    },
-}
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'redis_cache.RedisCache',
+#         'LOCATION': 'localhost:6379',
+#         'KEY_PREFIX': SHOP_APP_LABEL + '-cache',
+#     },
+# }
 
 SESSION_ENGINE = 'redis_sessions.session'
 SESSION_SAVE_EVERY_REQUEST = True
@@ -352,7 +349,7 @@ THUMBNAIL_PROCESSORS = (
 
 CMS_TEMPLATES = (
     ('myshop/pages/default.html', _("Default Page")),
-#    ('myshop/pages/catalog-list.html', _("List Commodites")),
+    ('myshop/catalog/product-list.html', _("List Products")),
 )
 
 CMS_SEO_FIELDS = True

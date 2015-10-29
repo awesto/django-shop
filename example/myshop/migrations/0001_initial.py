@@ -18,9 +18,9 @@ import shop_stripe.payment
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('email_auth', '0001_initial'),
-        ('filer', '0002_auto_20150606_2003'),
+        ('email_auth', '0002_auto_20151011_1652'),
         ('contenttypes', '0001_initial'),
+        ('filer', '0002_auto_20150606_2003'),
         ('cms', '0012_auto_20150607_2207'),
     ]
 
@@ -68,74 +68,34 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='CommodityProperty',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('multiple_tags', models.BooleanField(default=False, verbose_name='Customer can select multiple tags for this property')),
-            ],
-            options={
-                'verbose_name': 'Commodity Property',
-                'verbose_name_plural': 'Commodity Properties',
-            },
-            bases=(models.Model,),
-        ),
-        migrations.CreateModel(
-            name='CommodityPropertyTranslation',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('language_code', models.CharField(max_length=15, verbose_name='Language', db_index=True)),
-                ('property', models.CharField(help_text='One of some possible properties for commodities.', max_length=255, verbose_name='Property')),
-                ('master', models.ForeignKey(related_name='translations', editable=False, to='myshop.CommodityProperty', null=True)),
-            ],
-            options={
-                'managed': True,
-                'db_table': 'myshop_commodityproperty_translation',
-                'db_tablespace': '',
-                'default_permissions': (),
-                'verbose_name': 'Commodity Property Translation',
-            },
-            bases=(models.Model,),
-        ),
-        migrations.CreateModel(
-            name='CommodityTag',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('image', filer.fields.image.FilerImageField(related_name='tex_tag', blank=True, to='filer.Image', help_text='A sample image get an impression of this tag', null=True, verbose_name='Sample Image')),
-                ('property', models.ForeignKey(to='myshop.CommodityProperty')),
-            ],
-            options={
-                'verbose_name': 'Commodity Tag',
-                'verbose_name_plural': 'Commodity Tags',
-            },
-            bases=(models.Model,),
-        ),
-        migrations.CreateModel(
-            name='CommodityTagTranslation',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('language_code', models.CharField(max_length=15, verbose_name='Language', db_index=True)),
-                ('tag', models.CharField(help_text='A tag to describe the property of this commodity.', max_length=255, verbose_name='Tag')),
-                ('search_indices', models.CharField(help_text='Search Indices for describing this property tag', max_length=255, null=True, verbose_name='Search Indices', blank=True)),
-                ('master', models.ForeignKey(related_name='translations', editable=False, to='myshop.CommodityTag', null=True)),
-            ],
-            options={
-                'managed': True,
-                'db_table': 'myshop_commoditytag_translation',
-                'db_tablespace': '',
-                'default_permissions': (),
-                'verbose_name': 'Commodity Tag Translation',
-            },
-            bases=(models.Model,),
-        ),
-        migrations.CreateModel(
             name='Customer',
             fields=[
                 ('user', models.OneToOneField(primary_key=True, serialize=False, to=settings.AUTH_USER_MODEL)),
-                ('recognized', models.PositiveSmallIntegerField(default=0, help_text='Designates the state the customer is recognized as.', verbose_name='Recognized', choices=[(0, 'Unrecognized'), (1, 'Guest'), (2, 'Registered')])),
+                ('recognized', models.PositiveSmallIntegerField(default=0, help_text='Designates the state the customer is recognized as.', verbose_name='Recognized as', choices=[(0, 'Unrecognized'), (1, 'Guest'), (2, 'Registered')])),
                 ('salutation', models.CharField(max_length=5, verbose_name='Salutation', choices=[('mrs', 'Mrs.'), ('mr', 'Mr.'), ('na', '(n/a)')])),
                 ('last_access', models.DateTimeField(default=django.utils.timezone.now, verbose_name='Last accessed')),
                 ('extra', jsonfield.fields.JSONField(default={}, verbose_name='Extra information about this customer', editable=False)),
                 ('number', models.PositiveIntegerField(default=None, unique=True, null=True, verbose_name='Customer Number')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Manufacturer',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=50, verbose_name='Name')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='OperatingSystem',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=50, verbose_name='Name')),
             ],
             options={
             },
@@ -153,6 +113,7 @@ class Migration(migrations.Migration):
                 ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated at')),
                 ('extra', jsonfield.fields.JSONField(default={}, help_text='Arbitrary information for this order object on the moment of purchase.', verbose_name='Extra fields')),
                 ('stored_request', jsonfield.fields.JSONField(default={}, help_text='Parts of the Request objects on the moment of purchase.')),
+                ('number', models.PositiveIntegerField(default=None, unique=True, null=True, verbose_name='Order Number')),
                 ('shipping_address_text', models.TextField(help_text='Shipping address at the moment of purchase.', null=True, verbose_name='Shipping Address', blank=True)),
                 ('billing_address_text', models.TextField(help_text='Billing address at the moment of purchase.', null=True, verbose_name='Billing Address', blank=True)),
                 ('customer', models.ForeignKey(related_name='orders', verbose_name='Customer', to='myshop.Customer')),
@@ -214,9 +175,9 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
                 ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated at')),
                 ('active', models.BooleanField(default=True, help_text='Is this product publicly visible.', verbose_name='Active')),
-                ('identifier', models.CharField(max_length=255, verbose_name='Product code')),
-                ('unit_price', models.DecimalField(default='0', help_text='Net price for this product', verbose_name='Unit price', max_digits=30, decimal_places=3)),
                 ('order', models.PositiveIntegerField(verbose_name='Sort by', db_index=True)),
+                ('name', models.CharField(max_length=255, verbose_name='Name')),
+                ('slug', models.SlugField(verbose_name='Slug')),
             ],
             options={
                 'ordering': ('order',),
@@ -224,25 +185,11 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='Commodity',
-            fields=[
-                ('product_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='myshop.Product')),
-                ('cms_pages', models.ManyToManyField(help_text='Choose list view this commodity shall appear on.', to='cms.Page', blank=True)),
-                ('properties', models.ManyToManyField(help_text='Choose properties for this commodity.', to='myshop.CommodityTag', blank=True)),
-            ],
-            options={
-                'verbose_name': 'Commodity',
-                'verbose_name_plural': 'Commodities',
-            },
-            bases=('myshop.product',),
-        ),
-        migrations.CreateModel(
             name='ProductImage',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('order', models.SmallIntegerField(default=0)),
                 ('image', filer.fields.image.FilerImageField(to='filer.Image')),
-                ('product', models.ForeignKey(to='myshop.Product')),
             ],
             options={
                 'ordering': ('order',),
@@ -256,18 +203,69 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('language_code', models.CharField(max_length=15, verbose_name='Language', db_index=True)),
-                ('name', models.CharField(max_length=255, verbose_name='Name')),
-                ('slug', models.SlugField(verbose_name='Slug')),
                 ('description', djangocms_text_ckeditor.fields.HTMLField(help_text='Description for the list view of products.', verbose_name='Description')),
-                ('master', models.ForeignKey(related_name='translations', to='myshop.Product', null=True)),
             ],
             options={
             },
             bases=(models.Model,),
         ),
+        migrations.CreateModel(
+            name='SmartPhone',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('identifier', models.CharField(max_length=255, verbose_name='Product code')),
+                ('unit_price', models.DecimalField(default='0', help_text='Net price for this product', verbose_name='Unit price', max_digits=30, decimal_places=3)),
+                ('storage', models.PositiveIntegerField(help_text='Internal storage in MB', verbose_name='Internal Storage')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='SmartPhoneModel',
+            fields=[
+                ('product_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='myshop.Product')),
+                ('battery_type', models.PositiveSmallIntegerField(verbose_name='Battery type', choices=[(1, 'Lithium Polymer (Li-Poly)'), (2, 'Lithium Ion (Li-Ion)')])),
+                ('battery_capacity', models.PositiveIntegerField(help_text='Battery capacity in mAh', verbose_name='Capacity')),
+                ('ram_storage', models.PositiveIntegerField(help_text='RAM storage in MB', verbose_name='RAM')),
+                ('wifi_connectivity', models.PositiveIntegerField(help_text='WiFi Connectivity', verbose_name='WiFi', choices=[(1, '802.11 b/g/n')])),
+                ('bluetooth', models.PositiveIntegerField(help_text='Bluetooth Connectivity', verbose_name='Bluetooth', choices=[(1, 'Bluetooth 4.0')])),
+                ('gps', models.BooleanField(default=False, help_text='GPS integrated', verbose_name='GPS')),
+                ('width', models.DecimalField(help_text='Width in mm', verbose_name='Width', max_digits=4, decimal_places=1)),
+                ('height', models.DecimalField(help_text='Height in mm', verbose_name='Height', max_digits=4, decimal_places=1)),
+                ('weight', models.DecimalField(help_text='Weight in gram', verbose_name='Weight', max_digits=5, decimal_places=1)),
+                ('screen_size', models.DecimalField(help_text='Diagonal screen size in inch', verbose_name='Screen size', max_digits=4, decimal_places=2)),
+                ('cms_pages', models.ManyToManyField(help_text='Choose list view this phone shall appear on.', to='cms.Page', blank=True)),
+                ('manufacturer', models.ForeignKey(verbose_name='Manufacturer', to='myshop.Manufacturer')),
+                ('operating_system', models.ForeignKey(verbose_name='Operating System', to='myshop.OperatingSystem')),
+            ],
+            options={
+                'verbose_name': 'Smart Phone',
+                'verbose_name_plural': 'Smart Phones',
+            },
+            bases=('myshop.product',),
+        ),
+        migrations.AddField(
+            model_name='smartphone',
+            name='product',
+            field=models.ForeignKey(verbose_name='Internal Storage', to='myshop.SmartPhoneModel'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='producttranslation',
+            name='master',
+            field=models.ForeignKey(related_name='translations', to='myshop.Product', null=True),
+            preserve_default=True,
+        ),
         migrations.AlterUniqueTogether(
             name='producttranslation',
-            unique_together=set([('language_code', 'master'), ('language_code', 'slug')]),
+            unique_together=set([('language_code', 'master')]),
+        ),
+        migrations.AddField(
+            model_name='productimage',
+            name='product',
+            field=models.ForeignKey(to='myshop.Product'),
+            preserve_default=True,
         ),
         migrations.AddField(
             model_name='product',
@@ -298,14 +296,6 @@ class Migration(migrations.Migration):
             name='shipped_with',
             field=models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, blank=True, to='myshop.OrderShipping', help_text='Refer to the delivery provider used to ship this item', null=True, verbose_name='Shipped with'),
             preserve_default=True,
-        ),
-        migrations.AlterUniqueTogether(
-            name='commoditytagtranslation',
-            unique_together=set([('language_code', 'master')]),
-        ),
-        migrations.AlterUniqueTogether(
-            name='commoditypropertytranslation',
-            unique_together=set([('language_code', 'master')]),
         ),
         migrations.AddField(
             model_name='cartitem',

@@ -7,36 +7,36 @@ from shop.rest.filters import CMSPagesFilterBackend
 from shop.views.product import AddToCartView, ProductListView, ProductRetrieveView
 from shop.search.views import SearchView
 from shop.rest.serializers import AddToCartSerializer
-from myshop.models.commodity import Commodity
+from myshop.models.smartphone import SmartPhoneModel
 from myshop.serializers import (ProductSummarySerializer, ProductDetailSerializer,
     CommoditySearchSerializer)
 
-limit_choices_to = Q(instance_of=Commodity, active=True)
+limit_choices_to = Q(instance_of=SmartPhoneModel, active=True)
 list_options = dict(
-    product_model=Commodity,
+    product_model=SmartPhoneModel,
     serializer_class=ProductSummarySerializer,
     filter_backends=api_settings.DEFAULT_FILTER_BACKENDS + [CMSPagesFilterBackend()],
     limit_choices_to=limit_choices_to,
 )
 detail_options = dict(
     serializer_class=ProductDetailSerializer,
-    lookup_field='translations__slug',
+    lookup_field='slug',
     limit_choices_to=limit_choices_to,
 )
 add2cart_options = dict(
     serializer_class=AddToCartSerializer,
-    lookup_field='translations__slug',
+    lookup_field='slug',
     limit_choices_to=limit_choices_to,
 )
-autocomplete_options = dict(
-    serializer_class=CommoditySearchSerializer,
-    index_models=[Commodity],
-)
+#autocomplete_options = dict(
+#    serializer_class=CommoditySearchSerializer,
+#    index_models=[Commodity],
+#)
 
 
 urlpatterns = patterns('',
     url(r'^$', ProductListView.as_view(**list_options)),
     url(r'^(?P<slug>[\w-]+)$', ProductRetrieveView.as_view(**detail_options)),
     url(r'^(?P<slug>[\w-]+)/add-to-cart', AddToCartView.as_view(**add2cart_options)),
-    url(r'^autocomplete/', SearchView.as_view(**autocomplete_options)),
+    url(r'^autocomplete/', SearchView.as_view()),
 )

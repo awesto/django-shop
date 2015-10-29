@@ -15,7 +15,6 @@ from polymorphic.manager import PolymorphicManager
 from polymorphic.query import PolymorphicQuerySet
 import reversion
 from shop.models.product import BaseProduct
-from shop.money.fields import MoneyField
 
 
 class ProductQuerySet(TranslatableQuerySet, PolymorphicQuerySet):
@@ -27,12 +26,9 @@ class ProductManager(PolymorphicManager, TranslatableManager):
 
 
 class Product(TranslatableModel, BaseProduct):
-    identifier = models.CharField(max_length=255, verbose_name=_("Product code"))
-    unit_price = MoneyField(verbose_name=_("Unit price"), decimal_places=3,
-        help_text=_("Net price for this product"))  # TODO: , min_value=0
     order = models.PositiveIntegerField(verbose_name=_("Sort by"), db_index=True)
-    name = TranslatedField()
-    slug = TranslatedField()
+    name = models.CharField(max_length=255, verbose_name=_("Name"))
+    slug = models.SlugField(verbose_name=_("Slug"))
     description = TranslatedField()
     images = models.ManyToManyField(Image, through='ProductImage', null=True)
     placeholder = PlaceholderField('Product Detail',
@@ -48,7 +44,8 @@ class Product(TranslatableModel, BaseProduct):
     search_fields = ('identifier__istartswith', 'translations__name__istartswith',)
 
     def get_price(self, request):
-        gross_price = self.unit_price * (1 + settings.SHOP_VALUE_ADDED_TAX / 100)
+        # TODO: fix this gross_price = self.unit_price * (1 + settings.SHOP_VALUE_ADDED_TAX / 100)
+        gross_price = 0
         return gross_price
 
     def get_absolute_url(self):
@@ -68,13 +65,11 @@ reversion.register(Product, adapter_cls=type(str('ProductVersionAdapter'), (reve
 
 class ProductTranslation(TranslatedFieldsModel):
     master = models.ForeignKey(Product, related_name='translations', null=True)
-    name = models.CharField(max_length=255, verbose_name=_("Name"))
-    slug = models.SlugField(verbose_name=_("Slug"))
     description = HTMLField(verbose_name=_("Description"),
                             help_text=_("Description for the list view of products."))
 
     class Meta:
-        unique_together = [('language_code', 'master'), ('language_code', 'slug')]
+        unique_together = [('language_code', 'master')]
         app_label = settings.SHOP_APP_LABEL
 
 

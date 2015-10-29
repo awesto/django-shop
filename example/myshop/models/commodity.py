@@ -7,7 +7,7 @@ from django.utils.encoding import python_2_unicode_compatible, force_text
 from filer.fields import image
 from parler.models import TranslatableModel, TranslatedFields
 import reversion
-from .product import Product
+from myshop.models.product import Product
 
 
 @python_2_unicode_compatible
