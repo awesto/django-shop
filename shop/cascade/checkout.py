@@ -49,6 +49,14 @@ class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
         ]
         return select_template(template_names)
 
+    def render(self, context, instance, placeholder):
+        super(ShopProceedButton, self).render(context, instance, placeholder)
+        cart = CartModel.objects.get_from_request(context['request'])
+        if cart:
+            cart.update(context['request'])
+            context['cart'] = cart
+        return context
+
 plugin_pool.register_plugin(ShopProceedButton)
 
 
@@ -109,7 +117,7 @@ class PaymentMethodFormPlugin(DialogFormPluginBase):
 
     def get_form_data(self, request):
         cart = CartModel.objects.get_from_request(request)
-        initial = {'payment_modifier': cart.extra.get('payment_modifier')}
+        initial = {'payment_modifier': getattr(cart, 'extra', {}).get('payment_modifier')}
         return {'initial': initial}
 
     def render(self, context, instance, placeholder):
@@ -130,7 +138,7 @@ class ShippingMethodFormPlugin(DialogFormPluginBase):
 
     def get_form_data(self, request):
         cart = CartModel.objects.get_from_request(request)
-        initial = {'shipping_modifier': cart.extra.get('shipping_modifier')}
+        initial = {'shipping_modifier': getattr(cart, 'extra', {}).get('shipping_modifier')}
         return {'initial': initial}
 
     def render(self, context, instance, placeholder):
@@ -151,7 +159,7 @@ class ExtraAnnotationFormPlugin(DialogFormPluginBase):
 
     def get_form_data(self, request):
         cart = CartModel.objects.get_from_request(request)
-        initial = {'annotation': cart.extra.get('annotation', '')}
+        initial = {'annotation': getattr(cart, 'extra', {}).get('annotation', '')}
         return {'initial': initial}
 
 DialogFormPluginBase.register_plugin(ExtraAnnotationFormPlugin)

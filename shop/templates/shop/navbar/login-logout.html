@@ -11,7 +11,7 @@
 <li class="dropdown {{ dropdown_extra_class }}" dropdown auto-close="outsideClick">
 	<a class="dropdown-toggle" dropdown-toggle>
 	{% if customer.is_authenticated %}
-		<i class="fa fa-user"></i>&nbsp;{{ user.get_short_name }}
+		<i class="fa fa-user"></i>&nbsp;{{ customer.first_name|default:customer }}
 	{% else %}
 		<i class="fa fa-sign-in"></i>&nbsp;{% trans "Sign in" %}
 	{% endif %}<b class="caret"></b></a>
@@ -27,7 +27,7 @@
 		<li><a href="{{ personal_details_url }}">{% page_attribute "page_title" "personal-details" %}</a></li>
 		{% endif %}
 	{% else %}
-		<shop-auth-form ng-form action="RELOAD_PAGE" accept-charset="UTF-8" role="form">
+		<shop-auth-form ng-form name="form_data" action="RELOAD_PAGE" accept-charset="UTF-8" role="form">
 			<div class="alert alert-danger" ng-show="error_message" ng-cloak>
 				<a class="close" ng-click="dismiss()">×</a>{% verbatim %}{{ error_message }}{% endverbatim %}
 			</div>

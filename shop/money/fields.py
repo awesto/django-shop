@@ -49,7 +49,7 @@ class MoneyFormField(forms.DecimalField):
         return self.Money(value)
 
     def validate(self, value):
-        if value.get_currency() != self.Money.get_currency():
+        if value.currency != self.Money.currency:
             raise ValidationError("Can not convert different Money types.")
         super(MoneyFormField, self).validate(Decimal(value))
         return value
@@ -80,7 +80,7 @@ class MoneyField(six.with_metaclass(SubfieldBase, DecimalField)):
         return self.Money(value)
 
     def formfield(self, **kwargs):
-        widget = MoneyFieldWidget(attrs={'currency_code': self.Money.get_currency()})
+        widget = MoneyFieldWidget(attrs={'currency_code': self.Money.currency})
         defaults = {'form_class': MoneyFormField, 'widget': widget, 'money_class': self.Money}
         defaults.update(**kwargs)
         formfield = super(MoneyField, self).formfield(**defaults)

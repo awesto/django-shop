@@ -1,4 +1,5 @@
--e git+git@github.com:jrief/django-angular.git@1ae1903df81bf3f03bdc935ea763df7ed4bf92c4#egg=django_angular-master
+django-allauth==0.19.1
+django-angular==0.7.15
 django-appconf==1.0.1
 django-classy-tags==0.6.2
 django-cms==3.1.2
@@ -6,7 +7,7 @@ django-compressor==1.5
 django-filer==0.9.11
 django-filter==0.10.0
 django-fsm==2.2.1
--e git+git@github.com:jrief/django-fsm-admin.git@415a74abad5dd5fc9387dddcf9dd0c5419a482a1#egg=django_fsm_admin-allow-transition-methods
+django-fsm-admin==1.2.2
 django-haystack==2.4.0
 django-ipware==1.1.0
 django-multiselectfield==0.1.3
@@ -15,7 +16,7 @@ django-polymorphic==0.7.1
 django-post-office==2.0.1
 django-redis-cache==1.6.0
 django-redis-sessions==0.4.0
--e git+https://github.com/Tivix/django-rest-auth.git@bd97eee65a223d7ade0055d3778678a023d7d866#egg=django_rest_auth-master
+django-rest-auth==0.5.0
 django-reversion==1.8.5
 django-sass-processor==0.2.4
 django-sekizai==0.8.2
@@ -23,8 +24,8 @@ Django-Select2==4.2.2
 django-softhyphen==1.0.2
 django-treebeard==3.0
 djangocms-admin-style==0.2.7
--e git+git@github.com:jrief/djangocms-bootstrap3.git@425823b01d37164f5c8bef4f66da9bb6449593eb#egg=djangocms_bootstrap3-master
--e git+git@github.com:jrief/djangocms-cascade.git@066b8a1ca97d3afd8b79968a7f5af506a265095c#egg=djangocms_cascade-master
+djangocms-bootstrap3==0.1.0
+djangocms-cascade==0.6.2
 djangocms-text-ckeditor==2.5.3
 djangorestframework==3.0.5
 drf-haystack==1.5.1
@@ -53,4 +54,4 @@ South==1.0.2
 stripe==1.23.0
 Unidecode==0.4.18
 urllib3==1.10.4
-Django==1.6.11
+Django==1.7.10

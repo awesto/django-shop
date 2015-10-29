@@ -14,7 +14,10 @@ class ForwardFundPayment(PaymentProvider):
 
     def get_payment_request(self, cart, request):
         order = OrderModel.objects.create_from_cart(cart, request)
-        order.awaiting_payment()
+        if order.total == 0:
+            order.no_payment_required()
+        else:
+            order.awaiting_payment()
         order.save()
         thank_you_url = OrderModel.objects.get_latest_url()
         return '$window.location.href="{}";'.format(thank_you_url)
@@ -29,7 +32,17 @@ class PayInAdvanceWorkflowMixin(object):
     TRANSITION_TARGETS = {
         'awaiting_payment': _("Awaiting a forward fund payment"),
         'prepayment_deposited': _("Prepayment deposited"),
+        'no_payment_required': _("No Payment Required"),
     }
+
+    def is_fully_paid(self):
+        return super(PayInAdvanceWorkflowMixin, self).is_fully_paid()
+
+    @transition(field='status', source=['created'], target='no_payment_required')
+    def no_payment_required(self):
+        """
+        Signals that an Order can proceed directly and by confirming a payment of value zero.
+        """
 
     @transition(field='status', source=['created'], target='awaiting_payment')
     def awaiting_payment(self):
@@ -37,14 +50,9 @@ class PayInAdvanceWorkflowMixin(object):
         Signals that an Order awaits payments.
         Invoked by ForwardFundPayment.get_payment_request.
         """
-        pass
-
-    def deposited_enough(self):
-        return self.is_fully_paid()
 
     def deposited_too_little(self):
-        amount_paid = self.get_amount_paid()
-        return amount_paid > 0 and amount_paid < self.total
+        return self.amount_paid > 0 and self.amount_paid < self.total
 
     @transition(field='status', source=['awaiting_payment'], target='awaiting_payment',
         conditions=[deposited_too_little], custom=dict(admin=True, button_name=_("Deposited too little")))
@@ -52,11 +60,12 @@ class PayInAdvanceWorkflowMixin(object):
         """Signals that an Order received a payment, which was not enough."""
 
     @transition(field='status', source=['awaiting_payment'], target='prepayment_deposited',
-        conditions=[deposited_enough], custom=dict(admin=True, button_name=_("Mark as Paid")))
+        conditions=[is_fully_paid], custom=dict(admin=True, button_name=_("Mark as Paid")))
     def prepayment_fully_deposited(self):
         """Signals that an Order received a payment, which fully covers the requested sum."""
 
-    @transition(field='status', source='prepayment_deposited', custom=dict(auto=True))
+    @transition(field='status', source=['prepayment_deposited', 'no_payment_required'],
+        custom=dict(auto=True))
     def acknowledge_prepayment(self):
         """Ackknowledge the payment. This method is invoked automatically."""
         self.acknowledge_payment()

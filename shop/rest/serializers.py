@@ -244,7 +244,7 @@ class CartItemSerializer(BaseItemSerializer):
         exclude = ('cart', 'id',)
 
     def create(self, validated_data):
-        validated_data['cart'] = CartModel.objects.get_from_request(self.context['request'])
+        validated_data['cart'] = CartModel.objects.get_or_create_from_request(self.context['request'])
         return super(CartItemSerializer, self).create(validated_data)
 
 
@@ -254,7 +254,7 @@ class WatchItemSerializer(BaseItemSerializer):
         fields = ('product', 'url', 'summary', 'quantity', 'extra',)
 
     def create(self, validated_data):
-        cart = CartModel.objects.get_from_request(self.context['request'])
+        cart = CartModel.objects.get_or_create_from_request(self.context['request'])
         validated_data.update(cart=cart, quantity=0)
         return super(WatchItemSerializer, self).create(validated_data)
 
@@ -308,8 +308,9 @@ class OrderItemSerializer(serializers.ModelSerializer):
         exclude = ('id',)
 
     def get_summary(self, order_item):
+        label = self.context.get('render_label', 'order')
         serializer = product_summary_serializer_class(order_item.product, context=self.context,
-                                                      read_only=True, label='order')
+                                                      read_only=True, label=label)
         return serializer.data
 
 
@@ -327,13 +328,13 @@ class OrderListSerializer(serializers.ModelSerializer):
 
 class OrderDetailSerializer(OrderListSerializer):
     items = OrderItemSerializer(many=True, read_only=True)
-    amount_paid = MoneyField(source='get_amount_paid', read_only=True)
-    outstanding_amount = MoneyField(source='get_outstanding_amount', read_only=True)
+    amount_paid = MoneyField(read_only=True)
+    outstanding_amount = MoneyField(read_only=True)
     is_partially_paid = serializers.SerializerMethodField(method_name='get_partially_paid',
         help_text="Returns true, if order has been partially paid")
 
     def get_partially_paid(self, order):
-        return order.get_amount_paid() > 0
+        return order.amount_paid > 0
 
 
 class CustomerSerializer(serializers.ModelSerializer):

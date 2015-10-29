@@ -37,9 +37,13 @@ class LoginView(OriginalLoginView):
         Logs in as the given user, and moves the items from the current to the new cart.
         """
         anonymous_cart = CartModel.objects.get_from_request(self.request)
+        dead_user = None if self.request.user.is_anonymous() or self.request.customer.is_registered() else self.request.customer.user
         super(LoginView, self).login()  # this rotates the session_key
         authenticated_cart = CartModel.objects.get_from_request(self.request)
-        anonymous_cart.items.update(cart=authenticated_cart)
+        if anonymous_cart:
+            anonymous_cart.items.update(cart=authenticated_cart)
+        if dead_user and dead_user.is_active is False:
+            dead_user.delete()  # to keep the database clean
 
 
 class LogoutView(APIView):

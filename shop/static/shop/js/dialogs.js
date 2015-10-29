@@ -132,9 +132,7 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 						return eval(response.data.expression);
 					}
 				}).then(function() {
-					// should never reach this: `console.error` shall be replaced against `alert` 
-					console.error("An error occured while purchasing. Please reload the page and try again.");
-					//reenableButton();
+					console.log("Purchased without any further request-response cycle.");
 				}, function(errs) {
 					if (errs) {
 						console.error(errs);
