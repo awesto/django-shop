@@ -328,13 +328,13 @@ class OrderListSerializer(serializers.ModelSerializer):
 
 class OrderDetailSerializer(OrderListSerializer):
     items = OrderItemSerializer(many=True, read_only=True)
-    amount_paid = MoneyField(source='get_amount_paid', read_only=True)
-    outstanding_amount = MoneyField(source='get_outstanding_amount', read_only=True)
+    amount_paid = MoneyField(source='amount_paid', read_only=True)
+    outstanding_amount = MoneyField(source='outstanding_amount', read_only=True)
     is_partially_paid = serializers.SerializerMethodField(method_name='get_partially_paid',
         help_text="Returns true, if order has been partially paid")
 
     def get_partially_paid(self, order):
-        return order.get_amount_paid() > 0
+        return order.amount_paid > 0
 
 
 class CustomerSerializer(serializers.ModelSerializer):

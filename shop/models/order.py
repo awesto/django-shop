@@ -207,25 +207,25 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         self._total = BaseOrder.round_amount(self._total)
         super(BaseOrder, self).save(**kwargs)
 
-    def get_amount_paid(self):
+    @cached_property
+    def amount_paid(self):
         """
         The amount paid is the sum of related orderpayments
         """
-        if not hasattr(self, '_amount_paid'):
-            amount = self.orderpayment_set.aggregate(amount=Sum('amount'))['amount']
-            if amount is None:
-                amount = 0
-            self._amount_paid = MoneyMaker(self.currency)(amount)
-        return self._amount_paid
+        amount = self.orderpayment_set.aggregate(amount=Sum('amount'))['amount']
+        if amount is None:
+            amount = 0
+        return MoneyMaker(self.currency)(amount)
 
-    def get_outstanding_amount(self):
+    @cached_property
+    def outstanding_amount(self):
         """
         Return the outstanding amount paid for this order
         """
-        return self.total - self.get_amount_paid()
+        return self.total - self.amount_paid
 
     def is_fully_paid(self):
-        return self.get_amount_paid() >= self.total
+        return self.amount_paid >= self.total
 
     @transition(field='status', source='*', target='payment_confirmed', conditions=[is_fully_paid])
     def acknowledge_payment(self, by=None):

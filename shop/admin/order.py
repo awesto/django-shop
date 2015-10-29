@@ -82,7 +82,7 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
     get_customer_link.allow_tags = True
 
     def outstanding_amount(self, obj):
-        return obj.get_outstanding_amount()
+        return obj.outstanding_amount
     outstanding_amount.short_description = _("Outstanding amount")
 
 
