@@ -217,7 +217,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
             amount = 0
         return MoneyMaker(self.currency)(amount)
 
-    @cached_property
+    @property
     def outstanding_amount(self):
         """
         Return the outstanding amount paid for this order
