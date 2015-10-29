@@ -14,7 +14,10 @@ class ForwardFundPayment(PaymentProvider):
 
     def get_payment_request(self, cart, request):
         order = OrderModel.objects.create_from_cart(cart, request)
-        order.awaiting_payment()
+        if order.total == 0:
+            order.no_payment_required()
+        else:
+            order.awaiting_payment()
         order.save()
         thank_you_url = OrderModel.objects.get_latest_url()
         return '$window.location.href="{}";'.format(thank_you_url)
@@ -31,6 +34,16 @@ class PayInAdvanceWorkflowMixin(object):
         'prepayment_deposited': _("Prepayment deposited"),
     }
 
+    def is_fully_paid(self):
+        return super(PayInAdvanceWorkflowMixin, self).is_fully_paid()
+
+    @transition(field='status', source=['created'])
+    def no_payment_required(self):
+        """
+        Signals that an Order can proceed directly and by confirming a payment of value zero.
+        """
+        self.acknowledge_prepayment()
+
     @transition(field='status', source=['created'], target='awaiting_payment')
     def awaiting_payment(self):
         """
@@ -39,12 +52,8 @@ class PayInAdvanceWorkflowMixin(object):
         """
         pass
 
-    def deposited_enough(self):
-        return self.is_fully_paid()
-
     def deposited_too_little(self):
-        amount_paid = self.get_amount_paid()
-        return amount_paid > 0 and amount_paid < self.total
+        return self.amount_paid > 0 and self.amount_paid < self.total
 
     @transition(field='status', source=['awaiting_payment'], target='awaiting_payment',
         conditions=[deposited_too_little], custom=dict(admin=True, button_name=_("Deposited too little")))
@@ -52,7 +61,7 @@ class PayInAdvanceWorkflowMixin(object):
         """Signals that an Order received a payment, which was not enough."""
 
     @transition(field='status', source=['awaiting_payment'], target='prepayment_deposited',
-        conditions=[deposited_enough], custom=dict(admin=True, button_name=_("Mark as Paid")))
+        conditions=[is_fully_paid], custom=dict(admin=True, button_name=_("Mark as Paid")))
     def prepayment_fully_deposited(self):
         """Signals that an Order received a payment, which fully covers the requested sum."""
 
