@@ -32,17 +32,18 @@ class PayInAdvanceWorkflowMixin(object):
     TRANSITION_TARGETS = {
         'awaiting_payment': _("Awaiting a forward fund payment"),
         'prepayment_deposited': _("Prepayment deposited"),
+        'no_payment_required': _("No Payment Required"),
     }
 
     def is_fully_paid(self):
         return super(PayInAdvanceWorkflowMixin, self).is_fully_paid()
 
-    @transition(field='status', source=['created'])
+    @transition(field='status', source=['created'], target='no_payment_required')
     def no_payment_required(self):
         """
         Signals that an Order can proceed directly and by confirming a payment of value zero.
         """
-        self.acknowledge_prepayment()
+        self.acknowledge_payment()
 
     @transition(field='status', source=['created'], target='awaiting_payment')
     def awaiting_payment(self):
