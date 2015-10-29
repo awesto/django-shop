@@ -78,7 +78,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def validate_unique(self, exclude=None):
         super(User, self).validate_unique(exclude)
-        if get_user_model().objects.filter(is_active=True, email__exact=self.email).exists():
+        if get_user_model().objects.exclude(pk=self.pk).filter(is_active=True, email__exact=self.email).exists():
             msg = _("A customer with the e-mail address ‘{email}’ already exists.\n"
                     "If you have used this address previously, try to reset the password.")
             raise ValidationError({'email': msg.format(email=self.email)})
