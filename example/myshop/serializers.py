@@ -6,7 +6,6 @@ from django.template.base import TemplateDoesNotExist
 from django.template.loader import get_template
 from django.utils.html import strip_spaces_between_tags
 from django.utils.safestring import mark_safe, SafeText
-from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from shop.rest.serializers import ProductSummarySerializerBase, ProductDetailSerializerBase
 from shop.search.serializers import ProductSearchSerializer as ProductSearchSerializerBase
