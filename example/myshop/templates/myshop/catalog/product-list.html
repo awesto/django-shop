@@ -1,0 +1,11 @@
+{% extends "myshop/pages/default.html" %}
+
+{% block main-content %}
+<div class="row">
+	<div class="col-xs-12">
+		{% for product in data.results %}
+		<a href="{{ product.product_url }}">{{ product.product_name }}</a>
+		{% endfor %}
+	</div>
+</div>
+{% endblock main-content %}
