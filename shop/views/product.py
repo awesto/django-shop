@@ -11,7 +11,7 @@ from rest_framework.renderers import BrowsableAPIRenderer
 from rest_framework.response import Response
 from shop import settings as shop_settings
 from shop.rest.money import JSONRenderer
-from shop.rest.serializers import AddToCartSerializer
+from shop.rest.serializers import AddToCartSerializer, ProductSelectSerializer
 from shop.rest.renderers import CMSPageRenderer
 from shop.models.product import ProductModel
 
@@ -137,3 +137,18 @@ class ProductRetrieveView(generics.RetrieveAPIView):
             product = get_object_or_404(queryset)
             self._product = product
         return self._product
+
+
+class ProductSelectView(generics.ListAPIView):
+    """
+    A simple list view, which is used only by the admin backend. It is required to fetch
+    the data for rendering the select widget when looking up for a product.
+    """
+    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
+    serializer_class = ProductSelectSerializer
+
+    def get_queryset(self):
+        term = self.request.GET.get('term', '')
+        if len(term) >= 2:
+            return ProductModel.objects.select_lookup(term)[:10]
+        return ProductModel.objects.all()[:10]

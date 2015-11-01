@@ -16,6 +16,7 @@ from rest_framework import serializers
 from rest_framework.fields import empty
 from shop import settings as shop_settings
 from shop.models.cart import CartModel, CartItemModel, BaseCartItem
+from shop.models.product import ProductModel
 from shop.models.customer import CustomerModel
 from shop.models.order import OrderModel, OrderItemModel
 from shop.rest.money import MoneyField
@@ -343,3 +344,18 @@ class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomerModel
         fields = ('salutation', 'first_name', 'last_name', 'email', 'extra',)
+
+
+class ProductSelectSerializer(serializers.ModelSerializer):
+    """
+    A simple serializer to convert the product's name and code for rendering the select widget
+    when looking up for a product.
+    """
+    text = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ProductModel
+        fields = ('id', 'text',)
+
+    def get_text(self, instance):
+        return '{0} ({1})'.format(instance.product_name, instance.product_code)

@@ -11,18 +11,21 @@ from djangocms_text_ckeditor.fields import HTMLField
 from parler.models import TranslatableModel, TranslatedFieldsModel
 from parler.fields import TranslatedField
 from parler.managers import TranslatableManager, TranslatableQuerySet
-from polymorphic.manager import PolymorphicManager
 from polymorphic.query import PolymorphicQuerySet
 import reversion
-from shop.models.product import BaseProduct
+from shop.models.product import BaseProductManager, BaseProduct
 
 
 class ProductQuerySet(TranslatableQuerySet, PolymorphicQuerySet):
     pass
 
 
-class ProductManager(PolymorphicManager, TranslatableManager):
+class ProductManager(BaseProductManager, TranslatableManager):
     queryset_class = ProductQuerySet
+
+    def select_lookup(self, term):
+        query = models.Q(name__icontains=term) | models.Q(slug__icontains=term)
+        return self.get_queryset().filter(query)
 
 
 class Product(TranslatableModel, BaseProduct):
