@@ -26,14 +26,13 @@ class ProductIndex(indexes.SearchIndex):
                 data = super(ProductIndex, self).prepare(product)
         else:
             data = super(ProductIndex, self).prepare(product)
-        #print data
         return data
 
     def prepare_name(self, product):
         """
         Retrieve name though correct translation
         """
-        return product.name
+        return product.product_name
 
     def prepare_body(self, product):
         return self.render_html(product, 'body')

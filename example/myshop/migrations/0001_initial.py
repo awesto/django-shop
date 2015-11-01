@@ -126,7 +126,7 @@ class Migration(migrations.Migration):
             name='OrderItem',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('product_identifier', models.CharField(help_text='Product identifier at the moment of purchase.', max_length=255, verbose_name='Product identifier')),
+                ('product_code', models.CharField(help_text='Product code at the moment of purchase.', max_length=255, verbose_name='Product code')),
                 ('product_name', models.CharField(help_text='Product name at the moment of purchase.', max_length=255, null=True, verbose_name='Product name', blank=True)),
                 ('_unit_price', models.DecimalField(help_text='Products unit price at the moment of purchase.', null=True, verbose_name='Unit price', max_digits=30, decimal_places=2)),
                 ('_line_total', models.DecimalField(help_text='Line total on the invoice at the moment of purchase.', null=True, verbose_name='Line Total', max_digits=30, decimal_places=2)),

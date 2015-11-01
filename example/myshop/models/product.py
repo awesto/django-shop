@@ -56,6 +56,14 @@ class Product(TranslatableModel, BaseProduct):
         return urljoin(cms_page.get_absolute_url(), self.slug)
 
     @property
+    def product_name(self):
+        return self.name
+
+    @property
+    def product_code(self):
+        return self.slug
+
+    @property
     def sample_image(self):
         return self.images.first()
 

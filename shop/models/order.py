@@ -291,8 +291,8 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     # TODO: add foreign key to OrderShipping
     order = deferred.ForeignKey(BaseOrder, related_name='items', verbose_name=_("Order"))
-    product_identifier = models.CharField(max_length=255, verbose_name=_("Product identifier"),
-        help_text=_("Product identifier at the moment of purchase."))
+    product_code = models.CharField(max_length=255, verbose_name=_("Product code"),
+        help_text=_("Product code at the moment of purchase."))
     product_name = models.CharField(max_length=255, null=True, blank=True, verbose_name=_("Product name"),
         help_text=_("Product name at the moment of purchase."))
     product = deferred.ForeignKey('BaseProduct', null=True, blank=True, on_delete=models.SET_NULL,
@@ -323,8 +323,9 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         Return True if operation was successful, otherwise the order item is discarded.
         """
         self.product = cart_item.product
-        self.product_name = cart_item.product.name  # store the name on the moment of purchase, in case it changes
-        self.product_identifier = cart_item.product.identifier
+        # for historical integrity, store the product's code, name and prices on the moment of purchase
+        self.product_name = cart_item.product.product_name
+        self.product_code = cart_item.product.product_code
         self._unit_price = Decimal(cart_item.product.get_price(request))
         self._line_total = Decimal(cart_item.line_total)
         self.quantity = cart_item.quantity

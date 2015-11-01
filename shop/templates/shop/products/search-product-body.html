@@ -1,7 +1,7 @@
 {% load i18n thumbnail %}
 {# template for rendering a search result line #}
 {% with product_url=product.get_absolute_url %}
-<h4 class="media-heading"><a href="{{ product_url }}">{{ product.name }}</a></h4>
-<h5 class="media-heading">{% trans "Art-No.:" %} <a href="{{ product_url }}">{{ product.identifier }}</a></h5>
+<h4 class="media-heading"><a href="{{ product_url }}">{{ product.product_name }}</a></h4>
+<h5 class="media-heading">{% trans "Art-No.:" %} <a href="{{ product_url }}">{{ product.product_code }}</a></h5>
 {{ product.description|safe }}
 {% endwith %}

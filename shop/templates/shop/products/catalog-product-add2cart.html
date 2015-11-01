@@ -42,7 +42,7 @@
 
 	{% block add-to-cart-modal-body %}
 	<div class="modal-body">
-		{% verbatim %}{{ context.quantity|number }} &times; {% endverbatim %}{{ product.name }}
+		{% verbatim %}{{ context.quantity|number }} &times; {% endverbatim %}{{ product.product_name }}
 		{% trans "for {{ context.unit_price }} per piece: {{ context.subtotal }}" %}
 	</div>
 	{% endblock add-to-cart-modal-body %}
