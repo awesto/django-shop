@@ -8,7 +8,8 @@
 	<div class="panel-heading">
 		<h3 class="panel-title">{% trans "Order Product" %}</h3>
 	</div>
-	<table class="table shop-add-to-cart">
+	{% block add-product-to-cart-table %}
+	<table shop-add-to-cart="{{ product.get_absolute_url }}/add-to-cart/" class="table">
 		<tbody>
 			<tr>
 				<th>{% trans "Quantity" %}</th><th>{% trans "Unit Price" %}</th><th>{% trans "Subtotal" %}</th>
@@ -33,6 +34,7 @@
 			</tr>
 		</tbody>
 	</table>
+	{% endblock add-product-to-cart-table %}
 </div>
 {% endblock add-product-to-cart-panel %}
 

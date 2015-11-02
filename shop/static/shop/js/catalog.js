@@ -5,12 +5,11 @@ var djangoShopModule = angular.module('django.shop.catalog', ['ui.bootstrap']);
 
 djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$modal',
                                                function($scope, $http, $window, $modal) {
-	var updateUrl = $window.location.pathname + '/add-to-cart/' + $window.location.search;
 	var isLoading = false;
 	var prevContext = null;
 
-	this.loadContext = function() {
-		$http.get(updateUrl).success(function(context) {
+	this.loadContext = function(updateUrl) {
+		$http.get(updateUrl + $window.location.search).success(function(context) {
 			prevContext = context;
 			$scope.context = angular.copy(context);
 		}).error(function(msg) {
@@ -81,12 +80,14 @@ djangoShopModule.controller('ModalInstanceCtrl', ['$scope', '$http', '$modalInst
 
 // Directive <shop-add-to-cart>
 // handle dialog box on the product's detail page to add a product to the cart
-djangoShopModule.directive('shopAddToCart', function() {
+djangoShopModule.directive('shopAddToCart', function($window) {
 	return {
-		restrict: 'EAC',
+		restrict: 'A',
 		controller: 'AddToCartCtrl',
 		link: function(scope, element, attrs, AddToCartCtrl) {
-			AddToCartCtrl.loadContext();
+			if (angular.isUndefined(attrs.shopAddToCart))
+				throw "shop-add-to-cart must point onto an URL";
+			AddToCartCtrl.loadContext(attrs.shopAddToCart);
 		}
 	};
 });
