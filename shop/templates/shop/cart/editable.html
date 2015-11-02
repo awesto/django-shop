@@ -57,10 +57,7 @@
 <script id="shop/cart-item.html" type="text/ng-template">
 {% block shop-cart-item %}
 	<td>
-		<div class="media">
-			<div class="media-left" ng-bind-html="cart_item.summary.media"></div>
-			<div class="media-body" ng-bind-html="cart_item.summary.body"></div>
-		</div>
+		<div class="media" ng-bind-html="cart_item.summary.media"><!-- rendered by cart-product-media.html --></div>
 	</td>
 	<td class="text-center">
 		<input type="number" class="form-control" min="1" ng-model="cart_item.quantity" ng-model-options="{{ ng_model_options }}" ng-change="updateCartItem(cart_item)" />
