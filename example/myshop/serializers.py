@@ -14,16 +14,12 @@ from .search_indexes import CommodityIndex
 
 
 class ProductSummarySerializer(ProductSummarySerializerBase):
-    body = serializers.SerializerMethodField()
     media = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
-        fields = ('id', 'name', 'get_price', 'product_url',
-            'product_type', 'product_model', 'body', 'media',)
-
-    def get_body(self, product):
-        return self.render_html(product, 'body')
+        fields = ('id', 'product_name', 'product_url', 'product_type', 'product_model', 'price',
+                  'media',)
 
     def get_media(self, product):
         return self.render_html(product, 'media')

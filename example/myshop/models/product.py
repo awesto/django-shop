@@ -63,10 +63,6 @@ class Product(TranslatableModel, BaseProduct):
         return self.name
 
     @property
-    def product_code(self):
-        return self.slug
-
-    @property
     def sample_image(self):
         return self.images.first()
 

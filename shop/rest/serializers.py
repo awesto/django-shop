@@ -9,6 +9,7 @@ from django.template.base import TemplateDoesNotExist
 from django.template.loader import select_template
 from django.utils.six import with_metaclass
 from django.utils.html import strip_spaces_between_tags
+from django.utils.formats import localize
 from django.utils.safestring import mark_safe, SafeText
 from django.utils.translation import get_language_from_request
 from jsonfield.fields import JSONField
@@ -56,7 +57,8 @@ class ProductCommonSerializer(serializers.ModelSerializer):
     availability = serializers.SerializerMethodField()
 
     def get_price(self, product):
-        return product.get_price(self.context['request'])
+        price = product.get_price(self.context['request'])
+        return localize(price)
 
     def get_availability(self, product):
         return product.get_availability(self.context['request'])
@@ -84,7 +86,7 @@ class ProductCommonSerializer(serializers.ModelSerializer):
         try:
             template = select_template(['{0}/products/{1}-{2}-{3}.html'.format(*p) for p in params])
         except TemplateDoesNotExist:
-            return SafeText()
+            return SafeText("<!-- no such template: '{0}/products/{1}-{2}-{3}.html' -->".format(*params[0]))
         # when rendering emails, we require an absolute URI, so that media can be accessed from
         # the mail client
         absolute_base_uri = request.build_absolute_uri('/').rstrip('/')
@@ -358,4 +360,4 @@ class ProductSelectSerializer(serializers.ModelSerializer):
         fields = ('id', 'text',)
 
     def get_text(self, instance):
-        return '{0} ({1})'.format(instance.product_name, instance.product_code)
+        return instance.product_name

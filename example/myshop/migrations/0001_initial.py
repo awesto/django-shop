@@ -213,7 +213,7 @@ class Migration(migrations.Migration):
             name='SmartPhone',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('identifier', models.CharField(max_length=255, verbose_name='Product code')),
+                ('product_code', models.CharField(unique=True, max_length=255, verbose_name='Product code')),
                 ('unit_price', models.DecimalField(default='0', help_text='Net price for this product', verbose_name='Unit price', max_digits=30, decimal_places=3)),
                 ('storage', models.PositiveIntegerField(help_text='Internal storage in MB', verbose_name='Internal Storage')),
             ],

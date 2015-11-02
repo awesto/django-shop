@@ -88,7 +88,7 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         verbose_name_plural = _("Products")
 
     def __str__(self):
-        return self.product_name()
+        return self.product_name
 
     def product_type(self):
         """
@@ -110,13 +110,6 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         Hook to return the name of this product.
         """
         raise NotImplemented("subclasses of BaseProduct must provide a product_name() method")
-
-    @property
-    def product_code(self):
-        """
-        Hook to return the product code.
-        """
-        raise NotImplemented("subclasses of BaseProduct must provide a product_code() method")
 
     def get_absolute_url(self):
         """

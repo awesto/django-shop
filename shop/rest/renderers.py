@@ -9,7 +9,7 @@ class CMSPageRenderer(renderers.TemplateHTMLRenderer):
     Modified TemplateHTMLRenderer, which is able to render CMS pages containing the templatetag
     `{% render_placeholder ... %}`, and which accept ordinary Python objects in their rendering
     context.
-    The serialized data object, as available to other REST renderers is explicitly added to the
+    The serialized data object, as available to other REST renderers, is explicitly added to the
     context as ``data``. Therefore keep in mind that templates for REST's `TemplateHTMLRenderer`
     are not compatible with this renderer.
     """
