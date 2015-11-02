@@ -36,23 +36,11 @@ class ProductSearchSerializer(ProductSearchSerializerBase):
     Serializer to search over all products in this shop
     """
     app_label = settings.SHOP_APP_LABEL.lower()
-    overlay = serializers.SerializerMethodField()
 
     class Meta(ProductSearchSerializerBase.Meta):
         index_classes = (CommodityIndex,)
         fields = ProductSearchSerializerBase.Meta.fields + ('description', 'media', 'overlay')
         field_aliases = {'q': 'text'}
-
-    def get_overlay(self, search_result):
-        template = '{}/products/overview-product-overlay.html'.format(self.app_label)
-        try:
-            template = get_template(template)
-        except TemplateDoesNotExist:
-            return SafeText()
-        request = self.context['request']
-        context = RequestContext(request, {'product': search_result.object})
-        content = strip_spaces_between_tags(template.render(context).strip())
-        return mark_safe(content)
 
 
 class CommoditySearchSerializer(ProductSearchSerializer):
