@@ -100,7 +100,8 @@ class SerializerRegistryMetaclass(serializers.SerializerMetaclass):
     """
     Keep a global reference onto the class implementing `ProductSummarySerializerBase`.
     There can be only one class instance, because the products summary is the lowest common
-    denominator for all products of this shop instance.
+    denominator for all products of this shop instance. Otherwise we would be unable to mix
+    different polymorphic product types in the Cart and Order list views.
     """
     def __new__(cls, clsname, bases, attrs):
         global product_summary_serializer_class
@@ -125,7 +126,7 @@ class ProductSummarySerializerBase(with_metaclass(SerializerRegistryMetaclass, P
     product_model = serializers.CharField(read_only=True)
 
     def __init__(self, *args, **kwargs):
-        kwargs.setdefault('label', 'overview')
+        kwargs.setdefault('label', 'catalog')
         super(ProductSummarySerializerBase, self).__init__(*args, **kwargs)
 
 
