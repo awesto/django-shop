@@ -5,11 +5,14 @@ var djangoShopModule = angular.module('django.shop.catalog', ['ui.bootstrap']);
 
 djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$modal',
                                                function($scope, $http, $window, $modal) {
-	var isLoading = false;
-	var prevContext = null;
+	var isLoading = false, prevContext = null, updateUrl;
 
-	this.loadContext = function(updateUrl) {
-		$http.get(updateUrl + $window.location.search).success(function(context) {
+	this.setUpdateUrl = function(update_url) {
+		updateUrl = update_url + $window.location.search;
+	};
+
+	this.loadContext = function() {
+		$http.get(updateUrl).success(function(context) {
 			prevContext = context;
 			$scope.context = angular.copy(context);
 		}).error(function(msg) {
@@ -87,7 +90,8 @@ djangoShopModule.directive('shopAddToCart', function($window) {
 		link: function(scope, element, attrs, AddToCartCtrl) {
 			if (angular.isUndefined(attrs.shopAddToCart))
 				throw "shop-add-to-cart must point onto an URL";
-			AddToCartCtrl.loadContext(attrs.shopAddToCart);
+			AddToCartCtrl.setUpdateUrl(attrs.shopAddToCart); 
+			AddToCartCtrl.loadContext();
 		}
 	};
 });

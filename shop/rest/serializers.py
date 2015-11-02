@@ -154,7 +154,7 @@ class AddToCartSerializer(serializers.Serializer):
         if 'product' not in context or 'request' not in context:
             msg = "A context is required for this serializer and must contain the `product` and the `request` object."
             raise ValueError(msg)
-        instance = {'product': context['product'].id}
+        instance = self.get_instance(context)
         unit_price = context['product'].get_price(context['request'])
         if data == empty:
             quantity = self.fields['quantity'].default
@@ -162,6 +162,9 @@ class AddToCartSerializer(serializers.Serializer):
             quantity = data['quantity']
         instance.update(quantity=quantity, unit_price=unit_price, subtotal=quantity * unit_price)
         super(AddToCartSerializer, self).__init__(instance, data, **kwargs)
+
+    def get_instance(self, context):
+        return {'product': context['product'].id}
 
 
 class ExtraCartRow(serializers.Serializer):

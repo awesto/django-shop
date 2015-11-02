@@ -10,10 +10,12 @@
 	</div>
 	{% block add-product-to-cart-table %}
 	<table shop-add-to-cart="{{ product.get_absolute_url }}/add-to-cart/" class="table">
-		<tbody>
+		<thead>
 			<tr>
 				<th>{% trans "Quantity" %}</th><th>{% trans "Unit Price" %}</th><th>{% trans "Subtotal" %}</th>
 			</tr>
+		</thead>
+		<tbody>
 			<tr>
 				<td class="form-inline">
 					<div class="form-group">

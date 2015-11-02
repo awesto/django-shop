@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.conf import settings
-from django.template import RequestContext
-from django.template.base import TemplateDoesNotExist
-from django.template.loader import get_template
-from django.utils.html import strip_spaces_between_tags
-from django.utils.safestring import mark_safe, SafeText
 from rest_framework import serializers
-from shop.rest.serializers import ProductSummarySerializerBase, ProductDetailSerializerBase
+from rest_framework.fields import empty
+from shop.rest.serializers import (ProductSummarySerializerBase, ProductDetailSerializerBase,
+    AddToCartSerializer as AddToCartSerializerBase)
 from shop.search.serializers import ProductSearchSerializer as ProductSearchSerializerBase
 from .models.product import Product
 from .search_indexes import CommodityIndex
@@ -29,6 +26,14 @@ class ProductDetailSerializer(ProductDetailSerializerBase):
     class Meta:
         model = Product
         exclude = ('active',)
+
+
+class AddToCartSerializer(AddToCartSerializerBase):
+    """
+    Modified AddToCartSerializer which handles SmartPhones
+    """
+    def get_instance(self, context):
+        return {'product': context['product'].product_id}
 
 
 class ProductSearchSerializer(ProductSearchSerializerBase):
