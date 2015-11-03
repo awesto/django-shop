@@ -15,7 +15,7 @@ from .plugin_base import ShopPluginBase
 class ShopCartPlugin(ShopPluginBase):
     name = _("Cart")
     require_parent = True
-    parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin',)
+    parent_classes = ('BootstrapColumnPlugin',)
     cache = False
     CHOICES = (('editable', _("Editable Cart")), ('static', _("Static Cart")),
         ('summary', _("Cart Summary")), ('watch', _("Watch List")),)
