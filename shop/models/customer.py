@@ -279,6 +279,14 @@ class VisitingCustomer(object):
     def __str__(self):
         return 'Visitor'
 
+    @property
+    def email(self):
+        return ''
+
+    @email.setter
+    def email(self, value):
+        pass
+
     def is_anonymous(self):
         return True
 
