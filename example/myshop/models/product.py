@@ -46,11 +46,6 @@ class Product(TranslatableModel, BaseProduct):
     # filter expression used to search for a product item using the Select2 widget
     search_fields = ('identifier__istartswith', 'translations__name__istartswith',)
 
-    def get_price(self, request):
-        # TODO: fix this gross_price = self.unit_price * (1 + settings.SHOP_VALUE_ADDED_TAX / 100)
-        gross_price = 0
-        return gross_price
-
     def get_absolute_url(self):
         # sorting by highest level, so that the canonical URL associates with the most generic category
         cms_page = self.cms_pages.order_by('depth').last()

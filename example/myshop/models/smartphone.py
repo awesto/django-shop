@@ -75,11 +75,22 @@ class SmartPhoneModel(Product):
         """
         Return the starting price for instances of this smart phone model.
         """
-        if self.smartphone_set.exists():
-            currency = self.smartphone_set.first().unit_price.currency
-            aggr = self.smartphone_set.aggregate(models.Min('unit_price'))
-            return MoneyMaker(currency)(aggr['unit_price__min'])
-        return Money()
+        if not hasattr(self, '_price'):
+            if self.smartphone_set.exists():
+                currency = self.smartphone_set.first().unit_price.currency
+                aggr = self.smartphone_set.aggregate(models.Min('unit_price'))
+                self._price = MoneyMaker(currency)(aggr['unit_price__min'])
+            else:
+                self._price = Money()
+        return self._price
+
+    def is_in_cart(self, cart, extra, watched=False):
+        from shop.models.cart import CartItemModel
+        product_code = extra.get('product_code')
+        cart_item_qs = CartItemModel.objects.filter(cart=cart, product=self)
+        for cart_item in cart_item_qs:
+            if cart_item.extra.get('product_code') == product_code:
+                return cart_item
 
 reversion.register(SmartPhoneModel, follow=['product_ptr'])
 

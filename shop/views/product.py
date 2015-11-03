@@ -86,7 +86,7 @@ class AddToCartView(views.APIView):
 
     def get(self, request, *args, **kwargs):
         context = self.get_context(request, **kwargs)
-        serializer = self.serializer_class(context=context)
+        serializer = self.serializer_class(context=context, **kwargs)
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):

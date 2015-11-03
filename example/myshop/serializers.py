@@ -32,8 +32,11 @@ class AddToCartSerializer(AddToCartSerializerBase):
     """
     Modified AddToCartSerializer which handles SmartPhones
     """
-    def get_instance(self, context):
-        return {'product': context['product'].product_id}
+    def get_instance(self, context, extra_args):
+        product_code = extra_args.pop('product_code', None)
+        instance = {'product': context['product'].product_id,
+                    'extra': {'product_code': product_code}}
+        return instance
 
 
 class ProductSearchSerializer(ProductSearchSerializerBase):
