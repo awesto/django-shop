@@ -12,9 +12,9 @@ web-services, such as social networks or Intranet applications, where visitors h
 right from the beginning.
 
 But when running an e-commerce site, this use-pattern has serious drawbacks. Normally, a visitor
-starts to look for interesting products, hopefully adding a few of them to her cart. Then on the way
-to the checkout, she decides whether to create a user account, use an existing one or continue as
-guest. Here's where things get complicated.
+starts to look for interesting products, hopefully adding a few of them to their cart. Then on the
+way to the checkout, they decide whether to create a user account, use an existing one or continue
+as guest. Here's where things get complicated.
 
 First of all, for non-authenticated site visitors, the cart does not belong to anybody. But each
 cart must be associated with its site visitor, hence the generic anonymous user object is not
@@ -24,25 +24,25 @@ anonymous user object based on its session-Id.
 Secondly, at the latest when the cart is converted into an order, but the visitor wants to continue
 as guest (thus remaining anonymous), that order object *must* refer to a User object in the
 database. These kind of users would be regarded as fakes, unable to log in, reset their password,
-etc. The only information which must be stored for such a faked User, is her email address otherwise
-she couldn't be informed, whenever the state of her order changes.
+etc. The only information which must be stored for such a faked User, is their email address
+otherwise they couldn't be informed, whenever the state of their order changes.
 
-Django does not explicitly allow such users in its database models. But by using the boolean flag
-``is_active``, we can fool an application to interpret such *guest visitors* as a faked anonymous
-users. 
+Django does not explicitly allow such User objects in its database models. But by using the boolean
+flag ``is_active``, we can fool an application to interpret such *guest visitors* as a faked
+anonymous users. 
 
-Since such an approach is unportable across all Django based applications, **djangoSHOP** introduces
-a new database model – the ``Customer`` model, which extends the existing ``User`` model.
+However, since such an approach is unportable across all Django based applications, **djangoSHOP**
+introduces a new database model – the ``Customer`` model, which extends the existing ``User`` model.
 
 
 Properties of the Customer Model
 ================================
 
 The ``Customer`` model has a 1:1 relation to the existing ``User`` model, which means that for each
-customer, there always exists one and only one user object. This approach allows us to do a few
+customer, there always exists *one and only one* user object. This approach allows us to do a few
 things:
 
-The built-in User object can be swapped out and replaced against another implementation. Such an
+The built-in User model can be swapped out and replaced against another implementation. Such an
 alternative implementation has a small limitation. It must inherit from
 ``django.contrib.auth.models.AbstractBaseUser`` and from ``django.contrib.auth.models.PermissionMixin``.
 It also must define all the fields which are available in the default model as found in
@@ -53,8 +53,8 @@ Guests can not sign, they can not reset their password and can thus be considere
 anonymous users.
 
 Having guests with an entry in the database, gives us another advantage: By using the session key
-of the site visitor as the User object's username, it is possible to establish a connection between
-a User object in the database with an otherwise anonymous visitor. This further allows the Cart and
+of the site visitor as the User object's ``username``, it is possible to establish a link between a
+User object in the database with an otherwise anonymous visitor. This further allows the Cart and
 the Order models always refer to the User model, since they don't have to care about whether a
 certain User authenticated himself or not. It also keeps the workflow simple, whenever an anonymous
 User decides to register and authenticate himself in the future.
@@ -63,9 +63,9 @@ User decides to register and authenticate himself in the future.
 Add the Customer model to your application
 ==========================================
 
-As almost all models in ***djangoSHOP*, the Customer itself is deferrable_. This means that
-the Django project is responsible for materializing that model and it allows the merchant to add
-arbitrary fields to this Customer model. Good choices are a phone number, a boolean to signal
+As almost all models in **djangoSHOP**, the Customer itself is deferrable_. This means that
+the Django project is responsible for materializing that model and additionally allows the merchant
+to add arbitrary fields to this Customer model. Good choices are a phone number, a boolean to signal
 whether the customer shall receive newsletters, his rebate status, etc.
 
 The simplest way is to materialize the given convenience class in your project's ``models.py``:
@@ -92,12 +92,12 @@ Configure the Middleware
 
 A Customer object is created automatically with each visitor accessing the site. Whenever Django's
 internal AuthenticationMiddleware_ adds an ``AnonymousUser`` to the request object, djangoSHOP's
-CustomerMiddleware adds a ``VisitingCustomer`` to the request object as well. Both, the
-``AnonymousUser`` and the ``VisitingCustomer``, are not stored inside the database.
+CustomerMiddleware adds a ``VisitingCustomer`` to the request object as well. Neither the
+``AnonymousUser`` nor the ``VisitingCustomer`` are stored inside the database.
 
 Whenever the AuthenticationMiddleware adds an instantiated ``User`` to the request object,
 djangoSHOP's CustomerMiddleware adds an instantiated ``Customer`` to the request object
-as well. If no associated ``Customer`` yet exists, the CustomerMiddleware creates one.
+as well. If no associated ``Customer`` exists yet, the CustomerMiddleware creates one.
 
 Therefore add the CustomerMiddleware *after* the AuthenticationMiddleware in the project's
 ``settings.py``:
@@ -155,6 +155,10 @@ reverse relation from a Customer pointing onto the given User object.
 	DoesNotExist: User has no customer.
 
 This can happen for User objects added manually or by other applications.
+
+During database queries, **djangoSHOP** always performs and INNER JOIN between the Customer and the
+User table. Therefore it performs better to query the User via the Customer object, rather than vice
+versa.
 
 
 Anonymous Users and Visiting Customers
@@ -238,10 +242,10 @@ not a second time – something we certainly do not want!
 
 Therefore **djangoSHOP** offers two configurable options:
 
-* A customer can declare herself as guest, each time she buys something. This is the default, but
+* Customers can declare herself as guests, each time they buy something. This is the default, but
   causes to have non-unique email addresses in the database.
-* A customer can declare herself as guest the first time she buys something. If someday she buys
-  again, she will be recognized as returning customer and must use a form to reset her password.
+* Customer can declare themselves as guests the first time they buys something. If someday they buy
+  again, they will be recognized as returning customer and must use a form to reset their password.
   This configuration can be activated with ``SHOP_GUEST_IS_ACTIVE_USER = True`` in the project's
   ``settings.py``. This allows us, to set a unique constraint on the email field.
 

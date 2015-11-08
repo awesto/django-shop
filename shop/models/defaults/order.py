@@ -9,11 +9,11 @@ from shop.models import order
 
 class Order(order.BaseOrder):
     """Default materialized model for Order"""
+    number = models.PositiveIntegerField(_("Order Number"), null=True, default=None, unique=True)
     shipping_address_text = models.TextField(_("Shipping Address"), blank=True, null=True,
         help_text=_("Shipping address at the moment of purchase."))
     billing_address_text = models.TextField(_("Billing Address"), blank=True, null=True,
         help_text=_("Billing address at the moment of purchase."))
-    number = models.PositiveIntegerField(_("Order Number"), null=True, default=None, unique=True)
 
     @cached_property
     def identifier(self):

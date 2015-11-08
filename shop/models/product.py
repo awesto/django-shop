@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 from datetime import datetime
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
-from django.db.models.aggregates import Count
 from django.utils import six
 from django.utils.encoding import python_2_unicode_compatible, force_text
 from django.utils.translation import ugettext_lazy as _
@@ -13,34 +12,18 @@ from polymorphic.base import PolymorphicModelBase
 from . import deferred
 
 
-class ProductStatisticsManager(PolymorphicManager):
+class BaseProductManager(PolymorphicManager):
     """
-    A Manager for all the non-object manipulation needs, mostly statistics and
-    other "data-mining" toys.
+    A base ModelManager for all non-object manipulation needs, mostly statistics and querying.
     """
-    def top_selling_products(self, quantity):
+
+    def select_lookup(self, term):
         """
-        This method "mines" the previously passed orders, and gets a list of
-        products (of a size equal to the quantity parameter), ordered by how
-        many times they have been purchased.
+        Hook to returns a queryset containing the products matching the lookup criteria given
+        be the search term. This method must be implemented by the ProductManager used by the
+        real model implementing the product.
         """
-        from .order import OrderItemModel
-
-        # Get an aggregate of product references and their respective counts
-        top_products_data = OrderItemModel.objects.values('product') \
-            .annotate(product_count=Count('product')) \
-            .order_by('product_count')[:quantity]
-
-        # The top_products_data result should be in the form:
-        # [{'product_reference': '<product_id>', 'product_count': <count>}, ..]
-
-        top_products_list = []  # The actual list of products
-        for values in top_products_data:
-            prod = values.get('product')
-            # We could eventually return the count easily here, if needed.
-            top_products_list.append(prod)
-
-        return top_products_list
+        raise NotImplemented("subclasses of BaseProductManager must provide a select_lookup() method")
 
 
 class PolymorphicProductMetaclass(PolymorphicModelBase):
@@ -105,7 +88,7 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         verbose_name_plural = _("Products")
 
     def __str__(self):
-        return force_text(self.name)
+        return self.product_name
 
     def product_type(self):
         """
@@ -114,11 +97,19 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         return force_text(self.polymorphic_ctype)
     product_type.short_description = _("Product type")
 
+    @property
     def product_model(self):
         """
         Returns the polymorphic model name of the product's class.
         """
         return self.polymorphic_ctype.model
+
+    @property
+    def product_name(self):
+        """
+        Hook to return the name of this product.
+        """
+        raise NotImplemented("subclasses of BaseProduct must provide a product_name() method")
 
     def get_absolute_url(self):
         """
@@ -154,12 +145,12 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
 
     def is_in_cart(self, cart, extra, watched=False):
         """
-        Checks if the product is already in the given cart, and if returns the corresponding
-        cart_item, otherwise None. The dictionary `extra` is  used for passing arbitrary
-        information about the product. It can be used to determine if products with variations
-        shall be added to the cart or added as separate items.
-        The boolean `watched` can be used to determine if this check shall only be performed
-        for the watch-list.
+        Checks if the product is already in the given cart, and if so, returns the corresponding
+        cart_item, otherwise this method returns None. The dictionary `extra` is  used for passing
+        arbitrary information about the product. It can be used to determine if products with
+        variations shall be added to the cart or added as separate items.
+        The boolean `watched` can be used to determine if this check shall only be performed for
+        the watch-list.
         """
         from .cart import CartItemModel
         cart_item_qs = CartItemModel.objects.filter(cart=cart, product=self)

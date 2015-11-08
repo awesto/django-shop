@@ -9,5 +9,5 @@ from shop.models.defaults.cart import Cart
 from shop.models.defaults.cart_item import CartItem
 from shop.models.defaults.customer import Customer
 # models defined by the merchants shop instance itself
-from . import product
-from . import commodity
+from . import smartphone
+#from . import commodity

@@ -11,28 +11,27 @@ from djangocms_text_ckeditor.fields import HTMLField
 from parler.models import TranslatableModel, TranslatedFieldsModel
 from parler.fields import TranslatedField
 from parler.managers import TranslatableManager, TranslatableQuerySet
-from polymorphic.manager import PolymorphicManager
 from polymorphic.query import PolymorphicQuerySet
 import reversion
-from shop.models.product import BaseProduct
-from shop.money.fields import MoneyField
+from shop.models.product import BaseProductManager, BaseProduct
 
 
 class ProductQuerySet(TranslatableQuerySet, PolymorphicQuerySet):
     pass
 
 
-class ProductManager(PolymorphicManager, TranslatableManager):
+class ProductManager(BaseProductManager, TranslatableManager):
     queryset_class = ProductQuerySet
+
+    def select_lookup(self, term):
+        query = models.Q(name__icontains=term) | models.Q(slug__icontains=term)
+        return self.get_queryset().filter(query)
 
 
 class Product(TranslatableModel, BaseProduct):
-    identifier = models.CharField(max_length=255, verbose_name=_("Product code"))
-    unit_price = MoneyField(verbose_name=_("Unit price"), decimal_places=3,
-        help_text=_("Net price for this product"))  # TODO: , min_value=0
     order = models.PositiveIntegerField(verbose_name=_("Sort by"), db_index=True)
-    name = TranslatedField()
-    slug = TranslatedField()
+    name = models.CharField(max_length=255, verbose_name=_("Name"))
+    slug = models.SlugField(verbose_name=_("Slug"))
     description = TranslatedField()
     images = models.ManyToManyField(Image, through='ProductImage', null=True)
     placeholder = PlaceholderField('Product Detail',
@@ -47,16 +46,16 @@ class Product(TranslatableModel, BaseProduct):
     # filter expression used to search for a product item using the Select2 widget
     search_fields = ('identifier__istartswith', 'translations__name__istartswith',)
 
-    def get_price(self, request):
-        gross_price = self.unit_price * (1 + settings.SHOP_VALUE_ADDED_TAX / 100)
-        return gross_price
-
     def get_absolute_url(self):
         # sorting by highest level, so that the canonical URL associates with the most generic category
         cms_page = self.cms_pages.order_by('depth').last()
         if cms_page is None:
             return urljoin('category-not-assigned', self.slug)
         return urljoin(cms_page.get_absolute_url(), self.slug)
+
+    @property
+    def product_name(self):
+        return self.name
 
     @property
     def sample_image(self):
@@ -68,13 +67,11 @@ reversion.register(Product, adapter_cls=type(str('ProductVersionAdapter'), (reve
 
 class ProductTranslation(TranslatedFieldsModel):
     master = models.ForeignKey(Product, related_name='translations', null=True)
-    name = models.CharField(max_length=255, verbose_name=_("Name"))
-    slug = models.SlugField(verbose_name=_("Slug"))
     description = HTMLField(verbose_name=_("Description"),
                             help_text=_("Description for the list view of products."))
 
     class Meta:
-        unique_together = [('language_code', 'master'), ('language_code', 'slug')]
+        unique_together = [('language_code', 'master')]
         app_label = settings.SHOP_APP_LABEL
 
 

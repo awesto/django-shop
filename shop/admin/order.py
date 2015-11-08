@@ -35,9 +35,9 @@ class OrderPaymentInline(admin.TabularInline):
 class OrderItemInline(admin.StackedInline):
     model = OrderItemModel
     extra = 0
-    readonly_fields = ('product_identifier', 'product_name', 'unit_price', 'line_total', 'extra',)
+    readonly_fields = ('product_code', 'product_name', 'unit_price', 'line_total', 'extra',)
     fields = (
-        ('product_identifier', 'product_name',),
+        ('product_code', 'product_name',),
         ('quantity', 'unit_price', 'line_total',),
         'extra',
     )

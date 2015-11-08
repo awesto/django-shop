@@ -1,0 +1,20 @@
+{% extends "myshop/pages/default.html" %}
+{% load i18n %}
+
+{% block main-content %}
+<div class="row">
+	<div class="col-xs-12">
+		<div class="row">
+	{% for product in data.results %}
+			<div class="col-xs-6 col-sm-4 col-lg-3">
+				<a href="{{ product.product_url }}">
+					<h4>{{ product.product_name }}</h4>
+					{{ product.media }}
+					<h5>{% trans "Starting from" %} {{ product.price }}</h5>
+				</a>
+			</div>
+	{% endfor %}
+		</div>
+	</div>
+</div>
+{% endblock main-content %}

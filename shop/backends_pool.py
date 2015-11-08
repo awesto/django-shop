@@ -1,4 +1,5 @@
 #-*- coding: utf-8 -*-
+raise NotImplemented("Dead code")
 from django.conf import settings
 from shop.payment.api import PaymentAPI
 from shop.shipping.api import ShippingAPI

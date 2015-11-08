@@ -7,57 +7,63 @@ from django.template.context import Context
 from django.template.loader import get_template
 from cms.models import Page
 from cms.admin.placeholderadmin import PlaceholderAdminMixin, FrontendEditableAdminMixin
-from parler.admin import TranslatableAdmin, TranslatableTabularInline
+from parler.admin import TranslatableAdmin
 from polymorphic.admin import PolymorphicChildModelAdmin
 from reversion import VersionAdmin
 from myshop.models.product import Product
-from myshop.models.commodity import CommodityProperty, CommodityTag
+from myshop.models.smartphone import SmartPhone, Manufacturer, OperatingSystem
 from .image import ProductImageInline
 
 
-class CommodityTagInline(TranslatableTabularInline):
-    model = CommodityTag
-    extra = 1
-    fields = ('tag', 'image', 'search_indices',)
+class ManufacturerAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(Manufacturer, ManufacturerAdmin)
 
 
-class CommodityPropertyAdmin(TranslatableAdmin):
-    fields = ('property', 'multiple_tags',)
-    inlines = (CommodityTagInline,)
+class OperatingSystemAdmin(admin.ModelAdmin):
+    pass
 
-admin.site.register(CommodityProperty, CommodityPropertyAdmin)
+admin.site.register(OperatingSystem, OperatingSystemAdmin)
 
 
-class CommodityAdmin(TranslatableAdmin, VersionAdmin, FrontendEditableAdminMixin,
-                     PlaceholderAdminMixin, PolymorphicChildModelAdmin):
+class SmartPhoneInline(admin.TabularInline):
+    model = SmartPhone
+    extra = 0
+
+
+class SmartPhoneAdmin(TranslatableAdmin, VersionAdmin, FrontendEditableAdminMixin,
+                      PlaceholderAdminMixin, PolymorphicChildModelAdmin):
     base_model = Product
     fieldsets = (
         (None, {
-            'fields': ('identifier', ('unit_price', 'active',),)
+            'fields': ('name', 'slug', 'active',),
         }),
         (_("Translatable Fields"), {
-            'fields': ('name', 'slug', 'description',)
+            'fields': ('description',)
         }),
         (_("Categories"), {
             'fields': ('cms_pages',),
         }),
-        (_("Render search indices"), {
-            'fields': ('render_text_index',)
+        (_("Properties"), {
+            'fields': ('manufacturer', 'battery_type', 'battery_capacity', 'ram_storage',
+                'wifi_connectivity', 'bluetooth', 'gps', 'operating_system',
+                ('width', 'height', 'weight',), 'screen_size'),
         }),
     )
     filter_horizontal = ('cms_pages',)
-    inlines = (ProductImageInline,)
-    readonly_fields = ('render_text_index',)
+    inlines = (ProductImageInline, SmartPhoneInline,)
+    prepopulated_fields = {'slug': ('name',)}
 
-    def get_prepopulated_fields(self, request, obj=None):
-        return {'slug': ('name',)}
+#    def get_prepopulated_fields(self, request, obj=None):
+#        return {'slug': ('name',)}
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         if db_field.name == 'cms_pages':
             # restrict many-to-many field for cms_pages to ProductApp only
             limit_choices_to = {'publisher_is_draft': False, 'application_urls': 'ProductsListApp'}
             kwargs['queryset'] = Page.objects.filter(**limit_choices_to)
-        return super(CommodityAdmin, self).formfield_for_manytomany(db_field, request, **kwargs)
+        return super(SmartPhoneAdmin, self).formfield_for_manytomany(db_field, request, **kwargs)
 
     def save_model(self, request, obj, form, change):
         if not change:
@@ -65,7 +71,7 @@ class CommodityAdmin(TranslatableAdmin, VersionAdmin, FrontendEditableAdminMixin
             max_order = self.base_model.objects.aggregate(max_order=Max('order'))['max_order']
             obj.order = max_order + 1 if max_order else 1
         obj.legacy_fixed = True
-        super(CommodityAdmin, self).save_model(request, obj, form, change)
+        super(SmartPhoneAdmin, self).save_model(request, obj, form, change)
 
     def render_text_index(self, instance):
         template = get_template('search/indexes/myshop/commodity_text.txt')
