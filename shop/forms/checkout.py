@@ -55,9 +55,7 @@ class GuestForm(DialogModelForm):
         fields = ('email',)
 
     def __init__(self, initial=None, instance=None, *args, **kwargs):
-        try:
-           instance = None if instance.is_visitor() else instance.user
-        except AttributeError:
+        if isinstance(instance, CustomerModel._materialized_model):
             instance = instance.user
         super(GuestForm, self).__init__(initial=initial, instance=instance, *args, **kwargs)
 
