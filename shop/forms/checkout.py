@@ -47,7 +47,6 @@ class CustomerForm(DialogModelForm):
 
 class GuestForm(DialogModelForm):
     scope_prefix = 'data.guest'
-    form_name = 'customer_form'
     email = fields.EmailField(label=_("Email address"))
 
     class Meta:
