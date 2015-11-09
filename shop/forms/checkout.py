@@ -48,6 +48,7 @@ class CustomerForm(DialogModelForm):
 class GuestForm(DialogModelForm):
     scope_prefix = 'data.guest'
     form_name = 'customer_form'
+    email = fields.EmailField(label=_("Email address"), required=True)
 
     class Meta:
         model = get_user_model()  # since we only use the email field, use the User model directly
