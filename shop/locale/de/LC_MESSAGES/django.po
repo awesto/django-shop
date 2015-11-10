@@ -2082,7 +2082,7 @@ msgstr "Passwort für %(site_name)s zurücksetzen"
 
 #: templates/shop/navbar/language-chooser.html:3
 msgid "Language"
-msgstr ""
+msgstr "Sprache"
 
 #: templates/shop/navbar/login-logout.html:16
 msgid "Sign in"
@@ -2152,7 +2152,7 @@ msgstr "Art-Nr.:"
 
 #: templates/shop/search/results.html:14
 msgid "No search results found"
-msgstr ""
+msgstr "Die Suche hat nichts gefunden"
 
 #: templates/shop/search/results.html:20
 msgid "{{ search_data.count }} matching products found"
@@ -2168,7 +2168,7 @@ msgstr "Details"
 
 #: templates/shop/search/results.html:42
 msgid "Loading search results"
-msgstr ""
+msgstr "Läd weitere Suchergebnisse"
 
 #: templates/shop/templatetags/cart-icon.html:12
 msgctxt "cart icon"
@@ -2182,7 +2182,7 @@ msgstr "{} Artikel"
 
 #: views/auth.py:29
 msgid "Unable to proceed as guest without items in the cart."
-msgstr ""
+msgstr "Ohne Artikel im Warenkorb kann der Einkauf nicht fortgesetzt werden."
 
 #: views/auth.py:66
 msgid "Successfully logged out."
