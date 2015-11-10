@@ -18,9 +18,9 @@ import shop_stripe.payment
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('email_auth', '0001_initial'),
-        ('filer', '0002_auto_20150606_2003'),
+        ('email_auth', '0002_auto_20151011_1652'),
         ('contenttypes', '0001_initial'),
+        ('filer', '0002_auto_20150606_2003'),
         ('cms', '0012_auto_20150607_2207'),
     ]
 
@@ -131,7 +131,7 @@ class Migration(migrations.Migration):
             name='Customer',
             fields=[
                 ('user', models.OneToOneField(primary_key=True, serialize=False, to=settings.AUTH_USER_MODEL)),
-                ('recognized', models.PositiveSmallIntegerField(default=0, help_text='Designates the state the customer is recognized as.', verbose_name='Recognized', choices=[(0, 'Unrecognized'), (1, 'Guest'), (2, 'Registered')])),
+                ('recognized', models.PositiveSmallIntegerField(default=0, help_text='Designates the state the customer is recognized as.', verbose_name='Recognized as', choices=[(0, 'Unrecognized'), (1, 'Guest'), (2, 'Registered')])),
                 ('salutation', models.CharField(max_length=5, verbose_name='Salutation', choices=[('mrs', 'Mrs.'), ('mr', 'Mr.'), ('na', '(n/a)')])),
                 ('last_access', models.DateTimeField(default=django.utils.timezone.now, verbose_name='Last accessed')),
                 ('extra', jsonfield.fields.JSONField(default={}, verbose_name='Extra information about this customer', editable=False)),
@@ -155,6 +155,7 @@ class Migration(migrations.Migration):
                 ('stored_request', jsonfield.fields.JSONField(default={}, help_text='Parts of the Request objects on the moment of purchase.')),
                 ('shipping_address_text', models.TextField(help_text='Shipping address at the moment of purchase.', null=True, verbose_name='Shipping Address', blank=True)),
                 ('billing_address_text', models.TextField(help_text='Billing address at the moment of purchase.', null=True, verbose_name='Billing Address', blank=True)),
+                ('number', models.PositiveIntegerField(default=None, unique=True, null=True, verbose_name='Order Number')),
                 ('customer', models.ForeignKey(related_name='orders', verbose_name='Customer', to='myshop.Customer')),
             ],
             options={
