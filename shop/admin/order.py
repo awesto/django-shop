@@ -11,7 +11,7 @@ from django.template.loader import select_template
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 from fsm_admin.mixins import FSMTransitionMixin
-from shop.models.order import OrderModel, OrderItemModel, OrderPayment
+from shop.models.order import OrderItemModel, OrderPayment
 from shop.modifiers.pool import cart_modifiers_pool
 from shop.rest import serializers
 
@@ -64,22 +64,16 @@ class StatusListFilter(admin.SimpleListFilter):
 
 
 class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
-    list_display = ('id', 'customer', 'status_name', 'total', 'created_at',)
+    list_display = ('identifier', 'customer', 'status_name', 'total', 'created_at',)
     list_filter = (StatusListFilter,)
-    search_fields = ('id', 'customer__user__email', 'customer__user__lastname',)
+    search_fields = ('customer__user__email', 'customer__user__lastname',)
     fsm_field = ('status',)
     date_hierarchy = 'created_at'
     inlines = (OrderItemInline, OrderPaymentInline,)
-    readonly_fields = ('status_name', 'total', 'subtotal', 'get_customer_link', 'outstanding_amount',
-        'created_at', 'updated_at', 'extra', 'stored_request',)
-    fields = ('status_name', ('created_at', 'updated_at'), ('subtotal', 'total', 'outstanding_amount',),
-        'get_customer_link', 'extra', 'stored_request',)
-
-    def get_form(self, request, obj=None, **kwargs):
-        # must add field `extra` on the fly.
-        #Form = type('TextLinkForm', (TextLinkFormBase,), {'ProductModel': ProductModel, 'product': product_field})
-        #kwargs.update(form=Form)
-        return super(BaseOrderAdmin, self).get_form(request, obj, **kwargs)
+    readonly_fields = ('identifier', 'status_name', 'total', 'subtotal', 'get_customer_link',
+        'outstanding_amount', 'created_at', 'updated_at', 'extra', 'stored_request',)
+    fields = ('identifier', 'status_name', ('created_at', 'updated_at'),
+        ('subtotal', 'total', 'outstanding_amount',), 'get_customer_link', 'extra', 'stored_request',)
 
     def get_customer_link(self, obj):
         url = reverse('admin:shop_customerproxy_change', args=(obj.customer.pk,))
@@ -88,7 +82,7 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
     get_customer_link.allow_tags = True
 
     def outstanding_amount(self, obj):
-        return obj.get_outstanding_amount()
+        return obj.outstanding_amount
     outstanding_amount.short_description = _("Outstanding amount")
 
 
@@ -113,13 +107,13 @@ class PrintOrderAdminMixin(object):
 
     def _render_letter(self, request, pk, template):
         order = self.get_object(request, pk)
-        order_serializer = serializers.OrderDetailSerializer(order, context={'request': request})
-        context = RequestContext(request, {
+        context = {'request': request, 'render_label': 'print'}
+        order_serializer = serializers.OrderDetailSerializer(order, context=context)
+        content = template.render(RequestContext(request, {
             'customer': serializers.CustomerSerializer(order.customer).data,
             'data': order_serializer.data,
             'order': order,
-        })
-        content = template.render(context)
+        }))
         return HttpResponse(content)
 
     def render_delivery_note(self, request, pk=None):
@@ -158,10 +152,3 @@ class OrderAdmin(BaseOrderAdmin):
     """
     search_fields = BaseOrderAdmin.search_fields + ('shipping_address_text', 'billing_address_text',)
     fields = BaseOrderAdmin.fields + (('shipping_address_text', 'billing_address_text',),)
-
-
-class PrintableOrderAdmin(PrintOrderAdminMixin, OrderAdmin):
-    pass
-
-
-admin.site.register(OrderModel, PrintableOrderAdmin)

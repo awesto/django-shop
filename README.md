@@ -1,6 +1,4 @@
-===========
-django SHOP
-===========
+# django SHOP
 
 This version of django-shop is currently under development. If you want to help
 out, please have a look at our `Development documentation`_.
@@ -20,16 +18,15 @@ docs/plugins.rst to figure out what plugin types are available, and what the do.
 You'll find the detailed doc on `RTD <http://readthedocs.org/projects/django-shop/>`_
 
 
-Build status
-============
+## Build status
+
 .. |travisci| image:: https://api.travis-ci.org/divio/django-shop.png
 .. _travisci https://travis-ci.org/divio/django-shop
 
 |travisci|
 
 
-How to help:
-============
+## How to help:
 
 * Development is done on github - please fork!
 * Most of the discussion around architecture decisions / tools etc... take
@@ -37,8 +34,7 @@ How to help:
 * Pick a task from the list below :)
 
 
-Todo:
-=====
+## Todo:
 
 * Somebody should kickstart an example shop application using django SHOP, to
   use as an example.

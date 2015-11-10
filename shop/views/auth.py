@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.contrib.auth import logout
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.tokens import default_token_generator
+from django.core.exceptions import NON_FIELD_ERRORS
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import status
@@ -24,6 +25,9 @@ class AuthFormsView(GenericAPIView):
     form_class = None
 
     def post(self, request, *args, **kwargs):
+        if request.customer.is_visitor():
+            errors = {NON_FIELD_ERRORS: _("Unable to proceed as guest without items in the cart.")}
+            return Response(errors, status=status.HTTP_400_BAD_REQUEST)
         form = self.form_class(data=request.data, instance=request.customer)
         if form.is_valid():
             form.save(request=request)
@@ -37,9 +41,13 @@ class LoginView(OriginalLoginView):
         Logs in as the given user, and moves the items from the current to the new cart.
         """
         anonymous_cart = CartModel.objects.get_from_request(self.request)
+        dead_user = None if self.request.user.is_anonymous() or self.request.customer.is_registered() else self.request.customer.user
         super(LoginView, self).login()  # this rotates the session_key
         authenticated_cart = CartModel.objects.get_from_request(self.request)
-        anonymous_cart.items.update(cart=authenticated_cart)
+        if anonymous_cart:
+            anonymous_cart.items.update(cart=authenticated_cart)
+        if dead_user and dead_user.is_active is False:
+            dead_user.delete()  # to keep the database clean
 
 
 class LogoutView(APIView):

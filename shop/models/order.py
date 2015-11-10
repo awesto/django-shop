@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from six import with_metaclass
-from decimal import Decimal, ROUND_UP
+from decimal import Decimal
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
@@ -27,7 +27,7 @@ class OrderManager(models.Manager):
         with its CartItems.
         """
         cart.update(request)
-        order = self.model(customer=cart.customer, currency=cart.total.get_currency(),
+        order = self.model(customer=cart.customer, currency=cart.total.currency,
             _subtotal=Decimal(0), _total=Decimal(0), stored_request=self.stored_request(request))
         order.save()
         order.customer.get_number()
@@ -177,7 +177,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     @classmethod
     def round_amount(cls, amount):
         if amount.is_finite():
-            return Decimal(amount).quantize(cls.decimal_exp, ROUND_UP)
+            return Decimal(amount).quantize(cls.decimal_exp)
 
     def get_absolute_url(self):
         """
@@ -207,25 +207,25 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         self._total = BaseOrder.round_amount(self._total)
         super(BaseOrder, self).save(**kwargs)
 
-    def get_amount_paid(self):
+    @cached_property
+    def amount_paid(self):
         """
         The amount paid is the sum of related orderpayments
         """
-        if not hasattr(self, '_amount_paid'):
-            amount = self.orderpayment_set.aggregate(amount=Sum('amount'))['amount']
-            if amount is None:
-                amount = 0
-            self._amount_paid = MoneyMaker(self.currency)(amount)
-        return self._amount_paid
+        amount = self.orderpayment_set.aggregate(amount=Sum('amount'))['amount']
+        if amount is None:
+            amount = 0
+        return MoneyMaker(self.currency)(amount)
 
-    def get_outstanding_amount(self):
+    @property
+    def outstanding_amount(self):
         """
         Return the outstanding amount paid for this order
         """
-        return self.total - self.get_amount_paid()
+        return self.total - self.amount_paid
 
     def is_fully_paid(self):
-        return self.get_amount_paid() >= self.total
+        return self.amount_paid >= self.total
 
     @transition(field='status', source='*', target='payment_confirmed', conditions=[is_fully_paid])
     def acknowledge_payment(self, by=None):

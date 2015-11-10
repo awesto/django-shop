@@ -41,7 +41,7 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelF
 
     def clean_email(self):
         # check for uniqueness of email address
-        if get_user_model().objects.filter(email=self.cleaned_data['email']).exists():
+        if get_user_model().objects.filter(is_active=True, email=self.cleaned_data['email']).exists():
             msg = _("A customer with the e-mail address ‘{email}’ already exists.\n"
                     "If you have used this address previously, try to reset the password.")
             raise ValidationError(msg.format(**self.cleaned_data))
@@ -57,7 +57,7 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelF
         return cleaned_data
 
     def save(self, request=None, commit=True):
-        self.instance.recognized = CustomerModel.REGISTERED
+        self.instance.recognize_as_registered()
         self.instance.user.is_active = True
         self.instance.user.email = self.cleaned_data['email']
         self.instance.user.set_password(self.cleaned_data['password1'])
@@ -103,10 +103,10 @@ class ContinueAsGuestForm(ModelForm):
         fields = ()  # this form doesn't show any fields
 
     def save(self, request=None, commit=True):
+        self.instance.recognize_as_guest()
         self.instance.user.is_active = shop_settings.GUEST_IS_ACTIVE_USER
         if self.instance.user.is_active:
-            # set a usable password, otherwise the user can not reset the password
+            # set a usable password, otherwise the user later can not reset its password
             password = get_user_model().objects.make_random_password(length=30)
             self.instance.user.set_password(password)
-        self.instance.recognized = CustomerModel.GUEST
         return super(ContinueAsGuestForm, self).save(commit)
