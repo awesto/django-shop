@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from django.db.models import Max
 from django.forms.fields import CharField
-from django.template.loader import select_template
+from django.template.loader import get_template_from_string, select_template
 from django.utils.html import format_html, strip_tags, strip_entities
 from django.utils.safestring import mark_safe
 from django.utils.text import Truncator
@@ -67,9 +67,21 @@ class CustomerFormPlugin(DialogFormPluginBase):
     name = _("Customer Form")
     form_class = 'shop.forms.checkout.CustomerForm'
     template_leaf_name = 'customer.html'
+    cache = False
 
     def get_form_data(self, request):
         return {'instance': request.customer}
+
+    def get_render_template(self, context, instance, placeholder):
+        if 'error_message' in context:
+            return get_template_from_string('<p class="text-danger">{{ error_message }}</p>')
+        return super(CustomerFormPlugin, self).get_render_template(context, instance, placeholder)
+
+    def render(self, context, instance, placeholder):
+        if not context['request'].customer.is_registered():
+            context['error_message'] = _("Only registered customers can access this form.")
+            return context
+        return super(CustomerFormPlugin, self).render(context, instance, placeholder)
 
 DialogFormPluginBase.register_plugin(CustomerFormPlugin)
 
@@ -77,6 +89,12 @@ DialogFormPluginBase.register_plugin(CustomerFormPlugin)
 class GuestFormPlugin(CustomerFormPlugin):
     name = _("Guest Form")
     form_class = 'shop.forms.checkout.GuestForm'
+
+    def render(self, context, instance, placeholder):
+        if not context['request'].customer.is_guest():
+            context['error_message'] = _("Only guest customers can access this form.")
+            return context
+        return super(CustomerFormPlugin, self).render(context, instance, placeholder)
 
 DialogFormPluginBase.register_plugin(GuestFormPlugin)
 
