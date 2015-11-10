@@ -367,10 +367,10 @@ msgstr "Bestätige Passwort"
 #: forms/auth.py:45
 #, python-brace-format
 msgid ""
-"A customer with the e-mail address ‘{email}’ already exists.\n"
+"A registered customer with the e-mail address ‘{email}’ already exists.\n"
 "If you have used this address previously, try to reset the password."
 msgstr ""
-"Ein Benutzer mit der E-Mail Adresse ‘{email}’ existiert bereits.\n"
+"Ein registrierter Benutzer mit der E-Mail Adresse ‘{email}’ existiert bereits.\n"
 "Wenn Sie diese Adresse bereits verwendet haben, versuchen Sie bitte das Passwort zurückzusetzen."
 
 #: forms/auth.py:55

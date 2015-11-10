@@ -60,14 +60,11 @@ class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
 plugin_pool.register_plugin(ShopProceedButton)
 
 
-class CustomerFormPlugin(DialogFormPluginBase):
+class CustomerFormPluginBase(DialogFormPluginBase):
     """
-    provides the form to edit customer specific data stored in model `Customer`.
+    Base class for CustomerFormPlugin and GuestFormPlugin to share common methods.
     """
-    name = _("Customer Form")
-    form_class = 'shop.forms.checkout.CustomerForm'
     template_leaf_name = 'customer.html'
-    cache = False
 
     def get_form_data(self, request):
         return {'instance': request.customer}
@@ -75,7 +72,16 @@ class CustomerFormPlugin(DialogFormPluginBase):
     def get_render_template(self, context, instance, placeholder):
         if 'error_message' in context:
             return get_template_from_string('<p class="text-danger">{{ error_message }}</p>')
-        return super(CustomerFormPlugin, self).get_render_template(context, instance, placeholder)
+        return super(CustomerFormPluginBase, self).get_render_template(context, instance, placeholder)
+
+
+class CustomerFormPlugin(CustomerFormPluginBase):
+    """
+    Provides the form to edit specific data stored in model `Customer`, if customer declared
+    himself as registered.
+    """
+    name = _("Customer Form")
+    form_class = 'shop.forms.checkout.CustomerForm'
 
     def render(self, context, instance, placeholder):
         if not context['request'].customer.is_registered():
@@ -86,7 +92,11 @@ class CustomerFormPlugin(DialogFormPluginBase):
 DialogFormPluginBase.register_plugin(CustomerFormPlugin)
 
 
-class GuestFormPlugin(CustomerFormPlugin):
+class GuestFormPlugin(CustomerFormPluginBase):
+    """
+    Provides the form to edit specific data stored in model `Customer`, if customer declared
+    himself as guest.
+    """
     name = _("Guest Form")
     form_class = 'shop.forms.checkout.GuestForm'
 
@@ -94,7 +104,7 @@ class GuestFormPlugin(CustomerFormPlugin):
         if not context['request'].customer.is_guest():
             context['error_message'] = _("Only guest customers can access this form.")
             return context
-        return super(CustomerFormPlugin, self).render(context, instance, placeholder)
+        return super(GuestFormPlugin, self).render(context, instance, placeholder)
 
 DialogFormPluginBase.register_plugin(GuestFormPlugin)
 

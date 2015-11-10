@@ -47,7 +47,7 @@ class CustomerForm(DialogModelForm):
 class GuestForm(DialogModelForm):
     scope_prefix = 'data.guest'
     email = fields.EmailField(label=_("Email address"))
-    form_name = 'customer_form'
+    form_name = 'customer_form'  # Override form name to reuse template `customer.html`
 
     class Meta:
         model = get_user_model()  # since we only use the email field, use the User model directly
@@ -69,7 +69,7 @@ class GuestForm(DialogModelForm):
     def clean_email(self):
         # check for uniqueness of email address
         if get_user_model().objects.filter(is_active=True, email=self.cleaned_data['email']).exists():
-            msg = _("A customer with the e-mail address ‘{email}’ already exists.\n"
+            msg = _("A registered customer with the e-mail address ‘{email}’ already exists.\n"
                     "If you have used this address previously, try to reset the password.")
             raise ValidationError(msg.format(**self.cleaned_data))
         return self.cleaned_data['email']
