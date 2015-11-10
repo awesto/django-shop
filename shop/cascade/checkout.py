@@ -65,6 +65,7 @@ class CustomerFormPluginBase(DialogFormPluginBase):
     Base class for CustomerFormPlugin and GuestFormPlugin to share common methods.
     """
     template_leaf_name = 'customer.html'
+    cache = False
 
     def get_form_data(self, request):
         return {'instance': request.customer}
