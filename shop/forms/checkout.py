@@ -15,7 +15,7 @@ from .base import DialogForm, DialogModelForm
 
 class CustomerForm(DialogModelForm):
     scope_prefix = 'data.customer'
-    email = fields.EmailField(label=_("Email"))
+    email = fields.EmailField(label=_("Email address"))
     first_name = fields.CharField(label=_("First Name"))
     last_name = fields.CharField(label=_("Last Name"))
 
@@ -48,6 +48,7 @@ class CustomerForm(DialogModelForm):
 class GuestForm(DialogModelForm):
     scope_prefix = 'data.guest'
     form_name = 'customer_form'
+    email = fields.EmailField(label=_("Email address"))
 
     class Meta:
         model = get_user_model()  # since we only use the email field, use the User model directly
