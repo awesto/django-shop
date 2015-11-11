@@ -123,10 +123,6 @@ class CatalogLinkForm(LinkForm):
     product = ProductSelectField(required=False, label='',
         help_text=_("An internal link onto a product from the shop"))
 
-    def __init__(self, raw_data=None, *args, **kwargs):
-        self.base_fields['product'].choices = ((3, "Blahblah"),)
-        super(CatalogLinkForm, self).__init__(raw_data, *args, **kwargs)
-
     def clean_product(self):
         if self.cleaned_data.get('link_type') == 'product':
             app_label = ProductModel._meta.app_label
