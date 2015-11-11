@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 """
 Django settings for myshop project.
@@ -99,6 +100,7 @@ INSTALLED_APPS = (
     'post_office',
     'haystack',
     'shop',
+    'shop_stripe',
     'myshop',
 )
 
@@ -199,6 +201,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.messages.context_processors.messages',
     'cms.context_processors.cms_settings',
     'shop.context_processors.customer',
+    'shop_stripe.context_processors.public_keys',
     'sekizai.context_processors.sekizai',
 )
 
@@ -492,5 +495,10 @@ SHOP_ORDER_WORKFLOWS = (
 SHOP_STRIPE = {
     'PUBKEY': 'pk_test_stripe_secret',
     'APIKEY': 'sk_test_stripe_secret',
-    'PURCHASE_DESCRIPTION': _("Thank for purchasing at MyShop"),
+    'PURCHASE_DESCRIPTION': _("Thanks for purchasing at MyShop"),
 }
+try:
+    from . import private_settings
+    SHOP_STRIPE.update(private_settings.SHOP_STRIPE)
+except (ImportError, AttributeError):
+    pass
