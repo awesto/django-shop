@@ -24,10 +24,9 @@ class CustomerForm(DialogModelForm):
         exclude = ('user', 'recognized', 'number', 'last_access',)
         custom_fields = ('email', 'first_name', 'last_name',)
 
-    def __init__(self, initial=None, instance=None, *args, **kwargs):
-        if instance:
-            initial = initial or {}
-            initial.update(dict((f, getattr(instance, f)) for f in self.Meta.custom_fields))
+    def __init__(self, initial={}, instance=None, *args, **kwargs):
+        assert instance is not None and isinstance(initial, dict)
+        initial.update(dict((f, getattr(instance, f)) for f in self.Meta.custom_fields))
         super(CustomerForm, self).__init__(initial=initial, instance=instance, *args, **kwargs)
 
     def save(self, commit=True):
@@ -47,7 +46,8 @@ class CustomerForm(DialogModelForm):
 
 class GuestForm(DialogModelForm):
     scope_prefix = 'data.guest'
-    form_name = 'customer_form'
+    form_name = 'customer_form'  # Override form name to reuse template `customer.html`
+
     email = fields.EmailField(label=_("Email address"))
 
     class Meta:
@@ -70,7 +70,7 @@ class GuestForm(DialogModelForm):
     def clean_email(self):
         # check for uniqueness of email address
         if get_user_model().objects.filter(is_active=True, email=self.cleaned_data['email']).exists():
-            msg = _("A customer with the e-mail address ‘{email}’ already exists.\n"
+            msg = _("A registered customer with the e-mail address ‘{email}’ already exists.\n"
                     "If you have used this address previously, try to reset the password.")
             raise ValidationError(msg.format(**self.cleaned_data))
         return self.cleaned_data['email']
