@@ -388,7 +388,7 @@ CMS_PLACEHOLDER_CONF = {
     'Main Content Container': {
         'plugins': ['BootstrapRowPlugin', 'SimpleWrapperPlugin', 'SegmentPlugin'],
         'text_only_plugins': ['TextLinkPlugin'],
-        'parent_classes': {'BootstrapRowPlugin': [], 'SegmentPlugin': []},
+        'parent_classes': {'BootstrapRowPlugin': []},
         'require_parent': False,
         'glossary': {
             'breakpoints': ['xs', 'sm', 'md', 'lg'],
