@@ -183,6 +183,37 @@ In the latter case (customer registers himself), the user object is recycled and
 Django User object, with a password and an email address.
 
 
+Obviate Criticism
+-----------------
+
+Some may argue that adding unregistered and guest customers to the User table is an anti-pattern or
+hack. So, what are the alternatives?
+
+We could keep the cart of anonymous customers in the session store. This was the procedure used
+until **djangoSHOP** version 0.2. It however required to keep two different models of the cart,
+one session based and one relational. Not very practical, specially if the cart model should be
+overridable by the merchant's own implementation.
+
+We could associate each cart models with a session id. This would require an additional field which
+would be NULL for authenticated customers. While possible in theory, it would require a lot of code
+which distinguishes between anonymous and authenticated customers. Since the aim of this software is
+to remain simple, this idea was dismissed.
+
+We could keep the primary key of each cart in the session associated with the customer. But this
+would it make very hard to find expired carts, because we would have to iterate over all carts and
+for each cart we would have to iterate over all sessions to check if the primary keys matches.
+Remember, there is no such thing as an OUTER JOIN between sessions and database tables.
+
+We could create a customer object which is independent of the user. Hence instead of having a
+``OneToOneField(AUTH_USER_MODEL)`` in model ``Customer``, we'd have this 1:1 relation with a
+nullable foreign key. This would require an additional field to store the session id in the customer
+model. It also would require an additional email field, if we wanted a guest customers to remain
+anonymous users – what they actually are, since they can't sign in. Apart from field duplication,
+this approach would also require some code to distinguish between unrecognized, guest and
+registered customers. In addition to that, the administration backend would require two
+distinguished views, one for the customer model and one for the user model.
+
+
 Authenticating against the Email Address
 ========================================
 
@@ -251,6 +282,7 @@ Therefore **djangoSHOP** offers two configurable options:
 
 .. _RFC-5321: http://tools.ietf.org/html/rfc5321#section-4.5.3
 
+
 Administration of Users and Customers
 -------------------------------------
 
@@ -302,3 +334,33 @@ model:
 
 .. [3] if setting ``SHOP_GUEST_IS_ACTIVE_USER = True``.
 
+
+Manage Customers
+----------------
+
+**djangoSHOP** is shipped with a special management command which informs the merchant about the
+state of customers. In the project's folder, invoke on the command line:
+
+.. code-block:: shell
+
+	./manage.py shop_customers
+	Customers in this shop: total=20482, anonymous=17418, expired=10111, active=1068, guests=1997, registered=1067, staff=5.
+
+Read these numbers as:
+* Anonymous customers are those which added at least one item to the cart, but never proceeded to checkout.
+* Expired customers are the subset of the anonymous customers, whose session already expired.
+* The difference between guest and registered customers is explained in the above table.
+
+
+Delete expired customers
+........................
+
+By invoking on the command line:
+
+.. code-block:: shell
+
+	./manage.py shop_customers --delete-expired
+
+This removes all anonymous/unregistered customers and their associated user entities from the
+database, whose session expired. This command may be used to reduce the database storage
+requirements.
