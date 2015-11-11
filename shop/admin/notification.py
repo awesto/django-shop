@@ -14,6 +14,7 @@ class NotificationAttachmentAdmin(admin.TabularInline):
     extra = 0
 
 
+@admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):
     USER_CHOICES = (('', _("Nobody")), (0, _("Customer")),)
     list_display = ('name', 'transition_name', 'recipient', 'mail_template', 'num_attachments')
@@ -60,5 +61,3 @@ class NotificationAdmin(admin.ModelAdmin):
                 return OrderedDict(self.USER_CHOICES)[obj.mail_to]
         except (get_user_model().DoesNotExist, KeyError):
             return _("Nobody")
-
-admin.site.register(Notification, NotificationAdmin)
