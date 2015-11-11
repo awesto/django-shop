@@ -15,6 +15,7 @@ from ipware.ip import get_ip
 from django_fsm import FSMField, transition
 from cms.models import Page
 from shop import settings as shop_settings
+from shop.models.cart import CartItemModel
 from shop.money.fields import MoneyField, MoneyMaker
 from . import deferred
 
@@ -34,8 +35,11 @@ class OrderManager(models.Manager):
         for cart_item in cart.items.all():
             cart_item.update(request)
             order_item = OrderItemModel(order=order)
-            if order_item.populate_from_cart_item(cart_item, request):
+            try:
+                order_item.populate_from_cart_item(cart_item, request)
                 order_item.save()
+            except CartItemModel.DoesNotExist:
+                pass
         order.populate_from_cart(cart, request)
         order.save()
         cart.delete()
@@ -321,18 +325,17 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     def populate_from_cart_item(self, cart_item, request):
         """
         From a given cart item, populate the current order item.
-        Return True if operation was successful, otherwise the order item is discarded.
+        If a CartItem.DoesNotExist exception is raised, discard the order item.
         """
         self.product = cart_item.product
-        # for historical integrity, store the product's code, name and prices on the moment of purchase
+        # for historical integrity, store the product's name and price at the moment of purchase
         self.product_name = cart_item.product.product_name
-        self.product_code = cart_item.product.product_code
         self._unit_price = Decimal(cart_item.product.get_price(request))
         self._line_total = Decimal(cart_item.line_total)
         self.quantity = cart_item.quantity
         self.extra = dict(cart_item.extra)
-        self.extra.update(rows=[(modifier, extra_row.data) for modifier, extra_row in cart_item.extra_rows.items()])
-        return True
+        extra_rows = [(modifier, extra_row.data) for modifier, extra_row in cart_item.extra_rows.items()]
+        self.extra.update(rows=extra_rows)
 
     def save(self, *args, **kwargs):
         """

@@ -92,6 +92,12 @@ class SmartPhoneModel(Product):
             if cart_item.extra.get('product_code') == product_code:
                 return cart_item
 
+    def get_product_markedness(self, extra):
+        try:
+            return self.smartphone_set.get(product_code=extra.get('product_code'))
+        except SmartPhone.DoesNotExist as e:
+            raise SmartPhoneModel.DoesNotExist(e)
+
 reversion.register(SmartPhoneModel, follow=['product_ptr'])
 
 

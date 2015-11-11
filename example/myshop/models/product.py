@@ -61,6 +61,14 @@ class Product(TranslatableModel, BaseProduct):
     def sample_image(self):
         return self.images.first()
 
+    def get_product_markedness(self, extra):
+        """
+        Get the markedness of a product.
+        Raises `Product.objects.DoesNotExists` if there is no markedness for the given `extra`.
+        """
+        msg = "Method get_product_markedness(extra) must be implemented by subclass: `{}`"
+        raise NotImplementedError(msg.format(self.__class__.__name__))
+
 reversion.register(Product, adapter_cls=type(str('ProductVersionAdapter'), (reversion.VersionAdapter,),
                                              {'format': 'shop'}))
 
