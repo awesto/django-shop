@@ -5,10 +5,10 @@
 {% block shop-cart-thead %}
 	<thead>
 		<tr>
-			<th class="text-center">{% trans "Product" %}</th>
-			<th class="text-center">{% trans "Quantity" %}</th>
-			<th class="text-center">{% trans "Unit Price" %}</th>
-			<th class="text-right">{% trans "Total" %}</th>
+			<th class="col-xs-1 text-center">{% trans "Quantity" %}</th>
+			<th class="col-xs-7 text-center">{% trans "Product" %}</th>
+			<th class="col-xs-2 text-center">{% trans "Unit Price" %}</th>
+			<th class="col-xs-2 text-right">{% trans "Total" %}</th>
 		</tr>
 	</thead>
 {% endblock shop-cart-thead %}
@@ -17,14 +17,13 @@
 	<tbody>
 	{% for cart_item in cart.items %}
 		<tr>
-			<td rowspan="2" class="text-center">{{ cart_item.summary.media }}</td>
-			<td class="text-center">{{ cart_item.quantity }}</td>
+			<td rowspan="2" class="text-center">{{ cart_item.quantity }}</td>
+			<td rowspan="2" class="text-left">{{ cart_item.summary.media }}</td>
 			<td class="text-center">{{ cart_item.unit_price }}</td>
 			<td class="text-right">{{ cart_item.line_total }}</td>
 		</tr>
 		<tr class="no-border">
-			<td colspan="3">
-				{{ cart_item.summary.body }}
+			<td colspan="2">
 				{% for extra_row in cart_item.extra_rows %}
 				<div>{{ extra_row.label }}: {{ extra_row.amount }}</div>
 				{% endfor %}
@@ -37,11 +36,11 @@
 {% block shop-cart-tfoot %}
 	<tfoot>
 		<tr>
-			<td></td>
-			<td colspan="2"><h5>{% trans "Subtotal" %}</h5></td>
-			<td class="text-right"><h5>
-				<strong djng-bind-if="cart.subtotal">{{ cart.subtotal }}</strong>
-			</h5></td>
+			<td colspan="2"></td>
+			<td><h5>{% trans "Subtotal" %}</h5></td>
+			<td class="text-right">
+				<h5><strong djng-bind-if="cart.subtotal">{{ cart.subtotal }}</strong></h5>
+			</td>
 		</tr>
 	{% for extra_row in cart.extra_rows %}
 		<tr ng-if="!cart">
@@ -52,12 +51,11 @@
 		{% include 'shop/cart/extra-row.html' with ng=1 %}
 		</tr>
 		<tr>
-			<td></td>
-			<td colspan="2"><h4>{% trans "Total" %}</h4></td>
+			<td colspan="2"></td>
+			<td><h4>{% trans "Total" %}</h4></td>
 			<td class="text-right"><h4>
 				<strong djng-bind-if="cart.total">{{ cart.total }}</strong>
 			</h4></td>
-			<td></td>
 		</tr>
 	</tfoot>
 {% endblock shop-cart-tfoot %}
