@@ -5,6 +5,7 @@
 .cache
 *.coverage
 *~
+private_settings.py
 build
 docs/_build
 dist
