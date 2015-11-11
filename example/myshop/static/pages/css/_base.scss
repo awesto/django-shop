@@ -6,3 +6,10 @@
 .breadcrumb > li + li:before {
 	content: "/";
 }
+
+// use it to remove borders in tables
+table > tbody > tr.no-border> {
+	td, th {
+		border: none;
+	}
+}
