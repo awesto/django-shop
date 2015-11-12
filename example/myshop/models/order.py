@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from decimal import Decimal
-from shop.models.order import BaseOrderItem
+from django.core.exceptions import ObjectDoesNotExist
 from shop.models.cart import CartItemModel
-from .product import Product
+from shop.models.order import BaseOrderItem
 
 
 class OrderItem(BaseOrderItem):
@@ -14,5 +14,5 @@ class OrderItem(BaseOrderItem):
             product = cart_item.product.get_product_markedness(cart_item.extra)
             self.product_code = product.product_code
             self._unit_price = Decimal(product.unit_price)
-        except Product.DoesNotExist as e:
+        except ObjectDoesNotExist as e:
             raise CartItemModel.DoesNotExist(e)

@@ -5,6 +5,7 @@ from django.db import models, migrations
 import shop.payment.defaults
 import filer.fields.image
 import django_fsm
+import django.db.models.deletion
 import jsonfield.fields
 import djangocms_text_ckeditor.fields
 import cms.models.fields
@@ -282,6 +283,12 @@ class Migration(migrations.Migration):
             model_name='product',
             name='polymorphic_ctype',
             field=models.ForeignKey(related_name='polymorphic_myshop.product_set+', editable=False, to='contenttypes.ContentType', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='orderitem',
+            name='product',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, verbose_name='Product', blank=True, to='myshop.Product', null=True),
             preserve_default=True,
         ),
         migrations.AddField(

@@ -17,6 +17,7 @@ from cms.models import Page
 from shop import settings as shop_settings
 from shop.models.cart import CartItemModel
 from shop.money.fields import MoneyField, MoneyMaker
+from .product import BaseProduct
 from . import deferred
 
 
@@ -299,7 +300,7 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         help_text=_("Product name at the moment of purchase."))
     product_code = models.CharField(_("Product code"), max_length=255, null=True, blank=True,
         help_text=_("Product code at the moment of purchase."))
-    product = deferred.ForeignKey('BaseProduct', null=True, blank=True, on_delete=models.SET_NULL,
+    product = deferred.ForeignKey(BaseProduct, null=True, blank=True, on_delete=models.SET_NULL,
         verbose_name=_("Product"))
     _unit_price = models.DecimalField(_("Unit price"), null=True,  # may be NaN
         help_text=_("Products unit price at the moment of purchase."), **BaseOrder.decimalfield_kwargs)
