@@ -12,8 +12,8 @@
 	{% block shop-order-thead %}
 	<thead>
 		<tr>
-			<th class="text-center">{% trans "Product" %}</th>
 			<th class="text-center">{% trans "Quantity" %}</th>
+			<th class="text-center">{% trans "Product" %}</th>
 			<th class="text-center">{% trans "Unit Price" %}</th>
 			<th class="text-right">{% trans "Total" %}</th>
 		</tr>
@@ -24,8 +24,8 @@
 	<tbody>
 		{% for item in data.items %}
 		<tr>
-			<td rowspan="2" class="text-center">{{ item.summary.media|safe }}</td>
 			<td class="text-center">{{ item.quantity }}</td>
+			<td rowspan="2" class="text-center">{{ item.summary.media|safe }}</td>
 			<td class="text-center">{{ item.unit_price }}</td>
 			<td class="text-right">{{ item.line_total }}</td>
 		</tr>
@@ -52,20 +52,20 @@
 		</tr>
 		{% for key, extra_row in data.extra.rows %}
 		<tr>
-			<td colspan="2"></td>
+			<td class="no-border" colspan="2"></td>
 			<td>{{ extra_row.label }}</td>
 			<td class="text-right">{{ extra_row.amount }}</td>
 		</tr>
 		{% endfor %}
-		<tr style="border-top-style: double;">
-			<td colspan="2"></td>
+		<tr class="double-border">
+			<td class="no-border" colspan="2"></td>
 			<td><h4>{% trans "Total" %}</h4></td>
 			<td class="text-right">
 				<h4>{{ data.total }}</h4>
 			</td>
 		</tr>
 		<tr>
-			<td colspan="2"></td>
+			<td class="no-border" colspan="2"></td>
 			<td><h5>{% trans "Thereof Paid" %}</h5></td>
 			<td class="text-right">
 				<h5>{{ data.amount_paid }}</h5>

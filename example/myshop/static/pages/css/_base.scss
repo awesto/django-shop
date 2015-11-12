@@ -8,8 +8,19 @@
 }
 
 // use it to remove borders in tables
-table > tbody > tr.no-border> {
-	td, th {
-		border: none;
+table tr {
+	&.no-border {
+		td, th {
+			border-top-style: hidden;
+		}
+	}
+	&.double-border {
+		border-top-style: double;
+	}
+	td.no-border, th.no-border {
+		border-top-style: hidden;
+	}
+	td.double-border, th.double-border {
+		border-top-style: double;
 	}
 }

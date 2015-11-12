@@ -15,7 +15,7 @@
 		<tr>
 			<th class="col-xs-2 col-md-1 text-center">{% trans "Quantity" %}</th>
 			<th class="col-xs-7 text-center">{% trans "Product" %}</th>
-			<th class="col-xs-1 text-center">{% trans "Unit Price" %}</th>
+			<th class="col-xs-1 text-right">{% trans "Unit Price" %}</th>
 			<th class="col-xs-1 col-md-2 text-right">{% trans "Total" %}</th>
 			<th class="col-xs-1"></th>
 		</tr>
@@ -33,19 +33,21 @@
 {% block shop-cart-tfoot %}
 	<tfoot>
 		<tr>
-			<td colspan="2"></td>
-			<td colspan="2"><h5>{% trans "Subtotal" %}</h5></td>
-			<td class="text-right text-nowrap"><h5><strong ng-bind="cart.subtotal"><!-- Subtotal --></strong></h5></td>
+			<td colspan="3" class="text-right"><strong>{% trans "Subtotal" %}</strong></td>
+			<td class="text-right text-nowrap"><strong ng-bind="cart.subtotal"><!-- Subtotal --></strong></td>
+			<td></td>
 		</tr>
 		<tr ng-repeat="extra_row in cart.extra_rows">
-			<td colspan="2"></td>
-			<td colspan="2"><h5 ng-bind="extra_row.label"></h5></td>
-			<td class="text-right text-nowrap"><h5><strong ng-bind="extra_row.amount"></strong></h5></td>
+			<td colspan="2" class="no-border"></td>
+			<td class="text-right text-nowrap"><span ng-bind="extra_row.label"></span></td>
+			<td class="text-right text-nowrap"><span ng-bind="extra_row.amount"></span></td>
+			<td></td>
 		</tr>
-		<tr>
-			<td colspan="2"></td>
-			<td colspan="2"><h4>{% trans "Total" %}</h4></td>
+		<tr class="double-border">
+			<td colspan="2" class="no-border"></td>
+			<td class="text-right"><h4><strong>{% trans "Total" %}</strong></h4></td>
 			<td class="text-right text-nowrap"><h4><strong ng-bind="cart.total"><!-- Total --></strong></h4></td>
+			<td></td>
 		</tr>
 	</tfoot>
 {% endblock shop-cart-tfoot %}

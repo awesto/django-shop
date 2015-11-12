@@ -12,11 +12,11 @@
 		<div class="media" ng-bind-html="cart_item.summary.media"><!-- rendered by products/cart-`product`-media.html --></div>
 	</td>
 	<td class="text-right text-nowrap">
-		<strong ng-bind="cart_item.unit_price"></strong>
+		<p ng-bind="cart_item.unit_price"></p>
 		<div ng-repeat="extra_row in cart_item.extra_rows" ng-bind="extra_row.label"></div>
 	</td>
 	<td class="text-right text-nowrap">
-		<strong ng-bind="cart_item.line_total"></strong>
+		<p ng-bind="cart_item.line_total"></p>
 		<div ng-repeat="extra_row in cart_item.extra_rows" ng-bind="extra_row.amount"></div>
 	</td>
 	<td>
