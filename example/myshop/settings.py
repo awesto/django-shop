@@ -430,7 +430,7 @@ CMSPLUGIN_CASCADE_WITH_EXTRAFIELDS = (
 )
 
 CMSPLUGIN_CASCADE_SEGMENTATION_MIXINS = (
-    ('cmsplugin_cascade.segmentation.mixins.SegmentPluginModelMixin', 'cmsplugin_cascade.segmentation.mixins.EmulateUserAdminMixin'),
+    ('shop.cascade.segmentation.EmulateCustomerModelMixin', 'shop.cascade.segmentation.EmulateCustomerAdminMixin'),
 )
 
 CKEDITOR_SETTINGS = {
