@@ -32,7 +32,7 @@ django-select2==5.2.1
 django-treebeard==3.0
 djangocms-admin-style==0.2.8
 -e git+git@github.com:jrief/djangocms-bootstrap3.git@01b6016b53f8bc8731d3be527fa3791924dd48fa#egg=djangocms_bootstrap3-master
--e git+git@github.com:jrief/djangocms-cascade.git@9d13718bba4883c0b0287b544f7d7591170d9d90#egg=djangocms_cascade-dev
+-e git+git@github.com:jrief/djangocms-cascade.git@release-candidate-0.7#egg=djangocms_cascade-dev
 djangocms-text-ckeditor==2.6.0
 djangorestframework==3.0.5
 drf-haystack==1.5.2
