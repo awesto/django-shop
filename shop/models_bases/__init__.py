@@ -25,7 +25,7 @@ USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 class BaseProduct(PolymorphicModel):
     """
     A basic product for the shop.
-    
+
     Most of the already existing fields here should be generic enough to reside
     on the "base model" and not on an added property.
     """
@@ -79,9 +79,9 @@ class BaseProduct(PolymorphicModel):
 #==============================================================================
 class BaseCart(models.Model):
     """
-    This should be a rather simple list of items. 
-    
-    Ideally it should be bound to a session and not to a User is we want to let 
+    This should be a rather simple list of items.
+
+    Ideally it should be bound to a session and not to a User is we want to let
     people buy from our shop without having to register with us.
     """
     # If the user is null, that means this is used for a session
@@ -181,8 +181,8 @@ class BaseCart(models.Model):
 
     def delete_item(self, cart_item_id):
         """
-        A simple convenience method to delete one of the cart's items. 
-        
+        A simple convenience method to delete one of the cart's items.
+
         This allows to implicitely check for "access rights" since we insure the
         cartitem is actually in the user's cart.
         """
@@ -203,7 +203,7 @@ class BaseCart(models.Model):
         """
         This should be called whenever anything is changed in the cart (added
         or removed).
-        
+
         It will loop on all line items in the cart, and call all the price
         modifiers on each row.
         After doing this, it will compute and update the order's total and
@@ -429,7 +429,7 @@ class BaseOrder(models.Model):
         self.status = status
         if save: self.save()
         if status in self.STATUS_TO_SIGNALS.keys():
-            self.STATUS_TO_SIGNALS[status](self)
+            self.STATUS_TO_SIGNALS[status].send(self, order=self)
 
     def mark_as_confirming(self, save=True):
         self.mark_as(self.CONFIRMING, save)
@@ -465,12 +465,12 @@ class BaseOrder(models.Model):
             value = Decimal("%.2f".format(amount))
         else:
             value = amount
-        ExtraOrderPriceField.objects.create(
+        return ExtraOrderPriceField.objects.get_or_create(
             order=self,
             label=name,
             is_shipping=True,
             value=value
-        )
+        )[0]
 
     @property
     def shipping_costs(self):
@@ -550,7 +550,7 @@ class BasePaymentBackend(models.Model):
     '''
     Payment option proposed to a customer. Every payment backend has to have an
     entry in the DB as a PaymentBackend model. It will be always referred by
-    it's `url_name` therefor the form of URL is optional but the registration of
+    its `url_name` therefor the form of URL is optional but the registration of
     the URL is up to the backend itself. Usually the payment backend contains
     either from one (redirect) view which signes all orders as
     CONFIRMED/COMPLETED or two views when the first one calls external API and
@@ -560,7 +560,7 @@ class BasePaymentBackend(models.Model):
     url_name = models.SlugField(max_length=20)
     active = models.BooleanField(default=True)
     description = models.TextField(null=True, blank=True)
-    logo = models.ImageField(null=True, blank=True, 
+    logo = models.ImageField(null=True, blank=True,
                              upload_to=path.join(settings.MEDIA_ROOT, 'payment-backend'))
 
     class Meta(object):

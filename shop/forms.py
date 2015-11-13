@@ -4,7 +4,7 @@ from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.forms.models import modelformset_factory
-from django.forms.util import ErrorList, ErrorDict
+from django.forms.utils import ErrorList, ErrorDict
 from django.utils.translation import ugettext_lazy as _
 
 from shop.models.cartmodel import CartItem
@@ -14,7 +14,7 @@ from shop.util.loader import load_class
 
 class BillingShippingForm(forms.Form):
     """
-    A form displaying all available payment and shipping methods 
+    A form displaying all available payment and shipping methods
     """
     shipping_backend = forms.ModelChoiceField(
         queryset=ShippingBackend.objects.filter(active=True),
@@ -31,9 +31,9 @@ class AddressesForm(forms.Form):
     You can pass `billing` (resp. `shipping`) models instances to edit them.
     You can pass your own `billing_form_class` and `shipping_form_class` which
     have to be `ModelForm` subclasses. This form also supports `empty_permitted`.
-    The form takes optional keyword `required`. If it's True, then validation 
+    The form takes optional keyword `required`. If it's True, then validation
     will fail if neither address is filled in.
-    
+
     This form contains one own field - `addresses_the_same` and two subforms -
     `billing`, `shipping`
     '''
@@ -44,9 +44,9 @@ class AddressesForm(forms.Form):
                  billing_form_class=None, shipping_form_class=None,
                  auto_id='id_%s', prefix=None, initial={}, error_class=ErrorList,
                  label_suffix=None, empty_permitted=False):
-
-        bform = (billing_form_class or AddressForm)
-        sform = (shipping_form_class or AddressForm)
+        #  TODO: construct a ModelForm from Address model instance
+        bform = (billing_form_class or shipping_form_class)
+        sform = (shipping_form_class or billing_form_class)
 
         self.billing = bform(data, files, instance=billing, prefix="billing",
                              initial=initial.pop("billing", None), label_suffix=label_suffix)
