@@ -30,7 +30,7 @@ class OrderManager(models.Manager):
         order = self.model(customer=cart.customer, currency=cart.total.currency,
             _subtotal=Decimal(0), _total=Decimal(0), stored_request=self.stored_request(request))
         order.save()
-        order.customer.get_number()
+        order.customer.get_or_assign_number()
         for cart_item in cart.items.all():
             cart_item.update(request)
             order_item = OrderItemModel(order=order)
