@@ -21,6 +21,21 @@
 	}
 }
 
+.navbar-right {
+	shop-auth-form {
+		padding-bottom: 10px;
+		min-width: 160px;
+		display: block;
+	}
+}
+.dropdown-menu > li > a {
+	margin-left: 0;
+}
+.alert {
+	padding: 5px 10px;
+	line-height: 20px;
+}
+
 body {
 	padding-top: $navbar-height + $navbar-extra-top-height + 2 * $padding-large-vertical;
 }

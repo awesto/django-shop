@@ -9,7 +9,7 @@ class InvalidateProductCacheMixin(object):
         if not hasattr(cache, 'delete_pattern'):
             warnings.warn("Your caching backend does not support deletion by key patterns. "
                 "Please use `django-redis-cache`, or wait until the product's HTML snippet cache "
-                "expired by itself")
+                "expires by itself")
         super(InvalidateProductCacheMixin, self).__init__(*args, **kwargs)
 
     def save_model(self, request, product, form, change):

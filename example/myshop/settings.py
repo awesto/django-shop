@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 """
 Django settings for myshop project.
@@ -99,6 +100,7 @@ INSTALLED_APPS = (
     'post_office',
     'haystack',
     'shop',
+    'shop_stripe',
     'myshop',
 )
 
@@ -199,6 +201,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.messages.context_processors.messages',
     'cms.context_processors.cms_settings',
     'shop.context_processors.customer',
+    'shop_stripe.context_processors.public_keys',
     'sekizai.context_processors.sekizai',
 )
 
@@ -384,6 +387,26 @@ CMS_CACHE_DURATIONS = {
 
 CMS_PERMISSION = False
 
+CMS_PLACEHOLDER_CONF = {
+    'Main Content Container': {
+        'plugins': ['BootstrapRowPlugin', 'SimpleWrapperPlugin', 'SegmentPlugin'],
+        'text_only_plugins': ['TextLinkPlugin'],
+        'parent_classes': {'BootstrapRowPlugin': []},
+        'require_parent': False,
+        'glossary': {
+            'breakpoints': ['xs', 'sm', 'md', 'lg'],
+            'container_max_widths': {'xs': 750, 'sm': 750, 'md': 970, 'lg': 1170},
+            'fluid': False,
+            'media_queries': {
+                'xs': ['(max-width: 768px)'],
+                'sm': ['(min-width: 768px)', '(max-width: 992px)'],
+                'md': ['(min-width: 992px)', '(max-width: 1200px)'],
+                'lg': ['(min-width: 1200px)'],
+            },
+        },
+    },
+}
+
 CMSPLUGIN_CASCADE_PLUGINS = ('cmsplugin_cascade.segmentation', 'cmsplugin_cascade.generic', 'cmsplugin_cascade.link', 'shop.cascade', 'cmsplugin_cascade.bootstrap3',)
 
 CMSPLUGIN_CASCADE_DEPENDENCIES = {
@@ -407,7 +430,7 @@ CMSPLUGIN_CASCADE_WITH_EXTRAFIELDS = (
 )
 
 CMSPLUGIN_CASCADE_SEGMENTATION_MIXINS = (
-    ('cmsplugin_cascade.segmentation.mixins.SegmentPluginModelMixin', 'cmsplugin_cascade.segmentation.mixins.EmulateUserAdminMixin'),
+    ('shop.cascade.segmentation.EmulateCustomerModelMixin', 'shop.cascade.segmentation.EmulateCustomerAdminMixin'),
 )
 
 CKEDITOR_SETTINGS = {
@@ -472,5 +495,10 @@ SHOP_ORDER_WORKFLOWS = (
 SHOP_STRIPE = {
     'PUBKEY': 'pk_test_stripe_secret',
     'APIKEY': 'sk_test_stripe_secret',
-    'PURCHASE_DESCRIPTION': _("Thank for purchasing at MyShop"),
+    'PURCHASE_DESCRIPTION': _("Thanks for purchasing at MyShop"),
 }
+try:
+    from . import private_settings
+    SHOP_STRIPE.update(private_settings.SHOP_STRIPE)
+except (ImportError, AttributeError):
+    pass

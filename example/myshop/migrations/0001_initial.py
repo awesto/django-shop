@@ -126,12 +126,12 @@ class Migration(migrations.Migration):
             name='OrderItem',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('product_code', models.CharField(help_text='Product code at the moment of purchase.', max_length=255, verbose_name='Product code')),
                 ('product_name', models.CharField(help_text='Product name at the moment of purchase.', max_length=255, null=True, verbose_name='Product name', blank=True)),
+                ('product_code', models.CharField(help_text='Product code at the moment of purchase.', max_length=255, null=True, verbose_name='Product code', blank=True)),
                 ('_unit_price', models.DecimalField(help_text='Products unit price at the moment of purchase.', null=True, verbose_name='Unit price', max_digits=30, decimal_places=2)),
                 ('_line_total', models.DecimalField(help_text='Line total on the invoice at the moment of purchase.', null=True, verbose_name='Line Total', max_digits=30, decimal_places=2)),
                 ('quantity', models.IntegerField(verbose_name='Ordered quantity')),
-                ('extra', jsonfield.fields.JSONField(default={}, verbose_name='Arbitrary information for this order item')),
+                ('extra', jsonfield.fields.JSONField(default={}, help_text='Arbitrary information for this order item', verbose_name='Extra fields')),
                 ('order', models.ForeignKey(related_name='items', verbose_name='Order', to='myshop.Order')),
             ],
             options={
@@ -143,7 +143,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('status', django_fsm.FSMField(default='new', protected=True, max_length=50, verbose_name='Status')),
-                ('amount', models.DecimalField(default='0', help_text='How much was paid with this particular transfer.', verbose_name='Amount paid', max_digits=30, decimal_places=2)),
+                ('amount', models.DecimalField(default='0', help_text='How much was paid with this particular transfer.', max_digits=30, decimal_places=2)),
                 ('transaction_id', models.CharField(help_text="The transaction processor's reference", max_length=255, verbose_name='Transaction ID')),
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Received at')),
                 ('payment_method', models.CharField(help_text='The payment backend used to process the purchase', max_length=255, verbose_name='Payment method')),
@@ -289,12 +289,6 @@ class Migration(migrations.Migration):
             model_name='orderitem',
             name='product',
             field=models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, verbose_name='Product', blank=True, to='myshop.Product', null=True),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='orderitem',
-            name='shipped_with',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, blank=True, to='myshop.OrderShipping', help_text='Refer to the delivery provider used to ship this item', null=True, verbose_name='Shipped with'),
             preserve_default=True,
         ),
         migrations.AddField(

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.forms import fields
+from django.forms.fields import ChoiceField
 from django.template.loader import select_template
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
@@ -24,7 +24,7 @@ AUTH_FORM_TYPES = (
 
 class ShopAuthForm(LinkForm):
     LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")), ('RELOAD_PAGE', _("Reload Page")), ('DO_NOTHING', _("Do Nothing")))
-    form_type = fields.ChoiceField(label=_("Rendered Form"), choices=(ft[:2] for ft in AUTH_FORM_TYPES),
+    form_type = ChoiceField(label=_("Rendered Form"), choices=(ft[:2] for ft in AUTH_FORM_TYPES),
         help_text=_("Select the appropriate form for various authentication purposes."))
 
     def clean(self):

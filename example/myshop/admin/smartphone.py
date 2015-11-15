@@ -15,16 +15,14 @@ from myshop.models.smartphone import SmartPhone, Manufacturer, OperatingSystem
 from .image import ProductImageInline
 
 
+@admin.register(Manufacturer)
 class ManufacturerAdmin(admin.ModelAdmin):
     pass
 
-admin.site.register(Manufacturer, ManufacturerAdmin)
 
-
+@admin.register(OperatingSystem)
 class OperatingSystemAdmin(admin.ModelAdmin):
     pass
-
-admin.site.register(OperatingSystem, OperatingSystemAdmin)
 
 
 class SmartPhoneInline(admin.TabularInline):
