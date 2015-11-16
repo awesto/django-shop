@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 # value[2]: currency symbol in UTF-8
 # value[3]: textual description
 CURRENCIES = {
+    'AUD': ('036', 2, '$', _("Australian Dollar")),
     'BRL': ('986', 2, 'R$', _("Brazilian Real")),
     'CHF': ('756', 2, 'SFr.', _("Swiss Franc")),
     'CNY': ('156', 2, '¥', _("Chinese Yuan")),
