@@ -102,9 +102,9 @@ reversion.register(SmartPhoneModel, follow=['product_ptr'])
 
 
 class SmartPhone(models.Model):
-    product = models.ForeignKey(SmartPhoneModel, verbose_name=_("Internal Storage"))
-    product_code = models.CharField(max_length=255, verbose_name=_("Product code"), unique=True)
-    unit_price = MoneyField(verbose_name=_("Unit price"), decimal_places=3,
+    product = models.ForeignKey(SmartPhoneModel, verbose_name=_("Smart-Phone Model"))
+    product_code = models.CharField(_("Product code"), max_length=255, unique=True)
+    unit_price = MoneyField(_("Unit price"), decimal_places=3,
         help_text=_("Net price for this product"))
     storage = models.PositiveIntegerField(_("Internal Storage"),
         help_text=_("Internal storage in MB"))
