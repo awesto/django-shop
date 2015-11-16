@@ -27,11 +27,11 @@ django-reversion==1.9.3
 django-sass-processor==0.3.0
 django-sekizai==0.8.2
 django-select2==5.2.1
--e git+git@github.com:jrief/django-shop.git@d97447e1d9e29d44649b9d242c7f26dcb82fa057#egg=django_shop-0.3.0.dev
--e git+git@github.com:jrief/django-shop-stripe.git@6c57ce026270b752e829fe93c0df5cdd97fe0437#egg=django_shop_stripe-master
+-e git+git@github.com:jrief/django-shop.git@0.3.0.dev#egg=django_shop-0.3.0.dev
+-e git+git@github.com:jrief/django-shop-stripe.git@master#egg=django_shop_stripe-master
 django-treebeard==3.0
 djangocms-admin-style==0.2.8
--e git+git@github.com:jrief/djangocms-bootstrap3.git@01b6016b53f8bc8731d3be527fa3791924dd48fa#egg=djangocms_bootstrap3-master
+-e git+git@github.com:jrief/djangocms-bootstrap3.git@master#egg=djangocms_bootstrap3-master
 -e git+git@github.com:jrief/djangocms-cascade.git@release-candidate-0.7#egg=djangocms_cascade-dev
 djangocms-text-ckeditor==2.6.0
 djangorestframework==3.0.5
