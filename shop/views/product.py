@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 import os
 from django.db.models import Q
+from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404
 from django.utils.translation import get_language_from_request
 from rest_framework import generics
@@ -59,7 +60,10 @@ class ProductListView(generics.ListAPIView):
         renderer_context = super(ProductListView, self).get_renderer_context()
         if renderer_context['request'].accepted_renderer.format == 'html':
             # add the paginator as Python object to the context
-            renderer_context['paginator'] = self.paginator
+            try:
+                renderer_context['paginator'] = self.paginator
+            except AttributeError:
+                raise Http404("This paginated page does not exist")
             renderer_context['filter'] = self.filter_context
         return renderer_context
 
