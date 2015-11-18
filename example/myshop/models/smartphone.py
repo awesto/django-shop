@@ -6,15 +6,7 @@ from django.utils.encoding import python_2_unicode_compatible
 import reversion
 from shop.money import Money, MoneyMaker
 from shop.money.fields import MoneyField
-from .product import Product
-
-
-@python_2_unicode_compatible
-class Manufacturer(models.Model):
-    name = models.CharField(_("Name"), max_length=50)
-
-    def __str__(self):
-        return self.name
+from .product import Product, Manufacturer
 
 
 @python_2_unicode_compatible
@@ -60,9 +52,6 @@ class SmartPhoneModel(Product):
         help_text=_("Weight in gram"))
     screen_size = models.DecimalField(_("Screen size"), max_digits=4, decimal_places=2,
         help_text=_("Diagonal screen size in inch"))
-
-    cms_pages = models.ManyToManyField('cms.Page', blank=True,
-        help_text=_("Choose list view this phone shall appear on."))
 
     class Meta:
         verbose_name = _("Smart Phone")

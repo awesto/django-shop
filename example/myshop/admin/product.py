@@ -3,13 +3,20 @@ from __future__ import unicode_literals
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Max
+from django.template.context import Context
+from django.template.loader import get_template
 from django.utils.translation import ugettext_lazy as _
 from adminsortable2.admin import SortableAdminMixin
-from polymorphic.admin import PolymorphicParentModelAdmin
+from cms.admin.placeholderadmin import PlaceholderAdminMixin, FrontendEditableAdminMixin
+from parler.admin import TranslatableAdmin
+from polymorphic.admin import PolymorphicParentModelAdmin, PolymorphicChildModelAdmin
 from reversion import VersionAdmin
+from shop.admin.product import CMSPageAsCategoryMixin
 from myshop.models.product import Product
-from myshop.models.smartphone import SmartPhoneModel
-from .smartphone import SmartPhoneAdmin
+from myshop.models.smartcard import SmartCard
+from myshop.models.smartphone import SmartPhone, SmartPhoneModel, Manufacturer, OperatingSystem
+from .image import ProductImageInline
 
 
 class ProductTypeListFilter(admin.SimpleListFilter):
@@ -21,7 +28,8 @@ class ProductTypeListFilter(admin.SimpleListFilter):
 
     def lookups(self, request, model_admin):
         return (
-            ('smartphone', _("Smart Phone")),
+            ('smartcard', _("Smart Card")),
+            ('smartphonemodel', _("Smart Phone")),
         )
 
     def queryset(self, request, queryset):
@@ -37,10 +45,74 @@ class ProductTypeListFilter(admin.SimpleListFilter):
         return queryset.filter(polymorphic_ctype=product_type)
 
 
+class SmartCardAdmin(SortableAdminMixin, TranslatableAdmin, VersionAdmin, FrontendEditableAdminMixin,
+                     CMSPageAsCategoryMixin, PlaceholderAdminMixin, PolymorphicChildModelAdmin):
+    base_model = Product
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'slug', 'active',),
+        }),
+        (_("Translatable Fields"), {
+            'fields': ('description',)
+        }),
+        (_("Categories"), {
+            'fields': ('cms_pages',),
+        }),
+        (_("Properties"), {
+            'fields': ('manufacturer', 'storage',)
+        }),
+    )
+    filter_horizontal = ('cms_pages',)
+    inlines = (ProductImageInline,)
+    prepopulated_fields = {'slug': ('name',)}
+
+
+class SmartPhoneInline(admin.TabularInline):
+    model = SmartPhone
+    extra = 0
+
+
+class SmartPhoneAdmin(TranslatableAdmin, VersionAdmin, FrontendEditableAdminMixin,
+                      CMSPageAsCategoryMixin, PlaceholderAdminMixin, PolymorphicChildModelAdmin):
+    base_model = Product
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'slug', 'active',),
+        }),
+        (_("Translatable Fields"), {
+            'fields': ('description',)
+        }),
+        (_("Categories"), {
+            'fields': ('cms_pages',),
+        }),
+        (_("Properties"), {
+            'fields': ('manufacturer', 'battery_type', 'battery_capacity', 'ram_storage',
+                'wifi_connectivity', 'bluetooth', 'gps', 'operating_system',
+                ('width', 'height', 'weight',), 'screen_size'),
+        }),
+    )
+    filter_horizontal = ('cms_pages',)
+    inlines = (ProductImageInline, SmartPhoneInline,)
+    prepopulated_fields = {'slug': ('name',)}
+
+    def save_model(self, request, obj, form, change):
+        if not change:
+            # since SortableAdminMixin is missing on this class, ordering has to be computed by hand
+            max_order = self.base_model.objects.aggregate(max_order=Max('order'))['max_order']
+            obj.order = max_order + 1 if max_order else 1
+        obj.legacy_fixed = True
+        super(SmartPhoneAdmin, self).save_model(request, obj, form, change)
+
+    def render_text_index(self, instance):
+        template = get_template('search/indexes/myshop/commodity_text.txt')
+        return template.render(Context({'object': instance}))
+    render_text_index.short_description = _("Text Index")
+
+
 @admin.register(Product)
 class ProductAdmin(SortableAdminMixin, VersionAdmin, PolymorphicParentModelAdmin):
     base_model = Product
-    child_models = ((SmartPhoneModel, SmartPhoneAdmin),)  # (Commodity, CommodityAdmin),)
+    child_models = ((SmartPhoneModel, SmartPhoneAdmin), (SmartCard, SmartCardAdmin),)
     list_display = ('name', 'get_price', 'product_type', 'active',)
     list_display_links = ('name',)
     search_fields = ('name',)
@@ -51,3 +123,13 @@ class ProductAdmin(SortableAdminMixin, VersionAdmin, PolymorphicParentModelAdmin
     def get_price(self, obj):
         return obj.get_real_instance().get_price(None)
     get_price.short_description = _("Price starting at")
+
+
+@admin.register(Manufacturer)
+class ManufacturerAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(OperatingSystem)
+class OperatingSystemAdmin(admin.ModelAdmin):
+    pass

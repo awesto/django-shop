@@ -2,11 +2,13 @@
 from __future__ import unicode_literals
 from django.conf import settings
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from django.utils.six.moves.urllib.parse import urljoin
 from filer.fields import image
 from filer.models import Image
 from cms.models.fields import PlaceholderField
+from cms.models.pagemodel import Page
 from djangocms_text_ckeditor.fields import HTMLField
 from parler.models import TranslatableModel, TranslatedFieldsModel
 from parler.fields import TranslatedField
@@ -33,8 +35,10 @@ class Product(TranslatableModel, BaseProduct):
     name = models.CharField(max_length=255, verbose_name=_("Name"))
     slug = models.SlugField(verbose_name=_("Slug"))
     description = TranslatedField()
+    cms_pages = models.ManyToManyField(Page, through='ProductPage', null=True,
+        help_text=_("Choose list view this product shall appear on."))
     images = models.ManyToManyField(Image, through='ProductImage', null=True)
-    placeholder = PlaceholderField('Product Detail',
+    placeholder = PlaceholderField("Product Detail",
         verbose_name=_("Additional description for this product."))
 
     class Meta:
@@ -83,6 +87,19 @@ class ProductTranslation(TranslatedFieldsModel):
         app_label = settings.SHOP_APP_LABEL
 
 
+class ProductPage(models.Model):
+    """
+    Explicit ManyToMany relation from CMS Page to Product. This is in practice is the category.
+    """
+    page = models.ForeignKey(Page)
+    product = models.ForeignKey(Product)
+
+    class Meta:
+        app_label = settings.SHOP_APP_LABEL
+        verbose_name = _("Category")
+        verbose_name_plural = _("Categories")
+
+
 class ProductImage(models.Model):
     image = image.FilerImageField()
     product = models.ForeignKey(Product)
@@ -93,3 +110,11 @@ class ProductImage(models.Model):
         verbose_name = _("Product Image")
         verbose_name_plural = _("Product Images")
         ordering = ('order',)
+
+
+@python_2_unicode_compatible
+class Manufacturer(models.Model):
+    name = models.CharField(_("Name"), max_length=50)
+
+    def __str__(self):
+        return self.name

@@ -8,7 +8,7 @@ from shop.views.product import AddToCartView, ProductListView, ProductRetrieveVi
 from shop.search.views import SearchView
 from myshop.models.smartphone import SmartPhoneModel, SmartPhone
 from myshop.serializers import (ProductSummarySerializer, ProductDetailSerializer,
-    AddToCartSerializer, CommoditySearchSerializer)
+    AddToCartSerializer)
 
 limit_choices_to = Q(instance_of=SmartPhoneModel, active=True)
 list_options = dict(

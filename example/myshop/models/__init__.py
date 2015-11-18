@@ -10,4 +10,5 @@ from shop.models.defaults.customer import Customer
 
 # models defined by the myshop instance itself
 from .order import OrderItem
+from . import smartcard
 from . import smartphone
