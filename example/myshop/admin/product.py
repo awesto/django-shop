@@ -10,7 +10,8 @@ from django.utils.translation import ugettext_lazy as _
 from adminsortable2.admin import SortableAdminMixin
 from cms.admin.placeholderadmin import PlaceholderAdminMixin, FrontendEditableAdminMixin
 from parler.admin import TranslatableAdmin
-from polymorphic.admin import PolymorphicParentModelAdmin, PolymorphicChildModelAdmin
+from polymorphic.admin import (PolymorphicParentModelAdmin, PolymorphicChildModelAdmin,
+    PolymorphicChildModelFilter)
 from reversion import VersionAdmin
 from shop.admin.product import CMSPageAsCategoryMixin
 from myshop.models.product import Product
@@ -19,30 +20,6 @@ from myshop.models.smartphone import SmartPhone, SmartPhoneModel, Manufacturer, 
 from .image import ProductImageInline
 
 
-class ProductTypeListFilter(admin.SimpleListFilter):
-    title = _("Product type")
-    app_label = settings.SHOP_APP_LABEL.lower()
-
-    # Parameter for the filter that will be used in the URL query.
-    parameter_name = 'product_type'
-
-    def lookups(self, request, model_admin):
-        return (
-            ('smartcard', _("Smart Card")),
-            ('smartphonemodel', _("Smart Phone")),
-        )
-
-    def queryset(self, request, queryset):
-        """
-        Returns the filtered queryset based on the value
-        provided in the query string and retrievable via
-        `self.value()`.
-        """
-        model = self.value()
-        if not model:
-            return queryset
-        product_type = ContentType.objects.get(app_label=self.app_label, model=model)
-        return queryset.filter(polymorphic_ctype=product_type)
 
 
 class SmartCardAdmin(SortableAdminMixin, TranslatableAdmin, VersionAdmin, FrontendEditableAdminMixin,
@@ -116,7 +93,7 @@ class ProductAdmin(SortableAdminMixin, VersionAdmin, PolymorphicParentModelAdmin
     list_display = ('name', 'get_price', 'product_type', 'active',)
     list_display_links = ('name',)
     search_fields = ('name',)
-    list_filter = (ProductTypeListFilter,)
+    list_filter = (PolymorphicChildModelFilter,)
     list_per_page = 250
     list_max_show_all = 1000
 
