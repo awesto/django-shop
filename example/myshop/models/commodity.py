@@ -52,8 +52,6 @@ class CommodityTag(TranslatableModel, models.Model):
 
 @python_2_unicode_compatible
 class Commodity(Product):
-    cms_pages = models.ManyToManyField('cms.Page', blank=True,
-        help_text=_("Choose list view this commodity shall appear on."))
     properties = models.ManyToManyField(CommodityTag, blank=True,
         help_text=_("Choose properties for this commodity."))
 

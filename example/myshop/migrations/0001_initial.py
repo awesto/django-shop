@@ -19,9 +19,9 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('email_auth', '0002_auto_20151011_1652'),
-        ('contenttypes', '0001_initial'),
+        ('cms', '0013_urlconfrevision'),
         ('filer', '0002_auto_20150606_2003'),
-        ('cms', '0012_auto_20150607_2207'),
+        ('contenttypes', '0001_initial'),
     ]
 
     operations = [
@@ -192,9 +192,16 @@ class Migration(migrations.Migration):
                 ('image', filer.fields.image.FilerImageField(to='filer.Image')),
             ],
             options={
-                'ordering': ('order',),
-                'verbose_name': 'Product Image',
-                'verbose_name_plural': 'Product Images',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='ProductPage',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('page', models.ForeignKey(to='cms.Page')),
+            ],
+            options={
             },
             bases=(models.Model,),
         ),
@@ -210,11 +217,27 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='SmartCard',
+            fields=[
+                ('product_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='myshop.Product')),
+                ('cart_type', models.CharField(max_length='15', verbose_name='Card Type', choices=[('SD', 'SD'), ('micro SD', 'micro SD'), ('SDXC', 'SDXC'), ('micro SDXC', 'micro SDXC'), ('SDHC', 'SDHC'), ('micro SDHC', 'micro SDHC')])),
+                ('product_code', models.CharField(unique=True, max_length=255, verbose_name='Product code')),
+                ('unit_price', models.DecimalField(default='0', help_text='Net price for this product', max_digits=30, decimal_places=3)),
+                ('storage', models.PositiveIntegerField(help_text='Storage capacity in GB', verbose_name='Storage Capacity')),
+                ('manufacturer', models.ForeignKey(verbose_name='Manufacturer', to='myshop.Manufacturer')),
+            ],
+            options={
+                'verbose_name': 'Smart Card',
+                'verbose_name_plural': 'Smart Card',
+            },
+            bases=('myshop.product',),
+        ),
+        migrations.CreateModel(
             name='SmartPhone',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('product_code', models.CharField(unique=True, max_length=255, verbose_name='Product code')),
-                ('unit_price', models.DecimalField(default='0', help_text='Net price for this product', verbose_name='Unit price', max_digits=30, decimal_places=3)),
+                ('unit_price', models.DecimalField(default='0', help_text='Net price for this product', max_digits=30, decimal_places=3)),
                 ('storage', models.PositiveIntegerField(help_text='Internal storage in MB', verbose_name='Internal Storage')),
             ],
             options={
@@ -235,7 +258,6 @@ class Migration(migrations.Migration):
                 ('height', models.DecimalField(help_text='Height in mm', verbose_name='Height', max_digits=4, decimal_places=1)),
                 ('weight', models.DecimalField(help_text='Weight in gram', verbose_name='Weight', max_digits=5, decimal_places=1)),
                 ('screen_size', models.DecimalField(help_text='Diagonal screen size in inch', verbose_name='Screen size', max_digits=4, decimal_places=2)),
-                ('cms_pages', models.ManyToManyField(help_text='Choose list view this phone shall appear on.', to='cms.Page', blank=True)),
                 ('manufacturer', models.ForeignKey(verbose_name='Manufacturer', to='myshop.Manufacturer')),
                 ('operating_system', models.ForeignKey(verbose_name='Operating System', to='myshop.OperatingSystem')),
             ],
@@ -248,7 +270,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='smartphone',
             name='product',
-            field=models.ForeignKey(verbose_name='Internal Storage', to='myshop.SmartPhoneModel'),
+            field=models.ForeignKey(verbose_name='Smart-Phone Model', to='myshop.SmartPhoneModel'),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -262,9 +284,21 @@ class Migration(migrations.Migration):
             unique_together=set([('language_code', 'master')]),
         ),
         migrations.AddField(
+            model_name='productpage',
+            name='product',
+            field=models.ForeignKey(to='myshop.Product'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
             model_name='productimage',
             name='product',
             field=models.ForeignKey(to='myshop.Product'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='product',
+            name='cms_pages',
+            field=models.ManyToManyField(help_text='Choose list view this product shall appear on.', to='cms.Page', null=True, through='myshop.ProductPage'),
             preserve_default=True,
         ),
         migrations.AddField(
