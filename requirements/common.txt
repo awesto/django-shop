@@ -19,7 +19,6 @@ django-mptt==0.7.4
 django-parler==1.5
 django-polymorphic==0.7.1
 django-post-office==2.0.1
-django-pytest==0.2.0
 django-redis-cache==1.6.0
 django-redis-sessions==0.5.0
 django-rest-auth==0.5.0
@@ -49,14 +48,12 @@ pluggy==0.3.1
 py==1.4.30
 Pygments==2.0.2
 pypandoc==1.0.5
-pytest==2.8.2
 python-openid==2.2.5
 redis==2.10.3
 requests==2.7.0
 requests-oauthlib==0.5.0
 six==1.9.0
 stripe==1.27.1
-tox==2.1.1
 Unidecode==0.4.18
 urllib3==1.12
 virtualenv==13.1.2
