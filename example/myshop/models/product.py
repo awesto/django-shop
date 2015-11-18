@@ -5,10 +5,7 @@ from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from django.utils.six.moves.urllib.parse import urljoin
-from filer.fields import image
-from filer.models import Image
 from cms.models.fields import PlaceholderField
-from cms.models.pagemodel import Page
 from djangocms_text_ckeditor.fields import HTMLField
 from parler.models import TranslatableModel, TranslatedFieldsModel
 from parler.fields import TranslatedField
@@ -16,6 +13,7 @@ from parler.managers import TranslatableManager, TranslatableQuerySet
 from polymorphic.query import PolymorphicQuerySet
 import reversion
 from shop.models.product import BaseProductManager, BaseProduct
+from shop.models.related import BaseProductPage, BaseProductImage
 
 
 class ProductQuerySet(TranslatableQuerySet, PolymorphicQuerySet):
@@ -30,14 +28,22 @@ class ProductManager(BaseProductManager, TranslatableManager):
         return self.get_queryset().filter(query)
 
 
+class ProductPage(BaseProductPage):
+    """Materialize many-to-many relation with CMS pages"""
+
+
+class ProductImage(BaseProductImage):
+    """Materialize many-to-many relation with images"""
+
+
 class Product(TranslatableModel, BaseProduct):
     order = models.PositiveIntegerField(verbose_name=_("Sort by"), db_index=True)
     name = models.CharField(max_length=255, verbose_name=_("Name"))
     slug = models.SlugField(verbose_name=_("Slug"))
     description = TranslatedField()
-    cms_pages = models.ManyToManyField(Page, through='ProductPage', null=True,
+    cms_pages = models.ManyToManyField('cms.Page', through=ProductPage, null=True,
         help_text=_("Choose list view this product shall appear on."))
-    images = models.ManyToManyField(Image, through='ProductImage', null=True)
+    images = models.ManyToManyField('filer.Image', through=ProductImage, null=True)
     placeholder = PlaceholderField("Product Detail",
         verbose_name=_("Additional description for this product."))
 
@@ -85,31 +91,6 @@ class ProductTranslation(TranslatedFieldsModel):
     class Meta:
         unique_together = [('language_code', 'master')]
         app_label = settings.SHOP_APP_LABEL
-
-
-class ProductPage(models.Model):
-    """
-    Explicit ManyToMany relation from CMS Page to Product. This is in practice is the category.
-    """
-    page = models.ForeignKey(Page)
-    product = models.ForeignKey(Product)
-
-    class Meta:
-        app_label = settings.SHOP_APP_LABEL
-        verbose_name = _("Category")
-        verbose_name_plural = _("Categories")
-
-
-class ProductImage(models.Model):
-    image = image.FilerImageField()
-    product = models.ForeignKey(Product)
-    order = models.SmallIntegerField(default=0, blank=False, null=False)
-
-    class Meta:
-        app_label = settings.SHOP_APP_LABEL
-        verbose_name = _("Product Image")
-        verbose_name_plural = _("Product Images")
-        ordering = ('order',)
 
 
 @python_2_unicode_compatible

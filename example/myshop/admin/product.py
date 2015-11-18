@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.conf import settings
 from django.contrib import admin
-from django.contrib.contenttypes.models import ContentType
 from django.db.models import Max
 from django.template.context import Context
 from django.template.loader import get_template
@@ -13,13 +11,10 @@ from parler.admin import TranslatableAdmin
 from polymorphic.admin import (PolymorphicParentModelAdmin, PolymorphicChildModelAdmin,
     PolymorphicChildModelFilter)
 from reversion import VersionAdmin
-from shop.admin.product import CMSPageAsCategoryMixin
+from shop.admin.product import CMSPageAsCategoryMixin, ProductImageInline
 from myshop.models.product import Product
 from myshop.models.smartcard import SmartCard
 from myshop.models.smartphone import SmartPhone, SmartPhoneModel, Manufacturer, OperatingSystem
-from .image import ProductImageInline
-
-
 
 
 class SmartCardAdmin(SortableAdminMixin, TranslatableAdmin, VersionAdmin, FrontendEditableAdminMixin,
