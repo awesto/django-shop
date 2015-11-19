@@ -31,6 +31,7 @@ class OrderManager(models.Manager):
         cart.update(request)
         order = self.model(customer=cart.customer, currency=cart.total.currency,
             _subtotal=Decimal(0), _total=Decimal(0), stored_request=self.stored_request(request))
+        order.get_or_assign_number()
         order.save()
         order.customer.get_or_assign_number()
         for cart_item in cart.items.all():
@@ -152,18 +153,24 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         verbose_name_plural = _("Orders")
 
     def __str__(self):
-        return self.identifier
+        return self.get_number()
 
     def __repr__(self):
         return "<{}(pk={})>".format(self.__class__.__name__, self.pk)
 
-    @property
-    def identifier(self):
+    def get_or_assign_number(self):
         """
-        Return a unique identifier representing this Order object.
+        Hook to get or to assign the order number. It shall be invoked, every time an Order
+        object is created. If you prefer to use an order number which differs from the primary
+        key, then override this method.
         """
-        msg = "Property method identifier() must be implemented by subclass: `{}`"
-        raise NotImplementedError(msg.format(self.__class__.__name__))
+        return self.id
+
+    def get_number(self):
+        """
+        Hook to get the order number.
+        """
+        return self.id
 
     @cached_property
     def subtotal(self):

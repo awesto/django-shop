@@ -35,7 +35,7 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, generics.Gener
             if self.many is False:
                 # add an extra ance to the breadcrumb
                 try:
-                    renderer_context['extra_ance'] = self.get_object().identifier
+                    renderer_context['extra_ance'] = self.get_object().get_number()
                 except AttributeError:
                     pass
         return renderer_context

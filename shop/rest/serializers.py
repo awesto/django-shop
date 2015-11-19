@@ -323,7 +323,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderListSerializer(serializers.ModelSerializer):
-    identifier = serializers.CharField()
+    number = serializers.CharField(source='get_number', read_only=True)
     url = serializers.URLField(source='get_absolute_url', read_only=True)
     status = serializers.CharField(source='status_name', read_only=True)
     subtotal = MoneyField()

@@ -66,15 +66,19 @@ class StatusListFilter(admin.SimpleListFilter):
 
 
 class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
-    list_display = ('identifier', 'customer', 'status_name', 'total', 'created_at',)
+    list_display = ('get_number', 'customer', 'status_name', 'total', 'created_at',)
     list_filter = (StatusListFilter,)
     fsm_field = ('status',)
     date_hierarchy = 'created_at'
     inlines = (OrderItemInline, OrderPaymentInline,)
-    readonly_fields = ('identifier', 'status_name', 'total', 'subtotal', 'get_customer_link',
+    readonly_fields = ('get_number', 'status_name', 'total', 'subtotal', 'get_customer_link',
         'outstanding_amount', 'created_at', 'updated_at', 'extra', 'stored_request',)
-    fields = ('identifier', 'status_name', ('created_at', 'updated_at'),
+    fields = ('get_number', 'status_name', ('created_at', 'updated_at'),
         ('subtotal', 'total', 'outstanding_amount',), 'get_customer_link', 'extra', 'stored_request',)
+
+    def get_number(self, obj):
+        return obj.get_number()
+    get_number.short_description = _("Order number")
 
     def get_customer_link(self, obj):
         url = reverse('admin:shop_customerproxy_change', args=(obj.customer.pk,))
