@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from six import with_metaclass
-from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from filer.fields import image
