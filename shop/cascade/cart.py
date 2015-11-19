@@ -29,8 +29,8 @@ class ShopCartPlugin(ShopPluginBase):
     )
 
     @classmethod
-    def get_identifier(cls, obj):
-        render_type = obj.glossary.get('render_type')
+    def get_identifier(cls, instance):
+        render_type = instance.glossary.get('render_type')
         return mark_safe(dict(cls.CHOICES).get(render_type, ''))
 
     def get_render_template(self, context, instance, placeholder):

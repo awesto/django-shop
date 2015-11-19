@@ -37,9 +37,9 @@ class ProcessBarPlugin(TransparentMixin, ShopPluginBase):
     allow_children = True
 
     @classmethod
-    def get_identifier(cls, obj):
-        identifier = super(ProcessBarPlugin, cls).get_identifier(obj)
-        num_cols = obj.get_children().count()
+    def get_identifier(cls, instance):
+        identifier = super(ProcessBarPlugin, cls).get_identifier(instance)
+        num_cols = instance.get_children().count()
         content = ungettext_lazy('with {} page', 'with {} pages', num_cols).format(num_cols)
         return format_html('{0}{1}', identifier, content)
 

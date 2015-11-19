@@ -82,8 +82,8 @@ class ShopButtonPluginBase(ShopLinkPluginBase):
         js = resolve_dependencies('shop/js/admin/shoplinkplugin.js')
 
     @classmethod
-    def get_identifier(cls, obj):
-        return mark_safe(obj.glossary.get('link_content', ''))
+    def get_identifier(cls, instance):
+        return mark_safe(instance.glossary.get('link_content', ''))
 
 
 class HeavySelect2Widget(HeavySelect2Widget):
