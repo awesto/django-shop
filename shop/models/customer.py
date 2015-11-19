@@ -250,16 +250,16 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     def get_or_assign_number(self):
         """
         Hook to get or to assign the customers number. It shall be invoked, every time an Order
-        object is created. If you prefer to use a customer number which differs from the primary
-        key, then override this method.
+        object is created. If the customer number shall be different from the primary key, then
+        override this method.
         """
-        return self.user_id
+        return self.get_number()
 
     def get_number(self):
         """
-        Hook to get the customers number. May return None for customers haven't purchased anything.
+        Hook to get the customers number. Customers haven't purchased anything may return None.
         """
-        return self.user_id
+        return str(self.user_id)
 
     def save(self, **kwargs):
         if 'update_fields' not in kwargs:

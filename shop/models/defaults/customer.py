@@ -15,7 +15,4 @@ class Customer(BaseCustomer):
             aggr = Customer.objects.filter(number__isnull=False).aggregate(models.Max('number'))
             self.number = (aggr['number__max'] or 0) + 1
             self.save()
-        return self.number
-
-    def get_number(self):
-        return self.number
+        return self.get_number()

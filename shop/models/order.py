@@ -164,13 +164,13 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         object is created. If you prefer to use an order number which differs from the primary
         key, then override this method.
         """
-        return self.id
+        return self.get_number()
 
     def get_number(self):
         """
         Hook to get the order number.
         """
-        return self.id
+        return str(self.id)
 
     @cached_property
     def subtotal(self):
