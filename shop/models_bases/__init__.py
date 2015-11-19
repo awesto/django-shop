@@ -11,7 +11,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from polymorphic.polymorphic_model import PolymorphicModel
 from shop.cart.modifiers_pool import cart_modifiers_pool
 from shop.order_signals import confirmed, completed, cancelled, shipped
-from shop.util.fields import CurrencyField
+from shop.util.fields import CurrencyField, upload_to_classname
 from shop.util.loader import get_model_string
 import django
 import collections
@@ -560,8 +560,7 @@ class BasePaymentBackend(models.Model):
     url_name = models.SlugField(max_length=20)
     active = models.BooleanField(default=True)
     description = models.TextField(null=True, blank=True)
-    logo = models.ImageField(null=True, blank=True,
-                             upload_to=path.join(settings.MEDIA_ROOT, 'payment-backend'))
+    logo = models.ImageField(null=True, blank=True, upload_to=upload_to_classname)
 
     class Meta(object):
         abstract = True
@@ -571,6 +570,7 @@ class BasePaymentBackend(models.Model):
 
     def __str__(self):
         return self.name
+
 
 @python_2_unicode_compatible
 class BaseShippingBackend(models.Model):
@@ -586,8 +586,7 @@ class BaseShippingBackend(models.Model):
     url_name = models.SlugField(max_length=20)
     active = models.BooleanField(default=True)
     description = models.TextField(null=True, blank=True)
-    logo = models.ImageField(null=True, blank=True,
-                             upload_to=path.join(settings.MEDIA_ROOT, 'backends'))
+    logo = models.ImageField(null=True, blank=True, upload_to=upload_to_classname)
 
     class Meta(object):
         abstract = True

@@ -30,3 +30,22 @@ class CurrencyField(DecimalField):
         args, kwargs = introspector(self)
         # That's our definition!
         return (field_class, args, kwargs)
+
+
+def upload_to_classname(instance, filename):
+    basedir = str(instance.__class__.__name__).lower()
+    ext = os.path.splitext(filename)[1]
+    filename = None
+
+    if not filename and hasattr(instance, "slug") and getattr(instance, "slug"):
+        filename = getattr(instance, "slug")
+
+    if not filename and instance.pk:
+        filename = "image_" + str(instance.pk)
+
+    if not filename:
+        filename = "image_" + str(random.randint(1000, 1000000))
+        while os.path.exists(os.path.join(settings.MEDIA_ROOT, basedir, filename + ext)):
+            filename = "image_" + str(random.randint(1000, 1000000))
+
+    return os.path.join(settings.MEDIA_ROOT, basedir, filename + ext)
