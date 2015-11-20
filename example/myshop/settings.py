@@ -137,7 +137,7 @@ DATABASES = {
 }
 
 # Internationalization
-# https://docs.djangoproject.com/en/1.7/topics/i18n/
+# https://docs.djangoproject.com/en/stable/topics/i18n/
 
 LANGUAGE_CODE = 'de'
 
@@ -352,7 +352,6 @@ THUMBNAIL_PROCESSORS = (
 
 CMS_TEMPLATES = (
     ('myshop/pages/default.html', _("Default Page")),
-    ('myshop/catalog/product-list.html', _("List Products")),
 )
 
 CMS_SEO_FIELDS = True
