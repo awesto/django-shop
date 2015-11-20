@@ -9,10 +9,12 @@
 		<h3 class="panel-title">{% trans "Order Product" %}</h3>
 	</div>
 	{% block add-product-to-cart-table %}
-	<table shop-add-to-cart="{{ product.get_absolute_url }}/add-to-cart/" class="table">
+	<table shop-add-to-cart="{{ product.get_absolute_url }}/add-to-cart" class="table">
 		<thead>
 			<tr>
-				<th>{% trans "Quantity" %}</th><th>{% trans "Unit Price" %}</th><th>{% trans "Subtotal" %}</th>
+				<th>{% trans "Quantity" %}</th>
+				<th>{% trans "Unit Price" %}</th>
+				<th>{% trans "Subtotal" %}</th>
 			</tr>
 		</thead>
 		<tbody>
