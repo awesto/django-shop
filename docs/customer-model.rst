@@ -1,6 +1,8 @@
-==================
-The Customer Model
-==================
+.. _customer-model:
+
+==============
+Customer Model
+==============
 
 Most web applications distinguish logged in users explicitly from *the* anonymous site visitor,
 which is regarded as a non-existing user, and thus does not reference a session- or database
@@ -247,12 +249,12 @@ looking up the credentials. To activate this alternative User model, add to the 
 
 
 Caveat when using this alternative User model
---------------------------------------------
+---------------------------------------------
 
 The savvy reader may have noticed that in ``email_auth.models.User``, the email field is not
 declared as unique. This by the way causes Django to complain during startup with:
 
-.. code-block::
+.. code-block:: guess
 
 	WARNINGS:
 	email_auth.User: (auth.W004) 'User.email' is named as the 'USERNAME_FIELD', but it is not unique.
