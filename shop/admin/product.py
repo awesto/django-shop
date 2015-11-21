@@ -26,6 +26,11 @@ class CMSPageAsCategoryMixin(object):
         if not hasattr(self.model, 'cms_pages'):
             raise ImproperlyConfigured("Product model requires a field named `cms_pages`")
 
+    def get_fieldsets(self, request, obj=None):
+        fieldsets = super(CMSPageAsCategoryMixin, self).get_fieldsets(request, obj=obj)
+        fieldsets += (_("Categories"), {'fields': ('cms_pages',)}),
+        return fieldsets
+
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         if db_field.name == 'cms_pages':
             # restrict many-to-many field for cms_pages to ProductApp only
