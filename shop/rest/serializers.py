@@ -162,7 +162,7 @@ class AddToCartSerializer(serializers.Serializer):
         else:
             quantity = data['quantity']
         instance.update(quantity=quantity, unit_price=unit_price, subtotal=quantity * unit_price)
-        super(AddToCartSerializer, self).__init__(instance, data, **kwargs)
+        super(AddToCartSerializer, self).__init__(instance, data, context=context)
 
     def get_instance(self, context, extra_args):
         return {'product': context['product'].id}
