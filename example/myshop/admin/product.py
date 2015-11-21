@@ -14,7 +14,7 @@ from reversion import VersionAdmin
 from shop.admin.product import CMSPageAsCategoryMixin, ProductImageInline
 from myshop.models.product import Product
 from myshop.models.smartcard import SmartCard
-from myshop.models.smartphone import SmartPhone, SmartPhoneModel, Manufacturer, OperatingSystem
+from myshop.models.smartphone import SmartPhone, SmartPhoneModel
 
 
 class SmartCardAdmin(SortableAdminMixin, TranslatableAdmin, VersionAdmin, FrontendEditableAdminMixin,
@@ -95,13 +95,3 @@ class ProductAdmin(SortableAdminMixin, VersionAdmin, PolymorphicParentModelAdmin
     def get_price(self, obj):
         return obj.get_real_instance().get_price(None)
     get_price.short_description = _("Price starting at")
-
-
-@admin.register(Manufacturer)
-class ManufacturerAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(OperatingSystem)
-class OperatingSystemAdmin(admin.ModelAdmin):
-    pass

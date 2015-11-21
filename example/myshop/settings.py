@@ -14,9 +14,13 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 from decimal import Decimal
 from django.utils.translation import ugettext_lazy as _
+from django.core.exceptions import ImproperlyConfigured
 
 SHOP_APP_LABEL = 'myshop'
 BASE_DIR = os.path.dirname(__file__)
+SHOP_TUTORIAL = os.environ.get('DJANGO_SHOP_TUTORIAL', 'simple')
+if SHOP_TUTORIAL not in ('simple', 'i18n', 'polymorphic',):
+    raise ImproperlyConfigured("Environment DJANGO_SHOP_TUTORIAL has an invalid value `{}`".format(SHOP_TUTORIAL))
 
 # Root directory for this django project
 PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, os.path.pardir, os.path.pardir))
@@ -123,6 +127,10 @@ MIDDLEWARE_CLASSES = (
     #'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
+MIGRATION_MODULES = {
+    'myshop': 'myshop.migrations_{}'.format(SHOP_TUTORIAL)
+}
+
 ROOT_URLCONF = 'myshop.urls'
 
 WSGI_APPLICATION = 'myshop.wsgi.application'
@@ -132,7 +140,7 @@ WSGI_APPLICATION = 'myshop.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(WORK_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(WORK_DIR, 'db-{}.sqlite3'.format(SHOP_TUTORIAL)),
     }
 }
 

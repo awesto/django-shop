@@ -2,11 +2,11 @@
 from __future__ import unicode_literals
 from django.conf import settings
 from rest_framework import serializers
-from rest_framework.fields import empty
 from shop.rest.serializers import (ProductSummarySerializerBase, ProductDetailSerializerBase,
-    AddToCartSerializer as AddToCartSerializerBase)
+    AddToCartSerializer)
 from shop.search.serializers import ProductSearchSerializer as ProductSearchSerializerBase
-from .models.product import Product
+#from .models.product import Product
+from .models import SmartCard as Product
 #from .search_indexes import CommodityIndex
 
 
@@ -28,7 +28,7 @@ class ProductDetailSerializer(ProductDetailSerializerBase):
         exclude = ('active',)
 
 
-class AddToCartSerializer(AddToCartSerializerBase):
+class AddSmartphoneToCartSerializer(AddToCartSerializer):
     """
     Modified AddToCartSerializer which handles SmartPhones
     """
