@@ -97,5 +97,5 @@ class SmartPhone(models.Model):
     storage = models.PositiveIntegerField(_("Internal Storage"),
         help_text=_("Internal storage in MB"))
 
-    def XX_get_price(self, request):
+    def get_price(self, request):
         return self.unit_price
