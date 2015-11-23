@@ -36,15 +36,6 @@ class ProductListView(generics.ListAPIView):
     def get_template_names(self):
         return [self.request.current_page.get_template()]
 
-    def paginate_queryset(self, queryset):
-        page = super(ProductListView, self).paginate_queryset(queryset)
-        try:
-            self.paginator = page.paginator
-        except AttributeError:
-            # if pagination is disabled, paginate_queryset will have returned None
-            return None
-        return page
-
     def filter_queryset(self, queryset):
         self.filter_context = None
         if self.filter_class:
@@ -59,11 +50,6 @@ class ProductListView(generics.ListAPIView):
     def get_renderer_context(self):
         renderer_context = super(ProductListView, self).get_renderer_context()
         if renderer_context['request'].accepted_renderer.format == 'html':
-            # add the paginator as Python object to the context
-            try:
-                renderer_context['paginator'] = self.paginator
-            except AttributeError:
-                raise Http404("This paginated page does not exist")
             renderer_context['filter'] = self.filter_context
         return renderer_context
 
