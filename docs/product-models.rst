@@ -75,7 +75,8 @@ Therefore we would model our smart-phones using a similar database model:
 	
 	class SmartPhoneModel(Product):
 	    manufacturer = models.ForeignKey(Manufacturer, verbose_name=_("Manufacturer"))
-	    battery_capacity = models.PositiveIntegerField(_("Capacity"), help_text=_("Battery capacity in mAh"))
+	    battery_capacity = models.PositiveIntegerField(_("Capacity"),
+	        help_text=_("Battery capacity in mAh"))
 	    operating_system = models.ForeignKey(OperatingSystem, verbose_name=_("Operating System"))
 	    width = models.DecimalField(_("Width"), max_digits=4, decimal_places=1)
 	    height = models.DecimalField(_("Height"), max_digits=4, decimal_places=1)

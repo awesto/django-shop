@@ -8,24 +8,24 @@ make much sense to use a translatable field here. The only model field which mak
 available in different languages, is the ``description`` field.
 
 
-Run the multilingual demo
+Run the Multilingual Demo
 =========================
 
-To test this example, in the shell set the environment variable ``export DJANGO_SHOP_TUTORIAL=i18n``
-and recreate the database as explained in :ref:`create-demo-database`.
+To test this example, set the shell environment variable ``export DJANGO_SHOP_TUTORIAL=i18n``,
+then recreate the database as explained in :ref:`create-demo-database`.
 
-Afterwards start the demo server as usual with:
+Afterwards start the demo server:
 
 .. code-block:: shell
 
 	./manage.py runserver
 
 
-Changes to the multilingal product model
-========================================
+The Multilingal Product Model
+=============================
 
-**DjangoSHOP** uses the application django-parler_ for model translations. We now shall rewrite our
-model as:
+**DjangoSHOP** uses the application django-parler_ for model translations. We therefore shall
+rewrite our model as:
 
 .. _django-parler: https://github.com/edoburu/django-parler
 
@@ -34,10 +34,15 @@ model as:
 	:linenos:
 	:language: python
 	:lines: 8-10, 12, 15-18, 21-22, 27-28, 49, 77-
+	:emphasize-lines: 11, 18-19
 
-A model with translations requires an additional model manager and a table storing the translated
-fields. Accessing an instance of this model behaves exactly the same as an untranslated model.
-Therefore it can be used as a drop-in replacement for our simple ``SmartCard`` model.
+In comparison to the simple Smart Card model, the field ``description`` can now accept text in
+different languages.
+
+In order to work properly, a model with translations requires an additional model manager and a
+table storing the translated fields. Accessing an instance of this model behaves exactly the same
+as an untranslated model. Therefore it can be used as a drop-in replacement for our simple
+``SmartCard`` model.
 
 
 Translatable model in Django Admin

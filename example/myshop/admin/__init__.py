@@ -8,10 +8,12 @@ from shop.models.order import OrderModel
 #from . import product
 from . import properties
 
-if settings.MYSHOP_TUTORIAL == '02':
+if settings.SHOP_TUTORIAL == 'simple':
     from .simple import smartcard
-else:
+elif settings.SHOP_TUTORIAL == 'i18n':
     from .i18n import smartcard
+elif settings.SHOP_TUTORIAL == 'polymorphic':
+    from .polymorphic import product
 
 admin.site.register(CustomerProxy, CustomerAdmin)
 

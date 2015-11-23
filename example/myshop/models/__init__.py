@@ -13,7 +13,9 @@ from shop.models.defaults.customer import Customer
 # models defined by the myshop instance itself
 from .order import OrderItem
 
-if settings.MYSHOP_TUTORIAL == '02':
+if settings.SHOP_TUTORIAL == 'simple':
     from .simple.smartcard import SmartCard
-else:
+elif settings.SHOP_TUTORIAL == 'i18n':
     from .i18n.smartcard import SmartCard
+elif settings.SHOP_TUTORIAL == 'polymorphic':
+    from .polymorphic.smartcard import SmartCard

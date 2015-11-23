@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.six.moves.urllib.parse import urljoin
-from cms.models.fields import PlaceholderField
 from djangocms_text_ckeditor.fields import HTMLField
 from parler.models import TranslatableModel, TranslatedFieldsModel
 from parler.fields import TranslatedField
 from parler.managers import TranslatableManager, TranslatableQuerySet
 from polymorphic.query import PolymorphicQuerySet
 import reversion
-from shop.models.product import BaseProductManager, BaseProduct
+from shop.models.product import BaseProductManager
+from shop.models.product import BaseProduct
 from myshop.models.properties import Manufacturer, ProductPage, ProductImage
 
 
@@ -28,18 +27,18 @@ class ProductManager(BaseProductManager, TranslatableManager):
 
 
 class Product(TranslatableModel, BaseProduct):
-    order = models.PositiveIntegerField(verbose_name=_("Sort by"), db_index=True)
     name = models.CharField(max_length=255, verbose_name=_("Name"))
     slug = models.SlugField(verbose_name=_("Slug"))
     description = TranslatedField()
+
+    manufacturer = models.ForeignKey(Manufacturer, verbose_name=_("Manufacturer"))
+
+    order = models.PositiveIntegerField(verbose_name=_("Sort by"), db_index=True)
     cms_pages = models.ManyToManyField('cms.Page', through=ProductPage, null=True,
         help_text=_("Choose list view this product shall appear on."))
     images = models.ManyToManyField('filer.Image', through=ProductImage, null=True)
-    placeholder = PlaceholderField("Product Detail",
-        verbose_name=_("Additional description for this product."))
 
     class Meta:
-        app_label = settings.SHOP_APP_LABEL
         ordering = ('order',)
 
     objects = ProductManager()
@@ -81,4 +80,3 @@ class ProductTranslation(TranslatedFieldsModel):
 
     class Meta:
         unique_together = [('language_code', 'master')]
-        app_label = settings.SHOP_APP_LABEL

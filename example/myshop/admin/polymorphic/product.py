@@ -12,9 +12,9 @@ from polymorphic.admin import (PolymorphicParentModelAdmin, PolymorphicChildMode
     PolymorphicChildModelFilter)
 from reversion import VersionAdmin
 from shop.admin.product import CMSPageAsCategoryMixin, ProductImageInline
-from myshop.models.product import Product
-from myshop.models.smartcard import SmartCard
-from myshop.models.smartphone import SmartPhone, SmartPhoneModel
+from myshop.models.polymorphic.product import Product
+from myshop.models.polymorphic.smartcard import SmartCard
+from myshop.models.polymorphic.smartphone import SmartPhone, SmartPhoneModel
 
 
 class SmartCardAdmin(SortableAdminMixin, TranslatableAdmin, VersionAdmin, FrontendEditableAdminMixin,

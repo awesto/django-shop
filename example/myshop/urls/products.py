@@ -8,6 +8,7 @@ from shop.views.product import AddToCartView, ProductListView, ProductRetrieveVi
 from shop.search.views import SearchView
 from myshop.serializers import (ProductSummarySerializer, ProductDetailSerializer,
     AddSmartphoneToCartSerializer)
+from myshop.models.polymorphic.smartphone import SmartPhone
 
 list_options = dict(
     serializer_class=ProductSummarySerializer,
@@ -22,7 +23,8 @@ add2cart_options = dict(
     lookup_field='slug',
 )
 smartphone2cart_options = dict(
-    serializer_class=AddToCartSerializer,
+    product_model=SmartPhone,
+    serializer_class=AddSmartphoneToCartSerializer,
     lookup_field='product_code',
     lookup_url_kwarg='product_code',
 )

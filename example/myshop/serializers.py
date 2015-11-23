@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.conf import settings
+from django.utils.module_loading import import_string
 from rest_framework import serializers
 from shop.rest.serializers import (ProductSummarySerializerBase, ProductDetailSerializerBase,
     AddToCartSerializer)
 from shop.search.serializers import ProductSearchSerializer as ProductSearchSerializerBase
-#from .models.product import Product
-from .models import SmartCard as Product
+if settings.SHOP_TUTORIAL in ('simple', 'i18n'):
+    Product = import_string('myshop.models.{}.smartcard.SmartCard'.format(settings.SHOP_TUTORIAL))
+else:
+    Product = import_string('myshop.models.polymorphic.product.Product')
 #from .search_indexes import CommodityIndex
 
 

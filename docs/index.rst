@@ -14,6 +14,7 @@ User Manual
 	tutorial/intro
 	tutorial/simple-product
 	tutorial/multilingual-product
+	tutorial/polymorphic-product
 
 
 Reference
