@@ -1,5 +1,5 @@
 {% extends "myshop/pages/default.html" %}
-{% load static i18n sekizai_tags sass_tags %}
+{% load static i18n cms_tags sekizai_tags sass_tags %}
 
 {% block head %}
 	{{ block.super }}
@@ -13,7 +13,7 @@
 {% block main-content %}
 <div class="row product-detail">
 	<div class="col-xs-12 col-md-8">
-		<h1>{{ product.product_name }}</h1>
+		<h1>{% render_model product "product_name" %}</h1>
 		<pre class="images jfk-scrollbar">
 		{% for img in product.images.all %}
 			<img src="{{ img.url }}" alt="{{ product.product_name }}">
