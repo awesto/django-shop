@@ -11,7 +11,6 @@ from django.utils.six import with_metaclass
 from django.utils.html import strip_spaces_between_tags
 from django.utils.safestring import mark_safe, SafeText
 from django.utils.translation import get_language_from_request
-from jsonfield.fields import JSONField
 from rest_framework import serializers
 from rest_framework.fields import empty
 from shop import settings as shop_settings
@@ -41,9 +40,6 @@ class JSONSerializerField(serializers.Field):
 
     def to_internal_value(self, data):
         return data
-
-# add JSONField to the map of customized serializers
-serializers.ModelSerializer._field_mapping[JSONField] = JSONSerializerField
 
 
 class ProductCommonSerializer(serializers.ModelSerializer):
