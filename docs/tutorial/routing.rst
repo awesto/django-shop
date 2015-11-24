@@ -33,8 +33,8 @@ Open the detail view of a product in Django's administration backend. Locate the
 select box labeled **Categories / Cms pages**. Select the pages where each product shall appear
 on.
 
-On returning to the list view, the assigned products shall now be visible. Assure that they have
-been set to be active.
+On reloading the list view, the assigned products now shall be visible. Assure that they have been
+set to be active.
 
 
 Product Model Serializers
