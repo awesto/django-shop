@@ -1,11 +1,11 @@
 {% load i18n %}
 
+<div class="row" ng-if="!count && count!==0">
 {% for product in data.results %}
-<div class="col-xs-4 col-sm-3 col-lg-2">
-	<a href="{{ product.product_url }}">
-		<h4>{{ product.product_name }}</h4>
-		{{ product.media }}
-		<h5>{% trans "Price" %}: {{ product.price }}</h5>
-	</a>
-</div>
+	{% include "myshop/catalog/product-preview.html" with ng=0 %}
 {% endfor %}
+</div>
+<div class="row" ng-cloak ng-if="count>=0">
+	{% include "myshop/catalog/product-preview.html" with ng=1 %}
+</div>
+{#% include "myshop/fragments/paginator.html" %#}
