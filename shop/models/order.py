@@ -24,7 +24,8 @@ class OrderManager(models.Manager):
     def create_from_cart(self, cart, request):
         """
         This creates a new Order object with all its OrderItems using the current Cart object
-        with its CartItems.
+        with its Cart Items. Whenever on Order Item is created from a Cart Item, that item is
+        removed from the Cart.
         """
         cart.update(request)
         order = self.model(customer=cart.customer, currency=cart.total.currency,
@@ -36,9 +37,9 @@ class OrderManager(models.Manager):
             order_item = OrderItemModel(order=order)
             if order_item.populate_from_cart_item(cart_item, request):
                 order_item.save()
+                cart_item.delete()
         order.populate_from_cart(cart, request)
         order.save()
-        cart.delete()
         return order
 
     def stored_request(self, request):
@@ -319,9 +320,12 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     def populate_from_cart_item(self, cart_item, request):
         """
-        From a given cart item, populate the current order item.
-        Return True if operation was successful, otherwise the order item is discarded.
+        From a given cart item, populate the current Order Item.
+        Returns True, if operation was successful.
+        Otherwise discard the given Order Item and keep it in the Cart.
         """
+        if cart_item.quantity == 0:
+            return False
         self.product = cart_item.product
         self.product_name = cart_item.product.name  # store the name on the moment of purchase, in case it changes
         self.product_identifier = cart_item.product.identifier
