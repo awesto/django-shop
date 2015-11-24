@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from django.db.models.query import QuerySet
 from django.utils.cache import add_never_cache_headers
 from rest_framework import viewsets
 from rest_framework.decorators import list_route
@@ -9,14 +10,12 @@ from shop.rest import serializers
 
 
 class BaseViewSet(viewsets.ModelViewSet):
-    paginate_by = None
-
     def get_queryset(self):
         cart = CartModel.objects.get_from_request(self.request)
         if cart and self.kwargs.get(self.lookup_field):
             # we're interest only into a certain cart item
             return CartItemModel.objects.filter(cart=cart)
-        # otherwise the CartSerializer will show its detail and list all its items
+        # otherwise the CartSerializer will show its detail view and list all its cart items
         return cart
 
     @list_route(methods=['get'])
@@ -24,6 +23,10 @@ class BaseViewSet(viewsets.ModelViewSet):
         cart = self.get_queryset()
         data = {'count_items': cart and cart.items.count() or 0}
         return Response(data)
+
+    def paginate_queryset(self, queryset):
+        if isinstance(queryset, QuerySet):
+            return super(BaseViewSet, self).paginate_queryset(queryset)
 
     def get_serializer(self, *args, **kwargs):
         kwargs.update(context=self.get_serializer_context(), label=self.serializer_label)
