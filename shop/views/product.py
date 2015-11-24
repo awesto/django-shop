@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 import os
 from django.db.models import Q
-from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils.translation import get_language_from_request
 from rest_framework import generics
