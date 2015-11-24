@@ -33,7 +33,7 @@ djangocms-admin-style==0.2.8
 -e git+git@github.com:jrief/djangocms-bootstrap3.git@master#egg=djangocms_bootstrap3-master
 -e git+git@github.com:jrief/djangocms-cascade.git@release-candidate-0.7#egg=djangocms_cascade-dev
 djangocms-text-ckeditor==2.6.0
-djangorestframework==3.0.5
+djangorestframework==3.1.3
 drf-haystack==1.5.2
 easy-thumbnails==2.2
 elasticsearch==1.7.0
