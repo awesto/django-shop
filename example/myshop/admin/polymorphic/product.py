@@ -22,13 +22,10 @@ class SmartCardAdmin(SortableAdminMixin, TranslatableAdmin, VersionAdmin, Fronte
     base_model = Product
     fieldsets = (
         (None, {
-            'fields': ('name', 'slug', 'active',),
+            'fields': ('name', 'slug', 'active', 'unit_price',),
         }),
         (_("Translatable Fields"), {
             'fields': ('description',)
-        }),
-        (_("Categories"), {
-            'fields': ('cms_pages',),
         }),
         (_("Properties"), {
             'fields': ('manufacturer', 'storage',)
@@ -53,9 +50,6 @@ class SmartPhoneAdmin(TranslatableAdmin, VersionAdmin, FrontendEditableAdminMixi
         }),
         (_("Translatable Fields"), {
             'fields': ('description',)
-        }),
-        (_("Categories"), {
-            'fields': ('cms_pages',),
         }),
         (_("Properties"), {
             'fields': ('manufacturer', 'battery_type', 'battery_capacity', 'ram_storage',
