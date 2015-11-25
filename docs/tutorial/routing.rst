@@ -1,6 +1,6 @@
-=======================
-Routing to our Products
-=======================
+==================
+Routes to Products
+==================
 
 Now that we know how to create product models and how to administer them, lets have a look on how
 to route them to our views. A nice aspect of **djangoSHOP** is, that it doesn't require the
@@ -30,11 +30,13 @@ Add products to the category
 ----------------------------
 
 Open the detail view of a product in Django's administration backend. Locate the many-to-many
-select box labeled **Categories / Cms pages**. Select the pages where each product shall appear
+select box labeled **Categories > Cms pages**. Select the pages where each product shall appear
 on.
 
 On reloading the list view, the assigned products now shall be visible. Assure that they have been
 set to be active.
+
+If you nest categories, products assigned to children will be also be visible on their parents.
 
 
 Product Model Serializers
@@ -50,6 +52,10 @@ have to write any Django Views anymore.
 For instance, try to open the list- or the detail view of any of the products available in the
 shop. Then in the browser append ``?format=api`` or ``?format=json`` to the URL. This will render
 the pure product information, but without embedding it into HTML.
+
+The REST API view is very handy while developing. If you want to hide this on your production
+system , then in your settingy.py remove ``'rest_framework.renderers.BrowsableAPIRenderer'`` from 
+``REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES']``.
 
 In the shop's catalog, we need some functionality to render a list view for all products and
 we need a detail view to render each product type. The **djangoSHOP** framework supplies two
