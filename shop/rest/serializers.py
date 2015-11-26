@@ -155,6 +155,9 @@ class AddToCartSerializer(serializers.Serializer):
         else:
             super(AddToCartSerializer, self).__init__(instance, data, **kwargs)
 
+    def get_instance(self, context, extra_args):
+        return {'product': context['product'].id}
+
 
 class ExtraCartRow(serializers.Serializer):
     """
