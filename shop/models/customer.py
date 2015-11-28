@@ -99,8 +99,9 @@ class CustomerManager(models.Manager):
             pass
         if request.user.is_authenticated():
             customer, created = self.get_or_create(user=user)
-            if created:
+            if created:  # `user` has been created by another app than shop
                 customer.recognized = self.model.REGISTERED
+                customer.save()
         else:
             customer = VisitingCustomer()
         return customer
