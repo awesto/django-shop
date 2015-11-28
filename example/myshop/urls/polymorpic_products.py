@@ -4,7 +4,7 @@ from django.conf.urls import patterns, url
 from rest_framework.settings import api_settings
 from shop.rest.filters import CMSPagesFilterBackend
 from shop.rest.serializers import AddToCartSerializer
-from shop.views.product import AddToCartView, ProductListView, ProductRetrieveView
+from shop.views.catalog import AddToCartView, ProductListView, ProductRetrieveView
 from shop.search.views import SearchView
 from myshop.serializers import (ProductSummarySerializer, ProductDetailSerializer,
     AddSmartphoneToCartSerializer)
