@@ -14,6 +14,7 @@ class ShopCatalogPlugin(ShopPluginBase):
     name = _("Catalog List Views")
     require_parent = True
     parent_classes = ('BootstrapColumnPlugin',)
+    cache = False
 
     def get_render_template(self, context, instance, placeholder):
         return select_template([
