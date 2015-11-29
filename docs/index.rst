@@ -16,7 +16,7 @@ User Manual
 	tutorial/multilingual-product
 	tutorial/polymorphic-product
 	tutorial/catalog-views
-
+	tutorial/cart-views
 
 Reference
 ==========

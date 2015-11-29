@@ -17,7 +17,7 @@ When editing the CMS page used for the products list view, open **Advanced Setti
 **Products List** from the select box labeled **Application**.
 
 Then chose a template with at least one placeholder_. Click onto **View on site** to change into
-front-end editing mode. Locate your main placeholder and add a **Row** followed by a **Column**
+front-end editing mode. Locate the main placeholder and add a **Row** followed by a **Column**
 plugin from the section **Bootstrap**. Below that column add a **Catalog List Views** plugin from
 section **Shop**. Then publish the page, it should not display any products yet.
 
@@ -106,7 +106,7 @@ the above class to:
 
 As you might expect, ``render_html`` assigns a HTML snippet to the field ``media`` in the serialized
 representation of our product. This method uses a template to render the HTML. The name of this
-template is constructed using these rules:
+template is constructed using the following rules:
 
 * Look for a folder named according to the project's name, ie. ``settings.SHOP_APP_LABEL`` in lower
   case. If no such folder can be found, then use the folder named ``shop``.
@@ -235,29 +235,25 @@ This apphook points onto a list of boilerplate code containing these urlpattern:
 	:caption: myshop/urls/products.py
 	:linenos:
 
-	from django.conf.urls import url
+	from django.conf.urls import patterns, url
 	from rest_framework.settings import api_settings
 	from shop.rest.filters import CMSPagesFilterBackend
 	from shop.rest.serializers import AddToCartSerializer
 	from shop.views.catalog import (ProductListView,
 	    ProductRetrieveView, AddToCartView)
 	
-	urlpatterns = ('',
+	urlpatterns = patterns('',
 	    url(r'^$', ProductListView.as_view(
 	        serializer_class=ProductSummarySerializer,
 	        filter_backends=api_settings.DEFAULT_FILTER_BACKENDS \
 	            + [CMSPagesFilterBackend()],
 	    )),
 	    url(r'^(?P<slug>[\w-]+)$', ProductRetrieveView.as_view(
-	        serializer_class=ProductDetailSerializer,
-	        lookup_field='slug',
+	        serializer_class=ProductDetailSerializer
 	    )),
-	    url(r'^(?P<slug>[\w-]+)/add-to-cart', AddToCartView.as_view(
-	        serializer_class=AddToCartSerializer,
-	        lookup_field='slug',
-	    )),
+	    url(r'^(?P<slug>[\w-]+)/add-to-cart', AddToCartView.as_view()),
 	)
 
 These URL patterns connect the product serializers with the catalog views in order to assign them
 an endpoint. Additional note: The filter class ``CMSPagesFilterBackend`` is used to restrict
-products to specific CMS pages.
+products to specific CMS pages, hence it can be regarded as the product categoriser.
