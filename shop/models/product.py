@@ -16,7 +16,6 @@ class BaseProductManager(PolymorphicManager):
     """
     A base ModelManager for all non-object manipulation needs, mostly statistics and querying.
     """
-
     def select_lookup(self, term):
         """
         Hook to returns a queryset containing the products matching the lookup criteria given
@@ -79,7 +78,7 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
     active = models.BooleanField(default=True, verbose_name=_("Active"),
         help_text=_("Is this product publicly visible."))
 
-    objects = PolymorphicManager()
+    objects = BaseProductManager()
 
     class Meta:
         abstract = True
