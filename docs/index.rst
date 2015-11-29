@@ -15,7 +15,7 @@ User Manual
 	tutorial/simple-product
 	tutorial/multilingual-product
 	tutorial/polymorphic-product
-	tutorial/routing
+	tutorial/catalog-views
 
 
 Reference
