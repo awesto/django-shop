@@ -5,9 +5,16 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.six.moves.urllib.parse import urljoin
 from django.utils.encoding import python_2_unicode_compatible
 from djangocms_text_ckeditor.fields import HTMLField
+import reversion
 from shop.money.fields import MoneyField
-from shop.models.product import BaseProduct
+from shop.models.product import BaseProduct, BaseProductManager
 from myshop.models.properties import Manufacturer, ProductPage, ProductImage
+
+
+class ProductManager(BaseProductManager):
+    def select_lookup(self, term):
+        query = models.Q(name__icontains=term) | models.Q(slug__icontains=term)
+        return self.get_queryset().filter(query)
 
 
 @python_2_unicode_compatible
@@ -36,6 +43,8 @@ class SmartCard(BaseProduct):
     cms_pages = models.ManyToManyField('cms.Page', through=ProductPage, null=True,
         help_text=_("Choose list view this product shall appear on."))
     images = models.ManyToManyField('filer.Image', through=ProductImage, null=True)
+
+    objects = ProductManager()
 
     class Meta:
         verbose_name = _("Smart Card")
@@ -67,3 +76,5 @@ class SmartCard(BaseProduct):
         if cms_page is None:
             return urljoin('category-not-assigned', self.slug)
         return urljoin(cms_page.get_absolute_url(), self.slug)
+
+reversion.register(SmartCard)
