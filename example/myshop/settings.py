@@ -147,7 +147,7 @@ DATABASES = {
 # Internationalization
 # https://docs.djangoproject.com/en/stable/topics/i18n/
 
-LANGUAGE_CODE = 'de'
+LANGUAGE_CODE = 'en'
 
 LANGUAGES = (
     ('en', "English"),
@@ -366,22 +366,22 @@ CMS_SEO_FIELDS = True
 
 CMS_LANGUAGES = {
     'default': {
-        'fallbacks': ['de', 'en'],
+        'fallbacks': ['en', 'de'],
         'redirect_on_fallback': True,
         'public': True,
         'hide_untranslated': False,
     },
     1: ({
         'public': True,
-        'code': 'de',
-        'hide_untranslated': False,
-        'name': 'Deutsch',
-        'redirect_on_fallback': True,
-    }, {
-        'public': True,
         'code': 'en',
         'hide_untranslated': False,
         'name': 'English',
+        'redirect_on_fallback': True,
+    }, {
+        'public': True,
+        'code': 'de',
+        'hide_untranslated': False,
+        'name': 'Deutsch',
         'redirect_on_fallback': True,
     },)
 }
