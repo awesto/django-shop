@@ -1,8 +1,8 @@
-================
+=======
 Plugins
-================
+=======
 
-Django SHOP defines 3 types of different plugins for the time being:
+Django SHOP defines 4 types of different plugins for the time being:
 
 1. Cart modifiers
 2. Shipping modules

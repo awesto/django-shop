@@ -89,7 +89,7 @@ use:
 Here ``CartModel`` is a lazy object resolved during runtime and pointing on the materialized, or,
 to say it in other words, real Cart model.
 
-..lazy object pattern: _https://docs.djangoproject.com/en/dev/_modules/django/utils/functional/
+.. _lazy object pattern: _https://docs.djangoproject.com/en/dev/_modules/django/utils/functional/
 
 
 Technical Internals

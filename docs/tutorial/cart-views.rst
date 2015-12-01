@@ -21,17 +21,29 @@ add a **Row** followed by a **Column** plugin from the section **Bootstrap**. Be
 a **Cart** plugin from section **Shop**. As rendering option chose **Editable Cart**, then publish
 the page, it now should display an empty cart.
 
+|cart-structure| 
+
+.. |cart-structure| image:: /_static/cart/cart-structure.png
+
 
 Editable Cart
--------------
+=============
 
 An ‘Editable Cart’ is rendered using the Angular JS template engine. This means that a customer may
 change the number of items, delete them or move them the the watch-list. Each update is reflected
 immediately into the cart's subtotal, extra fields and final totals.
 
+Using the above structure, the rendered cart will look similar to this.
+
+|cart-display| 
+
+.. |cart-display| image:: /_static/cart/cart-display.png
+
+Depending on the chosen template, this layout may vary. 
+
 
 Static Cart
------------
+===========
 
 An alternative to the editable cart is the ‘static cart’. Here the cart items are rendered by
 the Django template engine. Since here everything is static, the quantity can't be changed anymore
@@ -40,14 +52,14 @@ probably only makes sense when purchasing a single product.
 
 
 Cart Summary
-------------
+============
 
 This only displays the cart's subtotal, the extra cart fields, such as V.A.T. and shipping costs
 and the final total.
 
 
 Watch List
-----------
+==========
 
 A special view of the cart is the watch list. It can be used by customers to remember items they
 want to compare or buy sometimes later. The watch-list by default is editable, but does not 
@@ -60,7 +72,7 @@ major point of confusion.
 
 
 Change the templates
---------------------
+====================
 
 The path of the templates used to render the cart views is constructed using the following rules:
 
@@ -79,13 +91,32 @@ therefore becomes very straight-forward to override Javascript templates using D
 template engine.
 
 
+Multiple templates
+------------------
+
+If for some special reasons you need different cart templates, then add this line to the projects
+``settings.py``:
+
+.. code-block:: python
+
+	CMSPLUGIN_CASCADE_PLUGINS_WITH_EXTRA_RENDER_TEMPLATES = {
+	    'ShopCartPlugin': (
+	        (None, _("default")),  # the default behavior
+	        ('myproject/cart/other-editable.html', _("extra editable")),
+	    )
+	}
+
+This will add an extra select button to the cart editor. The site administrator then can chose
+between the default template and an extra editable cart template.
+
+
 Proceed to Checkout
 -------------------
 
-On the cart's view, the designer using **djangoSHOP** may decide whether to combine the cart with
-the checkout view, or to proceed onto a special checkout page. In the latter case simply add a
-button to the cart, which links onto that checkout page. Otherwise add the CMS plugins required for
-checkout right onto the cart view.
+On the cart's view, the merchant may decide whether to implement the checkout forms together with
+the cart, or to create a special checkout page onto which the customer can proceed. In the latter
+case simply add a button to the cart, which links onto that checkout page. Otherwise add the form
+plugins required for checkout right onto this cart view.
 
 .. _placeholder: http://django-cms.readthedocs.org/en/latest/introduction/templates_placeholders.html#placeholders
 .. _directive script template: https://docs.angularjs.org/api/ng/directive/script

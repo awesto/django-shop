@@ -3,24 +3,24 @@ Money types
 ===========
 
 Until **django-shop** version 0.2, amounts relating to money, where kept inside a ``Decimal`` type
-and stored in the database model with ``DecimalField``. On shop installations with only one
+and stored in the database model using a ``DecimalField``. On shop installations with only one
 available currency, this wasn't a major issue, because the currency symbol could be hard-coded
 anywhere on the site.
 
-However, for sites offering pricing information in more than one currency, this could lead to
-major problems. When you need to perform calculations with amounts that have an associated currency,
+However, for sites offering pricing information in more than one currency, this caused major
+problems. When you needed to perform calculations with amounts that have an associated currency,
 it is a very common to make mistakes by mixing different currencies. It is also common to perform
 incorrect conversions that generate wrong results. Python doesn't allow developers to associate a
 specific decimal value with a unit.
 
-**django-shop**, starting in version 0.3.0 is shipped with with a special factory class
+Starting with version 0.3.0, **djangoSHOP** now is shipped with with a special factory class:
 
 
 MoneyMaker
 ==========
 
 This class can not be instantiated, but is a factory for building a money type with an associated
-currency. Internally it uses the well established ``Decimal`` type to keep track of amount.
+currency. Internally it uses the well established ``Decimal`` type to keep track of an amount.
 Additionally it restricts operations on the current Money type. For instance, you can't sum up
 Dollars with Euros. You also can't multiply two money types with each other.
 
@@ -29,12 +29,15 @@ Not a Number
 ------------
 
 In special occurrences you'd rather want to specify “no amount” rather than an amount of 0.00 (zero).
-The Decimal type denotes this kind of special value a ``NaN`` – for “Not a Number”. A Money type
-also knows about this special value, and when rendered, ``€ –`` is printed out.
+This can be useful for free samples, or when an item currently is not available. The Decimal type
+denotes a kind of special value a ``NaN`` – for “Not a Number”. Our Money type also knows about
+this special value, and when rendered, ``€ –`` is printed out.
 
 Declaring a Money object without a value, say ``m = Money()`` creates such a special value. The big
 difference to the ``Decimal`` type is, that when adding or substracting a ``NaN`` to a valid value,
-then it is considered zero, rather than changing the result to ``NaN``.
+then it is considered zero, rather than changing the result of this operation to ``NaN``.
+
+It also allows us to multiply a Money amount with ``None``. The result of this operation is ``NaN``.
 
 
 Create a Money type

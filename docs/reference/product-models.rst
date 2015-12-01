@@ -88,3 +88,5 @@ Therefore we would model our smart-phones using a similar database model:
 	    product_code = models.CharField(_("Product code"), max_length=255, unique=True)
 	    unit_price = MoneyField(_("Unit price"), decimal_places=3)
 	    storage = models.PositiveIntegerField(_("Internal Storage"))
+
+.. _django-parler: http://django-parler.readthedocs.org/
