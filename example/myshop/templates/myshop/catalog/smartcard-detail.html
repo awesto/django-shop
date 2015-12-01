@@ -1,5 +1,5 @@
 {% extends "myshop/catalog/product-detail.html" %}
-{% load i18n cms_tags %}
+{% load i18n cms_tags thumbnail %}
 
 {% block main-content %}
 <div class="row product-detail">
@@ -7,7 +7,8 @@
 		<h1>{% render_model product "product_name" %}</h1>
 		<pre class="images jfk-scrollbar">
 		{% for img in product.images.all %}
-			<img src="{{ img.url }}" alt="{{ product.product_name }}">
+			{% thumbnail img 250x250 crop as thumb %}
+			<img src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}" alt="{{ product.product_name }}">
 		{% endfor %}
 		</pre>
 	</div>
