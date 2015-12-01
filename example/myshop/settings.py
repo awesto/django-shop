@@ -307,7 +307,7 @@ REST_FRAMEWORK = {
     'MAX_PAGINATE_BY': 100,
 }
 
-SERIALIZATION_MODULES = {'shop': b'shop.money.serializers'}
+SERIALIZATION_MODULES = {'json': b'shop.money.serializers'}
 
 
 ############################################
