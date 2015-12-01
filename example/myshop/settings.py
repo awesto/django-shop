@@ -299,12 +299,12 @@ REST_FRAMEWORK = {
         'shop.rest.money.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',  # can be disabled for production environments
     ),
-#    'DEFAULT_AUTHENTICATION_CLASSES': (
-#        'rest_framework.authentication.TokenAuthentication',
-#    ),
+    # 'DEFAULT_AUTHENTICATION_CLASSES': (
+    #   'rest_framework.authentication.TokenAuthentication',
+    # ),
     'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',),
-    'PAGINATE_BY': 16,
-    'MAX_PAGINATE_BY': 100,
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 12,
 }
 
 SERIALIZATION_MODULES = {'json': b'shop.money.serializers'}
