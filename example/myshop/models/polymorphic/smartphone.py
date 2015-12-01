@@ -6,8 +6,15 @@ from django.utils.encoding import python_2_unicode_compatible
 import reversion
 from shop.money import Money, MoneyMaker
 from shop.money.fields import MoneyField
-from ..properties import OperatingSystem
 from .product import Product
+
+
+@python_2_unicode_compatible
+class OperatingSystem(models.Model):
+    name = models.CharField(_("Name"), max_length=50)
+
+    def __str__(self):
+        return self.name
 
 
 @python_2_unicode_compatible

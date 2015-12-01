@@ -14,14 +14,6 @@ class Manufacturer(models.Model):
         return self.name
 
 
-@python_2_unicode_compatible
-class OperatingSystem(models.Model):
-    name = models.CharField(_("Name"), max_length=50)
-
-    def __str__(self):
-        return self.name
-
-
 class ProductPage(BaseProductPage):
     """Materialize many-to-many relation with CMS pages"""
 

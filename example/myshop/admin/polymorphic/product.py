@@ -14,7 +14,7 @@ from reversion import VersionAdmin
 from shop.admin.product import CMSPageAsCategoryMixin, ProductImageInline
 from myshop.models.polymorphic.product import Product
 from myshop.models.polymorphic.smartcard import SmartCard
-from myshop.models.polymorphic.smartphone import SmartPhone, SmartPhoneModel
+from myshop.models.polymorphic.smartphone import OperatingSystem, SmartPhone, SmartPhoneModel
 
 
 class SmartCardAdmin(SortableAdminMixin, TranslatableAdmin, VersionAdmin, FrontendEditableAdminMixin,
@@ -34,6 +34,11 @@ class SmartCardAdmin(SortableAdminMixin, TranslatableAdmin, VersionAdmin, Fronte
     filter_horizontal = ('cms_pages',)
     inlines = (ProductImageInline,)
     prepopulated_fields = {'slug': ('name',)}
+
+
+@admin.register(OperatingSystem)
+class OperatingSystemAdmin(admin.ModelAdmin):
+    pass
 
 
 class SmartPhoneInline(admin.TabularInline):
