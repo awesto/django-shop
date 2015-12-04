@@ -28,11 +28,13 @@ class ProductManager(BaseProductManager, TranslatableManager):
 
 class Product(TranslatableModel, BaseProduct):
     name = models.CharField(max_length=255, verbose_name=_("Name"))
-    slug = models.SlugField(verbose_name=_("Slug"))
+    slug = models.SlugField(verbose_name=_("Slug"), unique=True)
     description = TranslatedField()
 
+    # common product properties
     manufacturer = models.ForeignKey(Manufacturer, verbose_name=_("Manufacturer"))
 
+    # controlling the catalog
     order = models.PositiveIntegerField(verbose_name=_("Sort by"), db_index=True)
     cms_pages = models.ManyToManyField('cms.Page', through=ProductPage, null=True,
         help_text=_("Choose list view this product shall appear on."))
@@ -69,8 +71,7 @@ class Product(TranslatableModel, BaseProduct):
         msg = "Method get_product_markedness(extra) must be implemented by subclass: `{}`"
         raise NotImplementedError(msg.format(self.__class__.__name__))
 
-reversion.register(Product, adapter_cls=type(str('ProductVersionAdapter'), (reversion.VersionAdapter,),
-                                             {'format': 'shop'}))
+reversion.register(Product, adapter_cls=type(str('ProductVersionAdapter'), (reversion.VersionAdapter,), {}))
 
 
 class ProductTranslation(TranslatedFieldsModel):
