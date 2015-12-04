@@ -14,16 +14,19 @@ versa.
 E-commerce solutions, claiming to be plug-and-play, usually use one of these (anti-)patterns
 ---------------------------------------------------------------------------------------------
 
-Either, they offer a field for every possible variation, or they use the Entity-Attribute-Value
-pattern to add meta-data for each of your models. This at a first glance seems to be easy. But both
-approaches are unwieldy and have serious drawbacks. They both apply a different "physical schema" –
-the way data is stored, rather than a "logical schema" – the way users and applications require that
-data. As soon as you have to combine your e-commerce solution with some Enterprise-Resource-Planning
-software, additional back-and-forward conversion routines have to be added.
+Either, they offer a field for every possible variation, or they use the `Entity Attribute Value`_
+(EAV) pattern to add meta-data for each of your models. This at a first glance seems to be easy.
+But both approaches are unwieldy and have serious drawbacks. They both apply a different "physical
+schema" – the way data is stored, rather than a "logical schema" – the way users and applications
+require that data. As soon as you have to combine your e-commerce solution with some
+Enterprise Resource Planning (ERP) software, additional back-and-forward conversion routines have
+to be added.
+
+.. _Entity Attribute Value: https://en.wikipedia.org/wiki/Entity%E2%80%93attribute%E2%80%93value_model
 
 
-In djangoSHOP, the physical representation of a product corresponds to its logical
-----------------------------------------------------------------------------------
+In **djangoSHOP**, the physical representation of a product always maps to its logical
+--------------------------------------------------------------------------------------
 
 **djangoSHOP**'s approach to this problem is to have minimal set of models. These abstract models
 are stubs provided to subclass the physical models. Hence the logical representation of the
