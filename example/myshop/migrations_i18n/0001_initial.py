@@ -91,16 +91,6 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='OperatingSystem',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.CharField(max_length=50, verbose_name='Name')),
-            ],
-            options={
-            },
-            bases=(models.Model,),
-        ),
-        migrations.CreateModel(
             name='Order',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
@@ -198,7 +188,10 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=255, verbose_name='Name')),
                 ('slug', models.SlugField(verbose_name='Slug')),
                 ('unit_price', models.DecimalField(default='0', help_text='Net price for this product', max_digits=30, decimal_places=3)),
-                ('card_type', models.CharField(max_length='15', verbose_name='Card Type', choices=[('SD', 'SD'), ('micro SD', 'micro SD'), ('SDXC', 'SDXC'), ('micro SDXC', 'micro SDXC'), ('SDHC', 'SDHC'), ('micro SDHC', 'micro SDHC')])),
+                ('description', djangocms_text_ckeditor.fields.HTMLField(help_text='Description for the list view of products.', verbose_name='Description')),
+                ('card_type', models.CharField(max_length=15, verbose_name='Card Type', choices=[('SD', 'SD'), ('micro SD', 'micro SD'), ('SDXC', 'SDXC'), ('micro SDXC', 'micro SDXC'), ('SDHC', 'SDHC'), ('micro SDHC', 'micro SDHC'), ('SDHC II', 'SDHC II'), ('micro SDHC II', 'micro SDHC II')])),
+                ('speed', models.CharField(max_length=8, verbose_name='Transfer Speed', choices=[(b'4', '4 MB/s'), (b'20', '20 MB/s'), (b'30', '30 MB/s'), (b'40', '40 MB/s'), (b'48', '48 MB/s'), (b'80', '80 MB/s'), (b'95', '95 MB/s'), (b'280', '280 MB/s')])),
+                ('product_code', models.CharField(unique=True, max_length=255, verbose_name='Product code')),
                 ('storage', models.PositiveIntegerField(help_text='Storage capacity in GB', verbose_name='Storage Capacity')),
                 ('order', models.PositiveIntegerField(verbose_name='Sort by', db_index=True)),
                 ('cms_pages', models.ManyToManyField(help_text='Choose list view this product shall appear on.', to='cms.Page', null=True, through='myshop.ProductPage')),
@@ -212,22 +205,6 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'Smart Cards',
             },
             bases=(models.Model,),
-        ),
-        migrations.CreateModel(
-            name='SmartCardTranslation',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('language_code', models.CharField(max_length=15, verbose_name='Language', db_index=True)),
-                ('description', djangocms_text_ckeditor.fields.HTMLField(help_text='Description for the list view of products.', verbose_name='Description')),
-                ('master', models.ForeignKey(related_name='translations', to='myshop.SmartCard', null=True)),
-            ],
-            options={
-            },
-            bases=(models.Model,),
-        ),
-        migrations.AlterUniqueTogether(
-            name='smartcardtranslation',
-            unique_together=set([('language_code', 'master')]),
         ),
         migrations.AddField(
             model_name='productpage',
