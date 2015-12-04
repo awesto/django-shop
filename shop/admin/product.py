@@ -46,10 +46,8 @@ class CMSPageAsCategoryMixin(object):
         # remove old
         for page in form.instance.cms_pages.all():
             if page not in cms_pages:
-                try:
-                    ProductPageModel.objects.get(product=form.instance, page=page).delete()
-                except ProductPageModel.DoesNotExist:
-                    pass
+                for pp in ProductPageModel.objects.filter(product=form.instance, page=page):
+                    pp.delete()
 
         # add new
         for page in cms_pages.all():
