@@ -4,7 +4,7 @@
 {% block add-product-to-cart-table %}
 	{% for smartphone in product.smartphone_set.all %}
 <table shop-add-to-cart="{% url 'add-smartphone-to-cart' smartphone.product_code %}" class="table">
-	<caption>{% trans "Internal Storage" %} {{ smartphone.storage }} MB</caption>
+	<caption>{% trans "Internal Storage" %} {{ smartphone.storage }} GB</caption>
 	<thead>
 		<tr><th>{% trans "Quantity" %}</th><th>{% trans "Unit Price" %}</th><th>{% trans "Subtotal" %}</th>
 		</tr>
