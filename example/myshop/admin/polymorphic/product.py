@@ -28,7 +28,7 @@ class SmartCardAdmin(SortableAdminMixin, TranslatableAdmin, VersionAdmin, Fronte
             'fields': ('description',)
         }),
         (_("Properties"), {
-            'fields': ('manufacturer', 'storage',)
+            'fields': ('manufacturer', 'storage', 'card_type', 'speed',)
         }),
     )
     filter_horizontal = ('cms_pages',)
