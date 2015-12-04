@@ -17,7 +17,7 @@ Installation
 ============
 
 To run the examples shown in this tutorial, you must install **django-shop** from GitHub, since
-the installable from PyPI only contains the main files. Before proceeding, please make sure
+the pip-installable from PyPI only contains the main files. Before proceeding, please make sure
 virtualenv_ is installed on your system, otherwise you would pollute your Python site-packages
 folder.
 
@@ -28,10 +28,17 @@ folder.
 	(shoptutorial)$ git clone https://github.com/jrief/django-shop
 	(shoptutorial)$ cd django-shop
 	(shoptutorial)$ pip install -r requirements/common.txt
+	(shoptutorial)$ pip install -e .
+	(shoptutorial)$ npm install
+	(shoptutorial)$ bower install
 
 these statements will setup an environment, which runs a demo shop out of the box.
 
+You may or populate the database with your own products, or, if you're impatient start with
+:ref:`quickstart` which is shipps with some prepared data.
+
 .. _create-demo-database:
+
 
 Create a database for the demo
 ------------------------------

@@ -14,6 +14,7 @@ dependencies. The code required to setup this demo, can be found in the example/
 	:numbered:
 
 	tutorial/intro
+	tutorial/quickstart
 	tutorial/simple-product
 	tutorial/multilingual-product
 	tutorial/polymorphic-product
