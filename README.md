@@ -3,10 +3,10 @@
 Today, as of 2015-12-05, I finally finished three demos which should run out of the box.
 
 Please read the files ``docs/tutorial/intro.rst`` and ``docs/tutorial/quickstart.rst``. Following
-the instructions should create a running shop in minutes. You can even pay by credit card, if you
-apply for your own testing account at Stripe.
+the instructions should create a running shop in minutes, prefilled with a dozen of products.
+You can even pay by credit card, if you apply for your own testing account at Stripe.
 
-I would be happy to hear some feedback.
+I would be happy to get some feedback.
 
 
 # django SHOP
