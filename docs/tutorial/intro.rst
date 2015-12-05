@@ -12,9 +12,10 @@ The steps outlined in this tutorial are meant to be followed in order.
 
 .. _Django Tutorial: https://docs.djangoproject.com/en/stable/intro/tutorial01/
 
+.. _prepare-installation:
 
-Installation
-============
+Prepare the Installation
+========================
 
 To run the examples shown in this tutorial, you must install **django-shop** from GitHub, since
 the pip-installable from PyPI only contains the main files. Before proceeding, please make sure
@@ -34,11 +35,11 @@ folder.
 
 these statements will setup an environment, which runs a demo shop out of the box.
 
-You may or populate the database with your own products, or, if you're impatient start with
-:ref:`quickstart` which is shipps with some prepared data.
+You may or populate the database with your own products, or if impatient, :ref:`quickstart` using
+prepared CMS page layouts, products and media files.
+
 
 .. _create-demo-database:
-
 
 Create a database for the demo
 ------------------------------

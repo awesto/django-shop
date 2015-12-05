@@ -1,6 +1,6 @@
-==========================================
-List of CMS plugins specific to djangoSHOP
-==========================================
+==================================
+CMS plugins specific to djangoSHOP
+==================================
 
 Cart
 ====
@@ -20,3 +20,8 @@ This means that changes to our model fields, are reflected automatically into th
 
 
 .. _Single Source of Truth: https://en.wikipedia.org/wiki/Single_Source_of_Truth
+
+
+Guest Form
+==========
+

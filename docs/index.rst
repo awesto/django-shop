@@ -21,12 +21,13 @@ dependencies. The code required to setup this demo, can be found in the example/
 	tutorial/catalog-views
 	tutorial/cart-views
 	tutorial/checkout-views
+	tutorial/order-views
 
 
 Reference
 ==========
 
-Reference sheets and lists regarding django SHOP
+Reference to classes and concepts used in **djangoSHOP**
 
 .. toctree::
 	:maxdepth: 1
@@ -36,20 +37,13 @@ Reference sheets and lists regarding django SHOP
 	reference/deferred-models
 	reference/money-types
 	reference/product-models
+	reference/cascade-plugins
 
 
-Naming conventions
-==================
+Development and Community
+=========================
 
-The official name of this project is **django SHOP**. Third party plugins for **djangoSHOP** shall
-follow the same naming convention as for plugins of **djangoCMS**: Third party package names shall
-start with **djangoshop** followed by a dash; no space shall be added between **django** and
-**shop**.
+.. toctree::
+	:maxdepth: 1
 
-
-
-**Django SHOP** should be capitalised at the start of sentences and in
-title-case headings.
-
-When referring to the package, repositories and any other things in which
-spaces are not permitted, use **django-shop**.
+	contributing

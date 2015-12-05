@@ -1,29 +1,23 @@
+.. _quickstart:
+
 =========================
-Start with a running demo
+Quickstart a running demo
 =========================
 
-Filling your CMS with page content and adding products is a boring job. Therefore you can start the
-three demos with some prepared sample data. First download some media data from:
-
-
-Assure that a virtual environment is installed as described in the :ref:`intro` section.
-
-
-Install django-shop
-===================
+Filling your CMS with page content and adding products is a boring job. Impatient users may start
+the three demos using some prepared sample data. First assure that all dependencies are installed
+into its virtual environment as described in section ":ref:`prepare-installation`". Then instead of
+create a database for the demo download the `media files`_ and unpack them into the folder
+``django-shop``:
 
 .. code-block:: shell
 
-	$ virtualenv shoptutorial
-	$ source shoptutorial/bin/activate
-	(shoptutorial)$ git clone https://github.com/jrief/django-shop
-	(shoptutorial)$ cd django-shop
-	(shoptutorial)$ pip install -r requirements/common.txt
-	(shoptutorial)$ pip install -e .
 	(shoptutorial)$ tar zxf DOWNLOAD/FOLDER/django-shop-sample-media.tar.gz
 
-Starting from this folder, you can run all three demos. The unpatient user can skip the first two
-demos; each of them can be started on its own.
+Starting from this folder, you can run all three demos. Skip the first two examples if you want to
+proceed directly with polymorphic products. Each demo can be started started on its own.
+
+.. _media files: http://django-shop.awesto.com/downloads/django-shop-workdir.tar.gz
 
 
 Simple Product
@@ -92,9 +86,10 @@ folder and using the correct virtual environment:
 	(shoptutorial)$ ./manage.py migrate
 	(shoptutorial)$ ./manage.py runserver
 
-This will allow you to add Smart Phones in addition to the existing Smart Cards. Since you probably
-want to experiment with some prepared Smart Phones, restart with a fixture which already contains
-them:
+This example shows how to add Smart Phones in addition to the existing Smart Cards.
+
+A more common use case is to experiment with some prepared Smart Phones. In this case restart with
+a fixture which already contains them:
 
 .. code-block:: shell
 

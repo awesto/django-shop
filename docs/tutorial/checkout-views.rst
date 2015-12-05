@@ -3,7 +3,7 @@ Checkout Views
 ==============
 
 In **djangoSHOP**, the checkout view follows the same idea as all other pages – it is managed by
-the CMS. Change into the Django admin backend and enter into CMS page tree. A good position in
+the CMS. Change into the Django admin backend and enter into the CMS page tree. A good position in
 that tree for adding the Checkout page is just below the Cart page. Then as the template, you can
 use “Inherit from parent”.
 
