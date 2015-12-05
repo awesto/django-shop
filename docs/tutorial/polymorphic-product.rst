@@ -1,3 +1,5 @@
+.. _polymorphic-product:
+
 ==================================
 Products with different properties
 ==================================
@@ -25,17 +27,19 @@ Afterwards start the demo server:
 The Polymorphic Product Model
 =============================
 
-If in addition to Smart Cards we want to sell Smart Phones, we must declare a new model. Here
-instead of duplicating all the common fields, we unify them into a common base class named
-``Product``. Then that base class shall be extended to become either our model ``SmartCard`` or
-a model ``SmartPhone``.
+If in addition to Smart Cards we now also want to sell Smart Phones, we must declare a new model.
+Here instead of duplicating all the common fields, we unify them into a common base class named
+``Product``. Then that base class shall be extended to become either our known model ``SmartCard``
+or a new model ``SmartPhone``.
 
 To enable polymorphic models in **djangoSHOP**, we require the application django-polymorphic_.
 Here our models for Smart Cards or Smart Phones will be split up into a generic part and a
-specialized part. The generic part goes into our new ``Product`` model. Here you should already
-think about the layout of the list views. Only attributes in the ``Product`` will be available for
-list views displaying Smart Phones side by side with Smart Cards. First we must create a special
-`Model Manager`_ which unifies the query methods for translatable and polymorphic models:
+specialized part. The generic part goes into our new ``Product`` model. 
+
+You should already start to think about the layout of the list views. Only attributes in the
+``Product`` will be available for list views displaying Smart Phones side by side with Smart Cards.
+First we must create a special `Model Manager`_ which unifies the query methods for translatable
+and polymorphic models:
 
 .. _django-polymorphic: https://django-polymorphic.readthedocs.org/en/latest/
 .. _Model Manager: https://docs.djangoproject.com/en/stable/topics/db/managers/
@@ -83,15 +87,14 @@ for each Smart Phone variation.
 	:caption: myshop/models/polymorphic/smartphone.py
 	:linenos:
 	:language: python
-	:lines: 10-11, 14, 28-47
+	:lines: 9-10, 21-47
 
 Here the method ``get_price()`` can only return the minimum, average or maximum price for our
-product, but that's something often seen quite often in stores, where stated: *Price starting
-at € 99.50*.
+product, but that's something seen quite often in stores: *Price starting at € 99.50*.
 
 The concrete Smart Phone then is modeled as:
 
 .. literalinclude:: /../example/myshop/models/polymorphic/smartphone.py
 	:linenos:
 	:language: python
-	:lines: 90-99
+	:lines: 97-109

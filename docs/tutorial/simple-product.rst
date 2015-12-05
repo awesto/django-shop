@@ -1,6 +1,8 @@
-======================
-Model a Simple Product
-======================
+.. _simple-product:
+
+=========================
+Modeling a Simple Product
+=========================
 
 As a simple example, this tutorial uses Smart Cards as its first product. As emphasized in section
 :ref:`customer-model`, **djangoSHOP** is not shipped with ready to use product models. Instead the

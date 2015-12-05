@@ -1,6 +1,8 @@
-============================
-Model a Multilingual Product
-============================
+.. _multilingual-product:
+
+===============================
+Modeling a Multilingual Product
+===============================
 
 Let's extend our previous ``SmartCard`` model to internationalize our shop site. Normally the name
 of a Smart Card model is international anyway, say *Ultra Plus micro SDXC*, so it probably won't

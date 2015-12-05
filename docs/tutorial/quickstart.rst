@@ -15,7 +15,10 @@ create a database for the demo download the `media files`_ and unpack them into 
 	(shoptutorial)$ tar zxf DOWNLOAD/FOLDER/django-shop-sample-media.tar.gz
 
 Starting from this folder, you can run all three demos. Skip the first two examples if you want to
-proceed directly with polymorphic products. Each demo can be started started on its own.
+proceed directly with the polymorphic products demo. 
+
+.. note:: All demos can be started independently from each other, but you are encouraged to start
+		with the "Simple Product", and then proceed to the more complicate examples.
 
 .. _media files: http://django-shop.awesto.com/downloads/django-shop-workdir.tar.gz
 
@@ -35,7 +38,7 @@ Assure you are in the ``django-shop`` folder and using the correct virtual envir
 
 Point a browser onto http://localhost:8000/admin/ and log in as ``admin`` with password ``secret``.
 
-This runs a demo for :ref:`simple-product`.
+This runs the demo for :ref:`simple-product`.
 
 
 Internationalized Products
@@ -100,3 +103,4 @@ a fixture which already contains them:
 	(shoptutorial)$ ./manage.py loaddata fixtures/myshop-polymorphic.json
 	(shoptutorial)$ ./manage.py runserver
 
+This runs a demo for :ref:`polymorphic-product`.
