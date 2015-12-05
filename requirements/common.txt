@@ -1,7 +1,7 @@
 beautifulsoup4==4.4.0
 cmsplugin-filer==0.10.2
 Django==1.7.10
-django-admin-sortable2==0.6.0
+django-admin-sortable2==0.6.1
 django-allauth==0.23.0
 django-angular==0.7.15
 django-appconf==1.0.1
@@ -26,7 +26,7 @@ django-reversion==1.9.3
 django-sass-processor==0.3.0
 django-sekizai==0.8.2
 django-select2==5.2.1
--e git+git@github.com:jrief/django-shop-stripe.git@master#egg=django_shop_stripe-master
+-e git+git@github.com:jrief/djangoshop-stripe.git@master#egg=djangoshop-stripe
 django-treebeard==3.0
 djangocms-admin-style==0.2.8
 -e git+git@github.com:jrief/djangocms-bootstrap3.git@master#egg=djangocms_bootstrap3-master
