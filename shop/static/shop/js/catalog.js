@@ -88,7 +88,7 @@ djangoShopModule.directive('shopAddToCart', function($window) {
 		restrict: 'A',
 		controller: 'AddToCartCtrl',
 		link: function(scope, element, attrs, AddToCartCtrl) {
-			if (angular.isUndefined(attrs.shopAddToCart))
+			if (!attrs.shopAddToCart)
 				throw new Error("shop-add-to-cart must point onto an URL");
 			AddToCartCtrl.setUpdateUrl(attrs.shopAddToCart); 
 			AddToCartCtrl.loadContext();
