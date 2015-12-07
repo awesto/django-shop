@@ -37,6 +37,7 @@ Reference to classes and concepts used in **djangoSHOP**
 	reference/deferred-models
 	reference/money-types
 	reference/product-models
+	reference/cart-modifiers
 	reference/cascade-plugins
 
 

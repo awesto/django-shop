@@ -22,6 +22,12 @@ the pip-installable from PyPI only contains the main files. Before proceeding, p
 virtualenv_ is installed on your system, otherwise you would pollute your Python site-packages
 folder.
 
+Also ensure that these packages are installed on your operating system using your favorite package
+manager:
+
+* Redis: http://redis.io/
+* SQLite: https://www.sqlite.org/
+
 .. code-block:: shell
 
 	$ virtualenv shoptutorial

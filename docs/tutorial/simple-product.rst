@@ -13,12 +13,12 @@ describing a typical Smart Card:
 	:caption: myshop/models/simple/smartcard.py
 	:linenos:
 	:language: python
-	:lines: 7-9, 10-11, 14-22
+	:lines: 10-12, 14-18, 21-29
 
 Here our model ``SmartCard`` inherits directly from ``BaseProduct``, which is a stub class, hence
 the most common fields, such as ``name``, ``slug`` and ``unit_price`` must be added to our product
-here. Later on we will see why these fields, even though required by each product, are not part of
-our abstract model ``BaseProduct``.
+here. Later on we will see why these fields, even though required by each product, can not be part
+of our abstract model ``BaseProduct``.
 
 Additionally a smart card has some product specific properties:
 
