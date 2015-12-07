@@ -2,15 +2,26 @@
 {% load i18n %}
 
 {% block add-product-to-cart-table %}
-	{% for smartphone in product.smartphone_set.all %}
-<table shop-add-to-cart="{% url 'add-smartphone-to-cart' smartphone.product_code %}" class="table">
-	<caption>{% trans "Internal Storage" %} {{ smartphone.storage }} GB</caption>
+<table shop-add-to-cart="{{ product.get_absolute_url }}/add-smartphone-to-cart" class="table">
 	<thead>
-		<tr><th>{% trans "Quantity" %}</th><th>{% trans "Unit Price" %}</th><th>{% trans "Subtotal" %}</th>
+		<tr>
+			<th>{% trans "Model" %}</th>
+			<th>{% trans "Quantity" %}</th>
+			<th>{% trans "Unit Price" %}</th>
+			<th>{% trans "Subtotal" %}</th>
 		</tr>
 	</thead>
 	<tbody>
 		<tr>
+			<td>
+				<select class="form-control" ng-model="context.extra.product_code" ng-change="updateContext()" >
+	{% for smartphone in product.smartphone_set.all %}
+					<option value="{{ smartphone.product_code }}">
+					{{ smartphone.storage }} GB
+					</option>
+	{% endfor %}
+				</select>
+			</td>
 			<td class="form-inline">
 				<div class="form-group">
 					<input class="form-control" type="number" min="1" ng-model="context.quantity" ng-model-options="{{ ng_model_options }}" ng-change="updateContext()" />
@@ -20,15 +31,13 @@
 			<td ng-bind="context.subtotal"></td>
 		</tr>
 		<tr>
-			<td></td>
-			<td>
+			<td colspan="2">
 				<button class="btn btn-info btn-block btn-xs" ng-click="addToCart('{% url 'shop:watch-list' %}', {watch: true})">{% trans "Watch product" %}</button>
 			</td>
-			<td>
+			<td colspan="2">
 				<button class="btn btn-primary btn-block" ng-click="addToCart('{% url 'shop:cart-list' %}')">{% trans "Add to cart" %}</button>
 			</td>
 		</tr>
 	</tbody>
 </table>
-	{% endfor %}
 {% endblock add-product-to-cart-table %}
