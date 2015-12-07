@@ -149,13 +149,15 @@ class AddToCartSerializer(serializers.Serializer):
     def __init__(self, instance=None, data=empty, **kwargs):
         context = kwargs.get('context', {})
         if 'product' in context:
+            product = context['product']
             instance = self.get_instance(context, kwargs)
-            unit_price = context['product'].get_price(context['request'])
+            unit_price = instance.get('unit_price', product.get_price(context['request']))
             if data == empty:
                 quantity = self.fields['quantity'].default
             else:
                 quantity = data['quantity']
-            instance.update(quantity=quantity, unit_price=unit_price, subtotal=quantity * unit_price)
+            subtotal = quantity * unit_price
+            instance.update(quantity=quantity, unit_price=unit_price, subtotal=subtotal)
             super(AddToCartSerializer, self).__init__(instance, data, context=context)
         else:
             super(AddToCartSerializer, self).__init__(instance, data, **kwargs)
