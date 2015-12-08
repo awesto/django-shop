@@ -362,8 +362,6 @@ CMS_TEMPLATES = (
     ('myshop/pages/default.html', _("Default Page")),
 )
 
-CMS_SEO_FIELDS = True
-
 CMS_LANGUAGES = {
     'default': {
         'fallbacks': ['en', 'de'],
