@@ -40,7 +40,6 @@ hiredis==0.2.0
 html5lib==0.9999999
 jsonfield==1.0.3
 libsass==0.8.3
-mysqlclient==1.3.6
 oauthlib==1.0.3
 Pillow==2.9.0
 pluggy==0.3.1
