@@ -34,4 +34,10 @@ class SmartCard(Product):
     def get_price(self, request):
         return self.unit_price
 
+    def get_product_markedness(self, extra):
+        """
+        SmartCards do not have a markedness, they are the product.
+        """
+        return self
+
 reversion.register(SmartCard, follow=['product_ptr'])
