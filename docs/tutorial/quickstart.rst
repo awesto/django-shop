@@ -12,7 +12,7 @@ create a database for the demo download the `media files`_ and unpack them into 
 
 .. code-block:: shell
 
-	(shoptutorial)$ tar zxf DOWNLOAD/FOLDER/django-shop-sample-media.tar.gz
+	(shoptutorial)$ tar zxf tar zxf DOWNLOAD/FOLDER/django-shop-workdir.tar.gz
 
 Starting from this folder, you can run all three demos. Skip the first two examples if you want to
 proceed directly with the polymorphic products demo. 
