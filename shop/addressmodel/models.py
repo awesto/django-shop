@@ -10,12 +10,12 @@ from django.conf import settings
 
 BASE_ADDRESS_TEMPLATE = \
 _("""
-Name: %(name)s,
-Address: %(address)s,
-City: %(city)s,
-State: %(state)s,
-Zip-Code: %(zipcode)s,
-Country: %(country)s
+%(name)s,
+%(address)s,
+%(city)s,
+%(state)s,
+%(zipcode)s,
+%(country)s
 """)
 
 ADDRESS_TEMPLATE = getattr(settings, 'SHOP_ADDRESS_TEMPLATE',
