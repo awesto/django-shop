@@ -41,7 +41,7 @@ class AddSmartphoneToCartSerializer(AddToCartSerializer):
         extra.setdefault('product_code', product.smartphone_set.first().product_code)
         instance = {
             'product': product.id,
-            'unit_price': product.get_product_marktness(extra).unit_price,
+            'unit_price': product.get_product_markedness(extra).unit_price,
             'extra': extra,
         }
         return instance
