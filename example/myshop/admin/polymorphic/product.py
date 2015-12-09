@@ -70,7 +70,6 @@ class SmartPhoneAdmin(TranslatableAdmin, FrontendEditableAdminMixin,
             # since SortableAdminMixin is missing on this class, ordering has to be computed by hand
             max_order = self.base_model.objects.aggregate(max_order=Max('order'))['max_order']
             obj.order = max_order + 1 if max_order else 1
-        obj.legacy_fixed = True
         super(SmartPhoneAdmin, self).save_model(request, obj, form, change)
 
     def render_text_index(self, instance):
