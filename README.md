@@ -29,10 +29,7 @@ You'll find the detailed doc on `RTD <http://readthedocs.org/projects/django-sho
 
 ## Build status
 
-.. |travisci| image:: https://api.travis-ci.org/divio/django-shop.png
-.. _travisci https://travis-ci.org/divio/django-shop
-
-|travisci|
+[![Build Status](https://travis-ci.org/jrief/django-shop.svg)](https://travis-ci.org/jrief/django-shop)
 
 
 ## How to help:
