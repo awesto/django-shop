@@ -24,7 +24,7 @@ We recommend that you use virtualenv_.
 
 4. Install the development requirements::
 
-    pip install -r requirements/dev.txt
+    pip install -r requirements/testing.txt
 
 That's it! Now, you should be able to run the tests::
 
