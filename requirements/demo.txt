@@ -1,0 +1,4 @@
+Django==1.8.7
+-r common.txt
+stripe==1.27.1
+-e git+git@github.com:jrief/djangoshop-stripe.git@master#egg=djangoshop-stripe
