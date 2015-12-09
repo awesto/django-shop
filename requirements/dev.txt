@@ -1,1 +1,0 @@
--r testing.txt

@@ -21,8 +21,8 @@ class PasswordResetSerializer(serializers.PasswordResetSerializer):
             'use_https': self.context['request'].is_secure(),
             'from_email': getattr(settings, 'DEFAULT_FROM_EMAIL'),
             'request': self.context['request'],
-            'subject_template_name': subject_template.name,
-            'email_template_name': body_template.name,
+            'subject_template_name': subject_template.template.name,
+            'email_template_name': body_template.template.name,
         }
         self.reset_form.save(**opts)
 
