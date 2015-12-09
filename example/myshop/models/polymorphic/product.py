@@ -36,9 +36,9 @@ class Product(TranslatableModel, BaseProduct):
 
     # controlling the catalog
     order = models.PositiveIntegerField(verbose_name=_("Sort by"), db_index=True)
-    cms_pages = models.ManyToManyField('cms.Page', through=ProductPage, null=True,
+    cms_pages = models.ManyToManyField('cms.Page', through=ProductPage,
         help_text=_("Choose list view this product shall appear on."))
-    images = models.ManyToManyField('filer.Image', through=ProductImage, null=True)
+    images = models.ManyToManyField('filer.Image', through=ProductImage)
 
     class Meta:
         ordering = ('order',)
