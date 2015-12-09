@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-shop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-10 09:40+0100\n"
+"POT-Creation-Date: 2015-12-09 09:52+0100\n"
 "PO-Revision-Date: 2011-07-13 16:16+0000\n"
 "Last-Translator: chrisglass <tribaal@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,7 +29,7 @@ msgstr "Kundesstatus"
 msgid "Username"
 msgstr "Benutzername"
 
-#: admin/customer.py:93 models/customer.py:146
+#: admin/customer.py:93 models/customer.py:181
 msgid "Salutation"
 msgstr "Anrede"
 
@@ -49,7 +49,7 @@ msgstr "Status"
 msgid "No data"
 msgstr ""
 
-#: admin/customer.py:108 models/customer.py:147
+#: admin/customer.py:108 models/customer.py:182
 msgid "Last accessed"
 msgstr "Letzter Besuch"
 
@@ -57,8 +57,8 @@ msgstr "Letzter Besuch"
 msgid "Unexpired"
 msgstr ""
 
-#: admin/customer.py:125 admin/notification.py:18 admin/order.py:81
-#: models/cart.py:136 models/order.py:130
+#: admin/customer.py:125 admin/notification.py:19 admin/order.py:86
+#: models/cart.py:136 models/order.py:137
 msgid "Customer"
 msgstr "Kunde"
 
@@ -66,41 +66,55 @@ msgstr "Kunde"
 msgid "Customers"
 msgstr "Kunden"
 
-#: admin/notification.py:18 admin/notification.py:62
+#: admin/notification.py:19 admin/notification.py:63
 msgid "Nobody"
 msgstr "Unbekannt"
 
-#: admin/notification.py:48 models/notification.py:74
+#: admin/notification.py:49 models/notification.py:74
 msgid "Event"
 msgstr "Ereignis"
 
-#: admin/notification.py:52
+#: admin/notification.py:53
 msgid "Attachments"
 msgstr ""
 
-#: admin/order.py:51 models/order.py:131 models/order.py:255
-#: models/order.py:274 templates/shop/order/list.html:16
+#: admin/order.py:53 models/order.py:138 models/order.py:268
+#: models/order.py:287 templates/shop/order/list.html:16
 msgid "Status"
 msgstr "Status"
 
-#: admin/order.py:86
+#: admin/order.py:81
+#, fuzzy
+#| msgid "Order Number"
+msgid "Order number"
+msgstr "Bestellnummer"
+
+#: admin/order.py:102
 msgid "Outstanding amount"
 msgstr "Offener Betrag"
 
-#: admin/order.py:135 templates/shop/print/delivery-note.html:10
+#: admin/order.py:151 templates/shop/print/delivery-note.html:10
 msgid "Delivery Note"
 msgstr "Lieferschein"
 
-#: admin/order.py:137 templates/shop/print/invoice.html:4
+#: admin/order.py:153 templates/shop/print/invoice.html:4
 #: templates/shop/print/invoice.html:7
 msgid "Invoice"
 msgstr "Rechnung"
 
-#: admin/order.py:145
+#: admin/order.py:161
 msgid "Print out"
 msgstr "Ausdrucken"
 
-#: apps.py:9
+#: admin/product.py:31 models/related.py:23
+msgid "Categories"
+msgstr ""
+
+#: admin/product.py:39
+msgid "CMS Pages"
+msgstr ""
+
+#: apps.py:10
 msgid "Shop"
 msgstr ""
 
@@ -136,11 +150,11 @@ msgstr "Benutzer Registrieren"
 msgid "Continue as guest"
 msgstr "Als Gast fortsetzen"
 
-#: cascade/auth.py:26 cascade/checkout.py:30 cascade/plugin_base.py:96
+#: cascade/auth.py:26 cascade/checkout.py:31 cascade/plugin_base.py:121
 msgid "CMS Page"
 msgstr ""
 
-#: cascade/auth.py:26 cascade/checkout.py:30
+#: cascade/auth.py:26 cascade/checkout.py:31
 msgid "Reload Page"
 msgstr "Seite erneut Laden"
 
@@ -180,7 +194,7 @@ msgstr ""
 msgid "Empty Breadcrumb"
 msgstr ""
 
-#: cascade/breadcrumb.py:20 cascade/cart.py:25 cascade/plugin_base.py:154
+#: cascade/breadcrumb.py:20 cascade/cart.py:25 cascade/plugin_base.py:172
 msgid "Render as"
 msgstr ""
 
@@ -212,59 +226,63 @@ msgstr ""
 msgid "Shall the cart be editable or a static summary?"
 msgstr ""
 
-#: cascade/checkout.py:29 cascade/processbar.py:99
+#: cascade/catalog.py:14
+msgid "Catalog List Views"
+msgstr ""
+
+#: cascade/checkout.py:30 cascade/processbar.py:94
 msgid "Button Content"
 msgstr ""
 
-#: cascade/checkout.py:30
+#: cascade/checkout.py:31
 msgid "Purchase Now"
 msgstr ""
 
-#: cascade/checkout.py:37
+#: cascade/checkout.py:38
 msgid "Proceed Button"
 msgstr "Weiter Button"
 
-#: cascade/checkout.py:83
+#: cascade/checkout.py:85
 msgid "Customer Form"
 msgstr ""
 
-#: cascade/checkout.py:88
+#: cascade/checkout.py:90
 msgid "Only registered customers can access this form."
 msgstr "Nur registrierte Kunden können auf dieses Formular zugreifen."
 
-#: cascade/checkout.py:100
+#: cascade/checkout.py:102
 msgid "Guest Form"
 msgstr ""
 
-#: cascade/checkout.py:105
+#: cascade/checkout.py:107
 msgid "Only guest customers can access this form."
 msgstr ""
 
-#: cascade/checkout.py:126
+#: cascade/checkout.py:128
 msgid "Shipping Address Form"
 msgstr "Formular für Lieferadresse"
 
-#: cascade/checkout.py:134
+#: cascade/checkout.py:136
 msgid "Billing Address Form"
 msgstr "Formular für Rechnungsadresse"
 
-#: cascade/checkout.py:142
+#: cascade/checkout.py:144
 msgid "Payment Method Form"
 msgstr "Formular für Zahlungsmethode"
 
-#: cascade/checkout.py:163
+#: cascade/checkout.py:165
 msgid "Shipping Method Form"
 msgstr "Formular für Liefermethode"
 
-#: cascade/checkout.py:184
+#: cascade/checkout.py:186
 msgid "Extra Annotation Form"
 msgstr "Formular für zusätzliche Anmerkung"
 
-#: cascade/checkout.py:200
+#: cascade/checkout.py:202
 msgid "Accept Condition"
 msgstr ""
 
-#: cascade/checkout.py:221
+#: cascade/checkout.py:223
 msgid "HTML content"
 msgstr ""
 
@@ -272,34 +290,34 @@ msgstr ""
 msgid "Order Views"
 msgstr ""
 
-#: cascade/plugin_base.py:96 models/order.py:299 models/product.py:104
-#: templates/shop/cart/editable.html:16 templates/shop/cart/static.html:8
+#: cascade/plugin_base.py:121 models/order.py:312 models/product.py:85
+#: templates/shop/cart/editable.html:17 templates/shop/cart/static.html:9
 #: templates/shop/cart/watch.html:12 templates/shop/email/order.html:11
-#: templates/shop/order/detail.html:15 templates/shop/print/order.html:9
+#: templates/shop/order/detail.html:16 templates/shop/print/order.html:9
 msgid "Product"
 msgstr "Produkt"
 
-#: cascade/plugin_base.py:97
+#: cascade/plugin_base.py:122
 msgid "External URL"
 msgstr ""
 
-#: cascade/plugin_base.py:97
+#: cascade/plugin_base.py:122
 msgid "Mail To"
 msgstr ""
 
-#: cascade/plugin_base.py:122
+#: cascade/plugin_base.py:124
 msgid "An internal link onto a product from the shop"
 msgstr ""
 
-#: cascade/plugin_base.py:150
+#: cascade/plugin_base.py:168
 msgid "Form dialog"
 msgstr ""
 
-#: cascade/plugin_base.py:150
+#: cascade/plugin_base.py:168
 msgid "Summary"
 msgstr ""
 
-#: cascade/plugin_base.py:156
+#: cascade/plugin_base.py:174
 msgid "A dialog can also be rendered as a box containing a read-only summary."
 msgstr ""
 
@@ -329,7 +347,7 @@ msgstr ""
 msgid "Step Title"
 msgstr ""
 
-#: cascade/processbar.py:121
+#: cascade/processbar.py:116
 msgid "Next Step Button"
 msgstr ""
 
@@ -388,7 +406,7 @@ msgstr ""
 msgid "Passwords do not match"
 msgstr "Passwörter stimmen nicht überein"
 
-#: forms/checkout.py:18 forms/checkout.py:49
+#: forms/checkout.py:18 forms/checkout.py:51
 #, fuzzy
 msgid "Email address"
 msgstr "Rechnungsadresse"
@@ -401,7 +419,7 @@ msgstr "Vorname"
 msgid "Last Name"
 msgstr "Nachname"
 
-#: forms/checkout.py:72
+#: forms/checkout.py:73
 #, python-brace-format
 msgid ""
 "A registered customer with the e-mail address ‘{email}’ already exists.\n"
@@ -412,31 +430,31 @@ msgstr ""
 "Wenn Sie diese Adresse bereits verwendet haben, versuchen Sie bitte das "
 "Passwort zurückzusetzen."
 
-#: forms/checkout.py:167
+#: forms/checkout.py:168
 msgid "Use shipping address for billing"
 msgstr "Verwende Liefer- als Rechnungsadresse"
 
-#: forms/checkout.py:194
+#: forms/checkout.py:195
 msgid "Payment Method"
 msgstr "Zahlungsmethode"
 
-#: forms/checkout.py:223
+#: forms/checkout.py:224
 msgid "Shipping Method"
 msgstr "Liefermethode"
 
-#: forms/checkout.py:252
+#: forms/checkout.py:253
 msgid "Extra annotation for this order"
 msgstr "Zusätzliche Anmerkung zu dieser Bestellung"
 
-#: management/commands/shop_customers.py:9
+#: management/commands/shopcustomers.py:9
 msgid "Collect information about all customers which accessed this shop."
 msgstr ""
 
-#: management/commands/shop_customers.py:13
+#: management/commands/shopcustomers.py:13
 msgid "Delete customers with expired sessions."
 msgstr ""
 
-#: management/commands/shop_customers.py:35
+#: management/commands/shopcustomers.py:35
 #, python-brace-format
 msgid ""
 "Customers in this shop: total={total}, anonymous={anonymous}, "
@@ -1464,11 +1482,11 @@ msgstr "Artikel"
 msgid "Cart items"
 msgstr "Artikel"
 
-#: models/cart.py:137 models/order.py:136 models/product.py:95
+#: models/cart.py:137 models/order.py:143 models/product.py:76
 msgid "Created at"
 msgstr "Erstellt am"
 
-#: models/cart.py:138 models/order.py:137 models/product.py:96
+#: models/cart.py:138 models/order.py:144 models/product.py:77
 msgid "Updated at"
 msgstr "Aktualisiert am"
 
@@ -1484,39 +1502,39 @@ msgstr "Der Warenkorb"
 msgid "Shopping Carts"
 msgstr "Warenkörbe"
 
-#: models/customer.py:137
+#: models/customer.py:172
 msgid "Mrs."
 msgstr "Frau"
 
-#: models/customer.py:137
+#: models/customer.py:172
 msgid "Mr."
 msgstr "Herr"
 
-#: models/customer.py:137
+#: models/customer.py:172
 msgid "(n/a)"
 msgstr "keine Angabe"
 
-#: models/customer.py:141
+#: models/customer.py:176
 msgid "Unrecognized"
 msgstr "Unerkannt"
 
-#: models/customer.py:141
+#: models/customer.py:176
 msgid "Guest"
 msgstr "Gast"
 
-#: models/customer.py:141
+#: models/customer.py:176
 msgid "Registered"
 msgstr "Registriert"
 
-#: models/customer.py:144
+#: models/customer.py:179
 msgid "Recognized as"
 msgstr "Erkannt als"
 
-#: models/customer.py:145
+#: models/customer.py:180
 msgid "Designates the state the customer is recognized as."
 msgstr ""
 
-#: models/customer.py:149
+#: models/customer.py:184
 msgid "Extra information about this customer"
 msgstr "Zusätzliche Information über diesen Kunden"
 
@@ -1548,6 +1566,10 @@ msgstr "Land"
 msgid "Customer Number"
 msgstr "Kundennummer"
 
+#: models/defaults/order.py:11
+msgid "Order Number"
+msgstr "Bestellnummer"
+
 #: models/defaults/order.py:12
 #: templates/shop/email/customer-information.html:14
 #: templates/shop/order/list.html:15
@@ -1566,10 +1588,6 @@ msgstr "Rechnungsadresse"
 #: models/defaults/order.py:15
 msgid "Billing address at the moment of purchase."
 msgstr "Rechnungsadresse zum Zeitpunkt des Einkaufs"
-
-#: models/defaults/order.py:16
-msgid "Order Number"
-msgstr "Bestellnummer"
 
 #: models/defaults/order_item.py:11
 msgid "Shipped with"
@@ -1599,184 +1617,206 @@ msgstr "Benachrichtigung"
 msgid "Notifications"
 msgstr "Benachrichtigungen"
 
-#: models/order.py:120
+#: models/order.py:127
 msgid "New order without content"
 msgstr "Neue Bestellung ohne Inhalt"
 
-#: models/order.py:121
+#: models/order.py:128
 msgid "Order freshly created"
 msgstr "Bestellung soeben erzeugt"
 
-#: models/order.py:122
+#: models/order.py:129
 msgid "Payment confirmed"
 msgstr "Zahlung bestätigt"
 
-#: models/order.py:133
+#: models/order.py:140
 msgid "Currency in which this order was concluded"
 msgstr "Währung in der diese Bestellung abgeschlossen wurde"
 
-#: models/order.py:134 templates/shop/cart/editable.html:37
-#: templates/shop/cart/static.html:41 templates/shop/cart/summary.html:6
+#: models/order.py:141 templates/shop/cart/editable.html:36
+#: templates/shop/cart/static.html:42 templates/shop/cart/summary.html:6
+#: templates/shop/catalog/product-add2cart.html:17
 #: templates/shop/email/order.html:41 templates/shop/order/detail.html:48
 #: templates/shop/print/order.html:44
-#: templates/shop/products/catalog-product-add2cart.html:14
 msgid "Subtotal"
 msgstr "Zwischen&shy;summe"
 
-#: models/order.py:135 templates/shop/cart/editable.html:19
-#: templates/shop/cart/editable.html:49 templates/shop/cart/static.html:11
-#: templates/shop/cart/static.html.py:56 templates/shop/cart/summary.html:16
+#: models/order.py:142 templates/shop/cart/editable.html:19
+#: templates/shop/cart/editable.html:48 templates/shop/cart/static.html:11
+#: templates/shop/cart/static.html.py:58 templates/shop/cart/summary.html:16
 #: templates/shop/email/order.html:51 templates/shop/order/detail.html:18
 #: templates/shop/order/detail.html:62 templates/shop/print/order.html:12
 #: templates/shop/print/order.html.py:58
 msgid "Total"
 msgstr "Gesamtsumme"
 
-#: models/order.py:138
+#: models/order.py:145 models/order.py:318
 msgid "Extra fields"
 msgstr "Extra Felder"
 
-#: models/order.py:139
+#: models/order.py:146
 msgid "Arbitrary information for this order object on the moment of purchase."
 msgstr ""
 
-#: models/order.py:141
+#: models/order.py:148
 msgid "Parts of the Request objects on the moment of purchase."
 msgstr ""
 
-#: models/order.py:146 models/order.py:254 models/order.py:273
-#: models/order.py:293 templates/shop/order/detail.html:8
+#: models/order.py:153
+msgctxt "order_models"
 msgid "Order"
 msgstr "Bestellung"
 
-#: models/order.py:147
+#: models/order.py:154
+msgctxt "order_models"
 msgid "Orders"
 msgstr "Bestellungen"
 
-#: models/order.py:245
-msgctxt "status_name"
+#: models/order.py:258
+msgctxt "order_models"
 msgid "State"
 msgstr "Status"
 
-#: models/order.py:256
+#: models/order.py:267 models/order.py:286 models/order.py:306
+#: templates/shop/order/detail.html:8
+msgid "Order"
+msgstr "Bestellung"
+
+#: models/order.py:269
 msgid "Amount paid"
 msgstr "Bezahlter Betrag"
 
-#: models/order.py:257
+#: models/order.py:270
 msgid "How much was paid with this particular transfer."
 msgstr "Welcher Betrag wurde bei diesem Transfer überwiesen?"
 
-#: models/order.py:258
+#: models/order.py:271
 msgid "Transaction ID"
 msgstr "Transaktionsnummer"
 
-#: models/order.py:259 models/order.py:276
+#: models/order.py:272 models/order.py:289
 msgid "The transaction processor's reference"
 msgstr "Die Referenz des Transaktionsprozessors"
 
-#: models/order.py:260
+#: models/order.py:273
 msgid "Received at"
 msgstr "Erhalten am"
 
-#: models/order.py:261
+#: models/order.py:274
 msgid "Payment method"
 msgstr "Zahlungsmethode"
 
-#: models/order.py:262
+#: models/order.py:275
 msgid "The payment backend used to process the purchase"
 msgstr "Das zum Kauf verwendete Zahlungsbackend"
 
-#: models/order.py:265
+#: models/order.py:278
+#| msgid "Order payment"
+msgctxt "order_models"
 msgid "Order payment"
 msgstr "Zahlung"
 
-#: models/order.py:266
+#: models/order.py:279
+#| msgid "Order payments"
+msgctxt "order_models"
 msgid "Order payments"
 msgstr "Zahlungen"
 
-#: models/order.py:275
+#: models/order.py:288
 msgid "Shipping ID"
 msgstr "Lieferanten Transaktion"
 
-#: models/order.py:277
+#: models/order.py:290
 msgid "Shipping method"
 msgstr "Gewählter Lieferant"
 
-#: models/order.py:278
+#: models/order.py:291
 msgid "The shipping backend used to deliver the items for this order"
 msgstr "Gewählter Lieferant, um Positionen dieser Bestellung zu versenden"
 
-#: models/order.py:282
+#: models/order.py:295
 msgid "Shipping order"
 msgstr ""
 
-#: models/order.py:283
+#: models/order.py:296
 msgid "Shipping orders"
 msgstr ""
 
-#: models/order.py:294
-msgid "Product identifier"
-msgstr "Produktreferenz"
-
-#: models/order.py:295
-msgid "Product identifier at the moment of purchase."
-msgstr "Artikelnummer zum Zeitpunkt der Bestellung."
-
-#: models/order.py:296
+#: models/order.py:307
 msgid "Product name"
 msgstr "Produktname"
 
-#: models/order.py:297
+#: models/order.py:308
 msgid "Product name at the moment of purchase."
 msgstr "Produktname zum Zeitpunkt der Bestellung."
 
-#: models/order.py:300
+#: models/order.py:309
+msgid "Product code"
+msgstr "Produktreferenz"
+
+#: models/order.py:310
+msgid "Product code at the moment of purchase."
+msgstr "Produktreferenz zum Zeitpunkt der Bestellung."
+
+#: models/order.py:313
 msgid "Unit price"
 msgstr "Einheitspreis"
 
-#: models/order.py:301
+#: models/order.py:314
 msgid "Products unit price at the moment of purchase."
 msgstr "Einheitspreis zum Zeitpunkt der Bestellung"
 
-#: models/order.py:302
+#: models/order.py:315
 msgid "Line Total"
 msgstr "Zeilensumme"
 
-#: models/order.py:303
+#: models/order.py:316
 msgid "Line total on the invoice at the moment of purchase."
 msgstr "Zeilensumme zum Zeitpunkt der Bestellung"
 
-#: models/order.py:304
+#: models/order.py:317
 msgid "Ordered quantity"
 msgstr "Bestellte Menge"
 
-#: models/order.py:305
+#: models/order.py:319
 msgid "Arbitrary information for this order item"
 msgstr "Zusätzliche Information zu dieser Position"
 
-#: models/order.py:309
+#: models/order.py:323
 msgid "Order item"
 msgstr "Bestellware"
 
-#: models/order.py:310
+#: models/order.py:324
 msgid "Order items"
 msgstr "Bestellwaren"
 
-#: models/product.py:97
+#: models/product.py:78
 msgid "Active"
 msgstr "Aktiv"
 
-#: models/product.py:98
+#: models/product.py:79
 msgid "Is this product publicly visible."
 msgstr "Ist dieses Produkt öffentlich sichtbar."
 
-#: models/product.py:105
+#: models/product.py:86
 msgid "Products"
 msgstr "Produkte"
 
-#: models/product.py:115
+#: models/product.py:96
 msgid "Product type"
 msgstr "Produkttype"
+
+#: models/related.py:22
+msgid "Category"
+msgstr ""
+
+#: models/related.py:38
+msgid "Product Image"
+msgstr "Produktbild"
+
+#: models/related.py:39
+msgid "Product Images"
+msgstr "Produktbilder"
 
 #: modifiers/defaults.py:39
 msgid "Pay in advance"
@@ -1795,42 +1835,46 @@ msgid "{}% V.A.T incl."
 msgstr "inkl. {}% MWSt."
 
 #: money/iso4217.py:12
-msgid "Brazilian Real"
+msgid "Australian Dollar"
 msgstr ""
 
 #: money/iso4217.py:13
-msgid "Swiss Franc"
+msgid "Brazilian Real"
 msgstr ""
 
 #: money/iso4217.py:14
-msgid "Chinese Yuan"
+msgid "Swiss Franc"
 msgstr ""
 
 #: money/iso4217.py:15
-msgid "Euro"
+msgid "Chinese Yuan"
 msgstr ""
 
 #: money/iso4217.py:16
-msgid "Pound Sterling"
+msgid "Euro"
 msgstr ""
 
 #: money/iso4217.py:17
-msgid "Israeli Sheqel"
+msgid "Pound Sterling"
 msgstr ""
 
 #: money/iso4217.py:18
-msgid "Japanese Yen"
+msgid "Israeli Sheqel"
 msgstr ""
 
 #: money/iso4217.py:19
-msgid "Russian Ruble"
+msgid "Japanese Yen"
 msgstr ""
 
 #: money/iso4217.py:20
-msgid "Ukrainian Hryvnia"
+msgid "Russian Ruble"
 msgstr ""
 
 #: money/iso4217.py:21
+msgid "Ukrainian Hryvnia"
+msgstr ""
+
+#: money/iso4217.py:22
 msgid "US Dollar"
 msgstr ""
 
@@ -1843,10 +1887,8 @@ msgid "Prepayment deposited"
 msgstr "Vorauszahlung eingegangen"
 
 #: payment/defaults.py:35
-#, fuzzy
-#| msgid "Payment confirmed"
 msgid "No Payment Required"
-msgstr "Zahlung bestätigt"
+msgstr "Keine Zahlung benötigt"
 
 #: payment/defaults.py:58
 msgid "Deposited too little"
@@ -1982,25 +2024,26 @@ msgstr "Registrieren Sie sich"
 msgid "Register"
 msgstr "Registrieren"
 
-#: templates/shop/cart/editable.html:17 templates/shop/cart/static.html:9
-#: templates/shop/cart/watch.html:13 templates/shop/email/order.html:12
-#: templates/shop/order/detail.html:16 templates/shop/print/order.html:10
-#: templates/shop/products/catalog-product-add2cart.html:14
+#: templates/shop/cart/editable.html:16 templates/shop/cart/static.html:8
+#: templates/shop/cart/watch.html:13
+#: templates/shop/catalog/product-add2cart.html:15
+#: templates/shop/email/order.html:12 templates/shop/order/detail.html:15
+#: templates/shop/print/order.html:10
 msgid "Quantity"
 msgstr "Menge"
 
 #: templates/shop/cart/editable.html:18 templates/shop/cart/static.html:10
-#: templates/shop/cart/watch.html:14 templates/shop/order/detail.html:17
-#: templates/shop/print/order.html:11
-#: templates/shop/products/catalog-product-add2cart.html:14
+#: templates/shop/cart/watch.html:14
+#: templates/shop/catalog/product-add2cart.html:16
+#: templates/shop/order/detail.html:17 templates/shop/print/order.html:11
 msgid "Unit Price"
 msgstr "Einheitspreis"
 
-#: templates/shop/cart/editable.html:76 templates/shop/cart/watch.html:50
+#: templates/shop/cart/editable.html:74 templates/shop/cart/watch.html:50
 msgid "Remove"
 msgstr "Entfernen"
 
-#: templates/shop/cart/editable.html:79
+#: templates/shop/cart/editable.html:77
 msgid "Watch Item"
 msgstr "Artikel beobachten"
 
@@ -2009,9 +2052,41 @@ msgid "Number of items"
 msgstr "Anzahl der Artikel"
 
 #: templates/shop/cart/watch.html:47
-#: templates/shop/products/catalog-product-add2cart.html:25
+#: templates/shop/catalog/product-add2cart.html:36
 msgid "Add to cart"
 msgstr "In den Warenkorb"
+
+#: templates/shop/catalog/product-add2cart.html:9
+msgid "Order Product"
+msgstr "Bestelle Produkt"
+
+#: templates/shop/catalog/product-add2cart.html:33
+msgid "Watch product"
+msgstr "Beobachte Produkt"
+
+#: templates/shop/catalog/product-add2cart.html:49
+msgid "The product has been successfully placed in the shopping cart:"
+msgstr "Das Produkt wurde in den Warenkorb gelegt:"
+
+#: templates/shop/catalog/product-add2cart.html:50
+msgid "Watching this product"
+msgstr "Beobachte dieses Produkt"
+
+#: templates/shop/catalog/product-add2cart.html:57
+msgid "for {{ context.unit_price }} per piece: {{ context.subtotal }}"
+msgstr "für {{ context.unit_price }} pro Stück: {{ context.subtotal }}"
+
+#: templates/shop/catalog/product-add2cart.html:64
+msgid "Show Cart"
+msgstr "Warenkorb"
+
+#: templates/shop/catalog/product-add2cart.html:66
+msgid "Continue Shopping"
+msgstr "Weiter Einkaufen"
+
+#: templates/shop/catalog/product-add2cart.html:67
+msgid "Cancel"
+msgstr "Abbrechen"
 
 #: templates/shop/email/customer-information.html:4
 msgid "Your Details"
@@ -2114,42 +2189,6 @@ msgstr "Summe"
 msgid "Delivery note for"
 msgstr "Lieferschein für"
 
-#: templates/shop/products/catalog-product-add2cart.html:9
-msgid "Order Product"
-msgstr "Bestelle Produkt"
-
-#: templates/shop/products/catalog-product-add2cart.html:26
-msgid "Watch product"
-msgstr "Beobachte Produkt"
-
-#: templates/shop/products/catalog-product-add2cart.html:38
-msgid "The product has been successfully placed in the shopping cart:"
-msgstr "Das Produkt wurde in den Warenkorb gelegt:"
-
-#: templates/shop/products/catalog-product-add2cart.html:39
-msgid "Watching this product"
-msgstr "Beobachte dieses Produkt"
-
-#: templates/shop/products/catalog-product-add2cart.html:46
-msgid "for {{ context.unit_price }} per piece: {{ context.subtotal }}"
-msgstr "für {{ context.unit_price }} pro Stück: {{ context.subtotal }}"
-
-#: templates/shop/products/catalog-product-add2cart.html:52
-msgid "Show Cart"
-msgstr "Warenkorb"
-
-#: templates/shop/products/catalog-product-add2cart.html:53
-msgid "Continue Shopping"
-msgstr "Weiter Einkaufen"
-
-#: templates/shop/products/catalog-product-add2cart.html:54
-msgid "Cancel"
-msgstr "Abbrechen"
-
-#: templates/shop/products/search-product-body.html:5
-msgid "Art-No.:"
-msgstr "Art-Nr.:"
-
 #: templates/shop/search/results.html:14
 msgid "No search results found"
 msgstr "Die Suche hat nichts gefunden"
@@ -2196,6 +2235,23 @@ msgstr "Anleitung zum Zurücksetzen des Passwortes wurde an '{email}' gesendet."
 #: views/auth.py:133
 msgid "Password has been reset with the new password."
 msgstr "Passwort wurde mit neuem Passwort zurückgesetzt"
+
+#: views/order.py:23
+msgid "Only signed in customers can view their orders"
+msgstr "Nur angemeldete Kunden können ihre Bestellungen einsehen."
+
+#~ msgctxt "status_name"
+#~ msgid "State"
+#~ msgstr "Status"
+
+#~ msgid "Product identifier"
+#~ msgstr "Produktreferenz"
+
+#~ msgid "Product identifier at the moment of purchase."
+#~ msgstr "Artikelnummer zum Zeitpunkt der Bestellung."
+
+#~ msgid "Art-No.:"
+#~ msgstr "Art-Nr.:"
 
 #~ msgid "Identifier"
 #~ msgstr "Produktreferenz"

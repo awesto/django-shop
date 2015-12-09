@@ -8,7 +8,7 @@ from django.db.models.aggregates import Sum
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.module_loading import import_by_path
 from django.utils.functional import cached_property
-from django.utils.translation import ugettext_lazy as _, pgettext, get_language_from_request
+from django.utils.translation import ugettext_lazy as _, pgettext_lazy, get_language_from_request
 from django.utils.six.moves.urllib.parse import urljoin
 from jsonfield.fields import JSONField
 from ipware.ip import get_ip
@@ -150,8 +150,6 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
 
     class Meta:
         abstract = True
-        verbose_name = _("Order")
-        verbose_name_plural = _("Orders")
 
     def __str__(self):
         return self.get_number()
@@ -255,7 +253,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     def status_name(self):
         """Return the human readable name for the current transition state"""
         return self._transition_targets.get(self.status, self.status)
-    status_name.short_description = pgettext('status_name', "State")
+    status_name.short_description = pgettext_lazy('order_models', "State")
 
 OrderModel = deferred.MaterializedModel(BaseOrder)
 
@@ -275,8 +273,8 @@ class OrderPayment(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         help_text=_("The payment backend used to process the purchase"))
 
     class Meta:
-        verbose_name = _("Order payment")
-        verbose_name_plural = _("Order payments")
+        verbose_name = pgettext_lazy('order_models', "Order payment")
+        verbose_name_plural = pgettext_lazy('order_models', "Order payments")
 
 
 class BaseOrderShipping(with_metaclass(WorkflowMixinMetaclass, models.Model)):

@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from django.db import models
 from django.utils.datetime_safe import datetime
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from shop.models import order
 
 
@@ -13,6 +13,10 @@ class Order(order.BaseOrder):
         help_text=_("Shipping address at the moment of purchase."))
     billing_address_text = models.TextField(_("Billing Address"), blank=True, null=True,
         help_text=_("Billing address at the moment of purchase."))
+
+    class Meta:
+        verbose_name = pgettext_lazy('order_models', "Order")
+        verbose_name_plural = pgettext_lazy('order_models', "Orders")
 
     def get_or_assign_number(self):
         """
