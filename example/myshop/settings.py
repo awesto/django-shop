@@ -312,19 +312,10 @@ SERIALIZATION_MODULES = {'json': b'shop.money.serializers'}
 
 
 ############################################
-# settings for storing data in memory
+# settings for storing session data
 
-# CACHES = {
-#     'default': {
-#         'BACKEND': 'redis_cache.RedisCache',
-#         'LOCATION': 'localhost:6379',
-#         'KEY_PREFIX': SHOP_APP_LABEL + '-cache',
-#     },
-# }
-
-SESSION_ENGINE = 'redis_sessions.session'
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 SESSION_SAVE_EVERY_REQUEST = True
-SESSION_REDIS_PREFIX = SHOP_APP_LABEL + '-session'
 
 
 ############################################
