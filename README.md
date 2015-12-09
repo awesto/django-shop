@@ -24,7 +24,7 @@ framework, that a moderately talented Django programmer should be able to pick u
 The current state is a roughly functional and highly modular system. Please refer to
 docs/plugins.rst to figure out what plugin types are available, and what the do.
 
-You'll find the detailed doc on `RTD <http://readthedocs.org/projects/django-shop/>`_
+You'll find the detailed doc on [RTD] (http://readthedocs.org/projects/django-shop/)
 
 
 ## Build status
