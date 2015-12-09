@@ -8,3 +8,6 @@ install:
   - pip install tox
 script:
   - tox -e $TOX_ENV
+matrix:
+  allow_failures:
+    - env: TOX_ENV=py27-django19
