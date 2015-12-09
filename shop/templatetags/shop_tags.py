@@ -21,10 +21,11 @@ class CartIcon(InclusionTag):
     Inclusion tag for displaying cart summary.
     """
     def get_template(self, context, **kwargs):
-        return select_template([
+        template = select_template([
             '{}/templatetags/cart-icon.html'.format(shop_settings.APP_LABEL),
             'shop/templatetags/cart-icon.html',
-        ]).name
+        ])
+        return template.template.name
 
     def get_context(self, context):
         request = context['request']

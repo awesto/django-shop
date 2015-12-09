@@ -2,7 +2,8 @@
 from __future__ import unicode_literals
 from django.db.models import Max
 from django.forms.fields import CharField
-from django.template.loader import get_template_from_string, select_template
+from django.template import Engine
+from django.template.loader import select_template
 from django.utils.html import format_html, strip_tags, strip_entities
 from django.utils.safestring import mark_safe
 from django.utils.text import Truncator
@@ -72,7 +73,7 @@ class CustomerFormPluginBase(DialogFormPluginBase):
 
     def get_render_template(self, context, instance, placeholder):
         if 'error_message' in context:
-            return get_template_from_string('<p class="text-danger">{{ error_message }}</p>')
+            return Engine().from_string('<p class="text-danger">{{ error_message }}</p>')
         return super(CustomerFormPluginBase, self).get_render_template(context, instance, placeholder)
 
 
