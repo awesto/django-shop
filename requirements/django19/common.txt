@@ -18,7 +18,7 @@ django-libsass==0.4
 django-mptt==0.7.4
 django-parler==1.5
 django-polymorphic==0.7.1
-django-post-office==2.0.1
+git+https://github.com/ui/django-post_office@a53179fc4a0fd833d1e5f81d3f340bd0f37a41ad
 django-redis-cache==1.6.0
 django-redis-sessions==0.5.0
 django-rest-auth==0.5.0
