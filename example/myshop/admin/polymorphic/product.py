@@ -21,7 +21,7 @@ class SmartCardAdmin(SortableAdminMixin, TranslatableAdmin, FrontendEditableAdmi
     base_model = Product
     fieldsets = (
         (None, {
-            'fields': ('name', 'slug', 'active', 'unit_price',),
+            'fields': ('name', 'slug', 'product_code', 'unit_price', 'active',),
         }),
         (_("Translatable Fields"), {
             'fields': ('description',)

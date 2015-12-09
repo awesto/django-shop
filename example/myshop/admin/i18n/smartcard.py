@@ -13,7 +13,7 @@ class SmartCardAdmin(SortableAdminMixin, TranslatableAdmin,
                      CMSPageAsCategoryMixin, admin.ModelAdmin):
     fieldsets = (
         (None, {
-            'fields': ('name', 'slug', 'unit_price', 'active',),
+            'fields': ('name', 'slug', 'product_code', 'unit_price', 'active',),
         }),
         (_("Translatable Fields"), {
             'fields': ('description',)
@@ -24,4 +24,4 @@ class SmartCardAdmin(SortableAdminMixin, TranslatableAdmin,
     )
     inlines = (ProductImageInline,)
     prepopulated_fields = {'slug': ('name',)}
-    list_display = ('name', 'unit_price', 'active',)
+    list_display = ('name', 'product_code', 'unit_price', 'active',)
