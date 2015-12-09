@@ -8,7 +8,6 @@ from parler.models import TranslatableModel, TranslatedFieldsModel
 from parler.fields import TranslatedField
 from parler.managers import TranslatableManager, TranslatableQuerySet
 from polymorphic.query import PolymorphicQuerySet
-import reversion
 from shop.models.product import BaseProductManager
 from shop.models.product import BaseProduct
 from myshop.models.properties import Manufacturer, ProductPage, ProductImage
@@ -70,8 +69,6 @@ class Product(TranslatableModel, BaseProduct):
         """
         msg = "Method get_product_markedness(extra) must be implemented by subclass: `{}`"
         raise NotImplementedError(msg.format(self.__class__.__name__))
-
-reversion.register(Product, adapter_cls=type(str('ProductVersionAdapter'), (reversion.VersionAdapter,), {}))
 
 
 class ProductTranslation(TranslatedFieldsModel):

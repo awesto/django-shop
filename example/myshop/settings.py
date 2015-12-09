@@ -98,7 +98,6 @@ INSTALLED_APPS = (
     'easy_thumbnails',
     'easy_thumbnails.optimize',
     'parler',
-    'reversion',
     'post_office',
     'haystack',
     'shop',

@@ -10,14 +10,13 @@ from cms.admin.placeholderadmin import PlaceholderAdminMixin, FrontendEditableAd
 from parler.admin import TranslatableAdmin
 from polymorphic.admin import (PolymorphicParentModelAdmin, PolymorphicChildModelAdmin,
     PolymorphicChildModelFilter)
-from reversion import VersionAdmin
 from shop.admin.product import CMSPageAsCategoryMixin, ProductImageInline
 from myshop.models.polymorphic.product import Product
 from myshop.models.polymorphic.smartcard import SmartCard
 from myshop.models.polymorphic.smartphone import OperatingSystem, SmartPhone, SmartPhoneModel
 
 
-class SmartCardAdmin(SortableAdminMixin, TranslatableAdmin, VersionAdmin, FrontendEditableAdminMixin,
+class SmartCardAdmin(SortableAdminMixin, TranslatableAdmin, FrontendEditableAdminMixin,
                      CMSPageAsCategoryMixin, PlaceholderAdminMixin, PolymorphicChildModelAdmin):
     base_model = Product
     fieldsets = (
@@ -46,7 +45,7 @@ class SmartPhoneInline(admin.TabularInline):
     extra = 0
 
 
-class SmartPhoneAdmin(TranslatableAdmin, VersionAdmin, FrontendEditableAdminMixin,
+class SmartPhoneAdmin(TranslatableAdmin, FrontendEditableAdminMixin,
                       CMSPageAsCategoryMixin, PlaceholderAdminMixin, PolymorphicChildModelAdmin):
     base_model = Product
     fieldsets = (
@@ -81,7 +80,7 @@ class SmartPhoneAdmin(TranslatableAdmin, VersionAdmin, FrontendEditableAdminMixi
 
 
 @admin.register(Product)
-class ProductAdmin(SortableAdminMixin, VersionAdmin, PolymorphicParentModelAdmin):
+class ProductAdmin(SortableAdminMixin, PolymorphicParentModelAdmin):
     base_model = Product
     child_models = ((SmartPhoneModel, SmartPhoneAdmin), (SmartCard, SmartCardAdmin),)
     list_display = ('name', 'get_price', 'product_type', 'active',)

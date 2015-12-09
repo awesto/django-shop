@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
-import reversion
 from shop.money import Money, MoneyMaker
 from shop.money.fields import MoneyField
 from .product import Product
@@ -90,8 +89,6 @@ class SmartPhoneModel(Product):
             return self.smartphone_set.get(product_code=extra.get('product_code'))
         except SmartPhone.DoesNotExist as e:
             raise SmartPhoneModel.DoesNotExist(e)
-
-reversion.register(SmartPhoneModel, follow=['product_ptr'])
 
 
 class SmartPhone(models.Model):
