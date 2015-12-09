@@ -24,9 +24,26 @@ MIDDLEWARE_CLASSES = (
     'shop.middleware.CustomerMiddleware',
 )
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.core.context_processors.request',
-)
+TEMPLATES = [{
+    'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    'APP_DIRS': True,
+    'OPTIONS': {
+        'context_processors': (
+            'django.contrib.auth.context_processors.auth',
+            'django.template.context_processors.debug',
+            'django.template.context_processors.i18n',
+            'django.template.context_processors.media',
+            'django.template.context_processors.static',
+            'django.template.context_processors.tz',
+            'django.template.context_processors.csrf',
+            'django.template.context_processors.request',
+            'django.contrib.messages.context_processors.messages',
+            'sekizai.context_processors.sekizai',
+            'cms.context_processors.cms_settings',
+            'shop.context_processors.customer',
+        )
+    }
+}]
 
 SILENCED_SYSTEM_CHECKS = ['auth.W004']
 
