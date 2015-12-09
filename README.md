@@ -59,3 +59,4 @@ You'll find the detailed doc on `RTD <http://readthedocs.org/projects/django-sho
 * Refactoring tests to make creating test environments less messy (fixtures?)
 * If you feel like you could solve having multiple currencies in an elegant
   manner, we would really be interested to hear from you
+
