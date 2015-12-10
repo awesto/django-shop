@@ -1,3 +1,4 @@
+Django==1.8.7
 beautifulsoup4==4.4.0
 cmsplugin-filer==0.10.2
 django-admin-sortable2==0.6.1
