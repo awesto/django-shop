@@ -81,7 +81,7 @@ djangoShopModule.controller('ModalInstanceCtrl', ['$scope', '$http', '$modalInst
 }]);
 
 
-// Directive <shop-add-to-cart>
+// Directive <ANY shop-add-to-cart="REST-API-endpoint">
 // handle dialog box on the product's detail page to add a product to the cart
 djangoShopModule.directive('shopAddToCart', function($window) {
 	return {
