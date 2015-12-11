@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-try:
-    from formtools.wizard.views import normalize_name
-except ImportError:  # Django-1.7
-    from django.contrib.formtools.wizard.views import normalize_name
+from formtools.wizard.views import normalize_name
 from django.forms import fields
 from cms.utils.helpers import classproperty
 from djangular.forms import NgModelFormMixin, NgFormValidationMixin
