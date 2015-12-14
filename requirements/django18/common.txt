@@ -23,7 +23,7 @@ django-rest-auth==0.5.0
 django-sass-processor==0.3.0
 django-sekizai==0.8.2
 django-select2==5.2.1
-git+https://github.com/jrief/djangoshop-stripe@887fcffd4e5d4a2d3a415e26bb1dc6d32baa1ced
+djangoshop-stripe==0.1.0
 django-treebeard==3.0
 djangocms-admin-style==0.2.8
 git+https://github.com/jrief/djangocms-bootstrap3@fccfa3e1530ae2a151f58442de46526c82c1970b
