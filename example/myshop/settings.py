@@ -406,28 +406,27 @@ CMS_PLACEHOLDER_CONF = {
 
 CMSPLUGIN_CASCADE_PLUGINS = ('cmsplugin_cascade.segmentation', 'cmsplugin_cascade.generic', 'cmsplugin_cascade.link', 'shop.cascade', 'cmsplugin_cascade.bootstrap3',)
 
-CMSPLUGIN_CASCADE_DEPENDENCIES = {
-    'shop/js/admin/shoplinkplugin.js': 'cascade/js/admin/linkpluginbase.js',
+CMSPLUGIN_CASCADE = {
+    'dependencies': {
+        'shop/js/admin/shoplinkplugin.js': 'cascade/js/admin/linkpluginbase.js',
+    },
+    'alien_plugins': ('TextPlugin', 'TextLinkPlugin',),
+    'plugins_with_extra_fields': (
+        'BootstrapButtonPlugin',
+        'BootstrapRowPlugin',
+        'SimpleWrapperPlugin',
+        'HorizontalRulePlugin',
+        'ExtraAnnotationFormPlugin',
+    ),
+    'segmentation_mixins': (
+        ('shop.cascade.segmentation.EmulateCustomerModelMixin', 'shop.cascade.segmentation.EmulateCustomerAdminMixin'),
+    ),
 }
-
-CMSPLUGIN_CASCADE_ALIEN_PLUGINS = ('TextPlugin', 'TextLinkPlugin',)
 
 CMSPLUGIN_CASCADE_LINKPLUGIN_CLASSES = (
     'shop.cascade.plugin_base.CatalogLinkPluginBase',
     'cmsplugin_cascade.link.plugin_base.LinkElementMixin',
     'shop.cascade.plugin_base.CatalogLinkForm',
-)
-
-CMSPLUGIN_CASCADE_WITH_EXTRAFIELDS = (
-    'BootstrapButtonPlugin',
-    'BootstrapRowPlugin',
-    'SimpleWrapperPlugin',
-    'HorizontalRulePlugin',
-    'ExtraAnnotationFormPlugin',
-)
-
-CMSPLUGIN_CASCADE_SEGMENTATION_MIXINS = (
-    ('shop.cascade.segmentation.EmulateCustomerModelMixin', 'shop.cascade.segmentation.EmulateCustomerAdminMixin'),
 )
 
 CKEDITOR_SETTINGS = {
