@@ -5,7 +5,7 @@ Contributing
 Naming conventions
 ==================
 
-The official name of this project is **django SHOP**. Third party plugins for **djangoSHOP** shall
+The official name of this project is **django SHOP**. Third party plugins for **django SHOP** shall
 follow the same naming convention as for plugins of **djangoCMS**: Third party package names shall
 start with **djangoshop** followed by a dash; no space shall be added between **django** and
 **shop**.
@@ -27,36 +27,45 @@ Setting up the environment
 --------------------------
 
 We highly suggest you run the tests suite in a clean environment, using a tool such as
-`virtualenv <http://pypi.python.org/pypi/virtualenv>`_
+`virtualenv <http://pypi.python.org/pypi/virtualenv>`_.
 
-The following packages are needed for the test suite to run:
+1. Clone the repository and cd into it::
 
-* `django <https://www.djangoproject.com/>`_
-* `django_polymorphic <https://github.com/chrisglass/django_polymorphic>`_
-* `django-classy-tags <https://github.com/ojii/django-classy-tags>`_
+    git clone https://github.com/jrief/django-shop
+    cd django-shop
 
-Running the following command inside your virtualenv should get you started::
+2. Create a virtualenv, and activate it::
 
-    pip install django django_polymorphic django-classy-tags
+    virtualenv ~/.virtualenvs/django-shop
+    source ~/.virtualenvs/django-shop/bin/activate
 
-Running the tests
------------------
+3. Install the project in development mode::
 
-Thankfully, we provided a small yet handy script to do it for you! Simply
-invoke ``runtests.sh`` on a unix platform and you should be all set.
+    pip install -e .
 
-The test suite should output normally (only "."'s), and we try to keep the suite fast
-(subsecond), so that people can test very often.
+4. Install the development requirements::
 
-Options
---------
+    pip install -r requirements/django18/testing.txt
 
-While a simple tool, ``runtests.sh`` provides the following options:
+That's it! Now, you should be able to run the tests::
 
-* ``--with-coverage`` : run the tests using coverage and let the coverage results
-  be displayed in your default browser (run ``pip install coverage`` beforehand)
-* ``--with-docs`` : run the tests and generate the documentation (the one you're
-  reading right now).
+    py.test tests
+
+We use `tox <http://codespeak.net/tox/>`_ as a CI tool. To run the full CI
+test suite and get a coverage report, all you have to do is this::
+
+    pip install tox
+    tox
+
+If you work on a certain part of the code base and you want to run the related
+tests and get a coverage report, you can do something like this::
+
+    coverage run $(which py.test) tests/test_money.py \
+        && coverage report -m shop/money/*.py
+
+.. NOTE::
+    Using tox and py.test is optional. If you prefer the conventional way of
+    running tests, you can do this: ``django-admin.py test tests --settings shop.testsettings``
 
 Community
 ==========

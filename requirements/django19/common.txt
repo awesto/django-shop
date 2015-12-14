@@ -1,6 +1,6 @@
+Django==1.9
 beautifulsoup4==4.4.0
 cmsplugin-filer==0.10.2
-Django==1.9
 django-admin-sortable2==0.6.1
 django-allauth==0.23.0
 django-angular==0.7.15
@@ -18,9 +18,7 @@ django-libsass==0.4
 django-mptt==0.7.4
 django-parler==1.5
 django-polymorphic==0.7.1
-django-post-office==2.0.1
-django-redis-cache==1.6.0
-django-redis-sessions==0.5.0
+git+https://github.com/ui/django-post_office@a53179fc4a0fd833d1e5f81d3f340bd0f37a41ad
 django-rest-auth==0.5.0
 django-sass-processor==0.3.0
 django-sekizai==0.8.2
@@ -35,7 +33,6 @@ djangorestframework==3.1.3
 drf-haystack==1.5.2
 easy-thumbnails==2.2.1
 elasticsearch==1.7.0
-hiredis==0.2.0
 html5lib==0.9999999
 jsonfield==1.0.3
 libsass==0.8.3
@@ -46,7 +43,6 @@ py==1.4.30
 Pygments==2.0.2
 python-openid==2.2.5
 pytz==2015.7
-redis==2.10.3
 requests==2.7.0
 requests-oauthlib==0.5.0
 six==1.9.0
