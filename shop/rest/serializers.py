@@ -12,7 +12,6 @@ from django.utils.html import strip_spaces_between_tags
 from django.utils.formats import localize
 from django.utils.safestring import mark_safe, SafeText
 from django.utils.translation import get_language_from_request
-from jsonfield.fields import JSONField
 from rest_framework import serializers
 from rest_framework.fields import empty
 from shop import settings as shop_settings
@@ -43,9 +42,6 @@ class JSONSerializerField(serializers.Field):
 
     def to_internal_value(self, data):
         return data
-
-# add JSONField to the map of customized serializers
-serializers.ModelSerializer._field_mapping[JSONField] = JSONSerializerField
 
 
 class ProductCommonSerializer(serializers.ModelSerializer):
@@ -152,20 +148,23 @@ class AddToCartSerializer(serializers.Serializer):
 
     def __init__(self, instance=None, data=empty, **kwargs):
         context = kwargs.get('context', {})
-        if 'product' not in context or 'request' not in context:
-            msg = "A context is required for this serializer and must contain the `product` and the `request` object."
-            raise ValueError(msg)
-        instance = self.get_instance(context, kwargs)
-        unit_price = context['product'].get_price(context['request'])
-        if data == empty:
-            quantity = self.fields['quantity'].default
+        if 'product' in context:
+            instance = self.get_instance(context, data, kwargs)
+            if data == empty:
+                instance.setdefault('quantity', self.fields['quantity'].default)
+            else:
+                instance.setdefault('quantity', data['quantity'])
+            instance.setdefault('subtotal', instance['quantity'] * instance['unit_price'])
+            super(AddToCartSerializer, self).__init__(instance, data, context=context)
         else:
-            quantity = data['quantity']
-        instance.update(quantity=quantity, unit_price=unit_price, subtotal=quantity * unit_price)
-        super(AddToCartSerializer, self).__init__(instance, data, **kwargs)
+            super(AddToCartSerializer, self).__init__(instance, data, **kwargs)
 
-    def get_instance(self, context, extra_args):
-        return {'product': context['product'].id}
+    def get_instance(self, context, data, extra_args):
+        product = context['product']
+        return {
+            'product': product.id,
+            'unit_price': product.get_price(context['request']),
+        }
 
 
 class ExtraCartRow(serializers.Serializer):
@@ -323,7 +322,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderListSerializer(serializers.ModelSerializer):
-    identifier = serializers.CharField()
+    number = serializers.CharField(source='get_number', read_only=True)
     url = serializers.URLField(source='get_absolute_url', read_only=True)
     status = serializers.CharField(source='status_name', read_only=True)
     subtotal = MoneyField()

@@ -2,6 +2,21 @@
 Contributing
 =============
 
+Naming conventions
+==================
+
+The official name of this project is **django SHOP**. Third party plugins for **djangoSHOP** shall
+follow the same naming convention as for plugins of **djangoCMS**: Third party package names shall
+start with **djangoshop** followed by a dash; no space shall be added between **django** and
+**shop**.
+
+**Django SHOP** should be capitalised at the start of sentences and in
+title-case headings.
+
+When referring to the package, repositories and any other things in which
+spaces are not permitted, use **django-shop**.
+
+
 Running tests
 ==============
 

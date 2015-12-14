@@ -11,6 +11,9 @@ class ShopConfig(AppConfig):
 
     def ready(self):
         from django_fsm.signals import post_transition
+        from jsonfield.fields import JSONField
+        from rest_framework.serializers import ModelSerializer
+        from shop.rest.serializers import JSONSerializerField
         from shop.models.notification import order_event_notification
 
         post_transition.connect(order_event_notification)
@@ -20,3 +23,6 @@ class ShopConfig(AppConfig):
             from django.utils import numberformat
             from shop.patches import numberformat as patched_numberformat
             numberformat.format = patched_numberformat.format
+
+        # add JSONField to the map of customized serializers
+        ModelSerializer.serializer_field_mapping[JSONField] = JSONSerializerField

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from collections import OrderedDict
 from datetime import datetime
 from django import template
 from django.conf import settings
@@ -7,7 +8,6 @@ from django.template.loader import select_template
 from django.utils import formats
 from django.utils.safestring import mark_safe
 from django.utils.dateformat import format, time_format
-from rest_framework.utils.serializer_helpers import ReturnDict
 from classytags.helpers import InclusionTag
 from shop import settings as shop_settings
 from shop.models.cart import CartModel
@@ -21,10 +21,11 @@ class CartIcon(InclusionTag):
     Inclusion tag for displaying cart summary.
     """
     def get_template(self, context, **kwargs):
-        return select_template([
+        template = select_template([
             '{}/templatetags/cart-icon.html'.format(shop_settings.APP_LABEL),
             'shop/templatetags/cart-icon.html',
-        ]).name
+        ])
+        return template.template.name
 
     def get_context(self, context):
         request = context['request']
@@ -92,7 +93,8 @@ def rest_json(value, arg=None):
     """
     if not value:
         return mark_safe('{}')
-    if not isinstance(value, ReturnDict):
-        raise ValueError("Given value must be of type `ReturnDict`")
+    if not isinstance(value, (dict, OrderedDict)):
+        msg = "Given value must be of type dict or OrderedDict, but it is {}.".format(value.__class__.__name__)
+        raise ValueError(msg)
     data = JSONRenderer().render(value)
     return mark_safe(data)

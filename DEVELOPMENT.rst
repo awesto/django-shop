@@ -24,7 +24,7 @@ We recommend that you use virtualenv_.
 
 4. Install the development requirements::
 
-    pip install -r requirements/dev.txt
+    pip install -r requirements/testing.txt
 
 That's it! Now, you should be able to run the tests::
 
@@ -38,7 +38,8 @@ report, all you have to do is this::
 If you work on a certain part of the code base and you want to run the related
 tests and get a coverage report, you can do something like this::
 
-    coverage run $(which py.test) tests/test_money.py && coverage report -m shop/money/*.py
+    coverage run $(which py.test) tests/test_money.py \
+        && coverage report -m shop/money/*.py
 
 .. NOTE::
     Using tox and py.test is optional. If you prefer the conventional way of
@@ -46,3 +47,15 @@ tests and get a coverage report, you can do something like this::
 
 .. _virtualenv: https://virtualenv.pypa.io/
 .. _tox: http://codespeak.net/tox/
+
+Running the example project
+===========================
+To run the example project, you need to have a running Redis instance.
+
+Please see the `Redis Documentation <http://redis.io/download#installation>`_
+for instructions on how to install Redis.
+
+You also have to install some non-Python dependencies. To do this, please
+install Bower, if necessary. Then, cd into the project directory and run::
+
+    bower install

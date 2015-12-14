@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.backends.db import SessionStore
+from django.db.models.fields import FieldDoesNotExist
 from django.test import TestCase, RequestFactory
 import mock
 from rest_framework.test import APIRequestFactory
@@ -16,6 +17,8 @@ class CustomerTest(TestCase):
     USERS = {
         'lisa': {
             'username': 'lisa',
+            'first_name': 'Lisa',
+            'last_name': 'Simpson',
             'email': 'lisa@thesimpsons.com',
             'password': 'asil',
         },
@@ -24,7 +27,7 @@ class CustomerTest(TestCase):
             'first_name': 'Bart',
             'last_name': 'Simpson',
             'email': 'bart@thesimpsons.com',
-            'password':'trab',
+            'password': 'trab',
         },
         'maggie': {
             # Maggie doesn't have an account yet, but will register during checkout
@@ -163,12 +166,29 @@ class CustomerTest(TestCase):
         self.assertTrue(customer.is_recognized())
         self.assertTrue(customer.is_registered())
         bart = self.USERS['bart']
-        self.assertEqual(str(customer), bart['email'])
-        self.assertEqual(customer.first_name, bart['first_name'])
-        self.assertEqual(customer.last_name, bart['last_name'])
-        self.assertEqual(customer.email, bart['email'])
-        print customer.date_joined
-        print customer.last_login
+        self.assertEqual(str(customer), 'bart@thesimpsons.com')
+        self.assertEqual(customer.first_name, 'Bart')
+        self.assertEqual(customer.last_name, 'Simpson')
+        self.assertEqual(customer.email, 'bart@thesimpsons.com')
+
+    def test_select_related(self):
+        """
+        Check that all queries on model Customer do an INNER JOIN on table `auth_user`.
+        """
+        qs = Customer.objects.all()
+        sql = qs.query.__str__()
+        self.assertIn('INNER JOIN "auth_user" ON ( "testshop_customer"."user_id" = "auth_user"."id" )', sql)
+        simpsons = qs.filter(last_name='Simpson')
+        self.assertEqual(simpsons.count(), 1)
+        bart = simpsons.last()
+        self.assertEqual(bart.last_name, 'Simpson')
+        self.assertEqual(bart.first_name, 'Bart')
+        self.assertEqual(bart.email, 'bart@thesimpsons.com')
+        bart.last_name = 'van Rossum'
+        bart.save()
+        self.assertEqual(simpsons.count(), 0)
+        with self.assertRaises(FieldDoesNotExist):
+            qs.filter(no_attrib='foo')
 
 
 class PasswordResetSerializerTest(TestCase):

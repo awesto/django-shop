@@ -1,9 +1,18 @@
+# Breaking News
+
+Today, as of 2015-12-05, I finally finished three demos which should run out of the box.
+
+Please read the files ``docs/tutorial/intro.rst`` and ``docs/tutorial/quickstart.rst``. Following
+the instructions should create a running shop in minutes, prefilled with a dozen of products.
+You can even pay by credit card, if you apply for your own testing account at Stripe.
+
+I would be happy to get some feedback.
+
+
 # django SHOP
 
-This version of django-shop is currently under development. If you want to help
-out, please have a look at our `Development documentation`_.
-
-.. _Development documentation: DEVELOPMENT.rst
+This version of django-shop is currently under active development. If you want
+to help out, please have a look at our development documentation in the ``DEVELOPMENT.rst`` file.
 
 This repository hosts the django SHOP code and documentation.
 
@@ -15,15 +24,12 @@ framework, that a moderately talented Django programmer should be able to pick u
 The current state is a roughly functional and highly modular system. Please refer to
 docs/plugins.rst to figure out what plugin types are available, and what the do.
 
-You'll find the detailed doc on `RTD <http://readthedocs.org/projects/django-shop/>`_
+You'll find the detailed doc on [RTD] (http://readthedocs.org/projects/django-shop/)
 
 
 ## Build status
 
-.. |travisci| image:: https://api.travis-ci.org/divio/django-shop.png
-.. _travisci https://travis-ci.org/divio/django-shop
-
-|travisci|
+[![Build Status](https://travis-ci.org/jrief/django-shop.svg)](https://travis-ci.org/jrief/django-shop)
 
 
 ## How to help:

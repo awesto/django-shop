@@ -81,14 +81,14 @@ djangoShopModule.controller('ModalInstanceCtrl', ['$scope', '$http', '$modalInst
 }]);
 
 
-// Directive <shop-add-to-cart>
+// Directive <ANY shop-add-to-cart="REST-API-endpoint">
 // handle dialog box on the product's detail page to add a product to the cart
 djangoShopModule.directive('shopAddToCart', function($window) {
 	return {
 		restrict: 'A',
 		controller: 'AddToCartCtrl',
 		link: function(scope, element, attrs, AddToCartCtrl) {
-			if (angular.isUndefined(attrs.shopAddToCart))
+			if (!attrs.shopAddToCart)
 				throw new Error("shop-add-to-cart must point onto an URL");
 			AddToCartCtrl.setUpdateUrl(attrs.shopAddToCart); 
 			AddToCartCtrl.loadContext();

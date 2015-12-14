@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.forms import widgets
-from django.template.loader import select_template
+from django.template.loader import select_template, get_template
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import mark_safe
 from cms.plugin_pool import plugin_pool
@@ -29,11 +29,14 @@ class ShopCartPlugin(ShopPluginBase):
     )
 
     @classmethod
-    def get_identifier(cls, obj):
-        render_type = obj.glossary.get('render_type')
+    def get_identifier(cls, instance):
+        render_type = instance.glossary.get('render_type')
         return mark_safe(dict(cls.CHOICES).get(render_type, ''))
 
     def get_render_template(self, context, instance, placeholder):
+        render_template = instance.glossary.get('render_template')
+        if render_template:
+            return get_template(render_template)
         render_type = instance.glossary.get('render_type')
         if render_type == 'static':
             template_names = [

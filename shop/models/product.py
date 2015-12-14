@@ -16,7 +16,6 @@ class BaseProductManager(PolymorphicManager):
     """
     A base ModelManager for all non-object manipulation needs, mostly statistics and querying.
     """
-
     def select_lookup(self, term):
         """
         Hook to returns a queryset containing the products matching the lookup criteria given
@@ -66,11 +65,10 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
     more polymorphic models, adding all the fields and relations, required to describe this
     type of product.
 
-    Some attributes for this class are mandatory. They can either be implemented as class element,
-    or as property method. The following fields MUST be implemented by the inheriting class:
-    `name`: Return the pronounced name for this product in its localized language.
-    `identifier`: Return a language independent unique identifier of this product,
-                  for instance an article number.
+    Some attributes for this class are mandatory. They shall be implemented as property method.
+    The following fields MUST be implemented by the inheriting class:
+    `product_name`: Return the pronounced name for this product in its localized language.
+    `product_code`: Return a language independent unique product code, for instance the article number.
 
     Additionally the inheriting class MUST implement the following methods `get_absolute_url()`
     and `get_price()`. See below for details.
@@ -80,7 +78,7 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
     active = models.BooleanField(default=True, verbose_name=_("Active"),
         help_text=_("Is this product publicly visible."))
 
-    objects = PolymorphicManager()
+    objects = BaseProductManager()
 
     class Meta:
         abstract = True

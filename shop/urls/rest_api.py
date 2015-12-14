@@ -4,7 +4,7 @@ from django.conf.urls import url, include
 from rest_framework import routers
 from shop.views.cart import CartViewSet, WatchViewSet
 from shop.views.checkout import CheckoutViewSet
-from shop.views.product import ProductSelectView
+from shop.views.catalog import ProductSelectView
 
 router = routers.DefaultRouter()  # TODO: try with trailing_slash=False
 router.register(r'cart', CartViewSet, base_name='cart')

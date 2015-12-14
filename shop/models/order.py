@@ -8,7 +8,7 @@ from django.db.models.aggregates import Sum
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.module_loading import import_by_path
 from django.utils.functional import cached_property
-from django.utils.translation import ugettext_lazy as _, pgettext, get_language_from_request
+from django.utils.translation import ugettext_lazy as _, pgettext_lazy, get_language_from_request
 from django.utils.six.moves.urllib.parse import urljoin
 from jsonfield.fields import JSONField
 from ipware.ip import get_ip
@@ -26,11 +26,13 @@ class OrderManager(models.Manager):
     def create_from_cart(self, cart, request):
         """
         This creates a new Order object with all its OrderItems using the current Cart object
-        with its CartItems.
+        with its Cart Items. Whenever on Order Item is created from a Cart Item, that item is
+        removed from the Cart.
         """
         cart.update(request)
         order = self.model(customer=cart.customer, currency=cart.total.currency,
             _subtotal=Decimal(0), _total=Decimal(0), stored_request=self.stored_request(request))
+        order.get_or_assign_number()
         order.save()
         order.customer.get_or_assign_number()
         for cart_item in cart.items.all():
@@ -39,11 +41,11 @@ class OrderManager(models.Manager):
             try:
                 order_item.populate_from_cart_item(cart_item, request)
                 order_item.save()
+                cart_item.delete()
             except CartItemModel.DoesNotExist:
                 pass
         order.populate_from_cart(cart, request)
         order.save()
-        cart.delete()
         return order
 
     def stored_request(self, request):
@@ -148,22 +150,26 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
 
     class Meta:
         abstract = True
-        verbose_name = _("Order")
-        verbose_name_plural = _("Orders")
 
     def __str__(self):
-        return self.identifier
+        return self.get_number()
 
     def __repr__(self):
         return "<{}(pk={})>".format(self.__class__.__name__, self.pk)
 
-    @property
-    def identifier(self):
+    def get_or_assign_number(self):
         """
-        Return a unique identifier representing this Order object.
+        Hook to get or to assign the order number. It shall be invoked, every time an Order
+        object is created. If you prefer to use an order number which differs from the primary
+        key, then override this method.
         """
-        msg = "Property method identifier() must be implemented by subclass: `{}`"
-        raise NotImplementedError(msg.format(self.__class__.__name__))
+        return self.get_number()
+
+    def get_number(self):
+        """
+        Hook to get the order number.
+        """
+        return str(self.id)
 
     @cached_property
     def subtotal(self):
@@ -247,7 +253,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     def status_name(self):
         """Return the human readable name for the current transition state"""
         return self._transition_targets.get(self.status, self.status)
-    status_name.short_description = pgettext('status_name', "State")
+    status_name.short_description = pgettext_lazy('order_models', "State")
 
 OrderModel = deferred.MaterializedModel(BaseOrder)
 
@@ -267,8 +273,8 @@ class OrderPayment(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         help_text=_("The payment backend used to process the purchase"))
 
     class Meta:
-        verbose_name = _("Order payment")
-        verbose_name_plural = _("Order payments")
+        verbose_name = pgettext_lazy('order_models', "Order payment")
+        verbose_name_plural = pgettext_lazy('order_models', "Order payments")
 
 
 class BaseOrderShipping(with_metaclass(WorkflowMixinMetaclass, models.Model)):
@@ -326,8 +332,11 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     def populate_from_cart_item(self, cart_item, request):
         """
         From a given cart item, populate the current order item.
+        If the operation was successful, the given item shall be removed from the cart.
         If a CartItem.DoesNotExist exception is raised, discard the order item.
         """
+        if cart_item.quantity == 0:
+            raise CartItemModel.DoesNotExist("Cart Item is on the Wish List")
         self.product = cart_item.product
         # for historical integrity, store the product's name and price at the moment of purchase
         self.product_name = cart_item.product.product_name
