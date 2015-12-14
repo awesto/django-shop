@@ -18,14 +18,14 @@ django-libsass==0.4
 django-mptt==0.7.4
 django-parler==1.5
 django-polymorphic==0.7.1
-git+https://github.com/ui/django-post_office@a53179fc4a0fd833d1e5f81d3f340bd0f37a41ad
+django-post-office==2.0.1
 django-redis-cache==1.6.0
 django-redis-sessions==0.5.0
 django-rest-auth==0.5.0
 django-sass-processor==0.3.0
 django-sekizai==0.8.2
 django-select2==5.2.1
-git+https://github.com/jrief/djangoshop-stripe@887fcffd4e5d4a2d3a415e26bb1dc6d32baa1ced
+djangoshop-stripe==0.1.1
 django-treebeard==3.0
 djangocms-admin-style==0.2.8
 git+https://github.com/jrief/djangocms-bootstrap3@fccfa3e1530ae2a151f58442de46526c82c1970b
