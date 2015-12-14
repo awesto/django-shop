@@ -12,7 +12,7 @@ I would be happy to get some feedback.
 # django SHOP
 
 This version of django-shop is currently under active development. If you want
-to help out, please have a look at our development documentation in the ``DEVELOPMENT.rst`` file.
+to help out, please have a look at our development documentation in ``docs/contributing.rst``.
 
 This repository hosts the django SHOP code and documentation.
 
