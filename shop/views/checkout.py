@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 from django.utils.module_loading import import_by_path
 from rest_framework.decorators import list_route
+from rest_framework.exceptions import ValidationError
 from cms.plugin_pool import plugin_pool
 from shop.cascade.plugin_base import DialogFormPluginBase
 from shop.rest.serializers import CheckoutSerializer
@@ -32,6 +33,8 @@ class CheckoutViewSet(BaseViewSet):
         Afterwards the cart is updated, so that all cart modifiers run and adopt those changes.
         """
         cart = self.get_queryset()
+        if cart is None:
+            raise ValidationError("Can not proceed to checkout without a cart")
 
         # sort posted form data by plugin order
         dialog_data = []
@@ -69,8 +72,11 @@ class CheckoutViewSet(BaseViewSet):
         any placeholder field.
         """
         cart = self.get_queryset()
+        if cart is None:
+            raise ValidationError("Can not purchase without a cart")
         cart.update(request)
         cart.save()
+
         response = self.list(request)
         # Iterate over the registered modifiers, and search for the active payment service provider
         for modifier in cart_modifiers_pool.get_payment_modifiers():
