@@ -36,7 +36,7 @@ system:
 	$ source shoptutorial/bin/activate
 	(shoptutorial)$ git clone https://github.com/jrief/django-shop
 	(shoptutorial)$ cd django-shop
-	(shoptutorial)$ pip install -r requirements/common.txt
+	(shoptutorial)$ pip install -r requirements/demo.txt
 	(shoptutorial)$ pip install -e .
 	(shoptutorial)$ npm install
 	(shoptutorial)$ bower install

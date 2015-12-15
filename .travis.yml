@@ -4,10 +4,11 @@ python:
 env:
   - TOX_ENV=py27-django18
   - TOX_ENV=py27-django19
+  - TOX_ENV=demo
 install:
   - pip install tox
 script:
-  - tox -e $TOX_ENV
+  - tox -r -e $TOX_ENV
 matrix:
   allow_failures:
     - env: TOX_ENV=py27-django19
