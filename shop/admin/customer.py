@@ -84,6 +84,7 @@ class CustomerAdmin(UserAdmin):
     segmentation_list_display = ('get_username',)
     list_filter = UserAdmin.list_filter + (CustomerListFilter,)
     readonly_fields = ('last_login', 'date_joined', 'last_access', 'recognized')
+    ordering = ('id',)
 
     class Media:
         js = ('shop/js/admin/customer.js',)
@@ -100,12 +101,14 @@ class CustomerAdmin(UserAdmin):
             return user.customer.get_username()
         return user.get_username()
     get_username.short_description = _("Username")
+    get_username.admin_order_field = 'email'
 
     def salutation(self, user):
         if hasattr(user, 'customer'):
             return user.customer.get_salutation_display()
         return ''
     salutation.short_description = _("Salutation")
+    salutation.admin_order_field = 'customer__salutation'
 
     def recognized(self, user):
         if hasattr(user, 'customer'):
@@ -121,6 +124,7 @@ class CustomerAdmin(UserAdmin):
             return localtime(user.customer.last_access).strftime("%d %B %Y %H:%M:%S")
         return _("No data")
     last_access.short_description = _("Last accessed")
+    last_access.admin_order_field = 'customer__last_access'
 
     def is_unexpired(self, user):
         if hasattr(user, 'customer'):
