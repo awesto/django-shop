@@ -59,4 +59,4 @@ class ProductIndex(indexes.SearchIndex):
             self.language = using
         else:
             self.language = settings.LANGUAGE_CODE
-        return self.get_model().objects.filter(active=True)
+        return self.get_model().objects.indexable()

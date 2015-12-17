@@ -24,6 +24,13 @@ class BaseProductManager(PolymorphicManager):
         """
         raise NotImplemented("subclasses of BaseProductManager must provide a select_lookup() method")
 
+    def indexable(self):
+        """
+        Return a queryset of indexable Products.
+        """
+        queryset = self.get_queryset().filter(active=True)
+        return queryset
+
 
 class PolymorphicProductMetaclass(PolymorphicModelBase):
     """
