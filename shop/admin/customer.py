@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.forms import UserChangeForm
+from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib import admin
 from django.utils.timezone import localtime
 from django.utils.translation import pgettext_lazy, ugettext_lazy as _
@@ -15,17 +15,31 @@ class CustomerInlineAdmin(admin.StackedInline):
     fields = ('salutation', 'get_number', 'recognized')
     readonly_fields = ('get_number',)
 
+    def get_extra(self, request, obj=None, **kwargs):
+        return 0 if obj is None else 1
+
+    def has_add_permission(self, request):
+        return False
+
     def get_number(self, customer):
         return customer.get_number()
     get_number.short_description = pgettext_lazy('customer', "Number")
 
 
-class CustomerChangeForm(UserChangeForm):
+class CustomerCreationForm(UserCreationForm):
     class Meta(UserChangeForm.Meta):
         model = get_user_model()
-        exclude = ('email',)
 
+    def save(self, commit=True):
+        self.instance.is_staff = True
+        return super(CustomerCreationForm, self).save(commit=False)
+
+
+class CustomerChangeForm(UserChangeForm):
     email = forms.EmailField(required=False)
+
+    class Meta(UserChangeForm.Meta):
+        model = get_user_model()
 
     def __init__(self, *args, **kwargs):
         initial = kwargs.get('initial', {})
@@ -63,6 +77,7 @@ class CustomerAdmin(UserAdmin):
     This ModelAdmin class must be registered inside the implementation of this shop.
     """
     form = CustomerChangeForm
+    add_form = CustomerCreationForm
     inlines = (CustomerInlineAdmin,)
     list_display = ('get_username', 'salutation', 'last_name', 'first_name', 'recognized',
         'last_access', 'is_unexpired')
@@ -118,7 +133,7 @@ class CustomerAdmin(UserAdmin):
 class CustomerProxy(get_user_model()):
     """
     With this neat proxy model, we are able to place the Customer Model Admin into
-    the section “Shop” instead of section email_auth.
+    the section “MyShop” instead of section email_auth.
     """
     class Meta:
         proxy = True
