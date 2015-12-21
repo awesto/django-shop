@@ -12,14 +12,14 @@ class ProductSearchSerializer(HaystackSerializer):
     price = serializers.SerializerMethodField()
 
     class Meta:
-        fields = ('text', 'autocomplete', 'name', 'product_url', 'price', 'media')
+        fields = ('text', 'autocomplete', 'name', 'product_url', 'price',)
         ignore_fields = ('text', 'autocomplete',)
 
     def get_price(self, search_result):
         """
         The price can't be stored inside the search index but must be fetched from the resolved
-        model. In case your product models have fixed prices, try to store and retrieve them
-        from the search index, because that's much faster.
+        model. In case your product models have a fixed price, try to store it as
+        ``indexes.DecimalField`` and retrieve from the search index, because that's much faster.
         """
         if search_result.object:
             return search_result.object.get_price(self.context['request'])
