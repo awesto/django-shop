@@ -18,11 +18,11 @@ django-libsass==0.4
 django-mptt==0.7.4
 django-parler==1.5
 django-polymorphic==0.7.1
-django-post-office==2.0.1
+django-post-office==2.0.4
 django-rest-auth==0.5.0
 django-sass-processor==0.3.0
 django-sekizai==0.8.2
-django-select2==5.2.1
+django-select2==5.5.0
 djangoshop-stripe==0.1.1
 django-treebeard==3.0
 djangocms-admin-style==1.0.7
