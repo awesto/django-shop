@@ -52,7 +52,7 @@ class User(AbstractUser):
     def get_short_name(self):
         short_name = super(User, self).get_short_name()
         if short_name:
-            return self.short_name
+            return short_name
         return self.email
 
     def validate_unique(self, exclude=None):
