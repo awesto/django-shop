@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-shop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-12-15 15:55+0100\n"
+"POT-Creation-Date: 2015-12-22 23:33+0100\n"
 "PO-Revision-Date: 2011-07-13 16:16+0000\n"
 "Last-Translator: chrisglass <tribaal@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,53 +16,53 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: admin/customer.py:20
+#: admin/customer.py:26
 msgctxt "customer"
 msgid "Number"
 msgstr "Kundennummer"
 
-#: admin/customer.py:46
+#: admin/customer.py:60
 msgid "Customer State"
 msgstr "Kundesstatus"
 
-#: admin/customer.py:87
+#: admin/customer.py:103
 msgid "Username"
 msgstr "Benutzername"
 
-#: admin/customer.py:93 models/customer.py:181
+#: admin/customer.py:110 models/customer.py:183
 msgid "Salutation"
 msgstr "Anrede"
 
-#: admin/customer.py:99
+#: admin/customer.py:117
 msgid "Staff"
 msgstr ""
 
-#: admin/customer.py:101
+#: admin/customer.py:119
 msgid "User"
 msgstr "Benutzer"
 
-#: admin/customer.py:102
+#: admin/customer.py:120
 msgid "State"
 msgstr "Status"
 
-#: admin/customer.py:107
+#: admin/customer.py:125
 msgid "No data"
 msgstr ""
 
-#: admin/customer.py:108 models/customer.py:182
+#: admin/customer.py:126 models/customer.py:184
 msgid "Last accessed"
 msgstr "Letzter Besuch"
 
-#: admin/customer.py:114
+#: admin/customer.py:133
 msgid "Unexpired"
 msgstr ""
 
-#: admin/customer.py:125 admin/notification.py:19 admin/order.py:86
+#: admin/customer.py:144 admin/notification.py:19 admin/order.py:86
 #: models/cart.py:136 models/order.py:137
 msgid "Customer"
 msgstr "Kunde"
 
-#: admin/customer.py:126
+#: admin/customer.py:145
 msgid "Customers"
 msgstr "Kunden"
 
@@ -84,8 +84,6 @@ msgid "Status"
 msgstr "Status"
 
 #: admin/order.py:81
-#, fuzzy
-#| msgid "Order Number"
 msgid "Order number"
 msgstr "Bestellnummer"
 
@@ -108,7 +106,7 @@ msgstr "Ausdrucken"
 
 #: admin/product.py:32 models/related.py:23
 msgid "Categories"
-msgstr ""
+msgstr "Kategorieen"
 
 #: admin/product.py:40
 msgid "CMS Pages"
@@ -230,7 +228,7 @@ msgstr ""
 msgid "Catalog List Views"
 msgstr ""
 
-#: cascade/checkout.py:30 cascade/processbar.py:94
+#: cascade/checkout.py:30 cascade/processbar.py:92
 msgid "Button Content"
 msgstr ""
 
@@ -290,7 +288,7 @@ msgstr ""
 msgid "Order Views"
 msgstr ""
 
-#: cascade/plugin_base.py:121 models/order.py:310 models/product.py:85
+#: cascade/plugin_base.py:121 models/order.py:310 models/product.py:91
 #: templates/shop/cart/editable.html:17 templates/shop/cart/static.html:9
 #: templates/shop/cart/watch.html:12 templates/shop/email/order.html:11
 #: templates/shop/order/detail.html:16 templates/shop/print/order.html:9
@@ -321,33 +319,33 @@ msgstr ""
 msgid "A dialog can also be rendered as a box containing a read-only summary."
 msgstr ""
 
-#: cascade/processbar.py:28
+#: cascade/processbar.py:26
 msgid "Steps"
 msgstr ""
 
-#: cascade/processbar.py:29
+#: cascade/processbar.py:27
 msgid "Number of steps for this proceed bar."
 msgstr ""
 
-#: cascade/processbar.py:33
+#: cascade/processbar.py:31
 msgid "Process Bar"
 msgstr ""
 
-#: cascade/processbar.py:43
+#: cascade/processbar.py:41
 msgid "with {} page"
 msgid_plural "with {} pages"
 msgstr[0] ""
 msgstr[1] ""
 
-#: cascade/processbar.py:69
+#: cascade/processbar.py:67
 msgid "Process Step"
 msgstr ""
 
-#: cascade/processbar.py:78
+#: cascade/processbar.py:76
 msgid "Step Title"
 msgstr ""
 
-#: cascade/processbar.py:116
+#: cascade/processbar.py:104
 msgid "Next Step Button"
 msgstr ""
 
@@ -389,10 +387,7 @@ msgid "Confirm password."
 msgstr "Bestätige Passwort"
 
 #: forms/auth.py:45
-#, fuzzy, python-brace-format
-#| msgid ""
-#| "A registered customer with the e-mail address ‘{email}’ already exists.\n"
-#| "If you have used this address previously, try to reset the password."
+#, python-brace-format
 msgid ""
 "A customer with the e-mail address ‘{email}’ already exists.\n"
 "If you have used this address previously, try to reset the password."
@@ -405,9 +400,8 @@ msgid "Passwords do not match"
 msgstr "Passwörter stimmen nicht überein"
 
 #: forms/checkout.py:18 forms/checkout.py:51
-#, fuzzy
 msgid "Email address"
-msgstr "Rechnungsadresse"
+msgstr "E-Mail Adresse"
 
 #: forms/checkout.py:19
 msgid "First Name"
@@ -1475,11 +1469,11 @@ msgstr "Artikel"
 msgid "Cart items"
 msgstr "Artikel"
 
-#: models/cart.py:137 models/order.py:143 models/product.py:76
+#: models/cart.py:137 models/order.py:143 models/product.py:82
 msgid "Created at"
 msgstr "Erstellt am"
 
-#: models/cart.py:138 models/order.py:144 models/product.py:77
+#: models/cart.py:138 models/order.py:144 models/product.py:83
 msgid "Updated at"
 msgstr "Aktualisiert am"
 
@@ -1495,39 +1489,39 @@ msgstr "Der Warenkorb"
 msgid "Shopping Carts"
 msgstr "Warenkörbe"
 
-#: models/customer.py:172
+#: models/customer.py:174
 msgid "Mrs."
 msgstr "Frau"
 
-#: models/customer.py:172
+#: models/customer.py:174
 msgid "Mr."
 msgstr "Herr"
 
-#: models/customer.py:172
+#: models/customer.py:174
 msgid "(n/a)"
 msgstr "keine Angabe"
 
-#: models/customer.py:176
+#: models/customer.py:178
 msgid "Unrecognized"
 msgstr "Unerkannt"
 
-#: models/customer.py:176
+#: models/customer.py:178
 msgid "Guest"
 msgstr "Gast"
 
-#: models/customer.py:176
+#: models/customer.py:178
 msgid "Registered"
 msgstr "Registriert"
 
-#: models/customer.py:179
+#: models/customer.py:181
 msgid "Recognized as"
 msgstr "Erkannt als"
 
-#: models/customer.py:180
+#: models/customer.py:182
 msgid "Designates the state the customer is recognized as."
 msgstr ""
 
-#: models/customer.py:184
+#: models/customer.py:186
 msgid "Extra information about this customer"
 msgstr "Zusätzliche Information über diesen Kunden"
 
@@ -1781,19 +1775,19 @@ msgstr "Bestellware"
 msgid "Order items"
 msgstr "Bestellwaren"
 
-#: models/product.py:78
+#: models/product.py:84
 msgid "Active"
 msgstr "Aktiv"
 
-#: models/product.py:79
+#: models/product.py:85
 msgid "Is this product publicly visible."
 msgstr "Ist dieses Produkt öffentlich sichtbar."
 
-#: models/product.py:86
+#: models/product.py:92
 msgid "Products"
 msgstr "Produkte"
 
-#: models/product.py:96
+#: models/product.py:102
 msgid "Product type"
 msgstr "Produkttype"
 
@@ -1889,19 +1883,27 @@ msgstr "Zu wenig einbezahlt"
 msgid "Mark as Paid"
 msgstr "Als bezahlt markieren"
 
-#: payment/defaults.py:81
+#: payment/defaults.py:80
+msgid "Order Canceled"
+msgstr "Bestellung Storniert"
+
+#: payment/defaults.py:87
+msgid "Cancel Order"
+msgstr "Bestellung Stornieren"
+
+#: payment/defaults.py:99
 msgid "Picking goods"
 msgstr "Ware kommisionieren"
 
-#: payment/defaults.py:82
+#: payment/defaults.py:100
 msgid "Packing goods"
 msgstr "Ware verpacken"
 
-#: payment/defaults.py:86
+#: payment/defaults.py:104
 msgid "Pick the goods"
 msgstr "Bestellte Waren kommisionieren"
 
-#: payment/defaults.py:91
+#: payment/defaults.py:109
 msgid "Pack the goods"
 msgstr "Bestellte Ware verpacken"
 

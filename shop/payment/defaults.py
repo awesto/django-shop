@@ -71,6 +71,24 @@ class PayInAdvanceWorkflowMixin(object):
         self.acknowledge_payment()
 
 
+class CancelOrderWorkflowMixin(object):
+    """
+    Add this class to `settings.SHOP_ORDER_WORKFLOWS` to mix it into your `OrderModel`.
+    It adds all the methods required for state transitions, to cancel an unpaid order.
+    """
+    TRANSITION_TARGETS = {
+        'order_canceled': _("Order Canceled"),
+    }
+
+    def no_open_deposits(self):
+        return self.amount_paid == 0
+
+    @transition(field='status', source=['awaiting_payment'], target='order_canceled',
+        conditions=[no_open_deposits], custom=dict(admin=True, button_name=_("Cancel Order")))
+    def cancel_order(self):
+        """Signals that an Order shall be canceled."""
+
+
 class CommissionGoodsWorkflowMixin(object):
     """
     Add this class to `settings.SHOP_ORDER_WORKFLOWS` to mix it into your `OrderModel`.
