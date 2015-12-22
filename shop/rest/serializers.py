@@ -97,7 +97,7 @@ class SerializerRegistryMetaclass(serializers.SerializerMetaclass):
     Keep a global reference onto the class implementing `ProductSummarySerializerBase`.
     There can be only one class instance, because the products summary is the lowest common
     denominator for all products of this shop instance. Otherwise we would be unable to mix
-    different polymorphic product types in the Cart and Order list views.
+    different polymorphic product types in the Catalog, Cart and Order list views.
     """
     def __new__(cls, clsname, bases, attrs):
         global product_summary_serializer_class
@@ -114,8 +114,8 @@ product_summary_serializer_class = None
 
 class ProductSummarySerializerBase(with_metaclass(SerializerRegistryMetaclass, ProductCommonSerializer)):
     """
-    Serialize a summary of the polymorphic Product model, suitable for product list views,
-    cart-lists and order-lists.
+    Serialize a summary of the polymorphic Product model, suitable for Catalog List Views,
+    Cart List Views and Order List Views.
     """
     product_url = serializers.URLField(source='get_absolute_url', read_only=True)
     product_type = serializers.CharField(read_only=True)
