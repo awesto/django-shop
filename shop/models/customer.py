@@ -39,6 +39,8 @@ class CustomerQuerySet(models.QuerySet):
                 field_name = opts.pk.name
             try:
                 opts.get_field_by_name(field_name)
+                if isinstance(lookup, get_user_model()):
+                    lookup.pk  # force lazy object to resolve
                 lookup_kwargs[key] = lookup
             except FieldDoesNotExist as fdne:
                 try:
