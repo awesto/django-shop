@@ -56,6 +56,12 @@ class User(AbstractUser):
         return self.email
 
     def validate_unique(self, exclude=None):
+        """
+        Since the email address is used as the primary identifier, we must ensure that it is
+        unique. However, this can not be done on the field declaration since is only applies to
+        active users. Inactive users can not login anyway, so we don't need a unique constraint
+        for them.
+        """
         super(User, self).validate_unique(exclude)
         if self.email and get_user_model().objects.exclude(id=self.id).filter(is_active=True, email__exact=self.email).exists():
             msg = _("A customer with the e-mail address ‘{email}’ already exists.")

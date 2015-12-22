@@ -75,7 +75,6 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
     Some attributes for this class are mandatory. They shall be implemented as property method.
     The following fields MUST be implemented by the inheriting class:
     `product_name`: Return the pronounced name for this product in its localized language.
-    `product_code`: Return a language independent unique product code, for instance the article number.
 
     Additionally the inheriting class MUST implement the following methods `get_absolute_url()`
     and `get_price()`. See below for details.
