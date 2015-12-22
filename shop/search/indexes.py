@@ -15,7 +15,7 @@ class ProductIndex(indexes.SearchIndex):
     """
     text = indexes.CharField(document=True, use_template=True)
     autocomplete = indexes.EdgeNgramField(use_template=True)
-    name = indexes.CharField(stored=True, indexed=False)
+    product_name = indexes.CharField(stored=True, indexed=False)
     product_url = indexes.CharField(stored=True, indexed=False, model_attr='get_absolute_url')
 
     def prepare(self, product):
@@ -27,7 +27,7 @@ class ProductIndex(indexes.SearchIndex):
             data = super(ProductIndex, self).prepare(product)
         return data
 
-    def prepare_name(self, product):
+    def prepare_product_name(self, product):
         """
         Retrieve name though correct translation
         """
