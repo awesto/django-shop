@@ -36,7 +36,7 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, generics.Gener
                 # add an extra ance to the breadcrumb
                 try:
                     renderer_context['extra_ance'] = self.get_object().get_number()
-                except AttributeError:
+                except (AttributeError, PermissionDenied):
                     pass
         return renderer_context
 
