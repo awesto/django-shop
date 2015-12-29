@@ -8,6 +8,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models, DEFAULT_DB_ALIAS
+from django.db.models.fields import FieldDoesNotExist
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
@@ -20,10 +21,45 @@ from . import deferred
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore()
 
 
+class CustomerQuerySet(models.QuerySet):
+    def _filter_or_exclude(self, negate, *args, **kwargs):
+        """
+        Emulate filter queries on a Customer using attributes from the User object.
+        Example: Customer.objects.filter(last_name__icontains='simpson') will return
+        a queryset with customers whose last name contains "simpson".
+        """
+        opts = self.model._meta
+        lookup_kwargs = {}
+        for key, lookup in kwargs.items():
+            try:
+                field_name = key[:key.index('__')]
+            except ValueError:
+                field_name = key
+            if field_name == 'pk':
+                field_name = opts.pk.name
+            try:
+                opts.get_field_by_name(field_name)
+                if isinstance(lookup, get_user_model()):
+                    lookup.pk  # force lazy object to resolve
+                lookup_kwargs[key] = lookup
+            except FieldDoesNotExist as fdne:
+                try:
+                    get_user_model()._meta.get_field_by_name(field_name)
+                    lookup_kwargs['user__' + key] = lookup
+                except FieldDoesNotExist:
+                    raise fdne
+                except Exception as othex:
+                    raise othex
+        result = super(CustomerQuerySet, self)._filter_or_exclude(negate, *args, **lookup_kwargs)
+        return result
+
+
 class CustomerManager(models.Manager):
     BASE64_ALPHABET = string.digits + string.ascii_uppercase + string.ascii_lowercase + '.@'
     REVERSE_ALPHABET = dict((c, i) for i, c in enumerate(BASE64_ALPHABET))
     BASE36_ALPHABET = string.digits + string.ascii_lowercase
+
+    _queryset_class = CustomerQuerySet
 
     @classmethod
     def encode_session_key(cls, session_key):
@@ -62,7 +98,7 @@ class CustomerManager(models.Manager):
         Whenever we fetch from the Customer table, inner join with the User table to reduce the
         number of queries to the database.
         """
-        qs = super(CustomerManager, self).get_queryset().select_related('user')
+        qs = self._queryset_class(self.model, using=self._db).select_related('user')
         return qs
 
     def create(self, *args, **kwargs):
@@ -99,8 +135,9 @@ class CustomerManager(models.Manager):
             pass
         if request.user.is_authenticated():
             customer, created = self.get_or_create(user=user)
-            if created:
+            if created:  # `user` has been created by another app than shop
                 customer.recognized = self.model.REGISTERED
+                customer.save()
         else:
             customer = VisitingCustomer()
         return customer
@@ -238,20 +275,28 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     def is_expired(self):
         """
-        Return true if the session of an unregistered customer expired.
+        Return true if the session of an unrecognized customer expired.
+        Registered customers never expire.
+        Guest customers only expire, if they failed fulfilling the purchase (currently not implemented).
         """
-        if self.recognized == self.REGISTERED:
-            return False
-        session_key = CustomerManager.decode_session_key(self.user.username)
-        return not SessionStore.exists(session_key)
+        if self.recognized == self.UNRECOGNIZED:
+            session_key = CustomerManager.decode_session_key(self.user.username)
+            return not SessionStore.exists(session_key)
+        return False
+
+    def get_or_assign_number(self):
+        """
+        Hook to get or to assign the customers number. It shall be invoked, every time an Order
+        object is created. If the customer number shall be different from the primary key, then
+        override this method.
+        """
+        return self.get_number()
 
     def get_number(self):
         """
-        Hook to get or to assign the customers number. It will be invoked, every time an Order
-        object is created. If you prefer to use a customer number which differs from the primary
-        key, then override this method.
+        Hook to get the customers number. Customers haven't purchased anything may return None.
         """
-        return self.user_id
+        return str(self.user_id)
 
     def save(self, **kwargs):
         if 'update_fields' not in kwargs:
@@ -282,6 +327,10 @@ class VisitingCustomer(object):
     @property
     def email(self):
         return ''
+
+    @email.setter
+    def email(self, value):
+        pass
 
     def is_anonymous(self):
         return True

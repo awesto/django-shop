@@ -1,26 +1,26 @@
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 """
 Django settings for myshop project.
 
 For more information on this file, see
-https://docs.djangoproject.com/en/1.7/topics/settings/
+https://docs.djangoproject.com/en/1.8/topics/settings/
 
 For the full list of settings and their values, see
-https://docs.djangoproject.com/en/1.7/ref/settings/
+https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 from decimal import Decimal
 from django.utils.translation import ugettext_lazy as _
-
-# Patches backported from Django<1.8
-from django.utils import numberformat
-from shop.patches import numberformat as patched_numberformat
-numberformat.format = patched_numberformat.format
+from django.core.exceptions import ImproperlyConfigured
 
 SHOP_APP_LABEL = 'myshop'
 BASE_DIR = os.path.dirname(__file__)
+SHOP_TUTORIAL = os.environ.get('DJANGO_SHOP_TUTORIAL', 'simple')
+if SHOP_TUTORIAL not in ('simple', 'i18n', 'polymorphic',):
+    raise ImproperlyConfigured("Environment DJANGO_SHOP_TUTORIAL has an invalid value `{}`".format(SHOP_TUTORIAL))
 
 # Root directory for this django project
 PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, os.path.pardir, os.path.pardir))
@@ -38,8 +38,6 @@ SECRET_KEY = 'nqniwbt=%@5a(e8%&h#c^0()64(ujs0=4%_nyajn*t6a$ca&at'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -100,31 +98,34 @@ INSTALLED_APPS = (
     'easy_thumbnails',
     'easy_thumbnails.optimize',
     'parler',
-    'reversion',
     'post_office',
     'haystack',
     'shop',
+    'shop_stripe',
     'myshop',
 )
 
 MIDDLEWARE_CLASSES = (
     'djangular.middleware.DjangularUrlMiddleware',
-    'django.middleware.cache.UpdateCacheMiddleware',
+    # 'django.middleware.cache.UpdateCacheMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'shop.middleware.CustomerMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.locale.LocaleMiddleware',
-    'django.middleware.doc.XViewMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.gzip.GZipMiddleware',
     'cms.middleware.language.LanguageCookieMiddleware',
     'cms.middleware.user.CurrentUserMiddleware',
     'cms.middleware.page.CurrentPageMiddleware',
     'cms.middleware.toolbar.ToolbarMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',
+    # 'django.middleware.cache.FetchFromCacheMiddleware',
 )
+
+MIGRATION_MODULES = {
+    'myshop': 'myshop.migrations_{}'.format(SHOP_TUTORIAL)
+}
 
 ROOT_URLCONF = 'myshop.urls'
 
@@ -135,14 +136,14 @@ WSGI_APPLICATION = 'myshop.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(WORK_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(WORK_DIR, 'db-{}.sqlite3'.format(SHOP_TUTORIAL)),
     }
 }
 
 # Internationalization
-# https://docs.djangoproject.com/en/1.7/topics/i18n/
+# https://docs.djangoproject.com/en/stable/topics/i18n/
 
-LANGUAGE_CODE = 'de'
+LANGUAGE_CODE = 'en'
 
 LANGUAGES = (
     ('en', "English"),
@@ -175,7 +176,7 @@ STATIC_ROOT = os.path.join(WORK_DIR, 'static')
 STATIC_URL = '/static/'
 
 STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'myshop.finders.ServeUnminimizedFinder',  # or 'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'sass_processor.finders.CssFinder',
     'compressor.finders.CompressorFinder',
@@ -193,23 +194,29 @@ STATICFILES_DIRS = (
 # Examples: "http://foo.com/static/admin/", "/static/admin/".
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.i18n',
-    'django.core.context_processors.media',
-    'django.core.context_processors.static',
-    'django.core.context_processors.tz',
-    'django.core.context_processors.request',
-    'django.contrib.messages.context_processors.messages',
-    'cms.context_processors.cms_settings',
-    'shop.context_processors.customer',
-    'sekizai.context_processors.sekizai',
-)
+TEMPLATES = [{
+    'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    'APP_DIRS': True,
+    'OPTIONS': {
+        'context_processors': (
+            'django.contrib.auth.context_processors.auth',
+            'django.template.context_processors.debug',
+            'django.template.context_processors.i18n',
+            'django.template.context_processors.media',
+            'django.template.context_processors.static',
+            'django.template.context_processors.tz',
+            'django.template.context_processors.csrf',
+            'django.template.context_processors.request',
+            'django.contrib.messages.context_processors.messages',
+            'sekizai.context_processors.sekizai',
+            'cms.context_processors.cms_settings',
+            'shop.context_processors.customer',
+            'shop_stripe.context_processors.public_keys',
+        )
+    }
+}]
 
 SECURE_PROXY_SSL_HEADER = (u'HTTP_X_FORWARDED_PROTO', u'https')
-
-TEMPLATE_DEBUG = DEBUG
 
 LOGGING = {
     'version': 1,
@@ -239,6 +246,8 @@ LOGGING = {
         },
     },
 }
+
+SILENCED_SYSTEM_CHECKS = ('auth.W004')
 
 
 ############################################
@@ -291,31 +300,22 @@ REST_FRAMEWORK = {
         'shop.rest.money.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',  # can be disabled for production environments
     ),
-#    'DEFAULT_AUTHENTICATION_CLASSES': (
-#        'rest_framework.authentication.TokenAuthentication',
-#    ),
+    # 'DEFAULT_AUTHENTICATION_CLASSES': (
+    #   'rest_framework.authentication.TokenAuthentication',
+    # ),
     'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',),
-    'PAGINATE_BY': 16,
-    'MAX_PAGINATE_BY': 100,
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 12,
 }
 
-SERIALIZATION_MODULES = {'shop': b'shop.money.serializers'}
+SERIALIZATION_MODULES = {'json': b'shop.money.serializers'}
 
 
 ############################################
-# settings for storing data in memory
+# settings for storing session data
 
-X_CACHES = {
-    'default': {
-        'BACKEND': 'redis_cache.RedisCache',
-        'LOCATION': 'localhost:6379',
-        'KEY_PREFIX': SHOP_APP_LABEL + '-cache',
-    },
-}
-
-SESSION_ENGINE = 'redis_sessions.session'
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 SESSION_SAVE_EVERY_REQUEST = True
-SESSION_REDIS_PREFIX = SHOP_APP_LABEL + '-session'
 
 
 ############################################
@@ -352,29 +352,26 @@ THUMBNAIL_PROCESSORS = (
 
 CMS_TEMPLATES = (
     ('myshop/pages/default.html', _("Default Page")),
-#    ('myshop/pages/catalog-list.html', _("List Commodites")),
 )
-
-CMS_SEO_FIELDS = True
 
 CMS_LANGUAGES = {
     'default': {
-        'fallbacks': ['de', 'en'],
+        'fallbacks': ['en', 'de'],
         'redirect_on_fallback': True,
         'public': True,
         'hide_untranslated': False,
     },
     1: ({
         'public': True,
-        'code': 'de',
-        'hide_untranslated': False,
-        'name': 'Deutsch',
-        'redirect_on_fallback': True,
-    }, {
-        'public': True,
         'code': 'en',
         'hide_untranslated': False,
         'name': 'English',
+        'redirect_on_fallback': True,
+    }, {
+        'public': True,
+        'code': 'de',
+        'hide_untranslated': False,
+        'name': 'Deutsch',
         'redirect_on_fallback': True,
     },)
 }
@@ -387,30 +384,49 @@ CMS_CACHE_DURATIONS = {
 
 CMS_PERMISSION = False
 
-CMSPLUGIN_CASCADE_PLUGINS = ('cmsplugin_cascade.segmentation', 'cmsplugin_cascade.generic', 'cmsplugin_cascade.link', 'shop.cascade', 'cmsplugin_cascade.bootstrap3',)
-
-CMSPLUGIN_CASCADE_DEPENDENCIES = {
-    'shop/js/admin/shoplinkplugin.js': 'cascade/js/admin/linkpluginbase.js',
+CMS_PLACEHOLDER_CONF = {
+    'Main Content Container': {
+        'plugins': ['BootstrapRowPlugin', 'SimpleWrapperPlugin', 'SegmentPlugin'],
+        'text_only_plugins': ['TextLinkPlugin'],
+        'parent_classes': {'BootstrapRowPlugin': []},
+        'require_parent': False,
+        'glossary': {
+            'breakpoints': ['xs', 'sm', 'md', 'lg'],
+            'container_max_widths': {'xs': 750, 'sm': 750, 'md': 970, 'lg': 1170},
+            'fluid': False,
+            'media_queries': {
+                'xs': ['(max-width: 768px)'],
+                'sm': ['(min-width: 768px)', '(max-width: 992px)'],
+                'md': ['(min-width: 992px)', '(max-width: 1200px)'],
+                'lg': ['(min-width: 1200px)'],
+            },
+        },
+    },
 }
 
-CMSPLUGIN_CASCADE_ALIEN_PLUGINS = ('TextPlugin', 'TextLinkPlugin',)
+CMSPLUGIN_CASCADE_PLUGINS = ('cmsplugin_cascade.segmentation', 'cmsplugin_cascade.generic', 'cmsplugin_cascade.link', 'shop.cascade', 'cmsplugin_cascade.bootstrap3',)
+
+CMSPLUGIN_CASCADE = {
+    'dependencies': {
+        'shop/js/admin/shoplinkplugin.js': 'cascade/js/admin/linkpluginbase.js',
+    },
+    'alien_plugins': ('TextPlugin', 'TextLinkPlugin',),
+    'plugins_with_extra_fields': (
+        'BootstrapButtonPlugin',
+        'BootstrapRowPlugin',
+        'SimpleWrapperPlugin',
+        'HorizontalRulePlugin',
+        'ExtraAnnotationFormPlugin',
+    ),
+    'segmentation_mixins': (
+        ('shop.cascade.segmentation.EmulateCustomerModelMixin', 'shop.cascade.segmentation.EmulateCustomerAdminMixin'),
+    ),
+}
 
 CMSPLUGIN_CASCADE_LINKPLUGIN_CLASSES = (
     'shop.cascade.plugin_base.CatalogLinkPluginBase',
     'cmsplugin_cascade.link.plugin_base.LinkElementMixin',
     'shop.cascade.plugin_base.CatalogLinkForm',
-)
-
-CMSPLUGIN_CASCADE_WITH_EXTRAFIELDS = (
-    'BootstrapButtonPlugin',
-    'BootstrapRowPlugin',
-    'SimpleWrapperPlugin',
-    'HorizontalRulePlugin',
-    'ExtraAnnotationFormPlugin',
-)
-
-CMSPLUGIN_CASCADE_SEGMENTATION_MIXINS = (
-    ('cmsplugin_cascade.segmentation.mixins.SegmentPluginModelMixin', 'cmsplugin_cascade.segmentation.mixins.EmulateUserAdminMixin'),
 )
 
 CKEDITOR_SETTINGS = {
@@ -431,6 +447,10 @@ CKEDITOR_SETTINGS = {
         ['Source']
     ],
 }
+
+SELECT2_CSS = 'bower_components/select2/dist/css/select2.min.css'
+SELECT2_JS = 'bower_components/select2/dist/js/select2.min.js'
+
 
 #############################################
 # settings for full index text search (Haystack)
@@ -456,7 +476,8 @@ HAYSTACK_ROUTERS = ('shop.search.routers.LanguageRouter',)
 SHOP_VALUE_ADDED_TAX = Decimal(19)
 SHOP_DEFAULT_CURRENCY = 'EUR'
 SHOP_CART_MODIFIERS = (
-    'shop.modifiers.defaults.DefaultCartModifier',
+    'myshop.polymorphic_modifiers.MyShopCartModifier' if SHOP_TUTORIAL == 'polymorphic'
+    else 'shop.modifiers.defaults.DefaultCartModifier',
     'shop.modifiers.taxes.CartExcludedTaxModifier',
     'myshop.modifiers.PostalShippingModifier',
     'shop.modifiers.defaults.PayInAdvanceModifier',
@@ -473,5 +494,10 @@ SHOP_ORDER_WORKFLOWS = (
 SHOP_STRIPE = {
     'PUBKEY': 'pk_test_stripe_secret',
     'APIKEY': 'sk_test_stripe_secret',
-    'PURCHASE_DESCRIPTION': _("Thank for purchasing at MyShop"),
+    'PURCHASE_DESCRIPTION': _("Thanks for purchasing at MyShop"),
 }
+try:
+    from . import private_settings
+    SHOP_STRIPE.update(private_settings.SHOP_STRIPE)
+except (ImportError, AttributeError):
+    pass

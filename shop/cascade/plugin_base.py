@@ -1,24 +1,25 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.db.models import get_model
-from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
-from django.forms import widgets
+from django.core.exceptions import ImproperlyConfigured
+from django.forms import ChoiceField, widgets
 from django.template.loader import select_template
-from django.utils.module_loading import import_by_path
+from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 from cms.plugin_pool import plugin_pool
-from cms.utils.compat.dj import python_2_unicode_compatible
+from django.utils.encoding import python_2_unicode_compatible
 from cmsplugin_cascade.fields import PartialFormField
 from cmsplugin_cascade.plugin_base import CascadePluginBase
 from cmsplugin_cascade.link.forms import LinkForm
-from cmsplugin_cascade.link.fields import LinkSearchField
 from cmsplugin_cascade.link.plugin_base import LinkPluginBase, LinkElementMixin
 from cmsplugin_cascade.utils import resolve_dependencies
+from django_select2.forms import HeavySelect2Widget
 from shop import settings as shop_settings
 from shop.forms.base import DialogFormMixin
 from shop.models.cart import CartModel
 from shop.models.product import ProductModel
+from shop.rest.serializers import ProductSelectSerializer
 
 
 class ShopPluginBase(CascadePluginBase):
@@ -81,8 +82,32 @@ class ShopButtonPluginBase(ShopLinkPluginBase):
         js = resolve_dependencies('shop/js/admin/shoplinkplugin.js')
 
     @classmethod
-    def get_identifier(cls, obj):
-        return mark_safe(obj.glossary.get('link_content', ''))
+    def get_identifier(cls, instance):
+        return mark_safe(instance.glossary.get('link_content', ''))
+
+
+class HeavySelect2Widget(HeavySelect2Widget):
+    def render(self, name, value, attrs=None, choices=None):
+        try:
+            result = ProductSelectSerializer(ProductModel.objects.get(pk=value))
+            choices = ((value, result.data['text']),)
+        except ProductModel.DoesNotExist:
+            choices = ()
+        html = super(HeavySelect2Widget, self).render(name, value, attrs=attrs, choices=choices)
+        return html
+
+
+class ProductSelectField(ChoiceField):
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('widget', HeavySelect2Widget(data_view='shop:select-product'))
+        super(ProductSelectField, self).__init__(*args, **kwargs)
+
+    def clean(self, value):
+        "Since the ProductSelectField does not specify choices by itself, accept any returned value"
+        try:
+            return int(value)
+        except ValueError:
+            pass
 
 
 class CatalogLinkForm(LinkForm):
@@ -95,32 +120,25 @@ class CatalogLinkForm(LinkForm):
     """
     LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")), ('product', _("Product")),
                          ('exturl', _("External URL")), ('email', _("Mail To")),)
+    product = ProductSelectField(required=False, label='',
+        help_text=_("An internal link onto a product from the shop"))
 
     def clean_product(self):
         if self.cleaned_data.get('link_type') == 'product':
-            app_label = self.ProductModel._meta.app_label
+            app_label = ProductModel._meta.app_label
             self.cleaned_data['link_data'] = {
                 'type': 'product',
-                'model': '{0}.{1}'.format(app_label, self.ProductModel.__name__),
-                'pk': self.cleaned_data['product'] and self.cleaned_data['product'].pk or None,
+                'model': '{0}.{1}'.format(app_label, ProductModel.__name__),
+                'pk': self.cleaned_data['product'],
             }
 
     def set_initial_product(self, initial):
         try:
+            # check if that product still exists, otherwise return nothing
             Model = get_model(*initial['link']['model'].split('.'))
-            initial['product'] = Model.objects.get(pk=initial['link']['pk'])
-        except (KeyError, ObjectDoesNotExist):
+            initial['product'] = Model.objects.get(pk=initial['link']['pk']).pk
+        except (KeyError, ValueError, Model.DoesNotExist):
             pass
-
-    @classmethod
-    def get_form_class(cls):
-        # must add field `product` on the fly, because during the declaration this form class
-        # the MaterializedModel of the product is not known yet.
-        product = LinkSearchField(required=False, label='',
-            queryset=ProductModel.objects.all(),
-            search_fields=getattr(ProductModel, 'search_fields'),
-            help_text=_("An internal link onto a product from the shop"))
-        return type(str('LinkForm'), (cls,), {'ProductModel': ProductModel, 'product': product})
 
 
 class CatalogLinkPluginBase(LinkPluginBase):
@@ -146,7 +164,7 @@ class DialogFormPluginBase(ShopPluginBase):
     Base class for all plugins adding a dialog form to a placeholder field.
     """
     require_parent = True
-    parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin',)
+    parent_classes = ('BootstrapColumnPlugin',)
     CHOICES = (('form', _("Form dialog")), ('summary', _("Summary")),)
     glossary_fields = (
         PartialFormField('render_type',
@@ -178,7 +196,7 @@ class DialogFormPluginBase(ShopPluginBase):
 
     def __init__(self, *args, **kwargs):
         super(DialogFormPluginBase, self).__init__(*args, **kwargs)
-        self.FormClass = import_by_path(self.get_form_class())
+        self.FormClass = import_string(self.get_form_class())
 
     def get_form_data(self, request):
         """

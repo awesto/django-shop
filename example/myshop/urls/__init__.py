@@ -16,13 +16,13 @@ def render_robots(request):
     permission = 'noindex' in settings.ROBOTS_META_TAGS and 'Disallow' or 'Allow'
     return HttpResponse('User-Agent: *\n%s: /\n' % permission, content_type='text/plain')
 
+
 urlpatterns = patterns('',
     url(r'^robots\.txt$', render_robots),
     url(r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap',
         {'sitemaps': {'cmspages': CMSSitemap}}, name='sitemap'),
     url(r'^shop/', include('shop.urls', namespace='shop')),
 ) + i18n_patterns('',
-    url(r'^admin/select2/', include('django_select2.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^password-reset-confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
         PasswordResetConfirm.as_view(template_name='myshop/pages/password-reset-confirm.html'),

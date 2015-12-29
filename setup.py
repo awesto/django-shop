@@ -1,5 +1,4 @@
 from setuptools import setup, find_packages
-import os
 import shop
 try:
     from pypandoc import convert

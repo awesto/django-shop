@@ -13,7 +13,7 @@ class SearchView(ListModelMixin, HaystackGenericAPIView):
     A generic view to be used for rendering the result list while searching.
     """
     renderer_classes = (CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer)
-    serializer_class = None
+    serializer_class = None  # to be set by SearchView.as_view(serializer_class=...)
     index_models = [ProductModel]
 
     def get(self, request, *args, **kwargs):

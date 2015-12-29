@@ -11,7 +11,7 @@
 <table class="table table-hover shop-search-results" ng-cloak>
 
 	{% block search-results-caption %}
-	<caption ng-if="search_data.count==0"><h3>{% trans "No search results found" %}</h3></caption>
+	<caption ng-if="search_data.count==0"><h3>{% trans "Searching for '{{ searchQuery }}' did not return any results" %}</h3></caption>
 	{% endblock search-results-caption %}
 
 	{% block search-results-thead %}

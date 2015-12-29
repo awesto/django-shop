@@ -18,6 +18,7 @@
 {% addtoblock "js" %}<script src="{% static 'bower_components/angular-sanitize/angular-sanitize.min.js' %}"></script>{% endaddtoblock %}
 {% addtoblock "js" %}<script src="{% static 'bower_components/angular-i18n/angular-locale_de.js' %}"></script>{% endaddtoblock %}
 {% addtoblock "js" %}<script src="{% static 'bower_components/angular-animate/angular-animate.min.js' %}"></script>{% endaddtoblock %}
+{% addtoblock "js" %}<script src="{% static 'bower_components/angular-messages/angular-messages.min.js' %}"></script>{% endaddtoblock %}
 
 <body>
 	{% cms_toolbar %}
@@ -39,7 +40,7 @@
 	{% render_block "ext-js" %}
 	{% render_block "js" postprocessor "compressor.contrib.sekizai.compress" %}
 	<script type="text/javascript">
-	angular.module('djangoShop', ['ngAnimate', 'ngSanitize',
+	angular.module('djangoShop', ['ngAnimate', 'ngMessages', 'ngSanitize',
 		{% render_block "shop-ng-requires" postprocessor "shop.sekizai_processors.module_list" %}
 	]).config(['$httpProvider', function($httpProvider) {
 		$httpProvider.defaults.headers.common['X-CSRFToken'] = '{% csrf_value %}';
