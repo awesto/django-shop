@@ -84,7 +84,6 @@ class Migration(migrations.Migration):
             name='Manufacturer',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-<<<<<<< HEAD:example/myshop/migrations/0001_initial.py
                 ('language_code', models.CharField(max_length=15, verbose_name='Language', db_index=True)),
                 ('tag', models.CharField(help_text='A tag to describe the property of this commodity.', max_length=255, verbose_name='Tag')),
                 ('search_indices', models.CharField(help_text='Search Indices for describing this property tag', max_length=255, null=True, verbose_name='Search Indices', blank=True)),
@@ -108,9 +107,6 @@ class Migration(migrations.Migration):
                 ('last_access', models.DateTimeField(default=django.utils.timezone.now, verbose_name='Last accessed')),
                 ('extra', jsonfield.fields.JSONField(default={}, verbose_name='Extra information about this customer', editable=False)),
                 ('number', models.PositiveIntegerField(default=None, unique=True, null=True, verbose_name='Customer Number')),
-=======
-                ('name', models.CharField(max_length=50, verbose_name='Name')),
->>>>>>> b89673f5f6effd536d7dddaf4c2543aec66846a8:example/myshop/migrations_polymorphic/0001_initial.py
             ],
             options={
             },
