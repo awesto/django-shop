@@ -1,7 +1,7 @@
 .. _polymorphic-product:
 
 ==================================
-Products with different properties
+Products with Different Properties
 ==================================
 
 In the previous examples we have seen that we can model our products according to their physical
@@ -11,7 +11,7 @@ is where polymorphism_ enters the scene.
 .. _polymorphism: https://en.wikipedia.org/wiki/Polymorphism_(computer_science)
 
 
-Run the Polymorphic demo
+Run the Polymorphic Demo
 ========================
 
 To test this example, set the shell environment variable ``export DJANGO_SHOP_TUTORIAL=polymorphic``,
@@ -51,7 +51,7 @@ and polymorphic models:
 	:lines: 9-10, 13, 16-27
 
 The next step is to identify which model attributes qualify for being part of our Product
-model. Unfortunately there is no silver bullet for this problem and that's the reason why
+model. Unfortunately, there is no silver bullet for this problem and that's the reason why
 **djangoSHOP** is shipped without any prepared model for this. If we want to sell both Smart Cards
 and Smart Phones, then this Product model will do its jobs:
 
@@ -69,7 +69,7 @@ Smart Cards now becomes a subset of itself:
 	:language: python
 	:lines: 7-9, 12-21
 
-The product model for Smart Phones (intentionally) is a little bit more complicated. Not only does
+The product model for Smart Phones is intentionally a little bit more complicated. Not only does
 it have a few more attributes, but Smart Phones can be sold with different specifications of
 internal storage. The latter influences the price and the product code. This also is the reason why
 our base Product model does not contain the fields ``unit_price`` and ``products_code``, although
@@ -77,7 +77,7 @@ every product in our shop requires them.
 
 When presenting Smart Phones in our list views, we want to focus on different models, but not on
 each markedness, ie. its internal storage. Therefore customers can differentiate between the
-concrete Smart Phone variations, whenever they add them to their cart. This means, that for some
+concrete Smart Phone variations, whenever they add them to their cart. This means that for some
 Smart Phone models, there might be more than one *Add to cart* button.
 
 When modeling, we therefore require two different classes, one for the Smart Phone model and one

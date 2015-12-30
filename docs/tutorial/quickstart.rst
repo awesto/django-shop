@@ -1,7 +1,7 @@
 .. _quickstart:
 
 =========================
-Quickstart a running demo
+Quickstart a Running Demo
 =========================
 
 Filling your CMS with page content and adding products is a boring job. Impatient users may start

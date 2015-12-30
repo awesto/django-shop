@@ -7,7 +7,7 @@ Tutorial
 ========
 
 This tutorial shows how to setup a working e-commerce site with **djangoSHOP** using the given
-dependencies. The code required to setup this demo, can be found in the example/myshop folder.
+dependencies. The code required to setup this demo can be found in the example/myshop folder.
 
 .. toctree::
 	:maxdepth: 1
