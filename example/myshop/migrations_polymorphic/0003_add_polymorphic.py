@@ -1,41 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import models, migrations
-from django.core.exceptions import ObjectDoesNotExist
+from django.db import migrations, models
 import django.db.models.deletion
-from django.contrib.contenttypes.models import ContentType
-
-
-def make_polymorphic_products(apps, schema_editor):
-    SmartCard = apps.get_model('myshop', 'SmartCard')
-    try:
-        ct = ContentType.objects.get(app_label='myshop', model='smartcard')
-    except ContentType.DoesNotExist:
-        # then its an initial instead of a data migrations
-        return
-    Product = apps.get_model('myshop', 'Product')
-    for sc in SmartCard.objects.all():
-        product = Product.objects.create(id=sc.product_ptr_id, slug=sc.slug, name=sc.name, active=sc.active,
-            order=sc.order, manufacturer=sc.manufacturer, polymorphic_ctype_id=ct.id)
-        product.save()
-
-
-def remove_stale_contenttypes(apps, schema_editor):
-    ContentTypes = apps.get_model('contenttypes', 'ContentType')
-    try:
-        ContentTypes.objects.get(model='smartcardtranslation').delete()
-    except ObjectDoesNotExist:
-        # then its an initial instead of a data migrations
-        pass
+import djangocms_text_ckeditor.fields
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
         ('cms', '0013_urlconfrevision'),
+        ('contenttypes', '0002_remove_content_type_name'),
         ('filer', '0002_auto_20150606_2003'),
-        ('contenttypes', '0001_initial'),
         ('myshop', '0002_add_i18n'),
     ]
 
@@ -46,9 +22,6 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=50, verbose_name='Name')),
             ],
-            options={
-            },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Product',
@@ -58,23 +31,20 @@ class Migration(migrations.Migration):
                 ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated at')),
                 ('active', models.BooleanField(default=True, help_text='Is this product publicly visible.', verbose_name='Active')),
                 ('name', models.CharField(max_length=255, verbose_name='Name')),
-                ('slug', models.SlugField(verbose_name='Slug')),
+                ('slug', models.SlugField(unique=True, verbose_name='Slug')),
                 ('order', models.PositiveIntegerField(verbose_name='Sort by', db_index=True)),
             ],
             options={
                 'ordering': ('order',),
             },
-            bases=(models.Model,),
         ),
-        migrations.RenameModel(
-            old_name='SmartCardTranslation',
-            new_name='ProductTranslation',
-        ),
-        migrations.AlterField(
-            model_name='producttranslation',
-            name='master',
-            field=models.ForeignKey(related_name='translations', to='myshop.Product', null=True),
-            preserve_default=True,
+        migrations.CreateModel(
+            name='ProductTranslation',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('language_code', models.CharField(max_length=15, verbose_name='Language', db_index=True)),
+                ('description', djangocms_text_ckeditor.fields.HTMLField(help_text='Description for the list view of products.', verbose_name='Description')),
+            ],
         ),
         migrations.CreateModel(
             name='SmartPhone',
@@ -84,81 +54,19 @@ class Migration(migrations.Migration):
                 ('unit_price', models.DecimalField(default='0', help_text='Net price for this product', max_digits=30, decimal_places=3)),
                 ('storage', models.PositiveIntegerField(help_text='Internal storage in MB', verbose_name='Internal Storage')),
             ],
-            options={
-            },
-            bases=(models.Model,),
         ),
-        migrations.CreateModel(
-            name='SmartPhoneModel',
-            fields=[
-                ('product_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='myshop.Product')),
-                ('battery_type', models.PositiveSmallIntegerField(verbose_name='Battery type', choices=[(1, 'Lithium Polymer (Li-Poly)'), (2, 'Lithium Ion (Li-Ion)')])),
-                ('battery_capacity', models.PositiveIntegerField(help_text='Battery capacity in mAh', verbose_name='Capacity')),
-                ('ram_storage', models.PositiveIntegerField(help_text='RAM storage in MB', verbose_name='RAM')),
-                ('wifi_connectivity', models.PositiveIntegerField(help_text='WiFi Connectivity', verbose_name='WiFi', choices=[(1, '802.11 b/g/n')])),
-                ('bluetooth', models.PositiveIntegerField(help_text='Bluetooth Connectivity', verbose_name='Bluetooth', choices=[(1, 'Bluetooth 4.0')])),
-                ('gps', models.BooleanField(default=False, help_text='GPS integrated', verbose_name='GPS')),
-                ('width', models.DecimalField(help_text='Width in mm', verbose_name='Width', max_digits=4, decimal_places=1)),
-                ('height', models.DecimalField(help_text='Height in mm', verbose_name='Height', max_digits=4, decimal_places=1)),
-                ('weight', models.DecimalField(help_text='Weight in gram', verbose_name='Weight', max_digits=5, decimal_places=1)),
-                ('screen_size', models.DecimalField(help_text='Diagonal screen size in inch', verbose_name='Screen size', max_digits=4, decimal_places=2)),
-                ('operating_system', models.ForeignKey(verbose_name='Operating System', to='myshop.OperatingSystem')),
-            ],
-            options={
-                'verbose_name': 'Smart Phone',
-                'verbose_name_plural': 'Smart Phones',
-            },
-            bases=('myshop.product',),
+        migrations.AlterUniqueTogether(
+            name='smartcardtranslation',
+            unique_together=set([]),
         ),
-        migrations.AddField(
-            model_name='smartphone',
-            name='product',
-            field=models.ForeignKey(verbose_name='Smart-Phone Model', to='myshop.SmartPhoneModel'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='product',
-            name='cms_pages',
-            field=models.ManyToManyField(help_text='Choose list view this product shall appear on.', to='cms.Page', null=True, through='myshop.ProductPage'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='product',
-            name='images',
-            field=models.ManyToManyField(to='filer.Image', null=True, through='myshop.ProductImage'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='product',
-            name='manufacturer',
-            field=models.ForeignKey(verbose_name='Manufacturer', to='myshop.Manufacturer'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='product',
-            name='polymorphic_ctype',
-            field=models.ForeignKey(related_name='polymorphic_myshop.product_set+', editable=False, to='contenttypes.ContentType', null=True),
-            preserve_default=True,
+        migrations.RemoveField(
+            model_name='smartcardtranslation',
+            name='master',
         ),
         migrations.AlterModelOptions(
             name='smartcard',
             options={'verbose_name': 'Smart Card', 'verbose_name_plural': 'Smart Cards'},
         ),
-        migrations.RenameField(
-            model_name='smartcard',
-            old_name='id',
-            new_name='product_ptr',
-        ),
-        migrations.AlterField(
-            model_name='smartcard',
-            name='product_ptr',
-            field=models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, default=None, serialize=False, to='myshop.Product'),
-            preserve_default=False,
-        ),
-
-        # split SmartCard into Product and its remaining attributes
-        migrations.RunPython(make_polymorphic_products),
-
         migrations.RemoveField(
             model_name='smartcard',
             name='active',
@@ -170,6 +78,10 @@ class Migration(migrations.Migration):
         migrations.RemoveField(
             model_name='smartcard',
             name='created_at',
+        ),
+        migrations.RemoveField(
+            model_name='smartcard',
+            name='id',
         ),
         migrations.RemoveField(
             model_name='smartcard',
@@ -203,25 +115,85 @@ class Migration(migrations.Migration):
             model_name='cartitem',
             name='product',
             field=models.ForeignKey(to='myshop.Product'),
-            preserve_default=True,
         ),
         migrations.AlterField(
             model_name='orderitem',
             name='product',
             field=models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, verbose_name='Product', blank=True, to='myshop.Product', null=True),
-            preserve_default=True,
         ),
         migrations.AlterField(
             model_name='productimage',
             name='product',
             field=models.ForeignKey(to='myshop.Product'),
-            preserve_default=True,
         ),
         migrations.AlterField(
             model_name='productpage',
             name='product',
             field=models.ForeignKey(to='myshop.Product'),
-            preserve_default=True,
         ),
-        migrations.RunPython(remove_stale_contenttypes),
+        migrations.CreateModel(
+            name='SmartPhoneModel',
+            fields=[
+                ('product_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='myshop.Product')),
+                ('battery_type', models.PositiveSmallIntegerField(verbose_name='Battery type', choices=[(1, 'Lithium Polymer (Li-Poly)'), (2, 'Lithium Ion (Li-Ion)')])),
+                ('battery_capacity', models.PositiveIntegerField(help_text='Battery capacity in mAh', verbose_name='Capacity')),
+                ('ram_storage', models.PositiveIntegerField(help_text='RAM storage in MB', verbose_name='RAM')),
+                ('wifi_connectivity', models.PositiveIntegerField(help_text='WiFi Connectivity', verbose_name='WiFi', choices=[(1, '802.11 b/g/n')])),
+                ('bluetooth', models.PositiveIntegerField(help_text='Bluetooth Connectivity', verbose_name='Bluetooth', choices=[(1, 'Bluetooth 4.0')])),
+                ('gps', models.BooleanField(default=False, help_text='GPS integrated', verbose_name='GPS')),
+                ('width', models.DecimalField(help_text='Width in mm', verbose_name='Width', max_digits=4, decimal_places=1)),
+                ('height', models.DecimalField(help_text='Height in mm', verbose_name='Height', max_digits=4, decimal_places=1)),
+                ('weight', models.DecimalField(help_text='Weight in gram', verbose_name='Weight', max_digits=5, decimal_places=1)),
+                ('screen_size', models.DecimalField(help_text='Diagonal screen size in inch', verbose_name='Screen size', max_digits=4, decimal_places=2)),
+                ('operating_system', models.ForeignKey(verbose_name='Operating System', to='myshop.OperatingSystem')),
+            ],
+            options={
+                'verbose_name': 'Smart Phone',
+                'verbose_name_plural': 'Smart Phones',
+            },
+            bases=('myshop.product',),
+        ),
+        migrations.DeleteModel(
+            name='SmartCardTranslation',
+        ),
+        migrations.AddField(
+            model_name='producttranslation',
+            name='master',
+            field=models.ForeignKey(related_name='translations', to='myshop.Product', null=True),
+        ),
+        migrations.AddField(
+            model_name='product',
+            name='cms_pages',
+            field=models.ManyToManyField(help_text='Choose list view this product shall appear on.', to='cms.Page', through='myshop.ProductPage'),
+        ),
+        migrations.AddField(
+            model_name='product',
+            name='images',
+            field=models.ManyToManyField(to='filer.Image', through='myshop.ProductImage'),
+        ),
+        migrations.AddField(
+            model_name='product',
+            name='manufacturer',
+            field=models.ForeignKey(verbose_name='Manufacturer', to='myshop.Manufacturer'),
+        ),
+        migrations.AddField(
+            model_name='product',
+            name='polymorphic_ctype',
+            field=models.ForeignKey(related_name='polymorphic_myshop.product_set+', editable=False, to='contenttypes.ContentType', null=True),
+        ),
+        migrations.AddField(
+            model_name='smartcard',
+            name='product_ptr',
+            field=models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, default=None, serialize=False, to='myshop.Product'),
+            preserve_default=False,
+        ),
+        migrations.AddField(
+            model_name='smartphone',
+            name='product',
+            field=models.ForeignKey(verbose_name='Smart-Phone Model', to='myshop.SmartPhoneModel'),
+        ),
+        migrations.AlterUniqueTogether(
+            name='producttranslation',
+            unique_together=set([('language_code', 'master')]),
+        ),
     ]
