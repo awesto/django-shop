@@ -30,7 +30,23 @@ class ProductDetailSerializer(ProductDetailSerializerBase):
         exclude = ('active',)
 
 
-class AddSmartphoneToCartSerializer(AddToCartSerializer):
+class AddSmartCardToCartSerializer(AddToCartSerializer):
+    """
+    Modified AddToCartSerializer which handles SmartCards
+    """
+    def get_instance(self, context, data, extra_args):
+        product = context['product']
+        extra = context['request'].data.get('extra', {})
+        extra.setdefault('product_code', product.product_code)
+        instance = {
+            'product': product.id,
+            'unit_price': product.unit_price,
+            'extra': extra,
+        }
+        return instance
+
+
+class AddSmartPhoneToCartSerializer(AddToCartSerializer):
     """
     Modified AddToCartSerializer which handles SmartPhones
     """
@@ -38,9 +54,11 @@ class AddSmartphoneToCartSerializer(AddToCartSerializer):
         product = context['product']
         extra = context['request'].data.get('extra', {})
         extra.setdefault('product_code', product.smartphone_set.first().product_code)
+        product_markedness = product.get_product_markedness(extra)
+        extra['storage'] = product_markedness.storage
         instance = {
             'product': product.id,
-            'unit_price': product.get_product_markedness(extra).unit_price,
+            'unit_price': product_markedness.unit_price,
             'extra': extra,
         }
         return instance

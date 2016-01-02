@@ -6,7 +6,7 @@ from shop.rest.filters import CMSPagesFilterBackend
 from shop.views.catalog import AddToCartView, ProductListView, ProductRetrieveView
 from shop.search.views import SearchView
 from myshop.serializers import (ProductSummarySerializer, ProductDetailSerializer,
-    AddSmartphoneToCartSerializer)
+    AddSmartCardToCartSerializer, AddSmartPhoneToCartSerializer)
 
 urlpatterns = patterns('',
     url(r'^$', ProductListView.as_view(
@@ -16,9 +16,11 @@ urlpatterns = patterns('',
     url(r'^(?P<slug>[\w-]+)$', ProductRetrieveView.as_view(
         serializer_class=ProductDetailSerializer,
     )),
-    url(r'^(?P<slug>[\w-]+)/add-to-cart', AddToCartView.as_view()),
+    url(r'^(?P<slug>[\w-]+)/add-to-cart', AddToCartView.as_view(
+        serializer_class=AddSmartCardToCartSerializer,
+    )),
     url(r'^(?P<slug>[\w-]+)/add-smartphone-to-cart', AddToCartView.as_view(
-        serializer_class=AddSmartphoneToCartSerializer,
+        serializer_class=AddSmartPhoneToCartSerializer,
     )),
     url(r'^autocomplete/', SearchView.as_view()),
 )

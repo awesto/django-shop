@@ -5,7 +5,7 @@
 <table shop-add-to-cart="{{ product.get_absolute_url }}/add-smartphone-to-cart" class="table">
 	<thead>
 		<tr>
-			<th>{% trans "Model" %}</th>
+			<th>{% trans "Internal Storage" %}</th>
 			<th>{% trans "Quantity" %}</th>
 			<th>{% trans "Unit Price" %}</th>
 			<th>{% trans "Subtotal" %}</th>
@@ -17,7 +17,7 @@
 				<select class="form-control" ng-model="context.extra.product_code" ng-change="updateContext()" >
 	{% for smartphone in product.smartphone_set.all %}
 					<option value="{{ smartphone.product_code }}">
-					{{ smartphone.storage }} GB
+		{% if smartphone.storage == 0 %}{% trans "Pluggable" %}{% else %}{{ smartphone.storage }} GB{% endif %}
 					</option>
 	{% endfor %}
 				</select>
