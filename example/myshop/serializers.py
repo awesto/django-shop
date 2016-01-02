@@ -10,7 +10,6 @@ if settings.SHOP_TUTORIAL in ('simple', 'i18n'):
     Product = import_string('myshop.models.{}.smartcard.SmartCard'.format(settings.SHOP_TUTORIAL))
 else:
     Product = import_string('myshop.models.polymorphic.product.Product')
-#from .search_indexes import CommodityIndex
 
 
 class ProductSummarySerializer(ProductSummarySerializerBase):
@@ -54,12 +53,5 @@ class ProductSearchSerializer(ProductSearchSerializerBase):
     app_label = settings.SHOP_APP_LABEL.lower()
 
     class Meta(ProductSearchSerializerBase.Meta):
-        #index_classes = (CommodityIndex,)
         fields = ProductSearchSerializerBase.Meta.fields + ('description', 'media', 'overlay')
         field_aliases = {'q': 'text'}
-
-
-# class CommoditySearchSerializer(ProductSearchSerializer):
-#     class Meta(ProductSearchSerializer.Meta):
-#         index_classes = (CommodityIndex,)
-#         field_aliases = {'q': 'autocomplete'}
