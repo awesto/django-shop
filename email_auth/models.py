@@ -9,7 +9,6 @@ settings.py, otherwise the default Django or another implementation is used.
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser, UserManager as BaseUserManager
 from django.core.exceptions import ValidationError
-from django.core.mail import send_mail
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 
