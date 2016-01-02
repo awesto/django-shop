@@ -7,7 +7,7 @@ from django.utils import six
 from django.utils.encoding import python_2_unicode_compatible, force_text
 from django.utils.translation import ugettext_lazy as _
 from polymorphic.manager import PolymorphicManager
-from polymorphic.polymorphic_model import PolymorphicModel
+from polymorphic.models import PolymorphicModel
 from polymorphic.base import PolymorphicModelBase
 from . import deferred
 
@@ -150,11 +150,12 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
     def is_in_cart(self, cart, extra, watched=False):
         """
         Checks if the product is already in the given cart, and if so, returns the corresponding
-        cart_item, otherwise this method returns None. The dictionary `extra` is  used for passing
-        arbitrary information about the product. It can be used to determine if products with
-        variations shall be added to the cart or added as separate items.
-        The boolean `watched` can be used to determine if this check shall only be performed for
-        the watch-list.
+        cart_item, otherwise this method returns None.
+        The boolean `watched` is used to determine if this check shall only be performed for the
+        watch-list.
+        Optionally one may pass arbitrary information about the product using `extra`. This can
+        be used to determine if products with variations shall increase the number of items or
+        being added as separate items.
         """
         from .cart import CartItemModel
         cart_item_qs = CartItemModel.objects.filter(cart=cart, product=self)
