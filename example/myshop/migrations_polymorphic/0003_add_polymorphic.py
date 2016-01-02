@@ -79,9 +79,10 @@ class Migration(migrations.Migration):
             model_name='smartcard',
             name='created_at',
         ),
-        migrations.RemoveField(
+        migrations.RenameField(
             model_name='smartcard',
-            name='id',
+            old_name='id',
+            new_name='product_ptr',
         ),
         migrations.RemoveField(
             model_name='smartcard',
@@ -181,11 +182,10 @@ class Migration(migrations.Migration):
             name='polymorphic_ctype',
             field=models.ForeignKey(related_name='polymorphic_myshop.product_set+', editable=False, to='contenttypes.ContentType', null=True),
         ),
-        migrations.AddField(
+        migrations.AlterField(
             model_name='smartcard',
             name='product_ptr',
             field=models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, default=None, serialize=False, to='myshop.Product'),
-            preserve_default=False,
         ),
         migrations.AddField(
             model_name='smartphone',
