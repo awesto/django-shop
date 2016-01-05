@@ -53,25 +53,17 @@ class PolymorphicProductMetaclass(PolymorphicModelBase):
             try:
                 if issubclass(baseclass._materialized_model, Model):
                     # as the materialized model, use the most generic one
-                    cls.check_fields(Model, attrs)
                     baseclass._materialized_model = Model
                 elif not issubclass(Model, baseclass._materialized_model):
                     raise ImproperlyConfigured("Abstract base class {} has already been associated "
                         "with a model {}, which is different or not a submodel of {}."
                         .format(name, Model, baseclass._materialized_model))
             except (AttributeError, TypeError):
-                cls.check_fields(Model, attrs)
                 baseclass._materialized_model = Model
 
             # check for pending mappings in the ForeignKeyBuilder and in case, process them
             deferred.ForeignKeyBuilder.process_pending_mappings(Model, baseclass.__name__)
         return Model
-
-    @classmethod
-    def check_fields(cls, Model, attrs):
-        if not isinstance(attrs.get('product_name'), (models.Field, property)):
-            msg = "Class `{}` must provide a model field or property implementing `product_name`"
-            raise NotImplementedError(msg.format(Model.__name__))
 
 
 @python_2_unicode_compatible
