@@ -24,6 +24,8 @@ MIDDLEWARE_CLASSES = (
     'shop.middleware.CustomerMiddleware',
 )
 
+STATIC_URL = '/static/'
+
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
     'APP_DIRS': True,
