@@ -16,13 +16,14 @@ class BaseProductManager(PolymorphicManager):
     """
     A base ModelManager for all non-object manipulation needs, mostly statistics and querying.
     """
-    def select_lookup(self, term):
+    def select_lookup(self, search_term):
         """
-        Hook to returns a queryset containing the products matching the lookup criteria given
+        Hook for returning a queryset containing the products matching the lookup criteria given
         be the search term. This method must be implemented by the ProductManager used by the
         real model implementing the product.
         """
-        raise NotImplemented("subclasses of BaseProductManager must provide a select_lookup() method")
+        msg = "Method select_lookup() must be implemented by subclass: `{}`"
+        raise NotImplementedError(msg.format(self.__class__.__name__))
 
     def indexable(self):
         """
@@ -52,17 +53,25 @@ class PolymorphicProductMetaclass(PolymorphicModelBase):
             try:
                 if issubclass(baseclass._materialized_model, Model):
                     # as the materialized model, use the most generic one
+                    cls.check_fields(Model, attrs)
                     baseclass._materialized_model = Model
                 elif not issubclass(Model, baseclass._materialized_model):
                     raise ImproperlyConfigured("Abstract base class {} has already been associated "
                         "with a model {}, which is different or not a submodel of {}."
                         .format(name, Model, baseclass._materialized_model))
             except (AttributeError, TypeError):
+                cls.check_fields(Model, attrs)
                 baseclass._materialized_model = Model
 
             # check for pending mappings in the ForeignKeyBuilder and in case, process them
             deferred.ForeignKeyBuilder.process_pending_mappings(Model, baseclass.__name__)
         return Model
+
+    @classmethod
+    def check_fields(cls, Model, attrs):
+        if not isinstance(attrs.get('product_name'), (models.Field, property)):
+            msg = "Class `{}` must provide a model field or property implementing `product_name`"
+            raise NotImplementedError(msg.format(Model.__name__))
 
 
 @python_2_unicode_compatible
@@ -108,18 +117,11 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         """
         return self.polymorphic_ctype.model
 
-    @property
-    def product_name(self):
-        """
-        Hook to return the name of this product.
-        """
-        raise NotImplemented("subclasses of BaseProduct must provide a product_name() method")
-
     def get_absolute_url(self):
         """
         Hook for returning the canonical Django URL of this product.
         """
-        msg = "Method get_absolute_url() must be implemented by subclass: {}"
+        msg = "Method get_absolute_url() must be implemented by subclass: `{}`"
         raise NotImplementedError(msg.format(self.__class__.__name__))
 
     def get_price(self, request):
