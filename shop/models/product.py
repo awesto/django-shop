@@ -16,13 +16,14 @@ class BaseProductManager(PolymorphicManager):
     """
     A base ModelManager for all non-object manipulation needs, mostly statistics and querying.
     """
-    def select_lookup(self, term):
+    def select_lookup(self, search_term):
         """
-        Hook to returns a queryset containing the products matching the lookup criteria given
+        Hook for returning a queryset containing the products matching the lookup criteria given
         be the search term. This method must be implemented by the ProductManager used by the
         real model implementing the product.
         """
-        raise NotImplemented("subclasses of BaseProductManager must provide a select_lookup() method")
+        msg = "Method select_lookup() must be implemented by subclass: `{}`"
+        raise NotImplementedError(msg.format(self.__class__.__name__))
 
     def indexable(self):
         """
@@ -120,7 +121,7 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         """
         Hook for returning the canonical Django URL of this product.
         """
-        msg = "Method get_absolute_url() must be implemented by subclass: {}"
+        msg = "Method get_absolute_url() must be implemented by subclass: `{}`"
         raise NotImplementedError(msg.format(self.__class__.__name__))
 
     def get_price(self, request):
