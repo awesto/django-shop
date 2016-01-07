@@ -25,7 +25,7 @@ class ProductManager(BaseProductManager, TranslatableManager):
         return self.get_queryset().filter(query)
 
 
-class Product(TranslatableModel, BaseProduct):
+class Product(BaseProduct, TranslatableModel):
     name = models.CharField(max_length=255, verbose_name=_("Name"))
     slug = models.SlugField(verbose_name=_("Slug"), unique=True)
     description = TranslatedField()

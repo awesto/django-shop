@@ -63,6 +63,13 @@ class PolymorphicProductMetaclass(PolymorphicModelBase):
 
             # check for pending mappings in the ForeignKeyBuilder and in case, process them
             deferred.ForeignKeyBuilder.process_pending_mappings(Model, baseclass.__name__)
+
+        # check if there is a field/method implementing `product_name`
+        try:
+            Model().product_name
+        except AttributeError:
+            msg = "Class `{}` must provide a model field or property implementing `product_name`"
+            raise NotImplementedError(msg.format(name))
         return Model
 
 
