@@ -218,6 +218,13 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         return "{}".format(self.pk) or '(unsaved)'
 
     @property
+    def num_items(self):
+        """
+        Returns the number of items in the cart.
+        """
+        return self.items.count()
+
+    @property
     def total_quantity(self):
         """
         Returns the total quantity of all items in the cart.
