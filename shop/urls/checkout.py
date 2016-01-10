@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from shop.util.decorators import cart_required
 
 from shop.views.checkout import (
@@ -7,7 +7,7 @@ from shop.views.checkout import (
     ThankYouView,
 )
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^$', cart_required(CheckoutSelectionView.as_view()),
         name='checkout_selection'  # first step of the checkout process
         ),
@@ -17,4 +17,4 @@ urlpatterns = patterns('',
     url(r'^thank_you/$', ThankYouView.as_view(),
         name='thank_you_for_your_order'  # final step of the checkout process
         ),
-    )
+]

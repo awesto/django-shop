@@ -1,9 +1,9 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
 from shop.views.cart import CartDetails, CartItemDetail
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^delete/$', CartDetails.as_view(action='delete'),  # DELETE
         name='cart_delete'),
     url(r'^item/$', CartDetails.as_view(action='post'),  # POST
@@ -18,4 +18,4 @@ urlpatterns = patterns('',
     url(r'^item/(?P<id>[0-9]+)/delete$',
         CartItemDetail.as_view(action='delete'),
         name='cart_item_delete'),
-)
+]
