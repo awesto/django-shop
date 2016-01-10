@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 from django.conf import settings
 from django.core import exceptions
-from django.utils.importlib import import_module
+from importlib import import_module
 
 
 class CartModifiersPool(object):
@@ -32,7 +32,7 @@ class CartModifiersPool(object):
                     '%s isn\'t a price modifier module' % modifier_path)
             try:
                 mod = import_module(mod_module)
-            except ImportError, e:
+            except ImportError as e:
                 raise exceptions.ImproperlyConfigured(
                     'Error importing modifier %s: "%s"' % (mod_module, e))
             try:

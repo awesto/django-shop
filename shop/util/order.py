@@ -1,12 +1,14 @@
 #-*- coding: utf-8 -*-
 from django.contrib.auth.models import AnonymousUser
-from shop.models.ordermodel import Order
+from django.core.urlresolvers import reverse
+from django.http.response import HttpResponseRedirect
 
 
 def get_orders_from_request(request):
     """
     Returns all the Orders created from the provided request.
     """
+    from shop.models.ordermodel import Order
     orders = None
     if request.user and not isinstance(request.user, AnonymousUser):
         # There is a logged in user
@@ -49,3 +51,17 @@ def add_order_to_request(request, order):
         # Add the order_id to the session There has to be a session. Otherwise
         # it's fine to get an AttributeError
         request.session['order_id'] = order.pk
+
+
+def redirect_to_shipping(request, order=None):
+    if order is None:
+        order = get_order_from_request(request)
+    return HttpResponseRedirect(
+        reverse(order.shipping_backend.url_name))
+
+
+def redirect_to_payment(request, order=None):
+    if order is None:
+        order = get_order_from_request(request)
+    return HttpResponseRedirect(
+        reverse(order.payment_backend.url_name))

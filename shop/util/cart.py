@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from shop.models.cartmodel import Cart
 from django.contrib.auth.models import AnonymousUser
 
 def get_cart_from_database(request):
+    from shop.models.cartmodel import Cart
     database_cart = Cart.objects.filter(user=request.user)
     if database_cart:
         database_cart = database_cart[0]
@@ -11,6 +11,7 @@ def get_cart_from_database(request):
     return database_cart
 
 def get_cart_from_session(request):
+    from shop.models.cartmodel import Cart
     session_cart = None
     session = getattr(request, 'session', None)
     if session is not None:
@@ -33,6 +34,7 @@ def get_or_create_cart(request, save=False):
 
     If ``save`` is True, cart object will be explicitly saved.
     """
+    from shop.models.cartmodel import Cart
     cart = None
     if not hasattr(request, '_cart'):
         is_logged_in = request.user and not isinstance(request.user, AnonymousUser)
@@ -79,3 +81,16 @@ def get_or_create_cart(request, save=False):
 
     cart = getattr(request, '_cart')  # There we *must* have a cart
     return cart
+
+
+def clean_cart(request):
+    '''
+    Cleans cart items if a corresponding cart exists.
+    '''
+    cart = None
+    if request.user.is_authenticated():
+        cart = get_cart_from_database(request)
+    else:
+        cart = get_cart_from_session(request)
+    if cart is not None:
+        cart.empty()

@@ -6,7 +6,6 @@ from django.shortcuts import redirect
 from django.core.exceptions import ObjectDoesNotExist
 
 from shop.forms import get_cart_item_formset
-from shop.models.productmodel import Product
 from shop.util.cart import get_or_create_cart
 from shop.views import ShopView, ShopTemplateResponseMixin
 
@@ -52,8 +51,9 @@ class CartItemDetail(ShopView):
         # quantity = self.request.POST['item_quantity']
         try:
             quantity = int(self.request.POST['item_quantity'])
+            if quantity < 0: raise ValueError("Quantity has to be non-negative")
         except (KeyError, ValueError):
-            return HttpResponseBadRequest("The quantity has to be a number")
+            return HttpResponseBadRequest("The quantity has to be a non-negative number")
         cart_object.update_quantity(item_id, quantity)
         return self.put_success()
 
@@ -137,11 +137,13 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
         quantity parameter to specify how many you wish to add at once
         (defaults to 1)
         """
+        from shop.models.productmodel import Product
         try:
             product_id = int(self.request.POST['add_item_id'])
             product_quantity = int(self.request.POST.get('add_item_quantity', 1))
+            if product_quantity < 0: raise ValueError("Quantity has to be non-negative")
         except (KeyError, ValueError):
-            return HttpResponseBadRequest("The quantity and ID have to be numbers")
+            return HttpResponseBadRequest("The quantity and ID have to be non-negative numbers")
         product = Product.objects.get(pk=product_id)
         cart_object = get_or_create_cart(self.request, save=True)
         cart_item = cart_object.add_product(product, product_quantity)

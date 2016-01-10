@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.test.testcases import TestCase
+from django.utils.encoding import force_text
 from shop.models.cartmodel import Cart, CartItem
 from shop.models.ordermodel import Order
 from shop.models.productmodel import Product
@@ -41,10 +42,10 @@ class ProductListViewTestCase(TestCase):
         """
         view = ProductListView()
         active_products = view.get_queryset()
-        self.assertEquals(len(active_products), 1)
+        self.assertEqual(len(active_products), 1)
 
         for product in active_products:
-            self.assertEquals(product.active, True)
+            self.assertEqual(product.active, True)
 
 
 class ProductDetailViewTestCase(TestCase):
@@ -260,11 +261,11 @@ class OrderListViewTestCase(TestCase):
         url = reverse('order_list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, unicode(self.order))
+        self.assertContains(response, force_text(self.order))
 
     def test_authenticated_user_see_order_detail(self):
         self.client.login(username='test', password='test')
         url = reverse('order_detail', kwargs={'pk': self.order.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, unicode(self.order))
+        self.assertContains(response, force_text(self.order))
