@@ -6,7 +6,6 @@ from django.shortcuts import redirect
 from django.core.exceptions import ObjectDoesNotExist
 
 from shop.forms import get_cart_item_formset
-from shop.models.productmodel import Product
 from shop.util.cart import get_or_create_cart
 from shop.views import ShopView, ShopTemplateResponseMixin
 
@@ -138,6 +137,7 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
         quantity parameter to specify how many you wish to add at once
         (defaults to 1)
         """
+        from shop.models.productmodel import Product
         try:
             product_id = int(self.request.POST['add_item_id'])
             product_quantity = int(self.request.POST.get('add_item_quantity', 1))

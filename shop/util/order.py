@@ -3,13 +3,12 @@ from django.contrib.auth.models import AnonymousUser
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 
-from shop.models.ordermodel import Order
-
 
 def get_orders_from_request(request):
     """
     Returns all the Orders created from the provided request.
     """
+    from shop.models.ordermodel import Order
     orders = None
     if request.user and not isinstance(request.user, AnonymousUser):
         # There is a logged in user

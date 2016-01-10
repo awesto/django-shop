@@ -9,8 +9,6 @@ from django.views.generic import RedirectView
 from django.utils.functional import cached_property
 
 from shop.forms import AddressesForm, BillingShippingForm
-from shop.models import AddressModel, OrderExtraInfo
-from shop.models import Order, ShippingBackend
 from shop.util.address import (
     assign_address_to_request,
     get_billing_address_from_request,
@@ -30,6 +28,7 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
         """
         Returns a dynamic ModelForm from the loaded AddressModel
         """
+        from shop.models import AddressModel
         form_class = model_forms.modelform_factory(
             AddressModel, exclude=['user_shipping', 'user_billing'])
         return form_class
@@ -51,6 +50,7 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
         This will create an Order object form the current cart, and will pass
         a reference to the Order on either the User object or the session.
         """
+        from shop.models.ordermodel import Order
         cart = get_or_create_cart(self.request)
         cart.update(self.request)
         order = Order.objects.create_from_cart(cart, self.request)
@@ -100,6 +100,7 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
         Initializes and handles the form for order extra info.
         """
         # Create a dynamic Form class for the model
+        from shop.models import OrderExtraInfo
         form_class = model_forms.modelform_factory(OrderExtraInfo, exclude=['order'])
         if self.request.method == 'POST':
             return form_class(self.request.POST)
@@ -164,7 +165,7 @@ class OrderConfirmView(RedirectView):
 
     def confirm_order(self):
         order = get_order_from_request(self.request)
-        order.status = Order.CONFIRMED
+        order.status = order.CONFIRMED
         order.save()
 
     def get(self, request, *args, **kwargs):
@@ -184,7 +185,7 @@ class ThankYouView(LoginMixin, ShopTemplateView):
 
         # put the latest order in the context only if it is completed
         order = get_order_from_request(self.request)
-        if order and order.status == Order.COMPLETED:
+        if order and order.status == order.COMPLETED:
             ctx.update({'order': order, })
 
         return ctx

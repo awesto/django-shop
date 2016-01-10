@@ -8,7 +8,7 @@ from django.db import models
 from django.db.models.aggregates import Sum
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
-from polymorphic.polymorphic_model import PolymorphicModel
+from polymorphic.models import PolymorphicModel
 from shop.cart.modifiers_pool import cart_modifiers_pool
 from shop.order_signals import confirmed, completed, cancelled, shipped
 from shop.util.fields import CurrencyField, upload_to_classname

@@ -7,8 +7,8 @@ from django.forms.models import modelformset_factory
 from django.forms.utils import ErrorList, ErrorDict
 from django.utils.translation import ugettext_lazy as _
 
-from shop.models.cartmodel import CartItem
-from shop.models import PaymentBackend, ShippingBackend
+from shop.models.paymentmodel import PaymentBackend
+from shop.models.shippingmodel import ShippingBackend
 from shop.util.loader import load_class
 
 
@@ -128,14 +128,14 @@ class AddressesForm(forms.Form):
         return billing, shipping
 
 
-class CartItemModelForm(forms.ModelForm):
+class CartItemForm(forms.Form):
     """A form for the CartItem model. To be used in the CartDetails view."""
 
     quantity = forms.IntegerField(min_value=0, max_value=9999)
 
-    class Meta:
-        model = CartItem
-        fields = ('quantity', )
+    def __init__(self, instance, *args, **kwargs):
+        self.instance = instance
+        super(CartItemForm, self).__init__(*args, **kwargs)
 
     def save(self, *args, **kwargs):
         """
@@ -144,8 +144,7 @@ class CartItemModelForm(forms.ModelForm):
         items from the cart when the quantity is set to 0.
         """
         quantity = self.cleaned_data['quantity']
-        instance = self.instance.cart.update_quantity(self.instance.pk,
-                quantity)
+        instance = self.instance.cart.update_quantity(self.instance.pk, quantity)
         return instance
 
 
@@ -156,7 +155,7 @@ def get_cart_item_modelform_class():
     The default `shop.forms.CartItemModelForm` can be overridden settings
     ``SHOP_CART_ITEM_FORM`` parameter in settings
     """
-    cls_name = getattr(settings, 'SHOP_CART_ITEM_FORM', 'shop.forms.CartItemModelForm')
+    cls_name = getattr(settings, 'SHOP_CART_ITEM_FORM', 'shop.forms.CartItemForm')
     cls = load_class(cls_name)
     return cls
 
@@ -169,9 +168,10 @@ def get_cart_item_formset(cart_items=None, data=None):
       be the list of updated cart items of the current cart.
     :param data: Optional POST data to be bound to this formset.
     """
+    from shop.models.cartmodel import CartItem
     assert(cart_items is not None)
     CartItemFormSet = modelformset_factory(CartItem, form=get_cart_item_modelform_class(),
-            extra=0)
+            extra=0, fields=["quantity", "id"])
     kwargs = {'queryset': cart_items, }
     form_set = CartItemFormSet(data, **kwargs)
 
