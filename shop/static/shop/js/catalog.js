@@ -94,8 +94,45 @@ djangoShopModule.directive('shopAddToCart', function() {
 });
 
 
+//Directive <ANY shop-catalog-list="REST-API-endpoint">
+djangoShopModule.directive('shopCatalogList', function() {
+	return {
+		restrict: 'A',
+		controller: ['$scope', '$http', '$window', function($scope, $http, $window) {
+			var self = this, fetchURL = $window.location.pathname;
+
+			this.loadProducts = function(config) {
+				if ($scope.isLoading || fetchURL === null)
+					return;
+				$scope.isLoading = true;
+				$http.get(fetchURL, config).success(function(response) {
+					fetchURL = response.next;
+					$scope.countProducts = response.count;
+					$scope.products = $scope.products.concat(response.results);
+					$scope.isLoading = false;
+				}).error(function() {
+					$scope.isLoading = false;
+				});
+			}
+
+			$scope.loadMore = function() {
+				console.log('load more products ...');
+				self.loadProducts();
+			};
+
+			$scope.products = [];
+			$scope.isLoading = false;
+			$scope.countProducts = null;
+		}],
+		link: function(scope, element, attrs, controller) {
+			console.log(controller);
+		}
+	};
+});
+
+
 // Directive <ANY shop-sync-catalog="REST-API-endpoint">
-// handle catalog list view combined with 
+// handle catalog list view combined with adding products to cart
 djangoShopModule.directive('shopSyncCatalog', function() {
 	var syncCatalogUrl;
 	return {
@@ -118,6 +155,5 @@ djangoShopModule.directive('shopSyncCatalog', function() {
 		}
 	};
 });
-
 
 })(window.angular);
