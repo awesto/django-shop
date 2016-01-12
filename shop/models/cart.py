@@ -229,7 +229,9 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         """
         Returns the total quantity of all items in the cart.
         """
-        return sum([ci.quantity for ci in self.items.all()])
+        return self.items.aggregate(models.Sum('quantity'))['quantity__sum']
+        # if we would know, that self.items is already evaluated, then this might be faster:
+        # return sum([ci.quantity for ci in self.items.all()])
 
     @property
     def is_empty(self):
