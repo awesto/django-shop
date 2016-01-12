@@ -11,7 +11,7 @@ from .money_maker import AbstractMoney
 
 class JSONEncoder(DjangoJSONEncoder):
     """
-    Money type aware JSON encoder.
+    Money type aware JSON encoder for reciprocal usage, such as import/export/dumpdata/loaddata.
     """
     def default(self, obj):
         if isinstance(obj, AbstractMoney):
