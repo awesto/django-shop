@@ -15,7 +15,7 @@
 
 <script id="shop/carticon-caption.html" type="text/ng-template">
 {% block carticon-caption %}
-	<ng-pluralize count="caption.total_quantity" when="{'1': '{% trans "1 Item" context "cart icon" %}', 'other': '{% trans "{} Items" context "cart icon" %}'}"></ng-pluralize>
+	<ng-pluralize count="caption.num_items" when="{'1': '{% trans "1 Item" context "cart icon" %}', 'other': '{% trans "{} Items" context "cart icon" %}'}"></ng-pluralize>
 {% endblock %}
 </script>
 
