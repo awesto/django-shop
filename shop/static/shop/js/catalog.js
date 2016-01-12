@@ -94,7 +94,7 @@ djangoShopModule.directive('shopAddToCart', function() {
 });
 
 
-//Directive <ANY shop-catalog-list="REST-API-endpoint">
+// Directive <ANY shop-catalog-list="REST-API-endpoint">
 djangoShopModule.directive('shopCatalogList', function() {
 	return {
 		restrict: 'A',
@@ -107,8 +107,8 @@ djangoShopModule.directive('shopCatalogList', function() {
 				$scope.isLoading = true;
 				$http.get(fetchURL, config).success(function(response) {
 					fetchURL = response.next;
-					$scope.countProducts = response.count;
-					$scope.products = $scope.products.concat(response.results);
+					$scope.catalog.count = response.count;
+					$scope.catalog.products = $scope.catalog.products.concat(response.results);
 					$scope.isLoading = false;
 				}).error(function() {
 					$scope.isLoading = false;
@@ -120,13 +120,9 @@ djangoShopModule.directive('shopCatalogList', function() {
 				self.loadProducts();
 			};
 
-			$scope.products = [];
+			$scope.catalog = {count: null, products: []};
 			$scope.isLoading = false;
-			$scope.countProducts = null;
-		}],
-		link: function(scope, element, attrs, controller) {
-			console.log(controller);
-		}
+		}]
 	};
 });
 
@@ -134,26 +130,54 @@ djangoShopModule.directive('shopCatalogList', function() {
 // Directive <ANY shop-sync-catalog="REST-API-endpoint">
 // handle catalog list view combined with adding products to cart
 djangoShopModule.directive('shopSyncCatalog', function() {
-	var syncCatalogUrl;
 	return {
 		restrict: 'A',
-		controller: ['$scope', '$http', function($scope, $http) {
-			$scope.syncQuantity = function(id) {
-				var context = angular.extend({id: id}, $scope.context.products[id]);
-				$http.post(syncCatalogUrl, context).success(function(context) {
-					angular.extend($scope.context.products[id], context);
-					$scope.$emit('shopUpdateCarticonCaption');
-				}).error(function(msg) {
-					console.error('Unable to sync quantity: ' + msg);
-				});
-			}
-		}],
-		link: function(scope, element, attrs, AddToCartCtrl) {
+		controller: function() {},
+		require: 'shopSyncCatalog',
+		link: function(scope, element, attrs, controller) {
 			if (!attrs.shopSyncCatalog)
 				throw new Error("Directive shop-sync-catalog must point onto an URL");
-			syncCatalogUrl = attrs.shopSyncCatalog;
+			controller.syncCatalogUrl = attrs.shopSyncCatalog;
 		}
 	};
 });
+
+
+// Directive <ANY shop-sync-catalog="{id: {{ product.id }}, quantity: {{ product.quantity }} }">
+// This directive must be a child of <ANY shop-sync-catalog...>. It synchronizes the local scope
+// of a catalog item.
+djangoShopModule.directive('shopSyncCatalogItem', function() {
+	return {
+		restrict: 'A',
+		require: ['^shopSyncCatalog', 'shopSyncCatalogItem'],
+		scope: true,
+		controller: ['$scope', '$http', function($scope, $http) {
+			var self = this, prev_item = null, isLoading = false;
+
+			$scope.syncQuantity = function() {
+				if (isLoading || angular.equals($scope.catalog_item, prev_item))
+					return;
+				isLoading = true;
+				$http.post(self.parent.syncCatalogUrl, $scope.catalog_item).success(function(response) {
+					prev_item = response;
+					angular.extend($scope.catalog_item, response);
+					$scope.$emit('shopUpdateCarticonCaption');
+					isLoading = false;
+				}).error(function(msg) {
+					console.error('Unable to sync quantity: ' + msg);
+					isLoading = false;
+				});
+			}
+
+		}],
+		link: function(scope, element, attrs, controllers) {
+			if (!attrs.shopSyncCatalogItem)
+				throw new Error("Directive shop-sync-catalog-item must provide an initialization object");
+			controllers[1].parent = controllers[0];
+			scope.catalog_item = scope.$eval(attrs.shopSyncCatalogItem);
+		}
+	};
+});
+
 
 })(window.angular);
