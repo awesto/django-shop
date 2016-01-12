@@ -7,6 +7,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from jsonfield.fields import JSONField
 from shop.modifiers.pool import cart_modifiers_pool
+from shop.money import Money
 from .product import BaseProduct
 from . import deferred
 from shop.models.customer import CustomerModel
@@ -236,5 +237,13 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     @property
     def is_empty(self):
         return self.total_quantity == 0
+
+    def get_caption_data(self):
+        return {'num_items': self.num_items, 'total_quantity': self.total_quantity,
+                'subtotal': self.subtotal, 'total': self.total}
+
+    @classmethod
+    def get_default_caption_data(cls):
+        return {'num_items': 0, 'total_quantity': 0, 'subtotal': Money(), 'total': Money()}
 
 CartModel = deferred.MaterializedModel(BaseCart)

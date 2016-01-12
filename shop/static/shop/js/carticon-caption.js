@@ -21,7 +21,7 @@ djangoShopModule.directive('shopCarticonCaption', ['$rootScope', '$http', 'djang
 				});
 			}
 
-			scope.caption = {num_items: attrs.numItems, total_quantity: attrs.totalQuantity};
+			scope.caption = scope.$eval(attrs.captionData);
 
 			// listen on events of type `shopUpdatedCartLegend`
 			$rootScope.$on('shopUpdateCarticonCaption', function(event, caption) {

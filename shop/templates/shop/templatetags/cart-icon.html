@@ -7,8 +7,10 @@
 {% page_url 'shop-cart' as shop_cart_url %}
 
 <a{% if shop_cart_url %} href="{{ shop_cart_url }}" title="{% page_attribute 'page_title' 'shop-cart' %}"{% endif %}>
+{% block carticon %}
 	<i class="fa fa-shopping-cart fa-fw fa-lg"></i>
-	<shop-carticon-caption num-items="{{ cart.num_items }}" total-quantity="{{ cart.total_quantity }}"></shop-carticon-caption>
+	<shop-carticon-caption caption-data="{num_items: {{ cart.num_items }} }"></shop-carticon-caption>
+{% endblock %}
 </a>
 
 <script id="shop/carticon-caption.html" type="text/ng-template">
