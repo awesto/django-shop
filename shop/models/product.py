@@ -64,7 +64,15 @@ class PolymorphicProductMetaclass(PolymorphicModelBase):
             # check for pending mappings in the ForeignKeyBuilder and in case, process them
             deferred.ForeignKeyBuilder.process_pending_mappings(Model, baseclass.__name__)
 
-        # check if there is a field/method implementing `product_name`
+        # perform some safety checks on the ProductModel being created
+        if not isinstance(Model.objects, BaseProductManager):
+            msg = "Class `{}.objects` must provide ModelManager inheriting from BaseProductManager"
+            raise NotImplementedError(msg.format(name))
+
+        if not isinstance(getattr(Model, 'search_fields', None), (list, tuple)):
+            msg = "Class `{}` must provide a tuple of `search_fields` so that Products can be easily found"
+            raise NotImplementedError(msg.format(name))
+
         try:
             Model().product_name
         except AttributeError:
@@ -91,8 +99,6 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
     active = models.BooleanField(default=True, verbose_name=_("Active"),
         help_text=_("Is this product publicly visible."))
-
-    objects = BaseProductManager()
 
     class Meta:
         abstract = True
