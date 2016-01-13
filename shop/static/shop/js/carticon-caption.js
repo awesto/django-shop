@@ -23,7 +23,7 @@ djangoShopModule.directive('shopCarticonCaption', ['$rootScope', '$http', 'djang
 
 			scope.caption = scope.$eval(attrs.captionData);
 
-			// listen on events of type `shopUpdatedCartLegend`
+			// listen on events of type `shopUpdateCarticonCaption`
 			$rootScope.$on('shopUpdateCarticonCaption', function(event, caption) {
 				if (angular.isObject(caption)) {
 					// the updated carticon's caption is passed in by the emitter
