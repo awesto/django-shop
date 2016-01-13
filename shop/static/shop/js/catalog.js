@@ -120,10 +120,13 @@ djangoShopModule.directive('shopCatalogList', function() {
 				self.loadProducts();
 			};
 
-			// listen on events of type `shopProductSearchAutocomplete`
+			// listen on events of type `shopCatalogSearch`
 			$scope.$root.$on('shopCatalogSearch', function(event, config) {
-				console.log('search for products');
-				console.log(config);
+				try {
+					config = {params: {autocomplete: config.params.q}}
+				} catch (err) {
+					config = null;
+				}
 				fetchURL = $window.location.pathname + 'search-catalog';
 				$scope.catalog.products = [];  // reset list of products
 				self.loadProducts(config);
