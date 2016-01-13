@@ -10,26 +10,54 @@ djangoShopModule.directive('shopProductSearch', ['$window', function($window) {
 	return {
 		require: 'form',
 		restrict: 'AC',
-		controller: ['$scope', function($scope) {
-			// shall be overridden by child controller
-			$scope.autocomplete = function() {};
+		controller: ['$scope', '$location', '$timeout', function($scope, $location, $timeout) {
+			var self = this;
+
+			// handle autocomplete
+			$scope.autocomplete = function() {
+				var config, acPromise = null;
+				if ($scope.searchQuery.length < 3) {
+					config = null;
+					$location.search({});
+				} else {
+					config = {
+						params: {
+							ac: $scope.searchQuery
+						}
+					};
+					$scope.property_filters = [];
+					$location.search(config.params);
+				}
+				// delay the execution of reloading products
+				if (acPromise) {
+					console.log(self);
+					$timeout.cancel(acPromise);
+					acPromise = null;
+				}
+				acPromise = $timeout(function() {
+					$scope.$emit('shopCatalogSearch', config);
+				}, 500);
+			};
+
+			// handle classic search submission.
+			$scope.submitSearch = function() {
+				if ($scope.searchQuery.length > 1/* && TODO: compare against previous search query */) {
+					self.submit();
+				}
+			};
+
 		}],
 		link: function(scope, element, attrs, formController) {
-			var i, search = {}, splitted, queries;
-			scope.searchQuery = '';
+			var i, splitted, queries;
+			formController.submit = element[0].submit;
 
 			// convert query string to object
+			scope.searchQuery = '';
 			queries = $window.location.search.replace(/^\?/, '').split('&');
 			for (i = 0; i < queries.length; i++) {
 				splitted = queries[i].split('=');
 				if (splitted[0] === 'q') {
 					scope.searchQuery = decodeURIComponent(splitted[1].split('+').join('%20'));
-				}
-			}
-
-			scope.submit = function() {
-				if (scope.searchQuery.length > 1 && scope.searchQuery !== search['q']) {
-					element[0].submit();
 				}
 			}
 		}
