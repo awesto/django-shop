@@ -7,6 +7,7 @@ from django.utils import translation
 from django.utils.html import strip_spaces_between_tags
 from django.utils.safestring import mark_safe
 from haystack import indexes
+from shop.models.product import ProductModel
 
 
 class ProductIndex(indexes.SearchIndex):
@@ -15,8 +16,15 @@ class ProductIndex(indexes.SearchIndex):
     """
     text = indexes.CharField(document=True, use_template=True)
     autocomplete = indexes.EdgeNgramField(use_template=True)
-    product_name = indexes.CharField(stored=True, indexed=False)
+    product_name = indexes.CharField(stored=True, indexed=False, model_attr='product_name')
     product_url = indexes.CharField(stored=True, indexed=False, model_attr='get_absolute_url')
+
+    def get_model(self):
+        """
+        Hook to refer to the used Product model. Override this to create indices of
+        specialized product models.
+        """
+        return ProductModel
 
     def prepare(self, product):
         if hasattr(product, 'translations'):
@@ -26,12 +34,6 @@ class ProductIndex(indexes.SearchIndex):
         else:
             data = super(ProductIndex, self).prepare(product)
         return data
-
-    def prepare_product_name(self, product):
-        """
-        Retrieve name though correct translation
-        """
-        return product.product_name
 
     def render_html(self, product, postfix):
         """
