@@ -37,6 +37,7 @@ djangoShopModule.controller('DialogCtrl', ['$scope', '$rootScope', '$http', '$q'
 					deferred.resolve(response);
 				}
 			}
+			// TODO: use $scope.$root instead of $rootScope
 			$rootScope.cart = response;
 		}).error(function(errors) {
 			console.error("Unable to upload checkout forms:");
