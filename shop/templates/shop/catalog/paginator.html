@@ -1,7 +1,7 @@
 {% load i18n %}{% spaceless %}
 
 {% if paginator.count > 0 %}
-<div class="row" ng-if="catalog.count===null">
+<div class="row" ng-if="catalog.count===undefined">
 	<div class="col-xs-12" in-view="$inview && loadMore()">{{ paginator.to_html }}</div>
 </div>
 {% endif %}

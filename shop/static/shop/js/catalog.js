@@ -132,7 +132,7 @@ djangoShopModule.directive('shopCatalogList', function() {
 				self.loadProducts(config);
 			});
 
-			$scope.catalog = {count: null, products: []};
+			$scope.catalog = {products: []};
 			$scope.isLoading = false;
 		}]
 	};
