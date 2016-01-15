@@ -11,7 +11,10 @@ class OrderItem(BaseOrderItem):
         super(OrderItem, self).populate_from_cart_item(cart_item, request)
         # the product code and price must be fetched from the product's markedness
         try:
-            product = cart_item.product.get_product_markedness(cart_item.extra)
+            if hasattr(cart_item.product, 'get_product_markedness'):
+                product = cart_item.product.get_product_markedness(cart_item.extra)
+            else:
+                product = cart_item.product
             self.product_code = product.product_code
             self._unit_price = Decimal(product.unit_price)
         except ObjectDoesNotExist as e:
