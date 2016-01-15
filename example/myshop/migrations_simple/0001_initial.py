@@ -159,7 +159,7 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
                 ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated at')),
                 ('active', models.BooleanField(default=True, help_text='Is this product publicly visible.', verbose_name='Active')),
-                ('product_name', models.CharField(max_length=255, verbose_name='Name')),
+                ('product_name', models.CharField(max_length=255, verbose_name='Product Name')),
                 ('slug', models.SlugField(verbose_name='Slug')),
                 ('unit_price', models.DecimalField(default='0', help_text='Net price for this product', max_digits=30, decimal_places=3)),
                 ('description', djangocms_text_ckeditor.fields.HTMLField(help_text='Description for the list view of products.', verbose_name='Description')),

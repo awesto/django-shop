@@ -19,7 +19,7 @@ class ProductManager(BaseProductManager):
 @python_2_unicode_compatible
 class SmartCard(BaseProduct):
     # common product fields
-    product_name = models.CharField(max_length=255, verbose_name=_("Name"))
+    product_name = models.CharField(max_length=255, verbose_name=_("Product Name"))
     slug = models.SlugField(verbose_name=_("Slug"))
     unit_price = MoneyField(_("Unit price"), decimal_places=3,
         help_text=_("Net price for this product"))
