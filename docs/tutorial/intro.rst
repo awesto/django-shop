@@ -43,7 +43,7 @@ system:
 
 these statements will setup an environment, which runs a demo shop out of the box.
 
-You may or populate the database with your own products, or if impatient, :ref:`quickstart` using
+You may populate the database with your own products, or if impatient, :ref:`quickstart` using
 prepared CMS page layouts, products and media files.
 
 
