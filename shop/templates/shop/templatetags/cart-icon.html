@@ -9,7 +9,7 @@
 <a{% if shop_cart_url %} href="{{ shop_cart_url }}" title="{% page_attribute 'page_title' 'shop-cart' %}"{% endif %}>
 {% block carticon %}
 	<i class="fa fa-shopping-cart fa-fw fa-lg"></i>
-	<shop-carticon-caption caption-data="{num_items: {{ cart.num_items }} }"></shop-carticon-caption>
+	<shop-carticon-caption caption-data="{num_items: {{ cart.num_items|default:0 }} }"></shop-carticon-caption>
 {% endblock %}
 </a>
 
