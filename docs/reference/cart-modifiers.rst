@@ -52,10 +52,10 @@ These kinds of cart modifiers are applied unconditionally onto the cart. A typic
 DefaultCartModifier
 -------------------
 
-The :class:DefaultCartModifier_ is required for almost every shopping cart. It handles the most
-basic calculations, ie. multiplying the items unit prices with the chosen quantity.
-Since this modifier sets the cart items line total, it must be listed as the first entry in
-``SHOP_CART_MODIFIERS``.
+The :class:`shop.modifiers.default.DefaultCartModifier` is required for almost every shopping cart.
+It handles the most basic calculations, ie. multiplying the items unit prices with the chosen
+quantity. Since this modifier sets the cart items line total, it must be listed as the first entry
+in ``SHOP_CART_MODIFIERS``.
 
 
 Payment Cart Modifiers

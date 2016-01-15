@@ -32,7 +32,8 @@ django-polymorphic_ app.
 Simple Product Demo
 ===================
 
-Assure you are in the ``django-shop`` folder and using the correct virtual environment.
+Assure you are in the ``django-shop`` folder and using the correct virtual environment. Then in a
+shell invoke:
 
 .. code-block:: shell
 
@@ -53,7 +54,7 @@ Internationalized Products
 In this demo the description of the products can be translated into different natural languages.
 
 When migrating from the Simple Products demo, assure you are in the ``django-shop`` folder and
-using the correct virtual environment:
+using the correct virtual environment. Then in a shell invoke:
 
 .. code-block:: shell
 
@@ -84,8 +85,8 @@ Polymorphic Products
 
 In this demo we show how to handle products with different types in different natural languages.
 
-When migrating from the Internationalized Products demo, assure you are in the ``django-shop``
-folder and using the correct virtual environment:
+When migrating from the previous *Internationalized Products* demo, assure you are in the
+``django-shop`` folder and using the correct virtual environment. Then in a shell invoke:
 
 .. code-block:: shell
 
@@ -95,10 +96,10 @@ folder and using the correct virtual environment:
 	(shoptutorial)$ ./manage.py migrate
 	(shoptutorial)$ ./manage.py runserver
 
-This example shows how to add Smart Phones in addition to the existing Smart Cards.
-
-A more common use case is to experiment with some prepared Smart Phones. In this case restart with
-a fixture which already contains them:
+This example shows how to add Smart Phones in addition to the existing Smart Cards. It is likely
+that you don't want to add the Smart Phones manually. In the latter case experiment with some
+Smart Phones as found in a fixture, which already contains some prepared samples. Assure you are in
+the ``django-shop`` folder and using the correct virtual environment. Then in a shell invoke:
 
 .. code-block:: shell
 
