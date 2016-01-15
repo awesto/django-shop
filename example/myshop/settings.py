@@ -144,12 +144,54 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en'
 
-LANGUAGES = (
-    ('en', "English"),
-    ('de', "Deutsch"),
-)
+if SHOP_TUTORIAL in ('i18n', 'polymorphic'):
+    USE_I18N = True
 
-USE_I18N = True
+    LANGUAGES = (
+        ('en', "English"),
+        ('de', "Deutsch"),
+    )
+
+    PARLER_DEFAULT_LANGUAGE = 'en'
+
+    PARLER_LANGUAGES = {
+        1: (
+            {'code': 'de'},
+            {'code': 'en'},
+        ),
+        'default': {
+            'fallbacks': ['de', 'en'],
+        },
+    }
+
+    CMS_LANGUAGES = {
+        'default': {
+            'fallbacks': ['en', 'de'],
+            'redirect_on_fallback': True,
+            'public': True,
+            'hide_untranslated': False,
+        },
+        1: ({
+            'public': True,
+            'code': 'en',
+            'hide_untranslated': False,
+            'name': 'English',
+            'redirect_on_fallback': True,
+        }, {
+            'public': True,
+            'code': 'de',
+            'hide_untranslated': False,
+            'name': 'Deutsch',
+            'redirect_on_fallback': True,
+        },)
+    }
+
+else:
+    USE_I18N = False
+
+    LANGUAGES = (
+        ('en', "English"),
+    )
 
 USE_L10N = True
 
@@ -277,18 +319,6 @@ COMPRESS_ENABLED = False
 
 FSM_ADMIN_FORCE_PERMIT = True
 
-PARLER_DEFAULT_LANGUAGE = 'de'
-
-PARLER_LANGUAGES = {
-    1: (
-        {'code': 'de'},
-        {'code': 'en'},
-    ),
-    'default': {
-        'fallbacks': ['de', 'en'],
-    },
-}
-
 ROBOTS_META_TAGS = ('noindex', 'nofollow')
 
 ############################################
@@ -353,28 +383,6 @@ CMS_TEMPLATES = (
     ('myshop/pages/default.html', _("Default Page")),
 )
 
-CMS_LANGUAGES = {
-    'default': {
-        'fallbacks': ['en', 'de'],
-        'redirect_on_fallback': True,
-        'public': True,
-        'hide_untranslated': False,
-    },
-    1: ({
-        'public': True,
-        'code': 'en',
-        'hide_untranslated': False,
-        'name': 'English',
-        'redirect_on_fallback': True,
-    }, {
-        'public': True,
-        'code': 'de',
-        'hide_untranslated': False,
-        'name': 'Deutsch',
-        'redirect_on_fallback': True,
-    },)
-}
-
 CMS_CACHE_DURATIONS = {
     'content': 600,
     'menus': 3600,
@@ -384,11 +392,11 @@ CMS_CACHE_DURATIONS = {
 CMS_PERMISSION = False
 
 CMS_PLACEHOLDER_CONF = {
-    'Main Content Container': {
-        'plugins': ['BootstrapRowPlugin', 'SimpleWrapperPlugin', 'SegmentPlugin'],
-        'text_only_plugins': ['TextLinkPlugin'],
-        'parent_classes': {'BootstrapRowPlugin': []},
-        'require_parent': False,
+    'Breadcrumb': {
+        'plugins': ['BreadcrumbPlugin'],
+        #'text_only_plugins': ['TextLinkPlugin'],
+        #'parent_classes': {'BootstrapRowPlugin': []},
+        #'require_parent': False,
         'glossary': {
             'breakpoints': ['xs', 'sm', 'md', 'lg'],
             'container_max_widths': {'xs': 750, 'sm': 750, 'md': 970, 'lg': 1170},
@@ -420,6 +428,7 @@ CMSPLUGIN_CASCADE = {
         'SimpleWrapperPlugin',
         'HorizontalRulePlugin',
         'ExtraAnnotationFormPlugin',
+        'ShopProceedButton',
     ),
     'segmentation_mixins': (
         ('shop.cascade.segmentation.EmulateCustomerModelMixin', 'shop.cascade.segmentation.EmulateCustomerAdminMixin'),

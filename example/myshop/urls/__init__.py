@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls import url, patterns, include
-from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -22,7 +21,6 @@ urlpatterns = patterns('',
     url(r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap',
         {'sitemaps': {'cmspages': CMSSitemap}}, name='sitemap'),
     url(r'^shop/', include('shop.urls', namespace='shop')),
-) + i18n_patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^password-reset-confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
         PasswordResetConfirm.as_view(template_name='myshop/pages/password-reset-confirm.html'),
