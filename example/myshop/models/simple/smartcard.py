@@ -19,7 +19,7 @@ class ProductManager(BaseProductManager):
 @python_2_unicode_compatible
 class SmartCard(BaseProduct):
     # common product fields
-    name = models.CharField(max_length=255, verbose_name=_("Name"))
+    product_name = models.CharField(max_length=255, verbose_name=_("Name"))
     slug = models.SlugField(verbose_name=_("Slug"))
     unit_price = MoneyField(_("Unit price"), decimal_places=3,
         help_text=_("Net price for this product"))
@@ -39,11 +39,14 @@ class SmartCard(BaseProduct):
 
     # controlling the catalog
     order = models.PositiveIntegerField(verbose_name=_("Sort by"), db_index=True)
-    cms_pages = models.ManyToManyField('cms.Page', through=ProductPage, null=True,
+    cms_pages = models.ManyToManyField('cms.Page', through=ProductPage,
         help_text=_("Choose list view this product shall appear on."))
-    images = models.ManyToManyField('filer.Image', through=ProductImage, null=True)
+    images = models.ManyToManyField('filer.Image', through=ProductImage)
 
     objects = ProductManager()
+
+    # filter expression used to search for a product item using the Select2 widget
+    search_fields = ('product_code__startswith', 'product_name__icontains',)
 
     class Meta:
         verbose_name = _("Smart Card")
@@ -51,11 +54,7 @@ class SmartCard(BaseProduct):
         ordering = ('order',)
 
     def __str__(self):
-        return self.name
-
-    @property
-    def product_name(self):
-        return self.name
+        return self.product_name
 
     @property
     def sample_image(self):

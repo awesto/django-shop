@@ -11,12 +11,12 @@ from myshop.models import SmartCard
 class SmartCardAdmin(SortableAdminMixin, CMSPageAsCategoryMixin, admin.ModelAdmin):
     fieldsets = (
         (None, {
-            'fields': ('name', 'slug', 'product_code', 'unit_price', 'active', 'description',),
+            'fields': ('product_name', 'slug', 'product_code', 'unit_price', 'active', 'description',),
         }),
         (_("Properties"), {
             'fields': ('manufacturer', 'storage', 'card_type', 'speed',)
         }),
     )
     inlines = (ProductImageInline,)
-    prepopulated_fields = {'slug': ('name',)}
-    list_display = ('name', 'product_code', 'unit_price', 'active',)
+    prepopulated_fields = {'slug': ('product_name',)}
+    list_display = ('product_name', 'product_code', 'unit_price', 'active',)
