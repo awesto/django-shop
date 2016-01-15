@@ -8,8 +8,7 @@ from parler.models import TranslatableModel, TranslatedFieldsModel
 from parler.fields import TranslatedField
 from parler.managers import TranslatableManager, TranslatableQuerySet
 from polymorphic.query import PolymorphicQuerySet
-from shop.models.product import BaseProductManager
-from shop.models.product import BaseProduct
+from shop.models.product import BaseProductManager, BaseProduct
 from myshop.models.properties import Manufacturer, ProductPage, ProductImage
 
 
