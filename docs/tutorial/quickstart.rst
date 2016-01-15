@@ -5,26 +5,32 @@ Quickstart a Running Demo
 =========================
 
 Filling your CMS with page content and adding products is a boring job. Impatient users may start
-the three demos using some prepared sample data. First assure that all dependencies are installed
-into its virtual environment as described in section ":ref:`prepare-installation`". Then instead of
-create a database for the demo download the `media files`_ and unpack them into the folder
+three demos using some prepared sample data. First assure that all dependencies are installed
+into its virtual environment as described in section ":ref:`prepare-installation`". Then instead
+of adding pages and products manually, download the `media files`_ and unpack them into the folder
 ``django-shop``:
 
 .. code-block:: shell
 
 	(shoptutorial)$ tar zxf DOWNLOAD/FOLDER/django-shop-workdir.tar.gz
 
-Starting from this folder, you can run all three demos. Skip the first two examples if you want to
-proceed directly with the polymorphic products demo. 
+Starting from this folder, you can run all three demos: The first, simple demo shows how to setup a
+monolingual shop, with one product type. The second, internationalized demo shows how to setup a
+multilingual shop, with one product type. For translation of model attributes, this installation
+uses the django-parler_ app. The third, polymorphic demo shows how to setup a shop with many
+different product types. To handle the polymorphism of products, this installation uses the
+django-polymorphic_ app.
 
 .. note:: All demos can be started independently from each other, but you are encouraged to start
 		with the "Simple Product", and then proceed to the more complicate examples.
 
 .. _media files: http://django-shop.awesto.com/downloads/django-shop-workdir.tar.gz
+.. _django-parler: http://django-parler.readthedocs.org/en/latest/
+.. _django-polymorphic: https://django-polymorphic.readthedocs.org/en/latest/
 
 
-Simple Product
-==============
+Simple Product Demo
+===================
 
 Assure you are in the ``django-shop`` folder and using the correct virtual environment.
 
@@ -57,7 +63,7 @@ using the correct virtual environment:
 	(shoptutorial)$ ./manage.py migrate
 	(shoptutorial)$ ./manage.py runserver
 
-Alternatively, if you prefer to starting with an empty database, assure that the file
+Alternatively, if you prefer to start with an empty database, assure that the file
 ``workdir/db-i18n.sqlite3`` is missing:
 
 .. code-block:: shell
