@@ -14,8 +14,8 @@
 		<tr>
 			<th class="text-center">{% trans "Quantity" %}</th>
 			<th class="text-center">{% trans "Product" %}</th>
-			<th class="text-center">{% trans "Unit Price" %}</th>
-			<th class="text-right">{% trans "Total" %}</th>
+			<th class="text-right shop-order-price-col">{% trans "Unit Price" %}</th>
+			<th class="text-right shop-order-price-col">{% trans "Total" %}</th>
 		</tr>
 	</thead>
 	{% endblock shop-order-thead %}
@@ -25,8 +25,8 @@
 		{% for item in data.items %}
 		<tr>
 			<td class="text-center">{{ item.quantity }}</td>
-			<td rowspan="2" class="text-center">{{ item.summary.media|safe }}</td>
-			<td class="text-center">{{ item.unit_price }}</td>
+			<td rowspan="2">{{ item.summary.media|safe }}</td>
+			<td class="text-right">{{ item.unit_price }}</td>
 			<td class="text-right">{{ item.line_total }}</td>
 		</tr>
 		<tr class="no-border">

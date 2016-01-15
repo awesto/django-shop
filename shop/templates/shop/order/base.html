@@ -1,4 +1,6 @@
-{% load i18n static sekizai_tags %}
+{% load i18n static sekizai_tags sass_tags %}
+
+{% addtoblock "css" %}<link href="{% sass_src 'shop/css/order.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 
 {% addtoblock "js" %}<script src="{% static 'shop/js/order.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% addtoblock "shop-ng-requires" %}django.shop.order{% endaddtoblock %}
