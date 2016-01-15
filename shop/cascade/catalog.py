@@ -8,7 +8,7 @@ from .plugin_base import ShopPluginBase
 
 
 class ShopCatalogPlugin(ShopPluginBase):
-    name = _("Catalog List Views")
+    name = _("Catalog List View")
     require_parent = True
     parent_classes = ('BootstrapColumnPlugin',)
     cache = False
