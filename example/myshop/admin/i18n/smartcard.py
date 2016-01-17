@@ -25,3 +25,4 @@ class SmartCardAdmin(SortableAdminMixin, TranslatableAdmin,
     inlines = (ProductImageInline,)
     prepopulated_fields = {'slug': ('product_name',)}
     list_display = ('product_name', 'product_code', 'unit_price', 'active',)
+    search_fields = ('product_name',)
