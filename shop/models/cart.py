@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from six import with_metaclass
 from collections import OrderedDict
-from django.core.validators import MinValueValidator
 from django.db import models
+from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import ugettext_lazy as _
 from jsonfield.fields import JSONField
 from shop.modifiers.pool import cart_modifiers_pool
@@ -73,9 +74,7 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     pointer to the actual Product being purchased
     """
     cart = deferred.ForeignKey('BaseCart', related_name='items')
-    quantity = models.IntegerField(validators=[MinValueValidator(0)])
     product = deferred.ForeignKey(BaseProduct)
-    extra = JSONField(default={}, verbose_name=_("Arbitrary information for this cart item"))
 
     objects = CartItemManager()
 
@@ -83,6 +82,18 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         abstract = True
         verbose_name = _("Cart item")
         verbose_name_plural = _("Cart items")
+
+    @classmethod
+    def perform_model_checks(cls):
+        try:
+            allowed_types = ('IntegerField', 'DecimalField', 'FloatField')
+            field = [f for f in cls._meta.fields if f.attname == 'quantity'][0]
+            if not field.get_internal_type() in allowed_types:
+                msg = "Field `{}.quantity` must be of one of the types: {}."
+                raise ImproperlyConfigured(msg.format(cls.__name__, allowed_types))
+        except IndexError:
+            msg = "Class `{}` must implement a field named `quantity`."
+            raise ImproperlyConfigured(msg.format(cls.__name__))
 
     def __init__(self, *args, **kwargs):
         # That will hold extra fields to display to the user (ex. taxes, discount)

@@ -100,6 +100,7 @@ class ForeignKeyBuilder(ModelBase):
                 field.contribute_to_class(Model, attrname)
             else:
                 ForeignKeyBuilder._pending_mappings.append((Model, attrname, member,))
+        Model.perform_model_checks()
         return Model
 
     @staticmethod
@@ -116,6 +117,13 @@ class ForeignKeyBuilder(ModelBase):
             msg = "No class implements abstract base model: `{}`."
             raise ImproperlyConfigured(msg.format(self.__name__))
         return object.__getattribute__(self, key)
+
+    @classmethod
+    def perform_model_checks(cls):
+        """
+        Hook for each class inheriting from ForeignKeyBuilder, to perform checks on the
+        implementation of the just created class type.
+        """
 
 
 class MaterializedModel(SimpleLazyObject):
