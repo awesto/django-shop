@@ -19,3 +19,4 @@ elif settings.SHOP_TUTORIAL == 'i18n':
     from .i18n.smartcard import SmartCard
 elif settings.SHOP_TUTORIAL == 'polymorphic':
     from .polymorphic.smartcard import SmartCard
+    from .polymorphic.smartphone import SmartPhoneModel, SmartPhone
