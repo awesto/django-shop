@@ -16,7 +16,6 @@ class OperatingSystem(models.Model):
         return self.name
 
 
-@python_2_unicode_compatible
 class SmartPhoneModel(Product):
     """
     A generic smart phone model, which must be concretized by a model `SmartPhone` - see below.
@@ -59,9 +58,6 @@ class SmartPhoneModel(Product):
     class Meta:
         verbose_name = _("Smart Phone")
         verbose_name_plural = _("Smart Phones")
-
-    def __str__(self):
-        return self.name
 
     def get_price(self, request):
         """

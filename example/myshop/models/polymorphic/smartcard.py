@@ -2,12 +2,10 @@
 from __future__ import unicode_literals
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import python_2_unicode_compatible
 from shop.money.fields import MoneyField
 from .product import Product
 
 
-@python_2_unicode_compatible
 class SmartCard(Product):
     # common product fields
     unit_price = MoneyField(_("Unit price"), decimal_places=3,
@@ -26,9 +24,6 @@ class SmartCard(Product):
     class Meta:
         verbose_name = _("Smart Card")
         verbose_name_plural = _("Smart Cards")
-
-    def __str__(self):
-        return self.name
 
     def get_price(self, request):
         return self.unit_price

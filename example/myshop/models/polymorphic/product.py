@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from django.utils.six.moves.urllib.parse import urljoin
 from djangocms_text_ckeditor.fields import HTMLField
@@ -24,8 +25,9 @@ class ProductManager(BaseProductManager, TranslatableManager):
         return self.get_queryset().filter(query)
 
 
+@python_2_unicode_compatible
 class Product(BaseProduct, TranslatableModel):
-    name = models.CharField(max_length=255, verbose_name=_("Name"))
+    product_name = models.CharField(max_length=255, verbose_name=_("Product Name"))
     slug = models.SlugField(verbose_name=_("Slug"), unique=True)
     description = TranslatedField()
 
@@ -46,16 +48,15 @@ class Product(BaseProduct, TranslatableModel):
     # filter expression used to search for a product item using the Select2 widget
     search_fields = ('identifier__istartswith', 'translations__name__istartswith',)
 
+    def __str__(self):
+        return self.product_name
+
     def get_absolute_url(self):
         # sorting by highest level, so that the canonical URL associates with the most generic category
         cms_page = self.cms_pages.order_by('depth').last()
         if cms_page is None:
             return urljoin('category-not-assigned', self.slug)
         return urljoin(cms_page.get_absolute_url(), self.slug)
-
-    @property
-    def product_name(self):
-        return self.name
 
     @property
     def sample_image(self):
