@@ -80,7 +80,8 @@ smart-phones have international names used everywhere. Smart-phones models have 
 operating system, a display type and other features.
 
 But smart-phone have different equipment, namely the built-in storage, and depending on that, they
-have different prices and a unique product code for each markedness.
+have different prices and a unique product code. Therefore our product models consists of two
+classes, the generic smart phone model and the concrete markedness of that model.
 
 Therefore we would model our smart-phones using a database model similar to the following one:
 
@@ -89,11 +90,6 @@ Therefore we would model our smart-phones using a database model similar to the 
 	from shop.models.product import BaseProductManager, BaseProduct
 	from django.utils.encoding import python_2_unicode_compatible
 	
-	class ProductManager(BaseProductManager):
-	    def select_lookup(self, term):
-	        query = models.Q(product_name__icontains=term) | models.Q(slug__icontains=term)
-	        return self.get_queryset().filter(query)
-
 	@python_2_unicode_compatible
 	class SmartPhoneModel(BaseProduct):
 	    product_name = models.CharField(max_length=255, verbose_name=_("Product Name"))
@@ -103,8 +99,8 @@ Therefore we would model our smart-phones using a database model similar to the 
 	    screen_size = models.DecimalField(_("Screen size"), max_digits=4, decimal_places=2)
 	    # other fields to map the specification sheet
 
-	    objects = ProductManager()
-	    search_fields = ('product_code__startswith', 'product_name__icontains',)
+	    objects = BaseProductManager()
+	    lookup_fields = ('product_name__icontains',)
 
 	class SmartPhone(models.Model):
 	    product_model = models.ForeignKey(SmartPhoneModel, verbose_name=_("Smart-Phone Model"))
@@ -112,7 +108,9 @@ Therefore we would model our smart-phones using a database model similar to the 
 	    unit_price = MoneyField(_("Unit price"), decimal_places=3)
 	    storage = models.PositiveIntegerField(_("Internal Storage"))
 
-Lets go into the details of these classes. Each product requires a ``ProductManager`` which
-implements the method ``select_lookup(search_term)``. 
+Lets go into the details of these classes. The model fields are self-explanatory. Something to note
+is, that each product requires a ``ProductManager`` and a list or tuple of search fields. These
+lookup fields are required for some parts of the administration backend, especially when the site
+editor wants to lookup for certain products.
 
 .. _django-parler: http://django-parler.readthedocs.org/

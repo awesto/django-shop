@@ -40,7 +40,7 @@ class SmartCard(BaseProduct):
     objects = BaseProductManager()
 
     # filter expression used to search for a product item using the Select2 widget
-    search_fields = ('product_code__startswith', 'product_name__icontains',)
+    lookup_fields = ('product_code__startswith', 'product_name__icontains',)
 
     class Meta:
         verbose_name = _("Smart Card")

@@ -41,8 +41,8 @@ class Product(BaseProduct, TranslatableModel):
 
     objects = ProductManager()
 
-    # filter expression used to search for a product item using the Select2 widget
-    search_fields = ('product_name__icontains',)
+    # filter expression used to lookup for a product item using the Select2 widget
+    lookup_fields = ('product_name__icontains',)
 
     def __str__(self):
         return self.product_name

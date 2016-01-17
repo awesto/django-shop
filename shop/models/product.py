@@ -23,9 +23,9 @@ class BaseProductManager(PolymorphicManager):
         """
         Returning a queryset containing the products matching the declared lookup fields together
         with the given search term. Each product can define its own lookup fields using the
-        member list or tuple `search_fields`.
+        member list or tuple `lookup_fields`.
         """
-        filter_by_term = (models.Q((sf, search_term)) for sf in self.model.search_fields)
+        filter_by_term = (models.Q((sf, search_term)) for sf in self.model.lookup_fields)
         queryset = self.get_queryset().filter(reduce(operator.or_, filter_by_term))
         return queryset
 
@@ -73,8 +73,8 @@ class PolymorphicProductMetaclass(PolymorphicModelBase):
             msg = "Class `{}.objects` must provide ModelManager inheriting from BaseProductManager"
             raise NotImplementedError(msg.format(name))
 
-        if not isinstance(getattr(Model, 'search_fields', None), (list, tuple)):
-            msg = "Class `{}` must provide a tuple of `search_fields` so that Products can be easily found"
+        if not isinstance(getattr(Model, 'lookup_fields', None), (list, tuple)):
+            msg = "Class `{}` must provide a tuple of `lookup_fields` so that we can easily lookup for Products"
             raise NotImplementedError(msg.format(name))
 
         try:
