@@ -10,12 +10,6 @@ from shop.models.product import BaseProduct, BaseProductManager
 from myshop.models.properties import Manufacturer, ProductPage, ProductImage
 
 
-class ProductManager(BaseProductManager):
-    def select_lookup(self, term):
-        query = models.Q(name__icontains=term) | models.Q(slug__icontains=term)
-        return self.get_queryset().filter(query)
-
-
 @python_2_unicode_compatible
 class SmartCard(BaseProduct):
     # common product fields
@@ -43,7 +37,7 @@ class SmartCard(BaseProduct):
         help_text=_("Choose list view this product shall appear on."))
     images = models.ManyToManyField('filer.Image', through=ProductImage)
 
-    objects = ProductManager()
+    objects = BaseProductManager()
 
     # filter expression used to search for a product item using the Select2 widget
     search_fields = ('product_code__startswith', 'product_name__icontains',)

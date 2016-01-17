@@ -20,10 +20,6 @@ class ProductQuerySet(TranslatableQuerySet, PolymorphicQuerySet):
 class ProductManager(BaseProductManager, TranslatableManager):
     queryset_class = ProductQuerySet
 
-    def select_lookup(self, term):
-        query = models.Q(name__icontains=term) | models.Q(slug__icontains=term)
-        return self.get_queryset().filter(query)
-
 
 @python_2_unicode_compatible
 class Product(BaseProduct, TranslatableModel):
@@ -46,7 +42,7 @@ class Product(BaseProduct, TranslatableModel):
     objects = ProductManager()
 
     # filter expression used to search for a product item using the Select2 widget
-    search_fields = ('identifier__istartswith', 'translations__name__istartswith',)
+    search_fields = ('product_name__icontains',)
 
     def __str__(self):
         return self.product_name
