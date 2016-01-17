@@ -65,7 +65,7 @@ using the correct virtual environment. Then in a shell invoke:
 	(shoptutorial)$ ./manage.py runserver
 
 Alternatively, if you prefer to start with an empty database, assure that the file
-``workdir/db-i18n.sqlite3`` is missing:
+``workdir/db-i18n.sqlite3`` is missing. Then in a shell invoke:
 
 .. code-block:: shell
 
@@ -83,23 +83,13 @@ This runs a demo for :ref:`multilingual-product`.
 Polymorphic Products
 ====================
 
-In this demo we show how to handle products with different types in different natural languages.
+In this demo we show how to handle products with different properties and in different natural
+languages. This example can't be migrated from the previous demos, without loosing lots of
+information. It is likely that you don't want to add the Smart Phones manually, it is suggested
+to start using a fixture.
 
-When migrating from the previous *Internationalized Products* demo, assure you are in the
-``django-shop`` folder and using the correct virtual environment. Then in a shell invoke:
-
-.. code-block:: shell
-
-	(shoptutorial)$ cp workdir/db-i18n.sqlite3 workdir/db-polymorphic.sqlite3
-	(shoptutorial)$ cd example
-	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=polymorphic
-	(shoptutorial)$ ./manage.py migrate
-	(shoptutorial)$ ./manage.py runserver
-
-This example shows how to add Smart Phones in addition to the existing Smart Cards. It is likely
-that you don't want to add the Smart Phones manually. In the latter case experiment with some
-Smart Phones as found in a fixture, which already contains some prepared samples. Assure you are in
-the ``django-shop`` folder and using the correct virtual environment. Then in a shell invoke:
+This example shows how to add Smart Phones in addition to the existing Smart Cards. Assure you are
+in the ``django-shop`` folder and using the correct virtual environment. Then in a shell invoke:
 
 .. code-block:: shell
 

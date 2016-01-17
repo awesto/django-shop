@@ -5,7 +5,7 @@ Products with Different Properties
 ==================================
 
 In the previous examples we have seen that we can model our products according to their physical
-properties, but what if we want to sell another type of product with different properties. This
+properties, but what if we want to sell another type of a product with different properties. This
 is where polymorphism_ enters the scene.
 
 .. _polymorphism: https://en.wikipedia.org/wiki/Polymorphism_(computer_science)
@@ -15,9 +15,7 @@ Run the Polymorphic Demo
 ========================
 
 To test this example, set the shell environment variable ``export DJANGO_SHOP_TUTORIAL=polymorphic``,
-then recreate the database as explained in :ref:`create-demo-database`.
-
-Afterwards start the demo server:
+then recreate the database as explained in :ref:`create-demo-database` and start the demo server:
 
 .. code-block:: shell
 
