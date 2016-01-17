@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from datetime import datetime
+from functools import reduce
+import operator
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.utils import six
@@ -18,12 +21,13 @@ class BaseProductManager(PolymorphicManager):
     """
     def select_lookup(self, search_term):
         """
-        Hook for returning a queryset containing the products matching the lookup criteria given
-        be the search term. This method must be implemented by the ProductManager used by the
-        real model implementing the product.
+        Returning a queryset containing the products matching the declared lookup fields together
+        with the given search term. Each product can define its own lookup fields using the
+        member list or tuple `search_fields`.
         """
-        msg = "Method select_lookup() must be implemented by subclass: `{}`"
-        raise NotImplementedError(msg.format(self.__class__.__name__))
+        filter_by_term = (models.Q((sf, search_term)) for sf in self.model.search_fields)
+        queryset = self.get_queryset().filter(reduce(operator.or_, filter_by_term))
+        return queryset
 
     def indexable(self):
         """
