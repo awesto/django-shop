@@ -185,13 +185,8 @@ if SHOP_TUTORIAL in ('i18n', 'polymorphic'):
             'redirect_on_fallback': True,
         },)
     }
-
 else:
     USE_I18N = False
-
-    LANGUAGES = (
-        ('en', "English"),
-    )
 
 USE_L10N = True
 
