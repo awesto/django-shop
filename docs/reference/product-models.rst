@@ -69,8 +69,8 @@ The example section of **djangoSHOP** contains a few models which can be copied 
 specific needs of the merchants products. Let's have a look at a few use-cases:
 
 
-Use-Case One: Smart-Phones
-..........................
+Case study: Smart-Phones
+========================
 
 There are many smart-phone models with different equipment. All the features are the same, except
 for the built-in storage. How shall we describe such a model?
@@ -88,9 +88,7 @@ Therefore we would model our smart-phones using a database model similar to the 
 .. code-block:: python
 
 	from shop.models.product import BaseProductManager, BaseProduct
-	from django.utils.encoding import python_2_unicode_compatible
 	
-	@python_2_unicode_compatible
 	class SmartPhoneModel(BaseProduct):
 	    product_name = models.CharField(max_length=255, verbose_name=_("Product Name"))
 	    slug = models.SlugField(verbose_name=_("Slug"))
@@ -109,8 +107,53 @@ Therefore we would model our smart-phones using a database model similar to the 
 	    storage = models.PositiveIntegerField(_("Internal Storage"))
 
 Lets go into the details of these classes. The model fields are self-explanatory. Something to note
-is, that each product requires a ``ProductManager`` and a list or tuple of search fields. These
-lookup fields are required for some parts of the administration backend, especially when the site
+is, that each product requires a ``ProductManager`` and a list or tuple of `lookup fields`_. These
+fields are required for some parts of the administration backend, especially when the site
 editor wants to lookup for certain products.
 
+
+Add multilingual support
+------------------------
+
+Adding multilingual support to an existing product is quite easy and straight forward. To achieve
+this **djangoSHOP** uses the app django-parler_ which provides Django model translations without
+nasty hacks. All we have to do, is to replace the ProductManager with one capable of handling
+translations:
+
+.. code-block:: python
+
+	class ProductQuerySet(TranslatableQuerySet, PolymorphicQuerySet):
+	    pass
+
+	class ProductManager(BaseProductManager, TranslatableManager):
+	    queryset_class = ProductQuerySet
+
+The next step is to locate the model fields, which shall be available in different languages. In
+our use-case thats only the product's description:
+
+.. code-block:: python
+
+	class SmartPhoneModel(BaseProduct, TranslatableModel):
+	    # other field remain unchanged
+	    description = TranslatedField()
+
+	class ProductTranslation(TranslatedFieldsModel):
+	    master = models.ForeignKey(SmartPhoneModel, related_name='translations', null=True)
+	    description = HTMLField(help_text=_("Some more detailed description."))
+
+	    class Meta:
+	        unique_together = [('language_code', 'master')]
+
+This simple change now allows us to offer the shop's assortment in different natural languages.
+
+.. _lookup fields: https://docs.djangoproject.com/en/stable/topics/db/queries/#complex-lookups-with-q-objects
 .. _django-parler: http://django-parler.readthedocs.org/
+
+
+Add polymorphic support
+-----------------------
+
+If besides smart phones we also want to sell shoes, paint or smart cards, we must split our product
+models into a common- and a specialized part. That said, we must determine the information every
+product requires, and the information specific to a certain product type.
+
