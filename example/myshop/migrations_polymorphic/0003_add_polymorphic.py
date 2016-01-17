@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
                 ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated at')),
                 ('active', models.BooleanField(default=True, help_text='Is this product publicly visible.', verbose_name='Active')),
-                ('name', models.CharField(max_length=255, verbose_name='Name')),
+                ('product_name', models.CharField(max_length=255, verbose_name='Product Name')),
                 ('slug', models.SlugField(unique=True, verbose_name='Slug')),
                 ('order', models.PositiveIntegerField(verbose_name='Sort by', db_index=True)),
             ],
@@ -79,10 +79,9 @@ class Migration(migrations.Migration):
             model_name='smartcard',
             name='created_at',
         ),
-        migrations.RenameField(
+        migrations.RemoveField(
             model_name='smartcard',
-            old_name='id',
-            new_name='product_ptr',
+            name='id',
         ),
         migrations.RemoveField(
             model_name='smartcard',
@@ -94,15 +93,15 @@ class Migration(migrations.Migration):
         ),
         migrations.RemoveField(
             model_name='smartcard',
-            name='name',
-        ),
-        migrations.RemoveField(
-            model_name='smartcard',
             name='order',
         ),
         migrations.RemoveField(
             model_name='smartcard',
             name='polymorphic_ctype',
+        ),
+        migrations.RemoveField(
+            model_name='smartcard',
+            name='product_name',
         ),
         migrations.RemoveField(
             model_name='smartcard',
@@ -182,10 +181,11 @@ class Migration(migrations.Migration):
             name='polymorphic_ctype',
             field=models.ForeignKey(related_name='polymorphic_myshop.product_set+', editable=False, to='contenttypes.ContentType', null=True),
         ),
-        migrations.AlterField(
+        migrations.AddField(
             model_name='smartcard',
             name='product_ptr',
             field=models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, default=None, serialize=False, to='myshop.Product'),
+            preserve_default=False,
         ),
         migrations.AddField(
             model_name='smartphone',

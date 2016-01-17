@@ -1,8 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.conf import settings
 from django.db import migrations, models
 import djangocms_text_ckeditor.fields
+
+
+def move_description(apps, schema_editor):
+    SmartCard = apps.get_model('myshop', 'SmartCard')
+    Translation = apps.get_model('myshop', 'SmartCardTranslation')
+    for sc in SmartCard.objects.all():
+        for lang in settings.LANGUAGES:
+            trans = Translation.objects.create(language_code=lang[0], description=sc.description, master=sc)
+            trans.save()
 
 
 class Migration(migrations.Migration):
@@ -20,10 +30,6 @@ class Migration(migrations.Migration):
                 ('description', djangocms_text_ckeditor.fields.HTMLField(help_text='Description for the list view of products.', verbose_name='Description')),
             ],
         ),
-        migrations.RemoveField(
-            model_name='smartcard',
-            name='description',
-        ),
         migrations.AddField(
             model_name='smartcardtranslation',
             name='master',
@@ -32,5 +38,10 @@ class Migration(migrations.Migration):
         migrations.AlterUniqueTogether(
             name='smartcardtranslation',
             unique_together=set([('language_code', 'master')]),
+        ),
+        migrations.RunPython(move_description),
+        migrations.RemoveField(
+            model_name='smartcard',
+            name='description',
         ),
     ]
