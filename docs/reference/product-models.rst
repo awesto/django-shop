@@ -88,6 +88,7 @@ Therefore we would model our smart-phones using a database model similar to the 
 .. code-block:: python
 
 	from shop.models.product import BaseProductManager, BaseProduct
+	from shop.money import Money
 	
 	class SmartPhoneModel(BaseProduct):
 	    product_name = models.CharField(max_length=255, verbose_name=_("Product Name"))
@@ -99,17 +100,24 @@ Therefore we would model our smart-phones using a database model similar to the 
 
 	    objects = BaseProductManager()
 	    lookup_fields = ('product_name__icontains',)
-
+	
+	    def get_price(request):
+            aggregate = self.smartphone_set.aggregate(models.Min('unit_price'))
+            return Money(aggregate['unit_price__min'])
+	
 	class SmartPhone(models.Model):
-	    product_model = models.ForeignKey(SmartPhoneModel, verbose_name=_("Smart-Phone Model"))
+	    product_model = models.ForeignKey(SmartPhoneModel)
 	    product_code = models.CharField(_("Product code"), max_length=255, unique=True)
-	    unit_price = MoneyField(_("Unit price"), decimal_places=3)
+	    unit_price = MoneyField(_("Unit price"))
 	    storage = models.PositiveIntegerField(_("Internal Storage"))
 
 Lets go into the details of these classes. The model fields are self-explanatory. Something to note
-is, that each product requires a ``ProductManager`` and a list or tuple of `lookup fields`_. These
-fields are required for some parts of the administration backend, especially when the site
-editor wants to lookup for certain products.
+is, that each product requires a ``ProductManager`` and a list or tuple of `lookup fields`_.
+The ``ProductManager`` can be any class inheriting from ``BaseProductManager``, it adds some methods
+to generate some special querysets. 
+The attribute containing ``lookup_fields`` is required by the administration backend, and used when
+the site editor has to search for certain products. Since the framework does not impose which fields
+are used to distinguish between products, we must give some hints.
 
 
 Add multilingual support
@@ -153,7 +161,48 @@ This simple change now allows us to offer the shop's assortment in different nat
 Add polymorphic support
 -----------------------
 
-If besides smart phones we also want to sell shoes, paint or smart cards, we must split our product
-models into a common- and a specialized part. That said, we must determine the information every
-product requires, and the information specific to a certain product type.
+If besides smart phones we also want to sell cables, pipes or smart cards, we must split our product
+models into a common- and a specialized part. That said, we must separate the information every
+product requires from the information specific to a certain product type. Say, in addition to smart
+phones, we also want to sell smart cards. First we declare a generic ``Product`` model, which is a
+common base class of both, ``SmartPhone``and ``SmartCard``:
 
+.. code-block::: python
+
+	class Product(BaseProduct, TranslatableModel):
+	    product_name = models.CharField(max_length=255, verbose_name=_("Product Name"))
+	    slug = models.SlugField(verbose_name=_("Slug"), unique=True)
+	    description = TranslatedField()
+	
+	    objects = ProductManager()
+	    lookup_fields = ('product_name__icontains',)
+
+Next we only add the product specific attributes to the class models derived from ``Product``:
+
+	class SmartPhoneModel(Product):
+	    manufacturer = models.ForeignKey(Manufacturer, verbose_name=_("Manufacturer"))
+	    screen_size = models.DecimalField(_("Screen size"), max_digits=4, decimal_places=2)
+	    battery_type = models.PositiveSmallIntegerField(_("Battery type"), choices=BATTERY_TYPES)
+	    battery_capacity = models.PositiveIntegerField(help_text=_("Battery capacity in mAh"))
+	    ram_storage = models.PositiveIntegerField(help_text=_("RAM storage in MB"))
+	    # and many more attributes as found on the data sheet
+
+	class SmartPhone(models.Model):
+	    product_model = models.ForeignKey(SmartPhoneModel)
+	    product_code = models.CharField(_("Product code"), max_length=255, unique=True)
+	    unit_price = MoneyField(_("Unit price"))
+	    storage = models.PositiveIntegerField(_("Internal Storage"))
+	
+	class SmartCard(Product):
+	    product_code = models.CharField(_("Product code"), max_length=255, unique=True)
+	    storage = models.PositiveIntegerField(help_text=_("Storage capacity in GB"))
+	    unit_price = MoneyField(_("Unit price"))
+	    CARD_TYPE = (2 * ('{}{}'.format(s, t),)
+	                 for t in ('SD', 'SDXC', 'SDHC', 'SDHC II') for s in ('', 'micro '))
+	    card_type = models.CharField(_("Card Type"), choices=CARD_TYPE, max_length=15)
+	    SPEED = ((str(s), "{} MB/s".format(s)) for s in (4, 20, 30, 40, 48, 80, 95, 280))
+	    speed = models.CharField(_("Transfer Speed"), choices=SPEED, max_length=8)
+
+If *MyShop* would sell the iPhone5 with 16GB and 32GB storage as independent products, then we could
+unify the classes ``SmartPhoneModel`` and ``SmartPhone`` and move the attributes ``product_code``
+and ``unit_price`` into the class ``Product``. This would simplify
