@@ -1,3 +1,5 @@
+.. _money-types:
+
 ===========
 Money Types
 ===========

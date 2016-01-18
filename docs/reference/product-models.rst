@@ -97,13 +97,13 @@ Therefore we would model our smart-phones using a database model similar to the 
 	    manufacturer = models.ForeignKey(Manufacturer, verbose_name=_("Manufacturer"))
 	    screen_size = models.DecimalField(_("Screen size"), max_digits=4, decimal_places=2)
 	    # other fields to map the specification sheet
-
+	
 	    objects = BaseProductManager()
 	    lookup_fields = ('product_name__icontains',)
 	
 	    def get_price(request):
-            aggregate = self.smartphone_set.aggregate(models.Min('unit_price'))
-            return Money(aggregate['unit_price__min'])
+	        aggregate = self.smartphone_set.aggregate(models.Min('unit_price'))
+	        return Money(aggregate['unit_price__min'])
 	
 	class SmartPhone(models.Model):
 	    product_model = models.ForeignKey(SmartPhoneModel)
@@ -112,12 +112,19 @@ Therefore we would model our smart-phones using a database model similar to the 
 	    storage = models.PositiveIntegerField(_("Internal Storage"))
 
 Lets go into the details of these classes. The model fields are self-explanatory. Something to note
-is, that each product requires a ``ProductManager`` and a list or tuple of `lookup fields`_.
-The ``ProductManager`` can be any class inheriting from ``BaseProductManager``, it adds some methods
-to generate some special querysets. 
-The attribute containing ``lookup_fields`` is required by the administration backend, and used when
-the site editor has to search for certain products. Since the framework does not impose which fields
-are used to distinguish between products, we must give some hints.
+here is, that each product requires a field ``product_name``. This alternatively can also be
+implemented as property.
+
+Another mandatory attribute for each product is the ``ProductManager`` class. It must inheriting
+from ``BaseProductManager``, and adds some methods to generate some special querysets. 
+
+Finally, the attribute ``lookup_fields`` contains a list or tuple of  `lookup fields`_. These are
+required by the administration backend, and used when the site editor has to search for certain
+products. Since the framework does not impose which fields are used to distinguish between products,
+we must give some hints.
+
+Each product also requires a method implemented as ``get_price(request)``. This must return the
+unit price using one of the available :ref:`money-types`.
 
 
 Add multilingual support
@@ -167,7 +174,7 @@ product requires from the information specific to a certain product type. Say, i
 phones, we also want to sell smart cards. First we declare a generic ``Product`` model, which is a
 common base class of both, ``SmartPhone``and ``SmartCard``:
 
-.. code-block::: python
+.. code-block:: python
 
 	class Product(BaseProduct, TranslatableModel):
 	    product_name = models.CharField(max_length=255, verbose_name=_("Product Name"))
@@ -197,8 +204,7 @@ Next we only add the product specific attributes to the class models derived fro
 	    product_code = models.CharField(_("Product code"), max_length=255, unique=True)
 	    storage = models.PositiveIntegerField(help_text=_("Storage capacity in GB"))
 	    unit_price = MoneyField(_("Unit price"))
-	    CARD_TYPE = (2 * ('{}{}'.format(s, t),)
-	                 for t in ('SD', 'SDXC', 'SDHC', 'SDHC II') for s in ('', 'micro '))
+	    CARD_TYPE = (2 * ('{}{}'.format(s, t),) for t in ('SD', 'SDXC', 'SDHC', 'SDHC II') for s in ('', 'micro '))
 	    card_type = models.CharField(_("Card Type"), choices=CARD_TYPE, max_length=15)
 	    SPEED = ((str(s), "{} MB/s".format(s)) for s in (4, 20, 30, 40, 48, 80, 95, 280))
 	    speed = models.CharField(_("Transfer Speed"), choices=SPEED, max_length=8)

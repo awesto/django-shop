@@ -6,7 +6,7 @@ Now that we know how to create product models and how to administer them, lets h
 to route them to our views.
 
 A nice aspect of **djangoSHOP** is, that it doesn't require the programmer to write any special
-Django Views in order to render the catalogs. Instead all business logic shall go into their
+Django Views in order to render the catalogs. Instead all business logic goes into their
 products classes, their model managers or into their serializers.
 
 Although in **djangoSHOP** it is possible to create explicit categories which act as list views
