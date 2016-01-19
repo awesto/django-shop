@@ -51,7 +51,7 @@ It also must define all the fields which are available in the default model as f
 ``django.contrib.auth.models.User``.
 
 By setting the flag ``is_active = False``, we can create guests inside Django's ``User`` model.
-Guests can not sign, they can not reset their password and can thus be considered as “materialized”
+Guests can not sign, they can not reset their password, and can thus be considered as “materialized”
 anonymous users.
 
 Having guests with an entry in the database, gives us another advantage: By using the session key

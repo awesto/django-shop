@@ -1,3 +1,5 @@
+.. _deferred-models:
+
 ================================
 Using the deferred model pattern
 ================================

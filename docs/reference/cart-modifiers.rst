@@ -1,8 +1,233 @@
-==============
-Cart modifiers
+.. _cart:
+
+========
+The Cart
+========
+
+In **djangoSHOP** the cart's content is always stored inside the database. In previous versions of
+the software, the cart's content was kept inside the session for anonymous users and stored in the
+database for logged in users. Now the cart is always stored in the database. This approach
+simplifies the code and saves some random access memory, but adds another minor problem:
+
+
+Expired Carts
+=============
+
+Sessions expire, but then the cart's content of anonymous customers still remains in the database.
+We therefore must assure that these carts will expire too, since they are of no use for anybody,
+except maybe for some data-mining.
+
+By invoking
+
+.. code-block:: shell
+
+	./manage.py shopcustomers
+	Customers in this shop: total=3408, anonymous=140, expired=88, active=1108, guests=2159, registered=1109, staff=5.
+
+we gather some statistics about former visiting customers of our **djangoSHOP**. Here we see that
+1109 customers bought as registered users, while 2159 bought as guests. There are 88 customers in
+the database, but they don't have any associated session anymore, hence they can be considered as
+expired. Invoking
+
+.. code-block:: shell
+
+	./manage.py shopcustomers --delete-expired
+
+deletes those expired customers, and with them their expired carts. This task shall be performed
+by a cronjob on a daily basis.
+
+
+Cart Models
+===========
+
+The cart consists of two models classes ``Cart`` and ``CartItem``, both inheriting from ``BaseCart``
+and ``BaseCartItem`` respectively. As most models in **djangoSHOP**, these models are
+:ref:`deferred-models`, so that inheriting from a base class automatically sets the foreign keys to
+the appropriate model. This gives the programmer the flexibility to add as many fields to the cart,
+as the merchant requires for some special implementation.
+
+In most use-cases, the default cart implementation will do the job. These default classes can be
+found at :class:`shop.models.defaults.cart.Cart` and :class:`shop.models.defaults.cart_item.CartItem`.
+To materialize the default implementation, it is enough to ``import`` one of these files into your
+own shop implementation. Otherwise create your own cart implementation inheriting from ``BaseCart``
+and ``BaseCartItem``. Since the item quantity can not always be represented by natural numbers, this
+field must be added to the ``CartItem`` implementation rather than its base class. Its field type
+must be countable, so only ``IntegerField``, ``FloatField`` or ``DecimalField`` are allowed as
+quantity.
+
+In case some extra arbitrary information has to be added to the cart or its items, add
+``extras = JSONField()`` to the ``Cart`` and/or ``CartItem`` models. This allows the merchant to keep
+track on product variations and other random stuff.
+
+The ``Cart`` model uses its own manager. Since there is only one cart per customer, accessing the
+cart must be performed using the ``request`` object. We can always access the cart for the current
+customer by invoking:
+
+.. code-block:: python
+
+	from shop.models.cart import CartManager
+	
+	cart = CartManager.get_or_create_from_request(request)
+
+Adding a product to the cart, must be performed by invoking:
+
+.. code-block:: python
+
+	from shop.models.cart import CartItemManager
+	
+	cart_item = CartItemManager.get_or_create(cart=cart, product=product, quantity=quantity, **extras)
+
+This returns a new cart item object, if the given product could not be found in the current cart.
+Otherwise it returns the existing cart item, increasing the quantity by the given value. For
+products with variations it's not always trivial to determine if they shall be considered as
+existing cart items, or as new ones. Since **djangoSHOP** can't tell that difference for any kind
+of product, it delegates this question. Therefore the class implementing the shop's products shall
+override their method ``is_in_cart``. This method is used to tell the ``CartItemManager`` whether a
+product has already been added to the cart or is new.
+
+
+Cart Views
+==========
+
+Displaying the cart in **djangoSHOP** is as simple, as adding any other page to the CMS. Change into
+the Django admin backend and enter into the CMS page tree. At an appropriate location in that tree
+add a new page. As page title use "Cart", "Basket", "Warenkorb", "Cesta", or whatever is appropriate
+in your language. Multilingual CMS installations offer a page title for each language.
+
+
+Add a Cart via CMS-Cascade Plugin
+---------------------------------
+
+In the CMS page editor click onto the link named **Advanced Settings** at the bottom of the popup
+window. As template, chose one which contains at least one big placeholder_.
+
+Enter "shop-cart" into the **Id**-field just below. This identifier is required by some templates
+which link directly onto the cart view page. If this field is not set, some links onto the cart page
+might not work properly.
+
+It is suggested to check the checkbox named **Soft root**. This prevents that a menu item named
+“Cart” will appear side by side with other pages from the CMS. Instead, presumably you prefer to
+render a special cart symbol located on the right of the navigation bar.
+
+Click onto **View on site** and change into front-end editing mode to use the grid-system of
+djangocms-cascade_. Locate the main placeholder and add a **Row** followed by at least one
+**Column** plugin; both can be found in section **Bootstrap**. Below that column plugin, add a
+child named **Cart** from section **Shop**. This Cart Plugin can be rendered in four different
+ways:
+
+|cart-structure| 
+
+.. |cart-structure| image:: /_static/cart/cart-structure.png
+
+
+Editable Cart
+~~~~~~~~~~~~~
+
+An "Editable Cart" is rendered using the Angular JS template engine. This means that a customer may
+change the number of items, delete them or move them the the watch-list. Each update is reflected
+immediately into the cart's subtotal, extra fields and final totals.
+
+Using the above structure, the rendered cart will look similar to this.
+
+|cart-display| 
+
+.. |cart-display| image:: /_static/cart/cart-display.png
+
+Depending on the chosen template, this layout may vary. 
+
+
+Static Cart
+~~~~~~~~~~~~
+
+An alternative to the editable cart is the ‘static cart’. Here the cart items are rendered by
+the Django template engine. Since here everything is static, the quantity can't be changed anymore
+and the customer would have to proceed to the checkout without being able to change his mind. This
+probably only makes sense when purchasing a single product.
+
+
+Cart Summary
+~~~~~~~~~~~~
+
+This only displays the cart's subtotal, the extra cart fields, such as V.A.T., shipping costs and
+the final total.
+
+
+Watch List
+~~~~~~~~~~
+
+A special view of the cart is the watch list. It can be used by customers to remember items they
+want to compare or buy sometimes later. The watch-list by default is editable, but does not 
+allow to change the quantity. This is because the watch-list shares the same object model as the
+cart items. If the quantity of an item 0, then that cart item is considered to be watched. If
+instead the quantity is 1 ore more, the item is considered to be in the cart. It therefore is
+very easy to move items from the cart to the watch-list and vice versa. This concept also disallows
+to have an item in both the cart and the watch-list. This during online shopping, often can be a
+major point of confusion.
+
+
+Render templates
+~~~~~~~~~~~~~~~~
+
+The path of the templates used to render the cart views is constructed using the following rules:
+
+* Look for a folder named according to the project's name, ie. ``settings.SHOP_APP_LABEL`` in lower
+  case. If no such folder can be found, then use the folder named ``shop``.
+* Search for a subfolder named ``cart``.
+* Search for a template named “editable.html”, “static.html”, “watch.html” or “summary.html”.
+
+These templates are written to be easily extensible by the customized templates. To override the
+‘editable cart’ add a template with the path, say ``myshop/cart/editable.html`` to the projects
+template folder. This template then shall begin with ``{% extend "shop/cart/editable.html" %}``
+and only override the ``{% block %}...{% endblock %}`` interested in.
+
+Please note that cart items are rendered using an Angular JS `directive script template`_. It
+therefore becomes very straight-forward to override Javascript templates using Djangos internal
+template engine.
+
+
+Multiple templates
+..................
+
+If for some special reasons you need different cart templates, then add this line to the projects
+``settings.py``:
+
+.. code-block:: python
+
+	CMSPLUGIN_CASCADE_PLUGINS_WITH_EXTRA_RENDER_TEMPLATES = {
+	    'ShopCartPlugin': (
+	        (None, _("default")),  # the default behavior
+	        ('myproject/cart/other-editable.html', _("extra editable")),
+	    )
+	}
+
+This will add an extra select button to the cart editor. The site administrator then can chose
+between the default template and an extra editable cart template.
+
+
+Proceed to Checkout
+...................
+
+On the cart's view, the merchant may decide whether to implement the checkout forms together with
+the cart, or to create a special checkout page onto which the customer can proceed. In the latter
+case simply add a button to the cart, which links onto that checkout page. Otherwise add the form
+plugins required for checkout right onto this cart view.
+
+
+Add a Cart via manually written Cart Template
+---------------------------------------------
+
+or create a special cart template manually
+
+
+Hardcode the Cart via urlpatterns
+---------------------------------
+
+
+
+Cart Modifiers
 ==============
 
-Cart Modifiers are simple plugins that allow you to define rules in a programmatic way, how the
+The Cart Modifiers are simple plugins that allow you to define rules in a programmatic way, how the
 totals of a cart are computed and how they are labeled. A typical job is to compute tax rates,
 adding discounts, shipping and payment costs, etc.
 
@@ -88,3 +313,7 @@ or more of the given methods:
 
 .. autoclass:: shop.modifiers.base.BaseCartModifier
    :members:
+
+.. _djangocms-cascade: http://djangocms-cascade.readthedocs.org/en/latest/
+.. _placeholder: http://django-cms.readthedocs.org/en/latest/introduction/templates_placeholders.html#placeholders
+.. _directive script template: https://docs.angularjs.org/api/ng/directive/script

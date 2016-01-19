@@ -172,7 +172,7 @@ If besides smart phones we also want to sell cables, pipes or smart cards, we mu
 models into a common- and a specialized part. That said, we must separate the information every
 product requires from the information specific to a certain product type. Say, in addition to smart
 phones, we also want to sell smart cards. First we declare a generic ``Product`` model, which is a
-common base class of both, ``SmartPhone``and ``SmartCard``:
+common base class of both, ``SmartPhone`` and ``SmartCard``:
 
 .. code-block:: python
 
@@ -211,4 +211,6 @@ Next we only add the product specific attributes to the class models derived fro
 
 If *MyShop* would sell the iPhone5 with 16GB and 32GB storage as independent products, then we could
 unify the classes ``SmartPhoneModel`` and ``SmartPhone`` and move the attributes ``product_code``
-and ``unit_price`` into the class ``Product``. This would simplify
+and ``unit_price`` into the class ``Product``. This would simplify some programming aspects, but
+would require the merchant to add a lot of information twice. Therefore we remain with the
+model layout presented here.
