@@ -85,6 +85,20 @@ of product, it delegates this question. Therefore the class implementing the sho
 override their method ``is_in_cart``. This method is used to tell the ``CartItemManager`` whether a
 product has already been added to the cart or is new.
 
+Whenever the method ``cart.update(request)`` is invoked, the cart modifiers run against all items
+in the cart. This updates the line totals, the subtotal, extra costs and the final sum.
+
+
+Watch List
+----------
+
+Instead of implementing a separate watch-list (some would say wish-list), **djangoSHOP** uses a
+simple trick. Whenever the quantity of a cart item is zero, this item is considered to be in the
+watch list. Otherwise it is considered to be in the cart. The train of though is as follows:
+A quantity of zero, never makes sense for items in the cart. On the other side, any quantity
+makes sense for items in the watch-list. Therefore reducing the quantity of a cart item to zero is
+the same as keeping an eye on it, without actually wanting it to purchase.
+
 
 Cart Views
 ==========
@@ -115,7 +129,7 @@ djangocms-cascade_. Locate the main placeholder and add a **Row** followed by at
 child named **Cart** from section **Shop**. This Cart Plugin can be rendered in four different
 ways:
 
-|cart-structure| 
+|cart-structure|
 
 .. |cart-structure| image:: /_static/cart/cart-structure.png
 
@@ -165,6 +179,8 @@ to have an item in both the cart and the watch-list. This during online shopping
 major point of confusion.
 
 
+.. _cart-render-templates:
+
 Render templates
 ~~~~~~~~~~~~~~~~
 
@@ -208,19 +224,41 @@ Proceed to Checkout
 ...................
 
 On the cart's view, the merchant may decide whether to implement the checkout forms together with
-the cart, or to create a special checkout page onto which the customer can proceed. In the latter
-case simply add a button to the cart, which links onto that checkout page. Otherwise add the form
-plugins required for checkout right onto this cart view.
+the cart, or to create a special checkout page onto which the customer can proceed. From a practical
+point of view it doesn't make any difference, if the cart and the checkout is combined on the same
+CMS page, or if they are split on two or more pages. In the latter case simply add a button at the
+end of each page, so that the customer can proceed to the next one.
+
+On the checkout page, the customer has to fill out a few forms. These can be a contact form,
+shipping and billing addresses, payment and shipping methods, and many more. Which ones depend on
+the configuration and the requirements of the shop's implementation. In :ref:`cascade-plugins`
+all shop specific CMS plugins are listed. They can be combined into whatever makes sense for a
+successful checkout.
+
+One plugin worth mentioning is the **ProcessBarPlugin**. It can be used to group different form
+plugins into single steps to form one CMS page. The customer is only allowed to move from one step
+to the next, if all forms are valid.
+
+|processbar-step3|
+
+.. |processbar-step3| image:: /_static/checkout/processbar-step3.png
 
 
 Add a Cart via manually written Cart Template
 ---------------------------------------------
 
+Instead of using the CMS plugin system, the template for the cart can also be implemented manually.
+Based on an existing page template, locate the element, where the cart shall be inserted. Then
+use one of the existing templates in the folder ``django-shop/shop/templates/shop/cart/`` as a
+starting point, and insert it at an appropriate location in the page template. Next, in the
+project's ``settings.py``, add this specialized template to the list ``CMS_TEMPLATES`` and select
+it for that page.
 
-
-Hardcode the Cart via urlpatterns
----------------------------------
-
+From a technical point of view, it does not make any difference whether we use the cart plugin or a
+handcrafted template. If the HTML code making up the cart has to be adopted to the merchants needs,
+you normally are better off and much more flexible, if you override the template code as described
+in section :ref:`cart-render-templates`. Therefore, you are strongly discouraged to craft your cart
+and checkout templates by hand. 
 
 
 Cart Modifiers

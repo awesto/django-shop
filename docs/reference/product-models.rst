@@ -139,7 +139,7 @@ translations:
 
 	class ProductQuerySet(TranslatableQuerySet, PolymorphicQuerySet):
 	    pass
-
+	
 	class ProductManager(BaseProductManager, TranslatableManager):
 	    queryset_class = ProductQuerySet
 
@@ -151,11 +151,11 @@ our use-case thats only the product's description:
 	class SmartPhoneModel(BaseProduct, TranslatableModel):
 	    # other field remain unchanged
 	    description = TranslatedField()
-
+	
 	class ProductTranslation(TranslatedFieldsModel):
 	    master = models.ForeignKey(SmartPhoneModel, related_name='translations', null=True)
 	    description = HTMLField(help_text=_("Some more detailed description."))
-
+	
 	    class Meta:
 	        unique_together = [('language_code', 'master')]
 
@@ -165,7 +165,7 @@ This simple change now allows us to offer the shop's assortment in different nat
 .. _django-parler: http://django-parler.readthedocs.org/
 
 
-Add polymorphic support
+Add Polymorphic Support
 -----------------------
 
 If besides smart phones we also want to sell cables, pipes or smart cards, we must split our product
@@ -186,6 +186,8 @@ common base class of both, ``SmartPhone`` and ``SmartCard``:
 
 Next we only add the product specific attributes to the class models derived from ``Product``:
 
+.. code-block:: python
+
 	class SmartPhoneModel(Product):
 	    manufacturer = models.ForeignKey(Manufacturer, verbose_name=_("Manufacturer"))
 	    screen_size = models.DecimalField(_("Screen size"), max_digits=4, decimal_places=2)
@@ -193,7 +195,7 @@ Next we only add the product specific attributes to the class models derived fro
 	    battery_capacity = models.PositiveIntegerField(help_text=_("Battery capacity in mAh"))
 	    ram_storage = models.PositiveIntegerField(help_text=_("RAM storage in MB"))
 	    # and many more attributes as found on the data sheet
-
+	
 	class SmartPhone(models.Model):
 	    product_model = models.ForeignKey(SmartPhoneModel)
 	    product_code = models.CharField(_("Product code"), max_length=255, unique=True)
