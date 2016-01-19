@@ -216,7 +216,6 @@ plugins required for checkout right onto this cart view.
 Add a Cart via manually written Cart Template
 ---------------------------------------------
 
-or create a special cart template manually
 
 
 Hardcode the Cart via urlpatterns
@@ -268,14 +267,14 @@ Here is an incomplete list of some useful cart modifiers.
 
 
 Generic Cart Modifiers
-======================
+----------------------
 
 These kinds of cart modifiers are applied unconditionally onto the cart. A typical instance is the
 ``DefaultCartModifier``, the ``CartIncludeTaxModifier`` or the ``CartExcludeTaxModifier``.
 
 
 DefaultCartModifier
--------------------
+~~~~~~~~~~~~~~~~~~~
 
 The :class:`shop.modifiers.default.DefaultCartModifier` is required for almost every shopping cart.
 It handles the most basic calculations, ie. multiplying the items unit prices with the chosen
@@ -284,7 +283,7 @@ in ``SHOP_CART_MODIFIERS``.
 
 
 Payment Cart Modifiers
-----------------------
+~~~~~~~~~~~~~~~~~~~~~~
 
 From these kinds of modifiers, only that for the chosen payment method is applied. Payment Modifiers
 are used to add extra costs or discounts depending on the chosen payment method. By overriding the
@@ -293,7 +292,7 @@ the carts total is below a certain threshold.
 
 
 Shipping Cart Modifiers
------------------------
+~~~~~~~~~~~~~~~~~~~~~~~
 
 From these kinds of modifiers, only that for the chosen shipping method is applied. Shipping
 Modifiers are used to add extra costs or discounts depending on chosen shipping method, the number
@@ -303,7 +302,8 @@ threshold.
 
 
 How Modifiers work
-------------------
+~~~~~~~~~~~~~~~~~~
+
 Cart modifiers should extend the :class:`shop.modifiers.base.BaseCartModifier` class and extend one
 or more of the given methods:
 
@@ -313,6 +313,7 @@ or more of the given methods:
 
 .. autoclass:: shop.modifiers.base.BaseCartModifier
    :members:
+
 
 .. _djangocms-cascade: http://djangocms-cascade.readthedocs.org/en/latest/
 .. _placeholder: http://django-cms.readthedocs.org/en/latest/introduction/templates_placeholders.html#placeholders
