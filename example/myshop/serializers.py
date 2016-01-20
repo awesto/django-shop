@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from django.conf import settings
 from django.utils.module_loading import import_string
 from rest_framework import serializers
+from rest_framework.fields import empty
 from shop.rest.serializers import (ProductSummarySerializerBase, ProductDetailSerializerBase,
     AddToCartSerializer)
 from shop.search.serializers import ProductSearchSerializer as ProductSearchSerializerBase
@@ -52,14 +54,15 @@ class AddSmartPhoneToCartSerializer(AddToCartSerializer):
     """
     def get_instance(self, context, data, extra_args):
         product = context['product']
-        extra = context['request'].data.get('extra', {})
-        extra.setdefault('product_code', product.smartphone_set.first().product_code)
-        product_markedness = product.get_product_markedness(extra)
-        extra['storage'] = product_markedness.storage
+        extra = data['extra'] if data is not empty else {}
+        try:
+            product_markedness = product.get_product_markedness(extra.get('product_code'))
+        except product.DoesNotExist:
+            product_markedness = product.smartphone_set.first()
         instance = {
             'product': product.id,
             'unit_price': product_markedness.unit_price,
-            'extra': extra,
+            'extra': {'product_code': product_markedness.product_code}
         }
         return instance
 
