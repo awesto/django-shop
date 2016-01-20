@@ -16,14 +16,18 @@ else:
 
 class ProductSummarySerializer(ProductSummarySerializerBase):
     media = serializers.SerializerMethodField()
+    description = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
         fields = ('id', 'product_name', 'product_url', 'product_type', 'product_model', 'price',
-                  'media',)
+                  'media', 'description')
 
     def get_media(self, product):
         return self.render_html(product, 'media')
+
+    def get_description(self, product):
+        return self.render_html(product, 'description')
 
 
 class ProductDetailSerializer(ProductDetailSerializerBase):

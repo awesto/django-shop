@@ -16,7 +16,7 @@
 		{% verbatim %}
 			<div class="media-body">
 				<h4 class="media-heading"><a href="{{ cart_item.summary.product_url }}">{{ cart_item.summary.product_name }}</a></h4>
-				
+				<div ng-bind-html="cart_item.summary.description"></div>
 			</div>
 		{% endverbatim %}
 		</div>
