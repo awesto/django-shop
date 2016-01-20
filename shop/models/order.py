@@ -312,7 +312,6 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         help_text=_("Products unit price at the moment of purchase."), **BaseOrder.decimalfield_kwargs)
     _line_total = models.DecimalField(_("Line Total"), null=True,  # may be NaN
         help_text=_("Line total on the invoice at the moment of purchase."), **BaseOrder.decimalfield_kwargs)
-    quantity = models.IntegerField(_("Ordered quantity"))
     extra = JSONField(verbose_name=_("Extra fields"), default={},
         help_text=_("Arbitrary information for this order item"))
 
@@ -320,6 +319,18 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         abstract = True
         verbose_name = _("Order item")
         verbose_name_plural = _("Order items")
+
+    @classmethod
+    def perform_model_checks(cls):
+        try:
+            cart_field = [f for f in CartItemModel._meta.fields if f.attname == 'quantity'][0]
+            order_field = [f for f in cls._meta.fields if f.attname == 'quantity'][0]
+            if order_field.get_internal_type() != cart_field.get_internal_type():
+                msg = "Field `{}.quantity` must be of one same type `{}.quantity`."
+                raise ImproperlyConfigured(msg.format(cls.__name__, CartItemModel.__name__))
+        except IndexError:
+            msg = "Class `{}` must implement a field named `quantity`."
+            raise ImproperlyConfigured(msg.format(cls.__name__))
 
     @property
     def unit_price(self):
