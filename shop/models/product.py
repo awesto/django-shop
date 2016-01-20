@@ -168,7 +168,7 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         """
         return [(True, datetime.max)]  # Infinite number of products available until eternity
 
-    def is_in_cart(self, cart, extra, watched=False):
+    def is_in_cart(self, cart, watched=False, **kwargs):
         """
         Checks if the product is already in the given cart, and if so, returns the corresponding
         cart_item, otherwise this method returns None.

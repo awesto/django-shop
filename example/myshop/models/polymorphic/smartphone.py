@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
@@ -72,9 +73,12 @@ class SmartPhoneModel(Product):
                 self._price = Money()
         return self._price
 
-    def is_in_cart(self, cart, extra, watched=False):
+    def is_in_cart(self, cart, watched=False, **kwargs):
         from shop.models.cart import CartItemModel
-        product_code = extra.get('product_code')
+        try:
+            product_code = kwargs['extra']['product_code']
+        except KeyError:
+            return
         cart_item_qs = CartItemModel.objects.filter(cart=cart, product=self)
         for cart_item in cart_item_qs:
             if cart_item.extra.get('product_code') == product_code:

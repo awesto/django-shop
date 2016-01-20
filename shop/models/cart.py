@@ -5,6 +5,7 @@ from six import with_metaclass
 from collections import OrderedDict
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
+from django.utils import six
 from django.utils.translation import ugettext_lazy as _
 from jsonfield.fields import JSONField
 from shop.modifiers.pool import cart_modifiers_pool
@@ -26,23 +27,17 @@ class CartItemManager(models.Manager):
         cart = kwargs.pop('cart')
         product = kwargs.pop('product')
         quantity = int(kwargs.pop('quantity', 1))
-        extra = kwargs.pop('extra', {})
 
         # add a new item to the cart, or reuse an existing one, increasing the quantity
-        watched = quantity == 0
-        cart_item = product.is_in_cart(cart, extra, watched)
+        watched = not quantity
+        cart_item = product.is_in_cart(cart, watched=watched, **kwargs)
         if cart_item:
             if not watched:
                 cart_item.quantity += quantity
-                cart_item.extra.update(extra)
             created = False
         else:
-            cart_item = self.model(cart=cart, product=product, quantity=quantity, extra=extra)
+            cart_item = self.model(cart=cart, product=product, quantity=quantity, **kwargs)
             created = True
-
-        # assign the remaining attributes to the model (applies only to overridden CartItem models)
-        for key, attr in kwargs.items():
-            setattr(cart_item, key, attr)
 
         cart_item.save()
         return cart_item, created
@@ -97,8 +92,10 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
             raise ImproperlyConfigured(msg.format(cls.__name__))
 
     def __init__(self, *args, **kwargs):
-        # That will hold extra fields to display to the user (ex. taxes, discount)
-        super(BaseCartItem, self).__init__(*args, **kwargs)
+        # reduce the given fields to what the model actually can consume
+        all_field_names = self._meta.get_all_field_names()
+        model_kwargs = {k: v for k, v in six.iteritems(kwargs) if k in all_field_names}
+        super(BaseCartItem, self).__init__(*args, **model_kwargs)
         self.extra_rows = OrderedDict()
         self._dirty = True
 
