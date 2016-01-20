@@ -21,7 +21,6 @@ dependencies. The code required to setup this demo can be found in the example/m
 	tutorial/polymorphic-product
 	tutorial/catalog-views
 	tutorial/checkout-views
-	tutorial/order-views
 
 
 Reference
@@ -39,6 +38,7 @@ Reference to classes and concepts used in **djangoSHOP**
 	reference/product-models
 	reference/cascade-plugins
 	reference/cart
+	reference/order
 
 
 Development and Community

@@ -106,5 +106,22 @@ This plugin requires a CMS page, which uses the CMSApp **OrderApp**. This app is
 framework and loaded automatically.
 
 
+Overriding Templates
+====================
+
+For all plugins described here, the merchant can override the provided templates with their own
+implementation. If the shop framework provides a template, named ``/shop/folder/template.html``,
+then the merchant may override this template using ``/merchantimplementaion/folder/template.html``.
+
+This template then usually extends the existing framework template with
+
+.. code-block:: django
+
+	{% extends "/shop/folder/template.html" %}
+	
+	{% block shop-some-identifier %}
+	    <div>...</div>
+	{% endblock %}
+
 .. _djangocms-cascade: http://djangocms-cascade.readthedocs.org/en/latest/
 .. _Single Source of Truth: https://en.wikipedia.org/wiki/Single_Source_of_Truth

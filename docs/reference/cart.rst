@@ -55,9 +55,8 @@ field must be added to the ``CartItem`` implementation rather than its base clas
 must be countable, so only ``IntegerField``, ``FloatField`` or ``DecimalField`` are allowed as
 quantity.
 
-In case some extra arbitrary information has to be added to the cart or its items, add
-``extras = JSONField()`` to the ``Cart`` and/or ``CartItem`` models. This allows the merchant to
-keep track on product variations and other random stuff.
+.. note:: Assure that the model ``OrderItem`` is imported (and materialized) before model
+		``Product`` and classes derived from it.
 
 The ``Cart`` model uses its own manager. Since there is only one cart per customer, accessing the
 cart must be performed using the ``request`` object. We can always access the cart for the current
@@ -108,12 +107,8 @@ the Django admin backend and enter into the CMS page tree. At an appropriate loc
 add a new page. As page title use "Cart", "Basket", "Warenkorb", "Cesta", or whatever is appropriate
 in your language. Multilingual CMS installations offer a page title for each language.
 
-
-Add a Cart via CMS-Cascade Plugin
----------------------------------
-
 In the CMS page editor click onto the link named **Advanced Settings** at the bottom of the popup
-window. As template, chose one which contains at least one big placeholder_.
+window. As template, chose the default one, provided it contains at least one big placeholder_.
 
 Enter "shop-cart" into the **Id**-field just below. This identifier is required by some templates
 which link directly onto the cart view page. If this field is not set, some links onto the cart page
@@ -122,6 +117,10 @@ might not work properly.
 It is suggested to check the checkbox named **Soft root**. This prevents that a menu item named
 “Cart” will appear side by side with other pages from the CMS. Instead, presumably you prefer to
 render a special cart symbol located on the right of the navigation bar.
+
+
+Add a Cart via CMS-Cascade Plugin
+---------------------------------
 
 Click onto **View on site** and change into front-end editing mode to use the grid-system of
 djangocms-cascade_. Locate the main placeholder and add a **Row** followed by at least one
@@ -189,7 +188,7 @@ The path of the templates used to render the cart views is constructed using the
 * Look for a folder named according to the project's name, ie. ``settings.SHOP_APP_LABEL`` in lower
   case. If no such folder can be found, then use the folder named ``shop``.
 * Search for a subfolder named ``cart``.
-* Search for a template named “editable.html”, “static.html”, “watch.html” or “summary.html”.
+* Search for a template named ``editable.html``, ``static.html``, ``watch.html`` or ``summary.html``.
 
 These templates are written to be easily extensible by the customized templates. To override the
 ‘editable cart’ add a template with the path, say ``myshop/cart/editable.html`` to the projects
@@ -264,9 +263,9 @@ and checkout templates by hand.
 Cart Modifiers
 ==============
 
-The Cart Modifiers are simple plugins that allow you to define rules in a programmatic way, how the
-totals of a cart are computed and how they are labeled. A typical job is to compute tax rates,
-adding discounts, shipping and payment costs, etc.
+Cart Modifiers are simple plugins that allow the merchant to define rules in a programmatic way,
+how the totals of a cart are computed and how they are labeled. A typical job is to compute tax
+rates, adding discounts, shipping and payment costs, etc.
 
 Instead of implementing each possible combination for all of these use cases, the **djangoSHOP**
 framework offers an API, where third party applications can hooks into every computational step.
