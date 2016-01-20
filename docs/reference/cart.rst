@@ -41,23 +41,23 @@ Cart Models
 ===========
 
 The cart consists of two models classes ``Cart`` and ``CartItem``, both inheriting from ``BaseCart``
-and ``BaseCartItem`` respectively. As most models in **djangoSHOP**, these models are
+and ``BaseCartItem`` respectively. As with most models in **djangoSHOP**, these are
 :ref:`deferred-models`, so that inheriting from a base class automatically sets the foreign keys to
 the appropriate model. This gives the programmer the flexibility to add as many fields to the cart,
-as the merchant requires for some special implementation.
+as the merchant requires for his special implementation.
 
 In most use-cases, the default cart implementation will do the job. These default classes can be
 found at :class:`shop.models.defaults.cart.Cart` and :class:`shop.models.defaults.cart_item.CartItem`.
-To materialize the default implementation, it is enough to ``import`` one of these files into your
-own shop implementation. Otherwise create your own cart implementation inheriting from ``BaseCart``
+To materialize the default implementation, it is enough to ``import`` these two files into the
+merchants shop project. Otherwise create your own cart implementation inheriting from ``BaseCart``
 and ``BaseCartItem``. Since the item quantity can not always be represented by natural numbers, this
 field must be added to the ``CartItem`` implementation rather than its base class. Its field type
 must be countable, so only ``IntegerField``, ``FloatField`` or ``DecimalField`` are allowed as
 quantity.
 
 In case some extra arbitrary information has to be added to the cart or its items, add
-``extras = JSONField()`` to the ``Cart`` and/or ``CartItem`` models. This allows the merchant to keep
-track on product variations and other random stuff.
+``extras = JSONField()`` to the ``Cart`` and/or ``CartItem`` models. This allows the merchant to
+keep track on product variations and other random stuff.
 
 The ``Cart`` model uses its own manager. Since there is only one cart per customer, accessing the
 cart must be performed using the ``request`` object. We can always access the cart for the current
