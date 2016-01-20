@@ -11,12 +11,14 @@ from shop.models.defaults.cart_item import CartItem
 from shop.models.defaults.customer import Customer
 
 # models defined by the myshop instance itself
-from .order import OrderItem
 
 if settings.SHOP_TUTORIAL == 'simple':
+    from .simple.order import OrderItem
     from .simple.smartcard import SmartCard
 elif settings.SHOP_TUTORIAL == 'i18n':
+    from .simple.order import OrderItem
     from .i18n.smartcard import SmartCard
 elif settings.SHOP_TUTORIAL == 'polymorphic':
+    from .polymorphic.order import OrderItem
     from .polymorphic.smartcard import SmartCard
     from .polymorphic.smartphone import SmartPhoneModel, SmartPhone
