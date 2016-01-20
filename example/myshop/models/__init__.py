@@ -4,14 +4,12 @@ from django.conf import settings
 
 # import default models from djangoSHOP to materialize them
 from shop.models.defaults.address import Address
-from shop.models.defaults.order import Order
-from shop.models.defaults.order_shipping import OrderShipping
 from shop.models.defaults.cart import Cart
 from shop.models.defaults.cart_item import CartItem
+from shop.models.defaults.order import Order
 from shop.models.defaults.customer import Customer
 
 # models defined by the myshop instance itself
-
 if settings.SHOP_TUTORIAL == 'simple':
     from .simple.order import OrderItem
     from .simple.smartcard import SmartCard
