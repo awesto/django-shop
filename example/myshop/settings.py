@@ -86,6 +86,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',
+    'django_fsm',
     'fsm_admin',
     'djangular',
     'cms',
