@@ -55,7 +55,7 @@ field must be added to the ``CartItem`` implementation rather than its base clas
 must be countable, so only ``IntegerField``, ``FloatField`` or ``DecimalField`` are allowed as
 quantity.
 
-.. note:: Assure that the model ``OrderItem`` is imported (and materialized) before model
+.. note:: Assure that the model ``CartItem`` is imported (and materialized) before model
 		``Product`` and classes derived from it.
 
 The ``Cart`` model uses its own manager. Since there is only one cart per customer, accessing the
@@ -191,13 +191,14 @@ The path of the templates used to render the cart views is constructed using the
 * Search for a template named ``editable.html``, ``static.html``, ``watch.html`` or ``summary.html``.
 
 These templates are written to be easily extensible by the customized templates. To override the
-‘editable cart’ add a template with the path, say ``myshop/cart/editable.html`` to the projects
+'*editable cart*' add a template with the path, say ``myshop/cart/editable.html`` to the projects
 template folder. This template then shall begin with ``{% extend "shop/cart/editable.html" %}``
 and only override the ``{% block %}...{% endblock %}`` interested in.
 
-Please note that cart items are rendered using an Angular JS `directive script template`_. It
-therefore becomes very straight-forward to override Javascript templates using Djangos internal
-template engine.
+Many of these template blocks are themselves embedded inside HTML elements such as
+``<script id="shop/....html" type="text/ng-template">``. The reason for this is that the editable
+cart is rendered in the browser by AngularJS using so called `directives`_. Hence it becomes very
+straight-forward to override Angular's `script templates`_ using Django's internal template engine.
 
 
 Multiple templates
@@ -354,4 +355,5 @@ or more of the given methods:
 
 .. _djangocms-cascade: http://djangocms-cascade.readthedocs.org/en/latest/
 .. _placeholder: http://django-cms.readthedocs.org/en/latest/introduction/templates_placeholders.html#placeholders
-.. _directive script template: https://docs.angularjs.org/api/ng/directive/script
+.. _directives: https://docs.angularjs.org/guide/directive
+.. _script templates: https://docs.angularjs.org/api/ng/directive/script

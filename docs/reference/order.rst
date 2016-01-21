@@ -4,7 +4,7 @@
 The Order
 =========
 
-During checkout, at a certain point, the customer has to click on a button name "Purchase Now".
+During checkout, at a certain point the customer has to click on a button named "*Purchase Now*".
 This operation performs quite a few tasks, one of them is to convert the cart with its items into
 an order. The final task is to reset the cart, which means to remove its content. This operation
 is atomic and not reversible.
@@ -14,7 +14,7 @@ Order Models
 ============
 
 An order consists of two models classes ``Order`` and ``OrderItem``, both inheriting from
-``BaseOrder`` and ``BaseOrderItem`` respectively. As with most models in **djangoSHOP**, these are
+``BaseOrder`` and ``BaseOrderItem`` respectively. As with most models in **djangoSHOP**, they are
 :ref:`deferred-models`, so that inheriting from a base class automatically sets the foreign keys to
 the appropriate model. This gives the programmer the flexibility to add as many fields to the order,
 as the merchant requires for his special implementation.
@@ -28,9 +28,14 @@ may create his own order implementation inheriting from ``BaseOrder`` and/or ``B
 .. note:: Assure that the model ``OrderItem`` is imported (and materialized) before model
 		``Product`` and classes derived from it.
 
-Since the order item quantity can not always be represented by natural numbers, this field must be
-added to the ``OrderItem`` implementation rather than its base class. Since quantities are copied
-from the cart to the order, this field type must must correspond to ``CartItem.quantity``.
+The order item quantity can not always be represented by natural numbers, therefore this field must
+be added to the ``OrderItem`` implementation rather than its base class. Since the quantity is
+copied from the cart item to the order item, its field type must must correspond to that of
+``CartItem.quantity``.
+
+
+Create an Order from the Cart
+-----------------------------
 
 Whenever the customer performs the purchase operation, the cart object is converted into a new order
 object by invoking:
@@ -42,7 +47,7 @@ object by invoking:
 	order = OrderModel.objects.create_from_cart(cart, request)
 
 This operation is atomic and can take some time. It normally is performed by the payment provider,
-whenever the payment was successfully received.
+whenever a successful payment was received.
 
 Since the merchants implementation of ``Cart``, ``CartItem``, ``Order`` and ``OrderItem`` may
 contain extra fields the shop framework isn't aware of, these fields have to be converted from the
@@ -129,6 +134,8 @@ These templates are written to be easily extensible by the customized templates.
 add a template with the path, say ``myshop/order/list.html`` to the projects template folder.
 
 
+.. _order-workflows:
+
 Order Workflows
 ===============
 
@@ -138,15 +145,160 @@ of a payment, which itself triggers further actions, say to print a delivery not
 
 Instead of implementing each possible combination for all of these use cases, the **djangoSHOP**
 framework offers a `Finite State Machine`_, where only selected state transition can be marked as
-possible. These transition further can trigger other events themselves. This prevents to perform
-invalid actions such as fulfilling orders, which haven't been paid yet.
+possible. These transition further can trigger other events themselves. This prevents to accidently
+perform invalid actions such as fulfilling orders, which haven't been paid yet.
+
+In class ``Order`` there is an attribute ``status`` which is of type ``FSMField``. In practice this
+is a char-field, which can hold preconfigured states, but which can't be changed by program code.
+Instead, by calling specially decorated class methods, this state changes from one or more allowed
+source states into one predefined target state. An incomplete example:
+
+.. code-block:: python
+
+	    @transition(field=status, source='new', target='created')
+	    def populate_from_cart(self, cart, request):
+	        # perform some side effects ...
+
+Whenever an ``Order`` object is initialized, its ``status`` is *new* and not yet persisted in the
+database. As we have seen earlier, this object must be populated from the cart. If this succeeds,
+the ``status`` of our new ``Order`` object switches to *created*. This is the default state before
+proceeding to our payment providers.
+
+In **djangoSHOP** the merchant can add as many payment providers he wants. This is done in
+``settings.py`` through the configuration directive ``SHOP_ORDER_WORKFLOWS`` which takes a list of
+so called "*Order Workflox Mixin*" classes. On bootstrapping the application and constructing the
+``Order`` class, it additionally inherits from these mixin classes. This gives the merchant an easy
+to configure, yet very powerful tool to model the selling process of his e-commerce site according
+to his needs. Say, we want to accept bank transfer in advance, so we must add
+``'shop.payment.defaults.PayInAdvanceWorkflowMixin'`` to our configuration setting. Additionally we
+must assure that the checkout process has been configured to offer the corresponding cart modifier:
+
+.. code-block:: python
+
+	SHOP_CART_MODIFIERS = (
+	    ...
+	    'shop.modifiers.defaults.PayInAdvanceModifier',
+	    ...
+	)
+
+This mixin class contains a few transition methods, lets for instance have a closer look onto
+
+.. code-block:: python
+
+	    @transition(field='status', source=['created'], target='awaiting_payment')
+	    def awaiting_payment(self):
+	         """Signals that an Order awaits payments."""
+
+This method actually does nothing, beside changing the status from "*created*" to
+"*awaiting_payment*". It is invoked by the method ``get_payment_request()`` from
+``ForwardFundPayment``, which is the default payment provider of the configured
+``PayInAdvanceModifier`` cart modifier.
+
+The class ``PayInAdvanceWorkflowMixin`` has two other transition methods worth mentioning:
+
+.. code-block:: python
+
+	    @transition(field='status', source=['awaiting_payment'],
+	        target='prepayment_deposited', conditions=[is_fully_paid],
+	        custom=dict(admin=True, button_name=_("Mark as Paid")))
+	    def prepayment_fully_deposited(self):
+	        """Signals that the current Order received a payment."""
+
+This method can be invoked by the Django admin backend when saving an existing Order object, but
+only under the condition that it is fully paid. The method ``is_fully_paid()`` iterates over all
+payments associated with its Order object, sums them up and compares them against the total. If the
+entered payment equals or exceeds the order's total, this method returns ``True`` and the condition
+for the given transition is met. This then adds a button labeled "*Mark as Paid*" at the bottom of
+the admin view. Whenever the merchant clicks on this button, the above method
+``prepayment_fully_deposited`` is invoked. This then changes the order's status from
+"*awaiting_payment*" to "*prepayment_deposited*". The :ref:`notifications` of **djangoSHOP** can
+intercept this transition change and perform preconfigured action, such as sending a payment
+confirmation email to the customer.
+
+Now that the order has been paid, it time to fulfill it. For this a merchant can use the workflow
+mixin class ``'shop.payment.defaults.CommissionGoodsWorkflowMixin'``, which gives him a
+hand to keep track on the fulfillment of each order. Since this class doesn't know anything
+about an order status of "*prepayment_deposited*" (this is a private definition of the class
+``PayInAdvanceWorkflowMixin``), **djangoSHOP** provides a status to mark the payment of an order as
+confirmed. Therefore another transition is added to our mixin class, which is invoked automatically
+by the framework whenever the status changes to "*prepayment_deposited*":
+
+.. code-block:: python
+
+    @transition(field='status', source=['prepayment_deposited',
+        'no_payment_required'], custom=dict(auto=True))
+    def acknowledge_prepayment(self):
+        """Acknowledge the payment."""
+        self.acknowledge_payment()
+
+This status, "*payment_confirmed*", is known by all other workflow mixin classes and must be used
+as the source argument for their transition methods.
 
 
+Finite State Machine Diagram
+----------------------------
+
+If graphviz_ is installed on your system, it is pretty simple to render a graphical representation
+of the currently configured Finite State Machine. Simply invoke:
+
+.. code-block:: shell
+
+	./manage.py ./manage.py graph_transitions -o fsm-graph.png
+
+Applied to our demo shop, this gives the following graph:
+
+|fsm-graph|
+
+.. |fsm-graph| image:: /_static/order/fsm-graph.png
 
 
-Cart Modifiers are split up into three different categories: Generic, Payment and Shipping. In the
-shops ``settings.py`` they must be configured as a list or tuple such as:
+Order Admin
+===========
+
+The order editor likely is the most heavily used for each shop installation. Here the merchant
+must manage all incoming orders, payments, customer annotations, deliveries, etc. By automating
+common tasks, the backend shall prevent careless mistakes. For instance, it should be impossible
+to ship unpaid goods or to cancel a delivered order.
+
+Since the **djangoSHOP** framework does not know which class model is used to implement an
+``Order``, it intentionally doesn't register its prepared administration class for that model.
+This has to be done by the project implementing the show. It allows to add additional fields and
+other mixin classes, before registration.
+
+For instance, the admin class used to manage the ``Order`` model in our shop project, could be
+implemented as:
+
+.. code-block:: python
+	:caption: myshop/admin.py
+
+	from django.contrib import admin
+	from shop.models.order import OrderModel
+	from shop.admin.order import (PrintOrderAdminMixin,
+	    BaseOrderAdmin, OrderPaymentInline, OrderItemInline)
+	
+	@admin.register(OrderModel)
+	class OrderAdmin(PrintOrderAdminMixin, BaseOrderAdmin):
+	    fields = BaseOrderAdmin.fields + (
+	        ('shipping_address_text', 'billing_address_text',),)
+	    inlines = (OrderItemInline, OrderPaymentInline,)
+
+The fields ``shipping_address_text`` and ``billing_address_text`` are not part of the abstract model
+class ``BaseOrder`` and therefore must be referenced separately.
+
+Another useful mixin class to be added to this admin backend is ``PrintOrderAdminMixin``. Whenever
+the status of an order is set to "*Pick the Goods*" a button labeled "*Print Delivery Note*" is
+added to the order admin form. Clicking on that button displays one ore more pages optimized for
+printing.
+
+On the other hand, when the status of an order is set to "*Pack the Goods*" a button labeled
+"*Print Invoice*" is added to the order admin form.
+
+The template for the invoice and delivery note can easily be adopted to the corporate design using
+plain HTML and CSS.
 
 
 .. _apphook: http://docs.django-cms.org/en/latest/how_to/apphooks.html
+.. _djangocms-cascade: http://djangocms-cascade.readthedocs.org/en/latest/
+.. _placeholder: http://django-cms.readthedocs.org/en/latest/introduction/templates_placeholders.html#placeholders
 .. _Finite State Machine: https://gist.github.com/Nagyman/9502133
+.. _graphviz: http://www.graphviz.org/
