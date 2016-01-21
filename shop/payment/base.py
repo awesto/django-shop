@@ -15,7 +15,8 @@ class PaymentProvider(object):
         Use a unique namespace for this payment provider. It is used to build the communication URLs
         exposed to an external payment service provider.
         """
-        return NotImplemented
+        msg = "The attribute `namespace` must be implemented by the class `{}`"
+        raise NotImplementedError(msg.format(self.__class__.__name__))
 
     def get_urls(self):
         """
@@ -27,7 +28,7 @@ class PaymentProvider(object):
     def get_payment_request(self, cart, request):
         """
         Build a JavaScript expression which is evaluated by the success handler on the page
-        summiting the purchase command. When redirecting to another page, use:
+        submitting the purchase command. When redirecting to another page, use:
         ```
         $window.location.href="URL-of-other-page";
         ```
