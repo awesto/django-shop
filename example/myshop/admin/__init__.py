@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from django.conf import settings
 from django.contrib import admin
 from shop.admin.customer import CustomerProxy, CustomerAdmin
 from shop.admin.order import (PrintOrderAdminMixin, BaseOrderAdmin, OrderPaymentInline, OrderItemInline)
 from shop.models.order import OrderModel
-#from . import product
 from . import properties
 
 if settings.SHOP_TUTORIAL == 'simple':
