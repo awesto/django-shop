@@ -94,10 +94,10 @@ djangoShopModule.directive('shopAddToCart', function() {
 });
 
 
-// Directive <ANY shop-catalog-list="REST-API-endpoint">
+// Directive <ANY shop-catalog-list>
 djangoShopModule.directive('shopCatalogList', function() {
 	return {
-		restrict: 'A',
+		restrict: 'EAC',
 		controller: ['$scope', '$http', '$window', function($scope, $http, $window) {
 			var self = this, fetchURL = $window.location.pathname;
 
