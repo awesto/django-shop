@@ -22,7 +22,8 @@ By invoking
 .. code-block:: shell
 
 	./manage.py shopcustomers
-	Customers in this shop: total=3408, anonymous=140, expired=88, active=1108, guests=2159, registered=1109, staff=5.
+	Customers in this shop: total=3408, anonymous=140, expired=88,
+	    active=1108, guests=2159, registered=1109, staff=5.
 
 we gather some statistics about former visiting customers of our **djangoSHOP**. Here we see that
 1109 customers bought as registered users, while 2159 bought as guests. There are 88 customers in
@@ -74,7 +75,8 @@ Adding a product to the cart, must be performed by invoking:
 
 	from shop.models.cart import CartItemManager
 	
-	cart_item = CartItemManager.get_or_create(cart=cart, product=product, quantity=quantity, **extras)
+	cart_item = CartItemManager.get_or_create(cart=cart,
+	        product=product, quantity=quantity, **extras)
 
 This returns a new cart item object, if the given product could not be found in the current cart.
 Otherwise it returns the existing cart item, increasing the quantity by the given value. For
@@ -191,7 +193,7 @@ The path of the templates used to render the cart views is constructed using the
 * Search for a template named ``editable.html``, ``static.html``, ``watch.html`` or ``summary.html``.
 
 These templates are written to be easily extensible by the customized templates. To override the
-'*editable cart*' add a template with the path, say ``myshop/cart/editable.html`` to the projects
+"*editable cart*" add a template with the path, say ``myshop/cart/editable.html`` to the projects
 template folder. This template then shall begin with ``{% extend "shop/cart/editable.html" %}``
 and only override the ``{% block %}...{% endblock %}`` interested in.
 
