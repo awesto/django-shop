@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from bs4 import BeautifulSoup
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
@@ -125,6 +126,7 @@ class EmulateHttpRequest(HttpRequest):
 
 def order_event_notification(sender, instance=None, target=None, **kwargs):
     from shop.rest import serializers
+
     for notification in Notification.objects.filter(transition_target=target):
         recipient = notification.get_recipient(instance)
         if recipient is None:
