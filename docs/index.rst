@@ -20,7 +20,7 @@ dependencies. The code required to setup this demo can be found in the example/m
 	tutorial/multilingual-product
 	tutorial/polymorphic-product
 	tutorial/catalog-views
-	tutorial/checkout-views
+	tutorial/cart-checkout-views
 
 
 Reference

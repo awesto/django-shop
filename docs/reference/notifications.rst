@@ -49,7 +49,8 @@ group eligible to manage the site.
 Email Templates
 ---------------
 
-From the section **Start > Post Office > Email Templates**, :ref:`post-office-emails`.
+From the section **Start > Post Office > Email Templates**, chose on of the
+:ref:`post-office-emails`.
 
 
 Notification attachments
@@ -86,8 +87,8 @@ in the language used during order creation.
 
 .. _post-office-emails:
 
-Use templates for emails
-------------------------
+Templates for Emails
+--------------------
 
 The **Message** fields can contain any code, which is valid for Django templates. Frequently, a
 summary of the order is rendered in these emails, creating a list of ordered items. This list often
@@ -104,18 +105,19 @@ templates can be loaded and expanded using the well known templatetag
 Caveats when using an HTML Message
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Displaying HTML in email clients is a pain. Nobody really can say, which HTML tags are allowed.
+Displaying HTML in email clients is a pain. Nobody really can say, which HTML tags are allowed
+in which client – and there are many email readers out there, far more than Internet browsers.
+
 Therefore when designing HTML templates for emails, one must be really, really conservative.
 Even if it seems anachronistic, but the best practice is still to use the ``<table>`` element, and
-if necessary, nest it into other tables. Moreover, use inline styles rather than a ``<style>``
-element containing blocks of CSS.
+if necessary, nest it into their ``<td>`` (tables data) elements. Moreover, use inline styles rather
+than a ``<style>`` element containing blocks of CSS.
 
 Images can be embedded into HTML emails using two different methods. One is to host the image on the
 web-server and to build an absolute URI referring it. Therefore **djangoSHOP** enriches the object
-``RenderContext`` with the base URI for that web-site and stores it inside the context variable
+``RenderContext`` with the base URI for that web-site and stores it as context variable named
 ``ABSOLUTE_BASE_URI``. For privacy reasons, most email clients do not load externally hosted images
-by default. In most email clients, the customer can easily bypass this restriction, whenever he
-desires.
+by default – the customer then must actively request to load them from the external sources.
 
 Another method for adding images to HTML emails is to inline their payload. This means that images,
 instead of referring them by URI, are inlined as a base64-encoded string. Easy-thumbnails_ offers a

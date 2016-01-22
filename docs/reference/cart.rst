@@ -1,8 +1,8 @@
 .. _cart:
 
-========
-The Cart
-========
+====
+Cart
+====
 
 In **djangoSHOP** the cart's content is always stored inside the database. In previous versions of
 the software, the cart's content was kept inside the session for anonymous users and stored in the

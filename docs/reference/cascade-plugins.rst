@@ -12,7 +12,7 @@ Cart
 ====
 
 The **CartPlugin** has four different rendering options: Editable, Static, Summary and Watch-List.
-:ref:`cart` plugin has already been described in detail.
+The :ref:`cart` plugin has already been described in detail.
 
 
 Customer Form

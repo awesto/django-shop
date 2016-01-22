@@ -1,19 +1,19 @@
-==============
-Checkout Views
-==============
+=======================
+Cart and Checkout Views
+=======================
 
 In **djangoSHOP**, the checkout view follows the same idea as all other pages – it is managed by
 the CMS. Change into the Django admin backend and enter into the CMS page tree. A good position in
 that tree for adding the Checkout page is just below the Cart page. Then as the template, you can
 use “Inherit from parent”.
 
-The Checkout page is probably the most complicated page to setup. Therefore no generic receipt
+The Checkout pages presumably are the most complicated page to setup. Therefore no generic receipt
 can be presented here. Instead some CMS plugins will be listed here. They can be useful to compose
 a complete checkout page:
 
 A list of plugins specific to **djangoSHOP** can be found in the reference section. They include
-a cart editor, forms to enter the customers names, addresses, payment- and shipping methods, credit
-card numbers and some more.
+a cart editor, a static cart renderer, forms to enter the customers names, addresses, payment- and
+shipping methods, credit card numbers and some more.
 
 Other useful plugins can be found in the Django application djangocms-cascade_.
 

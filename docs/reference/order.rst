@@ -1,8 +1,8 @@
 .. _order:
 
-=========
-The Order
-=========
+=====
+Order
+=====
 
 During checkout, at a certain point the customer has to click on a button named "*Purchase Now*".
 This operation performs quite a few tasks, one of them is to convert the cart with its items into
@@ -234,6 +234,12 @@ by the framework whenever the status changes to "*prepayment_deposited*":
 This status, "*payment_confirmed*", is known by all other workflow mixin classes and must be used
 as the source argument for their transition methods.
 
+For further details on Finite State Machine transitions, please refer to the `FSM docs`_. This
+however does not cover the contents of dictionary ``custom``. One of the attributes in ``custom``
+is ``button = _("Any Label")`` as explained in the `FSM admin docs`_. The other is ``auto = True``
+and has been introduced by **djangoSHOP** itself. It shall be used to automatically proceed from
+one target to another one, without manual intervention, such as clicking onto a button.
+
 
 Finite State Machine Diagram
 ----------------------------
@@ -302,3 +308,5 @@ plain HTML and CSS.
 .. _placeholder: http://django-cms.readthedocs.org/en/latest/introduction/templates_placeholders.html#placeholders
 .. _Finite State Machine: https://gist.github.com/Nagyman/9502133
 .. _graphviz: http://www.graphviz.org/
+.. _FSM docs: https://github.com/kmmbvnr/django-fsm
+.. _FSM admin docs: https://github.com/gadventures/django-fsm-admin

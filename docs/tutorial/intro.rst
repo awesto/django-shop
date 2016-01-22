@@ -78,7 +78,7 @@ In **djangoSHOP**, every page, with the exception of the product's detail pages,
 the CMS. Therefore, unless you need a special landing page, start immediately with the *Catalog List
 View* of your products. Change into the Django Admin backend, chose the section
 
-**django CMS > Pages**
+**Start > django CMS > Pages**
 
 and add a Page. As its **Title** chose “Smart Cards”. Then change into the **Advanced Settings**
 at the bottom of the page. In this editor window, locate the field **Application** and select
