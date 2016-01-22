@@ -40,6 +40,7 @@ Reference to classes and concepts used in **djangoSHOP**
 	reference/cart
 	reference/order
 	reference/notifications
+	reference/serializers
 
 
 Development and Community
