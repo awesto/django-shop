@@ -22,10 +22,11 @@
 	{% endfor %}
 				</select>
 			</td>
-			<td class="form-inline">
-				<div class="form-group">
-					<input class="form-control" type="number" min="1" ng-model="context.quantity" ng-model-options="{{ ng_model_options }}" ng-change="updateContext()" />
-				</div>
+			<td>
+				<select class="form-control" ng-model="context.quantity" ng-change="updateContext()">
+					<option value="1">1</option>
+					<option value="2">2</option>
+				</select>
 			</td>
 			<td ng-bind="context.unit_price"></td>
 			<td ng-bind="context.subtotal"></td>
