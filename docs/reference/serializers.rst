@@ -74,8 +74,99 @@ Routing to these endpoints
 
 Since we are using CMS pages to display the catalog's list view, we must provide an apphook_ to
 attach it to this page. These catalog apphooks are not part of the shop framework, but must be
-created and configured by the project.
+created and added to the project:
 
+.. code-block:: python
+	:caption: myshop/cms_app.py
+
+	from cms.app_base import CMSApp
+	from cms.apphook_pool import apphook_pool
+
+	class CatalogListApp(CMSApp):
+	    name = "Catalog List"
+	    urls = ['myshop.urls.catalog']
+
+	apphook_pool.register(CatalogListApp)
+
+We now must add routes for all sub-URLs of the given CMS page implementing the catalog list:
+
+.. code-block:: python
+	:caption: myshop/urls/catalog.py
+
+	from django.conf.urls import patterns, url
+	from rest_framework.settings import api_settings
+	from shop.rest.filters import CMSPagesFilterBackend
+	from shop.views.catalog import (AddToCartView, ProductListView,
+	    ProductRetrieveView)
+	from myshop.serializers import (ProductSummarySerializer,
+	    ProductDetailSerializer)
+
+	urlpatterns = patterns('',
+	    url(r'^$', ProductListView.as_view(
+	        serializer_class=ProductSummarySerializer,
+	        filter_backends=api_settings.DEFAULT_FILTER_BACKENDS + [
+	            CMSPagesFilterBackend()],
+	    )),
+	    url(r'^(?P<slug>[\w-]+)$', ProductRetrieveView.as_view(
+	        serializer_class=ProductDetailSerializer,
+	    )),
+	    url(r'^(?P<slug>[\w-]+)/add-to-cart', AddToCartView.as_view()
+	    ),
+	)
+
+
+Products List View
+~~~~~~~~~~~~~~~~~~
+
+The urlpattern matching the regular expression ``^$`` routes onto the catalog list view class
+:class:`shop.views.catalog.ProductListView` passing in a special serializer class,
+:class:`myshop.serializers.ProductSummarySerializer`. This has been customized to represent our
+product models in our catalog templates. Since the serialized data now is available as a Python
+dictionary or as a Plain Old Javascript Object, these templates then can be rendered by the Django
+template engine, as well as by the client using for instance AngularJS.
+
+This View class, which inherits from :class:`rest_framework.generics.ListAPIView` accepts a list of
+filters for restricting the list of items.
+
+As we (ab)use CMS pages as categories, we somehow must assign them to our products. Therefore our
+example project assigns a many-to-many field named ``cms_pages`` to our Product model. Using this
+field, the merchant can assign each product to one or more CMS pages, using the apphook
+``Products List``.
+
+This special ``filter_backend``, :class:`shop.rest.filters.CMSPagesFilterBackend`, is responsible
+for restricting selected products on the current catalog list view.
+
+
+Product Detail View
+~~~~~~~~~~~~~~~~~~~
+
+The urlpattern matching the regular expression ``^(?P<slug>[\w-]+)$`` routes onto the class
+:class:`shop.views.catalog.ProductRetrieveView` passing in a special serializer class,
+:class:`myshop.serializers.ProductDetailSerializer` which has been customized to represent our
+product model details.
+
+This View class inherits from :class:`rest_framework.generics.RetrieveAPIView`. In addition to the
+given ``serializer_class`` it can accept these fields:
+
+* ``lookup_field``: Model field to look up for the retrieved product. This defaults to ``slug``.
+* ``lookup_url_kwarg``: URL argument as used by the matching RegEx. This defaults to ``slug``.
+* ``product_model``: Restrict to products of this type. Defaults to ``ProductModel``.
+
+
+Add Product to Cart
+~~~~~~~~~~~~~~~~~~~
+
+
+Annotation
+----------
+
+In previous versions of **djangoSHOP**, this kind of controller implementation had to be implemented
+inside the 
+
+This meand that 
+Since the serialized data now is available as a Python
+dictionary or as a Plain Old Javascript Object, these templates then can be rendered server-side,
+as well as by a client-side template engine.
 
 
 .. _directives: https://docs.angularjs.org/guide/directive
