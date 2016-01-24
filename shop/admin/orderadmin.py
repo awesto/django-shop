@@ -54,10 +54,10 @@ class OrderAdmin(LocalizeDecimalFieldsMixin, ModelAdmin):
 
     def save_model(self, request, order, form, change):
         super(OrderAdmin, self).save_model(request, order, form, change)
-        if not order.is_completed() and order.is_paid():
-            order.status = Order.COMPLETED
-            order.save()
-            completed.send(sender=self, order=order)
+        #if not order.is_completed() and order.is_paid():
+        #    order.status = Order.COMPLETED
+        #    order.save()
+        #    completed.send(sender=self, order=order)
 
 ORDER_MODEL = getattr(settings, 'SHOP_ORDER_MODEL', None)
 if not ORDER_MODEL:

@@ -19,5 +19,5 @@ class AddressAdmin(ModelAdmin):
     raw_id_fields = ('user_shipping', 'user_billing')
 
 
-admin.site.register(Address, AddressAdmin)
+#admin.site.register(Address, AddressAdmin)
 admin.site.register(Country, CountryAdmin)

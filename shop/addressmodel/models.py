@@ -10,12 +10,12 @@ from django.conf import settings
 
 BASE_ADDRESS_TEMPLATE = \
 _("""
-Name: %(name)s,
-Address: %(address)s,
-Zip-Code: %(zipcode)s,
-City: %(city)s,
-State: %(state)s,
-Country: %(country)s
+%(name)s,
+%(address)s,
+%(city)s,
+%(state)s,
+%(zipcode)s,
+%(country)s
 """)
 
 ADDRESS_TEMPLATE = getattr(settings, 'SHOP_ADDRESS_TEMPLATE',
@@ -41,10 +41,10 @@ class Address(models.Model):
 
     name = models.CharField(_('Name'), max_length=255)
     address = models.CharField(_('Address'), max_length=255)
-    address2 = models.CharField(_('Address2'), max_length=255, blank=True)
-    zip_code = models.CharField(_('Zip Code'), max_length=20)
+    address2 = models.CharField(_('Address Cont.'), max_length=255, blank=True)
     city = models.CharField(_('City'), max_length=20)
     state = models.CharField(_('State'), max_length=255)
+    zip_code = models.CharField(_('Zip Code'), max_length=20)
     country = models.ForeignKey(Country, verbose_name=_('Country'), blank=True,
                                 null=True)
 
@@ -64,8 +64,8 @@ class Address(models.Model):
         return ADDRESS_TEMPLATE % {
             'name': self.name,
             'address': '%s\n%s' % (self.address, self.address2),
-            'zipcode': self.zip_code,
             'city': self.city,
             'state': self.state,
+            'zipcode': self.zip_code,
             'country': self.country,
         }
