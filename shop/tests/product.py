@@ -14,7 +14,7 @@ class ProductTestCase(TestCase):
         self.product.save()
 
     def test_unicode_returns_proper_stuff(self):
-        ret = self.product.__unicode__()
+        ret = str(self.product)
         self.assertEqual(ret, self.product.name)
 
     def test_active_filter_returns_only_active_products(self):

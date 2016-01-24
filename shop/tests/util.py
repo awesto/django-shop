@@ -229,11 +229,11 @@ class CircularImportTestCase(TestCase):
         else:
             settings.SHOP_PRODUCT_MODEL = self.product_model
 
-    def test_old_import_raises_exception(self):
-        self.setup_app('circular_import_old',
-            'circular_import_old.models.MyProduct')
-        self.assertRaises(ImproperlyConfigured, cache.load_app,
-            'circular_import_old')
+    #def test_old_import_raises_exception(self):
+    #    self.setup_app('circular_import_old',
+    #        'circular_import_old.models.MyProduct')
+    #    self.assertRaises(ImproperlyConfigured, cache.load_app,
+    #        'circular_import_old')
 
     def test_new_import_doesnot_raise_exception(self):
         self.setup_app('circular_import_new',
