@@ -19,6 +19,11 @@ from shop.util.cart import get_or_create_cart
 from shop.util.order import add_order_to_request, get_order_from_request
 from shop.views import ShopTemplateView, ShopView
 from shop.util.login_mixin import LoginMixin
+from django.conf import settings
+from shop.util.loader import load_class
+
+address_form_override = load_class(getattr(settings,
+    'SHOP_ADDRESS_FORM', 'django.forms.ModelForm'))
 
 
 class CheckoutSelectionView(LoginMixin, ShopTemplateView):
@@ -29,7 +34,8 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
         Returns a dynamic ModelForm from the loaded AddressModel
         """
         form_class = model_forms.modelform_factory(
-            AddressModel, exclude=['user_shipping', 'user_billing'])
+            AddressModel, exclude=['user_shipping', 'user_billing'],
+            form=address_form_override)
         return form_class
 
     def get_shipping_form_class(self):
