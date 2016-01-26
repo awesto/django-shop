@@ -43,16 +43,19 @@ class CMSPageAsCategoryMixin(object):
         return super(CMSPageAsCategoryMixin, self).formfield_for_manytomany(db_field, request, **kwargs)
 
     def save_related(self, request, form, formsets, change):
-        cms_pages = form.cleaned_data.pop('cms_pages')
+        old_cms_pages = form.instance.cms_pages.all()
+        new_cms_pages = form.cleaned_data.pop('cms_pages')
+
         # remove old
-        for page in form.instance.cms_pages.all():
-            if page not in cms_pages:
+        for page in old_cms_pages:
+            if page not in new_cms_pages:
                 for pp in ProductPageModel.objects.filter(product=form.instance, page=page):
                     pp.delete()
 
         # add new
-        for page in cms_pages.all():
-            ProductPageModel.objects.create(product=form.instance, page=page)
+        for page in new_cms_pages:
+            if page not in old_cms_pages:
+                ProductPageModel.objects.create(product=form.instance, page=page)
 
         return super(CMSPageAsCategoryMixin, self).save_related(request, form, formsets, change)
 
