@@ -21,6 +21,22 @@
 	}
 }
 
+.navbar-form {
+	&.shop-search-form {
+		input.form-control {
+			@media (min-width: $screen-lg-min) {
+				width: 40em;
+			}
+			@media (min-width: $screen-md-min) and (max-width: $screen-lg-min) {
+				width: 28em;
+			}
+		}
+		.input-group-addon {
+			cursor: pointer;
+		}
+	}
+}
+
 .navbar-right {
 	shop-auth-form {
 		padding-bottom: 10px;
@@ -37,5 +53,10 @@
 }
 
 body {
-	padding-top: $navbar-height + $navbar-extra-top-height + 2 * $padding-large-vertical;
+	@media (max-width: $screen-sm-min) {
+		padding-top: 290px;  // determined empirically
+	}
+	@media (min-width: $screen-sm-min) {
+		padding-top: $navbar-height + $navbar-extra-top-height + 2 * $padding-large-vertical;
+	}
 }

@@ -1,6 +1,0 @@
-{% load i18n thumbnail %}
-{# template for rendering a search result line #}
-{% with product_url=product.get_absolute_url %}
-<h4 class="media-heading"><a href="{{ product_url }}">{{ product.product_name }}</a></h4>
-{{ product.description|safe }}
-{% endwith %}

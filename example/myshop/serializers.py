@@ -12,6 +12,7 @@ if settings.SHOP_TUTORIAL in ('simple', 'i18n'):
     Product = import_string('myshop.models.{}.smartcard.SmartCard'.format(settings.SHOP_TUTORIAL))
 else:
     Product = import_string('myshop.models.polymorphic.product.Product')
+from .search_indexes import SmartCardIndex, SmartPhoneIndex
 
 
 class ProductSummarySerializer(ProductSummarySerializerBase):
@@ -75,8 +76,16 @@ class ProductSearchSerializer(ProductSearchSerializerBase):
     """
     Serializer to search over all products in this shop
     """
-    app_label = settings.SHOP_APP_LABEL.lower()
+    media = serializers.SerializerMethodField()
 
     class Meta(ProductSearchSerializerBase.Meta):
-        fields = ProductSearchSerializerBase.Meta.fields + ('description', 'media', 'overlay')
-        field_aliases = {'q': 'text'}
+        fields = ProductSearchSerializerBase.Meta.fields + ('media',)
+        index_classes = (SmartCardIndex, SmartPhoneIndex)
+
+    def get_media(self, search_result):
+        return search_result.search_media
+
+
+class CatalogSearchSerializer(ProductSearchSerializer):
+    def get_media(self, search_result):
+        return search_result.catalog_media

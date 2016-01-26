@@ -111,6 +111,7 @@ djangoShopModule.directive('shopCatalogList', function() {
 					$scope.catalog.products = $scope.catalog.products.concat(response.results);
 					$scope.isLoading = false;
 				}).error(function() {
+					fetchURL = null;
 					$scope.isLoading = false;
 				});
 			}

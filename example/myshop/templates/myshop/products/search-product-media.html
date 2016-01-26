@@ -1,0 +1,11 @@
+{% load i18n thumbnail %}
+{% thumbnail product.sample_image 80x80 crop as thumb %}
+<div class="media-left">
+	<a href="{{ product.get_absolute_url }}">
+		<img src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}" />
+	</a>
+</div>
+<div class="media-body">
+	<h4 class="media-heading"><a href="{{ product.get_absolute_url }}">{{ product.product_name }}</a></h4>
+	{{ product.description|safe }}
+</div>

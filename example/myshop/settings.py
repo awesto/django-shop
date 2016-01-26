@@ -390,9 +390,9 @@ CMS_PERMISSION = False
 CMS_PLACEHOLDER_CONF = {
     'Breadcrumb': {
         'plugins': ['BreadcrumbPlugin'],
-        #'text_only_plugins': ['TextLinkPlugin'],
-        #'parent_classes': {'BootstrapRowPlugin': []},
-        #'require_parent': False,
+        #  'text_only_plugins': ['TextLinkPlugin'],
+        #  'parent_classes': {'BootstrapRowPlugin': []},
+        #  'require_parent': False,
         'glossary': {
             'breakpoints': ['xs', 'sm', 'md', 'lg'],
             'container_max_widths': {'xs': 750, 'sm': 750, 'md': 970, 'lg': 1170},
@@ -467,14 +467,15 @@ HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
         'URL': 'http://localhost:9200/',
-        'INDEX_NAME': 'shop-de',
-    },
-    'en': {
-        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-        'URL': 'http://localhost:9200/',
-        'INDEX_NAME': 'shop-en',
+        'INDEX_NAME': 'myshop-en',
     },
 }
+if SHOP_TUTORIAL in ('i18n', 'polymorphic'):
+    HAYSTACK_CONNECTIONS['de'] = {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://localhost:9200/',
+        'INDEX_NAME': 'myshop-de',
+    }
 
 HAYSTACK_ROUTERS = ('shop.search.routers.LanguageRouter',)
 
@@ -505,7 +506,8 @@ SHOP_STRIPE = {
     'PURCHASE_DESCRIPTION': _("Thanks for purchasing at MyShop"),
 }
 
-for priv_attr in ('SHOP_STRIPE', 'DATABASES'):
+# merge settings with non-public credentioals in private_settings
+for priv_attr in ('DATABASES', 'SECRET_KEY', 'SHOP_STRIPE',):
     try:
         from . import private_settings
         vars()[priv_attr].update(getattr(private_settings, priv_attr))

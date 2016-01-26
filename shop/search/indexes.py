@@ -35,16 +35,16 @@ class ProductIndex(indexes.SearchIndex):
             data = super(ProductIndex, self).prepare(product)
         return data
 
-    def render_html(self, product, postfix):
+    def render_html(self, prefix, product, postfix):
         """
         Render a HTML snippet to be stored inside the index database.
         """
         app_label = product._meta.app_label.lower()
         product_type = product.__class__.__name__.lower()
         params = [
-            (app_label, 'search', product_type, postfix),
-            (app_label, 'search', 'product', postfix),
-            ('shop', 'search', 'product', postfix),
+            (app_label, prefix, product_type, postfix),
+            (app_label, prefix, 'product', postfix),
+            ('shop', prefix, 'product', postfix),
         ]
         template = select_template(['{0}/products/{1}-{2}-{3}.html'.format(*p) for p in params])
         context = Context({'product': product})
