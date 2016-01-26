@@ -33,6 +33,7 @@ class ProductIndex(indexes.SearchIndex):
                 data = super(ProductIndex, self).prepare(product)
         else:
             data = super(ProductIndex, self).prepare(product)
+        print data['django_ct']
         return data
 
     def render_html(self, prefix, product, postfix):

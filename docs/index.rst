@@ -39,6 +39,7 @@ Reference to classes and concepts used in **djangoSHOP**
 	reference/cascade-plugins
 	reference/cart
 	reference/order
+	reference/search
 	reference/notifications
 	reference/serializers
 

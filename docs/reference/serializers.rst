@@ -51,24 +51,6 @@ representation such as:
 .. |rest-catalog-detail| image:: /_static/rest-catalog-detail.png
 
 
-Add Product to Cart
--------------------
-
-The product detail view requires another serializer, the so called ``AddToCartSerializer``. This
-serializer is responsible for controlling the number of items being added to the cart and gives 
-feedback on the subtotal of that potential cart item.
-
-This serializer is slightly different than the previous ones, because it not only serializes
-data and sends it from the server to the client, but it also deserializes data submitted from the
-client back to the server using a post-request. This normally is the quantity, but in more
-elaborated use cases, this could contain attributes to distinguish product variations. The
-``AddSmartPhoneToCartSerializer``uses this pattern.
-
-Since each product type may inherit from ``AddToCartSerializer``, and hence override its
-functionality with a customized implementation, such a serializer may return any other information
-relevant to the customer. This could for instance be a rebate or an availability update.
-
-
 Routing to these endpoints
 --------------------------
 
@@ -156,17 +138,94 @@ given ``serializer_class`` it can accept these fields:
 Add Product to Cart
 ~~~~~~~~~~~~~~~~~~~
 
+The product detail view requires another serializer, the so called ``AddToCartSerializer``. This
+serializer is responsible for controlling the number of items being added to the cart and gives 
+feedback on the subtotal of that potential cart item.
 
-Annotation
-----------
+By appending the special string ``add-to-cart`` to the URL of a product's detail view, say
+http://localhost:8000/de/shop/smart-phones/apple-iphone-5/add-to-cart?format=api , one may check
+the legible representation of this serializer:
 
-In previous versions of **djangoSHOP**, this kind of controller implementation had to be implemented
-inside the 
+|rest-add-to-cart|
 
-This meand that 
-Since the serialized data now is available as a Python
-dictionary or as a Plain Old Javascript Object, these templates then can be rendered server-side,
-as well as by a client-side template engine.
+.. |rest-add-to-cart| image:: /_static/rest-add-to-cart.png
+
+This serializer is slightly different than the previous ones, because it not only serializes
+data and sends it from the server to the client, but it also deserializes data submitted from the
+client back to the server using a post-request. This normally is the quantity, but in more
+elaborated use cases, it also could contain attributes to distinguish product variations. The
+``AddSmartPhoneToCartSerializer`` for example, uses this pattern.
+
+Since we may create our own *Add this Product to Cart Serializer* for each product type in our shop,
+hence overriding its functionality with a customized implementation, such a serializer may return
+any other information relevant to the customer. This could for instance be a rebate or just an
+update of the availability.
+
+
+Cart and Checkout Views
+-----------------------
+
+CMS pages containing forms to edit the cart and the checkout views, do not require any URL routing,
+because their HTML is rendered by the CMS plugin system, whereas form submissions are handled
+by hard coded REST endpoints. These URLs are exclusively used by Ajax requests and never visible
+in the URL line of your browser. Those endpoints are configured by adding them to the root resolver
+at a project level:
+
+.. code-block:: python
+	:caption: myshop/urls.py
+
+	urlpatterns = patterns('',
+	    ...
+	    url(r'^shop/', include('shop.urls', namespace='shop')),
+	    ...
+	)
+
+The serializers of the cart then can be accessed at http://localhost:8000/shop/api/cart/ ,
+those of the watch-list at http://localhost:8000/shop/api/watch/ and those handling the various
+checkout forms at http://localhost:8000/shop/api/checkout/ . Accessing these URLs can be useful,
+specially when debugging JavaScript code.
+
+
+Order List and Detail Views
+---------------------------
+
+The Order List and Detail Views must be accessible through a CMS page, therefore we need a speaking
+URL. This is similar to the Catalog List View. This means that the Order Views require the apphook_
+named "*View Orders*", which must be configured in the advanced settings of the Order's CMS pages.
+This apphook is shipped with **djangoSHOP** itself and can be found at ``shop/cms_app.py``.
+
+As with all other Views used by **djangoSHOP**, the content of this View can also be rendered in
+its dictionary structure, instead of HTML. Just append ``?format=api`` to the URL and get the Order
+details. In our myshop example this may look like:
+
+|rest-order-detail|
+
+.. |rest-order-detail| image:: /_static/rest-order-detail.png
+
+
+Search Result Views
+-------------------
+
+As with the Order View, also the Search Results View is accessible through a CMS page. Say, a
+search query directed us to http://localhost:8000/en/search/?q=iphone , then the content of this
+query can be made visible by adding ``&format=api`` to this URL and get the results in its
+dictionary structure. This is specially useful to test if a customized search serializer returns
+the expected results. In our myshop example this may look like:
+
+|rest-search-results|
+
+.. |rest-search-results| image:: /_static/rest-search-results.png
+
+
+Note
+----
+
+In previous versions of **djangoSHOP**, these kinds of controller implementations had to be
+implemented by customized Django View classes. This programming pattern led to bloated code,
+because the programmer had to do a case distinction, whether the request was of type GET, POST
+or some kind of Ajax. Now **djangoSHOP** is shipped with reusable View classes, and the merchant's
+implementation must focus exclusively on serializers. This is much easier, because it separates the
+business logic from the underlying request-response-cycle.
 
 
 .. _directives: https://docs.angularjs.org/guide/directive
