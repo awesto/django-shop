@@ -130,6 +130,10 @@ class ProductDetailSerializerBase(ProductCommonSerializer):
     """
     Serialize all fields of the Product model, for the products detail view.
     """
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('label', 'catalog')
+        super(ProductDetailSerializerBase, self).__init__(*args, **kwargs)
+
     def to_representation(self, obj):
         product = super(ProductDetailSerializerBase, self).to_representation(obj)
         # add a serialized representation of the product to the context
