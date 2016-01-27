@@ -8,27 +8,23 @@ from rest_framework.fields import empty
 from shop.rest.serializers import (ProductSummarySerializerBase, ProductDetailSerializerBase,
     AddToCartSerializer)
 from shop.search.serializers import ProductSearchSerializer as ProductSearchSerializerBase
+from .search_indexes import SmartCardIndex, SmartPhoneIndex
 if settings.SHOP_TUTORIAL in ('simple', 'i18n'):
     Product = import_string('myshop.models.{}.smartcard.SmartCard'.format(settings.SHOP_TUTORIAL))
 else:
     Product = import_string('myshop.models.polymorphic.product.Product')
-from .search_indexes import SmartCardIndex, SmartPhoneIndex
 
 
 class ProductSummarySerializer(ProductSummarySerializerBase):
     media = serializers.SerializerMethodField()
-    description = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
         fields = ('id', 'product_name', 'product_url', 'product_type', 'product_model', 'price',
-                  'media', 'description')
+                  'media',)
 
     def get_media(self, product):
         return self.render_html(product, 'media')
-
-    def get_description(self, product):
-        return self.render_html(product, 'description')
 
 
 class ProductDetailSerializer(ProductDetailSerializerBase):
