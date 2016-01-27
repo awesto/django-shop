@@ -64,7 +64,7 @@ djangoShopModule.directive('shopDialogForm', function() {
 });
 
 
-// Directive to be added to button elements.
+// Directive shop-dialog-proceed to be added to button elements.
 djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djangoUrl',
                          function($window, $http, $q, djangoUrl) {
 	var purchaseURL = djangoUrl.reverse('shop:checkout-purchase');
