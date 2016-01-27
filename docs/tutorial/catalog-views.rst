@@ -5,14 +5,6 @@ Catalog Views
 Now that we know how to create product models and how to administer them, lets have a look on how
 to route them to our views.
 
-A nice aspect of **djangoSHOP** is, that it doesn't require the programmer to write any special
-Django Views in order to render the catalogs. Instead all business logic goes into their
-products classes, their model managers or into their serializers.
-
-Although in **djangoSHOP** it is possible to create explicit categories which act as list views
-for our products, normally a special CMS page can do this job if used in combination with a
-simple CMS apphook_.
-
 When editing the CMS page used for the products list view, open **Advanced Settings** and chose
 **Products List** from the select box labeled **Application**.
 

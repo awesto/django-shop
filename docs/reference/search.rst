@@ -233,7 +233,7 @@ In the Search View we link the serializer together with a `djangoCMS apphook`_. 
 ``ProductsListApp`` used to render the catalog view:
 
 .. code-block:: python
-	:caption: myshop/cms_apps.py
+	:caption: myshop/cms_app.py
 
 	from cms.app_base import CMSApp
 	from cms.apphook_pool import apphook_pool
@@ -244,7 +244,7 @@ In the Search View we link the serializer together with a `djangoCMS apphook`_. 
 	
 	apphook_pool.register(ProductSearchApp)
 
-as all other apphooks, it requires a file defining its urlpatterns:
+as all apphooks, it requires a file defining its urlpatterns:
 
 .. code-block:: python
 	:caption: myshop/urls/search.py
@@ -263,7 +263,7 @@ as all other apphooks, it requires a file defining its urlpatterns:
 Search Result Page
 ------------------
 
-As with all other pages in **djangoCMS**, the page displaying the search result is a normal CMS
+As with all other pages in **djangoSHOP**, the page displaying the search result is a normal CMS
 page too. It is suggested to create this page on the root level of the page tree.
 
 As the page title use "*Search*" or whatever is appropriate in your language. Then change into
@@ -276,12 +276,14 @@ coded string.
 
 Set the input field **Soft root** to checked. This hides this special page from our menu list.
 
-As **Application**, select "*Search*". This selects the apphook created in the previous section.
+As **Application**, select "*Search*". This selects the apphook we created in the previous section.
 
 Then save the page, change into **Structure** mode and locate the Main Content Container. Add
-a container with a Row and Column. As the child of this column chose the **Search Results** plugin.
+a container with a Row and Column. As the child of this column chose the **Search Results** plugin
+ from section **Shop**.
 
-Finally publish the page and enter some text into the search field. 
+Finally publish the page and enter some text into the search field. It should render a list of
+found products.
 
 |product-search-results|
 
@@ -314,12 +316,15 @@ Into these urlpatterns add the following entry:
 	from myshop.serializers import CatalogSearchSerializer
 	
 	urlpatterns = patterns('',
-	    # other patterns
+	    # previous patterns
 	    url(r'^search-catalog$', SearchView.as_view(
 	        serializer_class=CatalogSearchSerializer,
 	    )),
 	    # other patterns
 	)
+
+.. note:: Be careful the the regular expression for ``^search-catalog$`` matches before the
+		product's detail view, which usually is looks for patterns matching ``^(?P<slug>[\w-]+)$``.
 
 The ``CatalogSearchSerializer`` used here is very similar to the ``ProductSearchSerializer`` we have
 seen in the previous section. The only difference is, that instead of the ``search_media`` field

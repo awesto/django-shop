@@ -1,13 +1,18 @@
-.. _cart:
+.. _cart-checkout:
 
-====
-Cart
-====
+=================
+Cart and Checkout
+=================
 
 In **djangoSHOP** the cart's content is always stored inside the database. In previous versions of
 the software, the cart's content was kept inside the session for anonymous users and stored in the
 database for logged in users. Now the cart is always stored in the database. This approach
 simplifies the code and saves some random access memory, but adds another minor problem:
+
+From a technical point of view, the checkout page is the same as the cart. They can both be on
+separate pages, or be merged on the same page. Since what we would normally name the
+"*Checkout Page*", is only a collection of :ref:`cascade-plugins`, we won't go into further detail
+here.
 
 
 Expired Carts
@@ -121,8 +126,10 @@ It is suggested to check the checkbox named **Soft root**. This prevents that a 
 render a special cart symbol located on the right of the navigation bar.
 
 
-Add a Cart via CMS-Cascade Plugin
----------------------------------
+.. _cart-cascade-plugin:
+
+Cart using a Cascade Plugin
+---------------------------
 
 Click onto **View on site** and change into front-end editing mode to use the grid-system of
 djangocms-cascade_. Locate the main placeholder and add a **Row** followed by at least one
