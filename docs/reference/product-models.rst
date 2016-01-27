@@ -1,16 +1,20 @@
-=========================================================
-Describe your products through customized database models
-=========================================================
+.. _product-models:
+
+==============
+Product Models
+==============
 
 Products can vary wildly, and modeling them is not always trivial. Some products are salable in
 pieces, while others are continues. Trying to define a set of product models, capable for describing
 all such scenarios is impossible – 
 
 
-Describe your Products by Customizing the Model
-===============================================
+Describe Products by customizing the Model
+==========================================
 
-**DjangoSHOP** requires to describe your products instead of prescribing prefabricated models.
+**DjangoSHOP** requires to describe products instead of prescribing prefabricated models.
+
+All in all, we (or our ERP) knows best how our products should be modelled!
 
 
 E-commerce solutions, claiming to be plug-and-play, usually use one of these (anti-)patterns
@@ -59,11 +63,11 @@ the request object. This gives the merchant the ability to vary the price and/or
 depending on the geographic location, the customers login status, the browsers user-agent, or
 whatever else.
 
-An optional, but highly recommended field is the products item number, declared as ``product_code``.
-It shall return a unique and language independent identifier for each product, to be identifiable.
-In most cases the product code is implemented by the product model itself, but in some circumstances
-it may be implemented by the products markedness or variation. The ``SmartPhone``from the demo code
-is one such example.
+An optional, but highly recommended field is the products item number, declared as
+``product_code``. It shall return a unique and language independent identifier for each product,
+to be identifiable. In most cases the product code is implemented by the product model itself, but
+in some circumstances it may be implemented by the products markedness or variation. The
+``SmartPhone`` from the demo code is one such example.
 
 The example section of **djangoSHOP** contains a few models which can be copied and adopted to the
 specific needs of the merchants products. Let's have a look at a few use-cases:
@@ -91,11 +95,14 @@ Therefore we would model our smart-phones using a database model similar to the 
 	from shop.money import Money
 	
 	class SmartPhoneModel(BaseProduct):
-	    product_name = models.CharField(max_length=255, verbose_name=_("Product Name"))
+	    product_name = models.CharField(max_length=255,
+	        verbose_name=_("Product Name"))
 	    slug = models.SlugField(verbose_name=_("Slug"))
-	    description = HTMLField(help_text=_("Some more detailed description."))
-	    manufacturer = models.ForeignKey(Manufacturer, verbose_name=_("Manufacturer"))
-	    screen_size = models.DecimalField(_("Screen size"), max_digits=4, decimal_places=2)
+	    description = HTMLField(help_text=_("Detailed description."))
+	    manufacturer = models.ForeignKey(Manufacturer,
+	        verbose_name=_("Manufacturer"))
+	    screen_size = models.DecimalField(_("Screen size"),
+	        max_digits=4, decimal_places=2)
 	    # other fields to map the specification sheet
 	
 	    objects = BaseProductManager()
@@ -107,7 +114,8 @@ Therefore we would model our smart-phones using a database model similar to the 
 	
 	class SmartPhone(models.Model):
 	    product_model = models.ForeignKey(SmartPhoneModel)
-	    product_code = models.CharField(_("Product code"), max_length=255, unique=True)
+	    product_code = models.CharField(_("Product code"),
+	        max_length=255, unique=True)
 	    unit_price = MoneyField(_("Unit price"))
 	    storage = models.PositiveIntegerField(_("Internal Storage"))
 
@@ -216,3 +224,40 @@ unify the classes ``SmartPhoneModel`` and ``SmartPhone`` and move the attributes
 and ``unit_price`` into the class ``Product``. This would simplify some programming aspects, but
 would require the merchant to add a lot of information twice. Therefore we remain with the
 model layout presented here.
+
+
+Caveat using a ``ManyToManyField`` with existing models
+=======================================================
+
+Sometimes we may need to use a ``ManyToManyField`` for models which are handled by other apps in
+our project. This for example could be an attribute ``files`` referring the model
+``filer.FilerFileField`` from the library django-filer_. Here Django would try to create a mapping
+table, where the foreign key to our product model can not be resolved properly, because while
+bootstrapping the application, our Product model is still considered to be deferred.
+
+Therefore, we have to create our own mapping model and refer to it using the ``through``
+parameter, as shown in this example:
+
+.. code-block:: python
+
+	from six import with_metaclass
+	from django.db import models
+	from filer.fields.file import FilerFileField 
+	from shop.models import deferred
+	from shop.models.product import BaseProductManager, BaseProduct
+	
+	class ProductFile(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
+	    file = FilerFileField()
+	    product = deferred.ForeignKey(BaseProduct)
+	
+	class Product(BaseProduct):
+	    # other fields
+	    files = models.ManyToManyField('filer.File', through=ProductFile)
+	
+	    objects = ProductManager()
+
+.. note:: Do not use this example for creating a many-to-many field to ``FilerImageField``.
+	Instead use :class:`shop.models.related.BaseProductImage` which is a base class for this kind
+	of mapping. Just import and materialize it, in your own project.
+
+.. _django-filer: https://github.com/divio/django-filer

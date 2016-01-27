@@ -329,8 +329,10 @@ quantity. Since this modifier sets the cart items line total, it must be listed 
 in ``SHOP_CART_MODIFIERS``.
 
 
-Payment Cart Modifiers
-~~~~~~~~~~~~~~~~~~~~~~
+.. _payment-cart-modifier:
+
+Payment Cart Modifier
+~~~~~~~~~~~~~~~~~~~~~
 
 From these kinds of modifiers, only that for the chosen payment method is applied. Payment Modifiers
 are used to add extra costs or discounts depending on the chosen payment method. By overriding the
@@ -338,8 +340,10 @@ method ``is_disabled`` a payment method can be disabled; useful to disable certa
 the carts total is below a certain threshold.
 
 
-Shipping Cart Modifiers
-~~~~~~~~~~~~~~~~~~~~~~~
+.. _shipping-cart-modifier:
+
+Shipping Cart Modifier
+~~~~~~~~~~~~~~~~~~~~~~
 
 From these kinds of modifiers, only that for the chosen shipping method is applied. Shipping
 Modifiers are used to add extra costs or discounts depending on chosen shipping method, the number

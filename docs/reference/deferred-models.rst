@@ -30,7 +30,7 @@ Materializing such an abstract base model, means to create a concrete model with
 database table. This model creation is performed in the concrete shop implementation and must be
 done for each base model in the shop software.
 
-For instance, materialize the cart by using this code snippet inside your own shop's
+For instance, materialize the cart by using this code snippet inside our own shop's
 ``models/shopmodels.py`` files:
 
 .. code-block:: python
@@ -49,16 +49,16 @@ For instance, materialize the cart by using this code snippet inside your own sh
 	    class Meta:
 	        app_label = 'my_shop'
 
-Of course, you can add as many extra model fields to this concrete cart model, as you wish.
-All shop models, now are managed through *your* shop instance. This means that the models **Cart**,
+Of course, we can add as many extra model fields to this concrete cart model, as we wish.
+All shop models, now are managed through *our* shop instance. This means that the models **Cart**,
 **Order**, etc. now are managed by the common database migrations tools, such as
 ``./manage.py makemigration my_shop_instance`` and ``./manage.py migrate my_shop_instance``. This
 also means that these models in the admin interface are visible under **my_shop**.
 
-Often you don't need extra fields, hence the abstract shop base model is enough. Then,
+Often we don't need extra fields, hence the abstract shop base model is enough. Then,
 materializing the models can be done using some convenience classes as found in
-``shop/models/defaults``. Simply import them into ``models.py`` or ``models/__init__.py`` in your
-shop instance:
+``shop/models/defaults``. We can simply import them into ``models.py`` or ``models/__init__.py`` in
+our shop instance:
 
 .. code-block:: python
 
@@ -69,7 +69,7 @@ shop instance:
 		arern't used anywhere in ``models.py``.
 
 All the configuration settings from **djangoSHOP** <0.3: ``PRODUCT_MODEL``, ``ORDER_MODEL``,
-``ORDER_MODEL_ITEM``, etc. are not required anymore and can safely be removed from your
+``ORDER_MODEL_ITEM``, etc. are not required anymore and can safely be removed from our
 ``settings.py``.
 
 
