@@ -9,10 +9,13 @@ from shop.search.views import SearchView
 from myshop.serializers import (ProductSummarySerializer, ProductDetailSerializer,
     AddSmartCardToCartSerializer, AddSmartPhoneToCartSerializer, CatalogSearchSerializer)
 
+filter_backends = list(api_settings.DEFAULT_FILTER_BACKENDS)
+filter_backends.append(CMSPagesFilterBackend())
+
 urlpatterns = patterns('',
     url(r'^$', ProductListView.as_view(
         serializer_class=ProductSummarySerializer,
-        filter_backends=api_settings.DEFAULT_FILTER_BACKENDS + [CMSPagesFilterBackend()],
+        filter_backends=filter_backends,
     )),
     url(r'^search-catalog$', SearchView.as_view(
         serializer_class=CatalogSearchSerializer,

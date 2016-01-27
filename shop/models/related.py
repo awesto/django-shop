@@ -12,7 +12,7 @@ from . import deferred
 class BaseProductPage(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     ManyToMany relation from the polymorphic Product to the CMS Page.
-    This is in practice is the category.
+    This in practice is the category.
     """
     page = models.ForeignKey(Page)
     product = deferred.ForeignKey(BaseProduct)
