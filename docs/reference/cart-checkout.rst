@@ -55,7 +55,7 @@ as the merchant requires for his special implementation.
 In most use-cases, the default cart implementation will do the job. These default classes can be
 found at :class:`shop.models.defaults.cart.Cart` and :class:`shop.models.defaults.cart_item.CartItem`.
 To materialize the default implementation, it is enough to ``import`` these two files into the
-merchants shop project. Otherwise create your own cart implementation inheriting from ``BaseCart``
+merchants shop project. Otherwise we create our own cart implementation inheriting from ``BaseCart``
 and ``BaseCartItem``. Since the item quantity can not always be represented by natural numbers, this
 field must be added to the ``CartItem`` implementation rather than its base class. Its field type
 must be countable, so only ``IntegerField``, ``FloatField`` or ``DecimalField`` are allowed as
@@ -112,7 +112,8 @@ Cart Views
 Displaying the cart in **djangoSHOP** is as simple, as adding any other page to the CMS. Change into
 the Django admin backend and enter into the CMS page tree. At an appropriate location in that tree
 add a new page. As page title use "Cart", "Basket", "Warenkorb", "Cesta", or whatever is appropriate
-in your language. Multilingual CMS installations offer a page title for each language.
+in the natural language used for that site. Multilingual CMS installations offer a page title for
+each language.
 
 In the CMS page editor click onto the link named **Advanced Settings** at the bottom of the popup
 window. As template, chose the default one, provided it contains at least one big placeholder_.
@@ -122,8 +123,8 @@ which link directly onto the cart view page. If this field is not set, some link
 might not work properly.
 
 It is suggested to check the checkbox named **Soft root**. This prevents that a menu item named
-“Cart” will appear side by side with other pages from the CMS. Instead, presumably you prefer to
-render a special cart symbol located on the right of the navigation bar.
+"Cart" will appear side by side with other pages from the CMS. Instead, we prefer to render a
+special cart symbol located on the right of the navigation bar.
 
 
 .. _cart-cascade-plugin:
@@ -213,8 +214,8 @@ straight-forward to override Angular's `script templates`_ using Django's intern
 Multiple templates
 ..................
 
-If for some special reasons you need different cart templates, then add this line to the projects
-``settings.py``:
+If for some special reasons we need different cart templates, then we must add this line to the
+projects ``settings.py``:
 
 .. code-block:: python
 
@@ -265,9 +266,9 @@ it for that page.
 
 From a technical point of view, it does not make any difference whether we use the cart plugin or a
 handcrafted template. If the HTML code making up the cart has to be adopted to the merchants needs,
-you normally are better off and much more flexible, if you override the template code as described
-in section :ref:`cart-render-templates`. Therefore, you are strongly discouraged to craft your cart
-and checkout templates by hand. 
+we normally are better off and much more flexible, if we override the template code as described
+in section :ref:`cart-render-templates`. Therefore, it is strongly discouraged to craft cart and
+checkout templates by hand. 
 
 
 Cart Modifiers

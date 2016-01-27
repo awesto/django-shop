@@ -62,8 +62,8 @@ the application server with the Elasticsearch database:
 	    },
 	}
 
-If you need indices for different natural languages on your site, add the non-default languages to
-this Python dictionary using a different ``INDEX_NAME`` for each of them.
+In case we need indices for different natural languages on our site, we shall add the non-default
+languages to this Python dictionary using a different ``INDEX_NAME`` for each of them.
 
 Finally configure the site, so that search queries are routed to the correct index using the
 currently active natural language:
@@ -266,8 +266,8 @@ Search Result Page
 As with all other pages in **djangoSHOP**, the page displaying the search result is a normal CMS
 page too. It is suggested to create this page on the root level of the page tree.
 
-As the page title use "*Search*" or whatever is appropriate in your language. Then change into
-advanced setting.
+As the page title use "*Search*" or whatever is appropriate in our natural language. Then we change
+into advanced setting.
 
 As a template use one with a big placeholder, since it must display our search results.
 

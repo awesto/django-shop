@@ -68,8 +68,8 @@ Order Views
 Displaying the last or former orders in **djangoSHOP** is as simple, as adding two page to the CMS.
 Change into the Django admin backend and enter into the CMS page tree. At an appropriate location
 in that tree add a new page. As page title use "My Orders", "Ihre Bestellungen", "Mis Pedidos", or
-whatever is appropriate in your language. Multilingual CMS installations offer a page title for each
-language.
+whatever is appropriate in the natural language used for that site. Multilingual CMS installations
+offer a page title for each language.
 
 In the CMS page editor click onto the link named **Advanced Settings** at the bottom of the popup
 window. As template, chose the default one, provided it contains at least one big placeholder_.
@@ -96,7 +96,7 @@ djangocms-cascade_. Locate the main placeholder and add a **Row** followed by at
 **Column** plugin; both can be found in section **Bootstrap**. Below that column plugin, add a
 child named **Order Views** from section **Shop**.
 
-You have to perform this operation a second time for the page named "Thanks for Your Order". The
+We have to perform this operation a second time for the page named "Thanks for Your Order". The
 context menus for copying and pasting may be helpful here.
 
 Note the the page "My Orders" handles two views: By invoking it as a normal CMS page, it renders
@@ -244,8 +244,8 @@ one target to another one, without manual intervention, such as clicking onto a 
 Finite State Machine Diagram
 ----------------------------
 
-If graphviz_ is installed on your system, it is pretty simple to render a graphical representation
-of the currently configured Finite State Machine. Simply invoke:
+If graphviz_ is installed on the operating system, it is pretty simple to render a graphical
+representation of the currently configured Finite State Machine. Simply invoke:
 
 .. code-block:: shell
 

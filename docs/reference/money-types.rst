@@ -10,7 +10,7 @@ available currency, this wasn't a major issue, because the currency symbol could
 anywhere on the site.
 
 However, for sites offering pricing information in more than one currency, this caused major
-problems. When you needed to perform calculations with amounts that have an associated currency,
+problems. When we needed to perform calculations with amounts that have an associated currency,
 it is very common to make mistakes by mixing different currencies. It also is common to perform
 incorrect conversions that generate wrong results. Python doesn't allow developers to associate a
 specific decimal value with a unit.
@@ -23,14 +23,14 @@ MoneyMaker
 
 This class can not be instantiated, but is a factory for building a money type with an associated
 currency. Internally it uses the well established ``Decimal`` type to keep track of the amount.
-Additionally, it restricts operations on the current Money type. For instance, you can't sum up
-Dollars with Euros. You also can't multiply two currencies with each other.
+Additionally, it restricts operations on the current Money type. For instance, we can't sum up
+Dollars with Euros. We also can't multiply two currencies with each other.
 
 
 Not a Number
 ------------
 
-In special occurrences you'd rather want to specify “no amount” rather than an amount of 0.00 (zero).
+In special occurrences we'd rather want to specify "no amount" rather than an amount of 0.00 (zero).
 This can be useful for free samples, or when an item is currently not available. The Decimal type
 denotes a kind of special value a ``NaN`` – for “Not a Number”. Our Money type also knows about
 this special value, and when rendered, ``€ –`` is printed out.
@@ -71,17 +71,17 @@ By calling ``MoneyMaker()`` a type accepting amounts in the *default currency* i
 The default currency can be changed in ``settings.py`` with ``SHOP_DEFAULT_CURRENCY = 'USD'``,
 using one of the official ISO-4217 currency codes.
 
-Alternatively, you can create your own Money type, for instance ``Yen``.
+Alternatively, we can create our own Money type, for instance ``Yen``.
 
 
-Printing Money
---------------
+Formating Money
+---------------
 
 When the amount of a money type is printed or forced to text using ``str(price)``, it is prefixed
 by the currency symbol. This is fine, when working with only a few currencies. However, some symbols
 are ambiguous, for instance Canadian, Australian and US Dollars, which all use the "$" symbol.
 
-With the setting ``SHOP_MONEY_FORMAT`` you can style how money is going to be printed. This
+With the setting ``SHOP_MONEY_FORMAT`` we can style how money is going to be printed out. This
 setting defaults to ``{symbol} {amount}``. The following format strings are allowed:
 
  * ``{symbol}``: The short symbol for a currency, for instance ``$``, ``£``, ``€``, ``¥``, etc.
@@ -89,14 +89,14 @@ setting defaults to ``{symbol} {amount}``. The following format strings are allo
  * ``{currency}``: The spoken currency description, for instance “US Dollar”, “Pound Sterling”, etc.
  * ``{amount}``: The amount, unlocalized.
 
-Thus, if you prefer to print ``9.98 US Dollar``, then use ``{amount} {currency}`` as the formatting
-string.
+Thus, if we prefer to print ``9.98 US Dollar``, then we should set ``{amount} {currency}`` as the
+formatting string.
 
 
 Localizing Money
 ================
 
-Since the Money class doesn't know anything about your current locale setting, amounts always are
+Since the Money class doesn't know anything about our current locale setting, amounts always are
 printed unlocalized. To localize a Money type, use ``django.utils.numberformat.format(someamount)``.
 This function will return the amount, localized according to the current HTTP request.
 
@@ -108,7 +108,7 @@ Money can be stored in the database, keeping the currency information together w
 Internally, the database uses the Decimal type, but such a field knows its currency and will return
 an amount as ``MoneyIn...`` type. This prevents implicit, but accidental currency conversions.
 
-In your database model, declare a field as:
+In our database model, declare a field as:
 
 .. code-block:: python
 

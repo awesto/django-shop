@@ -2,8 +2,8 @@
 Catalog
 =======
 
-The catalog probably is that part, where customers of your e-commerce site spend the most time
-with. Often it even makes sense, to start the :ref:`catalog-list` on the main landing page.
+The catalog probably is that part, where customers of our e-commerce site spend the most time.
+Often it even makes sense, to start the :ref:`catalog-list` on the main landing page.
 
 In this documentation we presume that categories of products are built up using specially tagged
 CMS pages in combination with a `djangoCMS apphook`_. This works perfectly well for most
@@ -12,9 +12,9 @@ implementation, but some sites may require categories implemented independently 
 Using an external **djangoSHOP** plugin for managing categories is a very conceivable solution,
 and we will see separate implementations for this feature request. Using such an external category
 plugin can make sense, if this e-commerce site requires hundreds of hierarchical levels
-or these categories require a set of attributes which are not available in CMS pages. If you use
-externally implemented categories, please refer to their documentation, since here we proceed
-using CMS pages as categories.
+or these categories require a set of attributes which are not available in CMS pages. If you are
+going to use externally implemented categories, please refer to their documentation, since here we
+proceed using CMS pages as categories.
 
 A nice aspect of **djangoSHOP** is, that it doesn't require the programmer to write any special
 Django Views in order to render the catalog. Instead all merchant dependent business logic goes
@@ -90,20 +90,22 @@ Add the Catalog to the CMS
 --------------------------
 
 In the page list editor of **djangoCMS**, create a new page at an appropriate location of the
-page tree. As the page title and slug use something describing your products catalog in a way,
-both meaningful to the customers as well as to search engines. Then change into advanced setting.
+page tree. As the page title and slug we should use something describing our product catalog in a
+way, both meaningful to the customers as well as to search engines.
 
-As a template use one with a big placeholder, since it must display our list of products.
+Next, we change into advanced setting.
 
-As **Application**, select "*Catalog List*" or whatever you named your ``ProductsListApp``. This
+As a template we use one with a big placeholder, since it must display our list of products.
+
+As **Application**, select "*Catalog List*" or whatever we named our ``ProductsListApp``. This
 selects the apphook we created in the previous section.
 
-Then save the page, change into **Structure** mode and locate the Main Content Container. Add
-a container with a Row and Column. As the child of this column chose the **Catalog List View**
-plugin from section **Shop**.
+Then we save the page, change into **Structure** mode and locate the Main Content Container. Here
+we add a container with a Row and Column. As the child of this column we chose a
+**Catalog List View** plugin from section **Shop**.
 
-Finally publish the page and enter some text into the search field. Since we haven't assigned any
-products to the CMS page, we won't see anything yet.
+Finally we publish the page and enter some text into the search field. Since we haven't assigned
+any products to the CMS page, we won't see anything yet.
 
 
 .. _catalog-detail:

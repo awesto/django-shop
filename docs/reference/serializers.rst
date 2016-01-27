@@ -28,10 +28,10 @@ that mean?
 Catalog List View
 -----------------
 
-Say, you are working with the provided demo shop, then the product's list view is available at
+Say, we are working with the provided demo shop, then the product's list view is available at
 http://localhost:8000/de/shop/ . By appending ``?format=json`` to the URL, the raw data making up 
 our product list, is rendered as a JSON object. For humans, this is difficult to read, therefore
-the Django Restframework offers a version which is more legible: Instead of the above, invoke the
+the Django Restframework offers a version which is more legible: Instead of the above, we invoke the
 URL as http://localhost:8000/de/shop/?format=api . This renders the list of products as:
 
 |rest-catalog-list|
@@ -101,10 +101,10 @@ Products List View
 ~~~~~~~~~~~~~~~~~~
 
 The urlpattern matching the regular expression ``^$`` routes onto the catalog list view class
-:class:`shop.views.catalog.ProductListView` passing in a special serializer class,
+:class:`shop.views.catalog.ProductListView` passing in a special serializer class, for example
 :class:`myshop.serializers.ProductSummarySerializer`. This has been customized to represent our
 product models in our catalog templates. Since the serialized data now is available as a Python
-dictionary or as a Plain Old Javascript Object, these templates then can be rendered by the Django
+dictionary or as a plain Javascript object, these templates then can be rendered by the Django
 template engine, as well as by the client using for instance AngularJS.
 
 This View class, which inherits from :class:`rest_framework.generics.ListAPIView` accepts a list of
@@ -168,7 +168,7 @@ Cart and Checkout Views
 CMS pages containing forms to edit the cart and the checkout views, do not require any URL routing,
 because their HTML is rendered by the CMS plugin system, whereas form submissions are handled
 by hard coded REST endpoints. These URLs are exclusively used by Ajax requests and never visible
-in the URL line of your browser. Those endpoints are configured by adding them to the root resolver
+in the URL line of our browser. Those endpoints are configured by adding them to the root resolver
 at a project level:
 
 .. code-block:: python

@@ -19,7 +19,7 @@ gateway.
 A precautionary measure during payments with credit cards is, that the used e-commerce
 implementation never sees the card numbers or any other sensible information. Otherwise those
 merchants would have to be `PCI-DSS certified`_, which is an additional, but often unnecessary
-bureaucratic task, since most PSPs handle that task for you.
+bureaucratic task, since most PSPs handle that task for us.
 
 
 Checkout Forms

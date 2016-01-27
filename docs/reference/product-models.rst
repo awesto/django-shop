@@ -14,17 +14,17 @@ Describe Products by customizing the Model
 
 **DjangoSHOP** requires to describe products instead of prescribing prefabricated models.
 
-All in all, we (or our ERP) knows best how our products should be modelled!
+All in all, we know best how our products should be modelled!
 
 
 E-commerce solutions, claiming to be plug-and-play, usually use one of these (anti-)patterns
 --------------------------------------------------------------------------------------------
 
 Either, they offer a field for every possible variation, or they use the `Entity Attribute Value`_
-(EAV) pattern to add meta-data for each of your models. This at a first glance seems to be easy.
+(EAV) pattern to add meta-data for each of our models. This at a first glance seems to be easy.
 But both approaches are unwieldy and have serious drawbacks. They both apply a different "physical
 schema" – the way data is stored, rather than a "logical schema" – the way users and applications
-require that data. As soon as you have to combine your e-commerce solution with some
+require that data. As soon as we have to combine our e-commerce solution with some
 Enterprise Resource Planning (ERP) software, additional back-and-forward conversion routines have
 to be added.
 

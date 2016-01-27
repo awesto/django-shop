@@ -57,8 +57,8 @@ Notification attachments
 ------------------------
 
 Chose none, one or more static files to be attached to each email. This typically is a PDF with
-the terms and conditions. You normally want to send them only to the customer, but not to your
-staff users.
+the terms and conditions. We normally want to send them only to our customers, but not to the
+staff users, otherwise we'd fill up their mail inbox with countless attachments.
 
 
 Post Office
