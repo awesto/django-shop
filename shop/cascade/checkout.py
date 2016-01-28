@@ -28,7 +28,8 @@ from .plugin_base import ShopPluginBase, ShopButtonPluginBase, DialogFormPluginB
 
 class ProceedButtonForm(TextLinkFormMixin, LinkForm):
     link_content = CharField(label=_("Button Content"))
-    LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")), ('RELOAD_PAGE', _("Reload Page")), ('PURCHASE_NOW', _("Purchase Now")),)
+    LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")), ('RELOAD_PAGE', _("Reload Page")),
+        ('PURCHASE_NOW', _("Purchase Now")),)
 
 
 class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
@@ -36,7 +37,7 @@ class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
     This button is used to proceed from one checkout step to the next one.
     """
     name = _("Proceed Button")
-    parent_classes = ('BootstrapColumnPlugin',)
+    parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin',)
     model_mixins = (LinkElementMixin,)
 
     def get_form(self, request, obj=None, **kwargs):
