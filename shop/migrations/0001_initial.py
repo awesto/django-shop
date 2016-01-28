@@ -1,349 +1,236 @@
-# flake8: noqa
-# encoding: utf-8
-import datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
-class Migration(SchemaMigration):
-
-    def forwards(self, orm):
-
-        # Adding model 'Product'
-        db.create_table('shop_product', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('polymorphic_ctype', self.gf('django.db.models.fields.related.ForeignKey')(related_name='polymorphic_shop.product_set', null=True, to=orm['contenttypes.ContentType'])),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('slug', self.gf('django.db.models.fields.SlugField')(max_length=50, db_index=True)),
-            ('short_description', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('long_description', self.gf('django.db.models.fields.TextField')()),
-            ('active', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('date_added', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('last_modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-            ('unit_price', self.gf('django.db.models.fields.DecimalField')(default='0.00', max_digits=12, decimal_places=2)),
-        ))
-        db.send_create_signal('shop', ['Product'])
-
-        # Adding model 'Cart'
-        db.create_table('shop_cart', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['auth.User'], unique=True, null=True, blank=True)),
-            ('date_created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('last_updated', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-        ))
-        db.send_create_signal('shop', ['Cart'])
-
-        # Adding model 'CartItem'
-        db.create_table('shop_cartitem', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('cart', self.gf('django.db.models.fields.related.ForeignKey')(related_name='items', to=orm['shop.Cart'])),
-            ('quantity', self.gf('django.db.models.fields.IntegerField')()),
-            ('product', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['shop.Product'])),
-        ))
-        db.send_create_signal('shop', ['CartItem'])
-
-        # Adding model 'Client'
-        db.create_table('shop_client', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.OneToOneField')(related_name='client', unique=True, to=orm['auth.User'])),
-            ('date_of_birth', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-        ))
-        db.send_create_signal('shop', ['Client'])
-
-        # Adding model 'Country'
-        db.create_table('shop_country', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=255)),
-        ))
-        db.send_create_signal('shop', ['Country'])
-
-        # Adding model 'Address'
-        db.create_table('shop_address', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('client', self.gf('django.db.models.fields.related.ForeignKey')(related_name='addresses', to=orm['shop.Client'])),
-            ('address', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('address2', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('zip_code', self.gf('django.db.models.fields.CharField')(max_length=20)),
-            ('city', self.gf('django.db.models.fields.CharField')(max_length=20)),
-            ('state', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('country', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['shop.Country'])),
-            ('is_shipping', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('is_billing', self.gf('django.db.models.fields.BooleanField')(default=False)),
-        ))
-        db.send_create_signal('shop', ['Address'])
-
-        # Adding model 'Order'
-        db.create_table('shop_order', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], null=True, blank=True)),
-            ('status', self.gf('django.db.models.fields.IntegerField')(default=1)),
-            ('order_subtotal', self.gf('django.db.models.fields.DecimalField')(default='0.00', max_digits=12, decimal_places=2)),
-            ('order_total', self.gf('django.db.models.fields.DecimalField')(default='0.00', max_digits=12, decimal_places=2)),
-            ('payment_method', self.gf('django.db.models.fields.CharField')(max_length=255, null=True)),
-            ('shipping_name', self.gf('django.db.models.fields.CharField')(max_length=255, null=True)),
-            ('shipping_address', self.gf('django.db.models.fields.CharField')(max_length=255, null=True)),
-            ('shipping_address2', self.gf('django.db.models.fields.CharField')(max_length=255, null=True)),
-            ('shipping_city', self.gf('django.db.models.fields.CharField')(max_length=255, null=True)),
-            ('shipping_zip_code', self.gf('django.db.models.fields.CharField')(max_length=20, null=True)),
-            ('shipping_state', self.gf('django.db.models.fields.CharField')(max_length=255, null=True)),
-            ('shipping_country', self.gf('django.db.models.fields.CharField')(max_length=255, null=True)),
-            ('billing_name', self.gf('django.db.models.fields.CharField')(max_length=255, null=True)),
-            ('billing_address', self.gf('django.db.models.fields.CharField')(max_length=255, null=True)),
-            ('billing_address2', self.gf('django.db.models.fields.CharField')(max_length=255, null=True)),
-            ('billing_city', self.gf('django.db.models.fields.CharField')(max_length=255, null=True)),
-            ('billing_zip_code', self.gf('django.db.models.fields.CharField')(max_length=20, null=True)),
-            ('billing_state', self.gf('django.db.models.fields.CharField')(max_length=255, null=True)),
-            ('billing_country', self.gf('django.db.models.fields.CharField')(max_length=255, null=True)),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-        ))
-        db.send_create_signal('shop', ['Order'])
-
-        # Adding model 'OrderItem'
-        db.create_table('shop_orderitem', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('order', self.gf('django.db.models.fields.related.ForeignKey')(related_name='items', to=orm['shop.Order'])),
-            ('product_reference', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('product_name', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('unit_price', self.gf('django.db.models.fields.DecimalField')(default='0.00', max_digits=12, decimal_places=2)),
-            ('quantity', self.gf('django.db.models.fields.IntegerField')()),
-            ('line_subtotal', self.gf('django.db.models.fields.DecimalField')(default='0.00', max_digits=12, decimal_places=2)),
-            ('line_total', self.gf('django.db.models.fields.DecimalField')(default='0.00', max_digits=12, decimal_places=2)),
-        ))
-        db.send_create_signal('shop', ['OrderItem'])
-
-        # Adding model 'OrderExtraInfo'
-        db.create_table('shop_orderextrainfo', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('order', self.gf('django.db.models.fields.related.ForeignKey')(related_name='extra_info', to=orm['shop.Order'])),
-            ('text', self.gf('django.db.models.fields.TextField')()),
-        ))
-        db.send_create_signal('shop', ['OrderExtraInfo'])
-
-        # Adding model 'ExtraOrderPriceField'
-        db.create_table('shop_extraorderpricefield', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('order', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['shop.Order'])),
-            ('label', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('value', self.gf('django.db.models.fields.DecimalField')(default='0.00', max_digits=12, decimal_places=2)),
-            ('is_shipping', self.gf('django.db.models.fields.BooleanField')(default=False)),
-        ))
-        db.send_create_signal('shop', ['ExtraOrderPriceField'])
-
-        # Adding model 'ExtraOrderItemPriceField'
-        db.create_table('shop_extraorderitempricefield', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('order_item', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['shop.OrderItem'])),
-            ('label', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('value', self.gf('django.db.models.fields.DecimalField')(default='0.00', max_digits=12, decimal_places=2)),
-        ))
-        db.send_create_signal('shop', ['ExtraOrderItemPriceField'])
-
-        # Adding model 'OrderPayment'
-        db.create_table('shop_orderpayment', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('order', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['shop.Order'])),
-            ('amount', self.gf('django.db.models.fields.DecimalField')(default='0.00', max_digits=12, decimal_places=2)),
-            ('transaction_id', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('payment_method', self.gf('django.db.models.fields.CharField')(max_length=255)),
-        ))
-        db.send_create_signal('shop', ['OrderPayment'])
+from django.db import models, migrations
+import jsonfield.fields
+from decimal import Decimal
+import shop.util.fields
+import django.db.models.deletion
+from django.conf import settings
 
 
-    def backwards(self, orm):
+class Migration(migrations.Migration):
 
-        # Deleting model 'Product'
-        db.delete_table('shop_product')
+    dependencies = [
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('contenttypes', '0001_initial'),
+    ]
 
-        # Deleting model 'Cart'
-        db.delete_table('shop_cart')
-
-        # Deleting model 'CartItem'
-        db.delete_table('shop_cartitem')
-
-        # Deleting model 'Client'
-        db.delete_table('shop_client')
-
-        # Deleting model 'Country'
-        db.delete_table('shop_country')
-
-        # Deleting model 'Address'
-        db.delete_table('shop_address')
-
-        # Deleting model 'Order'
-        db.delete_table('shop_order')
-
-        # Deleting model 'OrderItem'
-        db.delete_table('shop_orderitem')
-
-        # Deleting model 'OrderExtraInfo'
-        db.delete_table('shop_orderextrainfo')
-
-        # Deleting model 'ExtraOrderPriceField'
-        db.delete_table('shop_extraorderpricefield')
-
-        # Deleting model 'ExtraOrderItemPriceField'
-        db.delete_table('shop_extraorderitempricefield')
-
-        # Deleting model 'OrderPayment'
-        db.delete_table('shop_orderpayment')
-
-
-    models = {
-        'auth.group': {
-            'Meta': {'object_name': 'Group'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
-            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
-        },
-        'auth.permission': {
-            'Meta': {'ordering': "('content_type__app_label', 'content_type__model', 'codename')", 'unique_together': "(('content_type', 'codename'),)", 'object_name': 'Permission'},
-            'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        'auth.user': {
-            'Meta': {'object_name': 'User'},
-            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
-            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
-        },
-        'contenttypes.contenttype': {
-            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
-            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        'shop.address': {
-            'Meta': {'object_name': 'Address'},
-            'address': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'address2': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'city': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
-            'client': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'addresses'", 'to': "orm['shop.Client']"}),
-            'country': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['shop.Country']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_billing': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_shipping': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'state': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'zip_code': ('django.db.models.fields.CharField', [], {'max_length': '20'})
-        },
-        'shop.cart': {
-            'Meta': {'object_name': 'Cart'},
-            'date_created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'last_updated': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'user': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['auth.User']", 'unique': 'True', 'null': 'True', 'blank': 'True'})
-        },
-        'shop.cartitem': {
-            'Meta': {'object_name': 'CartItem'},
-            'cart': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'items'", 'to': "orm['shop.Cart']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'product': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['shop.Product']"}),
-            'quantity': ('django.db.models.fields.IntegerField', [], {})
-        },
-        'shop.client': {
-            'Meta': {'object_name': 'Client'},
-            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'date_of_birth': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'user': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'client'", 'unique': 'True', 'to': "orm['auth.User']"})
-        },
-        'shop.country': {
-            'Meta': {'object_name': 'Country'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '255'})
-        },
-        'shop.extraorderitempricefield': {
-            'Meta': {'object_name': 'ExtraOrderItemPriceField'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'label': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'order_item': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['shop.OrderItem']"}),
-            'value': ('django.db.models.fields.DecimalField', [], {'default': "'0.00'", 'max_digits': '12', 'decimal_places': '2'})
-        },
-        'shop.extraorderpricefield': {
-            'Meta': {'object_name': 'ExtraOrderPriceField'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_shipping': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'label': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'order': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['shop.Order']"}),
-            'value': ('django.db.models.fields.DecimalField', [], {'default': "'0.00'", 'max_digits': '12', 'decimal_places': '2'})
-        },
-        'shop.order': {
-            'Meta': {'object_name': 'Order'},
-            'billing_address': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'billing_address2': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'billing_city': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'billing_country': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'billing_name': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'billing_state': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'billing_zip_code': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True'}),
-            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'order_subtotal': ('django.db.models.fields.DecimalField', [], {'default': "'0.00'", 'max_digits': '12', 'decimal_places': '2'}),
-            'order_total': ('django.db.models.fields.DecimalField', [], {'default': "'0.00'", 'max_digits': '12', 'decimal_places': '2'}),
-            'payment_method': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'shipping_address': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'shipping_address2': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'shipping_city': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'shipping_country': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'shipping_name': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'shipping_state': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'shipping_zip_code': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True'}),
-            'status': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'null': 'True', 'blank': 'True'})
-        },
-        'shop.orderextrainfo': {
-            'Meta': {'object_name': 'OrderExtraInfo'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'order': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'extra_info'", 'to': "orm['shop.Order']"}),
-            'text': ('django.db.models.fields.TextField', [], {})
-        },
-        'shop.orderitem': {
-            'Meta': {'object_name': 'OrderItem'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'line_subtotal': ('django.db.models.fields.DecimalField', [], {'default': "'0.00'", 'max_digits': '12', 'decimal_places': '2'}),
-            'line_total': ('django.db.models.fields.DecimalField', [], {'default': "'0.00'", 'max_digits': '12', 'decimal_places': '2'}),
-            'order': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'items'", 'to': "orm['shop.Order']"}),
-            'product_name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'product_reference': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'quantity': ('django.db.models.fields.IntegerField', [], {}),
-            'unit_price': ('django.db.models.fields.DecimalField', [], {'default': "'0.00'", 'max_digits': '12', 'decimal_places': '2'})
-        },
-        'shop.orderpayment': {
-            'Meta': {'object_name': 'OrderPayment'},
-            'amount': ('django.db.models.fields.DecimalField', [], {'default': "'0.00'", 'max_digits': '12', 'decimal_places': '2'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'order': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['shop.Order']"}),
-            'payment_method': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'transaction_id': ('django.db.models.fields.CharField', [], {'max_length': '255'})
-        },
-        'shop.product': {
-            'Meta': {'object_name': 'Product'},
-            'active': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'date_added': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'last_modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'long_description': ('django.db.models.fields.TextField', [], {}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'polymorphic_ctype': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'polymorphic_shop.product_set'", 'null': 'True', 'to': "orm['contenttypes.ContentType']"}),
-            'short_description': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50', 'db_index': 'True'}),
-            'unit_price': ('django.db.models.fields.DecimalField', [], {'default': "'0.00'", 'max_digits': '12', 'decimal_places': '2'})
-        }
-    }
-
-    complete_apps = ['shop']
+    operations = [
+        migrations.CreateModel(
+            name='Address',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=255, verbose_name='Name')),
+                ('address', models.CharField(max_length=255, verbose_name='Address')),
+                ('address2', models.CharField(max_length=255, verbose_name='Address2', blank=True)),
+                ('zip_code', models.CharField(max_length=20, verbose_name='Zip Code')),
+                ('city', models.CharField(max_length=20, verbose_name='City')),
+                ('state', models.CharField(max_length=255, verbose_name='State')),
+            ],
+            options={
+                'verbose_name': 'Address',
+                'verbose_name_plural': 'Addresses',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Cart',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('date_created', models.DateTimeField(auto_now_add=True)),
+                ('last_updated', models.DateTimeField(auto_now=True)),
+                ('user', models.OneToOneField(null=True, blank=True, to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+                'abstract': False,
+                'verbose_name': 'Cart',
+                'verbose_name_plural': 'Carts',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='CartItem',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('quantity', models.IntegerField()),
+                ('cart', models.ForeignKey(related_name='items', to='shop.Cart')),
+            ],
+            options={
+                'abstract': False,
+                'verbose_name': 'Cart item',
+                'verbose_name_plural': 'Cart items',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Country',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=255)),
+            ],
+            options={
+                'verbose_name': 'Country',
+                'verbose_name_plural': 'Countries',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='ExtraOrderItemPriceField',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('label', models.CharField(max_length=255, verbose_name='Label')),
+                ('value', shop.util.fields.CurrencyField(default=Decimal('0.0'), verbose_name='Amount', max_digits=30, decimal_places=2)),
+                ('data', jsonfield.fields.JSONField(null=True, verbose_name='Serialized extra data', blank=True)),
+            ],
+            options={
+                'verbose_name': 'Extra order item price field',
+                'verbose_name_plural': 'Extra order item price fields',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='ExtraOrderPriceField',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('label', models.CharField(max_length=255, verbose_name='Label')),
+                ('value', shop.util.fields.CurrencyField(default=Decimal('0.0'), verbose_name='Amount', max_digits=30, decimal_places=2)),
+                ('data', jsonfield.fields.JSONField(null=True, verbose_name='Serialized extra data', blank=True)),
+                ('is_shipping', models.BooleanField(default=False, verbose_name='Is shipping', editable=False)),
+            ],
+            options={
+                'verbose_name': 'Extra order price field',
+                'verbose_name_plural': 'Extra order price fields',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Order',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('status', models.IntegerField(default=10, verbose_name='Status', choices=[(10, 'Processing'), (20, 'Confirming'), (30, 'Confirmed'), (40, 'Completed'), (50, 'Shipped'), (60, 'Canceled')])),
+                ('order_subtotal', shop.util.fields.CurrencyField(default=Decimal('0.0'), verbose_name='Order subtotal', max_digits=30, decimal_places=2)),
+                ('order_total', shop.util.fields.CurrencyField(default=Decimal('0.0'), verbose_name='Order Total', max_digits=30, decimal_places=2)),
+                ('shipping_address_text', models.TextField(null=True, verbose_name='Shipping address', blank=True)),
+                ('billing_address_text', models.TextField(null=True, verbose_name='Billing address', blank=True)),
+                ('created', models.DateTimeField(auto_now_add=True, verbose_name='Created')),
+                ('modified', models.DateTimeField(auto_now=True, verbose_name='Updated')),
+                ('cart_pk', models.PositiveIntegerField(null=True, verbose_name='Cart primary key', blank=True)),
+                ('user', models.ForeignKey(verbose_name='User', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+            ],
+            options={
+                'abstract': False,
+                'verbose_name': 'Order',
+                'verbose_name_plural': 'Orders',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='OrderExtraInfo',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('text', models.TextField(verbose_name='Extra info', blank=True)),
+                ('order', models.ForeignKey(related_name='extra_info', verbose_name='Order', to='shop.Order')),
+            ],
+            options={
+                'verbose_name': 'Order extra info',
+                'verbose_name_plural': 'Order extra info',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='OrderItem',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('product_reference', models.CharField(max_length=255, verbose_name='Product reference')),
+                ('product_name', models.CharField(max_length=255, null=True, verbose_name='Product name', blank=True)),
+                ('unit_price', shop.util.fields.CurrencyField(default=Decimal('0.0'), verbose_name='Unit price', max_digits=30, decimal_places=2)),
+                ('quantity', models.IntegerField(verbose_name='Quantity')),
+                ('line_subtotal', shop.util.fields.CurrencyField(default=Decimal('0.0'), verbose_name='Line subtotal', max_digits=30, decimal_places=2)),
+                ('line_total', shop.util.fields.CurrencyField(default=Decimal('0.0'), verbose_name='Line total', max_digits=30, decimal_places=2)),
+                ('order', models.ForeignKey(related_name='items', verbose_name='Order', to='shop.Order')),
+            ],
+            options={
+                'abstract': False,
+                'verbose_name': 'Order item',
+                'verbose_name_plural': 'Order items',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='OrderPayment',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('amount', shop.util.fields.CurrencyField(default=Decimal('0.0'), verbose_name='Amount', max_digits=30, decimal_places=2)),
+                ('transaction_id', models.CharField(help_text="The transaction processor's reference", max_length=255, verbose_name='Transaction ID')),
+                ('payment_method', models.CharField(help_text='The payment backend used to process the purchase', max_length=255, verbose_name='Payment method')),
+                ('order', models.ForeignKey(verbose_name='Order', to='shop.Order')),
+            ],
+            options={
+                'verbose_name': 'Order payment',
+                'verbose_name_plural': 'Order payments',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Product',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=255, verbose_name='Name')),
+                ('slug', models.SlugField(unique=True, verbose_name='Slug')),
+                ('active', models.BooleanField(default=False, verbose_name='Active')),
+                ('date_added', models.DateTimeField(auto_now_add=True, verbose_name='Date added')),
+                ('last_modified', models.DateTimeField(auto_now=True, verbose_name='Last modified')),
+                ('unit_price', shop.util.fields.CurrencyField(default=Decimal('0.0'), verbose_name='Unit price', max_digits=30, decimal_places=2)),
+                ('polymorphic_ctype', models.ForeignKey(related_name='polymorphic_shop.product_set', editable=False, to='contenttypes.ContentType', null=True)),
+            ],
+            options={
+                'abstract': False,
+                'verbose_name': 'Product',
+                'verbose_name_plural': 'Products',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='orderitem',
+            name='product',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, verbose_name='Product', blank=True, to='shop.Product', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='extraorderpricefield',
+            name='order',
+            field=models.ForeignKey(verbose_name='Order', to='shop.Order'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='extraorderitempricefield',
+            name='order_item',
+            field=models.ForeignKey(verbose_name='Order item', to='shop.OrderItem'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='cartitem',
+            name='product',
+            field=models.ForeignKey(to='shop.Product'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='address',
+            name='country',
+            field=models.ForeignKey(verbose_name='Country', blank=True, to='shop.Country', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='address',
+            name='user_billing',
+            field=models.OneToOneField(related_name='billing_address', null=True, blank=True, to=settings.AUTH_USER_MODEL),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='address',
+            name='user_shipping',
+            field=models.OneToOneField(related_name='shipping_address', null=True, blank=True, to=settings.AUTH_USER_MODEL),
+            preserve_default=True,
+        ),
+    ]
