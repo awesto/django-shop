@@ -51,6 +51,10 @@ ul.djng-form-errors, ul.djng-field-errors {
 	}
 }
 
+label.djng-field-required::after {
+	content: "\00a0*";
+}
+
 ul.djng-field-errors {
 	position: absolute;
 	li.invalid:before {

@@ -8,6 +8,8 @@ from djangular.styling.bootstrap3.forms import Bootstrap3Form, Bootstrap3ModelFo
 
 
 class DialogFormMixin(NgModelFormMixin, NgFormValidationMixin):
+    required_css_class = 'djng-field-required'
+
     def __init__(self, *args, **kwargs):
         kwargs.pop('cart', None)  # cart object must be removed, otherwise underlying methods complain
         super(DialogFormMixin, self).__init__(*args, **kwargs)

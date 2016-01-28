@@ -23,7 +23,7 @@ from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
 from shop import settings as shop_settings
 from shop.models.cart import CartModel
 from shop.modifiers.pool import cart_modifiers_pool
-from .plugin_base import ShopButtonPluginBase, DialogFormPluginBase
+from .plugin_base import ShopPluginBase, ShopButtonPluginBase, DialogFormPluginBase
 
 
 class ProceedButtonForm(TextLinkFormMixin, LinkForm):
@@ -235,3 +235,17 @@ class AcceptConditionFormPlugin(DialogFormPluginBase):
         return context
 
 DialogFormPluginBase.register_plugin(AcceptConditionFormPlugin)
+
+
+class FormFieldsRequiredPlugin(ShopPluginBase):
+    name = _("Form Fields Required")
+    template_leaf_name = 'form-fields-required.html'
+
+    def get_render_template(self, context, instance, placeholder):
+        template_names = [
+            '{0}/checkout/{1}'.format(shop_settings.APP_LABEL, self.template_leaf_name),
+            'shop/checkout/{}'.format(self.template_leaf_name),
+        ]
+        return select_template(template_names)
+
+plugin_pool.register_plugin(FormFieldsRequiredPlugin)
