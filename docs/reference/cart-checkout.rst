@@ -234,16 +234,16 @@ Proceed to Checkout
 ...................
 
 On the cart's view, the merchant may decide whether to implement the checkout forms together with
-the cart, or to create a special checkout page onto which the customer can proceed. From a practical
-point of view it doesn't make any difference, if the cart and the checkout is combined on the same
-CMS page, or if they are split on two or more pages. In the latter case simply add a button at the
-end of each page, so that the customer can proceed to the next one.
+the cart, or to create a special checkout page onto which the customer can proceed. From a technical
+point of view, it doesn't make any difference, if the cart and the checkout are combined on the same
+CMS page, or if they are split across two or more pages. In the latter case simply add a button at
+the end of each page, so that the customer can easily proceed to the next one.
 
 On the checkout page, the customer has to fill out a few forms. These can be a contact form,
 shipping and billing addresses, payment and shipping methods, and many more. Which ones depend on
-the configuration and the requirements of the shop's implementation. In :ref:`cascade-plugins`
-all shop specific CMS plugins are listed. They can be combined into whatever makes sense for a
-successful checkout.
+the configuration, the legal regulations and the requirements of the shop's implementation. In
+:ref:`cascade-plugins` all shop specific CMS plugins are listed. They can be combined into whatever
+makes sense for a successful checkout.
 
 One plugin worth mentioning is the **ProcessBarPlugin**. It can be used to group different form
 plugins into single steps to form one CMS page. The customer is only allowed to move from one step

@@ -1,3 +1,5 @@
+.. _catalog:
+
 =======
 Catalog
 =======
@@ -210,7 +212,6 @@ This HTML renderer method looks up for a template following these rules:
 .. [5] ``<product-model-name>`` is the class name of the product model in lowercase.
 .. [6] ``<field-name>`` is the attribute name of the just declared field in lowercase.
 
-
 Emulate Categories
 ------------------
 
@@ -262,8 +263,22 @@ is shipped with a special mixin class, which shall be added to the product's adm
 This then adds a horizontal filter widget to the product models. Here the merchant must select
 each CMS page, where the currently edited product shall appear on.
 
+If we are using the method ``render_html()`` to render HTML snippets, these are cached by
+**djangoSHOP**, if caching is configured and enabled for that project. Caching these snippets is
+highly recommended and gives a noticeable performance boost, specially while rendering catalog list
+views.
+
+Since we would have to wait until they expire naturally by reaching their expire time,
+**djangoSHOP** offers a mixin class to be added to the Product admin class, to expire all HTML
+snippets of a product altogether, whenever a product in saved in the backend. Simply add
+:class:`shop.admin.product.InvalidateProductCacheMixin` to the ``ProductAdmin`` class described
+above.
+
+.. note:: Due to the way keys are handled in many caching systems, the ``InvalidateProductCacheMixin``
+	only makes sense if used in combination with the redis_cache_ backend.
 
 .. _djangoCMS apphook: http://docs.django-cms.org/en/stable/how_to/apphooks.html
 .. _djangoCMS Placeholder field: http://django-cms.readthedocs.org/en/stable/how_to/placeholders.html
 .. _serializer fields: http://www.django-rest-framework.org/api-guide/fields/
 .. _templatetags from the easythumbnail: https://easy-thumbnails.readthedocs.org/en/stable/usage/#templates
+.. _redis_cache: http://django-redis-cache.readthedocs.org/en/stable/

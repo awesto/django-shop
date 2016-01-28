@@ -217,8 +217,8 @@ the expected results. In our myshop example this may look like:
 .. |rest-search-results| image:: /_static/rest-search-results.png
 
 
-Note
-----
+Final Note
+==========
 
 In previous versions of **djangoSHOP**, these kinds of controller implementations had to be
 implemented by customized Django View classes. This programming pattern led to bloated code,

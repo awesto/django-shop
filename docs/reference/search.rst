@@ -280,7 +280,7 @@ As **Application**, select "*Search*". This selects the apphook we created in th
 
 Then save the page, change into **Structure** mode and locate the Main Content Container. Add
 a container with a Row and Column. As the child of this column chose the **Search Results** plugin
- from section **Shop**.
+from section **Shop**.
 
 Finally publish the page and enter some text into the search field. It should render a list of
 found products.
