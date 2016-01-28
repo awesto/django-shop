@@ -245,14 +245,6 @@ the configuration, the legal regulations and the requirements of the shop's impl
 :ref:`cascade-plugins` all shop specific CMS plugins are listed. They can be combined into whatever
 makes sense for a successful checkout.
 
-One plugin worth mentioning is the **ProcessBarPlugin**. It can be used to group different form
-plugins into single steps to form one CMS page. The customer is only allowed to move from one step
-to the next, if all forms are valid.
-
-|processbar-step3|
-
-.. |processbar-step3| image:: /_static/checkout/processbar-step3.png
-
 
 Add a Cart via manually written Cart Template
 ---------------------------------------------

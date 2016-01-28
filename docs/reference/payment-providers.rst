@@ -40,6 +40,12 @@ solution compatible for all of them.
 
 Here **djangoSHOP** uses some Javascript during the purchase operation. Lets explain how:
 
+
+.. _the-purchasing-operation:
+
+The Purchasing Operation
+------------------------
+
 During checkout, the clients final step is to click onto a button labeled something like "Buy Now".
 This button belongs to an AngularJS controller, provided by the directive ``shop-dialog-proceed``.
 It may look similar to this:

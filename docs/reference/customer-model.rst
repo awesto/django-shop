@@ -163,6 +163,8 @@ User table. Therefore it performs better to query the User via the Customer obje
 versa.
 
 
+.. _visitors-guests-registered-customers:
+
 Anonymous Users and Visiting Customers
 --------------------------------------
 
