@@ -237,9 +237,9 @@ class AcceptConditionFormPlugin(DialogFormPluginBase):
 DialogFormPluginBase.register_plugin(AcceptConditionFormPlugin)
 
 
-class FormFieldsRequiredPlugin(ShopPluginBase):
-    name = _("Form Fields Required")
-    template_leaf_name = 'form-fields-required.html'
+class RequiredFormFieldsPlugin(ShopPluginBase):
+    name = _("Required Form Fields")
+    template_leaf_name = 'required-form-fields.html'
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
@@ -248,4 +248,4 @@ class FormFieldsRequiredPlugin(ShopPluginBase):
         ]
         return select_template(template_names)
 
-plugin_pool.register_plugin(FormFieldsRequiredPlugin)
+plugin_pool.register_plugin(RequiredFormFieldsPlugin)
