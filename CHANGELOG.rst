@@ -3,6 +3,10 @@ Version NEXT
 
 (It's awefully quiet in here, why don't you commit something?)
 
+Version 0.2.1
+=============
+* last version based on the old code base, which soll be deprected.
+
 Version 0.2.0
 =============
 
