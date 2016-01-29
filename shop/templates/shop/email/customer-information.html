@@ -1,0 +1,17 @@
+{% load i18n %}
+
+<table cellspacing="0" cellpadding="12" border="1" style="width: 100%; border: 1px solid #ddd;">
+	<caption style="font-weight: bold; font-size: 115%; padding: 20px 0 10px; text-align: center; border: 2px solid #ddd;">{% trans "Your Details" %}</caption>
+	<tr>
+		<td style="text-align: right; border: 1px solid #ddd;">{% trans "Email" %}:</td>
+		<td style="text-align: left; border: 1px solid #ddd;">{{ customer.email }}</td>
+	</tr>
+	<tr>
+		<td style="text-align: right; border: 1px solid #ddd; vertical-align: top;" valign="top">{% trans "Billing Address" %}:</td>
+		<td style="text-align: left; border: 1px solid #ddd;"><pre>{{ data.billing_address_text }}</pre></td>
+	</tr>
+	<tr>
+		<td style="text-align: right; border: 1px solid #ddd; vertical-align: top;" valign="top">{% trans "Shipping Address" %}:</td>
+		<td style="text-align: left; border: 1px solid #ddd;"><pre>{{ data.shipping_address_text }}</pre></td>
+	</tr>
+</table>

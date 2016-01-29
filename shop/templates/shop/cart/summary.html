@@ -1,0 +1,17 @@
+{% load i18n %}
+
+<div class="panel panel-default">
+	<ul class="list-group">
+		<li class="list-group-item">{% trans "Number of items" %}:<div class="pull-right half-width"><strong djng-bind-if="cart.items">{{ cart.items }}</strong></div></li>
+		<li class="list-group-item">{% trans "Subtotal" %}:<div class="pull-right half-width"><strong djng-bind-if="cart.subtotal">{{ cart.subtotal }}</strong></div></li>
+	{% for extra_row in cart.extra_rows %}
+		<li class="list-group-item" ng-if="!cart">
+		{% include 'shop/cart/extra-listitem.html' with ng=0 %}
+		</li>
+	{% endfor %}
+		<li class="list-group-item" ng-cloak ng-if="cart" ng-repeat="extra_row in cart.extra_rows">
+		{% include 'shop/cart/extra-listitem.html' with ng=1 %}
+		</li>
+	</ul>
+	<div class="panel-footer">{% trans "Total" %}:<div class="half-width pull-right"><strong djng-bind-if="cart.total">{{ cart.total }}</strong></div></div>
+</div>

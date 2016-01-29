@@ -1,0 +1,10 @@
+{% extends "shop/auth/authenticated-base.html" %}
+{% load i18n %}
+
+{% block form_title %}{% blocktrans %}Authenticated as: {{ user }}{% endblocktrans %}{% endblock %}
+
+{% block form_content %}
+<div class="form-group">
+	<button type="button" ng-click="submitForm('{% url 'shop:logout' %}')" class="btn btn-primary">{% trans "Logout" %}</button>
+</div>
+{% endblock %}

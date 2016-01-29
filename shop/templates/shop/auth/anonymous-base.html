@@ -1,0 +1,25 @@
+{% load static sekizai_tags %}
+
+{% addtoblock "js" %}<script src="{% static 'shop/js/auth.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+{% addtoblock "shop-ng-requires" %}django.shop.auth{% endaddtoblock %}
+
+{% if customer.is_anonymous %}
+<div class="panel panel-info">
+	<div class="panel-heading">
+		<div class="panel-title">{% block form_title %}Panel Title{% endblock %}</div>
+	</div>
+
+	<div class="panel-body">
+		<shop-auth-form ng-form name="{{ form_name }}" action="{{ action }}" role="form">
+	{% block form_content %}
+			<div class="alert alert-success" ng-show="success_message" ng-cloak>
+				<a class="close" ng-click="dismiss()">×</a>{% verbatim %}{{ success_message }}{% endverbatim %}
+			</div>
+			<div class="alert alert-danger" ng-show="error_message" ng-cloak>
+				<a class="close" ng-click="dismiss()">×</a>{% verbatim %}{{ error_message }}{% endverbatim %}
+			</div>
+	{% endblock form_content %}
+		</shop-auth-form>
+	</div>
+</div>
+{% endif %}

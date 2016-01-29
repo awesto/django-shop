@@ -1,43 +1,13 @@
-================
+=======
 Plugins
-================
+=======
 
-Django SHOP defines 3 types of different plugins for the time being:
+Django SHOP defines 4 types of different plugins for the time being:
 
 1. Cart modifiers
 2. Shipping modules
 3. Payment modules
-
-Cart modifiers
-===============
-
-Cart modifiers are plugins that modify the cart's contents.
-
-Rough categories could be discount modules or tax modules: rules for these modules
-are invariant, and should be "stacked".
-
-Example: "CDs are buy two get one free this month", "orders over $500 get a 10%
-discount"
-
-How they work
---------------
-Cart modifiers should extend the
-:class:`shop.cart.cart_modifiers_base.BaseCartModifier` class.
-
-Users must register these filters in the settings.SHOP_PRICE_MODIFIERS settings
-entry. Modifiers will be iterated and function in the same fashion as django
-middleware classes.
-
-:class:`BaseCartModifier` defines a set of methods that implementations should
-override, and that are called for each cart item/cart when the cart's
-:meth:`update` method is called.
-
-Example implementations
-------------------------
-
-You can refer to the :mod:`shop.cart.modifiers` package to see some example
-implementations
-
+4. Order workflow modules
 
 Shipping backends
 ==================

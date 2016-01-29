@@ -1,2 +1,2 @@
-# flake8: noqa
-import orderadmin
+# -*- coding: utf-8 -*-
+from . import notification

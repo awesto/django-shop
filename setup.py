@@ -1,6 +1,11 @@
 from setuptools import setup, find_packages
-import os
 import shop
+try:
+    from pypandoc import convert
+except ImportError:
+    def convert(filename, fmt):
+        with open(filename) as fd:
+            return fd.read()
 
 CLASSIFIERS = [
     'Environment :: Web Environment',
@@ -14,24 +19,17 @@ CLASSIFIERS = [
 ]
 
 setup(
-    author="Christopher Glass",
-    author_email="tribaal@gmail.com",
-    name='django-shop',
+    author="Jacob Rief",
+    author_email="jacob.rief@gmail.com",
+    name="django-shop",
     version=shop.__version__,
-    description='An Advanced Django Shop',
-    long_description=open(os.path.join(os.path.dirname(__file__), 'README.rst')).read(),
+    description="A RESTful Django Shop",
+    long_description=convert('README.md', 'rst'),
     url='http://www.django-shop.org/',
     license='BSD License',
     platforms=['OS Independent'],
     classifiers=CLASSIFIERS,
-    install_requires=[
-        'Django>=1.4',
-        'django-classy-tags>=0.3.3',
-        'django-polymorphic>=0.2',
-        'south>=0.7.2',
-        'jsonfield>=0.9.6'
-    ],
-    packages=find_packages(exclude=["example", "example.*"]),
+    packages=find_packages(exclude=['example', 'docs', 'tests']),
     include_package_data=True,
     zip_safe=False,
 )

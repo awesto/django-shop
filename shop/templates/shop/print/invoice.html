@@ -1,0 +1,9 @@
+{% extends "shop/print/base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Invoice" %} {{ order.get_number }}{% endblock %}
+
+{% block content %}
+	<h4>{% trans "Invoice" %}: {{ order.get_number }}</h4>
+	{% include "shop/print/order.html" %}
+{% endblock %}

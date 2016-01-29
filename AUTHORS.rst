@@ -3,6 +3,7 @@ CORE DEVELOPERS
 
 * Chris Glass (chrisglass)
 * Martin Brochhaus
+* Jacob Rief
 
 CONTRIBUTORS
 ============
@@ -22,7 +23,6 @@ CONTRIBUTORS
 * ikresoft
 * Issac Kelly
 * Jacek Mitręga
-* Jacob Rief
 * Jonas Obrist
 * Justin Steward 
 * Kristian Øllegaard

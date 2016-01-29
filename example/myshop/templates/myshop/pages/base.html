@@ -1,0 +1,60 @@
+{% load static cms_tags sekizai_tags djangular_tags i18n %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}" ng-app="djangoShop">
+<head>
+	<title>{% block title %}django SHOP demo{% endblock %}</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="robots" content="{{ ROBOTS_META_TAGS }}" />
+	<meta name="description" content="{% block meta-description %}{% endblock %}" />
+	{% block head %}{% endblock head %}
+	{% render_block "ext-css" %}
+	{% render_block "css" postprocessor "compressor.contrib.sekizai.compress" %}
+</head>
+
+{% addtoblock "js" %}<script src="{% static 'bower_components/picturefill/dist/picturefill.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+{% addtoblock "js" %}<script src="{% static 'bower_components/angular/angular.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+{% addtoblock "js" %}<script src="{% static 'bower_components/angular-sanitize/angular-sanitize.min.js' %}"></script>{% endaddtoblock %}
+{% addtoblock "js" %}<script src="{% static 'bower_components/angular-i18n/angular-locale_de.js' %}"></script>{% endaddtoblock %}
+{% addtoblock "js" %}<script src="{% static 'bower_components/angular-animate/angular-animate.min.js' %}"></script>{% endaddtoblock %}
+{% addtoblock "js" %}<script src="{% static 'bower_components/angular-messages/angular-messages.min.js' %}"></script>{% endaddtoblock %}
+
+<body>
+	{% cms_toolbar %}
+	{% block header %}{% endblock %}
+
+	<div class="container">
+	{% block breadcrumb %}{% endblock %}
+	</div>
+
+	{% block main-content %}
+	<div class="container">
+		<div class="row shop-starter-template">
+			<div class="col-xs-12">
+				<h1>Base Template</h1>
+				<p class="lead">This document does not contain any content yet.</p>
+			</div>
+		</div>
+	</div>
+	{% endblock main-content %}
+
+	<footer class="footer">
+	{% block footer %}{% endblock footer %}
+	</footer>
+	{% render_block "ext-js" %}
+	{% render_block "js" postprocessor "compressor.contrib.sekizai.compress" %}
+	<script type="text/javascript">
+	angular.module('djangoShop', ['ngAnimate', 'ngMessages', 'ngSanitize',
+		{% render_block "shop-ng-requires" postprocessor "shop.sekizai_processors.module_list" %}
+	]).config(['$httpProvider', function($httpProvider) {
+		$httpProvider.defaults.headers.common['X-CSRFToken'] = '{% csrf_value %}';
+		$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+	}]).config(['$locationProvider', function($locationProvider) {
+		$locationProvider.html5Mode(false);
+	}]){% render_block "shop-ng-config" postprocessor "shop.sekizai_processors.module_config" %};
+	</script>
+	{% block last %}{% endblock last %}
+</body>
+
+</html>

@@ -1,0 +1,81 @@
+{% load i18n static sekizai_tags %}
+
+{% addtoblock "js" %}<script src="{% static 'shop/js/cart.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+{% addtoblock "shop-ng-requires" %}django.shop.cart{% endaddtoblock %}
+
+{% block shop-cart-table %}
+<table shop-cart class="table table-hover">
+	<!-- content is rendered via ng-template "shop/cart.html" -->
+</table>
+{% endblock shop-cart-table %}
+
+<script id="shop/cart.html" type="text/ng-template">
+{% block shop-cart-thead %}
+	<thead>
+		<tr>
+			<th class="col-xs-2 col-md-1 text-center">{% trans "Quantity" %}</th>
+			<th class="col-xs-7 text-center">{% trans "Product" %}</th>
+			<th class="col-xs-1 text-right">{% trans "Unit Price" %}</th>
+			<th class="col-xs-1 col-md-2 text-right">{% trans "Total" %}</th>
+			<th class="col-xs-1"></th>
+		</tr>
+	</thead>
+{% endblock shop-cart-thead %}
+
+{% block shop-cart-tbody %}
+	<tbody>
+		<tr shop-cart-item ng-repeat="cart_item in cart.items">
+			<!-- content is rendered via ng-template "shop/cart-item.html" -->
+		</tr>
+	</tbody>
+{% endblock shop-cart-tbody %}
+
+{% block shop-cart-tfoot %}
+	<tfoot>
+		<tr>
+			<td colspan="3" class="text-right"><strong>{% trans "Subtotal" %}</strong></td>
+			<td class="text-right text-nowrap"><strong ng-bind="cart.subtotal"><!-- Subtotal --></strong></td>
+			<td></td>
+		</tr>
+		<tr ng-repeat="extra_row in cart.extra_rows">
+			<td colspan="2" class="no-border"></td>
+			<td class="text-right text-nowrap"><span ng-bind="extra_row.label"></span></td>
+			<td class="text-right text-nowrap"><span ng-bind="extra_row.amount"></span></td>
+			<td></td>
+		</tr>
+		<tr class="double-border">
+			<td colspan="2" class="no-border"></td>
+			<td class="text-right"><h4><strong>{% trans "Total" %}</strong></h4></td>
+			<td class="text-right text-nowrap"><h4><strong ng-bind="cart.total"><!-- Total --></strong></h4></td>
+			<td></td>
+		</tr>
+	</tfoot>
+{% endblock shop-cart-tfoot %}
+</script>
+
+<script id="shop/cart-item.html" type="text/ng-template">
+{% block shop-cart-item %}
+	<td>
+		<input type="number" class="form-control" min="1" ng-model="cart_item.quantity" ng-model-options="{{ ng_model_options }}" ng-change="updateCartItem(cart_item)" />
+	</td>
+	<td>
+		<div class="media" ng-bind-html="cart_item.summary.media"><!-- rendered by products/cart-`product`-media.html --></div>
+	</td>
+	<td class="text-right text-nowrap">
+		<span ng-bind="cart_item.unit_price"></span>
+		<div ng-repeat="extra_row in cart_item.extra_rows" ng-bind="extra_row.label"></div>
+	</td>
+	<td class="text-right text-nowrap">
+		<span ng-bind="cart_item.line_total"></span>
+		<div ng-repeat="extra_row in cart_item.extra_rows" ng-bind="extra_row.amount"></div>
+	</td>
+	<td>
+		<button type="button" class="btn btn-xs btn-danger btn-block" ng-click="deleteCartItem(cart_item)">
+			<span class="glyphicon glyphicon-remove-circle"></span>&nbsp;{% trans "Remove" %}
+		</button>
+		<button type="button" class="btn btn-xs btn-info btn-block" ng-click="watchCartItem(cart_item)">
+			<span class="glyphicon glyphicon-ok-circle"></span>&nbsp;{% trans "Watch Item" %}
+		</button>
+	</td>
+{% endblock shop-cart-item %}
+</script>

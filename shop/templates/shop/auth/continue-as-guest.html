@@ -1,0 +1,12 @@
+{% extends "shop/auth/anonymous-base.html" %}
+{% load i18n %}
+
+{% block form_title %}{% trans "Proceed as guest" %}{% endblock %}
+
+{% block form_content %}
+{{ block.super }}
+
+<div class="form-group">
+	<button type="button" ng-click="submitForm('{% url 'shop:continue-as-guest' %}')" class="btn btn-primary">{% trans "Continue as guest" %}</button>
+</div>
+{% endblock form_content %}

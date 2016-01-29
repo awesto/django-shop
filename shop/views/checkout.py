@@ -1,283 +1,89 @@
 # -*- coding: utf-8 -*-
-"""
-This models the checkout process using views.
-"""
-from django.core.urlresolvers import reverse
-from django.forms import models as model_forms
-from django.http import HttpResponseRedirect
-from django.views.generic import RedirectView
-
-from shop.forms import BillingShippingForm
-from shop.models import AddressModel, OrderExtraInfo
-from shop.models import Order
-from shop.util.address import (
-    assign_address_to_request,
-    get_billing_address_from_request,
-    get_shipping_address_from_request,
-)
-from shop.util.cart import get_or_create_cart
-from shop.util.order import add_order_to_request, get_order_from_request
-from shop.views import ShopTemplateView, ShopView
-from shop.util.login_mixin import LoginMixin
+from __future__ import unicode_literals
+from django.utils.module_loading import import_by_path
+from rest_framework.decorators import list_route
+from rest_framework.exceptions import ValidationError
+from cms.plugin_pool import plugin_pool
+from shop.cascade.plugin_base import DialogFormPluginBase
+from shop.rest.serializers import CheckoutSerializer
+from shop.modifiers.pool import cart_modifiers_pool
+from .cart import BaseViewSet
 
 
-class CheckoutSelectionView(LoginMixin, ShopTemplateView):
-    template_name = 'shop/checkout/selection.html'
+class CheckoutViewSet(BaseViewSet):
+    serializer_label = 'checkout'
+    serializer_class = CheckoutSerializer
+    item_serializer_class = None
 
-    def _get_dynamic_form_class_from_factory(self):
+    def __init__(self, **kwargs):
+        super(CheckoutViewSet, self).__init__(**kwargs)
+        self.dialog_forms = []
+        for p in plugin_pool.get_all_plugins():
+            if issubclass(p, DialogFormPluginBase):
+                self.dialog_forms.append(import_by_path(p.form_class))
+
+    @list_route(methods=['post'], url_path='upload')
+    def upload(self, request):
         """
-        Returns a dynamic ModelForm from the loaded AddressModel
+        All forms using the AngularJS directive `shop-dialog-form` have an implicit scope containing
+        an `upload()` function. This function then may be connected to any input element, say
+        `ng-change="upload()"`. If such an event triggers, the scope data is send to this `upload()`
+        method using an Ajax POST request. This `upload()` method then dispatches the form data
+        to all forms registered through a `DialogFormPluginBase`.
+        Afterwards the cart is updated, so that all cart modifiers run and adopt those changes.
         """
-        form_class = model_forms.modelform_factory(
-            AddressModel, exclude=['user_shipping', 'user_billing'])
-        return form_class
+        cart = self.get_queryset()
+        if cart is None:
+            raise ValidationError("Can not proceed to checkout without a cart")
 
-    def get_shipping_form_class(self):
+        # sort posted form data by plugin order
+        dialog_data = []
+        for fc in self.dialog_forms:
+            key = fc.scope_prefix.split('.', 1)[1]
+            if key in request.data:
+                if 'plugin_order' in request.data[key]:
+                    dialog_data.append((fc, request.data[key]))
+                else:
+                    for data in request.data[key].values():
+                        dialog_data.append((fc, data))
+        dialog_data = sorted(dialog_data, key=lambda tpl: int(tpl[1]['plugin_order']))
+
+        # save data and collect potential errors
+        errors = {}
+        for form_class, data in dialog_data:
+            reply = form_class.form_factory(request, data, cart)
+            if isinstance(reply, dict):
+                errors.update(reply)
+
+        cart.save()
+
+        # add possible form errors for giving feedback to the customer
+        response = self.list(request)
+        response.data.update(errors=errors)
+        return response
+
+    @list_route(methods=['post'], url_path='purchase')
+    def purchase(self, request):
         """
-        Provided for extensibility.
+        This is the final step on converting a cart into an order object. It normally is used in
+        combination with the AngularJS directive `shop-dialog-proceed` used in combination with
+        `proceedWith("PURCHASE_NOW")`.
+        Use the plugin `shop.cascade.checkout.ProceedButtonPlugin` to render such a button into
+        any placeholder field.
         """
-        return self._get_dynamic_form_class_from_factory()
+        cart = self.get_queryset()
+        if cart is None:
+            raise ValidationError("Can not purchase without a cart")
+        cart.update(request)
+        cart.save()
 
-    def get_billing_form_class(self):
-        """
-        Provided for extensibility.
-        """
-        return self._get_dynamic_form_class_from_factory()
-
-    def create_order_object_from_cart(self):
-        """
-        This will create an Order object form the current cart, and will pass
-        a reference to the Order on either the User object or the session.
-        """
-        cart = get_or_create_cart(self.request)
-        cart.update(self.request)
-        order = Order.objects.create_from_cart(cart, self.request)
-        request = self.request
-        add_order_to_request(request, order)
-        return order
-
-    def get_shipping_address_form(self):
-        """
-        Initializes and handles the form for the shipping address.
-
-        AddressModel is a model of the type defined in
-        ``settings.SHOP_ADDRESS_MODEL``.
-
-        The trick here is that we generate a ModelForm for whatever model was
-        passed to us by the SHOP_ADDRESS_MODEL setting, and us this, prefixed,
-        as the shipping address form. So this can be as complex or as simple as
-        one wants.
-
-        Subclasses of this view can obviously override this method and return
-        any other form instead.
-        """
-        # Try to get the cached version first.
-        form = getattr(self, '_shipping_form', None)
-        if not form:
-            # Create a dynamic Form class for the model specified as the
-            # address model
-            form_class = self.get_shipping_form_class()
-
-            # Try to get a shipping address instance from the request (user or
-            # session))
-            shipping_address = get_shipping_address_from_request(self.request)
-            if self.request.method == "POST":
-                form = form_class(self.request.POST, prefix="ship",
-                    instance=shipping_address)
-            else:
-                # We should either have an instance, or None
-                if not shipping_address:
-                    # The user or guest doesn't already have a favorite
-                    # address. Instanciate a blank one, and use this as the
-                    # default value for the form.
-                    shipping_address = AddressModel()
-
-                # Instanciate the form
-                form = form_class(instance=shipping_address, prefix="ship")
-            setattr(self, '_shipping_form', form)
-        return form
-
-    def get_billing_address_form(self):
-        """
-        Initializes and handles the form for the shipping address.
-        AddressModel is a model of the type defined in
-        ``settings.SHOP_ADDRESS_MODEL``.
-        """
-        # Try to get the cached version first.
-        form = getattr(self, '_billing_form', None)
-        if not form:
-            # Create a dynamic Form class for the model specified as the
-            # address model
-            form_class = self.get_billing_form_class()
-
-            # Try to get a shipping address instance from the request (user or
-            # session))
-            billing_address = get_billing_address_from_request(self.request)
-            if self.request.method == "POST":
-                form = form_class(self.request.POST, prefix="bill",
-                    instance=billing_address)
-            else:
-                # We should either have an instance, or None
-                if not billing_address:
-                    # The user or guest doesn't already have a favorite
-                    # address. Instansiate a blank one, and use this as the
-                    # default value for the form.
-                    billing_address = AddressModel()
-
-                #Instanciate the form
-                form = form_class(instance=billing_address, prefix="bill")
-            setattr(self, '_billing_form', form)
-        return form
-
-    def get_billing_and_shipping_selection_form(self):
-        """
-        Get (and cache) the BillingShippingForm instance
-        """
-        form = getattr(self, '_billingshipping_form', None)
-        if not form:
-            if self.request.method == 'POST':
-                form = BillingShippingForm(self.request.POST)
-            else:
-                form = BillingShippingForm()
-            self._billingshipping_form = form
-        return form
-
-    def save_addresses_to_order(self, order, shipping_address,
-                                billing_address):
-        """
-        Provided for extensibility.
-
-        Adds both addresses (shipping and billing addresses) to the Order
-        object.
-        """
-        order.set_shipping_address(shipping_address)
-        order.set_billing_address(billing_address)
-        order.save()
-
-    def get_extra_info_form(self):
-        """
-        Initializes and handles the form for order extra info.
-        """
-        # Try to get the cached version first.
-        form = getattr(self, '_extra_info_form', None)
-        if not form:
-            # Create a dynamic Form class for the model
-            form_class = model_forms.modelform_factory(OrderExtraInfo, exclude=['order'])
-            if self.request.method == 'POST':
-                form = form_class(self.request.POST)
-            else:
-                form = form_class()
-            setattr(self, '_extra_info_form', form)
-        return form
-
-    def save_extra_info_to_order(self, order, form):
-        if form.cleaned_data.get('text'):
-            extra_info = form.save(commit=False)
-            extra_info.order = order
-            extra_info.save()
-
-    def post(self, *args, **kwargs):
-        """ Called when view is POSTed """
-        shipping_form = self.get_shipping_address_form()
-        billing_form = self.get_billing_address_form()
-        extra_info_form = self.get_extra_info_form()
-        if shipping_form.is_valid() and billing_form.is_valid() and extra_info_form.is_valid():
-
-            # Add the address to the order
-            shipping_address = shipping_form.save()
-            billing_address = billing_form.save()
-            order = self.create_order_object_from_cart()
-
-            self.save_addresses_to_order(order, shipping_address,
-                billing_address)
-
-            # The following marks addresses as being default addresses for
-            # shipping and billing. For more options (amazon style), we should
-            # remove this
-            assign_address_to_request(self.request, shipping_address,
-                shipping=True)
-            assign_address_to_request(self.request, billing_address,
-                shipping=False)
-
-            billingshipping_form = \
-                self.get_billing_and_shipping_selection_form()
-            if billingshipping_form.is_valid():
-                # save selected billing and shipping methods
-                self.request.session['payment_backend'] = \
-                    billingshipping_form.cleaned_data['payment_method']
-                self.request.session['shipping_backend'] = \
-                    billingshipping_form.cleaned_data['shipping_method']
-
-                # add extra info to order
-                self.save_extra_info_to_order(order, extra_info_form)
-
-                return HttpResponseRedirect(reverse('checkout_shipping'))
-
-        return self.get(self, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        """
-        This overrides the context from the normal template view
-        """
-        ctx = super(CheckoutSelectionView, self).get_context_data(**kwargs)
-
-        shipping_address_form = self.get_shipping_address_form()
-        billing_address_form = self.get_billing_address_form()
-        billingshipping_form = self.get_billing_and_shipping_selection_form()
-        extra_info_form = self.get_extra_info_form()
-        ctx.update({
-            'shipping_address': shipping_address_form,
-            'billing_address': billing_address_form,
-            'billing_shipping_form': billingshipping_form,
-            'extra_info_form': extra_info_form,
-        })
-        return ctx
-
-
-class OrderConfirmView(RedirectView):
-    url_name = 'checkout_payment'
-    permanent = False
-
-    def confirm_order(self):
-        order = get_order_from_request(self.request)
-        order.status = Order.CONFIRMED
-        order.save()
-
-    def get(self, request, *args, **kwargs):
-        self.confirm_order()
-        return super(OrderConfirmView, self).get(request, *args, **kwargs)
-
-    def get_redirect_url(self, **kwargs):
-        self.url = reverse(self.url_name)
-        return super(OrderConfirmView, self).get_redirect_url(**kwargs)
-
-class ThankYouView(LoginMixin, ShopTemplateView):
-    template_name = 'shop/checkout/thank_you.html'
-
-    def get_context_data(self, **kwargs):
-        ctx = super(ShopTemplateView, self).get_context_data(**kwargs)
-
-        # put the latest order in the context only if it is completed
-        order = get_order_from_request(self.request)
-        if order and order.status == Order.COMPLETED:
-            ctx.update({'order': order, })
-
-        return ctx
-
-
-class ShippingBackendRedirectView(LoginMixin, ShopView):
-    def get(self, *args, **kwargs):
-        try:
-            backend_namespace = self.request.session.pop('shipping_backend')
-            return HttpResponseRedirect(reverse(backend_namespace))
-        except KeyError:
-            return HttpResponseRedirect(reverse('cart'))
-
-
-class PaymentBackendRedirectView(LoginMixin, ShopView):
-    def get(self, *args, **kwargs):
-        try:
-            backend_namespace = self.request.session.pop('payment_backend')
-            return HttpResponseRedirect(reverse(backend_namespace))
-        except KeyError:
-            return HttpResponseRedirect(reverse('cart'))
+        response = self.list(request)
+        # Iterate over the registered modifiers, and search for the active payment service provider
+        for modifier in cart_modifiers_pool.get_payment_modifiers():
+            if modifier.is_active(cart):
+                payment_provider = getattr(modifier, 'payment_provider', None)
+                if payment_provider:
+                    expression = payment_provider.get_payment_request(cart, request)
+                    response.data.update(expression=expression)
+                break
+        return response

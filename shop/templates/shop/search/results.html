@@ -1,0 +1,55 @@
+{% load i18n static sekizai_tags shop_tags %}
+
+{% addtoblock "js" %}<script src="{% static 'bower_components/angular-inview/angular-inview.js' %}"></script>{% endaddtoblock %}
+{% addtoblock "shop-ng-requires" %}angular-inview{% endaddtoblock %}
+
+{% addtoblock "js" %}<script src="{% static 'shop/js/search-results.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+{% addtoblock "shop-ng-requires" %}django.shop.searchResults{% endaddtoblock %}
+{% addtoblock "shop-ng-config" %}['searchResultsProvider', function(provider) { provider.setSearchResults({{ data|rest_json }}); }]{% endaddtoblock %}
+
+{% block search-results-table %}
+<table class="table table-hover shop-search-results" ng-cloak>
+
+	{% block search-results-caption %}
+	<caption ng-if="search_data.count==0"><h3>{% trans "Searching for '{{ searchQuery }}' did not return any results" %}</h3></caption>
+	{% endblock search-results-caption %}
+
+	{% block search-results-thead %}
+	<thead ng-if="search_data.count>0">
+		<tr>
+			<th class="col-xs-8 text-center">{% trans "{{ search_data.count }} matching products found" %}</th>
+			<th class="col-xs-2 text-right">{% trans "Base Price" %}</th>
+			<th class="col-xs-2">&nbsp;</th>
+		</tr>
+	</thead>
+	{% endblock search-results-thead %}
+
+	{% block search-results-tbody %}
+	<tbody>
+		<tr ng-repeat="result in search_data.results">
+			<td ng-bind-html="result.media"></td>
+			<td class="text-right text-nowrap">
+				<strong ng-bind="result.price"></strong>
+			</td>
+			<td class="text-center">
+				<a class="btn btn-primary btn-sm" href="{% verbatim %}{{ result.product_url }}{% endverbatim %}">{% trans "Details" %}&nbsp;<i class="glyphicon glyphicon-menu-right"></i></a>
+			</td>
+		</tr>
+	</tbody>
+	{% endblock search-results-tbody %}
+
+	{% block search-results-tfoot %}
+	<tfoot>
+		<tr>
+			<td colspan="3">
+				<ul class="pager">
+					<li ng-if="isLoading"><span>{% trans "Loading search results" %} &hellip;</span></li>
+					<li ng-if="!isLoading"><i in-view="$inview && loadMore()">&nbsp;</i></li>
+				</ul>
+			</td>
+		</tr>
+	</tfoot>
+	{% endblock search-results-tfoot %}
+
+</table>
+{% endblock search-results-table %}

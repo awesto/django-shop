@@ -1,0 +1,34 @@
+{% extends "shop/order/base.html" %}
+{% load i18n cms_tags %}
+
+{% block shop-order-table %}
+
+	{% block shop-order-caption %}
+	<caption><h4>{% page_attribute "page_title" %}</h4></caption>
+	{% endblock %}
+
+	{% block shop-order-thead %}
+	<thead>
+		<tr>
+			<th class="text-center">{% trans "Order Date" %}</th>
+			<th class="text-center">{% trans "Sum" %}</th>
+			<th class="text-center">{% trans "Shipping Address" %}</th>
+			<th class="text-right">{% trans "Status" %}</th>
+		</tr>
+	</thead>
+	{% endblock shop-order-thead %}
+
+	{% block shop-order-tbody %}
+	<tbody>
+		{% for order in data.results %}
+		<tr>
+			<td class="text-center text-nowrap"><a href="{{ order.url }}" shop-timestamp="{{ order.created_at }}" time-format="d. MMM yyyy"></a></td>
+			<td class="text-center text-nowrap">{{ order.total }}</td>
+			<td class="text-center">{{ order.shipping_address_text }}</td>
+			<td class="text-right">{{ order.status }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+	{% endblock shop-order-tbody %}
+
+{% endblock shop-order-table %}

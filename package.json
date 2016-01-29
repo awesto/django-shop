@@ -1,0 +1,27 @@
+{
+  "name": "django-shop",
+  "version": "0.9.0",
+  "description": "This version of django-shop is currently under development. If you want to help out, please have a look at our `Development documentation`_.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jrief/django-shop.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jrief/django-shop/issues"
+  },
+  "homepage": "https://github.com/jrief/django-shop#readme",
+  "dependencies": {
+    "bootstrap-sass": "^3.3.6",
+    "font-awesome": "^4.5.0"
+  }
+}

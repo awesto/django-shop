@@ -1,0 +1,21 @@
+{% extends "shop/auth/login.html" %}
+{% load i18n %}
+
+{% block form_footer %}
+<div class="form-group">
+	<button type="button" ng-click="submitForm('{% url 'shop:login' %}')" class="btn btn-primary">{% trans "Login" %}</button>
+	<button type="button" ng-click="showResetForm=!showResetForm;" class="btn btn-link pull-right">{% trans "Password Forgotten?" %}</button>
+</div>
+
+<div ng-show="showResetForm" ng-cloak>
+	<label class="control-label">{% trans "Your e-mail address" %}</label>
+	<div style="margin-bottom: 20px" class="input-group">
+		<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+		<input type="text" class="form-control" name="email" ng-model="form_data.email" value="" placeholder="{% trans 'Email' %}" />
+	</div>
+
+	<div class="form-group" ng-hide="success_message">
+		<button type="button" ng-click="submitForm('{% url 'shop:password-reset' %}', 5000)" class="btn btn-primary">{% trans "Reset Password" %}</button>
+	</div>
+</div>
+{% endblock form_footer %}
