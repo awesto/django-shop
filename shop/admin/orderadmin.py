@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.contrib.admin.options import ModelAdmin
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
-from shop.order_signals import completed
+from shop.order_signals import completed, shipped
 from shop.admin.mixins import LocalizeDecimalFieldsMixin
 from shop.models.ordermodel import (Order, OrderItem,
         OrderExtraInfo, ExtraOrderPriceField, OrderPayment)
@@ -53,11 +53,26 @@ class OrderAdmin(LocalizeDecimalFieldsMixin, ModelAdmin):
             )
 
     def save_model(self, request, order, form, change):
+
+        if change:
+            pre_save_status = Order.objects.get(pk=order.pk).status
+            post_save_status = order.status
+
         super(OrderAdmin, self).save_model(request, order, form, change)
-        if not order.is_completed() and order.is_paid():
-            order.status = Order.COMPLETED
-            order.save()
-            completed.send(sender=self, order=order)
+        
+        if change:
+            if post_save_status == Order.SHIPPED and pre_save_status != Order.SHIPPED:
+                shipped.send(sender=self, order=order)
+
+    def save_related(self, request, form, formset, change):
+        super(OrderAdmin, self).save_related(request, form, formset, change)
+
+        if change:
+            if form.instance.status != Order.SHIPPED:
+                if not form.instance.is_completed() and form.instance.is_paid():
+                    form.instance.status = Order.COMPLETED
+                    form.instance.save()
+                    completed.send(sender=self, order=form.instance)
 
 ORDER_MODEL = getattr(settings, 'SHOP_ORDER_MODEL', None)
 if not ORDER_MODEL:
