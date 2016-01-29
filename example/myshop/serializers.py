@@ -8,7 +8,7 @@ from rest_framework.fields import empty
 from shop.rest.serializers import (ProductSummarySerializerBase, ProductDetailSerializerBase,
     AddToCartSerializer)
 from shop.search.serializers import ProductSearchSerializer as ProductSearchSerializerBase
-from .search_indexes import SmartCardIndex, SmartPhoneIndex
+from .search_indexes import myshop_search_index_classes
 if settings.SHOP_TUTORIAL in ('simple', 'i18n'):
     Product = import_string('myshop.models.{}.smartcard.SmartCard'.format(settings.SHOP_TUTORIAL))
 else:
@@ -76,7 +76,7 @@ class ProductSearchSerializer(ProductSearchSerializerBase):
 
     class Meta(ProductSearchSerializerBase.Meta):
         fields = ProductSearchSerializerBase.Meta.fields + ('media',)
-        index_classes = (SmartCardIndex, SmartPhoneIndex)
+        index_classes = myshop_search_index_classes
 
     def get_media(self, search_result):
         return search_result.search_media
