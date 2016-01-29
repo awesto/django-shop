@@ -59,7 +59,7 @@ msgstr "Nome"
 
 #: addressmodel/models.py:43 addressmodel/models.py:52
 msgid "Address"
-msgstr "Endereç"
+msgstr "Endereço"
 
 #: addressmodel/models.py:44
 msgid "Address2"
