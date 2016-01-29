@@ -7,7 +7,7 @@
 	<button type="button" ng-click="showResetForm=!showResetForm;" class="btn btn-link pull-right">{% trans "Password Forgotten?" %}</button>
 </div>
 
-<div ng-show="showResetForm">
+<div ng-show="showResetForm" ng-cloak>
 	<label class="control-label">{% trans "Your e-mail address" %}</label>
 	<div style="margin-bottom: 20px" class="input-group">
 		<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>

@@ -9,17 +9,7 @@
 		<small>{% trans "Product Code" %}: <strong ng-bind="cart_item.extra.product_code"></strong></small>
 	</td>
 	<td>
-		<div class="media">
-			<div class="media-left" ng-bind-html="cart_item.summary.media">
-				<!-- rendered by products/cart-`product`-media.html -->
-			</div>
-		{% verbatim %}
-			<div class="media-body">
-				<h4 class="media-heading"><a href="{{ cart_item.summary.product_url }}">{{ cart_item.summary.product_name }}</a></h4>
-				<div ng-bind-html="cart_item.summary.description"></div>
-			</div>
-		{% endverbatim %}
-		</div>
+		<div class="media" ng-bind-html="cart_item.summary.media"><!-- rendered by products/cart-`product`-media.html --></div>
 	</td>
 	<td class="text-right text-nowrap">
 		<p ng-bind="cart_item.unit_price"></p>

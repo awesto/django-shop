@@ -1,7 +1,7 @@
 {% extends "shop/cart/static.html" %}
 {% load i18n %}
 
-{% block xxx-shop-cart-tbody %}
+{% block shop-cart-tbody %}
 	<tbody>
 	{% for cart_item in cart.items %}
 		<tr>
@@ -13,8 +13,10 @@
 				</p>
 			</small>
 			</td>
-			<td rowspan="2" class="text-left">{{ cart_item.summary.media }}</td>
-			<td class="text-center">{{ cart_item.unit_price }}</td>
+			<td rowspan="2" class="text-left">
+				<div class="media">{{ cart_item.summary.media }}</div>
+			</td>
+			<td class="text-right">{{ cart_item.unit_price }}</td>
 			<td class="text-right">{{ cart_item.line_total }}</td>
 		</tr>
 		<tr class="no-border">
@@ -26,4 +28,4 @@
 		</tr>
 	{% endfor %}
 	</tbody>
-{% endblock xxx-shop-cart-tbody %}
+{% endblock shop-cart-tbody %}
