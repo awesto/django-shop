@@ -128,16 +128,6 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='OrderShipping',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('status', django_fsm.FSMField(default='new', protected=True, max_length=50, verbose_name='Status')),
-                ('shipping_id', models.CharField(help_text="The transaction processor's reference", max_length=255, verbose_name='Shipping ID')),
-                ('shipping_method', models.CharField(help_text='The shipping backend used to deliver the items for this order', max_length=255, verbose_name='Shipping method')),
-                ('order', models.ForeignKey(verbose_name='Order', to='myshop.Order')),
-            ],
-        ),
-        migrations.CreateModel(
             name='ProductImage',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),

@@ -126,7 +126,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 MIGRATION_MODULES = {
-    'myshop': 'myshop.migrations_{}'.format(SHOP_TUTORIAL)
+    'myshop': 'myshop.migrations.{}'.format(SHOP_TUTORIAL)
 }
 
 ROOT_URLCONF = 'myshop.urls'
