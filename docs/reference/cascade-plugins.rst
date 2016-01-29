@@ -1,4 +1,4 @@
-.. _cascade-plugins:
+.. _reference/cascade-plugins:
 
 ===============
 Cascade Plugins
@@ -56,7 +56,7 @@ Cart
 ====
 
 The **CartPlugin** has four different rendering options: Editable, Static, Summary and Watch-List.
-Refer to the :ref:`cart-cascade-plugin` for details.
+Refer to the :ref:`reference/cart-cascade-plugin` for details.
 
 
 Checkout Forms
@@ -150,7 +150,7 @@ asterisk is appended. This plugin can be used to add a short text message statin
 are required". It normally should be placed between the last checkout form and the proceed button.
 
 
-.. _proceed-button:
+.. _reference/proceed-button:
 
 Proceed Button
 --------------
@@ -166,7 +166,7 @@ The first target is useful to reload the page in a changed context, for instance
 logged in and now shall get a personalized page.
 
 The second target is special to **djangoSHOP** and exclusively used, when the customer performs
-:ref:`the-purchasing-operation`.
+:ref:`reference/the-purchasing-operation`.
 
 
 Authentication
@@ -174,7 +174,7 @@ Authentication
 
 Before proceeding with various input forms, we must know the authentication status of our site
 visitors. These different states are explained here in detail:
-:ref:`visitors-guests-registered-customers`.
+:ref:`reference/visitors-guests-registered-customers`.
 
 Therefore we need pluggable forms, where visitors can sign in and out, change and rest passwords and
 so on. All this authentication forms are handled by one single plugin
@@ -186,7 +186,7 @@ Authentication Plugin
 This plugin handles a bunch of authentication related forms. Lets list them:
 
 
-.. _login-form:
+.. _reference/login-form:
 
 Login Form
 ~~~~~~~~~~
@@ -200,7 +200,7 @@ This is a simple login form accepting a username and password.
 This form normally is used in combination with **Link type**: *CMS Page*.
 
 
-.. _logout-form:
+.. _reference/logout-form:
 
 Logout Form
 ~~~~~~~~~~~
@@ -214,17 +214,17 @@ This logout form just adds a button to sign out from the site.
 This form normally is used in combination with **Link type**: *CMS Page*.
 
 
-.. _shared-login-logout-form:
+.. _reference/shared-login-logout-form:
 
 Shared Login/Logout Form
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-This combines the :ref:`login-form` with the :ref:`logout-form` so, that anonymous visitors see the
-login form, while logged in users see the logout form. This form normally is used in
-combination with **Link type**: *Reload Page*.
+This combines the :ref:`reference/login-form` with the :ref:`reference/logout-form` so, that
+anonymous visitors see the login form, while logged in users see the logout form. This form
+normally is used in combination with **Link type**: *Reload Page*.
 
 
-.. _password-reset-form:
+.. _reference/password-reset:
 
 Password Reset Form
 ~~~~~~~~~~~~~~~~~~~
@@ -240,8 +240,8 @@ email address to start a password reset procedure.
 Login & Reset Form
 ~~~~~~~~~~~~~~~~~~
 
-This extends the :ref:`shared-login-logout-form` by combining it with the :ref:`password-reset`
-form.
+This extends the :ref:`reference/shared-login-logout-form` by combining it with the
+:ref:`reference/password-reset` form.
 
 |login-reset|
 
@@ -309,8 +309,9 @@ if all of them are valid.
 Each step in that process bar must contain a **Next Step Button**, so that the customer can move
 to the next step, provided all forms are valid.
 
-The last step shall contain a :ref:`proceed-button` which shall be configured to take appropriate
-action, for instance to start the purchasing operation using the **Link type** "*Purchase Now*".
+The last step shall contain a :ref:`reference/proceed-button` which shall be configured to take
+appropriate action, for instance to start the purchasing operation using the **Link type**
+"*Purchase Now*".
 
 .. note:: This plugin requires the AngularJS directive ``<bsp-process-bar>`` as found in the
 	bower package angular-bootstrap-plus_.
@@ -322,19 +323,30 @@ Catalog
 The catalog list view is handled by the **ShopCatalogPlugin**.
 
 This plugin requires a CMS page, which uses the apphook_ **ProductsListApp**. First assure that we 
-:ref:`create-ProductsListApp`. This CMSapp must be implementated by the merchant; it thus is part
-of the project, rather than the **djangoSHOP** framework.
+:ref:`reference/create-ProductsListApp`. This CMSapp must be implemented by the merchant; it thus
+is part of the project, rather than the **djangoSHOP** framework.
 
 
 Viewing Orders
 ==============
 
-The **ShopOrderViewsPlugin** is used to render the list- and detail views of orders, specific to the
+The **Order Views** plugin is used to render the list- and detail views of orders, specific to the
 currently logged in customer. Without a number in the URL, a list of all orders is shown. By
 adding the primary key to the URL, all ordered items from that specific order are shown.
 
 This plugin requires a CMS page, which uses the CMSApp **OrderApp**. This app is part of the shop
 framework and loaded automatically.
+
+
+Search Results
+==============
+
+Rendering search results is handled by the **Search Results** plugin.
+
+On a site offering full-text search, add a page to display search results. First assure that we 
+have a :ref:`reference/search-view` assigned to that page as apphook_. This CMSapp must be
+implemented by the merchant; it thus is part of the project, rather than the **djangoSHOP**
+framework.
 
 
 .. _Atomic Web Design: http://atomicdesign.bradfrost.com/table-of-contents/

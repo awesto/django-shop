@@ -1,4 +1,4 @@
-.. _polymorphic-product:
+.. _tutorial/polymorphic-product:
 
 ==================================
 Products with Different Properties
@@ -15,7 +15,8 @@ Run the Polymorphic Demo
 ========================
 
 To test this example, set the shell environment variable ``export DJANGO_SHOP_TUTORIAL=polymorphic``,
-then recreate the database as explained in :ref:`create-demo-database` and start the demo server:
+then recreate the database as explained in :ref:`tutorial/create-demo-database` and start the demo
+server:
 
 .. code-block:: shell
 
@@ -46,37 +47,49 @@ and polymorphic models:
 	:caption: myshop/models/i18n/polymorphic/product.py
 	:linenos:
 	:language: python
-	:lines: 9-10, 13, 16-27
+	:lines: 8-15, 17-19, 21-23, 26-30, 43
 
 The next step is to identify which model attributes qualify for being part of our Product
-model. Unfortunately, there is no silver bullet for this problem and that's the reason why
-**djangoSHOP** is shipped without any prepared model for this. If we want to sell both Smart Cards
-and Smart Phones, then this Product model will do its jobs:
+model. Unfortunately, there is no silver bullet for this problem and that's one of the reason why
+**djangoSHOP** is shipped without any prepared model for it. If we want to sell both Smart Cards
+and Smart Phones, then this Product model may do its jobs:
 
 .. literalinclude:: /../example/myshop/models/polymorphic/product.py
+	:caption: myshop/models/i18n/polymorphic/product.py
 	:linenos:
 	:language: python
-	:lines: 7, 13-14, 28-46
+	:lines: 31-39
+
+
+Model for Smart Card
+--------------------
 
 The model used to store translated fields is the same as in our last example. The new model for
-Smart Cards now becomes a subset of itself:
+Smart Cards now inherits from Product:
 
 .. literalinclude:: /../example/myshop/models/polymorphic/smartcard.py
 	:caption: myshop/models/i18n/polymorphic/smartcard.py
 	:linenos:
 	:language: python
-	:lines: 7-9, 12-21
+	:lines: 4-8, 10-24
+
+
+Model for Smart Phone
+--------------------
 
 The product model for Smart Phones is intentionally a little bit more complicated. Not only does
 it have a few more attributes, but Smart Phones can be sold with different specifications of
-internal storage. The latter influences the price and the product code. This also is the reason why
-our base Product model does not contain the fields ``unit_price`` and ``products_code``, although
-every product in our shop requires them.
+internal storage. The latter influences the price and the product code. This is also the reason why
+we didn't move the model fields ``unit_price`` and ``products_code`` into our base class
+``Product``, although every product in our shop requires them.
 
 When presenting Smart Phones in our list views, we want to focus on different models, but not on
-each markedness, ie. its internal storage. Therefore customers can differentiate between the
-concrete Smart Phone variations, whenever they add them to their cart. This means that for some
-Smart Phone models, there might be more than one *Add to cart* button.
+each markedness, ie. its internal storage. Therefore customers will have to differentiate between
+the concrete Smart Phone variations, whenever they add them to their cart, but not when viewing them
+in the catalog list. For a customer, it would be very boring to scroll through lists with many
+similar products, which only differentiate by a few variations.
+
+This means that for some Smart Phone models, there is be more than one *Add to cart* button.
 
 When modeling, we therefore require two different classes, one for the Smart Phone model and one
 for each Smart Phone variation.
@@ -85,14 +98,17 @@ for each Smart Phone variation.
 	:caption: myshop/models/polymorphic/smartphone.py
 	:linenos:
 	:language: python
-	:lines: 9-10, 21-47
+	:lines: 7-10, 20-44
 
 Here the method ``get_price()`` can only return the minimum, average or maximum price for our
-product, but that's something seen quite often in stores: *Price starting at € 99.50*.
+product. In this situation, most merchants extol the prices as: *Price starting at € 99.50*.
 
 The concrete Smart Phone then is modeled as:
 
 .. literalinclude:: /../example/myshop/models/polymorphic/smartphone.py
 	:linenos:
 	:language: python
-	:lines: 97-109
+	:lines: 94-103
+
+
+To proceed with purchasing, customers need some :ref:`tutorial/cart-checkout` pages.

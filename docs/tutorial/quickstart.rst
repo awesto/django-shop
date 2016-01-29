@@ -1,4 +1,4 @@
-.. _quickstart:
+.. _tutorial/quickstart:
 
 =========================
 Quickstart a Running Demo
@@ -6,9 +6,9 @@ Quickstart a Running Demo
 
 Filling your CMS with page content and adding products is a boring job. Impatient users may start
 three demos using some prepared sample data. First assure that all dependencies are installed
-into its virtual environment as described in section ":ref:`prepare-installation`". Then instead
-of adding pages and products manually, download the `media files`_ and unpack them into the folder
-``django-shop``:
+into its virtual environment as described in section ":ref:`tutorial/prepare-installation`". Then
+instead of adding pages and products manually, `download the media files`_ and unpack them into the
+folder ``django-shop``:
 
 .. code-block:: shell
 
@@ -24,7 +24,7 @@ django-polymorphic_ app.
 .. note:: All demos can be started independently from each other, but you are encouraged to start
 		with the "Simple Product", and then proceed to the more complicate examples.
 
-.. _media files: http://django-shop.awesto.com/downloads/django-shop-workdir.tar.gz
+.. _download the media files: http://downloads.awesto.com/django-shop-workdir.tar.gz
 .. _django-parler: http://django-parler.readthedocs.org/en/latest/
 .. _django-polymorphic: https://django-polymorphic.readthedocs.org/en/latest/
 
@@ -45,7 +45,7 @@ shell invoke:
 
 Point a browser onto http://localhost:8000/admin/ and log in as ``admin`` with password ``secret``.
 
-This runs the demo for :ref:`simple-product`.
+This runs the demo for :ref:`tutorial/simple-product`.
 
 
 Internationalized Products
@@ -77,7 +77,7 @@ Alternatively, if you prefer to start with an empty database, assure that the fi
 
 Point a browser onto http://localhost:8000/admin/ and log in as ``admin`` with password ``secret``.
 
-This runs a demo for :ref:`multilingual-product`.
+This runs a demo for :ref:`tutorial/multilingual-product`.
 
 
 Polymorphic Products
@@ -100,4 +100,4 @@ in the ``django-shop`` folder and using the correct virtual environment. Then in
 	(shoptutorial)$ ./manage.py loaddata fixtures/myshop-polymorphic.json
 	(shoptutorial)$ ./manage.py runserver
 
-This runs a demo for :ref:`polymorphic-product`.
+This runs a demo for :ref:`tutorial/polymorphic-product`.

@@ -1,4 +1,4 @@
-.. _order:
+.. _reference/order:
 
 =====
 Order
@@ -15,9 +15,9 @@ Order Models
 
 An order consists of two models classes ``Order`` and ``OrderItem``, both inheriting from
 ``BaseOrder`` and ``BaseOrderItem`` respectively. As with most models in **djangoSHOP**, they are
-:ref:`deferred-models`, so that inheriting from a base class automatically sets the foreign keys to
-the appropriate model. This gives the programmer the flexibility to add as many fields to the order,
-as the merchant requires for his special implementation.
+:ref:`reference/deferred-models`, so that inheriting from a base class automatically sets the
+foreign keys to the appropriate model. This gives the programmer the flexibility to add as many
+fields to the order, as the merchant requires for his special implementation.
 
 In most use-cases, the default order implementation will do the job. These default classes can be
 found at :class:`shop.models.defaults.order.Order` and
@@ -134,7 +134,7 @@ These templates are written to be easily extensible by the customized templates.
 add a template with the path, say ``myshop/order/list.html`` to the projects template folder.
 
 
-.. _order-workflows:
+.. _reference/order-workflows:
 
 Order Workflows
 ===============
@@ -211,9 +211,9 @@ entered payment equals or exceeds the order's total, this method returns ``True`
 for the given transition is met. This then adds a button labeled "*Mark as Paid*" at the bottom of
 the admin view. Whenever the merchant clicks on this button, the above method
 ``prepayment_fully_deposited`` is invoked. This then changes the order's status from
-"*awaiting_payment*" to "*prepayment_deposited*". The :ref:`notifications` of **djangoSHOP** can
-intercept this transition change and perform preconfigured action, such as sending a payment
-confirmation email to the customer.
+"*awaiting_payment*" to "*prepayment_deposited*". The :ref:`reference/notifications` of
+**djangoSHOP** can intercept this transition change and perform preconfigured action, such as
+sending a payment confirmation email to the customer.
 
 Now that the order has been paid, it time to fulfill it. For this a merchant can use the workflow
 mixin class ``'shop.payment.defaults.CommissionGoodsWorkflowMixin'``, which gives him a

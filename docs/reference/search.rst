@@ -1,4 +1,4 @@
-.. full-text-search:
+.. _reference/search:
 
 ================
 Full Text Search
@@ -225,6 +225,8 @@ This serializer is part of the project, since we must adopt it to whatever conte
 display on our site, whenever a visitor enters some text into the search field.
 
 
+.. _reference/search-view:
+
 Search View
 ===========
 
@@ -260,10 +262,10 @@ as all apphooks, it requires a file defining its urlpatterns:
 	)
 
 
-Search Result Page
-------------------
+Search Results
+--------------
 
-As with all other pages in **djangoSHOP**, the page displaying the search result is a normal CMS
+As with all other pages in **djangoSHOP**, the page displaying our search results is a normal CMS
 page too. It is suggested to create this page on the root level of the page tree.
 
 As the page title use "*Search*" or whatever is appropriate in our natural language. Then we change

@@ -1,11 +1,11 @@
-.. _catalog:
+.. _reference/catalog:
 
 =======
 Catalog
 =======
 
 The catalog probably is that part, where customers of our e-commerce site spend the most time.
-Often it even makes sense, to start the :ref:`catalog-list` on the main landing page.
+Often it even makes sense, to start the :ref:`reference/catalog-list` on the main landing page.
 
 In this documentation we presume that categories of products are built up using specially tagged
 CMS pages in combination with a `djangoCMS apphook`_. This works perfectly well for most
@@ -23,7 +23,7 @@ Django Views in order to render the catalog. Instead all merchant dependent busi
 into a serializer, which in this documentation is referred as ``ProductSummarySerializer``.
 
 
-.. _catalog-list:
+.. _reference/catalog-list:
 
 Catalog List View
 =================
@@ -33,10 +33,10 @@ whether the e-commerce aspect of that site is the most prominent part, or just a
 select an appropriate location in the page tree and create a new page. This will become the root
 of our catalog list.
 
-But first we must :ref:`create-ProductsListApp`.
+But first we must :ref:`reference/create-ProductsListApp`.
 
 
-.. _create-ProductsListApp:
+.. _reference/create-ProductsListApp:
 
 Create the ``ProductsListApp``
 ------------------------------
@@ -84,7 +84,7 @@ for being rendered inside a CMS page, as well as being converted to JSON. This a
 the same Django View (``ProductListView``) whenever the catalog list switches into infinite scroll
 mode, where it only requires the product's summary digested as JavaScript objects.
 
-In case we need :ref:`additional-serializer-fields`, lets add them to this class using the
+In case we need :ref:`reference/additional-serializer-fields`, lets add them to this class using the
 `serializer fields`_ from the Django RESTFramework library.
 
 
@@ -110,7 +110,7 @@ Finally we publish the page and enter some text into the search field. Since we 
 any products to the CMS page, we won't see anything yet.
 
 
-.. _catalog-detail:
+.. _reference/catalog-detail:
 
 Catalog Detail View
 ===================
@@ -177,11 +177,11 @@ write it as simple as:
 	        model = Product
 	        exclude = ('active',)
 
-In case we need :ref:`additional-serializer-fields`, lets add them to this class using the
+In case we need :ref:`reference/additional-serializer-fields`, lets add them to this class using the
 `serializer fields`_ from the Django RESTFramework library.
 
 
-.. _additional-serializer-fields:
+.. _reference/additional-serializer-fields:
 
 Additional Product Serializer Fields
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

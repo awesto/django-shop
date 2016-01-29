@@ -1,4 +1,4 @@
-.. _product-models:
+.. _reference/product-models:
 
 ==============
 Product Models
@@ -132,7 +132,7 @@ products. Since the framework does not impose which fields are used to distingui
 we must give some hints.
 
 Each product also requires a method implemented as ``get_price(request)``. This must return the
-unit price using one of the available :ref:`money-types`.
+unit price using one of the available :ref:`reference/money-types`.
 
 
 Add multilingual support

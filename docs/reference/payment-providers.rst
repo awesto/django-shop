@@ -1,4 +1,4 @@
-.. _payment-providers:
+.. _reference/payment-providers:
 
 =================
 Payment Providers
@@ -7,9 +7,9 @@ Payment Providers
 Payment Providers are simple classes, which create an interface from an external `Payment Service
 Provider`_ (shortcut PSP) to our **djangoSHOP** framework.
 
-Payment Providers must be aggregates of a :ref:`payment-cart-modifier`. Here the Payment Cart
-Modifier computes extra fees when selected as a payment method, whereas our Payment Provider class,
-handles the communication with the configured PSP, whenever the customer submits the purchase
+Payment Providers must be aggregates of a :ref:`reference/payment-cart-modifier`. Here the Payment
+Cart Modifier computes extra fees when selected as a payment method, whereas our Payment Provider
+class, handles the communication with the configured PSP, whenever the customer submits the purchase
 request.
 
 In **djangoSHOP** Payment Providers normally are packed into separate plugins, so here we will
@@ -41,7 +41,7 @@ solution compatible for all of them.
 Here **djangoSHOP** uses some Javascript during the purchase operation. Lets explain how:
 
 
-.. _the-purchasing-operation:
+.. _reference/the-purchasing-operation:
 
 The Purchasing Operation
 ------------------------

@@ -1,4 +1,4 @@
-.. _money-types:
+.. _reference/money-types:
 
 ===========
 Money Types

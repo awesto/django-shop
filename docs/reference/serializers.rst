@@ -1,4 +1,4 @@
-.. _serializers:
+.. _reference/serializers:
 
 ================
 REST Serializers

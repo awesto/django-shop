@@ -1,3 +1,5 @@
+.. _tutorial/intro:
+
 ========
 Tutorial
 ========
@@ -12,7 +14,7 @@ The steps outlined in this tutorial are meant to be followed in order.
 
 .. _Django Tutorial: https://docs.djangoproject.com/en/stable/intro/tutorial01/
 
-.. _prepare-installation:
+.. _tutorial/prepare-installation:
 
 Prepare the Installation
 ========================
@@ -43,11 +45,11 @@ system:
 
 these statements will setup an environment, which runs a demo shop out of the box.
 
-You may populate the database with your own products, or if impatient, :ref:`quickstart` using
-prepared CMS page layouts, products and media files.
+You may populate the database with your own products, or if impatient, :ref:`tutorial/quickstart`
+using prepared CMS page layouts, products and media files.
 
 
-.. _create-demo-database:
+.. _tutorial/create-demo-database:
 
 Create a database for the demo
 ------------------------------

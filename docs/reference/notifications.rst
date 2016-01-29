@@ -1,4 +1,4 @@
-.. _notifications:
+.. _reference/notifications:
 
 =============
 Notifications
@@ -27,7 +27,7 @@ a meaningful name, "Order confirmed, paid with PayPal" could for instance be a g
 Event Type
 ----------
 
-Each :ref:`order-workflows` declares a set of transition targets. For instance, the class
+Each :ref:`reference/order-workflows` declares a set of transition targets. For instance, the class
 ``PayInAdvanceWorkflowMixin`` declares these targets: "*Awaiting a forward fund payment*",
 "*Prepayment deposited*" and "*No Payment Required*".
 
@@ -50,7 +50,7 @@ Email Templates
 ---------------
 
 From the section **Start > Post Office > Email Templates**, chose on of the
-:ref:`post-office-emails`.
+:ref:`reference/post-office-emails`.
 
 
 Notification attachments
@@ -85,7 +85,7 @@ If **djangoSHOP** is configured to run in a multilingual environment, post offic
 in the language used during order creation.
 
 
-.. _post-office-emails:
+.. _reference/post-office-emails:
 
 Templates for Emails
 --------------------

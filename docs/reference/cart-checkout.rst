@@ -1,4 +1,4 @@
-.. _cart-checkout:
+.. _reference/cart-checkout:
 
 =================
 Cart and Checkout
@@ -11,8 +11,8 @@ simplifies the code and saves some random access memory, but adds another minor 
 
 From a technical point of view, the checkout page is the same as the cart. They can both be on
 separate pages, or be merged on the same page. Since what we would normally name the
-"*Checkout Page*", is only a collection of :ref:`cascade-plugins`, we won't go into further detail
-here.
+"*Checkout Page*", is only a collection of :ref:`reference/cascade-plugins`, we won't go into
+further detail here.
 
 
 Expired Carts
@@ -47,10 +47,10 @@ Cart Models
 ===========
 
 The cart consists of two models classes ``Cart`` and ``CartItem``, both inheriting from ``BaseCart``
-and ``BaseCartItem`` respectively. As with most models in **djangoSHOP**, these are
-:ref:`deferred-models`, so that inheriting from a base class automatically sets the foreign keys to
-the appropriate model. This gives the programmer the flexibility to add as many fields to the cart,
-as the merchant requires for his special implementation.
+and ``BaseCartItem`` respectively. As with most models in **djangoSHOP**, these are using the
+:ref:`reference/deferred-models`, so that inheriting from a base class automatically sets the
+foreign keys to the appropriate model. This gives the programmer the flexibility to add as many
+fields to the cart, as the merchant requires for his special implementation.
 
 In most use-cases, the default cart implementation will do the job. These default classes can be
 found at :class:`shop.models.defaults.cart.Cart` and :class:`shop.models.defaults.cart_item.CartItem`.
@@ -127,7 +127,7 @@ It is suggested to check the checkbox named **Soft root**. This prevents that a 
 special cart symbol located on the right of the navigation bar.
 
 
-.. _cart-cascade-plugin:
+.. _reference/cart-cascade-plugin:
 
 Cart using a Cascade Plugin
 ---------------------------
@@ -188,7 +188,7 @@ to have an item in both the cart and the watch-list. This during online shopping
 major point of confusion.
 
 
-.. _cart-render-templates:
+.. _reference/cart-render-templates:
 
 Render templates
 ~~~~~~~~~~~~~~~~
@@ -242,8 +242,8 @@ the end of each page, so that the customer can easily proceed to the next one.
 On the checkout page, the customer has to fill out a few forms. These can be a contact form,
 shipping and billing addresses, payment and shipping methods, and many more. Which ones depend on
 the configuration, the legal regulations and the requirements of the shop's implementation. In
-:ref:`cascade-plugins` all shop specific CMS plugins are listed. They can be combined into whatever
-makes sense for a successful checkout.
+:ref:`reference/cascade-plugins` all shop specific CMS plugins are listed. They can be combined
+into whatever makes sense for a successful checkout.
 
 
 Add a Cart via manually written Cart Template
@@ -259,8 +259,8 @@ it for that page.
 From a technical point of view, it does not make any difference whether we use the cart plugin or a
 handcrafted template. If the HTML code making up the cart has to be adopted to the merchants needs,
 we normally are better off and much more flexible, if we override the template code as described
-in section :ref:`cart-render-templates`. Therefore, it is strongly discouraged to craft cart and
-checkout templates by hand. 
+in section :ref:`reference/cart-render-templates`. Therefore, it is strongly discouraged to craft
+cart and checkout templates by hand. 
 
 
 Cart Modifiers
@@ -322,7 +322,7 @@ quantity. Since this modifier sets the cart items line total, it must be listed 
 in ``SHOP_CART_MODIFIERS``.
 
 
-.. _payment-cart-modifier:
+.. _reference/payment-cart-modifier:
 
 Payment Cart Modifier
 ~~~~~~~~~~~~~~~~~~~~~
@@ -333,7 +333,7 @@ method ``is_disabled`` a payment method can be disabled; useful to disable certa
 the carts total is below a certain threshold.
 
 
-.. _shipping-cart-modifier:
+.. _reference/shipping-cart-modifier:
 
 Shipping Cart Modifier
 ~~~~~~~~~~~~~~~~~~~~~~

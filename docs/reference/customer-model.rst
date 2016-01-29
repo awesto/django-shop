@@ -1,4 +1,4 @@
-.. _customer-model:
+.. _reference/customer-model:
 
 ==============
 Customer Model
@@ -65,10 +65,11 @@ User decides to register and authenticate himself in the future.
 Adding the Customer model to our application
 ============================================
 
-As almost all models in **djangoSHOP**, the Customer itself is deferrable_. This means that
-the Django project is responsible for materializing that model and additionally allows the merchant
-to add arbitrary fields to this Customer model. Good choices are a phone number, a boolean to signal
-whether the customer shall receive newsletters, his rebate status, etc.
+As almost all models in **djangoSHOP**, the Customer model uses itself the
+:ref:`reference/deferred-models`. This means that the Django project is responsible for
+materializing that model and additionally allows the merchant to add arbitrary fields to this
+Customer model. Good choices are a phone number, a boolean to signal whether the customer shall
+receive newsletters, his rebate status, etc.
 
 The simplest way is to materialize the given convenience class in our project's ``models.py``:
 
@@ -85,8 +86,6 @@ or, if we need extra fields, then instead of the above, we write:
 	class (BaseCustomer):
 	    birth_date = models.DateField("Date of Birth")
 	    # other customer related fields
-
-.. _deferrable: deferred-models
 
 
 Configure the Middleware
@@ -163,7 +162,7 @@ User table. Therefore it performs better to query the User via the Customer obje
 versa.
 
 
-.. _visitors-guests-registered-customers:
+.. _reference/visitors-guests-registered-customers:
 
 Anonymous Users and Visiting Customers
 --------------------------------------

@@ -1,3 +1,5 @@
+.. _tutorial/catalog-views:
+
 =============
 Catalog Views
 =============

@@ -1,8 +1,8 @@
-.. _deferred-models:
+.. _reference/deferred-models:
 
-================================
-Using the deferred model pattern
-================================
+======================
+Deferred Model Pattern
+======================
 
 Until **djangoSHOP** version 0.2, there were abstract and concrete and models: ``BaseProduct`` and
 ``Product``, ``BaseCart`` and ``Cart``, ``BaseCartItem`` and ``CartItem``, ``BaseOrder``and ``Order``
