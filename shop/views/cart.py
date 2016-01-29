@@ -1,176 +1,58 @@
 # -*- coding: utf-8 -*-
-from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseBadRequest
-from django.shortcuts import redirect
-from django.core.exceptions import ObjectDoesNotExist
-
-from shop.forms import get_cart_item_formset
-from shop.models.productmodel import Product
-from shop.util.cart import get_or_create_cart
-from shop.views import ShopView, ShopTemplateResponseMixin
+from __future__ import unicode_literals
+from django.db.models.query import QuerySet
+from django.utils.cache import add_never_cache_headers
+from rest_framework import viewsets
+from rest_framework.decorators import list_route
+from rest_framework.response import Response
+from shop.models.cart import CartModel, CartItemModel
+from shop.rest import serializers
 
 
-class CartItemDetail(ShopView):
-    """
-    A view to handle CartItem-related operations. This is not a real view in
-    the sense that it is not designed to answer to GET or POST request nor to
-    display anything, but only to be used from AJAX.
-    """
-    action = None
+class BaseViewSet(viewsets.ModelViewSet):
+    def get_queryset(self):
+        cart = CartModel.objects.get_from_request(self.request)
+        if cart and self.kwargs.get(self.lookup_field):
+            # we're interest only into a certain cart item
+            return CartItemModel.objects.filter(cart=cart)
+        # otherwise the CartSerializer will show its detail view and list all its cart items
+        return cart
 
-    def dispatch(self, request, *args, **kwargs):
-        """
-        Submitting form works only for "GET" and "POST".
-        If `action` is defined use it dispatch request to the right method.
-        """
-        if not self.action:
-            return super(CartItemDetail, self).dispatch(request, *args,
-                **kwargs)
-        if self.action in self.http_method_names:
-            handler = getattr(self, self.action, self.http_method_not_allowed)
+    def paginate_queryset(self, queryset):
+        if isinstance(queryset, QuerySet):
+            return super(BaseViewSet, self).paginate_queryset(queryset)
+
+    def get_serializer(self, *args, **kwargs):
+        kwargs.update(context=self.get_serializer_context(), label=self.serializer_label)
+        many = kwargs.pop('many', False)
+        if many or self.item_serializer_class is None:
+            return self.serializer_class(*args, **kwargs)
+        return self.item_serializer_class(*args, **kwargs)
+
+    def finalize_response(self, request, response, *args, **kwargs):
+        """Set HTTP headers to not cache this view"""
+        if self.action != 'render_product_summary':
+            add_never_cache_headers(response)
+        return super(BaseViewSet, self).finalize_response(request, response, *args, **kwargs)
+
+
+class CartViewSet(BaseViewSet):
+    serializer_label = 'cart'
+    serializer_class = serializers.CartSerializer
+    item_serializer_class = serializers.CartItemSerializer
+
+    @list_route(methods=['get'])
+    def update_caption(self, request):
+        cart = self.get_queryset()
+        if cart:
+            cart.update(request)
+            caption = cart.get_caption_data()
         else:
-            handler = self.http_method_not_allowed
-        self.request = request
-        self.args = args
-        self.kwargs = kwargs
-        return handler(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        """
-        Update one of the cartItem's quantities. This requires a single
-        ``item_quantity`` POST parameter, but should be posted to a properly
-        RESTful URL (that should contain the item's ID):
-
-        http://example.com/shop/cart/item/12345
-        """
-        cart_object = get_or_create_cart(self.request)
-        item_id = self.kwargs.get('id')
-        # NOTE: it seems logic to be in POST but as tests client shows
-        # with PUT request, data is in GET variable
-        # TODO: test in real client
-        # quantity = self.request.POST['item_quantity']
-        try:
-            quantity = int(self.request.POST['item_quantity'])
-        except (KeyError, ValueError):
-            return HttpResponseBadRequest("The quantity has to be a number")
-        cart_object.update_quantity(item_id, quantity)
-        return self.put_success()
-
-    def delete(self, request, *args, **kwargs):
-        """
-        Deletes one of the cartItems. This should be posted to a properly
-        RESTful URL (that should contain the item's ID):
-
-        http://example.com/shop/cart/item/12345
-        """
-        cart_object = get_or_create_cart(self.request)
-        item_id = self.kwargs.get('id')
-        try:
-            cart_object.delete_item(item_id)
-            return self.delete_success()
-        except ObjectDoesNotExist:
-            raise Http404
-
-    # success hooks
-    def success(self):
-        """
-        Generic hook by default redirects to cart
-        """
-        if self.request.is_ajax():
-            return HttpResponse('Ok<br />')
-        else:
-            return HttpResponseRedirect(reverse('cart'))
-
-    def post_success(self, product, cart_item):
-        """
-        Post success hook
-        """
-        return self.success()
-
-    def delete_success(self):
-        """
-        Post delete hook
-        """
-        return self.success()
-
-    def put_success(self):
-        """
-        Post put hook
-        """
-        return self.success()
-
-    # TODO: add failure hooks
+            caption = CartModel.get_default_caption_data()
+        return Response(caption)
 
 
-class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
-    """
-    This is the actual "cart" view, that answers to GET and POST requests like
-    a normal view (and returns HTML that people can actually see)
-    """
-
-    template_name = 'shop/cart.html'
-    action = None
-
-    def get_context_data(self, **kwargs):
-        # There is no get_context_data on super(), we inherit from the mixin!
-        ctx = {}
-        cart = get_or_create_cart(self.request)
-        cart.update(self.request)
-        ctx.update({'cart': cart})
-        ctx.update({'cart_items': cart.get_updated_cart_items()})
-        return ctx
-
-    def get(self, request, *args, **kwargs):
-        """
-        This is lifted from the TemplateView - we don't get this behavior since
-        this only extends the mixin and not templateview.
-        """
-        context = self.get_context_data(**kwargs)
-        formset = get_cart_item_formset(cart_items=context['cart_items'])
-        context.update({'formset': formset, })
-        return self.render_to_response(context)
-
-    def post(self, *args, **kwargs):
-        """
-        This is to *add* a new item to the cart. Optionally, you can pass it a
-        quantity parameter to specify how many you wish to add at once
-        (defaults to 1)
-        """
-        try:
-            product_id = int(self.request.POST['add_item_id'])
-            product_quantity = int(self.request.POST.get('add_item_quantity', 1))
-        except (KeyError, ValueError):
-            return HttpResponseBadRequest("The quantity and ID have to be numbers")
-        product = Product.objects.get(pk=product_id)
-        cart_object = get_or_create_cart(self.request, save=True)
-        cart_item = cart_object.add_product(product, product_quantity)
-        cart_object.save()
-        return self.post_success(product, cart_item)
-
-    def delete(self, *args, **kwargs):
-        """
-        Empty shopping cart.
-        """
-        cart_object = get_or_create_cart(self.request)
-        cart_object.empty()
-        return self.delete_success()
-
-    def put(self, *args, **kwargs):
-        """
-        Update shopping cart items quantities.
-
-        Data should be in update_item_ID=QTY form, where ID is id of cart item
-        and QTY is quantity to set.
-        """
-        context = self.get_context_data(**kwargs)
-        try:
-            formset = get_cart_item_formset(cart_items=context['cart_items'],
-                    data=self.request.POST)
-        except ValidationError:
-            return redirect('cart')
-        if formset.is_valid():
-            formset.save()
-            return self.put_success()
-        context.update({'formset': formset, })
-        return self.render_to_response(context)
+class WatchViewSet(BaseViewSet):
+    serializer_label = 'watch'
+    serializer_class = serializers.WatchSerializer
+    item_serializer_class = serializers.WatchItemSerializer

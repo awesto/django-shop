@@ -1,0 +1,5 @@
+{{ address.addressee }}{% if address.supplement %}
+{{ address.supplement }}{% endif %}
+{{ address.street }}
+{{ address.zip_code }} {{ address.location }}
+{{ address.get_country_display }}

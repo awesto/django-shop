@@ -1,0 +1,71 @@
+{% load static i18n cms_tags sekizai_tags %}
+
+{% addtoblock "js" %}<script src="{% static 'shop/js/catalog.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+{% addtoblock "shop-ng-requires" %}django.shop.catalog{% endaddtoblock %}
+
+{% block add-product-to-cart-panel %}
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">{% trans "Order Product" %}</h3>
+	</div>
+	{% block add-product-to-cart-table %}
+	<table shop-add-to-cart="{{ product.get_absolute_url }}/add-to-cart" class="table">
+		<thead>
+			<tr>
+				<th>{% trans "Quantity" %}</th>
+				<th>{% trans "Unit Price" %}</th>
+				<th>{% trans "Subtotal" %}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="form-inline">
+					<div class="form-group">
+						<input class="form-control" type="number" min="1" ng-model="context.quantity" ng-model-options="{{ ng_model_options }}" ng-change="updateContext()" />
+					</div>
+				</td>
+				<td ng-bind="context.unit_price"></td>
+				<td ng-bind="context.subtotal"></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<button class="btn btn-info btn-block btn-xs" ng-click="addToCart('{% url 'shop:watch-list' %}', {watch: true})">{% trans "Watch product" %}</button>
+				</td>
+				<td>
+					<button class="btn btn-primary btn-block" ng-click="addToCart('{% url 'shop:cart-list' %}')">{% trans "Add to cart" %}</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	{% endblock add-product-to-cart-table %}
+</div>
+{% endblock add-product-to-cart-panel %}
+
+{% block add-to-cart-modal-dialog %}
+<script id="AddToCartModalDialog.html" type="text/ng-template">
+	{% block add-to-cart-modal-header %}
+	<div class="modal-header">
+		<h4 class="modal-title" ng-if="!context.watch">{% trans "The product has been successfully placed in the shopping cart:" %}</h4>
+		<h4 class="modal-title" ng-if="context.watch">{% trans "Watching this product" %}</h4>
+	</div>
+	{% endblock add-to-cart-modal-header %}
+
+	{% block add-to-cart-modal-body %}
+	<div class="modal-body">
+		{% verbatim %}{{ context.quantity|number }} &times; {% endverbatim %}{{ product.product_name }}
+		{% trans "for {{ context.unit_price }} per piece: {{ context.subtotal }}" %}
+	</div>
+	{% endblock add-to-cart-modal-body %}
+
+	{% block add-to-cart-modal-footer %}{% page_url "shop-cart" as shop_cart_url %}
+	<div class="modal-footer">
+		{% if shop_cart_url %}
+		<button class="btn btn-primary" ng-click="proceed('{{ shop_cart_url }}')">{% trans "Show Cart" %}</button>
+		{% endif %}
+		<button class="btn btn-primary" ng-click="proceed('{{ request.current_page.get_absolute_url }}')">{% trans "Continue Shopping" %}</button>
+		<button class="btn btn-warning" ng-click="cancel()">{% trans "Cancel" %}</button>
+	</div>
+	{% endblock add-to-cart-modal-footer %}
+</script>
+{% endblock add-to-cart-modal-dialog %}

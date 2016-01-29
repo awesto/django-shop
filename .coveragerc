@@ -1,3 +1,6 @@
 [run]
+branch = True
 source = shop
-omit = */tests/*, */migrations/*, */admin.py
+
+[report]
+show_missing = True

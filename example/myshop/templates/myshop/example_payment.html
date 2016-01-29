@@ -1,8 +1,0 @@
-{% load shop_tags %}
-<h1>Example payment backend</h1>
-{% order order %}
-<p>Press next to continue</p>
-<form action="" method="post">
-    {% csrf_token %}
-    <input type="submit" value="Next" />
-</form>

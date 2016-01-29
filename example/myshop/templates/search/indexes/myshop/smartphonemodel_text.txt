@@ -1,0 +1,6 @@
+{{ object.product_name }}
+{% for product_code in object.smartphone_set.all %}
+{{ product_code }}{% endfor %}
+{{ object.description|striptags }}
+{% for page in object.cms_pages.all %}
+{{ page.get_title }}{% endfor %}

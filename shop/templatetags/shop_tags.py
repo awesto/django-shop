@@ -1,70 +1,100 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+from collections import OrderedDict
+from datetime import datetime
 from django import template
-
-from classytags.helpers import InclusionTag
-from classytags.core import Options
-from classytags.arguments import Argument
-
-from shop.util.cart import get_or_create_cart
-from shop.models.productmodel import Product
-
 from django.conf import settings
-
+from django.template.loader import select_template
+from django.utils import formats
+from django.utils.safestring import mark_safe
+from django.utils.dateformat import format, time_format
+from classytags.helpers import InclusionTag
+from shop import settings as shop_settings
+from shop.models.cart import CartModel
+from shop.rest.money import JSONRenderer
 
 register = template.Library()
 
 
-class Cart(InclusionTag):
+class CartIcon(InclusionTag):
     """
     Inclusion tag for displaying cart summary.
     """
-    template = 'shop/templatetags/_cart.html'
+    def get_template(self, context, **kwargs):
+        template = select_template([
+            '{}/templatetags/cart-icon.html'.format(shop_settings.APP_LABEL),
+            'shop/templatetags/cart-icon.html',
+        ])
+        return template.template.name
 
     def get_context(self, context):
         request = context['request']
-        cart = get_or_create_cart(request)
-        cart.update(request)
-        return {
-            'cart': cart
-        }
-register.tag(Cart)
-
-
-class Order(InclusionTag):
-    """
-    Inclusion tag for displaying order.
-    """
-    template = 'shop/templatetags/_order.html'
-    options = Options(
-        Argument('order', resolve=True),
-        )
-
-    def get_context(self, context, order):
-        return {
-            'order': order
-        }
-register.tag(Order)
-
-
-class Products(InclusionTag):
-    """
-    Inclusion tag for displaying all products.
-    """
-    template = 'shop/templatetags/_products.html'
-    options = Options(
-        Argument('objects', resolve=True, required=False),
-    )
-
-    def get_context(self, context, objects):
-        if objects is None:
-            objects = Product.objects.filter(active=True)
-        context.update({'products': objects, })
+        cart = CartModel.objects.get_from_request(request)
+        if cart:
+            cart.update(request)
+            context['cart'] = cart
         return context
-register.tag(Products)
+register.tag(CartIcon)
 
-def priceformat(price):
-    FORMAT = getattr(settings, 'SHOP_PRICE_FORMAT', '%0.2f')
-    if not price and price != 0:
+
+def from_iso8601(value):
+    try:
+        return datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%fZ")
+    except ValueError:
+        return datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ")
+
+
+@register.filter(expects_localtime=True, is_safe=False)
+def date(value, arg=None):
+    """
+    Alternative implementation to the built-in `date` template filter which also accepts the
+    date string in iso-8601 as passed in by the REST serializers.
+    """
+    if value in (None, ''):
         return ''
-    return FORMAT % price
-register.filter(priceformat)
+    if not isinstance(value, datetime):
+        value = from_iso8601(value)
+    if arg is None:
+        arg = settings.DATE_FORMAT
+    try:
+        return formats.date_format(value, arg)
+    except AttributeError:
+        try:
+            return format(value, arg)
+        except AttributeError:
+            return ''
+
+
+@register.filter(expects_localtime=True, is_safe=False)
+def time(value, arg=None):
+    """
+    Alternative implementation to the built-in `time` template filter which also accepts the
+    date string in iso-8601 as passed in by the REST serializers.
+    """
+    if value in (None, ''):
+        return ''
+    if not isinstance(value, datetime):
+        value = from_iso8601(value)
+    if arg is None:
+        arg = settings.TIME_FORMAT
+    try:
+        return formats.time_format(value, arg)
+    except AttributeError:
+        try:
+            return time_format(value, arg)
+        except AttributeError:
+            return ''
+
+
+@register.filter
+def rest_json(value, arg=None):
+    """
+    Renders a `ReturnDict` as used by the REST framework into a safe JSON string.
+    """
+    if not value:
+        return mark_safe('{}')
+    if not isinstance(value, (dict, OrderedDict)):
+        msg = "Given value must be of type dict or OrderedDict, but it is {}.".format(value.__class__.__name__)
+        raise ValueError(msg)
+    data = JSONRenderer().render(value)
+    return mark_safe(data)

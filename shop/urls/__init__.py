@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls import patterns, include, url
+from __future__ import unicode_literals
+from django.conf.urls import include, url
+from . import rest_api
+from . import auth
+from . import payment
 
-from shop.views import ShopTemplateView
 
-
-urlpatterns = patterns('',
-    url(r'^$', ShopTemplateView.as_view(template_name="shop/welcome.html"),
-        name='shop_welcome'),
-    (r'^pay/', include('shop.payment.urls')),
-    (r'^ship/', include('shop.shipping.urls')),
-    (r'^orders/', include('shop.urls.order')),
-    (r'^checkout/', include('shop.urls.checkout')),
-    (r'^cart/', include('shop.urls.cart')),
-    (r'^products/', include('shop.urls.catalog')),
-    )
+urlpatterns = (
+    url(r'^api/', include(rest_api)),
+    url(r'^auth/', include(auth)),
+    url(r'^payment/', include(payment)),
+)

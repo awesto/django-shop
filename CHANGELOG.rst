@@ -1,15 +1,13 @@
-Version NEXT
-============
-
-(It's awefully quiet in here, why don't you commit something?)
+Version 0.9.0
+=============
+* Complete rewrite of the code base. Too many things have changed to be enumerated here.
 
 Version 0.2.1
 =============
-* last version based on the old code base, which soll be deprected.
+* last version based on the old code base, which shall be deprecated.
 
 Version 0.2.0
 =============
-
 * models.FloatField are now automatically localized.
 * Support for Django 1.2 and Django 1.3 dropped.
 * Product model now has property ``can_be_added_to_cart`` which is checked before adding the product to cart

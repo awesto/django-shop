@@ -1,0 +1,66 @@
+{% load i18n %}
+
+<table class="table">
+{% block print-order-caption %}<!-- table caption -->{% endblock %}
+
+{% block print-order-thead %}
+	<thead class="dontsplit">
+		<tr>
+			<th class="text-center">{% trans "Product" %}</th>
+			<th class="text-center">{% trans "Quantity" %}</th>
+			<th class="text-center">{% trans "Unit Price" %}</th>
+			<th class="text-right">{% trans "Total" %}</th>
+		</tr>
+	</thead>
+{% endblock print-order-thead %}
+
+{% block print-order-tbody %}
+	<tbody>
+	{% for item in data.items %}
+		<div class="dontsplit"> {# just to give a hint to the columnizer #}
+			<tr>
+				<td rowspan="2" class="text-center">{{ item.summary.media|safe }}</td>
+				<td class="text-center">{{ item.quantity }}</td>
+				<td class="text-center">{{ item.unit_price }}</td>
+				<td class="text-right">{{ item.line_total }}</td>
+			</tr>
+			<tr class="no-border">
+				<td colspan="3">
+					{{ item.summary.body|safe }}
+					{% for key, extra_row in item.extra.rows %}
+					<div>{{ extra_row.label }}: {{ extra_row.amount }}</div>
+					{% endfor %}
+				</td>
+			</tr>
+		</div>
+	{% endfor %}
+	</tbody>
+{% endblock print-order-tbody %}
+
+{% block print-order-tfoot %}
+	<tfoot class="dontsplit">
+		<tr>
+			<td colspan="2"></td>
+			<td><h5>{% trans "Subtotal" %}</h5></td>
+			<td class="text-right">
+				<h5>{{ data.subtotal }}</h5>
+			</td>
+		</tr>
+	{% for key, extra_row in data.extra.rows %}
+		<tr>
+			<td colspan="2"></td>
+			<td>{{ extra_row.label }}</td>
+			<td class="text-right">{{ extra_row.amount }}</td>
+		</tr>
+	{% endfor %}
+		<tr>
+			<td colspan="2"></td>
+			<td><h4>{% trans "Total" %}</h4></td>
+			<td class="text-right">
+				<h4>{{ data.total }}</h4>
+			</td>
+		</tr>
+	</tfoot>
+{% endblock print-order-tfoot %}
+
+</table>

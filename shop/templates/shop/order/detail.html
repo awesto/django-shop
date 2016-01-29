@@ -1,0 +1,77 @@
+{% extends "shop/order/base.html" %}
+{% load i18n %}
+
+{% block shop-order-table %}
+
+	{% block shop-order-caption %}
+	<caption>
+		<h4>{% trans "Order" %} {{ data.get_number }} <small>{% trans "from" context "order-detail" %} <span shop-timestamp="{{ data.created_at }}"></span></small></h4>
+	</caption>
+	{% endblock %}
+
+	{% block shop-order-thead %}
+	<thead>
+		<tr>
+			<th class="text-center">{% trans "Quantity" %}</th>
+			<th class="text-center">{% trans "Product" %}</th>
+			<th class="text-right shop-order-price-col">{% trans "Unit Price" %}</th>
+			<th class="text-right shop-order-price-col">{% trans "Total" %}</th>
+		</tr>
+	</thead>
+	{% endblock shop-order-thead %}
+
+	{% block shop-order-tbody %}
+	<tbody>
+		{% for item in data.items %}
+		<tr>
+			<td class="text-center">{{ item.quantity }}</td>
+			<td rowspan="2">{{ item.summary.media|safe }}</td>
+			<td class="text-right">{{ item.unit_price }}</td>
+			<td class="text-right">{{ item.line_total }}</td>
+		</tr>
+		<tr class="no-border">
+			<td colspan="3">
+				{{ item.summary.body|safe }}
+				{% for key, extra_row in item.extra.rows %}
+				<div>{{ extra_row.label }}: {{ extra_row.amount }}</div>
+				{% endfor %}
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+	{% endblock shop-order-tbody %}
+
+	{% block shop-order-tfoot %}
+	<tfoot>
+		<tr>
+			<td colspan="2"></td>
+			<td><h5>{% trans "Subtotal" %}</h5></td>
+			<td class="text-right">
+				<h5>{{ data.subtotal }}</h5>
+			</td>
+		</tr>
+		{% for key, extra_row in data.extra.rows %}
+		<tr>
+			<td class="no-border" colspan="2"></td>
+			<td>{{ extra_row.label }}</td>
+			<td class="text-right">{{ extra_row.amount }}</td>
+		</tr>
+		{% endfor %}
+		<tr class="double-border">
+			<td class="no-border" colspan="2"></td>
+			<td><h4>{% trans "Total" %}</h4></td>
+			<td class="text-right">
+				<h4>{{ data.total }}</h4>
+			</td>
+		</tr>
+		<tr>
+			<td class="no-border" colspan="2"></td>
+			<td><h5>{% trans "Thereof Paid" %}</h5></td>
+			<td class="text-right">
+				<h5>{{ data.amount_paid }}</h5>
+			</td>
+		</tr>
+	</tfoot>
+	{% endblock shop-order-tfoot %}
+
+{% endblock shop-order-table %}

@@ -1,0 +1,21 @@
+{% load i18n static cms_tags sekizai_tags %}{% spaceless %}
+
+{% addtoblock "js" %}<script src="{% static 'shop/js/search-form.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+{% addtoblock "shop-ng-requires" %}django.shop.search{% endaddtoblock %}
+
+{% page_url 'shop-search-product' as shop_search_product_url %}
+
+<form shop-product-search class="{{ search_form_classes }}" role="search" method="get"{% if shop_search_product_url %} action="{{ shop_search_product_url }}"{% endif %}>
+	{% if shop_search_product_url %}
+	<div class="input-group">
+	{% endif %}
+		<input name="q" ng-model="searchQuery" ng-change="autocomplete()" type="text" class="form-control" placeholder="{% trans 'Search' %}" />
+	{% if shop_search_product_url %}
+		<div class="input-group-addon" ng-click="submitSearch()" tooltip="{% trans "Refine your search" %}">
+			<i class="glyphicon glyphicon-search"></i>
+		</div>
+	</div>
+	{% endif %}
+</form>
+
+{% endspaceless %}

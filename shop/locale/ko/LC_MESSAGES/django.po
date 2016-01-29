@@ -2,12 +2,17 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+<<<<<<< HEAD
 # 
+=======
+#
+>>>>>>> 25445f89cdfc1d7e8ec3740853732bebfd22e333
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2014-12-10 14:46+0900\n"
 "PO-Revision-Date: 2014-12-10 15:00+0900\n"
 "Last-Translator:   <admin@naver.com>\n"
@@ -377,3 +382,2246 @@ msgstr ""
 #: templates/shop/templatetags/_order.html:54
 msgid "Order Subtotal"
 msgstr "주문금액"
+=======
+"POT-Creation-Date: 2015-09-30 00:52+0200\n"
+"PO-Revision-Date: 2014-12-10 15:00+0900\n"
+"Last-Translator:   <admin@naver.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Translated-Using: django-rosetta 0.7.4\n"
+
+#: admin/customer.py:41
+msgid "Customer State"
+msgstr ""
+
+#: admin/customer.py:76
+#, fuzzy
+msgid "Identifier"
+msgstr "제품 참조"
+
+#: admin/customer.py:80 models/customer.py:111
+msgid "Salutation"
+msgstr ""
+
+#: admin/customer.py:85
+msgid "Staff"
+msgstr ""
+
+#: admin/customer.py:87
+#, fuzzy
+msgid "State"
+msgstr "주"
+
+#: admin/customer.py:91 models/customer.py:112
+#, fuzzy
+msgid "Last accessed"
+msgstr "마지막 수정"
+
+#: admin/customer.py:95
+msgid "Unexpired"
+msgstr ""
+
+#: admin/customer.py:106 admin/notification.py:18 models/cart.py:126
+#: models/order.py:115
+msgid "Customer"
+msgstr ""
+
+#: admin/customer.py:107
+msgid "Customers"
+msgstr ""
+
+#: admin/notification.py:18 admin/notification.py:53
+msgid "Nobody"
+msgstr ""
+
+#: admin/order.py:70
+msgid "Outstanding amount"
+msgstr ""
+
+#: admin/order.py:119 templates/shop/print/delivery-note.html:10
+msgid "Delivery Note"
+msgstr ""
+
+#: admin/order.py:121 templates/shop/print/invoice.html:4
+#: templates/shop/print/invoice.html:7
+msgid "Invoice"
+msgstr ""
+
+#: admin/order.py:129
+msgid "Print out"
+msgstr ""
+
+#: apps.py:9
+msgid "Shop"
+msgstr ""
+
+#: cascade/auth.py:14
+msgid "Login Form"
+msgstr ""
+
+#: cascade/auth.py:15
+msgid "Login & Reset Form"
+msgstr ""
+
+#: cascade/auth.py:16
+msgid "Logout Form"
+msgstr ""
+
+#: cascade/auth.py:17
+msgid "Shared Login/Logout Form"
+msgstr ""
+
+#: cascade/auth.py:18
+msgid "Password Reset Form"
+msgstr ""
+
+#: cascade/auth.py:19
+msgid "Change Password Form"
+msgstr ""
+
+#: cascade/auth.py:20
+msgid "Register User"
+msgstr ""
+
+#: cascade/auth.py:21 templates/shop/auth/continue-as-guest.html:10
+msgid "Continue as guest"
+msgstr ""
+
+#: cascade/auth.py:26 cascade/checkout.py:30 cascade/plugin_base.py:94
+#: cascade/processbar.py:107 cascade/processbar.py:110
+msgid "CMS Page"
+msgstr ""
+
+#: cascade/auth.py:26 cascade/checkout.py:30 cascade/processbar.py:108
+#: cascade/processbar.py:110
+msgid "Reload Page"
+msgstr ""
+
+#: cascade/auth.py:26
+msgid "Do Nothing"
+msgstr ""
+
+#: cascade/auth.py:27
+msgid "Rendered Form"
+msgstr ""
+
+#: cascade/auth.py:28
+msgid "Select the appropriate form for various authentication purposes."
+msgstr ""
+
+#: cascade/auth.py:42
+msgid "Authentication"
+msgstr ""
+
+#: cascade/auth.py:51
+msgid "unknown"
+msgstr ""
+
+#: cascade/cart.py:16
+msgid "Cart"
+msgstr "장바구니"
+
+#: cascade/cart.py:20
+msgid "Editable Cart"
+msgstr ""
+
+#: cascade/cart.py:20
+msgid "Static Cart"
+msgstr ""
+
+#: cascade/cart.py:21
+#, fuzzy
+msgid "Cart Summary"
+msgstr "장바구니 고유번호"
+
+#: cascade/cart.py:21
+msgid "Watch List"
+msgstr ""
+
+#: cascade/cart.py:25 cascade/plugin_base.py:152
+msgid "Render as"
+msgstr ""
+
+#: cascade/cart.py:27
+msgid "Shall the cart be editable or a static summary?"
+msgstr ""
+
+#: cascade/checkout.py:29 cascade/processbar.py:105
+msgid "Button Content"
+msgstr ""
+
+#: cascade/checkout.py:30 cascade/processbar.py:108 cascade/processbar.py:111
+msgid "Purchase Now"
+msgstr ""
+
+#: cascade/checkout.py:37
+#, fuzzy
+msgid "Proceed Button"
+msgstr "결제진행"
+
+#: cascade/checkout.py:59
+msgid "Customer Form"
+msgstr ""
+
+#: cascade/checkout.py:70
+msgid "Guest Form"
+msgstr ""
+
+#: cascade/checkout.py:90
+#, fuzzy
+msgid "Shipping Address Form"
+msgstr "배송지"
+
+#: cascade/checkout.py:98
+#, fuzzy
+msgid "Billing Address Form"
+msgstr "배송지"
+
+#: cascade/checkout.py:106
+#, fuzzy
+msgid "Payment Method Form"
+msgstr "지불방법"
+
+#: cascade/checkout.py:133
+#, fuzzy
+msgid "Shipping Method Form"
+msgstr "배송방법"
+
+#: cascade/checkout.py:160
+msgid "Extra Annotation Form"
+msgstr ""
+
+#: cascade/checkout.py:176
+msgid "Accept Condition"
+msgstr ""
+
+#: cascade/checkout.py:197
+msgid "HTML content"
+msgstr ""
+
+#: cascade/plugin_base.py:94 models/order.py:271 models/product.py:104
+#: templates/shop/cart/editable.html:16 templates/shop/cart/static.html:8
+#: templates/shop/cart/watch.html:12 templates/shop/email/order.html:11
+#: templates/shop/order/order-detail.html:15 templates/shop/print/order.html:9
+msgid "Product"
+msgstr "제품"
+
+#: cascade/plugin_base.py:95
+msgid "External URL"
+msgstr ""
+
+#: cascade/plugin_base.py:95
+msgid "Mail To"
+msgstr ""
+
+#: cascade/plugin_base.py:120
+msgid "An internal link onto a product from the shop"
+msgstr ""
+
+#: cascade/plugin_base.py:148
+msgid "Form dialog"
+msgstr ""
+
+#: cascade/plugin_base.py:148
+msgid "Summary"
+msgstr ""
+
+#: cascade/plugin_base.py:154
+msgid "A dialog can also be rendered as a box containing a read-only summary."
+msgstr ""
+
+#: cascade/processbar.py:26
+msgid "Steps"
+msgstr ""
+
+#: cascade/processbar.py:27
+msgid "Number of steps for this proceed bar."
+msgstr ""
+
+#: cascade/processbar.py:31
+#, fuzzy
+msgid "Process Bar"
+msgstr "처리중"
+
+#: cascade/processbar.py:41
+msgid "with {} page"
+msgid_plural "with {} pages"
+msgstr[0] ""
+
+#: cascade/processbar.py:67
+#, fuzzy
+msgid "Process Step"
+msgstr "처리중"
+
+#: cascade/processbar.py:76
+msgid "Step Title"
+msgstr ""
+
+#: cascade/processbar.py:97
+msgid "Next Step Button"
+msgstr ""
+
+#: cms_app.py:9
+#, fuzzy
+msgid "View Orders"
+msgstr "주문들"
+
+#: forms/auth.py:21 templates/shop/auth/login-reset.html:8
+#: templates/shop/auth/login-reset.html:26 templates/shop/auth/login.html:8
+#: templates/shop/auth/reset.html:8
+msgid "Your e-mail address"
+msgstr ""
+
+#: forms/auth.py:22
+msgid "Preset password"
+msgstr ""
+
+#: forms/auth.py:24
+msgid "Send a randomly generated password to your e-mail address."
+msgstr ""
+
+#: forms/auth.py:26
+msgid "Choose a password"
+msgstr ""
+
+#: forms/auth.py:27
+msgid "Minimum length is 6 characters."
+msgstr ""
+
+#: forms/auth.py:28
+msgid "Repeat password"
+msgstr ""
+
+#: forms/auth.py:29
+#, fuzzy
+msgid "Confirm password."
+msgstr "주문완료"
+
+#: forms/auth.py:53
+#, python-brace-format
+msgid ""
+"A customer with the e-mail address ‘{email}’ already exists.\n"
+"If you have used this address previously, try to reset the password."
+msgstr ""
+
+#: forms/auth.py:59
+msgid "Passwords do not match"
+msgstr ""
+
+#: forms/checkout.py:17 templates/shop/auth/login-reset.html:11
+#: templates/shop/auth/login-reset.html:29 templates/shop/auth/login.html:11
+#: templates/shop/auth/reset.html:11
+#: templates/shop/email/customer-information.html:6
+msgid "Email"
+msgstr ""
+
+#: forms/checkout.py:18
+#, fuzzy
+msgid "First Name"
+msgstr "제품명"
+
+#: forms/checkout.py:19
+#, fuzzy
+msgid "Last Name"
+msgstr "마지막 수정"
+
+#: forms/checkout.py:157
+#, fuzzy
+msgid "Use shipping address for billing"
+msgstr "배송지"
+
+#: forms/checkout.py:184
+#, fuzzy
+msgid "Payment Method"
+msgstr "지불방법"
+
+#: forms/checkout.py:201
+#, fuzzy
+msgid "Shipping Method"
+msgstr "배송방법"
+
+#: management/commands/shop_customers.py:9
+msgid "Collect information about all customers which accessed this shop."
+msgstr ""
+
+#: management/commands/shop_customers.py:13
+msgid "Delete customers with expired sessions."
+msgstr ""
+
+#: management/commands/shop_customers.py:35
+#, python-brace-format
+msgid "Customers in this shop: total={total}, anonymous={anonymous}, expired={expired}, active={active}, guests={guests}, registered={registered}, staff={staff}."
+msgstr ""
+
+#: models/address.py:18
+msgid "Priority of using this address for shipping"
+msgstr ""
+
+#: models/address.py:20
+msgid "Priority of using this address for invoicing"
+msgstr ""
+
+#: models/address.py:24
+msgid "Address"
+msgstr "주소"
+
+#: models/address.py:25
+msgid "Addresses"
+msgstr "주소"
+
+#: models/address.py:42
+msgid "Afghanistan"
+msgstr ""
+
+#: models/address.py:43
+msgid "Aland Islands"
+msgstr ""
+
+#: models/address.py:44
+msgid "Albania"
+msgstr ""
+
+#: models/address.py:45
+msgid "Algeria"
+msgstr ""
+
+#: models/address.py:46
+msgid "American Samoa"
+msgstr ""
+
+#: models/address.py:47
+msgid "Andorra"
+msgstr ""
+
+#: models/address.py:48
+msgid "Angola"
+msgstr ""
+
+#: models/address.py:49
+msgid "Anguilla"
+msgstr ""
+
+#: models/address.py:50
+msgid "Antarctica"
+msgstr ""
+
+#: models/address.py:51
+msgid "Antigua And Barbuda"
+msgstr ""
+
+#: models/address.py:52
+msgid "Argentina"
+msgstr ""
+
+#: models/address.py:53
+msgid "Armenia"
+msgstr ""
+
+#: models/address.py:54
+msgid "Aruba"
+msgstr ""
+
+#: models/address.py:55
+msgid "Australia"
+msgstr ""
+
+#: models/address.py:56
+msgid "Austria"
+msgstr ""
+
+#: models/address.py:57
+msgid "Azerbaijan"
+msgstr ""
+
+#: models/address.py:58
+msgid "Bahamas"
+msgstr ""
+
+#: models/address.py:59
+msgid "Bahrain"
+msgstr ""
+
+#: models/address.py:60
+msgid "Bangladesh"
+msgstr ""
+
+#: models/address.py:61
+msgid "Barbados"
+msgstr ""
+
+#: models/address.py:62
+msgid "Belarus"
+msgstr ""
+
+#: models/address.py:63
+msgid "Belgium"
+msgstr ""
+
+#: models/address.py:64
+msgid "Belize"
+msgstr ""
+
+#: models/address.py:65
+msgid "Benin"
+msgstr ""
+
+#: models/address.py:66
+msgid "Bermuda"
+msgstr ""
+
+#: models/address.py:67
+msgid "Bhutan"
+msgstr ""
+
+#: models/address.py:68
+msgid "Bolivia, Plurinational State Of"
+msgstr ""
+
+#: models/address.py:69
+msgid "Bonaire, Saint Eustatius And Saba"
+msgstr ""
+
+#: models/address.py:70
+msgid "Bosnia And Herzegovina"
+msgstr ""
+
+#: models/address.py:71
+msgid "Botswana"
+msgstr ""
+
+#: models/address.py:72
+msgid "Bouvet Island"
+msgstr ""
+
+#: models/address.py:73
+msgid "Brazil"
+msgstr ""
+
+#: models/address.py:74
+msgid "British Indian Ocean Territory"
+msgstr ""
+
+#: models/address.py:75
+msgid "Brunei Darussalam"
+msgstr ""
+
+#: models/address.py:76
+msgid "Bulgaria"
+msgstr ""
+
+#: models/address.py:77
+msgid "Burkina Faso"
+msgstr ""
+
+#: models/address.py:78
+msgid "Burundi"
+msgstr ""
+
+#: models/address.py:79
+msgid "Cambodia"
+msgstr ""
+
+#: models/address.py:80
+msgid "Cameroon"
+msgstr ""
+
+#: models/address.py:81
+msgid "Canada"
+msgstr ""
+
+#: models/address.py:82
+msgid "Cape Verde"
+msgstr ""
+
+#: models/address.py:83
+msgid "Cayman Islands"
+msgstr ""
+
+#: models/address.py:84
+msgid "Central African Republic"
+msgstr ""
+
+#: models/address.py:85
+msgid "Chad"
+msgstr ""
+
+#: models/address.py:86
+msgid "Chile"
+msgstr ""
+
+#: models/address.py:87
+msgid "China"
+msgstr ""
+
+#: models/address.py:88
+msgid "Christmas Island"
+msgstr ""
+
+#: models/address.py:89
+msgid "Cocos (Keeling) Islands"
+msgstr ""
+
+#: models/address.py:90
+msgid "Colombia"
+msgstr ""
+
+#: models/address.py:91
+msgid "Comoros"
+msgstr ""
+
+#: models/address.py:92
+msgid "Congo"
+msgstr ""
+
+#: models/address.py:93
+msgid "Congo, The Democratic Republic Of The"
+msgstr ""
+
+#: models/address.py:94
+msgid "Cook Islands"
+msgstr ""
+
+#: models/address.py:95
+msgid "Costa Rica"
+msgstr ""
+
+#: models/address.py:96
+msgid "Croatia"
+msgstr ""
+
+#: models/address.py:97
+msgid "Cuba"
+msgstr ""
+
+#: models/address.py:98
+msgid "Curacao"
+msgstr ""
+
+#: models/address.py:99
+msgid "Cyprus"
+msgstr ""
+
+#: models/address.py:100
+msgid "Czech Republic"
+msgstr ""
+
+#: models/address.py:101
+msgid "Denmark"
+msgstr ""
+
+#: models/address.py:102
+msgid "Djibouti"
+msgstr ""
+
+#: models/address.py:103
+msgid "Dominica"
+msgstr ""
+
+#: models/address.py:104
+msgid "Dominican Republic"
+msgstr ""
+
+#: models/address.py:105
+msgid "Ecuador"
+msgstr ""
+
+#: models/address.py:106
+msgid "Egypt"
+msgstr ""
+
+#: models/address.py:107
+msgid "El Salvador"
+msgstr ""
+
+#: models/address.py:108
+msgid "Equatorial Guinea"
+msgstr ""
+
+#: models/address.py:109
+msgid "Eritrea"
+msgstr ""
+
+#: models/address.py:110
+msgid "Estonia"
+msgstr ""
+
+#: models/address.py:111
+msgid "Ethiopia"
+msgstr ""
+
+#: models/address.py:112
+msgid "Falkland Islands (Malvinas)"
+msgstr ""
+
+#: models/address.py:113
+msgid "Faroe Islands"
+msgstr ""
+
+#: models/address.py:114
+msgid "Fiji"
+msgstr ""
+
+#: models/address.py:115
+msgid "Finland"
+msgstr ""
+
+#: models/address.py:116
+#, fuzzy
+msgid "France"
+msgstr "취소됨"
+
+#: models/address.py:117
+msgid "French Guiana"
+msgstr ""
+
+#: models/address.py:118
+msgid "French Polynesia"
+msgstr ""
+
+#: models/address.py:119
+msgid "French Southern Territories"
+msgstr ""
+
+#: models/address.py:120
+msgid "Gabon"
+msgstr ""
+
+#: models/address.py:121
+msgid "Gambia"
+msgstr ""
+
+#: models/address.py:122
+msgid "Germany"
+msgstr ""
+
+#: models/address.py:123
+msgid "Ghana"
+msgstr ""
+
+#: models/address.py:124
+msgid "Gibraltar"
+msgstr ""
+
+#: models/address.py:125
+msgid "Greece"
+msgstr ""
+
+#: models/address.py:126
+msgid "Greenland"
+msgstr ""
+
+#: models/address.py:127
+msgid "Grenada"
+msgstr ""
+
+#: models/address.py:128
+msgid "Guadeloupe"
+msgstr ""
+
+#: models/address.py:129
+msgid "Guam"
+msgstr ""
+
+#: models/address.py:130
+msgid "Guatemala"
+msgstr ""
+
+#: models/address.py:131
+msgid "Guernsey"
+msgstr ""
+
+#: models/address.py:132
+msgid "Guinea"
+msgstr ""
+
+#: models/address.py:133
+msgid "Guinea-Bissau"
+msgstr ""
+
+#: models/address.py:134
+msgid "Guyana"
+msgstr ""
+
+#: models/address.py:135
+msgid "Haiti"
+msgstr ""
+
+#: models/address.py:136
+msgid "Heard Island and McDonald Islands"
+msgstr ""
+
+#: models/address.py:137
+msgid "Holy See (Vatican City State)"
+msgstr ""
+
+#: models/address.py:138
+msgid "Honduras"
+msgstr ""
+
+#: models/address.py:139
+msgid "Hong Kong"
+msgstr ""
+
+#: models/address.py:140
+msgid "Hungary"
+msgstr ""
+
+#: models/address.py:141
+msgid "Iceland"
+msgstr ""
+
+#: models/address.py:142
+msgid "India"
+msgstr ""
+
+#: models/address.py:143
+msgid "Indonesia"
+msgstr ""
+
+#: models/address.py:144
+msgid "Iran, Islamic Republic Of"
+msgstr ""
+
+#: models/address.py:145
+msgid "Iraq"
+msgstr ""
+
+#: models/address.py:146
+msgid "Ireland"
+msgstr ""
+
+#: models/address.py:147
+msgid "Israel"
+msgstr ""
+
+#: models/address.py:148
+msgid "Italy"
+msgstr ""
+
+#: models/address.py:149
+msgid "Ivory Coast"
+msgstr ""
+
+#: models/address.py:150
+msgid "Jamaica"
+msgstr ""
+
+#: models/address.py:151
+msgid "Japan"
+msgstr ""
+
+#: models/address.py:152
+msgid "Jersey"
+msgstr ""
+
+#: models/address.py:153
+msgid "Jordan"
+msgstr ""
+
+#: models/address.py:154
+msgid "Kazakhstan"
+msgstr ""
+
+#: models/address.py:155
+msgid "Kenya"
+msgstr ""
+
+#: models/address.py:156
+msgid "Kiribati"
+msgstr ""
+
+#: models/address.py:157
+msgid "Korea, Democratic People's Republic Of"
+msgstr ""
+
+#: models/address.py:158
+msgid "Korea, Republic Of"
+msgstr ""
+
+#: models/address.py:159
+msgid "Kosovo"
+msgstr ""
+
+#: models/address.py:160
+msgid "Kuwait"
+msgstr ""
+
+#: models/address.py:161
+msgid "Kyrgyzstan"
+msgstr ""
+
+#: models/address.py:162
+msgid "Lao People's Democratic Republic"
+msgstr ""
+
+#: models/address.py:163
+msgid "Latvia"
+msgstr ""
+
+#: models/address.py:164
+msgid "Lebanon"
+msgstr ""
+
+#: models/address.py:165
+msgid "Lesotho"
+msgstr ""
+
+#: models/address.py:166
+msgid "Liberia"
+msgstr ""
+
+#: models/address.py:167
+msgid "Libyan Arab Jamahiriya"
+msgstr ""
+
+#: models/address.py:168
+msgid "Liechtenstein"
+msgstr ""
+
+#: models/address.py:169
+msgid "Lithuania"
+msgstr ""
+
+#: models/address.py:170
+msgid "Luxembourg"
+msgstr ""
+
+#: models/address.py:171
+msgid "Macao"
+msgstr ""
+
+#: models/address.py:172
+msgid "Macedonia"
+msgstr ""
+
+#: models/address.py:173
+msgid "Madagascar"
+msgstr ""
+
+#: models/address.py:174
+msgid "Malawi"
+msgstr ""
+
+#: models/address.py:175
+msgid "Malaysia"
+msgstr ""
+
+#: models/address.py:176
+msgid "Maldives"
+msgstr ""
+
+#: models/address.py:177
+msgid "Mali"
+msgstr ""
+
+#: models/address.py:178
+msgid "Malta"
+msgstr ""
+
+#: models/address.py:179
+msgid "Marshall Islands"
+msgstr ""
+
+#: models/address.py:180
+msgid "Martinique"
+msgstr ""
+
+#: models/address.py:181
+msgid "Mauritania"
+msgstr ""
+
+#: models/address.py:182
+msgid "Mauritius"
+msgstr ""
+
+#: models/address.py:183
+msgid "Mayotte"
+msgstr ""
+
+#: models/address.py:184
+msgid "Mexico"
+msgstr ""
+
+#: models/address.py:185
+msgid "Micronesia"
+msgstr ""
+
+#: models/address.py:186
+msgid "Moldova"
+msgstr ""
+
+#: models/address.py:187
+msgid "Monaco"
+msgstr ""
+
+#: models/address.py:188
+msgid "Mongolia"
+msgstr ""
+
+#: models/address.py:189
+msgid "Montenegro"
+msgstr ""
+
+#: models/address.py:190
+msgid "Montserrat"
+msgstr ""
+
+#: models/address.py:191
+msgid "Morocco"
+msgstr ""
+
+#: models/address.py:192
+msgid "Mozambique"
+msgstr ""
+
+#: models/address.py:193
+msgid "Myanmar"
+msgstr ""
+
+#: models/address.py:194
+msgid "Namibia"
+msgstr ""
+
+#: models/address.py:195
+msgid "Nauru"
+msgstr ""
+
+#: models/address.py:196
+msgid "Nepal"
+msgstr ""
+
+#: models/address.py:197
+msgid "Netherlands"
+msgstr ""
+
+#: models/address.py:198
+msgid "Netherlands Antilles"
+msgstr ""
+
+#: models/address.py:199
+msgid "New Caledonia"
+msgstr ""
+
+#: models/address.py:200
+msgid "New Zealand"
+msgstr ""
+
+#: models/address.py:201
+msgid "Nicaragua"
+msgstr ""
+
+#: models/address.py:202
+msgid "Niger"
+msgstr ""
+
+#: models/address.py:203
+msgid "Nigeria"
+msgstr ""
+
+#: models/address.py:204
+msgid "Niue"
+msgstr ""
+
+#: models/address.py:205
+msgid "Norfolk Island"
+msgstr ""
+
+#: models/address.py:206
+msgid "Northern Mariana Islands"
+msgstr ""
+
+#: models/address.py:207
+msgid "Norway"
+msgstr ""
+
+#: models/address.py:208
+msgid "Oman"
+msgstr ""
+
+#: models/address.py:209
+msgid "Pakistan"
+msgstr ""
+
+#: models/address.py:210
+msgid "Palau"
+msgstr ""
+
+#: models/address.py:211
+msgid "Palestinian Territory, Occupied"
+msgstr ""
+
+#: models/address.py:212
+msgid "Panama"
+msgstr ""
+
+#: models/address.py:213
+msgid "Papua New Guinea"
+msgstr ""
+
+#: models/address.py:214
+msgid "Paraguay"
+msgstr ""
+
+#: models/address.py:215
+msgid "Peru"
+msgstr ""
+
+#: models/address.py:216
+#, fuzzy
+msgid "Philippines"
+msgstr "배송지"
+
+#: models/address.py:217
+msgid "Pitcairn"
+msgstr ""
+
+#: models/address.py:218
+msgid "Poland"
+msgstr ""
+
+#: models/address.py:219
+msgid "Portugal"
+msgstr ""
+
+#: models/address.py:220
+msgid "Puerto Rico"
+msgstr ""
+
+#: models/address.py:221
+msgid "Qatar"
+msgstr ""
+
+#: models/address.py:222
+msgid "Reunion"
+msgstr ""
+
+#: models/address.py:223
+msgid "Romania"
+msgstr ""
+
+#: models/address.py:224
+msgid "Russian Federation"
+msgstr ""
+
+#: models/address.py:225
+msgid "Rwanda"
+msgstr ""
+
+#: models/address.py:226
+msgid "Saint Barthelemy"
+msgstr ""
+
+#: models/address.py:227
+msgid "Saint Helena, Ascension & Tristan Da Cunha"
+msgstr ""
+
+#: models/address.py:228
+msgid "Saint Kitts and Nevis"
+msgstr ""
+
+#: models/address.py:229
+msgid "Saint Lucia"
+msgstr ""
+
+#: models/address.py:230
+msgid "Saint Martin (French Part)"
+msgstr ""
+
+#: models/address.py:231
+msgid "Saint Pierre and Miquelon"
+msgstr ""
+
+#: models/address.py:232
+msgid "Saint Vincent And The Grenadines"
+msgstr ""
+
+#: models/address.py:233
+msgid "Samoa"
+msgstr ""
+
+#: models/address.py:234
+msgid "San Marino"
+msgstr ""
+
+#: models/address.py:235
+msgid "Sao Tome And Principe"
+msgstr ""
+
+#: models/address.py:236
+msgid "Saudi Arabia"
+msgstr ""
+
+#: models/address.py:237
+msgid "Senegal"
+msgstr ""
+
+#: models/address.py:238
+msgid "Serbia"
+msgstr ""
+
+#: models/address.py:239
+msgid "Seychelles"
+msgstr ""
+
+#: models/address.py:240
+msgid "Sierra Leone"
+msgstr ""
+
+#: models/address.py:241
+msgid "Singapore"
+msgstr ""
+
+#: models/address.py:242
+msgid "Sint Maarten (Dutch Part)"
+msgstr ""
+
+#: models/address.py:243
+msgid "Slovakia"
+msgstr ""
+
+#: models/address.py:244
+msgid "Slovenia"
+msgstr ""
+
+#: models/address.py:245
+msgid "Solomon Islands"
+msgstr ""
+
+#: models/address.py:246
+msgid "Somalia"
+msgstr ""
+
+#: models/address.py:247
+msgid "South Africa"
+msgstr ""
+
+#: models/address.py:248
+msgid "South Georgia And The South Sandwich Islands"
+msgstr ""
+
+#: models/address.py:249
+msgid "Spain"
+msgstr ""
+
+#: models/address.py:250
+msgid "Sri Lanka"
+msgstr ""
+
+#: models/address.py:251
+msgid "Sudan"
+msgstr ""
+
+#: models/address.py:252
+msgid "Suriname"
+msgstr ""
+
+#: models/address.py:253
+msgid "Svalbard And Jan Mayen"
+msgstr ""
+
+#: models/address.py:254
+msgid "Swaziland"
+msgstr ""
+
+#: models/address.py:255
+msgid "Sweden"
+msgstr ""
+
+#: models/address.py:256
+msgid "Switzerland"
+msgstr ""
+
+#: models/address.py:257
+msgid "Syrian Arab Republic"
+msgstr ""
+
+#: models/address.py:258
+msgid "Taiwan"
+msgstr ""
+
+#: models/address.py:259
+msgid "Tajikistan"
+msgstr ""
+
+#: models/address.py:260
+msgid "Tanzania"
+msgstr ""
+
+#: models/address.py:261
+msgid "Thailand"
+msgstr ""
+
+#: models/address.py:262
+msgid "Timor-Leste"
+msgstr ""
+
+#: models/address.py:263
+msgid "Togo"
+msgstr ""
+
+#: models/address.py:264
+msgid "Tokelau"
+msgstr ""
+
+#: models/address.py:265
+msgid "Tonga"
+msgstr ""
+
+#: models/address.py:266
+msgid "Trinidad and Tobago"
+msgstr ""
+
+#: models/address.py:267
+msgid "Tunisia"
+msgstr ""
+
+#: models/address.py:268
+msgid "Turkey"
+msgstr ""
+
+#: models/address.py:269
+msgid "Turkmenistan"
+msgstr ""
+
+#: models/address.py:270
+msgid "Turks And Caicos Islands"
+msgstr ""
+
+#: models/address.py:271
+msgid "Tuvalu"
+msgstr ""
+
+#: models/address.py:272
+msgid "Uganda"
+msgstr ""
+
+#: models/address.py:273
+msgid "Ukraine"
+msgstr ""
+
+#: models/address.py:274
+msgid "United Arab Emirates"
+msgstr ""
+
+#: models/address.py:275
+msgid "United Kingdom"
+msgstr ""
+
+#: models/address.py:276
+#, fuzzy
+msgid "United States"
+msgstr "수정됨"
+
+#: models/address.py:277
+msgid "United States Minor Outlying Islands"
+msgstr ""
+
+#: models/address.py:278
+msgid "Uruguay"
+msgstr ""
+
+#: models/address.py:279
+msgid "Uzbekistan"
+msgstr ""
+
+#: models/address.py:280
+msgid "Vanuatu"
+msgstr ""
+
+#: models/address.py:281
+msgid "Venezuela, Bolivarian Republic Of"
+msgstr ""
+
+#: models/address.py:282
+msgid "Viet Nam"
+msgstr ""
+
+#: models/address.py:283
+msgid "Virgin Islands, British"
+msgstr ""
+
+#: models/address.py:284
+msgid "Virgin Islands, U.S."
+msgstr ""
+
+#: models/address.py:285
+msgid "Wallis and Futuna"
+msgstr ""
+
+#: models/address.py:286
+msgid "Western Sahara"
+msgstr ""
+
+#: models/address.py:287
+msgid "Yemen"
+msgstr ""
+
+#: models/address.py:288
+msgid "Zambia"
+msgstr ""
+
+#: models/address.py:289
+msgid "Zimbabwe"
+msgstr ""
+
+#: models/cart.py:76
+msgid "Arbitrary information for this cart item"
+msgstr ""
+
+#: models/cart.py:82
+msgid "Cart item"
+msgstr "장바구니 상품"
+
+#: models/cart.py:83
+msgid "Cart items"
+msgstr "장바구니 상품들"
+
+#: models/cart.py:127 models/order.py:121 models/product.py:95
+#, fuzzy
+msgid "Created at"
+msgstr "생성됨"
+
+#: models/cart.py:128 models/order.py:122 models/product.py:96
+#, fuzzy
+msgid "Updated at"
+msgstr "수정됨"
+
+#: models/cart.py:129
+msgid "Arbitrary information for this cart"
+msgstr ""
+
+#: models/cart.py:136
+#, fuzzy
+msgid "Shopping Cart"
+msgstr "장바구비 비우기"
+
+#: models/cart.py:137
+#, fuzzy
+msgid "Shopping Carts"
+msgstr "장바구비 비우기"
+
+#: models/customer.py:102
+msgid "Mrs."
+msgstr ""
+
+#: models/customer.py:102
+msgid "Mr."
+msgstr ""
+
+#: models/customer.py:102
+msgid "(n/a)"
+msgstr ""
+
+#: models/customer.py:106
+msgid "Unrecognized"
+msgstr ""
+
+#: models/customer.py:106
+msgid "Guest"
+msgstr ""
+
+#: models/customer.py:106
+msgid "Registered"
+msgstr ""
+
+#: models/customer.py:109
+msgid "Recognized"
+msgstr ""
+
+#: models/customer.py:110
+msgid "Designates the state the customer is recognized as."
+msgstr ""
+
+#: models/customer.py:114
+msgid "Extra information about this customer"
+msgstr ""
+
+#: models/defaults/address.py:12
+#, fuzzy
+msgid "Addressee"
+msgstr "주소"
+
+#: models/defaults/address.py:13
+msgid "Supplement"
+msgstr ""
+
+#: models/defaults/address.py:14
+msgid "Street"
+msgstr ""
+
+#: models/defaults/address.py:15
+msgid "ZIP"
+msgstr ""
+
+#: models/defaults/address.py:16
+msgid "Location"
+msgstr ""
+
+#: models/defaults/address.py:17
+msgid "Country"
+msgstr "국가"
+
+#: models/defaults/order.py:10
+#: templates/shop/email/customer-information.html:14
+#: templates/shop/order/order-list.html:13
+msgid "Shipping Address"
+msgstr "배송지"
+
+#: models/defaults/order.py:11
+msgid "Shipping address at the moment of purchase."
+msgstr ""
+
+#: models/defaults/order.py:12
+#: templates/shop/email/customer-information.html:10
+#, fuzzy
+msgid "Billing Address"
+msgstr "배송지"
+
+#: models/defaults/order.py:13
+msgid "Billing address at the moment of purchase."
+msgstr ""
+
+#: models/defaults/order_item.py:11
+#, fuzzy
+msgid "Shipped with"
+msgstr "배송중"
+
+#: models/defaults/order_item.py:12
+msgid "Refer to the delivery provider used to ship this item"
+msgstr ""
+
+#: models/notification.py:75
+msgid "Name"
+msgstr "이름"
+
+#: models/notification.py:76
+msgid "Event"
+msgstr ""
+
+#: models/notification.py:77
+msgid "Mail to"
+msgstr ""
+
+#: models/notification.py:79
+msgid "Template"
+msgstr ""
+
+#: models/notification.py:84
+msgid "Notification"
+msgstr ""
+
+#: models/notification.py:85
+msgid "Notifications"
+msgstr ""
+
+#: models/notification.py:94
+msgid "Does not exists"
+msgstr ""
+
+#: models/order.py:106
+msgid "New order without content"
+msgstr ""
+
+#: models/order.py:107
+msgid "Order freshly created"
+msgstr ""
+
+#: models/order.py:116 models/order.py:227 models/order.py:246
+#: templates/shop/order/order-list.html:14
+msgid "Status"
+msgstr "상태"
+
+#: models/order.py:118
+msgid "Currency in which this order was concluded"
+msgstr ""
+
+#: models/order.py:119 templates/shop/cart/editable.html:37
+#: templates/shop/cart/static.html:41 templates/shop/cart/summary.html:6
+#: templates/shop/email/order.html:41 templates/shop/order/order-detail.html:48
+#: templates/shop/print/order.html:44
+#: templates/shop/products/catalog-product-add2cart.html:14
+#, fuzzy
+msgid "Subtotal"
+msgstr "장바구니 금액"
+
+#: models/order.py:120 templates/shop/cart/editable.html:19
+#: templates/shop/cart/editable.html:49 templates/shop/cart/static.html:11
+#: templates/shop/cart/static.html.py:56 templates/shop/cart/summary.html:16
+#: templates/shop/email/order.html:51 templates/shop/order/order-detail.html:18
+#: templates/shop/order/order-detail.html:62 templates/shop/print/order.html:12
+#: templates/shop/print/order.html.py:58
+#, fuzzy
+msgid "Total"
+msgstr "제품 총금액"
+
+#: models/order.py:123
+#, fuzzy
+msgid "Extra fields"
+msgstr "추가 주문 금액 필드들"
+
+#: models/order.py:124
+msgid "Arbitrary information for this order object on the moment of purchase."
+msgstr ""
+
+#: models/order.py:126
+msgid "Parts of the Request objects on the moment of purchase."
+msgstr ""
+
+#: models/order.py:131 models/order.py:226 models/order.py:245
+#: models/order.py:265
+msgid "Order"
+msgstr "주문"
+
+#: models/order.py:132
+msgid "Orders"
+msgstr "주문들"
+
+#: models/order.py:217
+#, fuzzy
+msgctxt "status_name"
+msgid "State"
+msgstr "주"
+
+#: models/order.py:228
+#, fuzzy
+msgid "Amount paid"
+msgstr "금액"
+
+#: models/order.py:229
+msgid "How much was paid with this particular transfer."
+msgstr ""
+
+#: models/order.py:230
+msgid "Transaction ID"
+msgstr "거래고유번호"
+
+#: models/order.py:231 models/order.py:248
+msgid "The transaction processor's reference"
+msgstr ""
+
+#: models/order.py:232
+msgid "Received at"
+msgstr ""
+
+#: models/order.py:233
+msgid "Payment method"
+msgstr "지불방법"
+
+#: models/order.py:234
+msgid "The payment backend used to process the purchase"
+msgstr "결제에 사용된 결제 backend"
+
+#: models/order.py:237
+msgid "Order payment"
+msgstr "주문결제"
+
+#: models/order.py:238
+msgid "Order payments"
+msgstr "주문결제들"
+
+#: models/order.py:247
+#, fuzzy
+msgid "Shipping ID"
+msgstr "배송"
+
+#: models/order.py:249
+msgid "Shipping method"
+msgstr "배송방법"
+
+#: models/order.py:250
+#, fuzzy
+msgid "The shipping backend used to deliver the items for this order"
+msgstr "결제에 사용된 결제 backend"
+
+#: models/order.py:254
+#, fuzzy
+msgid "Shipping order"
+msgstr "배송방법"
+
+#: models/order.py:255
+#, fuzzy
+msgid "Shipping orders"
+msgstr "배송지"
+
+#: models/order.py:266
+#, fuzzy
+msgid "Product identifier"
+msgstr "제품 참조"
+
+#: models/order.py:267
+msgid "Product identifier at the moment of purchase."
+msgstr ""
+
+#: models/order.py:268
+msgid "Product name"
+msgstr "제품명"
+
+#: models/order.py:269
+msgid "Product name at the moment of purchase."
+msgstr ""
+
+#: models/order.py:272
+msgid "Unit price"
+msgstr "금액"
+
+#: models/order.py:273
+msgid "Products unit price at the moment of purchase."
+msgstr ""
+
+#: models/order.py:274
+msgid "Line Total"
+msgstr "제품 총금액"
+
+#: models/order.py:275
+msgid "Line total on the invoice at the moment of purchase."
+msgstr ""
+
+#: models/order.py:276
+#, fuzzy
+msgid "Ordered quantity"
+msgstr "주문결제"
+
+#: models/order.py:277
+msgid "Arbitrary information for this order item"
+msgstr ""
+
+#: models/order.py:281
+msgid "Order item"
+msgstr "주문상품"
+
+#: models/order.py:282
+msgid "Order items"
+msgstr "주문상품들"
+
+#: models/product.py:97
+msgid "Active"
+msgstr "활성"
+
+#: models/product.py:98
+msgid "Is this product publicly visible."
+msgstr ""
+
+#: models/product.py:105
+msgid "Products"
+msgstr "제품들"
+
+#: models/product.py:115
+#, fuzzy
+msgid "Product type"
+msgstr "제품명"
+
+#: modifiers/defaults.py:39
+msgid "Pay in advance"
+msgstr ""
+
+#: modifiers/defaults.py:50
+msgid "Self collection"
+msgstr ""
+
+#: modifiers/taxes.py:24
+msgid "+ {}% V.A.T"
+msgstr ""
+
+#: modifiers/taxes.py:44
+msgid "{}% V.A.T incl."
+msgstr ""
+
+#: money/iso4217.py:12
+msgid "Brazilian Real"
+msgstr ""
+
+#: money/iso4217.py:13
+msgid "Swiss Franc"
+msgstr ""
+
+#: money/iso4217.py:14
+msgid "Chinese Yuan"
+msgstr ""
+
+#: money/iso4217.py:15
+msgid "Euro"
+msgstr ""
+
+#: money/iso4217.py:16
+msgid "Pound Sterling"
+msgstr ""
+
+#: money/iso4217.py:17
+msgid "Israeli Sheqel"
+msgstr ""
+
+#: money/iso4217.py:18
+msgid "Japanese Yen"
+msgstr ""
+
+#: money/iso4217.py:19
+msgid "Russian Ruble"
+msgstr ""
+
+#: money/iso4217.py:20
+msgid "Ukrainian Hryvnia"
+msgstr ""
+
+#: money/iso4217.py:21
+msgid "US Dollar"
+msgstr ""
+
+#: payment/defaults.py:30
+msgid "Awaiting a forward fund payment"
+msgstr ""
+
+#: payment/defaults.py:31
+#, fuzzy
+msgid "Prepayment deposited"
+msgstr "지불방법"
+
+#: payment/defaults.py:50
+msgid "Deposited too little"
+msgstr ""
+
+#: payment/defaults.py:56
+msgid "Mark as Paid"
+msgstr ""
+
+#: payment/defaults.py:69
+msgid "Picking goods"
+msgstr ""
+
+#: payment/defaults.py:70
+msgid "Packing goods"
+msgstr ""
+
+#: payment/defaults.py:74
+msgid "Pick the goods"
+msgstr ""
+
+#: payment/defaults.py:79
+msgid "Pack the goods"
+msgstr ""
+
+#: templates/shop/auth/change.html:4
+msgid "Change Password"
+msgstr ""
+
+#: templates/shop/auth/change.html:8 templates/shop/auth/change.html.py:11
+#: templates/shop/auth/password-reset-confirm.html:12
+msgid "New Password"
+msgstr ""
+
+#: templates/shop/auth/change.html:14 templates/shop/auth/change.html.py:17
+#: templates/shop/auth/password-reset-confirm.html:18
+#, fuzzy
+msgid "Confirm Password"
+msgstr "주문완료"
+
+#: templates/shop/auth/change.html:21
+msgid "Submit Changes"
+msgstr ""
+
+#: templates/shop/auth/continue-as-guest.html:4
+#, fuzzy
+msgid "Proceed as guest"
+msgstr "결제진행"
+
+#: templates/shop/auth/login-reset.html:4 templates/shop/auth/login.html:4
+msgid "Sign In"
+msgstr ""
+
+#: templates/shop/auth/login-reset.html:14
+#: templates/shop/auth/login-reset.html:17 templates/shop/auth/login.html:14
+#: templates/shop/auth/login.html.py:17
+msgid "Password"
+msgstr ""
+
+#: templates/shop/auth/login-reset.html:21 templates/shop/auth/login.html:21
+msgid "Login"
+msgstr ""
+
+#: templates/shop/auth/login-reset.html:22 templates/shop/auth/reset.html:4
+msgid "Password Forgotten?"
+msgstr ""
+
+#: templates/shop/auth/login-reset.html:33 templates/shop/auth/reset.html:15
+msgid "Reset Password"
+msgstr ""
+
+#: templates/shop/auth/logout.html:4
+#, python-format
+msgid "Authenticated as: %(user)s"
+msgstr ""
+
+#: templates/shop/auth/logout.html:8
+msgid "Logout"
+msgstr ""
+
+#: templates/shop/auth/password-reset-confirm.html:5
+#, python-format
+msgid "New password for '%(user_name)s'"
+msgstr ""
+
+#: templates/shop/auth/password-reset-confirm.html:11
+msgid "Please enter your new password twice so we can verify you typed it in correctly."
+msgstr ""
+
+#: templates/shop/auth/password-reset-confirm.html:15
+msgid "New password"
+msgstr ""
+
+#: templates/shop/auth/password-reset-confirm.html:21
+#, fuzzy
+msgid "Confirm password"
+msgstr "주문완료"
+
+#: templates/shop/auth/password-reset-confirm.html:25
+msgid "Change my password"
+msgstr ""
+
+#: templates/shop/auth/password-reset-decline.html:4
+msgid "Password reset unsuccessful"
+msgstr ""
+
+#: templates/shop/auth/password-reset-decline.html:7
+msgid "The password reset link was invalid, possibly because it has already been used.  Please request a new password reset."
+msgstr ""
+
+#: templates/shop/auth/register-user.html:4
+msgid "Register Yourself"
+msgstr ""
+
+#: templates/shop/auth/register-user.html:24
+msgid "Register"
+msgstr ""
+
+#: templates/shop/cart/editable.html:17 templates/shop/cart/static.html:9
+#: templates/shop/cart/watch.html:13 templates/shop/email/order.html:12
+#: templates/shop/order/order-detail.html:16 templates/shop/print/order.html:10
+#: templates/shop/products/catalog-product-add2cart.html:14
+msgid "Quantity"
+msgstr "수량"
+
+#: templates/shop/cart/editable.html:18 templates/shop/cart/static.html:10
+#: templates/shop/cart/watch.html:14 templates/shop/order/order-detail.html:17
+#: templates/shop/print/order.html:11
+#: templates/shop/products/catalog-product-add2cart.html:14
+#: templates/shop/search/results.html:10
+#, fuzzy
+msgid "Unit Price"
+msgstr "금액"
+
+#: templates/shop/cart/editable.html:76 templates/shop/cart/watch.html:50
+msgid "Remove"
+msgstr ""
+
+#: templates/shop/cart/editable.html:79
+msgid "Watch Item"
+msgstr ""
+
+#: templates/shop/cart/summary.html:5
+#, fuzzy
+msgid "Number of items"
+msgstr "주문상품들"
+
+#: templates/shop/cart/watch.html:47
+#: templates/shop/products/catalog-product-add2cart.html:25
+msgid "Add to cart"
+msgstr ""
+
+#: templates/shop/email/customer-information.html:4
+msgid "Your Details"
+msgstr ""
+
+#: templates/shop/email/order.html:7
+msgid "Summary of Your Order"
+msgstr ""
+
+#: templates/shop/email/order.html:13
+msgid "Price"
+msgstr ""
+
+#: templates/shop/email/register-user-body.txt:2
+#, python-format
+msgid ""
+"You are receiving this email because you asked for a auto-generated password for your\n"
+"user account at %(site_name)s."
+msgstr ""
+
+#: templates/shop/email/register-user-body.txt:5
+#, python-format
+msgid ""
+"In the future, please use username %(email)s with password %(password)s to sign\n"
+"into %(absolute_base_uri)s."
+msgstr ""
+
+#: templates/shop/email/register-user-body.txt:8
+#: templates/shop/email/reset-password-body.txt:8
+msgid "Thanks for using our site!"
+msgstr ""
+
+#: templates/shop/email/register-user-body.txt:10
+#: templates/shop/email/reset-password-body.txt:10
+#, python-format
+msgid "The %(site_name)s team"
+msgstr ""
+
+#: templates/shop/email/register-user-subject.txt:2
+#, python-format
+msgid "Password set on %(site_name)s"
+msgstr ""
+
+#: templates/shop/email/reset-password-body.txt:2
+#, python-format
+msgid ""
+"You're receiving this email because you requested a password reset for your user\n"
+"account '%(user)s' at %(site_name)s."
+msgstr ""
+
+#: templates/shop/email/reset-password-body.txt:5
+msgid "Please go to the following page and choose a new password:"
+msgstr ""
+
+#: templates/shop/email/reset-password-subject.txt:2
+#, python-format
+msgid "Password reset on %(site_name)s"
+msgstr ""
+
+#: templates/shop/order/order-detail.html:5
+#, fuzzy
+msgid "Your Order"
+msgstr "당신의 주문 리스트"
+
+#: templates/shop/order/order-detail.html:5
+msgid "from"
+msgstr ""
+
+#: templates/shop/order/order-detail.html:69
+msgid "Thereof Paid"
+msgstr ""
+
+#: templates/shop/order/order-list.html:11
+#, fuzzy
+msgid "Order Date"
+msgstr "주문상품"
+
+#: templates/shop/order/order-list.html:12
+msgid "Sum"
+msgstr ""
+
+#: templates/shop/print/delivery-note.html:6
+msgid "Delivery note for"
+msgstr ""
+
+#: templates/shop/products/catalog-product-add2cart.html:9
+#, fuzzy
+msgid "Order Product"
+msgstr "제품"
+
+#: templates/shop/products/catalog-product-add2cart.html:26
+#, fuzzy
+msgid "Watch product"
+msgstr "제품"
+
+#: templates/shop/products/catalog-product-add2cart.html:38
+msgid "The product has been successfully placed in the shopping cart:"
+msgstr ""
+
+#: templates/shop/products/catalog-product-add2cart.html:39
+msgid "Watching this product"
+msgstr ""
+
+#: templates/shop/products/catalog-product-add2cart.html:46
+msgid "for {{ context.unit_price }} per piece: {{ context.subtotal }}"
+msgstr ""
+
+#: templates/shop/products/catalog-product-add2cart.html:52
+#, fuzzy
+msgid "Show Cart"
+msgstr "장바구니"
+
+#: templates/shop/products/catalog-product-add2cart.html:53
+msgid "Continue Shopping"
+msgstr ""
+
+#: templates/shop/products/catalog-product-add2cart.html:54
+#, fuzzy
+msgid "Cancel"
+msgstr "취소됨"
+
+#: templates/shop/products/search-product-body.html:5
+msgid "Art-No.:"
+msgstr ""
+
+#: templates/shop/search/results.html:9
+msgid "{{ search_data.count }} matching products found"
+msgstr ""
+
+#: templates/shop/search/results.html:21
+msgid "Details"
+msgstr ""
+
+#: templates/shop/templatetags/cart-icon.html:9
+msgctxt "cart icon"
+msgid "1 Item"
+msgstr ""
+
+#: templates/shop/templatetags/cart-icon.html:9
+msgctxt "cart icon"
+msgid "{} Items"
+msgstr ""
+
+#: views/auth.py:58
+msgid "Successfully logged out."
+msgstr ""
+
+#: views/auth.py:78
+#, python-brace-format
+msgid "Instructions on how to reset the password have been sent to '{email}'."
+msgstr ""
+
+#: views/auth.py:125
+msgid "Password has been reset with the new password."
+msgstr ""
+
+#, fuzzy
+#~ msgid "Email address"
+#~ msgstr "주소"
+
+#, fuzzy
+#~ msgid "staff status"
+#~ msgstr "상태"
+
+#, fuzzy
+#~ msgid "active"
+#~ msgstr "활성"
+
+#, fuzzy
+#~ msgid "date joined"
+#~ msgstr "추가된 날짜"
+
+#, fuzzy
+#~ msgid "Add Payment"
+#~ msgstr "외상"
+
+#~ msgid "Shipping address"
+#~ msgstr "배송지"
+
+#, fuzzy
+#~ msgid "Personal info"
+#~ msgstr "추가정보"
+
+#~ msgid ""
+#~ "\n"
+#~ "Name: %(name)s,\n"
+#~ "Address: %(address)s,\n"
+#~ "Zip-Code: %(zipcode)s,\n"
+#~ "City: %(city)s,\n"
+#~ "State: %(state)s,\n"
+#~ "Country: %(country)s\n"
+#~ msgstr ""
+#~ "\n"
+#~ "이름: %(name)s,\n"
+#~ "주소: %(address)s,\n"
+#~ "우편번호: %(zipcode)s,\n"
+#~ "도시: %(city)s,\n"
+#~ "주: %(state)s,\n"
+#~ "나라: %(country)s\n"
+
+#~ msgid "Countries"
+#~ msgstr "국가들"
+
+#~ msgid "Address2"
+#~ msgstr "주소2"
+
+#~ msgid "Zip Code"
+#~ msgstr "우편번호"
+
+#~ msgid "City"
+#~ msgstr "도시"
+
+#~ msgid "Billing"
+#~ msgstr "지불"
+
+#~ msgid "Order extra info"
+#~ msgstr "주문 추가정보"
+
+#~ msgid "Label"
+#~ msgstr "라벨"
+
+#~ msgid "Is shipping"
+#~ msgstr "배송여부"
+
+#~ msgid "Extra order price field"
+#~ msgstr "추가 주문 금액 필드"
+
+#~ msgid "Extra order item price field"
+#~ msgstr "추가 주문상품 금액 필드"
+
+#~ msgid "Extra order item price fields"
+#~ msgstr "추가 주문상품 금액 필드들"
+
+#~ msgid "Carts"
+#~ msgstr "장바구니들"
+
+#~ msgid "Slug"
+#~ msgstr "슬러그"
+
+#~ msgid "Confirming"
+#~ msgstr "주문중"
+
+#~ msgid "Completed"
+#~ msgstr "결제완료"
+
+#~ msgid "User"
+#~ msgstr "사용자"
+
+#~ msgid "Order subtotal"
+#~ msgstr "주문금액"
+
+#~ msgid "Order Total"
+#~ msgstr "총 주문금액"
+
+#~ msgid "Order ID: %(id)s"
+#~ msgstr "주문번호: %(id)s"
+
+#~ msgid "Line subtotal"
+#~ msgstr "제품 금액"
+
+#~ msgid "Line total"
+#~ msgstr "제품 총금액"
+
+#~ msgid "Pay On Delivery"
+#~ msgstr "수령후 지불"
+
+#~ msgid "Flat rate"
+#~ msgstr "고정 요금"
+
+#~ msgid "Your shopping cart"
+#~ msgstr "당신의 장바구니"
+
+#~ msgid "Cart Total"
+#~ msgstr "장바구니 총금액"
+
+#~ msgid "Update Shopping Cart"
+#~ msgstr "장바구니 새로고침"
+
+#~ msgid "Shopping cart is empty"
+#~ msgstr "장바구니가 비어있습니다"
+
+#~ msgid "Order list"
+#~ msgstr "주문 리스트"
+
+#~ msgid "Hello"
+#~ msgstr "안녕하세요"
+
+#~ msgid "Order ID:"
+#~ msgstr "주문번호:"
+
+#~ msgid "Order Status"
+#~ msgstr "주문상태"
+
+#~ msgid "Order Subtotal"
+#~ msgstr "주문금액"
+>>>>>>> 25445f89cdfc1d7e8ec3740853732bebfd22e333

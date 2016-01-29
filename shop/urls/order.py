@@ -1,12 +1,9 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 from django.conf.urls import patterns, url
-from shop.views.order import OrderListView, OrderDetailView
+from shop.views.order import OrderView
 
 urlpatterns = patterns('',
-    url(r'^$',
-        OrderListView.as_view(),
-        name='order_list'),
-    url(r'^(?P<pk>\d+)/$',
-        OrderDetailView.as_view(),
-        name='order_detail'),
-    )
-
+    url(r'^$', OrderView.as_view()),
+    url(r'^(?P<pk>\d+)$', OrderView.as_view(many=False)),
+)

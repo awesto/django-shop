@@ -3,10 +3,13 @@
 .pydevproject
 .settings
 .tox/
+.cache
 *.coverage
 *~
+private_settings.py
 build
 docs/_build
+docs/web_build
 dist
 *egg-info*
 htmlcov
@@ -18,6 +21,12 @@ share/
 *.sqlite
 database.db
 *.swp
+.DS_store
 *coverage.xml
 .idea
 .ropeproject
+OLD-out-of-date
+.tox
+workdir/
+node_modules/
+bower_components/
