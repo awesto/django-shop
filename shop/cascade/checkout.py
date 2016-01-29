@@ -104,7 +104,7 @@ class GuestFormPlugin(CustomerFormPluginBase):
     form_class = 'shop.forms.checkout.GuestForm'
 
     def render(self, context, instance, placeholder):
-        if not context['request'].customer.is_guest():
+        if not context['customer'].is_guest():
             context['error_message'] = _("Only guest customers can access this form.")
             return context
         return super(GuestFormPlugin, self).render(context, instance, placeholder)
