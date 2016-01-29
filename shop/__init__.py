@@ -12,6 +12,6 @@ Release logic:
 6. git commit
 7. push to github (to avoid confusion)
 """
-__version__ = '0.3.0.dev'
+__version__ = '0.9.0rc1'
 
 default_app_config = 'shop.apps.ShopConfig'

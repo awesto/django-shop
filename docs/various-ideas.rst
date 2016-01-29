@@ -1,8 +1,6 @@
-
-
-================================
- Requirements / Usage Scenarios
-================================
+=============
+Various Ideas
+=============
 
 This has been startet as an unorderet list of various requirements and
 usage scenarios which may have an impact to the core

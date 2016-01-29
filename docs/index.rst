@@ -1,7 +1,14 @@
 
-=======================================
-Welcome to the djangoSHOP documentation
-=======================================
+=========================
+Django SHOP documentation
+=========================
+
+This is the documentation starting from version 0.9; if you are looking for the documentation of
+django-shop version 0.2, please check the sidebar of RTD.
+
+Version 0.9 of **djangoSHOP** is a complete rewrite of the code base, keeping the concepts of model
+overriding and cart modifiers. Therefore it should be possible to migrate existing projects to this
+new release.
 
 
 Tutorial

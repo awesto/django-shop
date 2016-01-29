@@ -40,8 +40,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'django SHOP'
-copyright = u' 2016 Jacob Rief, 2010 Chris Glas'
+project = u'djangoSHOP'
+copyright = u' 2016 Jacob Rief'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
