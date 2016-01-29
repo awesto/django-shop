@@ -8,7 +8,9 @@ from django.http import HttpResponseRedirect
 from django.views.generic import RedirectView
 
 from shop.forms import BillingShippingForm
-from shop.models import AddressModel, OrderExtraInfo
+from shop.models import (
+    ShippingAddressModel, BillingAddressModel, OrderExtraInfo
+)
 from shop.models import Order
 from shop.util.address import (
     assign_address_to_request,
@@ -24,25 +26,25 @@ from shop.util.login_mixin import LoginMixin
 class CheckoutSelectionView(LoginMixin, ShopTemplateView):
     template_name = 'shop/checkout/selection.html'
 
-    def _get_dynamic_form_class_from_factory(self):
+    def _get_dynamic_form_class_from_factory(self, model):
         """
-        Returns a dynamic ModelForm from the loaded AddressModel
+        Returns a dynamic ModelForm from the given AddressModel
         """
         form_class = model_forms.modelform_factory(
-            AddressModel, exclude=['user_shipping', 'user_billing'])
+            model, exclude=['user_shipping', 'user_billing'])
         return form_class
 
     def get_shipping_form_class(self):
         """
         Provided for extensibility.
         """
-        return self._get_dynamic_form_class_from_factory()
+        return self._get_dynamic_form_class_from_factory(ShippingAddressModel)
 
     def get_billing_form_class(self):
         """
         Provided for extensibility.
         """
-        return self._get_dynamic_form_class_from_factory()
+        return self._get_dynamic_form_class_from_factory(BillingAddressModel)
 
     def create_order_object_from_cart(self):
         """
@@ -60,8 +62,8 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
         """
         Initializes and handles the form for the shipping address.
 
-        AddressModel is a model of the type defined in
-        ``settings.SHOP_ADDRESS_MODEL``.
+        ShippingAddressModel is a model of the type defined in
+        ``settings.SHOP_SHIPPING_ADDRESS_MODEL``.
 
         The trick here is that we generate a ModelForm for whatever model was
         passed to us by the SHOP_ADDRESS_MODEL setting, and us this, prefixed,
@@ -90,7 +92,7 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
                     # The user or guest doesn't already have a favorite
                     # address. Instanciate a blank one, and use this as the
                     # default value for the form.
-                    shipping_address = AddressModel()
+                    shipping_address = ShippingAddressModel()
 
                 # Instanciate the form
                 form = form_class(instance=shipping_address, prefix="ship")
@@ -100,8 +102,8 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
     def get_billing_address_form(self):
         """
         Initializes and handles the form for the shipping address.
-        AddressModel is a model of the type defined in
-        ``settings.SHOP_ADDRESS_MODEL``.
+        BillingAddressModel is a model of the type defined in
+        ``settings.SHOP_BILLING_ADDRESS_MODEL``.
         """
         # Try to get the cached version first.
         form = getattr(self, '_billing_form', None)
@@ -122,7 +124,7 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
                     # The user or guest doesn't already have a favorite
                     # address. Instansiate a blank one, and use this as the
                     # default value for the form.
-                    billing_address = AddressModel()
+                    billing_address = BillingAddressModel()
 
                 #Instanciate the form
                 form = form_class(instance=billing_address, prefix="bill")
