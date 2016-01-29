@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from six import with_metaclass
 from decimal import Decimal
 from django.core.exceptions import ImproperlyConfigured
@@ -146,6 +147,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         help_text=_("Arbitrary information for this order object on the moment of purchase."))
     stored_request = JSONField(default={},
         help_text=_("Parts of the Request objects on the moment of purchase."))
+
     objects = OrderManager()
 
     class Meta:
