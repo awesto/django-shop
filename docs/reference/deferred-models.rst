@@ -5,8 +5,8 @@ Deferred Model Pattern
 ======================
 
 Until **djangoSHOP** version 0.2, there were abstract and concrete and models: ``BaseProduct`` and
-``Product``, ``BaseCart`` and ``Cart``, ``BaseCartItem`` and ``CartItem``, ``BaseOrder``and ``Order``
-and finally, ``BaseOrderItem`` and ``OrderItem``.
+``Product``, ``BaseCart`` and ``Cart``, ``BaseCartItem`` and ``CartItem``, ``BaseOrder`` and
+``Order`` and finally, ``BaseOrderItem`` and ``OrderItem``.
 
 The concrete models were stored in ``shop.models``, whereas abstract models were stored in
 ``shop.models_bases``. This was quite confusing and made it difficult to find the right model
@@ -21,10 +21,14 @@ This made configuration quite complicate and causes other drawbacks:
   To merchants, this inconsistency in the backend was quite difficult to explain.
 * In the past, mixing overriden with native models caused many issues with circular dependencies.
 
-Therefore in **djangoSHOP**, since version 0.3 *all* concrete models, ``Product``, ``Order``,
+Therefore in **djangoSHOP**, since version 0.9 *all* concrete models, ``Product``, ``Order``,
 ``OrderItem``, ``Cart``, ``CartItem`` have been removed. These model definitions now all are
 abstract and named ``BaseProduct``, ``BaseOrder``, ``BaseOrderItem``, etc. They all have been moved
 into the folder ``shop/models/``, because this is the location a programmer expects them.
+
+
+Materializing Models
+====================
 
 Materializing such an abstract base model, means to create a concrete model with an associated
 database table. This model creation is performed in the concrete shop implementation and must be
