@@ -20,11 +20,10 @@ book on `Atomic Web Design`_. He propagates to reverse the design process and st
 smallest entity, which he calls Atoms. They form to bigger components, named Molecules, which
 themselves aggregate to Organisms.
 
-Instead, Atomic Web Design starts from to bottom with Atoms, Molecules and Organisms. Some designers
-nowadays build those components directly in HTML and CSS or SASS, instead of drawing their
-screens using programs such as InDesign or PhotoShop (which by the way never was intended for this
-kind of work). It also exempts having the programmer to convert those screens into HTML and CSS – a
-time consuming and never satisfying job.
+Some designers nowadays build those components directly in HTML and CSS or SASS, instead of drawing
+their screens using programs such as InDesign or PhotoShop (which by the way never was intended for
+this kind of work). It also exempts having the programmer to convert those screens into HTML and CSS
+– a time consuming and never satisfying job.
 
 According to Frost, the next bigger component after the Organism is the template. This is where
 **djangocms-cascade** jumps in. Each of the Cascade plugins is shipped with its own default
@@ -35,14 +34,14 @@ Overriding Templates
 ====================
 
 For all plugins described here, we can override the provided templates with our own implementation.
-If the shop framework provides a template, named ``/shop/folder/template.html``, then we may
-override it using ``/merchantimplementaion/folder/template.html``.
+If the shop framework provides a template, named ``/shop/folder/my-organism.html``, then we may
+override it using ``/merchantimplementaion/folder/my-organism.html``.
 
 This template then usually extends the existing framework template with
 
 .. code-block:: django
 
-	{% extends "/shop/folder/template.html" %}
+	{% extends "/shop/folder/my-organism.html" %}
 	
 	{% block shop-some-identifier %}
 	    <div>...</div>
