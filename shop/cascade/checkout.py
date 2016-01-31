@@ -124,11 +124,21 @@ class CheckoutAddressPluginBase(DialogFormPluginBase):
             initial = {'priority': aggr['{}__max'.format(self.FormClass.priority_field)] or 0}
             return {'initial': initial}
 
+    def get_render_template(self, context, instance, placeholder):
+        render_type = instance.glossary.get('render_type')
+        if render_type not in ('form', 'summary',):
+            render_type = 'form'
+        template_names = [
+            '{0}/checkout/{1}'.format(shop_settings.APP_LABEL, self.template_leaf_name).format(render_type),
+            'shop/checkout/{}'.format(self.template_leaf_name).format(render_type),
+        ]
+        return select_template(template_names)
+
 
 class ShippingAddressFormPlugin(CheckoutAddressPluginBase):
     name = _("Shipping Address Form")
     form_class = 'shop.forms.checkout.ShippingAddressForm'
-    template_leaf_name = 'shipping-address.html'
+    template_leaf_name = 'shipping-address-{}.html'
 
 DialogFormPluginBase.register_plugin(ShippingAddressFormPlugin)
 
@@ -136,7 +146,7 @@ DialogFormPluginBase.register_plugin(ShippingAddressFormPlugin)
 class BillingAddressFormPlugin(CheckoutAddressPluginBase):
     name = _("Billing Address Form")
     form_class = 'shop.forms.checkout.BillingAddressForm'
-    template_leaf_name = 'billing-address.html'
+    template_leaf_name = 'billing-address-{}.html'
 
 DialogFormPluginBase.register_plugin(BillingAddressFormPlugin)
 

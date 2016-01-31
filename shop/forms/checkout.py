@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db.models import Max
 from django.forms import fields, widgets
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from djangular.styling.bootstrap3.forms import Bootstrap3ModelForm
 from djangular.styling.bootstrap3.widgets import RadioSelect, RadioFieldRenderer, CheckboxInput
@@ -143,6 +145,15 @@ class AddressForm(DialogModelForm):
         if created:
             instance.priority_billing = cls.get_max_priority(cart.customer) + 1
             instance.save()
+
+    def as_text(self):
+        output = []
+        for name in self.fields.keys():
+            bound_field = self[name]
+            value = bound_field.value()
+            if not bound_field.is_hidden and value:
+                output.append(value)
+        return mark_safe('\n'.join(output))
 
 
 class ShippingAddressForm(AddressForm):
