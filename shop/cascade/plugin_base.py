@@ -165,7 +165,7 @@ class DialogFormPluginBase(ShopPluginBase):
     """
     require_parent = True
     parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin',)
-    CHOICES = (('form', _("Form dialog")), ('summary', _("Summary")),)
+    CHOICES = (('form', _("Form dialog")), ('summary', _("Static summary")),)
     glossary_fields = (
         PartialFormField('render_type',
             widgets.RadioSelect(choices=CHOICES),
@@ -208,9 +208,12 @@ class DialogFormPluginBase(ShopPluginBase):
         return {}
 
     def get_render_template(self, context, instance, placeholder):
+        render_type = instance.glossary.get('render_type')
+        if render_type not in ('form', 'summary',):
+            render_type = 'form'
         template_names = [
-            '{0}/checkout/{1}'.format(shop_settings.APP_LABEL, self.template_leaf_name),
-            'shop/checkout/{}'.format(self.template_leaf_name),
+            '{0}/checkout/{1}'.format(shop_settings.APP_LABEL, self.template_leaf_name).format(render_type),
+            'shop/checkout/{}'.format(self.template_leaf_name).format(render_type),
         ]
         return select_template(template_names)
 

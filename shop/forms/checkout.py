@@ -5,7 +5,6 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db.models import Max
 from django.forms import fields, widgets
-from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from djangular.styling.bootstrap3.forms import Bootstrap3ModelForm
 from djangular.styling.bootstrap3.widgets import RadioSelect, RadioFieldRenderer, CheckboxInput
@@ -146,15 +145,6 @@ class AddressForm(DialogModelForm):
             instance.priority_billing = cls.get_max_priority(cart.customer) + 1
             instance.save()
 
-    def as_text(self):
-        output = []
-        for name in self.fields.keys():
-            bound_field = self[name]
-            value = bound_field.value()
-            if not bound_field.is_hidden and value:
-                output.append(value)
-        return mark_safe('\n'.join(output))
-
 
 class ShippingAddressForm(AddressForm):
     scope_prefix = 'data.shipping_address'
@@ -182,6 +172,14 @@ class BillingAddressForm(AddressForm):
         # Intentionally rendered without field `use_shipping_address`
         self.fields.pop('use_shipping_address', None)
         return super(BillingAddressForm, self).as_div()
+
+    def as_text(self):
+        try:
+            bound_field = self['use_shipping_address']
+            if bound_field.value():
+                return bound_field.field.widget.choice_label
+        except KeyError:
+            return super(BillingAddressForm, self).as_text()
 
     @classmethod
     def form_factory(cls, request, data, cart):

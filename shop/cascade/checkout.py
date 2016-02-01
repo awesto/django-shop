@@ -124,16 +124,6 @@ class CheckoutAddressPluginBase(DialogFormPluginBase):
             initial = {'priority': aggr['{}__max'.format(self.FormClass.priority_field)] or 0}
             return {'initial': initial}
 
-    def get_render_template(self, context, instance, placeholder):
-        render_type = instance.glossary.get('render_type')
-        if render_type not in ('form', 'summary',):
-            render_type = 'form'
-        template_names = [
-            '{0}/checkout/{1}'.format(shop_settings.APP_LABEL, self.template_leaf_name).format(render_type),
-            'shop/checkout/{}'.format(self.template_leaf_name).format(render_type),
-        ]
-        return select_template(template_names)
-
 
 class ShippingAddressFormPlugin(CheckoutAddressPluginBase):
     name = _("Shipping Address Form")
@@ -154,7 +144,7 @@ DialogFormPluginBase.register_plugin(BillingAddressFormPlugin)
 class PaymentMethodFormPlugin(DialogFormPluginBase):
     name = _("Payment Method Form")
     form_class = 'shop.forms.checkout.PaymentMethodForm'
-    template_leaf_name = 'payment-method.html'
+    template_leaf_name = 'payment-method-{}.html'
 
     def get_form_data(self, request):
         cart = CartModel.objects.get_from_request(request)
@@ -175,7 +165,7 @@ if cart_modifiers_pool.get_payment_modifiers():
 class ShippingMethodFormPlugin(DialogFormPluginBase):
     name = _("Shipping Method Form")
     form_class = 'shop.forms.checkout.ShippingMethodForm'
-    template_leaf_name = 'shipping-method.html'
+    template_leaf_name = 'shipping-method-{}.html'
 
     def get_form_data(self, request):
         cart = CartModel.objects.get_from_request(request)
