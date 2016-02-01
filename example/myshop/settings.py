@@ -213,8 +213,8 @@ STATIC_ROOT = os.path.join(WORK_DIR, 'static')
 STATIC_URL = '/static/'
 
 STATICFILES_FINDERS = (
-    'myshop.finders.ServeUnminimizedFinder',  # or 'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'myshop.finders.FileSystemFinder',  # or 'django.contrib.staticfiles.finders.FileSystemFinder',
+    'myshop.finders.AppDirectoriesFinder',  # or 'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'sass_processor.finders.CssFinder',
     'compressor.finders.CompressorFinder',
 )
