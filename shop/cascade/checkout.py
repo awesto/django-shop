@@ -4,7 +4,7 @@ from django.db.models import Max
 from django.forms.fields import CharField
 from django.template import Engine
 from django.template.loader import select_template
-from django.utils.html import format_html, strip_tags, strip_entities
+from django.utils.html import strip_tags, strip_entities
 from django.utils.safestring import mark_safe
 from django.utils.text import Truncator
 from django.utils.translation import ugettext_lazy as _
@@ -208,11 +208,10 @@ class AcceptConditionFormPlugin(DialogFormPluginBase):
 
     @classmethod
     def get_identifier(cls, instance):
-        identifier = super(AcceptConditionFormPlugin, cls).get_identifier(instance)
         html_content = cls.html_parser.unescape(instance.glossary.get('html_content', ''))
         html_content = strip_entities(strip_tags(html_content))
         html_content = Truncator(html_content).words(3, truncate=' ...')
-        return format_html('{}{}', identifier, html_content)
+        return mark_safe(html_content)
 
     def get_form(self, request, obj=None, **kwargs):
         if obj:

@@ -4,8 +4,9 @@ from django.db.models import get_model
 from django.core.exceptions import ImproperlyConfigured
 from django.forms import ChoiceField, widgets
 from django.template.loader import select_template
+from django.utils.html import format_html
 from django.utils.module_loading import import_string
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from django.utils.safestring import mark_safe
 from cms.plugin_pool import plugin_pool
 from django.utils.encoding import python_2_unicode_compatible
@@ -193,6 +194,12 @@ class DialogFormPluginBase(ShopPluginBase):
     @classmethod
     def get_form_class(cls):
         return getattr(cls, 'form_class', None)
+
+    @classmethod
+    def get_identifier(cls, instance):
+        render_type = instance.glossary.get('render_type')
+        render_type = dict(cls.CHOICES).get(render_type, '')
+        return format_html(pgettext_lazy('get_identifier', "as {}"), render_type)
 
     def __init__(self, *args, **kwargs):
         super(DialogFormPluginBase, self).__init__(*args, **kwargs)

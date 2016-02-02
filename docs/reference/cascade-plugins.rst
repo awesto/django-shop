@@ -72,14 +72,30 @@ A nice aspect of this approach is, that ...
   rendered HTML as well.
 * we get client side form validation for free, without having to write any Javascript nor HTML.
 * if we add, change or delete attributes in a form, this modification propagates down to both
-  form validation controllers, one in Javascript on the client as well as the final one on the
-  server.
+  form validation controllers: That one in Javascript used on the client as well as the final one,
+  validating the form on the server.
 * if our forms are made out of models, all of the above works as well.
 * we can arrange each of those form components using the **Structure** editor from **djangoCMS**
   toolbar. This is much faster, than by crafting templates manually.
 
 As we can see from this approach, **djangoSHOP**  places great value on the principles of a
 `Single Source of Truth`_, when working with customized database models and forms.
+
+Many of these Forms can be rendered using two different approaches:
+
+Form dialog
+~~~~~~~~~~~
+
+Here we render all model fields as input fields and group them into an editable form. This is the
+normal use case.
+
+
+Static summary
+~~~~~~~~~~~~~~
+
+Here we render all model fields as static strings without wrapping it into a form. This shall be
+used to summarize all inputs, preferably on the last process step.
+
 
 These are the currently available plugins provided by **djangoSHOP** to build the checkout page:
 
