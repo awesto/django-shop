@@ -490,8 +490,8 @@ SHOP_CART_MODIFIERS = (
     else 'shop.modifiers.defaults.DefaultCartModifier',
     'shop.modifiers.taxes.CartExcludedTaxModifier',
     'myshop.modifiers.PostalShippingModifier',
+    'myshop.modifiers.StripePaymentModifier',
     'shop.modifiers.defaults.PayInAdvanceModifier',
-    'shop_stripe.modifiers.StripePaymentModifier',
 )
 SHOP_EDITCART_NG_MODEL_OPTIONS = "{updateOn: 'default blur', debounce: {'default': 2500, 'blur': 0}}"
 

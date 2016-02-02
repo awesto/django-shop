@@ -5,6 +5,7 @@ from shop.modifiers.pool import cart_modifiers_pool
 from shop.rest.serializers import ExtraCartRow
 from shop.modifiers.base import ShippingModifier
 from shop.money import Money
+from shop_stripe import modifiers
 
 
 class PostalShippingModifier(ShippingModifier):
@@ -21,3 +22,7 @@ class PostalShippingModifier(ShippingModifier):
         instance = {'label': _("Shipping costs"), 'amount': amount}
         cart.extra_rows[self.identifier] = ExtraCartRow(instance)
         cart.total += amount
+
+
+class StripePaymentModifier(modifiers.StripePaymentModifier):
+    commision_percentage = 3
