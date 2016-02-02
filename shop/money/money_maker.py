@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from decimal import Decimal, InvalidOperation
 from cms.utils.helpers import classproperty
 from shop import settings as shop_settings
-from iso4217 import CURRENCIES
+from .iso4217 import CURRENCIES
 
 
 class AbstractMoney(Decimal):
