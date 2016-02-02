@@ -31,6 +31,7 @@ system:
 * SQLite: https://www.sqlite.org/
 * bower: http://bower.io/
 * Node Package Manager: https://www.npmjs.com/
+* Python 2.7.10
 
 .. code-block:: shell
 
