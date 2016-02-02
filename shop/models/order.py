@@ -7,7 +7,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
 from django.utils.encoding import python_2_unicode_compatible
-from django.utils.module_loading import import_by_path
+from django.utils.module_loading import import_string
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy, get_language_from_request
 from django.utils.six.moves.urllib.parse import urljoin
@@ -92,7 +92,7 @@ class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
     """
     def __new__(cls, name, bases, attrs):
         if 'BaseOrder' in (b.__name__ for b in bases):
-            bases = tuple(import_by_path(mc) for mc in shop_settings.ORDER_WORKFLOWS) + bases
+            bases = tuple(import_string(mc) for mc in shop_settings.ORDER_WORKFLOWS) + bases
             # merge the dicts of TRANSITION_TARGETS
             attrs.update(_transition_targets={}, _auto_transitions={})
             for b in reversed(bases):
@@ -109,9 +109,9 @@ class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
     @staticmethod
     def add_to_auto_transitions(base):
         result = {}
-        for name, method in base.__dict__.iteritems():
+        for name, method in base.__dict__.items():
             if callable(method) and hasattr(method, '_django_fsm'):
-                for name, transition in method._django_fsm.transitions.iteritems():
+                for name, transition in method._django_fsm.transitions.items():
                     if transition.custom.get('auto'):
                         result.update({name: method})
         return result

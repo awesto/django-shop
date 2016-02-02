@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.utils.module_loading import import_by_path
+
+from django.utils.module_loading import import_string
 from rest_framework.decorators import list_route
 from rest_framework.exceptions import ValidationError
 from cms.plugin_pool import plugin_pool
@@ -20,7 +21,7 @@ class CheckoutViewSet(BaseViewSet):
         self.dialog_forms = []
         for p in plugin_pool.get_all_plugins():
             if issubclass(p, DialogFormPluginBase):
-                self.dialog_forms.append(import_by_path(p.form_class))
+                self.dialog_forms.append(import_string(p.form_class))
 
     @list_route(methods=['post'], url_path='upload')
     def upload(self, request):
