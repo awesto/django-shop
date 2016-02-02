@@ -5,11 +5,12 @@
 
 <form name="{{ billing_address_form.form_name }}" novalidate>
 	<div class="has-feedback form-group">
-	{{ billing_address_form.use_shipping_address }}
+		{{ billing_address_form.use_shipping_address }}
 	</div>
-	<div shop-form-validate="!data.billing_address.use_shipping_address" ng-hide="data.billing_address.use_shipping_address" class="animate-show" ng-cloak>
+	<fieldset shop-form-validate="!data.billing_address.use_shipping_address" ng-hide="data.billing_address.use_shipping_address" class="animate-show" ng-cloak>
+		<legend>{{ billing_address_form.legend }}</legend>
 		{{ billing_address_form.as_div }}
-	</div>
+	</fieldset>
 </form>
 
 {% endspaceless %}

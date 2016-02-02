@@ -1,3 +1,4 @@
-{% load i18n %}
-<label>{% trans "Shipping Method" %}:</label>
-<pre>{{ shipping_method_form.as_text }}</pre>
+<div class="form-group">
+	<h4>{{ shipping_method_form.shipping_modifier.label }}</h4>
+	<pre class="shop-checkout-summary" djng-bind-if="checkout_summary.shipping_method_form">{{ shipping_method_form.as_text }}</pre>
+</div>

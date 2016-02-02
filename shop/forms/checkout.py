@@ -150,6 +150,7 @@ class AddressForm(DialogModelForm):
 class ShippingAddressForm(AddressForm):
     scope_prefix = 'data.shipping_address'
     priority_field = 'priority_shipping'
+    legend = _("Shipping Address")
 
     class Meta(AddressForm.Meta):
         widgets = {
@@ -165,6 +166,7 @@ class ShippingAddressForm(AddressForm):
 class BillingAddressForm(AddressForm):
     scope_prefix = 'data.billing_address'
     priority_field = 'priority_billing'
+    legend = _("Billing Address")
 
     use_shipping_address = fields.BooleanField(required=False, initial=True,
         widget=CheckboxInput(_("Use shipping address for billing")))
