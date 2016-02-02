@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db.models import Max
 from django.forms import fields, widgets
+from django.forms.utils import ErrorDict
 from django.utils.translation import ugettext_lazy as _
 from djangular.styling.bootstrap3.forms import Bootstrap3ModelForm
 from djangular.styling.bootstrap3.widgets import RadioSelect, RadioFieldRenderer, CheckboxInput
@@ -43,8 +44,7 @@ class CustomerForm(DialogModelForm):
         customer_form = cls(data=data, instance=request.customer)
         if customer_form.is_valid():
             customer_form.save()
-        else:
-            return {cls.form_name: customer_form.errors}
+        return customer_form
 
 
 class GuestForm(DialogModelForm):
@@ -68,8 +68,7 @@ class GuestForm(DialogModelForm):
         customer_form = cls(data=data, instance=request.customer.user)
         if customer_form.is_valid():
             customer_form.save()
-        else:
-            return {cls.form_name: customer_form.errors}
+        return customer_form
 
     def clean_email(self):
         # check for uniqueness of email address
@@ -124,8 +123,7 @@ class AddressForm(DialogModelForm):
             assert address_form.instance == instance
             instance.save()
             cls.set_address(cart, instance)
-        else:
-            return {address_form.form_name: dict(address_form.errors)}
+        return address_form
 
     @classmethod
     def get_max_priority(cls, customer):
@@ -171,6 +169,13 @@ class BillingAddressForm(AddressForm):
     use_shipping_address = fields.BooleanField(required=False, initial=True,
         widget=CheckboxInput(_("Use shipping address for billing")))
 
+    def full_clean(self):
+        super(BillingAddressForm, self).full_clean()
+        if self['use_shipping_address'].value():
+            # reset errors, since then the form is always regarded as valid
+            self._errors = ErrorDict()
+            self.instance.use_shipping_address = True
+
     def as_div(self):
         # Intentionally rendered without field `use_shipping_address`
         self.fields.pop('use_shipping_address', None)
@@ -185,20 +190,11 @@ class BillingAddressForm(AddressForm):
             return super(BillingAddressForm, self).as_text()
 
     @classmethod
-    def form_factory(cls, request, data, cart):
-        """
-        Overridden method to reuse data from ShippingAddressForm in case the checkbox for
-        `use_shipping_address` is active.
-        """
-        if data and data.pop('use_shipping_address', False):
-            cls.set_address(cart, cart.shipping_address)
-        else:
-            return super(BillingAddressForm, cls).form_factory(request, data, cart)
-
-    @classmethod
     def set_address(cls, cart, instance):
-        # TODO: super(BillingAddressForm, cls).set_address(cart, instance)
-        cart.billing_address = instance
+        if getattr(instance, 'use_shipping_address', False):
+            cart.billing_address = cart.shipping_address
+        else:
+            cart.billing_address = instance
 
 
 class PaymentMethodForm(DialogForm):
@@ -226,8 +222,7 @@ class PaymentMethodForm(DialogForm):
         payment_method_form = cls(data=data, cart=cart)
         if payment_method_form.is_valid():
             cart.extra.update(payment_method_form.cleaned_data)
-        else:
-            return {cls.form_name: payment_method_form.errors}
+        return payment_method_form
 
 
 class ShippingMethodForm(DialogForm):
@@ -255,8 +250,7 @@ class ShippingMethodForm(DialogForm):
         shipping_method_form = cls(data=data, cart=cart)
         if shipping_method_form.is_valid():
             cart.extra.update(shipping_method_form.cleaned_data)
-        else:
-            return {cls.form_name: shipping_method_form.errors}
+        return shipping_method_form
 
 
 class ExtraAnnotationForm(DialogForm):
@@ -270,8 +264,7 @@ class ExtraAnnotationForm(DialogForm):
         extra_annotation_form = cls(data=data)
         if extra_annotation_form.is_valid():
             cart.extra.update(extra_annotation_form.cleaned_data)
-        else:
-            return {cls.form_name: extra_annotation_form.errors}
+        return extra_annotation_form
 
 
 class AcceptConditionForm(DialogForm):
@@ -289,5 +282,4 @@ class AcceptConditionForm(DialogForm):
     def form_factory(cls, request, data, cart):
         data = data or {'accept': False}
         accept_form = cls(data=data)
-        if not accept_form.is_valid():
-            return {accept_form.form_name: dict(accept_form.errors)}
+        return accept_form

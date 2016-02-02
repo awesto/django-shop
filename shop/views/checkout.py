@@ -48,18 +48,20 @@ class CheckoutViewSet(BaseViewSet):
                         dialog_data.append((fc, data))
         dialog_data = sorted(dialog_data, key=lambda tpl: int(tpl[1]['plugin_order']))
 
-        # save data and collect potential errors
-        errors = {}
+        # save data, get text representation and collect potential errors
+        errors, checkout_summary = {}, {}
         for form_class, data in dialog_data:
-            reply = form_class.form_factory(request, data, cart)
-            if isinstance(reply, dict):
-                errors.update(reply)
-
+            form = form_class.form_factory(request, data, cart)
+            assert form.form_name == form_class.form_name
+            if form.is_valid():
+                checkout_summary[form_class.form_name] = form.as_text()
+            else:
+                errors[form_class.form_name] = dict(form.errors)
         cart.save()
 
         # add possible form errors for giving feedback to the customer
         response = self.list(request)
-        response.data.update(errors=errors)
+        response.data.update(errors=errors, checkout_summary=checkout_summary)
         return response
 
     @list_route(methods=['post'], url_path='purchase')
