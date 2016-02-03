@@ -12,7 +12,6 @@ yet, reading their excellent `Django Tutorial`_ is highly recommended.
 
 The steps outlined in this tutorial are meant to be followed in order.
 
-.. _Django Tutorial: https://docs.djangoproject.com/en/stable/intro/tutorial01/
 
 .. _tutorial/prepare-installation:
 
@@ -27,6 +26,7 @@ folder.
 Also ensure that these packages are installed using the favorite package manager of your operating
 system:
 
+* Python 2.7
 * Redis: http://redis.io/
 * SQLite: https://www.sqlite.org/
 * bower: http://bower.io/
@@ -93,3 +93,6 @@ View**.
 
 Now we have a working catalog list view, but since we havn't added any products to the database
 yet, we won't see any items on our page.
+
+
+.. _Django Tutorial: https://docs.djangoproject.com/en/stable/intro/tutorial01/

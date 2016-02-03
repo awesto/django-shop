@@ -24,15 +24,15 @@ This made configuration quite complicate and causes other drawbacks:
 Therefore in **djangoSHOP**, since version 0.9 *all* concrete models, ``Product``, ``Order``,
 ``OrderItem``, ``Cart``, ``CartItem`` have been removed. These model definitions now all are
 abstract and named ``BaseProduct``, ``BaseOrder``, ``BaseOrderItem``, etc. They all have been moved
-into the folder ``shop/models/``, because this is the location a programmer expects them.
+into the folder ``shop/models/``, because that's the location a programmer expects them.
 
 
 Materializing Models
 ====================
 
 Materializing such an abstract base model, means to create a concrete model with an associated
-database table. This model creation is performed in the concrete shop implementation and must be
-done for each base model in the shop software.
+database table. This model creation is performed in the concrete project implementing the shop;
+it must be done for each base model in the shop software.
 
 For instance, materialize the cart by using this code snippet inside our own shop's
 ``models/shopmodels.py`` files:
@@ -54,15 +54,19 @@ For instance, materialize the cart by using this code snippet inside our own sho
 	        app_label = 'my_shop'
 
 Of course, we can add as many extra model fields to this concrete cart model, as we wish.
-All shop models, now are managed through *our* shop instance. This means that the models **Cart**,
-**Order**, etc. now are managed by the common database migrations tools, such as
-``./manage.py makemigration my_shop_instance`` and ``./manage.py migrate my_shop_instance``. This
-also means that these models in the admin interface are visible under **my_shop**.
+All shop models, now are managed through *our* project instance. This means that the models
+**Cart**, **Order**, etc. are now managed by the common database migrations tools, such as
+``./manage.py makemigration my_shop`` and ``./manage.py migrate my_shop``. This
+also means that these models, in the Django admin backend, are visible under **my_shop**.
+
+
+Use the default Models
+----------------------
 
 Often we don't need extra fields, hence the abstract shop base model is enough. Then,
 materializing the models can be done using some convenience classes as found in
 ``shop/models/defaults``. We can simply import them into ``models.py`` or ``models/__init__.py`` in
-our shop instance:
+our own shop project:
 
 .. code-block:: python
 
@@ -72,7 +76,7 @@ our shop instance:
 .. note:: The comment ``nopyflakes`` has been added to suppress warnings, since these classes
 		arern't used anywhere in ``models.py``.
 
-All the configuration settings from **djangoSHOP** <0.3: ``PRODUCT_MODEL``, ``ORDER_MODEL``,
+All the configuration settings from **djangoSHOP** <0.9: ``PRODUCT_MODEL``, ``ORDER_MODEL``,
 ``ORDER_MODEL_ITEM``, etc. are not required anymore and can safely be removed from our
 ``settings.py``.
 
