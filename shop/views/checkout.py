@@ -53,7 +53,6 @@ class CheckoutViewSet(BaseViewSet):
         errors, checkout_summary = {}, {}
         for form_class, data in dialog_data:
             form = form_class.form_factory(request, data, cart)
-            assert form.form_name == form_class.form_name
             if form.is_valid():
                 checkout_summary[form_class.form_name] = form.as_text()
             else:

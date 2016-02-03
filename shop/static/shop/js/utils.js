@@ -20,13 +20,7 @@ djangoShopModule.provider('djangoShop', function() {
 	var self = this;
 
 	this.setTranslations = function(translations) {
-		debugger;
 		self.translations = translations;
-	};
-
-	this.dialogController = 'DialogController';  // the default
-	this.setDialogController = function(controller) {
-		self.dialogController = controller;
 	};
 
 	this.$get = function() {
