@@ -31,7 +31,8 @@ system:
 * SQLite: https://www.sqlite.org/
 * bower: http://bower.io/
 * Node Package Manager: https://www.npmjs.com/
-* Python 2.7.10
+* Python 2.7 (Latest minor version recommended)
+* Django 1.8 (Latest minor version recommended)
 
 .. code-block:: shell
 
