@@ -2,9 +2,9 @@
 
 {% addtoblock "css" %}<link href="{% sass_src 'shop/css/order.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 
-{% addtoblock "js" %}<script src="{% static 'shop/js/order.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-{% addtoblock "shop-ng-requires" %}django.shop.order{% endaddtoblock %}
-{% addtoblock "shop-ng-config" %}['translationProvider', function(translationProvider) { translationProvider.setDesignations('list-of-time-lemmas'); }]{% endaddtoblock %}
+{% addtoblock "js" %}<script src="{% static 'shop/js/utils.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+{% addtoblock "shop-ng-requires" %}django.shop.utils{% endaddtoblock %}
+{% addtoblock "shop-ng-config" %}['djangoShopProvider', function(djangoShopProvider) { djangoShopProvider.setTranslations('list-of-time-lemmas'); }]{% endaddtoblock %}
 
 <table class="table table-condensed">
 {% block shop-order-table %}<!-- table content -->{% endblock %}
