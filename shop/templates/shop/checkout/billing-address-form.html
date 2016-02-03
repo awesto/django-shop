@@ -1,8 +1,6 @@
-{% load static sekizai_tags %}{% spaceless %}
+{% extends "shop/checkout/dialog-base.html" %}
 
-{% addtoblock "js" %}<script src="{% static 'shop/js/dialogs.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-{% addtoblock "shop-ng-requires" %}django.shop.dialogs{% endaddtoblock %}
-
+{% block dialog_form %}
 <form name="{{ billing_address_form.form_name }}" novalidate>
 	<div class="has-feedback form-group">
 		{{ billing_address_form.use_shipping_address }}
@@ -12,5 +10,4 @@
 		{{ billing_address_form.as_div }}
 	</fieldset>
 </form>
-
-{% endspaceless %}
+{% endblock %}

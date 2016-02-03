@@ -1,0 +1,9 @@
+{% load static sekizai_tags %}{% spaceless %}
+
+{% addtoblock "js" %}<script src="{% static 'shop/js/utils.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+{% addtoblock "js" %}<script src="{% static 'shop/js/dialogs.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+{% addtoblock "shop-ng-requires" %}django.shop.dialogs{% endaddtoblock %}
+
+{% block dialog_form %}{% endblock %}
+
+{% endspaceless %}

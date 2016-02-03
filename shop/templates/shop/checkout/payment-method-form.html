@@ -1,10 +1,7 @@
-{% load static sekizai_tags %}{% spaceless %}
+{% extends "shop/checkout/dialog-base.html" %}
 
-{% addtoblock "js" %}<script src="{% static 'shop/js/dialogs.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-{% addtoblock "shop-ng-requires" %}django.shop.dialogs{% endaddtoblock %}
-
+{% block dialog_form %}
 <form shop-dialog-form name="{{ payment_method_form.form_name }}" novalidate>
 	{{ payment_method_form.as_div }}
 </form>
-
-{% endspaceless %}
+{% endblock %}
