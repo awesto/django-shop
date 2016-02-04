@@ -24,5 +24,12 @@ class PostalShippingModifier(ShippingModifier):
         cart.total += amount
 
 
+class CustomerPickupModifier(ShippingModifier):
+    identifier = 'customer-pickup'
+
+    def get_choice(self):
+        return (self.identifier, _("Customer pickups the goods"))
+
+
 class StripePaymentModifier(modifiers.StripePaymentModifier):
     commision_percentage = 3

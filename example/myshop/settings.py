@@ -490,6 +490,7 @@ SHOP_CART_MODIFIERS = (
     else 'shop.modifiers.defaults.DefaultCartModifier',
     'shop.modifiers.taxes.CartExcludedTaxModifier',
     'myshop.modifiers.PostalShippingModifier',
+    'myshop.modifiers.CustomerPickupModifier',
     'myshop.modifiers.StripePaymentModifier',
     'shop.modifiers.defaults.PayInAdvanceModifier',
 )
