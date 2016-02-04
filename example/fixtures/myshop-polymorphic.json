@@ -171,7 +171,7 @@
       18,
       19
     ],
-    "changed_date": "2016-02-04T08:05:40.535Z",
+    "changed_date": "2016-02-04T11:31:57.824Z",
     "limit_visibility_in_menu": null,
     "parent": 3,
     "numchild": 0,
@@ -207,7 +207,7 @@
       20,
       21
     ],
-    "changed_date": "2016-02-04T08:05:40.493Z",
+    "changed_date": "2016-02-04T11:31:57.690Z",
     "limit_visibility_in_menu": null,
     "parent": 4,
     "numchild": 0,
@@ -1476,7 +1476,7 @@
 },
 {
   "fields": {
-    "changed_date": "2016-02-01T10:00:23.550Z",
+    "changed_date": "2016-02-04T11:31:26.018Z",
     "language": "de",
     "parent": 35,
     "numchild": 1,
@@ -4039,7 +4039,7 @@
     "changed_date": "2016-02-01T10:00:23.627Z",
     "language": "de",
     "parent": 42,
-    "numchild": 8,
+    "numchild": 10,
     "creation_date": "2016-01-31T23:53:18.364Z",
     "depth": 6,
     "position": 3,
@@ -4052,13 +4052,13 @@
 },
 {
   "fields": {
-    "changed_date": "2016-02-01T10:00:23.760Z",
+    "changed_date": "2016-02-04T11:30:37.828Z",
     "language": "de",
     "parent": 1622,
     "numchild": 2,
     "creation_date": "2015-11-03T12:12:11.300Z",
     "depth": 7,
-    "position": 6,
+    "position": 8,
     "path": "0029000100010001000100040001",
     "placeholder": 19,
     "plugin_type": "AcceptConditionFormPlugin"
@@ -4084,13 +4084,13 @@
 },
 {
   "fields": {
-    "changed_date": "2016-02-01T10:00:23.765Z",
+    "changed_date": "2016-02-04T11:30:37.848Z",
     "language": "de",
     "parent": 1622,
     "numchild": 0,
     "creation_date": "2015-11-03T15:12:48.394Z",
     "depth": 7,
-    "position": 7,
+    "position": 9,
     "path": "0029000100010001000100040002",
     "placeholder": 19,
     "plugin_type": "ShopProceedButton"
@@ -4100,13 +4100,13 @@
 },
 {
   "fields": {
-    "changed_date": "2016-02-01T10:00:23.739Z",
+    "changed_date": "2016-02-04T11:30:37.731Z",
     "language": "de",
     "parent": 1622,
     "numchild": 0,
     "creation_date": "2016-01-31T22:20:32.185Z",
     "depth": 7,
-    "position": 2,
+    "position": 3,
     "path": "0029000100010001000100040003",
     "placeholder": 19,
     "plugin_type": "ShippingAddressFormPlugin"
@@ -4116,13 +4116,13 @@
 },
 {
   "fields": {
-    "changed_date": "2016-02-01T10:00:23.744Z",
+    "changed_date": "2016-02-04T11:30:37.750Z",
     "language": "de",
     "parent": 1622,
     "numchild": 0,
     "creation_date": "2016-01-31T22:20:49.792Z",
     "depth": 7,
-    "position": 3,
+    "position": 4,
     "path": "0029000100010001000100040004",
     "placeholder": 19,
     "plugin_type": "BillingAddressFormPlugin"
@@ -4132,7 +4132,7 @@
 },
 {
   "fields": {
-    "changed_date": "2016-02-01T10:00:23.734Z",
+    "changed_date": "2016-02-04T11:30:37.711Z",
     "language": "de",
     "parent": 1622,
     "numchild": 0,
@@ -4148,13 +4148,13 @@
 },
 {
   "fields": {
-    "changed_date": "2016-02-01T10:00:23.750Z",
+    "changed_date": "2016-02-04T11:30:37.771Z",
     "language": "de",
     "parent": 1622,
     "numchild": 0,
     "creation_date": "2016-01-31T22:23:33.271Z",
     "depth": 7,
-    "position": 4,
+    "position": 5,
     "path": "0029000100010001000100040006",
     "placeholder": 19,
     "plugin_type": "PaymentMethodFormPlugin"
@@ -4164,13 +4164,13 @@
 },
 {
   "fields": {
-    "changed_date": "2016-02-01T10:00:23.756Z",
+    "changed_date": "2016-02-04T11:30:37.789Z",
     "language": "de",
     "parent": 1622,
     "numchild": 0,
     "creation_date": "2016-01-31T22:24:08.104Z",
     "depth": 7,
-    "position": 5,
+    "position": 6,
     "path": "0029000100010001000100040007",
     "placeholder": 19,
     "plugin_type": "ShippingMethodFormPlugin"
@@ -4180,7 +4180,7 @@
 },
 {
   "fields": {
-    "changed_date": "2016-02-01T10:00:23.727Z",
+    "changed_date": "2016-02-04T11:30:37.689Z",
     "language": "de",
     "parent": 1622,
     "numchild": 0,
@@ -4929,710 +4929,6 @@
   },
   "model": "cms.cmsplugin",
   "pk": 2225
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.231Z",
-    "language": "de",
-    "parent": null,
-    "numchild": 2,
-    "creation_date": "2016-01-16T22:05:03.362Z",
-    "depth": 1,
-    "position": 0,
-    "path": "003R",
-    "placeholder": 21,
-    "plugin_type": "BootstrapContainerPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2271
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.240Z",
-    "language": "de",
-    "parent": 2271,
-    "numchild": 1,
-    "creation_date": "2015-11-03T11:52:31.490Z",
-    "depth": 2,
-    "position": 0,
-    "path": "003R0001",
-    "placeholder": 21,
-    "plugin_type": "SegmentPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2272
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.247Z",
-    "language": "de",
-    "parent": 2272,
-    "numchild": 1,
-    "creation_date": "2015-11-03T12:00:22.464Z",
-    "depth": 3,
-    "position": 0,
-    "path": "003R00010001",
-    "placeholder": 21,
-    "plugin_type": "BootstrapRowPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2273
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.259Z",
-    "language": "de",
-    "parent": 2273,
-    "numchild": 1,
-    "creation_date": "2015-11-03T12:00:27.233Z",
-    "depth": 4,
-    "position": 0,
-    "path": "003R000100010001",
-    "placeholder": 21,
-    "plugin_type": "BootstrapColumnPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2274
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.266Z",
-    "language": "de",
-    "parent": 2274,
-    "numchild": 4,
-    "creation_date": "2015-11-03T12:01:52.087Z",
-    "depth": 5,
-    "position": 0,
-    "path": "003R0001000100010001",
-    "placeholder": 21,
-    "plugin_type": "ProcessBarPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2275
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.273Z",
-    "language": "de",
-    "parent": 2275,
-    "numchild": 4,
-    "creation_date": "2015-11-03T12:01:57.069Z",
-    "depth": 6,
-    "position": 0,
-    "path": "003R00010001000100010001",
-    "placeholder": 21,
-    "plugin_type": "ProcessStepPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2276
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.279Z",
-    "language": "de",
-    "parent": 2276,
-    "numchild": 1,
-    "creation_date": "2015-11-03T12:03:13.411Z",
-    "depth": 7,
-    "position": 0,
-    "path": "003R000100010001000100010001",
-    "placeholder": 21,
-    "plugin_type": "SegmentPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2277
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.286Z",
-    "language": "de",
-    "parent": 2277,
-    "numchild": 0,
-    "creation_date": "2015-11-03T12:05:35.165Z",
-    "depth": 8,
-    "position": 0,
-    "path": "003R0001000100010001000100010001",
-    "placeholder": 21,
-    "plugin_type": "CustomerFormPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2278
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.295Z",
-    "language": "de",
-    "parent": 2276,
-    "numchild": 1,
-    "creation_date": "2015-11-03T12:03:40.516Z",
-    "depth": 7,
-    "position": 1,
-    "path": "003R000100010001000100010002",
-    "placeholder": 21,
-    "plugin_type": "SegmentPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2279
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.302Z",
-    "language": "de",
-    "parent": 2279,
-    "numchild": 0,
-    "creation_date": "2015-11-03T12:04:17.682Z",
-    "depth": 8,
-    "position": 0,
-    "path": "003R0001000100010001000100020001",
-    "placeholder": 21,
-    "plugin_type": "GuestFormPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2280
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.310Z",
-    "language": "de",
-    "parent": 2276,
-    "numchild": 0,
-    "creation_date": "2015-11-03T12:06:29.969Z",
-    "depth": 7,
-    "position": 3,
-    "path": "003R000100010001000100010003",
-    "placeholder": 21,
-    "plugin_type": "ProcessNextStepPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2281
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.318Z",
-    "language": "de",
-    "parent": 2276,
-    "numchild": 0,
-    "creation_date": "2016-01-28T09:51:53.338Z",
-    "depth": 7,
-    "position": 2,
-    "path": "003R000100010001000100010004",
-    "placeholder": 21,
-    "plugin_type": "RequiredFormFieldsPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2282
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.327Z",
-    "language": "de",
-    "parent": 2275,
-    "numchild": 4,
-    "creation_date": "2015-11-03T12:01:57.141Z",
-    "depth": 6,
-    "position": 1,
-    "path": "003R00010001000100010002",
-    "placeholder": 21,
-    "plugin_type": "ProcessStepPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2283
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.334Z",
-    "language": "de",
-    "parent": 2283,
-    "numchild": 0,
-    "creation_date": "2015-11-03T12:07:45.248Z",
-    "depth": 7,
-    "position": 0,
-    "path": "003R000100010001000100020001",
-    "placeholder": 21,
-    "plugin_type": "ShippingAddressFormPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2284
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.342Z",
-    "language": "de",
-    "parent": 2283,
-    "numchild": 0,
-    "creation_date": "2015-11-03T12:08:16.160Z",
-    "depth": 7,
-    "position": 1,
-    "path": "003R000100010001000100020002",
-    "placeholder": 21,
-    "plugin_type": "BillingAddressFormPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2285
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.350Z",
-    "language": "de",
-    "parent": 2283,
-    "numchild": 0,
-    "creation_date": "2015-11-03T12:08:38.948Z",
-    "depth": 7,
-    "position": 3,
-    "path": "003R000100010001000100020003",
-    "placeholder": 21,
-    "plugin_type": "ProcessNextStepPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2286
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.358Z",
-    "language": "de",
-    "parent": 2283,
-    "numchild": 0,
-    "creation_date": "2016-01-28T09:53:06.884Z",
-    "depth": 7,
-    "position": 2,
-    "path": "003R000100010001000100020004",
-    "placeholder": 21,
-    "plugin_type": "RequiredFormFieldsPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2287
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.366Z",
-    "language": "de",
-    "parent": 2275,
-    "numchild": 7,
-    "creation_date": "2015-11-03T12:01:57.216Z",
-    "depth": 6,
-    "position": 2,
-    "path": "003R00010001000100010003",
-    "placeholder": 21,
-    "plugin_type": "ProcessStepPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2288
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.374Z",
-    "language": "de",
-    "parent": 2288,
-    "numchild": 0,
-    "creation_date": "2015-11-03T12:09:28.368Z",
-    "depth": 7,
-    "position": 1,
-    "path": "003R000100010001000100030001",
-    "placeholder": 21,
-    "plugin_type": "ShopCartPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2289
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.382Z",
-    "language": "de",
-    "parent": 2288,
-    "numchild": 0,
-    "creation_date": "2015-11-03T12:10:27.667Z",
-    "depth": 7,
-    "position": 2,
-    "path": "003R000100010001000100030002",
-    "placeholder": 21,
-    "plugin_type": "PaymentMethodFormPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2290
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.390Z",
-    "language": "de",
-    "parent": 2288,
-    "numchild": 0,
-    "creation_date": "2015-11-03T12:10:56.492Z",
-    "depth": 7,
-    "position": 3,
-    "path": "003R000100010001000100030003",
-    "placeholder": 21,
-    "plugin_type": "ShippingMethodFormPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2291
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.398Z",
-    "language": "de",
-    "parent": 2288,
-    "numchild": 0,
-    "creation_date": "2015-11-03T12:11:30.640Z",
-    "depth": 7,
-    "position": 4,
-    "path": "003R000100010001000100030004",
-    "placeholder": 21,
-    "plugin_type": "ExtraAnnotationFormPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2292
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.406Z",
-    "language": "de",
-    "parent": 2288,
-    "numchild": 0,
-    "creation_date": "2016-01-28T09:53:35.815Z",
-    "depth": 7,
-    "position": 5,
-    "path": "003R000100010001000100030005",
-    "placeholder": 21,
-    "plugin_type": "RequiredFormFieldsPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2293
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.414Z",
-    "language": "de",
-    "parent": 2288,
-    "numchild": 0,
-    "creation_date": "2016-01-31T23:56:21.778Z",
-    "depth": 7,
-    "position": 6,
-    "path": "003R000100010001000100030006",
-    "placeholder": 21,
-    "plugin_type": "ProcessNextStepPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2294
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.614Z",
-    "language": "de",
-    "parent": 2288,
-    "numchild": 0,
-    "creation_date": "2016-02-04T07:45:16.885Z",
-    "depth": 7,
-    "position": 0,
-    "path": "003R000100010001000100030007",
-    "placeholder": 21,
-    "plugin_type": "TextPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2295
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.431Z",
-    "language": "de",
-    "parent": 2275,
-    "numchild": 8,
-    "creation_date": "2016-01-31T23:53:18.364Z",
-    "depth": 6,
-    "position": 3,
-    "path": "003R00010001000100010004",
-    "placeholder": 21,
-    "plugin_type": "ProcessStepPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2296
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.438Z",
-    "language": "de",
-    "parent": 2296,
-    "numchild": 2,
-    "creation_date": "2015-11-03T12:12:11.300Z",
-    "depth": 7,
-    "position": 6,
-    "path": "003R000100010001000100040001",
-    "placeholder": 21,
-    "plugin_type": "AcceptConditionFormPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2297
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.445Z",
-    "language": "de",
-    "parent": 2297,
-    "numchild": 0,
-    "creation_date": "2016-01-29T14:31:28.405Z",
-    "depth": 8,
-    "position": 0,
-    "path": "003R0001000100010001000400010001",
-    "placeholder": 21,
-    "plugin_type": "TextLinkPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2298
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.453Z",
-    "language": "de",
-    "parent": 2297,
-    "numchild": 0,
-    "creation_date": "2016-01-31T23:58:39.314Z",
-    "depth": 8,
-    "position": 1,
-    "path": "003R0001000100010001000400010002",
-    "placeholder": 21,
-    "plugin_type": "TextLinkPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2299
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.462Z",
-    "language": "de",
-    "parent": 2296,
-    "numchild": 0,
-    "creation_date": "2015-11-03T15:12:48.394Z",
-    "depth": 7,
-    "position": 7,
-    "path": "003R000100010001000100040002",
-    "placeholder": 21,
-    "plugin_type": "ShopProceedButton"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2300
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.469Z",
-    "language": "de",
-    "parent": 2296,
-    "numchild": 0,
-    "creation_date": "2016-01-31T22:20:32.185Z",
-    "depth": 7,
-    "position": 2,
-    "path": "003R000100010001000100040003",
-    "placeholder": 21,
-    "plugin_type": "ShippingAddressFormPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2301
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.478Z",
-    "language": "de",
-    "parent": 2296,
-    "numchild": 0,
-    "creation_date": "2016-01-31T22:20:49.792Z",
-    "depth": 7,
-    "position": 3,
-    "path": "003R000100010001000100040004",
-    "placeholder": 21,
-    "plugin_type": "BillingAddressFormPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2302
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.486Z",
-    "language": "de",
-    "parent": 2296,
-    "numchild": 0,
-    "creation_date": "2015-11-03T12:09:28.368Z",
-    "depth": 7,
-    "position": 1,
-    "path": "003R000100010001000100040005",
-    "placeholder": 21,
-    "plugin_type": "ShopCartPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2303
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.494Z",
-    "language": "de",
-    "parent": 2296,
-    "numchild": 0,
-    "creation_date": "2016-01-31T22:23:33.271Z",
-    "depth": 7,
-    "position": 4,
-    "path": "003R000100010001000100040006",
-    "placeholder": 21,
-    "plugin_type": "PaymentMethodFormPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2304
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.503Z",
-    "language": "de",
-    "parent": 2296,
-    "numchild": 0,
-    "creation_date": "2016-01-31T22:24:08.104Z",
-    "depth": 7,
-    "position": 5,
-    "path": "003R000100010001000100040007",
-    "placeholder": 21,
-    "plugin_type": "ShippingMethodFormPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2305
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.628Z",
-    "language": "de",
-    "parent": 2296,
-    "numchild": 0,
-    "creation_date": "2016-01-31T22:24:47.333Z",
-    "depth": 7,
-    "position": 0,
-    "path": "003R000100010001000100040008",
-    "placeholder": 21,
-    "plugin_type": "TextPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2306
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.519Z",
-    "language": "de",
-    "parent": 2271,
-    "numchild": 1,
-    "creation_date": "2015-11-03T11:52:57.955Z",
-    "depth": 2,
-    "position": 1,
-    "path": "003R0002",
-    "placeholder": 21,
-    "plugin_type": "SegmentPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2307
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.526Z",
-    "language": "de",
-    "parent": 2307,
-    "numchild": 3,
-    "creation_date": "2015-11-13T07:58:26.829Z",
-    "depth": 3,
-    "position": 0,
-    "path": "003R00020001",
-    "placeholder": 21,
-    "plugin_type": "BootstrapRowPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2308
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.538Z",
-    "language": "de",
-    "parent": 2308,
-    "numchild": 1,
-    "creation_date": "2015-11-13T07:58:30.141Z",
-    "depth": 4,
-    "position": 0,
-    "path": "003R000200010001",
-    "placeholder": 21,
-    "plugin_type": "BootstrapColumnPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2309
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.544Z",
-    "language": "de",
-    "parent": 2309,
-    "numchild": 0,
-    "creation_date": "2015-11-13T07:59:27.855Z",
-    "depth": 5,
-    "position": 0,
-    "path": "003R0002000100010001",
-    "placeholder": 21,
-    "plugin_type": "ShopAuthenticationPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2310
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.557Z",
-    "language": "de",
-    "parent": 2308,
-    "numchild": 1,
-    "creation_date": "2015-11-13T07:58:30.251Z",
-    "depth": 4,
-    "position": 1,
-    "path": "003R000200010002",
-    "placeholder": 21,
-    "plugin_type": "BootstrapColumnPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2311
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.565Z",
-    "language": "de",
-    "parent": 2311,
-    "numchild": 0,
-    "creation_date": "2015-11-13T08:01:15.285Z",
-    "depth": 5,
-    "position": 0,
-    "path": "003R0002000100020001",
-    "placeholder": 21,
-    "plugin_type": "ShopAuthenticationPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2312
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.578Z",
-    "language": "de",
-    "parent": 2308,
-    "numchild": 1,
-    "creation_date": "2015-11-13T07:58:30.362Z",
-    "depth": 4,
-    "position": 2,
-    "path": "003R000200010003",
-    "placeholder": 21,
-    "plugin_type": "BootstrapColumnPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2313
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:00.586Z",
-    "language": "de",
-    "parent": 2313,
-    "numchild": 0,
-    "creation_date": "2015-11-13T08:01:42.825Z",
-    "depth": 5,
-    "position": 0,
-    "path": "003R0002000100030001",
-    "placeholder": 21,
-    "plugin_type": "ShopAuthenticationPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2314
 },
 {
   "fields": {
@@ -6660,6 +5956,774 @@
 },
 {
   "fields": {
+    "changed_date": "2016-02-04T11:30:37.808Z",
+    "language": "de",
+    "parent": 1622,
+    "numchild": 0,
+    "creation_date": "2016-02-04T11:27:43.944Z",
+    "depth": 7,
+    "position": 7,
+    "path": "0029000100010001000100040009",
+    "placeholder": 19,
+    "plugin_type": "ExtraAnnotationFormPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2379
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:30:37.868Z",
+    "language": "de",
+    "parent": 1622,
+    "numchild": 0,
+    "creation_date": "2016-02-04T11:30:01.733Z",
+    "depth": 7,
+    "position": 2,
+    "path": "002900010001000100010004000A",
+    "placeholder": 19,
+    "plugin_type": "CustomerFormPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2425
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.038Z",
+    "language": "de",
+    "parent": null,
+    "numchild": 2,
+    "creation_date": "2016-01-16T22:05:03.362Z",
+    "depth": 1,
+    "position": 0,
+    "path": "003W",
+    "placeholder": 21,
+    "plugin_type": "BootstrapContainerPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2472
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.079Z",
+    "language": "de",
+    "parent": 2472,
+    "numchild": 1,
+    "creation_date": "2015-11-03T11:52:31.490Z",
+    "depth": 2,
+    "position": 0,
+    "path": "003W0001",
+    "placeholder": 21,
+    "plugin_type": "SegmentPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2473
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.105Z",
+    "language": "de",
+    "parent": 2473,
+    "numchild": 1,
+    "creation_date": "2015-11-03T12:00:22.464Z",
+    "depth": 3,
+    "position": 0,
+    "path": "003W00010001",
+    "placeholder": 21,
+    "plugin_type": "BootstrapRowPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2474
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.157Z",
+    "language": "de",
+    "parent": 2474,
+    "numchild": 1,
+    "creation_date": "2015-11-03T12:00:27.233Z",
+    "depth": 4,
+    "position": 0,
+    "path": "003W000100010001",
+    "placeholder": 21,
+    "plugin_type": "BootstrapColumnPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2475
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.182Z",
+    "language": "de",
+    "parent": 2475,
+    "numchild": 4,
+    "creation_date": "2015-11-03T12:01:52.087Z",
+    "depth": 5,
+    "position": 0,
+    "path": "003W0001000100010001",
+    "placeholder": 21,
+    "plugin_type": "ProcessBarPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2476
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.208Z",
+    "language": "de",
+    "parent": 2476,
+    "numchild": 4,
+    "creation_date": "2015-11-03T12:01:57.069Z",
+    "depth": 6,
+    "position": 0,
+    "path": "003W00010001000100010001",
+    "placeholder": 21,
+    "plugin_type": "ProcessStepPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2477
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.241Z",
+    "language": "de",
+    "parent": 2477,
+    "numchild": 1,
+    "creation_date": "2015-11-03T12:03:13.411Z",
+    "depth": 7,
+    "position": 0,
+    "path": "003W000100010001000100010001",
+    "placeholder": 21,
+    "plugin_type": "SegmentPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2478
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.270Z",
+    "language": "de",
+    "parent": 2478,
+    "numchild": 0,
+    "creation_date": "2015-11-03T12:05:35.165Z",
+    "depth": 8,
+    "position": 0,
+    "path": "003W0001000100010001000100010001",
+    "placeholder": 21,
+    "plugin_type": "CustomerFormPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2479
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.311Z",
+    "language": "de",
+    "parent": 2477,
+    "numchild": 1,
+    "creation_date": "2015-11-03T12:03:40.516Z",
+    "depth": 7,
+    "position": 1,
+    "path": "003W000100010001000100010002",
+    "placeholder": 21,
+    "plugin_type": "SegmentPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2480
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.352Z",
+    "language": "de",
+    "parent": 2480,
+    "numchild": 0,
+    "creation_date": "2015-11-03T12:04:17.682Z",
+    "depth": 8,
+    "position": 0,
+    "path": "003W0001000100010001000100020001",
+    "placeholder": 21,
+    "plugin_type": "GuestFormPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2481
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.387Z",
+    "language": "de",
+    "parent": 2477,
+    "numchild": 0,
+    "creation_date": "2015-11-03T12:06:29.969Z",
+    "depth": 7,
+    "position": 3,
+    "path": "003W000100010001000100010003",
+    "placeholder": 21,
+    "plugin_type": "ProcessNextStepPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2482
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.424Z",
+    "language": "de",
+    "parent": 2477,
+    "numchild": 0,
+    "creation_date": "2016-01-28T09:51:53.338Z",
+    "depth": 7,
+    "position": 2,
+    "path": "003W000100010001000100010004",
+    "placeholder": 21,
+    "plugin_type": "RequiredFormFieldsPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2483
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.453Z",
+    "language": "de",
+    "parent": 2476,
+    "numchild": 4,
+    "creation_date": "2015-11-03T12:01:57.141Z",
+    "depth": 6,
+    "position": 1,
+    "path": "003W00010001000100010002",
+    "placeholder": 21,
+    "plugin_type": "ProcessStepPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2484
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.481Z",
+    "language": "de",
+    "parent": 2484,
+    "numchild": 0,
+    "creation_date": "2015-11-03T12:07:45.248Z",
+    "depth": 7,
+    "position": 0,
+    "path": "003W000100010001000100020001",
+    "placeholder": 21,
+    "plugin_type": "ShippingAddressFormPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2485
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.511Z",
+    "language": "de",
+    "parent": 2484,
+    "numchild": 0,
+    "creation_date": "2015-11-03T12:08:16.160Z",
+    "depth": 7,
+    "position": 1,
+    "path": "003W000100010001000100020002",
+    "placeholder": 21,
+    "plugin_type": "BillingAddressFormPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2486
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.542Z",
+    "language": "de",
+    "parent": 2484,
+    "numchild": 0,
+    "creation_date": "2015-11-03T12:08:38.948Z",
+    "depth": 7,
+    "position": 3,
+    "path": "003W000100010001000100020003",
+    "placeholder": 21,
+    "plugin_type": "ProcessNextStepPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2487
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.575Z",
+    "language": "de",
+    "parent": 2484,
+    "numchild": 0,
+    "creation_date": "2016-01-28T09:53:06.884Z",
+    "depth": 7,
+    "position": 2,
+    "path": "003W000100010001000100020004",
+    "placeholder": 21,
+    "plugin_type": "RequiredFormFieldsPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2488
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.603Z",
+    "language": "de",
+    "parent": 2476,
+    "numchild": 7,
+    "creation_date": "2015-11-03T12:01:57.216Z",
+    "depth": 6,
+    "position": 2,
+    "path": "003W00010001000100010003",
+    "placeholder": 21,
+    "plugin_type": "ProcessStepPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2489
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.628Z",
+    "language": "de",
+    "parent": 2489,
+    "numchild": 0,
+    "creation_date": "2015-11-03T12:09:28.368Z",
+    "depth": 7,
+    "position": 1,
+    "path": "003W000100010001000100030001",
+    "placeholder": 21,
+    "plugin_type": "ShopCartPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2490
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.656Z",
+    "language": "de",
+    "parent": 2489,
+    "numchild": 0,
+    "creation_date": "2015-11-03T12:10:27.667Z",
+    "depth": 7,
+    "position": 2,
+    "path": "003W000100010001000100030002",
+    "placeholder": 21,
+    "plugin_type": "PaymentMethodFormPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2491
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.684Z",
+    "language": "de",
+    "parent": 2489,
+    "numchild": 0,
+    "creation_date": "2015-11-03T12:10:56.492Z",
+    "depth": 7,
+    "position": 3,
+    "path": "003W000100010001000100030003",
+    "placeholder": 21,
+    "plugin_type": "ShippingMethodFormPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2492
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.713Z",
+    "language": "de",
+    "parent": 2489,
+    "numchild": 0,
+    "creation_date": "2015-11-03T12:11:30.640Z",
+    "depth": 7,
+    "position": 4,
+    "path": "003W000100010001000100030004",
+    "placeholder": 21,
+    "plugin_type": "ExtraAnnotationFormPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2493
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.740Z",
+    "language": "de",
+    "parent": 2489,
+    "numchild": 0,
+    "creation_date": "2016-01-28T09:53:35.815Z",
+    "depth": 7,
+    "position": 5,
+    "path": "003W000100010001000100030005",
+    "placeholder": 21,
+    "plugin_type": "RequiredFormFieldsPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2494
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.769Z",
+    "language": "de",
+    "parent": 2489,
+    "numchild": 0,
+    "creation_date": "2016-01-31T23:56:21.778Z",
+    "depth": 7,
+    "position": 6,
+    "path": "003W000100010001000100030006",
+    "placeholder": 21,
+    "plugin_type": "ProcessNextStepPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2495
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:57.579Z",
+    "language": "de",
+    "parent": 2489,
+    "numchild": 0,
+    "creation_date": "2016-02-04T07:45:16.885Z",
+    "depth": 7,
+    "position": 0,
+    "path": "003W000100010001000100030007",
+    "placeholder": 21,
+    "plugin_type": "TextPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2496
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.828Z",
+    "language": "de",
+    "parent": 2476,
+    "numchild": 10,
+    "creation_date": "2016-01-31T23:53:18.364Z",
+    "depth": 6,
+    "position": 3,
+    "path": "003W00010001000100010004",
+    "placeholder": 21,
+    "plugin_type": "ProcessStepPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2497
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.853Z",
+    "language": "de",
+    "parent": 2497,
+    "numchild": 2,
+    "creation_date": "2015-11-03T12:12:11.300Z",
+    "depth": 7,
+    "position": 8,
+    "path": "003W000100010001000100040001",
+    "placeholder": 21,
+    "plugin_type": "AcceptConditionFormPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2498
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.880Z",
+    "language": "de",
+    "parent": 2498,
+    "numchild": 0,
+    "creation_date": "2016-01-29T14:31:28.405Z",
+    "depth": 8,
+    "position": 0,
+    "path": "003W0001000100010001000400010001",
+    "placeholder": 21,
+    "plugin_type": "TextLinkPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2499
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.910Z",
+    "language": "de",
+    "parent": 2498,
+    "numchild": 0,
+    "creation_date": "2016-01-31T23:58:39.314Z",
+    "depth": 8,
+    "position": 1,
+    "path": "003W0001000100010001000400010002",
+    "placeholder": 21,
+    "plugin_type": "TextLinkPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2500
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.938Z",
+    "language": "de",
+    "parent": 2497,
+    "numchild": 0,
+    "creation_date": "2015-11-03T15:12:48.394Z",
+    "depth": 7,
+    "position": 9,
+    "path": "003W000100010001000100040002",
+    "placeholder": 21,
+    "plugin_type": "ShopProceedButton"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2501
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.968Z",
+    "language": "de",
+    "parent": 2497,
+    "numchild": 0,
+    "creation_date": "2016-01-31T22:20:32.185Z",
+    "depth": 7,
+    "position": 3,
+    "path": "003W000100010001000100040003",
+    "placeholder": 21,
+    "plugin_type": "ShippingAddressFormPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2502
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:56.999Z",
+    "language": "de",
+    "parent": 2497,
+    "numchild": 0,
+    "creation_date": "2016-01-31T22:20:49.792Z",
+    "depth": 7,
+    "position": 4,
+    "path": "003W000100010001000100040004",
+    "placeholder": 21,
+    "plugin_type": "BillingAddressFormPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2503
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:57.034Z",
+    "language": "de",
+    "parent": 2497,
+    "numchild": 0,
+    "creation_date": "2015-11-03T12:09:28.368Z",
+    "depth": 7,
+    "position": 1,
+    "path": "003W000100010001000100040005",
+    "placeholder": 21,
+    "plugin_type": "ShopCartPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2504
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:57.063Z",
+    "language": "de",
+    "parent": 2497,
+    "numchild": 0,
+    "creation_date": "2016-01-31T22:23:33.271Z",
+    "depth": 7,
+    "position": 5,
+    "path": "003W000100010001000100040006",
+    "placeholder": 21,
+    "plugin_type": "PaymentMethodFormPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2505
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:57.093Z",
+    "language": "de",
+    "parent": 2497,
+    "numchild": 0,
+    "creation_date": "2016-01-31T22:24:08.104Z",
+    "depth": 7,
+    "position": 6,
+    "path": "003W000100010001000100040007",
+    "placeholder": 21,
+    "plugin_type": "ShippingMethodFormPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2506
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:57.635Z",
+    "language": "de",
+    "parent": 2497,
+    "numchild": 0,
+    "creation_date": "2016-01-31T22:24:47.333Z",
+    "depth": 7,
+    "position": 0,
+    "path": "003W000100010001000100040008",
+    "placeholder": 21,
+    "plugin_type": "TextPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2507
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:57.155Z",
+    "language": "de",
+    "parent": 2497,
+    "numchild": 0,
+    "creation_date": "2016-02-04T11:27:43.944Z",
+    "depth": 7,
+    "position": 7,
+    "path": "003W000100010001000100040009",
+    "placeholder": 21,
+    "plugin_type": "ExtraAnnotationFormPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2508
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:57.184Z",
+    "language": "de",
+    "parent": 2497,
+    "numchild": 0,
+    "creation_date": "2016-02-04T11:30:01.733Z",
+    "depth": 7,
+    "position": 2,
+    "path": "003W00010001000100010004000A",
+    "placeholder": 21,
+    "plugin_type": "CustomerFormPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2509
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:57.215Z",
+    "language": "de",
+    "parent": 2472,
+    "numchild": 1,
+    "creation_date": "2015-11-03T11:52:57.955Z",
+    "depth": 2,
+    "position": 1,
+    "path": "003W0002",
+    "placeholder": 21,
+    "plugin_type": "SegmentPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2510
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:57.244Z",
+    "language": "de",
+    "parent": 2510,
+    "numchild": 3,
+    "creation_date": "2015-11-13T07:58:26.829Z",
+    "depth": 3,
+    "position": 0,
+    "path": "003W00020001",
+    "placeholder": 21,
+    "plugin_type": "BootstrapRowPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2511
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:57.287Z",
+    "language": "de",
+    "parent": 2511,
+    "numchild": 1,
+    "creation_date": "2015-11-13T07:58:30.141Z",
+    "depth": 4,
+    "position": 0,
+    "path": "003W000200010001",
+    "placeholder": 21,
+    "plugin_type": "BootstrapColumnPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2512
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:57.314Z",
+    "language": "de",
+    "parent": 2512,
+    "numchild": 0,
+    "creation_date": "2015-11-13T07:59:27.855Z",
+    "depth": 5,
+    "position": 0,
+    "path": "003W0002000100010001",
+    "placeholder": 21,
+    "plugin_type": "ShopAuthenticationPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2513
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:57.370Z",
+    "language": "de",
+    "parent": 2511,
+    "numchild": 1,
+    "creation_date": "2015-11-13T07:58:30.251Z",
+    "depth": 4,
+    "position": 1,
+    "path": "003W000200010002",
+    "placeholder": 21,
+    "plugin_type": "BootstrapColumnPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2514
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:57.395Z",
+    "language": "de",
+    "parent": 2514,
+    "numchild": 0,
+    "creation_date": "2015-11-13T08:01:15.285Z",
+    "depth": 5,
+    "position": 0,
+    "path": "003W0002000100020001",
+    "placeholder": 21,
+    "plugin_type": "ShopAuthenticationPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2515
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:57.445Z",
+    "language": "de",
+    "parent": 2511,
+    "numchild": 1,
+    "creation_date": "2015-11-13T07:58:30.362Z",
+    "depth": 4,
+    "position": 2,
+    "path": "003W000200010003",
+    "placeholder": 21,
+    "plugin_type": "BootstrapColumnPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2516
+},
+{
+  "fields": {
+    "changed_date": "2016-02-04T11:31:57.469Z",
+    "language": "de",
+    "parent": 2516,
+    "numchild": 0,
+    "creation_date": "2015-11-13T08:01:42.825Z",
+    "depth": 5,
+    "position": 0,
+    "path": "003W0002000100030001",
+    "placeholder": 21,
+    "plugin_type": "ShopAuthenticationPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2517
+},
+{
+  "fields": {
     "menu_title": "",
     "meta_description": "",
     "page_title": "",
@@ -7667,7 +7731,7 @@
 },
 {
   "fields": {
-    "glossary": "{}"
+    "glossary": "{\"extra_inline_styles:Paddings\":{\"padding-right\":\"\",\"padding-left\":\"\"},\"extra_inline_styles:Margins\":{\"margin-top\":\"10px\",\"margin-bottom\":\"30px\"}}"
   },
   "model": "cmsplugin_cascade.cascadeelement",
   "pk": 40
@@ -9105,300 +9169,6 @@
     "glossary": "{\"media_queries\":{\"xs\":[\"(max-width: 768px)\"],\"md\":[\"(min-width: 992px)\",\"(max-width: 1200px)\"],\"sm\":[\"(min-width: 768px)\",\"(max-width: 992px)\"],\"lg\":[\"(min-width: 1200px)\"]},\"container_max_widths\":{\"xs\":750,\"md\":970,\"sm\":750,\"lg\":1170},\"fluid\":\"\",\"breakpoints\":[\"xs\",\"sm\",\"md\",\"lg\"]}"
   },
   "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2271
-},
-{
-  "fields": {
-    "glossary": "{\"open_tag\":\"if\",\"condition\":\"customer.is_recognized\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2272
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2273
-},
-{
-  "fields": {
-    "glossary": "{\"container_max_widths\":{\"xs\":720,\"md\":940,\"sm\":720,\"lg\":1140},\"xs-column-width\":\"col-xs-12\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2274
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2275
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2276
-},
-{
-  "fields": {
-    "glossary": "{\"open_tag\":\"if\",\"condition\":\"customer.is_registered\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2277
-},
-{
-  "fields": {
-    "glossary": "{\"render_type\":\"form\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2278
-},
-{
-  "fields": {
-    "glossary": "{\"open_tag\":\"else\",\"condition\":\"\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2279
-},
-{
-  "fields": {
-    "glossary": "{\"render_type\":\"form\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2280
-},
-{
-  "fields": {
-    "glossary": "{\"icon-right\":\"menu-right\",\"button-type\":\"btn-success\",\"link_content\":\"Weiter\",\"button-size\":\"\",\"quick-float\":\"\",\"button-options\":[],\"icon-left\":\"\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2281
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2282
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2283
-},
-{
-  "fields": {
-    "glossary": "{\"render_type\":\"form\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2284
-},
-{
-  "fields": {
-    "glossary": "{\"render_type\":\"form\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2285
-},
-{
-  "fields": {
-    "glossary": "{\"icon-right\":\"menu-right\",\"button-type\":\"btn-success\",\"link_content\":\"Weiter\",\"button-size\":\"\",\"quick-float\":\"\",\"button-options\":[],\"icon-left\":\"\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2286
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2287
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2288
-},
-{
-  "fields": {
-    "glossary": "{\"render_type\":\"summary\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2289
-},
-{
-  "fields": {
-    "glossary": "{\"render_type\":\"form\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2290
-},
-{
-  "fields": {
-    "glossary": "{\"render_type\":\"form\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2291
-},
-{
-  "fields": {
-    "glossary": "{\"render_type\":\"form\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2292
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2293
-},
-{
-  "fields": {
-    "glossary": "{\"icon-right\":\"menu-right\",\"button-type\":\"btn-success\",\"link_content\":\"Weiter\",\"button-size\":\"\",\"quick-float\":\"\",\"button-options\":[],\"icon-left\":\"\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2294
-},
-{
-  "fields": {
-    "glossary": "{\"step_title\":\"\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2296
-},
-{
-  "fields": {
-    "glossary": "{\"html_content\":\"&lt;p&gt;Ich habe die &lt;img alt=&quot;Link&quot; id=&quot;plugin_obj_1719&quot; src=&quot;&quot; title=&quot;Link - Allgemeinen Gesch\\u00e4ftsbedingungen&quot; /&gt; gelesen und erkl&amp;auml;re mich hiermit einverstanden.&lt;/p&gt;\\r\\n\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2297
-},
-{
-  "fields": {
-    "glossary": "{\"link_content\":\"terms and conditions\",\"link\":{\"pk\":15,\"model\":\"cms.Page\",\"type\":\"cmspage\"},\"target\":\"\",\"render_template\":\"cascade/link/text-link.html\",\"title\":\"\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2298
-},
-{
-  "fields": {
-    "glossary": "{\"link_content\":\"Allgemeinen Gesch\\u00e4ftsbedingungen\",\"link\":{\"pk\":15,\"model\":\"cms.Page\",\"type\":\"cmspage\"},\"target\":\"\",\"render_template\":\"cascade/link/text-link.html\",\"title\":\"\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2299
-},
-{
-  "fields": {
-    "glossary": "{\"icon-right\":\"\",\"extra_inline_styles:Margins\":{\"margin-top\":\"\",\"margin-bottom\":\"30px\"},\"button-type\":\"btn-success\",\"link_content\":\"Jetzt Kaufen\",\"link\":{\"type\":\"PURCHASE_NOW\"},\"button-size\":\"btn-lg\",\"quick-float\":\"\",\"button-options\":[],\"icon-left\":\"thumbs-up\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2300
-},
-{
-  "fields": {
-    "glossary": "{\"render_type\":\"summary\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2301
-},
-{
-  "fields": {
-    "glossary": "{\"render_type\":\"summary\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2302
-},
-{
-  "fields": {
-    "glossary": "{\"render_type\":\"static\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2303
-},
-{
-  "fields": {
-    "glossary": "{\"render_type\":\"summary\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2304
-},
-{
-  "fields": {
-    "glossary": "{\"render_type\":\"summary\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2305
-},
-{
-  "fields": {
-    "glossary": "{\"open_tag\":\"else\",\"condition\":\"\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2307
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2308
-},
-{
-  "fields": {
-    "glossary": "{\"container_max_widths\":{\"xs\":220,\"md\":293,\"sm\":220,\"lg\":360},\"xs-column-width\":\"col-xs-4\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2309
-},
-{
-  "fields": {
-    "glossary": "{\"form_type\":\"login-reset\",\"link\":{\"type\":\"RELOAD_PAGE\"}}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2310
-},
-{
-  "fields": {
-    "glossary": "{\"container_max_widths\":{\"xs\":220,\"md\":293,\"sm\":220,\"lg\":360},\"xs-column-width\":\"col-xs-4\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2311
-},
-{
-  "fields": {
-    "glossary": "{\"form_type\":\"register-user\",\"link\":{\"type\":\"RELOAD_PAGE\"}}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2312
-},
-{
-  "fields": {
-    "glossary": "{\"container_max_widths\":{\"xs\":220,\"md\":293,\"sm\":220,\"lg\":360},\"xs-column-width\":\"col-xs-4\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2313
-},
-{
-  "fields": {
-    "glossary": "{\"form_type\":\"continue-as-guest\",\"link\":{\"type\":\"RELOAD_PAGE\"}}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2314
-},
-{
-  "fields": {
-    "glossary": "{\"media_queries\":{\"xs\":[\"(max-width: 768px)\"],\"md\":[\"(min-width: 992px)\",\"(max-width: 1200px)\"],\"sm\":[\"(min-width: 768px)\",\"(max-width: 992px)\"],\"lg\":[\"(min-width: 1200px)\"]},\"container_max_widths\":{\"xs\":750,\"md\":970,\"sm\":750,\"lg\":1170},\"fluid\":\"\",\"breakpoints\":[\"xs\",\"sm\",\"md\",\"lg\"]}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
   "pk": 2315
 },
 {
@@ -9809,6 +9579,328 @@
 },
 {
   "fields": {
+    "glossary": "{\"render_type\":\"summary\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2379
+},
+{
+  "fields": {
+    "glossary": "{\"render_type\":\"summary\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2425
+},
+{
+  "fields": {
+    "glossary": "{\"media_queries\":{\"xs\":[\"(max-width: 768px)\"],\"md\":[\"(min-width: 992px)\",\"(max-width: 1200px)\"],\"sm\":[\"(min-width: 768px)\",\"(max-width: 992px)\"],\"lg\":[\"(min-width: 1200px)\"]},\"container_max_widths\":{\"xs\":750,\"md\":970,\"sm\":750,\"lg\":1170},\"fluid\":\"\",\"breakpoints\":[\"xs\",\"sm\",\"md\",\"lg\"]}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2472
+},
+{
+  "fields": {
+    "glossary": "{\"open_tag\":\"if\",\"condition\":\"customer.is_recognized\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2473
+},
+{
+  "fields": {
+    "glossary": "{\"extra_inline_styles:Paddings\":{\"padding-right\":\"\",\"padding-left\":\"\"},\"extra_inline_styles:Margins\":{\"margin-top\":\"10px\",\"margin-bottom\":\"30px\"}}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2474
+},
+{
+  "fields": {
+    "glossary": "{\"container_max_widths\":{\"xs\":720,\"md\":940,\"sm\":720,\"lg\":1140},\"xs-column-width\":\"col-xs-12\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2475
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2476
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2477
+},
+{
+  "fields": {
+    "glossary": "{\"open_tag\":\"if\",\"condition\":\"customer.is_registered\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2478
+},
+{
+  "fields": {
+    "glossary": "{\"render_type\":\"form\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2479
+},
+{
+  "fields": {
+    "glossary": "{\"open_tag\":\"else\",\"condition\":\"\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2480
+},
+{
+  "fields": {
+    "glossary": "{\"render_type\":\"form\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2481
+},
+{
+  "fields": {
+    "glossary": "{\"icon-right\":\"menu-right\",\"button-type\":\"btn-success\",\"link_content\":\"Weiter\",\"button-size\":\"\",\"quick-float\":\"\",\"button-options\":[],\"icon-left\":\"\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2482
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2483
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2484
+},
+{
+  "fields": {
+    "glossary": "{\"render_type\":\"form\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2485
+},
+{
+  "fields": {
+    "glossary": "{\"render_type\":\"form\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2486
+},
+{
+  "fields": {
+    "glossary": "{\"icon-right\":\"menu-right\",\"button-type\":\"btn-success\",\"link_content\":\"Weiter\",\"button-size\":\"\",\"quick-float\":\"\",\"button-options\":[],\"icon-left\":\"\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2487
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2488
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2489
+},
+{
+  "fields": {
+    "glossary": "{\"render_type\":\"summary\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2490
+},
+{
+  "fields": {
+    "glossary": "{\"render_type\":\"form\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2491
+},
+{
+  "fields": {
+    "glossary": "{\"render_type\":\"form\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2492
+},
+{
+  "fields": {
+    "glossary": "{\"render_type\":\"form\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2493
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2494
+},
+{
+  "fields": {
+    "glossary": "{\"icon-right\":\"menu-right\",\"button-type\":\"btn-success\",\"link_content\":\"Weiter\",\"button-size\":\"\",\"quick-float\":\"\",\"button-options\":[],\"icon-left\":\"\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2495
+},
+{
+  "fields": {
+    "glossary": "{\"step_title\":\"\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2497
+},
+{
+  "fields": {
+    "glossary": "{\"html_content\":\"&lt;p&gt;Ich habe die &lt;img alt=&quot;Link&quot; id=&quot;plugin_obj_1719&quot; src=&quot;&quot; title=&quot;Link - Allgemeinen Gesch\\u00e4ftsbedingungen&quot; /&gt; gelesen und erkl&amp;auml;re mich hiermit einverstanden.&lt;/p&gt;\\r\\n\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2498
+},
+{
+  "fields": {
+    "glossary": "{\"link_content\":\"terms and conditions\",\"link\":{\"pk\":15,\"model\":\"cms.Page\",\"type\":\"cmspage\"},\"target\":\"\",\"render_template\":\"cascade/link/text-link.html\",\"title\":\"\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2499
+},
+{
+  "fields": {
+    "glossary": "{\"link_content\":\"Allgemeinen Gesch\\u00e4ftsbedingungen\",\"link\":{\"pk\":15,\"model\":\"cms.Page\",\"type\":\"cmspage\"},\"target\":\"\",\"render_template\":\"cascade/link/text-link.html\",\"title\":\"\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2500
+},
+{
+  "fields": {
+    "glossary": "{\"icon-right\":\"\",\"extra_inline_styles:Margins\":{\"margin-top\":\"\",\"margin-bottom\":\"30px\"},\"button-type\":\"btn-success\",\"link_content\":\"Jetzt Kaufen\",\"link\":{\"type\":\"PURCHASE_NOW\"},\"button-size\":\"btn-lg\",\"quick-float\":\"\",\"button-options\":[],\"icon-left\":\"thumbs-up\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2501
+},
+{
+  "fields": {
+    "glossary": "{\"render_type\":\"summary\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2502
+},
+{
+  "fields": {
+    "glossary": "{\"render_type\":\"summary\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2503
+},
+{
+  "fields": {
+    "glossary": "{\"render_type\":\"static\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2504
+},
+{
+  "fields": {
+    "glossary": "{\"render_type\":\"summary\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2505
+},
+{
+  "fields": {
+    "glossary": "{\"render_type\":\"summary\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2506
+},
+{
+  "fields": {
+    "glossary": "{\"render_type\":\"summary\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2508
+},
+{
+  "fields": {
+    "glossary": "{\"render_type\":\"summary\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2509
+},
+{
+  "fields": {
+    "glossary": "{\"open_tag\":\"else\",\"condition\":\"\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2510
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2511
+},
+{
+  "fields": {
+    "glossary": "{\"container_max_widths\":{\"xs\":220,\"md\":293,\"sm\":220,\"lg\":360},\"xs-column-width\":\"col-xs-4\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2512
+},
+{
+  "fields": {
+    "glossary": "{\"form_type\":\"login-reset\",\"link\":{\"type\":\"RELOAD_PAGE\"}}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2513
+},
+{
+  "fields": {
+    "glossary": "{\"container_max_widths\":{\"xs\":220,\"md\":293,\"sm\":220,\"lg\":360},\"xs-column-width\":\"col-xs-4\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2514
+},
+{
+  "fields": {
+    "glossary": "{\"form_type\":\"register-user\",\"link\":{\"type\":\"RELOAD_PAGE\"}}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2515
+},
+{
+  "fields": {
+    "glossary": "{\"container_max_widths\":{\"xs\":220,\"md\":293,\"sm\":220,\"lg\":360},\"xs-column-width\":\"col-xs-4\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2516
+},
+{
+  "fields": {
+    "glossary": "{\"form_type\":\"continue-as-guest\",\"link\":{\"type\":\"RELOAD_PAGE\"}}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2517
+},
+{
+  "fields": {
     "inline_styles": "{\"extra_fields:Widths\":[],\"extra_fields:Margins\":[\"margin-top\",\"margin-bottom\"],\"extra_fields:Paddings\":[],\"extra_units:Widths\":\"px,em,%\",\"extra_units:Paddings\":\"px,em,%\",\"extra_units:Heights\":\"px,em,%\",\"extra_fields:Heights\":[],\"extra_units:Margins\":\"px,em,%\",\"extra_fields:Colors\":[],\"extra_fields:Overflow\":[]}",
     "css_classes": "{\"multiple\":\"on\",\"class_names\":\"foo, bar, cap\"}",
     "allow_id_tag": true,
@@ -9919,20 +10011,6 @@
 },
 {
   "fields": {
-    "body": "<h4>Bezahlen und Versand</h4>\n"
-  },
-  "model": "djangocms_text_ckeditor.text",
-  "pk": 2295
-},
-{
-  "fields": {
-    "body": "<h2>Zusammenfassung Ihrer Bestellung</h2>\n"
-  },
-  "model": "djangocms_text_ckeditor.text",
-  "pk": 2306
-},
-{
-  "fields": {
     "body": "<p>Donec sed odio dui. Donec id elit non mi porta gravida at eget metus. Aenean lacinia bibendum nulla sed consectetur. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Etiam porta sem malesuada magna mollis euismod. Maecenas sed diam eget risus varius blandit sit amet non magna. Maecenas sed diam eget risus varius blandit sit amet non magna.</p>\n"
   },
   "model": "djangocms_text_ckeditor.text",
@@ -9965,6 +10043,20 @@
   },
   "model": "djangocms_text_ckeditor.text",
   "pk": 2368
+},
+{
+  "fields": {
+    "body": "<h4>Bezahlen und Versand</h4>\n"
+  },
+  "model": "djangocms_text_ckeditor.text",
+  "pk": 2496
+},
+{
+  "fields": {
+    "body": "<h2>Zusammenfassung Ihrer Bestellung</h2>\n"
+  },
+  "model": "djangocms_text_ckeditor.text",
+  "pk": 2507
 },
 {
   "fields": {
@@ -12838,9 +12930,9 @@
   "fields": {
     "customer": 1,
     "billing_address": 1,
-    "extra": "{\"payment_extra_data\":{\"token_id\":\"tok_17ai89IL0PTUmvvrAUdnqved\"},\"shipping_modifier\":\"postal-shipping\",\"annotation\":\"foo\",\"payment_modifier\":\"stripe-payment\"}",
+    "extra": "{\"payment_extra_data\":{},\"shipping_modifier\":\"postal-shipping\",\"annotation\":\"foo\",\"payment_modifier\":\"pay-in-advance\"}",
     "created_at": "2016-01-02T21:05:25.264Z",
-    "updated_at": "2016-02-04T08:06:25.356Z",
+    "updated_at": "2016-02-04T11:32:54.495Z",
     "shipping_address": 1
   },
   "model": "myshop.cart",
@@ -13209,7 +13301,7 @@
 {
   "fields": {
     "salutation": "mrs",
-    "last_access": "2016-02-04T08:06:27.275Z",
+    "last_access": "2016-02-04T11:33:25.460Z",
     "number": 1,
     "recognized": 2,
     "extra": "{}"
