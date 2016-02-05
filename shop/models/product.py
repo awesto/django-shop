@@ -175,8 +175,9 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         The boolean `watched` is used to determine if this check shall only be performed for the
         watch-list.
         Optionally one may pass arbitrary information about the product using `**kwargs`. This can
-        be used to determine if a product with variations shall increase the number of items for
-        that cart, or being added as separate item.
+        be used to determine if a product with variations shall be considered as the same cart item
+        increasing it quantity, or if it shall be considered as a separate cart item, resulting in
+        the creation of a new cart item.
         """
         from .cart import CartItemModel
         cart_item_qs = CartItemModel.objects.filter(cart=cart, product=self)
