@@ -54,6 +54,39 @@ class ProductListView(generics.ListAPIView):
         return renderer_context
 
 
+class SyncCatalogView(views.APIView):
+    """
+    To be used for synchronizing the catalog list view with the cart.
+    Use Angular directive <ANY shop-sync-catalog-item="..."> on each catalog item.
+    """
+    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
+    product_model = ProductModel
+    product_field = 'product'
+    serializer_class = None  # must be overridden by SyncCatalogView.as_view
+    filter_class = None  # may be overridden by SyncCatalogView.as_view
+    limit_choices_to = Q()
+
+    def get_context(self, request, **kwargs):
+        filter_kwargs = {'id': request.data.get('id')}
+        if hasattr(self.product_model, 'translations'):
+            filter_kwargs.update(translations__language_code=get_language_from_request(self.request))
+        queryset = self.product_model.objects.filter(self.limit_choices_to, **filter_kwargs)
+        product = get_object_or_404(queryset)
+        return {self.product_field: product, 'request': request}
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context(request, **kwargs)
+        serializer = self.serializer_class(context=context, **kwargs)
+        return Response(serializer.data)
+
+    def post(self, request, *args, **kwargs):
+        context = self.get_context(request, **kwargs)
+        serializer = self.serializer_class(data=request.data, context=context)
+        if serializer.is_valid():
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class AddToCartView(views.APIView):
     """
     Handle the "Add to Cart" dialog on the products detail page.
