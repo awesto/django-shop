@@ -119,6 +119,8 @@ class AbstractMoney(Decimal):
         Return the amount as decimal quantized to its subunits.
         This representation often is used by payment service providers.
         """
+        if self.is_nan():
+            return Decimal(0)
         return Decimal.quantize(self, self._cents)
 
     def as_integer(self):
