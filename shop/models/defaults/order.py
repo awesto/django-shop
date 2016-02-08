@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from django.db import models
 from django.utils.datetime_safe import datetime
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
@@ -40,5 +41,5 @@ class Order(order.BaseOrder):
 
     def populate_from_cart(self, cart, request):
         self.shipping_address_text = cart.shipping_address.as_text()
-        self.billing_address_text = cart.shipping_address.as_text()
+        self.billing_address_text = cart.billing_address.as_text()
         super(Order, self).populate_from_cart(cart, request)
