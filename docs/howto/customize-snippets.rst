@@ -98,6 +98,75 @@ Inside the rendering template for that plugin, the newly added title can be acce
 `reference guide`_.
 
 
+Creating a customized Form snippet
+==================================
+
+Sometimes we might need a dialog form, to store arbitrary information queried from the customer
+using a customized form. Say we need to know, when to deliver the goods. This information will be
+stored inside the dictionary ``Cart.extra`` and thus transferred automatically to ``Order.extra``
+whenever the cart object is converted into an order object.
+
+Our form plugin now must inherit from :class:`shop.cascade.plugin_base.DialogFormPluginBase` instead
+of our ordinary shop plugin class:
+
+.. code-block:: python
+
+	from cms.plugin_pool import plugin_pool
+	from shop.models.cart import CartModel
+	from shop.cascade.plugin_base import DialogFormPluginBase
+	
+	class DeliveryDatePlugin(DialogFormPluginBase):
+	    name = "Delivery Date"
+	    form_class = 'myshop.forms.DeliveryDateForm'
+	    render_template = 'myshop/checkout/delivery-date.html'
+	
+	    def get_form_data(self, request):
+	        cart = CartModel.objects.get_from_request(request)
+	        initial = {'delivery_date': getattr(cart, 'extra', {}).get('delivery_date', '')}
+	        return {'initial': initial}
+	
+	DialogFormPluginBase.register_plugin(DeliveryDatePlugin)
+
+here additionally we have to specify a ``form_class``. This form class can inherit from
+:class:`shop.forms.base.DialogForm` or :class:`shop.forms.base.DialogModelForm`. Its behavior is
+almost identical to its Django's counterparts:
+
+.. code-block:: python
+	:caption: myshop/forms.py
+
+	class DeliveryDateForm(DialogForm):
+	    scope_prefix = 'data.delivery_date'
+	
+	    date = fields.DateField(label="Delivery date")
+	
+	    @classmethod
+	    def form_factory(cls, request, data, cart):
+	        delivery_date_form = cls(data=data)
+	        if delivery_date_form.is_valid():
+	            cart.extra.update(delivery_date_form.cleaned_data)
+	        return delivery_date_form
+
+The ``scope_prefix`` marks the JavaScript object below our AngularJS ``$scope``. This must be an
+identifier which is unique across all dialog forms building up our ecosystem of **Cascade** plugins.
+
+The classmethod ``form_factory`` must, as its name implies, create a form object of the class it
+belongs to. As in our example from above, we use this to update the cart's ``extra`` dictionary,
+whenever the customer submitted a valid delivery date.
+
+The last piece is to put everything together using a form template such as:
+
+.. code-block:: django
+	:caption: templates/myshop/checkout/delivery-date.html
+
+	{% extends "shop/checkout/dialog-base.html" %}
+	
+	{% block dialog_form %}
+	<form name="{{ delivery_date_form.form_name }}" novalidate>
+	    {{ delivery_date_form.as_div }}
+	</form>
+	{% endblock %}
+
+
 .. _encapsulation: https://en.wikipedia.org/wiki/Encapsulation_(computer_programming)
 .. _django-sekizai: http://django-sekizai.readthedocs.org/en/stable/
 .. _reference guide: http://djangocms-cascade.readthedocs.org/en/stable/
