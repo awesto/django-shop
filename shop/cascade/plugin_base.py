@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.db.models import get_model
 from django.core.exceptions import ImproperlyConfigured
 from django.forms import ChoiceField, widgets
+from django.template.base import TemplateDoesNotExist
 from django.template.loader import select_template
 from django.utils.html import format_html
 from django.utils.module_loading import import_string
@@ -218,11 +219,14 @@ class DialogFormPluginBase(ShopPluginBase):
         render_type = instance.glossary.get('render_type')
         if render_type not in ('form', 'summary',):
             render_type = 'form'
-        template_names = [
-            '{0}/checkout/{1}'.format(shop_settings.APP_LABEL, self.template_leaf_name).format(render_type),
-            'shop/checkout/{}'.format(self.template_leaf_name).format(render_type),
-        ]
-        return select_template(template_names)
+        try:
+            template_names = [
+                '{0}/checkout/{1}'.format(shop_settings.APP_LABEL, self.template_leaf_name).format(render_type),
+                'shop/checkout/{}'.format(self.template_leaf_name).format(render_type),
+            ]
+            return select_template(template_names)
+        except (AttributeError, TemplateDoesNotExist):
+            return self.render_template
 
     def render(self, context, instance, placeholder):
         """
