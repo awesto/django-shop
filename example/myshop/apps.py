@@ -17,3 +17,4 @@ class MyShopConfig(AppConfig):
             os.makedirs(settings.MEDIA_ROOT)
         if not os.path.isdir(settings.COMPRESS_ROOT):
             os.makedirs(settings.COMPRESS_ROOT)
+        print("django-shop is running in {} environment".format(settings.SHOP_TUTORIAL))
