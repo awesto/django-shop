@@ -95,6 +95,7 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 			scope.proceedWith = function(action) {
 				var deferred = $q.defer();
 				scope.prepare(deferred).then(function() {
+					deferred = $q.defer();
 					DialogController.uploadScope(scope, deferred);
 					performAction(deferred.promise, action);
 				});
@@ -135,7 +136,7 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 						return $http.post(purchaseURL, scope.data);
 					} else {
 						// Proceed as usual and load another page
-						$window.location.href = action;
+						$window.location.assign(action);
 					}
 				}).then(function(response) {
 					var result;
@@ -145,7 +146,7 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 						return eval(response.data.expression);
 					}
 				}).then(function() {
-					console.log("Purchased without any further request-response cycle.");
+					console.log("Proceeded without any further request-response cycle.");
 				}, function(errs) {
 					if (errs) {
 						console.error(errs);
