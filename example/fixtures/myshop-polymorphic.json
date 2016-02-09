@@ -1,3 +1,4 @@
+django-shop is running in polymorphic environment
 [
 {
   "fields": {
@@ -7,7 +8,7 @@
     "is_active": true,
     "is_superuser": true,
     "is_staff": true,
-    "last_login": "2016-02-04T08:04:00.003Z",
+    "last_login": "2016-02-09T08:47:16.819Z",
     "groups": [],
     "user_permissions": [],
     "password": "pbkdf2_sha256$20000$ysHUGIGUcl9v$pOGpVddP8XE2IksxoHwfS0nm7tinNTBjKR13syQWt5k=",
@@ -52,24 +53,6 @@
   },
   "model": "email_auth.user",
   "pk": 3
-},
-{
-  "fields": {
-    "username": "ADIGvipP.NoELZJxbX0QJj5iS1gy",
-    "first_name": "",
-    "last_name": "",
-    "is_active": false,
-    "is_superuser": false,
-    "is_staff": false,
-    "last_login": null,
-    "groups": [],
-    "user_permissions": [],
-    "password": "!kCdYqBHz6JvJca0t0GQJvRQ0XqcBhVYKkKuUr9ue",
-    "email": "",
-    "date_joined": "2016-02-04T08:03:43.486Z"
-  },
-  "model": "email_auth.user",
-  "pk": 4
 },
 {
   "fields": {
@@ -243,7 +226,7 @@
       22,
       23
     ],
-    "changed_date": "2016-02-04T08:05:34.194Z",
+    "changed_date": "2016-02-09T08:52:20.247Z",
     "limit_visibility_in_menu": null,
     "parent": null,
     "numchild": 0,
@@ -279,7 +262,7 @@
       24,
       25
     ],
-    "changed_date": "2016-02-04T08:05:34.125Z",
+    "changed_date": "2016-02-09T08:52:19.956Z",
     "limit_visibility_in_menu": null,
     "parent": null,
     "numchild": 0,
@@ -603,7 +586,7 @@
       45,
       46
     ],
-    "changed_date": "2016-01-16T21:58:33.077Z",
+    "changed_date": "2016-02-09T08:53:21.501Z",
     "limit_visibility_in_menu": null,
     "parent": 21,
     "numchild": 0,
@@ -639,7 +622,7 @@
       47,
       48
     ],
-    "changed_date": "2016-01-16T21:58:32.921Z",
+    "changed_date": "2016-02-09T08:53:21.363Z",
     "limit_visibility_in_menu": null,
     "parent": 22,
     "numchild": 0,
@@ -675,7 +658,7 @@
       49,
       50
     ],
-    "changed_date": "2016-01-16T21:59:03.047Z",
+    "changed_date": "2016-02-09T08:53:55.571Z",
     "limit_visibility_in_menu": null,
     "parent": 21,
     "numchild": 0,
@@ -711,7 +694,7 @@
       51,
       52
     ],
-    "changed_date": "2016-01-16T21:59:02.911Z",
+    "changed_date": "2016-02-09T08:53:55.440Z",
     "limit_visibility_in_menu": null,
     "parent": 22,
     "numchild": 0,
@@ -747,7 +730,7 @@
       53,
       54
     ],
-    "changed_date": "2016-02-04T08:05:34.159Z",
+    "changed_date": "2016-02-09T08:52:20.090Z",
     "limit_visibility_in_menu": null,
     "parent": null,
     "numchild": 2,
@@ -783,7 +766,7 @@
       55,
       56
     ],
-    "changed_date": "2016-02-04T08:05:34.089Z",
+    "changed_date": "2016-02-09T08:52:19.809Z",
     "limit_visibility_in_menu": null,
     "parent": null,
     "numchild": 2,
@@ -2132,54 +2115,6 @@
 },
 {
   "fields": {
-    "changed_date": "2016-02-01T10:00:25.045Z",
-    "language": "de",
-    "parent": 744,
-    "numchild": 1,
-    "creation_date": "2015-11-25T16:17:20.985Z",
-    "depth": 2,
-    "position": 0,
-    "path": "00210001",
-    "placeholder": 46,
-    "plugin_type": "BootstrapRowPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 342
-},
-{
-  "fields": {
-    "changed_date": "2016-02-01T10:00:25.051Z",
-    "language": "de",
-    "parent": 342,
-    "numchild": 1,
-    "creation_date": "2015-11-25T16:17:25.980Z",
-    "depth": 3,
-    "position": 0,
-    "path": "002100010001",
-    "placeholder": 46,
-    "plugin_type": "BootstrapColumnPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 343
-},
-{
-  "fields": {
-    "changed_date": "2016-02-01T10:00:25.057Z",
-    "language": "de",
-    "parent": 343,
-    "numchild": 0,
-    "creation_date": "2015-11-25T16:17:48.923Z",
-    "depth": 4,
-    "position": 0,
-    "path": "0021000100010001",
-    "placeholder": 46,
-    "plugin_type": "ShopCatalogPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 344
-},
-{
-  "fields": {
     "changed_date": "2016-02-01T10:00:24.469Z",
     "language": "de",
     "parent": 201,
@@ -2868,54 +2803,6 @@
 },
 {
   "fields": {
-    "changed_date": "2016-02-01T10:00:25.114Z",
-    "language": "de",
-    "parent": 749,
-    "numchild": 1,
-    "creation_date": "2015-12-02T22:11:34.445Z",
-    "depth": 2,
-    "position": 0,
-    "path": "00230001",
-    "placeholder": 50,
-    "plugin_type": "BootstrapRowPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 595
-},
-{
-  "fields": {
-    "changed_date": "2016-02-01T10:00:25.121Z",
-    "language": "de",
-    "parent": 595,
-    "numchild": 1,
-    "creation_date": "2015-12-02T22:11:38.478Z",
-    "depth": 3,
-    "position": 0,
-    "path": "002300010001",
-    "placeholder": 50,
-    "plugin_type": "BootstrapColumnPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 596
-},
-{
-  "fields": {
-    "changed_date": "2016-02-01T10:00:25.129Z",
-    "language": "de",
-    "parent": 596,
-    "numchild": 0,
-    "creation_date": "2015-12-02T22:11:55.914Z",
-    "depth": 4,
-    "position": 0,
-    "path": "0023000100010001",
-    "placeholder": 50,
-    "plugin_type": "ShopCatalogPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 597
-},
-{
-  "fields": {
     "changed_date": "2016-02-01T10:00:25.222Z",
     "language": "de",
     "parent": 738,
@@ -2996,7 +2883,7 @@
 },
 {
   "fields": {
-    "changed_date": "2016-02-01T10:00:25.237Z",
+    "changed_date": "2016-02-09T08:51:21.447Z",
     "language": "de",
     "parent": 608,
     "numchild": 0,
@@ -3031,7 +2918,7 @@
     "changed_date": "2016-02-01T10:00:25.196Z",
     "language": "en",
     "parent": 716,
-    "numchild": 1,
+    "numchild": 2,
     "creation_date": "2016-01-02T13:24:37.507Z",
     "depth": 3,
     "position": 0,
@@ -3044,13 +2931,13 @@
 },
 {
   "fields": {
-    "changed_date": "2016-02-01T10:00:25.204Z",
+    "changed_date": "2016-02-09T08:52:15.576Z",
     "language": "en",
     "parent": 717,
     "numchild": 0,
     "creation_date": "2016-01-02T13:24:52.350Z",
     "depth": 4,
-    "position": 0,
+    "position": 1,
     "path": "002Y000100010001",
     "placeholder": 54,
     "plugin_type": "ShopCatalogPlugin"
@@ -3073,166 +2960,6 @@
   },
   "model": "cms.cmsplugin",
   "pk": 738
-},
-{
-  "fields": {
-    "changed_date": "2016-02-01T10:00:25.038Z",
-    "language": "de",
-    "parent": null,
-    "numchild": 1,
-    "creation_date": "2016-01-16T21:58:20.768Z",
-    "depth": 1,
-    "position": 0,
-    "path": "0021",
-    "placeholder": 46,
-    "plugin_type": "BootstrapContainerPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 744
-},
-{
-  "fields": {
-    "changed_date": "2016-02-01T10:00:25.070Z",
-    "language": "de",
-    "parent": null,
-    "numchild": 1,
-    "creation_date": "2016-01-16T21:58:20.768Z",
-    "depth": 1,
-    "position": 0,
-    "path": "0022",
-    "placeholder": 48,
-    "plugin_type": "BootstrapContainerPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 745
-},
-{
-  "fields": {
-    "changed_date": "2016-02-01T10:00:25.077Z",
-    "language": "de",
-    "parent": 745,
-    "numchild": 1,
-    "creation_date": "2015-11-25T16:17:20.985Z",
-    "depth": 2,
-    "position": 0,
-    "path": "00220001",
-    "placeholder": 48,
-    "plugin_type": "BootstrapRowPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 746
-},
-{
-  "fields": {
-    "changed_date": "2016-02-01T10:00:25.083Z",
-    "language": "de",
-    "parent": 746,
-    "numchild": 1,
-    "creation_date": "2015-11-25T16:17:25.980Z",
-    "depth": 3,
-    "position": 0,
-    "path": "002200010001",
-    "placeholder": 48,
-    "plugin_type": "BootstrapColumnPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 747
-},
-{
-  "fields": {
-    "changed_date": "2016-02-01T10:00:25.090Z",
-    "language": "de",
-    "parent": 747,
-    "numchild": 0,
-    "creation_date": "2015-11-25T16:17:48.923Z",
-    "depth": 4,
-    "position": 0,
-    "path": "0022000100010001",
-    "placeholder": 48,
-    "plugin_type": "ShopCatalogPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 748
-},
-{
-  "fields": {
-    "changed_date": "2016-02-01T10:00:25.106Z",
-    "language": "de",
-    "parent": null,
-    "numchild": 1,
-    "creation_date": "2016-01-16T21:58:50.641Z",
-    "depth": 1,
-    "position": 0,
-    "path": "0023",
-    "placeholder": 50,
-    "plugin_type": "BootstrapContainerPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 749
-},
-{
-  "fields": {
-    "changed_date": "2016-02-01T10:00:25.144Z",
-    "language": "de",
-    "parent": null,
-    "numchild": 1,
-    "creation_date": "2016-01-16T21:58:50.641Z",
-    "depth": 1,
-    "position": 0,
-    "path": "0024",
-    "placeholder": 52,
-    "plugin_type": "BootstrapContainerPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 750
-},
-{
-  "fields": {
-    "changed_date": "2016-02-01T10:00:25.156Z",
-    "language": "de",
-    "parent": 750,
-    "numchild": 1,
-    "creation_date": "2015-12-02T22:11:34.445Z",
-    "depth": 2,
-    "position": 0,
-    "path": "00240001",
-    "placeholder": 52,
-    "plugin_type": "BootstrapRowPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 751
-},
-{
-  "fields": {
-    "changed_date": "2016-02-01T10:00:25.164Z",
-    "language": "de",
-    "parent": 751,
-    "numchild": 1,
-    "creation_date": "2015-12-02T22:11:38.478Z",
-    "depth": 3,
-    "position": 0,
-    "path": "002400010001",
-    "placeholder": 52,
-    "plugin_type": "BootstrapColumnPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 752
-},
-{
-  "fields": {
-    "changed_date": "2016-02-01T10:00:25.171Z",
-    "language": "de",
-    "parent": 752,
-    "numchild": 0,
-    "creation_date": "2015-12-02T22:11:55.914Z",
-    "depth": 4,
-    "position": 0,
-    "path": "0024000100010001",
-    "placeholder": 52,
-    "plugin_type": "ShopCatalogPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 753
 },
 {
   "fields": {
@@ -4196,22 +3923,6 @@
 },
 {
   "fields": {
-    "changed_date": "2016-02-01T10:00:22.944Z",
-    "language": "de",
-    "parent": null,
-    "numchild": 0,
-    "creation_date": "2015-11-03T12:06:29.969Z",
-    "depth": 1,
-    "position": 0,
-    "path": "003C",
-    "placeholder": 1,
-    "plugin_type": "ProcessNextStepPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1675
-},
-{
-  "fields": {
     "changed_date": "2016-02-04T07:46:32.112Z",
     "language": "de",
     "parent": 45,
@@ -4660,70 +4371,6 @@
 },
 {
   "fields": {
-    "changed_date": "2016-02-04T07:52:29.837Z",
-    "language": "en",
-    "parent": null,
-    "numchild": 1,
-    "creation_date": "2016-01-26T23:56:56.939Z",
-    "depth": 1,
-    "position": 0,
-    "path": "003M",
-    "placeholder": 56,
-    "plugin_type": "BootstrapContainerPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2195
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T07:52:29.864Z",
-    "language": "en",
-    "parent": 2195,
-    "numchild": 1,
-    "creation_date": "2016-01-02T13:24:32.828Z",
-    "depth": 2,
-    "position": 0,
-    "path": "003M0001",
-    "placeholder": 56,
-    "plugin_type": "BootstrapRowPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2196
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T07:52:29.910Z",
-    "language": "en",
-    "parent": 2196,
-    "numchild": 1,
-    "creation_date": "2016-01-02T13:24:37.507Z",
-    "depth": 3,
-    "position": 0,
-    "path": "003M00010001",
-    "placeholder": 56,
-    "plugin_type": "BootstrapColumnPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2197
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T07:52:29.938Z",
-    "language": "en",
-    "parent": 2197,
-    "numchild": 0,
-    "creation_date": "2016-01-02T13:24:52.350Z",
-    "depth": 4,
-    "position": 0,
-    "path": "003M000100010001",
-    "placeholder": 56,
-    "plugin_type": "ShopCatalogPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2198
-},
-{
-  "fields": {
     "changed_date": "2016-02-04T07:52:50.085Z",
     "language": "de",
     "parent": null,
@@ -5153,86 +4800,6 @@
   },
   "model": "cms.cmsplugin",
   "pk": 2328
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:34.042Z",
-    "language": "de",
-    "parent": null,
-    "numchild": 1,
-    "creation_date": "2016-01-16T21:57:47.046Z",
-    "depth": 1,
-    "position": 0,
-    "path": "003U",
-    "placeholder": 56,
-    "plugin_type": "BootstrapContainerPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2329
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:34.048Z",
-    "language": "de",
-    "parent": 2329,
-    "numchild": 1,
-    "creation_date": "2015-12-03T08:01:03.043Z",
-    "depth": 2,
-    "position": 0,
-    "path": "003U0001",
-    "placeholder": 56,
-    "plugin_type": "BootstrapRowPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2330
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:34.061Z",
-    "language": "de",
-    "parent": 2330,
-    "numchild": 2,
-    "creation_date": "2015-12-03T08:01:07.295Z",
-    "depth": 3,
-    "position": 0,
-    "path": "003U00010001",
-    "placeholder": 56,
-    "plugin_type": "BootstrapColumnPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2331
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:34.067Z",
-    "language": "de",
-    "parent": 2331,
-    "numchild": 0,
-    "creation_date": "2015-12-03T08:01:36.851Z",
-    "depth": 4,
-    "position": 1,
-    "path": "003U000100010001",
-    "placeholder": 56,
-    "plugin_type": "ShopCatalogPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2332
-},
-{
-  "fields": {
-    "changed_date": "2016-02-04T08:05:34.086Z",
-    "language": "de",
-    "parent": 2331,
-    "numchild": 0,
-    "creation_date": "2015-12-19T17:58:32.891Z",
-    "depth": 4,
-    "position": 0,
-    "path": "003U000100010002",
-    "placeholder": 56,
-    "plugin_type": "TextPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2333
 },
 {
   "fields": {
@@ -6724,6 +6291,198 @@
 },
 {
   "fields": {
+    "changed_date": "2016-02-09T08:51:41.904Z",
+    "language": "de",
+    "parent": null,
+    "numchild": 0,
+    "creation_date": "2015-12-19T17:58:32.891Z",
+    "depth": 1,
+    "position": 0,
+    "path": "003X",
+    "placeholder": 1,
+    "plugin_type": "TextPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2518
+},
+{
+  "fields": {
+    "changed_date": "2016-02-09T08:51:47.274Z",
+    "language": "de",
+    "parent": null,
+    "numchild": 1,
+    "creation_date": "2016-01-16T21:57:47.046Z",
+    "depth": 1,
+    "position": 0,
+    "path": "003Y",
+    "placeholder": 56,
+    "plugin_type": "BootstrapContainerPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2519
+},
+{
+  "fields": {
+    "changed_date": "2016-02-09T08:51:47.302Z",
+    "language": "de",
+    "parent": 2519,
+    "numchild": 1,
+    "creation_date": "2015-12-03T08:01:03.043Z",
+    "depth": 2,
+    "position": 0,
+    "path": "003Y0001",
+    "placeholder": 56,
+    "plugin_type": "BootstrapRowPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2520
+},
+{
+  "fields": {
+    "changed_date": "2016-02-09T08:51:47.344Z",
+    "language": "de",
+    "parent": 2520,
+    "numchild": 2,
+    "creation_date": "2015-12-03T08:01:07.295Z",
+    "depth": 3,
+    "position": 0,
+    "path": "003Y00010001",
+    "placeholder": 56,
+    "plugin_type": "BootstrapColumnPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2521
+},
+{
+  "fields": {
+    "changed_date": "2016-02-09T08:51:47.373Z",
+    "language": "de",
+    "parent": 2521,
+    "numchild": 0,
+    "creation_date": "2015-12-03T08:01:36.851Z",
+    "depth": 4,
+    "position": 1,
+    "path": "003Y000100010001",
+    "placeholder": 56,
+    "plugin_type": "ShopCatalogPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2522
+},
+{
+  "fields": {
+    "changed_date": "2016-02-09T08:51:47.441Z",
+    "language": "de",
+    "parent": 2521,
+    "numchild": 0,
+    "creation_date": "2015-12-19T17:58:32.891Z",
+    "depth": 4,
+    "position": 0,
+    "path": "003Y000100010002",
+    "placeholder": 56,
+    "plugin_type": "TextPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2523
+},
+{
+  "fields": {
+    "changed_date": "2016-02-09T08:52:15.655Z",
+    "language": "en",
+    "parent": 717,
+    "numchild": 0,
+    "creation_date": "2015-12-19T17:58:32.891Z",
+    "depth": 4,
+    "position": 0,
+    "path": "002Y000100010002",
+    "placeholder": 54,
+    "plugin_type": "TextPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2524
+},
+{
+  "fields": {
+    "changed_date": "2016-02-09T08:52:19.610Z",
+    "language": "en",
+    "parent": null,
+    "numchild": 1,
+    "creation_date": "2016-01-26T23:56:56.939Z",
+    "depth": 1,
+    "position": 0,
+    "path": "003Z",
+    "placeholder": 56,
+    "plugin_type": "BootstrapContainerPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2525
+},
+{
+  "fields": {
+    "changed_date": "2016-02-09T08:52:19.644Z",
+    "language": "en",
+    "parent": 2525,
+    "numchild": 1,
+    "creation_date": "2016-01-02T13:24:32.828Z",
+    "depth": 2,
+    "position": 0,
+    "path": "003Z0001",
+    "placeholder": 56,
+    "plugin_type": "BootstrapRowPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2526
+},
+{
+  "fields": {
+    "changed_date": "2016-02-09T08:52:19.687Z",
+    "language": "en",
+    "parent": 2526,
+    "numchild": 2,
+    "creation_date": "2016-01-02T13:24:37.507Z",
+    "depth": 3,
+    "position": 0,
+    "path": "003Z00010001",
+    "placeholder": 56,
+    "plugin_type": "BootstrapColumnPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2527
+},
+{
+  "fields": {
+    "changed_date": "2016-02-09T08:52:19.717Z",
+    "language": "en",
+    "parent": 2527,
+    "numchild": 0,
+    "creation_date": "2016-01-02T13:24:52.350Z",
+    "depth": 4,
+    "position": 1,
+    "path": "003Z000100010001",
+    "placeholder": 56,
+    "plugin_type": "ShopCatalogPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2528
+},
+{
+  "fields": {
+    "changed_date": "2016-02-09T08:52:19.793Z",
+    "language": "en",
+    "parent": 2527,
+    "numchild": 0,
+    "creation_date": "2015-12-19T17:58:32.891Z",
+    "depth": 4,
+    "position": 0,
+    "path": "003Z000100010002",
+    "placeholder": 56,
+    "plugin_type": "TextPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2529
+},
+{
+  "fields": {
     "menu_title": "",
     "meta_description": "",
     "page_title": "",
@@ -7197,7 +6956,7 @@
     "page": 17,
     "published": true,
     "path": "shop/smartcards",
-    "publisher_state": 1,
+    "publisher_state": 0,
     "creation_date": "2015-10-16T13:11:21.746Z",
     "slug": "smartcards",
     "publisher_public": 29
@@ -7239,7 +6998,7 @@
     "page": 18,
     "published": true,
     "path": "shop/smartcards",
-    "publisher_state": 1,
+    "publisher_state": 0,
     "creation_date": "2015-10-16T13:11:21.746Z",
     "slug": "smartcards",
     "publisher_public": 27
@@ -7365,7 +7124,7 @@
     "page": 19,
     "published": true,
     "path": "shop/smart-phones",
-    "publisher_state": 1,
+    "publisher_state": 0,
     "creation_date": "2015-12-02T22:03:34.672Z",
     "slug": "smart-phones",
     "publisher_public": 37
@@ -7407,7 +7166,7 @@
     "page": 20,
     "published": true,
     "path": "shop/smart-phones",
-    "publisher_state": 1,
+    "publisher_state": 0,
     "creation_date": "2015-12-02T22:03:34.672Z",
     "slug": "smart-phones",
     "publisher_public": 35
@@ -8011,27 +7770,6 @@
 },
 {
   "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 342
-},
-{
-  "fields": {
-    "glossary": "{\"container_max_widths\":{\"xs\":720,\"md\":940,\"sm\":720,\"lg\":1140},\"xs-column-width\":\"col-xs-12\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 343
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 344
-},
-{
-  "fields": {
     "glossary": "{\"image-height\":\"\",\"title\":\"\",\"image-title\":\"Django Pony\",\"image\":{\"pk\":1,\"model\":\"filer.Image\"},\"alt-tag\":\"\",\"image-width-fixed\":\"\",\"resize-options\":[\"subject_location\",\"high_resolution\"],\"link\":{\"type\":\"none\"},\"image-shapes\":[\"img-responsive\"],\"target\":\"\",\"image-width-responsive\":\"100%\"}"
   },
   "model": "cmsplugin_cascade.cascadeelement",
@@ -8329,27 +8067,6 @@
     "glossary": "{}"
   },
   "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 595
-},
-{
-  "fields": {
-    "glossary": "{\"container_max_widths\":{\"xs\":720,\"md\":940,\"sm\":720,\"lg\":1140},\"xs-column-width\":\"col-xs-12\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 596
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 597
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
   "pk": 607
 },
 {
@@ -8407,76 +8124,6 @@
   },
   "model": "cmsplugin_cascade.cascadeelement",
   "pk": 738
-},
-{
-  "fields": {
-    "glossary": "{\"media_queries\":{\"xs\":[\"(max-width: 768px)\"],\"md\":[\"(min-width: 992px)\",\"(max-width: 1200px)\"],\"sm\":[\"(min-width: 768px)\",\"(max-width: 992px)\"],\"lg\":[\"(min-width: 1200px)\"]},\"container_max_widths\":{\"xs\":750,\"md\":970,\"sm\":750,\"lg\":1170},\"fluid\":\"\",\"breakpoints\":[\"xs\",\"sm\",\"md\",\"lg\"]}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 744
-},
-{
-  "fields": {
-    "glossary": "{\"media_queries\":{\"xs\":[\"(max-width: 768px)\"],\"md\":[\"(min-width: 992px)\",\"(max-width: 1200px)\"],\"sm\":[\"(min-width: 768px)\",\"(max-width: 992px)\"],\"lg\":[\"(min-width: 1200px)\"]},\"container_max_widths\":{\"xs\":750,\"md\":970,\"sm\":750,\"lg\":1170},\"fluid\":\"\",\"breakpoints\":[\"xs\",\"sm\",\"md\",\"lg\"]}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 745
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 746
-},
-{
-  "fields": {
-    "glossary": "{\"container_max_widths\":{\"xs\":720,\"md\":940,\"sm\":720,\"lg\":1140},\"xs-column-width\":\"col-xs-12\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 747
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 748
-},
-{
-  "fields": {
-    "glossary": "{\"media_queries\":{\"xs\":[\"(max-width: 768px)\"],\"md\":[\"(min-width: 992px)\",\"(max-width: 1200px)\"],\"sm\":[\"(min-width: 768px)\",\"(max-width: 992px)\"],\"lg\":[\"(min-width: 1200px)\"]},\"container_max_widths\":{\"xs\":750,\"md\":970,\"sm\":750,\"lg\":1170},\"fluid\":\"\",\"breakpoints\":[\"xs\",\"sm\",\"md\",\"lg\"]}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 749
-},
-{
-  "fields": {
-    "glossary": "{\"media_queries\":{\"xs\":[\"(max-width: 768px)\"],\"md\":[\"(min-width: 992px)\",\"(max-width: 1200px)\"],\"sm\":[\"(min-width: 768px)\",\"(max-width: 992px)\"],\"lg\":[\"(min-width: 1200px)\"]},\"container_max_widths\":{\"xs\":750,\"md\":970,\"sm\":750,\"lg\":1170},\"fluid\":\"\",\"breakpoints\":[\"xs\",\"sm\",\"md\",\"lg\"]}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 750
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 751
-},
-{
-  "fields": {
-    "glossary": "{\"container_max_widths\":{\"xs\":720,\"md\":940,\"sm\":720,\"lg\":1140},\"xs-column-width\":\"col-xs-12\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 752
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 753
 },
 {
   "fields": {
@@ -8861,13 +8508,6 @@
     "glossary": "{\"icon-right\":\"menu-right\",\"button-type\":\"btn-success\",\"link_content\":\"Weiter\",\"button-size\":\"\",\"quick-float\":\"\",\"button-options\":[],\"icon-left\":\"\"}"
   },
   "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1675
-},
-{
-  "fields": {
-    "glossary": "{\"icon-right\":\"menu-right\",\"button-type\":\"btn-success\",\"link_content\":\"Weiter\",\"button-size\":\"\",\"quick-float\":\"\",\"button-options\":[],\"icon-left\":\"\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
   "pk": 1676
 },
 {
@@ -9050,34 +8690,6 @@
     "glossary": "{\"media_queries\":{\"xs\":[\"(max-width: 768px)\"],\"md\":[\"(min-width: 992px)\",\"(max-width: 1200px)\"],\"sm\":[\"(min-width: 768px)\",\"(max-width: 992px)\"],\"lg\":[\"(min-width: 1200px)\"]},\"container_max_widths\":{\"xs\":750,\"md\":970,\"sm\":750,\"lg\":1170},\"fluid\":\"\",\"breakpoints\":[\"xs\",\"sm\",\"md\",\"lg\"]}"
   },
   "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2195
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2196
-},
-{
-  "fields": {
-    "glossary": "{\"container_max_widths\":{\"xs\":720,\"md\":940,\"sm\":720,\"lg\":1140},\"xs-column-width\":\"col-xs-12\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2197
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2198
-},
-{
-  "fields": {
-    "glossary": "{\"media_queries\":{\"xs\":[\"(max-width: 768px)\"],\"md\":[\"(min-width: 992px)\",\"(max-width: 1200px)\"],\"sm\":[\"(min-width: 768px)\",\"(max-width: 992px)\"],\"lg\":[\"(min-width: 1200px)\"]},\"container_max_widths\":{\"xs\":750,\"md\":970,\"sm\":750,\"lg\":1170},\"fluid\":\"\",\"breakpoints\":[\"xs\",\"sm\",\"md\",\"lg\"]}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
   "pk": 2204
 },
 {
@@ -9247,34 +8859,6 @@
   },
   "model": "cmsplugin_cascade.cascadeelement",
   "pk": 2328
-},
-{
-  "fields": {
-    "glossary": "{\"media_queries\":{\"xs\":[\"(max-width: 768px)\"],\"md\":[\"(min-width: 992px)\",\"(max-width: 1200px)\"],\"sm\":[\"(min-width: 768px)\",\"(max-width: 992px)\"],\"lg\":[\"(min-width: 1200px)\"]},\"container_max_widths\":{\"xs\":750,\"md\":970,\"sm\":750,\"lg\":1170},\"fluid\":\"\",\"breakpoints\":[\"xs\",\"sm\",\"md\",\"lg\"]}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2329
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2330
-},
-{
-  "fields": {
-    "glossary": "{\"container_max_widths\":{\"xs\":720,\"md\":940,\"sm\":720,\"lg\":1140},\"xs-column-width\":\"col-xs-12\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2331
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2332
 },
 {
   "fields": {
@@ -9901,6 +9485,62 @@
 },
 {
   "fields": {
+    "glossary": "{\"media_queries\":{\"xs\":[\"(max-width: 768px)\"],\"md\":[\"(min-width: 992px)\",\"(max-width: 1200px)\"],\"sm\":[\"(min-width: 768px)\",\"(max-width: 992px)\"],\"lg\":[\"(min-width: 1200px)\"]},\"container_max_widths\":{\"xs\":750,\"md\":970,\"sm\":750,\"lg\":1170},\"fluid\":\"\",\"breakpoints\":[\"xs\",\"sm\",\"md\",\"lg\"]}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2519
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2520
+},
+{
+  "fields": {
+    "glossary": "{\"container_max_widths\":{\"xs\":720,\"md\":940,\"sm\":720,\"lg\":1140},\"xs-column-width\":\"col-xs-12\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2521
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2522
+},
+{
+  "fields": {
+    "glossary": "{\"media_queries\":{\"xs\":[\"(max-width: 768px)\"],\"md\":[\"(min-width: 992px)\",\"(max-width: 1200px)\"],\"sm\":[\"(min-width: 768px)\",\"(max-width: 992px)\"],\"lg\":[\"(min-width: 1200px)\"]},\"container_max_widths\":{\"xs\":750,\"md\":970,\"sm\":750,\"lg\":1170},\"fluid\":\"\",\"breakpoints\":[\"xs\",\"sm\",\"md\",\"lg\"]}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2525
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2526
+},
+{
+  "fields": {
+    "glossary": "{\"container_max_widths\":{\"xs\":720,\"md\":940,\"sm\":720,\"lg\":1140},\"xs-column-width\":\"col-xs-12\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2527
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2528
+},
+{
+  "fields": {
     "inline_styles": "{\"extra_fields:Widths\":[],\"extra_fields:Margins\":[\"margin-top\",\"margin-bottom\"],\"extra_fields:Paddings\":[],\"extra_units:Widths\":\"px,em,%\",\"extra_units:Paddings\":\"px,em,%\",\"extra_units:Heights\":\"px,em,%\",\"extra_fields:Heights\":[],\"extra_units:Margins\":\"px,em,%\",\"extra_fields:Colors\":[],\"extra_fields:Overflow\":[]}",
     "css_classes": "{\"multiple\":\"on\",\"class_names\":\"foo, bar, cap\"}",
     "allow_id_tag": true,
@@ -9948,7 +9588,7 @@
 },
 {
   "fields": {
-    "body": "<p>Etiam porta sem malesuada magna mollis euismod. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam quis risus eget urna mollis ornare vel eu leo. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Maecenas faucibus mollis interdum. Aenean lacinia bibendum nulla sed consectetur. Donec ullamcorper nulla non metus auctor fringilla. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Nullam id dolor id nibh ultricies vehicula ut id elit. Donec sed odio dui. Maecenas faucibus mollis interdum.</p>\n"
+    "body": "<h2>Our Catalog List View</h2>\n"
   },
   "model": "djangocms_text_ckeditor.text",
   "pk": 694
@@ -10025,13 +9665,6 @@
 },
 {
   "fields": {
-    "body": "<p>Etiam porta sem malesuada magna mollis euismod. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam quis risus eget urna mollis ornare vel eu leo. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Maecenas faucibus mollis interdum. Aenean lacinia bibendum nulla sed consectetur. Donec ullamcorper nulla non metus auctor fringilla. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Nullam id dolor id nibh ultricies vehicula ut id elit. Donec sed odio dui. Maecenas faucibus mollis interdum.</p>\n"
-  },
-  "model": "djangocms_text_ckeditor.text",
-  "pk": 2333
-},
-{
-  "fields": {
     "body": "<h4>Payment and\u00a0Shipping</h4>\n"
   },
   "model": "djangocms_text_ckeditor.text",
@@ -10057,6 +9690,34 @@
   },
   "model": "djangocms_text_ckeditor.text",
   "pk": 2507
+},
+{
+  "fields": {
+    "body": "<h2>Our Catalog List View</h2>\n"
+  },
+  "model": "djangocms_text_ckeditor.text",
+  "pk": 2518
+},
+{
+  "fields": {
+    "body": "<h2>Our Catalog List View</h2>\n"
+  },
+  "model": "djangocms_text_ckeditor.text",
+  "pk": 2523
+},
+{
+  "fields": {
+    "body": "<h2>Our Catalog List View</h2>\n"
+  },
+  "model": "djangocms_text_ckeditor.text",
+  "pk": 2524
+},
+{
+  "fields": {
+    "body": "<h2>Our Catalog List View</h2>\n"
+  },
+  "model": "djangocms_text_ckeditor.text",
+  "pk": 2529
 },
 {
   "fields": {
@@ -12964,18 +12625,6 @@
 },
 {
   "fields": {
-    "customer": 4,
-    "billing_address": null,
-    "extra": "{}",
-    "created_at": "2016-02-04T08:03:43.494Z",
-    "updated_at": "2016-02-04T08:03:43.494Z",
-    "shipping_address": null
-  },
-  "model": "myshop.cart",
-  "pk": 4
-},
-{
-  "fields": {
     "status": "new",
     "payment_method": "pay-in-advance",
     "created_at": "2016-01-21T10:44:14.480Z",
@@ -13301,7 +12950,7 @@
 {
   "fields": {
     "salutation": "mrs",
-    "last_access": "2016-02-04T11:33:25.460Z",
+    "last_access": "2016-02-09T08:55:21.984Z",
     "number": 1,
     "recognized": 2,
     "extra": "{}"
@@ -13330,17 +12979,6 @@
   },
   "model": "myshop.customer",
   "pk": 3
-},
-{
-  "fields": {
-    "salutation": "",
-    "last_access": "2016-02-04T08:03:47.530Z",
-    "number": null,
-    "recognized": 0,
-    "extra": "{}"
-  },
-  "model": "myshop.customer",
-  "pk": 4
 },
 {
   "fields": {
