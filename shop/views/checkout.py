@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.db import transaction
 from django.utils.module_loading import import_string
 from rest_framework.decorators import list_route
 from rest_framework.exceptions import ValidationError
@@ -51,13 +52,14 @@ class CheckoutViewSet(BaseViewSet):
 
         # save data, get text representation and collect potential errors
         errors, checkout_summary = {}, {}
-        for form_class, data in dialog_data:
-            form = form_class.form_factory(request, data, cart)
-            if form.is_valid():
-                checkout_summary[form_class.form_name] = form.as_text()
-            else:
-                errors[form_class.form_name] = dict(form.errors)
-        cart.save()
+        with transaction.atomic():
+            for form_class, data in dialog_data:
+                form = form_class.form_factory(request, data, cart)
+                if form.is_valid():
+                    checkout_summary[form_class.form_name] = form.as_text()
+                else:
+                    errors[form_class.form_name] = dict(form.errors)
+            cart.save()
 
         # add possible form errors for giving feedback to the customer
         response = self.list(request)
