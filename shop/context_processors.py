@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from django.conf import settings
+from django.forms.utils import ValidationError
 from shop.models.customer import CustomerModel
 
 
@@ -18,6 +20,6 @@ def customer(request):
     if request.user.is_staff:
         try:
             context.update(customer=CustomerModel.objects.get(pk=request.session['emulate_user_id']))
-        except (CustomerModel.DoesNotExist, KeyError, AttributeError):
+        except (CustomerModel.DoesNotExist, KeyError, AttributeError, ValidationError):
             pass
     return context
