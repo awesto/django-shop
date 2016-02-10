@@ -36,7 +36,18 @@ class DialogFormMixin(NgModelFormMixin, NgFormValidationMixin):
         for name in self.fields.keys():
             bound_field = self[name]
             value = bound_field.value()
-            if not bound_field.is_hidden and value:
+            if bound_field.is_hidden:
+                continue
+            if isinstance(value, (list, tuple)):
+                line = []
+                cast_to = type(tuple(bound_field.field.choices)[0][0])
+                for v in value:
+                    try:
+                        line.append(dict(bound_field.field.choices)[cast_to(v)])
+                    except (AttributeError, KeyError):
+                        pass
+                output.append(force_text(', '.join(line)))
+            elif value:
                 try:
                     value = dict(bound_field.field.choices)[value]
                 except (AttributeError, KeyError):
