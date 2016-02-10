@@ -85,6 +85,7 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 			scope.proceed = function() {
 				var deferred = $q.defer();
 				scope.prepare(deferred).then(function() {
+					deferred = $q.defer();
 					DialogController.uploadScope(scope, deferred);
 				});
 				return deferred.promise;
