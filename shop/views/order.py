@@ -19,9 +19,7 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, generics.Gener
     many = True
 
     def get_queryset(self):
-        if self.request.customer.is_visitor():
-            raise PermissionDenied(detail=_("Only signed in customers can view their orders"))
-        return OrderModel.objects.filter(customer=self.request.customer).order_by('-updated_at',)
+        return OrderModel.objects.filter_from_request(self.request)
 
     def get_serializer_class(self):
         if self.many:

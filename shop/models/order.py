@@ -61,6 +61,16 @@ class OrderManager(models.Manager):
             'user_agent': request.META.get('HTTP_USER_AGENT'),
         }
 
+    def filter_from_request(self, request):
+        """
+        Return a queryset containing the orders for the customer associated with the given
+        request object.
+        """
+        if request.customer.is_visitor():
+            msg = _("Only signed in customers can view their orders")
+            raise self.model.DoesNotExist(msg)
+        return self.get_queryset().filter(customer=request.customer).order_by('-updated_at',)
+
     def get_summary_url(self):
         """
         Returns the URL of the page with the list view for all orders related to the current customer

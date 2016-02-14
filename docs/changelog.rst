@@ -12,7 +12,9 @@ Changelog for djangoSHOP
   next step. Using Stripe was possible only on the last step. This restriction has gone.
 * It now also is possible to display a summary of your order before proceeding to the final
   purchasing step.
-
+* To be more Pythonic, class:`shop.models.cart.CartModelManager` raises a ``DoesNotExist`` exception
+  instead of ``None`` for visiting customers.
+* Added method ``filter_from_request`` to class:`shop.models.order.OrderManager`.
 
 0.9.0rc1
 ========
