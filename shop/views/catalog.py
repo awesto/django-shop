@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 import os
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from django.utils.cache import add_never_cache_headers
 from django.utils.translation import get_language_from_request
 from rest_framework import generics
 from rest_framework import status
@@ -22,6 +24,13 @@ class ProductListView(generics.ListAPIView):
     serializer_class = None  # must be overridden by ProductListView.as_view
     filter_class = None  # may be overridden by ProductListView.as_view
     limit_choices_to = Q()
+
+    def get(self, request, *args, **kwargs):
+        # TODO: we must find a better way to invalidate the cache.
+        # Simply adding a no-cache header eventually decreases the performance dramatically.
+        response = self.list(request, *args, **kwargs)
+        add_never_cache_headers(response)
+        return response
 
     def get_queryset(self):
         qs = self.product_model.objects.filter(self.limit_choices_to)
