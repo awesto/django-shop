@@ -11,12 +11,15 @@ from shop.rest import serializers
 
 class BaseViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
-        cart = CartModel.objects.get_from_request(self.request)
-        if cart and self.kwargs.get(self.lookup_field):
-            # we're interest only into a certain cart item
-            return CartItemModel.objects.filter(cart=cart)
-        # otherwise the CartSerializer will show its detail view and list all its cart items
-        return cart
+        try:
+            cart = CartModel.objects.get_from_request(self.request)
+            if self.kwargs.get(self.lookup_field):
+                # we're interest only into a certain cart item
+                return CartItemModel.objects.filter(cart=cart)
+            # otherwise the CartSerializer will show its detail view and list all its cart items
+            return cart
+        except CartModel.DoesNotExist:
+            return None
 
     def paginate_queryset(self, queryset):
         if isinstance(queryset, QuerySet):

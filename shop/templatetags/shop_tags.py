@@ -29,10 +29,12 @@ class CartIcon(InclusionTag):
 
     def get_context(self, context):
         request = context['request']
-        cart = CartModel.objects.get_from_request(request)
-        if cart:
+        try:
+            cart = CartModel.objects.get_from_request(request)
             cart.update(request)
             context['cart'] = cart
+        except CartModel.DoesNotExist:
+            pass
         return context
 register.tag(CartIcon)
 
