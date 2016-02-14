@@ -119,20 +119,23 @@ CartItemModel = deferred.MaterializedModel(BaseCartItem)
 
 
 class CartManager(models.Manager):
+    """
+    The Model Manager for any Cart inheriting from BaseCart.
+    """
+
     def get_from_request(self, request):
         """
         Return the cart for current customer.
         """
         if request.customer.is_visitor():
-            cart = None
-        else:
-            cart = self.get_or_create(customer=request.customer)[0]
+            raise self.model.DoesNotExist("Cart for visiting customer does not exist.")
+        cart, temp = self.get_or_create(customer=request.customer)
         return cart
 
     def get_or_create_from_request(self, request):
         if request.customer.is_visitor():
             request.customer = CustomerModel.objects.get_or_create_from_request(request)
-        cart = self.get_or_create(customer=request.customer)[0]
+        cart, temp = self.get_or_create(customer=request.customer)
         return cart
 
 

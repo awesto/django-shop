@@ -30,7 +30,7 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, generics.Gener
 
     def get_renderer_context(self):
         renderer_context = super(OrderView, self).get_renderer_context()
-        if renderer_context['request'].accepted_renderer.format == 'html':
+        if self.request.accepted_renderer.format == 'html':
             renderer_context['many'] = self.many
             if self.many is False:
                 # add an extra ance to the breadcrumb
