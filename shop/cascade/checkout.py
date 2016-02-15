@@ -149,9 +149,11 @@ class PaymentMethodFormPlugin(DialogFormPluginBase):
     template_leaf_name = 'payment-method-{}.html'
 
     def get_form_data(self, request):
-        cart = CartModel.objects.get_from_request(request)
-        initial = {'payment_modifier': cart.extra.get('payment_modifier')}
-        return {'initial': initial}
+        try:
+            cart = CartModel.objects.get_from_request(request)
+            return {'initial': {'payment_modifier': cart.extra['payment_modifier']}}
+        except (CartModel.DoesNotExist, KeyError):
+            return {}
 
     def render(self, context, instance, placeholder):
         super(PaymentMethodFormPlugin, self).render(context, instance, placeholder)
@@ -170,9 +172,11 @@ class ShippingMethodFormPlugin(DialogFormPluginBase):
     template_leaf_name = 'shipping-method-{}.html'
 
     def get_form_data(self, request):
-        cart = CartModel.objects.get_from_request(request)
-        initial = {'shipping_modifier': cart.extra.get('shipping_modifier')}
-        return {'initial': initial}
+        try:
+            cart = CartModel.objects.get_from_request(request)
+            return {'initial': {'shipping_modifier': cart.extra['shipping_modifier']}}
+        except (CartModel.DoesNotExist, KeyError):
+            return {}
 
     def render(self, context, instance, placeholder):
         super(ShippingMethodFormPlugin, self).render(context, instance, placeholder)
@@ -191,9 +195,11 @@ class ExtraAnnotationFormPlugin(DialogFormPluginBase):
     template_leaf_name = 'extra-annotation-{}.html'
 
     def get_form_data(self, request):
-        cart = CartModel.objects.get_from_request(request)
-        initial = {'annotation': cart.extra.get('annotation', '')}
-        return {'initial': initial}
+        try:
+            cart = CartModel.objects.get_from_request(request)
+            return {'initial': {'annotation': cart.extra['annotation']}}
+        except (CartModel.DoesNotExist, KeyError):
+            return {}
 
 DialogFormPluginBase.register_plugin(ExtraAnnotationFormPlugin)
 
