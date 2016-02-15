@@ -240,7 +240,7 @@ class DialogFormPluginBase(ShopPluginBase):
                 cart.update(request)
                 form_data['cart'] = cart
             except CartModel.DoesNotExist:
-                pass
+                form_data['cart'] = None
         request._plugin_order = getattr(request, '_plugin_order', 0) + 1
         if not isinstance(form_data.get('initial'), dict):
             form_data['initial'] = {}
