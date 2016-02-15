@@ -28,9 +28,8 @@ class CMSPageAsCategoryMixin(object):
             raise ImproperlyConfigured("Product model requires a field named `cms_pages`")
 
     def get_fieldsets(self, request, obj=None):
-        fieldsets = super(CMSPageAsCategoryMixin, self).get_fieldsets(request, obj=obj)
-        fieldsets += (_("Categories"), {'fields': ('cms_pages',)}),
-        return fieldsets
+        fieldsets = (_("Categories"), {'fields': ('cms_pages',)}),
+        return super(CMSPageAsCategoryMixin, self).get_fieldsets(request, obj=obj) + fieldsets
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         if db_field.name == 'cms_pages':
