@@ -15,6 +15,23 @@ Changelog for djangoSHOP
 * To be more Pythonic, class:`shop.models.cart.CartModelManager` raises a ``DoesNotExist`` exception
   instead of ``None`` for visiting customers.
 * Added method ``filter_from_request`` to class:`shop.models.order.OrderManager`.
+* Fixed: OrderAdmin doesn't ignores error if customer URL can't be resolved.
+* Fixed: Version checking of Django.
+* Fixed: Fieldsets duplication in Product Admin.
+* CartPlugin now can be child of ProcessStepPlugin and BootstrapPanelPlugin.
+* Added ShopAddToCartPlugin.
+* All Checkout Forms now can be rendered as editable or summary.
+* All Dialog Forms now can declare a legend.
+* In ``DialogFormPlugin``, method ``form_factory`` always returns a form class instead of an error
+  dict if form was invalid.
+* Added method ``OrderManager.filter_from_request``, which behaves analogous to
+  ``CartManager.get_from_request``.
+* Fixed lookups using MoneyField by adding method get_prep_value.
+* Dropped support for South migrations.
+* Fixed: In ``ProductIndex``, translations now are always overridden.
+* Added class ``SyncCatalogView`` which can be used to synchronize the cart with a catalog list
+  view.
+* Content of Checkout Forms is handled by a singe transaction.
 
 0.9.0rc1
 ========
