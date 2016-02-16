@@ -31,7 +31,7 @@ Changelog for djangoSHOP
 * Fixed: In ``ProductIndex``, translations now are always overridden.
 * Added class ``SyncCatalogView`` which can be used to synchronize the cart with a catalog list
   view.
-* Content of Checkout Forms is handled by a singe transaction.
+* Content of Checkout Forms is handled by a single transaction.
 
 0.9.0rc1
 ========
