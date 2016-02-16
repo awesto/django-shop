@@ -8,5 +8,6 @@ from cms.apphook_pool import apphook_pool
 class OrderApp(CMSApp):
     name = _("View Orders")
     urls = ['shop.urls.order']
+    cache_placeholders = False
 
 apphook_pool.register(OrderApp)

@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from django.forms import widgets
 from django.template import Template
 from django.template.loader import select_template, TemplateDoesNotExist
 from django.utils.translation import ugettext_lazy as _
+from cms.apphook_pool import apphook_pool
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.fields import PartialFormField
 from shop import settings as shop_settings
@@ -34,5 +36,9 @@ class BreadcrumbPlugin(ShopPluginBase):
             ])
         except TemplateDoesNotExist:
             return Template('<!-- empty breadcrumb -->')
+
+    def get_use_cache(self, context, instance, placeholder):
+        app = apphook_pool.get_apphook(instance.page.application_urls)
+        return getattr(app, 'cache_placeholders', self.cache)
 
 plugin_pool.register_plugin(BreadcrumbPlugin)
