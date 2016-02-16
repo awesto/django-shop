@@ -9,7 +9,7 @@ from shop.models import Cart
 from shop.models.ordermodel import OrderPayment
 from shop.models.ordermodel import Order
 from shop.shop_api import ShopAPI
-from shop.order_signals import completed
+from shop.order_signals import completed, cancelled
 from django.core.urlresolvers import reverse
 
 class PaymentAPI(ShopAPI):
@@ -58,6 +58,11 @@ class PaymentAPI(ShopAPI):
 
             completed.send(sender=self, order=order)
 
+    def cancel_payment(self, order, amount, payment_method, save=True):
+        if save:
+            order.status= Order.CANCELLED
+            order.save()
+        cancelled.send(sender=self, order=order)
 
     #==========================================================================
     # URLS
@@ -81,4 +86,5 @@ class PaymentAPI(ShopAPI):
         A helper for backends to let them redirect to a generic "order was
         cancelled" URL of their choosing.
         """
-        return reverse('checkout_payment')
+
+        return reverse('payment_error')
