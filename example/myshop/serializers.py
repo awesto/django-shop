@@ -9,8 +9,11 @@ from shop.rest.serializers import (ProductSummarySerializerBase, ProductDetailSe
     AddToCartSerializer)
 from shop.search.serializers import ProductSearchSerializer as ProductSearchSerializerBase
 from .search_indexes import myshop_search_index_classes
-if settings.SHOP_TUTORIAL in ('simple', 'i18n'):
-    Product = import_string('myshop.models.{}.smartcard.SmartCard'.format(settings.SHOP_TUTORIAL))
+
+if settings.SHOP_TUTORIAL == 'simple':
+    Product = import_string('myshop.models.simple.smartcard.SmartCard')
+elif settings.SHOP_TUTORIAL == 'i18n':
+    Product = import_string('myshop.models.i18n.smartcard.SmartCard')
 else:
     Product = import_string('myshop.models.polymorphic.product.Product')
 
