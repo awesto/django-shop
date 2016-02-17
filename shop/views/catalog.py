@@ -131,8 +131,6 @@ class AddToCartView(views.APIView):
 class ProductRetrieveView(generics.RetrieveAPIView):
     """
     View responsible for rendering the products details.
-    Additionally an extra method as shown in products lists, cart lists
-    and order item lists.
     """
     renderer_classes = (CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer)
     lookup_field = lookup_url_kwarg = 'slug'
