@@ -7,7 +7,7 @@
     "is_active": true,
     "is_superuser": true,
     "is_staff": true,
-    "last_login": "2016-02-15T21:29:36.603Z",
+    "last_login": "2016-02-17T15:01:37.917Z",
     "groups": [],
     "user_permissions": [],
     "password": "pbkdf2_sha256$20000$ysHUGIGUcl9v$pOGpVddP8XE2IksxoHwfS0nm7tinNTBjKR13syQWt5k=",
@@ -225,7 +225,7 @@
       22,
       23
     ],
-    "changed_date": "2016-02-15T21:31:15.002Z",
+    "changed_date": "2016-02-17T15:22:08.924Z",
     "limit_visibility_in_menu": null,
     "parent": null,
     "numchild": 0,
@@ -261,7 +261,7 @@
       24,
       25
     ],
-    "changed_date": "2016-02-15T21:31:14.700Z",
+    "changed_date": "2016-02-17T15:22:08.630Z",
     "limit_visibility_in_menu": null,
     "parent": null,
     "numchild": 0,
@@ -369,7 +369,7 @@
       30,
       31
     ],
-    "changed_date": "2016-02-15T20:24:08.020Z",
+    "changed_date": "2016-02-16T08:03:13.953Z",
     "limit_visibility_in_menu": null,
     "parent": 9,
     "numchild": 1,
@@ -405,7 +405,7 @@
       32,
       33
     ],
-    "changed_date": "2016-02-15T20:24:07.888Z",
+    "changed_date": "2016-02-16T08:03:13.820Z",
     "limit_visibility_in_menu": null,
     "parent": 10,
     "numchild": 1,
@@ -657,7 +657,7 @@
       49,
       50
     ],
-    "changed_date": "2016-02-09T08:53:55.571Z",
+    "changed_date": "2016-02-17T15:31:24.305Z",
     "limit_visibility_in_menu": null,
     "parent": 21,
     "numchild": 0,
@@ -693,7 +693,7 @@
       51,
       52
     ],
-    "changed_date": "2016-02-09T08:53:55.440Z",
+    "changed_date": "2016-02-17T15:31:24.156Z",
     "limit_visibility_in_menu": null,
     "parent": 22,
     "numchild": 0,
@@ -729,10 +729,10 @@
       53,
       54
     ],
-    "changed_date": "2016-02-15T21:31:14.844Z",
+    "changed_date": "2016-02-17T15:22:08.772Z",
     "limit_visibility_in_menu": null,
     "parent": null,
-    "numchild": 2,
+    "numchild": 3,
     "soft_root": false,
     "is_home": false,
     "publication_date": "2015-12-03T07:58:33.739Z",
@@ -765,10 +765,10 @@
       55,
       56
     ],
-    "changed_date": "2016-02-15T21:31:14.537Z",
+    "changed_date": "2016-02-17T15:22:08.481Z",
     "limit_visibility_in_menu": null,
     "parent": null,
-    "numchild": 2,
+    "numchild": 3,
     "soft_root": false,
     "is_home": false,
     "publication_date": "2015-12-03T07:58:33.739Z",
@@ -855,6 +855,78 @@
   },
   "model": "cms.page",
   "pk": 24
+},
+{
+  "fields": {
+    "navigation_extenders": "",
+    "site": 1,
+    "application_namespace": null,
+    "path": "00030003",
+    "in_navigation": true,
+    "reverse_id": null,
+    "login_required": false,
+    "created_by": "admin",
+    "languages": "en,de",
+    "publication_end_date": null,
+    "template": "INHERIT",
+    "placeholders": [
+      63,
+      64
+    ],
+    "changed_date": "2016-02-17T15:26:29.427Z",
+    "limit_visibility_in_menu": null,
+    "parent": 21,
+    "numchild": 0,
+    "soft_root": false,
+    "is_home": false,
+    "publication_date": "2016-02-17T15:26:22.100Z",
+    "creation_date": "2016-02-17T15:25:29.728Z",
+    "publisher_public": 26,
+    "application_urls": "ProductsListApp",
+    "changed_by": "admin",
+    "publisher_is_draft": true,
+    "xframe_options": 0,
+    "depth": 2,
+    "revision_id": 0
+  },
+  "model": "cms.page",
+  "pk": 25
+},
+{
+  "fields": {
+    "navigation_extenders": "",
+    "site": 1,
+    "application_namespace": null,
+    "path": "00040003",
+    "in_navigation": true,
+    "reverse_id": null,
+    "login_required": false,
+    "created_by": "admin",
+    "languages": "en,de",
+    "publication_end_date": null,
+    "template": "INHERIT",
+    "placeholders": [
+      65,
+      66
+    ],
+    "changed_date": "2016-02-17T15:26:29.286Z",
+    "limit_visibility_in_menu": null,
+    "parent": 22,
+    "numchild": 0,
+    "soft_root": false,
+    "is_home": false,
+    "publication_date": "2016-02-17T15:26:22.100Z",
+    "creation_date": "2016-02-17T15:26:22.144Z",
+    "publisher_public": 25,
+    "application_urls": "ProductsListApp",
+    "changed_by": "admin",
+    "publisher_is_draft": false,
+    "xframe_options": 0,
+    "depth": 2,
+    "revision_id": 0
+  },
+  "model": "cms.page",
+  "pk": 26
 },
 {
   "fields": {
@@ -1311,6 +1383,54 @@
   },
   "model": "cms.placeholder",
   "pk": 61
+},
+{
+  "fields": {
+    "slot": "Commodity Details",
+    "default_width": null
+  },
+  "model": "cms.placeholder",
+  "pk": 62
+},
+{
+  "fields": {
+    "slot": "Breadcrumb",
+    "default_width": null
+  },
+  "model": "cms.placeholder",
+  "pk": 63
+},
+{
+  "fields": {
+    "slot": "Main Content Container",
+    "default_width": null
+  },
+  "model": "cms.placeholder",
+  "pk": 64
+},
+{
+  "fields": {
+    "slot": "Breadcrumb",
+    "default_width": null
+  },
+  "model": "cms.placeholder",
+  "pk": 65
+},
+{
+  "fields": {
+    "slot": "Main Content Container",
+    "default_width": null
+  },
+  "model": "cms.placeholder",
+  "pk": 66
+},
+{
+  "fields": {
+    "slot": "Commodity Details",
+    "default_width": null
+  },
+  "model": "cms.placeholder",
+  "pk": 67
 },
 {
   "fields": {
@@ -1794,7 +1914,7 @@
 },
 {
   "fields": {
-    "changed_date": "2016-02-01T10:00:24.454Z",
+    "changed_date": "2016-02-16T07:23:25.371Z",
     "language": "de",
     "parent": 200,
     "numchild": 2,
@@ -2866,7 +2986,7 @@
 },
 {
   "fields": {
-    "changed_date": "2016-02-01T10:00:24.491Z",
+    "changed_date": "2016-02-16T07:22:59.691Z",
     "language": "de",
     "parent": 202,
     "numchild": 0,
@@ -5170,70 +5290,6 @@
 },
 {
   "fields": {
-    "changed_date": "2016-02-15T20:24:07.750Z",
-    "language": "de",
-    "parent": null,
-    "numchild": 1,
-    "creation_date": "2016-01-16T22:08:37.403Z",
-    "depth": 1,
-    "position": 0,
-    "path": "0045",
-    "placeholder": 33,
-    "plugin_type": "BootstrapContainerPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2600
-},
-{
-  "fields": {
-    "changed_date": "2016-02-15T20:24:07.780Z",
-    "language": "de",
-    "parent": 2600,
-    "numchild": 1,
-    "creation_date": "2015-11-12T12:34:05.647Z",
-    "depth": 2,
-    "position": 0,
-    "path": "00450001",
-    "placeholder": 33,
-    "plugin_type": "BootstrapRowPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2601
-},
-{
-  "fields": {
-    "changed_date": "2016-02-15T20:24:07.822Z",
-    "language": "de",
-    "parent": 2601,
-    "numchild": 1,
-    "creation_date": "2015-11-12T12:34:10.821Z",
-    "depth": 3,
-    "position": 0,
-    "path": "004500010001",
-    "placeholder": 33,
-    "plugin_type": "BootstrapColumnPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2602
-},
-{
-  "fields": {
-    "changed_date": "2016-02-15T20:24:07.852Z",
-    "language": "de",
-    "parent": 2602,
-    "numchild": 0,
-    "creation_date": "2015-11-12T12:36:11.833Z",
-    "depth": 4,
-    "position": 0,
-    "path": "0045000100010001",
-    "placeholder": 33,
-    "plugin_type": "ShopOrderViewsPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2603
-},
-{
-  "fields": {
     "changed_date": "2016-02-15T21:30:49.485Z",
     "language": "en",
     "parent": null,
@@ -5330,134 +5386,6 @@
 },
 {
   "fields": {
-    "changed_date": "2016-02-15T21:30:57.352Z",
-    "language": "de",
-    "parent": null,
-    "numchild": 1,
-    "creation_date": "2016-01-16T21:59:33.811Z",
-    "depth": 1,
-    "position": 0,
-    "path": "004B",
-    "placeholder": 25,
-    "plugin_type": "BootstrapContainerPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2709
-},
-{
-  "fields": {
-    "changed_date": "2016-02-15T21:30:57.387Z",
-    "language": "de",
-    "parent": 2709,
-    "numchild": 2,
-    "creation_date": "2015-11-05T11:08:54.064Z",
-    "depth": 2,
-    "position": 0,
-    "path": "004B0001",
-    "placeholder": 25,
-    "plugin_type": "BootstrapRowPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2710
-},
-{
-  "fields": {
-    "changed_date": "2016-02-15T21:30:57.437Z",
-    "language": "de",
-    "parent": 2710,
-    "numchild": 1,
-    "creation_date": "2015-11-05T11:09:02.696Z",
-    "depth": 3,
-    "position": 0,
-    "path": "004B00010001",
-    "placeholder": 25,
-    "plugin_type": "BootstrapColumnPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2711
-},
-{
-  "fields": {
-    "changed_date": "2016-02-15T21:30:57.464Z",
-    "language": "de",
-    "parent": 2711,
-    "numchild": 0,
-    "creation_date": "2015-11-25T17:34:43.289Z",
-    "depth": 4,
-    "position": 0,
-    "path": "004B000100010001",
-    "placeholder": 25,
-    "plugin_type": "BootstrapImagePlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2712
-},
-{
-  "fields": {
-    "changed_date": "2016-02-15T21:30:57.513Z",
-    "language": "de",
-    "parent": 2710,
-    "numchild": 2,
-    "creation_date": "2015-11-05T11:09:02.802Z",
-    "depth": 3,
-    "position": 1,
-    "path": "004B00010002",
-    "placeholder": 25,
-    "plugin_type": "BootstrapColumnPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2713
-},
-{
-  "fields": {
-    "changed_date": "2016-02-15T21:30:57.662Z",
-    "language": "de",
-    "parent": 2713,
-    "numchild": 1,
-    "creation_date": "2015-11-05T12:07:15.175Z",
-    "depth": 4,
-    "position": 0,
-    "path": "004B000100020001",
-    "placeholder": 25,
-    "plugin_type": "TextPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2714
-},
-{
-  "fields": {
-    "changed_date": "2016-02-15T21:30:57.578Z",
-    "language": "de",
-    "parent": 2714,
-    "numchild": 0,
-    "creation_date": "2015-12-14T21:58:41.769Z",
-    "depth": 5,
-    "position": 0,
-    "path": "004B0001000200010001",
-    "placeholder": 25,
-    "plugin_type": "TextLinkPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2715
-},
-{
-  "fields": {
-    "changed_date": "2016-02-15T21:30:57.613Z",
-    "language": "de",
-    "parent": 2713,
-    "numchild": 0,
-    "creation_date": "2015-12-18T18:10:29.618Z",
-    "depth": 4,
-    "position": 1,
-    "path": "004B000100020002",
-    "placeholder": 25,
-    "plugin_type": "BootstrapButtonPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2716
-},
-{
-  "fields": {
     "changed_date": "2016-02-15T21:31:05.467Z",
     "language": "de",
     "parent": null,
@@ -5535,86 +5463,6 @@
   },
   "model": "cms.cmsplugin",
   "pk": 2721
-},
-{
-  "fields": {
-    "changed_date": "2016-02-15T21:31:14.346Z",
-    "language": "en",
-    "parent": null,
-    "numchild": 1,
-    "creation_date": "2016-01-26T23:56:56.939Z",
-    "depth": 1,
-    "position": 0,
-    "path": "004D",
-    "placeholder": 56,
-    "plugin_type": "BootstrapContainerPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2722
-},
-{
-  "fields": {
-    "changed_date": "2016-02-15T21:31:14.373Z",
-    "language": "en",
-    "parent": 2722,
-    "numchild": 1,
-    "creation_date": "2016-01-02T13:24:32.828Z",
-    "depth": 2,
-    "position": 0,
-    "path": "004D0001",
-    "placeholder": 56,
-    "plugin_type": "BootstrapRowPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2723
-},
-{
-  "fields": {
-    "changed_date": "2016-02-15T21:31:14.416Z",
-    "language": "en",
-    "parent": 2723,
-    "numchild": 2,
-    "creation_date": "2016-01-02T13:24:37.507Z",
-    "depth": 3,
-    "position": 0,
-    "path": "004D00010001",
-    "placeholder": 56,
-    "plugin_type": "BootstrapColumnPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2724
-},
-{
-  "fields": {
-    "changed_date": "2016-02-15T21:31:14.445Z",
-    "language": "en",
-    "parent": 2724,
-    "numchild": 0,
-    "creation_date": "2016-01-02T13:24:52.350Z",
-    "depth": 4,
-    "position": 1,
-    "path": "004D000100010001",
-    "placeholder": 56,
-    "plugin_type": "ShopCatalogPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2725
-},
-{
-  "fields": {
-    "changed_date": "2016-02-15T21:31:14.518Z",
-    "language": "en",
-    "parent": 2724,
-    "numchild": 0,
-    "creation_date": "2015-12-19T17:58:32.891Z",
-    "depth": 4,
-    "position": 0,
-    "path": "004D000100010002",
-    "placeholder": 56,
-    "plugin_type": "TextPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 2726
 },
 {
   "fields": {
@@ -7202,6 +7050,406 @@
 },
 {
   "fields": {
+    "changed_date": "2016-02-16T07:23:32.010Z",
+    "language": "de",
+    "parent": null,
+    "numchild": 1,
+    "creation_date": "2016-01-16T21:59:33.811Z",
+    "depth": 1,
+    "position": 0,
+    "path": "004I",
+    "placeholder": 25,
+    "plugin_type": "BootstrapContainerPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2827
+},
+{
+  "fields": {
+    "changed_date": "2016-02-16T07:23:32.041Z",
+    "language": "de",
+    "parent": 2827,
+    "numchild": 2,
+    "creation_date": "2015-11-05T11:08:54.064Z",
+    "depth": 2,
+    "position": 0,
+    "path": "004I0001",
+    "placeholder": 25,
+    "plugin_type": "BootstrapRowPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2828
+},
+{
+  "fields": {
+    "changed_date": "2016-02-16T07:23:32.088Z",
+    "language": "de",
+    "parent": 2828,
+    "numchild": 1,
+    "creation_date": "2015-11-05T11:09:02.696Z",
+    "depth": 3,
+    "position": 0,
+    "path": "004I00010001",
+    "placeholder": 25,
+    "plugin_type": "BootstrapColumnPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2829
+},
+{
+  "fields": {
+    "changed_date": "2016-02-16T07:23:32.116Z",
+    "language": "de",
+    "parent": 2829,
+    "numchild": 0,
+    "creation_date": "2015-11-25T17:34:43.289Z",
+    "depth": 4,
+    "position": 0,
+    "path": "004I000100010001",
+    "placeholder": 25,
+    "plugin_type": "BootstrapImagePlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2830
+},
+{
+  "fields": {
+    "changed_date": "2016-02-16T07:23:32.169Z",
+    "language": "de",
+    "parent": 2828,
+    "numchild": 2,
+    "creation_date": "2015-11-05T11:09:02.802Z",
+    "depth": 3,
+    "position": 1,
+    "path": "004I00010002",
+    "placeholder": 25,
+    "plugin_type": "BootstrapColumnPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2831
+},
+{
+  "fields": {
+    "changed_date": "2016-02-16T07:23:32.334Z",
+    "language": "de",
+    "parent": 2831,
+    "numchild": 1,
+    "creation_date": "2015-11-05T12:07:15.175Z",
+    "depth": 4,
+    "position": 0,
+    "path": "004I000100020001",
+    "placeholder": 25,
+    "plugin_type": "TextPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2832
+},
+{
+  "fields": {
+    "changed_date": "2016-02-16T07:23:32.251Z",
+    "language": "de",
+    "parent": 2832,
+    "numchild": 0,
+    "creation_date": "2015-12-14T21:58:41.769Z",
+    "depth": 5,
+    "position": 0,
+    "path": "004I0001000200010001",
+    "placeholder": 25,
+    "plugin_type": "TextLinkPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2833
+},
+{
+  "fields": {
+    "changed_date": "2016-02-16T07:23:32.285Z",
+    "language": "de",
+    "parent": 2831,
+    "numchild": 0,
+    "creation_date": "2015-12-18T18:10:29.618Z",
+    "depth": 4,
+    "position": 1,
+    "path": "004I000100020002",
+    "placeholder": 25,
+    "plugin_type": "BootstrapButtonPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2834
+},
+{
+  "fields": {
+    "changed_date": "2016-02-16T08:03:02.457Z",
+    "language": "de",
+    "parent": null,
+    "numchild": 0,
+    "creation_date": "2016-02-16T07:24:05.825Z",
+    "depth": 1,
+    "position": 0,
+    "path": "004J",
+    "placeholder": 30,
+    "plugin_type": "BreadcrumbPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2835
+},
+{
+  "fields": {
+    "changed_date": "2016-02-16T08:03:13.631Z",
+    "language": "de",
+    "parent": null,
+    "numchild": 0,
+    "creation_date": "2016-02-16T07:24:05.825Z",
+    "depth": 1,
+    "position": 0,
+    "path": "004K",
+    "placeholder": 32,
+    "plugin_type": "BreadcrumbPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2841
+},
+{
+  "fields": {
+    "changed_date": "2016-02-16T08:03:13.686Z",
+    "language": "de",
+    "parent": null,
+    "numchild": 1,
+    "creation_date": "2016-01-16T22:08:37.403Z",
+    "depth": 1,
+    "position": 0,
+    "path": "004L",
+    "placeholder": 33,
+    "plugin_type": "BootstrapContainerPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2842
+},
+{
+  "fields": {
+    "changed_date": "2016-02-16T08:03:13.714Z",
+    "language": "de",
+    "parent": 2842,
+    "numchild": 1,
+    "creation_date": "2015-11-12T12:34:05.647Z",
+    "depth": 2,
+    "position": 0,
+    "path": "004L0001",
+    "placeholder": 33,
+    "plugin_type": "BootstrapRowPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2843
+},
+{
+  "fields": {
+    "changed_date": "2016-02-16T08:03:13.757Z",
+    "language": "de",
+    "parent": 2843,
+    "numchild": 1,
+    "creation_date": "2015-11-12T12:34:10.821Z",
+    "depth": 3,
+    "position": 0,
+    "path": "004L00010001",
+    "placeholder": 33,
+    "plugin_type": "BootstrapColumnPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2844
+},
+{
+  "fields": {
+    "changed_date": "2016-02-16T08:03:13.787Z",
+    "language": "de",
+    "parent": 2844,
+    "numchild": 0,
+    "creation_date": "2015-11-12T12:36:11.833Z",
+    "depth": 4,
+    "position": 0,
+    "path": "004L000100010001",
+    "placeholder": 33,
+    "plugin_type": "ShopOrderViewsPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2845
+},
+{
+  "fields": {
+    "changed_date": "2016-02-17T15:20:31.797Z",
+    "language": "en",
+    "parent": null,
+    "numchild": 2,
+    "creation_date": "2016-02-17T15:20:25.354Z",
+    "depth": 1,
+    "position": 0,
+    "path": "004M",
+    "placeholder": 62,
+    "plugin_type": "BootstrapRowPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2846
+},
+{
+  "fields": {
+    "changed_date": "2016-02-17T15:22:44.993Z",
+    "language": "en",
+    "parent": 2846,
+    "numchild": 1,
+    "creation_date": "2016-02-17T15:20:31.815Z",
+    "depth": 2,
+    "position": 0,
+    "path": "004M0001",
+    "placeholder": 62,
+    "plugin_type": "BootstrapColumnPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2847
+},
+{
+  "fields": {
+    "changed_date": "2016-02-17T15:23:12.506Z",
+    "language": "en",
+    "parent": 2846,
+    "numchild": 2,
+    "creation_date": "2016-02-17T15:20:31.961Z",
+    "depth": 2,
+    "position": 1,
+    "path": "004M0002",
+    "placeholder": 62,
+    "plugin_type": "BootstrapColumnPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2848
+},
+{
+  "fields": {
+    "changed_date": "2016-02-17T15:24:34.549Z",
+    "language": "en",
+    "parent": 2847,
+    "numchild": 0,
+    "creation_date": "2016-02-17T15:20:49.877Z",
+    "depth": 3,
+    "position": 0,
+    "path": "004M00010001",
+    "placeholder": 62,
+    "plugin_type": "BootstrapImagePlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2849
+},
+{
+  "fields": {
+    "changed_date": "2016-02-17T15:21:41.383Z",
+    "language": "en",
+    "parent": 2848,
+    "numchild": 0,
+    "creation_date": "2016-02-17T15:21:32.903Z",
+    "depth": 3,
+    "position": 0,
+    "path": "004M00020001",
+    "placeholder": 62,
+    "plugin_type": "TextPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2850
+},
+{
+  "fields": {
+    "changed_date": "2016-02-17T15:21:55.303Z",
+    "language": "en",
+    "parent": 2848,
+    "numchild": 0,
+    "creation_date": "2016-02-17T15:21:53.246Z",
+    "depth": 3,
+    "position": 1,
+    "path": "004M00020002",
+    "placeholder": 62,
+    "plugin_type": "ShopAddToCartPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2851
+},
+{
+  "fields": {
+    "changed_date": "2016-02-17T15:22:08.309Z",
+    "language": "en",
+    "parent": null,
+    "numchild": 1,
+    "creation_date": "2016-01-26T23:56:56.939Z",
+    "depth": 1,
+    "position": 0,
+    "path": "004N",
+    "placeholder": 56,
+    "plugin_type": "BootstrapContainerPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2852
+},
+{
+  "fields": {
+    "changed_date": "2016-02-17T15:22:08.335Z",
+    "language": "en",
+    "parent": 2852,
+    "numchild": 1,
+    "creation_date": "2016-01-02T13:24:32.828Z",
+    "depth": 2,
+    "position": 0,
+    "path": "004N0001",
+    "placeholder": 56,
+    "plugin_type": "BootstrapRowPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2853
+},
+{
+  "fields": {
+    "changed_date": "2016-02-17T15:22:08.377Z",
+    "language": "en",
+    "parent": 2853,
+    "numchild": 2,
+    "creation_date": "2016-01-02T13:24:37.507Z",
+    "depth": 3,
+    "position": 0,
+    "path": "004N00010001",
+    "placeholder": 56,
+    "plugin_type": "BootstrapColumnPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2854
+},
+{
+  "fields": {
+    "changed_date": "2016-02-17T15:22:08.402Z",
+    "language": "en",
+    "parent": 2854,
+    "numchild": 0,
+    "creation_date": "2016-01-02T13:24:52.350Z",
+    "depth": 4,
+    "position": 1,
+    "path": "004N000100010001",
+    "placeholder": 56,
+    "plugin_type": "ShopCatalogPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2855
+},
+{
+  "fields": {
+    "changed_date": "2016-02-17T15:22:08.463Z",
+    "language": "en",
+    "parent": 2854,
+    "numchild": 0,
+    "creation_date": "2015-12-19T17:58:32.891Z",
+    "depth": 4,
+    "position": 0,
+    "path": "004N000100010002",
+    "placeholder": 56,
+    "plugin_type": "TextPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 2856
+},
+{
+  "fields": {
     "menu_title": "",
     "meta_description": "",
     "page_title": "",
@@ -7297,7 +7545,7 @@
     "page": 5,
     "published": true,
     "path": "warenkorb/kaufen",
-    "publisher_state": 0,
+    "publisher_state": 1,
     "creation_date": "2015-11-03T11:50:25.673Z",
     "slug": "kaufen",
     "publisher_public": 10
@@ -7318,7 +7566,7 @@
     "page": 6,
     "published": true,
     "path": "warenkorb/kaufen",
-    "publisher_state": 0,
+    "publisher_state": 1,
     "creation_date": "2015-11-03T11:50:25.673Z",
     "slug": "kaufen",
     "publisher_public": 9
@@ -7381,7 +7629,7 @@
     "page": 7,
     "published": true,
     "path": "",
-    "publisher_state": 0,
+    "publisher_state": 1,
     "creation_date": "2015-11-05T11:52:49.846Z",
     "slug": "home",
     "publisher_public": 14
@@ -7402,7 +7650,7 @@
     "page": 8,
     "published": true,
     "path": "",
-    "publisher_state": 0,
+    "publisher_state": 1,
     "creation_date": "2015-11-05T11:52:49.846Z",
     "slug": "home",
     "publisher_public": 13
@@ -7423,7 +7671,7 @@
     "page": 5,
     "published": true,
     "path": "cart/checkout",
-    "publisher_state": 0,
+    "publisher_state": 1,
     "creation_date": "2015-11-05T11:53:43.570Z",
     "slug": "checkout",
     "publisher_public": 16
@@ -7444,7 +7692,7 @@
     "page": 6,
     "published": true,
     "path": "cart/checkout",
-    "publisher_state": 0,
+    "publisher_state": 1,
     "creation_date": "2015-11-05T11:53:43.570Z",
     "slug": "checkout",
     "publisher_public": 15
@@ -7633,7 +7881,7 @@
     "page": 15,
     "published": true,
     "path": "info/agb",
-    "publisher_state": 0,
+    "publisher_state": 1,
     "creation_date": "2015-11-13T00:06:49.812Z",
     "slug": "agb",
     "publisher_public": 26
@@ -7654,7 +7902,7 @@
     "page": 16,
     "published": true,
     "path": "info/agb",
-    "publisher_state": 0,
+    "publisher_state": 1,
     "creation_date": "2015-11-13T00:06:49.812Z",
     "slug": "agb",
     "publisher_public": 25
@@ -7801,7 +8049,7 @@
     "page": 15,
     "published": true,
     "path": "info/terms-and-conditions",
-    "publisher_state": 0,
+    "publisher_state": 1,
     "creation_date": "2015-11-25T16:31:58.074Z",
     "slug": "terms-and-conditions",
     "publisher_public": 44
@@ -7843,7 +8091,7 @@
     "page": 19,
     "published": true,
     "path": "shop/smart-phones",
-    "publisher_state": 0,
+    "publisher_state": 1,
     "creation_date": "2015-12-02T22:03:34.672Z",
     "slug": "smart-phones",
     "publisher_public": 37
@@ -7906,7 +8154,7 @@
     "page": 21,
     "published": true,
     "path": "shop",
-    "publisher_state": 0,
+    "publisher_state": 1,
     "creation_date": "2015-12-03T07:54:18.802Z",
     "slug": "shop",
     "publisher_public": 41
@@ -7969,7 +8217,7 @@
     "page": 22,
     "published": true,
     "path": "shop",
-    "publisher_state": 0,
+    "publisher_state": 1,
     "creation_date": "2015-12-03T07:54:18.802Z",
     "slug": "shop",
     "publisher_public": 38
@@ -8032,7 +8280,7 @@
     "page": 16,
     "published": true,
     "path": "info/terms-and-conditions",
-    "publisher_state": 0,
+    "publisher_state": 1,
     "creation_date": "2015-11-25T16:31:58.074Z",
     "slug": "terms-and-conditions",
     "publisher_public": 33
@@ -8126,6 +8374,90 @@
 },
 {
   "fields": {
+    "menu_title": "",
+    "meta_description": "",
+    "page_title": "",
+    "language": "en",
+    "title": "Commodities",
+    "has_url_overwrite": false,
+    "redirect": "",
+    "publisher_is_draft": true,
+    "page": 25,
+    "published": true,
+    "path": "shop/commodities",
+    "publisher_state": 0,
+    "creation_date": "2016-02-17T15:25:30.046Z",
+    "slug": "commodities",
+    "publisher_public": 51
+  },
+  "model": "cms.title",
+  "pk": 49
+},
+{
+  "fields": {
+    "menu_title": "",
+    "meta_description": "",
+    "page_title": "",
+    "language": "de",
+    "title": "Allerlei",
+    "has_url_overwrite": false,
+    "redirect": null,
+    "publisher_is_draft": true,
+    "page": 25,
+    "published": true,
+    "path": "shop/allerlei",
+    "publisher_state": 0,
+    "creation_date": "2016-02-17T15:25:41.836Z",
+    "slug": "allerlei",
+    "publisher_public": 52
+  },
+  "model": "cms.title",
+  "pk": 50
+},
+{
+  "fields": {
+    "menu_title": "",
+    "meta_description": "",
+    "page_title": "",
+    "language": "en",
+    "title": "Commodities",
+    "has_url_overwrite": false,
+    "redirect": "",
+    "publisher_is_draft": false,
+    "page": 26,
+    "published": true,
+    "path": "shop/commodities",
+    "publisher_state": 0,
+    "creation_date": "2016-02-17T15:25:30.046Z",
+    "slug": "commodities",
+    "publisher_public": 49
+  },
+  "model": "cms.title",
+  "pk": 51
+},
+{
+  "fields": {
+    "menu_title": "",
+    "meta_description": "",
+    "page_title": "",
+    "language": "de",
+    "title": "Allerlei",
+    "has_url_overwrite": false,
+    "redirect": null,
+    "publisher_is_draft": false,
+    "page": 26,
+    "published": true,
+    "path": "shop/allerlei",
+    "publisher_state": 0,
+    "creation_date": "2016-02-17T15:25:41.836Z",
+    "slug": "allerlei",
+    "publisher_public": 50
+  },
+  "model": "cms.title",
+  "pk": 52
+},
+{
+  "fields": {
     "code": "Static Footer",
     "name": "Static Footer",
     "creation_method": "template",
@@ -8139,7 +8471,7 @@
 },
 {
   "fields": {
-    "revision": "d22f8892-9a3b-4013-9cbf-ad5f95c98acc"
+    "revision": "b7b32fd6-ab06-4a3f-885b-a246c66d9c69"
   },
   "model": "cms.urlconfrevision",
   "pk": 1
@@ -8489,7 +8821,7 @@
 },
 {
   "fields": {
-    "glossary": "{\"image-height\":\"\",\"title\":\"\",\"image-title\":\"Django Pony\",\"image\":{\"pk\":1,\"model\":\"filer.Image\"},\"alt-tag\":\"\",\"image-width-fixed\":\"\",\"resize-options\":[\"subject_location\",\"high_resolution\"],\"link\":{\"type\":\"none\"},\"image-shapes\":[\"img-responsive\"],\"target\":\"\",\"image-width-responsive\":\"100%\"}"
+    "glossary": "{\"image-width-responsive\":\"100%\",\"title\":\"\",\"image-title\":\"Django Pony\",\"image\":{\"pk\":1,\"model\":\"filer.Image\"},\"alt-tag\":\"\",\"image-width-fixed\":\"\",\"resize-options\":[\"subject_location\",\"high_resolution\"],\"link\":{\"type\":\"none\"},\"image-shapes\":[\"img-responsive\"],\"target\":\"\",\"image-height\":\"\"}"
   },
   "model": "cmsplugin_cascade.cascadeelement",
   "pk": 348
@@ -8769,7 +9101,7 @@
 },
 {
   "fields": {
-    "glossary": "{\"image-width-responsive\":\"100%\",\"image-height\":\"\",\"title\":\"\",\"image-title\":\"Django Pony\",\"image\":{\"pk\":1,\"model\":\"filer.Image\"},\"image-width-fixed\":\"\",\"resize-options\":[\"subject_location\",\"high_resolution\"],\"link\":{\"type\":\"none\"},\"alt-tag\":\"\",\"image-shapes\":[\"img-responsive\"],\"target\":\"\"}"
+    "glossary": "{\"image-width-responsive\":\"100%\",\"title\":\"\",\"image-title\":\"Django Pony\",\"image\":{\"pk\":1,\"model\":\"filer.Image\"},\"image-height\":\"\",\"image-width-fixed\":\"\",\"resize-options\":[\"subject_location\",\"high_resolution\"],\"link\":{\"type\":\"none\"},\"alt-tag\":\"\",\"image-shapes\":[\"img-responsive\"],\"target\":\"\"}"
   },
   "model": "cmsplugin_cascade.cascadeelement",
   "pk": 567
@@ -8811,7 +9143,7 @@
 },
 {
   "fields": {
-    "glossary": "{\"icon-right\":\"\",\"extra_inline_styles:Margins\":{\"margin-top\":\"100px\",\"margin-bottom\":\"100px\"},\"button-type\":\"btn-success\",\"link_content\":\"Info\",\"link\":{\"pk\":9,\"model\":\"cms.Page\",\"type\":\"cmspage\"},\"button-size\":\"\",\"quick-float\":\"\",\"extra_element_id\":\"\",\"extra_css_classes\":[\"cap\"],\"button-options\":[],\"icon-left\":\"\"}"
+    "glossary": "{\"icon-right\":\"\",\"extra_inline_styles:Margins\":{\"margin-top\":\"30px\",\"margin-bottom\":\"30px\"},\"button-type\":\"btn-success\",\"link_content\":\"Info\",\"link\":{\"pk\":9,\"model\":\"cms.Page\",\"type\":\"cmspage\"},\"button-size\":\"\",\"quick-float\":\"\",\"extra_element_id\":\"\",\"extra_css_classes\":[\"cap\"],\"button-options\":[],\"icon-left\":\"\"}"
   },
   "model": "cmsplugin_cascade.cascadeelement",
   "pk": 679
@@ -9752,34 +10084,6 @@
     "glossary": "{\"media_queries\":{\"xs\":[\"(max-width: 768px)\"],\"md\":[\"(min-width: 992px)\",\"(max-width: 1200px)\"],\"sm\":[\"(min-width: 768px)\",\"(max-width: 992px)\"],\"lg\":[\"(min-width: 1200px)\"]},\"container_max_widths\":{\"xs\":750,\"md\":970,\"sm\":750,\"lg\":1170},\"fluid\":\"\",\"breakpoints\":[\"xs\",\"sm\",\"md\",\"lg\"]}"
   },
   "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2600
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2601
-},
-{
-  "fields": {
-    "glossary": "{\"container_max_widths\":{\"xs\":720,\"md\":940,\"sm\":720,\"lg\":1140},\"xs-column-width\":\"col-xs-12\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2602
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2603
-},
-{
-  "fields": {
-    "glossary": "{\"media_queries\":{\"xs\":[\"(max-width: 768px)\"],\"md\":[\"(min-width: 992px)\",\"(max-width: 1200px)\"],\"sm\":[\"(min-width: 768px)\",\"(max-width: 992px)\"],\"lg\":[\"(min-width: 1200px)\"]},\"container_max_widths\":{\"xs\":750,\"md\":970,\"sm\":750,\"lg\":1170},\"fluid\":\"\",\"breakpoints\":[\"xs\",\"sm\",\"md\",\"lg\"]}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
   "pk": 2703
 },
 {
@@ -9798,7 +10102,7 @@
 },
 {
   "fields": {
-    "glossary": "{\"image-width-responsive\":\"100%\",\"title\":\"\",\"image-title\":\"Django Pony\",\"image\":{\"pk\":1,\"model\":\"filer.Image\"},\"alt-tag\":\"\",\"image-width-fixed\":\"\",\"resize-options\":[\"subject_location\",\"high_resolution\"],\"link\":{\"type\":\"none\"},\"image-shapes\":[\"img-responsive\"],\"target\":\"\",\"image-height\":\"\"}"
+    "glossary": "{\"image-height\":\"\",\"title\":\"\",\"image-title\":\"Django Pony\",\"image\":{\"pk\":1,\"model\":\"filer.Image\"},\"alt-tag\":\"\",\"image-width-fixed\":\"\",\"resize-options\":[\"subject_location\",\"high_resolution\"],\"link\":{\"type\":\"none\"},\"image-shapes\":[\"img-responsive\"],\"target\":\"\",\"image-width-responsive\":\"100%\"}"
   },
   "model": "cmsplugin_cascade.cascadeelement",
   "pk": 2706
@@ -9809,55 +10113,6 @@
   },
   "model": "cmsplugin_cascade.cascadeelement",
   "pk": 2707
-},
-{
-  "fields": {
-    "glossary": "{\"media_queries\":{\"xs\":[\"(max-width: 768px)\"],\"md\":[\"(min-width: 992px)\",\"(max-width: 1200px)\"],\"sm\":[\"(min-width: 768px)\",\"(max-width: 992px)\"],\"lg\":[\"(min-width: 1200px)\"]},\"container_max_widths\":{\"xs\":750,\"md\":970,\"sm\":750,\"lg\":1170},\"fluid\":\"\",\"breakpoints\":[\"xs\",\"sm\",\"md\",\"lg\"]}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2709
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2710
-},
-{
-  "fields": {
-    "glossary": "{\"sm-responsive-utils\":\"\",\"xs-responsive-utils\":\"\",\"md-column-offset\":\"\",\"sm-column-width\":\"\",\"md-responsive-utils\":\"\",\"xs-column-offset\":\"\",\"sm-column-offset\":\"\",\"sm-column-ordering\":\"\",\"md-column-ordering\":\"\",\"lg-column-ordering\":\"\",\"lg-column-offset\":\"\",\"md-column-width\":\"\",\"xs-column-width\":\"col-xs-3\",\"lg-responsive-utils\":\"\",\"container_max_widths\":{\"xs\":157,\"md\":212,\"sm\":157,\"lg\":262},\"lg-column-width\":\"\",\"xs-column-ordering\":\"\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2711
-},
-{
-  "fields": {
-    "glossary": "{\"image-width-responsive\":\"100%\",\"image-height\":\"\",\"title\":\"\",\"image-title\":\"Django Pony\",\"image\":{\"pk\":1,\"model\":\"filer.Image\"},\"image-width-fixed\":\"\",\"resize-options\":[\"subject_location\",\"high_resolution\"],\"link\":{\"type\":\"none\"},\"alt-tag\":\"\",\"image-shapes\":[\"img-responsive\"],\"target\":\"\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2712
-},
-{
-  "fields": {
-    "glossary": "{\"sm-responsive-utils\":\"\",\"xs-responsive-utils\":\"\",\"md-column-offset\":\"\",\"sm-column-width\":\"\",\"md-responsive-utils\":\"\",\"xs-column-offset\":\"\",\"sm-column-offset\":\"\",\"sm-column-ordering\":\"\",\"md-column-ordering\":\"\",\"lg-column-ordering\":\"\",\"lg-column-offset\":\"\",\"md-column-width\":\"\",\"xs-column-width\":\"col-xs-9\",\"lg-responsive-utils\":\"\",\"container_max_widths\":{\"xs\":532,\"md\":697,\"sm\":532,\"lg\":847},\"lg-column-width\":\"\",\"xs-column-ordering\":\"\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2713
-},
-{
-  "fields": {
-    "glossary": "{\"link_content\":\"gravida\",\"link\":{\"pk\":48,\"model\":\"myshop.Product\",\"type\":\"product\"},\"target\":\"\",\"render_template\":\"cascade/link/text-link.html\",\"title\":\"\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2715
-},
-{
-  "fields": {
-    "glossary": "{\"icon-right\":\"\",\"extra_inline_styles:Margins\":{\"margin-top\":\"100px\",\"margin-bottom\":\"100px\"},\"button-type\":\"btn-success\",\"link_content\":\"Info\",\"link\":{\"pk\":9,\"model\":\"cms.Page\",\"type\":\"cmspage\"},\"button-size\":\"\",\"quick-float\":\"\",\"extra_element_id\":\"\",\"extra_css_classes\":[\"cap\"],\"button-options\":[],\"icon-left\":\"\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2716
 },
 {
   "fields": {
@@ -9886,34 +10141,6 @@
   },
   "model": "cmsplugin_cascade.cascadeelement",
   "pk": 2720
-},
-{
-  "fields": {
-    "glossary": "{\"media_queries\":{\"xs\":[\"(max-width: 768px)\"],\"md\":[\"(min-width: 992px)\",\"(max-width: 1200px)\"],\"sm\":[\"(min-width: 768px)\",\"(max-width: 992px)\"],\"lg\":[\"(min-width: 1200px)\"]},\"container_max_widths\":{\"xs\":750,\"md\":970,\"sm\":750,\"lg\":1170},\"fluid\":\"\",\"breakpoints\":[\"xs\",\"sm\",\"md\",\"lg\"]}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2722
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2723
-},
-{
-  "fields": {
-    "glossary": "{\"container_max_widths\":{\"xs\":720,\"md\":940,\"sm\":720,\"lg\":1140},\"xs-column-width\":\"col-xs-12\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2724
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 2725
 },
 {
   "fields": {
@@ -10568,6 +10795,160 @@
 },
 {
   "fields": {
+    "glossary": "{\"media_queries\":{\"xs\":[\"(max-width: 768px)\"],\"md\":[\"(min-width: 992px)\",\"(max-width: 1200px)\"],\"sm\":[\"(min-width: 768px)\",\"(max-width: 992px)\"],\"lg\":[\"(min-width: 1200px)\"]},\"container_max_widths\":{\"xs\":750,\"md\":970,\"sm\":750,\"lg\":1170},\"fluid\":\"\",\"breakpoints\":[\"xs\",\"sm\",\"md\",\"lg\"]}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2827
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2828
+},
+{
+  "fields": {
+    "glossary": "{\"sm-responsive-utils\":\"\",\"xs-responsive-utils\":\"\",\"md-column-offset\":\"\",\"sm-column-width\":\"\",\"md-responsive-utils\":\"\",\"xs-column-offset\":\"\",\"sm-column-offset\":\"\",\"sm-column-ordering\":\"\",\"md-column-ordering\":\"\",\"lg-column-ordering\":\"\",\"lg-column-offset\":\"\",\"md-column-width\":\"\",\"xs-column-width\":\"col-xs-3\",\"lg-responsive-utils\":\"\",\"container_max_widths\":{\"xs\":157,\"md\":212,\"sm\":157,\"lg\":262},\"lg-column-width\":\"\",\"xs-column-ordering\":\"\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2829
+},
+{
+  "fields": {
+    "glossary": "{\"image-width-responsive\":\"100%\",\"title\":\"\",\"image-title\":\"Django Pony\",\"image\":{\"pk\":1,\"model\":\"filer.Image\"},\"image-height\":\"\",\"image-width-fixed\":\"\",\"resize-options\":[\"subject_location\",\"high_resolution\"],\"link\":{\"type\":\"none\"},\"alt-tag\":\"\",\"image-shapes\":[\"img-responsive\"],\"target\":\"\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2830
+},
+{
+  "fields": {
+    "glossary": "{\"sm-responsive-utils\":\"\",\"xs-responsive-utils\":\"\",\"md-column-offset\":\"\",\"sm-column-width\":\"\",\"md-responsive-utils\":\"\",\"xs-column-offset\":\"\",\"sm-column-offset\":\"\",\"sm-column-ordering\":\"\",\"md-column-ordering\":\"\",\"lg-column-ordering\":\"\",\"lg-column-offset\":\"\",\"md-column-width\":\"\",\"xs-column-width\":\"col-xs-9\",\"lg-responsive-utils\":\"\",\"container_max_widths\":{\"xs\":532,\"md\":697,\"sm\":532,\"lg\":847},\"lg-column-width\":\"\",\"xs-column-ordering\":\"\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2831
+},
+{
+  "fields": {
+    "glossary": "{\"link_content\":\"gravida\",\"link\":{\"pk\":48,\"model\":\"myshop.Product\",\"type\":\"product\"},\"target\":\"\",\"render_template\":\"cascade/link/text-link.html\",\"title\":\"\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2833
+},
+{
+  "fields": {
+    "glossary": "{\"icon-right\":\"\",\"extra_inline_styles:Margins\":{\"margin-top\":\"30px\",\"margin-bottom\":\"30px\"},\"button-type\":\"btn-success\",\"link_content\":\"Info\",\"link\":{\"pk\":9,\"model\":\"cms.Page\",\"type\":\"cmspage\"},\"button-size\":\"\",\"quick-float\":\"\",\"extra_element_id\":\"\",\"extra_css_classes\":[\"cap\"],\"button-options\":[],\"icon-left\":\"\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2834
+},
+{
+  "fields": {
+    "glossary": "{\"render_type\":\"default\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2835
+},
+{
+  "fields": {
+    "glossary": "{\"render_type\":\"default\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2841
+},
+{
+  "fields": {
+    "glossary": "{\"media_queries\":{\"xs\":[\"(max-width: 768px)\"],\"md\":[\"(min-width: 992px)\",\"(max-width: 1200px)\"],\"sm\":[\"(min-width: 768px)\",\"(max-width: 992px)\"],\"lg\":[\"(min-width: 1200px)\"]},\"container_max_widths\":{\"xs\":750,\"md\":970,\"sm\":750,\"lg\":1170},\"fluid\":\"\",\"breakpoints\":[\"xs\",\"sm\",\"md\",\"lg\"]}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2842
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2843
+},
+{
+  "fields": {
+    "glossary": "{\"container_max_widths\":{\"xs\":720,\"md\":940,\"sm\":720,\"lg\":1140},\"xs-column-width\":\"col-xs-12\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2844
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2845
+},
+{
+  "fields": {
+    "glossary": "{\"extra_inline_styles:Paddings\":{\"padding-right\":\"\",\"padding-left\":\"\"},\"extra_inline_styles:Margins\":{\"margin-top\":\"\",\"margin-bottom\":\"\"}}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2846
+},
+{
+  "fields": {
+    "glossary": "{\"sm-responsive-utils\":\"\",\"xs-responsive-utils\":\"\",\"md-column-offset\":\"\",\"sm-column-width\":\"\",\"md-responsive-utils\":\"\",\"xs-column-offset\":\"\",\"sm-column-offset\":\"\",\"sm-column-ordering\":\"\",\"md-column-ordering\":\"\",\"lg-column-ordering\":\"\",\"lg-column-offset\":\"\",\"lg-column-width\":\"\",\"xs-column-width\":\"col-xs-4\",\"lg-responsive-utils\":\"\",\"container_max_widths\":{\"xs\":220,\"md\":293,\"sm\":220,\"lg\":360},\"md-column-width\":\"\",\"xs-column-ordering\":\"\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2847
+},
+{
+  "fields": {
+    "glossary": "{\"sm-responsive-utils\":\"\",\"xs-responsive-utils\":\"\",\"md-column-offset\":\"\",\"sm-column-width\":\"\",\"md-responsive-utils\":\"\",\"xs-column-offset\":\"\",\"sm-column-offset\":\"\",\"sm-column-ordering\":\"\",\"md-column-ordering\":\"\",\"lg-column-ordering\":\"\",\"lg-column-offset\":\"\",\"lg-column-width\":\"\",\"xs-column-width\":\"col-xs-8\",\"lg-responsive-utils\":\"\",\"container_max_widths\":{\"xs\":470,\"md\":616,\"sm\":470,\"lg\":750},\"md-column-width\":\"\",\"xs-column-ordering\":\"\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2848
+},
+{
+  "fields": {
+    "glossary": "{\"image-height\":\"150%\",\"title\":\"\",\"image-title\":\"Wedding Dress\",\"image\":{\"pk\":84,\"model\":\"filer.Image\"},\"alt-tag\":\"\",\"image-width-fixed\":\"\",\"resize-options\":[\"crop\",\"subject_location\",\"high_resolution\"],\"link\":{\"type\":\"none\"},\"image-shapes\":[\"img-responsive\"],\"target\":\"\",\"image-width-responsive\":\"100%\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2849
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2851
+},
+{
+  "fields": {
+    "glossary": "{\"media_queries\":{\"xs\":[\"(max-width: 768px)\"],\"md\":[\"(min-width: 992px)\",\"(max-width: 1200px)\"],\"sm\":[\"(min-width: 768px)\",\"(max-width: 992px)\"],\"lg\":[\"(min-width: 1200px)\"]},\"container_max_widths\":{\"xs\":750,\"md\":970,\"sm\":750,\"lg\":1170},\"fluid\":\"\",\"breakpoints\":[\"xs\",\"sm\",\"md\",\"lg\"]}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2852
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2853
+},
+{
+  "fields": {
+    "glossary": "{\"container_max_widths\":{\"xs\":720,\"md\":940,\"sm\":720,\"lg\":1140},\"xs-column-width\":\"col-xs-12\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2854
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 2855
+},
+{
+  "fields": {
     "inline_styles": "{\"extra_fields:Widths\":[],\"extra_fields:Margins\":[\"margin-top\",\"margin-bottom\"],\"extra_fields:Paddings\":[],\"extra_units:Widths\":\"px,em,%\",\"extra_units:Paddings\":\"px,em,%\",\"extra_units:Heights\":\"px,em,%\",\"extra_fields:Heights\":[],\"extra_units:Margins\":\"px,em,%\",\"extra_fields:Colors\":[],\"extra_fields:Overflow\":[]}",
     "css_classes": "{\"multiple\":\"on\",\"class_names\":\"foo, bar, cap\"}",
     "allow_id_tag": true,
@@ -10700,24 +11081,10 @@
 },
 {
   "fields": {
-    "body": "<p>Donec id elit non mi porta <img alt=\"Link - gravida\" id=\"plugin_obj_2715\" src=\"\" title=\"Link - gravida\"> at eget metus. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Curabitur blandit tempus porttitor. Sed posuere consectetur est at lobortis. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Sed posuere consectetur est at lobortis. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Donec sed odio dui. Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean lacinia bibendum nulla sed consectetur.</p>\n"
-  },
-  "model": "djangocms_text_ckeditor.text",
-  "pk": 2714
-},
-{
-  "fields": {
     "body": "<h2>Our Catalog List View</h2>\n"
   },
   "model": "djangocms_text_ckeditor.text",
   "pk": 2721
-},
-{
-  "fields": {
-    "body": "<h2>Our Catalog List View</h2>\n"
-  },
-  "model": "djangocms_text_ckeditor.text",
-  "pk": 2726
 },
 {
   "fields": {
@@ -10760,6 +11127,27 @@
   },
   "model": "djangocms_text_ckeditor.text",
   "pk": 2815
+},
+{
+  "fields": {
+    "body": "<p>Donec id elit non mi porta <img alt=\"Link - gravida\" id=\"plugin_obj_2833\" src=\"\" title=\"Link - gravida\"> at eget metus. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Curabitur blandit tempus porttitor. Sed posuere consectetur est at lobortis. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Sed posuere consectetur est at lobortis. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Donec sed odio dui. Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean lacinia bibendum nulla sed consectetur.</p>\n"
+  },
+  "model": "djangocms_text_ckeditor.text",
+  "pk": 2832
+},
+{
+  "fields": {
+    "body": "<p>Donec ullamcorper nulla non metus auctor fringilla. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Nulla vitae elit libero, a pharetra augue. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Nullam quis risus eget urna mollis ornare vel eu leo. Nullam quis risus eget urna mollis ornare vel eu leo. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>\n"
+  },
+  "model": "djangocms_text_ckeditor.text",
+  "pk": 2850
+},
+{
+  "fields": {
+    "body": "<h2>Our Catalog List View</h2>\n"
+  },
+  "model": "djangocms_text_ckeditor.text",
+  "pk": 2856
 },
 {
   "fields": {
@@ -12521,6 +12909,54 @@
 },
 {
   "fields": {
+    "sha1": "f8fa145e41342c21ba9585493db81ab530b2cf1d",
+    "original_filename": "handring.png",
+    "name": "",
+    "description": null,
+    "modified_at": "2016-02-17T15:09:15.318Z",
+    "_file_size": 367846,
+    "uploaded_at": "2016-02-17T15:08:09.044Z",
+    "file": "filer_public/9e/a1/9ea174ca-5b15-4cf7-b98d-4f6ee2101769/handring.png",
+    "owner": [
+      "admin"
+    ],
+    "is_public": true,
+    "folder": 1,
+    "has_all_mandatory_data": false,
+    "polymorphic_ctype": [
+      "filer",
+      "image"
+    ]
+  },
+  "model": "filer.file",
+  "pk": 83
+},
+{
+  "fields": {
+    "sha1": "f8c1962b459f559e46d59565e4f970db327a794d",
+    "original_filename": "wedding-dress.jpg",
+    "name": "",
+    "description": "",
+    "modified_at": "2016-02-17T15:24:19.637Z",
+    "_file_size": 433331,
+    "uploaded_at": "2016-02-17T15:09:01.665Z",
+    "file": "filer_public/c8/dd/c8dd20d5-da23-43ed-af6f-40c79a5ef722/wedding-dress.jpg",
+    "owner": [
+      "admin"
+    ],
+    "is_public": true,
+    "folder": 1,
+    "has_all_mandatory_data": false,
+    "polymorphic_ctype": [
+      "filer",
+      "image"
+    ]
+  },
+  "model": "filer.file",
+  "pk": 84
+},
+{
+  "fields": {
     "subject_location": null,
     "must_always_publish_copyright": false,
     "date_taken": "2015-11-25T17:33:34.787Z",
@@ -13586,6 +14022,36 @@
 },
 {
   "fields": {
+    "subject_location": null,
+    "must_always_publish_copyright": false,
+    "date_taken": "2016-02-17T15:08:09.020Z",
+    "author": null,
+    "_height": 760,
+    "_width": 870,
+    "must_always_publish_author_credit": false,
+    "default_alt_text": null,
+    "default_caption": null
+  },
+  "model": "filer.image",
+  "pk": 83
+},
+{
+  "fields": {
+    "subject_location": "672,682",
+    "must_always_publish_copyright": false,
+    "date_taken": "2016-02-17T15:09:01.650Z",
+    "author": "",
+    "_height": 1363,
+    "_width": 2048,
+    "must_always_publish_author_credit": false,
+    "default_alt_text": "",
+    "default_caption": ""
+  },
+  "model": "filer.image",
+  "pk": 84
+},
+{
+  "fields": {
     "supplement": "",
     "customer": 1,
     "street": "Somewhere",
@@ -13698,7 +14164,7 @@
 {
   "fields": {
     "salutation": "mr",
-    "last_access": "2016-02-15T21:31:53.429Z",
+    "last_access": "2016-02-17T15:54:10.589Z",
     "number": 1,
     "recognized": 2,
     "extra": "{}"
@@ -13797,6 +14263,20 @@
   },
   "model": "myshop.manufacturer",
   "pk": 8
+},
+{
+  "fields": {
+    "name": "Tailory"
+  },
+  "model": "myshop.manufacturer",
+  "pk": 9
+},
+{
+  "fields": {
+    "name": "Goldsmith"
+  },
+  "model": "myshop.manufacturer",
+  "pk": 10
 },
 {
   "fields": {
@@ -15328,6 +15808,38 @@
 },
 {
   "fields": {
+    "product": 52,
+    "page": 22
+  },
+  "model": "myshop.productpage",
+  "pk": 229
+},
+{
+  "fields": {
+    "product": 52,
+    "page": 26
+  },
+  "model": "myshop.productpage",
+  "pk": 230
+},
+{
+  "fields": {
+    "product": 53,
+    "page": 22
+  },
+  "model": "myshop.productpage",
+  "pk": 231
+},
+{
+  "fields": {
+    "product": 53,
+    "page": 26
+  },
+  "model": "myshop.productpage",
+  "pk": 232
+},
+{
+  "fields": {
     "product": 1,
     "image": 8,
     "order": 0
@@ -15874,6 +16386,24 @@
   },
   "model": "myshop.productimage",
   "pk": 68
+},
+{
+  "fields": {
+    "product": 52,
+    "image": 84,
+    "order": 1
+  },
+  "model": "myshop.productimage",
+  "pk": 69
+},
+{
+  "fields": {
+    "product": 53,
+    "image": 83,
+    "order": 1
+  },
+  "model": "myshop.productimage",
+  "pk": 70
 },
 {
   "fields": {
@@ -16673,6 +17203,40 @@
   },
   "model": "myshop.product",
   "pk": 51
+},
+{
+  "fields": {
+    "created_at": "2016-02-17T15:11:22.355Z",
+    "updated_at": "2016-02-17T15:27:34.449Z",
+    "slug": "wedding-dress",
+    "order": 52,
+    "active": true,
+    "manufacturer": 9,
+    "product_name": "Wedding Dress",
+    "polymorphic_ctype": [
+      "myshop",
+      "commodity"
+    ]
+  },
+  "model": "myshop.product",
+  "pk": 52
+},
+{
+  "fields": {
+    "created_at": "2016-02-17T15:52:12.565Z",
+    "updated_at": "2016-02-17T15:52:52.201Z",
+    "slug": "hand-ring",
+    "order": 53,
+    "active": true,
+    "manufacturer": 10,
+    "product_name": "Hand Ring",
+    "polymorphic_ctype": [
+      "myshop",
+      "commodity"
+    ]
+  },
+  "model": "myshop.product",
+  "pk": 53
 },
 {
   "fields": {
@@ -17522,6 +18086,42 @@
 },
 {
   "fields": {
+    "master": 52,
+    "description": "<p>Maecenas sed diam eget risus varius blandit sit amet non magna. Cras mattis consectetur purus sit amet fermentum.</p>\r\n",
+    "language_code": "de"
+  },
+  "model": "myshop.producttranslation",
+  "pk": 97
+},
+{
+  "fields": {
+    "master": 52,
+    "description": "<p>Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>\r\n",
+    "language_code": "en"
+  },
+  "model": "myshop.producttranslation",
+  "pk": 98
+},
+{
+  "fields": {
+    "master": 53,
+    "description": "<p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Maecenas faucibus mollis interdum. Donec id elit non mi porta gravida at eget metus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Donec ullamcorper nulla non metus auctor fringilla. Donec ullamcorper nulla non metus auctor fringilla. Nullam quis risus eget urna mollis ornare vel eu leo.</p>\r\n",
+    "language_code": "de"
+  },
+  "model": "myshop.producttranslation",
+  "pk": 99
+},
+{
+  "fields": {
+    "master": 53,
+    "description": "<p>Donec id elit non mi porta gravida at eget metus. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec ullamcorper nulla non metus auctor fringilla. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec id elit non mi porta gravida at eget metus. Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Cras mattis consectetur purus sit amet fermentum. Nulla vitae elit libero, a pharetra augue. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Donec id elit non mi porta gravida at eget metus.</p>\r\n",
+    "language_code": "en"
+  },
+  "model": "myshop.producttranslation",
+  "pk": 100
+},
+{
+  "fields": {
     "card_type": "SDHC",
     "storage": 4,
     "product_code": "1041",
@@ -18196,5 +18796,23 @@
   },
   "model": "myshop.smartphone",
   "pk": 9
+},
+{
+  "fields": {
+    "product_code": "wedding-dress",
+    "placeholder": 62,
+    "unit_price": 999.0
+  },
+  "model": "myshop.commodity",
+  "pk": 52
+},
+{
+  "fields": {
+    "product_code": "hand-ring",
+    "placeholder": 67,
+    "unit_price": 179.0
+  },
+  "model": "myshop.commodity",
+  "pk": 53
 }
 ]
