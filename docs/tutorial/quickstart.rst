@@ -24,7 +24,7 @@ django-polymorphic_ app.
 .. note:: All demos can be started independently from each other, but you are encouraged to start
 		with the "Simple Product", and then proceed to the more complicate examples.
 
-.. _download the media files: http://downloads.awesto.com/django-shop-workdir.tar.gz
+.. _download the media files: http://downloads.django-shop.org/django-shop-workdir.tar.gz
 .. _django-parler: http://django-parler.readthedocs.org/en/latest/
 .. _django-polymorphic: https://django-polymorphic.readthedocs.org/en/latest/
 
