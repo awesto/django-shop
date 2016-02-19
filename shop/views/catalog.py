@@ -9,17 +9,25 @@ from django.utils.translation import get_language_from_request
 from rest_framework import generics
 from rest_framework import status
 from rest_framework import views
+from rest_framework.settings import api_settings
 from rest_framework.renderers import BrowsableAPIRenderer
 from rest_framework.response import Response
 from shop import settings as shop_settings
 from shop.rest.money import JSONRenderer
+from shop.rest.filters import CMSPagesFilterBackend
 from shop.rest.serializers import AddToCartSerializer, ProductSelectSerializer
 from shop.rest.renderers import CMSPageRenderer
 from shop.models.product import ProductModel
 
 
 class ProductListView(generics.ListAPIView):
-    renderer_classes = (CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer)
+    """
+    This view is used to list all products which shall be visible below a certain URL.
+    It normally is added to the urlpatterns as:
+    ``url(r'^$', ProductListView.as_view(serializer_class=ProductSummarySerializer))``
+    where the ``ProductSummarySerializer`` is a customized REST serializer that that specific
+    product model.
+    """
     product_model = ProductModel
     serializer_class = None  # must be overridden by ProductListView.as_view
     filter_class = None  # may be overridden by ProductListView.as_view
@@ -45,6 +53,18 @@ class ProductListView(generics.ListAPIView):
         # TODO: let this be configurable through a View member variable
         return [self.request.current_page.get_template()]
 
+
+class CMSPageProductListView(ProductListView):
+    """
+    This view is used to list all products being associated with a CMS page. It normally is
+    added to the urlpatterns as:
+    ``url(r'^$', CMSPageProductListView.as_view(serializer_class=ProductSummarySerializer))``
+    where the ``ProductSummarySerializer`` is a customized REST serializer that that specific
+    product model.
+    """
+    renderer_classes = (CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer)
+    filter_backends = api_settings.DEFAULT_FILTER_BACKENDS + [CMSPagesFilterBackend()]
+
     def filter_queryset(self, queryset):
         self.filter_context = None
         if self.filter_class:
@@ -53,11 +73,11 @@ class ProductListView(generics.ListAPIView):
                 self.filter_context = filter_instance.get_render_context()
             elif hasattr(filter_instance, 'render_context'):
                 self.filter_context = filter_instance.render_context
-        qs = super(ProductListView, self).filter_queryset(queryset)
+        qs = super(CMSPageProductListView, self).filter_queryset(queryset)
         return qs
 
     def get_renderer_context(self):
-        renderer_context = super(ProductListView, self).get_renderer_context()
+        renderer_context = super(CMSPageProductListView, self).get_renderer_context()
         if renderer_context['request'].accepted_renderer.format == 'html':
             renderer_context['filter'] = self.filter_context
         return renderer_context
@@ -163,8 +183,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
             if hasattr(self.product_model, 'translations'):
                 filter_kwargs.update(translations__language_code=get_language_from_request(self.request))
             queryset = self.product_model.objects.filter(self.limit_choices_to, **filter_kwargs)
-            product = get_object_or_404(queryset)
-            self._product = product
+            self._product = get_object_or_404(queryset)
         return self._product
 
 

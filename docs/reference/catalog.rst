@@ -64,25 +64,20 @@ as all apphooks, it requires a file defining its urlpatterns:
 
 	from django.conf.urls import patterns, url
 	from rest_framework.settings import api_settings
-	from shop.rest.filters import CMSPagesFilterBackend
-	from shop.views.catalog import ProductListView
+	from shop.views.catalog import CMSPageProductListView
 	from myshop.serializers import ProductSummarySerializer
 	
-	filter_backends = list(api_settings.DEFAULT_FILTER_BACKENDS)
-	filter_backends.append(CMSPagesFilterBackend())
-	
 	urlpatterns = patterns('',
-	    url(r'^$', ProductListView.as_view(
+	    url(r'^$', CMSPageProductListView.as_view(
 	        serializer_class=ProductSummarySerializer,
-	        filter_backends=filter_backends,
 	    )),
 	    # other patterns
 	)
 
 Here the ``ProductSummarySerializer`` serializes the product models into a representation suitable
 for being rendered inside a CMS page, as well as being converted to JSON. This allows us to reuse
-the same Django View (``ProductListView``) whenever the catalog list switches into infinite scroll
-mode, where it only requires the product's summary digested as JavaScript objects.
+the same Django View (``CMSPageProductListView``) whenever the catalog list switches into infinite
+scroll mode, where it only requires the product's summary digested as JavaScript objects.
 
 In case we need :ref:`reference/additional-serializer-fields`, lets add them to this class using the
 `serializer fields`_ from the Django RESTFramework library.
