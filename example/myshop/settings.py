@@ -131,7 +131,7 @@ MIGRATION_MODULES = {
 
 ROOT_URLCONF = 'myshop.urls'
 
-WSGI_APPLICATION = 'myshop.wsgi.application'
+WSGI_APPLICATION = 'wsgi.application'
 
 DATABASES = {
     'default': {
