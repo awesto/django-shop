@@ -37,7 +37,7 @@ ADMINS = ((u'The Merchant', u'the.merchant@example.com'),)
 SECRET_KEY = 'nqniwbt=%@5a(e8%&h#c^0()64(ujs0=4%_nyajn*t6a$ca&at'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(os.environ.get('DJANGO_DEBUG'))
 
 ALLOWED_HOSTS = ['*']
 
