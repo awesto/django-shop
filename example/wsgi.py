@@ -30,6 +30,7 @@ except ImportError:
 application = get_wsgi_application()
 
 # rebuild index on first bootstrap
-if os.path.isfile('bootstrap'):
+BOOTSTRAP = '/web/src/django-shop/workdir/bootstrap'
+if os.path.isfile(BOOTSTRAP):
     call_command('rebuild_index', interactive=False)
-    os.remove('bootstrap')
+    os.remove(BOOTSTRAP)
