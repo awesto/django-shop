@@ -26,7 +26,7 @@ if SHOP_TUTORIAL not in ('simple', 'i18n', 'polymorphic',):
 PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, os.path.pardir, os.path.pardir))
 
 # Directory where working files, such as media and databases are kept
-WORK_DIR = os.path.join(PROJECT_ROOT, 'workdir')
+WORK_DIR = os.environ.get('DJANGO_WORKDIR', os.path.join(PROJECT_ROOT, 'workdir'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
