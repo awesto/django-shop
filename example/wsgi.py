@@ -29,8 +29,8 @@ except ImportError:
 
 application = get_wsgi_application()
 
-# rebuild index on first bootstrap
-BOOTSTRAP_FILE = os.path.join(os.getenv('DJANGO_WORKDIR'), 'bootstrap')
+# rebuild full text search index on first bootstrap
+BOOTSTRAP_FILE = os.path.join(os.getenv('DJANGO_WORKDIR', ''), 'bootstrap')
 if os.path.isfile(BOOTSTRAP_FILE):
     call_command('rebuild_index', interactive=False)
     os.remove(BOOTSTRAP_FILE)
