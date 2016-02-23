@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.core.exceptions import ImproperlyConfigured
 from django.forms import widgets
 from django.template import Template
 from django.template.loader import select_template, TemplateDoesNotExist
+from django.utils.html import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from cms.apphook_pool import apphook_pool
 from cms.plugin_pool import plugin_pool
@@ -27,6 +29,11 @@ class BreadcrumbPlugin(ShopPluginBase):
     parent_classes = ()
     allow_children = None
 
+    @classmethod
+    def get_identifier(cls, instance):
+        render_type = instance.glossary.get('render_type')
+        return mark_safe(dict(cls.CHOICES).get(render_type, ''))
+
     def get_render_template(self, context, instance, placeholder):
         render_type = instance.glossary.get('render_type')
         try:
@@ -38,7 +45,10 @@ class BreadcrumbPlugin(ShopPluginBase):
             return Template('<!-- empty breadcrumb -->')
 
     def get_use_cache(self, context, instance, placeholder):
-        app = apphook_pool.get_apphook(instance.page.application_urls)
-        return getattr(app, 'cache_placeholders', self.cache)
+        try:
+            app = apphook_pool.get_apphook(instance.page.application_urls)
+            return app.cache_placeholders
+        except (AttributeError, ImproperlyConfigured):
+            return super(BreadcrumbPlugin, self).get_use_cache(context, instance, placeholder)
 
 plugin_pool.register_plugin(BreadcrumbPlugin)
