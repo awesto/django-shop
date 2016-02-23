@@ -31,7 +31,7 @@ WORK_DIR = os.environ.get('DJANGO_WORKDIR', os.path.join(PROJECT_ROOT, 'workdir'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
-ADMINS = ((u'The Merchant', u'the.merchant@example.com'),)
+ADMINS = (("The Merchant", 'the.merchant@example.com'),)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'nqniwbt=%@5a(e8%&h#c^0()64(ujs0=4%_nyajn*t6a$ca&at'
@@ -254,7 +254,7 @@ TEMPLATES = [{
     }
 }]
 
-SECURE_PROXY_SSL_HEADER = (u'HTTP_X_FORWARDED_PROTO', u'https')
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 LOGGING = {
     'version': 1,
@@ -271,7 +271,7 @@ LOGGING = {
     },
     'handlers': {
         'console': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.StreamHandler',
             'formatter': 'simple',
         },
@@ -280,6 +280,11 @@ LOGGING = {
         'django': {
             'handlers': ['console'],
             'level': 'INFO',
+            'propagate': True,
+        },
+        'post_office': {
+            'handlers': ['console'],
+            'level': 'WARNING',
             'propagate': True,
         },
     },
