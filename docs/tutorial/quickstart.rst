@@ -82,7 +82,7 @@ shell invoke:
 .. code-block:: shell
 
 	(shoptutorial)$ cd example
-	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=simple
+	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=simple DJANGO_DEBUG=1
 	(shoptutorial)$ ./manage.py migrate
 	(shoptutorial)$ ./manage.py loaddata fixtures/myshop-simple.json
 	(shoptutorial)$ ./manage.py runserver
@@ -104,7 +104,7 @@ using the correct virtual environment. Then in a shell invoke:
 
 	(shoptutorial)$ cp workdir/db-simple.sqlite3 workdir/db-i18n.sqlite3
 	(shoptutorial)$ cd example
-	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=i18n
+	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=i18n DJANGO_DEBUG=1
 	(shoptutorial)$ ./manage.py migrate
 	(shoptutorial)$ ./manage.py runserver
 
@@ -114,7 +114,7 @@ Alternatively, if you prefer to start with an empty database, assure that the fi
 .. code-block:: shell
 
 	(shoptutorial)$ cd example
-	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=i18n
+	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=i18n DJANGO_DEBUG=1
 	(shoptutorial)$ ./manage.py migrate
 	(shoptutorial)$ ./manage.py loaddata fixtures/myshop-i18n.json
 	(shoptutorial)$ ./manage.py runserver
