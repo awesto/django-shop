@@ -4,6 +4,15 @@
 Changelog for djangoSHOP
 ========================
 
+0.9.0rc3
+========
+* Separated class:`shop.views.catalog.ProductListView` into its base and the new class
+  class:`shop.views.catalog.CMSPageProductListView` which already has added it appropriate
+  filters.
+* Moved ``wsgi.py`` into upper folder.
+* Prototype of :class:`shop.cascade.DialogFormPluginBase.get_form_data` changed. It now accepts
+  ``context``, ``instance`` and ``placeholder``.
+
 
 0.9.0rc2
 ========

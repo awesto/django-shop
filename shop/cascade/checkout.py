@@ -71,8 +71,8 @@ class CustomerFormPluginBase(DialogFormPluginBase):
     template_leaf_name = 'customer-{}.html'
     cache = False
 
-    def get_form_data(self, request):
-        return {'instance': request.customer}
+    def get_form_data(self, context, instance, placeholder):
+        return {'instance': context['request'].customer}
 
     def get_render_template(self, context, instance, placeholder):
         if 'error_message' in context:
@@ -115,14 +115,15 @@ DialogFormPluginBase.register_plugin(GuestFormPlugin)
 
 
 class CheckoutAddressPluginBase(DialogFormPluginBase):
-    def get_form_data(self, request):
-        filter_args = {'customer': request.customer, '{}__isnull'.format(self.FormClass.priority_field): False}
+    def get_form_data(self, context, instance, placeholder):
+        customer = context['request'].customer
+        filter_args = {'customer': customer, '{}__isnull'.format(self.FormClass.priority_field): False}
         AddressModel = self.FormClass.get_model()
         address = AddressModel.objects.filter(**filter_args).order_by(self.FormClass.priority_field).first()
         if address:
             return {'instance': address}
         else:
-            aggr = AddressModel.objects.filter(customer=request.customer).aggregate(Max(self.FormClass.priority_field))
+            aggr = AddressModel.objects.filter(customer=customer).aggregate(Max(self.FormClass.priority_field))
             initial = {'priority': aggr['{}__max'.format(self.FormClass.priority_field)] or 0}
             return {'initial': initial}
 
@@ -148,9 +149,9 @@ class PaymentMethodFormPlugin(DialogFormPluginBase):
     form_class = 'shop.forms.checkout.PaymentMethodForm'
     template_leaf_name = 'payment-method-{}.html'
 
-    def get_form_data(self, request):
+    def get_form_data(self, context, instance, placeholder):
         try:
-            cart = CartModel.objects.get_from_request(request)
+            cart = CartModel.objects.get_from_request(context['request'])
             return {'initial': {'payment_modifier': cart.extra['payment_modifier']}}
         except (CartModel.DoesNotExist, KeyError):
             return {}
@@ -171,9 +172,9 @@ class ShippingMethodFormPlugin(DialogFormPluginBase):
     form_class = 'shop.forms.checkout.ShippingMethodForm'
     template_leaf_name = 'shipping-method-{}.html'
 
-    def get_form_data(self, request):
+    def get_form_data(self, context, instance, placeholder):
         try:
-            cart = CartModel.objects.get_from_request(request)
+            cart = CartModel.objects.get_from_request(context['request'])
             return {'initial': {'shipping_modifier': cart.extra['shipping_modifier']}}
         except (CartModel.DoesNotExist, KeyError):
             return {}
@@ -194,9 +195,9 @@ class ExtraAnnotationFormPlugin(DialogFormPluginBase):
     form_class = 'shop.forms.checkout.ExtraAnnotationForm'
     template_leaf_name = 'extra-annotation-{}.html'
 
-    def get_form_data(self, request):
+    def get_form_data(self, context, instance, placeholder):
         try:
-            cart = CartModel.objects.get_from_request(request)
+            cart = CartModel.objects.get_from_request(context['request'])
             return {'initial': {'annotation': cart.extra['annotation']}}
         except (CartModel.DoesNotExist, KeyError):
             return {}

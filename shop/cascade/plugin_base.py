@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from django.db.models import get_model
 from django.core.exceptions import ImproperlyConfigured
 from django.forms import ChoiceField, widgets
@@ -206,12 +207,13 @@ class DialogFormPluginBase(ShopPluginBase):
         super(DialogFormPluginBase, self).__init__(*args, **kwargs)
         self.FormClass = import_string(self.get_form_class())
 
-    def get_form_data(self, request):
+    def get_form_data(self, context, instance, placeholder):
         """
         Returns data to initialize the corresponding dialog form.
-        This method must return a dictionary containing either `instance` - a Python object to
-        initialize the form class for this plugin, or `initial` - a dictionary containing initial
-        form data, or if both are set, values from `initial` override those of `instance`.
+        This method must return a dictionary containing 
+        * either `instance` - a Python object to initialize the form class for this plugin,
+        * or `initial` - a dictionary containing initial form data, or if both are set, values
+          from `initial` override those of `instance`.
         """
         return {}
 
@@ -233,7 +235,7 @@ class DialogFormPluginBase(ShopPluginBase):
         Return the context to render a DialogFormPlugin
         """
         request = context['request']
-        form_data = self.get_form_data(request)
+        form_data = self.get_form_data(context, instance, placeholder)
         if issubclass(self.FormClass, DialogFormMixin):
             try:
                 cart = CartModel.objects.get_from_request(request)

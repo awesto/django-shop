@@ -120,8 +120,8 @@ of our ordinary shop plugin class:
 	    form_class = 'myshop.forms.DeliveryDateForm'
 	    render_template = 'myshop/checkout/delivery-date.html'
 	
-	    def get_form_data(self, request):
-	        cart = CartModel.objects.get_from_request(request)
+	    def get_form_data(self, context, instance, placeholder):
+	        cart = CartModel.objects.get_from_request(context['request'])
 	        initial = {'delivery_date': getattr(cart, 'extra', {}).get('delivery_date', '')}
 	        return {'initial': initial}
 	
