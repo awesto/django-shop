@@ -95,8 +95,8 @@ def rest_json(value, arg=None):
     """
     if not value:
         return mark_safe('{}')
-    if not isinstance(value, (dict, OrderedDict)):
-        msg = "Given value must be of type dict or OrderedDict, but it is {}.".format(value.__class__.__name__)
-        raise ValueError(msg)
+    if not isinstance(value, (dict, OrderedDict, list, tuple)):
+        msg = "Given value must be of type dict, OrderedDict, list or tuple but it is {}."
+        raise ValueError(msg.format(value.__class__.__name__))
     data = JSONRenderer().render(value)
     return mark_safe(data)
