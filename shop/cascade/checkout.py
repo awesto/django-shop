@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.db.models import Max
+
 from django.forms.fields import CharField
+from django.forms import widgets
 from django.template import Engine
 from django.template.loader import select_template
 from django.utils.html import strip_tags, strip_entities
@@ -72,7 +73,9 @@ class CustomerFormPluginBase(DialogFormPluginBase):
     cache = False
 
     def get_form_data(self, context, instance, placeholder):
-        return {'instance': context['request'].customer}
+        form_data = super(CustomerFormPluginBase, self).get_form_data(context, instance, placeholder)
+        form_data.update(instance=context['request'].customer)
+        return form_data
 
     def get_render_template(self, context, instance, placeholder):
         if 'error_message' in context:
@@ -115,23 +118,48 @@ DialogFormPluginBase.register_plugin(GuestFormPlugin)
 
 
 class CheckoutAddressPluginBase(DialogFormPluginBase):
+    glossary_fields = DialogFormPluginBase.glossary_fields + (
+        PartialFormField('multi_addr',
+            widgets.CheckboxInput(),
+            label=_("Multiple Addresses"),
+            initial=False,
+            help_text=_("Shall the customer be allowed to edit multiple addresses."),
+        ),
+    )
+
     def get_form_data(self, context, instance, placeholder):
-        customer = context['request'].customer
-        filter_args = {'customer': customer, '{}__isnull'.format(self.FormClass.priority_field): False}
+        form_data = super(CheckoutAddressPluginBase, self).get_form_data(context, instance, placeholder)
+
         AddressModel = self.FormClass.get_model()
-        address = AddressModel.objects.filter(**filter_args).order_by(self.FormClass.priority_field).first()
-        if address:
-            return {'instance': address}
+        customer = context['request'].customer
+        cart = form_data.get('cart')
+        priority_field = self.FormClass.priority_field
+        address = self.get_address(cart)
+        exclude_kwargs = {priority_field: None}
+        if address is None:
+            address = AddressModel.objects.filter(customer=customer).exclude(**exclude_kwargs)
+            address = address.order_by(priority_field).last()
+        form_data.update(instance=address)
+
+        if instance.glossary.get('multi_addr'):
+            addresses = AddressModel.objects.filter(customer=customer).exclude(**exclude_kwargs)
+            addresses = addresses.order_by(priority_field)
+            form_entities = [dict(value=str(getattr(addr, priority_field)),
+                            label=addr.as_text().replace('\n', ' – ')) for addr in addresses]
+            form_data.update(multi_addr=True, form_entities=form_entities)
         else:
-            aggr = AddressModel.objects.filter(customer=customer).aggregate(Max(self.FormClass.priority_field))
-            initial = {'priority': aggr['{}__max'.format(self.FormClass.priority_field)] or 0}
-            return {'initial': initial}
+            form_data.update(multi_addr=False)
+        return form_data
 
 
 class ShippingAddressFormPlugin(CheckoutAddressPluginBase):
     name = _("Shipping Address Form")
     form_class = 'shop.forms.checkout.ShippingAddressForm'
     template_leaf_name = 'shipping-address-{}.html'
+
+    def get_address(self, cart):
+        if cart and cart.shipping_address:
+            return cart.shipping_address
 
 DialogFormPluginBase.register_plugin(ShippingAddressFormPlugin)
 
@@ -140,6 +168,19 @@ class BillingAddressFormPlugin(CheckoutAddressPluginBase):
     name = _("Billing Address Form")
     form_class = 'shop.forms.checkout.BillingAddressForm'
     template_leaf_name = 'billing-address-{}.html'
+
+    glossary_fields = CheckoutAddressPluginBase.glossary_fields + (
+        PartialFormField('allow_use_shipping',
+            widgets.CheckboxInput(),
+            label=_("Use shipping address"),
+            initial=True,
+            help_text=_("Allow the customer to use the shipping address for billing."),
+        ),
+    )
+
+    def get_address(self, cart):
+        if cart and cart.billing_address:
+            return cart.billing_address
 
 DialogFormPluginBase.register_plugin(BillingAddressFormPlugin)
 
@@ -150,11 +191,11 @@ class PaymentMethodFormPlugin(DialogFormPluginBase):
     template_leaf_name = 'payment-method-{}.html'
 
     def get_form_data(self, context, instance, placeholder):
-        try:
-            cart = CartModel.objects.get_from_request(context['request'])
-            return {'initial': {'payment_modifier': cart.extra['payment_modifier']}}
-        except (CartModel.DoesNotExist, KeyError):
-            return {}
+        form_data = super(PaymentMethodFormPlugin, self).get_form_data(context, instance, placeholder)
+        cart = form_data.get('cart')
+        if cart:
+            form_data.update(initial={'payment_modifier': cart.extra['payment_modifier']})
+        return form_data
 
     def render(self, context, instance, placeholder):
         super(PaymentMethodFormPlugin, self).render(context, instance, placeholder)
@@ -173,11 +214,11 @@ class ShippingMethodFormPlugin(DialogFormPluginBase):
     template_leaf_name = 'shipping-method-{}.html'
 
     def get_form_data(self, context, instance, placeholder):
-        try:
-            cart = CartModel.objects.get_from_request(context['request'])
-            return {'initial': {'shipping_modifier': cart.extra['shipping_modifier']}}
-        except (CartModel.DoesNotExist, KeyError):
-            return {}
+        form_data = super(ShippingMethodFormPlugin, self).get_form_data(context, instance, placeholder)
+        cart = form_data.get('cart')
+        if cart:
+            form_data.update(initial={'shipping_modifier': cart.extra['shipping_modifier']})
+        return form_data
 
     def render(self, context, instance, placeholder):
         super(ShippingMethodFormPlugin, self).render(context, instance, placeholder)
@@ -196,11 +237,11 @@ class ExtraAnnotationFormPlugin(DialogFormPluginBase):
     template_leaf_name = 'extra-annotation-{}.html'
 
     def get_form_data(self, context, instance, placeholder):
-        try:
-            cart = CartModel.objects.get_from_request(context['request'])
-            return {'initial': {'annotation': cart.extra['annotation']}}
-        except (CartModel.DoesNotExist, KeyError):
-            return {}
+        form_data = super(ExtraAnnotationFormPlugin, self).get_form_data(context, instance, placeholder)
+        cart = form_data.get('cart')
+        if cart:
+            form_data.update(initial={'annotation': cart.extra['annotation']})
+        return form_data
 
 DialogFormPluginBase.register_plugin(ExtraAnnotationFormPlugin)
 

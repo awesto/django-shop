@@ -40,30 +40,39 @@ class CheckoutViewSet(BaseViewSet):
 
         # sort posted form data by plugin order
         dialog_data = []
-        for fc in self.dialog_forms:
-            key = fc.scope_prefix.split('.', 1)[1]
+        for form_class in self.dialog_forms:
+            key = form_class.scope_prefix.split('.', 1)[1]
             if key in request.data:
                 if 'plugin_order' in request.data[key]:
-                    dialog_data.append((fc, request.data[key]))
+                    dialog_data.append((form_class, request.data[key]))
                 else:
                     for data in request.data[key].values():
-                        dialog_data.append((fc, data))
+                        dialog_data.append((form_class, data))
         dialog_data = sorted(dialog_data, key=lambda tpl: int(tpl[1]['plugin_order']))
 
         # save data, get text representation and collect potential errors
-        errors, checkout_summary = {}, {}
+        errors, checkout_summary, response_data = {}, {}, {}
         with transaction.atomic():
             for form_class, data in dialog_data:
                 form = form_class.form_factory(request, data, cart)
                 if form.is_valid():
+                    # empty error dict forces revalidation by the client side validation
+                    errors[form_class.form_name] = {}
+                    # keep a summary of of validated form content inside the client's $rootScope
                     checkout_summary[form_class.form_name] = form.as_text()
                 else:
+                    # errors are rendered by the client side validation
                     errors[form_class.form_name] = dict(form.errors)
+                # by updating the response data, we can override the form's model $scope
+                update_data = form.get_response_data()
+                if isinstance(update_data, dict):
+                    key = form_class.scope_prefix.split('.', 1)[1]
+                    response_data[key] = update_data
             cart.save()
 
         # add possible form errors for giving feedback to the customer
         response = self.list(request)
-        response.data.update(errors=errors, checkout_summary=checkout_summary)
+        response.data.update(errors=errors, checkout_summary=checkout_summary, data=response_data)
         return response
 
     @list_route(methods=['post'], url_path='purchase')

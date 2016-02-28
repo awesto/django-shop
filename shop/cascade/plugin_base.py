@@ -210,11 +210,18 @@ class DialogFormPluginBase(ShopPluginBase):
     def get_form_data(self, context, instance, placeholder):
         """
         Returns data to initialize the corresponding dialog form.
-        This method must return a dictionary containing 
-        * either `instance` - a Python object to initialize the form class for this plugin,
-        * or `initial` - a dictionary containing initial form data, or if both are set, values
-          from `initial` override those of `instance`.
+        This method must return a dictionary containing
+         * either `instance` - a Python object to initialize the form class for this plugin,
+         * or `initial` - a dictionary containing initial form data, or if both are set, values
+           from `initial` override those of `instance`.
         """
+        if issubclass(self.FormClass, DialogFormMixin):
+            try:
+                cart = CartModel.objects.get_from_request(context['request'])
+                cart.update(context['request'])
+            except CartModel.DoesNotExist:
+                cart = None
+            return {'cart': cart}
         return {}
 
     def get_render_template(self, context, instance, placeholder):
@@ -236,13 +243,6 @@ class DialogFormPluginBase(ShopPluginBase):
         """
         request = context['request']
         form_data = self.get_form_data(context, instance, placeholder)
-        if issubclass(self.FormClass, DialogFormMixin):
-            try:
-                cart = CartModel.objects.get_from_request(request)
-                cart.update(request)
-                form_data['cart'] = cart
-            except CartModel.DoesNotExist:
-                form_data['cart'] = None
         request._plugin_order = getattr(request, '_plugin_order', 0) + 1
         if not isinstance(form_data.get('initial'), dict):
             form_data['initial'] = {}

@@ -55,6 +55,12 @@ class DialogFormMixin(NgModelFormMixin, NgFormValidationMixin):
                 output.append(force_text(value))
         return mark_safe('\n'.join(output))
 
+    def get_response_data(self):
+        """
+        Hook to respond with an updated version of the form data. This response then merged
+        into the scope by dialogs.js
+        """
+
 
 class DialogForm(DialogFormMixin, Bootstrap3Form):
     """

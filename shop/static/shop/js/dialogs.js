@@ -59,17 +59,62 @@ djangoShopModule.controller('DialogController',
 // Directive <form shop-dialog-form> (must be added as attribute to the <form> element)
 // It is used to add an `upload()` method to the scope, so that `ng-change="upload()"`
 // can be added to any input element. Use it to upload the models on the server.
-djangoShopModule.directive('shopDialogForm', function() {
+djangoShopModule.directive('shopDialogForm', ['$q', '$timeout', function($q, $timeout) {
 	return {
 		restrict: 'A',
 		controller: 'DialogController',
 		link: function(scope, element, attrs, DialogController) {
+			var ready = false;
+			if (attrs.shopDialogForm) {
+				// initialize with form data
+				scope.$eval(attrs.shopDialogForm);
+			}
+			$timeout(function() {
+				// form ran its first scope.$digest() cycle
+				ready = true;
+			});
+
 			scope.upload = function() {
-				DialogController.uploadScope(scope);
+				if (ready) {
+					DialogController.uploadScope(scope);
+				}
+			};
+
+			scope.switchEntity = function(form_controller) {
+				var deferred;
+				if (ready) {
+					deferred = $q.defer();
+					DialogController.uploadScope(scope, deferred);
+					deferred.promise.then(function(response) {
+						angular.extend(scope.data, response.data);
+						scope.stepIsValid = true;
+					}, function(response) {
+						angular.extend(scope.data, response.data);
+						scope.stepIsValid = false;
+					});
+				}
+			};
+
+			scope.removeEntity = function(form_controller, data_model) {
+				var deferred = $q.defer();
+				if (angular.isObject(scope.data[data_model])) {
+					scope.data[data_model].remove_entity = true;
+					DialogController.uploadScope(scope, deferred);
+				}
+				if (angular.isObject(form_controller['form_entities'])) {
+					$q.when(deferred.promise).then(function(response) {
+						var remove_entity_filter;
+						if (angular.isObject(response.data[data_model]) && angular.isString(response.data[data_model].remove_entity_filter)) {
+							remove_entity_filter = new Function(response.data[data_model].remove_entity_filter);
+							form_controller['form_entities'] = remove_entity_filter.apply(null, form_controller['form_entities']);
+						}
+						angular.extend(scope.data, response.data);
+					});
+				}
 			};
 		}
 	};
-});
+}]);
 
 
 // Directive shop-dialog-proceed to be added to button elements.

@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from django.db.models import Max
 from django.forms import fields, widgets
 from django.forms.utils import ErrorDict
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from djangular.styling.bootstrap3.forms import Bootstrap3ModelForm
 from djangular.styling.bootstrap3.widgets import RadioSelect, RadioFieldRenderer, CheckboxInput
@@ -88,17 +89,25 @@ class AddressForm(DialogModelForm):
         'street_number': ['has-feedback', 'form-group', 'frmgrp-street_number'],
     }
 
-    priority = fields.IntegerField(widget=widgets.HiddenInput())  # TODO: use a choice field for selection
+    active_priority = fields.IntegerField(required=False, widget=widgets.HiddenInput())
+
+    # JS function to filter form_entities after removing an entity
+    js_filter = 'var list = [].slice.call(arguments); return list.filter(function(a) {{ return a.value != {}; }});'
 
     class Meta:
         model = AddressModel
         exclude = ('customer', 'priority_shipping', 'priority_billing',)
 
     def __init__(self, initial=None, instance=None, *args, **kwargs):
+        self.multi_addr = kwargs.pop('multi_addr', False)
+        self.form_entities = kwargs.pop('form_entities', [])
         if instance:
             initial = initial or {}
-            initial['priority'] = getattr(instance, self.priority_field)
+            initial['active_priority'] = getattr(instance, self.priority_field)
         super(AddressForm, self).__init__(initial=initial, instance=instance, *args, **kwargs)
+
+    def must_persist(self):
+        return True
 
     @classmethod
     def get_model(cls):
@@ -111,18 +120,51 @@ class AddressForm(DialogModelForm):
         If the form data is invalid, return an error dictionary to update the response.
         """
         # search for the associated address DB instance or create a new one
-        priority = data and data.get('priority') or 0
-        filter_args = {'customer': request.customer, cls.priority_field: priority}
-        instance = cls.get_model().objects.filter(**filter_args).first()
-        address_form = cls(data=data, instance=instance)
-        if address_form.is_valid():
-            if not instance:
-                instance = address_form.save(commit=False)
-                instance.customer = request.customer
-                setattr(instance, cls.priority_field, priority)
-            assert address_form.instance == instance
-            instance.save()
+        try:
+            active_priority = int(data['active_priority'])
+            filter_args = {'customer': request.customer, cls.priority_field: active_priority}
+            active_instance = cls.get_model().objects.get(**filter_args)
+        except cls.get_model().DoesNotExist:
+            active_instance = None
+        except (KeyError, ValueError):
+            active_priority, active_instance = None, None
+        current_priority = getattr(cls.get_address(cart), cls.priority_field, None)
+
+        if data.pop('remove_entity', False):
+            if active_instance:
+                active_instance.delete()
+            exclude_kwargs = {cls.priority_field: None}
+            instance = cls.get_model().objects.filter(customer=request.customer).exclude(**exclude_kwargs).last()
+            faked_data = dict((key, getattr(instance, key, val)) for key, val in data.items())
+            faked_data.update(active_priority=getattr(instance, cls.priority_field))
+            address_form = cls(data=faked_data, instance=instance)
+            remove_entity_filter = cls.js_filter.format(getattr(active_instance, cls.priority_field))
+            address_form.data.update(remove_entity_filter=mark_safe(remove_entity_filter))
             cls.set_address(cart, instance)
+        elif current_priority == active_priority:
+            # an existing entity of AddressModel was edited
+            address_form = cls(data=data, instance=active_instance)
+            if address_form.is_valid() and address_form.must_persist():
+                instance = address_form.save(commit=False)
+                if active_instance is None:
+                    instance.customer = request.customer
+                    next_priority = cls.get_max_priority(request.customer) + 1
+                    setattr(instance, cls.priority_field, next_priority)
+                instance.save()
+                cls.set_address(cart, instance)
+        elif active_priority is None:
+            # customer selected 'Add another address'
+            for key in data.keys():
+                if key not in ('plugin_id', 'plugin_order'):
+                    data[key] = ''
+            address_form = cls(data=data)
+            cls.set_address(cart, None)
+        else:
+            # an address with another priority was selected
+            faked_data = dict((key, getattr(active_instance, key, val)) for key, val in data.items())
+            address_form = cls(data=faked_data, instance=active_instance)
+            cls.set_address(cart, active_instance)
+
         return address_form
 
     @classmethod
@@ -131,20 +173,10 @@ class AddressForm(DialogModelForm):
         Return the maximum priority for this address model.
         """
         aggr = cls.get_model().objects.filter(customer=customer).aggregate(Max(cls.priority_field))
-        return aggr.get('{}__max'.format(cls.priority_field, 0))
+        return aggr['{}__max'.format(cls.priority_field)] or 0
 
-    @classmethod
-    def set_address(cls, cart, instance):
-        # TODO: method must be connected to allow different priorities
-        address_form = cls(instance=instance)
-        data = address_form.initial
-        data.pop('id', None)
-        data.initial.pop('priority', None)
-        data.update({'customer': cart.customer, '{}__isnull'.format(cls.priority_field): False})
-        instance, created = cls.get_model().objects.get_or_create(**data)
-        if created:
-            instance.priority_billing = cls.get_max_priority(cart.customer) + 1
-            instance.save()
+    def get_response_data(self):
+        return self.data
 
 
 class ShippingAddressForm(AddressForm):
@@ -158,8 +190,11 @@ class ShippingAddressForm(AddressForm):
         }
 
     @classmethod
+    def get_address(cls, cart):
+        return cart.shipping_address
+
+    @classmethod
     def set_address(cls, cart, instance):
-        # TODO: super(ShippingAddressForm, cls).set_address(cart, instance)
         cart.shipping_address = instance
 
 
@@ -169,14 +204,31 @@ class BillingAddressForm(AddressForm):
     legend = _("Billing Address")
 
     use_shipping_address = fields.BooleanField(required=False, initial=True,
-        widget=CheckboxInput(_("Use shipping address for billing")))
+        widget=CheckboxInput(_("Use shipping address for billing"),
+            attrs={'ng-change': 'switchEntity(billing_address_form)'}))
+
+    @classmethod
+    def get_address(cls, cart):
+        return cart.billing_address
+
+    @classmethod
+    def set_address(cls, cart, instance):
+        if getattr(instance, 'use_shipping_address', False):
+            cart.billing_address = cart.shipping_address
+        else:
+            cart.billing_address = instance
 
     def full_clean(self):
         super(BillingAddressForm, self).full_clean()
-        if self['use_shipping_address'].value():
+        if 'use_shipping_address' in self and self['use_shipping_address'].value():
             # reset errors, since then the form is always regarded as valid
             self._errors = ErrorDict()
             self.instance.use_shipping_address = True
+        else:
+            self.instance.use_shipping_address = False
+
+    def must_persist(self):
+        return not self['use_shipping_address'].value()
 
     def as_div(self):
         # Intentionally rendered without field `use_shipping_address`
@@ -190,13 +242,6 @@ class BillingAddressForm(AddressForm):
                 return bound_field.field.widget.choice_label
         except KeyError:
             return super(BillingAddressForm, self).as_text()
-
-    @classmethod
-    def set_address(cls, cart, instance):
-        if getattr(instance, 'use_shipping_address', False):
-            cart.billing_address = cart.shipping_address
-        else:
-            cart.billing_address = instance
 
 
 class PaymentMethodForm(DialogForm):
