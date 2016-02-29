@@ -145,7 +145,8 @@ class CheckoutAddressPluginBase(DialogFormPluginBase):
             addresses = AddressModel.objects.filter(customer=customer).exclude(**exclude_kwargs)
             addresses = addresses.order_by(priority_field)
             form_entities = [dict(value=str(getattr(addr, priority_field)),
-                            label=addr.as_text().replace('\n', ' – ')) for addr in addresses]
+                            label="{}. {}".format(number, addr.as_text().replace('\n', ' – ')))
+                             for number, addr in enumerate(addresses, 1)]
             form_data.update(multi_addr=True, form_entities=form_entities)
         else:
             form_data.update(multi_addr=False)
