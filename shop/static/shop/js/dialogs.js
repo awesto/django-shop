@@ -109,6 +109,8 @@ djangoShopModule.directive('shopDialogForm', ['$q', '$timeout', function($q, $ti
 							form_controller['form_entities'] = remove_entity_filter.apply(null, form_controller['form_entities']);
 						}
 						angular.extend(scope.data, response.data);
+						// skip one digest cycle so that the form can be updated without triggering a change event
+						ready = false; $timeout(function() { ready = true; });
 					});
 				}
 			};

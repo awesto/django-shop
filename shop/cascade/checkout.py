@@ -137,8 +137,12 @@ class CheckoutAddressPluginBase(DialogFormPluginBase):
         address = self.get_address(cart)
         exclude_kwargs = {priority_field: None}
         if address is None:
+            # no address has been associated with the cart, hence the the last one
+            # assigned to the current customer
             address = AddressModel.objects.filter(customer=customer).exclude(**exclude_kwargs)
             address = address.order_by(priority_field).last()
+            self.FormClass.set_address(cart, address)
+            cart.save()
         form_data.update(instance=address)
 
         if instance.glossary.get('multi_addr'):

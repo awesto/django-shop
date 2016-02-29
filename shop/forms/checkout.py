@@ -120,15 +120,19 @@ class AddressForm(DialogModelForm):
         If the form data is invalid, return an error dictionary to update the response.
         """
         # search for the associated address DB instance or create a new one
+        current_priority = getattr(cls.get_address(cart), cls.priority_field, None)
         try:
-            active_priority = int(data['active_priority'])
-            filter_args = {'customer': request.customer, cls.priority_field: active_priority}
-            active_instance = cls.get_model().objects.get(**filter_args)
+            active_priority = int(data.get('active_priority'))
+        except (TypeError, ValueError):
+            active_priority = current_priority
+        try:
+            if active_priority:
+                filter_args = {'customer': request.customer, cls.priority_field: active_priority}
+                active_instance = cls.get_model().objects.get(**filter_args)
+            else:
+                active_instance = None
         except cls.get_model().DoesNotExist:
             active_instance = None
-        except (KeyError, ValueError):
-            active_priority, active_instance = 'new', None
-        current_priority = getattr(cls.get_address(cart), cls.priority_field, None)
 
         if data.pop('remove_entity', False):
             if active_instance:
@@ -142,24 +146,26 @@ class AddressForm(DialogModelForm):
                 remove_entity_filter = cls.js_filter.format(getattr(active_instance, cls.priority_field))
                 address_form.data.update(remove_entity_filter=mark_safe(remove_entity_filter))
             cls.set_address(cart, instance)
+        elif data.get('active_priority') == 'new' and current_priority > 0:
+            # customer selected 'Add another address', hence create a new empty form
+            for key in data.keys():
+                if key not in ('plugin_id', 'plugin_order', 'active_priority'):
+                    data[key] = ''
+            address_form = cls(data=data)
+            address_form.data.update(active_priority='add')
+            cls.set_address(cart, None)
         elif current_priority == active_priority:
             # an existing entity of AddressModel was edited
             address_form = cls(data=data, instance=active_instance)
             if address_form.is_valid() and address_form.must_persist():
                 instance = address_form.save(commit=False)
                 if active_instance is None:
+                    # add address as new entity
                     instance.customer = request.customer
                     next_priority = cls.get_max_priority(request.customer) + 1
                     setattr(instance, cls.priority_field, next_priority)
                 instance.save()
                 cls.set_address(cart, instance)
-        elif active_priority == 'new':
-            # customer selected 'Add another address'
-            for key in data.keys():
-                if key not in ('plugin_id', 'plugin_order', 'active_priority'):
-                    data[key] = ''
-            address_form = cls(data=data)
-            cls.set_address(cart, None)
         else:
             # an address with another priority was selected
             faked_data = dict((key, getattr(active_instance, key, val)) for key, val in data.items())
