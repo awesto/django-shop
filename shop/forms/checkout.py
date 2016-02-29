@@ -89,7 +89,7 @@ class AddressForm(DialogModelForm):
         'street_number': ['has-feedback', 'form-group', 'frmgrp-street_number'],
     }
 
-    active_priority = fields.IntegerField(required=False, widget=widgets.HiddenInput())
+    active_priority = fields.CharField(required=False, widget=widgets.HiddenInput())
 
     # JS function to filter form_entities after removing an entity
     js_filter = 'var list = [].slice.call(arguments); return list.filter(function(a) {{ return a.value != {}; }});'
@@ -127,7 +127,7 @@ class AddressForm(DialogModelForm):
         except cls.get_model().DoesNotExist:
             active_instance = None
         except (KeyError, ValueError):
-            active_priority, active_instance = None, None
+            active_priority, active_instance = 'new', None
         current_priority = getattr(cls.get_address(cart), cls.priority_field, None)
 
         if data.pop('remove_entity', False):
@@ -153,10 +153,10 @@ class AddressForm(DialogModelForm):
                     setattr(instance, cls.priority_field, next_priority)
                 instance.save()
                 cls.set_address(cart, instance)
-        elif active_priority is None:
+        elif active_priority == 'new':
             # customer selected 'Add another address'
             for key in data.keys():
-                if key not in ('plugin_id', 'plugin_order'):
+                if key not in ('plugin_id', 'plugin_order', 'active_priority'):
                     data[key] = ''
             address_form = cls(data=data)
             cls.set_address(cart, None)

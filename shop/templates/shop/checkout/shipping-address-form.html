@@ -10,13 +10,13 @@
 			<label class="control-label">{% trans "Chose a previously used shipping address" %}</label>
 			<select class="form-control input-sm" name="active_priority" ng-change="switchEntity(shipping_address_form)" ng-model="data.shipping_address.active_priority">
 				<option ng-repeat="addr in shipping_address_form.form_entities" ng-selected="{{ shipping_address_form.active_priority.value }}=={% verbatim %}{{ addr.value }}" value="{{ addr.value }}">{{ addr.label }}</option{% endverbatim %}>
-				<option value="">{% trans "Add another address" %}</option>
+				<option value="new">{% trans "Add a new shipping address" %}</option>
 			</select>
 		</div>
 	{% endif %}
 		{{ shipping_address_form.as_div }}
 	{% if shipping_address_form.multi_addr %}
-		<div class="form-group" ng-if="shipping_address_form.form_entities.length>1 && data.shipping_address.active_priority>0">
+		<div class="form-group" ng-if="shipping_address_form.form_entities.length>1 && data.shipping_address.active_priority!='new'">
 			<button class="btn btn-danger btn-xs" ng-click="removeEntity(shipping_address_form, 'shipping_address')">
 				<span class="glyphicon glyphicon-remove-circle"></span>&nbsp;{% trans "Remove this address" %}
 			</button>
