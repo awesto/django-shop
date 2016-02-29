@@ -123,7 +123,7 @@ The template to render the media snippet could look like:
 .. code-block:: django
 	:caption: myshop/products/catalog-smartcard-media.html
 
-	{% load i18n thumbnail djangular_tags %}
+	{% load i18n thumbnail djng_tags %}
 	{% thumbnail product.sample_image 100x100 crop as thumb %}
 	<img src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}">
 

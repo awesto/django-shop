@@ -54,7 +54,7 @@ application. Say we declare a base template for our project:
 .. code-block:: django
 	:caption: myshop/pages/base.html
 
-	{% load djangular_tags %}
+	{% load djng_tags %}
 	<body>
 	...
 	{% render_block "js" postprocessor "compressor.contrib.sekizai.compress" %}

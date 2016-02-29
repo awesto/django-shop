@@ -88,7 +88,7 @@ INSTALLED_APPS = (
     'rest_auth',
     'django_fsm',
     'fsm_admin',
-    'djangular',
+    'djng',
     'cms',
     'menus',
     'treebeard',
@@ -108,7 +108,7 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE_CLASSES = (
-    'djangular.middleware.DjangularUrlMiddleware',
+    'djng.middleware.AngularUrlMiddleware',
     # 'django.middleware.cache.UpdateCacheMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

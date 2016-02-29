@@ -8,8 +8,8 @@ from django.forms import fields, widgets
 from django.forms.utils import ErrorDict
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
-from djangular.styling.bootstrap3.forms import Bootstrap3ModelForm
-from djangular.styling.bootstrap3.widgets import RadioSelect, RadioFieldRenderer, CheckboxInput
+from djng.styling.bootstrap3.forms import Bootstrap3ModelForm
+from djng.styling.bootstrap3.widgets import RadioSelect, RadioFieldRenderer, CheckboxInput
 from shop.models.address import AddressModel
 from shop.models.customer import CustomerModel
 from shop.modifiers.pool import cart_modifiers_pool
@@ -138,8 +138,9 @@ class AddressForm(DialogModelForm):
             faked_data = dict((key, getattr(instance, key, val)) for key, val in data.items())
             faked_data.update(active_priority=getattr(instance, cls.priority_field))
             address_form = cls(data=faked_data, instance=instance)
-            remove_entity_filter = cls.js_filter.format(getattr(active_instance, cls.priority_field))
-            address_form.data.update(remove_entity_filter=mark_safe(remove_entity_filter))
+            if active_instance:
+                remove_entity_filter = cls.js_filter.format(getattr(active_instance, cls.priority_field))
+                address_form.data.update(remove_entity_filter=mark_safe(remove_entity_filter))
             cls.set_address(cart, instance)
         elif current_priority == active_priority:
             # an existing entity of AddressModel was edited

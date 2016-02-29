@@ -6,8 +6,8 @@ from django.forms import fields
 from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
 from cms.utils.helpers import classproperty
-from djangular.forms import NgModelFormMixin, NgFormValidationMixin
-from djangular.styling.bootstrap3.forms import Bootstrap3Form, Bootstrap3ModelForm
+from djng.forms import NgModelFormMixin, NgFormValidationMixin
+from djng.styling.bootstrap3.forms import Bootstrap3Form, Bootstrap3ModelForm
 
 
 class DialogFormMixin(NgModelFormMixin, NgFormValidationMixin):
