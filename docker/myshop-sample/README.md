@@ -37,7 +37,7 @@ whenever we have to rebuild a new version of the merchant's project, we create a
 used to build a new Docker image. This image then shall be built inside the merchant's docker
 folder.
 
-**Do not a ``VOLUME /web`` to this Docker file**
+**Do not add ``VOLUME /web`` to this Docker file**
 
 ```
 docker build -t new-shop-image .
