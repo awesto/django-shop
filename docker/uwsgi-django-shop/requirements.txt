@@ -1,9 +1,9 @@
-Django==1.8.9
+Django==1.8.10
 beautifulsoup4==4.4.0
 cmsplugin-filer==0.10.2
 django-admin-sortable2==0.6.2
 django-allauth==0.23.0
--e git+https://github.com/jrief/django-angular.git@48785701312242b748653c4d673f10adce3291d1#egg=django-angular
+django-angular==0.8.0
 django-appconf==1.0.1
 django-classy-tags==0.6.2
 django-cms==3.2.1
