@@ -31,7 +31,7 @@ framework, that a moderately talented Django programmer should be able to pick u
 
 ## Build status
 
-[![Build Status](https://travis-ci.org/jrief/django-shop.svg)](https://travis-ci.org/jrief/django-shop)
+[![Build Status](https://travis-ci.org/awesto/django-shop.svg)](https://travis-ci.org/awesto/django-shop)
 
 
 ### Todo:
