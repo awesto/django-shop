@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from django.db.models import get_model
 from django.core.exceptions import ImproperlyConfigured
 from django.forms import ChoiceField, widgets
+from django.template.base import TemplateDoesNotExist
 from django.template.loader import select_template
+from django.utils.html import format_html
 from django.utils.module_loading import import_string
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from django.utils.safestring import mark_safe
 from cms.plugin_pool import plugin_pool
 from django.utils.encoding import python_2_unicode_compatible
@@ -164,8 +167,8 @@ class DialogFormPluginBase(ShopPluginBase):
     Base class for all plugins adding a dialog form to a placeholder field.
     """
     require_parent = True
-    parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin',)
-    CHOICES = (('form', _("Form dialog")), ('summary', _("Summary")),)
+    parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin', 'BootstrapPanelPlugin',)
+    CHOICES = (('form', _("Form dialog")), ('summary', _("Static summary")),)
     glossary_fields = (
         PartialFormField('render_type',
             widgets.RadioSelect(choices=CHOICES),
@@ -194,37 +197,52 @@ class DialogFormPluginBase(ShopPluginBase):
     def get_form_class(cls):
         return getattr(cls, 'form_class', None)
 
+    @classmethod
+    def get_identifier(cls, instance):
+        render_type = instance.glossary.get('render_type')
+        render_type = dict(cls.CHOICES).get(render_type, '')
+        return format_html(pgettext_lazy('get_identifier', "as {}"), render_type)
+
     def __init__(self, *args, **kwargs):
         super(DialogFormPluginBase, self).__init__(*args, **kwargs)
         self.FormClass = import_string(self.get_form_class())
 
-    def get_form_data(self, request):
+    def get_form_data(self, context, instance, placeholder):
         """
         Returns data to initialize the corresponding dialog form.
-        This method must return a dictionary containing either `instance` - a Python object to
-        initialize the form class for this plugin, or `initial` - a dictionary containing initial
-        form data, or if both are set, values from `initial` override those of `instance`.
+        This method must return a dictionary containing
+         * either `instance` - a Python object to initialize the form class for this plugin,
+         * or `initial` - a dictionary containing initial form data, or if both are set, values
+           from `initial` override those of `instance`.
         """
+        if issubclass(self.FormClass, DialogFormMixin):
+            try:
+                cart = CartModel.objects.get_from_request(context['request'])
+                cart.update(context['request'])
+            except CartModel.DoesNotExist:
+                cart = None
+            return {'cart': cart}
         return {}
 
     def get_render_template(self, context, instance, placeholder):
-        template_names = [
-            '{0}/checkout/{1}'.format(shop_settings.APP_LABEL, self.template_leaf_name),
-            'shop/checkout/{}'.format(self.template_leaf_name),
-        ]
-        return select_template(template_names)
+        render_type = instance.glossary.get('render_type')
+        if render_type not in ('form', 'summary',):
+            render_type = 'form'
+        try:
+            template_names = [
+                '{0}/checkout/{1}'.format(shop_settings.APP_LABEL, self.template_leaf_name).format(render_type),
+                'shop/checkout/{}'.format(self.template_leaf_name).format(render_type),
+            ]
+            return select_template(template_names)
+        except (AttributeError, TemplateDoesNotExist):
+            return self.render_template
 
     def render(self, context, instance, placeholder):
         """
         Return the context to render a DialogFormPlugin
         """
         request = context['request']
-        form_data = self.get_form_data(request)
-        if issubclass(self.FormClass, DialogFormMixin):
-            cart = CartModel.objects.get_from_request(request)
-            if cart:
-                cart.update(request)
-                form_data['cart'] = cart
+        form_data = self.get_form_data(context, instance, placeholder)
         request._plugin_order = getattr(request, '_plugin_order', 0) + 1
         if not isinstance(form_data.get('initial'), dict):
             form_data['initial'] = {}

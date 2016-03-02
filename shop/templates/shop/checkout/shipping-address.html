@@ -1,7 +1,0 @@
-{% load static sekizai_tags %}
-{% addtoblock "js" %}<script src="{% static 'shop/js/dialogs.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-{% addtoblock "shop-ng-requires" %}django.shop.dialogs{% endaddtoblock %}
-
-<form shop-dialog-form name="{{ shipping_address_form.form_name }}" novalidate>
-	{{ shipping_address_form.as_div }}
-</form>

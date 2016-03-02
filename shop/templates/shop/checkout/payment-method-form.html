@@ -1,0 +1,7 @@
+{% extends "shop/checkout/dialog-base.html" %}
+
+{% block dialog_form %}
+<form shop-dialog-form name="{{ payment_method_form.form_name }}" novalidate>
+	{{ payment_method_form.as_div }}
+</form>
+{% endblock %}

@@ -2,7 +2,7 @@
 'use strict';
 
 // module: django.shop, TODO: move this into a summary JS file
-var djangoShopModule = angular.module('django.shop.carticon_caption', ['ng.django.urls']);
+var djangoShopModule = angular.module('django.shop.carticon_caption', ['djng.urls']);
 
 // Directive <ANY shop-carticon-caption caption-data="{num_items: 7}">
 // Use this directive to handle the caption often displayed near a cart item. This caption

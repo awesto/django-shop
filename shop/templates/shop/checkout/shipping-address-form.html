@@ -1,0 +1,30 @@
+{% extends "shop/checkout/dialog-base.html" %}
+{% load i18n shop_tags %}
+
+{% block dialog_form %}
+<form shop-dialog-form='shipping_address_form.form_entities={{ shipping_address_form.form_entities|rest_json }};' name="{{ shipping_address_form.form_name }}" novalidate>
+	<fieldset>
+		<legend>{{ shipping_address_form.legend }}</legend>
+	{% if shipping_address_form.multi_addr %}
+		<div class="form-group" ng-if="shipping_address_form.form_entities.length>0 && data.shipping_address.active_priority!='add'">
+			<label class="control-label">{% trans "Chose a previously used shipping address" %}</label>
+			<select class="form-control input-sm" name="active_priority" ng-change="switchEntity(shipping_address_form)" ng-model="data.shipping_address.active_priority">
+				<option ng-repeat="addr in shipping_address_form.form_entities" ng-selected="{{ shipping_address_form.active_priority.value }}=={% verbatim %}{{ addr.value }}" value="{{ addr.value }}">{{ addr.label }}</option{% endverbatim %}>
+				<option value="new">{% trans "Add a new shipping address" %}</option>
+			</select>
+		</div>
+		<div class="form-group" ng-if="data.shipping_address.active_priority=='add'">
+			<h4 class="control-label">{% trans "Add a new shipping address" %}</h4>
+		</div>
+	{% endif %}
+		{{ shipping_address_form.as_div }}
+	{% if shipping_address_form.multi_addr %}
+		<div class="form-group" ng-if="shipping_address_form.form_entities.length>1 && data.shipping_address.active_priority!='new'">
+			<button class="btn btn-danger btn-xs" ng-click="removeEntity(shipping_address_form, 'shipping_address')">
+				<span class="glyphicon glyphicon-remove-circle"></span>&nbsp;{% trans "Remove this address" %}
+			</button>
+		</div>
+	{% endif %}
+	</fieldset>
+</form>
+{% endblock %}

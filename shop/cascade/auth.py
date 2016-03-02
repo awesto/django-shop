@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from django.forms.fields import ChoiceField
 from django.template.loader import select_template
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
-from django.utils.module_loading import import_by_path
+from django.utils.module_loading import import_string
 from cms.plugin_pool import plugin_pool
 from shop import settings as shop_settings
 from cmsplugin_cascade.link.forms import LinkForm
@@ -72,7 +73,7 @@ class ShopAuthenticationPlugin(ShopLinkPluginBase):
             # prevent a malicious database entry to import an ineligible file
             form_type = AUTH_FORM_TYPES[[ft[0] for ft in AUTH_FORM_TYPES].index(form_type)]
             try:
-                FormClass = import_by_path(form_type[2])
+                FormClass = import_string(form_type[2])
             except (ImportError, IndexError):
                 # TODO: other unresolvable may need another form name
                 context['form_name'] = 'auth_form'

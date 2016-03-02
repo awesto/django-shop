@@ -2,7 +2,7 @@
 'use strict';
 
 // module: django.shop, TODO: move this into a summary JS file
-var djangoShopModule = angular.module('django.shop.cart', ['ng.django.urls']);
+var djangoShopModule = angular.module('django.shop.cart', ['djng.urls']);
 
 djangoShopModule.controller('CartController', ['$scope', '$http', function($scope, $http) {
 	var isLoading = false;

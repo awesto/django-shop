@@ -1,6 +1,6 @@
-{% load static cms_tags sekizai_tags djangular_tags i18n %}
+{% load static cms_tags sekizai_tags djng_tags i18n %}
 <!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE }}" ng-app="djangoShop">
+<html lang="{{ LANGUAGE_CODE }}" ng-app="myShop">
 <head>
 	<title>{% block title %}django SHOP demo{% endblock %}</title>
 	<meta charset="utf-8">
@@ -45,7 +45,7 @@
 	{% render_block "ext-js" %}
 	{% render_block "js" postprocessor "compressor.contrib.sekizai.compress" %}
 	<script type="text/javascript">
-	angular.module('djangoShop', ['ngAnimate', 'ngMessages', 'ngSanitize',
+	angular.module('myShop', ['ngAnimate', 'ngMessages', 'ngSanitize',
 		{% render_block "shop-ng-requires" postprocessor "shop.sekizai_processors.module_list" %}
 	]).config(['$httpProvider', function($httpProvider) {
 		$httpProvider.defaults.headers.common['X-CSRFToken'] = '{% csrf_value %}';

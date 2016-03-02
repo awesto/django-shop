@@ -123,7 +123,7 @@ The template to render the media snippet could look like:
 .. code-block:: django
 	:caption: myshop/products/catalog-smartcard-media.html
 
-	{% load i18n thumbnail djangular_tags %}
+	{% load i18n thumbnail djng_tags %}
 	{% thumbnail product.sample_image 100x100 crop as thumb %}
 	<img src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}">
 
@@ -233,14 +233,12 @@ This apphook points onto a list of boilerplate code containing these urlpattern:
 	from rest_framework.settings import api_settings
 	from shop.rest.filters import CMSPagesFilterBackend
 	from shop.rest.serializers import AddToCartSerializer
-	from shop.views.catalog import (ProductListView,
+	from shop.views.catalog import (CMSPageProductListView,
 	    ProductRetrieveView, AddToCartView)
 	
 	urlpatterns = patterns('',
-	    url(r'^$', ProductListView.as_view(
+	    url(r'^$', CMSPageProductListView.as_view(
 	        serializer_class=ProductSummarySerializer,
-	        filter_backends=api_settings.DEFAULT_FILTER_BACKENDS \
-	            + [CMSPagesFilterBackend()],
 	    )),
 	    url(r'^(?P<slug>[\w-]+)$', ProductRetrieveView.as_view(
 	        serializer_class=ProductDetailSerializer

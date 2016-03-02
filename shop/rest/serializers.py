@@ -278,18 +278,19 @@ class BaseCartSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CartModel
+        fields = ('subtotal', 'extra_rows', 'total',)
+
+    def to_representation(self, cart):
+        cart.update(self.context['request'])
+        representation = super(BaseCartSerializer, self).to_representation(cart)
+        return representation
 
 
 class CartSerializer(BaseCartSerializer):
     items = CartItemSerializer(many=True, read_only=True)
 
     class Meta(BaseCartSerializer.Meta):
-        fields = ('items', 'subtotal', 'extra_rows', 'total',)
-
-    def to_representation(self, cart):
-        cart.update(self.context['request'])
-        representation = super(BaseCartSerializer, self).to_representation(cart)
-        return representation
+        fields = ('items',) + BaseCartSerializer.Meta.fields
 
 
 class WatchSerializer(BaseCartSerializer):
@@ -298,15 +299,17 @@ class WatchSerializer(BaseCartSerializer):
     class Meta(BaseCartSerializer.Meta):
         fields = ('items',)
 
-
-class CheckoutSerializer(BaseCartSerializer):
-    class Meta(BaseCartSerializer.Meta):
-        fields = ('subtotal', 'extra_rows', 'total',)
-
     def to_representation(self, cart):
-        cart.update(self.context['request'])
-        representation = super(BaseCartSerializer, self).to_representation(cart)
-        return representation
+        # grandparent super
+        return super(BaseCartSerializer, self).to_representation(cart)
+
+
+class CheckoutSerializer(serializers.Serializer):
+    cart = serializers.SerializerMethodField()
+
+    def get_cart(self, instance):
+        serializer = BaseCartSerializer(instance, context=self.context, label='cart')
+        return serializer.data
 
 
 class OrderItemSerializer(serializers.ModelSerializer):

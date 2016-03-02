@@ -5,7 +5,6 @@ from six import with_metaclass
 from collections import OrderedDict
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
-from django.utils import six
 from django.utils.translation import ugettext_lazy as _
 from jsonfield.fields import JSONField
 from shop.modifiers.pool import cart_modifiers_pool
@@ -94,7 +93,7 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     def __init__(self, *args, **kwargs):
         # reduce the given fields to what the model actually can consume
         all_field_names = self._meta.get_all_field_names()
-        model_kwargs = {k: v for k, v in six.iteritems(kwargs) if k in all_field_names}
+        model_kwargs = {k: v for k, v in kwargs.items() if k in all_field_names}
         super(BaseCartItem, self).__init__(*args, **model_kwargs)
         self.extra_rows = OrderedDict()
         self._dirty = True
@@ -120,20 +119,23 @@ CartItemModel = deferred.MaterializedModel(BaseCartItem)
 
 
 class CartManager(models.Manager):
+    """
+    The Model Manager for any Cart inheriting from BaseCart.
+    """
+
     def get_from_request(self, request):
         """
         Return the cart for current customer.
         """
         if request.customer.is_visitor():
-            cart = None
-        else:
-            cart = self.get_or_create(customer=request.customer)[0]
+            raise self.model.DoesNotExist("Cart for visiting customer does not exist.")
+        cart, temp = self.get_or_create(customer=request.customer)
         return cart
 
     def get_or_create_from_request(self, request):
         if request.customer.is_visitor():
             request.customer = CustomerModel.objects.get_or_create_from_request(request)
-        cart = self.get_or_create(customer=request.customer)[0]
+        cart, temp = self.get_or_create(customer=request.customer)
         return cart
 
 
