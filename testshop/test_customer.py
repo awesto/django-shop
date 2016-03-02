@@ -10,7 +10,7 @@ from rest_framework.test import APIRequestFactory
 from shop.rest.auth import PasswordResetSerializer
 from shop.models.defaults.customer import Customer
 from shop.middleware import CustomerMiddleware
-from shop.models.customer import VisitingCustomer
+from shop.models.customer import VisitingCustomer, CustomerManager
 
 
 class CustomerTest(TestCase):
@@ -189,6 +189,20 @@ class CustomerTest(TestCase):
         self.assertEqual(simpsons.count(), 0)
         with self.assertRaises(FieldDoesNotExist):
             qs.filter(no_attrib='foo')
+
+
+class SessionKeyEncodingTest(TestCase):
+
+    def test_decode_inverses_encode_if_leading_zero(self):
+        # Regression test for issue #311.
+        # We want ``decode_session_key(encode_session_key(x)) == x`` for all x.
+        # This was not the case if x started with ``0``.
+        manager = CustomerManager()
+        key = "0abc"
+        self.assertEqual(
+            manager.decode_session_key(manager.encode_session_key(key)),
+            key
+        )
 
 
 class PasswordResetSerializerTest(TestCase):
