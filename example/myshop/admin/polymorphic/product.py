@@ -12,8 +12,28 @@ from polymorphic.admin import (PolymorphicParentModelAdmin, PolymorphicChildMode
     PolymorphicChildModelFilter)
 from shop.admin.product import CMSPageAsCategoryMixin, ProductImageInline
 from myshop.models.polymorphic.product import Product
+from myshop.models.polymorphic.commodity import Commodity
 from myshop.models.polymorphic.smartcard import SmartCard
 from myshop.models.polymorphic.smartphone import OperatingSystem, SmartPhone, SmartPhoneModel
+
+
+class CommodityAdmin(SortableAdminMixin, TranslatableAdmin, FrontendEditableAdminMixin,
+                     PlaceholderAdminMixin, CMSPageAsCategoryMixin, admin.ModelAdmin):
+    base_model = Product
+    fieldsets = (
+        (None, {
+            'fields': ('product_name', 'slug', 'product_code', 'unit_price', 'active',),
+        }),
+        (_("Translatable Fields"), {
+            'fields': ('description',)
+        }),
+        (_("Properties"), {
+            'fields': ('manufacturer',)
+        }),
+    )
+    filter_horizontal = ('cms_pages',)
+    inlines = (ProductImageInline,)
+    prepopulated_fields = {'slug': ('product_name',)}
 
 
 class SmartCardAdmin(SortableAdminMixin, TranslatableAdmin, FrontendEditableAdminMixin,
@@ -81,7 +101,7 @@ class SmartPhoneAdmin(TranslatableAdmin, FrontendEditableAdminMixin,
 @admin.register(Product)
 class ProductAdmin(SortableAdminMixin, PolymorphicParentModelAdmin):
     base_model = Product
-    child_models = ((SmartPhoneModel, SmartPhoneAdmin), (SmartCard, SmartCardAdmin),)
+    child_models = ((SmartPhoneModel, SmartPhoneAdmin), (SmartCard, SmartCardAdmin), (Commodity, CommodityAdmin),)
     list_display = ('product_name', 'get_price', 'product_type', 'active',)
     list_display_links = ('product_name',)
     search_fields = ('product_name',)

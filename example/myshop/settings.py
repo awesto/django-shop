@@ -26,18 +26,18 @@ if SHOP_TUTORIAL not in ('simple', 'i18n', 'polymorphic',):
 PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, os.path.pardir, os.path.pardir))
 
 # Directory where working files, such as media and databases are kept
-WORK_DIR = os.path.join(PROJECT_ROOT, 'workdir')
+WORK_DIR = os.environ.get('DJANGO_WORKDIR', os.path.join(PROJECT_ROOT, 'workdir'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
-ADMINS = ((u'The Merchant', u'the.merchant@example.com'),)
+ADMINS = (("The Merchant", 'the.merchant@example.com'),)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'nqniwbt=%@5a(e8%&h#c^0()64(ujs0=4%_nyajn*t6a$ca&at'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(os.environ.get('DJANGO_DEBUG'))
 
 ALLOWED_HOSTS = ['*']
 
@@ -88,7 +88,7 @@ INSTALLED_APPS = (
     'rest_auth',
     'django_fsm',
     'fsm_admin',
-    'djangular',
+    'djng',
     'cms',
     'menus',
     'treebeard',
@@ -108,7 +108,7 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE_CLASSES = (
-    'djangular.middleware.DjangularUrlMiddleware',
+    'djng.middleware.AngularUrlMiddleware',
     # 'django.middleware.cache.UpdateCacheMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -131,7 +131,7 @@ MIGRATION_MODULES = {
 
 ROOT_URLCONF = 'myshop.urls'
 
-WSGI_APPLICATION = 'myshop.wsgi.application'
+WSGI_APPLICATION = 'wsgi.application'
 
 DATABASES = {
     'default': {
@@ -213,8 +213,8 @@ STATIC_ROOT = os.path.join(WORK_DIR, 'static')
 STATIC_URL = '/static/'
 
 STATICFILES_FINDERS = (
-    'myshop.finders.ServeUnminimizedFinder',  # or 'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'myshop.finders.FileSystemFinder',  # or 'django.contrib.staticfiles.finders.FileSystemFinder',
+    'myshop.finders.AppDirectoriesFinder',  # or 'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'sass_processor.finders.CssFinder',
     'compressor.finders.CompressorFinder',
 )
@@ -234,6 +234,7 @@ ADMIN_MEDIA_PREFIX = '/static/admin/'
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
     'APP_DIRS': True,
+    'DIRS': [],
     'OPTIONS': {
         'context_processors': (
             'django.contrib.auth.context_processors.auth',
@@ -253,7 +254,7 @@ TEMPLATES = [{
     }
 }]
 
-SECURE_PROXY_SSL_HEADER = (u'HTTP_X_FORWARDED_PROTO', u'https')
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 LOGGING = {
     'version': 1,
@@ -270,7 +271,7 @@ LOGGING = {
     },
     'handlers': {
         'console': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.StreamHandler',
             'formatter': 'simple',
         },
@@ -279,6 +280,11 @@ LOGGING = {
         'django': {
             'handlers': ['console'],
             'level': 'INFO',
+            'propagate': True,
+        },
+        'post_office': {
+            'handlers': ['console'],
+            'level': 'WARNING',
             'propagate': True,
         },
     },
@@ -310,8 +316,6 @@ SASS_PROCESSOR_INCLUDE_DIRS = (
 )
 
 COERCE_DECIMAL_TO_STRING = True
-
-COMPRESS_ENABLED = False
 
 FSM_ADMIN_FORCE_PERMIT = True
 
@@ -357,9 +361,9 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880
 THUMBNAIL_HIGH_RESOLUTION = False
 
 THUMBNAIL_OPTIMIZE_COMMAND = {
-    'gif': '/opt/local/bin/optipng {filename}',
-    'jpeg': '/opt/local/bin/jpegoptim {filename}',
-    'png': '/opt/local/bin/optipng {filename}'
+    'gif': '/usr/bin/optipng {filename}',
+    'jpeg': '/usr/bin/jpegoptim {filename}',
+    'png': '/usr/bin/optipng {filename}'
 }
 
 THUMBNAIL_PRESERVE_EXTENSIONS = True
@@ -387,25 +391,35 @@ CMS_CACHE_DURATIONS = {
 
 CMS_PERMISSION = False
 
+CACSCADE_WORKAREA_GLOSSARY = {
+    'breakpoints': ['xs', 'sm', 'md', 'lg'],
+    'container_max_widths': {'xs': 750, 'sm': 750, 'md': 970, 'lg': 1170},
+    'fluid': False,
+    'media_queries': {
+        'xs': ['(max-width: 768px)'],
+        'sm': ['(min-width: 768px)', '(max-width: 992px)'],
+        'md': ['(min-width: 992px)', '(max-width: 1200px)'],
+        'lg': ['(min-width: 1200px)'],
+    },
+}
+
 CMS_PLACEHOLDER_CONF = {
     'Breadcrumb': {
         'plugins': ['BreadcrumbPlugin'],
         #  'text_only_plugins': ['TextLinkPlugin'],
         #  'parent_classes': {'BootstrapRowPlugin': []},
         #  'require_parent': False,
-        'glossary': {
-            'breakpoints': ['xs', 'sm', 'md', 'lg'],
-            'container_max_widths': {'xs': 750, 'sm': 750, 'md': 970, 'lg': 1170},
-            'fluid': False,
-            'media_queries': {
-                'xs': ['(max-width: 768px)'],
-                'sm': ['(min-width: 768px)', '(max-width: 992px)'],
-                'md': ['(min-width: 992px)', '(max-width: 1200px)'],
-                'lg': ['(min-width: 1200px)'],
-            },
-        },
+        'glossary': CACSCADE_WORKAREA_GLOSSARY,
+    },
+    'Commodity Details': {
+        'plugins': ['BootstrapRowPlugin', 'TextPlugin', 'ImagePlugin', 'PicturePlugin'],
+        'text_only_plugins': ['TextLinkPlugin'],
+        'parent_classes': {'BootstrapRowPlugin': []},
+        'require_parent': False,
+        'glossary': CACSCADE_WORKAREA_GLOSSARY,
     },
 }
+
 
 CMSPLUGIN_CASCADE_PLUGINS = ('cmsplugin_cascade.segmentation', 'cmsplugin_cascade.generic',
     'cmsplugin_cascade.link', 'shop.cascade', 'cmsplugin_cascade.bootstrap3',)
@@ -489,8 +503,9 @@ SHOP_CART_MODIFIERS = (
     else 'shop.modifiers.defaults.DefaultCartModifier',
     'shop.modifiers.taxes.CartExcludedTaxModifier',
     'myshop.modifiers.PostalShippingModifier',
+    'myshop.modifiers.CustomerPickupModifier',
+    'myshop.modifiers.StripePaymentModifier',
     'shop.modifiers.defaults.PayInAdvanceModifier',
-    'shop_stripe.modifiers.StripePaymentModifier',
 )
 SHOP_EDITCART_NG_MODEL_OPTIONS = "{updateOn: 'default blur', debounce: {'default': 2500, 'blur': 0}}"
 
@@ -507,7 +522,9 @@ SHOP_STRIPE = {
 }
 
 # merge settings with non-public credentioals in private_settings
-for priv_attr in ('DATABASES', 'SECRET_KEY', 'SHOP_STRIPE',):
+for priv_attr in ('DATABASES', 'SECRET_KEY', 'SHOP_STRIPE', 'EMAIL_HOST', 'EMAIL_PORT',
+                  'EMAIL_HOST_USER', 'DEFAULT_FROM_EMAIL', 'EMAIL_HOST_PASSWORD', 'EMAIL_USE_TLS',
+                  'EMAIL_REPLY_TO', 'EMAIL_BACKEND'):
     try:
         from . import private_settings
         vars()[priv_attr].update(getattr(private_settings, priv_attr))

@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from decimal import Decimal, InvalidOperation
 from cms.utils.helpers import classproperty
 from shop import settings as shop_settings
-from iso4217 import CURRENCIES
+from .iso4217 import CURRENCIES
 
 
 class AbstractMoney(Decimal):
@@ -119,6 +119,8 @@ class AbstractMoney(Decimal):
         Return the amount as decimal quantized to its subunits.
         This representation often is used by payment service providers.
         """
+        if self.is_nan():
+            return Decimal(0)
         return Decimal.quantize(self, self._cents)
 
     def as_integer(self):

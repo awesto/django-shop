@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.utils.module_loading import import_by_path
+
+from django.db import transaction
+from django.utils.module_loading import import_string
 from rest_framework.decorators import list_route
 from rest_framework.exceptions import ValidationError
 from cms.plugin_pool import plugin_pool
@@ -20,7 +22,7 @@ class CheckoutViewSet(BaseViewSet):
         self.dialog_forms = []
         for p in plugin_pool.get_all_plugins():
             if issubclass(p, DialogFormPluginBase):
-                self.dialog_forms.append(import_by_path(p.form_class))
+                self.dialog_forms.append(import_string(p.form_class))
 
     @list_route(methods=['post'], url_path='upload')
     def upload(self, request):
@@ -38,28 +40,39 @@ class CheckoutViewSet(BaseViewSet):
 
         # sort posted form data by plugin order
         dialog_data = []
-        for fc in self.dialog_forms:
-            key = fc.scope_prefix.split('.', 1)[1]
+        for form_class in self.dialog_forms:
+            key = form_class.scope_prefix.split('.', 1)[1]
             if key in request.data:
                 if 'plugin_order' in request.data[key]:
-                    dialog_data.append((fc, request.data[key]))
+                    dialog_data.append((form_class, request.data[key]))
                 else:
                     for data in request.data[key].values():
-                        dialog_data.append((fc, data))
+                        dialog_data.append((form_class, data))
         dialog_data = sorted(dialog_data, key=lambda tpl: int(tpl[1]['plugin_order']))
 
-        # save data and collect potential errors
-        errors = {}
-        for form_class, data in dialog_data:
-            reply = form_class.form_factory(request, data, cart)
-            if isinstance(reply, dict):
-                errors.update(reply)
-
-        cart.save()
+        # save data, get text representation and collect potential errors
+        errors, checkout_summary, response_data = {}, {}, {}
+        with transaction.atomic():
+            for form_class, data in dialog_data:
+                form = form_class.form_factory(request, data, cart)
+                if form.is_valid():
+                    # empty error dict forces revalidation by the client side validation
+                    errors[form_class.form_name] = {}
+                    # keep a summary of of validated form content inside the client's $rootScope
+                    checkout_summary[form_class.form_name] = form.as_text()
+                else:
+                    # errors are rendered by the client side validation
+                    errors[form_class.form_name] = dict(form.errors)
+                # by updating the response data, we can override the form's model $scope
+                update_data = form.get_response_data()
+                if isinstance(update_data, dict):
+                    key = form_class.scope_prefix.split('.', 1)[1]
+                    response_data[key] = update_data
+            cart.save()
 
         # add possible form errors for giving feedback to the customer
         response = self.list(request)
-        response.data.update(errors=errors)
+        response.data.update(errors=errors, checkout_summary=checkout_summary, data=response_data)
         return response
 
     @list_route(methods=['post'], url_path='purchase')

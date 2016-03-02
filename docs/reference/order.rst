@@ -225,11 +225,11 @@ by the framework whenever the status changes to "*prepayment_deposited*":
 
 .. code-block:: python
 
-    @transition(field='status', source=['prepayment_deposited',
-        'no_payment_required'], custom=dict(auto=True))
-    def acknowledge_prepayment(self):
-        """Acknowledge the payment."""
-        self.acknowledge_payment()
+	@transition(field='status', source=['prepayment_deposited',
+	    'no_payment_required'], custom=dict(auto=True))
+	def acknowledge_prepayment(self):
+	    """Acknowledge the payment."""
+	    self.acknowledge_payment()
 
 This status, "*payment_confirmed*", is known by all other workflow mixin classes and must be used
 as the source argument for their transition methods.

@@ -40,7 +40,10 @@ class LoginView(OriginalLoginView):
         """
         Logs in as the given user, and moves the items from the current to the new cart.
         """
-        anonymous_cart = CartModel.objects.get_from_request(self.request)
+        try:
+            anonymous_cart = CartModel.objects.get_from_request(self.request)
+        except CartModel.DoesNotExist:
+            anonymous_cart = None
         dead_user = None if self.request.user.is_anonymous() or self.request.customer.is_registered() else self.request.customer.user
         super(LoginView, self).login()  # this rotates the session_key
         authenticated_cart = CartModel.objects.get_from_request(self.request)

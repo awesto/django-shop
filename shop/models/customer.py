@@ -237,7 +237,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     def is_recognized(self):
         """
         Return True if the customer is associated with a User account.
-        Non recognized customers have accessed the shop, but did not register
+        Unrecognized customers have accessed the shop, but did not register
         an account nor declared themselves as guests.
         """
         return self.recognized != self.UNRECOGNIZED

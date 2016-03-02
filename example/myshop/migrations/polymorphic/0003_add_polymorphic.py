@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import migrations, models
 import django.db.models.deletion
+import cms.models.fields
 import djangocms_text_ckeditor.fields
 
 
@@ -130,6 +131,20 @@ class Migration(migrations.Migration):
             model_name='productpage',
             name='product',
             field=models.ForeignKey(to='myshop.Product'),
+        ),
+        migrations.CreateModel(
+            name='Commodity',
+            fields=[
+                ('product_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='myshop.Product')),
+                ('unit_price', models.DecimalField(default='0', help_text='Net price for this product', max_digits=30, decimal_places=3)),
+                ('product_code', models.CharField(unique=True, max_length=255, verbose_name='Product code')),
+                ('placeholder', cms.models.fields.PlaceholderField(slotname='Commodity Details', editable=False, to='cms.Placeholder', null=True)),
+            ],
+            options={
+                'verbose_name': 'Commodity',
+                'verbose_name_plural': 'Commodities',
+            },
+            bases=('myshop.product',),
         ),
         migrations.CreateModel(
             name='SmartPhoneModel',

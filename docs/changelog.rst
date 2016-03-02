@@ -1,10 +1,117 @@
-Version 0.9.0
-=============
-* Complete rewrite of the code base. Too many things have changed to be enumerated here.
+.. _changelog:
+
+========================
+Changelog for djangoSHOP
+========================
+
+0.9.0rc3
+========
+* Separated class:`shop.views.catalog.ProductListView` into its base and the new class
+  class:`shop.views.catalog.CMSPageProductListView` which already has added it appropriate
+  filters.
+* Moved ``wsgi.py`` into upper folder.
+* Prototype of :class:`shop.cascade.DialogFormPluginBase.get_form_data` changed. It now accepts
+  ``context``, ``instance`` and ``placeholder``.
+
+
+0.9.0rc2
+========
+
+* Fixed: It was impossible to enter the credit card information for Stripe and then proceed to the
+  next step. Using Stripe was possible only on the last step. This restriction has gone.
+* It now also is possible to display a summary of your order before proceeding to the final
+  purchasing step.
+* To be more Pythonic, class:`shop.models.cart.CartModelManager` raises a ``DoesNotExist`` exception
+  instead of ``None`` for visiting customers.
+* Added method ``filter_from_request`` to class:`shop.models.order.OrderManager`.
+* Fixed: OrderAdmin doesn't ignores error if customer URL can't be resolved.
+* Fixed: Version checking of Django.
+* Fixed: Fieldsets duplication in Product Admin.
+* CartPlugin now can be child of ProcessStepPlugin and BootstrapPanelPlugin.
+* Added ShopAddToCartPlugin.
+* All Checkout Forms now can be rendered as editable or summary.
+* All Dialog Forms now can declare a legend.
+* In ``DialogFormPlugin``, method ``form_factory`` always returns a form class instead of an error
+  dict if form was invalid.
+* Added method ``OrderManager.filter_from_request``, which behaves analogous to
+  ``CartManager.get_from_request``.
+* Fixed lookups using MoneyField by adding method get_prep_value.
+* Dropped support for South migrations.
+* Fixed: In ``ProductIndex``, translations now are always overridden.
+* Added class ``SyncCatalogView`` which can be used to synchronize the cart with a catalog list
+  view.
+* Content of Checkout Forms is handled by a single transaction.
+
+0.9.0rc1
+========
+This is the initial public release base on the new code base. There are so many changes that this
+release can be considered as complete rewrite of the shop framework. Therefore instead of
+enumerating the new features, this section shows what remained from the old code base:
+
+* All models such as Product, Order, OrderItem, Cart, CartItem can be overridden by the merchant's
+  implementation. However, we are using the deferred pattern, instead of configuration settings.
+* Categories must be implemented as separate **djangoSHOP** addons. However for many implementations
+  pages form the **djangoCMS** can be used as catalog list views.
+* The principle on how cart modifiers work, didn't change. There more inversion of control now, in
+  that sense, that now the modifiers decide themselves, how to change the subtotal and final total.
+* Existing Payment Providers can be integrated without much hassle.
+
+But these things have changed:
+
+* The API of **djangoSHOP** is accessible through a REST interface. This allows us to build MVC on
+  top of that.
+
+* Changed the two OneToOne relations from model Address to User, one was used for shipping, one for
+  billing. Now abstract BaseAddress refers to the User by a single ForeignKey giving the ability to
+  link more than one address to each user. Additionally each address has a priority field for
+  shipping and invoices, so that the latest used address is offered to the client.
+
+* Replaced model shop.models.User by the configuration directive ``settings.AUTH_USER_MODEL``, to be
+  compliant with Django documentation.
+
+* The cart now is always stored inside the database; there is no more distinction between session
+  based carts and database carts. Carts for anonymous users are retrieved using the visitor's
+  session_key. Therefore we don't need a utility function such ``get_or_create_cart`` anymore.
+  Everything is handled by the a new CartManager, which retrieves or creates or cart based on
+  the request session.
+
+* If the quantity of a cart item drops to zero, this items is not automatically removed from the
+  cart. There are plenty of reasons, why it can make sense to have a quantity of zero.
+
+* A WatchList (some say wish-list) has been added. This simply reuses the existing Cart model,
+  where the item quantity is zero.
+
+* Currency and CurrencyField are replaced by Money and MoneyField. These types not only store the
+  amount, but also in which currency this amount is. This has many advantages:
+
+  * An amount is rendered with its currency symbol as a string. This also applies for JSON
+    data-structures, rendered by the REST framework.
+
+  * Money types of different currencies can not be added/substracted by
+    accident.  Normal installations woun't be affected, since each shop system
+    must specify its default currency.
+
+* Backend pools for Payment and Shipping have been removed. Instead, a Cart Modifier can inherit
+  from :class:`PaymentModifier` or :class:`ShippingModifier`. This allows to reuse the Cart Modifier
+  Pool for these backends and use the modifiers logic for adding extra rows to he carts total.
+
+* The models :class:`OrderExtraRow` and :class:`OrderItemExtraRow` has been replaced by a JSONField
+  extra_rows in model :class:`OrderModel` and :class:`OrderItemModel`. :class:`OrderAnnotation` now
+  also is stored inside this extra field.
+
+* Renamed for convention with other Django application:
+
+  * date_created -> created_at
+  * last_updated -> updated_at
+  * ExtraOrderPriceField -> BaseOrderExtraRow
+  * ExtraOrderItemPriceField -> BaseItemExtraRow
+
 
 Version 0.2.1
 =============
-* last version based on the old code base, which shall be deprecated.
+This is the last release on the old code base. It has been tagged as 0.2.1 and can be examined for
+historical reasons. Bugs will not be fixed in this release.
+
 
 Version 0.2.0
 =============

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.utils.translation import ugettext_lazy as _
+
 from django.views.decorators.cache import never_cache
 from rest_framework import generics, mixins
 from rest_framework.renderers import BrowsableAPIRenderer
@@ -19,9 +19,7 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, generics.Gener
     many = True
 
     def get_queryset(self):
-        if self.request.customer.is_visitor():
-            raise PermissionDenied(detail=_("Only signed in customers can view their orders"))
-        return OrderModel.objects.filter(customer=self.request.customer).order_by('-updated_at',)
+        return OrderModel.objects.filter_from_request(self.request)
 
     def get_serializer_class(self):
         if self.many:
@@ -30,7 +28,7 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, generics.Gener
 
     def get_renderer_context(self):
         renderer_context = super(OrderView, self).get_renderer_context()
-        if renderer_context['request'].accepted_renderer.format == 'html':
+        if self.request.accepted_renderer.format == 'html':
             renderer_context['many'] = self.many
             if self.many is False:
                 # add an extra ance to the breadcrumb

@@ -29,11 +29,8 @@ class ProductIndex(indexes.SearchIndex):
     def prepare(self, product):
         if hasattr(product, 'translations'):
             product.set_current_language(self.language)
-            with translation.override(self.language):
-                data = super(ProductIndex, self).prepare(product)
-        else:
+        with translation.override(self.language):
             data = super(ProductIndex, self).prepare(product)
-        print data['django_ct']
         return data
 
     def render_html(self, prefix, product, postfix):

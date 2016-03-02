@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.conf import settings
 from django.conf.urls import patterns, url
 from django.contrib import admin
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, NoReverseMatch
 from django.db.models.fields import Field, FieldDoesNotExist
 from django.forms import widgets
 from django.http import HttpResponse
@@ -81,8 +81,11 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
     get_number.short_description = _("Order number")
 
     def get_customer_link(self, obj):
-        url = reverse('admin:shop_customerproxy_change', args=(obj.customer.pk,))
-        return format_html('<a href="{0}" target="_new">{1}</a>'.format(url, obj.customer.get_username()))
+        try:
+            url = reverse('admin:shop_customerproxy_change', args=(obj.customer.pk,))
+            return format_html('<a href="{0}" target="_new">{1}</a>', url, obj.customer.get_username())
+        except NoReverseMatch:
+            return format_html('<strong>{0}</strong>', obj.customer.get_username())
     get_customer_link.short_description = _("Customer")
     get_customer_link.allow_tags = True
 

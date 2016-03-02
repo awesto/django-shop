@@ -7,8 +7,8 @@ from django.forms import fields, widgets, ModelForm
 from django.template import Context
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
-from djangular.forms import NgModelFormMixin, NgFormValidationMixin
-from djangular.styling.bootstrap3.forms import Bootstrap3ModelForm
+from djng.forms import NgModelFormMixin, NgFormValidationMixin
+from djng.styling.bootstrap3.forms import Bootstrap3ModelForm
 from shop import settings as shop_settings
 from shop.models.customer import CustomerModel
 

@@ -94,51 +94,66 @@ djangoShopModule.directive('shopAddToCart', function() {
 });
 
 
+djangoShopModule.controller('CatalogListController', ['$scope', '$http', '$window', function($scope, $http, $window) {
+	var self = this, fetchURL = $window.location.pathname;
+
+	this.loadProducts = function(config) {
+		if ($scope.isLoading || fetchURL === null)
+			return;
+		$scope.isLoading = true;
+		$http.get(fetchURL, config).success(function(response) {
+			fetchURL = response.next;
+			$scope.catalog.count = response.count;
+			$scope.catalog.products = $scope.catalog.products.concat(response.results);
+			$scope.isLoading = false;
+		}).error(function() {
+			fetchURL = null;
+			$scope.isLoading = false;
+		});
+	}
+
+	$scope.loadMore = function() {
+		console.log('load more products ...');
+		self.loadProducts();
+	};
+
+	// listen on events of type `shopCatalogSearch`
+	$scope.$root.$on('shopCatalogSearch', function(event, config) {
+		try {
+			config = {params: {autocomplete: config.params.q}};
+		} catch (err) {
+			config = null;
+		}
+		fetchURL = $window.location.pathname + 'search-catalog';
+		$scope.catalog.products = [];  // reset list of products
+		self.loadProducts(config);
+	});
+
+	// listen on events of type `shopCatalogFilter`
+	$scope.$root.$on('shopCatalogFilter', function(event, filter) {
+		var config;
+		try {
+			config = {params: filter};
+		} catch (err) {
+			config = null;
+		}
+		fetchURL = $window.location.pathname;
+		$scope.catalog.products = [];  // reset list of products
+		self.loadProducts(config);
+	});
+
+	$scope.catalog = {products: []};
+	$scope.isLoading = false;
+}]);
+
+
 // Directive <ANY shop-catalog-list>
 djangoShopModule.directive('shopCatalogList', function() {
 	return {
 		restrict: 'EAC',
-		controller: ['$scope', '$http', '$window', function($scope, $http, $window) {
-			var self = this, fetchURL = $window.location.pathname;
-
-			this.loadProducts = function(config) {
-				if ($scope.isLoading || fetchURL === null)
-					return;
-				$scope.isLoading = true;
-				$http.get(fetchURL, config).success(function(response) {
-					fetchURL = response.next;
-					$scope.catalog.count = response.count;
-					$scope.catalog.products = $scope.catalog.products.concat(response.results);
-					$scope.isLoading = false;
-				}).error(function() {
-					fetchURL = null;
-					$scope.isLoading = false;
-				});
-			}
-
-			$scope.loadMore = function() {
-				console.log('load more products ...');
-				self.loadProducts();
-			};
-
-			// listen on events of type `shopCatalogSearch`
-			$scope.$root.$on('shopCatalogSearch', function(event, config) {
-				try {
-					config = {params: {autocomplete: config.params.q}}
-				} catch (err) {
-					config = null;
-				}
-				fetchURL = $window.location.pathname + 'search-catalog';
-				$scope.catalog.products = [];  // reset list of products
-				self.loadProducts(config);
-			});
-
-			$scope.catalog = {products: []};
-			$scope.isLoading = false;
-		}]
+		controller: 'CatalogListController'
 	};
 });
-
 
 // Directive <ANY shop-sync-catalog="REST-API-endpoint">
 // handle catalog list view combined with adding products to cart
