@@ -198,11 +198,8 @@ class SessionKeyEncodingTest(TestCase):
         # We want ``decode_session_key(encode_session_key(x)) == x`` for all x.
         # This was not the case if x started with ``0``.
         manager = CustomerManager()
-        key = "0abc"
-        self.assertEqual(
-            manager.decode_session_key(manager.encode_session_key(key)),
-            key
-        )
+        key = "00" + 30 * "a"
+        self.assertEqual(key, manager.decode_session_key(manager.encode_session_key(key)))
 
 
 class PasswordResetSerializerTest(TestCase):
