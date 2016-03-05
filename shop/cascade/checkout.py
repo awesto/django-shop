@@ -132,23 +132,13 @@ class CheckoutAddressPluginBase(DialogFormPluginBase):
 
         AddressModel = self.FormClass.get_model()
         customer = context['request'].customer
-        cart = form_data.get('cart')
-        priority_field = self.FormClass.priority_field
-        address = self.get_address(cart)
-        exclude_kwargs = {priority_field: None}
-        if address is None:
-            # no address has been associated with the cart, hence the the last one
-            # assigned to the current customer
-            address = AddressModel.objects.filter(customer=customer).exclude(**exclude_kwargs)
-            address = address.order_by(priority_field).last()
-            self.FormClass.set_address(cart, address)
-            cart.save()
+        assert form_data['cart'] is not None, "Can not proceed to checkout without cart"
+        address = self.get_address(form_data['cart'])
         form_data.update(instance=address)
 
         if instance.glossary.get('multi_addr'):
-            addresses = AddressModel.objects.filter(customer=customer).exclude(**exclude_kwargs)
-            addresses = addresses.order_by(priority_field)
-            form_entities = [dict(value=str(getattr(addr, priority_field)),
+            addresses = AddressModel.objects.filter(customer=customer).order_by('priority')
+            form_entities = [dict(value=str(addr.priority),
                             label="{}. {}".format(number, addr.as_text().replace('\n', ' – ')))
                              for number, addr in enumerate(addresses, 1)]
             form_data.update(multi_addr=True, form_entities=form_entities)
@@ -163,8 +153,12 @@ class ShippingAddressFormPlugin(CheckoutAddressPluginBase):
     template_leaf_name = 'shipping-address-{}.html'
 
     def get_address(self, cart):
-        if cart and cart.shipping_address:
-            return cart.shipping_address
+        if cart.shipping_address is None:
+            # we always need at least one shipping address
+            address = self.FormClass.get_model().objects.get_fallback(customer=cart.customer)
+            cart.shipping_address = address
+            cart.save()
+        return cart.shipping_address
 
 DialogFormPluginBase.register_plugin(ShippingAddressFormPlugin)
 
@@ -184,8 +178,8 @@ class BillingAddressFormPlugin(CheckoutAddressPluginBase):
     )
 
     def get_address(self, cart):
-        if cart and cart.billing_address:
-            return cart.billing_address
+        # if billing address is None, we use the shipping address
+        return cart.billing_address
 
 DialogFormPluginBase.register_plugin(BillingAddressFormPlugin)
 
@@ -199,7 +193,7 @@ class PaymentMethodFormPlugin(DialogFormPluginBase):
         form_data = super(PaymentMethodFormPlugin, self).get_form_data(context, instance, placeholder)
         cart = form_data.get('cart')
         if cart:
-            form_data.update(initial={'payment_modifier': cart.extra['payment_modifier']})
+            form_data.update(initial={'payment_modifier': cart.extra.get('payment_modifier')})
         return form_data
 
     def render(self, context, instance, placeholder):
@@ -222,7 +216,7 @@ class ShippingMethodFormPlugin(DialogFormPluginBase):
         form_data = super(ShippingMethodFormPlugin, self).get_form_data(context, instance, placeholder)
         cart = form_data.get('cart')
         if cart:
-            form_data.update(initial={'shipping_modifier': cart.extra['shipping_modifier']})
+            form_data.update(initial={'shipping_modifier': cart.extra.get('shipping_modifier')})
         return form_data
 
     def render(self, context, instance, placeholder):
@@ -245,7 +239,7 @@ class ExtraAnnotationFormPlugin(DialogFormPluginBase):
         form_data = super(ExtraAnnotationFormPlugin, self).get_form_data(context, instance, placeholder)
         cart = form_data.get('cart')
         if cart:
-            form_data.update(initial={'annotation': cart.extra['annotation']})
+            form_data.update(initial={'annotation': cart.extra.get('annotation')})
         return form_data
 
 DialogFormPluginBase.register_plugin(ExtraAnnotationFormPlugin)

@@ -19,7 +19,7 @@
 	{% endif %}
 		{{ shipping_address_form.as_div }}
 	{% if shipping_address_form.multi_addr %}
-		<div class="form-group" ng-if="shipping_address_form.form_entities.length>1 && data.shipping_address.active_priority!='new'">
+		<div class="form-group" ng-if="shipping_address_form.form_entities.length>1 || data.shipping_address.active_priority=='add'">
 			<button class="btn btn-danger btn-xs" ng-click="removeEntity(shipping_address_form, 'shipping_address')">
 				<span class="glyphicon glyphicon-remove-circle"></span>&nbsp;{% trans "Remove this address" %}
 			</button>
