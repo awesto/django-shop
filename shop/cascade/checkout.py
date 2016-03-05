@@ -154,7 +154,7 @@ class ShippingAddressFormPlugin(CheckoutAddressPluginBase):
 
     def get_address(self, cart):
         if cart.shipping_address is None:
-            # we always need at least one shipping address
+            # fallback to another existing shipping address
             address = self.FormClass.get_model().objects.get_fallback(customer=cart.customer)
             cart.shipping_address = address
             cart.save()

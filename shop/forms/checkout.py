@@ -248,12 +248,10 @@ class BillingAddressForm(AddressForm):
         return super(BillingAddressForm, self).as_div()
 
     def as_text(self):
-        try:
-            bound_field = self['use_shipping_address']
-            if bound_field.value():
-                return bound_field.field.widget.choice_label
-        except KeyError:
-            return super(BillingAddressForm, self).as_text()
+        bound_field = self['use_shipping_address']
+        if bound_field.value():
+            return bound_field.field.widget.choice_label
+        return super(BillingAddressForm, self).as_text()
 
 
 class PaymentMethodForm(DialogForm):
