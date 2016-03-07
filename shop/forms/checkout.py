@@ -120,19 +120,19 @@ class AddressForm(DialogModelForm):
         current_address, active_address = cls.get_address(cart), None
         try:
             active_priority = int(data.get('active_priority'))
-            filter_args = dict(customer=request.customer.user, priority=active_priority)
+            filter_args = dict(customer=request.customer, priority=active_priority)
             active_address = cls.get_model().objects.filter(**filter_args).first()
         except ValueError:
             active_priority = data.get('active_priority')
         except TypeError:
             active_priority = cls.default_priority
         if not active_address:
-            active_address = cls.get_model().objects.get_fallback(customer=request.customer.user)
+            active_address = cls.get_model().objects.get_fallback(customer=request.customer)
 
         if data.pop('remove_entity', False):
             if isinstance(active_priority, int):
                 active_address.delete()
-            old_address = cls.get_model().objects.get_fallback(customer=request.customer.user)
+            old_address = cls.get_model().objects.get_fallback(customer=request.customer)
             faked_data = dict((key, getattr(old_address, key, val)) for key, val in data.items())
             if old_address:
                 faked_data.update(active_priority=old_address.priority)
@@ -149,11 +149,12 @@ class AddressForm(DialogModelForm):
                 all_field_names = cls.get_model()._meta.get_all_field_names()
                 filter_args = dict((attr, val) for attr, val in address_form.data.items()
                                    if attr in all_field_names and val)
+                filter_args.update(customer=request.customer)
                 if not cls.get_model().objects.filter(**filter_args).exists():
                     next_address = address_form.save(commit=False)
                     if next_address:
                         next_address.customer = request.customer.user
-                        next_address.priority = cls.get_model().objects.get_max_priority(request.customer.user) + 1
+                        next_address.priority = cls.get_model().objects.get_max_priority(request.customer) + 1
                         next_address.save()
                         address_form.data.update(active_priority=next_address.priority)
                     address_form.set_address(cart, next_address)

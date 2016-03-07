@@ -13,7 +13,19 @@ from shop import settings as shop_settings
 from . import deferred
 
 
+class AddressQuerySet(models.QuerySet):
+    """
+    Modify the queryset class to use the one-to-one key on User instead of Customer.
+    """
+    def _filter_or_exclude(self, negate, *args, **kwargs):
+        if 'customer' in kwargs:
+            kwargs['customer'] = kwargs['customer'].user
+        return super(AddressQuerySet, self)._filter_or_exclude(negate, *args, **kwargs)
+
+
 class AddressManager(models.Manager):
+    _queryset_class = AddressQuerySet
+
     def get_max_priority(self, customer):
         aggr = self.get_queryset().filter(customer=customer).aggregate(models.Max('priority'))
         priority = aggr['priority__max'] or 0

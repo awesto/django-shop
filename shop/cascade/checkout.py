@@ -136,8 +136,7 @@ class CheckoutAddressPluginBase(DialogFormPluginBase):
         form_data.update(instance=address)
 
         if instance.glossary.get('multi_addr'):
-            customer = context['request'].customer.user
-            addresses = AddressModel.objects.filter(customer=customer).order_by('priority')
+            addresses = AddressModel.objects.filter(customer=context['request'].customer).order_by('priority')
             form_entities = [dict(value=str(addr.priority),
                             label="{}. {}".format(number, addr.as_text().replace('\n', ' – ')))
                              for number, addr in enumerate(addresses, 1)]
@@ -155,7 +154,7 @@ class ShippingAddressFormPlugin(CheckoutAddressPluginBase):
     def get_address(self, cart):
         if cart.shipping_address is None:
             # fallback to another existing shipping address
-            address = self.FormClass.get_model().objects.get_fallback(customer=cart.customer.user)
+            address = self.FormClass.get_model().objects.get_fallback(customer=cart.customer)
             cart.shipping_address = address
             cart.save()
         return cart.shipping_address
@@ -239,7 +238,7 @@ class ExtraAnnotationFormPlugin(DialogFormPluginBase):
         form_data = super(ExtraAnnotationFormPlugin, self).get_form_data(context, instance, placeholder)
         cart = form_data.get('cart')
         if cart:
-            form_data.update(initial={'annotation': cart.extra.get('annotation')})
+            form_data.update(initial={'annotation': cart.extra.get('annotation', '')})
         return form_data
 
 DialogFormPluginBase.register_plugin(ExtraAnnotationFormPlugin)
