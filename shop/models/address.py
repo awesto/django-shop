@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 Holds all the information relevant to the client (addresses for instance)
 """
 from six import with_metaclass
+from django.conf import settings
 from django.db import models
 from django.template import Context
 from django.template.loader import select_template
@@ -26,7 +27,7 @@ class AddressManager(models.Manager):
 
 
 class BaseAddress(models.Model):
-    customer = deferred.ForeignKey('BaseCustomer')
+    customer = models.ForeignKey(settings.AUTH_USER_MODEL)
     priority = models.SmallIntegerField(help_text=_("Priority for using this address"))
 
     class Meta:
@@ -46,6 +47,7 @@ class BaseAddress(models.Model):
         template = select_template(template_names)
         context = Context({'address': self})
         return template.render(context)
+    as_text.short_description = _("Address")
 
 
 class BaseShippingAddress(with_metaclass(deferred.ForeignKeyBuilder, BaseAddress)):

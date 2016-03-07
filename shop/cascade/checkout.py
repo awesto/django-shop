@@ -131,13 +131,12 @@ class CheckoutAddressPluginBase(DialogFormPluginBase):
         form_data = super(CheckoutAddressPluginBase, self).get_form_data(context, instance, placeholder)
 
         AddressModel = self.FormClass.get_model()
-        customer = context['request'].customer
         assert form_data['cart'] is not None, "Can not proceed to checkout without cart"
         address = self.get_address(form_data['cart'])
         form_data.update(instance=address)
 
         if instance.glossary.get('multi_addr'):
-            addresses = AddressModel.objects.filter(customer=customer).order_by('priority')
+            addresses = AddressModel.objects.filter(customer=context['request'].user).order_by('priority')
             form_entities = [dict(value=str(addr.priority),
                             label="{}. {}".format(number, addr.as_text().replace('\n', ' – ')))
                              for number, addr in enumerate(addresses, 1)]
@@ -155,7 +154,7 @@ class ShippingAddressFormPlugin(CheckoutAddressPluginBase):
     def get_address(self, cart):
         if cart.shipping_address is None:
             # fallback to another existing shipping address
-            address = self.FormClass.get_model().objects.get_fallback(customer=cart.customer)
+            address = self.FormClass.get_model().objects.get_fallback(customer=cart.customer.user)
             cart.shipping_address = address
             cart.save()
         return cart.shipping_address
