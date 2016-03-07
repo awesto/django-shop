@@ -75,10 +75,17 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
         'outstanding_amount', 'created_at', 'updated_at', 'extra', 'stored_request',)
     fields = ('get_number', 'status_name', ('created_at', 'updated_at'),
         ('subtotal', 'total', 'outstanding_amount',), 'get_customer_link', 'extra', 'stored_request',)
+    actions = None
 
     def get_number(self, obj):
         return obj.get_number()
     get_number.short_description = _("Order number")
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
     def get_customer_link(self, obj):
         try:
