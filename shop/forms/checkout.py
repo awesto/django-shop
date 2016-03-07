@@ -163,7 +163,7 @@ class AddressForm(DialogModelForm):
             initial = dict((key, val) for key, val in data.items() if key in cls.plugin_fields)
             address_form = cls(initial=initial)
             address_form.data.update(address_form.get_initial_data())
-            address_form.data.update(active_priority='add' if active_priority == 'new' else active_priority)
+            address_form.data.update(active_priority='add')
             address_form.set_address(cart, None)
         elif current_address == active_address:
             # an existing entity of AddressModel was edited
@@ -233,15 +233,12 @@ class BillingAddressForm(AddressForm):
 
     def full_clean(self):
         super(BillingAddressForm, self).full_clean()
-        if self.is_bound and self['use_shipping_address'].value():
-            self.instance.use_shipping_address = False
-        else:
+        if self['use_shipping_address'].value():
             # reset errors, since then the form is always regarded as valid
             self._errors = ErrorDict()
-            self.instance.use_shipping_address = True
 
     def is_valid(self):
-        return self.initial['use_shipping_address'] or super(BillingAddressForm, self).is_valid()
+        return self['use_shipping_address'].value() or super(BillingAddressForm, self).is_valid()
 
     def save(self, commit=True):
         if not self['use_shipping_address'].value():
