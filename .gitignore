@@ -2,6 +2,7 @@
 .project
 .pydevproject
 .settings
+.tox/
 .cache
 *.coverage
 *~

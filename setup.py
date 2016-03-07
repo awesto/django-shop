@@ -32,4 +32,17 @@ setup(
     packages=find_packages(exclude=['example', 'docs', 'tests']),
     include_package_data=True,
     zip_safe=False,
+    install_requires=[
+        'Django>=1.8,<1.9',
+        'beautifulsoup4>=4.4.0',
+        'django-cms>=3.2.0',
+        'django-post-office>=2.0.5',
+        'django-filer>=1.0.6',
+        'django-ipware>=1.1.1',
+        'django-fsm>=2.2.1',
+        'djangorestframework>=3.1.3',
+        'django-angular>=0.7.15',
+        'django-select2>=5.5.0',
+        'django-sass-processor>=0.3.4',
+    ],
 )

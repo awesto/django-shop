@@ -75,12 +75,11 @@ class CustomerManager(models.Manager):
         """
         Decode a compact session key back to its original length and base.
         """
-        compact_session_key = compact_session_key
         base_length = len(cls.BASE64_ALPHABET)
         n = 0
         for c in compact_session_key:
             n = n * base_length + cls.REVERSE_ALPHABET[c]
-        return cls._encode(n, cls.BASE36_ALPHABET)
+        return cls._encode(n, cls.BASE36_ALPHABET).zfill(32)
 
     @classmethod
     def _encode(cls, n, base_alphabet):
