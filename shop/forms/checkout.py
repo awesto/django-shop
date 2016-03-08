@@ -157,6 +157,8 @@ class AddressForm(DialogModelForm):
                         next_address.priority = cls.get_model().objects.get_max_priority(request.customer) + 1
                         next_address.save()
                         address_form.data.update(active_priority=next_address.priority)
+                    else:
+                        address_form.data.update(active_priority='nop')
                     address_form.set_address(cart, next_address)
         elif active_address is None or active_priority == 'new':
             # customer selected 'Add another address', hence create a new empty form
