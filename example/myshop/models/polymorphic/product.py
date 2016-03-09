@@ -59,12 +59,12 @@ class Product(BaseProduct, TranslatableModel):
     def sample_image(self):
         return self.images.first()
 
-    def get_product_variation(self, extra):
+    def get_product_variant(self, extra):
         """
-        Get the variation of a product.
-        Raises `Product.objects.DoesNotExists` if there is no variation for the given `extra`.
+        Get a variant of the product or itself, if the product has no flavors.
+        Raises `Product.objects.DoesNotExists` if there is no variant for the given `extra`.
         """
-        msg = "Method get_product_variation(extra) must be implemented by subclass: `{}`"
+        msg = "Method get_product_variant(extra) must be implemented by subclass: `{}`"
         raise NotImplementedError(msg.format(self.__class__.__name__))
 
 

@@ -15,10 +15,10 @@ class OrderItem(order.BaseOrderItem):
     def populate_from_cart_item(self, cart_item, request):
         from .smartphone import SmartPhoneModel
         super(OrderItem, self).populate_from_cart_item(cart_item, request)
-        # the product code and price must be fetched from the product's variation
+        # the product code and price must be fetched from the product's variant
         try:
             if isinstance(cart_item.product, SmartPhoneModel):
-                product = cart_item.product.get_product_variation(cart_item.extra['product_code'])
+                product = cart_item.product.get_product_variant(cart_item.extra['product_code'])
             else:
                 product = cart_item.product
             self.product_code = product.product_code

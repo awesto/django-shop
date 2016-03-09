@@ -66,7 +66,7 @@ whatever else.
 An optional, but highly recommended field is the products item number, declared as
 ``product_code``. It shall return a unique and language independent identifier for each product,
 to be identifiable. In most cases the product code is implemented by the product model itself, but
-in some circumstances it may be implemented by the product's variation. The
+in some circumstances it may be implemented by the product's variant. The
 ``SmartPhone`` from the demo code is one such example.
 
 The example section of **djangoSHOP** contains a few models which can be copied and adopted to the
