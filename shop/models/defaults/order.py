@@ -25,8 +25,8 @@ class Order(order.BaseOrder):
         current year. The last five digits represent a zero-padded incremental counter.
         """
         if self.number is None:
-            epoch = datetime.now()
-            epoch = epoch.replace(epoch.year, 1, 1, 0, 0, 0, 0)
+            epoch = datetime.now().date()
+            epoch = epoch.replace(epoch.year, 1, 1)
             aggr = Order.objects.filter(number__isnull=False, created_at__gt=epoch).aggregate(models.Max('number'))
             try:
                 epoc_number = int(str(aggr['number__max'])[4:]) + 1
