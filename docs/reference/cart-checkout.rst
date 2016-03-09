@@ -277,8 +277,8 @@ the customer wants to proceed to the checkout, but also for each item before bei
 cart.
 
 This allows the programmer to vary the price of certain items, depending on the current state of
-the cart. It can for instance be used, to set one price for the first items added to the cart, and
-another price for every further item.
+the cart. It can for instance be used, to set one price for the first item, and other prices for
+every further items added to the cart.
 
 Cart Modifiers are split up into three different categories: Generic, Payment and Shipping. In the
 shops ``settings.py`` they must be configured as a list or tuple such as:

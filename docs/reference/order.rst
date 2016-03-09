@@ -85,8 +85,8 @@ numbers. A simple implementation may look like this:
 	
 	    def get_or_assign_number(self):
 	        if self.number is None:
-	            epoch = datetime.now()
-	            epoch = epoch.replace(epoch.year, 1, 1, 0, 0, 0, 0)
+	            epoch = datetime.now().date()
+	            epoch = epoch.replace(epoch.year, 1, 1)
 	            qs = Order.objects.filter(number__isnull=False, created_at__gt=epoch)
 	            qs = qs.aggregate(models.Max('number'))
 	            try:
@@ -107,7 +107,7 @@ digits are a continuous increasing sequence.
 Order Views
 ===========
 
-Displaying the last or former orders in **djangoSHOP** is as simple, as adding two page to the CMS.
+Displaying the last or former orders in **djangoSHOP** is as simple, as adding two pages to the CMS.
 Change into the Django admin backend and enter into the CMS page tree. At an appropriate location
 in that tree add a new page. As page title use "My Orders", "Ihre Bestellungen", "Mis Pedidos", or
 whatever is appropriate in the natural language used for that site. Multilingual CMS installations
