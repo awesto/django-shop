@@ -18,7 +18,7 @@ class AddressQuerySet(models.QuerySet):
     Modify the queryset class to use the one-to-one key on User instead of Customer.
     """
     def _filter_or_exclude(self, negate, *args, **kwargs):
-        if 'customer' in kwargs:
+        if 'customer' in kwargs and hasattr(kwargs['customer'], 'user'):
             kwargs['customer'] = kwargs['customer'].user
         return super(AddressQuerySet, self)._filter_or_exclude(negate, *args, **kwargs)
 
