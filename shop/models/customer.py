@@ -195,6 +195,9 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     def get_username(self):
         return self.user.get_username()
 
+    def get_full_name(self):
+        return self.user.get_full_name()
+
     @property
     def first_name(self):
         return self.user.first_name
