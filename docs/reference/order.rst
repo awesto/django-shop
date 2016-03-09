@@ -62,6 +62,48 @@ Similarly the merchant's implementation of ``OrderItem`` shall override the meth
 from the cart item to the order item object.
 
 
+Order Numbers
+-------------
+
+In commerce it is mandatory that orders are numbered using a unique and continuously increasing
+sequence. Each merchant has his own way to generate this sequence numbers and in some
+implementations it may even come from an external generator, such as an ERP system. Therefore
+**djangoSHOP** does not impose any numbering scheme for the orders. This intentionally is left
+over to the merchant's implementation.
+
+Each Order model must implement two methods, one to create and and one to retrieve the order
+numbers. A simple implementation may look like this:
+
+.. code-block:: python
+
+	from django.db import models
+	from django.utils.datetime_safe import datetime
+	from shop.models import order
+	
+	class Order(order.BaseOrder):
+	    number = models.PositiveIntegerField("Order Number", null=True, default=None, unique=True)
+	
+	    def get_or_assign_number(self):
+	        if self.number is None:
+	            epoch = datetime.now()
+	            epoch = epoch.replace(epoch.year, 1, 1, 0, 0, 0, 0)
+	            qs = Order.objects.filter(number__isnull=False, created_at__gt=epoch)
+	            qs = qs.aggregate(models.Max('number'))
+	            try:
+	                epoc_number = int(str(qs['number__max'])[4:]) + 1
+	                self.number = int('{0}{1:05d}'.format(epoch.year, epoc_number))
+	            except (KeyError, ValueError):
+	                # the first order this year
+	                self.number = int('{0}00001'.format(epoch.year))
+	        return self.get_number()
+	
+	    def get_number(self):
+	        return '{0}-{1}'.format(str(self.number)[:4], str(self.number)[4:])
+
+Here the first four digits specify the year in which the order was generated, whereas the last five
+digits are a continuous increasing sequence.
+
+
 Order Views
 ===========
 
