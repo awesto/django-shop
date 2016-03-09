@@ -59,12 +59,12 @@ class Product(BaseProduct, TranslatableModel):
     def sample_image(self):
         return self.images.first()
 
-    def get_product_markedness(self, extra):
+    def get_product_variation(self, extra):
         """
-        Get the markedness of a product.
-        Raises `Product.objects.DoesNotExists` if there is no markedness for the given `extra`.
+        Get the variation of a product.
+        Raises `Product.objects.DoesNotExists` if there is no variation for the given `extra`.
         """
-        msg = "Method get_product_markedness(extra) must be implemented by subclass: `{}`"
+        msg = "Method get_product_variation(extra) must be implemented by subclass: `{}`"
         raise NotImplementedError(msg.format(self.__class__.__name__))
 
 
