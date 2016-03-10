@@ -153,7 +153,7 @@ class AddressForm(DialogModelForm):
                 if not cls.get_model().objects.filter(**filter_args).exists():
                     next_address = address_form.save(commit=False)
                     if next_address:
-                        next_address.customer = request.customer.user
+                        next_address.customer = request.customer
                         next_address.priority = cls.get_model().objects.get_max_priority(request.customer) + 1
                         next_address.save()
                         address_form.data.update(active_priority=next_address.priority)

@@ -8,7 +8,6 @@ from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib import admin
 from django.utils.timezone import localtime
 from django.utils.translation import pgettext_lazy, ugettext_lazy as _
-from shop.models.address import ShippingAddressModel, BillingAddressModel
 from shop.models.customer import CustomerModel
 
 
@@ -74,30 +73,13 @@ class CustomerListFilter(admin.SimpleListFilter):
             return queryset
 
 
-class AddressInlineAdmin(admin.StackedInline):
-    fields = ('as_text',)
-    readonly_fields = ('as_text',)
-    extra = 0
-
-    def has_add_permission(self, request):
-        return False
-
-
-class ShippingAddressInlineAdmin(AddressInlineAdmin):
-    model = ShippingAddressModel
-
-
-class BillingAddressInlineAdmin(AddressInlineAdmin):
-    model = BillingAddressModel
-
-
 class CustomerAdmin(UserAdmin):
     """
     This ModelAdmin class must be registered inside the implementation of this shop.
     """
     form = CustomerChangeForm
     add_form = CustomerCreationForm
-    inlines = (CustomerInlineAdmin, ShippingAddressInlineAdmin, BillingAddressInlineAdmin)
+    inlines = (CustomerInlineAdmin,)
     list_display = ('get_username', 'salutation', 'last_name', 'first_name', 'recognized',
         'last_access', 'is_unexpired')
     segmentation_list_display = ('get_username',)

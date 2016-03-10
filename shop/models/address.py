@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 Holds all the information relevant to the client (addresses for instance)
 """
 from six import with_metaclass
-from django.conf import settings
 from django.db import models
 from django.template import Context
 from django.template.loader import select_template
@@ -13,19 +12,7 @@ from shop import settings as shop_settings
 from . import deferred
 
 
-class AddressQuerySet(models.QuerySet):
-    """
-    Modify the queryset class to use the one-to-one key on User instead of Customer.
-    """
-    def _filter_or_exclude(self, negate, *args, **kwargs):
-        if 'customer' in kwargs and hasattr(kwargs['customer'], 'user'):
-            kwargs['customer'] = kwargs['customer'].user
-        return super(AddressQuerySet, self)._filter_or_exclude(negate, *args, **kwargs)
-
-
 class AddressManager(models.Manager):
-    _queryset_class = AddressQuerySet
-
     def get_max_priority(self, customer):
         aggr = self.get_queryset().filter(customer=customer).aggregate(models.Max('priority'))
         priority = aggr['priority__max'] or 0
@@ -39,7 +26,7 @@ class AddressManager(models.Manager):
 
 
 class BaseAddress(models.Model):
-    customer = models.ForeignKey(settings.AUTH_USER_MODEL)
+    customer = deferred.ForeignKey('BaseCustomer')
     priority = models.SmallIntegerField(help_text=_("Priority for using this address"))
 
     class Meta:
