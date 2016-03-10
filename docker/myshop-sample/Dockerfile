@@ -3,10 +3,15 @@ FROM uwsgi-django-shop:latest
 MAINTAINER Jacob Rief <jacob.rief@gmail.com>
 
 # checkout the merchant's project
-# Here this is not required for myshop-sample, because the example is already
-# shipped with django-shop, but normally each merchant has is own repository.
+WORKDIR /web
+RUN git clone --depth=1 https://github.com/jrief/django-shop.git
+WORKDIR /web/django-shop
 
-# add uwsgi ini file into workdir, so that touching this file restarts the Django server
+# install packages outside of pypi
+RUN npm install
+RUN bower install --allow-root
+
+# add uwsgi.ini file into workdir, so that touching this file restarts the Django server
 ADD myshop.ini /web/workdir/myshop.ini
 RUN ln -s /web/workdir/myshop.ini /etc/uwsgi.d/myshop.ini
 
@@ -15,7 +20,7 @@ WORKDIR /web
 RUN wget -q -O- http://downloads.django-shop.org/django-shop-workdir.tar.gz | tar zx
 
 # create database and populate static files
-WORKDIR /usr/lib/python2.7/src/django-shop/example
+WORKDIR /web/django-shop/example
 ENV DJANGO_SHOP_TUTORIAL=polymorphic DJANGO_WORKDIR=/web/workdir DJANGO_SETTINGS_MODULE=myshop.settings
 RUN ./manage.py migrate
 RUN ./manage.py loaddata fixtures/myshop-$DJANGO_SHOP_TUTORIAL.json
