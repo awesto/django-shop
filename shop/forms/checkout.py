@@ -59,7 +59,7 @@ class GuestForm(DialogModelForm):
         fields = ('email',)
 
     def __init__(self, initial=None, instance=None, *args, **kwargs):
-        if isinstance(instance, CustomerModel._materialized_model):
+        if isinstance(instance, CustomerModel):
             instance = instance.user
         super(GuestForm, self).__init__(initial=initial, instance=instance, *args, **kwargs)
 
