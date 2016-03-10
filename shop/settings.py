@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from decimal import Decimal
 from django.conf import settings
 
@@ -8,6 +9,12 @@ APP_LABEL = settings.SHOP_APP_LABEL  # mandatory setting without default
 DEFAULT_CURRENCY = getattr(settings, 'SHOP_DEFAULT_CURRENCY', 'EUR')
 
 MONEY_FORMAT = getattr(settings, 'SHOP_MONEY_FORMAT', '{symbol} {amount}')
+"""
+When rendering an amount of type Money, use this format. Possible placeholders are:
+{symbol}: This can be €, $, £, etc.
+{currency}: This can be EUR, USD, GBP, etc.
+{amount}: The localized amount .
+"""
 
 DECIMAL_PLACES = getattr(settings, 'SHOP_DECIMAL_PLACES', 2)
 """

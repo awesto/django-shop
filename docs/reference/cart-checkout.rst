@@ -263,6 +263,8 @@ in section :ref:`reference/cart-render-templates`. Therefore, it is strongly dis
 cart and checkout templates by hand. 
 
 
+.. _reference/cart-modifiers:
+
 Cart Modifiers
 ==============
 
