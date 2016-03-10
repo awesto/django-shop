@@ -159,3 +159,8 @@ class MaterializedModel(SimpleLazyObject):
         else:
             repr_attr = self._wrapped
         return '<MaterializedModel: {}>'.format(repr_attr)
+
+    def __instancecheck__(self, instance):
+        if self._wrapped is empty:
+            self._setup()
+        return isinstance(instance, self._materialized_model)
