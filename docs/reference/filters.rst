@@ -55,22 +55,34 @@ we then replace the default filter backends by our own implementation:
 	    ),
 	)
 
-The above example is very simple but gives a rough impression on its possibilities. By creating
-a class which inherit from :class:`django_filters.FilterSet`, we can build filters against each
-attribute of our product. This filter the uses the passed in query parameters to restrict the
-set of products available from our catalog:
+The above example is very simple but gives a rough impression on its possibilities.
+
+
+Working with Django-Filter
+--------------------------
+
+django-filter_ is a generic, reusable application to alleviate writing some of the more mundane
+bits of view code. Specifically, it allows users to filter down a queryset based on a model’s
+fields, displaying the form to let them do this.
+
+REST framework also includes support for `generic filtering backends`_ that allow you to easily
+construct complex searches and filters.
+
+By creating a class which inherit from :class:`django_filters.FilterSet`, we can build filters
+against each attribute of our product. This filter then uses the passed in query parameters to
+restrict the set of products available from our catalog:
 
 .. code-block:: python
 	:caption: myshop/filters.py
 
 	import django_filters
 	
-	class PanelFilter(django_filters.FilterSet):
-	    width = django_filters.RangeFilter(name='panel_width')
+	class ProductFilter(django_filters.FilterSet):
+	    width = django_filters.RangeFilter(name='width')
 	    props = django_filters.MethodFilter(action='filter_properties', widget=SelectMultiple)
 	
 	    class Meta:
-	        model = TextilePanel
+	        model = OurProduct
 	        fields = ['width', 'props']
 	
 	    def filter_properties(self, queryset, values):
@@ -78,5 +90,25 @@ set of products available from our catalog:
 	            queryset = queryset.filter(properties=value)
 	        return queryset
 
+This example assumes that ``OurProduct`` has a numeric attribute named ``width`` and a many-to-many
+field named ``properties``.
+
+We then can add this filter to the list view for our products. In **djangoSHOP** we normally do
+this through the url patterns:
+
+.. code-block:: python
+	:caption: myshop/urls.py
+
+	urlpatterns = patterns('',
+	    url(r'^$', ProductListView.as_view(
+	        serializer_class=ProductSummarySerializer,
+	        filter_class=ProductFilter,
+	    )),
+	    # other patterns
+	)
+
+By appending ``?props=17`` to the URL, the above filter class will restrict the products in our list 
+view to those with a ``property`` of 17.
 
 .. _django-filter: http://django-filter.readthedocs.org/en/latest/usage.html
+.. _generic filtering backends: http://www.django-rest-framework.org/api-guide/filtering/#generic-filtering
