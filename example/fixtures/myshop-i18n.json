@@ -11240,9 +11240,7 @@
 },
 {
   "fields": {
-    "customer": [
-      "admin"
-    ],
+    "customer": 1,
     "street": "31 Orwell Road",
     "country": "GB",
     "supplement": "",

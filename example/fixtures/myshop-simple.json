@@ -11240,12 +11240,10 @@
 },
 {
   "fields": {
-    "customer": [
-      "admin"
-    ],
+    "supplement": "",
+    "customer": 1,
     "street": "31 Orwell Road",
     "country": "GB",
-    "supplement": "",
     "priority": 1,
     "addressee": "John Doe",
     "location": "Liverpool",
