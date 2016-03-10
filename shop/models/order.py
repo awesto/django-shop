@@ -253,8 +253,8 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     @transition(field='status', source='*', target='payment_confirmed', conditions=[is_fully_paid])
     def acknowledge_payment(self, by=None):
         """
-        Change status to 'payment_confirmed'. This status code can be used by all extarnal
-        plugins to check, if an Order has been fully paid.
+        Change status to 'payment_confirmed'. This status code is known globally and can be used
+        by all external plugins to check, if an Order has been fully paid.
         """
 
     @classmethod
