@@ -66,7 +66,7 @@ whatever else.
 An optional, but highly recommended field is the products item number, declared as
 ``product_code``. It shall return a unique and language independent identifier for each product,
 to be identifiable. In most cases the product code is implemented by the product model itself, but
-in some circumstances it may be implemented by the products markedness or variation. The
+in some circumstances it may be implemented by the product's variant. The
 ``SmartPhone`` from the demo code is one such example.
 
 The example section of **djangoSHOP** contains a few models which can be copied and adopted to the
@@ -85,7 +85,7 @@ operating system, a display type and other features.
 
 But smart-phone have different equipment, namely the built-in storage, and depending on that, they
 have different prices and a unique product code. Therefore our product models consists of two
-classes, the generic smart phone model and the concrete markedness of that model.
+classes, the generic smart phone model and the concrete flavor of that model.
 
 Therefore we would model our smart-phones using a database model similar to the following one:
 

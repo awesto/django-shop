@@ -60,13 +60,13 @@ class AddSmartPhoneToCartSerializer(AddToCartSerializer):
         product = context['product']
         extra = data['extra'] if data is not empty else {}
         try:
-            product_markedness = product.get_product_markedness(extra.get('product_code'))
+            variant = product.get_product_variant(extra.get('product_code'))
         except product.DoesNotExist:
-            product_markedness = product.smartphone_set.first()
+            variant = product.smartphone_set.first()
         instance = {
             'product': product.id,
-            'unit_price': product_markedness.unit_price,
-            'extra': {'product_code': product_markedness.product_code}
+            'unit_price': variant.unit_price,
+            'extra': {'product_code': variant.product_code}
         }
         return instance
 

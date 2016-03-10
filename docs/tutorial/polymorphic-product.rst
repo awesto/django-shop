@@ -85,7 +85,7 @@ we didn't move the model fields ``unit_price`` and ``products_code`` into our ba
 ``Product``, although every product in our shop requires them.
 
 When presenting Smart Phones in our list views, we want to focus on different models, but not on
-each markedness, ie. its internal storage. Therefore customers will have to differentiate between
+each flavor, ie. its internal storage. Therefore customers will have to differentiate between
 the concrete Smart Phone variations, whenever they add them to their cart, but not when viewing them
 in the catalog list. For a customer, it would be very boring to scroll through lists with many
 similar products, which only differentiate by a few variations.
