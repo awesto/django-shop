@@ -235,7 +235,7 @@ class BillingAddressForm(AddressForm):
 
     def full_clean(self):
         super(BillingAddressForm, self).full_clean()
-        if self['use_shipping_address'].value():
+        if self.is_bound and self['use_shipping_address'].value():
             # reset errors, since then the form is always regarded as valid
             self._errors = ErrorDict()
 
