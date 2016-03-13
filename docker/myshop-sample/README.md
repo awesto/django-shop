@@ -18,6 +18,19 @@ docker start myshop-sample-initial
 docker stop myshop-sample-initial
 ```
 
+Locate the IP address of your docker machine. Here we use 192.168.99.100, but depending your host's
+operating system, run:
+
+```
+docker-machine env default
+```
+
+and locate it using the environment variable DOCKER_HOST.
+
+Point a browser onto http://192.168.99.100:9001/ or an alternative IP address. To access the
+administration backend, change onto http://192.168.99.100:9001/admin and log in as "admin" using
+password "secret".
+
 To access the volume ``/web`` as provided by the container, start a throw away container:
 
 ```
