@@ -1,9 +1,9 @@
-Django==1.8.10
+Django==1.8.11
 beautifulsoup4==4.4.0
 cmsplugin-filer==0.10.2
 django-admin-sortable2==0.6.2
 django-allauth==0.23.0
-django-angular==0.8.0
+django-angular==0.8.1
 django-appconf==1.0.1
 django-classy-tags==0.6.2
 django-cms==3.2.1

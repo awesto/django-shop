@@ -85,13 +85,13 @@ djangoShopModule.directive('shopDialogForm', ['$q', '$timeout', function($q, $ti
 				if (ready) {
 					deferred = $q.defer();
 					DialogController.uploadScope(scope, deferred);
-					deferred.promise.then(function(response) {
-						angular.extend(scope.data, response.data);
-						scope.stepIsValid = true;
-					}, function(response) {
-						angular.extend(scope.data, response.data);
-						scope.stepIsValid = false;
-					});
+					deferred.promise.then(pristineEntity, pristineEntity);
+				}
+
+				function pristineEntity(response) {
+					angular.extend(scope.data, response.data);
+					scope.stepIsValid = response.data.$valid;
+					form_controller.$setPristine();
 				}
 			};
 
@@ -108,6 +108,7 @@ djangoShopModule.directive('shopDialogForm', ['$q', '$timeout', function($q, $ti
 							remove_entity_filter = new Function(response.data[data_model].remove_entity_filter);
 							form_controller['form_entities'] = remove_entity_filter.apply(null, form_controller['form_entities']);
 						}
+						scope.stepIsValid = response.data.$valid;
 						angular.extend(scope.data, response.data);
 						// skip one digest cycle so that the form can be updated without triggering a change event
 						ready = false; $timeout(function() { ready = true; });

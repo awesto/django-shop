@@ -62,10 +62,52 @@ Similarly the merchant's implementation of ``OrderItem`` shall override the meth
 from the cart item to the order item object.
 
 
+Order Numbers
+-------------
+
+In commerce it is mandatory that orders are numbered using a unique and continuously increasing
+sequence. Each merchant has his own way to generate this sequence numbers and in some
+implementations it may even come from an external generator, such as an ERP system. Therefore
+**djangoSHOP** does not impose any numbering scheme for the orders. This intentionally is left
+over to the merchant's implementation.
+
+Each Order model must implement two methods, one to create and and one to retrieve the order
+numbers. A simple implementation may look like this:
+
+.. code-block:: python
+
+	from django.db import models
+	from django.utils.datetime_safe import datetime
+	from shop.models import order
+	
+	class Order(order.BaseOrder):
+	    number = models.PositiveIntegerField("Order Number", null=True, default=None, unique=True)
+	
+	    def get_or_assign_number(self):
+	        if self.number is None:
+	            epoch = datetime.now().date()
+	            epoch = epoch.replace(epoch.year, 1, 1)
+	            qs = Order.objects.filter(number__isnull=False, created_at__gt=epoch)
+	            qs = qs.aggregate(models.Max('number'))
+	            try:
+	                epoc_number = int(str(qs['number__max'])[4:]) + 1
+	                self.number = int('{0}{1:05d}'.format(epoch.year, epoc_number))
+	            except (KeyError, ValueError):
+	                # the first order this year
+	                self.number = int('{0}00001'.format(epoch.year))
+	        return self.get_number()
+	
+	    def get_number(self):
+	        return '{0}-{1}'.format(str(self.number)[:4], str(self.number)[4:])
+
+Here the first four digits specify the year in which the order was generated, whereas the last five
+digits are a continuous increasing sequence.
+
+
 Order Views
 ===========
 
-Displaying the last or former orders in **djangoSHOP** is as simple, as adding two page to the CMS.
+Displaying the last or former orders in **djangoSHOP** is as simple, as adding two pages to the CMS.
 Change into the Django admin backend and enter into the CMS page tree. At an appropriate location
 in that tree add a new page. As page title use "My Orders", "Ihre Bestellungen", "Mis Pedidos", or
 whatever is appropriate in the natural language used for that site. Multilingual CMS installations
@@ -148,13 +190,19 @@ framework offers a `Finite State Machine`_, where only selected state transition
 possible. These transition further can trigger other events themselves. This prevents to accidently
 perform invalid actions such as fulfilling orders, which haven't been paid yet.
 
-In class ``Order`` there is an attribute ``status`` which is of type ``FSMField``. In practice this
-is a char-field, which can hold preconfigured states, but which can't be changed by program code.
-Instead, by calling specially decorated class methods, this state changes from one or more allowed
-source states into one predefined target state. An incomplete example:
+In class :class:`shop.models.order.BaseOrder` contains an attribute ``status`` which is of type
+``FSMField``. In practice this is a char-field, which can hold preconfigured states, but which
+*can not* be changed by program code. Instead, by calling specially decorated class methods, this
+state then changes from one or more allowed source states into one predefined target state. We
+denote this as a *state transition*.
+
+An incomplete example:
 
 .. code-block:: python
 
+	class Order(models.Model):
+	    # other attributes
+	
 	    @transition(field=status, source='new', target='created')
 	    def populate_from_cart(self, cart, request):
 	        # perform some side effects ...
@@ -166,7 +214,7 @@ proceeding to our payment providers.
 
 In **djangoSHOP** the merchant can add as many payment providers he wants. This is done in
 ``settings.py`` through the configuration directive ``SHOP_ORDER_WORKFLOWS`` which takes a list of
-so called "*Order Workflox Mixin*" classes. On bootstrapping the application and constructing the
+so called "*Order Workflow Mixin*" classes. On bootstrapping the application and constructing the
 ``Order`` class, it additionally inherits from these mixin classes. This gives the merchant an easy
 to configure, yet very powerful tool to model the selling process of his e-commerce site according
 to his needs. Say, we want to accept bank transfer in advance, so we must add
@@ -236,9 +284,44 @@ as the source argument for their transition methods.
 
 For further details on Finite State Machine transitions, please refer to the `FSM docs`_. This
 however does not cover the contents of dictionary ``custom``. One of the attributes in ``custom``
-is ``button = _("Any Label")`` as explained in the `FSM admin docs`_. The other is ``auto = True``
-and has been introduced by **djangoSHOP** itself. It shall be used to automatically proceed from
+is ``button="Any Label"`` as explained in the `FSM admin docs`_. The other is ``auto=True``
+and has been introduced by **djangoSHOP** itself. It is used to automatically proceed from
 one target to another one, without manual intervention, such as clicking onto a button.
+
+
+Signals
+-------
+
+Each state transition emits a signal_ before and after performing the status change. These signals,
+``pre_transition`` and ``post_transition`` can be received by any registered signal handler. In
+**djangoSHOP**, the notification framework listens for these events and creates appropriate
+notification e-mails, if configured.
+
+But sometimes simple notifications are not enough, and the merchant's implementation must perform
+actions in a programmatic way. This for instance could be a query, which shall be sent to the goods
+management database, whenever a payment has been confirmed successfully.
+
+In Django, we typically register signal handlers in the ``ready`` method of the merchant's
+`application configuration`_:
+
+.. code-block:: python
+	:caption: myshop/apps.py
+
+	from django.apps import AppConfig
+	
+	class MyShopConfig(AppConfig):
+	    name = 'my_shop'
+	
+	    def ready(self):
+	        from django_fsm.signals import post_transition
+	        post_transition.connect(order_event_notification)
+	
+	def order_event_notification(sender, instance=None, target=None, **kwargs):
+	    if target == 'payment_confirmed':
+	        # do whatever appropriate
+
+In the above order event notification, use ``instance`` to access the corresponding ``Order``
+object.
 
 
 Finite State Machine Diagram
@@ -310,3 +393,5 @@ plain HTML and CSS.
 .. _graphviz: http://www.graphviz.org/
 .. _FSM docs: https://github.com/kmmbvnr/django-fsm
 .. _FSM admin docs: https://github.com/gadventures/django-fsm-admin
+.. _signal: https://docs.djangoproject.com/en/stable/topics/signals/
+.. _application configuration: https://docs.djangoproject.com/en/1.9/ref/applications/#application-configuration

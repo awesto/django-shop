@@ -51,7 +51,7 @@ class CheckoutViewSet(BaseViewSet):
         dialog_data = sorted(dialog_data, key=lambda tpl: int(tpl[1]['plugin_order']))
 
         # save data, get text representation and collect potential errors
-        errors, checkout_summary, response_data = {}, {}, {}
+        errors, checkout_summary, response_data = {}, {}, {'$valid': True}
         with transaction.atomic():
             for form_class, data in dialog_data:
                 form = form_class.form_factory(request, data, cart)
@@ -63,6 +63,8 @@ class CheckoutViewSet(BaseViewSet):
                 else:
                     # errors are rendered by the client side validation
                     errors[form_class.form_name] = dict(form.errors)
+                response_data['$valid'] = response_data['$valid'] and form.is_valid()
+
                 # by updating the response data, we can override the form's model $scope
                 update_data = form.get_response_data()
                 if isinstance(update_data, dict):

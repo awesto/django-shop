@@ -29,8 +29,8 @@ class SmartCard(Product):
     def get_price(self, request):
         return self.unit_price
 
-    def get_product_markedness(self, extra):
+    def get_product_variant(self, extra):
         """
-        SmartCards do not have a markedness, they are the product.
+        SmartCards do not have flavors, they are the product.
         """
         return self

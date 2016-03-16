@@ -7,7 +7,7 @@
     "is_active": true,
     "is_superuser": true,
     "is_staff": true,
-    "last_login": "2016-01-29T16:16:05.699Z",
+    "last_login": "2016-03-07T08:19:08.209Z",
     "groups": [],
     "user_permissions": [],
     "password": "pbkdf2_sha256$20000$ysHUGIGUcl9v$pOGpVddP8XE2IksxoHwfS0nm7tinNTBjKR13syQWt5k=",
@@ -45,6 +45,654 @@
   },
   "model": "cms.usersettings",
   "pk": 1
+},
+{
+  "fields": {
+    "navigation_extenders": "",
+    "site": 1,
+    "application_namespace": null,
+    "path": "000G",
+    "in_navigation": true,
+    "reverse_id": "shop-cart",
+    "login_required": false,
+    "created_by": "admin",
+    "languages": "de,en",
+    "publication_end_date": null,
+    "template": "myshop/pages/default.html",
+    "placeholders": [
+      13,
+      14
+    ],
+    "changed_date": "2016-01-29T11:58:28.405Z",
+    "limit_visibility_in_menu": null,
+    "parent": null,
+    "numchild": 1,
+    "soft_root": true,
+    "is_home": false,
+    "publication_date": "2015-10-30T23:26:35.875Z",
+    "creation_date": "2015-10-30T23:26:23.274Z",
+    "publisher_public": 4,
+    "application_urls": "",
+    "changed_by": "admin",
+    "publisher_is_draft": true,
+    "xframe_options": 0,
+    "depth": 1,
+    "revision_id": 0
+  },
+  "model": "cms.page",
+  "pk": 3
+},
+{
+  "fields": {
+    "navigation_extenders": "",
+    "site": 1,
+    "application_namespace": null,
+    "path": "000A",
+    "in_navigation": true,
+    "reverse_id": "shop-cart",
+    "login_required": false,
+    "created_by": "admin",
+    "languages": "de,en",
+    "publication_end_date": null,
+    "template": "myshop/pages/default.html",
+    "placeholders": [
+      15,
+      16
+    ],
+    "changed_date": "2016-01-29T11:58:28.105Z",
+    "limit_visibility_in_menu": null,
+    "parent": null,
+    "numchild": 1,
+    "soft_root": true,
+    "is_home": false,
+    "publication_date": "2015-10-30T23:26:35.875Z",
+    "creation_date": "2015-10-30T23:26:35.899Z",
+    "publisher_public": 3,
+    "application_urls": "",
+    "changed_by": "admin",
+    "publisher_is_draft": false,
+    "xframe_options": 0,
+    "depth": 1,
+    "revision_id": 0
+  },
+  "model": "cms.page",
+  "pk": 4
+},
+{
+  "fields": {
+    "navigation_extenders": null,
+    "site": 1,
+    "application_namespace": null,
+    "path": "000G0001",
+    "in_navigation": true,
+    "reverse_id": null,
+    "login_required": false,
+    "created_by": "admin",
+    "languages": "de,en",
+    "publication_end_date": null,
+    "template": "INHERIT",
+    "placeholders": [
+      18,
+      19
+    ],
+    "changed_date": "2016-03-07T09:07:52.028Z",
+    "limit_visibility_in_menu": null,
+    "parent": 3,
+    "numchild": 0,
+    "soft_root": false,
+    "is_home": false,
+    "publication_date": "2015-11-03T11:55:55.669Z",
+    "creation_date": "2015-11-03T11:50:25.384Z",
+    "publisher_public": 6,
+    "application_urls": null,
+    "changed_by": "admin",
+    "publisher_is_draft": true,
+    "xframe_options": 0,
+    "depth": 2,
+    "revision_id": 0
+  },
+  "model": "cms.page",
+  "pk": 5
+},
+{
+  "fields": {
+    "navigation_extenders": null,
+    "site": 1,
+    "application_namespace": null,
+    "path": "000A0001",
+    "in_navigation": true,
+    "reverse_id": null,
+    "login_required": false,
+    "created_by": "admin",
+    "languages": "de,en",
+    "publication_end_date": null,
+    "template": "INHERIT",
+    "placeholders": [
+      20,
+      21
+    ],
+    "changed_date": "2016-03-07T09:07:51.956Z",
+    "limit_visibility_in_menu": null,
+    "parent": 4,
+    "numchild": 0,
+    "soft_root": false,
+    "is_home": false,
+    "publication_date": "2015-11-03T11:55:55.669Z",
+    "creation_date": "2015-11-03T11:55:55.686Z",
+    "publisher_public": 5,
+    "application_urls": null,
+    "changed_by": "admin",
+    "publisher_is_draft": false,
+    "xframe_options": 0,
+    "depth": 2,
+    "revision_id": 0
+  },
+  "model": "cms.page",
+  "pk": 6
+},
+{
+  "fields": {
+    "navigation_extenders": "",
+    "site": 1,
+    "application_namespace": null,
+    "path": "0001",
+    "in_navigation": true,
+    "reverse_id": null,
+    "login_required": false,
+    "created_by": "admin",
+    "languages": "de,en",
+    "publication_end_date": null,
+    "template": "myshop/pages/default.html",
+    "placeholders": [
+      22,
+      23
+    ],
+    "changed_date": "2016-01-29T16:57:51.711Z",
+    "limit_visibility_in_menu": null,
+    "parent": null,
+    "numchild": 0,
+    "soft_root": false,
+    "is_home": true,
+    "publication_date": "2015-11-03T22:32:52.028Z",
+    "creation_date": "2015-11-03T22:32:25.921Z",
+    "publisher_public": 8,
+    "application_urls": "",
+    "changed_by": "admin",
+    "publisher_is_draft": true,
+    "xframe_options": 0,
+    "depth": 1,
+    "revision_id": 0
+  },
+  "model": "cms.page",
+  "pk": 7
+},
+{
+  "fields": {
+    "navigation_extenders": "",
+    "site": 1,
+    "application_namespace": null,
+    "path": "0005",
+    "in_navigation": true,
+    "reverse_id": null,
+    "login_required": false,
+    "created_by": "admin",
+    "languages": "de,en",
+    "publication_end_date": null,
+    "template": "myshop/pages/default.html",
+    "placeholders": [
+      24,
+      25
+    ],
+    "changed_date": "2016-01-29T16:57:51.643Z",
+    "limit_visibility_in_menu": null,
+    "parent": null,
+    "numchild": 0,
+    "soft_root": false,
+    "is_home": true,
+    "publication_date": "2015-11-03T22:32:52.028Z",
+    "creation_date": "2015-11-03T22:32:52.049Z",
+    "publisher_public": 7,
+    "application_urls": "",
+    "changed_by": "admin",
+    "publisher_is_draft": false,
+    "xframe_options": 0,
+    "depth": 1,
+    "revision_id": 0
+  },
+  "model": "cms.page",
+  "pk": 8
+},
+{
+  "fields": {
+    "navigation_extenders": "",
+    "site": 1,
+    "application_namespace": null,
+    "path": "000F",
+    "in_navigation": false,
+    "reverse_id": null,
+    "login_required": false,
+    "created_by": "admin",
+    "languages": "de,en",
+    "publication_end_date": null,
+    "template": "myshop/pages/default.html",
+    "placeholders": [
+      26,
+      27
+    ],
+    "changed_date": "2015-11-25T16:20:45.992Z",
+    "limit_visibility_in_menu": null,
+    "parent": null,
+    "numchild": 2,
+    "soft_root": true,
+    "is_home": false,
+    "publication_date": "2015-11-12T12:32:30.971Z",
+    "creation_date": "2015-11-12T12:31:29.943Z",
+    "publisher_public": 10,
+    "application_urls": "",
+    "changed_by": "admin",
+    "publisher_is_draft": true,
+    "xframe_options": 0,
+    "depth": 1,
+    "revision_id": 0
+  },
+  "model": "cms.page",
+  "pk": 9
+},
+{
+  "fields": {
+    "navigation_extenders": "",
+    "site": 1,
+    "application_namespace": null,
+    "path": "0009",
+    "in_navigation": false,
+    "reverse_id": null,
+    "login_required": false,
+    "created_by": "admin",
+    "languages": "de,en",
+    "publication_end_date": null,
+    "template": "myshop/pages/default.html",
+    "placeholders": [
+      28,
+      29
+    ],
+    "changed_date": "2015-11-25T16:20:45.416Z",
+    "limit_visibility_in_menu": null,
+    "parent": null,
+    "numchild": 2,
+    "soft_root": true,
+    "is_home": false,
+    "publication_date": "2015-11-12T12:32:30.971Z",
+    "creation_date": "2015-11-12T12:32:30.994Z",
+    "publisher_public": 9,
+    "application_urls": "",
+    "changed_by": "admin",
+    "publisher_is_draft": false,
+    "xframe_options": 0,
+    "depth": 1,
+    "revision_id": 0
+  },
+  "model": "cms.page",
+  "pk": 10
+},
+{
+  "fields": {
+    "navigation_extenders": "",
+    "site": 1,
+    "application_namespace": null,
+    "path": "000F0002",
+    "in_navigation": true,
+    "reverse_id": "shop-order",
+    "login_required": false,
+    "created_by": "admin",
+    "languages": "de,en",
+    "publication_end_date": null,
+    "template": "INHERIT",
+    "placeholders": [
+      30,
+      31
+    ],
+    "changed_date": "2016-01-16T22:09:35.114Z",
+    "limit_visibility_in_menu": null,
+    "parent": 9,
+    "numchild": 1,
+    "soft_root": false,
+    "is_home": false,
+    "publication_date": "2015-11-12T12:33:43.153Z",
+    "creation_date": "2015-11-12T12:33:31.134Z",
+    "publisher_public": 12,
+    "application_urls": "OrderApp",
+    "changed_by": "admin",
+    "publisher_is_draft": true,
+    "xframe_options": 0,
+    "depth": 2,
+    "revision_id": 0
+  },
+  "model": "cms.page",
+  "pk": 11
+},
+{
+  "fields": {
+    "navigation_extenders": "",
+    "site": 1,
+    "application_namespace": null,
+    "path": "00090002",
+    "in_navigation": true,
+    "reverse_id": "shop-order",
+    "login_required": false,
+    "created_by": "admin",
+    "languages": "de,en",
+    "publication_end_date": null,
+    "template": "INHERIT",
+    "placeholders": [
+      32,
+      33
+    ],
+    "changed_date": "2016-01-16T22:09:34.981Z",
+    "limit_visibility_in_menu": null,
+    "parent": 10,
+    "numchild": 1,
+    "soft_root": false,
+    "is_home": false,
+    "publication_date": "2015-11-12T12:33:43.153Z",
+    "creation_date": "2015-11-12T12:33:43.174Z",
+    "publisher_public": 11,
+    "application_urls": "OrderApp",
+    "changed_by": "admin",
+    "publisher_is_draft": false,
+    "xframe_options": 0,
+    "depth": 2,
+    "revision_id": 0
+  },
+  "model": "cms.page",
+  "pk": 12
+},
+{
+  "fields": {
+    "navigation_extenders": "",
+    "site": 1,
+    "application_namespace": null,
+    "path": "000F00020001",
+    "in_navigation": true,
+    "reverse_id": "shop-order-last",
+    "login_required": false,
+    "created_by": "admin",
+    "languages": "de,en",
+    "publication_end_date": null,
+    "template": "INHERIT",
+    "placeholders": [
+      34,
+      35
+    ],
+    "changed_date": "2016-03-07T09:40:45.008Z",
+    "limit_visibility_in_menu": null,
+    "parent": 11,
+    "numchild": 0,
+    "soft_root": true,
+    "is_home": false,
+    "publication_date": "2015-11-12T23:21:22.963Z",
+    "creation_date": "2015-11-12T23:19:46.076Z",
+    "publisher_public": 14,
+    "application_urls": "OrderApp",
+    "changed_by": "admin",
+    "publisher_is_draft": true,
+    "xframe_options": 0,
+    "depth": 3,
+    "revision_id": 0
+  },
+  "model": "cms.page",
+  "pk": 13
+},
+{
+  "fields": {
+    "navigation_extenders": "",
+    "site": 1,
+    "application_namespace": null,
+    "path": "000900020001",
+    "in_navigation": true,
+    "reverse_id": "shop-order-last",
+    "login_required": false,
+    "created_by": "admin",
+    "languages": "de,en",
+    "publication_end_date": null,
+    "template": "INHERIT",
+    "placeholders": [
+      36,
+      37
+    ],
+    "changed_date": "2016-03-07T09:40:44.938Z",
+    "limit_visibility_in_menu": null,
+    "parent": 12,
+    "numchild": 0,
+    "soft_root": true,
+    "is_home": false,
+    "publication_date": "2015-11-12T23:21:22.963Z",
+    "creation_date": "2015-11-12T23:21:22.986Z",
+    "publisher_public": 13,
+    "application_urls": "OrderApp",
+    "changed_by": "admin",
+    "publisher_is_draft": false,
+    "xframe_options": 0,
+    "depth": 3,
+    "revision_id": 0
+  },
+  "model": "cms.page",
+  "pk": 14
+},
+{
+  "fields": {
+    "navigation_extenders": null,
+    "site": 1,
+    "application_namespace": null,
+    "path": "000F0003",
+    "in_navigation": true,
+    "reverse_id": null,
+    "login_required": false,
+    "created_by": "admin",
+    "languages": "de,en",
+    "publication_end_date": null,
+    "template": "INHERIT",
+    "placeholders": [
+      38,
+      39
+    ],
+    "changed_date": "2016-01-16T22:19:25.043Z",
+    "limit_visibility_in_menu": null,
+    "parent": 9,
+    "numchild": 0,
+    "soft_root": false,
+    "is_home": false,
+    "publication_date": "2015-11-13T00:07:13.450Z",
+    "creation_date": "2015-11-13T00:06:49.562Z",
+    "publisher_public": 16,
+    "application_urls": null,
+    "changed_by": "admin",
+    "publisher_is_draft": true,
+    "xframe_options": 0,
+    "depth": 2,
+    "revision_id": 0
+  },
+  "model": "cms.page",
+  "pk": 15
+},
+{
+  "fields": {
+    "navigation_extenders": null,
+    "site": 1,
+    "application_namespace": null,
+    "path": "00090003",
+    "in_navigation": true,
+    "reverse_id": null,
+    "login_required": false,
+    "created_by": "admin",
+    "languages": "de,en",
+    "publication_end_date": null,
+    "template": "INHERIT",
+    "placeholders": [
+      40,
+      41
+    ],
+    "changed_date": "2016-01-16T22:19:24.918Z",
+    "limit_visibility_in_menu": null,
+    "parent": 10,
+    "numchild": 0,
+    "soft_root": false,
+    "is_home": false,
+    "publication_date": "2015-11-13T00:07:13.450Z",
+    "creation_date": "2015-11-13T00:07:13.478Z",
+    "publisher_public": 15,
+    "application_urls": null,
+    "changed_by": "admin",
+    "publisher_is_draft": false,
+    "xframe_options": 0,
+    "depth": 2,
+    "revision_id": 0
+  },
+  "model": "cms.page",
+  "pk": 16
+},
+{
+  "fields": {
+    "navigation_extenders": "",
+    "site": 1,
+    "application_namespace": null,
+    "path": "0003",
+    "in_navigation": true,
+    "reverse_id": null,
+    "login_required": false,
+    "created_by": "admin",
+    "languages": "de,en",
+    "publication_end_date": null,
+    "template": "myshop/pages/default.html",
+    "placeholders": [
+      45,
+      46
+    ],
+    "changed_date": "2016-01-29T16:57:51.673Z",
+    "limit_visibility_in_menu": null,
+    "parent": null,
+    "numchild": 0,
+    "soft_root": false,
+    "is_home": false,
+    "publication_date": "2015-10-16T13:11:21.987Z",
+    "creation_date": "2015-11-18T09:57:54.691Z",
+    "publisher_public": 18,
+    "application_urls": "ProductsListApp",
+    "changed_by": "admin",
+    "publisher_is_draft": true,
+    "xframe_options": 0,
+    "depth": 1,
+    "revision_id": 0
+  },
+  "model": "cms.page",
+  "pk": 17
+},
+{
+  "fields": {
+    "navigation_extenders": "",
+    "site": 1,
+    "application_namespace": null,
+    "path": "0006",
+    "in_navigation": true,
+    "reverse_id": null,
+    "login_required": false,
+    "created_by": "admin",
+    "languages": "de,en",
+    "publication_end_date": null,
+    "template": "myshop/pages/default.html",
+    "placeholders": [
+      47,
+      48
+    ],
+    "changed_date": "2016-01-29T16:57:51.608Z",
+    "limit_visibility_in_menu": null,
+    "parent": null,
+    "numchild": 0,
+    "soft_root": false,
+    "is_home": false,
+    "publication_date": "2015-10-16T13:11:21.987Z",
+    "creation_date": "2015-11-18T10:00:00.309Z",
+    "publisher_public": 17,
+    "application_urls": "ProductsListApp",
+    "changed_by": "admin",
+    "publisher_is_draft": false,
+    "xframe_options": 0,
+    "depth": 1,
+    "revision_id": 0
+  },
+  "model": "cms.page",
+  "pk": 18
+},
+{
+  "fields": {
+    "navigation_extenders": "",
+    "site": 1,
+    "application_namespace": null,
+    "path": "000D",
+    "in_navigation": true,
+    "reverse_id": "shop-search-product",
+    "login_required": false,
+    "created_by": "admin",
+    "languages": "de,en",
+    "publication_end_date": null,
+    "template": "myshop/pages/default.html",
+    "placeholders": [
+      58,
+      59
+    ],
+    "changed_date": "2016-01-26T08:17:09.921Z",
+    "limit_visibility_in_menu": null,
+    "parent": null,
+    "numchild": 0,
+    "soft_root": true,
+    "is_home": false,
+    "publication_date": "2016-01-25T16:50:14.456Z",
+    "creation_date": "2016-01-25T16:40:53.222Z",
+    "publisher_public": 24,
+    "application_urls": "ProductSearchApp",
+    "changed_by": "admin",
+    "publisher_is_draft": true,
+    "xframe_options": 0,
+    "depth": 1,
+    "revision_id": 0
+  },
+  "model": "cms.page",
+  "pk": 23
+},
+{
+  "fields": {
+    "navigation_extenders": "",
+    "site": 1,
+    "application_namespace": null,
+    "path": "0008",
+    "in_navigation": true,
+    "reverse_id": "shop-search-product",
+    "login_required": false,
+    "created_by": "admin",
+    "languages": "en,de",
+    "publication_end_date": null,
+    "template": "myshop/pages/default.html",
+    "placeholders": [
+      60,
+      61
+    ],
+    "changed_date": "2016-01-26T08:17:09.622Z",
+    "limit_visibility_in_menu": null,
+    "parent": null,
+    "numchild": 0,
+    "soft_root": true,
+    "is_home": false,
+    "publication_date": "2016-01-25T16:50:14.456Z",
+    "creation_date": "2016-01-25T16:50:14.491Z",
+    "publisher_public": 23,
+    "application_urls": "ProductSearchApp",
+    "changed_by": "admin",
+    "publisher_is_draft": false,
+    "xframe_options": 0,
+    "depth": 1,
+    "revision_id": 0
+  },
+  "model": "cms.page",
+  "pk": 24
 },
 {
   "fields": {
@@ -1496,7 +2144,7 @@
 },
 {
   "fields": {
-    "changed_date": "2016-01-16T22:12:18.774Z",
+    "changed_date": "2016-03-07T09:05:40.034Z",
     "language": "en",
     "parent": 377,
     "numchild": 1,
@@ -1640,7 +2288,7 @@
 },
 {
   "fields": {
-    "changed_date": "2016-01-29T14:28:56.301Z",
+    "changed_date": "2016-03-07T09:06:37.351Z",
     "language": "en",
     "parent": 386,
     "numchild": 0,
@@ -1656,7 +2304,7 @@
 },
 {
   "fields": {
-    "changed_date": "2016-01-29T14:28:56.324Z",
+    "changed_date": "2016-03-07T09:07:23.295Z",
     "language": "en",
     "parent": 386,
     "numchild": 0,
@@ -1832,7 +2480,7 @@
 },
 {
   "fields": {
-    "changed_date": "2016-01-29T14:18:15.949Z",
+    "changed_date": "2016-03-07T09:05:40.118Z",
     "language": "en",
     "parent": 398,
     "numchild": 1,
@@ -1864,7 +2512,7 @@
 },
 {
   "fields": {
-    "changed_date": "2016-01-16T22:12:20.673Z",
+    "changed_date": "2016-03-07T09:05:40.137Z",
     "language": "en",
     "parent": 398,
     "numchild": 1,
@@ -1896,7 +2544,7 @@
 },
 {
   "fields": {
-    "changed_date": "2016-01-16T22:12:20.694Z",
+    "changed_date": "2016-03-07T09:05:40.155Z",
     "language": "en",
     "parent": 398,
     "numchild": 1,
@@ -2005,6 +2653,22 @@
   },
   "model": "cms.cmsplugin",
   "pk": 569
+},
+{
+  "fields": {
+    "changed_date": "2016-01-17T20:46:47.332Z",
+    "language": "de",
+    "parent": 212,
+    "numchild": 0,
+    "creation_date": "2015-12-14T21:58:41.769Z",
+    "depth": 5,
+    "position": 0,
+    "path": "00250001000200010001",
+    "placeholder": 23,
+    "plugin_type": "TextLinkPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 640
 },
 {
   "fields": {
@@ -2488,7 +3152,7 @@
 },
 {
   "fields": {
-    "changed_date": "2016-01-29T14:16:02.732Z",
+    "changed_date": "2016-03-07T09:05:40.011Z",
     "language": "en",
     "parent": null,
     "numchild": 2,
@@ -2619,7 +3283,7 @@
     "changed_date": "2016-01-16T22:16:18.660Z",
     "language": "en",
     "parent": 928,
-    "numchild": 1,
+    "numchild": 2,
     "creation_date": "2015-11-12T23:20:22.388Z",
     "depth": 3,
     "position": 0,
@@ -2632,83 +3296,19 @@
 },
 {
   "fields": {
-    "changed_date": "2016-01-16T22:16:18.690Z",
+    "changed_date": "2016-03-07T09:40:42.780Z",
     "language": "en",
     "parent": 929,
     "numchild": 0,
     "creation_date": "2015-11-12T23:21:08.149Z",
     "depth": 4,
-    "position": 0,
+    "position": 1,
     "path": "002N000100010001",
     "placeholder": 35,
     "plugin_type": "ShopOrderViewsPlugin"
   },
   "model": "cms.cmsplugin",
   "pk": 930
-},
-{
-  "fields": {
-    "changed_date": "2016-01-16T22:16:28.680Z",
-    "language": "en",
-    "parent": null,
-    "numchild": 1,
-    "creation_date": "2016-01-16T22:14:28.367Z",
-    "depth": 1,
-    "position": 3,
-    "path": "002O",
-    "placeholder": 37,
-    "plugin_type": "BootstrapContainerPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 931
-},
-{
-  "fields": {
-    "changed_date": "2016-01-16T22:16:28.710Z",
-    "language": "en",
-    "parent": 931,
-    "numchild": 1,
-    "creation_date": "2015-11-12T23:20:16.339Z",
-    "depth": 2,
-    "position": 0,
-    "path": "002O0001",
-    "placeholder": 37,
-    "plugin_type": "BootstrapRowPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 932
-},
-{
-  "fields": {
-    "changed_date": "2016-01-16T22:16:28.771Z",
-    "language": "en",
-    "parent": 932,
-    "numchild": 1,
-    "creation_date": "2015-11-12T23:20:22.388Z",
-    "depth": 3,
-    "position": 0,
-    "path": "002O00010001",
-    "placeholder": 37,
-    "plugin_type": "BootstrapColumnPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 933
-},
-{
-  "fields": {
-    "changed_date": "2016-01-16T22:16:28.799Z",
-    "language": "en",
-    "parent": 933,
-    "numchild": 0,
-    "creation_date": "2015-11-12T23:21:08.149Z",
-    "depth": 4,
-    "position": 0,
-    "path": "002O000100010001",
-    "placeholder": 37,
-    "plugin_type": "ShopOrderViewsPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 934
 },
 {
   "fields": {
@@ -4024,550 +4624,6 @@
 },
 {
   "fields": {
-    "changed_date": "2016-01-29T14:32:05.356Z",
-    "language": "en",
-    "parent": null,
-    "numchild": 2,
-    "creation_date": "2016-01-16T22:11:53.541Z",
-    "depth": 1,
-    "position": 0,
-    "path": "0037",
-    "placeholder": 21,
-    "plugin_type": "BootstrapContainerPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1321
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:05.381Z",
-    "language": "en",
-    "parent": 1321,
-    "numchild": 1,
-    "creation_date": "2015-11-03T11:52:31.490Z",
-    "depth": 2,
-    "position": 0,
-    "path": "00370001",
-    "placeholder": 21,
-    "plugin_type": "SegmentPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1322
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:05.406Z",
-    "language": "en",
-    "parent": 1322,
-    "numchild": 1,
-    "creation_date": "2015-11-03T12:00:22.464Z",
-    "depth": 3,
-    "position": 0,
-    "path": "003700010001",
-    "placeholder": 21,
-    "plugin_type": "BootstrapRowPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1323
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:05.451Z",
-    "language": "en",
-    "parent": 1323,
-    "numchild": 1,
-    "creation_date": "2015-11-03T12:00:27.233Z",
-    "depth": 4,
-    "position": 0,
-    "path": "0037000100010001",
-    "placeholder": 21,
-    "plugin_type": "BootstrapColumnPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1324
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:05.475Z",
-    "language": "en",
-    "parent": 1324,
-    "numchild": 3,
-    "creation_date": "2015-11-03T12:01:52.087Z",
-    "depth": 5,
-    "position": 0,
-    "path": "00370001000100010001",
-    "placeholder": 21,
-    "plugin_type": "ProcessBarPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1325
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:05.500Z",
-    "language": "en",
-    "parent": 1325,
-    "numchild": 4,
-    "creation_date": "2015-11-03T12:01:57.069Z",
-    "depth": 6,
-    "position": 0,
-    "path": "003700010001000100010001",
-    "placeholder": 21,
-    "plugin_type": "ProcessStepPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1326
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:05.525Z",
-    "language": "en",
-    "parent": 1326,
-    "numchild": 1,
-    "creation_date": "2015-11-03T12:03:13.411Z",
-    "depth": 7,
-    "position": 0,
-    "path": "0037000100010001000100010001",
-    "placeholder": 21,
-    "plugin_type": "SegmentPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1327
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:05.550Z",
-    "language": "en",
-    "parent": 1327,
-    "numchild": 0,
-    "creation_date": "2015-11-03T12:05:35.165Z",
-    "depth": 8,
-    "position": 0,
-    "path": "00370001000100010001000100010001",
-    "placeholder": 21,
-    "plugin_type": "CustomerFormPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1328
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:05.580Z",
-    "language": "en",
-    "parent": 1326,
-    "numchild": 1,
-    "creation_date": "2015-11-03T12:03:40.516Z",
-    "depth": 7,
-    "position": 1,
-    "path": "0037000100010001000100010002",
-    "placeholder": 21,
-    "plugin_type": "SegmentPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1329
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:05.610Z",
-    "language": "en",
-    "parent": 1329,
-    "numchild": 0,
-    "creation_date": "2015-11-03T12:04:17.682Z",
-    "depth": 8,
-    "position": 0,
-    "path": "00370001000100010001000100020001",
-    "placeholder": 21,
-    "plugin_type": "GuestFormPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1330
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:05.642Z",
-    "language": "en",
-    "parent": 1326,
-    "numchild": 0,
-    "creation_date": "2015-11-03T12:06:29.969Z",
-    "depth": 7,
-    "position": 3,
-    "path": "0037000100010001000100010003",
-    "placeholder": 21,
-    "plugin_type": "ProcessNextStepPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1331
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:05.671Z",
-    "language": "en",
-    "parent": 1326,
-    "numchild": 0,
-    "creation_date": "2016-01-29T14:27:21.436Z",
-    "depth": 7,
-    "position": 2,
-    "path": "0037000100010001000100010004",
-    "placeholder": 21,
-    "plugin_type": "RequiredFormFieldsPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1332
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:05.699Z",
-    "language": "en",
-    "parent": 1325,
-    "numchild": 4,
-    "creation_date": "2015-11-03T12:01:57.141Z",
-    "depth": 6,
-    "position": 1,
-    "path": "003700010001000100010002",
-    "placeholder": 21,
-    "plugin_type": "ProcessStepPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1333
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:05.724Z",
-    "language": "en",
-    "parent": 1333,
-    "numchild": 0,
-    "creation_date": "2015-11-03T12:07:45.248Z",
-    "depth": 7,
-    "position": 0,
-    "path": "0037000100010001000100020001",
-    "placeholder": 21,
-    "plugin_type": "ShippingAddressFormPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1334
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:05.753Z",
-    "language": "en",
-    "parent": 1333,
-    "numchild": 0,
-    "creation_date": "2015-11-03T12:08:16.160Z",
-    "depth": 7,
-    "position": 1,
-    "path": "0037000100010001000100020002",
-    "placeholder": 21,
-    "plugin_type": "BillingAddressFormPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1335
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:05.780Z",
-    "language": "en",
-    "parent": 1333,
-    "numchild": 0,
-    "creation_date": "2015-11-03T12:08:38.948Z",
-    "depth": 7,
-    "position": 3,
-    "path": "0037000100010001000100020003",
-    "placeholder": 21,
-    "plugin_type": "ProcessNextStepPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1336
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:05.817Z",
-    "language": "en",
-    "parent": 1333,
-    "numchild": 0,
-    "creation_date": "2016-01-29T14:28:24.445Z",
-    "depth": 7,
-    "position": 2,
-    "path": "0037000100010001000100020004",
-    "placeholder": 21,
-    "plugin_type": "RequiredFormFieldsPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1337
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:05.846Z",
-    "language": "en",
-    "parent": 1325,
-    "numchild": 7,
-    "creation_date": "2015-11-03T12:01:57.216Z",
-    "depth": 6,
-    "position": 2,
-    "path": "003700010001000100010003",
-    "placeholder": 21,
-    "plugin_type": "ProcessStepPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1338
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:05.871Z",
-    "language": "en",
-    "parent": 1338,
-    "numchild": 0,
-    "creation_date": "2015-11-03T12:09:28.368Z",
-    "depth": 7,
-    "position": 0,
-    "path": "0037000100010001000100030001",
-    "placeholder": 21,
-    "plugin_type": "ShopCartPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1339
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:05.898Z",
-    "language": "en",
-    "parent": 1338,
-    "numchild": 0,
-    "creation_date": "2015-11-03T12:10:27.667Z",
-    "depth": 7,
-    "position": 1,
-    "path": "0037000100010001000100030002",
-    "placeholder": 21,
-    "plugin_type": "PaymentMethodFormPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1340
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:05.927Z",
-    "language": "en",
-    "parent": 1338,
-    "numchild": 0,
-    "creation_date": "2015-11-03T12:10:56.492Z",
-    "depth": 7,
-    "position": 2,
-    "path": "0037000100010001000100030003",
-    "placeholder": 21,
-    "plugin_type": "ShippingMethodFormPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1341
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:05.963Z",
-    "language": "en",
-    "parent": 1338,
-    "numchild": 0,
-    "creation_date": "2015-11-03T12:11:30.640Z",
-    "depth": 7,
-    "position": 3,
-    "path": "0037000100010001000100030004",
-    "placeholder": 21,
-    "plugin_type": "ExtraAnnotationFormPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1342
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:05.993Z",
-    "language": "en",
-    "parent": 1338,
-    "numchild": 1,
-    "creation_date": "2015-11-03T12:12:11.300Z",
-    "depth": 7,
-    "position": 5,
-    "path": "0037000100010001000100030005",
-    "placeholder": 21,
-    "plugin_type": "AcceptConditionFormPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1343
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:06.021Z",
-    "language": "en",
-    "parent": 1343,
-    "numchild": 0,
-    "creation_date": "2016-01-29T14:31:28.405Z",
-    "depth": 8,
-    "position": 0,
-    "path": "00370001000100010001000300050001",
-    "placeholder": 21,
-    "plugin_type": "TextLinkPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1344
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:06.052Z",
-    "language": "en",
-    "parent": 1338,
-    "numchild": 0,
-    "creation_date": "2015-11-03T15:12:48.394Z",
-    "depth": 7,
-    "position": 6,
-    "path": "0037000100010001000100030006",
-    "placeholder": 21,
-    "plugin_type": "ShopProceedButton"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1345
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:06.080Z",
-    "language": "en",
-    "parent": 1338,
-    "numchild": 0,
-    "creation_date": "2016-01-29T14:29:31.869Z",
-    "depth": 7,
-    "position": 4,
-    "path": "0037000100010001000100030007",
-    "placeholder": 21,
-    "plugin_type": "RequiredFormFieldsPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1346
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:06.109Z",
-    "language": "en",
-    "parent": 1321,
-    "numchild": 1,
-    "creation_date": "2015-11-03T11:52:57.955Z",
-    "depth": 2,
-    "position": 1,
-    "path": "00370002",
-    "placeholder": 21,
-    "plugin_type": "SegmentPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1347
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:06.134Z",
-    "language": "en",
-    "parent": 1347,
-    "numchild": 3,
-    "creation_date": "2015-11-13T07:58:26.829Z",
-    "depth": 3,
-    "position": 0,
-    "path": "003700020001",
-    "placeholder": 21,
-    "plugin_type": "BootstrapRowPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1348
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:06.178Z",
-    "language": "en",
-    "parent": 1348,
-    "numchild": 1,
-    "creation_date": "2015-11-13T07:58:30.141Z",
-    "depth": 4,
-    "position": 0,
-    "path": "0037000200010001",
-    "placeholder": 21,
-    "plugin_type": "BootstrapColumnPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1349
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:06.202Z",
-    "language": "en",
-    "parent": 1349,
-    "numchild": 0,
-    "creation_date": "2015-11-13T07:59:27.855Z",
-    "depth": 5,
-    "position": 0,
-    "path": "00370002000100010001",
-    "placeholder": 21,
-    "plugin_type": "ShopAuthenticationPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1350
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:06.252Z",
-    "language": "en",
-    "parent": 1348,
-    "numchild": 1,
-    "creation_date": "2015-11-13T07:58:30.251Z",
-    "depth": 4,
-    "position": 1,
-    "path": "0037000200010002",
-    "placeholder": 21,
-    "plugin_type": "BootstrapColumnPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1351
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:06.278Z",
-    "language": "en",
-    "parent": 1351,
-    "numchild": 0,
-    "creation_date": "2015-11-13T08:01:15.285Z",
-    "depth": 5,
-    "position": 0,
-    "path": "00370002000100020001",
-    "placeholder": 21,
-    "plugin_type": "ShopAuthenticationPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1352
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:06.335Z",
-    "language": "en",
-    "parent": 1348,
-    "numchild": 1,
-    "creation_date": "2015-11-13T07:58:30.362Z",
-    "depth": 4,
-    "position": 2,
-    "path": "0037000200010003",
-    "placeholder": 21,
-    "plugin_type": "BootstrapColumnPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1353
-},
-{
-  "fields": {
-    "changed_date": "2016-01-29T14:32:06.358Z",
-    "language": "en",
-    "parent": 1353,
-    "numchild": 0,
-    "creation_date": "2015-11-13T08:01:42.825Z",
-    "depth": 5,
-    "position": 0,
-    "path": "00370002000100030001",
-    "placeholder": 21,
-    "plugin_type": "ShopAuthenticationPlugin"
-  },
-  "model": "cms.cmsplugin",
-  "pk": 1354
-},
-{
-  "fields": {
     "changed_date": "2016-01-29T16:24:30.828Z",
     "language": "de",
     "parent": null,
@@ -4661,6 +4717,22 @@
   },
   "model": "cms.cmsplugin",
   "pk": 1365
+},
+{
+  "fields": {
+    "changed_date": "2016-01-29T16:24:30.878Z",
+    "language": "de",
+    "parent": 1365,
+    "numchild": 0,
+    "creation_date": "2015-12-14T21:58:41.769Z",
+    "depth": 5,
+    "position": 0,
+    "path": "00380001000200010001",
+    "placeholder": 25,
+    "plugin_type": "TextLinkPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1366
 },
 {
   "fields": {
@@ -4776,651 +4848,771 @@
 },
 {
   "fields": {
-    "navigation_extenders": "",
-    "site": 1,
-    "application_namespace": null,
-    "path": "000G",
-    "in_navigation": true,
-    "reverse_id": "shop-cart",
-    "login_required": false,
-    "created_by": "admin",
-    "languages": "de,en",
-    "publication_end_date": null,
-    "template": "myshop/pages/default.html",
-    "placeholders": [
-      13,
-      14
-    ],
-    "changed_date": "2016-01-29T11:58:28.405Z",
-    "limit_visibility_in_menu": null,
+    "changed_date": "2016-01-29T16:55:15.695Z",
+    "language": "en",
     "parent": null,
     "numchild": 1,
-    "soft_root": true,
-    "is_home": false,
-    "publication_date": "2015-10-30T23:26:35.875Z",
-    "creation_date": "2015-10-30T23:26:23.274Z",
-    "publisher_public": 4,
-    "application_urls": "",
-    "changed_by": "admin",
-    "publisher_is_draft": true,
-    "xframe_options": 0,
+    "creation_date": "2016-01-29T16:55:13.851Z",
     "depth": 1,
-    "revision_id": 0
+    "position": 0,
+    "path": "003A",
+    "placeholder": 46,
+    "plugin_type": "BootstrapContainerPlugin"
   },
-  "model": "cms.page",
-  "pk": 3
+  "model": "cms.cmsplugin",
+  "pk": 1374
 },
 {
   "fields": {
-    "navigation_extenders": "",
-    "site": 1,
-    "application_namespace": null,
-    "path": "000A",
-    "in_navigation": true,
-    "reverse_id": "shop-cart",
-    "login_required": false,
-    "created_by": "admin",
-    "languages": "de,en",
-    "publication_end_date": null,
-    "template": "myshop/pages/default.html",
-    "placeholders": [
-      15,
-      16
-    ],
-    "changed_date": "2016-01-29T11:58:28.105Z",
-    "limit_visibility_in_menu": null,
+    "changed_date": "2016-01-29T16:57:27.049Z",
+    "language": "en",
+    "parent": 1374,
+    "numchild": 1,
+    "creation_date": "2016-01-29T16:57:22.941Z",
+    "depth": 2,
+    "position": 0,
+    "path": "003A0001",
+    "placeholder": 46,
+    "plugin_type": "BootstrapRowPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1375
+},
+{
+  "fields": {
+    "changed_date": "2016-01-29T16:57:27.080Z",
+    "language": "en",
+    "parent": 1375,
+    "numchild": 1,
+    "creation_date": "2016-01-29T16:57:27.056Z",
+    "depth": 3,
+    "position": 0,
+    "path": "003A00010001",
+    "placeholder": 46,
+    "plugin_type": "BootstrapColumnPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1376
+},
+{
+  "fields": {
+    "changed_date": "2016-01-29T16:57:42.973Z",
+    "language": "en",
+    "parent": 1376,
+    "numchild": 0,
+    "creation_date": "2016-01-29T16:57:41.269Z",
+    "depth": 4,
+    "position": 0,
+    "path": "003A000100010001",
+    "placeholder": 46,
+    "plugin_type": "ShopCatalogPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1377
+},
+{
+  "fields": {
+    "changed_date": "2016-01-29T16:57:51.582Z",
+    "language": "en",
     "parent": null,
     "numchild": 1,
-    "soft_root": true,
-    "is_home": false,
-    "publication_date": "2015-10-30T23:26:35.875Z",
-    "creation_date": "2015-10-30T23:26:35.899Z",
-    "publisher_public": 3,
-    "application_urls": "",
-    "changed_by": "admin",
-    "publisher_is_draft": false,
-    "xframe_options": 0,
+    "creation_date": "2016-01-29T16:55:13.851Z",
     "depth": 1,
-    "revision_id": 0
+    "position": 0,
+    "path": "003B",
+    "placeholder": 48,
+    "plugin_type": "BootstrapContainerPlugin"
   },
-  "model": "cms.page",
-  "pk": 4
+  "model": "cms.cmsplugin",
+  "pk": 1378
 },
 {
   "fields": {
-    "navigation_extenders": null,
-    "site": 1,
-    "application_namespace": null,
-    "path": "000G0001",
-    "in_navigation": true,
-    "reverse_id": null,
-    "login_required": false,
-    "created_by": "admin",
-    "languages": "de,en",
-    "publication_end_date": null,
-    "template": "INHERIT",
-    "placeholders": [
-      18,
-      19
-    ],
-    "changed_date": "2016-01-29T14:32:06.639Z",
-    "limit_visibility_in_menu": null,
-    "parent": 3,
-    "numchild": 0,
-    "soft_root": false,
-    "is_home": false,
-    "publication_date": "2015-11-03T11:55:55.669Z",
-    "creation_date": "2015-11-03T11:50:25.384Z",
-    "publisher_public": 6,
-    "application_urls": null,
-    "changed_by": "admin",
-    "publisher_is_draft": true,
-    "xframe_options": 0,
+    "changed_date": "2016-01-29T16:57:51.587Z",
+    "language": "en",
+    "parent": 1378,
+    "numchild": 1,
+    "creation_date": "2016-01-29T16:57:22.941Z",
     "depth": 2,
-    "revision_id": 0
+    "position": 0,
+    "path": "003B0001",
+    "placeholder": 48,
+    "plugin_type": "BootstrapRowPlugin"
   },
-  "model": "cms.page",
-  "pk": 5
+  "model": "cms.cmsplugin",
+  "pk": 1379
 },
 {
   "fields": {
-    "navigation_extenders": null,
-    "site": 1,
-    "application_namespace": null,
-    "path": "000A0001",
-    "in_navigation": true,
-    "reverse_id": null,
-    "login_required": false,
-    "created_by": "admin",
-    "languages": "de,en",
-    "publication_end_date": null,
-    "template": "INHERIT",
-    "placeholders": [
-      20,
-      21
-    ],
-    "changed_date": "2016-01-29T14:32:06.509Z",
-    "limit_visibility_in_menu": null,
-    "parent": 4,
+    "changed_date": "2016-01-29T16:57:51.596Z",
+    "language": "en",
+    "parent": 1379,
+    "numchild": 1,
+    "creation_date": "2016-01-29T16:57:27.056Z",
+    "depth": 3,
+    "position": 0,
+    "path": "003B00010001",
+    "placeholder": 48,
+    "plugin_type": "BootstrapColumnPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1380
+},
+{
+  "fields": {
+    "changed_date": "2016-01-29T16:57:51.601Z",
+    "language": "en",
+    "parent": 1380,
     "numchild": 0,
-    "soft_root": false,
-    "is_home": false,
-    "publication_date": "2015-11-03T11:55:55.669Z",
-    "creation_date": "2015-11-03T11:55:55.686Z",
-    "publisher_public": 5,
-    "application_urls": null,
-    "changed_by": "admin",
-    "publisher_is_draft": false,
-    "xframe_options": 0,
-    "depth": 2,
-    "revision_id": 0
+    "creation_date": "2016-01-29T16:57:41.269Z",
+    "depth": 4,
+    "position": 0,
+    "path": "003B000100010001",
+    "placeholder": 48,
+    "plugin_type": "ShopCatalogPlugin"
   },
-  "model": "cms.page",
-  "pk": 6
+  "model": "cms.cmsplugin",
+  "pk": 1381
 },
 {
   "fields": {
-    "navigation_extenders": "",
-    "site": 1,
-    "application_namespace": null,
-    "path": "0001",
-    "in_navigation": true,
-    "reverse_id": null,
-    "login_required": false,
-    "created_by": "admin",
-    "languages": "de,en",
-    "publication_end_date": null,
-    "template": "myshop/pages/default.html",
-    "placeholders": [
-      22,
-      23
-    ],
-    "changed_date": "2016-01-29T16:24:38.793Z",
-    "limit_visibility_in_menu": null,
-    "parent": null,
-    "numchild": 0,
-    "soft_root": false,
-    "is_home": true,
-    "publication_date": "2015-11-03T22:32:52.028Z",
-    "creation_date": "2015-11-03T22:32:25.921Z",
-    "publisher_public": 8,
-    "application_urls": "",
-    "changed_by": "admin",
-    "publisher_is_draft": true,
-    "xframe_options": 0,
-    "depth": 1,
-    "revision_id": 0
-  },
-  "model": "cms.page",
-  "pk": 7
-},
-{
-  "fields": {
-    "navigation_extenders": "",
-    "site": 1,
-    "application_namespace": null,
-    "path": "0005",
-    "in_navigation": true,
-    "reverse_id": null,
-    "login_required": false,
-    "created_by": "admin",
-    "languages": "de,en",
-    "publication_end_date": null,
-    "template": "myshop/pages/default.html",
-    "placeholders": [
-      24,
-      25
-    ],
-    "changed_date": "2016-01-29T16:24:38.705Z",
-    "limit_visibility_in_menu": null,
-    "parent": null,
-    "numchild": 0,
-    "soft_root": false,
-    "is_home": true,
-    "publication_date": "2015-11-03T22:32:52.028Z",
-    "creation_date": "2015-11-03T22:32:52.049Z",
-    "publisher_public": 7,
-    "application_urls": "",
-    "changed_by": "admin",
-    "publisher_is_draft": false,
-    "xframe_options": 0,
-    "depth": 1,
-    "revision_id": 0
-  },
-  "model": "cms.page",
-  "pk": 8
-},
-{
-  "fields": {
-    "navigation_extenders": "",
-    "site": 1,
-    "application_namespace": null,
-    "path": "000F",
-    "in_navigation": false,
-    "reverse_id": null,
-    "login_required": false,
-    "created_by": "admin",
-    "languages": "de,en",
-    "publication_end_date": null,
-    "template": "myshop/pages/default.html",
-    "placeholders": [
-      26,
-      27
-    ],
-    "changed_date": "2015-11-25T16:20:45.992Z",
-    "limit_visibility_in_menu": null,
+    "changed_date": "2016-03-07T09:07:51.327Z",
+    "language": "en",
     "parent": null,
     "numchild": 2,
-    "soft_root": true,
-    "is_home": false,
-    "publication_date": "2015-11-12T12:32:30.971Z",
-    "creation_date": "2015-11-12T12:31:29.943Z",
-    "publisher_public": 10,
-    "application_urls": "",
-    "changed_by": "admin",
-    "publisher_is_draft": true,
-    "xframe_options": 0,
+    "creation_date": "2016-01-16T22:11:53.541Z",
     "depth": 1,
-    "revision_id": 0
+    "position": 0,
+    "path": "003C",
+    "placeholder": 21,
+    "plugin_type": "BootstrapContainerPlugin"
   },
-  "model": "cms.page",
-  "pk": 9
+  "model": "cms.cmsplugin",
+  "pk": 1450
 },
 {
   "fields": {
-    "navigation_extenders": "",
-    "site": 1,
-    "application_namespace": null,
-    "path": "0009",
-    "in_navigation": false,
-    "reverse_id": null,
-    "login_required": false,
-    "created_by": "admin",
-    "languages": "de,en",
-    "publication_end_date": null,
-    "template": "myshop/pages/default.html",
-    "placeholders": [
-      28,
-      29
-    ],
-    "changed_date": "2015-11-25T16:20:45.416Z",
-    "limit_visibility_in_menu": null,
+    "changed_date": "2016-03-07T09:07:51.343Z",
+    "language": "en",
+    "parent": 1450,
+    "numchild": 1,
+    "creation_date": "2015-11-03T11:52:31.490Z",
+    "depth": 2,
+    "position": 0,
+    "path": "003C0001",
+    "placeholder": 21,
+    "plugin_type": "SegmentPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1451
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.359Z",
+    "language": "en",
+    "parent": 1451,
+    "numchild": 1,
+    "creation_date": "2015-11-03T12:00:22.464Z",
+    "depth": 3,
+    "position": 0,
+    "path": "003C00010001",
+    "placeholder": 21,
+    "plugin_type": "BootstrapRowPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1452
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.385Z",
+    "language": "en",
+    "parent": 1452,
+    "numchild": 1,
+    "creation_date": "2015-11-03T12:00:27.233Z",
+    "depth": 4,
+    "position": 0,
+    "path": "003C000100010001",
+    "placeholder": 21,
+    "plugin_type": "BootstrapColumnPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1453
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.401Z",
+    "language": "en",
+    "parent": 1453,
+    "numchild": 3,
+    "creation_date": "2015-11-03T12:01:52.087Z",
+    "depth": 5,
+    "position": 0,
+    "path": "003C0001000100010001",
+    "placeholder": 21,
+    "plugin_type": "ProcessBarPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1454
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.418Z",
+    "language": "en",
+    "parent": 1454,
+    "numchild": 4,
+    "creation_date": "2015-11-03T12:01:57.069Z",
+    "depth": 6,
+    "position": 0,
+    "path": "003C00010001000100010001",
+    "placeholder": 21,
+    "plugin_type": "ProcessStepPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1455
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.432Z",
+    "language": "en",
+    "parent": 1455,
+    "numchild": 1,
+    "creation_date": "2015-11-03T12:03:13.411Z",
+    "depth": 7,
+    "position": 0,
+    "path": "003C000100010001000100010001",
+    "placeholder": 21,
+    "plugin_type": "SegmentPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1456
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.447Z",
+    "language": "en",
+    "parent": 1456,
+    "numchild": 0,
+    "creation_date": "2015-11-03T12:05:35.165Z",
+    "depth": 8,
+    "position": 0,
+    "path": "003C0001000100010001000100010001",
+    "placeholder": 21,
+    "plugin_type": "CustomerFormPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1457
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.465Z",
+    "language": "en",
+    "parent": 1455,
+    "numchild": 1,
+    "creation_date": "2015-11-03T12:03:40.516Z",
+    "depth": 7,
+    "position": 1,
+    "path": "003C000100010001000100010002",
+    "placeholder": 21,
+    "plugin_type": "SegmentPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1458
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.479Z",
+    "language": "en",
+    "parent": 1458,
+    "numchild": 0,
+    "creation_date": "2015-11-03T12:04:17.682Z",
+    "depth": 8,
+    "position": 0,
+    "path": "003C0001000100010001000100020001",
+    "placeholder": 21,
+    "plugin_type": "GuestFormPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1459
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.503Z",
+    "language": "en",
+    "parent": 1455,
+    "numchild": 0,
+    "creation_date": "2015-11-03T12:06:29.969Z",
+    "depth": 7,
+    "position": 3,
+    "path": "003C000100010001000100010003",
+    "placeholder": 21,
+    "plugin_type": "ProcessNextStepPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1460
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.522Z",
+    "language": "en",
+    "parent": 1455,
+    "numchild": 0,
+    "creation_date": "2016-01-29T14:27:21.436Z",
+    "depth": 7,
+    "position": 2,
+    "path": "003C000100010001000100010004",
+    "placeholder": 21,
+    "plugin_type": "RequiredFormFieldsPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1461
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.539Z",
+    "language": "en",
+    "parent": 1454,
+    "numchild": 4,
+    "creation_date": "2015-11-03T12:01:57.141Z",
+    "depth": 6,
+    "position": 1,
+    "path": "003C00010001000100010002",
+    "placeholder": 21,
+    "plugin_type": "ProcessStepPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1462
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.552Z",
+    "language": "en",
+    "parent": 1462,
+    "numchild": 0,
+    "creation_date": "2015-11-03T12:07:45.248Z",
+    "depth": 7,
+    "position": 0,
+    "path": "003C000100010001000100020001",
+    "placeholder": 21,
+    "plugin_type": "ShippingAddressFormPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1463
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.567Z",
+    "language": "en",
+    "parent": 1462,
+    "numchild": 0,
+    "creation_date": "2015-11-03T12:08:16.160Z",
+    "depth": 7,
+    "position": 1,
+    "path": "003C000100010001000100020002",
+    "placeholder": 21,
+    "plugin_type": "BillingAddressFormPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1464
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.583Z",
+    "language": "en",
+    "parent": 1462,
+    "numchild": 0,
+    "creation_date": "2015-11-03T12:08:38.948Z",
+    "depth": 7,
+    "position": 3,
+    "path": "003C000100010001000100020003",
+    "placeholder": 21,
+    "plugin_type": "ProcessNextStepPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1465
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.598Z",
+    "language": "en",
+    "parent": 1462,
+    "numchild": 0,
+    "creation_date": "2016-01-29T14:28:24.445Z",
+    "depth": 7,
+    "position": 2,
+    "path": "003C000100010001000100020004",
+    "placeholder": 21,
+    "plugin_type": "RequiredFormFieldsPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1466
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.614Z",
+    "language": "en",
+    "parent": 1454,
+    "numchild": 7,
+    "creation_date": "2015-11-03T12:01:57.216Z",
+    "depth": 6,
+    "position": 2,
+    "path": "003C00010001000100010003",
+    "placeholder": 21,
+    "plugin_type": "ProcessStepPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1467
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.628Z",
+    "language": "en",
+    "parent": 1467,
+    "numchild": 0,
+    "creation_date": "2015-11-03T12:09:28.368Z",
+    "depth": 7,
+    "position": 0,
+    "path": "003C000100010001000100030001",
+    "placeholder": 21,
+    "plugin_type": "ShopCartPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1468
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.644Z",
+    "language": "en",
+    "parent": 1467,
+    "numchild": 0,
+    "creation_date": "2015-11-03T12:10:27.667Z",
+    "depth": 7,
+    "position": 1,
+    "path": "003C000100010001000100030002",
+    "placeholder": 21,
+    "plugin_type": "PaymentMethodFormPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1469
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.660Z",
+    "language": "en",
+    "parent": 1467,
+    "numchild": 0,
+    "creation_date": "2015-11-03T12:10:56.492Z",
+    "depth": 7,
+    "position": 2,
+    "path": "003C000100010001000100030003",
+    "placeholder": 21,
+    "plugin_type": "ShippingMethodFormPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1470
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.677Z",
+    "language": "en",
+    "parent": 1467,
+    "numchild": 0,
+    "creation_date": "2015-11-03T12:11:30.640Z",
+    "depth": 7,
+    "position": 3,
+    "path": "003C000100010001000100030004",
+    "placeholder": 21,
+    "plugin_type": "ExtraAnnotationFormPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1471
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.692Z",
+    "language": "en",
+    "parent": 1467,
+    "numchild": 1,
+    "creation_date": "2015-11-03T12:12:11.300Z",
+    "depth": 7,
+    "position": 5,
+    "path": "003C000100010001000100030005",
+    "placeholder": 21,
+    "plugin_type": "AcceptConditionFormPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1472
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.707Z",
+    "language": "en",
+    "parent": 1472,
+    "numchild": 0,
+    "creation_date": "2016-01-29T14:31:28.405Z",
+    "depth": 8,
+    "position": 0,
+    "path": "003C0001000100010001000300050001",
+    "placeholder": 21,
+    "plugin_type": "TextLinkPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1473
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.722Z",
+    "language": "en",
+    "parent": 1467,
+    "numchild": 0,
+    "creation_date": "2015-11-03T15:12:48.394Z",
+    "depth": 7,
+    "position": 6,
+    "path": "003C000100010001000100030006",
+    "placeholder": 21,
+    "plugin_type": "ShopProceedButton"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1474
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.737Z",
+    "language": "en",
+    "parent": 1467,
+    "numchild": 0,
+    "creation_date": "2016-01-29T14:29:31.869Z",
+    "depth": 7,
+    "position": 4,
+    "path": "003C000100010001000100030007",
+    "placeholder": 21,
+    "plugin_type": "RequiredFormFieldsPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1475
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.753Z",
+    "language": "en",
+    "parent": 1450,
+    "numchild": 1,
+    "creation_date": "2015-11-03T11:52:57.955Z",
+    "depth": 2,
+    "position": 1,
+    "path": "003C0002",
+    "placeholder": 21,
+    "plugin_type": "SegmentPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1476
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.767Z",
+    "language": "en",
+    "parent": 1476,
+    "numchild": 3,
+    "creation_date": "2015-11-13T07:58:26.829Z",
+    "depth": 3,
+    "position": 0,
+    "path": "003C00020001",
+    "placeholder": 21,
+    "plugin_type": "BootstrapRowPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1477
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.790Z",
+    "language": "en",
+    "parent": 1477,
+    "numchild": 1,
+    "creation_date": "2015-11-13T07:58:30.141Z",
+    "depth": 4,
+    "position": 0,
+    "path": "003C000200010001",
+    "placeholder": 21,
+    "plugin_type": "BootstrapColumnPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1478
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.802Z",
+    "language": "en",
+    "parent": 1478,
+    "numchild": 0,
+    "creation_date": "2015-11-13T07:59:27.855Z",
+    "depth": 5,
+    "position": 0,
+    "path": "003C0002000100010001",
+    "placeholder": 21,
+    "plugin_type": "ShopAuthenticationPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1479
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.827Z",
+    "language": "en",
+    "parent": 1477,
+    "numchild": 1,
+    "creation_date": "2015-11-13T07:58:30.251Z",
+    "depth": 4,
+    "position": 1,
+    "path": "003C000200010002",
+    "placeholder": 21,
+    "plugin_type": "BootstrapColumnPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1480
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.840Z",
+    "language": "en",
+    "parent": 1480,
+    "numchild": 0,
+    "creation_date": "2015-11-13T08:01:15.285Z",
+    "depth": 5,
+    "position": 0,
+    "path": "003C0002000100020001",
+    "placeholder": 21,
+    "plugin_type": "ShopAuthenticationPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1481
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.864Z",
+    "language": "en",
+    "parent": 1477,
+    "numchild": 1,
+    "creation_date": "2015-11-13T07:58:30.362Z",
+    "depth": 4,
+    "position": 2,
+    "path": "003C000200010003",
+    "placeholder": 21,
+    "plugin_type": "BootstrapColumnPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1482
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:07:51.878Z",
+    "language": "en",
+    "parent": 1482,
+    "numchild": 0,
+    "creation_date": "2015-11-13T08:01:42.825Z",
+    "depth": 5,
+    "position": 0,
+    "path": "003C0002000100030001",
+    "placeholder": 21,
+    "plugin_type": "ShopAuthenticationPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1483
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:40:42.790Z",
+    "language": "en",
+    "parent": 929,
+    "numchild": 0,
+    "creation_date": "2016-03-07T09:40:15.456Z",
+    "depth": 4,
+    "position": 0,
+    "path": "002N000100010002",
+    "placeholder": 35,
+    "plugin_type": "TextPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1484
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:40:44.840Z",
+    "language": "en",
     "parent": null,
+    "numchild": 1,
+    "creation_date": "2016-01-16T22:14:28.367Z",
+    "depth": 1,
+    "position": 3,
+    "path": "003D",
+    "placeholder": 37,
+    "plugin_type": "BootstrapContainerPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1485
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:40:44.856Z",
+    "language": "en",
+    "parent": 1485,
+    "numchild": 1,
+    "creation_date": "2015-11-12T23:20:16.339Z",
+    "depth": 2,
+    "position": 0,
+    "path": "003D0001",
+    "placeholder": 37,
+    "plugin_type": "BootstrapRowPlugin"
+  },
+  "model": "cms.cmsplugin",
+  "pk": 1486
+},
+{
+  "fields": {
+    "changed_date": "2016-03-07T09:40:44.879Z",
+    "language": "en",
+    "parent": 1486,
     "numchild": 2,
-    "soft_root": true,
-    "is_home": false,
-    "publication_date": "2015-11-12T12:32:30.971Z",
-    "creation_date": "2015-11-12T12:32:30.994Z",
-    "publisher_public": 9,
-    "application_urls": "",
-    "changed_by": "admin",
-    "publisher_is_draft": false,
-    "xframe_options": 0,
-    "depth": 1,
-    "revision_id": 0
-  },
-  "model": "cms.page",
-  "pk": 10
-},
-{
-  "fields": {
-    "navigation_extenders": "",
-    "site": 1,
-    "application_namespace": null,
-    "path": "000F0002",
-    "in_navigation": true,
-    "reverse_id": "shop-order",
-    "login_required": false,
-    "created_by": "admin",
-    "languages": "de,en",
-    "publication_end_date": null,
-    "template": "INHERIT",
-    "placeholders": [
-      30,
-      31
-    ],
-    "changed_date": "2016-01-16T22:09:35.114Z",
-    "limit_visibility_in_menu": null,
-    "parent": 9,
-    "numchild": 1,
-    "soft_root": false,
-    "is_home": false,
-    "publication_date": "2015-11-12T12:33:43.153Z",
-    "creation_date": "2015-11-12T12:33:31.134Z",
-    "publisher_public": 12,
-    "application_urls": "OrderApp",
-    "changed_by": "admin",
-    "publisher_is_draft": true,
-    "xframe_options": 0,
-    "depth": 2,
-    "revision_id": 0
-  },
-  "model": "cms.page",
-  "pk": 11
-},
-{
-  "fields": {
-    "navigation_extenders": "",
-    "site": 1,
-    "application_namespace": null,
-    "path": "00090002",
-    "in_navigation": true,
-    "reverse_id": "shop-order",
-    "login_required": false,
-    "created_by": "admin",
-    "languages": "de,en",
-    "publication_end_date": null,
-    "template": "INHERIT",
-    "placeholders": [
-      32,
-      33
-    ],
-    "changed_date": "2016-01-16T22:09:34.981Z",
-    "limit_visibility_in_menu": null,
-    "parent": 10,
-    "numchild": 1,
-    "soft_root": false,
-    "is_home": false,
-    "publication_date": "2015-11-12T12:33:43.153Z",
-    "creation_date": "2015-11-12T12:33:43.174Z",
-    "publisher_public": 11,
-    "application_urls": "OrderApp",
-    "changed_by": "admin",
-    "publisher_is_draft": false,
-    "xframe_options": 0,
-    "depth": 2,
-    "revision_id": 0
-  },
-  "model": "cms.page",
-  "pk": 12
-},
-{
-  "fields": {
-    "navigation_extenders": "",
-    "site": 1,
-    "application_namespace": null,
-    "path": "000F00020001",
-    "in_navigation": true,
-    "reverse_id": "shop-order-last",
-    "login_required": false,
-    "created_by": "admin",
-    "languages": "de,en",
-    "publication_end_date": null,
-    "template": "INHERIT",
-    "placeholders": [
-      34,
-      35
-    ],
-    "changed_date": "2016-01-20T21:56:22.757Z",
-    "limit_visibility_in_menu": null,
-    "parent": 11,
-    "numchild": 0,
-    "soft_root": true,
-    "is_home": false,
-    "publication_date": "2015-11-12T23:21:22.963Z",
-    "creation_date": "2015-11-12T23:19:46.076Z",
-    "publisher_public": 14,
-    "application_urls": "OrderApp",
-    "changed_by": "admin",
-    "publisher_is_draft": true,
-    "xframe_options": 0,
+    "creation_date": "2015-11-12T23:20:22.388Z",
     "depth": 3,
-    "revision_id": 0
+    "position": 0,
+    "path": "003D00010001",
+    "placeholder": 37,
+    "plugin_type": "BootstrapColumnPlugin"
   },
-  "model": "cms.page",
-  "pk": 13
+  "model": "cms.cmsplugin",
+  "pk": 1487
 },
 {
   "fields": {
-    "navigation_extenders": "",
-    "site": 1,
-    "application_namespace": null,
-    "path": "000900020001",
-    "in_navigation": true,
-    "reverse_id": "shop-order-last",
-    "login_required": false,
-    "created_by": "admin",
-    "languages": "de,en",
-    "publication_end_date": null,
-    "template": "INHERIT",
-    "placeholders": [
-      36,
-      37
-    ],
-    "changed_date": "2016-01-16T22:16:28.833Z",
-    "limit_visibility_in_menu": null,
-    "parent": 12,
+    "changed_date": "2016-03-07T09:40:44.893Z",
+    "language": "en",
+    "parent": 1487,
     "numchild": 0,
-    "soft_root": true,
-    "is_home": false,
-    "publication_date": "2015-11-12T23:21:22.963Z",
-    "creation_date": "2015-11-12T23:21:22.986Z",
-    "publisher_public": 13,
-    "application_urls": "OrderApp",
-    "changed_by": "admin",
-    "publisher_is_draft": false,
-    "xframe_options": 0,
-    "depth": 3,
-    "revision_id": 0
+    "creation_date": "2015-11-12T23:21:08.149Z",
+    "depth": 4,
+    "position": 1,
+    "path": "003D000100010001",
+    "placeholder": 37,
+    "plugin_type": "ShopOrderViewsPlugin"
   },
-  "model": "cms.page",
-  "pk": 14
+  "model": "cms.cmsplugin",
+  "pk": 1488
 },
 {
   "fields": {
-    "navigation_extenders": null,
-    "site": 1,
-    "application_namespace": null,
-    "path": "000F0003",
-    "in_navigation": true,
-    "reverse_id": null,
-    "login_required": false,
-    "created_by": "admin",
-    "languages": "de,en",
-    "publication_end_date": null,
-    "template": "INHERIT",
-    "placeholders": [
-      38,
-      39
-    ],
-    "changed_date": "2016-01-16T22:19:25.043Z",
-    "limit_visibility_in_menu": null,
-    "parent": 9,
+    "changed_date": "2016-03-07T09:40:44.929Z",
+    "language": "en",
+    "parent": 1487,
     "numchild": 0,
-    "soft_root": false,
-    "is_home": false,
-    "publication_date": "2015-11-13T00:07:13.450Z",
-    "creation_date": "2015-11-13T00:06:49.562Z",
-    "publisher_public": 16,
-    "application_urls": null,
-    "changed_by": "admin",
-    "publisher_is_draft": true,
-    "xframe_options": 0,
-    "depth": 2,
-    "revision_id": 0
+    "creation_date": "2016-03-07T09:40:15.456Z",
+    "depth": 4,
+    "position": 0,
+    "path": "003D000100010002",
+    "placeholder": 37,
+    "plugin_type": "TextPlugin"
   },
-  "model": "cms.page",
-  "pk": 15
-},
-{
-  "fields": {
-    "navigation_extenders": null,
-    "site": 1,
-    "application_namespace": null,
-    "path": "00090003",
-    "in_navigation": true,
-    "reverse_id": null,
-    "login_required": false,
-    "created_by": "admin",
-    "languages": "de,en",
-    "publication_end_date": null,
-    "template": "INHERIT",
-    "placeholders": [
-      40,
-      41
-    ],
-    "changed_date": "2016-01-16T22:19:24.918Z",
-    "limit_visibility_in_menu": null,
-    "parent": 10,
-    "numchild": 0,
-    "soft_root": false,
-    "is_home": false,
-    "publication_date": "2015-11-13T00:07:13.450Z",
-    "creation_date": "2015-11-13T00:07:13.478Z",
-    "publisher_public": 15,
-    "application_urls": null,
-    "changed_by": "admin",
-    "publisher_is_draft": false,
-    "xframe_options": 0,
-    "depth": 2,
-    "revision_id": 0
-  },
-  "model": "cms.page",
-  "pk": 16
-},
-{
-  "fields": {
-    "navigation_extenders": "",
-    "site": 1,
-    "application_namespace": null,
-    "path": "0003",
-    "in_navigation": true,
-    "reverse_id": null,
-    "login_required": false,
-    "created_by": "admin",
-    "languages": "de,en",
-    "publication_end_date": null,
-    "template": "myshop/pages/default.html",
-    "placeholders": [
-      45,
-      46
-    ],
-    "changed_date": "2016-01-29T16:23:32.861Z",
-    "limit_visibility_in_menu": null,
-    "parent": null,
-    "numchild": 0,
-    "soft_root": false,
-    "is_home": false,
-    "publication_date": "2015-10-16T13:11:21.987Z",
-    "creation_date": "2015-11-18T09:57:54.691Z",
-    "publisher_public": 18,
-    "application_urls": "ProductsListApp",
-    "changed_by": "admin",
-    "publisher_is_draft": true,
-    "xframe_options": 0,
-    "depth": 1,
-    "revision_id": 0
-  },
-  "model": "cms.page",
-  "pk": 17
-},
-{
-  "fields": {
-    "navigation_extenders": "",
-    "site": 1,
-    "application_namespace": null,
-    "path": "0006",
-    "in_navigation": true,
-    "reverse_id": null,
-    "login_required": false,
-    "created_by": "admin",
-    "languages": "de,en",
-    "publication_end_date": null,
-    "template": "INHERIT",
-    "placeholders": [
-      47,
-      48
-    ],
-    "changed_date": "2016-01-29T16:23:10.641Z",
-    "limit_visibility_in_menu": null,
-    "parent": null,
-    "numchild": 0,
-    "soft_root": false,
-    "is_home": false,
-    "publication_date": "2015-10-16T13:11:21.987Z",
-    "creation_date": "2015-11-18T10:00:00.309Z",
-    "publisher_public": 17,
-    "application_urls": "ProductsListApp",
-    "changed_by": "admin",
-    "publisher_is_draft": false,
-    "xframe_options": 0,
-    "depth": 1,
-    "revision_id": 0
-  },
-  "model": "cms.page",
-  "pk": 18
-},
-{
-  "fields": {
-    "navigation_extenders": "",
-    "site": 1,
-    "application_namespace": null,
-    "path": "000D",
-    "in_navigation": true,
-    "reverse_id": "shop-search-product",
-    "login_required": false,
-    "created_by": "admin",
-    "languages": "de,en",
-    "publication_end_date": null,
-    "template": "myshop/pages/default.html",
-    "placeholders": [
-      58,
-      59
-    ],
-    "changed_date": "2016-01-26T08:17:09.921Z",
-    "limit_visibility_in_menu": null,
-    "parent": null,
-    "numchild": 0,
-    "soft_root": true,
-    "is_home": false,
-    "publication_date": "2016-01-25T16:50:14.456Z",
-    "creation_date": "2016-01-25T16:40:53.222Z",
-    "publisher_public": 24,
-    "application_urls": "ProductSearchApp",
-    "changed_by": "admin",
-    "publisher_is_draft": true,
-    "xframe_options": 0,
-    "depth": 1,
-    "revision_id": 0
-  },
-  "model": "cms.page",
-  "pk": 23
-},
-{
-  "fields": {
-    "navigation_extenders": "",
-    "site": 1,
-    "application_namespace": null,
-    "path": "0008",
-    "in_navigation": true,
-    "reverse_id": "shop-search-product",
-    "login_required": false,
-    "created_by": "admin",
-    "languages": "en,de",
-    "publication_end_date": null,
-    "template": "myshop/pages/default.html",
-    "placeholders": [
-      60,
-      61
-    ],
-    "changed_date": "2016-01-26T08:17:09.622Z",
-    "limit_visibility_in_menu": null,
-    "parent": null,
-    "numchild": 0,
-    "soft_root": true,
-    "is_home": false,
-    "publication_date": "2016-01-25T16:50:14.456Z",
-    "creation_date": "2016-01-25T16:50:14.491Z",
-    "publisher_public": 23,
-    "application_urls": "ProductSearchApp",
-    "changed_by": "admin",
-    "publisher_is_draft": false,
-    "xframe_options": 0,
-    "depth": 1,
-    "revision_id": 0
-  },
-  "model": "cms.page",
-  "pk": 24
+  "model": "cms.cmsplugin",
+  "pk": 1489
 },
 {
   "fields": {
@@ -6044,7 +6236,7 @@
     "page": 13,
     "published": true,
     "path": "info/your-orders/thanks-your-order",
-    "publisher_state": 1,
+    "publisher_state": 0,
     "creation_date": "2016-01-16T22:16:03.370Z",
     "slug": "thanks-your-order",
     "publisher_public": 43
@@ -6060,7 +6252,7 @@
     "language": "en",
     "title": "Thanks for Your Order",
     "has_url_overwrite": false,
-    "redirect": null,
+    "redirect": "",
     "publisher_is_draft": false,
     "page": 14,
     "published": true,
@@ -6718,14 +6910,14 @@
 },
 {
   "fields": {
-    "glossary": "{\"render_type\":\"form\"}"
+    "glossary": "{\"render_type\":\"form\",\"multi_addr\":\"on\"}"
   },
   "model": "cmsplugin_cascade.cascadeelement",
   "pk": 387
 },
 {
   "fields": {
-    "glossary": "{\"render_type\":\"form\"}"
+    "glossary": "{\"render_type\":\"form\",\"multi_addr\":\"\",\"allow_use_shipping\":\"on\"}"
   },
   "model": "cmsplugin_cascade.cascadeelement",
   "pk": 388
@@ -6869,6 +7061,13 @@
   },
   "model": "cmsplugin_cascade.cascadeelement",
   "pk": 568
+},
+{
+  "fields": {
+    "glossary": "{\"link_content\":\"gravida\",\"link\":{\"pk\":48,\"model\":\"myshop.Product\",\"type\":\"product\"},\"target\":\"\",\"render_template\":\"cascade/link/text-link.html\",\"title\":\"\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 640
 },
 {
   "fields": {
@@ -7082,7 +7281,7 @@
 },
 {
   "fields": {
-    "glossary": "{\"media_queries\":{\"xs\":[\"(max-width: 768px)\"],\"md\":[\"(min-width: 992px)\",\"(max-width: 1200px)\"],\"sm\":[\"(min-width: 768px)\",\"(max-width: 992px)\"],\"lg\":[\"(min-width: 1200px)\"]},\"container_max_widths\":{\"xs\":750,\"md\":970,\"sm\":750,\"lg\":1170},\"fluid\":\"\",\"breakpoints\":[\"xs\",\"sm\",\"md\",\"lg\"]}"
+    "glossary": "{\"media_queries\":{\"xs\":[\"(max-width: 768px)\"],\"md\":[\"(min-width: 992px)\",\"(max-width: 1200px)\"],\"sm\":[\"(min-width: 768px)\",\"(max-width: 992px)\"],\"lg\":[\"(min-width: 1200px)\"]},\"container_max_widths\":{\"xs\":750,\"md\":970,\"sm\":750,\"lg\":1170},\"breakpoints\":[\"xs\",\"sm\",\"md\",\"lg\"],\"extra_inline_styles:Paddings\":{\"padding-top\":\"\",\"padding-bottom\":\"30px\"},\"fluid\":\"\"}"
   },
   "model": "cmsplugin_cascade.cascadeelement",
   "pk": 861
@@ -7149,34 +7348,6 @@
   },
   "model": "cmsplugin_cascade.cascadeelement",
   "pk": 930
-},
-{
-  "fields": {
-    "glossary": "{\"media_queries\":{\"xs\":[\"(max-width: 768px)\"],\"md\":[\"(min-width: 992px)\",\"(max-width: 1200px)\"],\"sm\":[\"(min-width: 768px)\",\"(max-width: 992px)\"],\"lg\":[\"(min-width: 1200px)\"]},\"container_max_widths\":{\"xs\":750,\"md\":970,\"sm\":750,\"lg\":1170},\"fluid\":\"\",\"breakpoints\":[\"xs\",\"sm\",\"md\",\"lg\"]}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 931
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 932
-},
-{
-  "fields": {
-    "glossary": "{\"container_max_widths\":{\"xs\":720,\"md\":940,\"sm\":720,\"lg\":1140},\"xs-column-width\":\"col-xs-12\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 933
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 934
 },
 {
   "fields": {
@@ -7729,244 +7900,6 @@
     "glossary": "{\"media_queries\":{\"xs\":[\"(max-width: 768px)\"],\"md\":[\"(min-width: 992px)\",\"(max-width: 1200px)\"],\"sm\":[\"(min-width: 768px)\",\"(max-width: 992px)\"],\"lg\":[\"(min-width: 1200px)\"]},\"container_max_widths\":{\"xs\":750,\"md\":970,\"sm\":750,\"lg\":1170},\"fluid\":\"\",\"breakpoints\":[\"xs\",\"sm\",\"md\",\"lg\"]}"
   },
   "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1321
-},
-{
-  "fields": {
-    "glossary": "{\"open_tag\":\"if\",\"condition\":\"customer.is_recognized\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1322
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1323
-},
-{
-  "fields": {
-    "glossary": "{\"container_max_widths\":{\"xs\":720,\"md\":940,\"sm\":720,\"lg\":1140},\"xs-column-width\":\"col-xs-12\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1324
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1325
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1326
-},
-{
-  "fields": {
-    "glossary": "{\"open_tag\":\"if\",\"condition\":\"customer.is_registered\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1327
-},
-{
-  "fields": {
-    "glossary": "{\"render_type\":\"form\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1328
-},
-{
-  "fields": {
-    "glossary": "{\"open_tag\":\"else\",\"condition\":\"\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1329
-},
-{
-  "fields": {
-    "glossary": "{\"render_type\":\"form\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1330
-},
-{
-  "fields": {
-    "glossary": "{\"icon-right\":\"menu-right\",\"button-type\":\"btn-success\",\"link_content\":\"Next\",\"button-size\":\"\",\"quick-float\":\"\",\"button-options\":[],\"icon-left\":\"\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1331
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1332
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1333
-},
-{
-  "fields": {
-    "glossary": "{\"render_type\":\"form\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1334
-},
-{
-  "fields": {
-    "glossary": "{\"render_type\":\"form\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1335
-},
-{
-  "fields": {
-    "glossary": "{\"icon-right\":\"menu-right\",\"button-type\":\"btn-success\",\"link_content\":\"Next\",\"button-size\":\"\",\"quick-float\":\"\",\"button-options\":[],\"icon-left\":\"\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1336
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1337
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1338
-},
-{
-  "fields": {
-    "glossary": "{\"render_type\":\"static\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1339
-},
-{
-  "fields": {
-    "glossary": "{\"render_type\":\"form\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1340
-},
-{
-  "fields": {
-    "glossary": "{\"render_type\":\"form\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1341
-},
-{
-  "fields": {
-    "glossary": "{\"render_type\":\"form\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1342
-},
-{
-  "fields": {
-    "glossary": "{\"html_content\":\"&lt;p&gt;I have read the &lt;img alt=&quot;Link&quot; id=&quot;plugin_obj_1320&quot; src=&quot;&quot; title=&quot;Link - terms and conditions&quot; /&gt; and agree with them.&lt;/p&gt;\\r\\n\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1343
-},
-{
-  "fields": {
-    "glossary": "{\"link_content\":\"terms and conditions\",\"link\":{\"pk\":15,\"model\":\"cms.Page\",\"type\":\"cmspage\"},\"target\":\"\",\"render_template\":\"cascade/link/text-link.html\",\"title\":\"\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1344
-},
-{
-  "fields": {
-    "glossary": "{\"icon-right\":\"\",\"extra_inline_styles:Margins\":{\"margin-top\":\"\",\"margin-bottom\":\"30px\"},\"button-type\":\"btn-success\",\"link_content\":\"Purchase Now\",\"link\":{\"type\":\"PURCHASE_NOW\"},\"button-size\":\"btn-lg\",\"quick-float\":\"\",\"button-options\":[],\"icon-left\":\"thumbs-up\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1345
-},
-{
-  "fields": {
-    "glossary": "{}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1346
-},
-{
-  "fields": {
-    "glossary": "{\"open_tag\":\"else\",\"condition\":\"\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1347
-},
-{
-  "fields": {
-    "glossary": "{\"extra_inline_styles:Paddings\":{\"padding-right\":\"\",\"padding-left\":\"\"},\"extra_inline_styles:Margins\":{\"margin-top\":\"\",\"margin-bottom\":\"20px\"}}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1348
-},
-{
-  "fields": {
-    "glossary": "{\"container_max_widths\":{\"xs\":220,\"md\":293,\"sm\":220,\"lg\":360},\"xs-column-width\":\"col-xs-4\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1349
-},
-{
-  "fields": {
-    "glossary": "{\"form_type\":\"login-reset\",\"link\":{\"type\":\"RELOAD_PAGE\"}}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1350
-},
-{
-  "fields": {
-    "glossary": "{\"container_max_widths\":{\"xs\":220,\"md\":293,\"sm\":220,\"lg\":360},\"xs-column-width\":\"col-xs-4\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1351
-},
-{
-  "fields": {
-    "glossary": "{\"form_type\":\"register-user\",\"link\":{\"type\":\"RELOAD_PAGE\"}}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1352
-},
-{
-  "fields": {
-    "glossary": "{\"container_max_widths\":{\"xs\":220,\"md\":293,\"sm\":220,\"lg\":360},\"xs-column-width\":\"col-xs-4\"}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1353
-},
-{
-  "fields": {
-    "glossary": "{\"form_type\":\"continue-as-guest\",\"link\":{\"type\":\"RELOAD_PAGE\"}}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
-  "pk": 1354
-},
-{
-  "fields": {
-    "glossary": "{\"media_queries\":{\"xs\":[\"(max-width: 768px)\"],\"md\":[\"(min-width: 992px)\",\"(max-width: 1200px)\"],\"sm\":[\"(min-width: 768px)\",\"(max-width: 992px)\"],\"lg\":[\"(min-width: 1200px)\"]},\"container_max_widths\":{\"xs\":750,\"md\":970,\"sm\":750,\"lg\":1170},\"fluid\":\"\",\"breakpoints\":[\"xs\",\"sm\",\"md\",\"lg\"]}"
-  },
-  "model": "cmsplugin_cascade.cascadeelement",
   "pk": 1360
 },
 {
@@ -7996,6 +7929,13 @@
   },
   "model": "cmsplugin_cascade.cascadeelement",
   "pk": 1364
+},
+{
+  "fields": {
+    "glossary": "{\"link_content\":\"gravida\",\"link\":{\"pk\":48,\"model\":\"myshop.Product\",\"type\":\"product\"},\"target\":\"\",\"render_template\":\"cascade/link/text-link.html\",\"title\":\"\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1366
 },
 {
   "fields": {
@@ -8041,6 +7981,328 @@
 },
 {
   "fields": {
+    "glossary": "{\"media_queries\":{\"xs\":[\"(max-width: 768px)\"],\"md\":[\"(min-width: 992px)\",\"(max-width: 1200px)\"],\"sm\":[\"(min-width: 768px)\",\"(max-width: 992px)\"],\"lg\":[\"(min-width: 1200px)\"]},\"container_max_widths\":{\"xs\":750,\"md\":970,\"sm\":750,\"lg\":1170},\"fluid\":\"\",\"breakpoints\":[\"xs\",\"sm\",\"md\",\"lg\"]}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1374
+},
+{
+  "fields": {
+    "glossary": "{\"extra_inline_styles:Paddings\":{\"padding-right\":\"\",\"padding-left\":\"\"},\"extra_inline_styles:Margins\":{\"margin-top\":\"\",\"margin-bottom\":\"\"}}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1375
+},
+{
+  "fields": {
+    "glossary": "{\"container_max_widths\":{\"xs\":720,\"md\":940,\"sm\":720,\"lg\":1140},\"xs-column-width\":\"col-xs-12\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1376
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1377
+},
+{
+  "fields": {
+    "glossary": "{\"media_queries\":{\"xs\":[\"(max-width: 768px)\"],\"md\":[\"(min-width: 992px)\",\"(max-width: 1200px)\"],\"sm\":[\"(min-width: 768px)\",\"(max-width: 992px)\"],\"lg\":[\"(min-width: 1200px)\"]},\"container_max_widths\":{\"xs\":750,\"md\":970,\"sm\":750,\"lg\":1170},\"fluid\":\"\",\"breakpoints\":[\"xs\",\"sm\",\"md\",\"lg\"]}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1378
+},
+{
+  "fields": {
+    "glossary": "{\"extra_inline_styles:Paddings\":{\"padding-right\":\"\",\"padding-left\":\"\"},\"extra_inline_styles:Margins\":{\"margin-top\":\"\",\"margin-bottom\":\"\"}}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1379
+},
+{
+  "fields": {
+    "glossary": "{\"container_max_widths\":{\"xs\":720,\"md\":940,\"sm\":720,\"lg\":1140},\"xs-column-width\":\"col-xs-12\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1380
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1381
+},
+{
+  "fields": {
+    "glossary": "{\"media_queries\":{\"xs\":[\"(max-width: 768px)\"],\"md\":[\"(min-width: 992px)\",\"(max-width: 1200px)\"],\"sm\":[\"(min-width: 768px)\",\"(max-width: 992px)\"],\"lg\":[\"(min-width: 1200px)\"]},\"container_max_widths\":{\"xs\":750,\"md\":970,\"sm\":750,\"lg\":1170},\"extra_inline_styles:Paddings\":{\"padding-top\":\"\",\"padding-bottom\":\"30px\"},\"fluid\":\"\",\"breakpoints\":[\"xs\",\"sm\",\"md\",\"lg\"]}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1450
+},
+{
+  "fields": {
+    "glossary": "{\"open_tag\":\"if\",\"condition\":\"customer.is_recognized\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1451
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1452
+},
+{
+  "fields": {
+    "glossary": "{\"container_max_widths\":{\"xs\":720,\"md\":940,\"sm\":720,\"lg\":1140},\"xs-column-width\":\"col-xs-12\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1453
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1454
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1455
+},
+{
+  "fields": {
+    "glossary": "{\"open_tag\":\"if\",\"condition\":\"customer.is_registered\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1456
+},
+{
+  "fields": {
+    "glossary": "{\"render_type\":\"form\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1457
+},
+{
+  "fields": {
+    "glossary": "{\"open_tag\":\"else\",\"condition\":\"\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1458
+},
+{
+  "fields": {
+    "glossary": "{\"render_type\":\"form\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1459
+},
+{
+  "fields": {
+    "glossary": "{\"icon-right\":\"menu-right\",\"button-type\":\"btn-success\",\"link_content\":\"Next\",\"button-size\":\"\",\"quick-float\":\"\",\"button-options\":[],\"icon-left\":\"\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1460
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1461
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1462
+},
+{
+  "fields": {
+    "glossary": "{\"render_type\":\"form\",\"multi_addr\":\"on\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1463
+},
+{
+  "fields": {
+    "glossary": "{\"render_type\":\"form\",\"multi_addr\":\"\",\"allow_use_shipping\":\"on\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1464
+},
+{
+  "fields": {
+    "glossary": "{\"icon-right\":\"menu-right\",\"button-type\":\"btn-success\",\"link_content\":\"Next\",\"button-size\":\"\",\"quick-float\":\"\",\"button-options\":[],\"icon-left\":\"\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1465
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1466
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1467
+},
+{
+  "fields": {
+    "glossary": "{\"render_type\":\"static\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1468
+},
+{
+  "fields": {
+    "glossary": "{\"render_type\":\"form\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1469
+},
+{
+  "fields": {
+    "glossary": "{\"render_type\":\"form\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1470
+},
+{
+  "fields": {
+    "glossary": "{\"render_type\":\"form\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1471
+},
+{
+  "fields": {
+    "glossary": "{\"html_content\":\"&lt;p&gt;I have read the &lt;img alt=&quot;Link&quot; id=&quot;plugin_obj_1320&quot; src=&quot;&quot; title=&quot;Link - terms and conditions&quot; /&gt; and agree with them.&lt;/p&gt;\\r\\n\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1472
+},
+{
+  "fields": {
+    "glossary": "{\"link_content\":\"terms and conditions\",\"link\":{\"pk\":15,\"model\":\"cms.Page\",\"type\":\"cmspage\"},\"target\":\"\",\"render_template\":\"cascade/link/text-link.html\",\"title\":\"\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1473
+},
+{
+  "fields": {
+    "glossary": "{\"icon-right\":\"\",\"extra_inline_styles:Margins\":{\"margin-top\":\"\",\"margin-bottom\":\"30px\"},\"button-type\":\"btn-success\",\"link_content\":\"Purchase Now\",\"link\":{\"type\":\"PURCHASE_NOW\"},\"button-size\":\"btn-lg\",\"quick-float\":\"\",\"button-options\":[],\"icon-left\":\"thumbs-up\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1474
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1475
+},
+{
+  "fields": {
+    "glossary": "{\"open_tag\":\"else\",\"condition\":\"\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1476
+},
+{
+  "fields": {
+    "glossary": "{\"extra_inline_styles:Paddings\":{\"padding-right\":\"\",\"padding-left\":\"\"},\"extra_inline_styles:Margins\":{\"margin-top\":\"\",\"margin-bottom\":\"20px\"}}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1477
+},
+{
+  "fields": {
+    "glossary": "{\"container_max_widths\":{\"xs\":220,\"md\":293,\"sm\":220,\"lg\":360},\"xs-column-width\":\"col-xs-4\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1478
+},
+{
+  "fields": {
+    "glossary": "{\"form_type\":\"login-reset\",\"link\":{\"type\":\"RELOAD_PAGE\"}}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1479
+},
+{
+  "fields": {
+    "glossary": "{\"container_max_widths\":{\"xs\":220,\"md\":293,\"sm\":220,\"lg\":360},\"xs-column-width\":\"col-xs-4\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1480
+},
+{
+  "fields": {
+    "glossary": "{\"form_type\":\"register-user\",\"link\":{\"type\":\"RELOAD_PAGE\"}}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1481
+},
+{
+  "fields": {
+    "glossary": "{\"container_max_widths\":{\"xs\":220,\"md\":293,\"sm\":220,\"lg\":360},\"xs-column-width\":\"col-xs-4\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1482
+},
+{
+  "fields": {
+    "glossary": "{\"form_type\":\"continue-as-guest\",\"link\":{\"type\":\"RELOAD_PAGE\"}}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1483
+},
+{
+  "fields": {
+    "glossary": "{\"media_queries\":{\"xs\":[\"(max-width: 768px)\"],\"md\":[\"(min-width: 992px)\",\"(max-width: 1200px)\"],\"sm\":[\"(min-width: 768px)\",\"(max-width: 992px)\"],\"lg\":[\"(min-width: 1200px)\"]},\"container_max_widths\":{\"xs\":750,\"md\":970,\"sm\":750,\"lg\":1170},\"fluid\":\"\",\"breakpoints\":[\"xs\",\"sm\",\"md\",\"lg\"]}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1485
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1486
+},
+{
+  "fields": {
+    "glossary": "{\"container_max_widths\":{\"xs\":720,\"md\":940,\"sm\":720,\"lg\":1140},\"xs-column-width\":\"col-xs-12\"}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1487
+},
+{
+  "fields": {
+    "glossary": "{}"
+  },
+  "model": "cmsplugin_cascade.cascadeelement",
+  "pk": 1488
+},
+{
+  "fields": {
     "inline_styles": "{\"extra_fields:Widths\":[],\"extra_fields:Margins\":[\"margin-top\",\"margin-bottom\"],\"extra_fields:Paddings\":[],\"extra_units:Widths\":\"px,em,%\",\"extra_units:Paddings\":\"px,em,%\",\"extra_units:Heights\":\"px,em,%\",\"extra_fields:Heights\":[],\"extra_units:Margins\":\"px,em,%\",\"extra_fields:Colors\":[],\"extra_fields:Overflow\":[]}",
     "css_classes": "{\"multiple\":\"on\",\"class_names\":\"foo, bar, cap\"}",
     "allow_id_tag": true,
@@ -8071,6 +8333,17 @@
   },
   "model": "cmsplugin_cascade.pluginextrafields",
   "pk": 3
+},
+{
+  "fields": {
+    "inline_styles": "{\"extra_fields:Widths\":[],\"extra_fields:Margins\":[],\"extra_fields:Paddings\":[\"padding-top\",\"padding-bottom\"],\"extra_units:Widths\":\"px,em,%\",\"extra_units:Paddings\":\"px,em,%\",\"extra_units:Heights\":\"px,em,%\",\"extra_fields:Heights\":[],\"extra_units:Margins\":\"px,em,%\",\"extra_fields:Colors\":[],\"extra_fields:Overflow\":[]}",
+    "css_classes": "{\"multiple\":\"\",\"class_names\":\"\"}",
+    "allow_id_tag": false,
+    "site": 1,
+    "plugin_type": "BootstrapContainerPlugin"
+  },
+  "model": "cmsplugin_cascade.pluginextrafields",
+  "pk": 4
 },
 {
   "fields": {
@@ -8127,6 +8400,20 @@
   },
   "model": "djangocms_text_ckeditor.text",
   "pk": 1373
+},
+{
+  "fields": {
+    "body": "<h3>Thanks for purchasing at MyShop</h3>\n"
+  },
+  "model": "djangocms_text_ckeditor.text",
+  "pk": 1484
+},
+{
+  "fields": {
+    "body": "<h3>Thanks for purchasing at MyShop</h3>\n"
+  },
+  "model": "djangocms_text_ckeditor.text",
+  "pk": 1489
 },
 {
   "fields": {
@@ -10953,26 +11240,25 @@
 },
 {
   "fields": {
-    "supplement": "",
     "customer": 1,
-    "street": "Lie Street",
+    "street": "31 Orwell Road",
     "country": "GB",
-    "priority_shipping": 0,
-    "addressee": "John Does",
-    "priority_billing": null,
-    "location": "London",
-    "zip_code": "987987"
+    "supplement": "",
+    "priority": 1,
+    "addressee": "John Doe",
+    "location": "Liverpool",
+    "zip_code": "L41RG"
   },
-  "model": "myshop.address",
+  "model": "myshop.shippingaddress",
   "pk": 1
 },
 {
   "fields": {
     "customer": 1,
-    "billing_address": 1,
-    "extra": "{\"shipping_modifier\":\"postal-shipping\",\"annotation\":\"\",\"payment_modifier\":\"stripe-payment\"}",
-    "created_at": "2015-12-01T22:13:27.652Z",
-    "updated_at": "2016-01-29T16:29:15.513Z",
+    "billing_address": null,
+    "extra": "{\"payment_extra_data\":{},\"shipping_modifier\":\"postal-shipping\",\"annotation\":\"None\",\"payment_modifier\":\"pay-in-advance\"}",
+    "created_at": "2016-03-07T08:28:56.851Z",
+    "updated_at": "2016-03-07T09:38:45.326Z",
     "shipping_address": 1
   },
   "model": "myshop.cart",
@@ -10980,66 +11266,26 @@
 },
 {
   "fields": {
-    "customer": 2,
-    "billing_address": null,
-    "extra": "{}",
-    "created_at": "2016-01-15T22:16:58.139Z",
-    "updated_at": "2016-01-15T22:16:58.139Z",
-    "shipping_address": null
-  },
-  "model": "myshop.cart",
-  "pk": 2
-},
-{
-  "fields": {
-    "product": 3,
-    "quantity": 2,
-    "cart": 1,
-    "extra": "{}"
-  },
-  "model": "myshop.cartitem",
-  "pk": 1
-},
-{
-  "fields": {
     "status": "awaiting_payment",
-    "_total": "8.99",
-    "stored_request": "{\"absolute_base_uri\":\"http://localhost:8089/\",\"user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2612.0 Safari/537.36\",\"language\":\"en\",\"remote_ip\":\"127.0.0.1\"}",
-    "extra": "{\"rows\":[[\"cartexcludedtaxmodifier\",{\"amount\":\"\\u20ac 0.64\",\"label\":\"19% V.A.T incl.\"}],[\"postal-shipping\",{\"amount\":\"\\u20ac 5.00\",\"label\":\"Shipping costs\"}]],\"shipping_modifier\":\"postal-shipping\",\"payment_modifier\":\"pay-in-advance\",\"annotation\":\"\"}",
-    "created_at": "2016-01-15T15:54:57.861Z",
-    "updated_at": "2016-01-15T15:54:57.921Z",
-    "_subtotal": "3.99",
+    "_total": "10.99",
+    "stored_request": "{\"absolute_base_uri\":\"http://localhost:8089/\",\"user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2655.0 Safari/537.36\",\"language\":\"en\",\"remote_ip\":\"127.0.0.1\"}",
+    "extra": "{\"payment_extra_data\":{},\"rows\":[[\"cartexcludedtaxmodifier\",{\"amount\":\"\\u20ac 0.96\",\"label\":\"19% VAT incl.\"}],[\"postal-shipping\",{\"amount\":\"\\u20ac 5.00\",\"label\":\"Shipping costs\"}]],\"shipping_modifier\":\"postal-shipping\",\"payment_modifier\":\"pay-in-advance\",\"annotation\":\"None\"}",
+    "created_at": "2016-03-07T09:38:45.352Z",
+    "updated_at": "2016-03-07T09:38:45.382Z",
+    "_subtotal": "5.99",
     "number": 201600001,
     "currency": "EUR",
-    "billing_address_text": "John Does\nLie Street\n987987 London\nUnited Kingdom",
-    "shipping_address_text": "John Does\nLie Street\n987987 London\nUnited Kingdom",
+    "billing_address_text": "John Doe\n31 Orwell Road\nL41RG Liverpool\nUnited Kingdom",
+    "shipping_address_text": "John Doe\n31 Orwell Road\nL41RG Liverpool\nUnited Kingdom",
     "customer": 1
   },
   "model": "myshop.order",
   "pk": 1
-},
-{
-  "fields": {
-    "status": "awaiting_payment",
-    "_total": "28.97",
-    "stored_request": "{\"absolute_base_uri\":\"http://localhost:8089/\",\"user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2612.0 Safari/537.36\",\"language\":\"en\",\"remote_ip\":\"127.0.0.1\"}",
-    "extra": "{\"rows\":[[\"cartexcludedtaxmodifier\",{\"amount\":\"\\u20ac 3.83\",\"label\":\"19% V.A.T incl.\"}],[\"postal-shipping\",{\"amount\":\"\\u20ac 5.00\",\"label\":\"Shipping costs\"}]],\"shipping_modifier\":\"postal-shipping\",\"payment_modifier\":\"pay-in-advance\",\"annotation\":\"\"}",
-    "created_at": "2016-01-15T22:08:25.038Z",
-    "updated_at": "2016-01-15T22:08:25.093Z",
-    "_subtotal": "23.97",
-    "number": 201600002,
-    "currency": "EUR",
-    "billing_address_text": "John Does\nLie Street\n987987 London\nUnited Kingdom",
-    "shipping_address_text": "John Does\nLie Street\n987987 London\nUnited Kingdom",
-    "customer": 1
-  },
-  "model": "myshop.order",
-  "pk": 2
 },
 {
   "fields": {
     "salutation": "mrs",
-    "last_access": "2016-01-29T16:28:26.842Z",
+    "last_access": "2016-03-07T10:00:15.499Z",
     "number": 1,
     "recognized": 2,
     "extra": "{}"
@@ -11049,42 +11295,17 @@
 },
 {
   "fields": {
-    "salutation": "",
-    "last_access": "2016-01-15T22:17:05.127Z",
-    "number": null,
-    "recognized": 0,
-    "extra": "{}"
-  },
-  "model": "myshop.customer",
-  "pk": 2
-},
-{
-  "fields": {
-    "product": 1,
-    "_unit_price": "3.99",
-    "_line_total": "3.99",
+    "product": 2,
+    "_unit_price": "5.99",
+    "_line_total": "5.99",
     "extra": "{\"rows\":[]}",
     "order": 1,
-    "product_code": "1041",
-    "product_name": "SDHC Card 4GB",
+    "product_code": null,
+    "product_name": "SDHC Card 8GB",
     "quantity": 1
   },
   "model": "myshop.orderitem",
   "pk": 1
-},
-{
-  "fields": {
-    "product": 3,
-    "_unit_price": "7.99",
-    "_line_total": "23.97",
-    "extra": "{\"rows\":[]}",
-    "order": 2,
-    "product_code": "1002",
-    "product_name": "SDHC Card 16GB",
-    "quantity": 3
-  },
-  "model": "myshop.orderitem",
-  "pk": 2
 },
 {
   "fields": {

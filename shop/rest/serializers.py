@@ -281,16 +281,19 @@ class BaseCartSerializer(serializers.ModelSerializer):
         fields = ('subtotal', 'extra_rows', 'total',)
 
     def to_representation(self, cart):
-        cart.update(self.context['request'])
+        if isinstance(cart, CartModel):
+            cart.update(self.context['request'])
         representation = super(BaseCartSerializer, self).to_representation(cart)
         return representation
 
 
 class CartSerializer(BaseCartSerializer):
     items = CartItemSerializer(many=True, read_only=True)
+    num_items = serializers.IntegerField()
+    total_quantity = serializers.IntegerField()
 
     class Meta(BaseCartSerializer.Meta):
-        fields = ('items',) + BaseCartSerializer.Meta.fields
+        fields = ('items', 'num_items', 'total_quantity') + BaseCartSerializer.Meta.fields
 
 
 class WatchSerializer(BaseCartSerializer):

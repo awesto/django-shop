@@ -167,7 +167,8 @@ class DialogFormPluginBase(ShopPluginBase):
     Base class for all plugins adding a dialog form to a placeholder field.
     """
     require_parent = True
-    parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin', 'BootstrapPanelPlugin',)
+    parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin', 'BootstrapPanelPlugin',
+        'SegmentPlugin', 'SimpleWrapperPlugin')
     CHOICES = (('form', _("Form dialog")), ('summary', _("Static summary")),)
     glossary_fields = (
         PartialFormField('render_type',

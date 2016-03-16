@@ -1,12 +1,3 @@
-@import "django-angular";
-
-form[shop-dialog-form] {
-	.has-feedback {
-		.form-control {
-			padding-right: 12px;
-		}
-	}
-}
 
 /* add spinng glyphicons *
 .glyphicon-refresh-animate {
@@ -23,48 +14,4 @@ form[shop-dialog-form] {
 }
 */
 
-.frmgrp-street_name {
-	width: 65%;
-	display: inline-block;
-}
-
-.frmgrp-street_number {
-	width: 35%;
-	display: inline-block;
-	margin-left: -4px;
-	padding-left: 15px;
-}
-
-.frmgrp-zip_code {
-	width: 35%;
-	display: inline-block;
-}
-
-.frmgrp-location {
-	width: 65%;
-	display: inline-block;
-	margin-left: -4px;
-	padding-left: 15px;
-}
-
-.shop-form-error {
-	position: absolute;
-	list-style: none;
-	top: 0;
-	right: 5px;
-	li {
-		color: #e9322d;
-		font-weight: bold;
-		white-space: nowrap;
-		padding-left: 8px;
-		padding-right: 4px;
-		border: 1px dotted #e9322d;
-		border-radius: 3px;
-		background: #f2dede;
-		opacity: 0.85;
-		&::before {
-			content: "\2716";
-			margin-right: 10px;
-		}
-	}
-}
+/* TODO: move this into dialog.scss */

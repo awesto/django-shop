@@ -84,7 +84,7 @@ class SmartPhoneModel(Product):
             if cart_item.extra.get('product_code') == product_code:
                 return cart_item
 
-    def get_product_markedness(self, product_code):
+    def get_product_variant(self, product_code):
         try:
             return self.smartphone_set.get(product_code=product_code)
         except SmartPhone.DoesNotExist as e:
