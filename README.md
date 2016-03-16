@@ -1,5 +1,7 @@
 # Breaking News
 
+[![Join the chat at https://gitter.im/awesto/django-shop](https://badges.gitter.im/awesto/django-shop.svg)](https://gitter.im/awesto/django-shop?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 After many month of hard work, version 0.9 of **djangoSHOP** has been finally released.
 Please [Read the Docs](http://django-shop.readthedocs.org/en/) for additional information.
 
