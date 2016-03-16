@@ -25,7 +25,7 @@ operating system, run:
 docker-machine env default
 ```
 
-and locate it using the environment variable DOCKER_HOST.
+and locate that IP address using the environment variable DOCKER_HOST.
 
 Point a browser onto http://192.168.99.100:9001/ or an alternative IP address. To access the
 administration backend, change onto http://192.168.99.100:9001/admin and log in as "admin" using

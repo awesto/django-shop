@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from six import with_metaclass
 from decimal import Decimal
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
 from django.utils.encoding import python_2_unicode_compatible
@@ -68,7 +68,7 @@ class OrderManager(models.Manager):
         """
         if request.customer.is_visitor():
             msg = _("Only signed in customers can view their orders")
-            raise self.model.DoesNotExist(msg)
+            raise PermissionDenied(msg)
         return self.get_queryset().filter(customer=request.customer).order_by('-updated_at',)
 
     def get_summary_url(self):

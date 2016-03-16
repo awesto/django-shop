@@ -12,12 +12,32 @@ Version 0.9 of **djangoSHOP** keeps the concepts of model overriding and cart mo
 with some effort, it should be possible to migrate existing projects to this new release. Please
 contact me, if you need help.
 
+## Running the demo projects
+
 To get a first impression on **djangoSHOP**, try out the three full working demo projects.
+
+And remember, I'm always happy to get some feedback on how it works elsewhere.
+
+### Run the demo in a local virtualenv
+
 Following the instructions  ``docs/tutorial/intro.rst`` and ``docs/tutorial/quickstart.rst``
 should create a running shop in minutes, prefilled with a dozen of products.
 You can even pay by credit card, if you apply for your own testing account at Stripe.
 
-I'd be happy to get some feedback.
+### Run the demo using Docker
+
+A faster alternative to run the "polymorphic" demo of **djangoSHOP** is to use a prepared Docker
+container available on the (Docker Hub)[https://hub.docker.com/r/jrief/myshop-sample/]. If you
+have a running docker-machine, download and start the demo using:
+
+```
+docker run -p 9001:9001 --rm jrief/myshop-sample:latest
+```
+
+Then point a browser on the IP address of your docker machine onto port 9001, for instance
+http://192.168.99.100:9001/ . To access the backend sign in with username *admin* and password
+*secret*. The first invocation of each page takes some time, since beforehand the supplied
+images have to be thumbnailed.
 
 
 # django SHOP

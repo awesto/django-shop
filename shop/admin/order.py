@@ -33,6 +33,9 @@ class OrderPaymentInline(admin.TabularInline):
         formset = super(OrderPaymentInline, self).get_formset(request, obj, **kwargs)
         return formset
 
+    def has_delete_permission(self, request, obj=None):
+        return False
+
 
 class OrderItemInline(admin.StackedInline):
     model = OrderItemModel
@@ -47,6 +50,9 @@ class OrderItemInline(admin.StackedInline):
     def get_formset(self, request, obj=None, **kwargs):
         formset = super(OrderItemInline, self).get_formset(request, obj, **kwargs)
         return formset
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 class StatusListFilter(admin.SimpleListFilter):
