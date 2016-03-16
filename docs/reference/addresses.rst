@@ -118,3 +118,41 @@ Such an address template may look like:
 	{{ address.get_country_display }}
 
 This template is used by the method ``as_text()`` as found in each address model.
+
+
+Address Forms
+=============
+
+The address form, where customers can insert their address, is generated automatically and in a DRY
+manner. This means that whenever a field is added, modified or removed from the address model, the
+corresponding fields in the address input form, reflect those changes without manual intervention.
+When creating the form template, we have to write it using the ``as_div()`` method. This method
+also adds automatic client-side form validation to the corresponding HTML code.
+
+
+Address Form Styling
+--------------------
+
+One problem which remains with automatic form generation, is how to style the input fields.
+Therefore, **djangoSHOP** wraps every input field into a ``<div>``-element using a CSS class named
+according to the field. This for instance is useful to shorten some input fields and/or place it
+onto the same line.
+
+Say, any of our address forms contain the fields ``zip_code`` and ``location`` as shown in the
+example above. Then they may be styled as
+
+.. code-block:: css
+
+	.shop-address-zip_code {
+	    width: 35%;
+	    display: inline-block;
+	}
+	
+	.shop-address-location {
+	    width: 65%;
+	    display: inline-block;
+	    margin-left: -4px;
+	    padding-left: 15px;
+	}
+
+so that the ZIP field is narrower and precedes the location field on the same line.
