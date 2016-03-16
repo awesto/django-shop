@@ -24,7 +24,7 @@ djangoShopModule.controller('CartController', ['$scope', '$http', function($scop
 			return $http.get($scope.$parent.cartListURL);
 		}).then(function(response) {
 			angular.copy(response.data, $scope.cart);
-			$scope.$emit('shopUpdateCarticonCaption', {num_items: $scope.cart.items.length});
+			$scope.$emit('shopUpdateCarticonCaption', response.data);
 		}, function(error) {
 			console.error(error);
 		}, function() {
