@@ -27,7 +27,7 @@ You can even pay by credit card, if you apply for your own testing account at St
 ### Run the demo using Docker
 
 A faster alternative to run the "polymorphic" demo of **djangoSHOP** is to use a prepared Docker
-container available on the (Docker Hub)[https://hub.docker.com/r/jrief/myshop-sample/]. If you
+container available on the [Docker Hub](https://hub.docker.com/r/jrief/myshop-sample/). If you
 have a running docker-machine, download and start the demo using:
 
 ```
