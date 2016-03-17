@@ -34,7 +34,7 @@ Docker image it is recommended to restart the container. First locate it using
 	...
 	$ docker start 79b7b69a7473
 
-and then restart it. The access the administration backed, sign in with user "*admin*" using
+and then restart it. The access the administration backed, sign in as user "*admin*" with
 password "*secret*".
 
 .. note:: This demo does not function with the Payment Service Provider Stripe, because each
@@ -45,8 +45,8 @@ password "*secret*".
 The classic approach
 ====================
 
-Alternatively you may also download all dependencies and start the project manually. This probably
-is 
+Alternatively you may also download all dependencies and start the project manually. If you want to
+use the demo as a starting point, this probably is the better solution.
 
 Filling your CMS with page content and adding products is a boring job. Impatient users may start
 three demos using some prepared sample data. First assure that all dependencies are installed
@@ -87,7 +87,8 @@ shell invoke:
 	(shoptutorial)$ ./manage.py loaddata fixtures/myshop-simple.json
 	(shoptutorial)$ ./manage.py runserver
 
-Point a browser onto http://localhost:8000/admin/ and log in as ``admin`` with password ``secret``.
+Point a browser onto http://localhost:8000/admin/ and sign in as user "*admin*" with password
+"*secret*".
 
 This runs the demo for :ref:`tutorial/simple-product`.
 
@@ -119,7 +120,8 @@ Alternatively, if you prefer to start with an empty database, assure that the fi
 	(shoptutorial)$ ./manage.py loaddata fixtures/myshop-i18n.json
 	(shoptutorial)$ ./manage.py runserver
 
-Point a browser onto http://localhost:8000/admin/ and log in as ``admin`` with password ``secret``.
+Point a browser onto http://localhost:8000/admin/ and sign in as user "*admin*" with password
+"*secret*".
 
 This runs a demo for :ref:`tutorial/multilingual-product`.
 
@@ -143,6 +145,9 @@ in the ``django-shop`` folder and using the correct virtual environment. Then in
 	(shoptutorial)$ ./manage.py migrate
 	(shoptutorial)$ ./manage.py loaddata fixtures/myshop-polymorphic.json
 	(shoptutorial)$ ./manage.py runserver
+
+Point a browser onto http://localhost:8000/admin/ and sign in as user "*admin*" with password
+"*secret*".
 
 This runs a demo for :ref:`tutorial/polymorphic-product`.
 
