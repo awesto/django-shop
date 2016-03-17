@@ -1,5 +1,6 @@
-include LICENSE
+include LICENSE.txt
 include README.md
-recursive-include email_auth *
-recursive-include shop *
-recursive-exclude * *.pyc
+include setup.py
+include bower.json
+recursive-include email_auth 
+recursive-include shop 

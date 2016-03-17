@@ -8,7 +8,27 @@ The **djangoSHOP** framework is, as its name implies, a framework and not a soft
 out of the box. Instead an e-commerce site built upon **djangoSHOP**, always consists of this
 framework, a bunch of other Django apps and the merchant's own implementation. While this may seem
 more complicate than a ready-to-use solution, it gives the programmer enormous advantages during the
-implementation.
+implementation:
+
+Not everything can be "explained" to a software system using user interfaces. When reaching a
+certain point of complexity, it normally is easier to pour those requirements into software,
+rather than to expect yet another configuration button.
+
+When evaluating **djangoSHOP** with other e-commerce solutions, I suggest to do the following
+litmus test:
+
+Consider a product which shall be sold world-wide. Depending on the country's origin of the request,
+use the native language and the local currency. Due to export restrictions, some products can not
+be sold everywhere. Moreover, in some countries the value added tax is part of the product's price,
+and must be stated separately on the invoice, while in other countries, products are  advertised
+using net prices, and tax is added later on the invoice.
+
+Instead of looking for software which can handle such a complex requirement, rethink about writing
+your own plugins, able to handle this. With the **django**, **REST** and **djangoSHOP** frameworks,
+this normally is possible in a few dozen lines of clearly legible Python code. Compare this to
+solutions, which claim to handle such complex requirements. They normally are shipped containing
+huge amounts of features, which very few merchants ever require, but which bloat the overall system
+complexity, making such a piece of software expensive to maintain.
 
 
 Feature Completeness
@@ -18,6 +38,10 @@ A merchant who wants to implement a unique feature for his e-commerce site, **mu
 touch the code of the framework. Aiming for feature completeness means, that no matter how
 challenging a feature is, it must be possible to be implemented into the merchant's implementation,
 rather than by patching the framework.
+
+Consider that often a merchant's requirement is patched into existing code. This means that every
+time a new version of the e-commerce software is released, that patch must be repeatedly adopted.
+This can become rather dangerous when security flaws in that software must be closed immediately.
 
 
 Core System
