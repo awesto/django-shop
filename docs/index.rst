@@ -10,6 +10,13 @@ Version 0.9 of **djangoSHOP** is a complete rewrite of the code base, keeping th
 overriding and cart modifiers. With some effort it should be possible to migrate existing projects
 to this new release.
 
+.. toctree::
+	:maxdepth: 1
+	:numbered:
+
+	architecture
+	features
+
 
 Tutorial
 ========
@@ -55,10 +62,27 @@ Reference to classes and concepts used in **djangoSHOP**
 	reference/serializers
 
 
+How To's
+========
+
+Some recipes on how to perform certain tasks in **djangoSHOP**.
+
+*This collection of recipes unfortunately is not finished yet.*
+
+.. toctree::
+	:maxdepth: 1
+	:numbered:
+
+	howto/customize-snippets
+	howto/handling-discounts
+	howto/handling-taxes
+
+
 Development and Community
 =========================
 
 .. toctree::
 	:maxdepth: 1
 
+	changelog
 	contributing

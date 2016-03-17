@@ -1,3 +1,5 @@
+.. _features:
+
 =============================
 Unique Features of djangoSHOP
 =============================

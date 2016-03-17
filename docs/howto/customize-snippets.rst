@@ -1,4 +1,4 @@
-.. _customize-snippets:
+.. _howto/customize-snippets:
 
 ============================
 Add Customized HTML Snippets

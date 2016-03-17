@@ -13,8 +13,8 @@ implementation, but some sites may require categories implemented independently 
 
 Using an external **djangoSHOP** plugin for managing categories is a very conceivable solution,
 and we will see separate implementations for this feature request. Using such an external category
-plugin can make sense, if this e-commerce site requires hundreds of hierarchical levels
-or these categories require a set of attributes which are not available in CMS pages. If you are
+plugin can make sense, if this e-commerce site requires hundreds of hierarchical levels and/or
+these categories require a set of attributes which are not available in CMS pages. If you are
 going to use externally implemented categories, please refer to their documentation, since here we
 proceed using CMS pages as categories.
 
