@@ -31,17 +31,35 @@ huge amounts of features, which very few merchants ever require, but which bloat
 complexity, making such a piece of software expensive to maintain.
 
 
+Design Decisions
+================
+
+Single Source of Truth
+----------------------
+
+A fundamental aspect of good software design is to follow the principle of "Don't repeat yourself",
+often denotes as DRY. In **djangoSHOP** we aim for a single source of truth, wherever possible.
+
+For instance have a look at the :class:`shop.models.address.BaseShippingAddress`. Whenever we
+add, change or remove a field, the ORM mapper of Django gets notified and with
+``./manage.py makemigrations`` followed by ``./manage.py migrate`` our database scheme is updated.
+But even the input fields of our address form adopt to all changes in our address model. Even the
+client side form field validation adopts to every change in our address model. As we can see, here
+our single source of truth is the address model.
+
+
 Feature Completeness
-====================
+--------------------
 
 A merchant who wants to implement a unique feature for his e-commerce site, **must** never have to
 touch the code of the framework. Aiming for feature completeness means, that no matter how
-challenging a feature is, it must be possible to be implemented into the merchant's implementation,
-rather than by patching the framework.
+challenging a feature is, it *must be possible to be implemented* into the merchant's own
+implementation, rather than by patching the framework itself.
 
-Consider that often a merchant's requirement is patched into existing code. This means that every
-time a new version of the e-commerce software is released, that patch must be repeatedly adopted.
-This can become rather dangerous when security flaws in that software must be closed immediately.
+Consider that on many sites, a merchant's requirement is patched into existing code. This means
+that every time a new version of the e-commerce software is released, that patch must be repeatedly
+adopted. This can become rather dangerous when security flaws in that software must be closed
+immediately.
 
 
 Core System
