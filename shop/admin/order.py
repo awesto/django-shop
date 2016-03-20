@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from django.conf import settings
 from django.conf.urls import patterns, url
 from django.contrib import admin
@@ -40,16 +41,15 @@ class OrderPaymentInline(admin.TabularInline):
 class OrderItemInline(admin.StackedInline):
     model = OrderItemModel
     extra = 0
-    readonly_fields = ('product_code', 'product_name', 'unit_price', 'line_total', 'extra',)
     fields = (
         ('product_code', 'product_name',),
         ('quantity', 'unit_price', 'line_total',),
         'extra',
     )
+    readonly_fields = ('product_code', 'product_name', 'quantity', 'unit_price', 'line_total', 'extra',)
 
-    def get_formset(self, request, obj=None, **kwargs):
-        formset = super(OrderItemInline, self).get_formset(request, obj, **kwargs)
-        return formset
+    def has_add_permission(self, request, obj=None):
+        return False
 
     def has_delete_permission(self, request, obj=None):
         return False
