@@ -511,7 +511,7 @@ SHOP_EDITCART_NG_MODEL_OPTIONS = "{updateOn: 'default blur', debounce: {'default
 
 SHOP_ORDER_WORKFLOWS = (
     'shop.payment.defaults.PayInAdvanceWorkflowMixin',
-    'shop.payment.defaults.CommissionGoodsWorkflowMixin',
+    'shop.shipping.defaults.CommissionGoodsWorkflowMixin',
     'shop_stripe.payment.OrderWorkflowMixin',
 )
 
