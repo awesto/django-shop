@@ -99,7 +99,7 @@ class Migration(migrations.Migration):
                 'verbose_name': 'Order',
                 'verbose_name_plural': 'Orders',
             },
-            bases=(shop.payment.defaults.PayInAdvanceWorkflowMixin, shop.payment.defaults.CommissionGoodsWorkflowMixin, shop_stripe.payment.OrderWorkflowMixin, models.Model),
+            bases=(shop.payment.defaults.PayInAdvanceWorkflowMixin, shop.shipping.defaults.CommissionGoodsWorkflowMixin, shop_stripe.payment.OrderWorkflowMixin, models.Model),
         ),
         migrations.CreateModel(
             name='OrderItem',
