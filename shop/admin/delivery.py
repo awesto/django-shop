@@ -69,14 +69,14 @@ class OrderItemInlineDelivery(OrderItemInline):
             if obj.status == 'pick_goods' and obj.unfulfilled_items > 0:
                 fields[1] += ('deliver_quantity', 'canceled',)
             else:
-                fields[1] += ('get_delivered',)
+                fields[1] += ('get_delivered', 'show_ready',)
         return fields
 
     def get_readonly_fields(self, request, obj=None):
         fields = list(super(OrderItemInlineDelivery, self).get_readonly_fields(request, obj))
         if obj:
             if not (obj.status == 'pick_goods' and obj.unfulfilled_items > 0):
-                fields.append('get_delivered')
+                fields.extend(['get_delivered', 'show_ready'])
         return fields
 
     def get_formset(self, request, obj=None, **kwargs):
@@ -100,6 +100,11 @@ class OrderItemInlineDelivery(OrderItemInline):
     def get_delivered(self, obj=None):
         return OrderItemForm.get_delivered(obj)
     get_delivered.short_description = _("Delivered quantity")
+
+    def show_ready(self, obj=None):
+        return not obj.canceled
+    show_ready.boolean = True
+    show_ready.short_description = _("Ready for delivery")
 
 
 class DeliveryInline(admin.TabularInline):
@@ -128,6 +133,7 @@ class DeliveryInline(admin.TabularInline):
 
     def delivered_items(self, obj):
         aggr = obj.deliveryitem_set.aggregate(quantity=Sum('quantity'))
+        aggr['quantity'] = aggr['quantity'] or 0
         aggr.update(items=obj.deliveryitem_set.count())
         return '{quantity}/{items}'.format(**aggr)
     delivered_items.short_description = _("Quantity/Items")
