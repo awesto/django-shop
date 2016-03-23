@@ -26,6 +26,13 @@ class BaseDelivery(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         verbose_name = _("Delivery")
         verbose_name_plural = _("Deliveries")
 
+    @classmethod
+    def perform_model_checks(cls):
+        canceled_field = [f for f in OrderItemModel._meta.fields if f.attname == 'canceled']
+        if not canceled_field or canceled_field[0].get_internal_type() != 'BooleanField':
+            msg = "Class `{}` must implement a `BooleanField` named `canceled`, if used in combination with a Delivery model."
+            raise ImproperlyConfigured(msg.format(OrderItemModel.__name__))
+
 DeliveryModel = deferred.MaterializedModel(BaseDelivery)
 
 
