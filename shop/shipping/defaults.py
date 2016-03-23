@@ -32,8 +32,9 @@ class CommissionGoodsWorkflowMixin(object):
     def unfulfilled_items(self):
         unfulfilled_items = 0
         for order_item in self.items.all():
-            aggr = order_item.deliveryitem_set.aggregate(delivered=Sum('quantity'))
-            unfulfilled_items += order_item.quantity - (aggr['delivered'] or 0)
+            if not order_item.canceled:
+                aggr = order_item.deliveryitem_set.aggregate(delivered=Sum('quantity'))
+                unfulfilled_items += order_item.quantity - (aggr['delivered'] or 0)
         return unfulfilled_items
 
     def ready_for_delivery(self):
