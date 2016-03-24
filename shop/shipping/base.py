@@ -1,23 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from six import with_metaclass
 from django.conf.urls import patterns
 
 
-class ShippingProviderRegistry(type):
-    pool = {}
-
-    def __new__(cls, name, bases, attrs):
-        new_class = super(ShippingProviderRegistry, cls).__new__(cls, name, bases, attrs)
-        try:
-            cls.pool[str(new_class().namespace)] = new_class
-        except NotImplementedError:
-            pass
-        return new_class
-
-
-class ShippingProvider(with_metaclass(ShippingProviderRegistry)):
+class ShippingProvider(object):
     """
     Base class for all Shipping Providers.
     """
