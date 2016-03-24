@@ -11,8 +11,8 @@ more complicate than a ready-to-use solution, it gives the programmer enormous a
 implementation:
 
 Not everything can be "explained" to a software system using user interfaces. When reaching a
-certain point of complexity, it normally is easier to pour those requirements into software,
-rather than to expect yet another configuration button.
+certain point of complexity, it normally is easier to pour those requirements into code, rather
+than to expect yet another configuration button.
 
 When evaluating **djangoSHOP** with other e-commerce solutions, I suggest to do the following
 litmus test:
@@ -51,7 +51,7 @@ our single source of truth is the address model.
 Feature Completeness
 --------------------
 
-A merchant who wants to implement a unique feature for his e-commerce site, **must** never have to
+A merchant who wants to implement a unique feature for his e-commerce site, *must* never have to
 touch the code of the framework. Aiming for feature completeness means, that no matter how
 challenging a feature is, it *must be possible to be implemented* into the merchant's own
 implementation, rather than by patching the framework itself.
@@ -60,6 +60,39 @@ Consider that on many sites, a merchant's requirement is patched into existing c
 that every time a new version of the e-commerce software is released, that patch must be repeatedly
 adopted. This can become rather dangerous when security flaws in that software must be closed
 immediately.
+
+
+Separation of Concern
+---------------------
+
+Compared to other e-commerce solutions, the **djangoSHOP** framework has a rather small footprint
+in terms of code lines, database tables and classes. This does not mean, that its functionality is
+somehow limited. Instead, the merchant's own implementation can become rather large. This is
+because **djangoSHOP** implies dependencies to many third party Django apps.
+
+Having layered systems gives us programmers many advantages:
+
+* We don't have to reinvent the wheel for every required feature.
+* Since those dependencies are used in other applications, they normally are tested quite well.
+* No danger to create circular dependencies, as found often in big libraries and stand alone
+  applications.
+* Better overview for newcomers, which part of the system is responsible for what.
+* Easier to replace one component against another one.
+
+Fortunately Django gives us all the tools to stitch those dependencies together. If for instance we
+would use one of the many PHP-based e-commerce system, we'd have to stay inside their modest
+collection for third party apps, or reinvent the wheel. This often is a limiting factor compared to
+the huge ecosystems arround Django.
+
+
+Inversion of Control
+--------------------
+
+Wherever possible, **djangoSHOP** tries to delegate the responsibility for taking decision to the
+merchant's implementation of the site. Let explain this by a small example: When the customer
+adds a product to the cart, **djangoSHOP** consults the implementation of the product to determine
+whether the given item is already part of the cart or not. This allows the merchant's implementation
+to fine tune its product variants.
 
 
 Core System
