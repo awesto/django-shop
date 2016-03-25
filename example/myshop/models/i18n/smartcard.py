@@ -11,7 +11,8 @@ from parler.fields import TranslatedField
 from polymorphic.query import PolymorphicQuerySet
 from shop.money.fields import MoneyField
 from shop.models.product import BaseProductManager, BaseProduct
-from myshop.models.properties import Manufacturer, ProductPage, ProductImage
+from shop.models.defaults.mapping import ProductPage, ProductImage
+from myshop.models.properties import Manufacturer
 
 
 class ProductQuerySet(TranslatableQuerySet, PolymorphicQuerySet):
