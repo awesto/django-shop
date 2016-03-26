@@ -38,7 +38,7 @@ system:
 
 	$ virtualenv shoptutorial
 	$ source shoptutorial/bin/activate
-	(shoptutorial)$ git clone https://github.com/jrief/django-shop
+	(shoptutorial)$ git clone --depth 1 https://github.com/awesto/django-shop
 	(shoptutorial)$ cd django-shop
 	(shoptutorial)$ pip install -r requirements/demo.txt
 	(shoptutorial)$ pip install -e .
