@@ -12,10 +12,10 @@ implementation:
 
 Not everything can be "explained" to a software system using user interfaces. When reaching a
 certain point of complexity, it normally is easier to pour those requirements into code, rather
-than to expect yet another configuration button.
+than to expect yet another set of configuration buttons.
 
-When evaluating **djangoSHOP** with other e-commerce solutions, I suggest to do the following
-litmus test:
+When evaluating **djangoSHOP** with other e-commerce solutions, I therefore suggest to do the
+following litmus test:
 
 Consider a product which shall be sold world-wide. Depending on the country's origin of the request,
 use the native language and the local currency. Due to export restrictions, some products can not
@@ -52,9 +52,13 @@ Feature Completeness
 --------------------
 
 A merchant who wants to implement a unique feature for his e-commerce site, *must* never have to
-touch the code of the framework. Aiming for feature completeness means, that no matter how
-challenging a feature is, it *must be possible to be implemented* into the merchant's own
-implementation, rather than by patching the framework itself.
+touch the code of the framework. Aiming for ubiquity means, that no matter how challenging a feature
+is, it *must be possible to be implemented* into the merchant's own implementation, rather than by
+patching the framework itself.
+
+Otherwise *its a bug in the framework* - not just a missing feature! I'm sure some merchants will
+come up with really weird ideas, I never have thought of. If the **djangoSHOP** framework inhibits
+to add a feature, then feel free to create a bug report. 
 
 Consider that on many sites, a merchant's requirement is patched into existing code. This means
 that every time a new version of the e-commerce software is released, that patch must be repeatedly
