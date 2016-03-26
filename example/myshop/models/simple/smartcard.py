@@ -8,7 +8,8 @@ from django.utils.encoding import python_2_unicode_compatible
 from djangocms_text_ckeditor.fields import HTMLField
 from shop.money.fields import MoneyField
 from shop.models.product import BaseProduct, BaseProductManager
-from myshop.models.properties import Manufacturer, ProductPage, ProductImage
+from shop.models.defaults.mapping import ProductPage, ProductImage
+from myshop.models.properties import Manufacturer
 
 
 @python_2_unicode_compatible
