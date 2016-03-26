@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib import admin
+from django.utils.html import format_html_join
 from django.utils.timezone import localtime
 from django.utils.translation import pgettext_lazy, ugettext_lazy as _
 from shop.models.customer import CustomerModel
@@ -13,8 +14,11 @@ from shop.models.customer import CustomerModel
 
 class CustomerInlineAdmin(admin.StackedInline):
     model = CustomerModel
-    fields = ('salutation', 'get_number', 'recognized')
-    readonly_fields = ('get_number',)
+    fieldsets = (
+        (None, {'fields': ('salutation', 'get_number', 'recognized')}),
+        (_("Shipping Addresses"), {'fields': ('get_shipping_addresses',)})
+    )
+    readonly_fields = ('get_number', 'get_shipping_addresses',)
 
     def get_extra(self, request, obj=None, **kwargs):
         return 0 if obj is None else 1
@@ -25,6 +29,12 @@ class CustomerInlineAdmin(admin.StackedInline):
     def get_number(self, customer):
         return customer.get_number()
     get_number.short_description = pgettext_lazy('customer', "Number")
+
+    def get_shipping_addresses(self, customer):
+        addresses = [(a.as_text(),) for a in customer.shippingaddress_set.all()]
+        return format_html_join('', '<address>{0}</address>', addresses)
+    get_shipping_addresses.short_description = ''
+    get_shipping_addresses.allow_tags = True
 
 
 class CustomerCreationForm(UserCreationForm):

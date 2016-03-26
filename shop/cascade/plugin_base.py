@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db.models import get_model
+from django.apps import apps
 from django.core.exceptions import ImproperlyConfigured
 from django.forms import ChoiceField, widgets
-from django.template.base import TemplateDoesNotExist
+from django.template import TemplateDoesNotExist
 from django.template.loader import select_template
 from django.utils.html import format_html
 from django.utils.module_loading import import_string
@@ -57,7 +57,7 @@ class ShopLinkPluginBase(ShopPluginBase):
         if link.get('type') == 'cmspage':
             if 'model' in link and 'pk' in link:
                 if not hasattr(obj, '_link_model'):
-                    Model = get_model(*link['model'].split('.'))
+                    Model = apps.get_model(*link['model'].split('.'))
                     try:
                         obj._link_model = Model.objects.get(pk=link['pk'])
                     except Model.DoesNotExist:
@@ -138,7 +138,7 @@ class CatalogLinkForm(LinkForm):
     def set_initial_product(self, initial):
         try:
             # check if that product still exists, otherwise return nothing
-            Model = get_model(*initial['link']['model'].split('.'))
+            Model = apps.get_model(*initial['link']['model'].split('.'))
             initial['product'] = Model.objects.get(pk=initial['link']['pk']).pk
         except (KeyError, ValueError, Model.DoesNotExist):
             pass

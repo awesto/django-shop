@@ -4,7 +4,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db.models.base import ModelBase
 from django.db import models
 from django.utils import six
-from django.utils.functional import SimpleLazyObject, _super, empty
+from django.utils.functional import SimpleLazyObject, empty
 from shop import settings as shop_settings
 
 
@@ -133,7 +133,7 @@ class MaterializedModel(SimpleLazyObject):
     """
     def __init__(self, base_model):
         self.__dict__['_base_model'] = base_model
-        _super(SimpleLazyObject, self).__init__()
+        super(SimpleLazyObject, self).__init__()
 
     def _setup(self):
         self._wrapped = getattr(self._base_model, '_materialized_model')
