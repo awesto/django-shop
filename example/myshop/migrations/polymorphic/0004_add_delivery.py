@@ -30,19 +30,10 @@ class Migration(migrations.Migration):
                 ('delivery', models.ForeignKey(verbose_name='Delivery', to='myshop.Delivery', help_text='Refer to the shipping provider used to ship this item')),
             ],
         ),
-        migrations.RemoveField(
-            model_name='orderpayment',
-            name='status',
-        ),
         migrations.AddField(
             model_name='orderitem',
             name='canceled',
             field=models.BooleanField(default=False, verbose_name='Item canceled '),
-        ),
-        migrations.AlterField(
-            model_name='orderpayment',
-            name='payment_method',
-            field=models.CharField(help_text='The payment backend used to process the purchase', max_length=50, verbose_name='Payment method'),
         ),
         migrations.AddField(
             model_name='deliveryitem',
