@@ -249,6 +249,7 @@ TEMPLATES = [{
             'sekizai.context_processors.sekizai',
             'cms.context_processors.cms_settings',
             'shop.context_processors.customer',
+            'shop.context_processors.version',
             'shop_stripe.context_processors.public_keys',
         )
     }

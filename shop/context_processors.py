@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
+from django import __version__
 from django.conf import settings
 from shop.models.customer import CustomerModel
 
@@ -21,3 +23,12 @@ def customer(request):
         except (CustomerModel.DoesNotExist, KeyError, AttributeError):
             pass
     return context
+
+
+def version(request):
+    """
+    Add version to context, since in Django-1.9 the path for jquery changed
+    """
+    return {
+        'DJANGO_VERSION': __version__,
+    }
