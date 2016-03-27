@@ -65,7 +65,7 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelF
         password = self.cleaned_data['password1']
         if self.cleaned_data['preset_password']:
             self._send_password(request, customer.user, password)
-        user = authenticate(username=customer.user.get_username(), password=password)
+        user = authenticate(username=customer.user.username, password=password)
         login(request, user)
         return customer
 
