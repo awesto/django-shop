@@ -9,7 +9,7 @@ import shop.cascade.plugin_base
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cmsplugin_cascade', '0007_headingpluginmodel_horizontalrulepluginmodel_segmentpluginmodel_simplewrapperpluginmodel'),
+        ('cmsplugin_cascade', '0006_bootstrapgallerypluginmodel'),
         ('shop', '0002_auto_20151016_1451'),
     ]
 
