@@ -5,7 +5,7 @@ django-admin-sortable2==0.6.2
 django-allauth==0.23.0
 django-angular==0.8.1
 django-appconf==1.0.1
-django-classy-tags==0.6.2
+django-classy-tags==0.7.2
 django-cms==3.2.3
 django-compressor==1.5
 django-filer==1.1.1
