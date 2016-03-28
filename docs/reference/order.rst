@@ -264,7 +264,7 @@ the admin view. Whenever the merchant clicks on this button, the above method
 sending a payment confirmation email to the customer.
 
 Now that the order has been paid, it time to fulfill it. For this a merchant can use the workflow
-mixin class ``'shop.payment.defaults.CommissionGoodsWorkflowMixin'``, which gives him a
+mixin class :class:`shop.shipping.defaults.CommissionGoodsWorkflowMixin`, which gives him a
 hand to keep track on the fulfillment of each order. Since this class doesn't know anything
 about an order status of "*prepayment_deposited*" (this is a private definition of the class
 ``PayInAdvanceWorkflowMixin``), **djangoSHOP** provides a status to mark the payment of an order as

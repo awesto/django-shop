@@ -71,7 +71,7 @@ Workflow Mixins
 
 	SHOP_ORDER_WORKFLOWS = (
 	    'shop.payment.defaults.PayInAdvanceWorkflowMixin',
-	    'shop.payment.defaults.CommissionGoodsWorkflowMixin',
+	    'shop.shipping.defaults.CommissionGoodsWorkflowMixin',
 	    # other workflow mixins
 	)
 

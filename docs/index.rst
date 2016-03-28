@@ -56,6 +56,7 @@ Reference to classes and concepts used in **djangoSHOP**
 	reference/cart-checkout
 	reference/payment-providers
 	reference/order
+	reference/delivery
 	reference/addresses
 	reference/search
 	reference/notifications
