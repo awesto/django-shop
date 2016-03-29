@@ -317,10 +317,11 @@ Money type:
 	SERIALIZATION_MODULES = {'json': str('shop.money.serializers')}
 
 
-CMS and Cascade settings
-------------------------
+Django CMS and Cascade settings
+-------------------------------
 
-**DjangoSHOP** requires at least one CMS template. Assure that it contains a placeholder 
+**DjangoSHOP** requires at least one CMS template. Assure that it contains a placeholder able to
+accept 
 
 .. code-block:: python
 
@@ -328,72 +329,73 @@ CMS and Cascade settings
 	    ('myshop/pages/default.html', _("Default Page")),
 	)
 
-CMS_CACHE_DURATIONS = {
-    'content': 600,
-    'menus': 3600,
-    'permissions': 86400,
-}
-
-CMS_PERMISSION = False
-
-CACSCADE_WORKAREA_GLOSSARY = {
-    'breakpoints': ['xs', 'sm', 'md', 'lg'],
-    'container_max_widths': {'xs': 750, 'sm': 750, 'md': 970, 'lg': 1170},
-    'fluid': False,
-    'media_queries': {
-        'xs': ['(max-width: 768px)'],
-        'sm': ['(min-width: 768px)', '(max-width: 992px)'],
-        'md': ['(min-width: 992px)', '(max-width: 1200px)'],
-        'lg': ['(min-width: 1200px)'],
-    },
-}
-
-CMS_PLACEHOLDER_CONF = {
-    'Breadcrumb': {
-        'plugins': ['BreadcrumbPlugin'],
-        'glossary': CACSCADE_WORKAREA_GLOSSARY,
-    },
-    'Commodity Details': {
-        'plugins': ['BootstrapRowPlugin', 'TextPlugin', 'ImagePlugin', 'PicturePlugin'],
-        'text_only_plugins': ['TextLinkPlugin'],
-        'parent_classes': {'BootstrapRowPlugin': []},
-        'require_parent': False,
-        'glossary': CACSCADE_WORKAREA_GLOSSARY,
-    },
-}
+	CMS_PERMISSION = False
 
 
-CMSPLUGIN_CASCADE_PLUGINS = ('cmsplugin_cascade.segmentation', 'cmsplugin_cascade.generic',
-    'cmsplugin_cascade.link', 'shop.cascade', 'cmsplugin_cascade.bootstrap3',)
+**DjangoSHOP** requires a few shop specific plugins for **djangocms-cascade**. Additionally we
+gain some functionality to add links from CMS pages to products.
 
-CMSPLUGIN_CASCADE = {
-    'dependencies': {
-        'shop/js/admin/shoplinkplugin.js': 'cascade/js/admin/linkpluginbase.js',
-    },
-    'alien_plugins': ('TextPlugin', 'TextLinkPlugin',),
-    'bootstrap3': {
-        'template_basedir': 'angular-ui',
-    },
-    'plugins_with_extra_fields': (
-        'BootstrapButtonPlugin',
-        'BootstrapRowPlugin',
-        'SimpleWrapperPlugin',
-        'HorizontalRulePlugin',
-        'ExtraAnnotationFormPlugin',
-        'ShopProceedButton',
-    ),
-    'segmentation_mixins': (
-        ('shop.cascade.segmentation.EmulateCustomerModelMixin', 'shop.cascade.segmentation.EmulateCustomerAdminMixin'),
-    ),
-}
+.. code-block:: python
 
-CMSPLUGIN_CASCADE_LINKPLUGIN_CLASSES = (
-    'shop.cascade.plugin_base.CatalogLinkPluginBase',
-    'cmsplugin_cascade.link.plugin_base.LinkElementMixin',
-    'shop.cascade.plugin_base.CatalogLinkForm',
-)
+	CMSPLUGIN_CASCADE_PLUGINS = ('cmsplugin_cascade.segmentation', 'cmsplugin_cascade.generic',
+	    'cmsplugin_cascade.link', 'shop.cascade', 'cmsplugin_cascade.bootstrap3',)
+	
+	CMSPLUGIN_CASCADE = {
+	    'dependencies': {
+	        'shop/js/admin/shoplinkplugin.js': 'cascade/js/admin/linkpluginbase.js',
+	    },
+	    'alien_plugins': ('TextPlugin', 'TextLinkPlugin',),
+	    'bootstrap3': {
+	        'template_basedir': 'angular-ui',
+	    },
+	    'plugins_with_extra_fields': (
+	        'BootstrapButtonPlugin',
+	        'BootstrapRowPlugin',
+	        'SimpleWrapperPlugin',
+	        'HorizontalRulePlugin',
+	        'ExtraAnnotationFormPlugin',
+	        'ShopProceedButton',
+	    ),
+	    'segmentation_mixins': (
+	        ('shop.cascade.segmentation.EmulateCustomerModelMixin', 'shop.cascade.segmentation.EmulateCustomerAdminMixin'),
+	    ),
+	}
+	
+	CMSPLUGIN_CASCADE_LINKPLUGIN_CLASSES = (
+	    'shop.cascade.plugin_base.CatalogLinkPluginBase',
+	    'cmsplugin_cascade.link.plugin_base.LinkElementMixin',
+	    'shop.cascade.plugin_base.CatalogLinkForm',
+	)
 
 
+Full Text Search
+----------------
+
+Presuming that you installed and run an ElasticSearchEngine server, configure Haystack:
+
+.. code-block:: python
+
+	HAYSTACK_CONNECTIONS = {
+	    'default': {
+	        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+	        'URL': 'http://localhost:9200/',
+	        'INDEX_NAME': 'my_prefix-en',
+	    },
+	}
+
+If you want to index other natural language, say German, add another prefix:
+
+.. code-block:: python
+
+	HAYSTACK_CONNECTIONS = {
+	    ...
+	    'de': {
+	        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+	        'URL': 'http://localhost:9200/',
+	        'INDEX_NAME': 'my_prefix-de',
+	    }
+	}
+	HAYSTACK_ROUTERS = ('shop.search.routers.LanguageRouter',)
 
 
 Various other settings
@@ -406,11 +408,21 @@ time of inactivity. This configuration sets this to 2500 milliseconds:
 
 	SHOP_EDITCART_NG_MODEL_OPTIONS = "{updateOn: 'default blur', debounce: {'default': 2500, 'blur': 0}}"
 
+Change the include path to a local directory, if you don't want to rely on a CDN:
 
+.. code-block:: python
+
+	SELECT2_CSS = 'bower_components/select2/dist/css/select2.min.css'
+	SELECT2_JS = 'bower_components/select2/dist/js/select2.min.js'
+
+Since the client side is not allowed to do any price and quantity computations, Decimal values are
+transferred to the client using strings. This also avoids nasty rounding errors.
+
+.. code-block:: python
 
 	COERCE_DECIMAL_TO_STRING = True
 
+Prevent to display all transitions configured by the workflow mixins inside the administration
+backend:
+
 	FSM_ADMIN_FORCE_PERMIT = True
-
-.. note:: unfinished document
-
