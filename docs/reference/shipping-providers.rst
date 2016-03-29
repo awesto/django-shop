@@ -4,6 +4,7 @@
 Shipping Providers
 ==================
 
-Unless your merchant management systems has such a built-in feature, **djangoSHOP** provides some
-hooks to add shipping providers.
+Unless you use the merchant management systems for delivery, **djangoSHOP** provides some hooks to
+add shipping providers. Shipping providers require that the Delivery model is available, otherwise
+there is no way to keep track which items have been shipped with a delivery.
 
