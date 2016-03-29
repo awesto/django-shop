@@ -338,7 +338,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 12,
 }
 
-SERIALIZATION_MODULES = {'json': b'shop.money.serializers'}
+SERIALIZATION_MODULES = {'json': str('shop.money.serializers')}
 
 
 ############################################
@@ -407,9 +407,6 @@ CACSCADE_WORKAREA_GLOSSARY = {
 CMS_PLACEHOLDER_CONF = {
     'Breadcrumb': {
         'plugins': ['BreadcrumbPlugin'],
-        #  'text_only_plugins': ['TextLinkPlugin'],
-        #  'parent_classes': {'BootstrapRowPlugin': []},
-        #  'require_parent': False,
         'glossary': CACSCADE_WORKAREA_GLOSSARY,
     },
     'Commodity Details': {
