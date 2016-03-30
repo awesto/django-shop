@@ -6,7 +6,7 @@ from django.utils.safestring import mark_safe
 
 def module_list(context, data, namespace):
     """
-    To be used in sekizai's render_block to postprocess AngularJS module dependenies
+    To be used in Sekizai's render_block to postprocess AngularJS module dependenies
     """
     modules = set(m.strip(' "\'') for m in data.split())
     text = format_html_join(', ', '"{0}"', ((m,) for m in modules))
