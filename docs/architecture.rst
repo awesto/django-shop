@@ -73,7 +73,7 @@ Django SHOP defines 5 types of different plugins:
 2. Cart modifiers
 3. Payment backends
 4. Shipping backends
-4. Order workflow modules
+#. Order workflow modules
 
 They may be added as a third party **djangoSHOP** plugin, or integrated into the merchant's
 implementation.
