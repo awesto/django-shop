@@ -5,10 +5,10 @@ Software Architecture
 =====================
 
 The **djangoSHOP** framework is, as its name implies, a framework and not a software which runs
-out of the box. Instead an e-commerce site built upon **djangoSHOP**, always consists of this
-framework, a bunch of other Django apps and the merchant's own implementation. While this may seem
-more complicate than a ready-to-use solution, it gives the programmer enormous advantages during the
-implementation:
+out of the box. Instead, an e-commerce site built upon **djangoSHOP**, always consists of this
+framework, a bunch of other Django apps and the **merchant's own implementation**. While this may
+seem more complicate than a ready-to-use solution, it gives the programmer enormous advantages
+during the implementation:
 
 Not everything can be "explained" to a software system using user interfaces. When reaching a
 certain point of complexity, it normally is easier to pour those requirements into code, rather
