@@ -89,6 +89,9 @@ class MoneyField(models.DecimalField):
         value = super(models.DecimalField, self).get_prep_value(value)
         return super(MoneyField, self).to_python(value)
 
+    def from_db_value(self, value, expression, connection, context):
+        return self.Money(value)
+
     def get_db_prep_save(self, value, connection):
         if value.is_nan():
             return None
