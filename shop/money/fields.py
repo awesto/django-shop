@@ -90,6 +90,10 @@ class MoneyField(models.DecimalField):
         return super(MoneyField, self).to_python(value)
 
     def from_db_value(self, value, expression, connection, context):
+        if value is None:
+            return
+        if isinstance(value, float):
+            value = str(value)
         return self.Money(value)
 
     def get_db_prep_save(self, value, connection):

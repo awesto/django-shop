@@ -237,8 +237,8 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         """
         amount = self.orderpayment_set.aggregate(amount=Sum('amount'))['amount']
         if amount is None:
-            amount = 0
-        return MoneyMaker(self.currency)(str(amount))
+            amount = MoneyMaker(self.currency)()
+        return amount
 
     @property
     def outstanding_amount(self):
