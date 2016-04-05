@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from decimal import Decimal, InvalidOperation
 from cms.utils.helpers import classproperty
 from shop import settings as shop_settings
@@ -49,7 +50,7 @@ class AbstractMoney(Decimal):
 
     def __add__(self, other, context=None):
         other = self._assert_addable(other)
-        amount = Decimal.__add__(self, other, context) if not self.is_nan() else other
+        amount = Decimal.__add__(self, other) if not self.is_nan() else other
         return self.__class__(amount)
 
     def __radd__(self, other, context=None):
@@ -58,21 +59,21 @@ class AbstractMoney(Decimal):
     def __sub__(self, other, context=None):
         other = self._assert_addable(other)
         # self - other is computed as self + other.copy_negate()
-        amount = Decimal.__add__(self, other.copy_negate(), context=context)
+        amount = Decimal.__add__(self, other.copy_negate())
         return self.__class__(amount)
 
     def __rsub__(self, other, context=None):
         raise ValueError("Can not substract money from something else.")
 
     def __neg__(self, context=None):
-        amount = Decimal.__neg__(self, context)
+        amount = Decimal.__neg__(self)
         return self.__class__(amount)
 
     def __mul__(self, other, context=None):
         if other is None:
             return self.__class__('NaN')
         other = self._assert_multipliable(other)
-        amount = Decimal.__mul__(self, other, context)
+        amount = Decimal.__mul__(self, other)
         return self.__class__(amount)
 
     def __rmul__(self, other, context=None):
@@ -80,7 +81,7 @@ class AbstractMoney(Decimal):
 
     def __div__(self, other, context=None):
         other = self._assert_dividable(other)
-        amount = Decimal.__div__(self, other, context)
+        amount = Decimal.__div__(self, other)
         return self.__class__(amount)
 
     def __rdiv__(self, other, context=None):
@@ -88,7 +89,7 @@ class AbstractMoney(Decimal):
 
     def __truediv__(self, other, context=None):
         other = self._assert_dividable(other)
-        amount = Decimal.__truediv__(self, other, context)
+        amount = Decimal.__truediv__(self, other)
         return self.__class__(amount)
 
     def __rtruediv__(self, other, context=None):
@@ -179,7 +180,7 @@ class MoneyMaker(type):
             if isinstance(value, cls):
                 assert cls._currency_code == value._currency_code
             if isinstance(value, (cls, Decimal)):
-                self = object.__new__(cls)
+                self = Decimal.__new__(cls)
                 self._exp = value._exp
                 self._sign = value._sign
                 self._int = value._int
