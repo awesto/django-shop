@@ -1,5 +1,6 @@
 # -*- coding: utf-8
 from __future__ import unicode_literals
+
 from decimal import Decimal, getcontext
 import math
 try:
@@ -207,7 +208,7 @@ class MoneyMakerTest(TestCase):
 
     def test_rest(self):
         Money = MoneyMaker('EUR')
-        instance = type(b'TestMoney', (object,), {'amount': Money('1.23')})
+        instance = type(str('TestMoney'), (object,), {'amount': Money('1.23')})
         serializer = TestMoneySerializer(instance)
         self.assertDictEqual({'amount': '€ 1.23'}, serializer.data)
 
