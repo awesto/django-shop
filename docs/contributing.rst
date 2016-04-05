@@ -10,7 +10,7 @@ Naming conventions
 The official name of this project is **djangoSHOP**. Third party plugins for **djangoSHOP** shall
 follow the same naming convention as for plugins of **djangoCMS**: Third party package names shall
 start with **djangoshop** followed by a dash; no space shall be added between **django** and
-**shop**.
+**shop**, for example: ``djangoshop-stripe``
 
 **DjangoSHOP** should be capitalised at the start of sentences and in title-case headings.
 
@@ -65,16 +65,31 @@ coverage report, all you have to do is this:
 
 .. code-block:: shell
 
-
 	pip install tox
 	tox
 
-If you work on a certain part of the code base and you want to run the related tests and get a
-coverage report, you can do something like this:
+If you work on a certain part of the code base and you want to run the related tests, you may only
+want to run the tests affecting that part. In such a case use ``py.test`` from your testing
+environment and specify the file to test, or for more granularity the class name or even the method
+name. Here are two examples:
 
 .. code-block:: shell
 
-	coverage run $(which py.test) tests/test_money.py && coverage report -m shop/money/*.py
+	.tox/py27-django19/bin/py.test testshop/test_money.py
+	.tox/py27-django19/bin/py.test testshop/test_money.py -k test_pickle
+
+Measuring which lines of code have been "seen" be the test runner is an important task while
+testing. Do this by creating a coverage report, for example with:
+
+.. code-block:: shell
+
+	coverage run .tox/py27-django19/bin/py.test testshop
+	coverage report
+
+or if you to test only a specific class
+
+	coverage run .tox/py27-django19/bin/py.test testshop/test_money.py
+	coverage report -m shop/money/*.py
 
 .. note::
 

@@ -11,7 +11,7 @@ Until **djangoSHOP** version 0.2, there were abstract and concrete and models: `
 The concrete models were stored in ``shop.models``, whereas abstract models were stored in
 ``shop.models_bases``. This was quite confusing and made it difficult to find the right model
 definition whenever one had to access the definition of one of the models.
-Additionally, if someone wanted to override a model, he had to use a configuration directive, say
+Additionally, if someone wanted to subclass a model, he had to use a configuration directive, say
 ``PRODUCT_MODEL``, ``ORDER_MODEL``, ``ORDER_MODEL_ITEM`` from the projects ``settings.py``.
 
 This made configuration quite complicate and causes other drawbacks:
@@ -19,7 +19,7 @@ This made configuration quite complicate and causes other drawbacks:
 * Unless *all* models have been overridden, the native ones appeared in the administration backend
   below the category *Shop*, while the customized ones appeared under the given project's name.
   To merchants, this inconsistency in the backend was quite difficult to explain.
-* In the past, mixing overriden with native models caused many issues with circular dependencies.
+* In the past, mixing subclassed with native models caused many issues with circular dependencies.
 
 Therefore in **djangoSHOP**, since version 0.9 *all* concrete models, ``Product``, ``Order``,
 ``OrderItem``, ``Cart``, ``CartItem`` have been removed. These model definitions now all are
@@ -119,7 +119,7 @@ instead of using a real ``ForeignKey``, one can use a special “lazy” field, 
 with an abstract model. Now, whenever the models are “materialized”, then these abstract relations
 are converted into real foreign keys. The only drawback for this solution is, that one may derive
 from an abstract model only once, but for **djangoSHOP** that's a non-issue and doesn't differ from
-the current situation, where one can override ``BaseCart`` only once anyway.
+the current situation, where one can subclass ``BaseCart`` only once anyway.
 
 Therefore, when using this deferred model pattern, instead of using ``models.ForeignKey``,
 ``models.OneToOneField`` or ``models.ManyToManyField``, use the special fields

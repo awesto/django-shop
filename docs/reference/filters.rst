@@ -23,7 +23,7 @@ By default these View classes are configured to use the default filter backends 
 REST framework. These filter backends can be configured globally through the settings variable
 ``DEFAULT_FILTER_BACKENDS``.
 
-Additionally we can override the filter backends for each View class in our ``urls.py``. Say, we
+Additionally we can subclass the filter backends for each View class in our ``urls.py``. Say, we
 need a special catalog filter, which groups our products by a certain product attribute. Then we
 can create customized filter backend
 

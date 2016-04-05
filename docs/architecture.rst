@@ -38,7 +38,7 @@ Single Source of Truth
 ----------------------
 
 A fundamental aspect of good software design is to follow the principle of "Don't repeat yourself",
-often denotes as DRY. In **djangoSHOP** we aim for a single source of truth, wherever possible.
+often denoted as DRY. In **djangoSHOP** we aim for a *single source of truth*, wherever possible.
 
 For instance have a look at the :class:`shop.models.address.BaseShippingAddress`. Whenever we
 add, change or remove a field, the ORM mapper of Django gets notified and with
@@ -64,6 +64,28 @@ Consider that on many sites, a merchant's requirement is patched into existing c
 that every time a new version of the e-commerce software is released, that patch must be repeatedly
 adopted. This can become rather dangerous when security flaws in that software must be closed
 immediately.
+
+
+Minimalism
+----------
+
+In a nutshell, **djangoSHOP** offers this set of basic functionalities:
+
+* A catalog to display product lists and detail views.
+* Some methods to add products to the cart.
+* A way to remove items from the cart or change their quantities.
+* A set of classes to modify the cart's totals.
+* A collection of forms, where customers can add personal, shipping and payment information.
+* A way to perform the purchase: this converts the cart into an order.
+* A list view where customers can lookup their previously performed orders
+* A backend tool which helps to track the state of orders.
+
+All functionality required to build a real e-commerce site, sits on top of this. Computing taxes
+for instance, can vary a lot among different legislations and thus is not part of the framework.
+The same applies for vouchers, rebates, delivery costs, etc.
+
+These are the parts, which must be fine tuned by the merchant. They can be rather complicate to
+implement and are best implemented by separate plugins.
 
 
 Separation of Concern
