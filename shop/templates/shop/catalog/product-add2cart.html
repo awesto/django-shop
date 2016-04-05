@@ -27,6 +27,16 @@
 				<td ng-bind="context.unit_price"></td>
 				<td ng-bind="context.subtotal"></td>
 			</tr>
+		{% if request.session.is_empty %}{% spaceless %}
+			<tr>
+				<td colspan="3">
+			{% block cookie-disclaimer %}{% blocktrans %}
+				By adding a product to the cart you are giving consent to cookies being used.<br>
+				For technical reasons cookies can not be disabled here.
+			{% endblocktrans %}{% endblock %}
+				</td>
+			</tr>
+			{% endspaceless %}{% endif %}
 			<tr>
 				<td></td>
 				<td>

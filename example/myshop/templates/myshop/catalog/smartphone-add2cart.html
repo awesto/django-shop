@@ -31,6 +31,11 @@
 			<td ng-bind="context.unit_price"></td>
 			<td ng-bind="context.subtotal"></td>
 		</tr>
+		{% if request.session.is_empty %}
+		<tr>
+			<td colspan="4">{% block cookie-disclaimer %}{{ block.super }}{% endblock %}</td>
+		</tr>
+		{% endif %}
 		<tr>
 			<td colspan="2">
 				<button class="btn btn-info btn-block btn-xs" ng-click="addToCart('{% url 'shop:watch-list' %}', {watch: true})">{% trans "Watch product" %}</button>
