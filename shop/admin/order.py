@@ -11,7 +11,8 @@ from django.http import HttpResponse
 from django.template import RequestContext
 from django.template.loader import select_template
 from django.utils.html import format_html
-from django.utils.translation import ugettext_lazy as _
+from django.utils.formats import number_format
+from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from fsm_admin.mixins import FSMTransitionMixin
 from shop.models.customer import CustomerModel
 from shop.models.order import OrderItemModel, OrderPayment
@@ -59,11 +60,11 @@ class OrderItemInline(admin.StackedInline):
 
     def get_extra_data(self, obj):
         return obj.extra  # TODO: use a template to format this data
-    get_extra_data.short_description = _("Extra data")
+    get_extra_data.short_description = pgettext_lazy('admin', "Extra data")
 
 
 class StatusListFilter(admin.SimpleListFilter):
-    title = _("Status")
+    title = pgettext_lazy('admin', "Status")
     parameter_name = 'status'
 
     def lookups(self, request, model_admin):
@@ -84,15 +85,27 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
     fsm_field = ('status',)
     date_hierarchy = 'created_at'
     inlines = (OrderItemInline, OrderPaymentInline,)
-    readonly_fields = ('get_number', 'status_name', 'total', 'subtotal', 'get_customer_link',
-        'outstanding_amount', 'created_at', 'updated_at', 'extra', 'stored_request',)
+    readonly_fields = ('get_number', 'status_name', 'get_total', 'get_subtotal', 'get_customer_link',
+        'get_outstanding_amount', 'created_at', 'updated_at', 'extra', 'stored_request',)
     fields = ('get_number', 'status_name', ('created_at', 'updated_at'),
-        ('subtotal', 'total', 'outstanding_amount',), 'get_customer_link', 'extra', 'stored_request',)
+        ('get_subtotal', 'get_total', 'get_outstanding_amount',), 'get_customer_link', 'extra', 'stored_request',)
     actions = None
 
     def get_number(self, obj):
         return obj.get_number()
-    get_number.short_description = _("Order number")
+    get_number.short_description = pgettext_lazy('admin', "Order number")
+
+    def get_total(self, obj):
+        return number_format(obj.total)
+    get_total.short_description = pgettext_lazy('admin', "Total")
+
+    def get_subtotal(self, obj):
+        return number_format(obj.subtotal)
+    get_subtotal.short_description = pgettext_lazy('admin', "Subtotal")
+
+    def get_outstanding_amount(self, obj):
+        return number_format(obj.outstanding_amount)
+    get_outstanding_amount.short_description = pgettext_lazy('admin', "Outstanding amount")
 
     def has_add_permission(self, request):
         return False
@@ -106,7 +119,7 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
             return format_html('<a href="{0}" target="_new">{1}</a>', url, obj.customer.get_username())
         except NoReverseMatch:
             return format_html('<strong>{0}</strong>', obj.customer.get_username())
-    get_customer_link.short_description = _("Customer")
+    get_customer_link.short_description = pgettext_lazy('admin', "Customer")
     get_customer_link.allow_tags = True
 
     def get_search_fields(self, request):
@@ -119,10 +132,6 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
         except FieldDoesNotExist:
             pass
         return fields
-
-    def outstanding_amount(self, obj):
-        return obj.outstanding_amount
-    outstanding_amount.short_description = _("Outstanding amount")
 
 
 class PrintOrderAdminMixin(object):
