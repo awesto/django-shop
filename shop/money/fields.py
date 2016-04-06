@@ -68,7 +68,7 @@ class MoneyField(models.DecimalField):
         defaults = {
             'max_digits': 30,
             'decimal_places': CURRENCIES[self.currency_code][1],
-            'default': '0',
+            'default': self.Money(0),
         }
         defaults.update(kwargs)
         super(MoneyField, self).__init__(**defaults)
