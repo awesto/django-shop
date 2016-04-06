@@ -108,6 +108,30 @@ class AbstractMoney(Decimal):
             s = Decimal.__str__(self)
         return float(s)
 
+    def __lt__(self, other, context=None):
+        other = self._assert_addable(other)
+        if self.is_nan():
+            return Decimal().__lt__(other)
+        return Decimal.__lt__(self, other)
+
+    def __le__(self, other, context=None):
+        other = self._assert_addable(other)
+        if self.is_nan():
+            return Decimal().__le__(other)
+        return Decimal.__le__(self, other)
+
+    def __gt__(self, other, context=None):
+        other = self._assert_addable(other)
+        if self.is_nan():
+            return Decimal().__gt__(other)
+        return Decimal.__gt__(self, other)
+
+    def __ge__(self, other, context=None):
+        other = self._assert_addable(other)
+        if self.is_nan():
+            return Decimal().__ge__(other)
+        return Decimal.__ge__(self, other)
+
     @classproperty
     def currency(cls):
         """
@@ -121,7 +145,7 @@ class AbstractMoney(Decimal):
         This representation often is used by payment service providers.
         """
         if self.is_nan():
-            return Decimal(0)
+            return Decimal()
         return Decimal.quantize(self, self._cents)
 
     def as_integer(self):
