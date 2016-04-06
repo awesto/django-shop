@@ -9,6 +9,7 @@ except ImportError:
     import pickle
 import json
 from django.test import TestCase
+from django.utils import six
 from rest_framework import serializers
 from shop.money.money_maker import AbstractMoney, MoneyMaker, _make_money
 from shop.rest.money import MoneyField, JSONRenderer
@@ -70,10 +71,13 @@ class MoneyMakerTest(TestCase):
         value._cents = Decimal("0." + ("0" * prec))
         self.assertRaises(ValueError, lambda: str(value))
 
-    def skip_test_str(self):
+    def test_str(self):
         EUR = MoneyMaker('EUR')
         value = EUR()
-        self.assertEqual(str(value), str("€ –"))
+        if six.PY2:
+            self.assertEqual(str(value).decode('utf-8'), "€ –")
+        else:
+            self.assertEqual(str(value), "€ –")
 
     def test_reduce(self):
         Money = MoneyMaker('EUR')

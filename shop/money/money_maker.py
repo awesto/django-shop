@@ -1,19 +1,21 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.utils.encoding import python_2_unicode_compatible
 from decimal import Decimal, InvalidOperation
 from cms.utils.helpers import classproperty
 from shop import settings as shop_settings
 from .iso4217 import CURRENCIES
 
 
+@python_2_unicode_compatible
 class AbstractMoney(Decimal):
     MONEY_FORMAT = getattr(shop_settings, 'MONEY_FORMAT')
 
     def __new__(cls, value):
         raise TypeError("Can not instantiate {} as AbstractMoney.".format(value))
 
-    def __unicode__(self):
+    def __str__(self):
         """
         Renders the price localized and formatted in its current currency.
         """
@@ -25,9 +27,6 @@ class AbstractMoney(Decimal):
         except InvalidOperation:
             raise ValueError("Can not represent {} as Money type.".format(self.__repr__()))
         return self.MONEY_FORMAT.format(**vals)
-
-    def __str__(self):
-        return self.__unicode__().encode('utf-8')
 
     def __repr__(self):
         value = Decimal.__str__(self)
