@@ -73,7 +73,7 @@ class MoneyMakerTest(TestCase):
     def test_str(self):
         EUR = MoneyMaker('EUR')
         value = EUR()
-        self.assertEqual(str(value).decode('utf-8'), "€ –")
+        self.assertEqual(str(value), str("€ –"))
 
     def test_reduce(self):
         Money = MoneyMaker('EUR')
