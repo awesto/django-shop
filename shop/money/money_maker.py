@@ -100,10 +100,10 @@ class AbstractMoney(Decimal):
 
     def __float__(self):
         """Float representation."""
-        if self._isnan():
+        if self.is_nan():
             if self.is_snan():
                 raise ValueError("Cannot convert signaling NaN to float")
-            s = "-nan" if self._sign else "nan"
+            s = '-nan' if self._sign else 'nan'
         else:
             s = Decimal.__str__(self)
         return float(s)
