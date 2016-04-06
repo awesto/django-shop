@@ -75,15 +75,15 @@ name. Here are two examples:
 
 .. code-block:: shell
 
-	.tox/py27-django19/bin/py.test testshop/test_money.py
-	.tox/py27-django19/bin/py.test testshop/test_money.py -k test_pickle
+	py.test testshop/test_money.py
+	py.test testshop/test_money.py -k test_pickle
 
 Measuring which lines of code have been "seen" be the test runner is an important task while
 testing. Do this by creating a coverage report, for example with:
 
 .. code-block:: shell
 
-	coverage run .tox/py27-django19/bin/py.test testshop
+	coverage run $(which py.test) testshop
 	coverage report
 
 or if you to test only a specific class

@@ -56,20 +56,23 @@ touch the code of the framework. Aiming for ubiquity means, that no matter how c
 is, it *must be possible to be implemented* into the merchant's own implementation, rather than by
 patching the framework itself.
 
-Otherwise *its a bug in the framework* - not just a missing feature! I'm sure some merchants will
+Otherwise *this framework contains a bug* - not just a missing feature! I'm sure some merchants will
 come up with really weird ideas, I never have thought of. If the **djangoSHOP** framework inhibits
-to add a feature, then feel free to create a bug report. 
+to add a feature, then feel free to create a bug report. The claim "*feature completeness*" for a
+framework is the analogue to the term "*Turing completeness*" for programming languages.
 
 Consider that on many sites, a merchant's requirement is patched into existing code. This means
 that every time a new version of the e-commerce software is released, that patch must be repeatedly
 adopted. This can become rather dangerous when security flaws in that software must be closed
-immediately.
+immediately. **DjangoSHOP** instead is designed, so that the merchant's implementation and third
+party plugins have to subclass its models and to override its templates accordingly.
 
 
 Minimalism
 ----------
 
-In a nutshell, **djangoSHOP** offers this set of basic functionalities:
+In a nutshell, **djangoSHOP** offers this set of basic functionalities, to keep the framework
+simple and stupid (KISS) without reinventing the wheel:
 
 * A catalog to display product lists and detail views.
 * Some methods to add products to the cart.
