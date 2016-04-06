@@ -178,14 +178,7 @@ class MoneyMaker(type):
             Build a class named MoneyIn<currency_code> inheriting from Decimal.
             """
             if isinstance(value, cls):
-                assert cls._currency_code == value._currency_code
-            if isinstance(value, (cls, Decimal)):
-                self = Decimal.__new__(cls)
-                self._exp = value._exp
-                self._sign = value._sign
-                self._int = value._int
-                self._is_special = value._is_special
-                return self
+                assert cls._currency_code == value._currency_code, "Money type currency mismatch"
             if value is None:
                 value = 'NaN'
             try:
@@ -205,7 +198,7 @@ class MoneyMaker(type):
         try:
             cents = Decimal('.' + CURRENCIES[currency_code][1] * '0')
         except InvalidOperation:
-            # Currencies with no decimal places, ex. JPY
+            # Currencies with no decimal places, ex. JPY, HUF
             cents = Decimal()
         attrs = {'_currency_code': currency_code, '_currency': CURRENCIES[currency_code],
                  '_cents': cents, '__new__': new_money}
