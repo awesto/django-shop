@@ -40,10 +40,10 @@ class AbstractMoney(Decimal):
     def __format__(self, specifier, context=None, _localeconv=None):
         if self.is_nan():
             amount = '–'
-        elif context is None:
-            amount = self.quantize(self._cents).__format__(specifier, context, _localeconv)
+        elif specifier in ('', 'f',):
+            amount = self.quantize(self._cents).__format__(specifier)
         else:
-            amount = Decimal.__format__(self, specifier, context, _localeconv)
+            amount = Decimal.__format__(self, specifier)
         vals = dict(code=self._currency_code, symbol=self._currency[2],
                     currency=self._currency[3], amount=amount)
         return self.MONEY_FORMAT.format(**vals)
@@ -103,7 +103,7 @@ class AbstractMoney(Decimal):
         if self.is_nan():
             if self.is_snan():
                 raise ValueError("Cannot convert signaling NaN to float")
-            s = '-nan' if self._sign else 'nan'
+            s = '-nan' if self.is_signed() else 'nan'
         else:
             s = Decimal.__str__(self)
         return float(s)
