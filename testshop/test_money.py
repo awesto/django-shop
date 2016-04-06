@@ -73,7 +73,7 @@ class MoneyMakerTest(TestCase):
     def test_str(self):
         EUR = MoneyMaker('EUR')
         value = EUR()
-        self.assertEqual(str(value), "€ –".encode('utf-8'))
+        self.assertEqual(str(value).decode('utf-8'), "€ –")
 
     def test_reduce(self):
         Money = MoneyMaker('EUR')
@@ -212,8 +212,8 @@ class MoneyMakerTest(TestCase):
         self.assertDictEqual({'amount': '€ 1.23'}, serializer.data)
 
     def test_json(self):
-        Money = MoneyMaker('EUR')
+        EUR = MoneyMaker('EUR')
         renderer = JSONRenderer()
-        data = {'amount': Money('1.23')}
+        data = {'amount': EUR('1.23')}
         rendered_json = renderer.render(data, 'application/json')
-        self.assertDictEqual({'amount': '€ 1.23'}, json.loads(rendered_json))
+        self.assertDictEqual({'amount': "€ 1.23"}, json.loads(rendered_json.decode('utf-8')))
