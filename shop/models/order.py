@@ -86,7 +86,8 @@ class OrderManager(models.Manager):
 
     def get_latest_url(self):
         """
-        Returns the URL of the page with the detail view for the latest order related to the current customer
+        Returns the URL of the page with the detail view for the latest order related to the
+        current customer. This normally is the thank-you view.
         """
         try:
             return Page.objects.public().get(reverse_id='shop-order-last').get_absolute_url()
