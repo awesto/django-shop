@@ -70,7 +70,7 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'djangocms_admin_style',
+    #'djangocms_admin_style', the default style in Django-1.9 is good enough
     'django.contrib.admin',
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
