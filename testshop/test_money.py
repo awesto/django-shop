@@ -1,5 +1,6 @@
 # -*- coding: utf-8
 from __future__ import unicode_literals
+
 from decimal import Decimal, getcontext
 import math
 try:
@@ -8,6 +9,7 @@ except ImportError:
     import pickle
 import json
 from django.test import TestCase
+from django.utils.six import text_type
 from rest_framework import serializers
 from shop.money.money_maker import AbstractMoney, MoneyMaker, _make_money
 from shop.rest.money import MoneyField, JSONRenderer
@@ -57,32 +59,22 @@ class MoneyMakerTest(TestCase):
         self.assertRaises(AssertionError, lambda: Money(value))
 
     def test_create_instance_from_decimal(self):
-        Money = MoneyMaker('EUR')
         value = Decimal('1.2')
-        inst = Money(value)
-        self.assertEquals(inst, value)
+        EUR = MoneyMaker('EUR')
+        self.assertIsInstance(EUR(), Decimal)
+        self.assertEquals(value, EUR(value))
 
-    def test_unicode_with_value(self):
-        Money = MoneyMaker('EUR')
-        value = Money(1)
-        self.assertEqual(unicode(value), "€ 1.00")
-
-    def test_unicode_with_nan(self):
-        Money = MoneyMaker()
-        value = Money()
-        self.assertEqual(unicode(value), "€ –")
-
-    def test_unicode_with_too_much_precision(self):
-        Money = MoneyMaker()
-        value = Money(1)
+    def test_str_with_too_much_precision(self):
+        EUR = MoneyMaker('EUR')
+        value = EUR(1)
         prec = getcontext().prec
         value._cents = Decimal("0." + ("0" * prec))
-        self.assertRaises(ValueError, lambda: unicode(value))
+        self.assertRaises(ValueError, lambda: str(value))
 
     def test_str(self):
-        Money = MoneyMaker('EUR')
-        value = Money()
-        self.assertEqual(str(value), "€ –".encode("utf-8"))
+        EUR = MoneyMaker('EUR')
+        value = EUR()
+        self.assertEqual(text_type(value), "€ –")
 
     def test_reduce(self):
         Money = MoneyMaker('EUR')
@@ -95,14 +87,23 @@ class MoneyMakerTest(TestCase):
         self.assertTrue(Money.is_nan())
 
     def test_format(self):
-        Money = MoneyMaker('EUR')
-        self.assertEqual(format(Money()), "€ –")
-        self.assertEqual(format(Money(1)), "€ 1.00")
+        EUR, JPY = MoneyMaker('EUR'), MoneyMaker('JPY')
+        self.assertEqual(format(EUR()), "€ –")
+        self.assertEqual(format(JPY()), "¥ –")
+        self.assertEqual(format(EUR(1.1)), "€ 1.10")
+        self.assertEqual(format(JPY(1)), "¥ 1")
 
-    def test_format_with_context(self):
-        # This uses Decimal.__format__
-        Money = MoneyMaker()
-        self.assertEqual(Money(1).__format__("", getcontext()), "€ 1")
+    def test_float_format(self):
+        EUR = MoneyMaker('EUR')
+        d = Decimal(1.99)
+        e = EUR(d)
+        self.assertEqual('{}'.format(e), "€ 1.99")
+        self.assertEqual('{:}'.format(e), "€ 1.99")
+        self.assertEqual('{:f}'.format(e), "€ 1.99")
+        self.assertEqual('{:.5}'.format(e), "€ 1.9900")
+        self.assertEqual('{:.5f}'.format(e), "€ 1.99000")
+        self.assertEqual('{:.20}'.format(e), "€ {:.20}".format(d))
+        self.assertEqual('{:.20f}'.format(e), "€ {:.20f}".format(d))
 
     def test_add(self):
         Money = MoneyMaker()
@@ -144,7 +145,7 @@ class MoneyMakerTest(TestCase):
         self.assertEqual(Money(1) * 0, Money(0))
         self.assertEqual(Money(1).__rmul__(-1), Money(-1))
         self.assertEqual(Money(1).__rmul__(1.0), Money(1))
-        self.assertEqual(unicode(Money(1) * None), "€ –")
+        self.assertEqual(format(Money(1) * None), "€ –")
         self.assertRaises(ValueError, lambda: Money(1) * (Money(1)))
 
     def test_div(self):
@@ -207,13 +208,13 @@ class MoneyMakerTest(TestCase):
 
     def test_rest(self):
         Money = MoneyMaker('EUR')
-        instance = type(b'TestMoney', (object,), {'amount': Money('1.23')})
+        instance = type(str('TestMoney'), (object,), {'amount': Money('1.23')})
         serializer = TestMoneySerializer(instance)
         self.assertDictEqual({'amount': '€ 1.23'}, serializer.data)
 
     def test_json(self):
-        Money = MoneyMaker('EUR')
+        EUR = MoneyMaker('EUR')
         renderer = JSONRenderer()
-        data = {'amount': Money('1.23')}
+        data = {'amount': EUR('1.23')}
         rendered_json = renderer.render(data, 'application/json')
-        self.assertDictEqual({'amount': '€ 1.23'}, json.loads(rendered_json))
+        self.assertDictEqual({'amount': "€ 1.23"}, json.loads(rendered_json.decode('utf-8')))

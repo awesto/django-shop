@@ -32,16 +32,17 @@ system:
 * bower: http://bower.io/
 * Node Package Manager: https://www.npmjs.com/
 * Python 2.7 (Latest minor version recommended)
-* Django 1.8 (Latest minor version recommended)
+* Django 1.9 (Latest minor version recommended)
 
 .. code-block:: shell
 
 	$ virtualenv shoptutorial
 	$ source shoptutorial/bin/activate
+	$ mkdir Tutorial; cd Tutorial
 	(shoptutorial)$ git clone --depth 1 https://github.com/awesto/django-shop
 	(shoptutorial)$ cd django-shop
-	(shoptutorial)$ pip install -r requirements/demo.txt
 	(shoptutorial)$ pip install -e .
+	(shoptutorial)$ pip install -r requirements/tutorial.txt
 	(shoptutorial)$ npm install
 	(shoptutorial)$ bower install
 

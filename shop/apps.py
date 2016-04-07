@@ -19,7 +19,7 @@ class ShopConfig(AppConfig):
 
         post_transition.connect(order_event_notification)
 
-        # Monkey patches for Django-1.7
+        # Monkey patches for Django-1.8
         if get_tuple_version()[:2] < (1, 9):
             from django.utils import numberformat
             from shop.patches import numberformat as patched_numberformat

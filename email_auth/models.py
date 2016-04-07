@@ -15,7 +15,10 @@ from django.utils.translation import ugettext_lazy as _
 
 class UserManager(BaseUserManager):
     def get_by_natural_key(self, username):
-        return self.get(username=username)
+        try:
+            return self.get(username=username)
+        except self.model.DoesNotExist:
+            return self.get(is_active=True, email=username)
 
 
 @python_2_unicode_compatible

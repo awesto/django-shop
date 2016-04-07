@@ -11,8 +11,10 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'treebeard',
     'cms',
+    'menus',
     'post_office',
     'filer',
+    'easy_thumbnails',
     'shop',
     'testshop',
 )

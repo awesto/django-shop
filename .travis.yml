@@ -19,9 +19,6 @@ script:
   - tox -r -e "$TOX_ENV"
 
 matrix:
-  allow_failures:
-    - env: DJANGOVER=django19
-    - python: 3.4
   exclude:
     - python: 3.4
       env: TOX_ENV=demo

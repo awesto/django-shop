@@ -1,5 +1,6 @@
 # -*- coding: utf-8
 from __future__ import unicode_literals
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.backends.db import SessionStore
@@ -176,14 +177,14 @@ class CustomerTest(TestCase):
         Check that all queries on model Customer do an INNER JOIN on table `auth_user`.
         """
         qs = Customer.objects.all()
-        sql = qs.query.__str__()
-        self.assertIn('INNER JOIN "auth_user" ON ( "testshop_customer"."user_id" = "auth_user"."id" )', sql)
-        simpsons = qs.filter(last_name='Simpson')
-        self.assertEqual(simpsons.count(), 1)
-        bart = simpsons.last()
-        self.assertEqual(bart.last_name, 'Simpson')
-        self.assertEqual(bart.first_name, 'Bart')
-        self.assertEqual(bart.email, 'bart@thesimpsons.com')
+        with self.assertNumQueries(1):
+            simpsons = qs.filter(last_name='Simpson')
+            self.assertEqual(simpsons.count(), 1)
+        with self.assertNumQueries(1):
+            bart = simpsons.last()
+            self.assertEqual(bart.last_name, 'Simpson')
+            self.assertEqual(bart.first_name, 'Bart')
+            self.assertEqual(bart.email, 'bart@thesimpsons.com')
         bart.last_name = 'van Rossum'
         bart.save()
         self.assertEqual(simpsons.count(), 0)

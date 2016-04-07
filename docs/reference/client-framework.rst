@@ -34,8 +34,8 @@ straight forward. Change the outermost HTML element, which typically is the ``<h
 
 somewhere in this file, include the Javascript files required by Angular.
 
-For a better organization of the inluded files, it is strongly recommended to use django-sekizai_
-as assets manager:
+For a better organization of the included files, it is strongly recommended to use django-sekizai_
+as the assets manager:
 
 .. code-block:: django
 
@@ -49,7 +49,7 @@ as assets manager:
 	{% addtoblock "js" %}<script src="{% static 'bower_components/angular-messages/angular-messages.min.js' %}"></script>{% endaddtoblock %}
 
 Before the closing ``</body>``-tag, we then combine those includes and initialize the client side
-application. Say we declare a base template for our project:
+application. Say, we declare a base template for our project:
 
 .. code-block:: django
 	:caption: myshop/pages/base.html
@@ -97,11 +97,30 @@ Angular Modules
 ===============
 
 The **djangoSHOP** framework declares a bunch of Angular directives and controllers, grouped into
-separate modules. All these modules are placed into their own Javascript file and use the same
+separate modules. All these modules are placed into their own JavaScript file and use the same
 but unique naming scheme, for example ``django.shop.auth``, ``django.shop.cart``,
 ``django.shop.catalog`` etc., to avoid conflicts with other third party modules.
 
+This is where Sekizai's ``render_block`` templatetag, together with the postprocessor
+``module_list`` we can manage our AngularJS dependencies:
+
+.. block:: Django
+
+	angular.module('myShop', [/* other dependencies */
+	    {% render_block "shop-ng-requires" postprocessor "shop.sekizai_processors.module_list" %}
+	])
+
+By adding Sekizai's ``render_block`` templatetag, together with the postprocessor ``module_config``,
+at the end of our initialization statement, we can add arbitrary configuration code.
+
+.. block:: Django
+
+	angular.module('myShop', [/* module dependencies */]
+	).{% render_block "shop-ng-config" postprocessor "shop.sekizai_processors.module_config" %};
+
+Unless additional client functionality is required, these are the only parts where our project
+requires us to write JavaScript.
 
 
 .. _AngularJS: https://www.angularjs.org/
-.. _django-sekizai: 
+.. _django-sekizai: https://django-sekizai.readthedocs.org/en/latest/

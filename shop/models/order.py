@@ -86,7 +86,8 @@ class OrderManager(models.Manager):
 
     def get_latest_url(self):
         """
-        Returns the URL of the page with the detail view for the latest order related to the current customer
+        Returns the URL of the page with the detail view for the latest order related to the
+        current customer. This normally is the thank-you view.
         """
         try:
             return Page.objects.public().get(reverse_id='shop-order-last').get_absolute_url()
@@ -237,8 +238,8 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         """
         amount = self.orderpayment_set.aggregate(amount=Sum('amount'))['amount']
         if amount is None:
-            amount = 0
-        return MoneyMaker(self.currency)(amount)
+            amount = MoneyMaker(self.currency)()
+        return amount
 
     @property
     def outstanding_amount(self):
@@ -253,8 +254,8 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     @transition(field='status', source='*', target='payment_confirmed', conditions=[is_fully_paid])
     def acknowledge_payment(self, by=None):
         """
-        Change status to 'payment_confirmed'. This status code is known globally and can be used
-        by all external plugins to check, if an Order has been fully paid.
+        Change status to `payment_confirmed`. This status code is known globally and can be used
+        by all external plugins to check, if an Order object has been fully paid.
         """
 
     @classmethod
@@ -270,18 +271,17 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
 OrderModel = deferred.MaterializedModel(BaseOrder)
 
 
-class OrderPayment(with_metaclass(WorkflowMixinMetaclass, models.Model)):
+class OrderPayment(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     A model to hold received payments for a given order.
     """
     order = deferred.ForeignKey(BaseOrder, verbose_name=_("Order"))
-    status = FSMField(default='new', protected=True, verbose_name=_("Status"))
     amount = MoneyField(_("Amount paid"),
         help_text=_("How much was paid with this particular transfer."))
     transaction_id = models.CharField(_("Transaction ID"), max_length=255,
         help_text=_("The transaction processor's reference"))
     created_at = models.DateTimeField(_("Received at"), auto_now_add=True)
-    payment_method = models.CharField(_("Payment method"), max_length=255,
+    payment_method = models.CharField(_("Payment method"), max_length=50,
         help_text=_("The payment backend used to process the purchase"))
 
     class Meta:
@@ -289,30 +289,11 @@ class OrderPayment(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         verbose_name_plural = pgettext_lazy('order_models', "Order payments")
 
 
-class BaseOrderShipping(with_metaclass(WorkflowMixinMetaclass, models.Model)):
-    """
-    A model to keep track on the shipping of each order's item.
-    """
-    order = deferred.ForeignKey(BaseOrder, verbose_name=_("Order"))
-    status = FSMField(default='new', protected=True, verbose_name=_("Status"))
-    shipping_id = models.CharField(_("Shipping ID"), max_length=255,
-        help_text=_("The transaction processor's reference"))
-    shipping_method = models.CharField(_("Shipping method"), max_length=255,
-        help_text=_("The shipping backend used to deliver the items for this order"))
-
-    class Meta:
-        abstract = True
-        verbose_name = _("Shipping order")
-        verbose_name_plural = _("Shipping orders")
-
-OrderShippingModel = deferred.MaterializedModel(BaseOrderShipping)
-
-
+@python_2_unicode_compatible
 class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     An item for an order.
     """
-    # TODO: add foreign key to OrderShipping
     order = deferred.ForeignKey(BaseOrder, related_name='items', verbose_name=_("Order"))
     product_name = models.CharField(_("Product name"), max_length=255, null=True, blank=True,
         help_text=_("Product name at the moment of purchase."))
@@ -331,6 +312,9 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         abstract = True
         verbose_name = _("Order item")
         verbose_name_plural = _("Order items")
+
+    def __str__(self):
+        return self.product_name
 
     @classmethod
     def perform_model_checks(cls):

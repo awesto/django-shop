@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from django.conf import settings
 from django.conf.urls import patterns, url
 from django.contrib import admin
@@ -10,7 +11,8 @@ from django.http import HttpResponse
 from django.template import RequestContext
 from django.template.loader import select_template
 from django.utils.html import format_html
-from django.utils.translation import ugettext_lazy as _
+from django.utils.formats import number_format
+from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from fsm_admin.mixins import FSMTransitionMixin
 from shop.models.customer import CustomerModel
 from shop.models.order import OrderItemModel, OrderPayment
@@ -40,23 +42,29 @@ class OrderPaymentInline(admin.TabularInline):
 class OrderItemInline(admin.StackedInline):
     model = OrderItemModel
     extra = 0
-    readonly_fields = ('product_code', 'product_name', 'unit_price', 'line_total', 'extra',)
     fields = (
-        ('product_code', 'product_name',),
-        ('quantity', 'unit_price', 'line_total',),
-        'extra',
+        ('product_code', 'unit_price', 'line_total',),
+        ('quantity',),
+        'get_extra_data',
     )
+    readonly_fields = ('product_code', 'quantity', 'unit_price', 'line_total', 'get_extra_data',)
 
-    def get_formset(self, request, obj=None, **kwargs):
-        formset = super(OrderItemInline, self).get_formset(request, obj, **kwargs)
-        return formset
+    def has_add_permission(self, request, obj=None):
+        return False
 
     def has_delete_permission(self, request, obj=None):
         return False
 
+    def get_max_num(self, request, obj=None, **kwargs):
+        return self.model.objects.filter(order=obj).count()
+
+    def get_extra_data(self, obj):
+        return obj.extra  # TODO: use a template to format this data
+    get_extra_data.short_description = pgettext_lazy('admin', "Extra data")
+
 
 class StatusListFilter(admin.SimpleListFilter):
-    title = _("Status")
+    title = pgettext_lazy('admin', "Status")
     parameter_name = 'status'
 
     def lookups(self, request, model_admin):
@@ -77,15 +85,27 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
     fsm_field = ('status',)
     date_hierarchy = 'created_at'
     inlines = (OrderItemInline, OrderPaymentInline,)
-    readonly_fields = ('get_number', 'status_name', 'total', 'subtotal', 'get_customer_link',
-        'outstanding_amount', 'created_at', 'updated_at', 'extra', 'stored_request',)
+    readonly_fields = ('get_number', 'status_name', 'get_total', 'get_subtotal', 'get_customer_link',
+        'get_outstanding_amount', 'created_at', 'updated_at', 'extra', 'stored_request',)
     fields = ('get_number', 'status_name', ('created_at', 'updated_at'),
-        ('subtotal', 'total', 'outstanding_amount',), 'get_customer_link', 'extra', 'stored_request',)
+        ('get_subtotal', 'get_total', 'get_outstanding_amount',), 'get_customer_link', 'extra', 'stored_request',)
     actions = None
 
     def get_number(self, obj):
         return obj.get_number()
-    get_number.short_description = _("Order number")
+    get_number.short_description = pgettext_lazy('admin', "Order number")
+
+    def get_total(self, obj):
+        return number_format(obj.total)
+    get_total.short_description = pgettext_lazy('admin', "Total")
+
+    def get_subtotal(self, obj):
+        return number_format(obj.subtotal)
+    get_subtotal.short_description = pgettext_lazy('admin', "Subtotal")
+
+    def get_outstanding_amount(self, obj):
+        return number_format(obj.outstanding_amount)
+    get_outstanding_amount.short_description = pgettext_lazy('admin', "Outstanding amount")
 
     def has_add_permission(self, request):
         return False
@@ -99,7 +119,7 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
             return format_html('<a href="{0}" target="_new">{1}</a>', url, obj.customer.get_username())
         except NoReverseMatch:
             return format_html('<strong>{0}</strong>', obj.customer.get_username())
-    get_customer_link.short_description = _("Customer")
+    get_customer_link.short_description = pgettext_lazy('admin', "Customer")
     get_customer_link.allow_tags = True
 
     def get_search_fields(self, request):
@@ -112,10 +132,6 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
         except FieldDoesNotExist:
             pass
         return fields
-
-    def outstanding_amount(self, obj):
-        return obj.outstanding_amount
-    outstanding_amount.short_description = _("Outstanding amount")
 
 
 class PrintOrderAdminMixin(object):
@@ -130,8 +146,8 @@ class PrintOrderAdminMixin(object):
 
     def get_urls(self):
         my_urls = patterns('',
-            url(r'^(?P<pk>\d+)/print_delivery_note/$', self.admin_site.admin_view(self.render_delivery_note),
-                name='print_delivery_note'),
+            url(r'^(?P<pk>\d+)/print_confirmation/$', self.admin_site.admin_view(self.render_confirmation),
+                name='print_confirmation'),
             url(r'^(?P<pk>\d+)/print_invoice/$', self.admin_site.admin_view(self.render_invoice),
                 name='print_invoice'),
         )
@@ -148,10 +164,10 @@ class PrintOrderAdminMixin(object):
         }))
         return HttpResponse(content)
 
-    def render_delivery_note(self, request, pk=None):
+    def render_confirmation(self, request, pk=None):
         template = select_template([
-            '{}/print/delivery-note.html'.format(settings.SHOP_APP_LABEL.lower()),
-            'shop/print/delivery-note.html'
+            '{}/print/order-confirmation.html'.format(settings.SHOP_APP_LABEL.lower()),
+            'shop/print/order-confirmation.html'
         ])
         return self._render_letter(request, pk, template)
 
@@ -164,7 +180,7 @@ class PrintOrderAdminMixin(object):
 
     def print_out(self, obj):
         if obj.status == 'pick_goods':
-            button = reverse('admin:print_delivery_note', args=(obj.id,)), _("Delivery Note")
+            button = reverse('admin:print_confirmation', args=(obj.id,)), _("Order Confirmation")
         elif obj.status == 'pack_goods':
             button = reverse('admin:print_invoice', args=(obj.id,)), _("Invoice")
         else:

@@ -70,7 +70,7 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'djangocms_admin_style',
+    #'djangocms_admin_style', the default style in Django-1.9 is good enough
     'django.contrib.admin',
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
@@ -249,6 +249,7 @@ TEMPLATES = [{
             'sekizai.context_processors.sekizai',
             'cms.context_processors.cms_settings',
             'shop.context_processors.customer',
+            'shop.context_processors.version',
             'shop_stripe.context_processors.public_keys',
         )
     }
@@ -337,7 +338,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 12,
 }
 
-SERIALIZATION_MODULES = {'json': b'shop.money.serializers'}
+SERIALIZATION_MODULES = {'json': str('shop.money.serializers')}
 
 
 ############################################
@@ -406,9 +407,6 @@ CACSCADE_WORKAREA_GLOSSARY = {
 CMS_PLACEHOLDER_CONF = {
     'Breadcrumb': {
         'plugins': ['BreadcrumbPlugin'],
-        #  'text_only_plugins': ['TextLinkPlugin'],
-        #  'parent_classes': {'BootstrapRowPlugin': []},
-        #  'require_parent': False,
         'glossary': CACSCADE_WORKAREA_GLOSSARY,
     },
     'Commodity Details': {
@@ -511,7 +509,8 @@ SHOP_EDITCART_NG_MODEL_OPTIONS = "{updateOn: 'default blur', debounce: {'default
 
 SHOP_ORDER_WORKFLOWS = (
     'shop.payment.defaults.PayInAdvanceWorkflowMixin',
-    'shop.payment.defaults.CommissionGoodsWorkflowMixin',
+    'shop.shipping.delivery.PartialDeliveryWorkflowMixin' if SHOP_TUTORIAL == 'polymorphic'
+    else 'shop.shipping.defaults.CommissionGoodsWorkflowMixin',
     'shop_stripe.payment.OrderWorkflowMixin',
 )
 

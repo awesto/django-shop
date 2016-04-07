@@ -3,8 +3,8 @@ from __future__ import unicode_literals
 
 from django.core.exceptions import ImproperlyConfigured
 from django.forms import widgets
-from django.template import Template
-from django.template.loader import select_template, TemplateDoesNotExist
+from django.template import Template, TemplateDoesNotExist
+from django.template.loader import select_template
 from django.utils.html import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from cms.apphook_pool import apphook_pool

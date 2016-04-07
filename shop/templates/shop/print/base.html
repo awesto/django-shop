@@ -34,7 +34,11 @@
 		#page_template .footer { height: 20mm; }
 	{% endblock styles %}
 	</style>
+	{% if DJANGO_VERSION < "1.9" %}
 	<script type="text/javascript" src="{% static 'admin/js/jquery.min.js' %}"></script>
+	{% else %}
+	<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.min.js' %}"></script>
+	{% endif %}
 	<script type="text/javascript" src="{% static 'shop/js/admin/jquery.columnizer.js' %}"></script>
 	<script type="text/javascript">
 	$(function() {
