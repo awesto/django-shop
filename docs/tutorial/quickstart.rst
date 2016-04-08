@@ -15,9 +15,9 @@ Now you may run a fully configured **djangoSHOP** image on your local machine:
 
 .. code-block:: bash
 
-	docker run -p 9001:9001 jrief/uwsgi-django-shop:latest
+	docker run -p 9001:9001 jrief/myshop-sample:latest
 
-This image is rather large (1.7 GB) therefore it may take some time to download.
+This image is rather large (1.9 GB) therefore it may take some time to download.
 
 Locate the IP address of the running container using ``docker-machine ip default``. Then point
 a browser onto this address using port 9001, for instance http://192.168.99.100:9001/en/
