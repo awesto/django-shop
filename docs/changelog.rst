@@ -4,19 +4,23 @@
 Changelog for djangoSHOP
 ========================
 
-0.9.0rc3
-========
+0.9.1
+=====
+
+* Support for Python 3
+* Support for Django-1.9
+* Added abstract classes class:`shop.models.delivery.BaseDelivery` and class:`shop.models.delivery.BaseDeliveryItem`
+  for optional partial shipping.
+
+0.9.0
+=====
+
 * Separated class:`shop.views.catalog.ProductListView` into its base and the new class
   class:`shop.views.catalog.CMSPageProductListView` which already has added it appropriate
   filters.
 * Moved ``wsgi.py`` into upper folder.
 * Prototype of :class:`shop.cascade.DialogFormPluginBase.get_form_data` changed. It now accepts
   ``context``, ``instance`` and ``placeholder``.
-
-
-0.9.0rc2
-========
-
 * Fixed: It was impossible to enter the credit card information for Stripe and then proceed to the
   next step. Using Stripe was possible only on the last step. This restriction has gone.
 * It now also is possible to display a summary of your order before proceeding to the final
@@ -41,13 +45,6 @@ Changelog for djangoSHOP
 * Added class ``SyncCatalogView`` which can be used to synchronize the cart with a catalog list
   view.
 * Content of Checkout Forms is handled by a single transaction.
-
-0.9.0rc1
-========
-This is the initial public release base on the new code base. There are so many changes that this
-release can be considered as complete rewrite of the shop framework. Therefore instead of
-enumerating the new features, this section shows what remained from the old code base:
-
 * All models such as Product, Order, OrderItem, Cart, CartItem can be overridden by the merchant's
   implementation. However, we are using the deferred pattern, instead of configuration settings.
 * Categories must be implemented as separate **djangoSHOP** addons. However for many implementations
@@ -56,7 +53,9 @@ enumerating the new features, this section shows what remained from the old code
   that sense, that now the modifiers decide themselves, how to change the subtotal and final total.
 * Existing Payment Providers can be integrated without much hassle.
 
-But these things have changed:
+
+Since version 0.2.1 a lot of things have changed. Here is a short summary:
+==========================================================================
 
 * The API of **djangoSHOP** is accessible through a REST interface. This allows us to build MVC on
   top of that.
