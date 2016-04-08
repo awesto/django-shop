@@ -2,8 +2,8 @@ FROM jrief/fedora-uwsgi-python:latest
 
 MAINTAINER Jacob Rief <jacob.rief@gmail.com>
 
-RUN alternatives --install /usr/bin/python python /usr/bin/python3.4 2
-RUN alternatives --install /usr/bin/python python /usr/bin/python2.7 1
+#RUN alternatives --install /usr/bin/python python /usr/bin/python3.4 2
+#RUN alternatives --install /usr/bin/python python /usr/bin/python2.7 1
 RUN pip install --upgrade pip
 
 ADD uwsgi.ini /etc/uwsgi.ini
@@ -18,7 +18,7 @@ RUN chown redis.redis /etc/uwsgi.d/redis.ini
 
 ADD requirements.txt /tmp/requirements.txt
 RUN pip install -r /tmp/requirements.txt
-RUN pip install uwsgi https://github.com/jrief/django-shop/archive/develop.zip
+RUN pip install uwsgi https://github.com/awesto/django-shop/archive/master.zip
 
 RUN useradd -M -d /web -s /bin/bash django
 RUN mkdir -p /web/{logs,workdir,elasticsearch,redis}

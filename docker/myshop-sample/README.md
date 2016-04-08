@@ -11,12 +11,14 @@ docker build -t myshop-sample .
 docker create --name myshop-sample-initial -p 9001:9001 myshop-sample
 ```
 
-Start and stop the container:
+Start the container:
 
 ```
 docker start myshop-sample-initial
-docker stop myshop-sample-initial
 ```
+
+It may take some time until the container is ready, because beforehand the full-text search index
+must be build.
 
 Locate the IP address of your docker machine. Here we use 192.168.99.100, but depending your host's
 operating system, run:
@@ -42,6 +44,12 @@ In ``/web/logs`` you may check for information provided by the services running 
 *myshop-sample-initial*. After saving or touching the file ``/web/workdir/myshop.ini``, the
 Django application server restarts.
 
+If done, stop and remove the container:
+
+```
+docker stop myshop-sample-initial
+docker rm myshop-sample-initial
+```
 
 ## Separation of code from data
 
