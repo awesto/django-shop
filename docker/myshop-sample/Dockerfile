@@ -1,4 +1,4 @@
-FROM uwsgi-django-shop:latest
+FROM jrief/uwsgi-django-shop:latest
 
 MAINTAINER Jacob Rief <jacob.rief@gmail.com>
 
