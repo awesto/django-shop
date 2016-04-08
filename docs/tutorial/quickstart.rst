@@ -30,7 +30,7 @@ Docker image it is recommended to restart the container. First locate it using
 
 	$ docker ps -a
 	CONTAINER ID  IMAGE                           COMMAND                 CREATED
-	79b7b69a7473  jrief/uwsgi-django-shop:latest  "/usr/sbin/uwsgi --in"  11 minutes ago
+	79b7b69a7473  jrief/myshop-sample:latest  "/usr/sbin/uwsgi --in"  11 minutes ago
 	...
 	$ docker start 79b7b69a7473
 
