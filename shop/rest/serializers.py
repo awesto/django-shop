@@ -282,8 +282,7 @@ class BaseCartSerializer(serializers.ModelSerializer):
         fields = ('subtotal', 'extra_rows', 'total',)
 
     def to_representation(self, cart):
-        if isinstance(cart, CartModel):
-            cart.update(self.context['request'])
+        cart.update(self.context['request'])
         representation = super(BaseCartSerializer, self).to_representation(cart)
         return representation
 
