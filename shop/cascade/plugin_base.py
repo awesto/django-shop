@@ -90,7 +90,7 @@ class HeavySelect2Widget(HeavySelect2Widget):
         try:
             result = ProductSelectSerializer(ProductModel.objects.get(pk=value))
             choices = ((value, result.data['text']),)
-        except ProductModel.DoesNotExist:
+        except (ProductModel.DoesNotExist, ValueError):
             choices = ()
         html = super(HeavySelect2Widget, self).render(name, value, attrs=attrs, choices=choices)
         return html
@@ -131,7 +131,7 @@ class CatalogLinkForm(LinkForm):
                 'pk': self.cleaned_data['product'],
             }
 
-    def set_initial_product(self, initial):
+    def set_initial_product(self, data, initial):
         try:
             # check if that product still exists, otherwise return nothing
             Model = apps.get_model(*initial['link']['model'].split('.'))
