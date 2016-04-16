@@ -11,6 +11,8 @@ Changelog for djangoSHOP
 * Support for Django-1.9
 * Added abstract classes class:`shop.models.delivery.BaseDelivery` and class:`shop.models.delivery.BaseDeliveryItem`
   for optional partial shipping.
+* Fixed issue #333: accessing the cart API endpoint when there was no cart yet
+  caused an error.
 
 0.9.0
 =====
