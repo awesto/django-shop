@@ -44,7 +44,7 @@ setup(
         'django-filer>=1.0.6',
         'django-ipware>=1.1.1',
         'django-fsm>=2.2.1',
-        'djangorestframework>=3.1,<3.2',
+        'djangorestframework>=3.1',
         'django-angular>=0.8.1',
         'django-select2>=5.5.0',
         'django-sass-processor>=0.3.4',
