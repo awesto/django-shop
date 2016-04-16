@@ -4,7 +4,7 @@
 Changelog for djangoSHOP
 ========================
 
-0.9.1
+0.9.2
 =====
 
 * Support for Python 3
