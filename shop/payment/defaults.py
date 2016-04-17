@@ -83,7 +83,7 @@ class CancelOrderWorkflowMixin(object):
     def no_open_deposits(self):
         return self.amount_paid == 0
 
-    @transition(field='status', source=['awaiting_payment'], target='order_canceled',
+    @transition(field='status', source=['*'], target='order_canceled',
         conditions=[no_open_deposits], custom=dict(admin=True, button_name=_("Cancel Order")))
     def cancel_order(self):
         """Signals that an Order shall be canceled."""
