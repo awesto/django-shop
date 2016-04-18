@@ -437,6 +437,7 @@ CMSPLUGIN_CASCADE = {
         'HorizontalRulePlugin',
         'ExtraAnnotationFormPlugin',
         'ShopProceedButton',
+        'CarouselPlugin',
     ),
     'segmentation_mixins': (
         ('shop.cascade.segmentation.EmulateCustomerModelMixin', 'shop.cascade.segmentation.EmulateCustomerAdminMixin'),
