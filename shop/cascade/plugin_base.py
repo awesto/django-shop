@@ -131,7 +131,7 @@ class CatalogLinkForm(LinkForm):
                 'pk': self.cleaned_data['product'],
             }
 
-    def set_initial_product(self, data, initial):
+    def set_initial_product(self, initial):
         try:
             # check if that product still exists, otherwise return nothing
             Model = apps.get_model(*initial['link']['model'].split('.'))
