@@ -8,10 +8,12 @@ try:
 except ImportError:
     import pickle
 import json
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.utils.six import text_type
 from rest_framework import serializers
 from shop.money.money_maker import AbstractMoney, MoneyMaker, _make_money
+from shop.money.fields import MoneyField as MoneyDbField
 from shop.rest.money import MoneyField, JSONRenderer
 
 
@@ -61,8 +63,8 @@ class MoneyMakerTest(TestCase):
     def test_create_instance_from_decimal(self):
         value = Decimal('1.2')
         EUR = MoneyMaker('EUR')
-        self.assertIsInstance(EUR(), Decimal)
-        self.assertEquals(value, EUR(value))
+        self.assertTrue(issubclass(EUR, Decimal))
+        self.assertIsInstance(EUR(value), Decimal)
 
     def test_str_with_too_much_precision(self):
         EUR = MoneyMaker('EUR')
@@ -132,9 +134,9 @@ class MoneyMakerTest(TestCase):
 
     def test_neg(self):
         Money = MoneyMaker()
-        self.assertEqual(- Money(1), -1)
-        self.assertEqual(- Money(-1), 1)
-        self.assertEqual(- Money(0), 0)
+        self.assertEqual(- Money(1), Money(-1))
+        self.assertEqual(- Money(-1), Money(1))
+        self.assertEqual(- Money(0), Money(0))
 
     def test_mul(self):
         Money = MoneyMaker()
@@ -218,3 +220,24 @@ class MoneyMakerTest(TestCase):
         data = {'amount': EUR('1.23')}
         rendered_json = renderer.render(data, 'application/json')
         self.assertDictEqual({'amount': "€ 1.23"}, json.loads(rendered_json.decode('utf-8')))
+
+
+class MoneyDbFieldTests(TestCase):
+
+    def test_to_python(self):
+        EUR = MoneyMaker('EUR')
+        f = MoneyDbField(currency='EUR', null=True)
+        self.assertEqual(f.to_python(3), EUR('3'))
+        self.assertEqual(f.to_python('3.14'), EUR('3.14'))
+        with self.assertRaises(ValidationError):
+            f.to_python('abc')
+
+    def test_default(self):
+        EUR = MoneyMaker('EUR')
+        f = MoneyDbField(currency='EUR', null=False)
+        self.assertEqual(f.get_default(), EUR())
+        f = MoneyDbField(currency='EUR', null=True)
+        self.assertEqual(f.get_default(), EUR())
+        f = MoneyDbField(currency='EUR')
+        self.assertEqual(f.get_default(), EUR())
+
