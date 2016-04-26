@@ -12,8 +12,8 @@ Changelog for djangoSHOP
   :class:`shop.models.order.OrderItem`.
 * Fixed #333: Accessing the cart when there is no cart assiciated with a customer.
 * Removed Apphook :class:`shop.cms_apps.OrderApp`. This class now must be added to the project's
-  ``cms_apps.py``, but allows to override the :class:`shop.rest.serializers.OrderListSerializer` and
-  :class:`shop.rest.serializers.OrderDetailSerializer`.
+  ``cms_apps.py``. This allows the merchant to override the
+  :class:`shop.rest.serializers.OrderListSerializer` and :class:`shop.rest.serializers.OrderDetailSerializer`.
 * Bugfix: declared django-rest-auth as requirement in setup.py.
 
 

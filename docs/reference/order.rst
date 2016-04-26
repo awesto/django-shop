@@ -154,7 +154,7 @@ This apphook uses the class :class:`shop.views.order.OrderView` to render the or
 detail views using the serializers :class:`shop.rest.serializers.OrderListSerializer` and
 :class:`shop.rest.serializers.OrderDetailSerializer`. Sometimes these defaults aren't enough and
 must be extended by a customized serializer. Say, our order contains a reference to the shipping
-address. Then we can add this as a new field to our serializer class:
+and billing addresses. Then we can extend our serializer class by adding them:
 
 .. code-block:: python
 	:caption: myshop/serializers.py
@@ -162,13 +162,11 @@ address. Then we can add this as a new field to our serializer class:
 	from shop.rest.serializers import OrderDetailSerializer
 
 	class CustomOrderSerializer(OrderDetailSerializer):
-	    shipping_address = serializers.SerializerMethodField()
-
-	    def get_shipping_address(self, order):
-	        return order.shipping_address.as_text()
+	    shipping_address_text = serializers.CharField(read_only=True)
+	    billing_address_text = serializers.CharField(read_only=True)
 
 We now can replace the ``urls`` attribute in our apphook class with, say ``['myshop.urls.order']``
-and replace the default serializer with our customized one:
+and exchange the default serializer with our customized one:
 
 .. code-block:: python
 	:caption: myshop/urls/order.py
@@ -183,9 +181,8 @@ and replace the default serializer with our customized one:
 	        detail_serializer_class=CustomOrderSerializer)),
 	)
 
-Now, when invoking the order detail page appending ``?format=api`` to the URL, then a new field
-named ``shipping_address`` shall appear in our context. Depending on the chosen rendering template
-for the address field, it shall contain the formatted shipping address.
+Now, when invoking the order detail page appending ``?format=api`` to the URL, then two new fields,
+``shipping_address_text`` and ``billing_address_text`` shall appear in our context.
 
 
 Add the Order list view via CMS-Cascade Plugin
