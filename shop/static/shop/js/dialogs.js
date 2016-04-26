@@ -56,7 +56,7 @@ djangoShopModule.controller('DialogController',
 }]);
 
 
-// Directive <form shop-dialog-form> (must be added as attribute to the <form> element)
+// Directive <form shop-dialog-form ...> (must be added as attribute to the <form> element)
 // It is used to add an `upload()` method to the scope, so that `ng-change="upload()"`
 // can be added to any input element. Use it to upload the models on the server.
 djangoShopModule.directive('shopDialogForm', ['$q', '$timeout', function($q, $timeout) {

@@ -68,20 +68,19 @@ class MoneyField(models.DecimalField):
         defaults = {
             'max_digits': 30,
             'decimal_places': CURRENCIES[self.currency_code][1],
-            'default': self.Money(0) if kwargs.get('required', True) else self.Money(),
+            'default': self.Money(0) if kwargs.get('null', False) else self.Money(),
         }
         defaults.update(kwargs)
-        super(MoneyField, self).__init__(**defaults)
+        super(MoneyField, self).__init__(*args, **defaults)
 
     def deconstruct(self):
-        name, _, args, kwargs = super(MoneyField, self).deconstruct()
-        if 'default' in kwargs:
-            kwargs['default'] = Decimal()
-        path = 'django.db.models.fields.DecimalField'
+        name, path, args, kwargs = super(MoneyField, self).deconstruct()
+        if kwargs['max_digits'] == 30:
+            kwargs.pop('max_digits')
+        if kwargs['decimal_places'] == CURRENCIES[self.currency_code][1]:
+            kwargs.pop('decimal_places')
+        kwargs.pop('default')
         return name, path, args, kwargs
-
-    def get_internal_type(self):
-        return 'MoneyField'
 
     def to_python(self, value):
         if isinstance(value, AbstractMoney):
