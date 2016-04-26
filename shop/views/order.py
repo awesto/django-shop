@@ -11,7 +11,8 @@ from shop.rest.renderers import CMSPageRenderer
 from shop.models.order import OrderModel
 
 
-class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, generics.GenericAPIView):
+class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
+                generics.GenericAPIView):
     """
     Base View class to render the fulfilled orders for the current user.
     """
@@ -48,12 +49,28 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, generics.Gener
             return self.get_queryset().first()
         return super(OrderView, self).get_object()
 
+    @property
+    def allowed_methods(self):
+        """Restrict method "POST" only on the detail view"""
+        allowed_methods = self._allowed_methods()
+        if self.many:
+            allowed_methods.remove('POST')
+        return allowed_methods
+
     @never_cache
     def get(self, request, *args, **kwargs):
         if self.is_last():
             self.many = False
         if self.many:
             return self.list(request, *args, **kwargs)
+        return self.retrieve(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if self.is_last():
+            self.many = False
+        if self.many:
+            return self.list(request, *args, **kwargs)
+        response = self.update(request, *args, **kwargs)
         return self.retrieve(request, *args, **kwargs)
 
     def is_last(self):

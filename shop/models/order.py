@@ -220,6 +220,22 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         self.extra = dict(cart.extra)
         self.extra.update(rows=[(modifier, extra_row.data) for modifier, extra_row in cart.extra_rows.items()])
 
+    @transaction.atomic
+    def readd_to_cart(self, cart):
+        """
+        Re-add the items of this order back to the cart.
+        """
+        for order_item in self.items.all():
+            extra = dict(order_item.extra)
+            extra.pop('rows', None)
+            cart_item = order_item.product.is_in_cart(cart, **extra)
+            if cart_item:
+                cart_item.quantity = max(cart_item.quantity, order_item.quantity)
+            else:
+                cart_item = CartItemModel(cart=cart, product=order_item.product,
+                                          quantity=order_item.quantity, extra=extra)
+            cart_item.save()
+
     def save(self, **kwargs):
         """
         Before saving the Order object to the database, round the total to the given decimal_places
