@@ -25,7 +25,7 @@ apphook_pool.register(ProductSearchApp)
 
 class OrderApp(CMSApp):
     name = _("View Orders")
-    urls = ['myshop.urls.order']
+    urls = ['shop.urls.order']
     cache_placeholders = False
 
 apphook_pool.register(OrderApp)

@@ -6,7 +6,7 @@ from django.utils.module_loading import import_string
 from rest_framework import serializers
 from rest_framework.fields import empty
 from shop.rest.serializers import (ProductSummarySerializerBase, ProductDetailSerializerBase,
-    AddToCartSerializer, OrderDetailSerializer as OrderDetailSerializerBase)
+    AddToCartSerializer)
 from shop.search.serializers import ProductSearchSerializer as ProductSearchSerializerBase
 from .search_indexes import myshop_search_index_classes
 
@@ -88,8 +88,3 @@ class ProductSearchSerializer(ProductSearchSerializerBase):
 class CatalogSearchSerializer(ProductSearchSerializer):
     def get_media(self, search_result):
         return search_result.catalog_media
-
-
-class OrderDetailSerializer(OrderDetailSerializerBase):
-    shipping_address_text = serializers.CharField(read_only=True)
-    billing_address_text = serializers.CharField(read_only=True)
