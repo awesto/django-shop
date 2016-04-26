@@ -24,10 +24,6 @@ class AbstractMoneyTest(TestCase):
         self.assertRaises(TypeError, lambda: AbstractMoney(1))
 
 
-class TestMoneySerializer(serializers.Serializer):
-    amount = MoneyField(read_only=True)
-
-
 class MoneyMakerTest(TestCase):
 
     def test_create_money_type_without_arguments(self):
@@ -209,20 +205,6 @@ class MoneyMakerTest(TestCase):
         pickled = pickle.dumps(money)
         self.assertEqual(pickle.loads(pickled), money)
 
-    def test_rest(self):
-        Money = MoneyMaker('EUR')
-        instance = type(str('TestMoney'), (object,), {'amount': Money('1.23')})
-        serializer = TestMoneySerializer(instance)
-        self.assertDictEqual({'amount': '€ 1.23'}, serializer.data)
-
-    def test_json(self):
-        EUR = MoneyMaker('EUR')
-        renderer = JSONRenderer()
-        data = {'amount': EUR('1.23')}
-        rendered_json = renderer.render(data, 'application/json')
-        self.assertDictEqual({'amount': "€ 1.23"}, json.loads(rendered_json.decode('utf-8')))
-
-
 class Foo(models.Model):
     amount = MoneyDbField(currency='EUR', null=True)
 
@@ -263,3 +245,22 @@ class MoneyDbFieldTests(TestCase):
         self.assertEqual(list(Foo.objects.filter(amount__lt='12.35')), [foo])
         self.assertEqual(list(Foo.objects.filter(amount__lt='12.34')), [])
         self.assertEqual(list(Foo.objects.filter(amount__lte='12.34')), [foo])
+
+
+class TestMoneySerializer(serializers.Serializer):
+    amount = MoneyField(read_only=True)
+
+
+class MoneySerializerTests(TestCase):
+    def test_rest(self):
+        EUR = MoneyMaker('EUR')
+        instance = type(str('TestMoney'), (object,), {'amount': EUR('1.23')})
+        serializer = TestMoneySerializer(instance)
+        self.assertDictEqual({'amount': '€ 1.23'}, serializer.data)
+
+    def test_json(self):
+        EUR = MoneyMaker('EUR')
+        renderer = JSONRenderer()
+        data = {'amount': EUR('1.23')}
+        rendered_json = renderer.render(data, 'application/json')
+        self.assertDictEqual({'amount': "€ 1.23"}, json.loads(rendered_json.decode('utf-8')))
