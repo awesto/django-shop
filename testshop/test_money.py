@@ -8,6 +8,7 @@ try:
 except ImportError:
     import pickle
 import json
+from django.db import models
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.utils.six import text_type
@@ -222,13 +223,17 @@ class MoneyMakerTest(TestCase):
         self.assertDictEqual({'amount': "€ 1.23"}, json.loads(rendered_json.decode('utf-8')))
 
 
-class MoneyDbFieldTests(TestCase):
+class Foo(models.Model):
+    amount = MoneyDbField(currency='EUR', null=True)
 
+
+class MoneyDbFieldTests(TestCase):
     def test_to_python(self):
         EUR = MoneyMaker('EUR')
         f = MoneyDbField(currency='EUR', null=True)
         self.assertEqual(f.to_python(3), EUR('3'))
         self.assertEqual(f.to_python('3.14'), EUR('3.14'))
+        self.assertEqual(f.to_python(None), EUR())
         with self.assertRaises(ValidationError):
             f.to_python('abc')
 
@@ -241,3 +246,20 @@ class MoneyDbFieldTests(TestCase):
         f = MoneyDbField(currency='EUR')
         self.assertEqual(f.get_default(), EUR())
 
+    def test_format(self):
+        f = MoneyDbField(max_digits=5, decimal_places=3)
+        self.assertEqual(f._format(f.to_python(2)), '2.000')
+        self.assertEqual(f._format(f.to_python('2.34567')), '2.346')
+        self.assertEqual(f._format(None), None)
+
+    def test_filter_with_strings(self):
+        amount = MoneyMaker('EUR')('12.34')
+        foo = Foo.objects.create(amount=amount)
+        self.assertEqual(list(Foo.objects.filter(amount='12.34')), [foo])
+        self.assertEqual(list(Foo.objects.filter(amount='12.35')), [])
+        self.assertEqual(list(Foo.objects.filter(amount__gt='12.33')), [foo])
+        self.assertEqual(list(Foo.objects.filter(amount__gt='12.34')), [])
+        self.assertEqual(list(Foo.objects.filter(amount__gte='12.34')), [foo])
+        self.assertEqual(list(Foo.objects.filter(amount__lt='12.35')), [foo])
+        self.assertEqual(list(Foo.objects.filter(amount__lt='12.34')), [])
+        self.assertEqual(list(Foo.objects.filter(amount__lte='12.34')), [foo])
