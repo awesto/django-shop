@@ -137,6 +137,9 @@ class AbstractMoney(Decimal):
             return Decimal().__ge__(other)
         return Decimal.__ge__(self, other)
 
+    def __deepcopy__(self, memo):
+        return self.__class__(self._cents)
+
     @classproperty
     def currency(cls):
         """
