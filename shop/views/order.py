@@ -16,6 +16,8 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, generics.Gener
     Base View class to render the fulfilled orders for the current user.
     """
     renderer_classes = (CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer)
+    list_serializer_class = OrderListSerializer
+    detail_serializer_class = OrderDetailSerializer
     many = True
 
     def get_queryset(self):
@@ -23,8 +25,8 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, generics.Gener
 
     def get_serializer_class(self):
         if self.many:
-            return OrderListSerializer
-        return OrderDetailSerializer
+            return self.list_serializer_class
+        return self.detail_serializer_class
 
     def get_renderer_context(self):
         renderer_context = super(OrderView, self).get_renderer_context()
