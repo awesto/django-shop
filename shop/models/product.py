@@ -12,7 +12,7 @@ from django.utils.translation import ugettext_lazy as _
 from polymorphic.manager import PolymorphicManager
 from polymorphic.models import PolymorphicModel
 from polymorphic.base import PolymorphicModelBase
-from . import deferred
+from shop import deferred
 
 
 class BaseProductManager(PolymorphicManager):
@@ -49,6 +49,7 @@ class PolymorphicProductMetaclass(PolymorphicModelBase):
         Model = super(PolymorphicProductMetaclass, cls).__new__(cls, name, bases, attrs)
         if Model._meta.abstract:
             return Model
+
         for baseclass in bases:
             # since an abstract base class does not have no valid model.Manager,
             # refer to it via its materialized Product model.
@@ -68,6 +69,7 @@ class PolymorphicProductMetaclass(PolymorphicModelBase):
             # check for pending mappings in the ForeignKeyBuilder and in case, process them
             deferred.ForeignKeyBuilder.process_pending_mappings(Model, baseclass.__name__)
 
+        deferred.ForeignKeyBuilder.handle_deferred_foreign_fields(Model)
         cls.perform_model_checks(Model)
         return Model
 
@@ -108,6 +110,10 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
 
     Additionally the inheriting class MUST implement the following methods `get_absolute_url()`
     and `get_price()`. See below for details.
+
+    Unless each product variant offers it's own product code, it is strongly recommended to add
+    a field ``product_code = models.CharField(_("Product code"), max_length=255, unique=True)``
+    to the class implementing the product.
     """
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))

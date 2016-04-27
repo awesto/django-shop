@@ -5,7 +5,7 @@ from django.db.models.base import ModelBase
 from django.db import models
 from django.utils import six
 from django.utils.functional import SimpleLazyObject, empty
-from shop import settings as shop_settings
+from . import settings as shop_settings
 
 
 class DeferredRelatedField(object):
@@ -86,7 +86,16 @@ class ForeignKeyBuilder(ModelBase):
                     baseclass._materialized_model = Model
             cls.process_pending_mappings(Model, basename)
 
-        # search for deferred foreign fields in our Model
+        cls.handle_deferred_foreign_fields(Model)
+        Model.perform_model_checks()
+        return Model
+
+    @classmethod
+    def handle_deferred_foreign_fields(cls, Model):
+        """
+        Search for deferred foreign fields in our Model and contribute them to the class or
+        append them to our list of pending mappings
+        """
         for attrname in dir(Model):
             try:
                 member = getattr(Model, attrname)
@@ -100,12 +109,12 @@ class ForeignKeyBuilder(ModelBase):
                 field.contribute_to_class(Model, attrname)
             else:
                 ForeignKeyBuilder._pending_mappings.append((Model, attrname, member,))
-        Model.perform_model_checks()
-        return Model
 
     @staticmethod
     def process_pending_mappings(Model, basename):
-        # check for pending mappings and in case, process them and remove them from the list
+        """
+        Check for pending mappings and in case, process, and remove them from the list
+        """
         for mapping in ForeignKeyBuilder._pending_mappings[:]:
             if mapping[2].abstract_model == basename:
                 field = mapping[2].MaterializedField(Model, **mapping[2].options)
@@ -124,6 +133,13 @@ class ForeignKeyBuilder(ModelBase):
         Hook for each class inheriting from ForeignKeyBuilder, to perform checks on the
         implementation of the just created class type.
         """
+
+    @classmethod
+    def check_for_pending_mappings(cls):
+        if cls._pending_mappings:
+            msg = "Deferred foreign key '{0}.{1}' has not been mapped"
+            pm = cls._pending_mappings
+            raise ImproperlyConfigured(msg.format(pm[0][0].__name__, pm[0][1]))
 
 
 class MaterializedModel(SimpleLazyObject):
