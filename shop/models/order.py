@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from six import with_metaclass
 from decimal import Decimal
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
 from django.utils.encoding import python_2_unicode_compatible
-from django.utils.module_loading import import_by_path
+from django.utils.module_loading import import_string
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy, get_language_from_request
 from django.utils.six.moves.urllib.parse import urljoin
@@ -18,7 +19,7 @@ from shop import settings as shop_settings
 from shop.models.cart import CartItemModel
 from shop.money.fields import MoneyField, MoneyMaker
 from .product import BaseProduct
-from . import deferred
+from shop import deferred
 
 
 class OrderManager(models.Manager):
@@ -60,6 +61,16 @@ class OrderManager(models.Manager):
             'user_agent': request.META.get('HTTP_USER_AGENT'),
         }
 
+    def filter_from_request(self, request):
+        """
+        Return a queryset containing the orders for the customer associated with the given
+        request object.
+        """
+        if request.customer.is_visitor():
+            msg = _("Only signed in customers can view their orders")
+            raise PermissionDenied(msg)
+        return self.get_queryset().filter(customer=request.customer).order_by('-updated_at',)
+
     def get_summary_url(self):
         """
         Returns the URL of the page with the list view for all orders related to the current customer
@@ -75,7 +86,8 @@ class OrderManager(models.Manager):
 
     def get_latest_url(self):
         """
-        Returns the URL of the page with the detail view for the latest order related to the current customer
+        Returns the URL of the page with the detail view for the latest order related to the
+        current customer. This normally is the thank-you view.
         """
         try:
             return Page.objects.public().get(reverse_id='shop-order-last').get_absolute_url()
@@ -91,7 +103,7 @@ class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
     """
     def __new__(cls, name, bases, attrs):
         if 'BaseOrder' in (b.__name__ for b in bases):
-            bases = tuple(import_by_path(mc) for mc in shop_settings.ORDER_WORKFLOWS) + bases
+            bases = tuple(import_string(mc) for mc in shop_settings.ORDER_WORKFLOWS) + bases
             # merge the dicts of TRANSITION_TARGETS
             attrs.update(_transition_targets={}, _auto_transitions={})
             for b in reversed(bases):
@@ -108,9 +120,9 @@ class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
     @staticmethod
     def add_to_auto_transitions(base):
         result = {}
-        for name, method in base.__dict__.iteritems():
+        for name, method in base.__dict__.items():
             if callable(method) and hasattr(method, '_django_fsm'):
-                for name, transition in method._django_fsm.transitions.iteritems():
+                for name, transition in method._django_fsm.transitions.items():
                     if transition.custom.get('auto'):
                         result.update({name: method})
         return result
@@ -146,6 +158,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         help_text=_("Arbitrary information for this order object on the moment of purchase."))
     stored_request = JSONField(default={},
         help_text=_("Parts of the Request objects on the moment of purchase."))
+
     objects = OrderManager()
 
     class Meta:
@@ -207,6 +220,22 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         self.extra = dict(cart.extra)
         self.extra.update(rows=[(modifier, extra_row.data) for modifier, extra_row in cart.extra_rows.items()])
 
+    @transaction.atomic
+    def readd_to_cart(self, cart):
+        """
+        Re-add the items of this order back to the cart.
+        """
+        for order_item in self.items.all():
+            extra = dict(order_item.extra)
+            extra.pop('rows', None)
+            cart_item = order_item.product.is_in_cart(cart, **extra)
+            if cart_item:
+                cart_item.quantity = max(cart_item.quantity, order_item.quantity)
+            else:
+                cart_item = CartItemModel(cart=cart, product=order_item.product,
+                                          quantity=order_item.quantity, extra=extra)
+            cart_item.save()
+
     def save(self, **kwargs):
         """
         Before saving the Order object to the database, round the total to the given decimal_places
@@ -225,8 +254,8 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         """
         amount = self.orderpayment_set.aggregate(amount=Sum('amount'))['amount']
         if amount is None:
-            amount = 0
-        return MoneyMaker(self.currency)(amount)
+            amount = MoneyMaker(self.currency)()
+        return amount
 
     @property
     def outstanding_amount(self):
@@ -241,8 +270,8 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     @transition(field='status', source='*', target='payment_confirmed', conditions=[is_fully_paid])
     def acknowledge_payment(self, by=None):
         """
-        Change status to 'payment_confirmed'. This status code can be used by all extarnal
-        plugins to check, if an Order has been fully paid.
+        Change status to `payment_confirmed`. This status code is known globally and can be used
+        by all external plugins to check, if an Order object has been fully paid.
         """
 
     @classmethod
@@ -258,18 +287,17 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
 OrderModel = deferred.MaterializedModel(BaseOrder)
 
 
-class OrderPayment(with_metaclass(WorkflowMixinMetaclass, models.Model)):
+class OrderPayment(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     A model to hold received payments for a given order.
     """
     order = deferred.ForeignKey(BaseOrder, verbose_name=_("Order"))
-    status = FSMField(default='new', protected=True, verbose_name=_("Status"))
     amount = MoneyField(_("Amount paid"),
         help_text=_("How much was paid with this particular transfer."))
     transaction_id = models.CharField(_("Transaction ID"), max_length=255,
         help_text=_("The transaction processor's reference"))
     created_at = models.DateTimeField(_("Received at"), auto_now_add=True)
-    payment_method = models.CharField(_("Payment method"), max_length=255,
+    payment_method = models.CharField(_("Payment method"), max_length=50,
         help_text=_("The payment backend used to process the purchase"))
 
     class Meta:
@@ -277,30 +305,11 @@ class OrderPayment(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         verbose_name_plural = pgettext_lazy('order_models', "Order payments")
 
 
-class BaseOrderShipping(with_metaclass(WorkflowMixinMetaclass, models.Model)):
-    """
-    A model to keep track on the shipping of each order's item.
-    """
-    order = deferred.ForeignKey(BaseOrder, verbose_name=_("Order"))
-    status = FSMField(default='new', protected=True, verbose_name=_("Status"))
-    shipping_id = models.CharField(_("Shipping ID"), max_length=255,
-        help_text=_("The transaction processor's reference"))
-    shipping_method = models.CharField(_("Shipping method"), max_length=255,
-        help_text=_("The shipping backend used to deliver the items for this order"))
-
-    class Meta:
-        abstract = True
-        verbose_name = _("Shipping order")
-        verbose_name_plural = _("Shipping orders")
-
-OrderShippingModel = deferred.MaterializedModel(BaseOrderShipping)
-
-
+@python_2_unicode_compatible
 class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     An item for an order.
     """
-    # TODO: add foreign key to OrderShipping
     order = deferred.ForeignKey(BaseOrder, related_name='items', verbose_name=_("Order"))
     product_name = models.CharField(_("Product name"), max_length=255, null=True, blank=True,
         help_text=_("Product name at the moment of purchase."))
@@ -312,7 +321,6 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         help_text=_("Products unit price at the moment of purchase."), **BaseOrder.decimalfield_kwargs)
     _line_total = models.DecimalField(_("Line Total"), null=True,  # may be NaN
         help_text=_("Line total on the invoice at the moment of purchase."), **BaseOrder.decimalfield_kwargs)
-    quantity = models.IntegerField(_("Ordered quantity"))
     extra = JSONField(verbose_name=_("Extra fields"), default={},
         help_text=_("Arbitrary information for this order item"))
 
@@ -321,11 +329,26 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         verbose_name = _("Order item")
         verbose_name_plural = _("Order items")
 
-    @property
+    def __str__(self):
+        return self.product_name
+
+    @classmethod
+    def perform_model_checks(cls):
+        try:
+            cart_field = [f for f in CartItemModel._meta.fields if f.attname == 'quantity'][0]
+            order_field = [f for f in cls._meta.fields if f.attname == 'quantity'][0]
+            if order_field.get_internal_type() != cart_field.get_internal_type():
+                msg = "Field `{}.quantity` must be of one same type `{}.quantity`."
+                raise ImproperlyConfigured(msg.format(cls.__name__, CartItemModel.__name__))
+        except IndexError:
+            msg = "Class `{}` must implement a field named `quantity`."
+            raise ImproperlyConfigured(msg.format(cls.__name__))
+
+    @cached_property
     def unit_price(self):
         return MoneyMaker(self.order.currency)(self._unit_price)
 
-    @property
+    @cached_property
     def line_total(self):
         return MoneyMaker(self.order.currency)(self._line_total)
 

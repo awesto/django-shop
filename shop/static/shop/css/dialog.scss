@@ -1,0 +1,50 @@
+@import "django-angular";
+
+form[shop-dialog-form] {
+	.has-feedback {
+		.form-control {
+			padding-right: 12px;
+		}
+	}
+}
+
+button[shop-dialog-proceed] {
+	.glyphicon.cascade-icon-left {
+		margin-right: 10px;
+	}
+	.glyphicon.cascade-icon-right {
+		margin-left: 10px;
+	}
+	.glyphicon-refresh-animate {
+		animation: spin 2s linear infinite;
+	}
+}
+
+@keyframes spin { 100% { transform:rotate(360deg); } }
+
+
+/* TODO: move this into myshop/css/address.scss */
+
+.shop-address-street_name {
+	width: 65%;
+	display: inline-block;
+}
+
+.shop-address-street_number {
+	width: 35%;
+	display: inline-block;
+	margin-left: -4px;
+	padding-left: 15px;
+}
+
+.shop-address-zip_code {
+	width: 35%;
+	display: inline-block;
+}
+
+.shop-address-location {
+	width: 65%;
+	display: inline-block;
+	margin-left: -4px;
+	padding-left: 15px;
+}

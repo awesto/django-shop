@@ -1,3 +1,5 @@
+Obsolete documentation
+
 =======
 Plugins
 =======

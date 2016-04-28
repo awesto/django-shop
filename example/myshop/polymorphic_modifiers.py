@@ -10,7 +10,8 @@ class MyShopCartModifier(DefaultCartModifier):
     """
     def process_cart_item(self, cart_item, request):
         if isinstance(cart_item.product, SmartPhoneModel):
-            cart_item.unit_price = cart_item.product.get_product_markedness(cart_item.extra).unit_price
+            product_code = cart_item.extra.get('product_code')
+            cart_item.unit_price = cart_item.product.get_product_variant(product_code).unit_price
         else:
             cart_item.unit_price = cart_item.product.get_price(request)
         cart_item.line_total = cart_item.unit_price * cart_item.quantity

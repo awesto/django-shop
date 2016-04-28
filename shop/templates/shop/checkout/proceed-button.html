@@ -1,8 +1,7 @@
-{% load static sekizai_tags %}
+{% extends "shop/checkout/dialog-base.html" %}
 
-{% addtoblock "js" %}<script src="{% static 'shop/js/dialogs.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-{% addtoblock "shop-ng-requires" %}django.shop.dialogs{% endaddtoblock %}
-
-{% with instance_css_classes=instance.css_classes instance_inline_styles=instance.inline_styles %}
-{% block proceed-button %}<button shop-dialog-proceed ng-click="proceedWith('{{ instance.link }}')" ng-disabled="stepIsValid===false"{% if instance_css_classes %} class="{{ instance_css_classes }}"{% endif %}{% if instance_inline_styles %} style="{{ instance_inline_styles }}"{% endif %}>{{ icon_left }}{{ instance.content }}{{ icon_right }}</button>{% endblock %}
-{% endwith %}
+{% block dialog_form %}
+	{% with instance_css_classes=instance.css_classes instance_inline_styles=instance.inline_styles %}
+	{% block proceed-button %}<button shop-dialog-proceed ng-click="proceedWith('{{ instance.link }}')" ng-disabled="stepIsValid===false"{% if instance_css_classes %} class="{{ instance_css_classes }}"{% endif %}{% if instance_inline_styles %} style="{{ instance_inline_styles }}"{% endif %}>{{ icon_left }}{{ instance.content }}{{ icon_right }}</button>{% endblock %}
+	{% endwith %}
+{% endblock %}

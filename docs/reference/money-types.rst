@@ -1,41 +1,43 @@
+.. _reference/money-types:
+
 ===========
-Money types
+Money Types
 ===========
 
-Until **django-shop** version 0.2, amounts relating to money, where kept inside a ``Decimal`` type
-and stored in the database model using a ``DecimalField``. On shop installations with only one
+Until **djangoSHOP** version 0.2, amounts relating to money were kept inside a ``Decimal`` type
+and stored in the database model using a ``DecimalField``. In shop installations with only one
 available currency, this wasn't a major issue, because the currency symbol could be hard-coded
 anywhere on the site.
 
 However, for sites offering pricing information in more than one currency, this caused major
-problems. When you needed to perform calculations with amounts that have an associated currency,
-it is a very common to make mistakes by mixing different currencies. It is also common to perform
+problems. When we needed to perform calculations with amounts that have an associated currency,
+it is very common to make mistakes by mixing different currencies. It also is common to perform
 incorrect conversions that generate wrong results. Python doesn't allow developers to associate a
 specific decimal value with a unit.
 
-Starting with version 0.3.0, **djangoSHOP** now is shipped with with a special factory class:
+Starting with version 0.3.0, **djangoSHOP** now is shipped with a special factory class:
 
 
 MoneyMaker
 ==========
 
 This class can not be instantiated, but is a factory for building a money type with an associated
-currency. Internally it uses the well established ``Decimal`` type to keep track of an amount.
-Additionally it restricts operations on the current Money type. For instance, you can't sum up
-Dollars with Euros. You also can't multiply two money types with each other.
+currency. Internally it uses the well established ``Decimal`` type to keep track of the amount.
+Additionally, it restricts operations on the current Money type. For instance, we can't sum up
+Dollars with Euros. We also can't multiply two currencies with each other.
 
 
 Not a Number
 ------------
 
-In special occurrences you'd rather want to specify “no amount” rather than an amount of 0.00 (zero).
-This can be useful for free samples, or when an item currently is not available. The Decimal type
+In special occurrences we'd rather want to specify "no amount" rather than an amount of 0.00 (zero).
+This can be useful for free samples, or when an item is currently not available. The Decimal type
 denotes a kind of special value a ``NaN`` – for “Not a Number”. Our Money type also knows about
 this special value, and when rendered, ``€ –`` is printed out.
 
 Declaring a Money object without a value, say ``m = Money()`` creates such a special value. The big
-difference to the ``Decimal`` type is, that when adding or substracting a ``NaN`` to a valid value,
-then it is considered zero, rather than changing the result of this operation to ``NaN``.
+difference as for the ``Decimal`` type is that when adding or subtracting a ``NaN`` to a valid
+value, it is considered zero, rather than changing the result of this operation to ``NaN``.
 
 It also allows us to multiply a Money amount with ``None``. The result of this operation is ``NaN``.
 
@@ -69,34 +71,34 @@ By calling ``MoneyMaker()`` a type accepting amounts in the *default currency* i
 The default currency can be changed in ``settings.py`` with ``SHOP_DEFAULT_CURRENCY = 'USD'``,
 using one of the official ISO-4217 currency codes.
 
-Alternatively, you can create your own money type, for example ``Yen``.
+Alternatively, we can create our own Money type, for instance ``Yen``.
 
 
-Printing Money
---------------
+Formating Money
+---------------
 
-When the amount of a money type is printed, or forced to text using ``str(price)``, it is prefixed
-by the currency symbol. This is fine, if you work with only a few currencies. However, some symbols
-are ambiguous.
+When the amount of a money type is printed or forced to text using ``str(price)``, it is prefixed
+by the currency symbol. This is fine, when working with only a few currencies. However, some symbols
+are ambiguous, for instance Canadian, Australian and US Dollars, which all use the "$" symbol.
 
-With the setting ``SHOP_MONEY_FORMAT`` you can style how money is going to be printed. This
-settings defaults to ``{symbol} {amount}``. The following format strings are allowed:
+With the setting ``SHOP_MONEY_FORMAT`` we can style how money is going to be printed out. This
+setting defaults to ``{symbol} {amount}``. The following format strings are allowed:
 
  * ``{symbol}``: The short symbol for a currency, for instance ``$``, ``£``, ``€``, ``¥``, etc.
  * ``{code}``: The international currency code, for instance USD, GBP, EUR, JPY, etc.
  * ``{currency}``: The spoken currency description, for instance “US Dollar”, “Pound Sterling”, etc.
  * ``{amount}``: The amount, unlocalized.
 
-Thus, if you prefer to print ``9.98 US Dollar``, then use ``{amount} {currency}`` as formatting
-string.
+Thus, if we prefer to print ``9.98 US Dollar``, then we should set ``{amount} {currency}`` as the
+formatting string.
 
 
 Localizing Money
 ================
 
-Since the Money class doesn't know anything about your current locale setting, amounts always are
-printed unlocalized. To localize a money type, use ``django.utils.numberformat.format(someamount)``.
-This function will return the amount, localized according to your current HTTP request.
+Since the Money class doesn't know anything about our current locale setting, amounts always are
+printed unlocalized. To localize a Money type, use ``django.utils.numberformat.format(someamount)``.
+This function will return the amount, localized according to the current HTTP request.
 
 
 Money Database Fields
@@ -104,9 +106,9 @@ Money Database Fields
 
 Money can be stored in the database, keeping the currency information together with the field type.
 Internally, the database uses the Decimal type, but such a field knows its currency and will return
-an amount as ``MoneyIn...`` type. This prevent from implicit, but accidental currency conversions.
+an amount as ``MoneyIn...`` type. This prevents implicit, but accidental currency conversions.
 
-In your database model, declare a field as:
+In our database model, declare a field as:
 
 .. code-block:: python
 
@@ -132,8 +134,8 @@ writing REST serializers, use:
 	class SomeSerializer(serializers.ModelSerializer):
 	    price = MoneyField()
 
-The default REST behavior, is to serialize Decimal types as floats. This is fine if you want to
-do some calculations in the browser. However, then the currency information is lost, and must
-be re added somehow to the output strings. It also is a bad idea to do commercial calculations using
-floats, but JavaScript does not offer any Decimal-like type. I therefore recommend to always
-do your commerce calculations on the server and pass amount information using JSON strings.
+The default REST behavior serializes Decimal types as floats. This is fine if we want to do some
+computations in the browser using JavaScript. However, then the currency information is lost and
+must be re-added somehow to the output strings. It also is a bad idea to do commercial calculations
+using floats, yet JavaScript does not offer any Decimal-like type. I therefore recommend to always
+do the commerce calculations on the server and transfer amount information using JSON strings.

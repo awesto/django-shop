@@ -24,6 +24,7 @@ djangoShopModule.directive('shopSearchResults', ['$http', function($http) {
 					$scope.search_data.results = $scope.search_data.results.concat(response.results);
 					$scope.isLoading = false;
 				}).error(function() {
+					$scope.search_data.next = null;
 					$scope.isLoading = false;
 				});
 			};

@@ -1,17 +1,11 @@
+.. _tutorial/catalog-views:
+
 =============
 Catalog Views
 =============
 
 Now that we know how to create product models and how to administer them, lets have a look on how
 to route them to our views.
-
-A nice aspect of **djangoSHOP** is, that it doesn't require the programmer to write any special
-Django Views in order to render the catalogs. Instead all business logic shall go into their
-products classes, their model managers or into their serializers.
-
-Although in **djangoSHOP** it is possible to create explicit categories which act as list views
-for our products, normally a special CMS page can do this job if used in combination with a
-simple CMS apphook_.
 
 When editing the CMS page used for the products list view, open **Advanced Settings** and chose
 **Products List** from the select box labeled **Application**.
@@ -129,7 +123,7 @@ The template to render the media snippet could look like:
 .. code-block:: django
 	:caption: myshop/products/catalog-smartcard-media.html
 
-	{% load i18n thumbnail djangular_tags %}
+	{% load i18n thumbnail djng_tags %}
 	{% thumbnail product.sample_image 100x100 crop as thumb %}
 	<img src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}">
 
@@ -239,14 +233,12 @@ This apphook points onto a list of boilerplate code containing these urlpattern:
 	from rest_framework.settings import api_settings
 	from shop.rest.filters import CMSPagesFilterBackend
 	from shop.rest.serializers import AddToCartSerializer
-	from shop.views.catalog import (ProductListView,
+	from shop.views.catalog import (CMSPageProductListView,
 	    ProductRetrieveView, AddToCartView)
 	
 	urlpatterns = patterns('',
-	    url(r'^$', ProductListView.as_view(
+	    url(r'^$', CMSPageProductListView.as_view(
 	        serializer_class=ProductSummarySerializer,
-	        filter_backends=api_settings.DEFAULT_FILTER_BACKENDS \
-	            + [CMSPagesFilterBackend()],
 	    )),
 	    url(r'^(?P<slug>[\w-]+)$', ProductRetrieveView.as_view(
 	        serializer_class=ProductDetailSerializer

@@ -2,55 +2,57 @@
 {% load i18n cms_tags %}
 
 {% block main-content %}
-<div class="row product-detail">
-	<div class="col-xs-12 col-md-8">
-		<h1>{{ product.product_name }}</h1>
-		<pre class="images jfk-scrollbar">
-		{% for img in product.images.all %}
-			<img src="{{ img.url }}" alt="{{ product.product_name }}">
-		{% endfor %}
-		</pre>
-	</div>
-	<div class="col-xs-12 col-md-8">
-		{{ product.description|safe }}
-		<table class="table table-bordered">
-			<tbody class="table-striped">
-				<tr>
-					<td>{% trans "Battery" %}</td>
-					<td>{{ product.get_battery_type_display }} ({{ product.battery_capacity }} mAh)</td>
-				</tr>
-				<tr>
-					<td>{% trans "RAM Storage" %}</td>
-					<td>{{ product.ram_storage }} MB</td>
-				</tr>
-				<tr>
-					<td>{% trans "WiFi Connectivity" %}</td>
-					<td>{{ product.wifi_connectivity }} MB</td>
-				</tr>
-				<tr>
-					<td>{% trans "Bluetooth Connectivity" %}</td>
-					<td>{{ product.wifi_connectivity }} MB</td>
-				</tr>
-				<tr>
-					<td>{% trans "GPS" %}</td>
-					<td>{{ product.wifi_connectivity }} MB</td>
-				</tr>
-				<tr>
-					<td>{% trans "Dimensions" %}</td>
-					<td>{{ product.width }} mm (w) &times; {{ product.height }} mm (h)</td>
-				</tr>
-				<tr>
-					<td>{% trans "Weight" %}</td>
-					<td>{{ product.weight }} g</td>
-				</tr>
-				<tr>
-					<td>{% trans "Screen size" %}</td>
-					<td>{{ product.screen_size }} ({% trans "inch" %})</td>
-				</tr>
-			</tbody>
-		</table>
-		<!-- include "Add to Cart" dialog box -->
-		{% include "myshop/catalog/smartphone-add2cart.html" %}
+<div class="container">
+	<div class="row product-detail">
+		<div class="col-xs-12 col-md-8">
+			<h1>{{ product.product_name }}</h1>
+			<pre class="images jfk-scrollbar">
+			{% for img in product.images.all %}
+				<img src="{{ img.url }}" alt="{{ product.product_name }}">
+			{% endfor %}
+			</pre>
+		</div>
+		<div class="col-xs-12 col-md-8">
+			{{ product.description|safe }}
+			<table class="table table-bordered">
+				<tbody class="table-striped">
+					<tr>
+						<td>{% trans "Battery" %}</td>
+						<td>{{ product.get_battery_type_display }} ({{ product.battery_capacity }} mAh)</td>
+					</tr>
+					<tr>
+						<td>{% trans "RAM Storage" %}</td>
+						<td>{{ product.ram_storage }} MB</td>
+					</tr>
+					<tr>
+						<td>{% trans "WiFi Connectivity" %}</td>
+						<td>{{ product.wifi_connectivity }} MB</td>
+					</tr>
+					<tr>
+						<td>{% trans "Bluetooth Connectivity" %}</td>
+						<td>{{ product.wifi_connectivity }} MB</td>
+					</tr>
+					<tr>
+						<td>{% trans "GPS" %}</td>
+						<td>{{ product.wifi_connectivity }} MB</td>
+					</tr>
+					<tr>
+						<td>{% trans "Dimensions" %}</td>
+						<td>{{ product.width }} mm (w) &times; {{ product.height }} mm (h)</td>
+					</tr>
+					<tr>
+						<td>{% trans "Weight" %}</td>
+						<td>{{ product.weight }} g</td>
+					</tr>
+					<tr>
+						<td>{% trans "Screen size" %}</td>
+						<td>{{ product.screen_size }} ({% trans "inch" %})</td>
+					</tr>
+				</tbody>
+			</table>
+			<!-- include "Add to Cart" dialog box -->
+			{% include "myshop/catalog/smartphone-add2cart.html" %}
+		</div>
 	</div>
 </div>
 {% endblock main-content %}

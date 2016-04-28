@@ -1,20 +1,26 @@
-.. _multilingual-product:
+.. _tutorial/multilingual-product:
 
 ===============================
 Modeling a Multilingual Product
 ===============================
 
 Let's extend our previous ``SmartCard`` model to internationalize our shop site. Normally the name
-of a Smart Card model is international anyway, say *Ultra Plus micro SDXC*, so it probably won't
-make much sense to use a translatable field here. The only model field which makes sense to be
-available in different languages, is the ``description`` field.
+of a Smart Card model is international anyway, say "*Ultra Plus micro SDXC*", so it probably won't
+make much sense to use a translatable field here. The model attribute which certainly makes sense
+to be translated into different languages, is the ``description`` field.
 
 
 Run the Multilingual Demo
 =========================
 
 To test this example, set the shell environment variable ``export DJANGO_SHOP_TUTORIAL=i18n``,
-then recreate the database as explained in :ref:`create-demo-database`.
+then apply the modified models to the database schema:
+
+.. code-block:: shell
+
+	./manage.py migrate myshop
+
+Alternatively recreate the database as explained in :ref:`tutorial/create-demo-database`.
 
 Afterwards start the demo server:
 
@@ -26,7 +32,7 @@ Afterwards start the demo server:
 The Multilingal Product Model
 =============================
 
-**DjangoSHOP** uses the application django-parler_ for model translations. We therefore shall
+**DjangoSHOP** uses the library django-parler_ for model translations. We therefore shall
 rewrite our model as:
 
 .. _django-parler: https://github.com/edoburu/django-parler
@@ -35,8 +41,8 @@ rewrite our model as:
 	:caption: myshop/models/i18n/smartcard.py
 	:linenos:
 	:language: python
-	:lines: 8-10, 12, 15-18, 21-22, 27-28, 49, 77-
-	:emphasize-lines: 11, 18-19
+	:lines: 7-15, 17-19, 21-23, 26-31, 49-50, 80-
+	:emphasize-lines: 21, 28-29
 
 In comparison to the simple Smart Card model, the field ``description`` can now accept text in
 different languages.
@@ -59,4 +65,9 @@ that these fields are translatable.
 	:caption: myshop/admin/i18n/smartcard.py
 	:linenos:
 	:language: python
-	:lines: 3-9, 12-
+	:lines: 4-10, 12-
+	:emphasize-lines: 15-17
+
+
+Extend our discrete product type, to polymorphic models which are able to support many different
+product types: :ref:`tutorial/polymorphic-product`.

@@ -4,14 +4,19 @@ from __future__ import unicode_literals
 See PEP 386 (http://www.python.org/dev/peps/pep-0386/)
 
 Release logic:
-1. Remove "dev" from current.
-2. git commit
-3. git tag <version>
-4. push to pypi + push to github
-5. bump the version, append '.dev0'
-6. git commit
-7. push to github (to avoid confusion)
+ 1. Remove ".devX" from __version__ (below)
+ 2. git add shop/__init__.py
+ 3. git commit -m 'Bump to <version>'
+ 4. git tag <version>
+ 5. git push
+ 6. assure that all tests pass on https://travis-ci.org/awesto/django-shop
+ 7. git push --tags
+ 8. python setup.py sdist upload
+ 9. bump the version, append ".dev0" to __version__
+10. git add shop/__init__.py
+11. git commit -m 'Start with <version>'
+12. git push
 """
-__version__ = '0.3.0.dev'
+__version__ = '0.9.1'
 
 default_app_config = 'shop.apps.ShopConfig'

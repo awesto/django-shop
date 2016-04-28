@@ -5,28 +5,27 @@ from __future__ import unicode_literals
 class BaseCartModifier(object):
     """
     Cart Modifiers are the cart's counterpart to backends.
-    It allows to implement taxes and rebates / bulk prices in an elegant and reusable manner:
 
+    It allows to implement taxes and rebates / bulk prices in an elegant and reusable manner:
     Every time the cart is refreshed (via it's update() method), the cart will call all subclasses
     of this modifier class registered with their full path in `settings.SHOP_CART_MODIFIERS`.
 
     The methods defined here are called in the following sequence:
-
-    1.  `pre_process_cart`: Totals are not computed, the cart is "rough": only relations and
-        quantities are available
+    1. `pre_process_cart`: Totals are not computed, the cart is "rough": only relations and
+    quantities are available
     1a. `pre_process_cart_item`: Line totals are not computed, the cart and its items are "rough":
-        only relations and quantities are available
-    2.  `process_cart_item`: Called for each cart_item in the cart. The modifier may change the
-        amount in `cart_item.line_total`.
+    only relations and quantities are available
+    2. `process_cart_item`: Called for each cart_item in the cart. The modifier may change the
+    amount in `cart_item.line_total`.
     2a. `add_extra_cart_item_row`: It optionally adds an object of type `ExtraCartRow` to the
-        current cart item. This object adds additional information displayed on each cart items
-        line.
-    3.  `process_cart`: Called once for the whole cart. Here, all fields relative to cart items are
-        filled. Here the carts subtotal is used to computer the carts total.
+    current cart item. This object adds additional information displayed on each cart items line.
+    3. `process_cart`: Called once for the whole cart. Here, all fields relative to cart items are
+    filled. Here the carts subtotal is used to computer the carts total.
     3a. `add_extra_cart_row`: It optionally adds an object of type `ExtraCartRow` to the current
-        cart. This object adds additional information displayed in the carts footer section.
+    cart. This object adds additional information displayed in the carts footer section.
     4.  `post_process_cart`: all totals are up-to-date, the cart is ready to be displayed. Any
-        change you make here must be consistent!
+    change you make here must be consistent!
+
     Each method accepts the HTTP `request` object. It shall be used to let implementations
     determine their prices according to the session, and other request information. The `request`
     object also can be used to store arbitrary data to be passed between modifers using the

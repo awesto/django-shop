@@ -1,15 +1,17 @@
-================================
-Using the deferred model pattern
-================================
+.. _reference/deferred-models:
+
+======================
+Deferred Model Pattern
+======================
 
 Until **djangoSHOP** version 0.2, there were abstract and concrete and models: ``BaseProduct`` and
-``Product``, ``BaseCart`` and ``Cart``, ``BaseCartItem`` and ``CartItem``, ``BaseOrder``and ``Order``
-and finally, ``BaseOrderItem`` and ``OrderItem``.
+``Product``, ``BaseCart`` and ``Cart``, ``BaseCartItem`` and ``CartItem``, ``BaseOrder`` and
+``Order`` and finally, ``BaseOrderItem`` and ``OrderItem``.
 
 The concrete models were stored in ``shop.models``, whereas abstract models were stored in
 ``shop.models_bases``. This was quite confusing and made it difficult to find the right model
 definition whenever one had to access the definition of one of the models.
-Additionally, if someone wanted to override a model, he had to use a configuration directive, say
+Additionally, if someone wanted to subclass a model, he had to use a configuration directive, say
 ``PRODUCT_MODEL``, ``ORDER_MODEL``, ``ORDER_MODEL_ITEM`` from the projects ``settings.py``.
 
 This made configuration quite complicate and causes other drawbacks:
@@ -17,18 +19,22 @@ This made configuration quite complicate and causes other drawbacks:
 * Unless *all* models have been overridden, the native ones appeared in the administration backend
   below the category *Shop*, while the customized ones appeared under the given project's name.
   To merchants, this inconsistency in the backend was quite difficult to explain.
-* In the past, mixing overriden with native models caused many issues with circular dependencies.
+* In the past, mixing subclassed with native models caused many issues with circular dependencies.
 
-Therefore in **djangoSHOP**, since version 0.3 *all* concrete models, ``Product``, ``Order``,
+Therefore in **djangoSHOP**, since version 0.9 *all* concrete models, ``Product``, ``Order``,
 ``OrderItem``, ``Cart``, ``CartItem`` have been removed. These model definitions now all are
 abstract and named ``BaseProduct``, ``BaseOrder``, ``BaseOrderItem``, etc. They all have been moved
-into the folder ``shop/models/``, because this is the location a programmer expects them.
+into the folder ``shop/models/``, because that's the location a programmer expects them.
+
+
+Materializing Models
+====================
 
 Materializing such an abstract base model, means to create a concrete model with an associated
-database table. This model creation is performed in the concrete shop implementation and must be
-done for each base model in the shop software.
+database table. This model creation is performed in the concrete project implementing the shop;
+it must be done for each base model in the shop software.
 
-For instance, materialize the cart by using this code snippet inside your own shop's
+For instance, materialize the cart by using this code snippet inside our own shop's
 ``models/shopmodels.py`` files:
 
 .. code-block:: python
@@ -47,16 +53,20 @@ For instance, materialize the cart by using this code snippet inside your own sh
 	    class Meta:
 	        app_label = 'my_shop'
 
-Of course, you can add as many extra model fields to this concrete cart model, as you wish.
-All shop models, now are managed through *your* shop instance. This means that the models **Cart**,
-**Order**, etc. now are managed by the common database migrations tools, such as
-``./manage.py makemigration my_shop_instance`` and ``./manage.py migrate my_shop_instance``. This
-also means that these models in the admin interface are visible under **my_shop**.
+Of course, we can add as many extra model fields to this concrete cart model, as we wish.
+All shop models, now are managed through *our* project instance. This means that the models
+**Cart**, **Order**, etc. are now managed by the common database migrations tools, such as
+``./manage.py makemigration my_shop`` and ``./manage.py migrate my_shop``. This
+also means that these models, in the Django admin backend, are visible under **my_shop**.
 
-Often you don't need extra fields, hence the abstract shop base model is enough. Then,
+
+Use the default Models
+----------------------
+
+Often we don't need extra fields, hence the abstract shop base model is enough. Then,
 materializing the models can be done using some convenience classes as found in
-``shop/models/defaults``. Simply import them into ``models.py`` or ``models/__init__.py`` in your
-shop instance:
+``shop/models/defaults``. We can simply import them into ``models.py`` or ``models/__init__.py`` in
+our own shop project:
 
 .. code-block:: python
 
@@ -66,8 +76,8 @@ shop instance:
 .. note:: The comment ``nopyflakes`` has been added to suppress warnings, since these classes
 		arern't used anywhere in ``models.py``.
 
-All the configuration settings from **djangoSHOP** <0.3: ``PRODUCT_MODEL``, ``ORDER_MODEL``,
-``ORDER_MODEL_ITEM``, etc. are not required anymore and can safely be removed from your
+All the configuration settings from **djangoSHOP** <0.9: ``PRODUCT_MODEL``, ``ORDER_MODEL``,
+``ORDER_MODEL_ITEM``, etc. are not required anymore and can safely be removed from our
 ``settings.py``.
 
 
@@ -109,7 +119,7 @@ instead of using a real ``ForeignKey``, one can use a special “lazy” field, 
 with an abstract model. Now, whenever the models are “materialized”, then these abstract relations
 are converted into real foreign keys. The only drawback for this solution is, that one may derive
 from an abstract model only once, but for **djangoSHOP** that's a non-issue and doesn't differ from
-the current situation, where one can override ``BaseCart`` only once anyway.
+the current situation, where one can subclass ``BaseCart`` only once anyway.
 
 Therefore, when using this deferred model pattern, instead of using ``models.ForeignKey``,
 ``models.OneToOneField`` or ``models.ManyToManyField``, use the special fields

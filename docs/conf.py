@@ -40,8 +40,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'django SHOP'
-copyright = u'2015 Jacob Rief, 2010 Chris Glas'
+project = u'djangoSHOP'
+copyright = u' 2016 Jacob Rief'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -181,10 +181,10 @@ htmlhelp_basename = 'DjangoShopdoc'
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
-latex_documents = [
-  ('index_', 'DjangoShop.tex', u'Django SHOP Documentation',
-   u'Chris Glass', 'manual'),
-]
+#latex_documents = [
+#  ('index_', 'DjangoShop.tex', u'Django SHOP Documentation',
+#   u'Chris Glass', 'manual'),
+#]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
@@ -214,7 +214,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    ('index_', 'djangoshop', u'Django SHOP Documentation',
-     [u'Chris Glass'], 1)
-]
+#man_pages = [
+#    ('index_', 'djangoshop', u'Django SHOP Documentation',
+#     [u'Chris Glass'], 1)
+#]

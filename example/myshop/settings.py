@@ -18,26 +18,29 @@ from django.core.exceptions import ImproperlyConfigured
 
 SHOP_APP_LABEL = 'myshop'
 BASE_DIR = os.path.dirname(__file__)
-SHOP_TUTORIAL = os.environ.get('DJANGO_SHOP_TUTORIAL', 'simple')
-if SHOP_TUTORIAL not in ('simple', 'i18n', 'polymorphic',):
-    raise ImproperlyConfigured("Environment DJANGO_SHOP_TUTORIAL has an invalid value `{}`".format(SHOP_TUTORIAL))
+
+SHOP_TUTORIAL = os.environ.get('DJANGO_SHOP_TUTORIAL')
+if SHOP_TUTORIAL is None:
+    raise ImproperlyConfigured("Environment variable DJANGO_SHOP_TUTORIAL is not set")
+if SHOP_TUTORIAL not in ('commodity', 'i18n_commodity', 'smartcard', 'i18n_smartcard', 'polymorphic',):
+    raise ImproperlyConfigured("Environment variable DJANGO_SHOP_TUTORIAL has an invalid value `{}`".format(SHOP_TUTORIAL))
 
 # Root directory for this django project
 PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, os.path.pardir, os.path.pardir))
 
 # Directory where working files, such as media and databases are kept
-WORK_DIR = os.path.join(PROJECT_ROOT, 'workdir')
+WORK_DIR = os.environ.get('DJANGO_WORKDIR', os.path.join(PROJECT_ROOT, 'workdir'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
-ADMINS = ((u'The Merchant', u'the.merchant@example.com'),)
+ADMINS = (("The Merchant", 'the.merchant@example.com'),)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'nqniwbt=%@5a(e8%&h#c^0()64(ujs0=4%_nyajn*t6a$ca&at'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(os.environ.get('DJANGO_DEBUG'))
 
 ALLOWED_HOSTS = ['*']
 
@@ -70,13 +73,14 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'djangocms_admin_style',
+    #'djangocms_admin_style', the default style in Django-1.9 is good enough
     'django.contrib.admin',
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
     'djangocms_text_ckeditor',
     'django_select2',
     'cmsplugin_cascade',
+    'cmsplugin_cascade.clipboard',
     'cmsplugin_cascade.sharable',
     'cmsplugin_cascade.extra_fields',
     'cmsplugin_cascade.segmentation',
@@ -85,8 +89,9 @@ INSTALLED_APPS = (
     'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',
+    'django_fsm',
     'fsm_admin',
-    'djangular',
+    'djng',
     'cms',
     'menus',
     'treebeard',
@@ -106,7 +111,7 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE_CLASSES = (
-    'djangular.middleware.DjangularUrlMiddleware',
+    'djng.middleware.AngularUrlMiddleware',
     # 'django.middleware.cache.UpdateCacheMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -124,15 +129,13 @@ MIDDLEWARE_CLASSES = (
 )
 
 MIGRATION_MODULES = {
-    'myshop': 'myshop.migrations_{}'.format(SHOP_TUTORIAL)
+    'myshop': 'myshop.migrations.{}'.format(SHOP_TUTORIAL)
 }
 
 ROOT_URLCONF = 'myshop.urls'
 
-WSGI_APPLICATION = 'myshop.wsgi.application'
+WSGI_APPLICATION = 'wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -145,12 +148,49 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en'
 
-LANGUAGES = (
-    ('en', "English"),
-    ('de', "Deutsch"),
-)
+if SHOP_TUTORIAL in ('i18n_smartcard', 'i18n_commodity', 'polymorphic'):
+    USE_I18N = True
 
-USE_I18N = True
+    LANGUAGES = (
+        ('en', "English"),
+        ('de', "Deutsch"),
+    )
+
+    PARLER_DEFAULT_LANGUAGE = 'en'
+
+    PARLER_LANGUAGES = {
+        1: (
+            {'code': 'de'},
+            {'code': 'en'},
+        ),
+        'default': {
+            'fallbacks': ['de', 'en'],
+        },
+    }
+
+    CMS_LANGUAGES = {
+        'default': {
+            'fallbacks': ['en', 'de'],
+            'redirect_on_fallback': True,
+            'public': True,
+            'hide_untranslated': False,
+        },
+        1: ({
+            'public': True,
+            'code': 'en',
+            'hide_untranslated': False,
+            'name': 'English',
+            'redirect_on_fallback': True,
+        }, {
+            'public': True,
+            'code': 'de',
+            'hide_untranslated': False,
+            'name': 'Deutsch',
+            'redirect_on_fallback': True,
+        },)
+    }
+else:
+    USE_I18N = False
 
 USE_L10N = True
 
@@ -176,8 +216,8 @@ STATIC_ROOT = os.path.join(WORK_DIR, 'static')
 STATIC_URL = '/static/'
 
 STATICFILES_FINDERS = (
-    'myshop.finders.ServeUnminimizedFinder',  # or 'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'myshop.finders.FileSystemFinder',  # or 'django.contrib.staticfiles.finders.FileSystemFinder',
+    'myshop.finders.AppDirectoriesFinder',  # or 'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'sass_processor.finders.CssFinder',
     'compressor.finders.CompressorFinder',
 )
@@ -197,6 +237,7 @@ ADMIN_MEDIA_PREFIX = '/static/admin/'
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
     'APP_DIRS': True,
+    'DIRS': [],
     'OPTIONS': {
         'context_processors': (
             'django.contrib.auth.context_processors.auth',
@@ -211,12 +252,13 @@ TEMPLATES = [{
             'sekizai.context_processors.sekizai',
             'cms.context_processors.cms_settings',
             'shop.context_processors.customer',
+            'shop.context_processors.version',
             'shop_stripe.context_processors.public_keys',
         )
     }
 }]
 
-SECURE_PROXY_SSL_HEADER = (u'HTTP_X_FORWARDED_PROTO', u'https')
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 LOGGING = {
     'version': 1,
@@ -233,7 +275,7 @@ LOGGING = {
     },
     'handlers': {
         'console': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.StreamHandler',
             'formatter': 'simple',
         },
@@ -242,6 +284,11 @@ LOGGING = {
         'django': {
             'handlers': ['console'],
             'level': 'INFO',
+            'propagate': True,
+        },
+        'post_office': {
+            'handlers': ['console'],
+            'level': 'WARNING',
             'propagate': True,
         },
     },
@@ -274,21 +321,7 @@ SASS_PROCESSOR_INCLUDE_DIRS = (
 
 COERCE_DECIMAL_TO_STRING = True
 
-COMPRESS_ENABLED = False
-
 FSM_ADMIN_FORCE_PERMIT = True
-
-PARLER_DEFAULT_LANGUAGE = 'de'
-
-PARLER_LANGUAGES = {
-    1: (
-        {'code': 'de'},
-        {'code': 'en'},
-    ),
-    'default': {
-        'fallbacks': ['de', 'en'],
-    },
-}
 
 ROBOTS_META_TAGS = ('noindex', 'nofollow')
 
@@ -308,7 +341,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 12,
 }
 
-SERIALIZATION_MODULES = {'json': b'shop.money.serializers'}
+SERIALIZATION_MODULES = {'json': str('shop.money.serializers')}
 
 
 ############################################
@@ -332,9 +365,9 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880
 THUMBNAIL_HIGH_RESOLUTION = False
 
 THUMBNAIL_OPTIMIZE_COMMAND = {
-    'gif': '/opt/local/bin/optipng {filename}',
-    'jpeg': '/opt/local/bin/jpegoptim {filename}',
-    'png': '/opt/local/bin/optipng {filename}'
+    'gif': '/usr/bin/optipng {filename}',
+    'jpeg': '/usr/bin/jpegoptim {filename}',
+    'png': '/usr/bin/optipng {filename}'
 }
 
 THUMBNAIL_PRESERVE_EXTENSIONS = True
@@ -354,28 +387,6 @@ CMS_TEMPLATES = (
     ('myshop/pages/default.html', _("Default Page")),
 )
 
-CMS_LANGUAGES = {
-    'default': {
-        'fallbacks': ['en', 'de'],
-        'redirect_on_fallback': True,
-        'public': True,
-        'hide_untranslated': False,
-    },
-    1: ({
-        'public': True,
-        'code': 'en',
-        'hide_untranslated': False,
-        'name': 'English',
-        'redirect_on_fallback': True,
-    }, {
-        'public': True,
-        'code': 'de',
-        'hide_untranslated': False,
-        'name': 'Deutsch',
-        'redirect_on_fallback': True,
-    },)
-}
-
 CMS_CACHE_DURATIONS = {
     'content': 600,
     'menus': 3600,
@@ -384,39 +395,63 @@ CMS_CACHE_DURATIONS = {
 
 CMS_PERMISSION = False
 
-CMS_PLACEHOLDER_CONF = {
-    'Main Content Container': {
-        'plugins': ['BootstrapRowPlugin', 'SimpleWrapperPlugin', 'SegmentPlugin'],
-        'text_only_plugins': ['TextLinkPlugin'],
-        'parent_classes': {'BootstrapRowPlugin': []},
-        'require_parent': False,
-        'glossary': {
-            'breakpoints': ['xs', 'sm', 'md', 'lg'],
-            'container_max_widths': {'xs': 750, 'sm': 750, 'md': 970, 'lg': 1170},
-            'fluid': False,
-            'media_queries': {
-                'xs': ['(max-width: 768px)'],
-                'sm': ['(min-width: 768px)', '(max-width: 992px)'],
-                'md': ['(min-width: 992px)', '(max-width: 1200px)'],
-                'lg': ['(min-width: 1200px)'],
-            },
-        },
+CACSCADE_WORKAREA_GLOSSARY = {
+    'breakpoints': ['xs', 'sm', 'md', 'lg'],
+    'container_max_widths': {'xs': 750, 'sm': 750, 'md': 970, 'lg': 1170},
+    'fluid': False,
+    'media_queries': {
+        'xs': ['(max-width: 768px)'],
+        'sm': ['(min-width: 768px)', '(max-width: 992px)'],
+        'md': ['(min-width: 992px)', '(max-width: 1200px)'],
+        'lg': ['(min-width: 1200px)'],
     },
 }
 
-CMSPLUGIN_CASCADE_PLUGINS = ('cmsplugin_cascade.segmentation', 'cmsplugin_cascade.generic', 'cmsplugin_cascade.link', 'shop.cascade', 'cmsplugin_cascade.bootstrap3',)
+CMS_PLACEHOLDER_CONF = {
+    'Breadcrumb': {
+        'plugins': ['BreadcrumbPlugin'],
+        'parent_classes': {'BreadcrumbPlugin': None},
+        'glossary': CACSCADE_WORKAREA_GLOSSARY,
+    },
+    'Commodity Details': {
+        'plugins': ['BootstrapRowPlugin', 'TextPlugin', 'ImagePlugin', 'PicturePlugin'],
+        'text_only_plugins': ['TextLinkPlugin'],
+        'parent_classes': {'BootstrapRowPlugin': None},
+        'require_parent': False,
+        'glossary': CACSCADE_WORKAREA_GLOSSARY,
+    },
+    'Main Content Container': {
+        'plugins': ['BootstrapContainerPlugin',],
+        'parent_classes': {'BootstrapContainerPlugin': None},
+        'glossary': CACSCADE_WORKAREA_GLOSSARY,
+    },
+    'Static Footer': {
+        'plugins': ['BootstrapContainerPlugin', ],
+        'parent_classes': {'BootstrapContainerPlugin': None},
+        'glossary': CACSCADE_WORKAREA_GLOSSARY,
+    },
+}
+
+
+CMSPLUGIN_CASCADE_PLUGINS = ('cmsplugin_cascade.segmentation', 'cmsplugin_cascade.generic',
+    'cmsplugin_cascade.link', 'shop.cascade', 'cmsplugin_cascade.bootstrap3',)
 
 CMSPLUGIN_CASCADE = {
     'dependencies': {
         'shop/js/admin/shoplinkplugin.js': 'cascade/js/admin/linkpluginbase.js',
     },
     'alien_plugins': ('TextPlugin', 'TextLinkPlugin',),
+    'bootstrap3': {
+        'template_basedir': 'angular-ui',
+    },
     'plugins_with_extra_fields': (
         'BootstrapButtonPlugin',
         'BootstrapRowPlugin',
         'SimpleWrapperPlugin',
         'HorizontalRulePlugin',
         'ExtraAnnotationFormPlugin',
+        'ShopProceedButton',
+        'CarouselPlugin',
     ),
     'segmentation_mixins': (
         ('shop.cascade.segmentation.EmulateCustomerModelMixin', 'shop.cascade.segmentation.EmulateCustomerAdminMixin'),
@@ -459,14 +494,15 @@ HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
         'URL': 'http://localhost:9200/',
-        'INDEX_NAME': 'shop-de',
-    },
-    'en': {
-        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-        'URL': 'http://localhost:9200/',
-        'INDEX_NAME': 'shop-en',
+        'INDEX_NAME': 'myshop-en',
     },
 }
+if SHOP_TUTORIAL in ('i18n', 'polymorphic'):
+    HAYSTACK_CONNECTIONS['de'] = {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://localhost:9200/',
+        'INDEX_NAME': 'myshop-de',
+    }
 
 HAYSTACK_ROUTERS = ('shop.search.routers.LanguageRouter',)
 
@@ -480,14 +516,16 @@ SHOP_CART_MODIFIERS = (
     else 'shop.modifiers.defaults.DefaultCartModifier',
     'shop.modifiers.taxes.CartExcludedTaxModifier',
     'myshop.modifiers.PostalShippingModifier',
+    'myshop.modifiers.CustomerPickupModifier',
+    'myshop.modifiers.StripePaymentModifier',
     'shop.modifiers.defaults.PayInAdvanceModifier',
-    'shop_stripe.modifiers.StripePaymentModifier',
 )
 SHOP_EDITCART_NG_MODEL_OPTIONS = "{updateOn: 'default blur', debounce: {'default': 2500, 'blur': 0}}"
 
 SHOP_ORDER_WORKFLOWS = (
     'shop.payment.defaults.PayInAdvanceWorkflowMixin',
-    'shop.payment.defaults.CommissionGoodsWorkflowMixin',
+    'shop.shipping.delivery.PartialDeliveryWorkflowMixin' if SHOP_TUTORIAL == 'polymorphic'
+    else 'shop.shipping.defaults.CommissionGoodsWorkflowMixin',
     'shop_stripe.payment.OrderWorkflowMixin',
 )
 
@@ -496,8 +534,17 @@ SHOP_STRIPE = {
     'APIKEY': 'sk_test_stripe_secret',
     'PURCHASE_DESCRIPTION': _("Thanks for purchasing at MyShop"),
 }
-try:
-    from . import private_settings
-    SHOP_STRIPE.update(private_settings.SHOP_STRIPE)
-except (ImportError, AttributeError):
-    pass
+
+# merge settings with non-public credentioals in private_settings
+for priv_attr in ('DATABASES', 'SECRET_KEY', 'SHOP_STRIPE', 'EMAIL_HOST', 'EMAIL_PORT',
+                  'EMAIL_HOST_USER', 'DEFAULT_FROM_EMAIL', 'EMAIL_HOST_PASSWORD', 'EMAIL_USE_TLS',
+                  'EMAIL_REPLY_TO', 'EMAIL_BACKEND'):
+    try:
+        from . import private_settings
+        vars()[priv_attr].update(getattr(private_settings, priv_attr))
+    except AttributeError:
+        continue
+    except KeyError:
+        vars()[priv_attr] = getattr(private_settings, priv_attr)
+    except ImportError:
+        break

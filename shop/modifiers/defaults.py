@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from shop.modifiers.base import PaymentModifier, ShippingModifier
 from shop.money import AbstractMoney, Money
 from shop.payment.defaults import ForwardFundPayment
+from shop.shipping.defaults import DefaultShippingProvider
 from .base import BaseCartModifier
 
 
@@ -45,6 +46,7 @@ class SelfCollectionModifier(ShippingModifier):
     to enable the customer to pick up the products in the shop.
     """
     identifier = 'self-collection'
+    shipping_provider = DefaultShippingProvider()
 
     def get_choice(self):
         return (self.identifier, _("Self collection"))

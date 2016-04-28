@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.utils.translation import ugettext_lazy as _
+
 from django.views.decorators.cache import never_cache
 from rest_framework import generics, mixins
 from rest_framework.renderers import BrowsableAPIRenderer
@@ -11,26 +11,27 @@ from shop.rest.renderers import CMSPageRenderer
 from shop.models.order import OrderModel
 
 
-class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, generics.GenericAPIView):
+class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
+                generics.GenericAPIView):
     """
     Base View class to render the fulfilled orders for the current user.
     """
     renderer_classes = (CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer)
+    list_serializer_class = OrderListSerializer
+    detail_serializer_class = OrderDetailSerializer
     many = True
 
     def get_queryset(self):
-        if self.request.customer.is_visitor():
-            raise PermissionDenied(detail=_("Only signed in customers can view their orders"))
-        return OrderModel.objects.filter(customer=self.request.customer).order_by('-updated_at',)
+        return OrderModel.objects.filter_from_request(self.request)
 
     def get_serializer_class(self):
         if self.many:
-            return OrderListSerializer
-        return OrderDetailSerializer
+            return self.list_serializer_class
+        return self.detail_serializer_class
 
     def get_renderer_context(self):
         renderer_context = super(OrderView, self).get_renderer_context()
-        if renderer_context['request'].accepted_renderer.format == 'html':
+        if self.request.accepted_renderer.format == 'html':
             renderer_context['many'] = self.many
             if self.many is False:
                 # add an extra ance to the breadcrumb
@@ -48,12 +49,28 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, generics.Gener
             return self.get_queryset().first()
         return super(OrderView, self).get_object()
 
+    @property
+    def allowed_methods(self):
+        """Restrict method "POST" only on the detail view"""
+        allowed_methods = self._allowed_methods()
+        if self.many:
+            allowed_methods.remove('POST')
+        return allowed_methods
+
     @never_cache
     def get(self, request, *args, **kwargs):
         if self.is_last():
             self.many = False
         if self.many:
             return self.list(request, *args, **kwargs)
+        return self.retrieve(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if self.is_last():
+            self.many = False
+        if self.many:
+            return self.list(request, *args, **kwargs)
+        response = self.update(request, *args, **kwargs)
         return self.retrieve(request, *args, **kwargs)
 
     def is_last(self):

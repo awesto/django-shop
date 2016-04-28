@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from six import with_metaclass
 from collections import OrderedDict
-from django.core.validators import MinValueValidator
 from django.db import models
+from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import ugettext_lazy as _
 from jsonfield.fields import JSONField
 from shop.modifiers.pool import cart_modifiers_pool
+from shop.money import Money
 from .product import BaseProduct
-from . import deferred
+from shop import deferred
 from shop.models.customer import CustomerModel
 
 
@@ -24,23 +26,17 @@ class CartItemManager(models.Manager):
         cart = kwargs.pop('cart')
         product = kwargs.pop('product')
         quantity = int(kwargs.pop('quantity', 1))
-        extra = kwargs.pop('extra', {})
 
         # add a new item to the cart, or reuse an existing one, increasing the quantity
-        watched = quantity == 0
-        cart_item = product.is_in_cart(cart, extra, watched)
+        watched = not quantity
+        cart_item = product.is_in_cart(cart, watched=watched, **kwargs)
         if cart_item:
             if not watched:
                 cart_item.quantity += quantity
-                cart_item.extra.update(extra)
             created = False
         else:
-            cart_item = self.model(cart=cart, product=product, quantity=quantity, extra=extra)
+            cart_item = self.model(cart=cart, product=product, quantity=quantity, **kwargs)
             created = True
-
-        # assign the remaining attributes to the model (applies only to overridden CartItem models)
-        for key, attr in kwargs.items():
-            setattr(cart_item, key, attr)
 
         cart_item.save()
         return cart_item, created
@@ -72,7 +68,6 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     pointer to the actual Product being purchased
     """
     cart = deferred.ForeignKey('BaseCart', related_name='items')
-    quantity = models.IntegerField(validators=[MinValueValidator(0)])
     product = deferred.ForeignKey(BaseProduct)
     extra = JSONField(default={}, verbose_name=_("Arbitrary information for this cart item"))
 
@@ -83,9 +78,23 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         verbose_name = _("Cart item")
         verbose_name_plural = _("Cart items")
 
+    @classmethod
+    def perform_model_checks(cls):
+        try:
+            allowed_types = ('IntegerField', 'DecimalField', 'FloatField')
+            field = [f for f in cls._meta.fields if f.attname == 'quantity'][0]
+            if not field.get_internal_type() in allowed_types:
+                msg = "Field `{}.quantity` must be of one of the types: {}."
+                raise ImproperlyConfigured(msg.format(cls.__name__, allowed_types))
+        except IndexError:
+            msg = "Class `{}` must implement a field named `quantity`."
+            raise ImproperlyConfigured(msg.format(cls.__name__))
+
     def __init__(self, *args, **kwargs):
-        # That will hold extra fields to display to the user (ex. taxes, discount)
-        super(BaseCartItem, self).__init__(*args, **kwargs)
+        # reduce the given fields to what the model actually can consume
+        all_field_names = self._meta.get_all_field_names()
+        model_kwargs = {k: v for k, v in kwargs.items() if k in all_field_names}
+        super(BaseCartItem, self).__init__(*args, **model_kwargs)
         self.extra_rows = OrderedDict()
         self._dirty = True
 
@@ -110,20 +119,23 @@ CartItemModel = deferred.MaterializedModel(BaseCartItem)
 
 
 class CartManager(models.Manager):
+    """
+    The Model Manager for any Cart inheriting from BaseCart.
+    """
+
     def get_from_request(self, request):
         """
         Return the cart for current customer.
         """
         if request.customer.is_visitor():
-            cart = None
-        else:
-            cart = self.get_or_create(customer=request.customer)[0]
+            raise self.model.DoesNotExist("Cart for visiting customer does not exist.")
+        cart, temp = self.get_or_create(customer=request.customer)
         return cart
 
     def get_or_create_from_request(self, request):
         if request.customer.is_visitor():
             request.customer = CustomerModel.objects.get_or_create_from_request(request)
-        cart = self.get_or_create(customer=request.customer)[0]
+        cart, temp = self.get_or_create(customer=request.customer)
         return cart
 
 
@@ -218,14 +230,31 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         return "{}".format(self.pk) or '(unsaved)'
 
     @property
+    def num_items(self):
+        """
+        Returns the number of items in the cart.
+        """
+        return self.items.filter(quantity__gt=0).count()
+
+    @property
     def total_quantity(self):
         """
         Returns the total quantity of all items in the cart.
         """
-        return sum([ci.quantity for ci in self.items.all()])
+        return self.items.aggregate(models.Sum('quantity'))['quantity__sum']
+        # if we would know, that self.items is already evaluated, then this might be faster:
+        # return sum([ci.quantity for ci in self.items.all()])
 
     @property
     def is_empty(self):
         return self.total_quantity == 0
+
+    def get_caption_data(self):
+        return {'num_items': self.num_items, 'total_quantity': self.total_quantity,
+                'subtotal': self.subtotal, 'total': self.total}
+
+    @classmethod
+    def get_default_caption_data(cls):
+        return {'num_items': 0, 'total_quantity': 0, 'subtotal': Money(), 'total': Money()}
 
 CartModel = deferred.MaterializedModel(BaseCart)

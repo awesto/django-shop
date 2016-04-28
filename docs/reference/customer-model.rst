@@ -1,4 +1,4 @@
-.. _customer-model:
+.. _reference/customer-model:
 
 ==============
 Customer Model
@@ -51,7 +51,7 @@ It also must define all the fields which are available in the default model as f
 ``django.contrib.auth.models.User``.
 
 By setting the flag ``is_active = False``, we can create guests inside Django's ``User`` model.
-Guests can not sign, they can not reset their password and can thus be considered as “materialized”
+Guests can not sign, they can not reset their password, and can thus be considered as “materialized”
 anonymous users.
 
 Having guests with an entry in the database, gives us another advantage: By using the session key
@@ -62,21 +62,22 @@ certain User authenticated himself or not. It also keeps the workflow simple, wh
 User decides to register and authenticate himself in the future.
 
 
-Add the Customer model to your application
-==========================================
+Adding the Customer model to our application
+============================================
 
-As almost all models in **djangoSHOP**, the Customer itself is deferrable_. This means that
-the Django project is responsible for materializing that model and additionally allows the merchant
-to add arbitrary fields to this Customer model. Good choices are a phone number, a boolean to signal
-whether the customer shall receive newsletters, his rebate status, etc.
+As almost all models in **djangoSHOP**, the Customer model uses itself the
+:ref:`reference/deferred-models`. This means that the Django project is responsible for
+materializing that model and additionally allows the merchant to add arbitrary fields to this
+Customer model. Good choices are a phone number, a boolean to signal whether the customer shall
+receive newsletters, his rebate status, etc.
 
-The simplest way is to materialize the given convenience class in your project's ``models.py``:
+The simplest way is to materialize the given convenience class in our project's ``models.py``:
 
 .. code-block:: python
 
 	from shop.models.defaults.customer import Customer
 
-or, if you needs extra fields, then instead of the above, do:
+or, if we need extra fields, then instead of the above, we write:
 
 .. code-block:: python
 
@@ -85,8 +86,6 @@ or, if you needs extra fields, then instead of the above, do:
 	class (BaseCustomer):
 	    birth_date = models.DateField("Date of Birth")
 	    # other customer related fields
-
-.. _deferrable: deferred-models
 
 
 Configure the Middleware
@@ -163,10 +162,12 @@ User table. Therefore it performs better to query the User via the Customer obje
 versa.
 
 
+.. _reference/visitors-guests-registered-customers:
+
 Anonymous Users and Visiting Customers
 --------------------------------------
 
-Most requests to your site will be of anonymous nature. They will not send a cookie containing a
+Most requests to our site will be of anonymous nature. They will not send a cookie containing a
 session-Id to the client, and the server will not allocate a session bucket. The middleware adds
 a ``VisitingCustomer`` object associated with an ``AnonymousUser`` object to the request. These
 two objects are not stored inside the database.
@@ -293,7 +294,7 @@ Administration of Users and Customers
 -------------------------------------
 
 By keeping the Customer and the User model tight together, it is possible to reuse the Django's
-administration backend for both of them. All you have to do is to import and register the
+administration backend for both of them. All we have to do is to import and register the
 Customer backend inside the project's ``admin.py``:
 
 .. code-block:: python

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
@@ -16,7 +17,6 @@ class OperatingSystem(models.Model):
         return self.name
 
 
-@python_2_unicode_compatible
 class SmartPhoneModel(Product):
     """
     A generic smart phone model, which must be concretized by a model `SmartPhone` - see below.
@@ -60,9 +60,6 @@ class SmartPhoneModel(Product):
         verbose_name = _("Smart Phone")
         verbose_name_plural = _("Smart Phones")
 
-    def __str__(self):
-        return self.name
-
     def get_price(self, request):
         """
         Return the starting price for instances of this smart phone model.
@@ -76,17 +73,20 @@ class SmartPhoneModel(Product):
                 self._price = Money()
         return self._price
 
-    def is_in_cart(self, cart, extra, watched=False):
+    def is_in_cart(self, cart, watched=False, **kwargs):
         from shop.models.cart import CartItemModel
-        product_code = extra.get('product_code')
+        try:
+            product_code = kwargs['extra']['product_code']
+        except KeyError:
+            return
         cart_item_qs = CartItemModel.objects.filter(cart=cart, product=self)
         for cart_item in cart_item_qs:
             if cart_item.extra.get('product_code') == product_code:
                 return cart_item
 
-    def get_product_markedness(self, extra):
+    def get_product_variant(self, product_code):
         try:
-            return self.smartphone_set.get(product_code=extra.get('product_code'))
+            return self.smartphone_set.get(product_code=product_code)
         except SmartPhone.DoesNotExist as e:
             raise SmartPhoneModel.DoesNotExist(e)
 

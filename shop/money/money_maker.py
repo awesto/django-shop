@@ -1,18 +1,21 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
+from django.utils.encoding import python_2_unicode_compatible
 from decimal import Decimal, InvalidOperation
 from cms.utils.helpers import classproperty
 from shop import settings as shop_settings
-from iso4217 import CURRENCIES
+from .iso4217 import CURRENCIES
 
 
+@python_2_unicode_compatible
 class AbstractMoney(Decimal):
     MONEY_FORMAT = getattr(shop_settings, 'MONEY_FORMAT')
 
     def __new__(cls, value):
         raise TypeError("Can not instantiate {} as AbstractMoney.".format(value))
 
-    def __unicode__(self):
+    def __str__(self):
         """
         Renders the price localized and formatted in its current currency.
         """
@@ -25,9 +28,6 @@ class AbstractMoney(Decimal):
             raise ValueError("Can not represent {} as Money type.".format(self.__repr__()))
         return self.MONEY_FORMAT.format(**vals)
 
-    def __str__(self):
-        return self.__unicode__().encode('utf-8')
-
     def __repr__(self):
         value = Decimal.__str__(self)
         return "{}('{}')".format(self.__class__.__name__, value)
@@ -39,17 +39,17 @@ class AbstractMoney(Decimal):
     def __format__(self, specifier, context=None, _localeconv=None):
         if self.is_nan():
             amount = '–'
-        elif context is None:
-            amount = self.quantize(self._cents).__format__(specifier, context, _localeconv)
+        elif specifier in ('', 'f',):
+            amount = self.quantize(self._cents).__format__(specifier)
         else:
-            amount = Decimal.__format__(self, specifier, context, _localeconv)
+            amount = Decimal.__format__(self, specifier)
         vals = dict(code=self._currency_code, symbol=self._currency[2],
                     currency=self._currency[3], amount=amount)
         return self.MONEY_FORMAT.format(**vals)
 
     def __add__(self, other, context=None):
         other = self._assert_addable(other)
-        amount = Decimal.__add__(self, other, context) if not self.is_nan() else other
+        amount = Decimal.__add__(self, other) if not self.is_nan() else other
         return self.__class__(amount)
 
     def __radd__(self, other, context=None):
@@ -58,21 +58,21 @@ class AbstractMoney(Decimal):
     def __sub__(self, other, context=None):
         other = self._assert_addable(other)
         # self - other is computed as self + other.copy_negate()
-        amount = Decimal.__add__(self, other.copy_negate(), context=context)
+        amount = Decimal.__add__(self, other.copy_negate())
         return self.__class__(amount)
 
     def __rsub__(self, other, context=None):
         raise ValueError("Can not substract money from something else.")
 
     def __neg__(self, context=None):
-        amount = Decimal.__neg__(self, context)
+        amount = Decimal.__neg__(self)
         return self.__class__(amount)
 
     def __mul__(self, other, context=None):
         if other is None:
             return self.__class__('NaN')
         other = self._assert_multipliable(other)
-        amount = Decimal.__mul__(self, other, context)
+        amount = Decimal.__mul__(self, other)
         return self.__class__(amount)
 
     def __rmul__(self, other, context=None):
@@ -80,7 +80,7 @@ class AbstractMoney(Decimal):
 
     def __div__(self, other, context=None):
         other = self._assert_dividable(other)
-        amount = Decimal.__div__(self, other, context)
+        amount = Decimal.__div__(self, other)
         return self.__class__(amount)
 
     def __rdiv__(self, other, context=None):
@@ -88,7 +88,7 @@ class AbstractMoney(Decimal):
 
     def __truediv__(self, other, context=None):
         other = self._assert_dividable(other)
-        amount = Decimal.__truediv__(self, other, context)
+        amount = Decimal.__truediv__(self, other)
         return self.__class__(amount)
 
     def __rtruediv__(self, other, context=None):
@@ -99,13 +99,47 @@ class AbstractMoney(Decimal):
 
     def __float__(self):
         """Float representation."""
-        if self._isnan():
+        if self.is_nan():
             if self.is_snan():
                 raise ValueError("Cannot convert signaling NaN to float")
-            s = "-nan" if self._sign else "nan"
+            s = '-nan' if self.is_signed() else 'nan'
         else:
             s = Decimal.__str__(self)
         return float(s)
+
+    def __eq__(self, other, context=None):
+        if self.is_nan() and other.is_nan():
+            return True
+        if isinstance(other, AbstractMoney):
+            other = self._assert_addable(other)
+        return Decimal.__eq__(self, other)
+
+    def __lt__(self, other, context=None):
+        other = self._assert_addable(other)
+        if self.is_nan():
+            return Decimal().__lt__(other)
+        return Decimal.__lt__(self, other)
+
+    def __le__(self, other, context=None):
+        other = self._assert_addable(other)
+        if self.is_nan():
+            return Decimal().__le__(other)
+        return Decimal.__le__(self, other)
+
+    def __gt__(self, other, context=None):
+        other = self._assert_addable(other)
+        if self.is_nan():
+            return Decimal().__gt__(other)
+        return Decimal.__gt__(self, other)
+
+    def __ge__(self, other, context=None):
+        other = self._assert_addable(other)
+        if self.is_nan():
+            return Decimal().__ge__(other)
+        return Decimal.__ge__(self, other)
+
+    def __deepcopy__(self, memo):
+        return self.__class__(self._cents)
 
     @classproperty
     def currency(cls):
@@ -119,6 +153,8 @@ class AbstractMoney(Decimal):
         Return the amount as decimal quantized to its subunits.
         This representation often is used by payment service providers.
         """
+        if self.is_nan():
+            return Decimal()
         return Decimal.quantize(self, self._cents)
 
     def as_integer(self):
@@ -175,14 +211,7 @@ class MoneyMaker(type):
             Build a class named MoneyIn<currency_code> inheriting from Decimal.
             """
             if isinstance(value, cls):
-                assert cls._currency_code == value._currency_code
-            if isinstance(value, (cls, Decimal)):
-                self = object.__new__(cls)
-                self._exp = value._exp
-                self._sign = value._sign
-                self._int = value._int
-                self._is_special = value._is_special
-                return self
+                assert cls._currency_code == value._currency_code, "Money type currency mismatch"
             if value is None:
                 value = 'NaN'
             try:
@@ -202,7 +231,7 @@ class MoneyMaker(type):
         try:
             cents = Decimal('.' + CURRENCIES[currency_code][1] * '0')
         except InvalidOperation:
-            # Currencies with no decimal places, ex. JPY
+            # Currencies with no decimal places, ex. JPY, HUF
             cents = Decimal()
         attrs = {'_currency_code': currency_code, '_currency': CURRENCIES[currency_code],
                  '_cents': cents, '__new__': new_money}

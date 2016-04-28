@@ -6,13 +6,13 @@ from django.utils.translation import ugettext_lazy as _
 from filer.fields import image
 from cms.models.pagemodel import Page
 from .product import BaseProduct
-from . import deferred
+from shop import deferred
 
 
 class BaseProductPage(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     ManyToMany relation from the polymorphic Product to the CMS Page.
-    This is in practice is the category.
+    This in practice is the category.
     """
     page = models.ForeignKey(Page)
     product = deferred.ForeignKey(BaseProduct)

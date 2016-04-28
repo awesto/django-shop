@@ -1,3 +1,5 @@
+.. _contributing:
+
 =============
 Contributing
 =============
@@ -5,16 +7,15 @@ Contributing
 Naming conventions
 ==================
 
-The official name of this project is **django SHOP**. Third party plugins for **django SHOP** shall
+The official name of this project is **djangoSHOP**. Third party plugins for **djangoSHOP** shall
 follow the same naming convention as for plugins of **djangoCMS**: Third party package names shall
 start with **djangoshop** followed by a dash; no space shall be added between **django** and
-**shop**.
+**shop**, for example: ``djangoshop-stripe``
 
-**Django SHOP** should be capitalised at the start of sentences and in
-title-case headings.
+**DjangoSHOP** should be capitalised at the start of sentences and in title-case headings.
 
-When referring to the package, repositories and any other things in which
-spaces are not permitted, use **django-shop**.
+When referring to the package, repositories and any other things in which spaces are not permitted,
+use **django-shop**.
 
 
 Running tests
@@ -29,82 +30,105 @@ Setting up the environment
 We highly suggest you run the tests suite in a clean environment, using a tool such as
 `virtualenv <http://pypi.python.org/pypi/virtualenv>`_.
 
-1. Clone the repository and cd into it::
+1. Clone the repository and cd into it:
 
-    git clone https://github.com/jrief/django-shop
-    cd django-shop
+.. code-block:: shell
 
-2. Create a virtualenv, and activate it::
+	git clone https://github.com/awesto/django-shop
+	cd django-shop
 
-    virtualenv ~/.virtualenvs/django-shop
-    source ~/.virtualenvs/django-shop/bin/activate
+2. Create a virtualenv, and activate it:
 
-3. Install the project in development mode::
+.. code-block:: shell
 
-    pip install -e .
+	virtualenv ~/.virtualenvs/django-shop
+	source ~/.virtualenvs/django-shop/bin/activate
 
-4. Install the development requirements::
+3. Install the project in development mode:
 
-    pip install -r requirements/django18/testing.txt
+.. code-block:: shell
+
+	pip install -e .
+
+4. Install the development requirements:
+
+.. code-block:: shell
+
+	pip install -r requirements/django18/testing.txt
 
 That's it! Now, you should be able to run the tests::
 
-    py.test tests
+	py.test testshop
 
-We use `tox <http://codespeak.net/tox/>`_ as a CI tool. To run the full CI
-test suite and get a coverage report, all you have to do is this::
+We use `tox <http://codespeak.net/tox/>`_ as a CI tool. To run the full CI test suite and get a
+coverage report, all you have to do is this:
 
-    pip install tox
-    tox
+.. code-block:: shell
 
-If you work on a certain part of the code base and you want to run the related
-tests and get a coverage report, you can do something like this::
+	pip install tox
+	tox
 
-    coverage run $(which py.test) tests/test_money.py \
-        && coverage report -m shop/money/*.py
+If you work on a certain part of the code base and you want to run the related tests, you may only
+want to run the tests affecting that part. In such a case use ``py.test`` from your testing
+environment and specify the file to test, or for more granularity the class name or even the method
+name. Here are two examples:
 
-.. NOTE::
-    Using tox and py.test is optional. If you prefer the conventional way of
-    running tests, you can do this: ``django-admin.py test tests --settings shop.testsettings``
+.. code-block:: shell
+
+	py.test testshop/test_money.py
+	py.test testshop/test_money.py -k test_pickle
+
+Measuring which lines of code have been "seen" be the test runner is an important task while
+testing. Do this by creating a coverage report, for example with:
+
+.. code-block:: shell
+
+	coverage run $(which py.test) testshop
+	coverage report
+
+or if you to test only a specific class
+
+	coverage run .tox/py27-django19/bin/py.test testshop/test_money.py
+	coverage report -m shop/money/*.py
+
+.. note::
+
+	Using tox and py.test is optional. If you prefer the conventional way of running tests, you can
+	do this: ``django-admin.py test tests --settings shop.testsettings``
+
 
 Community
 ==========
 
-Most of the discussion around django SHOP takes place on IRC (Internet Relay
-Chat), on the freenode servers in the #django-shop channel.
+Most of the discussion around django SHOP takes place on IRC (Internet Relay Chat), on the freenode
+servers in the #django-shop channel.
 
 We also have a mailing list and a google group::
 
 	http://groups.google.com/group/django-shop
 
+
 Code guidelines
 ================
 
-* Like most projects, we try to follow :pep:`8` as closely as possible
-* Most pull requests will be rejected without proper unit testing
-* Generally we like to discuss new features before they are merged in, but this
-  is a somewhat flexible rule :)
+Unless otherwise specified, follow :pep:`8` as closely as possible.
 
+An exception to PEP 8 is our rules on line lengths. Don’t limit lines of code to 79 characters if it
+means the code looks significantly uglier or is harder to read. Consider 100 characters as a soft,
+and 119 as a hard limit. Here soft limit means, that unless a line must be splitted across two
+lines, it is more readable to stay with a long line.
 
-Sending a pull request
-======================
+Use the issue tracker only to report bugs. Send unsolicited pull requests only to fix bug – never
+to add new features.
 
-We use github for development, and so all code that you would like to see
-included should follow the following simple workflow:
+Use stack-overflow to ask for questions related to **djangoSHOP**.
 
-* Clone django-shop
-* Checkout your fork
-* Make a feature branch (to make pull requests easier)
-* Hack hack, Test test, Commit commit, Test test
-* Push your feature branch to your remote (your fork)
-* Use the github interface to create a pull request from your branch
-* Wait for the community to review your changes. You can hang out with us and
-  ask for feedback on #django-shop (on freenode) in the mean time!
-* If some changes are required, please commit to your local feature branch and
-  push the changes to your remote feature branch. The pull request will be
-  updated automagically with your new changes!
-* DO NOT add unrelated commits to your branch, since they make the review
-  process more complicated and painful for everybody.
+Most pull requests will be rejected without proper unit testing.
 
-More information can be found on Github itself:
+Before adding a new feature, please write a specification using the style for
+`Django Enhancement Proposals`_.
+
+More information about how to send a Pull Request can be found on GitHub:
 http://help.github.com/send-pull-requests/
+
+.. _Django Enhancement Proposals: https://github.com/django/deps/blob/master/final/0001-dep-process.rst

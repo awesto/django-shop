@@ -14,6 +14,7 @@ class ProductSearchSerializer(HaystackSerializer):
     class Meta:
         fields = ('text', 'autocomplete', 'product_name', 'product_url', 'price',)
         ignore_fields = ('text', 'autocomplete',)
+        field_aliases = {'q': 'text'}
 
     def get_price(self, search_result):
         """
@@ -23,7 +24,3 @@ class ProductSearchSerializer(HaystackSerializer):
         """
         if search_result.object:
             return search_result.object.get_price(self.context['request'])
-
-    def to_representation(self, instance):
-        representation = super(ProductSearchSerializer, self).to_representation(instance)
-        return representation

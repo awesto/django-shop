@@ -17,19 +17,22 @@
 	{% block search-results-thead %}
 	<thead ng-if="search_data.count>0">
 		<tr>
-			<th class="col-xs-9 text-center">{% trans "{{ search_data.count }} matching products found" %}</th>
-			<th class="col-xs-3 text-center">{% trans "Base Price" %}</th>
+			<th class="col-xs-8 text-center">{% trans "{{ search_data.count }} matching products found" %}</th>
+			<th class="col-xs-2 text-right">{% trans "Base Price" %}</th>
+			<th class="col-xs-2">&nbsp;</th>
 		</tr>
 	</thead>
 	{% endblock search-results-thead %}
 
 	{% block search-results-tbody %}
 	<tbody>
-		<tr ng-repeat="result_line in search_data.results">
-			<td ng-bind-html="result_line.body"></td>
-			<td class="text-center text-nowrap">
-				<strong ng-bind="result_line.price"></strong>
-				<a class="btn btn-primary btn-sm" href="{% verbatim %}{{ result_line.product_url }}{% endverbatim %}">{% trans "Details" %}&nbsp;<i class="glyphicon glyphicon-menu-right"></i></a>
+		<tr ng-repeat="result in search_data.results">
+			<td ng-bind-html="result.media"></td>
+			<td class="text-right text-nowrap">
+				<strong ng-bind="result.price"></strong>
+			</td>
+			<td class="text-center">
+				<a class="btn btn-primary btn-sm" href="{% verbatim %}{{ result.product_url }}{% endverbatim %}">{% trans "Details" %}&nbsp;<i class="glyphicon glyphicon-menu-right"></i></a>
 			</td>
 		</tr>
 	</tbody>
@@ -37,12 +40,14 @@
 
 	{% block search-results-tfoot %}
 	<tfoot>
-		<tr><td colspan="2">
-			<ul class="pager">
-				<li colspan="2" ng-if="isLoading"><span>{% trans "Loading search results" %} &hellip;</span></li>
-				<li colspan="2" ng-if="!isLoading"><i in-view="$inview && loadMore()">&nbsp;</i></li>
-			</ul>
-		</td></tr>
+		<tr>
+			<td colspan="3">
+				<ul class="pager">
+					<li ng-if="isLoading"><span>{% trans "Loading search results" %} &hellip;</span></li>
+					<li ng-if="!isLoading"><i in-view="$inview && loadMore()">&nbsp;</i></li>
+				</ul>
+			</td>
+		</tr>
 	</tfoot>
 	{% endblock search-results-tfoot %}
 

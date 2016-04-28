@@ -15,7 +15,7 @@ from .plugin_base import ShopPluginBase
 class ShopCartPlugin(ShopPluginBase):
     name = _("Cart")
     require_parent = True
-    parent_classes = ('BootstrapColumnPlugin',)
+    parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin', 'BootstrapPanelPlugin',)
     cache = False
     CHOICES = (('editable', _("Editable Cart")), ('static', _("Static Cart")),
         ('summary', _("Cart Summary")), ('watch', _("Watch List")),)
@@ -64,13 +64,15 @@ class ShopCartPlugin(ShopPluginBase):
         render_type = instance.glossary.get('render_type')
         if render_type in ('static', 'summary',):
             # update context for static and summary cart rendering since items are rendered in HTML
-            cart = CartModel.objects.get_from_request(context['request'])
-            if cart:
+            try:
+                cart = CartModel.objects.get_from_request(context['request'])
                 cart_serializer = CartSerializer(cart, context=context, label='cart')
                 context['cart'] = cart_serializer.data
                 if render_type == 'summary':
                     # for a cart summary we're only interested into the number of items
                     context['cart']['items'] = len(context['cart']['items'])
+            except CartModel.DoesNotExist:
+                pass
         else:
             context['ng_model_options'] = shop_settings.EDITCART_NG_MODEL_OPTIONS
         return super(ShopCartPlugin, self).render(context, instance, placeholder)

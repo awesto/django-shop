@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from bs4 import BeautifulSoup
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
@@ -15,6 +16,7 @@ from post_office import mail
 from post_office.models import Email as OriginalEmail, EmailTemplate
 from filer.fields.file import FilerFileField
 from .customer import CustomerModel
+from .order import OrderModel
 
 
 class Email(OriginalEmail):
@@ -72,8 +74,8 @@ class Notification(models.Model):
     """
     name = models.CharField(max_length=50, verbose_name=_("Name"))
     transition_target = models.CharField(max_length=50, verbose_name=_("Event"))
-    mail_to = models.PositiveIntegerField(verbose_name=_("Mail to"), null=True, blank=True,
-                                          default=None)
+    mail_to = models.PositiveIntegerField(verbose_name=_("Mail to"), null=True,
+                                          blank=True, default=None)
     mail_template = models.ForeignKey(EmailTemplate, verbose_name=_("Template"),
                             limit_choices_to=Q(language__isnull=True) | Q(language=''))
 
@@ -125,6 +127,9 @@ class EmulateHttpRequest(HttpRequest):
 
 def order_event_notification(sender, instance=None, target=None, **kwargs):
     from shop.rest import serializers
+
+    if not isinstance(instance, OrderModel):
+        return
     for notification in Notification.objects.filter(transition_target=target):
         recipient = notification.get_recipient(instance)
         if recipient is None:

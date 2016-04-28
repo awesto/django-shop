@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
+from functools import reduce
 import operator
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Q
@@ -18,7 +20,7 @@ class _CMSPagesFilterBackend(BaseFilterBackend):
         current_page = request.current_page
         if current_page.publisher_is_draft:
             current_page = current_page.publisher_public
-        filter_by_cms_page = [Q((field, current_page)) for field in cms_pages_fields]
+        filter_by_cms_page = (Q((field, current_page)) for field in cms_pages_fields)
         queryset = queryset.filter(reduce(operator.or_, filter_by_cms_page)).distinct()
         return queryset
 

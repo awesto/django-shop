@@ -1,0 +1,1 @@
+{% extends "search/indexes/myshop/smartphonemodel_text.txt" %}

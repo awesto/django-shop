@@ -5,7 +5,7 @@
 <table shop-add-to-cart="{{ product.get_absolute_url }}/add-smartphone-to-cart" class="table">
 	<thead>
 		<tr>
-			<th>{% trans "Model" %}</th>
+			<th>{% trans "Internal Storage" %}</th>
 			<th>{% trans "Quantity" %}</th>
 			<th>{% trans "Unit Price" %}</th>
 			<th>{% trans "Subtotal" %}</th>
@@ -17,19 +17,25 @@
 				<select class="form-control" ng-model="context.extra.product_code" ng-change="updateContext()" >
 	{% for smartphone in product.smartphone_set.all %}
 					<option value="{{ smartphone.product_code }}">
-					{{ smartphone.storage }} GB
+		{% if smartphone.storage == 0 %}{% trans "Pluggable" %}{% else %}{{ smartphone.storage }} GB{% endif %}
 					</option>
 	{% endfor %}
 				</select>
 			</td>
-			<td class="form-inline">
-				<div class="form-group">
-					<input class="form-control" type="number" min="1" ng-model="context.quantity" ng-model-options="{{ ng_model_options }}" ng-change="updateContext()" />
-				</div>
+			<td>
+				<select class="form-control" ng-model="context.quantity" ng-change="updateContext()">
+					<option value="1">1</option>
+					<option value="2">2</option>
+				</select>
 			</td>
 			<td ng-bind="context.unit_price"></td>
 			<td ng-bind="context.subtotal"></td>
 		</tr>
+		{% if request.session.is_empty %}
+		<tr>
+			<td colspan="4">{% block cookie-disclaimer %}{{ block.super }}{% endblock %}</td>
+		</tr>
+		{% endif %}
 		<tr>
 			<td colspan="2">
 				<button class="btn btn-info btn-block btn-xs" ng-click="addToCart('{% url 'shop:watch-list' %}', {watch: true})">{% trans "Watch product" %}</button>

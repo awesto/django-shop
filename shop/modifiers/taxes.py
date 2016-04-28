@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.utils.translation import ugettext as _
+
+from django.utils.translation import ugettext_lazy as _
 from shop import settings
 from shop.rest.serializers import ExtraCartRow
 from .base import BaseCartModifier
@@ -21,7 +22,7 @@ class CartIncludeTaxModifier(BaseCartModifier):
         """
         amount = cart.subtotal * self.taxes
         instance = {
-            'label': _("+ {}% V.A.T").format(settings.VALUE_ADDED_TAX),
+            'label': _("plus {}% VAT").format(settings.VALUE_ADDED_TAX),
             'amount': amount,
         }
         cart.extra_rows[self.identifier] = ExtraCartRow(instance)
@@ -41,7 +42,7 @@ class CartExcludedTaxModifier(BaseCartModifier):
         """
         amount = cart.subtotal * self.taxes
         instance = {
-            'label': _("{}% V.A.T incl.").format(settings.VALUE_ADDED_TAX),
+            'label': _("{}% VAT incl.").format(settings.VALUE_ADDED_TAX),
             'amount': amount,
         }
         cart.extra_rows[self.identifier] = ExtraCartRow(instance)

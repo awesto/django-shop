@@ -4,26 +4,29 @@ from __future__ import unicode_literals
 Alternative implementation of Django's authentication User model, which allows to authenticate
 against the email field in addition to the username fields.
 This alternative implementation is activated by setting ``AUTH_USER_MODEL = 'shop.User'`` in
-settings.py, otherwise the default Django or another implementation is used.
+settings.py, otherwise the default Django or another customized implementation will be used.
 """
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser, UserManager as BaseUserManager
 from django.core.exceptions import ValidationError
-from django.core.mail import send_mail
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 
 
 class UserManager(BaseUserManager):
     def get_by_natural_key(self, username):
-        return self.get(is_active=True, **{self.model.USERNAME_FIELD: username})
+        try:
+            return self.get(username=username)
+        except self.model.DoesNotExist:
+            return self.get(is_active=True, email=username)
 
 
 @python_2_unicode_compatible
 class User(AbstractUser):
     """
-    Alternative implementation of Django's User model allowing to authenticate
-    against the email field in addition to the username field.
+    Alternative implementation of Django's User model allowing to authenticate against the email
+    field in addition to the username field, which remains the primary unique identifier. The
+    email field is only used in addition. It must be unique only for users marked as active.
     """
     objects = UserManager()
 

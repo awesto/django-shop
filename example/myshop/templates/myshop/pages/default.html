@@ -16,12 +16,14 @@
 	{% include "bootstrap/includes/breadcrumb-row.html" with breadcrumb_classes="breadcrumb" %}
 {% endplaceholder %}{% endblock breadcrumb %}
 
-{% block main-content %}{% placeholder "Main Content Container" or %}
-<div class="row shop-starter-template">
-	<div class="col-xs-12">
-		<h1>Default Template</h1>
-		<p class="lead">Use this placeholder as a quick way to start editing a new CMS page.<br/>
-		All you have to do is to append <code>?edit</code> to the URL and switch to “Structure” mode.</p>
+{% block main-content %}{% placeholder "Main Content Container" inherit or %}
+<div class="container">
+	<div class="row shop-starter-template">
+		<div class="col-xs-12">
+			<h1>Default Template</h1>
+			<p class="lead">Use this placeholder as a quick way to start editing a new CMS page.<br/>
+			All you have to do is to append <code>?edit</code> to the URL and switch to “Structure” mode.</p>
+		</div>
 	</div>
 </div>
 {% endplaceholder %}{% endblock main-content %}

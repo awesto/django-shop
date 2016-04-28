@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from cms.app_base import CMSApp
@@ -20,6 +21,14 @@ class ProductSearchApp(CMSApp):
     urls = ['myshop.urls.search']
 
 apphook_pool.register(ProductSearchApp)
+
+
+class OrderApp(CMSApp):
+    name = _("View Orders")
+    urls = ['shop.urls.order']
+    cache_placeholders = False
+
+apphook_pool.register(OrderApp)
 
 
 def _deregister_menu_pool_modifier(Modifier):

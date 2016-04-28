@@ -1,7 +1,6 @@
 {% extends "bootstrap/includes/ng-nav-navbar.html" %}
 {% load static i18n cms_tags menu_tags sekizai_tags sass_tags shop_tags %}
 
-{% page_url 'shop-search-product' as shop_search_product %}
 {% page_url 'shop-watch' as shop_watch_url %}
 
 {% block navbar %}
@@ -27,20 +26,11 @@
 		</div>
 	</div>
 	{{ block.super }}
-	{% if shop_search_product %}
 	<div class="container">
 		<div class="form-group visible-xs">
-			<form shop-product-search class="navbar-form" role="search" method="get" action="{{ shop_search_product }}">
-				<div class="input-group shop-search-field">
-					<input name="q" ng-model="searchQuery" ng-change="autocomplete()" type="text" class="form-control" placeholder="{% trans 'Search' %}" />
-					<div class="input-group-addon" ng-click="submit()">
-						<i class="glyphicon glyphicon-search"></i>
-					</div>
-				</div>
-			</form>
+			{% include "shop/navbar/search-form.html" with search_form_classes="shop-search-form navbar-form" %}
 		</div>
 	</div>
-	{% endif %}
 
 	{% addtoblock "css" %}<link href="{% sass_src 'pages/css/navbar.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 
@@ -50,7 +40,7 @@
 	{% addtoblock "js" %}<script src="{% static 'pages/js/navbar.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 	{% addtoblock "shop-ng-requires" %}myshop.navbar{% endaddtoblock %}
 
-	{% addtoblock "js" %}<script src="{% static 'shop/js/search.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+	{% addtoblock "js" %}<script src="{% static 'shop/js/search-form.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 	{% addtoblock "shop-ng-requires" %}django.shop.search{% endaddtoblock %}
 {% endblock navbar %}
 
@@ -70,14 +60,5 @@
 		{% endif %}
 		<li>{% cart_icon %}</li>
 	</ul>
-	{% if shop_search_product %}
-	<form shop-product-search class="navbar-form navbar-right hidden-xs" role="search" method="get" action="{{ shop_search_product }}">
-		<div class="input-group shop-search-field">
-			<input name="q" ng-model="searchQuery" ng-change="autocomplete()" type="text" class="form-control" placeholder="{% trans 'Search' %}" />
-			<div class="input-group-addon" ng-click="submit()">
-				<i class="glyphicon glyphicon-search"></i>
-			</div>
-		</div>
-	</form>
-	{% endif %}
+	{% include "shop/navbar/search-form.html" with search_form_classes="shop-search-form navbar-form navbar-right hidden-xs" %}
 {% endblock %}

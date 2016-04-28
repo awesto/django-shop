@@ -1,15 +1,22 @@
 {% load i18n static cms_tags sekizai_tags %}{% spaceless %}
 
-{% addtoblock "js" %}<script src="{% static 'shop/js/cart-icon.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-{% addtoblock "js" %}<script src="{% static 'djangular/js/django-angular.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-{% addtoblock "shop-ng-requires" %}django.shop.cart_icon{% endaddtoblock %}
+{% addtoblock "js" %}<script src="{% static 'djng/js/django-angular.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+{% addtoblock "js" %}<script src="{% static 'shop/js/carticon-caption.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+{% addtoblock "shop-ng-requires" %}django.shop.carticon_caption{% endaddtoblock %}
 
 {% page_url 'shop-cart' as shop_cart_url %}
 
 <a{% if shop_cart_url %} href="{{ shop_cart_url }}" title="{% page_attribute 'page_title' 'shop-cart' %}"{% endif %}>
+{% block carticon %}
 	<i class="fa fa-shopping-cart fa-fw fa-lg"></i>
-	<span shop-cart-count-items="{{ cart.total_quantity }}" ng-cloak>
-		<ng-pluralize count="count_items" when="{'1': '{% trans "1 Item" context "cart icon" %}', 'other': '{% trans "{} Items" context "cart icon" %}'}"></ng-pluralize>
-	</span>
+	<shop-carticon-caption caption-data="{num_items: {{ cart.num_items|default:0 }} }"></shop-carticon-caption>
+{% endblock %}
 </a>
+
+<script id="shop/carticon-caption.html" type="text/ng-template">
+{% block carticon-caption %}
+	<ng-pluralize count="caption.num_items" when="{'1': '{% trans "1 Item" context "cart icon" %}', 'other': '{% trans "{} Items" context "cart icon" %}'}"></ng-pluralize>
+{% endblock %}
+</script>
+
 {% endspaceless %}

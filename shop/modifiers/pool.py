@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.utils.module_loading import import_by_path
+
+from django.utils.module_loading import import_string
 from shop import settings
 from .base import ShippingModifier, PaymentModifier
 
@@ -17,7 +18,7 @@ class CartModifiersPool(object):
         Returns all registered modifiers of this shop instance.
         """
         if not self.USE_CACHE or not self._modifiers_list:
-            self._modifiers_list = [import_by_path(mc)() for mc in settings.CART_MODIFIERS]
+            self._modifiers_list = [import_string(mc)() for mc in settings.CART_MODIFIERS]
         return self._modifiers_list
 
     def get_shipping_modifiers(self):

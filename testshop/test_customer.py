@@ -1,5 +1,6 @@
 # -*- coding: utf-8
 from __future__ import unicode_literals
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.backends.db import SessionStore
@@ -10,7 +11,7 @@ from rest_framework.test import APIRequestFactory
 from shop.rest.auth import PasswordResetSerializer
 from shop.models.defaults.customer import Customer
 from shop.middleware import CustomerMiddleware
-from shop.models.customer import VisitingCustomer
+from shop.models.customer import VisitingCustomer, CustomerManager
 
 
 class CustomerTest(TestCase):
@@ -176,19 +177,30 @@ class CustomerTest(TestCase):
         Check that all queries on model Customer do an INNER JOIN on table `auth_user`.
         """
         qs = Customer.objects.all()
-        sql = qs.query.__str__()
-        self.assertIn('INNER JOIN "auth_user" ON ( "testshop_customer"."user_id" = "auth_user"."id" )', sql)
-        simpsons = qs.filter(last_name='Simpson')
-        self.assertEqual(simpsons.count(), 1)
-        bart = simpsons.last()
-        self.assertEqual(bart.last_name, 'Simpson')
-        self.assertEqual(bart.first_name, 'Bart')
-        self.assertEqual(bart.email, 'bart@thesimpsons.com')
+        with self.assertNumQueries(1):
+            simpsons = qs.filter(last_name='Simpson')
+            self.assertEqual(simpsons.count(), 1)
+        with self.assertNumQueries(1):
+            bart = simpsons.last()
+            self.assertEqual(bart.last_name, 'Simpson')
+            self.assertEqual(bart.first_name, 'Bart')
+            self.assertEqual(bart.email, 'bart@thesimpsons.com')
         bart.last_name = 'van Rossum'
         bart.save()
         self.assertEqual(simpsons.count(), 0)
         with self.assertRaises(FieldDoesNotExist):
             qs.filter(no_attrib='foo')
+
+
+class SessionKeyEncodingTest(TestCase):
+
+    def test_decode_inverses_encode_if_leading_zero(self):
+        # Regression test for issue #311.
+        # We want ``decode_session_key(encode_session_key(x)) == x`` for all x.
+        # This was not the case if x started with ``0``.
+        manager = CustomerManager()
+        key = "00" + 30 * "a"
+        self.assertEqual(key, manager.decode_session_key(manager.encode_session_key(key)))
 
 
 class PasswordResetSerializerTest(TestCase):

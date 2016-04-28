@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from rest_framework.mixins import ListModelMixin
 from rest_framework.renderers import BrowsableAPIRenderer
 from drf_haystack.generics import HaystackGenericAPIView
-from shop.models.product import ProductModel
 from shop.rest.renderers import CMSPageRenderer
 from shop.rest.money import JSONRenderer
 
@@ -14,7 +14,6 @@ class SearchView(ListModelMixin, HaystackGenericAPIView):
     """
     renderer_classes = (CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer)
     serializer_class = None  # to be set by SearchView.as_view(serializer_class=...)
-    index_models = [ProductModel]
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)

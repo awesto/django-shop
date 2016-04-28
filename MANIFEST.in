@@ -1,11 +1,9 @@
-include AUTHORS.rst
-include LICENSE
-include CHANGELOG.rst
-include README.rst
-include runtests.sh
-recursive-include docs *
-recursive-include shop/locale *
+include LICENSE.txt
+include README.md
+include setup.py
+include bower.json
+recursive-include email_auth *.py
+recursive-include shop *.py
+recursive-include shop/static *
 recursive-include shop/templates *
-recursive-include shop/media *
-recursive-include tests *
-recursive-exclude * *.pyc
+recursive-include shop/locale *
