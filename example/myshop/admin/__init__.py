@@ -9,7 +9,7 @@ from shop.models.order import OrderModel
 
 # models defined by the myshop instance itself
 if settings.SHOP_TUTORIAL == 'commodity' or settings.SHOP_TUTORIAL == 'i18n_commodity':
-    from shop.admin.defaults import commodity
+    from shop.admin import commodity
 elif settings.SHOP_TUTORIAL == 'simple':
     from . import manufacturer
     from .simple import smartcard, order
