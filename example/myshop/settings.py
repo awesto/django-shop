@@ -18,9 +18,12 @@ from django.core.exceptions import ImproperlyConfigured
 
 SHOP_APP_LABEL = 'myshop'
 BASE_DIR = os.path.dirname(__file__)
-SHOP_TUTORIAL = os.environ.get('DJANGO_SHOP_TUTORIAL', 'simple')
-if SHOP_TUTORIAL not in ('commodity', 'i18n_commodity', 'simple', 'i18n', 'polymorphic',):
-    raise ImproperlyConfigured("Environment DJANGO_SHOP_TUTORIAL has an invalid value `{}`".format(SHOP_TUTORIAL))
+
+SHOP_TUTORIAL = os.environ.get('DJANGO_SHOP_TUTORIAL')
+if SHOP_TUTORIAL is None:
+    raise ImproperlyConfigured("Environment variable DJANGO_SHOP_TUTORIAL is not set")
+if SHOP_TUTORIAL not in ('commodity', 'i18n_commodity', 'smartcard', 'i18n_smartcard', 'polymorphic',):
+    raise ImproperlyConfigured("Environment variable DJANGO_SHOP_TUTORIAL has an invalid value `{}`".format(SHOP_TUTORIAL))
 
 # Root directory for this django project
 PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, os.path.pardir, os.path.pardir))
@@ -145,7 +148,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en'
 
-if SHOP_TUTORIAL in ('i18n', 'i18n_commodity', 'polymorphic'):
+if SHOP_TUTORIAL in ('i18n_smartcard', 'i18n_commodity', 'polymorphic'):
     USE_I18N = True
 
     LANGUAGES = (
@@ -407,13 +410,24 @@ CACSCADE_WORKAREA_GLOSSARY = {
 CMS_PLACEHOLDER_CONF = {
     'Breadcrumb': {
         'plugins': ['BreadcrumbPlugin'],
+        'parent_classes': {'BreadcrumbPlugin': None},
         'glossary': CACSCADE_WORKAREA_GLOSSARY,
     },
     'Commodity Details': {
         'plugins': ['BootstrapRowPlugin', 'TextPlugin', 'ImagePlugin', 'PicturePlugin'],
         'text_only_plugins': ['TextLinkPlugin'],
-        'parent_classes': {'BootstrapRowPlugin': []},
+        'parent_classes': {'BootstrapRowPlugin': None},
         'require_parent': False,
+        'glossary': CACSCADE_WORKAREA_GLOSSARY,
+    },
+    'Main Content Container': {
+        'plugins': ['BootstrapContainerPlugin',],
+        'parent_classes': {'BootstrapContainerPlugin': None},
+        'glossary': CACSCADE_WORKAREA_GLOSSARY,
+    },
+    'Static Footer': {
+        'plugins': ['BootstrapContainerPlugin', ],
+        'parent_classes': {'BootstrapContainerPlugin': None},
         'glossary': CACSCADE_WORKAREA_GLOSSARY,
     },
 }

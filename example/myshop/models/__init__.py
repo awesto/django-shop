@@ -13,12 +13,12 @@ from shop.models.defaults.customer import Customer
 if settings.SHOP_TUTORIAL == 'commodity' or settings.SHOP_TUTORIAL == 'i18n_commodity':
     from shop.models.defaults.order_item import OrderItem
     from shop.models.defaults.commodity import Commodity
-elif settings.SHOP_TUTORIAL == 'simple':
+elif settings.SHOP_TUTORIAL == 'smartcard':
     from shop.models.defaults.order_item import OrderItem
-    from .simple.smartcard import SmartCard
-elif settings.SHOP_TUTORIAL == 'i18n':
+    from .smartcard import SmartCard
+elif settings.SHOP_TUTORIAL == 'i18n_smartcard':
     from shop.models.defaults.order_item import OrderItem
-    from .i18n.smartcard import SmartCard
+    from .i18n_smartcard import SmartCard
 elif settings.SHOP_TUTORIAL == 'polymorphic':
     from .polymorphic.order import OrderItem
     from .polymorphic.smartcard import SmartCard

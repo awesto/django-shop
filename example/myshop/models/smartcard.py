@@ -9,7 +9,7 @@ from djangocms_text_ckeditor.fields import HTMLField
 from shop.money.fields import MoneyField
 from shop.models.product import BaseProduct, BaseProductManager
 from shop.models.defaults.mapping import ProductPage, ProductImage
-from ..manufacturer import Manufacturer
+from .manufacturer import Manufacturer
 
 
 @python_2_unicode_compatible

@@ -12,10 +12,10 @@ from .search_indexes import myshop_search_index_classes
 
 if settings.SHOP_TUTORIAL in ('commodity', 'i18n_commodity'):
     Product = import_string('shop.models.defaults.commodity.Commodity')
-elif settings.SHOP_TUTORIAL == 'simple':
-    Product = import_string('myshop.models.simple.smartcard.SmartCard')
-elif settings.SHOP_TUTORIAL == 'i18n':
-    Product = import_string('myshop.models.i18n.smartcard.SmartCard')
+elif settings.SHOP_TUTORIAL == 'smartcard':
+    Product = import_string('myshop.models.smartcard.SmartCard')
+elif settings.SHOP_TUTORIAL == 'i18n_smartcard':
+    Product = import_string('myshop.models.i18n_smartcard.SmartCard')
 elif settings.SHOP_TUTORIAL == 'polymorphic':
     Product = import_string('myshop.models.polymorphic.product.Product')
 else:

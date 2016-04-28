@@ -10,13 +10,13 @@ from shop.models.order import OrderModel
 # models defined by the myshop instance itself
 if settings.SHOP_TUTORIAL == 'commodity' or settings.SHOP_TUTORIAL == 'i18n_commodity':
     from shop.admin import commodity
-elif settings.SHOP_TUTORIAL == 'simple':
+elif settings.SHOP_TUTORIAL == 'smartcard':
     from . import manufacturer
-    from .simple import smartcard, order
-elif settings.SHOP_TUTORIAL == 'i18n':
+    from .smartcard import smartcard, order
+elif settings.SHOP_TUTORIAL == 'i18n_smartcard':
     from . import manufacturer
-    from .i18n import smartcard
-    from .simple import order
+    from . import i18n_smartcard
+    from .smartcard import order
 elif settings.SHOP_TUTORIAL == 'polymorphic':
     from . import manufacturer
     from .polymorphic import product, order
