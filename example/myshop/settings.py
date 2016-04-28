@@ -19,7 +19,7 @@ from django.core.exceptions import ImproperlyConfigured
 SHOP_APP_LABEL = 'myshop'
 BASE_DIR = os.path.dirname(__file__)
 SHOP_TUTORIAL = os.environ.get('DJANGO_SHOP_TUTORIAL', 'simple')
-if SHOP_TUTORIAL not in ('simple', 'i18n', 'polymorphic',):
+if SHOP_TUTORIAL not in ('commodity', 'i18n_commodity', 'simple', 'i18n', 'polymorphic',):
     raise ImproperlyConfigured("Environment DJANGO_SHOP_TUTORIAL has an invalid value `{}`".format(SHOP_TUTORIAL))
 
 # Root directory for this django project
@@ -145,7 +145,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en'
 
-if SHOP_TUTORIAL in ('i18n', 'polymorphic'):
+if SHOP_TUTORIAL in ('i18n', 'i18n_commodity', 'polymorphic'):
     USE_I18N = True
 
     LANGUAGES = (
