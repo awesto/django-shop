@@ -15,7 +15,7 @@ class ShopConfig(AppConfig):
         from django_fsm.signals import post_transition
         from jsonfield.fields import JSONField
         from rest_framework.serializers import ModelSerializer
-        from shop.rest.serializers import JSONSerializerField
+        from shop.rest.fields import JSONSerializerField
         from shop.models.notification import order_event_notification
 
         post_transition.connect(order_event_notification)
