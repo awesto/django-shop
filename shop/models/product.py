@@ -87,7 +87,7 @@ class PolymorphicProductMetaclass(PolymorphicModelBase):
             raise NotImplementedError(msg.format(Model.__name__))
 
         try:
-            Model().product_name
+            Model.product_name
         except AttributeError:
             msg = "Class `{}` must provide a model field or property implementing `product_name`"
             raise NotImplementedError(msg.format(Model.__name__))
