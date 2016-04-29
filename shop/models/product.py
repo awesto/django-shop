@@ -7,7 +7,7 @@ import operator
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.utils import six
-from django.utils.encoding import python_2_unicode_compatible, force_text
+from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 from polymorphic.manager import PolymorphicManager
 from polymorphic.models import PolymorphicModel
@@ -97,7 +97,6 @@ class PolymorphicProductMetaclass(PolymorphicModelBase):
             raise NotImplementedError(msg.format(cls.__name__))
 
 
-@python_2_unicode_compatible
 class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicModel)):
     """
     An abstract basic product model for the shop. It is intended to be overridden by one or
@@ -124,9 +123,6 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         abstract = True
         verbose_name = _("Product")
         verbose_name_plural = _("Products")
-
-    def __str__(self):
-        return self.product_name
 
     def product_type(self):
         """
