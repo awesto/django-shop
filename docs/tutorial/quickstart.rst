@@ -59,14 +59,14 @@ folder ``django-shop``:
 	(shoptutorial)$ tar zxf DOWNLOAD/FOLDER/django-shop-workdir.tar.gz
 
 Starting from this folder, you can run all three demos: The first, simple demo shows how to setup a
-monolingual shop, with one product type. The second, internationalized demo shows how to setup a
-multilingual shop, with one product type. For translation of model attributes, this installation
-uses the django-parler_ app. The third, polymorphic demo shows how to setup a shop with many
-different product types. To handle the polymorphism of products, this installation uses the
+monolingual shop, selling Smart Cards exclusively. The second, internationalized demo shows how to
+setup the same shop, but multilingual. For translation of model attributes, this installation
+uses the django-parler_ app. The third, polymorphic demo shows how to setup a multilingual shop with
+many different product types. To handle the polymorphism of products, this installation uses the
 django-polymorphic_ app.
 
 .. note:: All demos can be started independently from each other, but you are encouraged to start
-		with the "Simple Product", and then proceed to the more complicate examples.
+		with the monolingual Smart Cards example, and then proceed to the more complicate ones.
 
 .. _download the media files: http://downloads.django-shop.org/django-shop-workdir.tar.gz
 .. _django-parler: http://django-parler.readthedocs.org/en/latest/
@@ -82,9 +82,9 @@ shell invoke:
 .. code-block:: shell
 
 	(shoptutorial)$ cd example
-	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=simple DJANGO_DEBUG=1
+	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=smartcard DJANGO_DEBUG=1
 	(shoptutorial)$ ./manage.py migrate
-	(shoptutorial)$ ./manage.py loaddata fixtures/myshop-simple.json
+	(shoptutorial)$ ./manage.py loaddata fixtures/myshop-smartcard.json
 	(shoptutorial)$ ./manage.py runserver
 
 Point a browser onto http://localhost:8000/admin/ and sign in as user "*admin*" with password
@@ -98,26 +98,26 @@ Internationalized Products
 
 In this demo the description of the products can be translated into different natural languages.
 
-When migrating from the Simple Products demo, assure you are in the ``django-shop`` folder and
+When migrating from the Smart Card demo, assure you are in the ``django-shop`` folder and
 using the correct virtual environment. Then in a shell invoke:
 
 .. code-block:: shell
 
-	(shoptutorial)$ cp workdir/db-simple.sqlite3 workdir/db-i18n.sqlite3
+	(shoptutorial)$ cp workdir/db-smartcard.sqlite3 workdir/db-i18n_smartcard.sqlite3
 	(shoptutorial)$ cd example
-	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=i18n DJANGO_DEBUG=1
+	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=i18n_smartcard DJANGO_DEBUG=1
 	(shoptutorial)$ ./manage.py migrate
 	(shoptutorial)$ ./manage.py runserver
 
 Alternatively, if you prefer to start with an empty database, assure that the file
-``workdir/db-i18n.sqlite3`` is missing. Then in a shell invoke:
+``workdir/db-i18n_smartcard.sqlite3`` is missing. Then in a shell invoke:
 
 .. code-block:: shell
 
 	(shoptutorial)$ cd example
-	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=i18n DJANGO_DEBUG=1
+	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=i18n_smartcard DJANGO_DEBUG=1
 	(shoptutorial)$ ./manage.py migrate
-	(shoptutorial)$ ./manage.py loaddata fixtures/myshop-i18n.json
+	(shoptutorial)$ ./manage.py loaddata fixtures/myshop-i18n_smartcard.json
 	(shoptutorial)$ ./manage.py runserver
 
 Point a browser onto http://localhost:8000/admin/ and sign in as user "*admin*" with password
