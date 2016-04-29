@@ -15,7 +15,8 @@ Changelog for djangoSHOP
   ``cms_apps.py``. This allows the merchant to override the
   :class:`shop.rest.serializers.OrderListSerializer` and :class:`shop.rest.serializers.OrderDetailSerializer`.
 * Bugfix: declared django-rest-auth as requirement in setup.py.
-* Refactored shop.models.deferred -> shop.deferred. This allows to add a check for pending mappings.
+* Refactored shop.models.deferred -> shop.deferred. This allows to add a check for pending mappings
+  into the ready-method of the shop's AppConfig.
 
 
 0.9.1
