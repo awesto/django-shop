@@ -101,7 +101,7 @@ class CustomerTest(TestCase):
         customer = Customer.objects.get_or_create_from_request(request)
         self.assertIsInstance(customer, Customer)
         self.assertTrue(customer.is_anonymous())
-        self.assertTrue(customer.is_expired())
+        self.assertFalse(customer.is_expired())
         self.assertEqual(Customer.objects.decode_session_key(customer.user.username), request.session.session_key)
         customer.delete()
         with self.assertRaises(Customer.DoesNotExist):
@@ -216,7 +216,7 @@ class PasswordResetSerializerTest(TestCase):
         serializer.save()
         serializer.reset_form.save.assert_called_with(
             use_https=False,
-            from_email='webmaster@localhost',
+            from_email='My Shop <no-reply@example.com>',
             request=request,
             subject_template_name=u'shop/email/reset-password-subject.txt',
             email_template_name='shop/email/reset-password-body.txt',

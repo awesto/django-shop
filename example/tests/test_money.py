@@ -8,7 +8,7 @@ try:
 except ImportError:
     import pickle
 import json
-from django.db import models
+
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.utils.six import text_type
@@ -16,6 +16,8 @@ from rest_framework import serializers
 from shop.money.money_maker import AbstractMoney, MoneyMaker, _make_money
 from shop.money.fields import MoneyField as MoneyDbField
 from shop.rest.money import MoneyField, JSONRenderer
+from myshop.models.manufacturer import Manufacturer
+from myshop.models.polymorphic.commodity import Commodity
 
 
 class AbstractMoneyTest(TestCase):
@@ -205,9 +207,6 @@ class MoneyMakerTest(TestCase):
         pickled = pickle.dumps(money)
         self.assertEqual(pickle.loads(pickled), money)
 
-class Foo(models.Model):
-    amount = MoneyDbField(currency='EUR', null=True)
-
 
 class MoneyDbFieldTests(TestCase):
     def test_to_python(self):
@@ -236,15 +235,18 @@ class MoneyDbFieldTests(TestCase):
 
     def test_filter_with_strings(self):
         amount = MoneyMaker('EUR')('12.34')
-        foo = Foo.objects.create(amount=amount)
-        self.assertEqual(list(Foo.objects.filter(amount='12.34')), [foo])
-        self.assertEqual(list(Foo.objects.filter(amount='12.35')), [])
-        self.assertEqual(list(Foo.objects.filter(amount__gt='12.33')), [foo])
-        self.assertEqual(list(Foo.objects.filter(amount__gt='12.34')), [])
-        self.assertEqual(list(Foo.objects.filter(amount__gte='12.34')), [foo])
-        self.assertEqual(list(Foo.objects.filter(amount__lt='12.35')), [foo])
-        self.assertEqual(list(Foo.objects.filter(amount__lt='12.34')), [])
-        self.assertEqual(list(Foo.objects.filter(amount__lte='12.34')), [foo])
+        m1 = Manufacturer(name="Rosebutt")
+        m1.save()
+        bag = Commodity.objects.create(unit_price=amount, product_code='B', order=1, product_name="Bag",
+            slug='bag', manufacturer=m1, description="This is a bag")
+        self.assertEqual(list(Commodity.objects.filter(unit_price='12.34')), [bag])
+        self.assertEqual(list(Commodity.objects.filter(unit_price='12.35')), [])
+        self.assertEqual(list(Commodity.objects.filter(unit_price__gt='12.33')), [bag])
+        self.assertEqual(list(Commodity.objects.filter(unit_price__gt='12.34')), [])
+        self.assertEqual(list(Commodity.objects.filter(unit_price__gte='12.34')), [bag])
+        self.assertEqual(list(Commodity.objects.filter(unit_price__lt='12.35')), [bag])
+        self.assertEqual(list(Commodity.objects.filter(unit_price__lt='12.34')), [])
+        self.assertEqual(list(Commodity.objects.filter(unit_price__lte='12.34')), [bag])
 
 
 class TestMoneySerializer(serializers.Serializer):

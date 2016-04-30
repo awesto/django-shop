@@ -7,7 +7,7 @@ django-appconf==1.0.1
 django-classy-tags==0.7.2
 django-cms==3.2.3
 django-compressor==1.6
--e git+https://github.com/divio/django-filer.git@409f76ce285341e8f9f4adb3065ab8e011387de0#egg=django-filer-develop
+django-filer==1.2.0
 django-filter==0.13.0
 django-fsm==2.3.0
 django-fsm-admin==1.2.2
