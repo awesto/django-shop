@@ -21,7 +21,7 @@ class CatalogTest(TestCase):
         url = self.sample.get_absolute_url()
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        soup = BeautifulSoup(response.content, 'lxml')
+        soup = BeautifulSoup(response.content, 'html.parser')
         print(soup.prettify())
         self.assertEqual(soup.title.string, 'SDHC Card 4GB')
         breadcrumb = soup.find('ol', class_='breadcrumb')
