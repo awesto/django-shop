@@ -296,6 +296,7 @@ LOGGING = {
 
 SILENCED_SYSTEM_CHECKS = ('auth.W004')
 
+FIXTURE_DIRS = [os.path.join(PROJECT_ROOT, 'example/fixtures')]
 
 ############################################
 # settings for sending mail
