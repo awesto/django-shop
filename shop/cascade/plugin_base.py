@@ -105,7 +105,7 @@ class ProductSelectField(ChoiceField):
         "Since the ProductSelectField does not specify choices by itself, accept any returned value"
         try:
             return int(value)
-        except ValueError:
+        except (TypeError, ValueError):
             pass
 
 
