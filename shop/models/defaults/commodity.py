@@ -47,7 +47,7 @@ if settings.USE_I18N:
         order = models.PositiveIntegerField(verbose_name=_("Sort by"), db_index=True)
         cms_pages = models.ManyToManyField('cms.Page', through=ProductPage,
             help_text=_("Choose list view this product shall appear on."))
-        sample_image = image.FilerImageField()
+        sample_image = image.FilerImageField(blank=True)
         placeholder = PlaceholderField("Commodity Details")
 
         # translatable fields for the catalog's list- and detail views
@@ -80,7 +80,7 @@ if settings.USE_I18N:
         master = models.ForeignKey(Commodity, related_name='translations', null=True)
         translated_product_name = models.CharField(max_length=255, verbose_name=_("Product Name"))
         slug = models.SlugField(verbose_name=_("Slug"))
-        description = HTMLField(verbose_name=_("Description"),
+        description = HTMLField(verbose_name=_("Description"), blank=True, null=True,
                                 help_text=_("Description for the list view of products."))
 
         class Meta:

@@ -8,7 +8,6 @@ python:
 env:
   - DJANGOVER=django18
   - DJANGOVER=django19
-  - TOX_ENV=demo
   - TOX_ENV=docs
 
 install:
@@ -23,10 +22,6 @@ script:
 matrix:
   exclude:
     - python: 3.4
-      env: TOX_ENV=demo
-    - python: 3.4
       env: TOX_ENV=docs
-    - python: 3.5
-      env: TOX_ENV=demo
     - python: 3.5
       env: TOX_ENV=docs

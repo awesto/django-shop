@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls import url, patterns, include
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
-from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from shop.views.auth import PasswordResetConfirm
 from cms.sitemaps import CMSSitemap
-from cms.models.pagemodel import Page
 
 
 def render_robots(request):

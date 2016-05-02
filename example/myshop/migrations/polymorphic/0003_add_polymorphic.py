@@ -5,6 +5,7 @@ from django.db import migrations, models
 import django.db.models.deletion
 import cms.models.fields
 import djangocms_text_ckeditor.fields
+import shop.money.fields
 
 
 class Migration(migrations.Migration):
@@ -52,7 +53,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('product_code', models.CharField(unique=True, max_length=255, verbose_name='Product code')),
-                ('unit_price', models.DecimalField(default='0', help_text='Net price for this product', max_digits=30, decimal_places=3)),
+                ('unit_price', shop.money.fields.MoneyField(default='0', help_text='Net price for this product', max_digits=30, decimal_places=3, verbose_name='Unit price')),
                 ('storage', models.PositiveIntegerField(help_text='Internal storage in MB', verbose_name='Internal Storage')),
             ],
         ),
@@ -136,7 +137,7 @@ class Migration(migrations.Migration):
             name='Commodity',
             fields=[
                 ('product_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='myshop.Product')),
-                ('unit_price', models.DecimalField(default='0', help_text='Net price for this product', max_digits=30, decimal_places=3)),
+                ('unit_price', shop.money.fields.MoneyField(default='0', help_text='Net price for this product', max_digits=30, decimal_places=3, verbose_name='Unit price')),
                 ('product_code', models.CharField(unique=True, max_length=255, verbose_name='Product code')),
                 ('placeholder', cms.models.fields.PlaceholderField(slotname='Commodity Details', editable=False, to='cms.Placeholder', null=True)),
             ],
