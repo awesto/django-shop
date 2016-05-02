@@ -37,7 +37,7 @@ class CatalogTest(TestCase):
         #
         url = self.sample.get_absolute_url() + '/add-to-cart'
         response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        payload = json.loads(response.content)
+        payload = json.loads(response.content.decode('utf-8'))
         self.assertIsInstance(payload, dict)
         self.assertDictContainsSubset(
             {'unit_price': "€ 3.99", 'product': 1, 'extra': {'product_code': '1041'}},
@@ -48,7 +48,7 @@ class CatalogTest(TestCase):
         url = reverse('shop:cart-list')
         response = self.client.post(url, payload)
         self.assertEqual(response.status_code, 201)
-        cart = json.loads(response.content)
+        cart = json.loads(response.content.decode('utf-8'))
         self.assertDictContainsSubset(
             {'id': 1, 'product_name': "SDHC Card 4GB", 'product_url': self.sample.get_absolute_url(),
              'product_type': "Smart Card", 'product_model': "smartcard", 'price': "€ 3.99"},
@@ -62,7 +62,7 @@ class CatalogTest(TestCase):
         # now check the cart detail
         response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         print(response.content)
-        cart = json.loads(response.content)
+        cart = json.loads(response.content.decode('utf-8'))
         self.assertDictContainsSubset({'num_items': 1, 'total_quantity': 3, 'subtotal': "€ 11.97",
             'extra_rows': [{'amount': "€ 1.91", 'modifier': "cartexcludedtaxmodifier",
                 'label': "19% VAT incl."}], 'total': "€ 11.97"}, cart)
