@@ -441,6 +441,13 @@ The template for the invoice and delivery note can easily be adopted to the corp
 plain HTML and CSS.
 
 
+Re-adding an Order to the Cart
+==============================
+
+Sometimes it can be useful to re-add the content of an order back to the cart. This functionality
+is implemented via the REST-API and can be allowed
+
+
 .. _apphook: http://docs.django-cms.org/en/latest/how_to/apphooks.html
 .. _djangocms-cascade: http://djangocms-cascade.readthedocs.org/en/latest/
 .. _placeholder: http://django-cms.readthedocs.org/en/latest/introduction/templates_placeholders.html#placeholders
