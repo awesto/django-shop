@@ -9,7 +9,6 @@ env:
   - DJANGOVER=django18
   - DJANGOVER=django19
   - TOX_ENV=docs
-  - DJANGO_SHOP_TUTORIAL=polymorphic
 
 install:
   - pip install tox
