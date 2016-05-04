@@ -23,6 +23,10 @@ class ProductQuerySet(TranslatableQuerySet, PolymorphicQuerySet):
 class ProductManager(BaseProductManager, TranslatableManager):
     queryset_class = ProductQuerySet
 
+    def get_queryset(self):
+        qs = self.queryset_class(self.model, using=self._db)
+        return qs.prefetch_related('translations')
+
 
 @python_2_unicode_compatible
 class SmartCard(BaseProduct, TranslatableModel):
