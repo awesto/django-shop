@@ -10,7 +10,7 @@ from jsonfield.fields import JSONField
 from shop.modifiers.pool import cart_modifiers_pool
 from shop.money import Money
 from .product import BaseProduct
-from . import deferred
+from shop import deferred
 from shop.models.customer import CustomerModel
 
 

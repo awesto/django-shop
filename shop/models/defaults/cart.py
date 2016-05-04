@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from shop.models import deferred
+from shop import deferred
 from shop.models.address import BaseShippingAddress, BaseBillingAddress
 from shop.models.cart import BaseCart
 

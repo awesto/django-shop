@@ -19,7 +19,7 @@ from shop import settings as shop_settings
 from shop.models.cart import CartItemModel
 from shop.money.fields import MoneyField, MoneyMaker
 from .product import BaseProduct
-from . import deferred
+from shop import deferred
 
 
 class OrderManager(models.Manager):
@@ -220,6 +220,22 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         self.extra = dict(cart.extra)
         self.extra.update(rows=[(modifier, extra_row.data) for modifier, extra_row in cart.extra_rows.items()])
 
+    @transaction.atomic
+    def readd_to_cart(self, cart):
+        """
+        Re-add the items of this order back to the cart.
+        """
+        for order_item in self.items.all():
+            extra = dict(order_item.extra)
+            extra.pop('rows', None)
+            cart_item = order_item.product.is_in_cart(cart, **extra)
+            if cart_item:
+                cart_item.quantity = max(cart_item.quantity, order_item.quantity)
+            else:
+                cart_item = CartItemModel(cart=cart, product=order_item.product,
+                                          quantity=order_item.quantity, extra=extra)
+            cart_item.save()
+
     def save(self, **kwargs):
         """
         Before saving the Order object to the database, round the total to the given decimal_places
@@ -328,11 +344,11 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
             msg = "Class `{}` must implement a field named `quantity`."
             raise ImproperlyConfigured(msg.format(cls.__name__))
 
-    @property
+    @cached_property
     def unit_price(self):
         return MoneyMaker(self.order.currency)(self._unit_price)
 
-    @property
+    @cached_property
     def line_total(self):
         return MoneyMaker(self.order.currency)(self._line_total)
 

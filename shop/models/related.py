@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from filer.fields import image
 from cms.models.pagemodel import Page
 from .product import BaseProduct
-from . import deferred
+from shop import deferred
 
 
 class BaseProductPage(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):

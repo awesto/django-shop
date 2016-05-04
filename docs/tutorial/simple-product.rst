@@ -9,8 +9,8 @@ As a simple example, this tutorial uses Smart Cards as its first product. As emp
 Instead the merchant must declare these models based on the products properties. Lets have a look
 ar a model describing a typical Smart Card:
 
-.. literalinclude:: /../example/myshop/models/simple/smartcard.py
-	:caption: myshop/models/simple/smartcard.py
+.. literalinclude:: /../example/myshop/models/smartcard.py
+	:caption: myshop/models/smartcard.py
 	:linenos:
 	:language: python
 	:lines: 8-11, 15-22, 40-41
@@ -22,7 +22,7 @@ be part of our abstract model ``BaseProduct``.
 
 Additionally a smart card has some product specific properties:
 
-.. literalinclude:: /../example/myshop/models/simple/smartcard.py
+.. literalinclude:: /../example/myshop/models/smartcard.py
 	:linenos:
 	:language: python
 	:lines: 23-34
@@ -31,7 +31,7 @@ these class attributes depend heavily on the data sheet of the product to sell.
 
 Finally we also want to position our products into categories and sort them:
 
-.. literalinclude:: /../example/myshop/models/simple/smartcard.py
+.. literalinclude:: /../example/myshop/models/smartcard.py
 	:linenos:
 	:language: python
 	:lines: 34-40
@@ -84,7 +84,7 @@ Instead **djangoSHOP** is shipped with a special mixin class ``CMSPageAsCategory
 handles the relation between CMS pages and the product. This however implies that the field used
 to specify this relation is named ``cms_pages``.
 
-.. literalinclude:: /../example/myshop/admin/simple/smartcard.py
+.. literalinclude:: /../example/myshop/admin/smartcard/smartcard.py
 	:linenos:
 	:language: python
 	:lines: 6-
