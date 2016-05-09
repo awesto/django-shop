@@ -11,7 +11,7 @@ router.register(r'cart', CartViewSet, base_name='cart')
 router.register(r'watch', WatchViewSet, base_name='watch')
 router.register(r'checkout', CheckoutViewSet, base_name='checkout')
 
-urlpatterns = (
+urlpatterns = [
     url(r'^select_product$', ProductSelectView.as_view(), name='select-product'),
     url(r'^', include(router.urls)),
-)
+]

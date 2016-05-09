@@ -62,17 +62,17 @@ as all apphooks, it requires a file defining its urlpatterns:
 .. code-block:: python
 	:caption: myshop/urls/products.py
 
-	from django.conf.urls import patterns, url
+	from django.conf.urls import url
 	from rest_framework.settings import api_settings
 	from shop.views.catalog import CMSPageProductListView
 	from myshop.serializers import ProductSummarySerializer
 	
-	urlpatterns = patterns('',
+	urlpatterns = [
 	    url(r'^$', CMSPageProductListView.as_view(
 	        serializer_class=ProductSummarySerializer,
 	    )),
 	    # other patterns
-	)
+	]
 
 Here the ``ProductSummarySerializer`` serializes the product models into a representation suitable
 for being rendered inside a CMS page, as well as being converted to JSON. This allows us to reuse
@@ -144,17 +144,17 @@ requests on all of its sub-URLs. This is done by expanding the current list of u
 .. code-block:: python
 	:caption: myshop/urls/products.py
 
-	from django.conf.urls import patterns, url
+	from django.conf.urls import url
 	from shop.views.catalog import ProductRetrieveView
 	from myshop.serializers import ProductDetailSerializer
 	
-	urlpatterns = patterns('',
+	urlpatterns = [
 	    # previous patterns
 	    url(r'^(?P<slug>[\w-]+)$', ProductRetrieveView.as_view(
 	        serializer_class=ProductDetailSerializer,
 	    )),
 	    # other patterns
-	)
+	]
 
 All business logic regarding our product now goes into our customized serializer class named
 ``ProductDetailSerializer``. This class then may access the various attributes of our product model

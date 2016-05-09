@@ -251,15 +251,15 @@ as all apphooks, it requires a file defining its urlpatterns:
 .. code-block:: python
 	:caption: myshop/urls/search.py
 
-	from django.conf.urls import patterns, url
+	from django.conf.urls import url
 	from shop.search.views import SearchView
 	from myshop.serializers import ProductSearchSerializer
 	
-	urlpatterns = patterns('',
+	urlpatterns = [
 	    url(r'^', SearchView.as_view(
 	        serializer_class=ProductSearchSerializer,
 	    )),
-	)
+	]
 
 
 Search Results
@@ -313,17 +313,17 @@ Into these urlpatterns add the following entry:
 
 .. code-block:: python
 
-	from django.conf.urls import patterns, url
+	from django.conf.urls import url
 	from shop.search.views import SearchView
 	from myshop.serializers import CatalogSearchSerializer
 	
-	urlpatterns = patterns('',
+	urlpatterns = [
 	    # previous patterns
 	    url(r'^search-catalog$', SearchView.as_view(
 	        serializer_class=CatalogSearchSerializer,
 	    )),
 	    # other patterns
-	)
+	]
 
 .. note:: Be careful the the regular expression for ``^search-catalog$`` matches before the
 		product's detail view, which usually is looks for patterns matching ``^(?P<slug>[\w-]+)$``.

@@ -171,15 +171,15 @@ and exchange the default serializer with our customized one:
 .. code-block:: python
 	:caption: myshop/urls/order.py
 
-	from django.conf.urls import patterns, url
+	from django.conf.urls import url
 	from shop.views.order import OrderView
 	from myshop.serializers import CustomOrderSerializer
 
-	urlpatterns = patterns('',
+	urlpatterns = [
 	    url(r'^$', OrderView.as_view()),
 	    url(r'^(?P<pk>\d+)$', OrderView.as_view(many=False,
 	        detail_serializer_class=CustomOrderSerializer)),
-	)
+	]
 
 Now, when invoking the order detail page appending ``?format=api`` to the URL, then two new fields,
 ``shipping_address_text`` and ``billing_address_text`` shall appear in our context.
