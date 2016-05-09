@@ -6,6 +6,7 @@ from django.contrib import admin
 from shop.admin.customer import CustomerProxy, CustomerAdmin
 from shop.models.order import OrderModel
 
+__all__ = ['OrderModel', 'commodity']
 
 # models defined by the myshop instance itself
 if settings.SHOP_TUTORIAL == 'commodity' or settings.SHOP_TUTORIAL == 'i18n_commodity':
