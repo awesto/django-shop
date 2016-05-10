@@ -24,6 +24,7 @@ try:
         Delete expired customers every Sunday
         """
         call_command('shopcustomers', delete_expired=True)
+
 except ImportError:
     print("uwsgidecorators not found. Cron and timers are disabled")
 
