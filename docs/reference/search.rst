@@ -280,9 +280,9 @@ Set the input field **Soft root** to checked. This hides this special page from 
 
 As **Application**, select "*Search*". This selects the apphook we created in the previous section.
 
-Then save the page, change into **Structure** mode and locate the Main Content Container. Add
-a container with a Row and Column. As the child of this column chose the **Search Results** plugin
-from section **Shop**.
+Then save the page, change into **Structure** mode and locate the placeholder named
+**Main Content**. Add a Container plugin, followed by a Row and then a Column plugin. As the
+child of this column chose the **Search Results** plugin from section **Shop**.
 
 Finally publish the page and enter some text into the search field. It should render a list of
 found products.

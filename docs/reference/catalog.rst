@@ -97,12 +97,12 @@ As a template we use one with a big placeholder, since it must display our list 
 As **Application**, select "*Catalog List*" or whatever we named our ``ProductsListApp``. This
 selects the apphook we created in the previous section.
 
-Then we save the page, change into **Structure** mode and locate the Main Content Container. Here
-we add a container with a Row and Column. As the child of this column we chose a
-**Catalog List View** plugin from section **Shop**.
+Then we save the page, change into **Structure** mode and locate the placeholder named
+**Main Content**. Add a Container plugin, followed by a Row and then a Column plugin. As the
+child of this column chose the **Catalog List View** plugin from section **Shop**.
 
-Finally we publish the page and enter some text into the search field. Since we haven't assigned
-any products to the CMS page, we won't see anything yet.
+Finally we publish the page. If we have assigned products to that CMS page, they should be rendered
+now.
 
 
 .. _reference/catalog-detail:

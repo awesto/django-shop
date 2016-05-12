@@ -788,7 +788,7 @@
   "model": "cms.placeholder",
   "pk": 14,
   "fields": {
-    "slot": "Main Content Container",
+    "slot": "Main Content",
     "default_width": null
   }
 },
@@ -804,7 +804,7 @@
   "model": "cms.placeholder",
   "pk": 16,
   "fields": {
-    "slot": "Main Content Container",
+    "slot": "Main Content",
     "default_width": null
   }
 },
@@ -828,7 +828,7 @@
   "model": "cms.placeholder",
   "pk": 19,
   "fields": {
-    "slot": "Main Content Container",
+    "slot": "Main Content",
     "default_width": null
   }
 },
@@ -844,7 +844,7 @@
   "model": "cms.placeholder",
   "pk": 21,
   "fields": {
-    "slot": "Main Content Container",
+    "slot": "Main Content",
     "default_width": null
   }
 },
@@ -860,7 +860,7 @@
   "model": "cms.placeholder",
   "pk": 23,
   "fields": {
-    "slot": "Main Content Container",
+    "slot": "Main Content",
     "default_width": null
   }
 },
@@ -876,7 +876,7 @@
   "model": "cms.placeholder",
   "pk": 25,
   "fields": {
-    "slot": "Main Content Container",
+    "slot": "Main Content",
     "default_width": null
   }
 },
@@ -892,7 +892,7 @@
   "model": "cms.placeholder",
   "pk": 27,
   "fields": {
-    "slot": "Main Content Container",
+    "slot": "Main Content",
     "default_width": null
   }
 },
@@ -908,7 +908,7 @@
   "model": "cms.placeholder",
   "pk": 29,
   "fields": {
-    "slot": "Main Content Container",
+    "slot": "Main Content",
     "default_width": null
   }
 },
@@ -924,7 +924,7 @@
   "model": "cms.placeholder",
   "pk": 31,
   "fields": {
-    "slot": "Main Content Container",
+    "slot": "Main Content",
     "default_width": null
   }
 },
@@ -940,7 +940,7 @@
   "model": "cms.placeholder",
   "pk": 33,
   "fields": {
-    "slot": "Main Content Container",
+    "slot": "Main Content",
     "default_width": null
   }
 },
@@ -956,7 +956,7 @@
   "model": "cms.placeholder",
   "pk": 35,
   "fields": {
-    "slot": "Main Content Container",
+    "slot": "Main Content",
     "default_width": null
   }
 },
@@ -972,7 +972,7 @@
   "model": "cms.placeholder",
   "pk": 37,
   "fields": {
-    "slot": "Main Content Container",
+    "slot": "Main Content",
     "default_width": null
   }
 },
@@ -988,7 +988,7 @@
   "model": "cms.placeholder",
   "pk": 39,
   "fields": {
-    "slot": "Main Content Container",
+    "slot": "Main Content",
     "default_width": null
   }
 },
@@ -1004,7 +1004,7 @@
   "model": "cms.placeholder",
   "pk": 41,
   "fields": {
-    "slot": "Main Content Container",
+    "slot": "Main Content",
     "default_width": null
   }
 },
@@ -1044,7 +1044,7 @@
   "model": "cms.placeholder",
   "pk": 46,
   "fields": {
-    "slot": "Main Content Container",
+    "slot": "Main Content",
     "default_width": null
   }
 },
@@ -1060,7 +1060,7 @@
   "model": "cms.placeholder",
   "pk": 48,
   "fields": {
-    "slot": "Main Content Container",
+    "slot": "Main Content",
     "default_width": null
   }
 },
@@ -1084,7 +1084,7 @@
   "model": "cms.placeholder",
   "pk": 59,
   "fields": {
-    "slot": "Main Content Container",
+    "slot": "Main Content",
     "default_width": null
   }
 },
@@ -1100,7 +1100,7 @@
   "model": "cms.placeholder",
   "pk": 61,
   "fields": {
-    "slot": "Main Content Container",
+    "slot": "Main Content",
     "default_width": null
   }
 },
