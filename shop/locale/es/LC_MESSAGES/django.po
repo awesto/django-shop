@@ -51,15 +51,15 @@ msgstr ""
 #: admin/customer.py:106 admin/notification.py:18 models/cart.py:126
 #: models/order.py:115
 msgid "Customer"
-msgstr ""
+msgstr "Cliente"
 
 #: admin/customer.py:107
 msgid "Customers"
-msgstr ""
+msgstr "Clientes"
 
 #: admin/notification.py:18 admin/notification.py:53
 msgid "Nobody"
-msgstr ""
+msgstr "Ninguno"
 
 #: admin/order.py:70
 msgid "Outstanding amount"
@@ -80,7 +80,7 @@ msgstr ""
 
 #: apps.py:9
 msgid "Shop"
-msgstr ""
+msgstr "Tienda"
 
 #: cascade/auth.py:14
 msgid "Login Form"
@@ -92,7 +92,7 @@ msgstr ""
 
 #: cascade/auth.py:16
 msgid "Logout Form"
-msgstr ""
+msgstr "Cerrar Sesión Form"
 
 #: cascade/auth.py:17
 msgid "Shared Login/Logout Form"
@@ -100,7 +100,7 @@ msgstr ""
 
 #: cascade/auth.py:18
 msgid "Password Reset Form"
-msgstr ""
+msgstr "Reestablecer contraseña Form"
 
 #: cascade/auth.py:19
 msgid "Change Password Form"
@@ -108,11 +108,11 @@ msgstr ""
 
 #: cascade/auth.py:20
 msgid "Register User"
-msgstr ""
+msgstr "Registrar Usuario"
 
 #: cascade/auth.py:21 templates/shop/auth/continue-as-guest.html:10
 msgid "Continue as guest"
-msgstr ""
+msgstr "Continuar como invitado"
 
 #: cascade/auth.py:26 cascade/checkout.py:30 cascade/plugin_base.py:94
 #: cascade/processbar.py:107 cascade/processbar.py:110
@@ -122,7 +122,7 @@ msgstr ""
 #: cascade/auth.py:26 cascade/checkout.py:30 cascade/processbar.py:108
 #: cascade/processbar.py:110
 msgid "Reload Page"
-msgstr ""
+msgstr "Recargar página"
 
 #: cascade/auth.py:26
 msgid "Do Nothing"
@@ -138,7 +138,7 @@ msgstr ""
 
 #: cascade/auth.py:42
 msgid "Authentication"
-msgstr ""
+msgstr "Atenticación"
 
 #: cascade/auth.py:51
 msgid "unknown"
@@ -179,7 +179,7 @@ msgstr ""
 
 #: cascade/checkout.py:30 cascade/processbar.py:108 cascade/processbar.py:111
 msgid "Purchase Now"
-msgstr ""
+msgstr "Comprar Ahora"
 
 #: cascade/checkout.py:37
 #, fuzzy
@@ -192,7 +192,7 @@ msgstr ""
 
 #: cascade/checkout.py:70
 msgid "Guest Form"
-msgstr ""
+msgstr "Form Invitado"
 
 #: cascade/checkout.py:90
 #, fuzzy
@@ -224,7 +224,7 @@ msgstr ""
 
 #: cascade/checkout.py:197
 msgid "HTML content"
-msgstr ""
+msgstr "Contenido HTML"
 
 #: cascade/plugin_base.py:94 models/order.py:271 models/product.py:104
 #: templates/shop/cart/editable.html:16 templates/shop/cart/static.html:8
@@ -239,7 +239,7 @@ msgstr ""
 
 #: cascade/plugin_base.py:95
 msgid "Mail To"
-msgstr ""
+msgstr "Correo a"
 
 #: cascade/plugin_base.py:120
 msgid "An internal link onto a product from the shop"
@@ -310,11 +310,11 @@ msgstr ""
 
 #: forms/auth.py:26
 msgid "Choose a password"
-msgstr ""
+msgstr "Seleccionar Contraseña"
 
 #: forms/auth.py:27
 msgid "Minimum length is 6 characters."
-msgstr ""
+msgstr "Longitud mínima de 6 carácteres"
 
 #: forms/auth.py:28
 msgid "Repeat password"
@@ -323,7 +323,7 @@ msgstr ""
 #: forms/auth.py:29
 #, fuzzy
 msgid "Confirm password."
-msgstr "Confirmado"
+msgstr "Confirmar contraseña"
 
 #: forms/auth.py:53
 #, python-brace-format
@@ -334,24 +334,24 @@ msgstr ""
 
 #: forms/auth.py:59
 msgid "Passwords do not match"
-msgstr ""
+msgstr "Las contraseñas no coinciden"
 
 #: forms/checkout.py:17 templates/shop/auth/login-reset.html:11
 #: templates/shop/auth/login-reset.html:29 templates/shop/auth/login.html:11
 #: templates/shop/auth/reset.html:11
 #: templates/shop/email/customer-information.html:6
 msgid "Email"
-msgstr ""
+msgstr "Correo"
 
 #: forms/checkout.py:18
 #, fuzzy
 msgid "First Name"
-msgstr "Nombre del producto"
+msgstr "Primer Nombre"
 
 #: forms/checkout.py:19
 #, fuzzy
 msgid "Last Name"
-msgstr "Última modificación"
+msgstr "Apellido"
 
 #: forms/checkout.py:157
 #, fuzzy
@@ -374,7 +374,7 @@ msgstr ""
 
 #: management/commands/shop_customers.py:13
 msgid "Delete customers with expired sessions."
-msgstr ""
+msgstr "Eliminar clientes con sesiones expiradas"
 
 #: management/commands/shop_customers.py:35
 #, python-brace-format
@@ -2157,7 +2157,7 @@ msgstr ""
 #~ "País: %(country)s\n"
 
 #~ msgid "Countries"
-#~ msgstr "Paises"
+#~ msgstr "Países"
 
 #~ msgid "Address2"
 #~ msgstr "Dirección 2"
@@ -2226,16 +2226,16 @@ msgstr ""
 #~ msgstr "Tasa envío plano"
 
 #~ msgid "Your shopping cart"
-#~ msgstr "Su carro de la compra"
+#~ msgstr "Su carro de compras"
 
 #~ msgid "Cart Total"
 #~ msgstr "Total del carro"
 
 #~ msgid "Update Shopping Cart"
-#~ msgstr "Actualizar Carro de la Compra"
+#~ msgstr "Actualizar Carro de Compra"
 
 #~ msgid "Shopping cart is empty"
-#~ msgstr "El carro de la compra está vacío"
+#~ msgstr "El carro de compras está vacío"
 
 #~ msgid "Order list"
 #~ msgstr "Listado del pedido"
