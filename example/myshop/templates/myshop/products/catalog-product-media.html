@@ -1,3 +1,4 @@
 {% load i18n thumbnail djng_tags %}
 {% thumbnail product.sample_image 244x244 crop as thumb %}
-<img class="img-thumbnail" src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}" />
+{% thumbnail product.sample_image 488x488 crop as thumb2 %}
+<img class="img-responsive" src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}" srcset="{{ thumb.url }} 1x, {{ thumb2.url }} 2x" />
