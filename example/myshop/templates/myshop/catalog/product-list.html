@@ -1,6 +1,6 @@
-{% load i18n static sekizai_tags sass_tags %}
+{% load i18n static sekizai_tags %}
 
-{% addtoblock "css" %}<link href="{% sass_src 'pages/css/product-list.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+{% addtoblock "css" %}<link href="{% static 'pages/css/product-list.css' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 
 {% addtoblock "js" %}<script src="{% static 'bower_components/angular-inview/angular-inview.js' %}"></script>{% endaddtoblock %}
 {% addtoblock "shop-ng-requires" %}angular-inview{% endaddtoblock %}

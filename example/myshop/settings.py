@@ -94,7 +94,6 @@ INSTALLED_APPS = (
     'treebeard',
     'compressor',
     'sekizai',
-    'sass_processor',
     'django_filters',
     'filer',
     'easy_thumbnails',
@@ -215,7 +214,6 @@ STATIC_URL = '/static/'
 STATICFILES_FINDERS = (
     'myshop.finders.FileSystemFinder',  # or 'django.contrib.staticfiles.finders.FileSystemFinder',
     'myshop.finders.AppDirectoriesFinder',  # or 'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'sass_processor.finders.CssFinder',
     'compressor.finders.CompressorFinder',
 )
 
@@ -311,10 +309,6 @@ EMAIL_BACKEND = 'post_office.EmailBackend'
 # settings for third party Django apps
 
 NODE_MODULES_URL = STATIC_URL + 'node_modules/'
-
-SASS_PROCESSOR_INCLUDE_DIRS = (
-    os.path.join(PROJECT_ROOT, 'node_modules'),
-)
 
 COERCE_DECIMAL_TO_STRING = True
 

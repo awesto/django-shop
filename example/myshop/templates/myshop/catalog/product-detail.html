@@ -1,11 +1,11 @@
 {% extends "myshop/pages/default.html" %}
-{% load cms_tags sekizai_tags sass_tags %}
+{% load cms_tags sekizai_tags %}
 
 {% block title %}{{ product.product_name }}{% endblock %}
 
 {% block head %}
 	{{ block.super }}
-	{% addtoblock "css" %}<link href="{% sass_src 'pages/css/product-detail.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+	{% addtoblock "css" %}<link href="{% static 'pages/css/product-detail.css' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 {% endblock head %}
 
 {% block breadcrumb %}{% with extra_ance=product.product_name %}
