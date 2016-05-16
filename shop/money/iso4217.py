@@ -18,6 +18,7 @@ CURRENCIES = {
     'CZK': ('203', 2, 'Kč', _("Czech Koruna")),
     'EUR': ('978', 2, '€', _("Euro")),
     'GBP': ('826', 2, '£', _("Pound Sterling")),
+    'HRK': ('191', 2, 'kn', _("Croatian kuna")),
     'HUF': ('348', 0, 'Ft', _("Hungarian Forint")),
     'ILS': ('376', 2, '₪', _("Israeli Sheqel")),
     'JPY': ('392', 0, '¥', _("Japanese Yen")),
