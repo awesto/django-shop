@@ -326,6 +326,8 @@ FSM_ADMIN_FORCE_PERMIT = True
 
 ROBOTS_META_TAGS = ('noindex', 'nofollow')
 
+SERIALIZATION_MODULES = {'json': str('shop.money.serializers')}
+
 ############################################
 # settings for django-restframework and plugins
 
@@ -341,9 +343,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 12,
 }
-
-SERIALIZATION_MODULES = {'json': str('shop.money.serializers')}
-
 
 ############################################
 # settings for storing session data
