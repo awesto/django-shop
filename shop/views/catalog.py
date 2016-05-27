@@ -58,9 +58,18 @@ class CMSPageProductListView(ProductListView):
     """
     This view is used to list all products being associated with a CMS page. It normally is
     added to the urlpatterns as:
-    ``url(r'^$', CMSPageProductListView.as_view(serializer_class=ProductSummarySerializer))``
-    where the ``ProductSummarySerializer`` is a customized REST serializer that that specific
-    product model.
+    ``url(r'^$', CMSPageProductListView.as_view(serializer_class=ProductSummarySerializer))``.
+
+    :param product_model: A specific product model. If unspecified, the default ``ProductModel``
+    is used.
+
+    :param serializer_class: for instance ``ProductSummarySerializer``, a customized REST
+    serializer for that specific product model.
+
+    :param filter_class: TODO:
+
+    :param cms_pages_fields: A tuple of field names used for looking up, which products
+    belong to which CMS page.
     """
     renderer_classes = (CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer)
     filter_backends = list(api_settings.DEFAULT_FILTER_BACKENDS)
