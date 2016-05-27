@@ -62,17 +62,17 @@ as all apphooks, it requires a file defining its urlpatterns:
 .. code-block:: python
 	:caption: myshop/urls/products.py
 
-	from django.conf.urls import patterns, url
+	from django.conf.urls import url
 	from rest_framework.settings import api_settings
 	from shop.views.catalog import CMSPageProductListView
 	from myshop.serializers import ProductSummarySerializer
 	
-	urlpatterns = patterns('',
+	urlpatterns = [
 	    url(r'^$', CMSPageProductListView.as_view(
 	        serializer_class=ProductSummarySerializer,
 	    )),
 	    # other patterns
-	)
+	]
 
 Here the ``ProductSummarySerializer`` serializes the product models into a representation suitable
 for being rendered inside a CMS page, as well as being converted to JSON. This allows us to reuse
@@ -97,12 +97,12 @@ As a template we use one with a big placeholder, since it must display our list 
 As **Application**, select "*Catalog List*" or whatever we named our ``ProductsListApp``. This
 selects the apphook we created in the previous section.
 
-Then we save the page, change into **Structure** mode and locate the Main Content Container. Here
-we add a container with a Row and Column. As the child of this column we chose a
-**Catalog List View** plugin from section **Shop**.
+Then we save the page, change into **Structure** mode and locate the placeholder named
+**Main Content**. Add a Container plugin, followed by a Row and then a Column plugin. As the
+child of this column chose the **Catalog List View** plugin from section **Shop**.
 
-Finally we publish the page and enter some text into the search field. Since we haven't assigned
-any products to the CMS page, we won't see anything yet.
+Finally we publish the page. If we have assigned products to that CMS page, they should be rendered
+now.
 
 
 .. _reference/catalog-detail:
@@ -144,17 +144,17 @@ requests on all of its sub-URLs. This is done by expanding the current list of u
 .. code-block:: python
 	:caption: myshop/urls/products.py
 
-	from django.conf.urls import patterns, url
+	from django.conf.urls import url
 	from shop.views.catalog import ProductRetrieveView
 	from myshop.serializers import ProductDetailSerializer
 	
-	urlpatterns = patterns('',
+	urlpatterns = [
 	    # previous patterns
 	    url(r'^(?P<slug>[\w-]+)$', ProductRetrieveView.as_view(
 	        serializer_class=ProductDetailSerializer,
 	    )),
 	    # other patterns
-	)
+	]
 
 All business logic regarding our product now goes into our customized serializer class named
 ``ProductDetailSerializer``. This class then may access the various attributes of our product model

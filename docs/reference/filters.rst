@@ -43,17 +43,17 @@ we then replace the default filter backends by our own implementation:
 .. code-block:: python
 	:caption: myshop/urls/catalog.py
 	
-	from django.conf.urls import patterns, url
+	from django.conf.urls import url
 	from rest_framework.settings import api_settings
 	from shop.views.catalog import ProductListView
 	from myshop.serializers import ProductSummarySerializer
 	
-	urlpatterns = patterns('',
+	urlpatterns = [
 	    url(r'^$', ProductListView.as_view(
 	        serializer_class=ProductSummarySerializer,
 	        filter_backends=[CatalogFilterBackend],
 	    ),
-	)
+	]
 
 The above example is very simple but gives a rough impression on its possibilities.
 
@@ -99,13 +99,13 @@ this through the url patterns:
 .. code-block:: python
 	:caption: myshop/urls.py
 
-	urlpatterns = patterns('',
+	urlpatterns = [
 	    url(r'^$', ProductListView.as_view(
 	        serializer_class=ProductSummarySerializer,
 	        filter_class=ProductFilter,
 	    )),
 	    # other patterns
-	)
+	]
 
 By appending ``?props=17`` to the URL, the above filter class will restrict the products in our list 
 view to those with a ``property`` of 17.

@@ -421,8 +421,9 @@ CMS_PLACEHOLDER_CONF = {
         'require_parent': False,
         'glossary': CACSCADE_WORKAREA_GLOSSARY,
     },
-    'Main Content Container': {
-        'plugins': ['BootstrapContainerPlugin',],
+    'Main Content': {
+        'plugins': ['BootstrapContainerPlugin'],
+        'text_only_plugins': ['TextLinkPlugin'],
         'parent_classes': {'BootstrapContainerPlugin': None},
         'glossary': CACSCADE_WORKAREA_GLOSSARY,
     },
@@ -432,7 +433,6 @@ CMS_PLACEHOLDER_CONF = {
         'glossary': CACSCADE_WORKAREA_GLOSSARY,
     },
 }
-
 
 CMSPLUGIN_CASCADE_PLUGINS = ('cmsplugin_cascade.segmentation', 'cmsplugin_cascade.generic',
     'cmsplugin_cascade.link', 'shop.cascade', 'cmsplugin_cascade.bootstrap3',)

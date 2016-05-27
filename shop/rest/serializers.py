@@ -47,14 +47,14 @@ class ProductCommonSerializer(serializers.ModelSerializer):
             msg = "The Product Serializer must be configured using a `label` field."
             raise exceptions.ImproperlyConfigured(msg)
         app_label = product._meta.app_label.lower()
-        product_type = product.__class__.__name__.lower()
         request = self.context['request']
-        cache_key = 'product:{0}|{1}-{2}-{3}-{4}-{5}'.format(product.id, app_label, self.label, product_type, postfix, get_language_from_request(request))
+        cache_key = 'product:{0}|{1}-{2}-{3}-{4}-{5}'.format(product.id, app_label, self.label,
+            product.product_model, postfix, get_language_from_request(request))
         content = cache.get(cache_key)
         if content:
             return mark_safe(content)
         params = [
-            (app_label, self.label, product_type, postfix),
+            (app_label, self.label, product.product_model, postfix),
             (app_label, self.label, 'product', postfix),
             ('shop', self.label, 'product', postfix),
         ]
