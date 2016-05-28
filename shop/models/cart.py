@@ -165,8 +165,9 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         self._cached_cart_items = None
         self._dirty = True
 
-    def save(self, *args, **kwargs):
-        super(BaseCart, self).save(*args, **kwargs)
+    def save(self, force_update=False, *args, **kwargs):
+        if self.pk or force_update is False:
+            super(BaseCart, self).save(force_update=force_update, *args, **kwargs)
         self._dirty = True
 
     def update(self, request):
