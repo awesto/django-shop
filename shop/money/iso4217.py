@@ -27,6 +27,7 @@ CURRENCIES = {
     'QAR': ('634', 2, 'ر.ق', _('Qatari riyal')),
     'RUB': ('643', 2, '₽', _("Russian Ruble")),
     'SAR': ('682', 2, 'ر.س', _('Saudi riyal')),
+    'TND': ('788', 3, 'TND', _("Tunisian Dinar")),
     'UAH': ('980', 2, '₴', _("Ukrainian Hryvnia")),
     'USD': ('840', 2, '$', _("US Dollar")),
     # feel free to add more currencies, alphabetically ordered
