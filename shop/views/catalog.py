@@ -81,7 +81,7 @@ class CMSPageProductListView(ProductListView):
         if self.filter_class:
             filter_instance = self.filter_class(self.request.query_params, queryset=queryset)
             if callable(getattr(filter_instance, 'get_render_context', None)):
-                self.filter_context = filter_instance.get_render_context()
+                self.filter_context = filter_instance.get_render_context(self.request)
             elif hasattr(filter_instance, 'render_context'):
                 self.filter_context = filter_instance.render_context
         qs = super(CMSPageProductListView, self).filter_queryset(queryset)
