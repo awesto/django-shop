@@ -1,11 +1,11 @@
 {% extends "myshop/pages/base.html" %}
-{% load static cms_tags i18n sekizai_tags sass_tags %}
+{% load static cms_tags i18n sekizai_tags %}
 
 {% block title %}{% page_attribute "page_title" %}{% endblock %}
 
 {% block head %}
 	{{ block.super }}
-	{% addtoblock "css" %}<link href="{% sass_src 'pages/css/default.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+	{% addtoblock "css" %}<link href="{% static 'pages/css/default.css' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 {% endblock head %}
 
 {% block header %}

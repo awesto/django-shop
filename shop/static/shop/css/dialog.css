@@ -1,0 +1,112 @@
+[ng-cloak], .ng-cloak {
+  display: none !important; }
+
+.animate-show {
+  opacity: 1; }
+  .animate-show.ng-hide-add.ng-hide-add-active, .animate-show.ng-hide-remove.ng-hide-remove-active {
+    -webkit-transition: all linear 0.2s;
+    transition: all linear 0.2s; }
+  .animate-show.ng-hide {
+    opacity: 0;
+    -webkit-transition: all linear 0.2s;
+    transition: all linear 0.2s; }
+
+form .ng-invalid-bound.ng-pristine, form .ng-invalid.ng-dirty {
+  border-color: #e9322d; }
+
+form .ng-invalid-bound.ng-pristine:focus, form .ng-invalid.ng-dirty:focus {
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #ce8483; }
+
+.shop-form-error {
+  position: absolute;
+  list-style: none;
+  top: 0;
+  right: 5px; }
+  .shop-form-error li {
+    color: #e9322d;
+    font-weight: bold;
+    white-space: nowrap;
+    padding-left: 8px;
+    padding-right: 4px;
+    border: 1px dotted #e9322d;
+    border-radius: 3px;
+    background: #f2dede;
+    opacity: 0.85; }
+    .shop-form-error li::before {
+      content: "\2716";
+      margin-right: 10px; }
+
+ul.djng-form-errors, ul.djng-field-errors {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  top: -8px;
+  right: 0;
+  max-width: 100%;
+  overflow-x: overlay;
+  line-height: 28px;
+  z-index: 9; }
+  ul.djng-form-errors li, ul.djng-field-errors li {
+    color: #e9322d;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow-x: hidden;
+    padding-left: 8px;
+    padding-right: 4px; }
+    ul.djng-form-errors li.invalid, ul.djng-field-errors li.invalid {
+      border: 1px dotted #e9322d;
+      border-radius: 3px;
+      background: #f2dede;
+      opacity: 0.85; }
+      ul.djng-form-errors li.invalid:before, ul.djng-field-errors li.invalid:before {
+        content: "\2716";
+        margin-right: 10px; }
+
+label.djng-field-required::after {
+  content: "\00a0*"; }
+
+ul.djng-field-errors {
+  position: absolute; }
+  ul.djng-field-errors li.invalid:before {
+    content: "\2716";
+    margin-right: 10px; }
+  ul.djng-field-errors li.valid:before {
+    color: #00c900;
+    content: "\2714"; }
+
+form[shop-dialog-form] .has-feedback .form-control {
+  padding-right: 12px; }
+
+button[shop-dialog-proceed] .glyphicon.cascade-icon-left {
+  margin-right: 10px; }
+
+button[shop-dialog-proceed] .glyphicon.cascade-icon-right {
+  margin-left: 10px; }
+
+button[shop-dialog-proceed] .glyphicon-refresh-animate {
+  animation: spin 2s linear infinite; }
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg); } }
+
+/* TODO: move this into myshop/css/address.scss */
+.shop-address-street_name {
+  width: 65%;
+  display: inline-block; }
+
+.shop-address-street_number {
+  width: 35%;
+  display: inline-block;
+  margin-left: -4px;
+  padding-left: 15px; }
+
+.shop-address-zip_code {
+  width: 35%;
+  display: inline-block; }
+
+.shop-address-location {
+  width: 65%;
+  display: inline-block;
+  margin-left: -4px;
+  padding-left: 15px; }

@@ -1,5 +1,5 @@
 {% extends "bootstrap/includes/ng-nav-navbar.html" %}
-{% load static i18n cms_tags menu_tags sekizai_tags sass_tags shop_tags %}
+{% load static i18n cms_tags menu_tags sekizai_tags shop_tags %}
 
 {% page_url 'shop-watch' as shop_watch_url %}
 
@@ -32,7 +32,7 @@
 		</div>
 	</div>
 
-	{% addtoblock "css" %}<link href="{% sass_src 'pages/css/navbar.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+	{% addtoblock "css" %}<link href="{% static 'pages/css/navbar.css' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 
 	{% addtoblock "js" %}<script src="{% static 'bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js' %}"></script>{% endaddtoblock %}
 	{% addtoblock "shop-ng-requires" %}ui.bootstrap{% endaddtoblock %}

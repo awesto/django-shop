@@ -1,0 +1,50 @@
+[
+{
+  "model": "email_auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$24000$95O1UX8N7shl$LVABZ9JKUO2fB2J0h2rt18gEdjo7zXoyjJlYiBZIRAU=",
+    "last_login": "2016-05-16T09:23:16.650Z",
+    "is_superuser": true,
+    "username": "abel",
+    "first_name": "",
+    "last_name": "",
+    "email": "abel@kuwaitnet.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2016-05-16T08:41:07.523Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "cms.usersettings",
+  "pk": 1,
+  "fields": {
+    "user": [
+      "abel"
+    ],
+    "language": "en",
+    "clipboard": 1
+  }
+},
+{
+  "model": "cms.placeholder",
+  "pk": 1,
+  "fields": {
+    "slot": "clipboard",
+    "default_width": null
+  }
+},
+{
+  "model": "myshop.customer",
+  "pk": 1,
+  "fields": {
+    "recognized": 2,
+    "salutation": "",
+    "last_access": "2016-05-16T09:23:16.900Z",
+    "extra": "{}",
+    "number": null
+  }
+}
+]
