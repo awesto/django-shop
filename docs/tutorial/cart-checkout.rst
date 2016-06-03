@@ -9,7 +9,7 @@ managed by the CMS. Change into the Django admin backend and look for the CMS pa
 position for adding a page is the root level, but then assure that in Advanced Setting the checkbox
 **Soft root** is set.
 
-The checkout my or be combined with the cart on the same page, or moved on a separate page. Its best
+The checkout can be combined with the cart on the same page or moved on a separate page. Its best
 position normally is just below the Cart page.
 
 |static-cart|
