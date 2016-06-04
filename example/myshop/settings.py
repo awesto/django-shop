@@ -18,9 +18,12 @@ from django.core.exceptions import ImproperlyConfigured
 
 SHOP_APP_LABEL = 'myshop'
 BASE_DIR = os.path.dirname(__file__)
-SHOP_TUTORIAL = os.environ.get('DJANGO_SHOP_TUTORIAL', 'simple')
-if SHOP_TUTORIAL not in ('simple', 'i18n', 'polymorphic',):
-    raise ImproperlyConfigured("Environment DJANGO_SHOP_TUTORIAL has an invalid value `{}`".format(SHOP_TUTORIAL))
+
+SHOP_TUTORIAL = os.environ.get('DJANGO_SHOP_TUTORIAL')
+if SHOP_TUTORIAL is None:
+    raise ImproperlyConfigured("Environment variable DJANGO_SHOP_TUTORIAL is not set")
+if SHOP_TUTORIAL not in ('commodity', 'i18n_commodity', 'smartcard', 'i18n_smartcard', 'polymorphic',):
+    raise ImproperlyConfigured("Environment variable DJANGO_SHOP_TUTORIAL has an invalid value `{}`".format(SHOP_TUTORIAL))
 
 # Root directory for this django project
 PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, os.path.pardir, os.path.pardir))
@@ -145,7 +148,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en'
 
-if SHOP_TUTORIAL in ('i18n', 'polymorphic'):
+if SHOP_TUTORIAL in ('i18n_smartcard', 'i18n_commodity', 'polymorphic'):
     USE_I18N = True
 
     LANGUAGES = (
@@ -293,6 +296,7 @@ LOGGING = {
 
 SILENCED_SYSTEM_CHECKS = ('auth.W004')
 
+FIXTURE_DIRS = [os.path.join(PROJECT_ROOT, 'example/fixtures')]
 
 ############################################
 # settings for sending mail
@@ -322,6 +326,8 @@ FSM_ADMIN_FORCE_PERMIT = True
 
 ROBOTS_META_TAGS = ('noindex', 'nofollow')
 
+SERIALIZATION_MODULES = {'json': str('shop.money.serializers')}
+
 ############################################
 # settings for django-restframework and plugins
 
@@ -337,9 +343,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 12,
 }
-
-SERIALIZATION_MODULES = {'json': str('shop.money.serializers')}
-
 
 ############################################
 # settings for storing session data
@@ -407,17 +410,28 @@ CACSCADE_WORKAREA_GLOSSARY = {
 CMS_PLACEHOLDER_CONF = {
     'Breadcrumb': {
         'plugins': ['BreadcrumbPlugin'],
+        'parent_classes': {'BreadcrumbPlugin': None},
         'glossary': CACSCADE_WORKAREA_GLOSSARY,
     },
     'Commodity Details': {
         'plugins': ['BootstrapRowPlugin', 'TextPlugin', 'ImagePlugin', 'PicturePlugin'],
         'text_only_plugins': ['TextLinkPlugin'],
-        'parent_classes': {'BootstrapRowPlugin': []},
+        'parent_classes': {'BootstrapRowPlugin': None},
         'require_parent': False,
         'glossary': CACSCADE_WORKAREA_GLOSSARY,
     },
+    'Main Content': {
+        'plugins': ['BootstrapContainerPlugin'],
+        'text_only_plugins': ['TextLinkPlugin'],
+        'parent_classes': {'BootstrapContainerPlugin': None},
+        'glossary': CACSCADE_WORKAREA_GLOSSARY,
+    },
+    'Static Footer': {
+        'plugins': ['BootstrapContainerPlugin', ],
+        'parent_classes': {'BootstrapContainerPlugin': None},
+        'glossary': CACSCADE_WORKAREA_GLOSSARY,
+    },
 }
-
 
 CMSPLUGIN_CASCADE_PLUGINS = ('cmsplugin_cascade.segmentation', 'cmsplugin_cascade.generic',
     'cmsplugin_cascade.link', 'shop.cascade', 'cmsplugin_cascade.bootstrap3',)
@@ -437,6 +451,7 @@ CMSPLUGIN_CASCADE = {
         'HorizontalRulePlugin',
         'ExtraAnnotationFormPlugin',
         'ShopProceedButton',
+        'CarouselPlugin',
     ),
     'segmentation_mixins': (
         ('shop.cascade.segmentation.EmulateCustomerModelMixin', 'shop.cascade.segmentation.EmulateCustomerAdminMixin'),
@@ -520,16 +535,7 @@ SHOP_STRIPE = {
     'PURCHASE_DESCRIPTION': _("Thanks for purchasing at MyShop"),
 }
 
-# merge settings with non-public credentioals in private_settings
-for priv_attr in ('DATABASES', 'SECRET_KEY', 'SHOP_STRIPE', 'EMAIL_HOST', 'EMAIL_PORT',
-                  'EMAIL_HOST_USER', 'DEFAULT_FROM_EMAIL', 'EMAIL_HOST_PASSWORD', 'EMAIL_USE_TLS',
-                  'EMAIL_REPLY_TO', 'EMAIL_BACKEND'):
-    try:
-        from . import private_settings
-        vars()[priv_attr].update(getattr(private_settings, priv_attr))
-    except AttributeError:
-        continue
-    except KeyError:
-        vars()[priv_attr] = getattr(private_settings, priv_attr)
-    except ImportError:
-        break
+try:
+    from .private_settings import *
+except ImportError:
+    pass

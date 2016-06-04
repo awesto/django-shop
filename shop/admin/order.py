@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.conf import settings
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from django.contrib import admin
 from django.core.urlresolvers import reverse, NoReverseMatch
 from django.db.models.fields import Field, FieldDoesNotExist
@@ -145,13 +145,13 @@ class PrintOrderAdminMixin(object):
         super(PrintOrderAdminMixin, self).__init__(*args, **kwargs)
 
     def get_urls(self):
-        my_urls = patterns('',
+        my_urls = [
             url(r'^(?P<pk>\d+)/print_confirmation/$', self.admin_site.admin_view(self.render_confirmation),
                 name='print_confirmation'),
             url(r'^(?P<pk>\d+)/print_invoice/$', self.admin_site.admin_view(self.render_invoice),
                 name='print_invoice'),
-        )
-        return my_urls + super(PrintOrderAdminMixin, self).get_urls()
+        ] + super(PrintOrderAdminMixin, self).get_urls()
+        return my_urls
 
     def _render_letter(self, request, pk, template):
         order = self.get_object(request, pk)

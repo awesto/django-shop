@@ -16,7 +16,7 @@ from django.utils.functional import SimpleLazyObject
 from django.utils.translation import ugettext_lazy as _
 from django.utils.six import with_metaclass
 from jsonfield.fields import JSONField
-from . import deferred
+from shop import deferred
 
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore()
 

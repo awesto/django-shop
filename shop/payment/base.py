@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.conf.urls import patterns
-
 
 class PaymentProvider(object):
     """
@@ -21,8 +19,7 @@ class PaymentProvider(object):
         """
         Return a list of URL patterns for external communication with the payment service provider.
         """
-        urlpatterns = patterns('')
-        return urlpatterns
+        return []
 
     def get_payment_request(self, cart, request):
         """

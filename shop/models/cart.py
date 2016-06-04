@@ -10,7 +10,7 @@ from jsonfield.fields import JSONField
 from shop.modifiers.pool import cart_modifiers_pool
 from shop.money import Money
 from .product import BaseProduct
-from . import deferred
+from shop import deferred
 from shop.models.customer import CustomerModel
 
 
@@ -165,8 +165,9 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         self._cached_cart_items = None
         self._dirty = True
 
-    def save(self, *args, **kwargs):
-        super(BaseCart, self).save(*args, **kwargs)
+    def save(self, force_update=False, *args, **kwargs):
+        if self.pk or force_update is False:
+            super(BaseCart, self).save(force_update=force_update, *args, **kwargs)
         self._dirty = True
 
     def update(self, request):

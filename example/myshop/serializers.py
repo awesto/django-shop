@@ -10,12 +10,16 @@ from shop.rest.serializers import (ProductSummarySerializerBase, ProductDetailSe
 from shop.search.serializers import ProductSearchSerializer as ProductSearchSerializerBase
 from .search_indexes import myshop_search_index_classes
 
-if settings.SHOP_TUTORIAL == 'simple':
-    Product = import_string('myshop.models.simple.smartcard.SmartCard')
-elif settings.SHOP_TUTORIAL == 'i18n':
-    Product = import_string('myshop.models.i18n.smartcard.SmartCard')
-else:
+if settings.SHOP_TUTORIAL in ('commodity', 'i18n_commodity'):
+    Product = import_string('shop.models.defaults.commodity.Commodity')
+elif settings.SHOP_TUTORIAL == 'smartcard':
+    Product = import_string('myshop.models.smartcard.SmartCard')
+elif settings.SHOP_TUTORIAL == 'i18n_smartcard':
+    Product = import_string('myshop.models.i18n_smartcard.SmartCard')
+elif settings.SHOP_TUTORIAL == 'polymorphic':
     Product = import_string('myshop.models.polymorphic.product.Product')
+else:
+    raise NotImplementedError("Unknown settings for SHOP_TUTORIAL: {}".format(settings.SHOP_TUTORIAL))
 
 
 class ProductSummarySerializer(ProductSummarySerializerBase):
@@ -33,7 +37,7 @@ class ProductSummarySerializer(ProductSummarySerializerBase):
 class ProductDetailSerializer(ProductDetailSerializerBase):
     class Meta:
         model = Product
-        exclude = ('active',)
+        exclude = ('active', 'polymorphic_ctype',)
 
 
 class AddSmartCardToCartSerializer(AddToCartSerializer):

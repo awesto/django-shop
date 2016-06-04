@@ -6,7 +6,27 @@ Changelog for djangoSHOP
 
 0.9.2.dev
 =========
+
+* Fixed :method:`shop.money.fields.decontruct` to avoid repetitive useless generation of migration
+  files.
+* Using cached_property decoration for methods ``unit_price`` and ``line_total`` in
+  :class:`shop.models.order.OrderItem`.
+* Fixed #333: Accessing the cart when there is no cart assiciated with a customer.
+* Removed Apphook :class:`shop.cms_apps.OrderApp`. This class now must be added to the project's
+  ``cms_apps.py``. This allows the merchant to override the
+  :class:`shop.rest.serializers.OrderListSerializer` and :class:`shop.rest.serializers.OrderDetailSerializer`.
 * Bugfix: declared django-rest-auth as requirement in setup.py.
+* Refactored shop.models.deferred -> shop.deferred. This allows to add a check for pending mappings
+  into the ready-method of the shop's AppConfig.
+* Prepared for Django-1.10: Replaced all occurrences of :method:`django.conf.urls.patterns` by
+  a simple list.
+* Method ``get_render_context`` in class extending ``django_filters.FilterSet`` now accepts the
+  request object.
+* Method ``get_renderer_context`` in class ``CMSPageProductListView`` now fetches the rendering
+  context for filtering *after* the queryset have been determined. This allows us to adopt the
+  context.
+* Function ``loadMore()`` in ``CatalogListController`` bypasses the existing search query. This
+  allows to use hard coded links for tag search.
 
 
 0.9.1
@@ -16,6 +36,7 @@ Changelog for djangoSHOP
 * Support for Django-1.9
 * Added abstract classes class:`shop.models.delivery.BaseDelivery` and class:`shop.models.delivery.BaseDeliveryItem`
   for optional partial shipping.
+
 
 0.9.0
 =====

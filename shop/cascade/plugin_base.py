@@ -42,9 +42,6 @@ class ShopLinkPluginBase(ShopPluginBase):
     Base plugin for arbitrary buttons used during various checkout pages.
     """
     allow_children = False
-    fields = (('link_type', 'cms_page',), 'glossary',)
-    glossary_field_map = {'link': ('link_type', 'cms_page',)}
-    allow_children = False
     parent_classes = []
     require_parent = False
 
@@ -78,11 +75,11 @@ class ShopButtonPluginBase(ShopLinkPluginBase):
     """
     Base plugin for arbitrary buttons used during various checkout pages.
     """
+    #fields = ('link_content', ('link_type', 'cms_page', 'section',), 'glossary',)
     fields = ('link_content', ('link_type', 'cms_page',), 'glossary',)
 
     class Media:
         css = {'all': ('cascade/css/admin/bootstrap.min.css', 'cascade/css/admin/bootstrap-theme.min.css',)}
-        js = resolve_dependencies('shop/js/admin/shoplinkplugin.js')
 
     @classmethod
     def get_identifier(cls, instance):
@@ -94,7 +91,7 @@ class HeavySelect2Widget(HeavySelect2Widget):
         try:
             result = ProductSelectSerializer(ProductModel.objects.get(pk=value))
             choices = ((value, result.data['text']),)
-        except ProductModel.DoesNotExist:
+        except (ProductModel.DoesNotExist, ValueError):
             choices = ()
         html = super(HeavySelect2Widget, self).render(name, value, attrs=attrs, choices=choices)
         return html
@@ -109,7 +106,7 @@ class ProductSelectField(ChoiceField):
         "Since the ProductSelectField does not specify choices by itself, accept any returned value"
         try:
             return int(value)
-        except ValueError:
+        except (TypeError, ValueError):
             pass
 
 
@@ -146,17 +143,10 @@ class CatalogLinkForm(LinkForm):
 
 class CatalogLinkPluginBase(LinkPluginBase):
     """
-    Modified implementation of ``cmsplugin_cascade.link.LinkPluginBase`` which adds link type
-    "Product", to set links onto arbitrary products of this shop.
+    Modified implementation of ``cmsplugin_cascade.link.DefaultLinkPluginBase`` which adds another
+    link type, namely "Product", to set links onto arbitrary products of this shop.
     """
-#     glossary_fields = (
-#         PartialFormField('title',
-#             widgets.TextInput(),
-#             label=_("Title"),
-#             help_text=_("Link's Title")
-#         ),
-#     ) + LinkPluginBase.glossary_fields
-    glossary_field_map = {'link': ('link_type', 'cms_page', 'product', 'ext_url', 'mail_to',)}
+    fields = (('link_type', 'cms_page', 'section', 'product', 'ext_url', 'mail_to',), 'glossary',)
 
     class Media:
         js = resolve_dependencies('shop/js/admin/shoplinkplugin.js')
