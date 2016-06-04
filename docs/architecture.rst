@@ -147,7 +147,7 @@ method and destination, as well as the payment method may modify the final total
 The checkout process
 --------------------
 
-Her the customer must be able to refine the cart' content: Change the quantity of an item, or remove
+Here the customer must be able to refine the cart' content: Change the quantity of an item, or remove
 that item completely from the cart.
 
 During the checkout process, the customer must enter his addresses and payment informations. These
