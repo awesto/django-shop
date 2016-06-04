@@ -20,6 +20,11 @@ Changelog for djangoSHOP
   into the ready-method of the shop's AppConfig.
 * Prepared for Django-1.10: Replaced all occurrences of :method:`django.conf.urls.patterns` by
   a simple list.
+* Method ``get_render_context`` in class extending ``django_filters.FilterSet`` now accepts the
+  request object.
+* Method ``get_renderer_context`` in class ``CMSPageProductListView`` now fetches the rendering
+  context for filtering *after* the queryset have been determined. This allows us to adopt the
+  context.
 * Function ``loadMore()`` in ``CatalogListController`` bypasses the existing search query. This
   allows to use hard coded links for tag search.
 
