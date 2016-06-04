@@ -20,6 +20,8 @@ Changelog for djangoSHOP
   into the ready-method of the shop's AppConfig.
 * Prepared for Django-1.10: Replaced all occurrences of :method:`django.conf.urls.patterns` by
   a simple list.
+* Function ``loadMore()`` in ``CatalogListController`` bypasses the existing search query. This
+  allows to use hard coded links for tag search.
 
 
 0.9.1

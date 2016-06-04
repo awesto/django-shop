@@ -44,6 +44,7 @@ djangoShopModule.directive('shopProductSearch', ['$window', '$location', functio
 
 			// convert query string from URL to object
 			if (angular.equals({}, queries.params)) {
+				// TODO: refactor by using djangoShop.paramsFromSearchQuery()
 				scope.searchQuery = '';
 				queries = $window.location.search.replace(/^\?/, '').split('&');
 				for (i = 0; i < queries.length; i++) {

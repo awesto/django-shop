@@ -1,5 +1,6 @@
 {% load i18n static sekizai_tags %}
 
+{% addtoblock "js" %}<script src="{% static 'shop/js/utils.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% addtoblock "js" %}<script src="{% static 'shop/js/catalog.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% addtoblock "shop-ng-requires" %}django.shop.catalog{% endaddtoblock %}
 
