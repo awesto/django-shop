@@ -14,7 +14,7 @@ django-fsm-admin==1.2.2
 https://github.com/django-haystack/django-haystack/archive/cd7380e.zip
 django-ipware==1.1.1
 django-mptt==0.7.4
-django-parler==1.6
+django-parler==1.6.2
 django-polymorphic==0.8.1
 django-post-office==2.0.5
 django-rest-auth==0.5.0
