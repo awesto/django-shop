@@ -18,7 +18,7 @@ if settings.USE_I18N:
                          PlaceholderAdminMixin, CMSPageAsCategoryMixin, admin.ModelAdmin):
         fieldsets = (
             (None, {
-                'fields': ('translated_product_name', 'slug', 'description',)
+                'fields': ('translated_product_name', 'slug', 'caption',)
             }),
             (_("Common Fields"), {
                 'fields': ('product_code', ('unit_price', 'active',), 'sample_image',),
@@ -36,7 +36,7 @@ else:
     @admin.register(Commodity)
     class CommodityAdmin(SortableAdminMixin, FrontendEditableAdminMixin, PlaceholderAdminMixin,
                          CMSPageAsCategoryMixin, admin.ModelAdmin):
-        fields = ('product_name', 'slug',  'description', 'product_code',
+        fields = ('product_name', 'slug',  'caption', 'product_code',
                   ('unit_price', 'active',), 'sample_image',)
         filter_horizontal = ('cms_pages',)
         prepopulated_fields = {'slug': ('product_name',)}

@@ -1,7 +1,22 @@
+@import "variables";
 
 .shop-list-item {
-	h4 {
-		min-height: 38px;
+	padding-left: 5px;
+	padding-right: 5px;
+	figure {
+		border: 1px solid $list-group-border;
+		border-radius: $border-radius-base;
+		padding: 10px;
+		a:hover, a:active {
+			text-decoration: none;
+		}
+		h4 {
+			min-height: 38px;
+		}
+		figcaption {
+			margin-top: 5px;
+			min-height: 50px;
+		}
 	}
 	margin-bottom: 20px;
 }
