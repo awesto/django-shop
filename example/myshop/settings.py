@@ -498,7 +498,7 @@ HAYSTACK_CONNECTIONS = {
         'INDEX_NAME': 'myshop-en',
     },
 }
-if SHOP_TUTORIAL in ('i18n', 'polymorphic'):
+if USE_I18N:
     HAYSTACK_CONNECTIONS['de'] = {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
         'URL': 'http://localhost:9200/',
