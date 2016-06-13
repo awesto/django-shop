@@ -21,7 +21,7 @@ if settings.USE_I18N:
                 'fields': ('translated_product_name', 'slug', 'caption',)
             }),
             (_("Common Fields"), {
-                'fields': ('product_code', ('unit_price', 'active',), 'sample_image',),
+                'fields': ('product_code', ('unit_price', 'active',), 'show_breadcrumb', 'sample_image'),
             }),
         )
         filter_horizontal = ('cms_pages',)
@@ -37,6 +37,9 @@ else:
     class CommodityAdmin(SortableAdminMixin, FrontendEditableAdminMixin, PlaceholderAdminMixin,
                          CMSPageAsCategoryMixin, admin.ModelAdmin):
         fields = ('product_name', 'slug',  'caption', 'product_code',
-                  ('unit_price', 'active',), 'sample_image',)
+                  ('unit_price', 'active',), 'show_breadcrumb', 'sample_image',)
         filter_horizontal = ('cms_pages',)
         prepopulated_fields = {'slug': ('product_name',)}
+
+#        class Media:
+#            js = ('cms/js/admin.changeform.js',)

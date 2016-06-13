@@ -26,7 +26,7 @@ class CMSPageReferenceMixin(object):
         # associates with the most generic category
         cms_page = self.cms_pages.order_by('depth').last()
         if cms_page is None:
-            return urljoin('category-not-assigned', self.slug)
+            return urljoin('/category-not-assigned/', self.slug)
         return urljoin(cms_page.get_absolute_url(), self.slug)
 
 
@@ -120,7 +120,10 @@ else:
         order = models.PositiveIntegerField(verbose_name=_("Sort by"), db_index=True)
         cms_pages = models.ManyToManyField('cms.Page', through=ProductPage,
             help_text=_("Choose list view this product shall appear on."))
-        sample_image = image.FilerImageField()
+        sample_image = image.FilerImageField(verbose_name=_("Sample Image"),
+            help_text=_("Sample image used in the catalog's list view."))
+        show_breadcrumb = models.BooleanField(_("Show Breadcrumb"), default=True,
+            help_text=_("Shall the detail page show the product's breadcrumb."))
         placeholder = PlaceholderField("Commodity Details")
 
         # common fields for the catalog's list- and detail views
@@ -144,3 +147,9 @@ else:
 
         def get_price(self, request):
             return self.unit_price
+
+        def save(self, *args, **kwargs):
+            if self.order is None:
+                aggr = self._meta.model.objects.aggregate(max=models.Max('order'))
+                self.order = 1 if aggr['max'] is None else aggr['max'] + 1
+            return super(Commodity, self).save(*args, **kwargs)

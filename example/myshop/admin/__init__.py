@@ -10,7 +10,7 @@ __all__ = ['OrderModel', 'commodity']
 
 # models defined by the myshop instance itself
 if settings.SHOP_TUTORIAL in ('commodity', 'i18n_commodity'):
-    from shop.admin import commodity
+    from shop.admin.defaults import commodity
     from . import order
 elif settings.SHOP_TUTORIAL == 'smartcard':
     from . import manufacturer
