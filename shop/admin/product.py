@@ -32,6 +32,16 @@ class CMSPageAsCategoryMixin(object):
         fieldsets.append((_("Categories"), {'fields': ('cms_pages',)}),)
         return fieldsets
 
+    def get_fields(self, request, obj=None):
+        # In ``get_fieldsets()``, ``cms_pages`` is added, so remove it from ``fields`` to
+        # avoid showing it twice.
+        fields = list(super(CMSPageAsCategoryMixin, self).get_fields(request, obj))
+        try:
+            fields.remove('cms_pages')
+        except ValueError:
+            pass
+        return fields
+
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         if db_field.name == 'cms_pages':
             # restrict many-to-many field for cms_pages to ProductApp only
