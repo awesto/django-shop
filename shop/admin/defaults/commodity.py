@@ -6,7 +6,7 @@ from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 from adminsortable2.admin import SortableAdminMixin
 from cms.admin.placeholderadmin import PlaceholderAdminMixin, FrontendEditableAdminMixin
-from shop.admin.product import CMSPageAsCategoryMixin
+from shop.admin.product import CMSPageAsCategoryMixin, CMSPageFilter
 from shop.models.defaults.commodity import Commodity
 
 if settings.USE_I18N:
@@ -25,6 +25,7 @@ if settings.USE_I18N:
             }),
         )
         filter_horizontal = ('cms_pages',)
+        list_filter = (CMSPageFilter,)
 
         def get_prepopulated_fields(self, request, obj=None):
             return {

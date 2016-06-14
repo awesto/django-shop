@@ -92,3 +92,17 @@ class InvalidateProductCacheMixin(object):
             cache.delete_pattern('product:{}|*'.format(product.id))
         except AttributeError:
             pass
+
+
+class CMSPageFilter(admin.SimpleListFilter):
+    title = _("Category")
+    parameter_name = 'category'
+
+    def lookups(self, request, model_admin):
+        limit_choices_to = {'publisher_is_draft': False, 'application_urls': 'ProductsListApp'}
+        queryset = Page.objects.filter(**limit_choices_to)
+        return [(page.id, page.get_title()) for page in queryset]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(cms_pages__id=self.value())

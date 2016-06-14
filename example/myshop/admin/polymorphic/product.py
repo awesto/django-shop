@@ -11,7 +11,7 @@ from cms.admin.placeholderadmin import PlaceholderAdminMixin, FrontendEditableAd
 from parler.admin import TranslatableAdmin
 from polymorphic.admin import (PolymorphicParentModelAdmin, PolymorphicChildModelAdmin,
     PolymorphicChildModelFilter)
-from shop.admin.product import CMSPageAsCategoryMixin, ProductImageInline
+from shop.admin.product import CMSPageAsCategoryMixin, ProductImageInline, CMSPageFilter
 from myshop.models.polymorphic.product import Product
 from myshop.models.polymorphic.commodity import Commodity
 from myshop.models.polymorphic.smartcard import SmartCard
@@ -106,7 +106,7 @@ class ProductAdmin(SortableAdminMixin, PolymorphicParentModelAdmin):
     list_display = ('product_name', 'get_price', 'product_type', 'active',)
     list_display_links = ('product_name',)
     search_fields = ('product_name',)
-    list_filter = (PolymorphicChildModelFilter,)
+    list_filter = (PolymorphicChildModelFilter, CMSPageFilter,)
     list_per_page = 250
     list_max_show_all = 1000
 
