@@ -7,13 +7,13 @@ from django.utils.six.moves.urllib.parse import urljoin
 from django.utils.encoding import python_2_unicode_compatible
 from djangocms_text_ckeditor.fields import HTMLField
 from shop.money.fields import MoneyField
-from shop.models.product import BaseProduct, BaseProductManager
+from shop.models.product import BaseProduct, BaseProductManager, CMSPageReferenceMixin
 from shop.models.defaults.mapping import ProductPage, ProductImage
 from .manufacturer import Manufacturer
 
 
 @python_2_unicode_compatible
-class SmartCard(BaseProduct):
+class SmartCard(CMSPageReferenceMixin, BaseProduct):
     # common product fields
     product_name = models.CharField(max_length=255, verbose_name=_("Product Name"))
     slug = models.SlugField(verbose_name=_("Slug"))
@@ -58,11 +58,3 @@ class SmartCard(BaseProduct):
 
     def get_price(self, request):
         return self.unit_price
-
-    def get_absolute_url(self):
-        # sorting by highest level, so that the canonical URL associates with the
-        # most generic category
-        cms_page = self.cms_pages.order_by('depth').last()
-        if cms_page is None:
-            return urljoin('category-not-assigned', self.slug)
-        return urljoin(cms_page.get_absolute_url(), self.slug)

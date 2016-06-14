@@ -9,25 +9,14 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
-from django.utils.six.moves.urllib.parse import urljoin
 from django.utils.translation import ugettext_lazy as _
 from cms.models.fields import PlaceholderField
 from filer.fields import image
 from djangocms_text_ckeditor.fields import HTMLField
 from polymorphic.query import PolymorphicQuerySet
-from shop.models.product import BaseProduct, BaseProductManager
+from shop.models.product import BaseProduct, BaseProductManager, CMSPageReferenceMixin
 from shop.models.defaults.mapping import ProductPage
 from shop.money.fields import MoneyField
-
-
-class CMSPageReferenceMixin(object):
-    def get_absolute_url(self):
-        # sorting by highest level, so that the canonical URL
-        # associates with the most generic category
-        cms_page = self.cms_pages.order_by('depth').last()
-        if cms_page is None:
-            return urljoin('/category-not-assigned/', self.slug)
-        return urljoin(cms_page.get_absolute_url(), self.slug)
 
 
 if settings.USE_I18N:
