@@ -3,7 +3,9 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from djangocms_text_ckeditor.fields import HTMLField
 from shop.money.fields import MoneyField
+from parler.models import TranslatedFields
 from .product import Product
 
 
@@ -21,6 +23,8 @@ class SmartCard(Product):
     product_code = models.CharField(_("Product code"), max_length=255, unique=True)
     storage = models.PositiveIntegerField(_("Storage Capacity"),
         help_text=_("Storage capacity in GB"))
+    multilingual = TranslatedFields(description=HTMLField(verbose_name=_("Description"),
+                        help_text=_("Full description for the detail view of Smart Cards.")))
 
     class Meta:
         verbose_name = _("Smart Card")

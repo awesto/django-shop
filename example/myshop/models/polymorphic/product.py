@@ -30,7 +30,7 @@ class ProductManager(BaseProductManager, TranslatableManager):
 class Product(CMSPageReferenceMixin, TranslatableModelMixin, BaseProduct):
     product_name = models.CharField(max_length=255, verbose_name=_("Product Name"))
     slug = models.SlugField(verbose_name=_("Slug"), unique=True)
-    description = TranslatedField()
+    caption = TranslatedField()
 
     # common product properties
     manufacturer = models.ForeignKey(Manufacturer, verbose_name=_("Manufacturer"))
@@ -67,8 +67,8 @@ class Product(CMSPageReferenceMixin, TranslatableModelMixin, BaseProduct):
 
 class ProductTranslation(TranslatedFieldsModel):
     master = models.ForeignKey(Product, related_name='translations', null=True)
-    description = HTMLField(verbose_name=_("Description"),
-                            help_text=_("Description for the list view of products."))
+    caption = HTMLField(verbose_name=_("Caption"),
+                        help_text=_("Short description for the list view of products."))
 
     class Meta:
         unique_together = [('language_code', 'master')]

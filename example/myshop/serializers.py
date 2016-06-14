@@ -27,8 +27,8 @@ class ProductSummarySerializer(ProductSummarySerializerBase):
 
     class Meta:
         model = Product
-        fields = ('id', 'product_name', 'product_url', 'product_type', 'product_model', 'price',
-                  'media',)
+        fields = ('id', 'product_name', 'product_url', 'product_model', 'price',
+            'media', 'caption')
 
     def get_media(self, product):
         return self.render_html(product, 'media')

@@ -45,7 +45,7 @@ class SmartCardAdmin(SortableAdminMixin, TranslatableAdmin, FrontendEditableAdmi
             'fields': ('product_name', 'slug', 'product_code', 'unit_price', 'active',),
         }),
         (_("Translatable Fields"), {
-            'fields': ('description',)
+            'fields': ('caption', 'description',)
         }),
         (_("Properties"), {
             'fields': ('manufacturer', 'storage', 'card_type', 'speed',)
@@ -74,7 +74,7 @@ class SmartPhoneAdmin(SortableAdminMixin, TranslatableAdmin, FrontendEditableAdm
             'fields': ('product_name', 'slug', 'active',),
         }),
         (_("Translatable Fields"), {
-            'fields': ('description',)
+            'fields': ('caption', 'description',)
         }),
         (_("Properties"), {
             'fields': ('manufacturer', 'battery_type', 'battery_capacity', 'ram_storage',
