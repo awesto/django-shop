@@ -23,12 +23,12 @@ djangoShopModule.controller('CartController', ['$scope', '$http', function($scop
 		$http.post(cart_item.url, cart_item, config).then(function(response) {
 			return $http.get($scope.$parent.cartListURL);
 		}).then(function(response) {
+			isLoading = false;
 			angular.copy(response.data, $scope.cart);
 			$scope.$emit('shopUpdateCarticonCaption', response.data);
 		}, function(error) {
-			console.error(error);
-		}, function() {
 			isLoading = false;
+			console.error(error);
 		});
 	}
 
