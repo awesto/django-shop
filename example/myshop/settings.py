@@ -502,6 +502,7 @@ CKEDITOR_SETTINGS_CAPTION = {
     'height': 70,
     'toolbar_HTMLField': [
         ['Undo', 'Redo'],
+        ['Format', 'Styles'],
         ['Bold', 'Italic', 'Underline', '-', 'Subscript', 'Superscript', '-', 'RemoveFormat'],
         ['Source']
     ],
