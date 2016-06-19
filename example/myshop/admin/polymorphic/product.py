@@ -20,13 +20,16 @@ from myshop.models.polymorphic.smartphone import OperatingSystem, SmartPhone, Sm
 
 class CommodityAdmin(SortableAdminMixin, TranslatableAdmin, FrontendEditableAdminMixin,
                      PlaceholderAdminMixin, CMSPageAsCategoryMixin, admin.ModelAdmin):
+    """
+    Since our Commodity model inherits from polymorphic Product, we have to redefine its admin class.
+    """
     base_model = Product
     fieldsets = (
         (None, {
             'fields': ('product_name', 'slug', 'product_code', 'unit_price', 'active',),
         }),
         (_("Translatable Fields"), {
-            'fields': ('description',)
+            'fields': ('caption',)
         }),
         (_("Properties"), {
             'fields': ('manufacturer',)
