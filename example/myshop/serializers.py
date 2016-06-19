@@ -82,7 +82,7 @@ class ProductSearchSerializer(ProductSearchSerializerBase):
     media = serializers.SerializerMethodField()
 
     class Meta(ProductSearchSerializerBase.Meta):
-        fields = ProductSearchSerializerBase.Meta.fields + ('media',)
+        fields = ProductSearchSerializerBase.Meta.fields + ('media', 'caption')
         index_classes = myshop_search_index_classes
 
     def get_media(self, search_result):
@@ -90,5 +90,8 @@ class ProductSearchSerializer(ProductSearchSerializerBase):
 
 
 class CatalogSearchSerializer(ProductSearchSerializer):
+    """
+    Serializer to restrict products in the catalog
+    """
     def get_media(self, search_result):
         return search_result.catalog_media
