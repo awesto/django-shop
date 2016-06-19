@@ -254,7 +254,6 @@ class BaseCartSerializer(serializers.ModelSerializer):
     subtotal = MoneyField()
     total = MoneyField()
     extra_rows = ExtraCartRowList(read_only=True)
-    num_items = serializers.IntegerField()
 
     class Meta:
         model = CartModel
@@ -269,6 +268,7 @@ class BaseCartSerializer(serializers.ModelSerializer):
 class CartSerializer(BaseCartSerializer):
     items = CartItemSerializer(many=True, read_only=True)
     total_quantity = serializers.IntegerField()
+    num_items = serializers.IntegerField()
 
     class Meta(BaseCartSerializer.Meta):
         fields = ('items', 'total_quantity', 'num_items') + BaseCartSerializer.Meta.fields
@@ -276,6 +276,7 @@ class CartSerializer(BaseCartSerializer):
 
 class WatchSerializer(BaseCartSerializer):
     items = WatchItemSerializer(many=True, read_only=True)
+    num_items = serializers.IntegerField()
 
     class Meta(BaseCartSerializer.Meta):
         fields = ('items', 'num_items')
