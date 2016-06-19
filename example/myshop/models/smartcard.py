@@ -20,7 +20,8 @@ class SmartCard(CMSPageReferenceMixin, BaseProduct):
     unit_price = MoneyField(_("Unit price"), decimal_places=3,
         help_text=_("Net price for this product"))
     description = HTMLField(verbose_name=_("Description"),
-                            help_text=_("Description for the list view of products."))
+        configuration='CKEDITOR_SETTINGS_DESCRIPTION',
+        help_text=_("Description for the list view of products."))
 
     # product properties
     manufacturer = models.ForeignKey(Manufacturer, verbose_name=_("Manufacturer"))

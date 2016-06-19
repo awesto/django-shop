@@ -57,9 +57,9 @@ class SmartPhoneModel(Product):
     screen_size = models.DecimalField(_("Screen size"), max_digits=4,
         decimal_places=2,
         help_text=_("Diagonal screen size in inch"))
-    multilingual = TranslatedFields(
-        description=HTMLField(verbose_name=_("Description"),
-            help_text=_("Full description for the detail view of Smart Cards.")))
+    multilingual = TranslatedFields(description=HTMLField(verbose_name=_("Description"),
+        configuration='CKEDITOR_SETTINGS_DESCRIPTION',
+        help_text=_("Full description used in the catalog's detail view of Smart Cards.")))
 
     class Meta:
         verbose_name = _("Smart Phone")

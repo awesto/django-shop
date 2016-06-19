@@ -24,7 +24,8 @@ class SmartCard(Product):
     storage = models.PositiveIntegerField(_("Storage Capacity"),
         help_text=_("Storage capacity in GB"))
     multilingual = TranslatedFields(description=HTMLField(verbose_name=_("Description"),
-                        help_text=_("Full description for the detail view of Smart Cards.")))
+        configuration='CKEDITOR_SETTINGS_DESCRIPTION',
+        help_text=_("Full description used in the catalog's detail view of Smart Cards.")))
 
     class Meta:
         verbose_name = _("Smart Card")
