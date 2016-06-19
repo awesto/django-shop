@@ -442,6 +442,11 @@ CMSPLUGIN_CASCADE = {
     'dependencies': {
         'shop/js/admin/shoplinkplugin.js': 'cascade/js/admin/linkpluginbase.js',
     },
+    'link_plugin_classes': (
+        'shop.cascade.plugin_base.CatalogLinkPluginBase',
+        'cmsplugin_cascade.link.plugin_base.LinkElementMixin',
+        'shop.cascade.plugin_base.CatalogLinkForm',
+    ),
     'alien_plugins': ('TextPlugin', 'TextLinkPlugin',),
     'bootstrap3': {
         'template_basedir': 'angular-ui',
@@ -449,12 +454,18 @@ CMSPLUGIN_CASCADE = {
     'plugins_with_extra_fields': (
         'BootstrapButtonPlugin',
         'BootstrapRowPlugin',
+        'CarouselPlugin',
         'SimpleWrapperPlugin',
         'HorizontalRulePlugin',
         'ExtraAnnotationFormPlugin',
         'ShopProceedButton',
-        'CarouselPlugin',
+        'ShopAddToCartPlugin',
     ),
+    'plugins_with_extra_render_templates': {
+        'CustomSnippetPlugin': [
+            ('shop/catalog/product-heading.html', _("Product Heading"))
+        ],
+    },
     'plugins_with_sharables': {
         'BootstrapImagePlugin': ('image-shapes', 'image-width-responsive', 'image-width-fixed', 'image-height', 'resize-options',),
         'BootstrapPicturePlugin': ('image-shapes', 'responsive-heights', 'image-size', 'resize-options',),
@@ -464,12 +475,6 @@ CMSPLUGIN_CASCADE = {
         ('shop.cascade.segmentation.EmulateCustomerModelMixin', 'shop.cascade.segmentation.EmulateCustomerAdminMixin'),
     ),
 }
-
-CMSPLUGIN_CASCADE_LINKPLUGIN_CLASSES = (
-    'shop.cascade.plugin_base.CatalogLinkPluginBase',
-    'cmsplugin_cascade.link.plugin_base.LinkElementMixin',
-    'shop.cascade.plugin_base.CatalogLinkForm',
-)
 
 CKEDITOR_SETTINGS = {
     'language': '{{ language }}',
