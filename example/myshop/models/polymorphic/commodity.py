@@ -20,6 +20,7 @@ class Commodity(Product):
 
     # controlling the catalog
     placeholder = PlaceholderField("Commodity Details")
+    show_breadcrumb = True  # hard coded to always show the product's breadcrumb
 
     class Meta:
         verbose_name = _("Commodity")
