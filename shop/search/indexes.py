@@ -38,9 +38,8 @@ class ProductIndex(indexes.SearchIndex):
         Render a HTML snippet to be stored inside the index database.
         """
         app_label = product._meta.app_label.lower()
-        product_type = product.__class__.__name__.lower()
         params = [
-            (app_label, prefix, product_type, postfix),
+            (app_label, prefix, product.product_model, postfix),
             (app_label, prefix, 'product', postfix),
             ('shop', prefix, 'product', postfix),
         ]

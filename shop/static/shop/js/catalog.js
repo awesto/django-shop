@@ -1,7 +1,7 @@
 (function(angular, undefined) {
 'use strict';
 
-var djangoShopModule = angular.module('django.shop.catalog', ['ui.bootstrap']);
+var djangoShopModule = angular.module('django.shop.catalog', ['ui.bootstrap', 'django.shop.utils']);
 
 djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$modal',
                                                function($scope, $http, $window, $modal) {
@@ -94,8 +94,8 @@ djangoShopModule.directive('shopAddToCart', function() {
 });
 
 
-djangoShopModule.controller('CatalogListController', ['$scope', '$http', '$window', function($scope, $http, $window) {
-	var self = this, fetchURL = $window.location.pathname;
+djangoShopModule.controller('CatalogListController', ['$scope', '$http', 'djangoShop', function($scope, $http, djangoShop) {
+	var self = this, fetchURL = djangoShop.getLocationPath();
 
 	this.loadProducts = function(config) {
 		if ($scope.isLoading || fetchURL === null)
@@ -113,8 +113,9 @@ djangoShopModule.controller('CatalogListController', ['$scope', '$http', '$windo
 	}
 
 	$scope.loadMore = function() {
+		var config = {params: djangoShop.paramsFromSearchQuery.apply(this, arguments)};
 		console.log('load more products ...');
-		self.loadProducts();
+		self.loadProducts(config);
 	};
 
 	// listen on events of type `shopCatalogSearch`
@@ -124,7 +125,7 @@ djangoShopModule.controller('CatalogListController', ['$scope', '$http', '$windo
 		} catch (err) {
 			config = null;
 		}
-		fetchURL = $window.location.pathname + 'search-catalog';
+		fetchURL = djangoShop.getLocationPath() + 'search-catalog';
 		$scope.catalog.products = [];  // reset list of products
 		self.loadProducts(config);
 	});
@@ -137,7 +138,7 @@ djangoShopModule.controller('CatalogListController', ['$scope', '$http', '$windo
 		} catch (err) {
 			config = null;
 		}
-		fetchURL = $window.location.pathname;
+		fetchURL = djangoShop.getLocationPath();
 		$scope.catalog.products = [];  // reset list of products
 		self.loadProducts(config);
 	});

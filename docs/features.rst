@@ -99,6 +99,6 @@ administration interface. All browser components have been implemented as Angula
 that they can be reused between projects. For instance, my current merchant implementation does not
 have a single line of customized JavaScript.
 
-This makes is very easy, even for non-programmers, to implement a shop. A merchant only has to adopt
+This makes it very easy, even for non-programmers, to implement a shop. A merchant only has to adopt
 his product models, optionally the cart and order models, and override the templates.
 

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.six.moves.urllib.parse import urljoin
@@ -12,7 +13,7 @@ from polymorphic.query import PolymorphicQuerySet
 from shop.money.fields import MoneyField
 from shop.models.product import BaseProductManager, BaseProduct
 from shop.models.defaults.mapping import ProductPage, ProductImage
-from myshop.models.properties import Manufacturer
+from ..manufacturer import Manufacturer
 
 
 class ProductQuerySet(TranslatableQuerySet, PolymorphicQuerySet):
@@ -21,6 +22,10 @@ class ProductQuerySet(TranslatableQuerySet, PolymorphicQuerySet):
 
 class ProductManager(BaseProductManager, TranslatableManager):
     queryset_class = ProductQuerySet
+
+    def get_queryset(self):
+        qs = self.queryset_class(self.model, using=self._db)
+        return qs.prefetch_related('translations')
 
 
 @python_2_unicode_compatible

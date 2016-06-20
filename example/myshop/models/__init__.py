@@ -10,12 +10,15 @@ from shop.models.defaults.cart_item import CartItem
 from shop.models.defaults.customer import Customer
 
 # models defined by the myshop instance itself
-if settings.SHOP_TUTORIAL == 'simple':
-    from .simple.order import OrderItem
-    from .simple.smartcard import SmartCard
-elif settings.SHOP_TUTORIAL == 'i18n':
-    from .simple.order import OrderItem
-    from .i18n.smartcard import SmartCard
+if settings.SHOP_TUTORIAL == 'commodity' or settings.SHOP_TUTORIAL == 'i18n_commodity':
+    from shop.models.defaults.order_item import OrderItem
+    from shop.models.defaults.commodity import Commodity
+elif settings.SHOP_TUTORIAL == 'smartcard':
+    from shop.models.defaults.order_item import OrderItem
+    from .smartcard import SmartCard
+elif settings.SHOP_TUTORIAL == 'i18n_smartcard':
+    from shop.models.defaults.order_item import OrderItem
+    from .i18n_smartcard import SmartCard
 elif settings.SHOP_TUTORIAL == 'polymorphic':
     from .polymorphic.order import OrderItem
     from .polymorphic.smartcard import SmartCard

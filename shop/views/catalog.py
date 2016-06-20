@@ -58,29 +58,34 @@ class CMSPageProductListView(ProductListView):
     """
     This view is used to list all products being associated with a CMS page. It normally is
     added to the urlpatterns as:
-    ``url(r'^$', CMSPageProductListView.as_view(serializer_class=ProductSummarySerializer))``
-    where the ``ProductSummarySerializer`` is a customized REST serializer that that specific
-    product model.
+    ``url(r'^$', CMSPageProductListView.as_view(serializer_class=ProductSummarySerializer))``.
+
+    :param product_model: A specific product model. If unspecified, the default ``ProductModel``
+    is used.
+
+    :param serializer_class: for instance ``ProductSummarySerializer``, a customized REST
+    serializer for that specific product model.
+
+    :param filter_class: TODO:
+
+    :param cms_pages_fields: A tuple of field names used for looking up, which products
+    belong to which CMS page.
     """
     renderer_classes = (CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer)
-    filter_backends = list(api_settings.DEFAULT_FILTER_BACKENDS)
-    filter_backends.append(CMSPagesFilterBackend())
-
-    def filter_queryset(self, queryset):
-        self.filter_context = None
-        if self.filter_class:
-            filter_instance = self.filter_class(self.request.query_params, queryset=queryset)
-            if callable(getattr(filter_instance, 'get_render_context', None)):
-                self.filter_context = filter_instance.get_render_context()
-            elif hasattr(filter_instance, 'render_context'):
-                self.filter_context = filter_instance.render_context
-        qs = super(CMSPageProductListView, self).filter_queryset(queryset)
-        return qs
+    filter_backends = [CMSPagesFilterBackend()] + list(api_settings.DEFAULT_FILTER_BACKENDS)
+    cms_pages_fields = ('cms_pages',)
 
     def get_renderer_context(self):
-        renderer_context = super(CMSPageProductListView, self).get_renderer_context()
-        if renderer_context['request'].accepted_renderer.format == 'html':
-            renderer_context['filter'] = self.filter_context
+        renderer_context = super(ProductListView, self).get_renderer_context()
+        if self.filter_class and renderer_context['request'].accepted_renderer.format == 'html':
+            # restrict to products associated to this CMS page only
+            backend = CMSPagesFilterBackend()
+            queryset = backend().filter_queryset(self.request, self.get_queryset(), self)
+            filter_instance = self.filter_class(self.request.query_params, queryset=queryset)
+            if callable(getattr(filter_instance, 'get_render_context', None)):
+                renderer_context['filter'] = filter_instance.get_render_context(self.request)
+            elif isinstance(getattr(filter_instance, 'render_context', None), dict):
+                renderer_context['filter'] = filter_instance.render_context
         return renderer_context
 
 

@@ -12,10 +12,10 @@ django.jQuery(function($) {
 			$('.glossary-widget .glossary_target').before($('.form-row.field-link_type'));
 		},
 		toggleLinkTypes: function(linkType) {
-			var $field_cmspage = $(".form-row.field-link_type .field-box.field-cms_page"),
-				$field_product = $(".form-row.field-link_type .field-box.field-product"),
-				$field_exturl = $(".form-row.field-link_type .field-box.field-ext_url"),
-				$field_mailto = $(".form-row.field-link_type .field-box.field-mail_to"),
+			var $field_cmspage = $(".form-row .field-box.field-cms_page, .form-row .field-box.field-section"),
+				$field_product = $(".form-row .field-box.field-product"),
+				$field_exturl = $(".form-row .field-box.field-ext_url"),
+				$field_mailto = $(".form-row .field-box.field-mail_to"),
 				$link_target = $(".glossary-widget.glossary_target");
 
 			switch(linkType) {

@@ -6,7 +6,7 @@ from django.db import models
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import ugettext_lazy as _
 from .order import BaseOrder, BaseOrderItem, OrderItemModel
-from . import deferred
+from shop import deferred
 
 
 class BaseDelivery(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):

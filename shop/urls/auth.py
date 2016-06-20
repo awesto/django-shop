@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from rest_auth.views import PasswordChangeView
 from shop.forms.auth import RegisterUserForm, ContinueAsGuestForm
 from shop.views.auth import AuthFormsView, LoginView, LogoutView, PasswordResetView
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url(r'^password/reset/$', PasswordResetView.as_view(),
         name='password-reset'),
     url(r'^login/$', LoginView.as_view(),
@@ -20,4 +19,4 @@ urlpatterns = patterns(
         name='logout'),
     url(r'^password/change/$', PasswordChangeView.as_view(),
         name='password-change'),
-)
+]

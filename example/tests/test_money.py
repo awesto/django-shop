@@ -8,21 +8,22 @@ try:
 except ImportError:
     import pickle
 import json
+
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.utils.six import text_type
 from rest_framework import serializers
 from shop.money.money_maker import AbstractMoney, MoneyMaker, _make_money
+from shop.money.fields import MoneyField as MoneyDbField
 from shop.rest.money import MoneyField, JSONRenderer
+from myshop.models.manufacturer import Manufacturer
+from myshop.models.polymorphic.commodity import Commodity
 
 
 class AbstractMoneyTest(TestCase):
 
     def test_is_abstract(self):
         self.assertRaises(TypeError, lambda: AbstractMoney(1))
-
-
-class TestMoneySerializer(serializers.Serializer):
-    amount = MoneyField(read_only=True)
 
 
 class MoneyMakerTest(TestCase):
@@ -61,8 +62,8 @@ class MoneyMakerTest(TestCase):
     def test_create_instance_from_decimal(self):
         value = Decimal('1.2')
         EUR = MoneyMaker('EUR')
-        self.assertIsInstance(EUR(), Decimal)
-        self.assertEquals(value, EUR(value))
+        self.assertTrue(issubclass(EUR, Decimal))
+        self.assertIsInstance(EUR(value), Decimal)
 
     def test_str_with_too_much_precision(self):
         EUR = MoneyMaker('EUR')
@@ -132,9 +133,9 @@ class MoneyMakerTest(TestCase):
 
     def test_neg(self):
         Money = MoneyMaker()
-        self.assertEqual(- Money(1), -1)
-        self.assertEqual(- Money(-1), 1)
-        self.assertEqual(- Money(0), 0)
+        self.assertEqual(- Money(1), Money(-1))
+        self.assertEqual(- Money(-1), Money(1))
+        self.assertEqual(- Money(0), Money(0))
 
     def test_mul(self):
         Money = MoneyMaker()
@@ -206,9 +207,56 @@ class MoneyMakerTest(TestCase):
         pickled = pickle.dumps(money)
         self.assertEqual(pickle.loads(pickled), money)
 
+
+class MoneyDbFieldTests(TestCase):
+    def test_to_python(self):
+        EUR = MoneyMaker('EUR')
+        f = MoneyDbField(currency='EUR', null=True)
+        self.assertEqual(f.to_python(3), EUR('3'))
+        self.assertEqual(f.to_python('3.14'), EUR('3.14'))
+        self.assertEqual(f.to_python(None), EUR())
+        with self.assertRaises(ValidationError):
+            f.to_python('abc')
+
+    def test_default(self):
+        EUR = MoneyMaker('EUR')
+        f = MoneyDbField(currency='EUR', null=False)
+        self.assertEqual(f.get_default(), EUR())
+        f = MoneyDbField(currency='EUR', null=True)
+        self.assertEqual(f.get_default(), EUR())
+        f = MoneyDbField(currency='EUR')
+        self.assertEqual(f.get_default(), EUR())
+
+    def test_format(self):
+        f = MoneyDbField(max_digits=5, decimal_places=3)
+        self.assertEqual(f._format(f.to_python(2)), '2.000')
+        self.assertEqual(f._format(f.to_python('2.34567')), '2.346')
+        self.assertEqual(f._format(None), None)
+
+    def test_filter_with_strings(self):
+        amount = MoneyMaker('EUR')('12.34')
+        m1 = Manufacturer(name="Rosebutt")
+        m1.save()
+        bag = Commodity.objects.create(unit_price=amount, product_code='B', order=1, product_name="Bag",
+            slug='bag', manufacturer=m1, description="This is a bag")
+        self.assertEqual(list(Commodity.objects.filter(unit_price='12.34')), [bag])
+        self.assertEqual(list(Commodity.objects.filter(unit_price='12.35')), [])
+        self.assertEqual(list(Commodity.objects.filter(unit_price__gt='12.33')), [bag])
+        self.assertEqual(list(Commodity.objects.filter(unit_price__gt='12.34')), [])
+        self.assertEqual(list(Commodity.objects.filter(unit_price__gte='12.34')), [bag])
+        self.assertEqual(list(Commodity.objects.filter(unit_price__lt='12.35')), [bag])
+        self.assertEqual(list(Commodity.objects.filter(unit_price__lt='12.34')), [])
+        self.assertEqual(list(Commodity.objects.filter(unit_price__lte='12.34')), [bag])
+
+
+class TestMoneySerializer(serializers.Serializer):
+    amount = MoneyField(read_only=True)
+
+
+class MoneySerializerTests(TestCase):
     def test_rest(self):
-        Money = MoneyMaker('EUR')
-        instance = type(str('TestMoney'), (object,), {'amount': Money('1.23')})
+        EUR = MoneyMaker('EUR')
+        instance = type(str('TestMoney'), (object,), {'amount': EUR('1.23')})
         serializer = TestMoneySerializer(instance)
         self.assertDictEqual({'amount': '€ 1.23'}, serializer.data)
 

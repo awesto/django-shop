@@ -7,12 +7,12 @@ import operator
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.utils import six
-from django.utils.encoding import python_2_unicode_compatible, force_text
+from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 from polymorphic.manager import PolymorphicManager
 from polymorphic.models import PolymorphicModel
 from polymorphic.base import PolymorphicModelBase
-from . import deferred
+from shop import deferred
 
 
 class BaseProductManager(PolymorphicManager):
@@ -49,6 +49,7 @@ class PolymorphicProductMetaclass(PolymorphicModelBase):
         Model = super(PolymorphicProductMetaclass, cls).__new__(cls, name, bases, attrs)
         if Model._meta.abstract:
             return Model
+
         for baseclass in bases:
             # since an abstract base class does not have no valid model.Manager,
             # refer to it via its materialized Product model.
@@ -68,6 +69,7 @@ class PolymorphicProductMetaclass(PolymorphicModelBase):
             # check for pending mappings in the ForeignKeyBuilder and in case, process them
             deferred.ForeignKeyBuilder.process_pending_mappings(Model, baseclass.__name__)
 
+        deferred.ForeignKeyBuilder.handle_deferred_foreign_fields(Model)
         cls.perform_model_checks(Model)
         return Model
 
@@ -95,7 +97,6 @@ class PolymorphicProductMetaclass(PolymorphicModelBase):
             raise NotImplementedError(msg.format(cls.__name__))
 
 
-@python_2_unicode_compatible
 class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicModel)):
     """
     An abstract basic product model for the shop. It is intended to be overridden by one or
@@ -108,6 +109,10 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
 
     Additionally the inheriting class MUST implement the following methods `get_absolute_url()`
     and `get_price()`. See below for details.
+
+    Unless each product variant offers it's own product code, it is strongly recommended to add
+    a field ``product_code = models.CharField(_("Product code"), max_length=255, unique=True)``
+    to the class implementing the product.
     """
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
@@ -118,9 +123,6 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         abstract = True
         verbose_name = _("Product")
         verbose_name_plural = _("Products")
-
-    def __str__(self):
-        return self.product_name
 
     def product_type(self):
         """

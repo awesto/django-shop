@@ -229,14 +229,14 @@ This apphook points onto a list of boilerplate code containing these urlpattern:
 	:caption: myshop/urls/products.py
 	:linenos:
 
-	from django.conf.urls import patterns, url
+	from django.conf.urls import url
 	from rest_framework.settings import api_settings
 	from shop.rest.filters import CMSPagesFilterBackend
 	from shop.rest.serializers import AddToCartSerializer
 	from shop.views.catalog import (CMSPageProductListView,
 	    ProductRetrieveView, AddToCartView)
 	
-	urlpatterns = patterns('',
+	urlpatterns = [
 	    url(r'^$', CMSPageProductListView.as_view(
 	        serializer_class=ProductSummarySerializer,
 	    )),
@@ -244,7 +244,7 @@ This apphook points onto a list of boilerplate code containing these urlpattern:
 	        serializer_class=ProductDetailSerializer
 	    )),
 	    url(r'^(?P<slug>[\w-]+)/add-to-cart', AddToCartView.as_view()),
-	)
+	]
 
 These URL patterns connect the product serializers with the catalog views in order to assign them
 an endpoint. Additional note: The filter class ``CMSPagesFilterBackend`` is used to restrict
