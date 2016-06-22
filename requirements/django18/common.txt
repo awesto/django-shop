@@ -1,6 +1,6 @@
 Django==1.8.12
 beautifulsoup4==4.4.0
-django-admin-sortable2==0.6.3
+django-admin-sortable2==0.6.4
 django-allauth==0.23.0
 django-angular==0.8.1
 django-appconf==1.0.1
@@ -9,8 +9,8 @@ django-cms==3.2.5
 django-compressor==1.6
 django-filer==1.2.0
 django-filter==0.13.0
-django-fsm==2.3.0
-django-fsm-admin==1.2.2
+django-fsm==2.4.0
+django-fsm-admin==1.2.3
 django-haystack==2.4.1
 django-ipware==1.1.1
 django-mptt==0.7.4

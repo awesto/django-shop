@@ -14,3 +14,5 @@ class ProductPage(BaseProductPage):
 
 class ProductImage(BaseProductImage):
     """Materialize many-to-many relation with images"""
+    class Meta(BaseProductImage.Meta):
+        abstract = False

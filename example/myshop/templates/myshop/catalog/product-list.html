@@ -5,6 +5,9 @@
 {% addtoblock "js" %}<script src="{% static 'bower_components/angular-inview/angular-inview.js' %}"></script>{% endaddtoblock %}
 {% addtoblock "shop-ng-requires" %}angular-inview{% endaddtoblock %}
 
+{% addtoblock "js" %}<script src="{% static 'shop/js/utils.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+{% addtoblock "shop-ng-requires" %}django.shop.utils{% endaddtoblock %}
+
 {% addtoblock "js" %}<script src="{% static 'shop/js/catalog.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% addtoblock "shop-ng-requires" %}django.shop.catalog{% endaddtoblock %}
 

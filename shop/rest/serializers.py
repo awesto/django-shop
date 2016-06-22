@@ -257,7 +257,7 @@ class BaseCartSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CartModel
-        fields = ('subtotal', 'extra_rows', 'total',)
+        fields = ('subtotal', 'total', 'extra_rows')
 
     def to_representation(self, cart):
         cart.update(self.context['request'])
@@ -267,18 +267,19 @@ class BaseCartSerializer(serializers.ModelSerializer):
 
 class CartSerializer(BaseCartSerializer):
     items = CartItemSerializer(many=True, read_only=True)
-    num_items = serializers.IntegerField()
     total_quantity = serializers.IntegerField()
+    num_items = serializers.IntegerField()
 
     class Meta(BaseCartSerializer.Meta):
-        fields = ('items', 'num_items', 'total_quantity') + BaseCartSerializer.Meta.fields
+        fields = ('items', 'total_quantity', 'num_items') + BaseCartSerializer.Meta.fields
 
 
 class WatchSerializer(BaseCartSerializer):
     items = WatchItemSerializer(many=True, read_only=True)
+    num_items = serializers.IntegerField()
 
     class Meta(BaseCartSerializer.Meta):
-        fields = ('items',)
+        fields = ('items', 'num_items')
 
     def to_representation(self, cart):
         # grandparent super
