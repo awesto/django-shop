@@ -10,6 +10,7 @@ if settings.SHOP_TUTORIAL == 'smartcard':
 elif settings.SHOP_TUTORIAL == 'i18n_smartcard':
     from myshop.models.i18n_smartcard import SmartCard
 elif settings.SHOP_TUTORIAL == 'polymorphic':
+    from myshop.models.polymorphic.commodity import Commodity
     from myshop.models.polymorphic.smartcard import SmartCard
     from myshop.models.polymorphic.smartphone import SmartPhoneModel
 
@@ -17,12 +18,18 @@ elif settings.SHOP_TUTORIAL == 'polymorphic':
 class ProductIndex(ProductIndexBase):
     catalog_media = indexes.CharField(stored=True, indexed=False, null=True)
     search_media = indexes.CharField(stored=True, indexed=False, null=True)
+    caption = indexes.CharField(stored=True, indexed=False, null=True, model_attr='caption')
 
     def prepare_catalog_media(self, product):
         return self.render_html('catalog', product, 'media')
 
     def prepare_search_media(self, product):
         return self.render_html('search', product, 'media')
+
+
+class CommodityIndex(ProductIndex, indexes.Indexable):
+    def get_model(self):
+        return Commodity
 
 
 class SmartCardIndex(ProductIndex, indexes.Indexable):
@@ -34,6 +41,6 @@ if settings.SHOP_TUTORIAL == 'polymorphic':
     class SmartPhoneIndex(ProductIndex, indexes.Indexable):
         def get_model(self):
             return SmartPhoneModel
-    myshop_search_index_classes = (SmartCardIndex, SmartPhoneIndex)
+    myshop_search_index_classes = (CommodityIndex, SmartCardIndex, SmartPhoneIndex)
 else:
     myshop_search_index_classes = (SmartCardIndex,)

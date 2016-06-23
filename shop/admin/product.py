@@ -27,10 +27,27 @@ class CMSPageAsCategoryMixin(object):
         if not hasattr(self.model, 'cms_pages'):
             raise ImproperlyConfigured("Product model requires a field named `cms_pages`")
 
+    def get_fields(self, request, obj=None):
+        # We add ``cms_pages`` in ``get_fieldsets()``, so we remove it here to
+        # avoid showing it twice.
+        fields = super(CMSPageAsCategoryMixin, self).get_fields(request, obj)
+        fields.remove('cms_pages')
+        return fields
+
     def get_fieldsets(self, request, obj=None):
         fieldsets = list(super(CMSPageAsCategoryMixin, self).get_fieldsets(request, obj=obj))
         fieldsets.append((_("Categories"), {'fields': ('cms_pages',)}),)
         return fieldsets
+
+    def get_fields(self, request, obj=None):
+        # In ``get_fieldsets()``, ``cms_pages`` is added, so remove it from ``fields`` to
+        # avoid showing it twice.
+        fields = list(super(CMSPageAsCategoryMixin, self).get_fields(request, obj))
+        try:
+            fields.remove('cms_pages')
+        except ValueError:
+            pass
+        return fields
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         if db_field.name == 'cms_pages':
@@ -82,3 +99,17 @@ class InvalidateProductCacheMixin(object):
             cache.delete_pattern('product:{}|*'.format(product.id))
         except AttributeError:
             pass
+
+
+class CMSPageFilter(admin.SimpleListFilter):
+    title = _("Category")
+    parameter_name = 'category'
+
+    def lookups(self, request, model_admin):
+        limit_choices_to = {'publisher_is_draft': False, 'application_urls': 'ProductsListApp'}
+        queryset = Page.objects.filter(**limit_choices_to)
+        return [(page.id, page.get_title()) for page in queryset]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(cms_pages__id=self.value())

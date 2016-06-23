@@ -7,11 +7,11 @@ from django.utils.six.moves.urllib.parse import urljoin
 from django.utils.encoding import python_2_unicode_compatible
 from djangocms_text_ckeditor.fields import HTMLField
 from parler.managers import TranslatableManager, TranslatableQuerySet
-from parler.models import TranslatableModel, TranslatedFieldsModel
+from parler.models import TranslatableModelMixin, TranslatedFieldsModel
 from parler.fields import TranslatedField
 from polymorphic.query import PolymorphicQuerySet
 from shop.money.fields import MoneyField
-from shop.models.product import BaseProductManager, BaseProduct
+from shop.models.product import BaseProductManager, BaseProduct, CMSPageReferenceMixin
 from shop.models.defaults.mapping import ProductPage, ProductImage
 from ..manufacturer import Manufacturer
 
@@ -29,7 +29,7 @@ class ProductManager(BaseProductManager, TranslatableManager):
 
 
 @python_2_unicode_compatible
-class SmartCard(BaseProduct, TranslatableModel):
+class SmartCard(CMSPageReferenceMixin, TranslatableModelMixin, BaseProduct):
     product_name = models.CharField(max_length=255, verbose_name=_("Product Name"))
     slug = models.SlugField(verbose_name=_("Slug"))
     unit_price = MoneyField(_("Unit price"), decimal_places=3,
@@ -74,14 +74,6 @@ class SmartCard(BaseProduct, TranslatableModel):
 
     def get_price(self, request):
         return self.unit_price
-
-    def get_absolute_url(self):
-        # sorting by highest level, so that the canonical URL
-        # associates with the most generic category
-        cms_page = self.cms_pages.order_by('depth').last()
-        if cms_page is None:
-            return urljoin('category-not-assigned', self.slug)
-        return urljoin(cms_page.get_absolute_url(), self.slug)
 
 
 class SmartCardTranslation(TranslatedFieldsModel):

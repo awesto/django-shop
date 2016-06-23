@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.template import RequestContext
 from rest_framework import renderers
 
 
@@ -30,10 +29,5 @@ class CMSPageRenderer(renderers.TemplateHTMLRenderer):
             context['edit_mode'] = request.current_page.publisher_is_draft
 
         context['data'] = data
-        request_context = self.resolve_context(context, request, response)
-        return template.render(request_context)
-
-    def resolve_context(self, context, request, response):
-        if response.exception:
-            context['status_code'] = response.status_code
-        return RequestContext(request._request, context)
+        context = self.resolve_context(context, request, response)
+        return template.render(context, request=request)

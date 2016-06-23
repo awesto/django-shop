@@ -70,10 +70,10 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'email_auth',
     'polymorphic',
+    #'djangocms_admin_style',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
-    #'djangocms_admin_style', the default style in Django-1.9 is good enough
     'django.contrib.admin',
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
@@ -326,6 +326,8 @@ FSM_ADMIN_FORCE_PERMIT = True
 
 ROBOTS_META_TAGS = ('noindex', 'nofollow')
 
+SERIALIZATION_MODULES = {'json': str('shop.money.serializers')}
+
 ############################################
 # settings for django-restframework and plugins
 
@@ -341,9 +343,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 12,
 }
-
-SERIALIZATION_MODULES = {'json': str('shop.money.serializers')}
-
 
 ############################################
 # settings for storing session data
@@ -415,10 +414,12 @@ CMS_PLACEHOLDER_CONF = {
         'glossary': CACSCADE_WORKAREA_GLOSSARY,
     },
     'Commodity Details': {
-        'plugins': ['BootstrapRowPlugin', 'TextPlugin', 'ImagePlugin', 'PicturePlugin'],
+        #'plugins': ['BootstrapRowPlugin', 'TextPlugin', 'ImagePlugin', 'PicturePlugin'],
+        'plugins': ['BootstrapContainerPlugin'],
         'text_only_plugins': ['TextLinkPlugin'],
-        'parent_classes': {'BootstrapRowPlugin': None},
-        'require_parent': False,
+        'parent_classes': {'BootstrapContainerPlugin': None},
+        #'parent_classes': {'BootstrapRowPlugin': None},
+        #'require_parent': False,
         'glossary': CACSCADE_WORKAREA_GLOSSARY,
     },
     'Main Content': {
@@ -441,6 +442,11 @@ CMSPLUGIN_CASCADE = {
     'dependencies': {
         'shop/js/admin/shoplinkplugin.js': 'cascade/js/admin/linkpluginbase.js',
     },
+    'link_plugin_classes': (
+        'shop.cascade.plugin_base.CatalogLinkPluginBase',
+        'cmsplugin_cascade.link.plugin_base.LinkElementMixin',
+        'shop.cascade.plugin_base.CatalogLinkForm',
+    ),
     'alien_plugins': ('TextPlugin', 'TextLinkPlugin',),
     'bootstrap3': {
         'template_basedir': 'angular-ui',
@@ -448,27 +454,63 @@ CMSPLUGIN_CASCADE = {
     'plugins_with_extra_fields': (
         'BootstrapButtonPlugin',
         'BootstrapRowPlugin',
+        'CarouselPlugin',
         'SimpleWrapperPlugin',
         'HorizontalRulePlugin',
         'ExtraAnnotationFormPlugin',
         'ShopProceedButton',
-        'CarouselPlugin',
+        'ShopAddToCartPlugin',
     ),
+    'plugins_with_extra_render_templates': {
+        'CustomSnippetPlugin': [
+            ('shop/catalog/product-heading.html', _("Product Heading"))
+        ],
+    },
+    'plugins_with_sharables': {
+        'BootstrapImagePlugin': ('image-shapes', 'image-width-responsive', 'image-width-fixed', 'image-height', 'resize-options',),
+        'BootstrapPicturePlugin': ('image-shapes', 'responsive-heights', 'image-size', 'resize-options',),
+    },
+    'bookmark_prefix': '/',
     'segmentation_mixins': (
         ('shop.cascade.segmentation.EmulateCustomerModelMixin', 'shop.cascade.segmentation.EmulateCustomerAdminMixin'),
     ),
 }
 
-CMSPLUGIN_CASCADE_LINKPLUGIN_CLASSES = (
-    'shop.cascade.plugin_base.CatalogLinkPluginBase',
-    'cmsplugin_cascade.link.plugin_base.LinkElementMixin',
-    'shop.cascade.plugin_base.CatalogLinkForm',
-)
-
 CKEDITOR_SETTINGS = {
     'language': '{{ language }}',
     'skin': 'moono',
     'toolbar': 'CMS',
+    'toolbar_HTMLField': [
+        ['Undo', 'Redo'],
+        ['cmsplugins', '-', 'ShowBlocks'],
+        ['Format', 'Styles'],
+        ['TextColor', 'BGColor', '-', 'PasteText', 'PasteFromWord'],
+        ['Maximize', ''],
+        '/',
+        ['Bold', 'Italic', 'Underline', '-', 'Subscript', 'Superscript', '-', 'RemoveFormat'],
+        ['JustifyLeft', 'JustifyCenter', 'JustifyRight'],
+        ['HorizontalRule'],
+        ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Table'],
+        ['Source']
+    ],
+}
+
+CKEDITOR_SETTINGS_CAPTION = {
+    'language': '{{ language }}',
+    'skin': 'moono',
+    'height': 70,
+    'toolbar_HTMLField': [
+        ['Undo', 'Redo'],
+        ['Format', 'Styles'],
+        ['Bold', 'Italic', 'Underline', '-', 'Subscript', 'Superscript', '-', 'RemoveFormat'],
+        ['Source']
+    ],
+}
+
+CKEDITOR_SETTINGS_DESCRIPTION = {
+    'language': '{{ language }}',
+    'skin': 'moono',
+    'height': 250,
     'toolbar_HTMLField': [
         ['Undo', 'Redo'],
         ['cmsplugins', '-', 'ShowBlocks'],
@@ -498,7 +540,7 @@ HAYSTACK_CONNECTIONS = {
         'INDEX_NAME': 'myshop-en',
     },
 }
-if SHOP_TUTORIAL in ('i18n', 'polymorphic'):
+if USE_I18N:
     HAYSTACK_CONNECTIONS['de'] = {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
         'URL': 'http://localhost:9200/',
