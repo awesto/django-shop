@@ -2,11 +2,9 @@ language: python
 
 python:
   - 2.7
-  - 3.4
   - 3.5
 
 env:
-  - DJANGOVER=django18
   - DJANGOVER=django19
   - TOX_ENV=docs
 
@@ -15,13 +13,10 @@ install:
 
 script:
   - "if [[ $TRAVIS_PYTHON_VERSION == '2.7' && $DJANGOVER ]]; then export TOX_ENV=py27-$DJANGOVER; fi"
-  - "if [[ $TRAVIS_PYTHON_VERSION == '3.4' && $DJANGOVER ]]; then export TOX_ENV=py34-$DJANGOVER; fi"
   - "if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $DJANGOVER ]]; then export TOX_ENV=py35-$DJANGOVER; fi"
   - tox -r -e "$TOX_ENV"
 
 matrix:
   exclude:
-    - python: 3.4
-      env: TOX_ENV=docs
     - python: 3.5
       env: TOX_ENV=docs

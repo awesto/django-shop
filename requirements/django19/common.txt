@@ -1,8 +1,8 @@
-Django==1.9.5
+Django==1.9.7
 beautifulsoup4==4.4.0
 django-admin-sortable2==0.6.4
 django-allauth==0.23.0
-django-angular==0.8.1
+django-angular==0.8.2
 django-appconf==1.0.1
 django-classy-tags==0.7.2
 django-cms==3.3.0
@@ -14,8 +14,8 @@ django-fsm-admin==1.2.3
 https://github.com/django-haystack/django-haystack/archive/v2.5.dev1.zip
 django-ipware==1.1.1
 django-mptt==0.7.4
-django-parler==1.6.2
-django-polymorphic==0.8.1
+django-parler==1.6.4
+django-polymorphic==0.9.2
 django-post-office==2.0.5
 django-rest-auth==0.5.0
 django-sass-processor==0.3.4
@@ -24,7 +24,7 @@ django-select2==5.5.0
 djangoshop-stripe==0.1.4
 django-treebeard==4.0
 djangocms-bootstrap3==0.1.1
-djangocms-cascade==0.8.2
+djangocms-cascade==0.9.0
 djangocms-text-ckeditor==3.0.0
 djangorestframework==3.3.3
 drf-haystack==1.5.6
@@ -34,7 +34,7 @@ html5lib==0.9999999
 jsonfield==1.0.3
 libsass==0.8.3
 oauthlib==1.0.3
-Pillow==2.9.0
+Pillow==3.2.0
 pluggy==0.3.1
 py==1.4.30
 Pygments==2.0.2
