@@ -70,7 +70,7 @@ class AddSmartPhoneToCartSerializer(AddToCartSerializer):
         instance = {
             'product': product.id,
             'unit_price': variant.unit_price,
-            'extra': {'product_code': variant.product_code}
+            'extra': {'product_code': variant.product_code, 'storage': variant.storage}
         }
         return instance
 
