@@ -11,7 +11,7 @@ django-filer==1.2.0
 django-filter==0.13.0
 django-fsm==2.4.0
 django-fsm-admin==1.2.3
-https://github.com/django-haystack/django-haystack/archive/cd7380e.zip
+https://github.com/django-haystack/django-haystack/archive/v2.5.dev1.zip
 django-ipware==1.1.1
 django-mptt==0.7.4
 django-parler==1.6.2
