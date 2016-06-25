@@ -27,13 +27,6 @@ class CMSPageAsCategoryMixin(object):
         if not hasattr(self.model, 'cms_pages'):
             raise ImproperlyConfigured("Product model requires a field named `cms_pages`")
 
-    def get_fields(self, request, obj=None):
-        # We add ``cms_pages`` in ``get_fieldsets()``, so we remove it here to
-        # avoid showing it twice.
-        fields = super(CMSPageAsCategoryMixin, self).get_fields(request, obj)
-        fields.remove('cms_pages')
-        return fields
-
     def get_fieldsets(self, request, obj=None):
         fieldsets = list(super(CMSPageAsCategoryMixin, self).get_fieldsets(request, obj=obj))
         fieldsets.append((_("Categories"), {'fields': ('cms_pages',)}),)
