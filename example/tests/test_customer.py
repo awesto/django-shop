@@ -1,6 +1,7 @@
 # -*- coding: utf-8
 from __future__ import unicode_literals
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.backends.db import SessionStore
@@ -216,7 +217,7 @@ class PasswordResetSerializerTest(TestCase):
         serializer.save()
         serializer.reset_form.save.assert_called_with(
             use_https=False,
-            from_email='My Shop <no-reply@example.com>',
+            from_email=settings.DEFAULT_FROM_EMAIL,
             request=request,
             subject_template_name=u'shop/email/reset-password-subject.txt',
             email_template_name='shop/email/reset-password-body.txt',
