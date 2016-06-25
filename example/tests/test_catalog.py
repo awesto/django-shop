@@ -40,7 +40,7 @@ class CatalogTest(TestCase):
         payload = json.loads(response.content.decode('utf-8'))
         self.assertIsInstance(payload, dict)
         self.assertDictContainsSubset(
-            {'unit_price': "€ 3.99", 'product': 1, 'extra': {'product_code': '1041'}},
+            {'quantity': 1, 'unit_price': "€ 3.99", 'product': 1, 'extra': {'product_code': '1041'}},
             payload)
 
         # add two items of that Smart Card
@@ -48,10 +48,12 @@ class CatalogTest(TestCase):
         url = reverse('shop:cart-list')
         response = self.client.post(url, payload)
         self.assertEqual(response.status_code, 201)
+
+        # examine if our product is in the cart
         cart = json.loads(response.content.decode('utf-8'))
         self.assertDictContainsSubset(
             {'id': 1, 'product_name': "SDHC Card 4GB", 'product_url': self.sample.get_absolute_url(),
-             'product_type': "Smart Card", 'product_model': "smartcard", 'price': "€ 3.99"},
+             'product_model': "smartcard", 'price': "€ 3.99"},
             cart['summary'])
 
         # and add another one
