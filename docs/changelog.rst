@@ -27,6 +27,8 @@ Changelog for djangoSHOP
   context.
 * Function ``loadMore()`` in ``CatalogListController`` bypasses the existing search query. This
   allows to use hard coded links for tag search.
+* Using Python's ``Enum`` class to declare customer states, such as UNRECOGNIZED, GUEST or
+  REGISTERED.
 
 
 0.9.1
