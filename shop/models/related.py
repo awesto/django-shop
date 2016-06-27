@@ -1,12 +1,29 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
+from enum import Enum
 from six import with_metaclass
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy
 from filer.fields import image
 from cms.models.pagemodel import Page
 from .product import BaseProduct
 from shop import deferred
+
+
+class ChoiceEnum(Enum):
+    """
+    Utility class to handle choices in Django model fields
+    """
+    @classmethod
+    def choices(cls):
+        values = [p.value for p in cls.__members__.values()]
+        if len(values) > len(set(values)):
+            msg = "Duplicate values found in {}".format(cls.__class__.__name__)
+            raise ValueError(msg)
+        choices = [(prop.value, ugettext_lazy('.'.join((cls.__name__, attr))))
+                   for attr, prop in cls.__members__.items()]
+        return choices
 
 
 class BaseProductPage(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
@@ -20,8 +37,8 @@ class BaseProductPage(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     class Meta:
         abstract = True
         unique_together = ('page', 'product',)
-        verbose_name = _("Category")
-        verbose_name_plural = _("Categories")
+        verbose_name = ugettext_lazy("Category")
+        verbose_name_plural = ugettext_lazy("Categories")
 
 ProductPageModel = deferred.MaterializedModel(BaseProductPage)
 
@@ -36,8 +53,8 @@ class BaseProductImage(with_metaclass(deferred.ForeignKeyBuilder, models.Model))
 
     class Meta:
         abstract = True
-        verbose_name = _("Product Image")
-        verbose_name_plural = _("Product Images")
+        verbose_name = ugettext_lazy("Product Image")
+        verbose_name_plural = ugettext_lazy("Product Images")
         ordering = ('order',)
 
 ProductImageModel = deferred.MaterializedModel(BaseProductImage)
