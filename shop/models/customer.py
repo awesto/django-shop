@@ -33,11 +33,14 @@ class CustomerStateField(models.PositiveSmallIntegerField):
 
     def __init__(self, *args, **kwargs):
         kwargs.update(choices=CustomerState.choices())
+        kwargs.setdefault('default', CustomerState.UNRECOGNIZED)
         super(CustomerStateField, self).__init__(*args, **kwargs)
 
     def deconstruct(self):
         name, path, args, kwargs = super(CustomerStateField, self).deconstruct()
         del kwargs['choices']
+        if kwargs['default'] is not CustomerState.UNRECOGNIZED:
+            del kwargs['default']
         return name, path, args, kwargs
 
     def from_db_value(self, value, expression, connection, context):
@@ -45,6 +48,9 @@ class CustomerStateField(models.PositiveSmallIntegerField):
 
     def get_prep_value(self, state):
         return state.value
+
+    def to_python(self, state):
+        return CustomerState(state)
 
 
 class CustomerQuerySet(models.QuerySet):
