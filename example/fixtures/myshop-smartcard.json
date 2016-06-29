@@ -11268,8 +11268,8 @@
   "model": "myshop.customer",
   "pk": 1,
   "fields": {
-    "recognized": 2,
-    "salutation": "mrs",
+    "recognized": "REGISTERED",
+    "salutation": "na",
     "last_access": "2016-03-07T10:00:15.499Z",
     "extra": "{}",
     "number": 1

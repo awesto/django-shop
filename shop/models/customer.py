@@ -39,8 +39,10 @@ class CustomerStateField(models.PositiveSmallIntegerField):
     def deconstruct(self):
         name, path, args, kwargs = super(CustomerStateField, self).deconstruct()
         del kwargs['choices']
-        if kwargs['default'] is not CustomerState.UNRECOGNIZED:
+        if kwargs['default'] is CustomerState.UNRECOGNIZED:
             del kwargs['default']
+        elif isinstance(kwargs['default'], CustomerState):
+            kwargs['default'] = kwargs['default'].value
         return name, path, args, kwargs
 
     def from_db_value(self, value, expression, connection, context):
