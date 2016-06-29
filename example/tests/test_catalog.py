@@ -5,7 +5,6 @@ import json
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from myshop.models.polymorphic.smartcard import SmartCard
-from myshop.models import Cart
 
 
 class CatalogTest(TestCase):
