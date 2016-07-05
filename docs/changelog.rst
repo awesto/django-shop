@@ -11,7 +11,7 @@ Changelog for djangoSHOP
   files.
 * Using cached_property decoration for methods ``unit_price`` and ``line_total`` in
   :class:`shop.models.order.OrderItem`.
-* Fixed #333: Accessing the cart when there is no cart assiciated with a customer.
+* Fixed #333: Accessing the cart when there is no cart associated with a customer.
 * Removed Apphook :class:`shop.cms_apps.OrderApp`. This class now must be added to the project's
   ``cms_apps.py``. This allows the merchant to override the
   :class:`shop.rest.serializers.OrderListSerializer` and :class:`shop.rest.serializers.OrderDetailSerializer`.
@@ -27,6 +27,12 @@ Changelog for djangoSHOP
   context.
 * Function ``loadMore()`` in ``CatalogListController`` bypasses the existing search query. This
   allows to use hard coded links for tag search.
+* Using Python's ``Enum`` class to declare customer states, such as UNRECOGNIZED, GUEST or
+  REGISTERED.
+* Created a customized database field to hold the customers states, as stored by the above
+  ``Enum``.
+* Fixed: A server-side invalidated email addresses was accepted anyway, causing problems for
+  returning customers.
 
 
 0.9.1

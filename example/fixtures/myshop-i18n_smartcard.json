@@ -11320,8 +11320,8 @@
   "model": "myshop.customer",
   "pk": 1,
   "fields": {
-    "recognized": 2,
-    "salutation": "mrs",
+    "recognized": "REGISTERED",
+    "salutation": "na",
     "last_access": "2016-04-07T11:41:57.393Z",
     "extra": "{}",
     "number": 1
@@ -11331,8 +11331,8 @@
   "model": "myshop.customer",
   "pk": 3,
   "fields": {
-    "recognized": 0,
-    "salutation": "",
+    "recognized": "UNRECOGNIZED",
+    "salutation": "na",
     "last_access": "2016-04-07T11:09:00.260Z",
     "extra": "{}",
     "number": null

@@ -17052,7 +17052,7 @@
   "model": "myshop.customer",
   "pk": 1,
   "fields": {
-    "recognized": 2,
+    "recognized": "REGISTERED",
     "salutation": "na",
     "last_access": "2016-06-24T14:19:31.260Z",
     "extra": "{}",
@@ -17063,7 +17063,7 @@
   "model": "myshop.customer",
   "pk": 2,
   "fields": {
-    "recognized": 1,
+    "recognized": "GUEST",
     "salutation": "na",
     "last_access": "2016-01-20T17:25:01.802Z",
     "extra": "{}",
