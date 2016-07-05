@@ -3,8 +3,8 @@
 .navbar {
 	.navbar-extra-top {
 		min-height: $navbar-extra-top-height;
-		border: 1px solid transparent;
-		border-bottom-color: $navbar-default-border;
+		border-top: 1px solid transparent;
+		border-bottom: 1px solid $navbar-default-border;
 		.shop-brand {
 			text-align: center;
 		}
@@ -60,6 +60,6 @@ body {
 		padding-top: 290px;  // determined empirically
 	}
 	@media (min-width: $screen-sm-min) {
-		padding-top: $navbar-height + $navbar-extra-top-height + 2 * $padding-large-vertical;
+		padding-top: $navbar-height + $navbar-extra-top-height + 3;
 	}
 }
