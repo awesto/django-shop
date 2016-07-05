@@ -16,6 +16,8 @@ When rendering an amount of type Money, use this format. Possible placeholders a
 {amount}: The localized amount .
 """
 
+USE_TZ = True
+
 DECIMAL_PLACES = getattr(settings, 'SHOP_DECIMAL_PLACES', 2)
 """
 Number of decimal places for the internal representation of a price. Not visible to the customer.
