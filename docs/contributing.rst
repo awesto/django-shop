@@ -54,7 +54,7 @@ We highly suggest you run the tests suite in a clean environment, using a tool s
 
 .. code-block:: shell
 
-	pip install -r requirements/django18/testing.txt
+	pip install -r requirements/django19/testing.txt
 
 That's it! Now, you should be able to run the tests::
 
