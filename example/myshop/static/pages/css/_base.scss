@@ -2,9 +2,13 @@
 @import "bootstrap-sass/assets/stylesheets/bootstrap";
 @import "font-awesome/scss/font-awesome";
 
-// fixes https://github.com/twbs/bootstrap-sass/issues/919
-.breadcrumb > li + li:before {
-	content: "/";
+.breadcrumb {
+	margin-top: 20px;
+
+	>li + li:before {
+		// fixes https://github.com/twbs/bootstrap-sass/issues/919
+		content: "/";
+	}
 }
 
 // use it to remove borders in tables
