@@ -33,7 +33,10 @@ Changelog for djangoSHOP
   ``Enum``.
 * Fixed: A server-side invalidated email addresses was accepted anyway, causing problems for
   returning customers.
-
+* Renamed CMS Page IDs for better consistency:
+  * ``personal-details`` -> ``shop-customer-details`` to access the Customer Detail Page.
+  * ``reset-password`` -> ``shop-password-reset`` to access the Reset Password Page.
+  * new: ``shop-register-customer`` to access the Register User Page.
 
 0.9.1
 =====
