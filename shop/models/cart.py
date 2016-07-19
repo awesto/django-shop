@@ -241,7 +241,8 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         """
         Returns the total quantity of all items in the cart.
         """
-        return self.items.aggregate(models.Sum('quantity'))['quantity__sum']
+        aggr = self.items.aggregate(quantity=models.Sum('quantity'))
+        return aggr['quantity'] or 0
         # if we would know, that self.items is already evaluated, then this might be faster:
         # return sum([ci.quantity for ci in self.items.all()])
 
