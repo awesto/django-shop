@@ -37,6 +37,6 @@ class CheckoutTest(TestCase):
         response = self.client.post(checkout_upload_url)
         self.assertEqual(response.status_code, 200)
 
-        print(response.content)
-        print(response.cookies)
-        self.fail()
+        #print(response.content)
+        #print(response.cookies)
+        #self.fail()
