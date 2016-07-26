@@ -17,7 +17,7 @@ from .base import DialogForm, DialogModelForm
 
 class CustomerForm(DialogModelForm):
     scope_prefix = 'data.customer'
-    legend = _("Customer Details")
+    legend = _("Customer's Details")
 
     email = fields.EmailField(label=_("Email address"))
     first_name = fields.CharField(label=_("First Name"))
@@ -50,7 +50,7 @@ class CustomerForm(DialogModelForm):
 class GuestForm(DialogModelForm):
     scope_prefix = 'data.guest'
     form_name = 'customer_form'  # Override form name to reuse template `customer-form.html`
-    legend = _("Customer Details")
+    legend = _("Customer's Email")
 
     email = fields.EmailField(label=_("Email address"))
 
