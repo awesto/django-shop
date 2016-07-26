@@ -36,6 +36,7 @@ CONTRIBUTORS
 * Sławomir Ehlert
 * Stephen Muss
 * Thomas Woolford
+* Hamza Khchine
 
 TRANSLATORS
 ===========
