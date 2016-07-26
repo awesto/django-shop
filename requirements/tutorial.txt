@@ -1,1 +1,0 @@
--r ../docker/uwsgi-django-shop/requirements.txt
