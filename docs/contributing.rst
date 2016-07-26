@@ -88,6 +88,8 @@ testing. Do this by creating a coverage report, for example with:
 
 or if you to test only a specific class
 
+.. code-block:: shell
+
 	coverage run .tox/py27-django19/bin/py.test testshop/test_money.py
 	coverage report -m shop/money/*.py
 

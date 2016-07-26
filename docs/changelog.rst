@@ -7,7 +7,7 @@ Changelog for djangoSHOP
 0.9.2.dev
 =========
 
-* Fixed :method:`shop.money.fields.decontruct` to avoid repetitive useless generation of migration
+* Fixed :py:meth:`shop.money.fields.decontruct` to avoid repetitive useless generation of migration
   files.
 * Using cached_property decoration for methods ``unit_price`` and ``line_total`` in
   :class:`shop.models.order.OrderItem`.
@@ -18,7 +18,7 @@ Changelog for djangoSHOP
 * Bugfix: declared django-rest-auth as requirement in setup.py.
 * Refactored shop.models.deferred -> shop.deferred. This allows to add a check for pending mappings
   into the ready-method of the shop's AppConfig.
-* Prepared for Django-1.10: Replaced all occurrences of :method:`django.conf.urls.patterns` by
+* Prepared for Django-1.10: Replaced all occurrences of :py:meth:`django.conf.urls.patterns` by
   a simple list.
 * Method ``get_render_context`` in classes extending from ``django_filters.FilterSet`` now must be a
   ``classmethod`` and accepts the request object.

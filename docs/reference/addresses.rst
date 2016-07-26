@@ -16,7 +16,7 @@ address fields are required for his needs. Therefore the base address model does
 any address related fields, they instead have to be declared by the merchant. A concrete
 implementation of the shipping address model may look like this:
 
-..code-block:: python
+.. code-block:: python
 
 	from shop.models.address import BaseShippingAddress, ISO_3166_CODES
 	
@@ -36,7 +36,7 @@ Since the billing address may contain different fields, it must be defined separ
 shipping address. To avoid the duplicate definition of common fields for both models, use a mixin
 class such as:
 
-..code-block:: python
+.. code-block:: python
 
 	from django.db import models
 	from shop.models.address import BaseBillingAddress
