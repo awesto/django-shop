@@ -2,6 +2,8 @@
 django-SHOP
 ===========
 
+[![Build Status](https://travis-ci.org/awesto/django-shop.svg)](https://travis-ci.org/awesto/django-shop)
+
 [![Join the chat at https://gitter.im/awesto/django-shop](https://badges.gitter.im/awesto/django-shop.svg)](https://gitter.im/awesto/django-shop?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Version 0.9 of **djangoSHOP** is a complete rewrite of the old code base but keeps the concepts of
@@ -51,11 +53,6 @@ DjangoSHOP aims to be a the easy, fun and fast shop counterpart to django CMS.
 
 Specifically, we aim at providing a clean, modular and Pythonic/Djangonic implementation of a shop
 framework, that a moderately talented Django programmer should be able to pick up and run easily.
-
-
-## Build status
-
-[![Build Status](https://travis-ci.org/awesto/django-shop.svg)](https://travis-ci.org/awesto/django-shop)
 
 
 ### Todo:
