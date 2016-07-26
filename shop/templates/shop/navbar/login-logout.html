@@ -5,8 +5,9 @@
 {% addtoblock "shop-ng-requires" %}django.shop.auth{% endaddtoblock %}
 
 {% page_url 'shop-order' as shop_order_url %}
-{% page_url 'personal-details' as personal_details_url %}
-{% page_url 'reset-password' as reset_password_url %}
+{% page_url 'shop-customer-details' as customer_details_url %}
+{% page_url 'shop-password-reset' as password_reset_url %}
+{% page_url 'shop-register-customer' as register_customer_url %}
 
 <li class="dropdown {{ dropdown_extra_class }}" dropdown auto-close="outsideClick">
 	<a class="dropdown-toggle" dropdown-toggle>
@@ -23,8 +24,8 @@
 		{% if shop_order_url %}
 		<li><a href="{{ shop_order_url }}">{% page_attribute "page_title" "shop-order" %}</a></li>
 		{% endif %}
-		{% if personal_details_url %}
-		<li><a href="{{ personal_details_url }}">{% page_attribute "page_title" "personal-details" %}</a></li>
+		{% if customer_details_url %}
+		<li><a href="{{ customer_details_url }}">{% page_attribute "page_title" "shop-customer-details" %}</a></li>
 		{% endif %}
 	{% else %}
 		<shop-auth-form ng-form name="auth_form" action="RELOAD_PAGE" accept-charset="UTF-8" role="form">
@@ -46,10 +47,16 @@
 				</div>
 			</div>
 			<button class="btn btn-primary btn-block" type="button" ng-click="submitForm('{% url "shop:login" %}')">{% trans "Login" %}</button>
-		{% if reset_password_url %}
-			<a class="btn btn-block" href="{{ reset_password_url }}">{% trans "Password Forgotten?" %}</a>
-		{% endif %}
 		</shop-auth-form>
+		{% if password_reset_url or register_customer_url %}
+		<li role="separator" class="divider"></li>
+			{% if password_reset_url %}
+		<li><a href="{{ password_reset_url }}">{% trans "Password Forgotten?" %}</a></li>
+			{% endif %}
+			{% if register_customer_url %}
+		<li><a href="{{ register_customer_url }}">{% trans "Register Yourself" %}</a></li>
+			{% endif %}
+		{% endif %}
 	{% endif %}
 	</ul>
 </li>

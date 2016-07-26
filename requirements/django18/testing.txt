@@ -1,7 +1,0 @@
--r common.txt
-flake8==2.4.1
-pytest==2.8.3
-coverage==4.0
-pytest-django==2.9.1
-mock==1.3.0
-tox==2.1.1

@@ -23,6 +23,14 @@ class ProductSearchApp(CMSApp):
 apphook_pool.register(ProductSearchApp)
 
 
+class OrderApp(CMSApp):
+    name = _("View Orders")
+    urls = ['shop.urls.order']
+    cache_placeholders = False
+
+apphook_pool.register(OrderApp)
+
+
 def _deregister_menu_pool_modifier(Modifier):
     index = None
     for k, modifier_class in enumerate(menu_pool.modifiers):

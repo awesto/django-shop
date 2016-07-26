@@ -17,6 +17,7 @@
 	<div class="row">
 		<div class="col-xs-12">
 			<h1>{% render_model product "product_name" %}</h1>
+			{# the first `render_placeholder` is only required for editing the page #}
 			{% render_placeholder product.placeholder %}{% render_placeholder product.placeholder as product_details %}
 			{% if not product_details %}
 			<p class="lead">Edit this page, then switch into <em>Structure</em> mode and add plugins to placeholder <code> {{ product.placeholder.slot }} </code>.</p>

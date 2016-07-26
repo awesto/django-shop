@@ -90,7 +90,7 @@ and add a Page. As its **Title** chose “Smart Cards”. Then change into the *
 at the bottom of the page. In this editor window, locate the field **Application** and select
 **Products List**. Then save the page and click on **View on site**.
 
-Now change into **Structure** mode and locate the placeholder named **Main content container**.
+Now change into **Structure** mode and locate the placeholder named **Main Content**.
 Add a plugin from section **Bootstrap** named **Row**. Below that Row add a Column with a width of
 12 units. Finally, below the last Column add a plugin from section **Shop** named **Catalog List
 View**.

@@ -13,12 +13,46 @@ from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import SimpleLazyObject
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext_noop
 from django.utils.six import with_metaclass
 from jsonfield.fields import JSONField
-from . import deferred
+from shop import deferred
+from .related import ChoiceEnum
 
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore()
+
+
+class CustomerState(ChoiceEnum):
+    UNRECOGNIZED = 0; ugettext_noop("CustomerState.Unrecognized")
+    GUEST = 1; ugettext_noop("CustomerState.Guest")
+    REGISTERED = 2; ugettext_noop("CustomerState.Registered")
+
+
+class CustomerStateField(models.PositiveSmallIntegerField):
+    description = _("Customer recognition state")
+
+    def __init__(self, *args, **kwargs):
+        kwargs.update(choices=CustomerState.choices())
+        kwargs.setdefault('default', CustomerState.UNRECOGNIZED)
+        super(CustomerStateField, self).__init__(*args, **kwargs)
+
+    def deconstruct(self):
+        name, path, args, kwargs = super(CustomerStateField, self).deconstruct()
+        del kwargs['choices']
+        if kwargs['default'] is CustomerState.UNRECOGNIZED:
+            del kwargs['default']
+        elif isinstance(kwargs['default'], CustomerState):
+            kwargs['default'] = kwargs['default'].value
+        return name, path, args, kwargs
+
+    def from_db_value(self, value, expression, connection, context):
+        return CustomerState(value)
+
+    def get_prep_value(self, state):
+        return state.value
+
+    def to_python(self, state):
+        return CustomerState(state)
 
 
 class CustomerQuerySet(models.QuerySet):
@@ -103,7 +137,7 @@ class CustomerManager(models.Manager):
     def create(self, *args, **kwargs):
         customer = super(CustomerManager, self).create(*args, **kwargs)
         if 'user' in kwargs and kwargs['user'].is_authenticated():
-            customer.recognized = self.model.REGISTERED
+            customer.recognized = CustomerState.REGISTERED
         return customer
 
     def _get_visiting_user(self, session_key):
@@ -135,7 +169,7 @@ class CustomerManager(models.Manager):
         if request.user.is_authenticated():
             customer, created = self.get_or_create(user=user)
             if created:  # `user` has been created by another app than shop
-                customer.recognized = self.model.REGISTERED
+                customer.recognized = CustomerState.REGISTERED
                 customer.save()
         else:
             customer = VisitingCustomer()
@@ -144,7 +178,7 @@ class CustomerManager(models.Manager):
     def get_or_create_from_request(self, request):
         if request.user.is_authenticated():
             user = request.user
-            recognized = self.model.REGISTERED
+            recognized = CustomerState.REGISTERED
         else:
             if not request.session.session_key:
                 request.session.cycle_key()
@@ -155,7 +189,7 @@ class CustomerManager(models.Manager):
             user = get_user_model().objects.create_user(username)
             user.is_active = False
             user.save()
-            recognized = self.model.UNRECOGNIZED
+            recognized = CustomerState.UNRECOGNIZED
         customer = self.get_or_create(user=user)[0]
         customer.recognized = recognized
         return customer
@@ -171,14 +205,10 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     object is created for anonymous customers also (with unusable password).
     """
     SALUTATION = (('mrs', _("Mrs.")), ('mr', _("Mr.")), ('na', _("(n/a)")))
-    UNRECOGNIZED = 0
-    GUEST = 1
-    REGISTERED = 2
-    CUSTOMER_STATES = ((UNRECOGNIZED, _("Unrecognized")), (GUEST, _("Guest")), (REGISTERED, _("Registered")))
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL, primary_key=True)
-    recognized = models.PositiveSmallIntegerField(_("Recognized as"), choices=CUSTOMER_STATES,
-        help_text=_("Designates the state the customer is recognized as."), default=UNRECOGNIZED)
+    recognized = CustomerStateField(_("Recognized as"), default=CustomerState.UNRECOGNIZED,
+        help_text=_("Designates the state the customer is recognized as."))
     salutation = models.CharField(_("Salutation"), max_length=5, choices=SALUTATION)
     last_access = models.DateTimeField(_("Last accessed"), default=timezone.now)
     extra = JSONField(default={}, editable=False,
@@ -231,10 +261,10 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         return self.user.last_login
 
     def is_anonymous(self):
-        return self.recognized in (self.UNRECOGNIZED, self.GUEST)
+        return self.recognized in (CustomerState.UNRECOGNIZED, CustomerState.GUEST)
 
     def is_authenticated(self):
-        return self.recognized == self.REGISTERED
+        return self.recognized is CustomerState.REGISTERED
 
     def is_recognized(self):
         """
@@ -242,32 +272,38 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         Unrecognized customers have accessed the shop, but did not register
         an account nor declared themselves as guests.
         """
-        return self.recognized != self.UNRECOGNIZED
+        return self.recognized is not CustomerState.UNRECOGNIZED
 
     def is_guest(self):
         """
         Return true if the customer isn't associated with valid User account, but declared
         himself as a guest, leaving their email address.
         """
-        return self.recognized == self.GUEST
+        return self.recognized is CustomerState.GUEST
 
     def recognize_as_guest(self):
         """
         Recognize the current customer as guest customer.
         """
-        self.recognized = self.GUEST
+        self.recognized = CustomerState.GUEST
 
     def is_registered(self):
         """
         Return true if the customer has registered himself.
         """
-        return self.recognized == self.REGISTERED
+        return self.recognized is CustomerState.REGISTERED
 
     def recognize_as_registered(self):
         """
         Recognize the current customer as registered customer.
         """
-        self.recognized = self.REGISTERED
+        self.recognized = CustomerState.REGISTERED
+
+    def unrecognize(self):
+        """
+        Unrecognize the current customer.
+        """
+        self.recognized = CustomerState.UNRECOGNIZED
 
     def is_visitor(self):
         """
@@ -281,7 +317,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         Registered customers never expire.
         Guest customers only expire, if they failed fulfilling the purchase (currently not implemented).
         """
-        if self.recognized == self.UNRECOGNIZED:
+        if self.recognized is CustomerState.UNRECOGNIZED:
             session_key = CustomerManager.decode_session_key(self.user.username)
             return not SessionStore.exists(session_key)
         return False
@@ -306,7 +342,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         super(BaseCustomer, self).save(**kwargs)
 
     def delete(self, *args, **kwargs):
-        if self.user.is_active and self.recognized == self.UNRECOGNIZED:
+        if self.user.is_active and self.recognized is CustomerState.UNRECOGNIZED:
             # invalid state of customer, keep the referred User
             super(BaseCustomer, self).delete(*args, **kwargs)
         else:

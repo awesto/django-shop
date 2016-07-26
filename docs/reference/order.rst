@@ -22,7 +22,7 @@ fields to the order, as the merchant requires for his special implementation.
 In most use-cases, the default order implementation will do the job. These default classes can be
 found at :class:`shop.models.defaults.order.Order` and
 :class:`shop.models.defaults.order_item.OrderItem`. To materialize the default implementation, it
-is enough to ``import`` these two files into the merchants shop project. Otherwise the programmer
+is enough to ``import`` these two files into the merchant's shop project. Otherwise the programmer
 may create his own order implementation inheriting from ``BaseOrder`` and/or ``BaseOrderItem``.
 
 .. note:: Assure that the model ``OrderItem`` is imported (and materialized) before model
@@ -50,8 +50,8 @@ This operation is atomic and can take some time. It normally is performed by the
 whenever a successful payment was received.
 
 Since the merchants implementation of ``Cart``, ``CartItem``, ``Order`` and ``OrderItem`` may
-contain extra fields the shop framework isn't aware of, these fields have to be converted from the
-cart to the order objects during the purchasing operation.
+contain extra fields the shop framework isn't aware of, the content of these fields has to be
+transferred, whenever a cart is converted into an order object, during the purchasing operation.
 
 If required the merchant's implementation of ``Order`` shall override the method
 ``populate_from_cart(cart, request)``, which provides a hook to copy those extra fields from the cart
@@ -128,6 +128,61 @@ Bestellung" or "Gracias por su pedido". Change into the **Advanced Settings** vi
 rendering template select "*Inherit the template of the nearest ancestor*". Next enter
 "*shop-order-last*" into the **Id**-field just below. As **Application** chose again
 "*View Orders*".
+
+
+CMS Apphook for the Order
+-------------------------
+
+The apphook for the Order View must be provided by the Django project. This is a simple snippet of
+boilerplate which has to be added to the merchant's implementation of the ``cms_apps.py`` file:
+
+.. code-block:: python
+	:caption: myshop/cms_apps.py
+
+	from cms.app_base import CMSApp
+	from cms.apphook_pool import apphook_pool
+
+	class OrderApp(CMSApp):
+	    name = "View Orders"
+	    urls = ['shop.urls.order']
+	    cache_placeholders = False
+
+	apphook_pool.register(OrderApp)
+
+
+This apphook uses the class :class:`shop.views.order.OrderView` to render the order's list- and
+detail views using the serializers :class:`shop.rest.serializers.OrderListSerializer` and
+:class:`shop.rest.serializers.OrderDetailSerializer`. Sometimes these defaults aren't enough and
+must be extended by a customized serializer. Say, our Order class contains the rendered
+shipping and billing addresses. Then we can extend our serializer class by adding them:
+
+.. code-block:: python
+	:caption: myshop/serializers.py
+
+	from shop.rest.serializers import OrderDetailSerializer
+
+	class CustomOrderSerializer(OrderDetailSerializer):
+	    shipping_address_text = serializers.CharField(read_only=True)
+	    billing_address_text = serializers.CharField(read_only=True)
+
+We now can replace the ``urls`` attribute in our apphook class with, say ``['myshop.urls.order']``
+and exchange the default serializer with our customized one:
+
+.. code-block:: python
+	:caption: myshop/urls/order.py
+
+	from django.conf.urls import url
+	from shop.views.order import OrderView
+	from myshop.serializers import CustomOrderSerializer
+
+	urlpatterns = [
+	    url(r'^$', OrderView.as_view()),
+	    url(r'^(?P<pk>\d+)$', OrderView.as_view(many=False,
+	        detail_serializer_class=CustomOrderSerializer)),
+	]
+
+Now, when invoking the order detail page appending ``?format=api`` to the URL, then two new fields,
+``shipping_address_text`` and ``billing_address_text`` shall appear in our context.
 
 
 Add the Order list view via CMS-Cascade Plugin
@@ -384,6 +439,13 @@ On the other hand, when the status of an order is set to "*Pack the Goods*" a bu
 
 The template for the invoice and delivery note can easily be adopted to the corporate design using
 plain HTML and CSS.
+
+
+Re-adding an Order to the Cart
+==============================
+
+Sometimes it can be useful to re-add the content of an order back to the cart. This functionality
+is implemented via the REST-API and can be allowed
 
 
 .. _apphook: http://docs.django-cms.org/en/latest/how_to/apphooks.html
