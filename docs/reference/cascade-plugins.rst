@@ -10,14 +10,14 @@ different elements, without having to craft templates by hand – with one excep
 detail views.
 
 Therefore all we have to focus on, is a default page template with one big placeholder. This
-placeholder then is subdivided into containers, rows, columns and other elements of the Cascade
+placeholder then is subdivided into containers, rows, columns and other elements of the **Cascade**
 plugin collection.
 
 This however requires a completely different approach, from the designer point of view. The way web
-design was done a few years ago, starting with the screenshot of a finished page, must be rethought.
-This has been discussed in length by many web-designers, especially by Brad Frost in his excellent
-book on `Atomic Web Design`_. He propagates to reverse the design process and start with the
-smallest entity, which he calls Atoms. They form to bigger components, named Molecules, which
+design has been done a few years ago, starting with the screenshot of a finished page, must be
+rethought. This has been discussed in length by many web-designers, especially by Brad Frost in his
+excellent book on `Atomic Web Design`_. He propagates to reverse the design process and start with
+the smallest entity, which he calls Atoms. They form to bigger components, named Molecules, which
 themselves aggregate to Organisms.
 
 Some designers nowadays build those components directly in HTML and CSS or SASS, instead of drawing

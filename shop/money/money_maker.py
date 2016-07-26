@@ -107,6 +107,13 @@ class AbstractMoney(Decimal):
             s = Decimal.__str__(self)
         return float(s)
 
+    def __eq__(self, other, context=None):
+        if self.is_nan() and (other == 0 or other.is_nan()):
+            return True
+        if isinstance(other, AbstractMoney):
+            other = self._assert_addable(other)
+        return Decimal.__eq__(self, other)
+
     def __lt__(self, other, context=None):
         other = self._assert_addable(other)
         if self.is_nan():

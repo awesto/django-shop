@@ -62,7 +62,7 @@ application. Say, we declare a base template for our project:
 	angular.module('myShop', ['ngAnimate', 'ngMessages', 'ngSanitize',
 		{% render_block "shop-ng-requires" postprocessor "shop.sekizai_processors.module_list" %}
 	]).config(['$httpProvider', function($httpProvider) {
-		$httpProvider.defaults.headers.common['X-CSRFToken'] = '{% csrf_value %}';
+		$httpProvider.defaults.headers.common['X-CSRFToken'] = '{{ csrf_token }}';
 		$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 	}]).config(['$locationProvider', function($locationProvider) {
 		$locationProvider.html5Mode(false);

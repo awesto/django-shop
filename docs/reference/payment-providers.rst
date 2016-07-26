@@ -74,8 +74,8 @@ PSP.
 
 While processing the payment, PSPs usually need to communicate with the shop framework, in order to
 inform us about success or failure of the payment. To communicate with us, they may need a few
-endpoints. Each Payment provider may override the method ``get_urls()`` returning an ``urlpattern``,
-which then is used by the Django URL resolving engine.
+endpoints. Each Payment provider may override the method ``get_urls()`` returning a list of
+urlpatterns, which then is used by the Django URL resolving engine.
 
 .. code-block:: python
 
@@ -83,10 +83,10 @@ which then is used by the Django URL resolving engine.
 	    namespace = 'my-psp-payment'
 	
 	    def get_urls(self):
-	        urlpatterns = patterns('',
+	        urlpatterns = [
 	            url(r'^success$', self.success_view, name='success'),
 	            url(r'^failure$', self.failure_view, name='failure'),
-	        )
+	        ]
 	        return urlpatterns
 	
 	    def get_payment_request(self, cart, request):

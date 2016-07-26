@@ -1,15 +1,13 @@
 {% extends "bootstrap/includes/ng-nav-navbar.html" %}
 {% load static i18n cms_tags menu_tags sekizai_tags sass_tags shop_tags %}
 
-{% page_url 'shop-watch' as shop_watch_url %}
-
 {% block navbar %}
 	<div class="navbar-extra-top">
 		<div class="container">
 			<div class="row">
 				<div class="col-xs-12 col-sm-3">
 					<a href="/">
-						<img src="{% static 'shop/django-shop-logo.svg' %}" alt="djangoSHOP" height="40px" style="margin-top: 6px;" />
+						<img class="brand-logo" src="{% static 'shop/django-shop-logo.svg' %}" alt="djangoSHOP" height="40" />
 					</a>
 				</div>
 				<div class="col-xs-12 col-sm-9">
@@ -45,6 +43,7 @@
 {% endblock navbar %}
 
 {% block navbar-nav %}
+	{% page_url 'shop-watch-list' as shop_watch_url %}
 	{{ block.super }}
 	<ul class="nav navbar-nav navbar-right">
 		{% with dropdown_extra_class="collapsed-nav" %}
@@ -53,7 +52,7 @@
 		{% endwith %}
 		{% if shop_watch_url %}
 		<li>
-			<a href="{{ shop_watch_url }}" title="{% page_attribute 'page_title' 'shop-watch' %}">
+			<a href="{{ shop_watch_url }}" title="{% page_attribute 'page_title' 'shop-watch-list' %}">
 				<i class="fa fa-heart fa-lg"></i>
 			</a>
 		</li>

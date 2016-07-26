@@ -9,9 +9,9 @@ very important feature. Customers must be able to narrow down the list of availa
 a set of desired products using a combination of prepared filter attributes.
 
 Since in **djangoSHOP** each product class declares its own database model with its own attributes,
-often related with foreign data models, filtering must be implemented by the merchant on top of the
-existing product models. Fortunately the REST framework in combination with `Django Filter`_ makes
-this a rather simple task.
+often related by foreign keys to other data models, the filtering functionality must be implemented
+by the merchant on top of the existing product models. Fortunately the REST framework in combination
+with `Django Filter`_ makes this a rather simple task.
 
 
 Adding a filter to the List View
@@ -43,17 +43,17 @@ we then replace the default filter backends by our own implementation:
 .. code-block:: python
 	:caption: myshop/urls/catalog.py
 	
-	from django.conf.urls import patterns, url
+	from django.conf.urls import url
 	from rest_framework.settings import api_settings
 	from shop.views.catalog import ProductListView
 	from myshop.serializers import ProductSummarySerializer
 	
-	urlpatterns = patterns('',
+	urlpatterns = [
 	    url(r'^$', ProductListView.as_view(
 	        serializer_class=ProductSummarySerializer,
 	        filter_backends=[CatalogFilterBackend],
 	    ),
-	)
+	]
 
 The above example is very simple but gives a rough impression on its possibilities.
 
@@ -99,16 +99,33 @@ this through the url patterns:
 .. code-block:: python
 	:caption: myshop/urls.py
 
-	urlpatterns = patterns('',
+	urlpatterns = [
 	    url(r'^$', ProductListView.as_view(
 	        serializer_class=ProductSummarySerializer,
 	        filter_class=ProductFilter,
 	    )),
 	    # other patterns
-	)
+	]
 
 By appending ``?props=17`` to the URL, the above filter class will restrict the products in our list 
 view to those with a ``property`` of 17.
+
+
+Populate the Render Context
+---------------------------
+
+Filtering functionality without an appropriate user interface doesn't make much sense. Therefore,
+when rendering the product's list view, we might want to add some input fields or special links, so
+that the customer can narrow down the result set. To do this, the rendering template requires
+additional context data.
+
+Since **djangoSHOP** honours the principle of cohesion, each filter set is responsible for providing
+the context required to render its specific filtering parameters. This optional extra context must
+be a dictionary named ``render_context``, respectively a method ``get_render_context(request)``
+which must return such a dictionary.
+
+When rendering HTML pages, this extra context then is available and can be used to render various
+tag filtering elements.
 
 .. _django-filter: http://django-filter.readthedocs.org/en/latest/usage.html
 .. _generic filtering backends: http://www.django-rest-framework.org/api-guide/filtering/#generic-filtering
