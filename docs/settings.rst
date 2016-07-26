@@ -59,7 +59,7 @@ Extensibility Settings
 
 Theses settings allow developers to extend the shop's functionality by replacing
 models with their own models. More information on how to use these settings
-can be found in the :doc:`/howto/how-to-extend-django-shop-models` section.
+can be found in the `/howto/how-to-extend-django-shop-models` section.
 
 SHOP_CART_MODEL
 ================
@@ -71,8 +71,8 @@ SHOP_ADDRESS_MODEL
 ===================
 (Optional)
 A python classpath to the class you want to replace the
-:class:`shop.addressmodel.models.Address` model with. See
-:doc:`/howto/how-to-use-your-own-addressmodel` for a more complete example.
+`shop.addressmodel.models.Address` model with. See
+`/howto/how-to-use-your-own-addressmodel` for a more complete example.
 
 Example value: `myproject.models.MyAddressModel`
 

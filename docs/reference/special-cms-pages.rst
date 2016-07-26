@@ -6,7 +6,7 @@ Special CMS Pages
 
 Besides the Catalog-, Cart- and Checkout Views, some pages must be accessed from already prepared
 templates, which are shipped with this framework. These templates use the templatetag
-``{% page_url %}`` shipped by **djangoCMS with some hard coded IDs. Unless we want to rewrite those
+``{% page_url %}`` shipped by djangoCMS with some hard coded IDs. Unless we want to rewrite those
 templates, we must provide a few special CMS pages, where we specify those page IDs.
 
 
