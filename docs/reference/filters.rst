@@ -11,7 +11,7 @@ a set of desired products using a combination of prepared filter attributes.
 Since in **djangoSHOP** each product class declares its own database model with its own attributes,
 often related by foreign keys to other data models, the filtering functionality must be implemented
 by the merchant on top of the existing product models. Fortunately the REST framework in combination
-with `Django Filter`_ makes this a rather simple task.
+with `django-filter`_ makes this a rather simple task.
 
 
 Adding a filter to the List View

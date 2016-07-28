@@ -9,7 +9,7 @@ from django.contrib import admin
 from django.utils.html import format_html_join
 from django.utils.timezone import localtime
 from django.utils.translation import pgettext_lazy, ugettext_lazy as _
-from shop.models.customer import CustomerModel
+from shop.models.customer import CustomerModel, CustomerState
 
 
 class CustomerInlineAdmin(admin.StackedInline):
@@ -72,13 +72,11 @@ class CustomerListFilter(admin.SimpleListFilter):
     parameter_name = 'custate'
 
     def lookups(self, request, model_admin):
-        return CustomerModel.CUSTOMER_STATES
+        return CustomerState.choices()
 
     def queryset(self, request, queryset):
         try:
-            custate = int(self.value())
-            if custate in dict(CustomerModel.CUSTOMER_STATES):
-                queryset = queryset.filter(customer__recognized=custate)
+            queryset = queryset.filter(customer__recognized=CustomerState(int(self.value())))
         finally:
             return queryset
 

@@ -75,8 +75,7 @@ class ShopButtonPluginBase(ShopLinkPluginBase):
     """
     Base plugin for arbitrary buttons used during various checkout pages.
     """
-    #fields = ('link_content', ('link_type', 'cms_page', 'section',), 'glossary',)
-    fields = ('link_content', ('link_type', 'cms_page',), 'glossary',)
+    fields = ('link_content', ('link_type', 'cms_page', 'section',), 'glossary',)
 
     class Media:
         css = {'all': ('cascade/css/admin/bootstrap.min.css', 'cascade/css/admin/bootstrap-theme.min.css',)}
@@ -149,6 +148,7 @@ class CatalogLinkPluginBase(LinkPluginBase):
     fields = (('link_type', 'cms_page', 'section', 'product', 'ext_url', 'mail_to',), 'glossary',)
 
     class Media:
+        css = {'all': ('shop/css/admin/editplugin.css',)}
         js = resolve_dependencies('shop/js/admin/shoplinkplugin.js')
 
 

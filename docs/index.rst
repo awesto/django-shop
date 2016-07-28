@@ -11,11 +11,11 @@ overriding and cart modifiers. With some effort it should be possible to migrate
 to this new release.
 
 .. toctree::
-	:maxdepth: 1
-	:numbered:
+    :maxdepth: 1
+    :numbered:
 
-	architecture
-	features
+    architecture
+    features
 
 
 Tutorial
@@ -25,16 +25,16 @@ This tutorial shows how to setup a working e-commerce site with **djangoSHOP** u
 dependencies. The code required to setup this demo can be found in the example/myshop folder.
 
 .. toctree::
-	:maxdepth: 1
-	:numbered:
+    :maxdepth: 1
+    :numbered:
 
-	tutorial/intro
-	tutorial/quickstart
-	tutorial/simple-product
-	tutorial/multilingual-product
-	tutorial/polymorphic-product
-	tutorial/catalog-views
-	tutorial/cart-checkout
+    tutorial/intro
+    tutorial/quickstart
+    tutorial/simple-product
+    tutorial/multilingual-product
+    tutorial/polymorphic-product
+    tutorial/catalog-views
+    tutorial/cart-checkout
 
 
 Reference
@@ -43,24 +43,29 @@ Reference
 Reference to classes and concepts used in **djangoSHOP**
 
 .. toctree::
-	:maxdepth: 1
-	:numbered:
+    :maxdepth: 1
+    :numbered:
 
-	reference/customer-model
-	reference/deferred-models
-	reference/money-types
-	reference/product-models
-	reference/catalog
-	reference/filters
-	reference/cascade-plugins
-	reference/cart-checkout
-	reference/payment-providers
-	reference/order
-	reference/delivery
-	reference/addresses
-	reference/search
-	reference/notifications
-	reference/serializers
+    reference/customer-model
+    reference/deferred-models
+    reference/money-types
+    reference/product-models
+    reference/catalog
+    reference/filters
+    reference/cascade-plugins
+    reference/cart-checkout
+    reference/payment-providers
+    reference/order
+    reference/delivery
+    reference/addresses
+    reference/search
+    reference/notifications
+    reference/serializers
+    reference/client-framework
+    reference/configuration
+    reference/shipping-providers
+    reference/special-cms-pages
+    reference/cart-icon
 
 
 How To's
@@ -71,23 +76,46 @@ Some recipes on how to perform certain tasks in **djangoSHOP**.
 *This collection of recipes unfortunately is not finished yet.*
 
 .. toctree::
-	:maxdepth: 1
-	:numbered:
+    :maxdepth: 1
+    :numbered:
 
-	howto/customize-snippets
-	howto/handling-discounts
-	howto/handling-taxes
-
+    howto/customize-snippets
+    howto/handling-discounts
+    howto/handling-taxes
 
 Development and Community
 =========================
 
 .. toctree::
-	:maxdepth: 1
+    :maxdepth: 1
 
-	changelog
-	contributing
+    changelog
+    contributing
+    authors
 
+To be written
+=============
+
+.. toctree::
+    :maxdepth: 1
+
+    howto/address-model
+    howto/how-to-payment
+    howto/multi-tenancy
+    howto/secure-catalog
+
+Obsolete documentation
+======================
+
+This documentation is only kept arond for historical reasons, please do not use
+it.
+
+.. toctree::
+    :maxdepth: 1
+
+    plugins
+    settings
+    various-ideas
 
 License
 =======

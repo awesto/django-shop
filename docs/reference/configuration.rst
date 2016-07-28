@@ -344,6 +344,11 @@ gain some functionality to add links from CMS pages to products.
 	    'dependencies': {
 	        'shop/js/admin/shoplinkplugin.js': 'cascade/js/admin/linkpluginbase.js',
 	    },
+	    'link_plugin_classes': (
+	        'shop.cascade.plugin_base.CatalogLinkPluginBase',
+	        'cmsplugin_cascade.link.plugin_base.LinkElementMixin',
+	        'shop.cascade.plugin_base.CatalogLinkForm',
+	    ),
 	    'alien_plugins': ('TextPlugin', 'TextLinkPlugin',),
 	    'bootstrap3': {
 	        'template_basedir': 'angular-ui',
@@ -359,13 +364,12 @@ gain some functionality to add links from CMS pages to products.
 	    'segmentation_mixins': (
 	        ('shop.cascade.segmentation.EmulateCustomerModelMixin', 'shop.cascade.segmentation.EmulateCustomerAdminMixin'),
 	    ),
+	    'plugins_with_extra_render_templates': {
+	        'CustomSnippetPlugin': [
+	            ('shop/catalog/product-heading.html', _("Product Heading"))
+	        ],
+	    },
 	}
-	
-	CMSPLUGIN_CASCADE_LINKPLUGIN_CLASSES = (
-	    'shop.cascade.plugin_base.CatalogLinkPluginBase',
-	    'cmsplugin_cascade.link.plugin_base.LinkElementMixin',
-	    'shop.cascade.plugin_base.CatalogLinkForm',
-	)
 
 
 Full Text Search

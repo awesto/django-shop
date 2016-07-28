@@ -84,7 +84,8 @@ autodiscovery, therefore this class must be added to a file named ``search_index
 product model ``SmartCard``, this indexing class then may look like:
 
 .. code-block:: python
-	:caption: myshop/search_indexes.py
+    :caption: myshop/search_indexes.py
+    :name: smartcard-search-indexes
 
 	from shop.search.indexes import ProductIndex
 	from haystack import indexes
@@ -166,7 +167,8 @@ this is done by the fields ``catalog_media`` and ``search_media``. Since we do n
 a model attribute, we must provide two methods, which creates this content:
 
 .. code-block:: python
-	:caption: myshop/search_indexes.py
+    :caption: myshop/search_indexes.py
+    :name: searchindex-media
 
 	class SmartCardIndex(ProductIndex, indexes.Indexable):
 	    # other fields and methods ...
@@ -205,7 +207,8 @@ to Django database models when serializing their fields. The serializer used to 
 for this demo site, may look like:
 
 .. code-block:: python
-	:caption: myshop/serializers.py
+    :caption: myshop/serializers.py
+    :name: serializers
 
 	from rest_framework import serializers
 	from shop.search.serializers import ProductSearchSerializer as ProductSearchSerializerBase
@@ -235,7 +238,8 @@ In the Search View we link the serializer together with a `djangoCMS apphook`_. 
 ``ProductsListApp`` used to render the catalog view:
 
 .. code-block:: python
-	:caption: myshop/cms_app.py
+    :caption: myshop/cms_apps.py
+    :name: search-app
 
 	from cms.app_base import CMSApp
 	from cms.apphook_pool import apphook_pool

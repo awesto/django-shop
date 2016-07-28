@@ -14,7 +14,7 @@ urlpatterns = [
     url(r'^search-catalog$', SearchView.as_view(
         serializer_class=CatalogSearchSerializer,
     )),
-    url(r'^(?P<slug>[\w-]+)$', ProductRetrieveView.as_view(
+    url(r'^(?P<slug>[\w-]+)/?$', ProductRetrieveView.as_view(
         serializer_class=ProductDetailSerializer,
     )),
     url(r'^(?P<slug>[\w-]+)/add-to-cart', AddToCartView.as_view(

@@ -8,6 +8,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.utils import six
 from django.utils.encoding import force_text
+from django.utils.six.moves.urllib.parse import urljoin
 from django.utils.translation import ugettext_lazy as _
 from polymorphic.manager import PolymorphicManager
 from polymorphic.models import PolymorphicModel
@@ -186,3 +187,21 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         return cart_item_qs.first()
 
 ProductModel = deferred.MaterializedModel(BaseProduct)
+
+
+class CMSPageReferenceMixin(object):
+    """
+    Products which refer to CMS pages in order to emulate categories, normally need
+    a way to be accessed directly via a URL. Add this mixin to Product classes to
+    add a ``get_absolute_url()`` method.
+    """
+    def get_absolute_url(self):
+        """
+        Return the absolute URL of a product
+        """
+        # sorting by highest level, so that the canonical URL
+        # associates with the most generic category
+        cms_page = self.cms_pages.order_by('depth').last()
+        if cms_page is None:
+            return urljoin('/category-not-assigned/', self.slug)
+        return urljoin(cms_page.get_absolute_url(), self.slug)

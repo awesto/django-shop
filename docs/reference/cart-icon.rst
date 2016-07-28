@@ -18,23 +18,19 @@ Cart Icon Caption
 
 This is where the client-side cart controller enters the scene. Adding product to –, or editing
 the cart changes the number of items and/or the cart's total. Therefore we must update its caption
-whenever we detect a modification in the cart. A typical use pattern, for example is:
+whenever we detect a modification in the cart. A typical use pattern, for example is::
 
-.. code-block:: html
-
-	<a href="{% page_url 'shop-cart' %}">
-		<i class="fa fa-shopping-cart fa-fw fa-lg"></i>
-		<shop-carticon-caption caption-data="{num_items: {{ cart.num_items|default:0 }} }"></shop-carticon-caption>
-	</a>
+    <a href="{% page_url 'shop-cart' %}">
+        <i class="fa fa-shopping-cart fa-fw fa-lg"></i>
+        <shop-carticon-caption caption-data="{num_items: {{ cart.num_items|default:0 }} }"></shop-carticon-caption>
+    </a>
 
 The AngularJS directive ``<shop-carticon-caption ...>`` is itself styled using an Angular template
-such as:
+such as::
 
-.. code-block:: html
-
-	<script id="shop/carticon-caption.html" type="text/ng-template">
-		<ng-pluralize count="caption.num_items" when="{'1': '{% trans "1 Item" context "cart icon" %}', 'other': '{% trans "{} Items" context "cart icon" %}'}"></ng-pluralize>
-	</script>
+    <script id="shop/carticon-caption.html" type="text/ng-template">
+        <ng-pluralize count="caption.num_items" when="{'1': '{% trans "1 Item" context "cart icon" %}', 'other': '{% trans "{} Items" context "cart icon" %}'}"></ng-pluralize>
+    </script>
 
 Whenever this AngularJS directive receives an event of type ``shopUpdateCarticonCaption``, then it
 updates the cart icon's caption with the current state of the cart. The emitter of such an event
@@ -43,7 +39,7 @@ the new caption data, it may send it to the cart item, such as:
 
 .. code-block:: javascript
 
-	$scope.$emit('shopUpdateCarticonCaption', caption_data);
+    $scope.$emit('shopUpdateCarticonCaption', caption_data);
 
 otherwise if it emits the signal without object, the AngularJS directive ``shopCarticonCaption``
 will fetch the updated caption data from the server. The latter invokes an additional HTTP request

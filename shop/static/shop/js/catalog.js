@@ -4,7 +4,7 @@
 var djangoShopModule = angular.module('django.shop.catalog', ['ui.bootstrap', 'django.shop.utils']);
 
 djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$modal',
-                                               function($scope, $http, $window, $modal) {
+                                      function($scope, $http, $window, $modal) {
 	var isLoading = false, prevContext = null, updateUrl;
 
 	this.setUpdateUrl = function(update_url) {
