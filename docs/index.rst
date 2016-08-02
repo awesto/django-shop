@@ -18,6 +18,11 @@ to this new release.
     features
 
 
+Upgrading
+=========
+If you are upgrading from an earlier version, please be sure to read :doc:`upgrading`.
+
+
 Tutorial
 ========
 
@@ -79,6 +84,7 @@ Some recipes on how to perform certain tasks in **djangoSHOP**.
     :maxdepth: 1
     :numbered:
 
+    upgrading
     howto/customize-snippets
     howto/handling-discounts
     howto/handling-taxes
