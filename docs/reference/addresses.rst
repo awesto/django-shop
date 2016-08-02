@@ -120,9 +120,10 @@ Such an address template may look like:
     :caption: myshop/address.txt
 
     {{ address.name }}
-    {{ address.address1 }}
+    {{ address.address1 }}{% if address.address2 %}
     {{ address.address2 }}
-    {{ address.zip_code }} {{ address.location }}
+    {% endif %}
+    {{ address.zip_code }} {{ address.city }}
     {{ address.get_country_display }}
 
 This template is used by the method ``as_text()`` as found in each address model.
