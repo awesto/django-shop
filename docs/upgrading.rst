@@ -1,5 +1,7 @@
+.. _upgrading:
+
 ====================
-Upgrade instructions
+Upgrading djangoSHOP
 ====================
 
 0.9.2
