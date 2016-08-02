@@ -20,7 +20,8 @@ to this new release.
 
 Upgrading
 =========
-If you are upgrading from an earlier version, please be sure to read :doc:`upgrading`.
+If you are upgrading from an earlier version, please be sure to read the
+:doc:`upgrade instructions <upgrading>`.
 
 
 Tutorial
@@ -84,7 +85,6 @@ Some recipes on how to perform certain tasks in **djangoSHOP**.
     :maxdepth: 1
     :numbered:
 
-    upgrading
     howto/customize-snippets
     howto/handling-discounts
     howto/handling-taxes
@@ -96,6 +96,7 @@ Development and Community
     :maxdepth: 1
 
     changelog
+    upgrading
     contributing
     authors
 
