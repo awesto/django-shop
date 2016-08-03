@@ -7,6 +7,8 @@ Changelog for djangoSHOP
 0.9.2.dev
 =========
 
+* Changed the default address models to be more generic. Please read the
+  :doc:`upgrade instructions <upgrading>` if you are upgrading from 0.9.0 or 0.9.1.
 * Fixed :py:meth:`shop.money.fields.decontruct` to avoid repetitive useless generation of migration
   files.
 * Using cached_property decoration for methods ``unit_price`` and ``line_total`` in

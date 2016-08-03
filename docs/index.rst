@@ -18,6 +18,12 @@ to this new release.
     features
 
 
+Upgrading
+=========
+If you are upgrading from an earlier version, please be sure to read the
+:doc:`upgrade instructions <upgrading>`.
+
+
 Tutorial
 ========
 
@@ -90,6 +96,7 @@ Development and Community
     :maxdepth: 1
 
     changelog
+    upgrading
     contributing
     authors
 
