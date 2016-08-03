@@ -6,17 +6,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-shop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-27 15:48+0200\n"
-"PO-Revision-Date: 2011-07-13 16:16+0000\n"
-"Last-Translator: chrisglass <tribaal@gmail.com>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2016-08-03 17:06+0200\n"
+"PO-Revision-Date: 2016-08-03 18:00+0100\n"
+"Last-Translator: René Fleschenberg <rene@fleschenberg.net>\n"
+"Language-Team: René Fleschenberg <rene@fleschenberg.net>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.6.10\n"
 
-#: admin/customer.py:19 models/defaults/address.py:24
+#: admin/customer.py:19 models/defaults/address.py:25
 msgid "Shipping Addresses"
 msgstr "Lieferadressen"
 
@@ -29,44 +30,44 @@ msgstr "Kundennummer"
 msgid "Customer State"
 msgstr "Kundesstatus"
 
-#: admin/customer.py:114
+#: admin/customer.py:112
 msgid "Username"
 msgstr "Benutzername"
 
-#: admin/customer.py:121 models/customer.py:208
+#: admin/customer.py:119 models/customer.py:212
 msgid "Salutation"
 msgstr "Anrede"
 
-#: admin/customer.py:128
+#: admin/customer.py:126
 msgid "Staff"
 msgstr ""
 
-#: admin/customer.py:130
+#: admin/customer.py:128
 msgid "User"
 msgstr "Benutzer"
 
-#: admin/customer.py:131
+#: admin/customer.py:129
 msgid "State"
 msgstr "Status"
 
-#: admin/customer.py:136
+#: admin/customer.py:134
 msgid "No data"
 msgstr ""
 
-#: admin/customer.py:137 models/customer.py:209
+#: admin/customer.py:135 models/customer.py:213
 msgid "Last accessed"
 msgstr "Letzter Besuch"
 
-#: admin/customer.py:144
+#: admin/customer.py:142
 msgid "Unexpired"
 msgstr ""
 
-#: admin/customer.py:155 admin/notification.py:19 models/cart.py:148
+#: admin/customer.py:153 admin/notification.py:19 models/cart.py:148
 #: models/order.py:149
 msgid "Customer"
 msgstr "Kunde"
 
-#: admin/customer.py:156
+#: admin/customer.py:154
 msgid "Customers"
 msgstr "Kunden"
 
@@ -80,7 +81,8 @@ msgstr "Es kann nur eine positive Anzahl von Artikeln ausgeliefert werden"
 
 #: admin/delivery.py:57
 msgid "The number of items to deliver exceeds the ordered quantity"
-msgstr "Die Anzahl der auszuliefernden Artikel ist größer, als die bestellte Menge"
+msgstr ""
+"Die Anzahl der auszuliefernden Artikel ist größer, als die bestellte Menge"
 
 #: admin/delivery.py:86
 msgid "Deliver quantity"
@@ -175,7 +177,7 @@ msgstr "Bestbestätigung"
 msgid "Invoice"
 msgstr "Rechnung"
 
-#: admin/product.py:32 models/related.py:41
+#: admin/product.py:32 models/related.py:56
 msgid "Categories"
 msgstr "Kategorieen"
 
@@ -183,7 +185,7 @@ msgstr "Kategorieen"
 msgid "CMS Pages"
 msgstr ""
 
-#: admin/product.py:98 models/related.py:40
+#: admin/product.py:98 models/related.py:55
 msgid "Category"
 msgstr "Kategorie"
 
@@ -392,14 +394,10 @@ msgid "Order Views"
 msgstr ""
 
 #: cascade/order.py:73
-#, fuzzy
-#| msgid "Proceed Button"
 msgid "Reorder Button"
-msgstr "Weiter Button"
+msgstr ""
 
 #: cascade/order.py:93
-#, fuzzy
-#| msgid "Extra annotation for this order"
 msgid "Supplementary annotation for this Order"
 msgstr "Zusätzliche Anmerkung zu dieser Bestellung"
 
@@ -524,9 +522,9 @@ msgstr ""
 msgid "Passwords do not match"
 msgstr "Passwörter stimmen nicht überein"
 
-#: forms/checkout.py:20 forms/checkout.py:53
-msgid "Customer Details"
-msgstr "Kundesdetails"
+#: forms/checkout.py:20
+msgid "Customer's Details"
+msgstr "Details des Kunden"
 
 #: forms/checkout.py:22 forms/checkout.py:55
 msgid "Email address"
@@ -540,9 +538,12 @@ msgstr "Vorname"
 msgid "Last Name"
 msgstr "Nachname"
 
+#: forms/checkout.py:53
+msgid "Customer's Email"
+msgstr "Details des Kunden"
+
 #: forms/checkout.py:76
-#| "A registered customer with the e-mail address ‘{email}’ already exists.\n"
-#| "If you have used this address previously, try to reset the password."
+#, python-brace-format
 msgid ""
 "A registered customer with the e-mail address '{email}' already exists.\n"
 "If you have used this address previously, try to reset the password."
@@ -552,14 +553,14 @@ msgstr ""
 "Wenn Sie diese Adresse bereits verwendet haben, versuchen Sie bitte das "
 "Passwort zurückzusetzen."
 
-#: forms/checkout.py:193 models/defaults/address.py:23
+#: forms/checkout.py:193 models/defaults/address.py:24
 #: models/defaults/order.py:13
 #: templates/shop/email/customer-information.html:14
 #: templates/shop/order/list.html:15
 msgid "Shipping Address"
 msgstr "Lieferadresse"
 
-#: forms/checkout.py:212 models/defaults/address.py:29
+#: forms/checkout.py:212 models/defaults/address.py:30
 #: models/defaults/order.py:15
 #: templates/shop/email/customer-information.html:10
 msgid "Billing Address"
@@ -1630,74 +1631,70 @@ msgid "Shopping Carts"
 msgstr "Warenkörbe"
 
 #: models/customer.py:26
-#| msgid "Customer State"
 msgid "CustomerState.Unrecognized"
 msgstr "Unerkannt"
 
 #: models/customer.py:27
-#| msgid "Customer State"
 msgid "CustomerState.Guest"
 msgstr "Gast"
 
 #: models/customer.py:28
-#| msgid "Customer State"
 msgid "CustomerState.Registered"
 msgstr "Registriert"
 
 #: models/customer.py:32
-#| msgid "Customer State"
 msgid "Customer recognition state"
 msgstr "Kundesstatus"
 
-#: models/customer.py:199
+#: models/customer.py:207
 msgid "Mrs."
 msgstr "Frau"
 
-#: models/customer.py:199
+#: models/customer.py:207
 msgid "Mr."
 msgstr "Herr"
 
-#: models/customer.py:199
+#: models/customer.py:207
 msgid "(n/a)"
 msgstr "keine Angabe"
 
-#: models/customer.py:206
+#: models/customer.py:210
 msgid "Recognized as"
 msgstr "Erkannt als"
 
-#: models/customer.py:207
+#: models/customer.py:211
 msgid "Designates the state the customer is recognized as."
 msgstr ""
 
-#: models/customer.py:211
+#: models/customer.py:215
 msgid "Extra information about this customer"
 msgstr "Zusätzliche Information über diesen Kunden"
 
 #: models/defaults/address.py:10
-msgid "Addressee"
-msgstr "Empfänger"
+msgid "Full name"
+msgstr "Voller Name"
 
 #: models/defaults/address.py:11
-msgid "Supplement"
-msgstr "Adresszusatz"
+msgid "Address line 1"
+msgstr "Adresse (Zeile 1)"
 
 #: models/defaults/address.py:12
-msgid "Street"
-msgstr "Straße"
+msgid "Address line 2"
+msgstr "Adresse (Zeile 2)"
 
 #: models/defaults/address.py:13
-msgid "ZIP"
-msgstr "PLZ"
+msgid "ZIP / Postal code"
+msgstr "Postleitzahl"
 
 #: models/defaults/address.py:14
-msgid "Location"
+msgid "City"
 msgstr "Stadt"
 
 #: models/defaults/address.py:15
 msgid "Country"
 msgstr "Land"
 
-#: models/defaults/address.py:30
+#: models/defaults/address.py:31
 msgid "Billing Addresses"
 msgstr "Rechnungsadressen"
 
@@ -2005,15 +2002,15 @@ msgstr "Produkte"
 msgid "Product type"
 msgstr "Produkttype"
 
-#: models/related.py:24
+#: models/related.py:39
 msgid "."
 msgstr ""
 
-#: models/related.py:56
+#: models/related.py:71
 msgid "Product Image"
 msgstr "Produktbild"
 
-#: models/related.py:57
+#: models/related.py:72
 msgid "Product Images"
 msgstr "Produktbilder"
 
@@ -2033,7 +2030,7 @@ msgstr "zz. {}% MWSt."
 msgid "{}% VAT incl."
 msgstr "inkl. {}% MWSt."
 
-#: money/fields.py:63
+#: money/fields.py:58
 #, python-format
 msgid "Money in %(currency_code)s"
 msgstr ""
@@ -2197,12 +2194,12 @@ msgid "Proceed as guest"
 msgstr "Als Gast fortfahren"
 
 #: templates/shop/auth/login-reset.html:6 templates/shop/auth/login.html:29
-#: templates/shop/navbar/login-logout.html:48
+#: templates/shop/navbar/login-logout.html:49
 msgid "Login"
 msgstr "Anmelden"
 
 #: templates/shop/auth/login-reset.html:7 templates/shop/auth/reset.html:4
-#: templates/shop/navbar/login-logout.html:50
+#: templates/shop/navbar/login-logout.html:54
 msgid "Password Forgotten?"
 msgstr "Passwort Vergessen?"
 
@@ -2225,8 +2222,8 @@ msgid "Please provide a valid email address"
 msgstr "Bitte eine gültige E-Mail Adresse eingeben"
 
 #: templates/shop/auth/login.html:20 templates/shop/auth/login.html:23
-#: templates/shop/navbar/login-logout.html:42
-#: templates/shop/navbar/login-logout.html:45
+#: templates/shop/navbar/login-logout.html:43
+#: templates/shop/navbar/login-logout.html:46
 msgid "Password"
 msgstr "Passwort"
 
@@ -2235,7 +2232,8 @@ msgstr "Passwort"
 msgid "Authenticated as: %(user)s"
 msgstr "Als %(user)s authentifiziert"
 
-#: templates/shop/auth/logout.html:8 templates/shop/navbar/login-logout.html:21
+#: templates/shop/auth/logout.html:8
+#: templates/shop/navbar/login-logout.html:22
 msgid "Logout"
 msgstr "Abmelden"
 
@@ -2277,6 +2275,7 @@ msgstr ""
 "wurde. Bitte beantragen Sie ein erneutes Rücksetzen des Passwortes."
 
 #: templates/shop/auth/register-user.html:4
+#: templates/shop/navbar/login-logout.html:57
 msgid "Register Yourself"
 msgstr "Registrieren Sie sich"
 
@@ -2470,12 +2469,12 @@ msgstr "Passwort für %(site_name)s zurücksetzen"
 msgid "Language"
 msgstr "Sprache"
 
-#: templates/shop/navbar/login-logout.html:16
+#: templates/shop/navbar/login-logout.html:17
 msgid "Sign in"
 msgstr "Anmelden"
 
-#: templates/shop/navbar/login-logout.html:35
-#: templates/shop/navbar/login-logout.html:38
+#: templates/shop/navbar/login-logout.html:36
+#: templates/shop/navbar/login-logout.html:39
 msgid "E-Mail"
 msgstr "E-Mail"
 
@@ -2564,6 +2563,18 @@ msgstr "Anleitung zum Zurücksetzen des Passwortes wurde an '{email}' gesendet."
 #: views/auth.py:136
 msgid "Password has been reset with the new password."
 msgstr "Passwort wurde mit neuem Passwort zurückgesetzt"
+
+#~ msgid "Supplement"
+#~ msgstr "Adresszusatz"
+
+#~ msgid "Street"
+#~ msgstr "Straße"
+
+#~ msgid "ZIP"
+#~ msgstr "PLZ"
+
+#~ msgid "Location"
+#~ msgstr "Stadt"
 
 #~ msgid "View Orders"
 #~ msgstr "Bestellungen"
