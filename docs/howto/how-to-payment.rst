@@ -144,5 +144,4 @@ Security
 
 In order to make your payment backend compatible with the ``SHOP_FORCE_LOGIN``
 setting please make sure to add the ``@shop_login_required`` decorator to any
-views that your backend provides. See :ref:`how-to-secure-your-views` for more
-information.
+views that your backend provides.

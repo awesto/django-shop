@@ -69,17 +69,17 @@ The **djangoSHOP** framework does not know which of those fields have to be seri
 it requires some help from the programmer:
 
 .. code-block:: python
-	:caption: myshop/product_serializers.py
-	:linenos:
+    :caption: myshop/product_serializers.py
+    :linenos:
 
-	from shop.rest.serializers import ProductSummarySerializerBase
-	from myshop.models.polymorphic.product import Product
-	
-	class ProductSummarySerializer(ProductSummarySerializerBase):
-	    class Meta:
-	        model = Product
-	        fields = ('id', 'product_name', 'product_url',
-	            'product_type', 'product_model', 'price')
+    from shop.rest.serializers import ProductSummarySerializerBase
+    from myshop.models.polymorphic.product import Product
+    
+    class ProductSummarySerializer(ProductSummarySerializerBase):
+        class Meta:
+            model = Product
+            fields = ('id', 'product_name', 'product_url',
+                'product_type', 'product_model', 'price')
 
 All these fields can be extracted directly from the product model with the exception of the sample
 image. This is because we yet do not know the final dimensions of the image inside its HTML element
@@ -88,14 +88,14 @@ delivered. An easy way to solve this problem is to use the ``SerializerMethodFie
 the above class to:
 
 .. code-block:: python
-	:linenos:
+    :linenos:
 
-	from rest_framework.serializers import SerializerMethodField
-	
-	class ProductSummarySerializer(ProductSummarySerializerBase):
-	    media = SerializerMethodField()
-	
-	    def get_media(self, product):
+    from rest_framework.serializers import SerializerMethodField
+    
+    class ProductSummarySerializer(ProductSummarySerializerBase):
+        media = SerializerMethodField()
+    
+        def get_media(self, product):
             return self.render_html(product, 'media')
 
 As you might expect, ``render_html`` assigns a HTML snippet to the field ``media`` in the serialized
@@ -114,33 +114,33 @@ template is constructed using the following rules:
   above, this is the string ``media``.
 
 .. note:: It might seem “un-restful” to render HTML snippets by a REST serializer and deliver them
-	via JSON to the client. However, we somehow must re-size the images assigned to our product to
-	fit into the layout of our list view. The easiest way to do this in a configurable manner is
-	to use the easythumbnails_ library and its templatetag ``{% thumbnail product.sample_image ... %}``.
+    via JSON to the client. However, we somehow must re-size the images assigned to our product to
+    fit into the layout of our list view. The easiest way to do this in a configurable manner is
+    to use the easythumbnails_ library and its templatetag ``{% thumbnail product.sample_image ... %}``.
 
 The template to render the media snippet could look like:
 
 .. code-block:: django
-	:caption: myshop/products/catalog-smartcard-media.html
+    :caption: myshop/products/catalog-smartcard-media.html
 
-	{% load i18n thumbnail djng_tags %}
-	{% thumbnail product.sample_image 100x100 crop as thumb %}
-	<img src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}">
+    {% load i18n thumbnail djng_tags %}
+    {% thumbnail product.sample_image 100x100 crop as thumb %}
+    <img src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}">
 
 The template of the products list view then may contain a list iteration such as:
 
 .. code-block:: django
-	:emphasize-lines: 5
+    :emphasize-lines: 5
 
-	{% for product in data.results %}
-	  <div class="shop-list-item">
-	    <a href="{{ product.product_url }}">
-	      <h4>{{ product.product_name }}</h4>
-	        {{ product.media }}
-	        <strong>{% trans "Price" %}: {{ product.price }}</strong>
-	    </a>
-	  </div>
-	{% endfor %}
+    {% for product in data.results %}
+      <div class="shop-list-item">
+        <a href="{{ product.product_url }}">
+          <h4>{{ product.product_name }}</h4>
+            {{ product.media }}
+            <strong>{% trans "Price" %}: {{ product.price }}</strong>
+        </a>
+      </div>
+    {% endfor %}
 
 The tag ``{{ product.media }}`` inserts the HTML snippet as prepared by the serializer from above.
 A serializer may add more than one ``SerializerMethodField``. This can be useful, if the list view
@@ -156,14 +156,14 @@ not interested in, rather than naming the fields we want to include. This for th
 view makes sense, since we want to expose every possible detail.
 
 .. code-block:: python
-	:linenos:
+    :linenos:
 
-	from shop.rest.serializers import ProductDetailSerializerBase
-	
-	class ProductDetailSerializer(ProductDetailSerializerBase):
-	    class Meta:
-	        model = Product
-	        exclude = ('active',)
+    from shop.rest.serializers import ProductDetailSerializerBase
+    
+    class ProductDetailSerializer(ProductDetailSerializerBase):
+        class Meta:
+            model = Product
+            exclude = ('active',)
 
 
 .. _RESTful: https://en.wikipedia.org/wiki/Representational_state_transfer
@@ -187,7 +187,7 @@ product object. The ``ProductDetailSerializer`` does this by default. Then add
 
 .. code-block:: django
 
-	{% include "shop/catalog/product-add2cart.html" %}
+    {% include "shop/catalog/product-add2cart.html" %}
 
 to an appropriate location in the template which renders the product detail view.
 
@@ -211,40 +211,41 @@ access them through a CMS page. Remember, since we've chosen to use CMS pages as
 to set a special **djangoCMS** apphook_:
 
 .. code-block:: python
-	:caption: myshop/cms_app.py
-	:linenos:
+    :caption: myshop/cms_apps.py
+    :name:
+    :linenos:
 
-	from cms.app_base import CMSApp
-	from cms.apphook_pool import apphook_pool
-	
-	class ProductsListApp(CMSApp):
-	    name = _("Products List")
-	    urls = ['myshop.urls.products']
-	
-	apphook_pool.register(ProductsListApp)
+    from cms.app_base import CMSApp
+    from cms.apphook_pool import apphook_pool
+    
+    class ProductsListApp(CMSApp):
+        name = _("Products List")
+        urls = ['myshop.urls.products']
+    
+    apphook_pool.register(ProductsListApp)
 
 This apphook points onto a list of boilerplate code containing these urlpattern:
 
 .. code-block:: python
-	:caption: myshop/urls/products.py
-	:linenos:
+    :caption: myshop/urls/products.py
+    :linenos:
 
-	from django.conf.urls import url
-	from rest_framework.settings import api_settings
-	from shop.rest.filters import CMSPagesFilterBackend
-	from shop.rest.serializers import AddToCartSerializer
-	from shop.views.catalog import (CMSPageProductListView,
-	    ProductRetrieveView, AddToCartView)
-	
-	urlpatterns = [
-	    url(r'^$', CMSPageProductListView.as_view(
-	        serializer_class=ProductSummarySerializer,
-	    )),
-	    url(r'^(?P<slug>[\w-]+)$', ProductRetrieveView.as_view(
-	        serializer_class=ProductDetailSerializer
-	    )),
-	    url(r'^(?P<slug>[\w-]+)/add-to-cart', AddToCartView.as_view()),
-	]
+    from django.conf.urls import url
+    from rest_framework.settings import api_settings
+    from shop.rest.filters import CMSPagesFilterBackend
+    from shop.rest.serializers import AddToCartSerializer
+    from shop.views.catalog import (CMSPageProductListView,
+        ProductRetrieveView, AddToCartView)
+    
+    urlpatterns = [
+        url(r'^$', CMSPageProductListView.as_view(
+            serializer_class=ProductSummarySerializer,
+        )),
+        url(r'^(?P<slug>[\w-]+)$', ProductRetrieveView.as_view(
+            serializer_class=ProductDetailSerializer
+        )),
+        url(r'^(?P<slug>[\w-]+)/add-to-cart', AddToCartView.as_view()),
+    ]
 
 These URL patterns connect the product serializers with the catalog views in order to assign them
 an endpoint. Additional note: The filter class ``CMSPagesFilterBackend`` is used to restrict

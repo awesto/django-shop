@@ -1,0 +1,27 @@
+{% extends "shop/order/detail.html" %}
+{% load i18n %}
+
+{% block shop-order-tbody %}
+<tbody>
+	{% for item in data.items %}
+	<tr>
+		<td class="text-center">
+			<p>{{ item.quantity }}</p>
+			<small class="text-nowrap">{% trans "Product Code" %}:</small>
+			<strong>{{ item.extra.product_code }}</strong>
+		</td>
+		<td rowspan="2">{{ item.summary.media|safe }}</td>
+		<td class="text-right">{{ item.unit_price }}</td>
+		<td class="text-right">{{ item.line_total }}</td>
+	</tr>
+	<tr class="no-border">
+		<td colspan="3">
+			{{ item.summary.body|safe }}
+			{% for key, extra_row in item.extra.rows %}
+			<div>{{ extra_row.label }}: {{ extra_row.amount }}</div>
+			{% endfor %}
+		</td>
+	</tr>
+	{% endfor %}
+</tbody>
+{% endblock shop-order-tbody %}

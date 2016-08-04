@@ -23,11 +23,11 @@ class AddressTest(TestCase):
         self.assertGreaterEqual(self.customer.pk, 1)
 
     def test_shipping_address(self):
-        address = {'addressee': "John Doe", 'street': "31, Orwell Rd", 'zip_code': "L41RG",
-            'location': "Liverpool", 'country': 'UK'}
+        address = {'name': "John Doe", 'address1': "31, Orwell Rd", 'zip_code': "L41RG",
+            'city': "Liverpool", 'country': 'UK'}
         shipping_addr = ShippingAddress.objects.create(priority=1, customer=self.customer, **address)
         self.assertGreaterEqual(shipping_addr.id, 1)
-        addr_block = "John Doe\n31, Orwell Rd\nL41RG Liverpool\nUK"
+        addr_block = "John Doe\n31, Orwell Rd\nL41RG Liverpool\nUK\n"
         self.assertMultiLineEqual(shipping_addr.as_text(), addr_block)
         self.assertEqual(ShippingAddress.objects.get_max_priority(self.customer), 1)
         self.assertEqual(ShippingAddress.objects.get_fallback(self.customer), shipping_addr)

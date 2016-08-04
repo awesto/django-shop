@@ -50,4 +50,8 @@ setup(
         'django-rest-auth>=0.5.0',
         'django-admin-sortable2>=0.6.3',
     ],
+    # Note: this requires setuptools >= 18.0.
+    extras_require={
+        ':python_version<"3.4"': ['enum34'],
+    },
 )

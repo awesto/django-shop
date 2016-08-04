@@ -23,7 +23,7 @@ Product Model
 
 Since we are free to declare our own product models, This can be achieved by adding a foreign key onto the User model:
 
-..code-block:: python
+.. code-block:: python
 
 	from shop.models.product import BaseProduct
 	

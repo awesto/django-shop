@@ -54,7 +54,7 @@ We highly suggest you run the tests suite in a clean environment, using a tool s
 
 .. code-block:: shell
 
-	pip install -r requirements/django18/testing.txt
+	pip install -r requirements/py3/testing.txt
 
 That's it! Now, you should be able to run the tests::
 
@@ -87,6 +87,8 @@ testing. Do this by creating a coverage report, for example with:
 	coverage report
 
 or if you to test only a specific class
+
+.. code-block:: shell
 
 	coverage run .tox/py27-django19/bin/py.test testshop/test_money.py
 	coverage report -m shop/money/*.py

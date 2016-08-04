@@ -81,11 +81,10 @@ class CMSPageProductListView(ProductListView):
             # restrict to products associated to this CMS page only
             backend = CMSPagesFilterBackend()
             queryset = backend().filter_queryset(self.request, self.get_queryset(), self)
-            filter_instance = self.filter_class(self.request.query_params, queryset=queryset)
-            if callable(getattr(filter_instance, 'get_render_context', None)):
-                renderer_context['filter'] = filter_instance.get_render_context(self.request)
-            elif isinstance(getattr(filter_instance, 'render_context', None), dict):
-                renderer_context['filter'] = filter_instance.render_context
+            if callable(getattr(self.filter_class, 'get_render_context', None)):
+                renderer_context['filter'] = self.filter_class.get_render_context(self.request, queryset)
+            elif isinstance(getattr(self.filter_class, 'render_context', None), dict):
+                renderer_context['filter'] = self.filter_class.render_context
         return renderer_context
 
 

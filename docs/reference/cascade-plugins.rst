@@ -10,14 +10,14 @@ different elements, without having to craft templates by hand – with one excep
 detail views.
 
 Therefore all we have to focus on, is a default page template with one big placeholder. This
-placeholder then is subdivided into containers, rows, columns and other elements of the Cascade
+placeholder then is subdivided into containers, rows, columns and other elements of the **Cascade**
 plugin collection.
 
 This however requires a completely different approach, from the designer point of view. The way web
-design was done a few years ago, starting with the screenshot of a finished page, must be rethought.
-This has been discussed in length by many web-designers, especially by Brad Frost in his excellent
-book on `Atomic Web Design`_. He propagates to reverse the design process and start with the
-smallest entity, which he calls Atoms. They form to bigger components, named Molecules, which
+design has been done a few years ago, starting with the screenshot of a finished page, must be
+rethought. This has been discussed in length by many web-designers, especially by Brad Frost in his
+excellent book on `Atomic Web Design`_. He propagates to reverse the design process and start with
+the smallest entity, which he calls Atoms. They form to bigger components, named Molecules, which
 themselves aggregate to Organisms.
 
 Some designers nowadays build those components directly in HTML and CSS or SASS, instead of drawing
@@ -209,7 +209,7 @@ so on. All this authentication forms are handled by one single plugin
 
 
 Authentication Plugin
----------------------
+~~~~~~~~~~~~~~~~~~~~~
 
 This plugin handles a bunch of authentication related forms. Lets list them:
 
@@ -369,7 +369,7 @@ of the shop framework and always available in the *Advanced Settings* of each CM
 
 
 Caveat when editing the Order Detail Page
------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The Order List- and Detail Pages share one common entity in our CMS page tree. The Order Detail
 view just rendered in a different way. Editing this pseudo page therefore is not possible because
