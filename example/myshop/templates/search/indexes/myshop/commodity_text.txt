@@ -1,5 +1,7 @@
+{% load shop_tags %}
 {{ object.product_name }}
 {{ object.product_code }}
 {{ object.description|striptags }}
 {% for page in object.cms_pages.all %}
 {{ page.get_title }}{% endfor %}
+{% render_placeholder object.placeholder %}
