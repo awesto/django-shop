@@ -106,7 +106,7 @@ INSTALLED_APPS = (
     'post_office',
     'haystack',
     'shop',
-    #'shop_stripe',
+    'shop_stripe',
     'myshop',
 )
 
