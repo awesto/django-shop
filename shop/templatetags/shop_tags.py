@@ -1,14 +1,23 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from collections import OrderedDict
 from datetime import datetime
 from django import template
 from django.conf import settings
+from django.contrib.auth.models import AnonymousUser
+from django.http.request import HttpRequest
+from django.template import Context, RequestContext
 from django.template.loader import select_template
 from django.utils import formats
+from django.utils.html import strip_tags
 from django.utils.safestring import mark_safe
 from django.utils.dateformat import format, time_format
-from classytags.helpers import InclusionTag
+from cms.models import Placeholder as PlaceholderModel
+from cms.plugin_rendering import render_placeholder
+from classytags.arguments import Argument
+from classytags.helpers import AsTag, InclusionTag
+from classytags.core import Options, Tag
 from shop import settings as shop_settings
 from shop.models.cart import CartModel
 from shop.rest.money import JSONRenderer
@@ -100,3 +109,39 @@ def rest_json(value, arg=None):
         raise ValueError(msg.format(value.__class__.__name__))
     data = JSONRenderer().render(value)
     return mark_safe(data)
+
+
+class RenderPlaceholder(AsTag):
+    """
+    Render the content of the plugins contained in a placeholder.
+    The result can be assigned to a variable within the template's context by using the `as` keyword.
+    It behaves in the same way as the `PageAttribute` class, check its docstring for more details.
+    """
+    name = 'render_placeholder'
+    options = Options(
+        Argument('placeholder'),
+        Argument('width', default=None, required=False),
+        'language',
+        Argument('language', default=None, required=False),
+        'as',
+        Argument('varname', required=False, resolve=False)
+    )
+
+    def get_value(self, context, **kwargs):
+        placeholder = kwargs.get('placeholder')
+        if not placeholder:
+            return ''
+        width = kwargs.get('width')
+        lang = kwargs.get('language')
+
+        context.push()
+        request = HttpRequest()
+        request.user = AnonymousUser()
+        request.current_page = None
+        context['request'] = request
+        obj = context.get('object')
+        content = render_placeholder(obj.placeholder, context, name_fallback=placeholder, lang=lang,
+                                     default=None, editable=True, use_cache=True) #, editable=False, use_cache=False)
+        return strip_tags(content)
+
+register.tag(RenderPlaceholder)

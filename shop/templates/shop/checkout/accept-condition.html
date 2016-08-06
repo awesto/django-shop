@@ -4,7 +4,7 @@
 	</div>
 	<div class="has-feedback form-group">
 	{{ accept_condition_form.accept.errors }}
-	{{ accept_condition_form.accept }}
+	{{ accept_condition_form.accept }}{% if accept_condition_form.accept.field.required %}<sup><strong>*</strong></sup>{% endif %}
 	{% for hidden in accept_condition_form.hidden_fields %}{{ hidden }}{% endfor %}
 	</div>
 </form>
