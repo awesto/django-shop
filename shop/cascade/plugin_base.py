@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.apps import apps
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.forms import ChoiceField, widgets
 from django.template import TemplateDoesNotExist
 from django.template.loader import select_template
@@ -136,7 +136,7 @@ class CatalogLinkForm(LinkForm):
             # check if that product still exists, otherwise return nothing
             Model = apps.get_model(*initial['link']['model'].split('.'))
             initial['product'] = Model.objects.get(pk=initial['link']['pk']).pk
-        except (KeyError, ValueError, Model.DoesNotExist):
+        except (KeyError, ValueError, ObjectDoesNotExist):
             pass
 
 

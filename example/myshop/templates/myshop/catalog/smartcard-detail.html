@@ -6,7 +6,7 @@
 	<div class="row product-detail">
 		<div class="col-xs-12 col-md-8">
 			<h1>{% render_model product "product_name" %}</h1>
-			<pre class="images jfk-scrollbar">
+			<pre class="images">
 			{% for img in product.images.all %}
 				{% thumbnail img 250x250 crop as thumb %}
 				<img src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}" alt="{{ product.product_name }}">
