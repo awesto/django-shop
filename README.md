@@ -55,8 +55,14 @@ Specifically, we aim at providing a clean, modular and Pythonic/Djangonic implem
 framework, that a moderately talented Django programmer should be able to pick up and run easily.
 
 
-### Todo:
+## Please help
 
-* We need more tests.
-* We need translations into other natural languages.
-* The documentation should be checked by a native English speaker.
+In order to build better demo sites, we need good pictures together with some introductory text
+for arbitrary products. Both, pictures and text must be free of copyright or under an open license
+(CC-by-SA, or similar). If you can provide these assets, please get in touch with Jacob Rief
+or René Fleschenber by email.
+
+We also need ...
+* more tests.
+* translations into other natural languages.
+* a native English speaker to check the documentation.
