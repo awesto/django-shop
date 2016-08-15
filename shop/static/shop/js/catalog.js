@@ -53,8 +53,9 @@ djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$mo
 
 }]);
 
-djangoShopModule.controller('ModalInstanceCtrl', ['$scope', '$http', '$modalInstance', 'modal_context',
-                                        function($scope, $http, $modalInstance, modal_context) {
+djangoShopModule.controller('ModalInstanceCtrl',
+    ['$scope', '$http', '$modalInstance', 'modal_context',
+    function($scope, $http, $modalInstance, modal_context) {
 	var isLoading = false;
 	$scope.proceed = function(next_url) {
 		if (isLoading)
@@ -94,7 +95,8 @@ djangoShopModule.directive('shopAddToCart', function() {
 });
 
 
-djangoShopModule.controller('CatalogListController', ['$scope', '$http', 'djangoShop', function($scope, $http, djangoShop) {
+djangoShopModule.controller('CatalogListController', [
+    '$scope', '$http', 'djangoShop', function($scope, $http, djangoShop) {
 	var self = this, fetchURL = djangoShop.getLocationPath();
 
 	this.loadProducts = function(config) {

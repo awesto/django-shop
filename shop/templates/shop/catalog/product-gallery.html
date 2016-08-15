@@ -1,0 +1,27 @@
+{% load i18n static sekizai_tags sass_tags %}
+
+{% addtoblock "css" %}<link href="{% sass_src 'bower_components/angular-bootstrap-plus/src/scrollpane/scrollpane.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+{% addtoblock "js" %}<script src="{% static 'bower_components/angular-bootstrap-plus/src/scrollpane/scrollpane.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+{% addtoblock "shop-ng-requires" %}bs-plus.scrollpane{% endaddtoblock %}
+
+{% addtoblock "css" %}<link href="{% sass_src 'shop/css/product-gallery.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+
+<bsp-scroll-pane>
+	<ul>{% for product in products %}
+		<li>{% include "shop/catalog/product-figure.html" %}</li>
+	{% endfor %}</ul>
+</bsp-scroll-pane>
+
+<script id="scrollpane/bsp-scrollpane.tmpl.html" type="text/ng-template">
+<scroll-edge class="scroll-left">
+	<div class="button-left">
+		<div class="arrow-left"></div>
+	</div>
+</scroll-edge>
+<ng-transclude></ng-transclude>
+<scroll-edge class="scroll-right">
+	<div class="button-right">
+		<div class="arrow-right"></div>
+	</div>
+</scroll-edge>
+</script>
