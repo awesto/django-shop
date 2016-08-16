@@ -13,15 +13,11 @@
 </bsp-scroll-pane>
 
 <script id="scrollpane/bsp-scrollpane.tmpl.html" type="text/ng-template">
-<scroll-edge class="scroll-left">
-	<div class="button-left">
-		<div class="arrow-left"></div>
-	</div>
-</scroll-edge>
+<pane-control class="left ">
+	<span class="glyphicon glyphicon-chevron-left"></span>
+</pane-control>
 <ng-transclude></ng-transclude>
-<scroll-edge class="scroll-right">
-	<div class="button-right">
-		<div class="arrow-right"></div>
-	</div>
-</scroll-edge>
+<pane-control class="right">
+	<span class="glyphicon glyphicon-chevron-right"></span>
+</pane-control>
 </script>
