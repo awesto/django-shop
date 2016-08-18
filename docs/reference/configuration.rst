@@ -240,15 +240,14 @@ the list of the default ``STATICFILES_FINDERS``:
 	)
 
 
-Since **djangoSHOP** requires third party packages outside of PyPI and installed via
-``bower install`` and ``npm install``, these files must be made available to Django through the
-configuration setting:
+Since **djangoSHOP** requires a few third party packages, which are not available from PyPI, they
+instead must be installed via ``npm install``. In order to make these files available to our Django
+application, we use the configuration setting:
 
 .. code-block:: python
 
 	STATICFILES_DIRS = (
 	    os.path.join(BASE_DIR, 'static'),
-	    ('bower_components', os.path.join(PROJECT_ROOT, 'bower_components')),
 	    ('node_modules', os.path.join(PROJECT_ROOT, 'node_modules')),
 	)
 
@@ -416,8 +415,8 @@ Change the include path to a local directory, if you don't want to rely on a CDN
 
 .. code-block:: python
 
-	SELECT2_CSS = 'bower_components/select2/dist/css/select2.min.css'
-	SELECT2_JS = 'bower_components/select2/dist/js/select2.min.js'
+	SELECT2_CSS = 'node_modules/select2/dist/css/select2.min.css'
+	SELECT2_JS = 'node_modules/select2/dist/js/select2.min.js'
 
 Since the client side is not allowed to do any price and quantity computations, Decimal values are
 transferred to the client using strings. This also avoids nasty rounding errors.
