@@ -6,18 +6,18 @@
 
 {% addtoblock "css" %}<link href="{% sass_src 'shop/css/product-gallery.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 
-<bsp-scroll-pane>
+<bsp-scrollpanel>
 	<ul>{% for product in products %}
 		<li>{% include "shop/catalog/product-figure.html" %}</li>
 	{% endfor %}</ul>
-</bsp-scroll-pane>
+</bsp-scrollpanel>
 
-<script id="scrollpane/bsp-scrollpane.tmpl.html" type="text/ng-template">
-<pane-control class="left ">
+<script id="scrollpanel/bsp-scrollpanel.tmpl.html" type="text/ng-template">
+<panel-control class="left ">
 	<span class="glyphicon glyphicon-chevron-left"></span>
-</pane-control>
+</panel-control>
 <ng-transclude></ng-transclude>
-<pane-control class="right">
+<panel-control class="right">
 	<span class="glyphicon glyphicon-chevron-right"></span>
-</pane-control>
+</panel-control>
 </script>
