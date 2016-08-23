@@ -87,8 +87,10 @@ class ProductGalleryInline(SortableInlineAdminMixin, StackedInline):
     model = SortableInlineCascadeElement
     raw_id_fields = ('product',)
     form = ProductGalleryForm
-    extra = 1
+    extra = 5
     ordering = ('order',)
+    verbose_name = _("Product")
+    verbose_name_plural = _("Product Gallery")
 
 
 class ShopProductGallery(ShopPluginBase):
@@ -96,6 +98,11 @@ class ShopProductGallery(ShopPluginBase):
     require_parent = True
     parent_classes = ('BootstrapColumnPlugin',)
     inlines = (ProductGalleryInline,)
+    # until this bug https://github.com/applegrew/django-select2/issues/65 is fixed
+    # we hide the a "add row" button and instead use `extra = 5` in ProductGalleryInline
+
+    class Media:
+        css = {'all': ('shop/css/admin/product-gallery.css',)}
 
     def get_render_template(self, context, instance, placeholder):
         return select_template([

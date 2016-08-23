@@ -41,12 +41,12 @@ as the assets manager:
 
 	{% load static sekizai_tags %}
 	
-	{% addtoblock "js" %}<script src="{% static 'bower_components/picturefill/dist/picturefill.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-	{% addtoblock "js" %}<script src="{% static 'bower_components/angular/angular.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-	{% addtoblock "js" %}<script src="{% static 'bower_components/angular-sanitize/angular-sanitize.min.js' %}"></script>{% endaddtoblock %}
-	{% addtoblock "js" %}<script src="{% static 'bower_components/angular-i18n/angular-locale_de.js' %}"></script>{% endaddtoblock %}
-	{% addtoblock "js" %}<script src="{% static 'bower_components/angular-animate/angular-animate.min.js' %}"></script>{% endaddtoblock %}
-	{% addtoblock "js" %}<script src="{% static 'bower_components/angular-messages/angular-messages.min.js' %}"></script>{% endaddtoblock %}
+	{% addtoblock "js" %}<script src="{% static 'node_modules/picturefill/dist/picturefill.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+	{% addtoblock "js" %}<script src="{% static 'node_modules/angular/angular.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+	{% addtoblock "js" %}<script src="{% static 'node_modules/angular-sanitize/angular-sanitize.min.js' %}"></script>{% endaddtoblock %}
+	{% addtoblock "js" %}<script src="{% static 'node_modules/angular-i18n/angular-locale_de.js' %}"></script>{% endaddtoblock %}
+	{% addtoblock "js" %}<script src="{% static 'node_modules/angular-animate/angular-animate.min.js' %}"></script>{% endaddtoblock %}
+	{% addtoblock "js" %}<script src="{% static 'node_modules/angular-messages/angular-messages.min.js' %}"></script>{% endaddtoblock %}
 
 Before the closing ``</body>``-tag, we then combine those includes and initialize the client side
 application. Say, we declare a base template for our project:

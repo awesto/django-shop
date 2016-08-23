@@ -37,6 +37,7 @@ Changelog for djangoSHOP
   * ``personal-details`` -> ``shop-customer-details`` to access the Customer Detail Page.
   * ``reset-password`` -> ``shop-password-reset`` to access the Reset Password Page.
   * new: ``shop-register-customer`` to access the Register User Page.
+* Moved all non-Python dependencies from ``bower_components`` into ``node_modules``.
 
 0.9.1
 =====

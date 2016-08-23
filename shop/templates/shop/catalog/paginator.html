@@ -1,6 +1,6 @@
 {% load i18n static sekizai_tags %}{% spaceless %}
 
-{% addtoblock "js" %}<script src="{% static 'bower_components/angular-inview/angular-inview.js' %}"></script>{% endaddtoblock %}
+{% addtoblock "js" %}<script src="{% static 'node_modules/angular-inview/angular-inview.js' %}"></script>{% endaddtoblock %}
 {% addtoblock "shop-ng-requires" %}angular-inview{% endaddtoblock %}
 
 {% if paginator.count > 0 %}
