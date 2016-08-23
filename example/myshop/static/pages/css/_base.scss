@@ -5,7 +5,7 @@
 .breadcrumb {
 	margin-top: 20px;
 
-	>li + li:before {
+	>li + li::before {
 		// fixes https://github.com/twbs/bootstrap-sass/issues/919
 		content: "/";
 	}
