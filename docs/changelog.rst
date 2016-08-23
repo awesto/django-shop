@@ -38,6 +38,7 @@ Changelog for djangoSHOP
   * ``reset-password`` -> ``shop-password-reset`` to access the Reset Password Page.
   * new: ``shop-register-customer`` to access the Register User Page.
 * Moved all non-Python dependencies from ``bower_components`` into ``node_modules``.
+* The breadcrumb now is responsible itself for being wrapped into a Bootstrap container.
 
 0.9.1
 =====

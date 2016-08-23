@@ -13,7 +13,7 @@
 {% endblock header %}
 
 {% block breadcrumb %}{% placeholder "Breadcrumb" or %}
-	{% include "bootstrap/includes/breadcrumb-row.html" with breadcrumb_classes="breadcrumb" %}
+	{% include "shop/breadcrumb/default.html" %}
 {% endplaceholder %}{% endblock breadcrumb %}
 
 {% block main-content %}{% placeholder "Main Content" inherit or %}

@@ -9,7 +9,7 @@
 {% endblock head %}
 
 {% block breadcrumb %}{% with extra_ance=product.product_name %}
-	{% include "bootstrap/includes/breadcrumb-row.html" with breadcrumb_classes="breadcrumb" %}
+	{% include "shop/breadcrumb/default.html" %}
 {% endwith %}{% endblock %}
 
 {% block main-content %}
