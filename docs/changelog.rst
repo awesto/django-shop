@@ -39,6 +39,8 @@ Changelog for djangoSHOP
   * new: ``shop-register-customer`` to access the Register User Page.
 * Moved all non-Python dependencies from ``bower_components`` into ``node_modules``.
 * The breadcrumb now is responsible itself for being wrapped into a Bootstrap container.
+* Use Sekizai processors from django-angular. Replaced ``shop-ng-requires`` against ``ng-requires``
+  and ``shop-ng-config`` against ``ng-config``.
 
 0.9.1
 =====

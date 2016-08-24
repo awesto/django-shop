@@ -40,17 +40,18 @@
 	<footer class="footer">
 	{% block footer %}{% endblock footer %}
 	</footer>
+
 	{% render_block "ext-js" %}
 	{% render_block "js" postprocessor "compressor.contrib.sekizai.compress" %}
 	<script type="text/javascript">
 	angular.module('myShop', ['ngAnimate', 'ngMessages', 'ngSanitize',
-		{% render_block "shop-ng-requires" postprocessor "shop.sekizai_processors.module_list" %}
+		{% render_block "ng-requires" postprocessor "djng.sekizai_processors.module_list" %}
 	]).config(['$httpProvider', function($httpProvider) {
 		$httpProvider.defaults.headers.common['X-CSRFToken'] = '{{ csrf_token }}';
 		$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 	}]).config(['$locationProvider', function($locationProvider) {
 		$locationProvider.html5Mode(false);
-	}]){% render_block "shop-ng-config" postprocessor "shop.sekizai_processors.module_config" %};
+	}]){% render_block "ng-config" postprocessor "djng.sekizai_processors.module_config" %};
 	</script>
 	{% block last %}{% endblock last %}
 </body>

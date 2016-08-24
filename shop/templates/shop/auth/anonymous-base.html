@@ -2,7 +2,7 @@
 
 {% addtoblock "css" %}<link href="{% sass_src 'shop/css/auth.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 {% addtoblock "js" %}<script src="{% static 'shop/js/auth.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-{% addtoblock "shop-ng-requires" %}django.shop.auth{% endaddtoblock %}
+{% addtoblock "ng-requires" %}django.shop.auth{% endaddtoblock %}
 
 {% if customer.is_anonymous %}
 <div class="panel panel-info">

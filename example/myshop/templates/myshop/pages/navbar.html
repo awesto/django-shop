@@ -33,13 +33,13 @@
 	{% addtoblock "css" %}<link href="{% sass_src 'pages/css/navbar.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 
 	{% addtoblock "js" %}<script src="{% static 'node_modules/angular-ui-bootstrap/ui-bootstrap-tpls.min.js' %}"></script>{% endaddtoblock %}
-	{% addtoblock "shop-ng-requires" %}ui.bootstrap{% endaddtoblock %}
+	{% addtoblock "ng-requires" %}ui.bootstrap{% endaddtoblock %}
 
 	{% addtoblock "js" %}<script src="{% static 'pages/js/navbar.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-	{% addtoblock "shop-ng-requires" %}myshop.navbar{% endaddtoblock %}
+	{% addtoblock "ng-requires" %}myshop.navbar{% endaddtoblock %}
 
 	{% addtoblock "js" %}<script src="{% static 'shop/js/search-form.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-	{% addtoblock "shop-ng-requires" %}django.shop.search{% endaddtoblock %}
+	{% addtoblock "ng-requires" %}django.shop.search{% endaddtoblock %}
 {% endblock navbar %}
 
 {% block navbar-nav %}

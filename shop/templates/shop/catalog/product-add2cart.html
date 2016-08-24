@@ -2,7 +2,7 @@
 
 {% addtoblock "js" %}<script src="{% static 'shop/js/utils.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% addtoblock "js" %}<script src="{% static 'shop/js/catalog.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-{% addtoblock "shop-ng-requires" %}django.shop.catalog{% endaddtoblock %}
+{% addtoblock "ng-requires" %}django.shop.catalog{% endaddtoblock %}
 
 {% block add-product-to-cart-panel %}{% with inline_styles=instance.inline_styles %}
 <div class="panel panel-default"{% if inline_styles %} style="{{ inline_styles }}"{% endif %}>
