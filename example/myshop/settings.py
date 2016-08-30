@@ -15,6 +15,7 @@ import os
 from decimal import Decimal
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ImproperlyConfigured
+from cmsplugin_cascade.extra_fields.config import PluginExtraFieldsConfig
 
 SHOP_APP_LABEL = 'myshop'
 BASE_DIR = os.path.dirname(__file__)
@@ -451,16 +452,16 @@ CMSPLUGIN_CASCADE = {
     'bootstrap3': {
         'template_basedir': 'angular-ui',
     },
-    'plugins_with_extra_fields': (
-        'BootstrapButtonPlugin',
-        'BootstrapRowPlugin',
-        'CarouselPlugin',
-        'SimpleWrapperPlugin',
-        'HorizontalRulePlugin',
-        'ExtraAnnotationFormPlugin',
-        'ShopProceedButton',
-        'ShopAddToCartPlugin',
-    ),
+    'plugins_with_extra_fields': {
+        'BootstrapButtonPlugin': PluginExtraFieldsConfig(allow_id_tag=True),
+        'BootstrapRowPlugin': PluginExtraFieldsConfig(),
+        'CarouselPlugin': PluginExtraFieldsConfig(),
+        'SimpleWrapperPlugin': PluginExtraFieldsConfig(),
+        'HorizontalRulePlugin': PluginExtraFieldsConfig(),
+        'ExtraAnnotationFormPlugin': PluginExtraFieldsConfig(),
+        'ShopProceedButton': PluginExtraFieldsConfig(),
+        'ShopAddToCartPlugin': PluginExtraFieldsConfig(),
+    },
     'plugins_with_extra_render_templates': {
         'CustomSnippetPlugin': [
             ('shop/catalog/product-heading.html', _("Product Heading"))
