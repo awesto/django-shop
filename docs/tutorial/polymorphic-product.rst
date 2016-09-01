@@ -41,7 +41,7 @@ You should already start to think about the layout of the list views. Only attri
 First we must create a special `Model Manager`_ which unifies the query methods for translatable
 and polymorphic models:
 
-.. _django-polymorphic: https://django-polymorphic.readthedocs.org/en/latest/
+.. _django-polymorphic: https://django-polymorphic.readthedocs.org/
 .. _Model Manager: https://docs.djangoproject.com/en/stable/topics/db/managers/
 
 .. literalinclude:: /../example/myshop/models/polymorphic/product.py
