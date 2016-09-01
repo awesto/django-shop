@@ -1,0 +1,18 @@
+{% load i18n sekizai_tags %}
+<div ng-controller="filterManufacturer" style="margin-bottom: 10px;">
+	<label for="manufacturer">{% trans "Manufacturer" %}:</label>
+	<select name="manufacturer" ng-change="filterChanged()" ng-model="manufacturer">
+		<option value="">{% trans "any" %}</option>
+	{% for manufacturer in filter.manufacturers %}
+		<option value="{{ manufacturer.id }}">{{ manufacturer.name }}</option>
+	{% endfor %}
+	</select>
+</div>
+
+{% addtoblock "ng-controller" %}
+app.controller('filterManufacturer', ['$scope', function($scope) {
+	$scope.filterChanged = function() {
+		$scope.$emit('shopCatalogFilter', {manufacturer: $scope.manufacturer});
+	};
+}]);
+{% endaddtoblock %}

@@ -464,7 +464,8 @@ CMSPLUGIN_CASCADE = {
     },
     'plugins_with_extra_render_templates': {
         'CustomSnippetPlugin': [
-            ('shop/catalog/product-heading.html', _("Product Heading"))
+            ('shop/catalog/product-heading.html', _("Product Heading")),
+            ('myshop/catalog/manufacturer-filter.html', _("Manufacturer Filter")),
         ],
     },
     'plugins_with_sharables': {
