@@ -44,7 +44,7 @@
 	{% render_block "ext-js" %}
 	{% render_block "js" postprocessor "compressor.contrib.sekizai.compress" %}
 	<script type="text/javascript">
-	angular.module('myShop', ['ngAnimate', 'ngMessages', 'ngSanitize',
+	var app = angular.module('myShop', ['ngAnimate', 'ngMessages', 'ngSanitize',
 		{% render_block "ng-requires" postprocessor "djng.sekizai_processors.module_list" %}
 	]).config(['$httpProvider', function($httpProvider) {
 		$httpProvider.defaults.headers.common['X-CSRFToken'] = '{{ csrf_token }}';
@@ -52,8 +52,8 @@
 	}]).config(['$locationProvider', function($locationProvider) {
 		$locationProvider.html5Mode(false);
 	}]){% render_block "ng-config" postprocessor "djng.sekizai_processors.module_config" %};
+	{% render_block "ng-controller" %}
 	</script>
-	{% block last %}{% endblock last %}
 </body>
 
 </html>
