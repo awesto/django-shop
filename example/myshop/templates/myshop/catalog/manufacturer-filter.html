@@ -10,9 +10,11 @@
 </div>
 
 {% addtoblock "ng-controller" %}
-app.controller('filterManufacturer', ['$scope', function($scope) {
+<script type="text/javascript">
+angular.module('myShop').controller('filterManufacturer', ['$scope', function($scope) {
 	$scope.filterChanged = function() {
 		$scope.$emit('shopCatalogFilter', {manufacturer: $scope.manufacturer});
 	};
 }]);
+</script>
 {% endaddtoblock %}
