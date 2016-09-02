@@ -40,7 +40,6 @@ class MoneyFormField(forms.DecimalField):
         super(MoneyFormField, self).__init__(**kwargs)
 
     def prepare_value(self, value):
-        raise NotImplemented("This method is gone")
         if isinstance(value, AbstractMoney):
             return Decimal(value)
         return value
