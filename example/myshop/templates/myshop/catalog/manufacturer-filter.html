@@ -1,12 +1,6 @@
 {% load i18n sekizai_tags %}
 <div ng-controller="filterManufacturer" style="margin-bottom: 10px;">
-	<label for="manufacturer">{% trans "Manufacturer" %}:</label>
-	<select name="manufacturer" ng-change="filterChanged()" ng-model="manufacturer">
-		<option value="">{% trans "any" %}</option>
-	{% for manufacturer in filter.manufacturers %}
-		<option value="{{ manufacturer.id }}">{{ manufacturer.name }}</option>
-	{% endfor %}
-	</select>
+	{{ filter.filter_set.form.as_div }}
 </div>
 
 {% addtoblock "ng-controller" %}
