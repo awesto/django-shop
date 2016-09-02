@@ -88,14 +88,21 @@ to restrict our list view onto a certain manufacturer:
 .. code-block:: python
 	:caption: myshop/filters.py
 
+	from django.forms.widgets import Select
 	import django_filters
 	from myshop.models.manufacturer import Manufacturer
+	from djng.forms import NgFormValidationMixin
+	from djng.styling.bootstrap3.forms import Bootstrap3Form
 
 	class ProductFilter(django_filters.FilterSet):
-	    manufacturer = django_filters.ModelChoiceFilter(queryset=Manufacturer.objects.all())
+	    manufacturer = django_filters.ModelChoiceFilter(
+	        queryset=Manufacturer.objects.all(),
+	        widget=Select(attrs={'ng-change': 'filterChanged()'}),
+	        empty_label="Any Manufacturer")
 
 	    class Meta:
 	        model = MyProduct
+	        form = type(str('FilterForm'), (NgFormValidationMixin, Bootstrap3Form), {})
 	        fields = ['manufacturer']
 
 	    @classmethod
@@ -104,8 +111,12 @@ to restrict our list view onto a certain manufacturer:
 	        Prepare the context for rendering the filter.
 	        We only want to show manufacturers for the list available in the current list view.
 	        """
-	        manufacturer_ids = set([i[0] for i in queryset.values_list('manufacturer')])
-	        return {'manufacturers': Manufacturer.objects.filter(id__in=manufacturer_ids)}
+	        filter_set = cls()
+	        # we only want to show manufacturers for products available in the current list view
+	        filter_field = filter_set.filters['manufacturer'].field
+	        filter_field.queryset =filter_field.queryset.filter(
+	            id__in=queryset.values_list('manufacturer_id'))
+	        return dict(filter_set=filter_set)
 
 To this filter class we can combine as many fields as we need, but in this example, we just use
 the foreign key to the manufacturer model. For all available filter field types, please check the
@@ -159,21 +170,15 @@ If we render the filtering selection in our list view such as:
 
 .. code-block:: html
 
-	<div ng-controller="filterManufacturer" style="margin-bottom: 10px;">
-	  <label for="manufacturer">Chose Manufacturer:</label>
-	  <select name="manufacturer" ng-change="filterChanged()" ng-model="manufacturer">
-	    <option>any</option>
-	    {% for manufacturer in filter.manufacturers %}
-	    <option value="{{ manufacturer.id }}">{{ manufacturer.name }}</option>
-	    {% endfor %}
-	  </select>
+	<div ng-controller="filterManufacturer">
+	  {{ filter.filter_set.form.as_div }}
 	</div>
 
 we then can connect it to a very simple AngularJS controller:
 
 .. code-block:: javascript
 
-	app.controller('filterManufacturer', ['$scope', function($scope) {
+	angular.module('myShop').controller('filterManufacturer', ['$scope', function($scope) {
 	  $scope.filterChanged = function() {
 	    $scope.$emit('shopCatalogFilter', {manufacturer: $scope.manufacturer});
 	  };
