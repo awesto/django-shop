@@ -415,11 +415,9 @@ CMS_PLACEHOLDER_CONF = {
         'glossary': CACSCADE_WORKAREA_GLOSSARY,
     },
     'Commodity Details': {
-        'plugins': ['BootstrapContainerPlugin'],
+        'plugins': ['BootstrapContainerPlugin', 'BootstrapJumbotronPlugin'],
         'text_only_plugins': ['TextLinkPlugin'],
-        'parent_classes': {'BootstrapContainerPlugin': None},
-        #'parent_classes': {'BootstrapRowPlugin': None},
-        #'require_parent': False,
+        'parent_classes': {'BootstrapContainerPlugin': None, 'BootstrapJumbotronPlugin': None},
         'glossary': CACSCADE_WORKAREA_GLOSSARY,
     },
     'Main Content': {
