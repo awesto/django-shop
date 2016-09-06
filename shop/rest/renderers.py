@@ -33,4 +33,5 @@ class CMSPageRenderer(renderers.TemplateHTMLRenderer):
         except AttributeError:
             # Fallback for DRF < 3.4.2
             template_context = self.resolve_context(context, request, response)
+        template_context.update(context)
         return template.render(template_context, request=request)

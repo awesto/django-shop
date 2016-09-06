@@ -60,7 +60,7 @@ framework, that a moderately talented Django programmer should be able to pick u
 In order to build better demo sites, we need good pictures together with some introductory text
 for arbitrary products. Both, pictures and text must be free of copyright or under an open license
 (CC-by-SA, or similar). If you can provide these assets, please get in touch with Jacob Rief
-or René Fleschenber by email.
+or René Fleschenberg by email.
 
 We also need ...
 * more tests.
