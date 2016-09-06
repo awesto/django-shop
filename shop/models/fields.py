@@ -3,12 +3,12 @@ from __future__ import unicode_literals
 
 from django.db import connection
 
-POSTGRES_FALG = False
+POSTGRES_FLAG = False
 if str(connection.vendor) == 'postgresql':
-    POSTGRES_FALG = True
+    POSTGRES_FLAG = True
 
 try:
-    if POSTGRES_FALG:
+    if POSTGRES_FLAG:
         from django.contrib.postgres.fields import JSONField
     else:
         raise ImportError
