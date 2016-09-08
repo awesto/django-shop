@@ -25,13 +25,11 @@ class CMSPageRenderer(renderers.TemplateHTMLRenderer):
             context['paginator'] = view.paginator
             # set edit_mode, so that otherwise invisible placeholders can be edited inline
             context['edit_mode'] = request.current_page.publisher_is_draft
-
-        context['data'] = data
         try:
             # DRF >= 3.4.2
-            template_context = self.get_template_context(data, context)
+            template_context = self.get_template_context(context, context)
         except AttributeError:
             # Fallback for DRF < 3.4.2
-            template_context = self.resolve_context(context, request, response)
-        template_context.update(context)
+            template_context = self.resolve_context({}, request, response)
+        template_context['data'] = data
         return template.render(template_context, request=request)
