@@ -260,6 +260,10 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     def last_login(self):
         return self.user.last_login
 
+    @property
+    def groups(self):
+        return self.user.groups
+
     def is_anonymous(self):
         return self.recognized in (CustomerState.UNRECOGNIZED, CustomerState.GUEST)
 
