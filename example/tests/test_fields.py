@@ -1,11 +1,9 @@
 # -*- coding: utf-8
 from __future__ import unicode_literals
 
-from django.db import models
 from django.test import TestCase
 
 from shop.models.cart import BaseCartItem
-from shop.models.fields import JSONField
 
 
 class JSONFieldTest(TestCase):
@@ -18,6 +16,6 @@ class JSONFieldTest(TestCase):
             "blergh": "hey, hey, hey"}
 
         obj = BaseCartItem.objects.create(extra=json_obj)
-        new_obj = JsonModel.objects.get(id=obj.id)
+        new_obj = BaseCartItem.objects.get(id=obj.id)
 
         self.assertEqual(new_obj.json, json_obj)
