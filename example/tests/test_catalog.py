@@ -37,7 +37,7 @@ class CatalogTest(TestCase):
         add2cart_url = self.sample.get_absolute_url() + '/add-to-cart'
         response = self.client.get(add2cart_url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(response.cookies.has_key('sessionid'))
+        self.assertFalse('sessionid' in response.cookies)
         payload = json.loads(response.content.decode('utf-8'))
         self.assertIsInstance(payload, dict)
         self.assertDictContainsSubset(
@@ -49,7 +49,7 @@ class CatalogTest(TestCase):
         payload['quantity'] = 2
         response = self.client.post(cart_url, payload)
         self.assertEqual(response.status_code, 201)
-        self.assertTrue(response.cookies.has_key('sessionid'))
+        self.assertTrue('sessionid' in response.cookies)
 
         # examine if our product is in the cart
         cart = json.loads(response.content.decode('utf-8'))

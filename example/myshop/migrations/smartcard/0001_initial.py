@@ -10,7 +10,7 @@ import django.utils.timezone
 import django_fsm
 import djangocms_text_ckeditor.fields
 import filer.fields.image
-import jsonfield.fields
+from shop.models.fields import JSONFieldWrapper
 import shop.money.fields
 import shop.payment.defaults
 import shop.shipping.defaults
@@ -52,7 +52,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
                 ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated at')),
-                ('extra', jsonfield.fields.JSONField(default={}, verbose_name='Arbitrary information for this cart')),
+                ('extra', JSONFieldWrapper(verbose_name='Arbitrary information for this cart')),
                 ('billing_address', models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='+', to='myshop.BillingAddress')),
             ],
         ),
@@ -60,7 +60,7 @@ class Migration(migrations.Migration):
             name='CartItem',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('extra', jsonfield.fields.JSONField(default={}, verbose_name='Arbitrary information for this cart item')),
+                ('extra', JSONFieldWrapper(verbose_name='Arbitrary information for this cart item')),
                 ('quantity', models.IntegerField(validators=[django.core.validators.MinValueValidator(0)])),
                 ('cart', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='items', to='myshop.Cart')),
             ],
@@ -72,7 +72,7 @@ class Migration(migrations.Migration):
                 ('recognized', models.PositiveSmallIntegerField(choices=[(0, 'Unrecognized'), (1, 'Guest'), (2, 'Registered')], default=0, help_text='Designates the state the customer is recognized as.', verbose_name='Recognized as')),
                 ('salutation', models.CharField(choices=[('mrs', 'Mrs.'), ('mr', 'Mr.'), ('na', '(n/a)')], max_length=5, verbose_name='Salutation')),
                 ('last_access', models.DateTimeField(default=django.utils.timezone.now, verbose_name='Last accessed')),
-                ('extra', jsonfield.fields.JSONField(default={}, editable=False, verbose_name='Extra information about this customer')),
+                ('extra', JSONFieldWrapper(editable=False, verbose_name='Extra information about this customer')),
                 ('number', models.PositiveIntegerField(default=None, null=True, unique=True, verbose_name='Customer Number')),
             ],
         ),
@@ -93,8 +93,8 @@ class Migration(migrations.Migration):
                 ('_total', models.DecimalField(decimal_places=2, max_digits=30, verbose_name='Total')),
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
                 ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated at')),
-                ('extra', jsonfield.fields.JSONField(default={}, help_text='Arbitrary information for this order object on the moment of purchase.', verbose_name='Extra fields')),
-                ('stored_request', jsonfield.fields.JSONField(default={}, help_text='Parts of the Request objects on the moment of purchase.')),
+                ('extra', JSONFieldWrapper(help_text='Arbitrary information for this order object on the moment of purchase.', verbose_name='Extra fields')),
+                ('stored_request', JSONFieldWrapper(help_text='Parts of the Request objects on the moment of purchase.')),
                 ('number', models.PositiveIntegerField(default=None, null=True, unique=True, verbose_name='Order Number')),
                 ('shipping_address_text', models.TextField(blank=True, editable=False, help_text='Shipping address at the moment of purchase.', null=True, verbose_name='Shipping Address')),
                 ('billing_address_text', models.TextField(blank=True, editable=False, help_text='Billing address at the moment of purchase.', null=True, verbose_name='Billing Address')),
@@ -114,7 +114,7 @@ class Migration(migrations.Migration):
                 ('product_code', models.CharField(blank=True, help_text='Product code at the moment of purchase.', max_length=255, null=True, verbose_name='Product code')),
                 ('_unit_price', models.DecimalField(decimal_places=2, help_text='Products unit price at the moment of purchase.', max_digits=30, null=True, verbose_name='Unit price')),
                 ('_line_total', models.DecimalField(decimal_places=2, help_text='Line total on the invoice at the moment of purchase.', max_digits=30, null=True, verbose_name='Line Total')),
-                ('extra', jsonfield.fields.JSONField(default={}, help_text='Arbitrary information for this order item', verbose_name='Extra fields')),
+                ('extra', JSONFieldWrapper(help_text='Arbitrary information for this order item', verbose_name='Extra fields')),
                 ('quantity', models.IntegerField(verbose_name='Ordered quantity')),
                 ('order', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='items', to='myshop.Order', verbose_name='Order')),
             ],

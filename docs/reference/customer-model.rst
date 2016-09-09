@@ -75,17 +75,17 @@ The simplest way is to materialize the given convenience class in our project's 
 
 .. code-block:: python
 
-	from shop.models.defaults.customer import Customer
+    from shop.models.defaults.customer import Customer
 
 or, if we need extra fields, then instead of the above, we write:
 
 .. code-block:: python
 
-	from shop.models.customer import BaseCustomer
+    from shop.models.customer import BaseCustomer
 
-	class (BaseCustomer):
-	    birth_date = models.DateField("Date of Birth")
-	    # other customer related fields
+    class Customer(BaseCustomer):
+        birth_date = models.DateField("Date of Birth")
+        # other customer related fields
 
 
 Configure the Middleware
@@ -105,12 +105,12 @@ Therefore add the CustomerMiddleware *after* the AuthenticationMiddleware in the
 
 .. code-block:: python
 
-	MIDDLEWARE_CLASSES = (
-	    ...
-	    'django.contrib.auth.middleware.AuthenticationMiddleware',
-	    'shop.middleware.CustomerMiddleware',
-	    ...
-	)
+    MIDDLEWARE_CLASSES = (
+        ...
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'shop.middleware.CustomerMiddleware',
+        ...
+    )
 
 .. _AuthenticationMiddleware: https://docs.djangoproject.com/en/stable/ref/middleware/#django.contrib.auth.middleware.AuthenticationMiddleware
 
@@ -123,11 +123,11 @@ Therefore, add this context processor to the ``settings.py`` of the project.
 
 .. code-block:: python
 
-	TEMPLATE_CONTEXT_PROCESSORS = (
-	    ...
-	    'shop.context_processors.customer',
-	    ...
-	)
+    TEMPLATE_CONTEXT_PROCESSORS = (
+        ...
+        'shop.context_processors.customer',
+        ...
+    )
 
 
 Implementation Details
@@ -146,14 +146,14 @@ reverse relation from a Customer pointing onto the given User object.
 
 .. code-block:: python
 
-	>>> from django.contrib.auth import get_user_model
-	>>> user = get_user_model().create(username='bobo')
-	>>> print user.customer.salutation
-	Traceback (most recent call last):
-	  File "<console>", line 1, in <module>
-	  File "django/db/models/fields/related.py", line 206, in __get__
-	    self.related.get_accessor_name()))
-	DoesNotExist: User has no customer.
+    >>> from django.contrib.auth import get_user_model
+    >>> user = get_user_model().create(username='bobo')
+    >>> print user.customer.salutation
+    Traceback (most recent call last):
+      File "<console>", line 1, in <module>
+      File "django/db/models/fields/related.py", line 206, in __get__
+        self.related.get_accessor_name()))
+    DoesNotExist: User has no customer.
 
 This can happen for User objects added manually or by other applications.
 
@@ -236,17 +236,17 @@ looking up the credentials. To activate this alternative User model, add to the 
 
 .. code-block:: python
 
-	INSTALLED_APPS = (
-	    'django.contrib.auth',
-	    'email_auth',
-	    ...
-	)
-	
-	AUTH_USER_MODEL = 'email_auth.User'
+    INSTALLED_APPS = (
+        'django.contrib.auth',
+        'email_auth',
+        ...
+    )
+    
+    AUTH_USER_MODEL = 'email_auth.User'
 
 .. note:: This alternative User model uses the same database table as the Django authentication
-		would, namely ``auth_user``. It is even field-compatible with the built-in model and hence
-		can be added later to an existing Django project.
+        would, namely ``auth_user``. It is even field-compatible with the built-in model and hence
+        can be added later to an existing Django project.
 
 
 Caveat when using this alternative User model
@@ -257,9 +257,9 @@ declared as unique. This by the way causes Django to complain during startup wit
 
 .. code-block:: guess
 
-	WARNINGS:
-	email_auth.User: (auth.W004) 'User.email' is named as the 'USERNAME_FIELD', but it is not unique.
-	    HINT: Ensure that your authentication backend(s) can handle non-unique usernames.
+    WARNINGS:
+    email_auth.User: (auth.W004) 'User.email' is named as the 'USERNAME_FIELD', but it is not unique.
+        HINT: Ensure that your authentication backend(s) can handle non-unique usernames.
 
 This warning can be silenced by adding ``SILENCED_SYSTEM_CHECKS = ['auth.W004']`` to the project's
 ``settings.py``.
@@ -284,8 +284,8 @@ Therefore **djangoSHOP** offers two configurable options:
   ``settings.py``. This allows us, to set a unique constraint on the email field.
 
 .. note:: The email field from Django's built-in User model has a max-length of 75 characters. This
-		is enough for most use-cases but violates RFC-5321_, which requires 254 characters. The
-		alternative implementation uses the correct max-length.
+        is enough for most use-cases but violates RFC-5321_, which requires 254 characters. The
+        alternative implementation uses the correct max-length.
 
 .. _RFC-5321: http://tools.ietf.org/html/rfc5321#section-4.5.3
 
@@ -299,10 +299,10 @@ Customer backend inside the project's ``admin.py``:
 
 .. code-block:: python
 
-	from django.contrib import admin
-	from shop.admin.customer import CustomerProxy, CustomerAdmin
+    from django.contrib import admin
+    from shop.admin.customer import CustomerProxy, CustomerAdmin
 
-	admin.site.register(CustomerProxy, CustomerAdmin)
+    admin.site.register(CustomerProxy, CustomerAdmin)
 
 This administration backend recycles the built-in ``django.contrib.auth.admin.UserAdmin``, and
 enriches it by adding the Customer model as a ``StackedInlineAdmin`` on top of the detail page.
@@ -350,8 +350,8 @@ state of customers. In the project's folder, invoke on the command line:
 
 .. code-block:: shell
 
-	./manage.py shop_customers
-	Customers in this shop: total=20482, anonymous=17418, expired=10111, active=1068, guests=1997, registered=1067, staff=5.
+    ./manage.py shop_customers
+    Customers in this shop: total=20482, anonymous=17418, expired=10111, active=1068, guests=1997, registered=1067, staff=5.
 
 Read these numbers as:
 * Anonymous customers are those which added at least one item to the cart, but never proceeded to checkout.
@@ -366,7 +366,7 @@ By invoking on the command line:
 
 .. code-block:: shell
 
-	./manage.py shop_customers --delete-expired
+    ./manage.py shop_customers --delete-expired
 
 This removes all anonymous/unregistered customers and their associated user entities from the
 database, whose session expired. This command may be used to reduce the database storage

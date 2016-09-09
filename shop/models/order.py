@@ -11,7 +11,7 @@ from django.utils.module_loading import import_string
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy, get_language_from_request
 from django.utils.six.moves.urllib.parse import urljoin
-from jsonfield.fields import JSONField
+from shop.models.fields import JSONFieldWrapper
 from ipware.ip import get_ip
 from django_fsm import FSMField, transition
 from cms.models import Page
@@ -32,7 +32,7 @@ class OrderManager(models.Manager):
         """
         cart.update(request)
         order = self.model(customer=cart.customer, currency=cart.total.currency,
-            _subtotal=Decimal(0), _total=Decimal(0), stored_request=self.stored_request(request))
+                           _subtotal=Decimal(0), _total=Decimal(0), stored_request=self.stored_request(request))
         order.get_or_assign_number()
         order.save()
         order.customer.get_or_assign_number()
@@ -69,7 +69,7 @@ class OrderManager(models.Manager):
         if request.customer.is_visitor():
             msg = _("Only signed in customers can view their orders")
             raise PermissionDenied(msg)
-        return self.get_queryset().filter(customer=request.customer).order_by('-updated_at',)
+        return self.get_queryset().filter(customer=request.customer).order_by('-updated_at', )
 
     def get_summary_url(self):
         """
@@ -101,6 +101,7 @@ class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
     Add configured Workflow mixin classes to `OrderModel` and `OrderPayment` to customize
     all kinds of state transitions in a pluggable manner.
     """
+
     def __new__(cls, name, bases, attrs):
         if 'BaseOrder' in (b.__name__ for b in bases):
             bases = tuple(import_string(mc) for mc in shop_settings.ORDER_WORKFLOWS) + bases
@@ -149,15 +150,15 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     customer = deferred.ForeignKey('BaseCustomer', verbose_name=_("Customer"), related_name='orders')
     status = FSMField(default='new', protected=True, verbose_name=_("Status"))
     currency = models.CharField(max_length=7, editable=False,
-        help_text=_("Currency in which this order was concluded"))
+                                help_text=_("Currency in which this order was concluded"))
     _subtotal = models.DecimalField(_("Subtotal"), **decimalfield_kwargs)
     _total = models.DecimalField(_("Total"), **decimalfield_kwargs)
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
     updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
-    extra = JSONField(verbose_name=_("Extra fields"), default={},
-        help_text=_("Arbitrary information for this order object on the moment of purchase."))
-    stored_request = JSONField(default={},
-        help_text=_("Parts of the Request objects on the moment of purchase."))
+    extra = JSONFieldWrapper(verbose_name=_("Extra fields"), default={},
+                             help_text=_("Arbitrary information for this order object on the moment of purchase."))
+    stored_request = JSONFieldWrapper(default={},
+                                      help_text=_("Parts of the Request objects on the moment of purchase."))
 
     objects = OrderManager()
 
@@ -284,6 +285,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         return self._transition_targets.get(self.status, self.status)
     status_name.short_description = pgettext_lazy('order_models', "State")
 
+
 OrderModel = deferred.MaterializedModel(BaseOrder)
 
 
@@ -293,12 +295,12 @@ class OrderPayment(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     order = deferred.ForeignKey(BaseOrder, verbose_name=_("Order"))
     amount = MoneyField(_("Amount paid"),
-        help_text=_("How much was paid with this particular transfer."))
+                        help_text=_("How much was paid with this particular transfer."))
     transaction_id = models.CharField(_("Transaction ID"), max_length=255,
-        help_text=_("The transaction processor's reference"))
+                                      help_text=_("The transaction processor's reference"))
     created_at = models.DateTimeField(_("Received at"), auto_now_add=True)
     payment_method = models.CharField(_("Payment method"), max_length=50,
-        help_text=_("The payment backend used to process the purchase"))
+                                      help_text=_("The payment backend used to process the purchase"))
 
     class Meta:
         verbose_name = pgettext_lazy('order_models', "Order payment")
@@ -312,17 +314,19 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     order = deferred.ForeignKey(BaseOrder, related_name='items', verbose_name=_("Order"))
     product_name = models.CharField(_("Product name"), max_length=255, null=True, blank=True,
-        help_text=_("Product name at the moment of purchase."))
+                                    help_text=_("Product name at the moment of purchase."))
     product_code = models.CharField(_("Product code"), max_length=255, null=True, blank=True,
-        help_text=_("Product code at the moment of purchase."))
+                                    help_text=_("Product code at the moment of purchase."))
     product = deferred.ForeignKey(BaseProduct, null=True, blank=True, on_delete=models.SET_NULL,
-        verbose_name=_("Product"))
+                                  verbose_name=_("Product"))
     _unit_price = models.DecimalField(_("Unit price"), null=True,  # may be NaN
-        help_text=_("Products unit price at the moment of purchase."), **BaseOrder.decimalfield_kwargs)
+                                      help_text=_("Products unit price at the moment of purchase."),
+                                      **BaseOrder.decimalfield_kwargs)
     _line_total = models.DecimalField(_("Line Total"), null=True,  # may be NaN
-        help_text=_("Line total on the invoice at the moment of purchase."), **BaseOrder.decimalfield_kwargs)
-    extra = JSONField(verbose_name=_("Extra fields"), default={},
-        help_text=_("Arbitrary information for this order item"))
+                                      help_text=_("Line total on the invoice at the moment of purchase."),
+                                      **BaseOrder.decimalfield_kwargs)
+    extra = JSONFieldWrapper(verbose_name=_("Extra fields"),
+                             help_text=_("Arbitrary information for this order item"))
 
     class Meta:
         abstract = True
@@ -377,5 +381,6 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         self._unit_price = BaseOrder.round_amount(self._unit_price)
         self._line_total = BaseOrder.round_amount(self._line_total)
         super(BaseOrderItem, self).save(*args, **kwargs)
+
 
 OrderItemModel = deferred.MaterializedModel(BaseOrderItem)

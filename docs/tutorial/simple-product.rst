@@ -4,10 +4,10 @@
 Modeling a simple product
 =========================
 
-As a simple example, this tutorial uses Smart Cards as its first product. As emphasized in section
-:ref:`tutorial/customer-model`, **djangoSHOP** is not shipped with ready to use product models.
-Instead the merchant must declare these models based on the products properties. Lets have a look
-ar a model describing a typical Smart Card:
+As a simple example, this tutorial uses Smart Cards as its first product. As
+emphasized earlier, **djangoSHOP** is not shipped with ready to use product
+models.  Instead the merchant must declare these models based on the products
+properties. Lets have a look ar a model describing a typical Smart Card:
 
 .. literalinclude:: /../example/myshop/models/smartcard.py
 	:caption: myshop/models/smartcard.py

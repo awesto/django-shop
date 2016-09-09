@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from django.utils.datetime_safe import datetime
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from shop.models import order
 
@@ -25,7 +25,7 @@ class Order(order.BaseOrder):
         current year. The last five digits represent a zero-padded incremental counter.
         """
         if self.number is None:
-            epoch = datetime.now().date()
+            epoch = timezone.now().date()
             epoch = epoch.replace(epoch.year, 1, 1)
             aggr = Order.objects.filter(number__isnull=False, created_at__gt=epoch).aggregate(models.Max('number'))
             try:
