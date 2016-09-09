@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.test import TestCase
 
-from shop.models.cart import BaseCartItem
+from shop.models.defaults.customer import Customer
 
 
 class JSONFieldTest(TestCase):
@@ -15,7 +15,7 @@ class JSONFieldTest(TestCase):
             "item_1": "this is a json blah",
             "blergh": "hey, hey, hey"}
 
-        obj = BaseCartItem.objects.create(extra=json_obj)
-        new_obj = BaseCartItem.objects.get(id=obj.id)
+        obj = Customer.objects.create(extra=json_obj)
+        new_obj = Customer.objects.get(id=obj.id)
 
-        self.assertEqual(new_obj.json, json_obj)
+        self.assertEqual(new_obj.extra, json_obj)
