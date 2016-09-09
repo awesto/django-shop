@@ -9,7 +9,7 @@ from django.template import Context
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
 from shop import settings as shop_settings
-from . import deferred
+from shop import deferred
 
 
 class AddressManager(models.Manager):

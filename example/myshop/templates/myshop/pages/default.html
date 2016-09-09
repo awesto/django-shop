@@ -13,10 +13,10 @@
 {% endblock header %}
 
 {% block breadcrumb %}{% placeholder "Breadcrumb" or %}
-	{% include "bootstrap/includes/breadcrumb-row.html" with breadcrumb_classes="breadcrumb" %}
+	{% include "shop/breadcrumb/default.html" %}
 {% endplaceholder %}{% endblock breadcrumb %}
 
-{% block main-content %}{% placeholder "Main Content Container" inherit or %}
+{% block main-content %}{% placeholder "Main Content" inherit or %}
 <div class="container">
 	<div class="row shop-starter-template">
 		<div class="col-xs-12">

@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.conf.urls import patterns
-
 
 class ShippingProvider(object):
     """
@@ -21,5 +19,4 @@ class ShippingProvider(object):
         """
         Return a list of URL patterns for external communication with the shipping service provider.
         """
-        urlpatterns = patterns('')
-        return urlpatterns
+        return []

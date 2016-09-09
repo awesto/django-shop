@@ -1,8 +1,8 @@
 {% load static cms_tags sekizai_tags %}
 
-{% addtoblock "css" %}<link href="{% static 'bower_components/angular-bootstrap-plus/src/processbar/processbar.css' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
-{% addtoblock "js" %}<script src="{% static 'bower_components/angular-bootstrap-plus/src/processbar/processbar.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-{% addtoblock "shop-ng-requires" %}bs-plus.processbar{% endaddtoblock %}
+{% addtoblock "css" %}<link href="{% static 'node_modules/angular-bootstrap-plus/src/processbar/processbar.css' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+{% addtoblock "js" %}<script src="{% static 'node_modules/angular-bootstrap-plus/src/processbar/processbar.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+{% addtoblock "ng-requires" %}bs-plus.processbar{% endaddtoblock %}
 
 <bsp-process-bar action="{{ instance.link }}">
 	{% for child in instance.child_plugin_instances %}

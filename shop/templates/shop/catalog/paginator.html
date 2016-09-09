@@ -1,4 +1,7 @@
-{% load i18n %}{% spaceless %}
+{% load i18n static sekizai_tags %}{% spaceless %}
+
+{% addtoblock "js" %}<script src="{% static 'node_modules/angular-inview/angular-inview.js' %}"></script>{% endaddtoblock %}
+{% addtoblock "ng-requires" %}angular-inview{% endaddtoblock %}
 
 {% if paginator.count > 0 %}
 <div class="row" ng-if="catalog.count===undefined">
@@ -10,7 +13,7 @@
 	<div class="col-xs-12" ng-if="catalog.count>0">
 		<ul class="pager">
 			<li ng-if="isLoading"><span>{% trans "Loading more products" %} &hellip;</span></li>
-			<li ng-if="!isLoading"><i in-view="$inview && loadMore()">&nbsp;</i></li>
+			<li ng-if="!isLoading"><i in-view="$inview && loadMore(false)">&nbsp;</i></li>
 		</ul>
 	</div>
 	<div class="col-xs-12" ng-if="catalog.count===0"><h2>{% trans "No products found" %}</h2></div>

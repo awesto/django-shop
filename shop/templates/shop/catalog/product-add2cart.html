@@ -1,10 +1,11 @@
 {% load static i18n cms_tags sekizai_tags %}
 
+{% addtoblock "js" %}<script src="{% static 'shop/js/utils.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% addtoblock "js" %}<script src="{% static 'shop/js/catalog.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-{% addtoblock "shop-ng-requires" %}django.shop.catalog{% endaddtoblock %}
+{% addtoblock "ng-requires" %}django.shop.catalog{% endaddtoblock %}
 
-{% block add-product-to-cart-panel %}
-<div class="panel panel-default">
+{% block add-product-to-cart-panel %}{% with inline_styles=instance.inline_styles %}
+<div class="panel panel-default"{% if inline_styles %} style="{{ inline_styles }}"{% endif %}>
 	<div class="panel-heading">
 		<h3 class="panel-title">{% trans "Order Product" %}</h3>
 	</div>
@@ -19,7 +20,7 @@
 		</thead>
 		<tbody>
 			<tr>
-				<td class="form-inline">
+				<td>
 					<div class="form-group">
 						<input class="form-control" type="number" min="1" ng-model="context.quantity" ng-model-options="{{ ng_model_options }}" ng-change="updateContext()" />
 					</div>
@@ -39,7 +40,7 @@
 			{% endspaceless %}{% endif %}
 			<tr>
 				<td></td>
-				<td>
+				<td class="vertical-align-middle">
 					<button class="btn btn-info btn-block btn-xs" ng-click="addToCart('{% url 'shop:watch-list' %}', {watch: true})">{% trans "Watch product" %}</button>
 				</td>
 				<td>
@@ -50,7 +51,7 @@
 	</table>
 	{% endblock add-product-to-cart-table %}
 </div>
-{% endblock add-product-to-cart-panel %}
+{% endwith %}{% endblock add-product-to-cart-panel %}
 
 {% block add-to-cart-modal-dialog %}
 <script id="AddToCartModalDialog.html" type="text/ng-template">

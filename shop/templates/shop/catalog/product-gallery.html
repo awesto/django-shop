@@ -1,0 +1,23 @@
+{% load i18n static sekizai_tags sass_tags %}
+
+{% addtoblock "css" %}<link href="{% sass_src 'node_modules/angular-bootstrap-plus/src/scrollpanel/scrollpanel.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+{% addtoblock "js" %}<script src="{% static 'node_modules/angular-bootstrap-plus/src/scrollpanel/scrollpanel.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+{% addtoblock "ng-requires" %}bs-plus.scrollpanel{% endaddtoblock %}
+
+{% addtoblock "css" %}<link href="{% sass_src 'shop/css/product-gallery.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+
+<bsp-scrollpanel>
+	<ul>{% for product in products %}
+		<li>{% include "shop/catalog/product-figure.html" %}</li>
+	{% endfor %}</ul>
+</bsp-scrollpanel>
+
+<script id="scrollpanel/bsp-scrollpanel.tmpl.html" type="text/ng-template">
+<panel-control class="left ">
+	<span class="glyphicon glyphicon-chevron-left"></span>
+</panel-control>
+<ng-transclude></ng-transclude>
+<panel-control class="right">
+	<span class="glyphicon glyphicon-chevron-right"></span>
+</panel-control>
+</script>

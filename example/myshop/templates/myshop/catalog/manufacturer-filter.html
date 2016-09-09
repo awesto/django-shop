@@ -1,0 +1,14 @@
+{% load i18n sekizai_tags %}
+<div ng-controller="filterManufacturer" style="margin-bottom: 10px;">
+	{{ filter.filter_set.form.as_div }}
+</div>
+
+{% addtoblock "ng-controller" %}
+<script type="text/javascript">
+angular.module('myShop').controller('filterManufacturer', ['$scope', function($scope) {
+	$scope.filterChanged = function() {
+		$scope.$emit('shopCatalogFilter', {manufacturer: $scope.manufacturer});
+	};
+}]);
+</script>
+{% endaddtoblock %}

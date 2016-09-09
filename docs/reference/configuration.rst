@@ -152,11 +152,13 @@ This is a configuration known to work. Special and optional apps are discussed b
 
 * ``email_auth`` optional but recommended, overrides the built-in authentification. It must be
   located after ``django.contrib.auth``.
-* ``polymorphic`` required only, if the site requires more than one type of product model.
+* ``polymorphic`` only required, if the site requires more than one type of product model.
+  It presumes that django-polymorphic_ is installed.
 * ``djangocms_text_ckeditor`` optionally adds a WYSIWYG HTML editor which integrates well with
   **djangoCMS**.
 * ``django_select2`` optionally adds a select field to Django's admin, with integrated
-  autocompletion. Very useful for added links to products manually.
+  autocompletion. Very useful for added links to products manually. It presumes that django-select2_
+  is installed.
 * ``cmsplugin_cascade`` adds the functionality to add CMS plugins, as provided by **djangoSHOP**,
   to arbitrary CMS placeholders.
 * ``cmsplugin_cascade.clipboard`` allows the site administrator to copy a set of plugins in one
@@ -174,26 +176,43 @@ This is a configuration known to work. Special and optional apps are discussed b
   functionality to the **djangoSHOP** framework.
 * ``django_fsm`` and ``fsm_admin``, required, add the Finite State Machine to the **djangoSHOP**
   framework.
-* ``djng`` required for installations using AngularJS. Adds the interface layer between Django and
-  AngularJS.
+* ``djng`` only required for installations using AngularJS, which is the recommended JavaScript
+  framework. It adds the interface layer between Django and AngularJS and presumes that
+  django-angular_ is installed.
 * ``cms``, ``menus`` and ``treebeard`` are required if **djangoSHOP** is used in combination with
   **djangoCMS**.
-* ``compressor``, highly recommended, concatenates and minifies CSS and JavaScript files on
-  production systems.
+* ``compressor``, highly recommended. Concatenates and minifies CSS and JavaScript files on
+  production systems. It presumes that django-compressor_ is installed.
 * ``sekizai``, highly recommended, allows the template designer to group CSS and JavaScript
-  includes.
-* ``sass_processor``, optional but recommended, used to convert SASS into pure CSS.
+  file includes. It presumes that django-sekizai_ is installed.
+* ``sass_processor``, optional but recommended, used to convert SASS into pure CSS together
+  with debugging information. It presumes that django-sass-processor_ is installed.
 * ``django_filters``, optionally used to filter products by their attributes using request
   parameters.
-* ``filer``, highly recommended, manage your media files in Django.
+* ``filer``, highly recommended, manage your media files in Django. It presumes that django-filer_
+  is installed.
 * ``easy_thumbnails`` and ``easy_thumbnails.optimize``, highly recommended, handle thumbnail
-  generation and optimization.
+  generation and optimization. It presumes that easy-thumbnails_ is installed.
 * ``parler`` is an optional framework which handles the translation of models fields into other
   natural languages.
-* ``post_office`` is an asynchronous mail delivery application.
-* ``haystack`` handles the interface between Django and Elasticsearch – a full-text search engine.
-* ``shop`` this framework.
+* ``post_office`` highly recommended. An asynchronous mail delivery application which does not
+  interrupt the request-response cycle when sending mail.
+* ``haystack`` optional, handles the interface between Django and Elasticsearch – a full-text
+  search engine. It presumes a running and available instance of ElasticSearch and that
+  django-haystack_ and drf-haystack_ is installed.
+* ``shop`` the **djangoSHOP** framework.
 * ``my_shop_implementation`` replace this by the merchant's implementation of his shop.
+
+.. _django-polymorphic: https://django-polymorphic.readthedocs.org/
+.. _django-select2: https://django-select2.readthedocs.org/
+.. _django-angular: https://django-angular.readthedocs.org/
+.. _django-compressor: https://django-compressor.readthedocs.org/
+.. _django-sekizai: https://django-sekizai.readthedocs.org/
+.. _django-sass-processor: https://github.com/jrief/django-sass-processor/
+.. _django-haystack: https://django-haystack.readthedocs.org/
+.. _drf-haystack: https://drf-haystack.readthedocs.org/
+.. _easy-thumbnails: https://easy-thumbnails.readthedocs.org/
+.. _django-filer: https://django-filer.readthedocs.org/
 
 
 Middleware Classes
@@ -218,10 +237,10 @@ This is a configuration known to work. Special middleware classes are discussed 
 	    'cms.middleware.page.CurrentPageMiddleware',
 	    'cms.middleware.toolbar.ToolbarMiddleware',
 	)
-	
-	* ``djng.middleware.AngularUrlMiddleware`` adds a special router, so that we can use Django's
-	  ``reverse`` function from inside JavaScript.
-	* ``shop.middleware.CustomerMiddleware`` add the Customer object to each request.
+
+* ``djng.middleware.AngularUrlMiddleware`` adds a special router, so that we can use Django's
+  ``reverse`` function from inside JavaScript.
+* ``shop.middleware.CustomerMiddleware`` add the Customer object to each request.
 
 
 Static Files
@@ -240,15 +259,14 @@ the list of the default ``STATICFILES_FINDERS``:
 	)
 
 
-Since **djangoSHOP** requires third party packages outside of PyPI and installed via
-``bower install`` and ``npm install``, these files must be made available to Django through the
-configuration setting:
+Since **djangoSHOP** requires a few third party packages, which are not available from PyPI, they
+instead must be installed via ``npm install``. In order to make these files available to our Django
+application, we use the configuration setting:
 
 .. code-block:: python
 
 	STATICFILES_DIRS = (
 	    os.path.join(BASE_DIR, 'static'),
-	    ('bower_components', os.path.join(PROJECT_ROOT, 'bower_components')),
 	    ('node_modules', os.path.join(PROJECT_ROOT, 'node_modules')),
 	)
 
@@ -332,15 +350,21 @@ accept
 	CMS_PERMISSION = False
 
 
-**DjangoSHOP** requires a few shop specific plugins for **djangocms-cascade**. Additionally we
-gain some functionality to add links from CMS pages to products.
+**DjangoSHOP** enriches **djangocms-cascade** with a few shop specific plugins.
 
 .. code-block:: python
+
+	from cmsplugin_cascade.extra_fields.config import PluginExtraFieldsConfig
 
 	CMSPLUGIN_CASCADE_PLUGINS = ('cmsplugin_cascade.segmentation', 'cmsplugin_cascade.generic',
 	    'cmsplugin_cascade.link', 'shop.cascade', 'cmsplugin_cascade.bootstrap3',)
 	
 	CMSPLUGIN_CASCADE = {
+	    'link_plugin_classes': (
+	        'shop.cascade.plugin_base.CatalogLinkPluginBase',
+	        'cmsplugin_cascade.link.plugin_base.LinkElementMixin',
+	        'shop.cascade.plugin_base.CatalogLinkForm',
+	    ),
 	    'dependencies': {
 	        'shop/js/admin/shoplinkplugin.js': 'cascade/js/admin/linkpluginbase.js',
 	    },
@@ -348,25 +372,35 @@ gain some functionality to add links from CMS pages to products.
 	    'bootstrap3': {
 	        'template_basedir': 'angular-ui',
 	    },
-	    'plugins_with_extra_fields': (
-	        'BootstrapButtonPlugin',
-	        'BootstrapRowPlugin',
-	        'SimpleWrapperPlugin',
-	        'HorizontalRulePlugin',
-	        'ExtraAnnotationFormPlugin',
-	        'ShopProceedButton',
-	    ),
+	    'plugins_with_extra_fields': {
+	        'ExtraAnnotationFormPlugin': PluginExtraFieldsConfig(),
+	        'ShopProceedButton': PluginExtraFieldsConfig(),
+	        'ShopAddToCartPlugin': PluginExtraFieldsConfig(),
+	    },
 	    'segmentation_mixins': (
-	        ('shop.cascade.segmentation.EmulateCustomerModelMixin', 'shop.cascade.segmentation.EmulateCustomerAdminMixin'),
+	        ('shop.cascade.segmentation.EmulateCustomerModelMixin',
+	         'shop.cascade.segmentation.EmulateCustomerAdminMixin'),
 	    ),
+	    'plugins_with_extra_render_templates': {
+	        'CustomSnippetPlugin': [
+	            ('shop/catalog/product-heading.html', _("Product Heading"))
+	        ],
+	    },
 	}
-	
-	CMSPLUGIN_CASCADE_LINKPLUGIN_CLASSES = (
-	    'shop.cascade.plugin_base.CatalogLinkPluginBase',
-	    'cmsplugin_cascade.link.plugin_base.LinkElementMixin',
-	    'shop.cascade.plugin_base.CatalogLinkForm',
-	)
 
+Since we want to add arbitrary links onto the detail view of a product, **djangoSHOP** offers
+a modified link plugin. This has to be enabled using the 3-tuple ``link_plugin_classes``. There
+is also a JavaScript helper ``shop/js/admin/shoplinkplugin.js``, which depends on another JavaScript
+file.
+
+**DjangoShop** uses with AngularJS rather than jQuery to control it's dynamic HTML widgets.
+We therefore have to override the default with this settings:
+``CMSPLUGIN_CASCADE['bootstrap3']['template_basedir']``.
+
+For a detailed explanation of these configuration settings, please refer to the documentation
+of djangocms-cascade_.
+
+.. _djangocms-cascade: http://djangocms-cascade.readthedocs.org
 
 Full Text Search
 ----------------
@@ -412,8 +446,8 @@ Change the include path to a local directory, if you don't want to rely on a CDN
 
 .. code-block:: python
 
-	SELECT2_CSS = 'bower_components/select2/dist/css/select2.min.css'
-	SELECT2_JS = 'bower_components/select2/dist/js/select2.min.js'
+	SELECT2_CSS = 'node_modules/select2/dist/css/select2.min.css'
+	SELECT2_JS = 'node_modules/select2/dist/js/select2.min.js'
 
 Since the client side is not allowed to do any price and quantity computations, Decimal values are
 transferred to the client using strings. This also avoids nasty rounding errors.

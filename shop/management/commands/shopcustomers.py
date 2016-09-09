@@ -8,10 +8,9 @@ from django.utils.translation import ugettext_lazy as _
 class Command(BaseCommand):
     help = _("Collect information about all customers which accessed this shop.")
 
-    option_list = BaseCommand.option_list + (
-        make_option("--delete-expired", action='store_true', dest='delete_expired',
-            help=_("Delete customers with expired sessions.")),
-    )
+    def add_arguments(self, parser):
+        parser.add_argument("--delete-expired", action='store_true', dest='delete_expired',
+            help=_("Delete customers with expired sessions."))
 
     def handle(self, verbosity, delete_expired, *args, **options):
         from shop.models.customer import CustomerModel

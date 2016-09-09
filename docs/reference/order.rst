@@ -153,8 +153,8 @@ boilerplate which has to be added to the merchant's implementation of the ``cms_
 This apphook uses the class :class:`shop.views.order.OrderView` to render the order's list- and
 detail views using the serializers :class:`shop.rest.serializers.OrderListSerializer` and
 :class:`shop.rest.serializers.OrderDetailSerializer`. Sometimes these defaults aren't enough and
-must be extended by a customized serializer. Say, our order contains a reference to the shipping
-address. Then we can add this as a new field to our serializer class:
+must be extended by a customized serializer. Say, our Order class contains the rendered
+shipping and billing addresses. Then we can extend our serializer class by adding them:
 
 .. code-block:: python
 	:caption: myshop/serializers.py
@@ -162,30 +162,27 @@ address. Then we can add this as a new field to our serializer class:
 	from shop.rest.serializers import OrderDetailSerializer
 
 	class CustomOrderSerializer(OrderDetailSerializer):
-	    shipping_address = serializers.SerializerMethodField()
-
-	    def get_shipping_address(self, order):
-	        return order.shipping_address.as_text()
+	    shipping_address_text = serializers.CharField(read_only=True)
+	    billing_address_text = serializers.CharField(read_only=True)
 
 We now can replace the ``urls`` attribute in our apphook class with, say ``['myshop.urls.order']``
-and replace the default serializer with our customized one:
+and exchange the default serializer with our customized one:
 
 .. code-block:: python
 	:caption: myshop/urls/order.py
 
-	from django.conf.urls import patterns, url
+	from django.conf.urls import url
 	from shop.views.order import OrderView
 	from myshop.serializers import CustomOrderSerializer
 
-	urlpatterns = patterns('',
+	urlpatterns = [
 	    url(r'^$', OrderView.as_view()),
 	    url(r'^(?P<pk>\d+)$', OrderView.as_view(many=False,
 	        detail_serializer_class=CustomOrderSerializer)),
-	)
+	]
 
-Now, when invoking the order detail page appending ``?format=api`` to the URL, then a new field
-named ``shipping_address`` shall appear in our context. Depending on the chosen rendering template
-for the address field, it shall contain the formatted shipping address.
+Now, when invoking the order detail page appending ``?format=api`` to the URL, then two new fields,
+``shipping_address_text`` and ``billing_address_text`` shall appear in our context.
 
 
 Add the Order list view via CMS-Cascade Plugin
@@ -442,6 +439,13 @@ On the other hand, when the status of an order is set to "*Pack the Goods*" a bu
 
 The template for the invoice and delivery note can easily be adopted to the corporate design using
 plain HTML and CSS.
+
+
+Re-adding an Order to the Cart
+==============================
+
+Sometimes it can be useful to re-add the content of an order back to the cart. This functionality
+is implemented via the REST-API and can be allowed
 
 
 .. _apphook: http://docs.django-cms.org/en/latest/how_to/apphooks.html

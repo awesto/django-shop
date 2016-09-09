@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 import warnings
 from django import forms
 from django.core.cache import cache
@@ -31,6 +32,16 @@ class CMSPageAsCategoryMixin(object):
         fieldsets = list(super(CMSPageAsCategoryMixin, self).get_fieldsets(request, obj=obj))
         fieldsets.append((_("Categories"), {'fields': ('cms_pages',)}),)
         return fieldsets
+
+    def get_fields(self, request, obj=None):
+        # In ``get_fieldsets()``, ``cms_pages`` is added, so remove it from ``fields`` to
+        # avoid showing it twice.
+        fields = list(super(CMSPageAsCategoryMixin, self).get_fields(request, obj))
+        try:
+            fields.remove('cms_pages')
+        except ValueError:
+            pass
+        return fields
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         if db_field.name == 'cms_pages':
@@ -82,3 +93,17 @@ class InvalidateProductCacheMixin(object):
             cache.delete_pattern('product:{}|*'.format(product.id))
         except AttributeError:
             pass
+
+
+class CMSPageFilter(admin.SimpleListFilter):
+    title = _("Category")
+    parameter_name = 'category'
+
+    def lookups(self, request, model_admin):
+        limit_choices_to = {'publisher_is_draft': False, 'application_urls': 'ProductsListApp'}
+        queryset = Page.objects.filter(**limit_choices_to)
+        return [(page.id, page.get_title()) for page in queryset]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(cms_pages__id=self.value())

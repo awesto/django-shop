@@ -13,7 +13,7 @@ to be translated into different languages, is the ``description`` field.
 Run the Multilingual Demo
 =========================
 
-To test this example, set the shell environment variable ``export DJANGO_SHOP_TUTORIAL=i18n``,
+To test this example, set the shell environment variable ``export DJANGO_SHOP_TUTORIAL=i18n_smartcard``,
 then apply the modified models to the database schema:
 
 .. code-block:: shell
@@ -37,8 +37,8 @@ rewrite our model as:
 
 .. _django-parler: https://github.com/edoburu/django-parler
 
-.. literalinclude:: /../example/myshop/models/i18n/smartcard.py
-	:caption: myshop/models/i18n/smartcard.py
+.. literalinclude:: /../example/myshop/models/i18n_smartcard/__init__.py
+	:caption: myshop/models/i18n_smartcard.py
 	:linenos:
 	:language: python
 	:lines: 7-15, 17-19, 21-23, 26-31, 49-50, 80-
@@ -61,8 +61,8 @@ The admin requires only a small change. Its class must additionally inherit from
 editor. Therefore it is recommended to group all multilingual fields into one fieldset to emphasize
 that these fields are translatable.
 
-.. literalinclude:: /../example/myshop/admin/i18n/smartcard.py
-	:caption: myshop/admin/i18n/smartcard.py
+.. literalinclude:: /../example/myshop/admin/i18n_smartcard.py
+	:caption: myshop/admin/i18n_smartcard.py
 	:linenos:
 	:language: python
 	:lines: 4-10, 12-

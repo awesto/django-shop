@@ -22,7 +22,7 @@ This image is rather large (1.9 GB) therefore it may take some time to download.
 Locate the IP address of the running container using ``docker-machine ip default``. Then point
 a browser onto this address using port 9001, for instance http://192.168.99.100:9001/en/
 
-Please note that before bootstrapping, a full text index is built and the images are thumbnailed.
+Please note that before the server starts, a full text index is built and the images are thumbnailed.
 This takes additional time. Therefore, if you stop the running container, before rerunning the
 Docker image it is recommended to restart the container. First locate it using
 
@@ -42,39 +42,48 @@ password "*secret*".
 	the application requires an outgoing SMTP server.
 
 
-The classic approach
+The Classic Approach
 ====================
 
 Alternatively you may also download all dependencies and start the project manually. If you want to
-use the demo as a starting point, this probably is the better solution.
+use the demo as a starting point, this presumably is the better solution.
 
 Filling your CMS with page content and adding products is a boring job. Impatient users may start
-three demos using some prepared sample data. First assure that all dependencies are installed
-into its virtual environment as described in section ":ref:`tutorial/prepare-installation`". Then
-instead of adding pages and products manually, `download the media files`_ and unpack them into the
-folder ``django-shop``:
+five demos using prepared sample data. First assure that all dependencies are installed into its
+virtual environment as described in section ":ref:`tutorial/prepare-installation`". Then instead of
+adding pages and products manually, `download the media files`_ and unpack them into the folder
+``django-shop``:
 
 .. code-block:: shell
 
 	(shoptutorial)$ tar zxf DOWNLOAD/FOLDER/django-shop-workdir.tar.gz
 
-Starting from this folder, you can run all three demos: The first, simple demo shows how to setup a
-monolingual shop, with one product type. The second, internationalized demo shows how to setup a
-multilingual shop, with one product type. For translation of model attributes, this installation
-uses the django-parler_ app. The third, polymorphic demo shows how to setup a shop with many
-different product types. To handle the polymorphism of products, this installation uses the
-django-polymorphic_ app.
+Starting from this folder, you can run all five demos:
+
+The first, simple demo shows how to setup a monolingual shop, with a generic product, which
+is named a "Commodity".
+
+The second, internationalized demo shows how to setup the same shop, but multilingual. For
+translating the model attributes, this installation uses django-parler_ app.
+
+The third demo shows how to declare your own product model, using Smart Cards as an example.
+
+The fourth demo is the same as the third one, but internationalized.
+
+The fifth demo combines all of the above, and uses polymorphism_ to distinguish between various
+types of products. This demo is multilingual and handles Commodities, Smart Cards and Smart Phones
+with variations.
 
 .. note:: All demos can be started independently from each other, but you are encouraged to start
-		with the "Simple Product", and then proceed to the more complicate examples.
+		with the first example, and then proceed to the more complicate ones.
 
 .. _download the media files: http://downloads.django-shop.org/django-shop-workdir.tar.gz
 .. _django-parler: http://django-parler.readthedocs.org/en/latest/
-.. _django-polymorphic: https://django-polymorphic.readthedocs.org/en/latest/
+.. _polymorphism: https://django-polymorphic.readthedocs.org/en/latest/
 
 
-Simple Product Demo
-===================
+Simple Generic Product (Commodity) Demo
+=======================================
 
 Assure you are in the ``django-shop`` folder and using the correct virtual environment. Then in a
 shell invoke:
@@ -82,9 +91,9 @@ shell invoke:
 .. code-block:: shell
 
 	(shoptutorial)$ cd example
-	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=simple DJANGO_DEBUG=1
+	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=commodity DJANGO_DEBUG=1
 	(shoptutorial)$ ./manage.py migrate
-	(shoptutorial)$ ./manage.py loaddata fixtures/myshop-simple.json
+	(shoptutorial)$ ./manage.py loaddata fixtures/myshop-commodity.json
 	(shoptutorial)$ ./manage.py runserver
 
 Point a browser onto http://localhost:8000/admin/ and sign in as user "*admin*" with password
@@ -98,26 +107,26 @@ Internationalized Products
 
 In this demo the description of the products can be translated into different natural languages.
 
-When migrating from the Simple Products demo, assure you are in the ``django-shop`` folder and
+When migrating from the Smart Card demo, assure you are in the ``django-shop`` folder and
 using the correct virtual environment. Then in a shell invoke:
 
 .. code-block:: shell
 
-	(shoptutorial)$ cp workdir/db-simple.sqlite3 workdir/db-i18n.sqlite3
+	(shoptutorial)$ cp workdir/db-smartcard.sqlite3 workdir/db-i18n_smartcard.sqlite3
 	(shoptutorial)$ cd example
-	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=i18n DJANGO_DEBUG=1
+	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=i18n_smartcard DJANGO_DEBUG=1
 	(shoptutorial)$ ./manage.py migrate
 	(shoptutorial)$ ./manage.py runserver
 
 Alternatively, if you prefer to start with an empty database, assure that the file
-``workdir/db-i18n.sqlite3`` is missing. Then in a shell invoke:
+``workdir/db-i18n_smartcard.sqlite3`` is missing. Then in a shell invoke:
 
 .. code-block:: shell
 
 	(shoptutorial)$ cd example
-	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=i18n DJANGO_DEBUG=1
+	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=i18n_smartcard DJANGO_DEBUG=1
 	(shoptutorial)$ ./manage.py migrate
-	(shoptutorial)$ ./manage.py loaddata fixtures/myshop-i18n.json
+	(shoptutorial)$ ./manage.py loaddata fixtures/myshop-i18n_smartcard.json
 	(shoptutorial)$ ./manage.py runserver
 
 Point a browser onto http://localhost:8000/admin/ and sign in as user "*admin*" with password

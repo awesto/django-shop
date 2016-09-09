@@ -1,14 +1,23 @@
-{% load i18n menu_tags %}{% spaceless %}
+{% load i18n menu_tags sekizai_tags %}
+{% addtoblock "css" %}
+<style>
+.breadcrumb li.pull-right::before {
+	display: none;
+}
+</style>
+{% endaddtoblock %}
 
-<div class="row">
-	<div class="col-xs-12">
-		<ol class="breadcrumb">
-			{% show_breadcrumb 0 "bootstrap/menu/breadcrumb.html" %}
-			<li class="pull-right hidden-xs">
-				{% trans "Found Products" %}: <span class="badge" djng-bind-if="catalog.count">{{ paginator.count }}</span>
-			</li>
-		</ol>
+{% spaceless %}
+<div class="container">
+	<div class="row">
+		<div class="col-xs-12">
+			<ol class="breadcrumb">
+				{% show_breadcrumb 0 "bootstrap/menu/breadcrumb.html" %}
+				<li class="pull-right hidden-xs">
+					{% trans "Found Products" %}: <span class="badge" djng-bind-if="catalog.count">{{ paginator.count }}</span>
+				</li>
+			</ol>
+		</div>
 	</div>
 </div>
-
 {% endspaceless %}
