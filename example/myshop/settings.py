@@ -103,13 +103,14 @@ INSTALLED_APPS = (
     'filer',
     'easy_thumbnails',
     'easy_thumbnails.optimize',
-    'parler',
     'post_office',
     'haystack',
     'shop',
     'shop_stripe',
     'myshop',
 )
+if SHOP_TUTORIAL in ('i18n_commodity', 'i18n_smartcard', 'polymorphic'):
+    INSTALLED_APPS += ('parler',)
 
 MIDDLEWARE_CLASSES = (
     'djng.middleware.AngularUrlMiddleware',
