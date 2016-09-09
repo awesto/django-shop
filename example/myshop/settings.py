@@ -451,16 +451,6 @@ CMSPLUGIN_CASCADE = {
     'bootstrap3': {
         'template_basedir': 'angular-ui',
     },
-    'plugins_with_extra_fields': {
-        'BootstrapButtonPlugin': PluginExtraFieldsConfig(allow_id_tag=True),
-        'BootstrapRowPlugin': PluginExtraFieldsConfig(),
-        'CarouselPlugin': PluginExtraFieldsConfig(),
-        'SimpleWrapperPlugin': PluginExtraFieldsConfig(),
-        'HorizontalRulePlugin': PluginExtraFieldsConfig(),
-        'ExtraAnnotationFormPlugin': PluginExtraFieldsConfig(),
-        'ShopProceedButton': PluginExtraFieldsConfig(),
-        'ShopAddToCartPlugin': PluginExtraFieldsConfig(),
-    },
     'plugins_with_extra_render_templates': {
         'CustomSnippetPlugin': [
             ('shop/catalog/product-heading.html', _("Product Heading")),
