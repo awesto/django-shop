@@ -11,7 +11,7 @@ from django.utils.module_loading import import_string
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy, get_language_from_request
 from django.utils.six.moves.urllib.parse import urljoin
-from shop.models.fields import JSONFieldWrapper
+from shop.models.fields import JSONField
 from ipware.ip import get_ip
 from django_fsm import FSMField, transition
 from cms.models import Page
@@ -155,9 +155,9 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     _total = models.DecimalField(_("Total"), **decimalfield_kwargs)
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
     updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
-    extra = JSONFieldWrapper(verbose_name=_("Extra fields"), default={},
+    extra = JSONField(verbose_name=_("Extra fields"), default={},
                              help_text=_("Arbitrary information for this order object on the moment of purchase."))
-    stored_request = JSONFieldWrapper(default={},
+    stored_request = JSONField(default={},
                                       help_text=_("Parts of the Request objects on the moment of purchase."))
 
     objects = OrderManager()
@@ -325,7 +325,7 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     _line_total = models.DecimalField(_("Line Total"), null=True,  # may be NaN
                                       help_text=_("Line total on the invoice at the moment of purchase."),
                                       **BaseOrder.decimalfield_kwargs)
-    extra = JSONFieldWrapper(verbose_name=_("Extra fields"),
+    extra = JSONField(verbose_name=_("Extra fields"),
                              help_text=_("Arbitrary information for this order item"))
 
     class Meta:
