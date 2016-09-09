@@ -8,11 +8,6 @@ from shop.models.cart import BaseCartItem
 from shop.models.fields import JSONField
 
 
-class JsonModel(models.Model):
-    json = JSONField()
-    default_json = JSONField(default={"check": 12})
-
-
 class JSONFieldTest(TestCase):
     """JSONField Wrapper Tests"""
 
