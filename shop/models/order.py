@@ -155,10 +155,9 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     _total = models.DecimalField(_("Total"), **decimalfield_kwargs)
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
     updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
-    extra = JSONField(verbose_name=_("Extra fields"), default={},
-                             help_text=_("Arbitrary information for this order object on the moment of purchase."))
-    stored_request = JSONField(default={},
-                                      help_text=_("Parts of the Request objects on the moment of purchase."))
+    extra = JSONField(verbose_name=_("Extra fields"),
+                      help_text=_("Arbitrary information for this order object on the moment of purchase."))
+    stored_request = JSONField(help_text=_("Parts of the Request objects on the moment of purchase."))
 
     objects = OrderManager()
 
@@ -283,6 +282,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     def status_name(self):
         """Return the human readable name for the current transition state"""
         return self._transition_targets.get(self.status, self.status)
+
     status_name.short_description = pgettext_lazy('order_models', "State")
 
 
@@ -326,7 +326,7 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
                                       help_text=_("Line total on the invoice at the moment of purchase."),
                                       **BaseOrder.decimalfield_kwargs)
     extra = JSONField(verbose_name=_("Extra fields"),
-                             help_text=_("Arbitrary information for this order item"))
+                      help_text=_("Arbitrary information for this order item"))
 
     class Meta:
         abstract = True
