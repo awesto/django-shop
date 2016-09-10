@@ -1,21 +1,34 @@
 # -*- coding: utf-8
 from __future__ import unicode_literals
 
+from django.db import models
 from django.test import TestCase
 
-from shop.models.defaults.customer import Customer
+from shop.models.defaults.cart_item import CartItem
+from shop.models.fields import JSONField
+
+
+class JsonModel(models.Model):
+
+    class Meta:
+        app_label = 'JsonModel'
+
+    json = JSONField()
+    default_json = JSONField(default={"check": 12})
 
 
 class JSONFieldTest(TestCase):
-    """JSONField Wrapper Tests"""
+    """JSONField Tests"""
+
+    fixtures = ['myshop-polymorphic.json']
+
+    def setUp(self):
+        super(JSONFieldTest, self).setUp()
+        self.sample = CartItem.objects.get(id=8)
+        self.assertIsNotNone(self.sample)
 
     def test_json_field_create(self):
         """Test saving a JSON object in our JSONField"""
-        json_obj = {
-            "item_1": "this is a json blah",
-            "blergh": "hey, hey, hey"}
+        extra = {"product_code":"1121"}
 
-        obj = Customer.objects.create(extra=json_obj)
-        new_obj = Customer.objects.get(id=obj.id)
-
-        self.assertEqual(new_obj.extra, json_obj)
+        self.assertEqual(self.sample.extra, extra)
