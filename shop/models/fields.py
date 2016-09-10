@@ -2,40 +2,38 @@
 from __future__ import unicode_literals
 
 from distutils.version import LooseVersion
-import re
-import subprocess
 from django.db import connection
 
-POSTGRES_FLAG = False
-if str(connection.vendor) == 'postgresql':
-    POSTGRES_FLAG = True
+from shop.apps import get_tuple_version
+
 try:
-    if POSTGRES_FLAG:
+    if str(connection.vendor) == 'postgresql':
         import psycopg2
 
-        psycopg2_version = re.search('([0-9.]+)', psycopg2.__version__ or "0").group(0)
-        try:
-            process = subprocess.Popen(
-                ['psql', '-V'], stdout=subprocess.PIPE, stderr=subprocess.PIPE
-            )
-        except (OSError, IOError):
-            raise ImportError
-        out, err = process.communicate()
-        postgres_version = re.search('([0-9.]+)', out or "0").group(0)
+        psycopg2_version = get_tuple_version(psycopg2.__version__[:5])
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT version()")
+            row = cursor.fetchone()[:17]
+        postgres_version = get_tuple_version(str(row[0][:17].split(' ')[1]))
         # To be able to use the Django version of JSONField, it requires to have PostgreSQL ≥ 9.4 and psycopg2 ≥ 2.5.4,
         # otherwise some issues could be faced.
-        if LooseVersion(psycopg2_version) >= LooseVersion('2.5.4') and (LooseVersion(postgres_version)>= LooseVersion('9.4')):
-            from django.contrib.postgres.fields import JSONField
+        if (psycopg2_version[0]) >= (2, 5, 4) and (postgres_version >= (9, 4)):
+            from django.contrib.postgres.fields import JSONField as _JSONField
         else:
             raise ImportError
     else:
         raise ImportError
 
 except ImportError:
-    from jsonfield.fields import JSONField
+    from jsonfield.fields import JSONField as _JSONField
 
 
-class JSONFieldWrapper(JSONField):
+class JSONField(_JSONField):
     def __init__(self, *args, **kwargs):
         kwargs.update({'default': {}})
-        super(JSONFieldWrapper, self).__init__(*args, **kwargs)
+        super(JSONField, self).__init__(*args, **kwargs)
+
+    def deconstruct(self):
+        name, path, args, kwargs = super(JSONField, self).deconstruct()
+        del kwargs["default"]
+        return name, path, args, kwargs

@@ -6,7 +6,7 @@ from collections import OrderedDict
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import ugettext_lazy as _
-from shop.models.fields import JSONFieldWrapper
+from shop.models.fields import JSONField
 from shop.modifiers.pool import cart_modifiers_pool
 from shop.money import Money
 from .product import BaseProduct
@@ -70,7 +70,7 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     cart = deferred.ForeignKey('BaseCart', related_name='items')
     product = deferred.ForeignKey(BaseProduct)
-    extra = JSONFieldWrapper(default={}, verbose_name=_("Arbitrary information for this cart item"))
+    extra = JSONField(default={}, verbose_name=_("Arbitrary information for this cart item"))
 
     objects = CartItemManager()
 
@@ -150,7 +150,7 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     customer = deferred.OneToOneField('BaseCustomer', verbose_name=_("Customer"), related_name='cart')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
-    extra = JSONFieldWrapper(verbose_name=_("Arbitrary information for this cart"))
+    extra = JSONField(verbose_name=_("Arbitrary information for this cart"))
 
     # our CartManager determines the cart object from the request.
     objects = CartManager()

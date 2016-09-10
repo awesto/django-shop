@@ -11,7 +11,7 @@ from django.utils.module_loading import import_string
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy, get_language_from_request
 from django.utils.six.moves.urllib.parse import urljoin
-from shop.models.fields import JSONFieldWrapper
+from shop.models.fields import JSONField
 from ipware.ip import get_ip
 from django_fsm import FSMField, transition
 from cms.models import Page
@@ -155,10 +155,9 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     _total = models.DecimalField(_("Total"), **decimalfield_kwargs)
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
     updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
-    extra = JSONFieldWrapper(verbose_name=_("Extra fields"), default={},
-                             help_text=_("Arbitrary information for this order object on the moment of purchase."))
-    stored_request = JSONFieldWrapper(default={},
-                                      help_text=_("Parts of the Request objects on the moment of purchase."))
+    extra = JSONField(verbose_name=_("Extra fields"),
+                      help_text=_("Arbitrary information for this order object on the moment of purchase."))
+    stored_request = JSONField(help_text=_("Parts of the Request objects on the moment of purchase."))
 
     objects = OrderManager()
 
@@ -283,6 +282,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     def status_name(self):
         """Return the human readable name for the current transition state"""
         return self._transition_targets.get(self.status, self.status)
+
     status_name.short_description = pgettext_lazy('order_models', "State")
 
 
@@ -325,8 +325,8 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     _line_total = models.DecimalField(_("Line Total"), null=True,  # may be NaN
                                       help_text=_("Line total on the invoice at the moment of purchase."),
                                       **BaseOrder.decimalfield_kwargs)
-    extra = JSONFieldWrapper(verbose_name=_("Extra fields"),
-                             help_text=_("Arbitrary information for this order item"))
+    extra = JSONField(verbose_name=_("Extra fields"),
+                      help_text=_("Arbitrary information for this order item"))
 
     class Meta:
         abstract = True

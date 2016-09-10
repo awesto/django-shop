@@ -15,7 +15,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import SimpleLazyObject
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
 from django.utils.six import with_metaclass
-from shop.models.fields import JSONFieldWrapper
+from shop.models.fields import JSONField
 from shop import deferred
 from .related import ChoiceEnum
 
@@ -214,7 +214,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
                                     help_text=_("Designates the state the customer is recognized as."))
     salutation = models.CharField(_("Salutation"), max_length=5, choices=SALUTATION)
     last_access = models.DateTimeField(_("Last accessed"), default=timezone.now)
-    extra = JSONFieldWrapper(editable=False,
+    extra = JSONField(editable=False,
                              verbose_name=_("Extra information about this customer"))
 
     objects = CustomerManager()
