@@ -214,8 +214,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
                                     help_text=_("Designates the state the customer is recognized as."))
     salutation = models.CharField(_("Salutation"), max_length=5, choices=SALUTATION)
     last_access = models.DateTimeField(_("Last accessed"), default=timezone.now)
-    extra = JSONField(editable=False,
-                             verbose_name=_("Extra information about this customer"))
+    extra = JSONField(editable=False, verbose_name=_("Extra information about this customer"))
 
     objects = CustomerManager()
 

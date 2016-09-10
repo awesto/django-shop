@@ -70,7 +70,7 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     cart = deferred.ForeignKey('BaseCart', related_name='items')
     product = deferred.ForeignKey(BaseProduct)
-    extra = JSONField(default={}, verbose_name=_("Arbitrary information for this cart item"))
+    extra = JSONField(verbose_name=_("Arbitrary information for this cart item"))
 
     objects = CartItemManager()
 
