@@ -104,7 +104,7 @@ but unique naming scheme, for example ``django.shop.auth``, ``django.shop.cart``
 This is where Sekizai's ``render_block`` templatetag, together with the postprocessor
 ``module_list`` we can manage our AngularJS dependencies:
 
-.. block:: Django
+.. code-block:: Django
 
 	angular.module('myShop', [/* other dependencies */
 	    {% render_block "ng-requires" postprocessor "djng.sekizai_processors.module_list" %}
@@ -113,7 +113,7 @@ This is where Sekizai's ``render_block`` templatetag, together with the postproc
 By adding Sekizai's ``render_block`` templatetag, together with the postprocessor ``module_config``,
 at the end of our initialization statement, we can add arbitrary configuration code.
 
-.. block:: Django
+.. code-block:: Django
 
 	angular.module('myShop', [/* module dependencies */]
 	).{% render_block "ng-config" postprocessor "djng.sekizai_processors.module_config" %};

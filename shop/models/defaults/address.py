@@ -7,12 +7,13 @@ from shop.models.address import BaseShippingAddress, BaseBillingAddress, ISO_316
 
 
 class AddressModelMixin(models.Model):
-    addressee = models.CharField(_("Addressee"), max_length=50)
-    supplement = models.CharField(_("Supplement"), max_length=50, blank=True, null=True)
-    street = models.CharField(_("Street"), max_length=50)
-    zip_code = models.CharField(_("ZIP"), max_length=10)
-    location = models.CharField(_("Location"), max_length=50)
-    country = models.CharField(_("Country"), max_length=3, choices=ISO_3166_CODES)
+    name = models.CharField(_("Full name"), max_length=1024)
+    address1 = models.CharField(_("Address line 1"), max_length=1024)
+    address2 = models.CharField(_("Address line 2"), max_length=1024)
+    zip_code = models.CharField(_("ZIP / Postal code"), max_length=12)
+    city = models.CharField(_("City"), max_length=1024)
+    country = models.CharField(_("Country"), max_length=3,
+                               choices=ISO_3166_CODES)
 
     class Meta:
         abstract = True

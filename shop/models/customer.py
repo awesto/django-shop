@@ -15,7 +15,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import SimpleLazyObject
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
 from django.utils.six import with_metaclass
-from jsonfield.fields import JSONField
+from shop.models.fields import JSONField
 from shop import deferred
 from .related import ChoiceEnum
 
@@ -23,9 +23,12 @@ SessionStore = import_module(settings.SESSION_ENGINE).SessionStore()
 
 
 class CustomerState(ChoiceEnum):
-    UNRECOGNIZED = 0; ugettext_noop("CustomerState.Unrecognized")
-    GUEST = 1; ugettext_noop("CustomerState.Guest")
-    REGISTERED = 2; ugettext_noop("CustomerState.Registered")
+    UNRECOGNIZED = 0;
+    ugettext_noop("CustomerState.Unrecognized")
+    GUEST = 1;
+    ugettext_noop("CustomerState.Guest")
+    REGISTERED = 2;
+    ugettext_noop("CustomerState.Registered")
 
 
 class CustomerStateField(models.PositiveSmallIntegerField):
@@ -208,11 +211,10 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL, primary_key=True)
     recognized = CustomerStateField(_("Recognized as"), default=CustomerState.UNRECOGNIZED,
-        help_text=_("Designates the state the customer is recognized as."))
+                                    help_text=_("Designates the state the customer is recognized as."))
     salutation = models.CharField(_("Salutation"), max_length=5, choices=SALUTATION)
     last_access = models.DateTimeField(_("Last accessed"), default=timezone.now)
-    extra = JSONField(default={}, editable=False,
-        verbose_name=_("Extra information about this customer"))
+    extra = JSONField(editable=False, verbose_name=_("Extra information about this customer"))
 
     objects = CustomerManager()
 
@@ -352,6 +354,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         else:
             # also delete self through cascading
             self.user.delete(*args, **kwargs)
+
 
 CustomerModel = deferred.MaterializedModel(BaseCustomer)
 

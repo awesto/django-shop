@@ -16,44 +16,52 @@ address fields are required for his needs. Therefore the base address model does
 any address related fields, they instead have to be declared by the merchant. A concrete
 implementation of the shipping address model may look like this:
 
-..code-block:: python
+.. code-block:: python
 
-	from shop.models.address import BaseShippingAddress, ISO_3166_CODES
-	
-	class ShippingAddress(BaseShippingAddress):
-	    class Meta:
-	        verbose_name = "Shipping Address"
-	        verbose_name_plural = "Shipping Addresses"
-	
-	    addressee = models.CharField("Addressee", max_length=50)
-	    street = models.CharField("Street", max_length=50)
-	    zip_code = models.CharField("ZIP", max_length=10)
-	    location = models.CharField("Location", max_length=50)
-	    country = models.CharField("Country", max_length=3,
-	                               choices=ISO_3166_CODES)
+    from django.utils.translation import ugettext as _
+    from shop.models.address import BaseShippingAddress, ISO_3166_CODES
+
+    class ShippingAddress(BaseShippingAddress):
+
+        name = models.CharField(_("Full name"), max_length=1024)
+        address1 = models.CharField(_("Address line 1"), max_length=1024)
+        address2 = models.CharField(_("Address line 2"), max_length=1024)
+        zip_code = models.CharField(_("ZIP / Postal code"), max_length=12)
+        city = models.CharField(_("City"), max_length=1024)
+        country = models.CharField(_("Country"), max_length=3,
+                                choices=ISO_3166_CODES)
+        class Meta:
+            verbose_name = "Shipping Address"
+            verbose_name_plural = "Shipping Addresses"
+
+
 
 Since the billing address may contain different fields, it must be defined separately from the
 shipping address. To avoid the duplicate definition of common fields for both models, use a mixin
 class such as:
 
-..code-block:: python
+.. code-block:: python
 
-	from django.db import models
-	from shop.models.address import BaseBillingAddress
-	
-	class AddressModelMixin(models.Model):
-	    addressee = models.CharField(_("Addressee"), max_length=50)
-	    # other fields
-	
-	    class Meta:
-	        abstract = True
-	
-	class BillingAddress(BaseBillingAddress, AddressModelMixin):
-	    tax_number = models.CharField("Tax number", max_length=50)
-	
-	    class Meta:
-	        verbose_name = "Billing Address"
-	        verbose_name_plural = "Billing Addresses"
+    from django.db import models
+    from django.utils.translation import ugettext as _
+    from shop.models.address import BaseBillingAddress
+
+    class AddressModelMixin(models.Model):
+        name = models.CharField(_"Full name"), max_length=1024)
+        address1 = models.CharField(_"Address line 1"), max_length=1024)
+        # other fields
+
+        class Meta:
+            abstract = True
+
+
+    class BillingAddress(BaseBillingAddress, AddressModelMixin):
+        tax_number = models.CharField("Tax number", max_length=50)
+
+        class Meta:
+            verbose_name = _("Billing Address")
+            verbose_name_plural = _("Billing Addresses")
+
 
 
 Multiple Addresses
@@ -109,13 +117,14 @@ If both address models share the same fields, we may also use ``myshop/address.t
 Such an address template may look like:
 
 .. code-block:: django
-	:caption: myshop/address.txt
+    :caption: myshop/address.txt
 
-	{{ address.addressee }}{% if address.supplement %}
-	{{ address.supplement }}{% endif %}
-	{{ address.street }}
-	{{ address.zip_code }} {{ address.location }}
-	{{ address.get_country_display }}
+    {{ address.name }}
+    {{ address.address1 }}{% if address.address2 %}
+    {{ address.address2 }}
+    {% endif %}
+    {{ address.zip_code }} {{ address.city }}
+    {{ address.get_country_display }}
 
 This template is used by the method ``as_text()`` as found in each address model.
 
@@ -143,16 +152,16 @@ example above. Then they may be styled as
 
 .. code-block:: css
 
-	.shop-address-zip_code {
-	    width: 35%;
-	    display: inline-block;
-	}
-	
-	.shop-address-location {
-	    width: 65%;
-	    display: inline-block;
-	    margin-left: -4px;
-	    padding-left: 15px;
-	}
+    .shop-address-zip_code {
+        width: 35%;
+        display: inline-block;
+    }
+
+    .shop-address-city {
+        width: 65%;
+        display: inline-block;
+        margin-left: -4px;
+        padding-left: 15px;
+    }
 
 so that the ZIP field is narrower and precedes the location field on the same line.
