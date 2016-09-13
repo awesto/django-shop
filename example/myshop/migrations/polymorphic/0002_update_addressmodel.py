@@ -47,4 +47,14 @@ class Migration(migrations.Migration):
         migrations.AlterField("BillingAddress", "city", models.CharField(
             verbose_name="City", max_length=1024
         )),
+        migrations.AlterField(
+            model_name='billingaddress',
+            name='zip_code',
+            field=models.CharField(max_length=12, verbose_name='ZIP / Postal code'),
+        ),
+        migrations.AlterField(
+            model_name='shippingaddress',
+            name='zip_code',
+            field=models.CharField(max_length=12, verbose_name='ZIP / Postal code'),
+        ),
     ]
