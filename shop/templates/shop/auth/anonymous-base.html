@@ -4,6 +4,9 @@
 {% addtoblock "js" %}<script src="{% static 'shop/js/auth.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% addtoblock "ng-requires" %}django.shop.auth{% endaddtoblock %}
 
+{% addtoblock "js" %}<script src="{% static 'node_modules/angular-messages/angular-messages.min.js' %}"></script>{% endaddtoblock %}
+{% addtoblock "ng-requires" %}ngMessages{% endaddtoblock %}
+
 {% if customer.is_anonymous %}
 <div class="panel panel-info">
 	<div class="panel-heading">

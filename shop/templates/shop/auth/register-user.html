@@ -1,8 +1,5 @@
 {% extends "shop/auth/anonymous-base.html" %}
-{% load i18n static sekizai_tags %}
-
-{% addtoblock "js" %}<script src="{% static 'node_modules/angular-messages/angular-messages.min.js' %}"></script>{% endaddtoblock %}
-{% addtoblock "ng-requires" %}ngMessages{% endaddtoblock %}
+{% load i18n %}
 
 {% block form_title %}{% trans "Register Yourself" %}{% endblock %}
 
