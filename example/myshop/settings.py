@@ -318,7 +318,6 @@ NODE_MODULES_URL = STATIC_URL + 'node_modules/'
 
 SASS_PROCESSOR_INCLUDE_DIRS = (
     os.path.join(PROJECT_ROOT, 'node_modules'),
-    os.path.join(PROJECT_ROOT, 'shop/static'),
 )
 
 COERCE_DECIMAL_TO_STRING = True
