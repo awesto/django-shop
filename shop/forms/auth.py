@@ -19,8 +19,10 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelF
     field_css_classes = 'input-group has-feedback'
 
     email = fields.EmailField(label=_("Your e-mail address"))
-    preset_password = fields.BooleanField(required=False, label=_("Preset password"),
+    preset_password = fields.BooleanField(
+        label=_("Preset password"),
         widget=widgets.CheckboxInput(),
+        required=False,
         help_text=_("Send a randomly generated password to your e-mail address."))
 
     password1 = fields.CharField(label=_("Choose a password"), widget=widgets.PasswordInput,

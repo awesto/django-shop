@@ -209,7 +209,7 @@ so on. All this authentication forms are handled by one single plugin
 
 
 Authentication Plugin
----------------------
+~~~~~~~~~~~~~~~~~~~~~
 
 This plugin handles a bunch of authentication related forms. Lets list them:
 
@@ -369,7 +369,7 @@ of the shop framework and always available in the *Advanced Settings* of each CM
 
 
 Caveat when editing the Order Detail Page
------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The Order List- and Detail Pages share one common entity in our CMS page tree. The Order Detail
 view just rendered in a different way. Editing this pseudo page therefore is not possible because

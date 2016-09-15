@@ -1,0 +1,22 @@
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Set default charset
+[*.{js,py,rst,json,yml,html,txt}]
+charset = utf-8
+
+[*.{py}]
+indent_style = space
+indent_size = 4
+
+[*.{html,rst,css,scss}]
+indent_style = tab
+indent_size = 4
+
+[*.{json,yml}]
+indent_style = space
+indent_size = 2

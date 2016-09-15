@@ -1,22 +1,18 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: django-shop\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-30 17:17+0200\n"
-"PO-Revision-Date: 2011-07-13 16:16+0000\n"
-"Last-Translator: chrisglass <tribaal@gmail.com>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: René Fleschenberg <rene@fleschenberg.net>\n"
+"Language-Team: René Fleschenberg <rene@fleschenberg.net>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Language: de\n"
+"X-Generator: Poedit 1.5.5\n"
 
-#: admin/customer.py:19 models/defaults/address.py:24
+#: admin/customer.py:19 models/defaults/address.py:25
 msgid "Shipping Addresses"
 msgstr "Lieferadressen"
 
@@ -394,7 +390,7 @@ msgstr ""
 
 #: cascade/order.py:73
 msgid "Reorder Button"
-msgstr "Erneut bestellen Button"
+msgstr ""
 
 #: cascade/order.py:93
 msgid "Supplementary annotation for this Order"
@@ -520,7 +516,7 @@ msgstr "Passwörter stimmen nicht überein"
 
 #: forms/checkout.py:20
 msgid "Customer's Details"
-msgstr "Kundendetails"
+msgstr "Details des Kunden"
 
 #: forms/checkout.py:22 forms/checkout.py:55
 msgid "Email address"
@@ -536,7 +532,7 @@ msgstr "Nachname"
 
 #: forms/checkout.py:53
 msgid "Customer's Email"
-msgstr "Email Adresse des Kunden"
+msgstr "Details des Kunden"
 
 #: forms/checkout.py:76
 #, python-brace-format
@@ -549,14 +545,14 @@ msgstr ""
 "Wenn Sie diese Adresse bereits verwendet haben, versuchen Sie bitte das "
 "Passwort zurückzusetzen."
 
-#: forms/checkout.py:193 models/defaults/address.py:23
+#: forms/checkout.py:193 models/defaults/address.py:24
 #: models/defaults/order.py:13
 #: templates/shop/email/customer-information.html:14
 #: templates/shop/order/list.html:15
 msgid "Shipping Address"
 msgstr "Lieferadresse"
 
-#: forms/checkout.py:212 models/defaults/address.py:29
+#: forms/checkout.py:212 models/defaults/address.py:30
 #: models/defaults/order.py:15
 #: templates/shop/email/customer-information.html:10
 msgid "Billing Address"
@@ -1667,30 +1663,30 @@ msgid "Extra information about this customer"
 msgstr "Zusätzliche Information über diesen Kunden"
 
 #: models/defaults/address.py:10
-msgid "Addressee"
-msgstr "Empfänger"
+msgid "Full name"
+msgstr "Voller Name"
 
 #: models/defaults/address.py:11
-msgid "Supplement"
-msgstr "Adresszusatz"
+msgid "Address line 1"
+msgstr "Adresse (Zeile 1)"
 
 #: models/defaults/address.py:12
-msgid "Street"
-msgstr "Straße"
+msgid "Address line 2"
+msgstr "Adresse (Zeile 2)"
 
 #: models/defaults/address.py:13
-msgid "ZIP"
-msgstr "PLZ"
+msgid "ZIP / Postal code"
+msgstr "Postleitzahl"
 
 #: models/defaults/address.py:14
-msgid "Location"
+msgid "City"
 msgstr "Stadt"
 
 #: models/defaults/address.py:15
 msgid "Country"
 msgstr "Land"
 
-#: models/defaults/address.py:30
+#: models/defaults/address.py:31
 msgid "Billing Addresses"
 msgstr "Rechnungsadressen"
 
@@ -2026,7 +2022,7 @@ msgstr "zz. {}% MWSt."
 msgid "{}% VAT incl."
 msgstr "inkl. {}% MWSt."
 
-#: money/fields.py:64
+#: money/fields.py:58 money/fields.py:64
 #, python-format
 msgid "Money in %(currency_code)s"
 msgstr ""
@@ -2558,6 +2554,18 @@ msgstr "Anleitung zum Zurücksetzen des Passwortes wurde an '{email}' gesendet."
 #: views/auth.py:136
 msgid "Password has been reset with the new password."
 msgstr "Passwort wurde mit neuem Passwort zurückgesetzt"
+
+#~ msgid "Supplement"
+#~ msgstr "Adresszusatz"
+
+#~ msgid "Street"
+#~ msgstr "Straße"
+
+#~ msgid "ZIP"
+#~ msgstr "PLZ"
+
+#~ msgid "Location"
+#~ msgstr "Stadt"
 
 #~ msgid "View Orders"
 #~ msgstr "Bestellungen"

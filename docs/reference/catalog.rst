@@ -60,7 +60,8 @@ of the merchant's project:
 as all apphooks, it requires a file defining its urlpatterns:
 
 .. code-block:: python
-	:caption: myshop/urls/products.py
+    :caption: myshop/urls/products.py
+    :name: apphook-urlpatterns
 
 	from django.conf.urls import url
 	from rest_framework.settings import api_settings
@@ -142,7 +143,8 @@ The ``ProductsListApp``, which we previously have registered into **djangoCMS**,
 requests on all of its sub-URLs. This is done by expanding the current list of urlpatterns:
 
 .. code-block:: python
-	:caption: myshop/urls/products.py
+    :caption: myshop/urls/products.py
+    :name: productlist-urlpatterns
 
 	from django.conf.urls import url
 	from shop.views.catalog import ProductRetrieveView
