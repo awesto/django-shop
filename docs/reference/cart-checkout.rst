@@ -20,7 +20,7 @@ Expired Carts
 
 Sessions expire, but then the cart's content of anonymous customers still remains in the database.
 We therefore must assure that these carts will expire too, since they are of no use for anybody,
-except maybe for some data-mining.
+except, maybe for some data-mining experts.
 
 By invoking
 
@@ -30,17 +30,17 @@ By invoking
 	Customers in this shop: total=3408, anonymous=140, expired=88,
 	    active=1108, guests=2159, registered=1109, staff=5.
 
-we gather some statistics about former visiting customers of our **djangoSHOP**. Here we see that
-1109 customers bought as registered users, while 2159 bought as guests. There are 88 customers in
-the database, but they don't have any associated session anymore, hence they can be considered as
-expired. Invoking
+we gather some statistics about customers having visited of our **djangoSHOP** site. In this example
+we see that 1109 customers bought as registered users, while 2159 bought as guests. There are 88
+customers in the database, but they don't have any associated session anymore, hence they can be
+considered as expired. Invoking
 
 .. code-block:: shell
 
 	./manage.py shopcustomers --delete-expired
 
 deletes those expired customers, and with them their expired carts. This task shall be performed
-by a cronjob on a daily basis.
+by a cronjob on a daily or weekly basis.
 
 
 Cart Models
@@ -58,8 +58,8 @@ To materialize the default implementation, it is enough to ``import`` these two 
 merchants shop project. Otherwise we create our own cart implementation inheriting from ``BaseCart``
 and ``BaseCartItem``. Since the item quantity can not always be represented by natural numbers, this
 field must be added to the ``CartItem`` implementation rather than its base class. Its field type
-must be countable, so only ``IntegerField``, ``FloatField`` or ``DecimalField`` are allowed as
-quantity.
+must allow arithmetic operations, so only ``IntegerField``, ``FloatField`` or ``DecimalField``
+are allowed as quantity.
 
 .. note:: Assure that the model ``CartItem`` is imported (and materialized) before model
 		``Product`` and classes derived from it.
@@ -72,7 +72,7 @@ customer by invoking:
 
 	from shop.models.cart import CartManager
 
-	cart = CartManager.get_or_create_from_request(request)
+	cart = CartModel.objects.get_or_create_from_request(request)
 
 Adding a product to the cart, must be performed by invoking:
 
@@ -80,8 +80,8 @@ Adding a product to the cart, must be performed by invoking:
 
 	from shop.models.cart import CartItemManager
 
-	cart_item = CartItemManager.get_or_create(cart=cart,
-	        product=product, quantity=quantity, **extras)
+	cart_item = CartItemManager.get_or_create(
+	    cart=cart, product=product, quantity=quantity, **extras)
 
 This returns a new cart item object, if the given product could not be found in the current cart.
 Otherwise it returns the existing cart item, increasing the quantity by the given value. For
