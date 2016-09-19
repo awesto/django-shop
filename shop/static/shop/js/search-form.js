@@ -6,11 +6,11 @@ var djangoShopModule = angular.module('django.shop.search', ['django.shop.utils'
 
 // Directive <form shop-product-search ...> to be used in the form containing the input field
 // for entering the search query
-djangoShopModule.directive('shopProductSearch', ['$location', 'djangoShop', function($location, djangoShop) {
+djangoShopModule.directive('shopProductSearch', ['$location', '$timeout', 'djangoShop', function($location, $timeout, djangoShop) {
 	return {
 		require: 'form',
 		restrict: 'AC',
-		controller: ['$scope', '$timeout', function($scope, $timeout) {
+		controller: ['$scope', function($scope) {
 			var acPromise = null;
 
 			// handle typeahead using autocomplete
@@ -46,10 +46,10 @@ djangoShopModule.directive('shopProductSearch', ['$location', 'djangoShop', func
 				queries = djangoShop.paramsFromSearchQuery();
 				scope.searchQuery = queries.q;
 			} else {
-				//$timeout(function() {
+				$timeout(function() {
 					// delay until next digest cycle
-				//	scope.$emit('shopCatalogSearch', queries);
-				//});
+					scope.$emit('shopCatalogSearch', queries);
+				});
 				scope.searchQuery = queries.params.q;
 			}
 
