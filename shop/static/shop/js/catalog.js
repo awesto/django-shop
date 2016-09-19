@@ -88,7 +88,7 @@ djangoShopModule.directive('shopAddToCart', function() {
 		link: function(scope, element, attrs, AddToCartCtrl) {
 			if (!attrs.shopAddToCart)
 				throw new Error("Directive shop-add-to-cart must point onto an URL");
-			AddToCartCtrl.setUpdateUrl(attrs.shopAddToCart); 
+			AddToCartCtrl.setUpdateUrl(attrs.shopAddToCart);
 			AddToCartCtrl.loadContext();
 		}
 	};
