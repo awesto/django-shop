@@ -133,10 +133,10 @@ djangoShopModule.controller('CatalogListController', [
 	});
 
 	// listen on events of type `shopCatalogFilter`
-	$scope.$root.$on('shopCatalogFilter', function(event, filter) {
+	$scope.$root.$on('shopCatalogFilter', function(event, params) {
 		var config;
 		try {
-			config = {params: filter};
+			config = {params: params};
 		} catch (err) {
 			config = null;
 		}

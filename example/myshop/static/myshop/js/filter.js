@@ -9,18 +9,19 @@ Module.directive('shopAttributeFilter', ['$location', '$timeout', function($loca
 			var params = $location.search(), attr = attrs['shopAttributeFilter'];
 			if (!attr)
 				throw new Error("Directive shop-attribute-filter requires an attribute.");
+
+			scope.filters = scope.filters || {};
 			if (angular.isDefined(params[attr])) {
 				$timeout(function() {
 					// delay until next digest cycle
 					scope.$emit('shopCatalogFilter', params);
 				});
-				scope[attr] = params[attr];
+				scope.filters[attr] = params[attr];
 			}
 
 			scope.filterChanged = function() {
-				console.log(scope);
-				if (scope[attr]) {
-					params[attr] = scope[attr];
+				if (scope.filters[attr]) {
+					params[attr] = scope.filters[attr];
 				} else {
 					params = {};
 				}

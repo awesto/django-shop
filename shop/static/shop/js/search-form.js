@@ -13,7 +13,7 @@ djangoShopModule.directive('shopProductSearch', ['$location', '$timeout', 'djang
 		controller: ['$scope', function($scope) {
 			var acPromise = null;
 
-			// handle typeahead using autocomplete
+			// handle typeahead search using autocomplete
 			$scope.autocomplete = function() {
 				var config;
 				if (!angular.isString($scope.searchQuery) || $scope.searchQuery.length < 3) {
@@ -25,7 +25,6 @@ djangoShopModule.directive('shopProductSearch', ['$location', '$timeout', 'djang
 							q: $scope.searchQuery
 						}
 					};
-					$scope.property_filters = [];
 					$location.search(config.params);
 				}
 				// delay the execution of reloading products
@@ -34,23 +33,24 @@ djangoShopModule.directive('shopProductSearch', ['$location', '$timeout', 'djang
 					acPromise = null;
 				}
 				acPromise = $timeout(function() {
+					$scope.filters = {};  // remove content in filters
 					$scope.$emit('shopCatalogSearch', config);
 				}, 666);
 			};
 		}],
 		link: function(scope, element, attrs, formController) {
-			var queries = {params: $location.search()};
+			var params = $location.search();
 
-			// convert query string from URL to object
-			if (angular.equals({}, queries.params)) {
-				queries = djangoShop.paramsFromSearchQuery();
-				scope.searchQuery = queries.q;
-			} else {
+			if (angular.equals({}, params)) {
+				// convert URL ending in ?q=<query> into string for our search input field
+				scope.searchQuery = djangoShop.paramsFromSearchQuery()['q'];
+			} else if (params.q) {
+				// we are performing an autocomplete search
 				$timeout(function() {
 					// delay until next digest cycle
-					scope.$emit('shopCatalogSearch', queries);
+					scope.$emit('shopCatalogSearch', {params: params});
 				});
-				scope.searchQuery = queries.params.q;
+				scope.searchQuery = params.q;
 			}
 
 			// handle classic search through submission form

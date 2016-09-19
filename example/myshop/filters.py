@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.forms.widgets import Select
 from django.utils.translation import ugettext_lazy as _
 import django_filters
-from djng.forms import NgFormValidationMixin
+from djng.forms import NgModelFormMixin
 from djng.styling.bootstrap3.forms import Bootstrap3Form
 from .models.manufacturer import Manufacturer
 from .models.polymorphic.product import Product
@@ -18,7 +18,7 @@ class ManufacturerFilter(django_filters.FilterSet):
 
     class Meta:
         model = Product
-        form = type(str('FilterForm'), (NgFormValidationMixin, Bootstrap3Form), {})
+        form = type(str('FilterForm'), (NgModelFormMixin, Bootstrap3Form), {'scope_prefix': 'filters'})
         fields = ['manufacturer']
 
     @classmethod
@@ -26,6 +26,6 @@ class ManufacturerFilter(django_filters.FilterSet):
         filter_set = cls()
         # we only want to show manufacturers for products available in the current list view
         filter_field = filter_set.filters['manufacturer'].field
-        filter_field.queryset =filter_field.queryset.filter(
+        filter_field.queryset = filter_field.queryset.filter(
             id__in=queryset.values_list('manufacturer_id'))
         return dict(filter_set=filter_set)
