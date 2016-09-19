@@ -3,10 +3,12 @@
 
 var Module = angular.module('myshop.filter', []);
 
-Module.directive('shopAttributeFilter', ['$location', '$timeout', function($location, $timeout) {
+// Directive <ANY shop-product-filter="attribute"> to be used to communicate selected
+// attributes used to narrow down the list of products.
+Module.directive('shopProductFilter', ['$location', '$timeout', function($location, $timeout) {
 	return {
 		link: function(scope, element, attrs) {
-			var params = $location.search(), attr = attrs['shopAttributeFilter'];
+			var params = $location.search(), attr = attrs['shopProductFilter'];
 			if (!attr)
 				throw new Error("Directive shop-attribute-filter requires an attribute.");
 

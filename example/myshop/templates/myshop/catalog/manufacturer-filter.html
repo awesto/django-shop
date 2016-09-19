@@ -1,8 +1,8 @@
 {% load static sekizai_tags %}
 
-{% addtoblock "js" %}<script src="{% static 'myshop/js/filter.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+{% addtoblock "js" %}<script src="{% static 'shop/js/filter.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% addtoblock "ng-requires" %}myshop.filter{% endaddtoblock %}
 
-<div shop-attribute-filter="manufacturer" style="margin-bottom: 10px;">
+<div shop-product-filter="manufacturer" style="margin-bottom: 10px;">
 	{{ filter.filter_set.form.as_div }}
 </div>
