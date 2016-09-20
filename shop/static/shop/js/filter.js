@@ -1,7 +1,7 @@
 (function(angular, undefined) {
 'use strict';
 
-var Module = angular.module('shop.filter', []);
+var Module = angular.module('django.shop.filter', []);
 
 // Directive <ANY shop-product-filter="attribute"> to be used to communicate selected
 // attributes used to narrow down the list of products.

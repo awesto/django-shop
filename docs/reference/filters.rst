@@ -173,7 +173,9 @@ us to add a set of filter options to the product's list view, without having to 
 fetch that filtered list from the server.
 
 Since we don't event want to care about controlling change events on the filtering ``<select>`` box,
-**djangoSHOP** is shipped with a special directive, which handles this for us:
+**djangoSHOP** is shipped with a reusable directive named ``shopProductFilter``.
+
+Sample HTML snippet:
 
 .. code-block:: django
 
@@ -186,15 +188,15 @@ that file. Additionally that module must be initialized while bootstrapping our 
 
 .. code-block:: javascript
 
-	angular.module('myShop', [..., 'shop.filter', ...]);
+	angular.module('myShop', [..., 'django.shop.filter', ...]);
 
 Each time the customer selects another manufacturer, the function ``filterChanged`` emits
 an event intercepted by the AngularJS directive ``shopListProducts``, which consequently
 fetches a list of products using the filtering class as shown above.
 
-Apart from handling the change event on our ``<select>`` box, this directive also modifies the
+Apart from forwarding changes detected in our ``<select>`` box, this directive also modifies the
 URL and appends the selected properties. This is required, whenever the user navigates away from
-the product's list view and returns back, so that the same filters are applied. Additionally this
+the product's list view and returns back, so that the same filters are applied. Additionally the
 directive clears the search query field, because full text search in combination with property
 filtering is confusing and doesn't make sense.
 
