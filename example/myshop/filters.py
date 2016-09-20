@@ -10,15 +10,20 @@ from .models.manufacturer import Manufacturer
 from .models.polymorphic.product import Product
 
 
+class FilterForm(NgModelFormMixin, Bootstrap3Form):
+    scope_prefix = 'filters'
+
+
 class ManufacturerFilter(django_filters.FilterSet):
     manufacturer = django_filters.ModelChoiceFilter(
         queryset=Manufacturer.objects.all(),
         widget=Select(attrs={'ng-change': 'filterChanged()'}),
-        empty_label=_("Any Manufacturer"))
+        empty_label=_("Any Manufacturer"),
+        help_text=_("Restrict product on this manufacturer only"))
 
     class Meta:
         model = Product
-        form = type(str('FilterForm'), (NgModelFormMixin, Bootstrap3Form), {'scope_prefix': 'filters'})
+        form = FilterForm
         fields = ['manufacturer']
 
     @classmethod
