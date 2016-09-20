@@ -13,7 +13,7 @@ Module.directive('shopProductFilter', ['$location', '$timeout', function($locati
 				throw new Error("Directive shop-attribute-filter requires an attribute.");
 
 			scope.filters = scope.filters || {};
-			if (angular.isDefined(params[attr])) {
+			if (params[attr]) {
 				$timeout(function() {
 					// delay until next digest cycle
 					scope.$emit('shopCatalogFilter', params);
@@ -22,10 +22,9 @@ Module.directive('shopProductFilter', ['$location', '$timeout', function($locati
 			}
 
 			scope.filterChanged = function() {
+				var params = {};
 				if (scope.filters[attr]) {
 					params[attr] = scope.filters[attr];
-				} else {
-					params = {};
 				}
 				$location.search(params);
 				scope.searchQuery = '';  // remove content in search field
