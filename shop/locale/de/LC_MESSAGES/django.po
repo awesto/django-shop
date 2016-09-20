@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: de\n"
-"X-Generator: Poedit 1.5.5\n"
+"X-Generator: Poedit 1.6.10\n"
 
 #: admin/customer.py:19 models/defaults/address.py:25
 msgid "Shipping Addresses"
@@ -2224,7 +2224,8 @@ msgstr "Passwort"
 msgid "Authenticated as: %(user)s"
 msgstr "Als %(user)s authentifiziert"
 
-#: templates/shop/auth/logout.html:8 templates/shop/navbar/login-logout.html:22
+#: templates/shop/auth/logout.html:8
+#: templates/shop/navbar/login-logout.html:22
 msgid "Logout"
 msgstr "Abmelden"
 
@@ -2311,7 +2312,7 @@ msgstr "In den Warenkorb"
 
 #: templates/shop/catalog/paginator.html:12
 msgid "Loading more products"
-msgstr "Läd weitere Produkte"
+msgstr "Lädt weitere Produkte"
 
 #: templates/shop/catalog/paginator.html:16
 msgid "No products found"
