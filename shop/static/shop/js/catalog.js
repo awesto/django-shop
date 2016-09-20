@@ -5,7 +5,7 @@ var djangoShopModule = angular.module('django.shop.catalog', ['ui.bootstrap', 'd
 
 djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$modal',
                                       function($scope, $http, $window, $modal) {
-	var isLoading = false, prevContext = null, updateUrl;
+	var prevContext = null, updateUrl;
 
 	this.setUpdateUrl = function(update_url) {
 		updateUrl = update_url + $window.location.search;
@@ -21,16 +21,13 @@ djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$mo
 	};
 
 	$scope.updateContext = function() {
-		if (isLoading || angular.equals($scope.context, prevContext))
+		if (angular.equals($scope.context, prevContext))
 			return;
-		isLoading = true;
 		$http.post(updateUrl, $scope.context).success(function(context) {
 			prevContext = context;
 			$scope.context = angular.copy(context);
 		}).error(function(msg) {
 			console.error('Unable to update context: ' + msg);
-		}).finally(function() {
-			isLoading = false;
 		});
 	};
 
