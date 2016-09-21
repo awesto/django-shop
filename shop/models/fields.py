@@ -16,7 +16,7 @@ try:
         postgres_version = get_tuple_version(str(row[0][:17].split(' ')[1]))
         # To be able to use the Django version of JSONField, it requires to have
         # PostgreSQL ≥ 9.4 and psycopg2 ≥ 2.5.4, otherwise some issues could be faced.
-        if (psycopg2_version[0]) >= (2, 5, 4) and (postgres_version >= (9, 4)):
+        if (psycopg2_version) >= (2, 5, 4) and (postgres_version >= (9, 4)):
             from django.contrib.postgres.fields import JSONField as _JSONField
         else:
             raise ImportError
