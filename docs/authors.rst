@@ -25,6 +25,7 @@ CONTRIBUTORS
 * Jonas Obrist
 * Justin Steward
 * Kristian Øllegaard
+* maltitco
 * Martin Ogden
 * Mike Yumatov
 * Pavel Zhukov
