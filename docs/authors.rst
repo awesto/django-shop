@@ -18,6 +18,7 @@ CONTRIBUTORS
 * Chris Morgan
 * fivethreeo
 * German Larrain
+* Hamza Khchine
 * ikresoft
 * Issac Kelly
 * Jacek Mitręga
@@ -34,7 +35,6 @@ CONTRIBUTORS
 * Sławomir Ehlert
 * Stephen Muss
 * Thomas Woolford
-* Hamza Khchine
 
 TRANSLATORS
 ===========
