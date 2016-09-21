@@ -12,7 +12,7 @@ django-filer==1.2.5
 django-filter==0.13.0
 django-fsm==2.4.0
 django-fsm-admin==1.2.3
-https://github.com/django-haystack/django-haystack/archive/v2.5.dev1.zip
+django-haystack==2.5.0
 django-ipware==1.1.1
 django-mptt==0.7.4
 django-parler==1.6.4
@@ -25,7 +25,7 @@ django-select2==5.5.0
 djangoshop-stripe==0.1.4
 django-treebeard==4.0
 djangocms-bootstrap3==0.1.1
-djangocms-cascade==0.10.0
+djangocms-cascade==0.10.1
 djangocms-text-ckeditor==3.0.0
 djangorestframework==3.2.5
 drf-haystack==1.5.6
