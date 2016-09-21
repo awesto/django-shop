@@ -1,8 +1,6 @@
 CORE DEVELOPERS
 ===============
 
-* Chris Glass (chrisglass)
-* Martin Brochhaus
 * Jacob Rief
 
 CONTRIBUTORS
@@ -24,7 +22,7 @@ CONTRIBUTORS
 * Issac Kelly
 * Jacek Mitręga
 * Jonas Obrist
-* Justin Steward 
+* Justin Steward
 * Kristian Øllegaard
 * Martin Ogden
 * Mike Yumatov
@@ -45,3 +43,9 @@ TRANSLATORS
 * Pavel Zhukov (Russian)
 * Pedro Gracia (Spanish)
 * Arturo Fernandez (Spanish)
+
+RETIRED CORE DEVELOPERS
+=======================
+
+* Chris Glass (chrisglass)
+* Martin Brochhaus
