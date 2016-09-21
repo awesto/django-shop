@@ -1,0 +1,21 @@
+bsp-scrollpanel {
+	ul {
+		margin: 0;
+		padding: 5px;
+		display: block;
+		overflow-x: hidden;
+		list-style-type: none;
+		white-space: nowrap;
+		margin-left: 20px;
+		transition: margin-left 0.5s;
+
+		li {
+			display: inline-block;
+			margin: 0 5px 0 0;
+			width: 200px;
+			overflow: auto;
+			white-space: initial;
+			@import "product-figure";
+		}
+	}
+}

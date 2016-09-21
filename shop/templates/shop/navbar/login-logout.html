@@ -2,7 +2,7 @@
 
 {% addtoblock "css" %}<link href="{% sass_src 'shop/css/navbar.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 {% addtoblock "js" %}<script src="{% static 'shop/js/auth.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-{% addtoblock "shop-ng-requires" %}django.shop.auth{% endaddtoblock %}
+{% addtoblock "ng-requires" %}django.shop.auth{% endaddtoblock %}
 
 {% page_url 'shop-order' as shop_order_url %}
 {% page_url 'shop-customer-details' as customer_details_url %}

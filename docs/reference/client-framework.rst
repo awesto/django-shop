@@ -41,12 +41,12 @@ as the assets manager:
 
 	{% load static sekizai_tags %}
 	
-	{% addtoblock "js" %}<script src="{% static 'bower_components/picturefill/dist/picturefill.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-	{% addtoblock "js" %}<script src="{% static 'bower_components/angular/angular.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-	{% addtoblock "js" %}<script src="{% static 'bower_components/angular-sanitize/angular-sanitize.min.js' %}"></script>{% endaddtoblock %}
-	{% addtoblock "js" %}<script src="{% static 'bower_components/angular-i18n/angular-locale_de.js' %}"></script>{% endaddtoblock %}
-	{% addtoblock "js" %}<script src="{% static 'bower_components/angular-animate/angular-animate.min.js' %}"></script>{% endaddtoblock %}
-	{% addtoblock "js" %}<script src="{% static 'bower_components/angular-messages/angular-messages.min.js' %}"></script>{% endaddtoblock %}
+	{% addtoblock "js" %}<script src="{% static 'node_modules/picturefill/dist/picturefill.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+	{% addtoblock "js" %}<script src="{% static 'node_modules/angular/angular.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+	{% addtoblock "js" %}<script src="{% static 'node_modules/angular-sanitize/angular-sanitize.min.js' %}"></script>{% endaddtoblock %}
+	{% addtoblock "js" %}<script src="{% static 'node_modules/angular-i18n/angular-locale_de.js' %}"></script>{% endaddtoblock %}
+	{% addtoblock "js" %}<script src="{% static 'node_modules/angular-animate/angular-animate.min.js' %}"></script>{% endaddtoblock %}
+	{% addtoblock "js" %}<script src="{% static 'node_modules/angular-messages/angular-messages.min.js' %}"></script>{% endaddtoblock %}
 
 Before the closing ``</body>``-tag, we then combine those includes and initialize the client side
 application. Say, we declare a base template for our project:
@@ -60,13 +60,13 @@ application. Say, we declare a base template for our project:
 	{% render_block "js" postprocessor "compressor.contrib.sekizai.compress" %}
 	<script type="text/javascript">
 	angular.module('myShop', ['ngAnimate', 'ngMessages', 'ngSanitize',
-		{% render_block "shop-ng-requires" postprocessor "shop.sekizai_processors.module_list" %}
+		{% render_block "ng-requires" postprocessor "djng.sekizai_processors.module_list" %}
 	]).config(['$httpProvider', function($httpProvider) {
 		$httpProvider.defaults.headers.common['X-CSRFToken'] = '{{ csrf_token }}';
 		$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 	}]).config(['$locationProvider', function($locationProvider) {
 		$locationProvider.html5Mode(false);
-	}]){% render_block "shop-ng-config" postprocessor "shop.sekizai_processors.module_config" %};
+	}]){% render_block "ng-config" postprocessor "djng.sekizai_processors.module_config" %};
 	</script>
 	
 	</body>
@@ -86,7 +86,7 @@ with:
 	{% load static sekizai_tags %}
 	
 	{% addtoblock "js" %}<script src="{% static 'shop/js/cart.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-	{% addtoblock "shop-ng-requires" %}django.shop.cart{% endaddtoblock %}
+	{% addtoblock "ng-requires" %}django.shop.cart{% endaddtoblock %}
 
 Sekizai then collects the content between these ``addtoblock``s, and renders them using the
 ``render_block`` statements shown above. This concept allows us to delegate dependency resolution
@@ -107,7 +107,7 @@ This is where Sekizai's ``render_block`` templatetag, together with the postproc
 .. code-block:: Django
 
 	angular.module('myShop', [/* other dependencies */
-	    {% render_block "shop-ng-requires" postprocessor "shop.sekizai_processors.module_list" %}
+	    {% render_block "ng-requires" postprocessor "djng.sekizai_processors.module_list" %}
 	])
 
 By adding Sekizai's ``render_block`` templatetag, together with the postprocessor ``module_config``,
@@ -116,7 +116,7 @@ at the end of our initialization statement, we can add arbitrary configuration c
 .. code-block:: Django
 
 	angular.module('myShop', [/* module dependencies */]
-	).{% render_block "shop-ng-config" postprocessor "shop.sekizai_processors.module_config" %};
+	).{% render_block "ng-config" postprocessor "djng.sekizai_processors.module_config" %};
 
 Unless additional client functionality is required, these are the only parts where our project
 requires us to write JavaScript.

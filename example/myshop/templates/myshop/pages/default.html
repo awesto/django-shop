@@ -5,7 +5,7 @@
 
 {% block head %}
 	{{ block.super }}
-	{% addtoblock "css" %}<link href="{% sass_src 'pages/css/default.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+	{% addtoblock "css" %}<link href="{% sass_src 'myshop/css/default.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 {% endblock head %}
 
 {% block header %}
@@ -13,7 +13,7 @@
 {% endblock header %}
 
 {% block breadcrumb %}{% placeholder "Breadcrumb" or %}
-	{% include "bootstrap/includes/breadcrumb-row.html" with breadcrumb_classes="breadcrumb" %}
+	{% include "shop/breadcrumb/default.html" %}
 {% endplaceholder %}{% endblock breadcrumb %}
 
 {% block main-content %}{% placeholder "Main Content" inherit or %}

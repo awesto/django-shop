@@ -24,10 +24,7 @@ class Migration(migrations.Migration):
             verbose_name="Address line 1", max_length=1024
         )),
         migrations.AlterField("ShippingAddress", "address2", models.CharField(
-            verbose_name="Address line 2", max_length=1024
-        )),
-        migrations.AlterField("ShippingAddress", "city", models.CharField(
-            verbose_name="City", max_length=1024
+            verbose_name="Address line 2", blank=True, max_length=1024, null=True
         )),
 
         migrations.RenameField("BillingAddress", "addressee", "name"),
@@ -42,9 +39,19 @@ class Migration(migrations.Migration):
             verbose_name="Address line 1", max_length=1024
         )),
         migrations.AlterField("BillingAddress", "address2", models.CharField(
-            verbose_name="Address line 2", max_length=1024
+            verbose_name="Address line 2", blank=True, max_length=1024, null=True
         )),
         migrations.AlterField("BillingAddress", "city", models.CharField(
             verbose_name="City", max_length=1024
         )),
+        migrations.AlterField(
+            model_name='billingaddress',
+            name='zip_code',
+            field=models.CharField(max_length=12, verbose_name='ZIP / Postal code'),
+        ),
+        migrations.AlterField(
+            model_name='shippingaddress',
+            name='zip_code',
+            field=models.CharField(max_length=12, verbose_name='ZIP / Postal code'),
+        ),
     ]

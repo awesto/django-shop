@@ -17,7 +17,7 @@ from .plugin_base import ShopPluginBase
 class BreadcrumbPlugin(ShopPluginBase):
     name = _("Breadcrumb")
     CHOICES = (('default', _("Default Breadcrumb")), ('soft-root', _("“Soft-Root” Breadcrumb")),
-        ('catalog', _("With Catalog Count")), ('empty', _("Empty Breadcrumb")),)
+        ('catalog', _("With Catalog Count")), ('empty', _("Hidden Breadcrumb")),)
     glossary_fields = (
         PartialFormField('render_type',
             widgets.RadioSelect(choices=CHOICES),

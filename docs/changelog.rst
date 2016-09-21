@@ -7,6 +7,8 @@ Changelog for djangoSHOP
 0.9.2.dev
 =========
 
+* Minimum required version of django-filer is now 1.2.5.
+* Minimum required version of djangocms-cascade is now 0.10.0.
 * Changed the default address models to be more generic. Please read the
   :doc:`upgrade instructions <upgrading>` if you are upgrading from 0.9.0 or 0.9.1.
 * Fixed :py:meth:`shop.money.fields.decontruct` to avoid repetitive useless generation of migration
@@ -23,7 +25,7 @@ Changelog for djangoSHOP
 * Prepared for Django-1.10: Replaced all occurrences of :py:meth:`django.conf.urls.patterns` by
   a simple list.
 * Method ``get_render_context`` in classes extending from ``django_filters.FilterSet`` now must be a
-  ``classmethod`` and accepts the request object.
+  ``classmethod`` accepting a request object and the querystring.
 * Method ``get_renderer_context`` in class ``CMSPageProductListView`` now fetches the rendering
   context for filtering *after* the queryset have been determined. This allows us to adopt the
   context.
@@ -39,6 +41,10 @@ Changelog for djangoSHOP
   * ``personal-details`` -> ``shop-customer-details`` to access the Customer Detail Page.
   * ``reset-password`` -> ``shop-password-reset`` to access the Reset Password Page.
   * new: ``shop-register-customer`` to access the Register User Page.
+* Moved all non-Python dependencies from ``bower_components`` into ``node_modules``.
+* The breadcrumb now is responsible itself for being wrapped into a Bootstrap container.
+* Use Sekizai processors from django-angular. Replaced ``shop-ng-requires`` against ``ng-requires``
+  and ``shop-ng-config`` against ``ng-config``.
 
 0.9.1
 =====

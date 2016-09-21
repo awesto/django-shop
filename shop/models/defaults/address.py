@@ -9,7 +9,7 @@ from shop.models.address import BaseShippingAddress, BaseBillingAddress, ISO_316
 class AddressModelMixin(models.Model):
     name = models.CharField(_("Full name"), max_length=1024)
     address1 = models.CharField(_("Address line 1"), max_length=1024)
-    address2 = models.CharField(_("Address line 2"), max_length=1024)
+    address2 = models.CharField(_("Address line 2"), max_length=1024, blank=True, null=True)
     zip_code = models.CharField(_("ZIP / Postal code"), max_length=12)
     city = models.CharField(_("City"), max_length=1024)
     country = models.CharField(_("Country"), max_length=3,

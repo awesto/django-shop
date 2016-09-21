@@ -1,7 +1,7 @@
 {% load i18n static sekizai_tags %}
 
 {% addtoblock "js" %}<script src="{% static 'shop/js/cart.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-{% addtoblock "shop-ng-requires" %}django.shop.cart{% endaddtoblock %}
+{% addtoblock "ng-requires" %}django.shop.cart{% endaddtoblock %}
 
 {% block shop-cart-table %}
 <table shop-cart class="table table-hover">
