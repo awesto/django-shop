@@ -24,7 +24,7 @@ django-select2==5.5.0
 djangoshop-stripe==0.1.4
 django-treebeard==4.0
 djangocms-bootstrap3==0.1.1
-djangocms-cascade==0.9.0
+djangocms-cascade==0.10.0
 djangocms-text-ckeditor==3.0.0
 djangorestframework==3.2.5
 drf-haystack==1.5.6
