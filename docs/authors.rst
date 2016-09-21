@@ -7,6 +7,7 @@ CORE DEVELOPERS
 CONTRIBUTORS
 ============
 
+* abelradac
 * Adrien Lemaire
 * airtonix
 * Aleš Kocjančič
