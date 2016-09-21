@@ -7,6 +7,7 @@ Changelog for djangoSHOP
 0.9.2.dev
 =========
 
+* Minimum required version of django-filer is now 1.2.5.
 * Minimum required version of djangocms-cascade is now 0.10.0.
 * Changed the default address models to be more generic. Please read the
   :doc:`upgrade instructions <upgrading>` if you are upgrading from 0.9.0 or 0.9.1.

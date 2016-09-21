@@ -42,7 +42,7 @@ setup(
         'beautifulsoup4>=4.4.0',
         'django-cms>=3.2.0',
         'django-post-office>=2.0.5',
-        'django-filer>=1.0.6',
+        'django-filer>=1.2.5',
         'django-ipware>=1.1.1',
         'django-fsm>=2.2.1',
         'djangorestframework>=3.1',
