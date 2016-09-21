@@ -5,13 +5,11 @@
 
 {% block head %}
 	{{ block.super }}
-	{% addtoblock "css" %}<link href="{% sass_src 'pages/css/product-detail.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+	{% addtoblock "css" %}<link href="{% sass_src 'myshop/css/product-detail.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 {% endblock head %}
 
 {% block breadcrumb %}{% with extra_ance=product.product_name %}
-	{% if product.show_breadcrumb %}
-	{% include "bootstrap/includes/breadcrumb-row.html" with breadcrumb_classes="breadcrumb" %}
-	{% endif %}
+	{% if product.show_breadcrumb %}{% include "shop/breadcrumb/default.html" %}{% endif %}
 {% endwith %}{% endblock %}
 
 {% block main-content %}

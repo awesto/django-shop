@@ -10,30 +10,31 @@ addresses are no exception here. The class :class:`shop.models.address.BaseAddre
 a foreign key to the Customer model and a priority field used to sort multiple addresses by
 relevance.
 
-All the fields which make up an address, such as the addresse, the street, zip code, etc. are part
-of the concrete model implementing an address. It is the merchant's responsibility to define which
-address fields are required for his needs. Therefore the base address model does not contain
+Create a Customized Address Model
+=================================
+
+All the fields which make up an address, such as the addressee, the street name, zip code, etc. are
+part of the concrete model implementing an address. It is the merchant's responsibility to define
+which address fields are required for his needs. Therefore the base address model does not contain
 any address related fields, they instead have to be declared by the merchant. A concrete
 implementation of the shipping address model may look like this:
 
 .. code-block:: python
 
-    from django.utils.translation import ugettext as _
-    from shop.models.address import BaseShippingAddress, ISO_3166_CODES
+	from django.utils.translation import ugettext as _
+	from shop.models.address import BaseShippingAddress, ISO_3166_CODES
 
-    class ShippingAddress(BaseShippingAddress):
-
-        name = models.CharField(_("Full name"), max_length=1024)
-        address1 = models.CharField(_("Address line 1"), max_length=1024)
-        address2 = models.CharField(_("Address line 2"), max_length=1024)
-        zip_code = models.CharField(_("ZIP / Postal code"), max_length=12)
-        city = models.CharField(_("City"), max_length=1024)
-        country = models.CharField(_("Country"), max_length=3,
-                                choices=ISO_3166_CODES)
-        class Meta:
-            verbose_name = "Shipping Address"
-            verbose_name_plural = "Shipping Addresses"
-
+	class ShippingAddress(BaseShippingAddress):
+	    name = models.CharField(_("Full name"), max_length=1024)
+	    address1 = models.CharField(_("Address line 1"), max_length=1024)
+	    address2 = models.CharField(_("Address line 2"), max_length=1024)
+	    zip_code = models.CharField(_("ZIP / Postal code"), max_length=12)
+	    city = models.CharField(_("City"), max_length=1024)
+	    country = models.CharField(_("Country"), max_length=3,
+	                               choices=ISO_3166_CODES)
+	    class Meta:
+	        verbose_name = "Shipping Address"
+	        verbose_name_plural = "Shipping Addresses"
 
 
 Since the billing address may contain different fields, it must be defined separately from the
@@ -42,26 +43,34 @@ class such as:
 
 .. code-block:: python
 
-    from django.db import models
-    from django.utils.translation import ugettext as _
-    from shop.models.address import BaseBillingAddress
+	from django.db import models
+	from django.utils.translation import ugettext as _
+	from shop.models.address import BaseBillingAddress
 
-    class AddressModelMixin(models.Model):
-        name = models.CharField(_"Full name"), max_length=1024)
-        address1 = models.CharField(_"Address line 1"), max_length=1024)
-        # other fields
+	class AddressModelMixin(models.Model):
+	    name = models.CharField(_"Full name"), max_length=1024)
+	    address1 = models.CharField(_"Address line 1"), max_length=1024)
+	    # other fields
 
-        class Meta:
-            abstract = True
+	    class Meta:
+	        abstract = True
 
 
-    class BillingAddress(BaseBillingAddress, AddressModelMixin):
-        tax_number = models.CharField("Tax number", max_length=50)
+	class BillingAddress(BaseBillingAddress, AddressModelMixin):
+	    tax_number = models.CharField("Tax number", max_length=50)
 
-        class Meta:
-            verbose_name = _("Billing Address")
-            verbose_name_plural = _("Billing Addresses")
+	    class Meta:
+	        verbose_name = _("Billing Address")
+	        verbose_name_plural = _("Billing Addresses")
 
+
+The Default Address Model
+-------------------------
+
+The simplest way is to materialize the required address classes, is to use them from our default
+and convenience models: :class:`shop.models.defaults.address.ShippingAddress` and
+:class:`shop.models.defaults.address.BillingAddress`. Before using them, please check if they
+fulfill your requirements.
 
 
 Multiple Addresses
@@ -78,14 +87,14 @@ billing addresses, or if he desires add a new one to his list of existing addres
 How Addresses are used
 ======================
 
-Each active Cart object refers to one shipping address object and optionally one billing address
+Each active ``Cart`` object refers to one shipping address object and optionally one billing address
 object. This means that the customer can change those addresses whenever he uses the supplied
 address forms.
 
 However, when the customer purchases the content of the cart, that address object is converted into
-a simple text string and stored inside the newly created Order object. This is to freeze the actual
-wording of the entered address. It also assures that the address used for delivery and printed on
-the invoice is immune against accidental changes after the purchasing operation.
+a simple text string and stored inside the then created ``Order`` object. This is to freeze the
+actual wording of the entered address. It also assures that the address used for delivery and
+printed on the invoice is immune against accidental changes after the purchasing operation.
 
 
 Use Shipping Address for Billing
@@ -117,14 +126,14 @@ If both address models share the same fields, we may also use ``myshop/address.t
 Such an address template may look like:
 
 .. code-block:: django
-    :caption: myshop/address.txt
+	:caption: myshop/address.txt
 
-    {{ address.name }}
-    {{ address.address1 }}{% if address.address2 %}
-    {{ address.address2 }}
-    {% endif %}
-    {{ address.zip_code }} {{ address.city }}
-    {{ address.get_country_display }}
+	{{ address.name }}
+	{{ address.address1 }}{% if address.address2 %}
+	{{ address.address2 }}
+	{% endif %}
+	{{ address.zip_code }} {{ address.city }}
+	{{ address.get_country_display }}
 
 This template is used by the method ``as_text()`` as found in each address model.
 
@@ -152,16 +161,23 @@ example above. Then they may be styled as
 
 .. code-block:: css
 
-    .shop-address-zip_code {
-        width: 35%;
-        display: inline-block;
-    }
+	.shop-address-zip_code {
+	  width: 35%;
+	  display: inline-block;
+	}
 
-    .shop-address-city {
-        width: 65%;
-        display: inline-block;
-        margin-left: -4px;
-        padding-left: 15px;
-    }
+	.shop-address-city {
+	  width: 65%;
+	  display: inline-block;
+	  margin-left: -4px;
+	  padding-left: 15px;
+	}
 
 so that the ZIP field is narrower and precedes the location field on the same line.
+
+
+Further Reading
+===============
+
+A good introduction on which fields to use where and when in addresses can be found at
+http://www.uxmatters.com/mt/archives/2008/06/international-address-fields-in-web-forms.php

@@ -15,7 +15,7 @@ from shop.models.customer import CustomerModel, CustomerState
 class CustomerInlineAdmin(admin.StackedInline):
     model = CustomerModel
     fieldsets = (
-        (None, {'fields': ('salutation', 'get_number', 'recognized')}),
+        (None, {'fields': ('salutation', 'get_number')}),
         (_("Shipping Addresses"), {'fields': ('get_shipping_addresses',)})
     )
     readonly_fields = ('get_number', 'get_shipping_addresses',)
@@ -24,6 +24,9 @@ class CustomerInlineAdmin(admin.StackedInline):
         return 0 if obj is None else 1
 
     def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
         return False
 
     def get_number(self, customer):

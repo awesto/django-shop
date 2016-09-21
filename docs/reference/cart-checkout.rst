@@ -20,7 +20,7 @@ Expired Carts
 
 Sessions expire, but then the cart's content of anonymous customers still remains in the database.
 We therefore must assure that these carts will expire too, since they are of no use for anybody,
-except maybe for some data-mining.
+except, maybe for some data-mining experts.
 
 By invoking
 
@@ -30,17 +30,17 @@ By invoking
 	Customers in this shop: total=3408, anonymous=140, expired=88,
 	    active=1108, guests=2159, registered=1109, staff=5.
 
-we gather some statistics about former visiting customers of our **djangoSHOP**. Here we see that
-1109 customers bought as registered users, while 2159 bought as guests. There are 88 customers in
-the database, but they don't have any associated session anymore, hence they can be considered as
-expired. Invoking
+we gather some statistics about customers having visited of our **djangoSHOP** site. In this example
+we see that 1109 customers bought as registered users, while 2159 bought as guests. There are 88
+customers in the database, but they don't have any associated session anymore, hence they can be
+considered as expired. Invoking
 
 .. code-block:: shell
 
 	./manage.py shopcustomers --delete-expired
 
 deletes those expired customers, and with them their expired carts. This task shall be performed
-by a cronjob on a daily basis.
+by a cronjob on a daily or weekly basis.
 
 
 Cart Models
@@ -58,8 +58,8 @@ To materialize the default implementation, it is enough to ``import`` these two 
 merchants shop project. Otherwise we create our own cart implementation inheriting from ``BaseCart``
 and ``BaseCartItem``. Since the item quantity can not always be represented by natural numbers, this
 field must be added to the ``CartItem`` implementation rather than its base class. Its field type
-must be countable, so only ``IntegerField``, ``FloatField`` or ``DecimalField`` are allowed as
-quantity.
+must allow arithmetic operations, so only ``IntegerField``, ``FloatField`` or ``DecimalField``
+are allowed as quantity.
 
 .. note:: Assure that the model ``CartItem`` is imported (and materialized) before model
 		``Product`` and classes derived from it.
@@ -71,17 +71,17 @@ customer by invoking:
 .. code-block:: python
 
 	from shop.models.cart import CartManager
-	
-	cart = CartManager.get_or_create_from_request(request)
+
+	cart = CartModel.objects.get_or_create_from_request(request)
 
 Adding a product to the cart, must be performed by invoking:
 
 .. code-block:: python
 
 	from shop.models.cart import CartItemManager
-	
-	cart_item = CartItemManager.get_or_create(cart=cart,
-	        product=product, quantity=quantity, **extras)
+
+	cart_item = CartItemManager.get_or_create(
+	    cart=cart, product=product, quantity=quantity, **extras)
 
 This returns a new cart item object, if the given product could not be found in the current cart.
 Otherwise it returns the existing cart item, increasing the quantity by the given value. For
@@ -152,11 +152,11 @@ immediately into the cart's subtotal, extra fields and final totals.
 
 Using the above structure, the rendered cart will look similar to this.
 
-|cart-display| 
+|cart-display|
 
 .. |cart-display| image:: /_static/cart/cart-display.png
 
-Depending on the chosen template, this layout may vary. 
+Depending on the chosen template, this layout may vary.
 
 
 Static Cart
@@ -179,7 +179,7 @@ Watch List
 ~~~~~~~~~~
 
 A special view of the cart is the watch list. It can be used by customers to remember items they
-want to compare or buy sometimes later. The watch-list by default is editable, but does not 
+want to compare or buy sometimes later. The watch-list by default is editable, but does not
 allow to change the quantity. This is because the watch-list shares the same object model as the
 cart items. If the quantity of an item 0, then that cart item is considered to be watched. If
 instead the quantity is 1 ore more, the item is considered to be in the cart. It therefore is
@@ -260,7 +260,7 @@ From a technical point of view, it does not make any difference whether we use t
 handcrafted template. If the HTML code making up the cart has to be adopted to the merchants needs,
 we normally are better off and much more flexible, if we override the template code as described
 in section :ref:`reference/cart-render-templates`. Therefore, it is strongly discouraged to craft
-cart and checkout templates by hand. 
+cart and checkout templates by hand.
 
 
 .. _reference/cart-modifiers:
@@ -295,17 +295,23 @@ shops ``settings.py`` they must be configured as a list or tuple such as:
 	    'shop_stripe.modifiers.StripePaymentModifier',
 	)
 
-When updating the cart, these modifiers are applied in the order of the above list. Therefore it
-makes a difference, if taxes are applied before or after having applied the shipping costs.
+Generic modifiers are applied always. The Shipping and Payment modifiers are applied only for the
+selected shipping and/or payment method. If the customer has not yet decided, how to ship or how to
+pay, then the corresponding modifiers are not applied.
+
+When updating the cart, modifiers are applied in the order of the above list. Therefore it makes a
+difference, if taxes are applied before or after having applied the shipping costs.
 
 Moreover, whenever in the detail view the quantity of a product is updated, then all configured
 modifiers are ran for that item. This allows the ``ItemModelSerializer``, to even change the unit
-price of product depending on the total content of the cart.
+price of a product, depending on the total content of the cart.
 
 Cart modifiers are easy to write and they normally consist only of a few lines of code. It is the
-intention of **djangoSHOP** to seed an eco-system for these kinds of plugins.
+intention of **djangoSHOP** to seed an eco-system for these kinds of plugins. Besides computing
+the total, cart modifiers can also be used to sum up the weight, if the merchant's product models
+specifies it.
 
-Here is an incomplete list of some useful cart modifiers.
+Here is an incomplete list of some useful cart modifiers:
 
 
 Generic Cart Modifiers
@@ -320,7 +326,7 @@ DefaultCartModifier
 
 The :class:`shop.modifiers.default.DefaultCartModifier` is required for almost every shopping cart.
 It handles the most basic calculations, ie. multiplying the items unit prices with the chosen
-quantity. Since this modifier sets the cart items line total, it must be listed as the first entry
+quantity. Since this modifier sets the cart item's line total, it must be listed as the first entry
 in ``SHOP_CART_MODIFIERS``.
 
 
@@ -343,8 +349,8 @@ Shipping Cart Modifier
 From these kinds of modifiers, only that for the chosen shipping method is applied. Shipping
 Modifiers are used to add extra costs or discounts depending on chosen shipping method, the number
 of items in the cart and their weight. By overriding the method ``is_disabled`` a shipping method
-can be disabled; useful to disable certain payments in case the carts total is below a certain
-threshold.
+can be disabled; useful to disable certain payments in case the cart's total is below a certain
+threshold or the weight is too high.
 
 
 How Modifiers work
@@ -354,8 +360,8 @@ Cart modifiers should extend the :class:`shop.modifiers.base.BaseCartModifier` c
 or more of the given methods:
 
 .. note:: Until version 0.2 of **djangoSHOP**, the Cart Modifiers returned the amount and label
-		for the extra item rows, and **djangoSHOP** added them up. Since Version 0.3 cart modifiers
-		must change the line subtotals and cart total themselves.
+	for the extra item rows, and **djangoSHOP** added them up. Since Version 0.3 cart modifiers
+	must change the line subtotals and cart total themselves.
 
 .. autoclass:: shop.modifiers.base.BaseCartModifier
    :members:

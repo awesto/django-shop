@@ -107,7 +107,7 @@ class BaseCartModifier(object):
         Optionally add an `ExtraCartRow` object to the current cart item.
 
         This allows to add an additional row description to a cart item line.
-        This method optionally utilizes or modifies the amount in `cart_item.line_total`.
+        This method optionally utilizes and/or modifies the amount in `cart_item.line_total`.
         """
 
     def add_extra_cart_row(self, cart, request):
@@ -115,7 +115,7 @@ class BaseCartModifier(object):
         Optionally add an `ExtraCartRow` object to the current cart.
 
         This allows to add an additional row description to the cart.
-        This method optionally utilizes `cart.subtotal` and modifies the amount in `cart.total`.
+        This method optionally utilizes `cart.subtotal` and/or modifies the amount in `cart.total`.
         """
 
 

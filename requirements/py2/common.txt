@@ -3,7 +3,7 @@ beautifulsoup4==4.4.0
 enum34==1.1.6
 django-admin-sortable2==0.6.4
 django-allauth==0.23.0
-django-angular==0.8.2
+django-angular==0.8.4
 django-appconf==1.0.1
 django-classy-tags==0.7.2
 django-cms==3.3.0

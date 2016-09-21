@@ -57,6 +57,7 @@ Reference to classes and concepts used in **djangoSHOP**
     reference/money-types
     reference/product-models
     reference/catalog
+    reference/search
     reference/filters
     reference/cascade-plugins
     reference/cart-checkout
@@ -64,7 +65,6 @@ Reference to classes and concepts used in **djangoSHOP**
     reference/order
     reference/delivery
     reference/addresses
-    reference/search
     reference/notifications
     reference/serializers
     reference/client-framework

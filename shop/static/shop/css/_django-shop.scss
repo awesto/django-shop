@@ -5,7 +5,7 @@
 .breadcrumb {
 	margin-top: 20px;
 
-	>li + li:before {
+	>li + li::before {
 		// fixes https://github.com/twbs/bootstrap-sass/issues/919
 		content: "/";
 	}
@@ -26,5 +26,8 @@ table tr {
 	}
 	td.double-border, th.double-border {
 		border-top-style: double;
+	}
+	td.vertical-align-middle {
+		vertical-align: middle;
 	}
 }

@@ -5,7 +5,7 @@ var djangoShopModule = angular.module('django.shop.catalog', ['ui.bootstrap', 'd
 
 djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$modal',
                                       function($scope, $http, $window, $modal) {
-	var isLoading = false, prevContext = null, updateUrl;
+	var prevContext = null, updateUrl;
 
 	this.setUpdateUrl = function(update_url) {
 		updateUrl = update_url + $window.location.search;
@@ -21,16 +21,13 @@ djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$mo
 	};
 
 	$scope.updateContext = function() {
-		if (isLoading || angular.equals($scope.context, prevContext))
+		if (angular.equals($scope.context, prevContext))
 			return;
-		isLoading = true;
 		$http.post(updateUrl, $scope.context).success(function(context) {
 			prevContext = context;
 			$scope.context = angular.copy(context);
 		}).error(function(msg) {
 			console.error('Unable to update context: ' + msg);
-		}).finally(function() {
-			isLoading = false;
 		});
 	};
 
@@ -53,8 +50,9 @@ djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$mo
 
 }]);
 
-djangoShopModule.controller('ModalInstanceCtrl', ['$scope', '$http', '$modalInstance', 'modal_context',
-                                        function($scope, $http, $modalInstance, modal_context) {
+djangoShopModule.controller('ModalInstanceCtrl',
+    ['$scope', '$http', '$modalInstance', 'modal_context',
+    function($scope, $http, $modalInstance, modal_context) {
 	var isLoading = false;
 	$scope.proceed = function(next_url) {
 		if (isLoading)
@@ -87,14 +85,15 @@ djangoShopModule.directive('shopAddToCart', function() {
 		link: function(scope, element, attrs, AddToCartCtrl) {
 			if (!attrs.shopAddToCart)
 				throw new Error("Directive shop-add-to-cart must point onto an URL");
-			AddToCartCtrl.setUpdateUrl(attrs.shopAddToCart); 
+			AddToCartCtrl.setUpdateUrl(attrs.shopAddToCart);
 			AddToCartCtrl.loadContext();
 		}
 	};
 });
 
 
-djangoShopModule.controller('CatalogListController', ['$scope', '$http', 'djangoShop', function($scope, $http, djangoShop) {
+djangoShopModule.controller('CatalogListController', [
+    '$scope', '$http', 'djangoShop', function($scope, $http, djangoShop) {
 	var self = this, fetchURL = djangoShop.getLocationPath();
 
 	this.loadProducts = function(config) {
@@ -131,10 +130,10 @@ djangoShopModule.controller('CatalogListController', ['$scope', '$http', 'django
 	});
 
 	// listen on events of type `shopCatalogFilter`
-	$scope.$root.$on('shopCatalogFilter', function(event, filter) {
+	$scope.$root.$on('shopCatalogFilter', function(event, params) {
 		var config;
 		try {
-			config = {params: filter};
+			config = {params: params};
 		} catch (err) {
 			config = null;
 		}
