@@ -38,6 +38,7 @@ setup(
     zip_safe=False,
     install_requires=[
         'Django>=1.9',
+        'djangocms-cascade>=0.10.0',
         'beautifulsoup4>=4.4.0',
         'django-cms>=3.2.0',
         'django-post-office>=2.0.5',
