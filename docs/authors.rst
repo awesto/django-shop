@@ -33,6 +33,7 @@ CONTRIBUTORS
 * Pavel Zhukov
 * Per Rosengren
 * Raúl Cumplido
+* Roberth Solís
 * Rolo Mawlabaux
 * rubengrill
 * Simon Luijk
