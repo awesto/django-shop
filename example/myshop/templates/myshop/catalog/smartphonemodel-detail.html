@@ -22,6 +22,10 @@
 			<table class="table table-bordered">
 				<tbody class="table-striped">
 					<tr>
+						<td>{% trans "Manufacturer" %}</td>
+						<td>{{ product.manufacturer }}</td>
+					</tr>
+					<tr>
 						<td>{% trans "Battery" %}</td>
 						<td>{{ product.get_battery_type_display }} ({{ product.battery_capacity }} mAh)</td>
 					</tr>

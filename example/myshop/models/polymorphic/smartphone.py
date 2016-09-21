@@ -32,6 +32,8 @@ class SmartPhoneModel(Product):
     )
     BLUETOOTH_CONNECTIVITY = (
         (1, "Bluetooth 4.0"),
+        (2, "Bluetooth 3.0"),
+        (3, "Bluetooth 2.1"),
     )
     battery_type = models.PositiveSmallIntegerField(_("Battery type"),
         choices=BATTERY_TYPES)
