@@ -1,0 +1,2 @@
+-r test.txt
+-r common.txt
