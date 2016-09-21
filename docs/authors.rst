@@ -2,6 +2,7 @@ CORE DEVELOPERS
 ===============
 
 * Jacob Rief
+* René Fleschenberg
 
 CONTRIBUTORS
 ============
