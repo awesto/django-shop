@@ -17,6 +17,7 @@ CONTRIBUTORS
 * Benjamin Wohlwend
 * Bojan Mihelac
 * Chris Morgan
+* Dino Perovic
 * fivethreeo
 * German Larrain
 * Hamza Khchine
