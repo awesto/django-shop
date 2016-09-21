@@ -5,7 +5,7 @@ from django.conf.urls import url
 from shop.views.catalog import AddToCartView, CMSPageProductListView, ProductRetrieveView
 from shop.search.views import SearchView
 from myshop.serializers import (ProductSummarySerializer, ProductDetailSerializer,
-    CatalogSearchSerializer)
+                                CatalogSearchSerializer)
 
 urlpatterns = [
     url(r'^$', CMSPageProductListView.as_view(

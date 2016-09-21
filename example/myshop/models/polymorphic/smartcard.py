@@ -18,7 +18,7 @@ class SmartCard(Product):
     CARD_TYPE = (2 * ('{}{}'.format(s, t),)
                  for t in ('SD', 'SDXC', 'SDHC', 'SDHC II') for s in ('', 'micro '))
     card_type = models.CharField(_("Card Type"), choices=CARD_TYPE, max_length=15)
-    SPEED = ((str(s), "{} MB/s".format(s)) for s in (4, 20, 30, 40, 48, 80, 95, 280))
+    SPEED = [(str(s), "{} MB/s".format(s)) for s in (4, 20, 30, 40, 48, 80, 95, 280)]
     speed = models.CharField(_("Transfer Speed"), choices=SPEED, max_length=8)
     product_code = models.CharField(_("Product code"), max_length=255, unique=True)
     storage = models.PositiveIntegerField(_("Storage Capacity"),

@@ -1,4 +1,4 @@
-FROM jrief/fedora-uwsgi-python:latest
+FROM jrief/fedora-uwsgi-python:3
 
 MAINTAINER Jacob Rief <jacob.rief@gmail.com>
 

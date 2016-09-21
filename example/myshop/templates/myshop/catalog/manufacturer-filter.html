@@ -1,0 +1,8 @@
+{% load static sekizai_tags %}
+
+{% addtoblock "js" %}<script src="{% static 'shop/js/filter.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+{% addtoblock "ng-requires" %}django.shop.filter{% endaddtoblock %}
+
+<div shop-product-filter="manufacturer" style="margin-bottom: 10px;">
+	{{ filter.filter_set.form.as_div }}
+</div>

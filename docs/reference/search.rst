@@ -5,9 +5,9 @@ Full Text Search
 ================
 
 How should a customer find the product he desires in a more or less unstructured collection of
-countless products. Hierarchical navigation often doesn't work and takes too much time. Thanks to
-the way we use the Internet today, most site visitors expect one central search field in the main
-navigation bar of a site.
+countless products? Hierarchical navigation often doesn't work and takes too much time. Thanks to
+the way we use the Internet today, most site visitors expect one central search field in, or nearby
+the main navigation bar of a site.
 
 
 Search Engine API
@@ -17,11 +17,11 @@ In Django the most popular API for full-text search is Haystack_. While other in
 such as Solr and Whoosh might work as well, the best results have been achieved with Elasticsearch_.
 Therefore this documentation focuses exclusively on Elasticsearch. And since in **djangoSHOP** every
 programming interface uses REST, search is no exception here. Fortunately there is a project named
-drf-haystack_, which "restifies" our search results, if use use special serializers.
+drf-haystack_, which "restifies" our search results, if we use a special serializer class.
 
 In this document we assume that the merchant only wants to index his products, but not any arbitrary
 content, such as for example the terms and condition, as found outside **djangoSHOP**, but inside
-**djangoCMS**.
+**djangoCMS**. The latter would however be perfectly feasible.
 
 
 Configuration
@@ -89,13 +89,13 @@ product model ``SmartCard``, this indexing class then may look like:
 
 	from shop.search.indexes import ProductIndex
 	from haystack import indexes
-	
+
 	class SmartCardIndex(ProductIndex, indexes.Indexable):
 	    catalog_media = indexes.CharField(stored=True,
 	        indexed=False, null=True)
 	    search_media = indexes.CharField(stored=True,
 	        indexed=False, null=True)
-	
+
 	    def get_model(self):
 	        return SmartCard
 
@@ -118,7 +118,7 @@ additional fields to store information about the indexed product entity:
 	        indexed=True, use_template=True)
 	    autocomplete = indexes.EdgeNgramField(indexed=True,
 	        use_template=True)
-	
+
 	    product_name = indexes.CharField(stored=True,
 	        indexed=False, model_attr='product_name')
 	    product_url = indexes.CharField(stored=True,
@@ -172,10 +172,10 @@ a model attribute, we must provide two methods, which creates this content:
 
 	class SmartCardIndex(ProductIndex, indexes.Indexable):
 	    # other fields and methods ...
-	
+
 	    def prepare_catalog_media(self, product):
 	        return self.render_html('catalog', product, 'media')
-	
+
 	    def prepare_search_media(self, product):
 	        return self.render_html('search', product, 'media')
 
@@ -213,14 +213,14 @@ for this demo site, may look like:
 	from rest_framework import serializers
 	from shop.search.serializers import ProductSearchSerializer as ProductSearchSerializerBase
 	from .search_indexes import SmartCardIndex, SmartPhoneIndex
-	
+
 	class ProductSearchSerializer(ProductSearchSerializerBase):
 	    media = serializers.SerializerMethodField()
-	
+
 	    class Meta(ProductSearchSerializerBase.Meta):
 	        fields = ProductSearchSerializerBase.Meta.fields + ('media',)
 	        index_classes = (SmartCardIndex, SmartPhoneIndex)
-	
+
 	    def get_media(self, search_result):
 	        return search_result.search_media
 
@@ -243,11 +243,11 @@ In the Search View we link the serializer together with a `djangoCMS apphook`_. 
 
 	from cms.app_base import CMSApp
 	from cms.apphook_pool import apphook_pool
-	
+
 	class ProductSearchApp(CMSApp):
 	    name = _("Search")
 	    urls = ['myshop.urls.search']
-	
+
 	apphook_pool.register(ProductSearchApp)
 
 as all apphooks, it requires a file defining its urlpatterns:
@@ -258,7 +258,7 @@ as all apphooks, it requires a file defining its urlpatterns:
 	from django.conf.urls import url
 	from shop.search.views import SearchView
 	from myshop.serializers import ProductSearchSerializer
-	
+
 	urlpatterns = [
 	    url(r'^', SearchView.as_view(
 	        serializer_class=ProductSearchSerializer,
@@ -266,27 +266,28 @@ as all apphooks, it requires a file defining its urlpatterns:
 	]
 
 
-Search Results
---------------
+Display Search Results
+----------------------
 
 As with all other pages in **djangoSHOP**, the page displaying our search results is a normal CMS
 page too. It is suggested to create this page on the root level of the page tree.
 
-As the page title use "*Search*" or whatever is appropriate in our natural language. Then we change
-into advanced setting.
+As the page title use "*Search*" or whatever is appropriate as expression. Then we change into
+the *Advanced Setting* od the page.
 
-As a template use one with a big placeholder, since it must display our search results.
+As a template use one with a big placeholder, since it must display our search results. Our default
+template usually is a good fit.
 
-In the page **Id** field, use "shop-search-product". Some prepared default templates use this hard
-coded string.
+As the page **Id** field, enter ``shop-search-product``. Some default HTML snippets, prepared for
+inclusion in other templates, use this hard coded string.
 
-Set the input field **Soft root** to checked. This hides this special page from our menu list.
+Set the input field **Soft root** to checked. This hides our search results page from the menu list.
 
 As **Application**, select "*Search*". This selects the apphook we created in the previous section.
 
 Then save the page, change into **Structure** mode and locate the placeholder named
-**Main Content**. Add a Container plugin, followed by a Row and then a Column plugin. As the
-child of this column chose the **Search Results** plugin from section **Shop**.
+**Main Content**. Add a Bootstrap Container plugin, followed by a Row and then a Column plugin. As
+the child of this column, chose the **Search Results** plugin from section **Shop**.
 
 Finally publish the page and enter some text into the search field. It should render a list of
 found products.
@@ -313,14 +314,14 @@ To extend the existing Catalog List View for autocompletion, locate the file con
 urlpatterns, which are used by the apphook ``ProductsListApp``. In doubt, consult the file
 ``myshop/cms_app.py``.
 
-Into these urlpatterns add the following entry:
+To this file with urlpatterns add the following entry:
 
 .. code-block:: python
 
 	from django.conf.urls import url
 	from shop.search.views import SearchView
 	from myshop.serializers import CatalogSearchSerializer
-	
+
 	urlpatterns = [
 	    # previous patterns
 	    url(r'^search-catalog$', SearchView.as_view(
@@ -329,13 +330,39 @@ Into these urlpatterns add the following entry:
 	    # other patterns
 	]
 
-.. note:: Be careful the the regular expression for ``^search-catalog$`` matches before the
-		product's detail view, which usually is looks for patterns matching ``^(?P<slug>[\w-]+)$``.
+.. note:: Be careful that the regular expression for ``^search-catalog$`` is located *before* the
+	pattern used for the product's detail view; this usually looks like ``^(?P<slug>[\w-]+)$``.
 
 The ``CatalogSearchSerializer`` used here is very similar to the ``ProductSearchSerializer`` we have
 seen in the previous section. The only difference is, that instead of the ``search_media`` field
 is uses the ``catalog_media`` field, which renders the result items media in a layout appropriate
-for the catalog's list view.
+for the catalog's list view. Therefore this kind of search, normally is used in combination with
+auto-completion, because here we reuse the same layout for the product's list view.
+
+
+The Client Side
+---------------
+
+To facilitate the placement of the search input field, **djangoSHOP** ships with a reusable
+AngularJS directive ``shopProductSearch``, which is declared inside the module
+``shop/js/search-form.js``.
+
+A HTML snipped with a submission form using this directive can be found in the shop's templates
+folder at ``shop/navbar/search-form.html``. If you override it, make sure that the form element
+uses the directive ``shop-product-search`` as attribute:
+
+.. code-block:: django
+
+	<form shop-product-search method="get" action="/url-of-page-rendering-the-search-results">
+	  <input name="q" ng-model="searchQuery" ng-change="autocomplete()" type="text" />
+	</form>
+
+If you don't use the prepared HTML snippet, assure that the module is initialized while
+bootstrapping our Angular application:
+
+.. code-block:: javascript
+
+	angular.module('myShop', [..., 'django.shop.search', ...]);
 
 
 .. _Haystack: http://haystacksearch.org/

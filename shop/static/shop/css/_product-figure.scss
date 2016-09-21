@@ -1,0 +1,18 @@
+@import "variables";
+
+figure {
+	border: 1px solid $list-group-border;
+	border-radius: $border-radius-base;
+	padding: 10px;
+	a:hover, a:active {
+		text-decoration: none;
+	}
+	h4 {
+		min-height: 38px;
+	}
+	figcaption {
+		margin-top: 5px;
+		min-height: 50px;
+	}
+	min-height: 365px;
+}

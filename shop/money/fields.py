@@ -39,6 +39,11 @@ class MoneyFormField(forms.DecimalField):
         self.Money = money_class
         super(MoneyFormField, self).__init__(**kwargs)
 
+    def prepare_value(self, value):
+        if isinstance(value, AbstractMoney):
+            return Decimal(value)
+        return value
+
     def to_python(self, value):
         value = super(MoneyFormField, self).to_python(value)
         return self.Money(value)

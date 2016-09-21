@@ -286,6 +286,9 @@ DialogFormPluginBase.register_plugin(AcceptConditionFormPlugin)
 
 
 class RequiredFormFieldsPlugin(ShopPluginBase):
+    """
+    This plugin renders a short text message, emphasizing that fields with a star are required.
+    """
     name = _("Required Form Fields")
     template_leaf_name = 'required-form-fields.html'
 

@@ -1,0 +1,8 @@
+@import "bootstrap-sass/assets/stylesheets/bootstrap/variables";
+
+// configure the font include pathes
+$icon-font-path: unquote(get-setting(NODE_MODULES_URL) + "bootstrap-sass/assets/fonts/bootstrap/");
+$fa-font-path: unquote(get-setting(NODE_MODULES_URL) + "font-awesome/fonts");
+
+// navbar
+$navbar-extra-top-height: 50px;

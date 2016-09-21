@@ -342,7 +342,7 @@ appropriate action, for instance to start the purchasing operation using the **L
 "*Purchase Now*".
 
 .. note:: This plugin requires the AngularJS directive ``<bsp-process-bar>`` as found in the
-	bower package angular-bootstrap-plus_.
+	npm package angular-bootstrap-plus_.
 
 
 Catalog
