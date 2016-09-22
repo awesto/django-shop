@@ -51,7 +51,10 @@ if settings.USE_I18N:
         order = models.PositiveIntegerField(verbose_name=_("Sort by"), db_index=True)
         cms_pages = models.ManyToManyField('cms.Page', through=ProductPage,
             help_text=_("Choose list view this product shall appear on."))
-        sample_image = image.FilerImageField(blank=True)
+        sample_image = image.FilerImageField(verbose_name=_("Sample Image"), blank=True, null=True,
+            help_text=_("Sample image used in the catalog's list view."))
+        show_breadcrumb = models.BooleanField(_("Show Breadcrumb"), default=True,
+            help_text=_("Shall the detail page show the product's breadcrumb."))
         placeholder = PlaceholderField("Commodity Details")
 
         # translatable fields for the catalog's list- and detail views
@@ -109,7 +112,7 @@ else:
         order = models.PositiveIntegerField(verbose_name=_("Sort by"), db_index=True)
         cms_pages = models.ManyToManyField('cms.Page', through=ProductPage,
             help_text=_("Choose list view this product shall appear on."))
-        sample_image = image.FilerImageField(verbose_name=_("Sample Image"),
+        sample_image = image.FilerImageField(verbose_name=_("Sample Image"), blank=True, null=True,
             help_text=_("Sample image used in the catalog's list view."))
         show_breadcrumb = models.BooleanField(_("Show Breadcrumb"), default=True,
             help_text=_("Shall the detail page show the product's breadcrumb."))
