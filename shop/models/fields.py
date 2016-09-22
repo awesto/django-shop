@@ -1,29 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import connection
+from django.conf import settings
 
-from shop.apps import get_tuple_version
 
-try:
-    if str(connection.vendor) == 'postgresql':
-        import psycopg2
-
-        psycopg2_version = get_tuple_version(psycopg2.__version__[:5])
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT version()")
-            row = cursor.fetchone()[:17]
-        postgres_version = get_tuple_version(str(row[0][:17].split(' ')[1]))
-        # To be able to use the Django version of JSONField, it requires to have
-        # PostgreSQL ≥ 9.4 and psycopg2 ≥ 2.5.4, otherwise some issues could be faced.
-        if (psycopg2_version) >= (2, 5, 4) and (postgres_version >= (9, 4)):
-            from django.contrib.postgres.fields import JSONField as _JSONField
-        else:
-            raise ImportError
-    else:
-        raise ImportError
-
-except ImportError:
+if settings.DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql':
+    from django.contrib.postgres.fields import JSONField as _JSONField
+else:
     from jsonfield.fields import JSONField as _JSONField
 
 
