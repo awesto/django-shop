@@ -14,7 +14,7 @@ if settings.SHOP_TUTORIAL in ('commodity', 'i18n_commodity'):
     from . import order
 elif settings.SHOP_TUTORIAL == 'smartcard':
     from . import manufacturer
-    from .smartcard import smartcard
+    from . import smartcard
     from . import order
 elif settings.SHOP_TUTORIAL == 'i18n_smartcard':
     from . import manufacturer

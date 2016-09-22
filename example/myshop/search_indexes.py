@@ -2,8 +2,8 @@
 from __future__ import unicode_literals
 
 from django.conf import settings
-from shop.search.indexes import ProductIndex as ProductIndexBase
 from haystack import indexes
+from shop.search.indexes import ProductIndex as ProductIndexBase
 
 
 if settings.SHOP_TUTORIAL == 'commodity' or settings.SHOP_TUTORIAL == 'i18n_commodity':
@@ -14,7 +14,7 @@ elif settings.SHOP_TUTORIAL == 'i18n_smartcard':
     from myshop.models.i18n_smartcard import SmartCard
 elif settings.SHOP_TUTORIAL == 'polymorphic':
     from myshop.models.polymorphic.smartcard import SmartCard
-    from myshop.models.polymorphic.smartphone import SmartPhoneModel, SmartPhone
+    from myshop.models.polymorphic.smartphone import SmartPhoneModel
 
 
 class ProductIndex(ProductIndexBase):

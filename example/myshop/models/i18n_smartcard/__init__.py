@@ -83,6 +83,7 @@ class SmartCardTranslation(TranslatedFieldsModel):
         configuration='CKEDITOR_SETTINGS_CAPTION',
         help_text=_("Short description used in the catalog's list view of products."))
     description = HTMLField(verbose_name=_("Description"),
+        configuration='CKEDITOR_SETTINGS_DESCRIPTION',
         help_text=_("Description for the list view of products."))
 
     class Meta:
