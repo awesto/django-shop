@@ -137,6 +137,11 @@ class AddToCartView(views.APIView):
         filter_kwargs = {self.lookup_field: kwargs.pop(self.lookup_url_kwarg)}
         if hasattr(self.product_model, 'translations'):
             filter_kwargs.update(translations__language_code=get_language_from_request(self.request))
+            try:
+                self.product_model._meta.get_field_by_name(self.lookup_field)
+            except FieldDoesNotExist:
+                slug = filter_kwargs.pop(self.lookup_field)
+                filter_kwargs['translations__{}'.format(self.lookup_field)] = slug
         queryset = self.product_model.objects.filter(self.limit_choices_to, **filter_kwargs)
         product = get_object_or_404(queryset)
         return {'product': product, 'request': request}
