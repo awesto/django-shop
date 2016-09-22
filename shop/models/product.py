@@ -88,10 +88,15 @@ class PolymorphicProductMetaclass(PolymorphicModelBase):
             raise NotImplementedError(msg.format(Model.__name__))
 
         try:
-            Model().product_name
+            # properties and translated fields are available through the class
+            Model.product_name
         except AttributeError:
-            msg = "Class `{}` must provide a model field or property implementing `product_name`"
-            raise NotImplementedError(msg.format(Model.__name__))
+            try:
+                # model fields are only available through a class instance
+                Model().product_name
+            except AttributeError:
+                msg = "Class `{}` must provide a model field implementing `product_name`"
+                raise NotImplementedError(msg.format(Model.__name__))
 
         if not callable(getattr(Model, 'get_price', None)):
             msg = "Class `{}` must provide a method implementing `get_price(request)`"
