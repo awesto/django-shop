@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import os
+from django.core.exceptions import FieldDoesNotExist
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.utils.cache import add_never_cache_headers
@@ -187,6 +188,11 @@ class ProductRetrieveView(generics.RetrieveAPIView):
             filter_kwargs = {self.lookup_field: self.kwargs[self.lookup_url_kwarg]}
             if hasattr(self.product_model, 'translations'):
                 filter_kwargs.update(translations__language_code=get_language_from_request(self.request))
+                try:
+                    self.product_model._meta.get_field_by_name(self.lookup_field)
+                except FieldDoesNotExist:
+                    slug = filter_kwargs.pop(self.lookup_field)
+                    filter_kwargs['translations__{}'.format(self.lookup_field)] = slug
             queryset = self.product_model.objects.filter(self.limit_choices_to, **filter_kwargs)
             self._product = get_object_or_404(queryset)
         return self._product
