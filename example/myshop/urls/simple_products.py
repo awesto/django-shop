@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+"""
+These URL routings are used by the example `commodity`, `smartcard` and ì18n_smartcard` as found
+in the djangoSHOP's tutorials.
+This is the simplest way of routing and a good default to start with.
+"""
 
 from django.conf.urls import url
 from shop.views.catalog import AddToCartView, CMSPageProductListView, ProductRetrieveView
