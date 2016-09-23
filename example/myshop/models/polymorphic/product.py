@@ -67,7 +67,8 @@ class Product(CMSPageReferenceMixin, TranslatableModelMixin, BaseProduct):
 
 class ProductTranslation(TranslatedFieldsModel):
     master = models.ForeignKey(Product, related_name='translations', null=True)
-    caption = HTMLField(verbose_name=_("Caption"),
+    caption = HTMLField(
+        verbose_name=_("Caption"), blank=True, null=True,
         configuration='CKEDITOR_SETTINGS_CAPTION',
         help_text=_("Short description used in the catalog's list view of products."))
 
