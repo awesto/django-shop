@@ -1,5 +1,4 @@
 beautifulsoup4==4.4.0
-czipfile==1.0.0
 enum34==1.1.6
 django-admin-sortable2==0.6.4
 django-allauth==0.23.0
