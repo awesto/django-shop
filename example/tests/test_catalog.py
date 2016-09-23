@@ -2,50 +2,13 @@
 from __future__ import unicode_literals
 
 import json
-from django.test import TestCase
 from django.core.urlresolvers import reverse
-from cms.api import add_plugin, create_page
-from shop.money import Money
-from shop.models.defaults.mapping import ProductPage, ProductImage
 from myshop.models.polymorphic.smartcard import SmartCard
-from myshop.models.polymorphic.smartphone import SmartPhone
-from myshop.models.manufacturer import Manufacturer
-from myshop.cms_app import ProductsListApp
 from bs4 import BeautifulSoup
+from .test_shop import ShopTestCase
 
 
-class CatalogTest(TestCase):
-    def setUp(self):
-        super(CatalogTest, self).setUp()
-        self.create_pages()
-        self.create_products()
-
-    def create_pages(self):
-        self.home_page = create_page("HOME", 'myshop/pages/default.html', 'en', published=True,
-                           in_navigation=True)
-        self.shop_page = create_page("Shop", 'INHERIT', 'en', parent=self.home_page, published=True,
-                                     in_navigation=True, apphook=ProductsListApp)
-        self.smartcards_page = create_page("Smart Cards", 'INHERIT', 'en', parent=self.shop_page,
-                                      published=True, in_navigation=True, apphook=ProductsListApp)
-
-    def create_products(self):
-        manufacturer = Manufacturer.objects.create(name="SanDisk")
-        sdhc_4gb = SmartCard.objects.create(
-            product_name="SDHC Card 4GB",
-            slug="sdhc-card-4gb",
-            unit_price=Money('3.99'),
-            caption="Dependability and solid performance",
-            manufacturer=manufacturer,
-            card_type="SDHC",
-            storage=4,
-            speed=4,
-            product_code="sd1041",
-            description="SanDisk SDHC and SDXC memory cards are great",
-            order=1
-        )
-        ProductPage.objects.create(page=self.shop_page, product=sdhc_4gb)
-        ProductPage.objects.create(page=self.smartcards_page, product=sdhc_4gb)
-
+class CatalogTest(ShopTestCase):
     def test_list_view(self):
         url = self.smartcards_page.get_absolute_url()
         response = self.client.get(url)
