@@ -47,7 +47,8 @@ class CommodityWizardForm(BaseFormMixin, models.ModelForm):
         self.instance.product_name = self.cleaned_data['product_name']
         self.instance.caption = self.cleaned_data['caption']
         self.instance.slug = self.cleaned_data['slug']
-        self.instance.order = Commodity.objects.aggregate(max=Max('order'))['max'] + 1
+        max_order = Commodity.objects.aggregate(max=Max('order'))['max']
+        self.instance.order = max_order + 1 if max_order else 1
         commodity = super(CommodityWizardForm, self).save(commit)
         ProductPageModel.objects.create(product=commodity, page=self.page.get_public_object())
         return commodity
