@@ -63,7 +63,7 @@ Finally we must create a database to run our example project:
 .. code-block:: shell
 
 	(shoptutorial)$ cd example
-	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=polymorphic DJANGO_DEBUG=1
+	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=commodity DJANGO_DEBUG=1
 	(shoptutorial)$ ./manage.py migrate
 	(shoptutorial)$ ./manage.py createsuperuser
 	Email address: admin@example.org
@@ -81,9 +81,9 @@ Finally point a browser onto http://localhost:8000/ and log in as the superuser 
 Add some pages to the CMS
 =========================
 
-In **djangoSHOP**, every page, with the exception of the product's detail pages, can be rendered by
-the CMS. Therefore, unless you need a special landing page, start immediately with the *Catalog List
-View* of your products. Change into the Django Admin backend, chose the section
+In **djangoSHOP**, every page, can be rendered by the CMS. Therefore, unless you need a special
+landing page, start immediately with the *Catalog's List View* of your products. Change into the
+Django Admin backend, chose the section
 
 **Start > django CMS > Pages**
 

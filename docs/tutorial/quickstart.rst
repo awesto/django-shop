@@ -4,8 +4,8 @@
 Quickstart a Running Demo
 =========================
 
-Using a Docker image
-====================
+Using a Docker image (currently dysfunctional)
+==============================================
 
 To get a first impression of the **djangoSHOP** examples, you may use a prepared Docker container.
 If not already available on your workstation, first install the `Docker runtime environment`_ and
@@ -46,19 +46,40 @@ The Classic Approach
 ====================
 
 Alternatively you may also download all dependencies and start the project manually. If you want to
-use the demo as a starting point, this presumably is the better solution.
+use the demo as a starting point for your own project, then this presumably is the better solution.
 
-Filling your CMS with page content and adding products is a boring job. Impatient users may start
-five demos using prepared sample data. First assure that all dependencies are installed into its
-virtual environment as described in section ":ref:`tutorial/prepare-installation`". Then instead of
-adding pages and products manually, `download the media files`_ and unpack them into the folder
-``django-shop``:
+Filling your CMS with page content and adding products is a boring job. Impatient users can start
+with one of the provided five demos, using prepared sample data. First assure that all dependencies
+are installed into it's virtual environment as described in section :ref:`tutorial/prepare-installation`.
+Then instead of adding pages and products manually, use the following steps:
 
 .. code-block:: shell
 
-	(shoptutorial)$ tar zxf DOWNLOAD/FOLDER/django-shop-workdir.tar.gz
+	(shoptutorial)$ pip install czipfile
+	(shoptutorial)$ cd django-shop/example
+	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=polymorphic
+	(shoptutorial)$ ./manage.py install_workdir
+	(shoptutorial)$ ./manage.py migrate
+	(shoptutorial)$ ./manage.py loaddata ../workdir/$DJANGO_SHOP_TUTORIAL/fixtures/myshop.json
+	(shoptutorial)$ ./manage.py runserver
 
-Starting from this folder, you can run all five demos:
+Starting from this folder, you can run all five demos by reconfiguring the environment variable
+``DJANGO_SHOP_TUTORIAL``. Allowed values are ``commodity``, ``i18n_commodity``, ``smartcard``,
+``i18n_smartcard`` and ``polymorphic``.
+
+To try out another demo, just run these steps:
+
+.. code-block:: shell
+
+	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=smartcard
+	(shoptutorial)$ ./manage.py migrate
+	(shoptutorial)$ ./manage.py loaddata ../workdir/$DJANGO_SHOP_TUTORIAL/fixtures/myshop.json
+	(shoptutorial)$ ./manage.py runserver
+
+
+.. note:: All demos can be started independently from each other, but you are encouraged to start
+		with the ``commodity`` example, and then proceed to the more complicate ones.
+
 
 The first, simple demo shows how to setup a monolingual shop, with a generic product, which
 is named a "Commodity".
@@ -73,14 +94,6 @@ The fourth demo is the same as the third one, but internationalized.
 The fifth demo combines all of the above, and uses polymorphism_ to distinguish between various
 types of products. This demo is multilingual and handles Commodities, Smart Cards and Smart Phones
 with variations.
-
-.. note:: All demos can be started independently from each other, but you are encouraged to start
-		with the first example, and then proceed to the more complicate ones.
-
-.. _download the media files: http://downloads.django-shop.org/django-shop-workdir.tar.gz
-.. _django-parler: http://django-parler.readthedocs.org/en/latest/
-.. _polymorphism: https://django-polymorphic.readthedocs.org/en/latest/
-
 
 Simple Generic Product (Commodity) Demo
 =======================================
@@ -162,3 +175,5 @@ This runs a demo for :ref:`tutorial/polymorphic-product`.
 
 
 .. _Docker runtime environment: https://docs.docker.com/windows/
+.. _django-parler: http://django-parler.readthedocs.org/en/latest/
+.. _polymorphism: https://django-polymorphic.readthedocs.org/en/latest/
