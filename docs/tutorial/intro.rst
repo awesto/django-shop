@@ -63,7 +63,7 @@ Finally we must create a database to run our example project:
 .. code-block:: shell
 
 	(shoptutorial)$ cd example
-	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=commodity DJANGO_DEBUG=1
+	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=commodity
 	(shoptutorial)$ ./manage.py migrate
 	(shoptutorial)$ ./manage.py createsuperuser
 	Email address: admin@example.org
