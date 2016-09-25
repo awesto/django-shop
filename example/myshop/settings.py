@@ -565,8 +565,8 @@ SHOP_ORDER_WORKFLOWS = (
 )
 
 SHOP_STRIPE = {
-    'PUBKEY': 'pk_test_stripe_secret',
-    'APIKEY': 'sk_test_stripe_secret',
+    'PUBKEY': 'pk_test_HlEp5oZyPonE21svenqowhXp',
+    'APIKEY': 'sk_test_xUdHLeFasmOUDvmke4DHGRDP',
     'PURCHASE_DESCRIPTION': _("Thanks for purchasing at MyShop"),
 }
 
