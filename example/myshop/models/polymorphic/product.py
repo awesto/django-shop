@@ -28,6 +28,11 @@ class ProductManager(BaseProductManager, TranslatableManager):
 
 @python_2_unicode_compatible
 class Product(CMSPageReferenceMixin, TranslatableModelMixin, BaseProduct):
+    """
+    Base class to describe a polymorphic product. Here we declare common fields available in all of
+    our different product types. These common fields are also used to build up the view displaying
+    a list of all products.
+    """
     product_name = models.CharField(max_length=255, verbose_name=_("Product Name"))
     slug = models.SlugField(verbose_name=_("Slug"), unique=True)
     caption = TranslatedField()
