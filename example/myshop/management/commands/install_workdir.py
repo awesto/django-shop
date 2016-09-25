@@ -14,13 +14,15 @@ except ImportError:
 
 class Command(BaseCommand):
     help = _("Initialize the workdir to run the demo of myshop.")
-    download_url = 'http://downloads.django-shop.org/django-shop-workdir-0.9.2.zip'
+    download_url = 'http://downloads.django-shop.org/django-shop-workdir_{tutorial}-{version}.zip'
+    version = '0.9.2'
     pwd = 'z7xv'
 
     def handle(self, verbosity, *args, **options):
-        msg = "Downloading workdir. Please wait, this may take a few minutes."
+        msg = "Downloading and extracting workdir. Please wait ..."
         self.stdout.write(msg)
-        response = requests.get(self.download_url, stream=True)
+        download_url = self.download_url.format(tutorial=settings.SHOP_TUTORIAL, version=self.version)
+        response = requests.get(download_url, stream=True)
         try:
             zip_ref = zipfile.ZipFile(StringIO.StringIO(response.content))
             zip_ref.extractall(settings.PROJECT_ROOT, pwd=self.pwd)
