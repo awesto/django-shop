@@ -3,8 +3,6 @@ from __future__ import unicode_literals
 
 import json
 from django.contrib import admin
-from django.contrib.auth.models import AnonymousUser
-from django.contrib.sessions.models import Session
 from django.core.urlresolvers import reverse
 from django.test import TestCase, RequestFactory
 from cms.api import add_plugin, create_page
@@ -12,10 +10,7 @@ from cmsplugin_cascade.bootstrap3 import settings
 from cmsplugin_cascade.bootstrap3.container import (BootstrapContainerPlugin, BootstrapRowPlugin,
         BootstrapColumnPlugin)
 from shop.money import Money
-from shop.models.customer import VisitingCustomer
-from shop.models.cart import CartModel
 from shop.models.defaults.mapping import ProductPage
-from shop.middleware import get_customer
 
 from myshop.models.polymorphic.smartcard import SmartCard
 from myshop.models.manufacturer import Manufacturer
@@ -56,12 +51,10 @@ class ShopTestCase(TestCase):
         ProductPage.objects.create(page=self.shop_page, product=sdhc_4gb)
         ProductPage.objects.create(page=self.smartcards_page, product=sdhc_4gb)
 
-    def add_product2cart(self):
-        sdhc_4gb = SmartCard.objects.get(slug="sdhc-card-4gb")
-        add2cart_url = sdhc_4gb.get_absolute_url() + '/add-to-cart'
+    def add_product2cart(self, product):
+        add2cart_url = product.get_absolute_url() + '/add-to-cart'
         response = self.client.get(add2cart_url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
-        self.assertFalse('sessionid' in response.cookies)
         payload = json.loads(response.content.decode('utf-8'))
         print(payload)
 
@@ -70,15 +63,6 @@ class ShopTestCase(TestCase):
         payload['quantity'] = 1
         response = self.client.post(cart_url, payload)
         self.assertEqual(response.status_code, 201)
-        self.assertTrue('sessionid' in response.cookies)
-
-        # check that the item is in the cart
-        request = self.factory.get('/')
-        request.session = Session.objects.get(session_key=response.cookies['sessionid'].value)
-        request.user = AnonymousUser()
-        request.customer = get_customer(request)
-        cart = CartModel.objects.get_from_request(request)
-        self.assertEquals(cart.items.count(), 1)
 
     def create_page_grid(self, page):
         """
