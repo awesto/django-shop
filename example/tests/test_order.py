@@ -9,7 +9,6 @@ from shop.cascade.checkout import GuestFormPlugin
 
 from .test_shop import ShopTestCase
 
-
 class CheckoutTest(ShopTestCase):
     def setUp(self):
         # add our sample item to the cart

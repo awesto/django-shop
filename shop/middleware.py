@@ -14,8 +14,12 @@ def get_customer(request, force=False):
 
 class CustomerMiddleware(object):
     def process_request(self, request):
-        assert hasattr(request, 'session'), "The djangoSHOP middleware requires session middleware to be installed. Edit your MIDDLEWARE_CLASSES setting to insert 'django.contrib.sessions.middleware.SessionMiddleware'."
-        assert hasattr(request, 'user'), "The djangoSHOP middleware requires an authentication middleware to be installed. Edit your MIDDLEWARE_CLASSES setting to insert 'django.contrib.auth.middleware.AuthenticationMiddleware'."
+        assert hasattr(request, 'session'), (
+            "The djangoSHOP middleware requires session middleware to be installed. "
+            "Edit your MIDDLEWARE_CLASSES setting to insert 'django.contrib.sessions.middleware.SessionMiddleware'.")
+        assert hasattr(request, 'user'), (
+            "The djangoSHOP middleware requires an authentication middleware to be installed. "
+            "Edit your MIDDLEWARE_CLASSES setting to insert 'django.contrib.auth.middleware.AuthenticationMiddleware'.")
         request.customer = SimpleLazyObject(lambda: get_customer(request))
 
     def process_response(self, request, response):
