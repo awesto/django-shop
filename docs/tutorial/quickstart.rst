@@ -11,7 +11,7 @@ You may download all dependencies and start the testing projects manually. If yo
 demo as a starting point for your own project, then this presumably is the better solution.
 
 Filling your CMS with page content and adding products is a boring job. Impatient users can start
-with one of the provided five demos, using prepared sample data. First assure that all dependencies
+with one of the five provided demos, using prepared sample data. First assure that all dependencies
 are installed into it's virtual environment as described in section :ref:`tutorial/prepare-installation`.
 Then instead of adding pages and products manually, use the following steps:
 
