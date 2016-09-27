@@ -20,22 +20,20 @@ Then instead of adding pages and products manually, use the following steps:
 	(shoptutorial)$ pip install czipfile
 	(shoptutorial)$ cd django-shop/example
 	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=commodity
-	(shoptutorial)$ ./manage.py install_workdir
-	(shoptutorial)$ ./manage.py migrate
-	(shoptutorial)$ ./manage.py loaddata ../workdir/$DJANGO_SHOP_TUTORIAL/fixtures/myshop.json
+	(shoptutorial)$ ./manage.py initialize_shop_demo
 	(shoptutorial)$ ./manage.py runserver
 
-Point a browser onto http://localhost:8000/admin/ and sign in as user "*admin*" with password
-"*secret*".
+Point a browser onto http://localhost:8000/admin/ and sign in as user *admin* with password
+*secret*.
 
 This runs the demo for :ref:`tutorial/commodity`.
 
 Starting from this folder, you can run all five demos by reconfiguring the environment variable
-``DJANGO_SHOP_TUTORIAL``. Allowed values are "``commodity``", "``i18n_commodity``", "``smartcard``",
-"``i18n_smartcard``" and "``polymorphic``". Afterwards re-run the above commands starting from
-``./manage.py install_workdir``.
+``DJANGO_SHOP_TUTORIAL``. Allowed values are ``commodity``, ``i18n_commodity``, ``smartcard``,
+``i18n_smartcard`` and ``polymorphic``. Afterwards re-run ``./manage.py initialize_shop_demo``
+for each of them.
 
-.. note:: All demos can be started independently from each other, but you are encouraged to start
+.. note:: All demos can be started independently from each other, but you are encouraged to begin
 	with the ``commodity`` example, and then proceed to the more complicate ones.
 
 
