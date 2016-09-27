@@ -116,7 +116,6 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
             modifier.process_cart_item(self, request)
         self._dirty = False
 
-
 CartItemModel = deferred.MaterializedModel(BaseCartItem)
 
 
@@ -258,6 +257,5 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     @classmethod
     def get_default_caption_data(cls):
         return {'num_items': 0, 'total_quantity': 0, 'subtotal': Money(), 'total': Money()}
-
 
 CartModel = deferred.MaterializedModel(BaseCart)
