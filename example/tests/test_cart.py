@@ -113,13 +113,12 @@ class CartTest(ShopTestCase):
 
     def test_merge_items(self):
         BART = {
-            'username': 'bart',
             'first_name': 'Bart',
             'last_name': 'Simpson',
             'email': 'bart@thesimpsons.com',
             'password': 'trab',
         }
-        bart = get_user_model().objects.create(**BART)
+        bart = get_user_model().objects.create_user('bart', **BART)
         bart = Customer.objects.create(user=bart, salutation='mr',
                                        recognized=CustomerState.REGISTERED)
         self.assertTrue(bart.is_registered())
@@ -152,23 +151,15 @@ class CartTest(ShopTestCase):
         xtr_sdhc_16gb = SmartCard.objects.get(slug="extreme-plus-sdhc-16gb")
         self.add_product2cart(xtr_sdhc_16gb)
 
-        # the cart should contain this item
-        sessionid = self.client.session.session_key
-        request = self.factory.get('/')
-        self.middleware_process_request(request, sessionid)
-        cart = CartModel.objects.get_from_request(request)
-        self.assertEquals(cart.items.count(), 1)
-        self.assertEquals(cart.items.first().product.product_code, xtr_sdhc_16gb.product_code)
-
         # Bart logs in again
-        client = APIClient()
-        client.cookies = self.client.cookies
-        client.login(username='bart', password='trab')
-        self.assertEquals(sessionid, client.session.session_key)
+        login_url = reverse('shop:login')
+        credentials = dict(username='bart', password='trab')
+        response = self.client.post(login_url, credentials)
+        self.assertEqual(response.status_code, 200)
 
         # the cart now should contain both items
         request = APIRequestFactory().request()
-        self.middleware_process_request(request, sessionid)
+        self.middleware_process_request(request, self.client.session.session_key)
         cart = CartModel.objects.get_from_request(request)
-        # TODO: we somehow must ensure that LoginView.login() is invoked
-        # self.assertEquals(cart.items.count(), 2)
+        self.assertEquals(cart.items.count(), 2)
+        self.assertEquals(cart.items.last().product.product_code, xtr_sdhc_16gb.product_code)
