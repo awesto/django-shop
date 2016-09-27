@@ -2,13 +2,17 @@
 from __future__ import unicode_literals
 
 import json
+from django.conf import settings
 from django.contrib import admin
 from django.core.urlresolvers import reverse
+from django.contrib.sessions.middleware import SessionMiddleware
+from django.contrib.auth.middleware import AuthenticationMiddleware
 from django.test import TestCase, RequestFactory
 from cms.api import add_plugin, create_page
-from cmsplugin_cascade.bootstrap3 import settings
+from cmsplugin_cascade.bootstrap3 import settings as bs3_settings
 from cmsplugin_cascade.bootstrap3.container import (BootstrapContainerPlugin, BootstrapRowPlugin,
         BootstrapColumnPlugin)
+from shop.middleware import CustomerMiddleware
 from shop.money import Money
 from shop.models.defaults.mapping import ProductPage
 
@@ -51,6 +55,22 @@ class ShopTestCase(TestCase):
         ProductPage.objects.create(page=self.shop_page, product=sdhc_4gb)
         ProductPage.objects.create(page=self.smartcards_page, product=sdhc_4gb)
 
+        xtr_sdhc_16gb = SmartCard.objects.create(
+            product_name="EXTREME PLUS SDHC 16GB",
+            slug="extreme-plus-sdhc-16gb",
+            unit_price=Money('8.49'),
+            caption="Up to 80/60MB/s read/write speed",
+            manufacturer=manufacturer,
+            card_type="SDHC",
+            storage=16,
+            speed=80,
+            product_code="sd2016",
+            description="SanDisk Extreme memory cards offer speed, capacity, and durability",
+            order=2,
+        )
+        ProductPage.objects.create(page=self.shop_page, product=xtr_sdhc_16gb)
+        ProductPage.objects.create(page=self.smartcards_page, product=xtr_sdhc_16gb)
+
     def add_product2cart(self, product):
         add2cart_url = product.get_absolute_url() + '/add-to-cart'
         response = self.client.get(add2cart_url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
@@ -74,7 +94,7 @@ class ShopTestCase(TestCase):
 
         # create container
         BS3_BREAKPOINT_KEYS = list(
-            tp[0] for tp in settings.CMSPLUGIN_CASCADE['bootstrap3']['breakpoints'])
+            tp[0] for tp in bs3_settings.CMSPLUGIN_CASCADE['bootstrap3']['breakpoints'])
         container_element = add_plugin(placeholder, BootstrapContainerPlugin, 'en',
             glossary={'breakpoints': BS3_BREAKPOINT_KEYS})
         container_plugin = container_element.get_plugin_class_instance(self.admin_site)
@@ -93,3 +113,10 @@ class ShopTestCase(TestCase):
         column_plugin = column_element.get_plugin_class_instance()
         self.assertIsInstance(column_plugin, BootstrapColumnPlugin)
         return column_element
+
+    def middleware_process_request(self, request, sessionid=None):
+        if sessionid:
+            request.COOKIES[settings.SESSION_COOKIE_NAME] = sessionid
+        SessionMiddleware().process_request(request)
+        AuthenticationMiddleware().process_request(request)
+        CustomerMiddleware().process_request(request)
