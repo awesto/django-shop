@@ -14,7 +14,7 @@ django-haystack==2.5.0
 django-ipware==1.1.1
 django-mptt==0.7.4
 django-parler==1.6.4
-django-polymorphic==0.9.2
+django-polymorphic==1.0.1
 django-post-office==2.0.5
 django-rest-auth==0.5.0
 django-sass-processor==0.4.4
