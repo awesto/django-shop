@@ -45,7 +45,7 @@ class Command(BaseCommand):
         download_url = self.download_url.format(tutorial=settings.SHOP_TUTORIAL, version=self.version)
         response = requests.get(download_url, stream=True)
         try:
-            zip_ref = zipfile.ZipFile(StringIO.StringIO(response.content))
+            zip_ref = zipfile.ZipFile(StringIO(response.content))
             zip_ref.extractall(settings.PROJECT_ROOT, pwd=self.pwd)
         finally:
             zip_ref.close()
