@@ -17,7 +17,6 @@ Then instead of adding pages and products manually, use the following steps:
 
 .. code-block:: shell
 
-	(shoptutorial)$ pip install czipfile
 	(shoptutorial)$ cd django-shop/example
 	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=commodity
 	(shoptutorial)$ ./manage.py initialize_shop_demo
@@ -28,6 +27,10 @@ Point a browser onto http://localhost:8000/admin/ and sign in as user *admin* wi
 
 This runs the demo for :ref:`tutorial/commodity`.
 
+.. note:: The first time, **djangoSHOP** renders a page, images must be thumbnailed and cropped.
+	This is an expensive operation which runs only once. Therefore please be patient, when loading
+	pages for the first time.
+
 Starting from this folder, you can run all five demos by reconfiguring the environment variable
 ``DJANGO_SHOP_TUTORIAL``. Allowed values are ``commodity``, ``i18n_commodity``, ``smartcard``,
 ``i18n_smartcard`` and ``polymorphic``. Afterwards re-run ``./manage.py initialize_shop_demo``
@@ -35,7 +38,6 @@ for each of them.
 
 .. note:: All demos can be started independently from each other, but you are encouraged to begin
 	with the ``commodity`` example, and then proceed to the more complicate ones.
-
 
 .. _tutorial/commodity:
 
