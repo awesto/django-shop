@@ -18,7 +18,7 @@ if settings.USE_I18N:
                          PlaceholderAdminMixin, CMSPageAsCategoryMixin, admin.ModelAdmin):
         fieldsets = (
             (None, {
-                'fields': ('translated_product_name', 'slug', 'caption',)
+                'fields': ('product_name', 'slug', 'caption',)
             }),
             (_("Common Fields"), {
                 'fields': ('product_code', ('unit_price', 'active',), 'show_breadcrumb', 'sample_image'),
@@ -29,7 +29,7 @@ if settings.USE_I18N:
 
         def get_prepopulated_fields(self, request, obj=None):
             return {
-                'slug': ('translated_product_name',)
+                'slug': ('product_name',)
             }
 
 else:
@@ -41,6 +41,3 @@ else:
                   ('unit_price', 'active',), 'show_breadcrumb', 'sample_image',)
         filter_horizontal = ('cms_pages',)
         prepopulated_fields = {'slug': ('product_name',)}
-
-#        class Media:
-#            js = ('cms/js/admin.changeform.js',)

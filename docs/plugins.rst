@@ -27,7 +27,7 @@ How they work
 
 Shipping backends need to be registered in the SHOP_SHIPPING_BACKENDS Django 
 setting. They do not need to extend any particular class, but need to expose
-a specific interface, as defined in :ref:`shipping-backend-interface`.
+a specific interface, as defined in ``:ref:`shipping-backend-interface```.
 
 The core functionality the shop exposes is the ability to retrieve the current 
 :class:`~shop.models.Order` object (and all it's related bits and pieces such

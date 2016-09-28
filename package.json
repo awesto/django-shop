@@ -1,6 +1,6 @@
 {
   "name": "django-shop",
-  "version": "0.9.0",
+  "version": "0.9.2",
   "description": "This version of django-shop is currently under development. If you want to help out, please have a look at our `Development documentation`_.",
   "main": "index.js",
   "directories": {
@@ -21,7 +21,18 @@
   },
   "homepage": "https://github.com/jrief/django-shop#readme",
   "dependencies": {
-    "bootstrap-sass": "^3.3.6",
-    "font-awesome": "^4.5.0"
+    "angular": "~1.3.20",
+    "angular-animate": "~1.3.20",
+    "angular-bootstrap-plus": "^0.6.3",
+    "angular-i18n": "~1.3.20",
+    "angular-inview": "^1.5.7",
+    "angular-messages": "~1.3.20",
+    "angular-sanitize": "~1.3.20",
+    "angular-ui-bootstrap": "~0.13.4",
+    "bootstrap": "^3.3.7",
+    "bootstrap-sass": "^3.3.7",
+    "font-awesome": "^4.6.3",
+    "picturefill": "^3.0.2",
+    "select2": "^4.0.3"
   }
 }

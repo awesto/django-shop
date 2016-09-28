@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.apps import apps
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.forms import ChoiceField, widgets
 from django.template import TemplateDoesNotExist
 from django.template.loader import select_template
@@ -85,20 +85,21 @@ class ShopButtonPluginBase(ShopLinkPluginBase):
         return mark_safe(instance.glossary.get('link_content', ''))
 
 
-class HeavySelect2Widget(HeavySelect2Widget):
+class ProductSelect2Widget(HeavySelect2Widget):
     def render(self, name, value, attrs=None, choices=None):
         try:
             result = ProductSelectSerializer(ProductModel.objects.get(pk=value))
             choices = ((value, result.data['text']),)
         except (ProductModel.DoesNotExist, ValueError):
             choices = ()
-        html = super(HeavySelect2Widget, self).render(name, value, attrs=attrs, choices=choices)
+        html = super(ProductSelect2Widget, self).render(name, value, attrs=attrs, choices=choices)
+        print(html)
         return html
 
 
 class ProductSelectField(ChoiceField):
     def __init__(self, *args, **kwargs):
-        kwargs.setdefault('widget', HeavySelect2Widget(data_view='shop:select-product'))
+        kwargs.setdefault('widget', ProductSelect2Widget(data_view='shop:select-product'))
         super(ProductSelectField, self).__init__(*args, **kwargs)
 
     def clean(self, value):
@@ -136,7 +137,7 @@ class CatalogLinkForm(LinkForm):
             # check if that product still exists, otherwise return nothing
             Model = apps.get_model(*initial['link']['model'].split('.'))
             initial['product'] = Model.objects.get(pk=initial['link']['pk']).pk
-        except (KeyError, ValueError, Model.DoesNotExist):
+        except (KeyError, ValueError, ObjectDoesNotExist):
             pass
 
 

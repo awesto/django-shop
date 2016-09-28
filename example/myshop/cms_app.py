@@ -11,7 +11,13 @@ from menus.menu_pool import menu_pool
 
 class ProductsListApp(CMSApp):
     name = _("Products List")
-    urls = ['myshop.urls.{}_products'.format('polymorphic' if settings.SHOP_TUTORIAL == 'polymorphic' else 'simple')]
+    if settings.SHOP_TUTORIAL == 'polymorphic':
+        urls = ['myshop.urls.polymorphic_products']
+    elif settings.SHOP_TUTORIAL == 'i18n_commodity':
+        urls = ['myshop.urls.i18n_products']
+    else:
+        urls = ['myshop.urls.simple_products']
+
 
 apphook_pool.register(ProductsListApp)
 

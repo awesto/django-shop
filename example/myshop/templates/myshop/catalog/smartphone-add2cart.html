@@ -23,9 +23,8 @@
 				</select>
 			</td>
 			<td>
-				<select class="form-control" ng-model="context.quantity" ng-change="updateContext()">
-					<option value="1">1</option>
-					<option value="2">2</option>
+				<select class="form-control" ng-model="context.quantity" ng-change="updateContext()"
+					ng-options="quantity as quantity for quantity in [1,2]">
 				</select>
 			</td>
 			<td ng-bind="context.unit_price"></td>

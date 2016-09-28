@@ -6,7 +6,7 @@ from collections import OrderedDict
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import ugettext_lazy as _
-from jsonfield.fields import JSONField
+from shop.models.fields import JSONField
 from shop.modifiers.pool import cart_modifiers_pool
 from shop.money import Money
 from .product import BaseProduct
@@ -18,6 +18,7 @@ class CartItemManager(models.Manager):
     """
     Customized model manager for our CartItem model.
     """
+
     def get_or_create(self, **kwargs):
         """
         Create a unique cart item. If the same product exists already in the given cart,
@@ -69,7 +70,7 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     cart = deferred.ForeignKey('BaseCart', related_name='items')
     product = deferred.ForeignKey(BaseProduct)
-    extra = JSONField(default={}, verbose_name=_("Arbitrary information for this cart item"))
+    extra = JSONField(verbose_name=_("Arbitrary information for this cart item"))
 
     objects = CartItemManager()
 
@@ -141,14 +142,12 @@ class CartManager(models.Manager):
 
 class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
-    The fundamental parts of a shopping cart. It refers to a rather simple list of items.
-    Ideally it should be bound to a session and not to a User as we want to let
-    people buy from our shop without having to register with us.
+    The fundamental part of a shopping cart.
     """
     customer = deferred.OneToOneField('BaseCustomer', verbose_name=_("Customer"), related_name='cart')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
-    extra = JSONField(default={}, verbose_name=_("Arbitrary information for this cart"))
+    extra = JSONField(verbose_name=_("Arbitrary information for this cart"))
 
     # our CartManager determines the cart object from the request.
     objects = CartManager()
@@ -242,7 +241,8 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         """
         Returns the total quantity of all items in the cart.
         """
-        return self.items.aggregate(models.Sum('quantity'))['quantity__sum']
+        aggr = self.items.aggregate(quantity=models.Sum('quantity'))
+        return aggr['quantity'] or 0
         # if we would know, that self.items is already evaluated, then this might be faster:
         # return sum([ci.quantity for ci in self.items.all()])
 

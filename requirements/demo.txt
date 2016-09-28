@@ -1,1 +1,0 @@
--r django18/testing.txt

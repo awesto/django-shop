@@ -2,6 +2,8 @@
 django-SHOP
 ===========
 
+[![Build Status](https://travis-ci.org/awesto/django-shop.svg)](https://travis-ci.org/awesto/django-shop)
+[![PyPI version](https://img.shields.io/pypi/v/django-shop.svg)](https://https://pypi.python.org/pypi/django-shop)
 [![Join the chat at https://gitter.im/awesto/django-shop](https://badges.gitter.im/awesto/django-shop.svg)](https://gitter.im/awesto/django-shop?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Version 0.9 of **djangoSHOP** is a complete rewrite of the old code base but keeps the concepts of
@@ -53,13 +55,14 @@ Specifically, we aim at providing a clean, modular and Pythonic/Djangonic implem
 framework, that a moderately talented Django programmer should be able to pick up and run easily.
 
 
-## Build status
+## Please help
 
-[![Build Status](https://travis-ci.org/awesto/django-shop.svg)](https://travis-ci.org/awesto/django-shop)
+In order to build better demo sites, we need good pictures together with some introductory text
+for arbitrary products. Both, pictures and text must be free of copyright or under an open license
+(CC-by-SA, or similar). If you can provide these assets, please get in touch with Jacob Rief
+or René Fleschenberg by email.
 
-
-### Todo:
-
-* We need more tests.
-* We need translations into other natural languages.
-* The documentation should be checked by a native English speaker.
+We also need ...
+* more tests.
+* translations into other natural languages.
+* a native English speaker to check the documentation.

@@ -88,10 +88,15 @@ class PolymorphicProductMetaclass(PolymorphicModelBase):
             raise NotImplementedError(msg.format(Model.__name__))
 
         try:
-            Model().product_name
+            # properties and translated fields are available through the class
+            Model.product_name
         except AttributeError:
-            msg = "Class `{}` must provide a model field or property implementing `product_name`"
-            raise NotImplementedError(msg.format(Model.__name__))
+            try:
+                # model fields are only available through a class instance
+                Model().product_name
+            except AttributeError:
+                msg = "Class `{}` must provide a model field implementing `product_name`"
+                raise NotImplementedError(msg.format(Model.__name__))
 
         if not callable(getattr(Model, 'get_price', None)):
             msg = "Class `{}` must provide a method implementing `get_price(request)`"
@@ -173,14 +178,22 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
 
     def is_in_cart(self, cart, watched=False, **kwargs):
         """
-        Checks if the product is already in the given cart, and if so, returns the corresponding
-        cart_item, otherwise this method returns None.
-        The boolean `watched` is used to determine if this check shall only be performed for the
-        watch-list.
-        Optionally one may pass arbitrary information about the product using `**kwargs`. This can
-        be used to determine if a product with variations shall be considered as the same cart item
-        increasing it quantity, or if it shall be considered as a separate cart item, resulting in
-        the creation of a new cart item.
+        Checks if the current product is already in the given cart, and if so, returns the
+        corresponding cart_item.
+
+        Args:
+            watched (bool): This is used to determine if this check shall only be performed
+                for the watch-list.
+
+            **kwargs: Optionally one may pass arbitrary information about the product being looked
+                 up. This can be used to determine if a product with variations shall be considered
+                 equal to the same cart item, resulting in an increase of it's quantity, or if it
+                 shall be considered as a separate cart item, resulting in the creation of a new
+                 item.
+
+        Returns:
+            The cart_item containing the product considered as equal to the current one, or
+            ``None`` if it is not available.
         """
         from .cart import CartItemModel
         cart_item_qs = CartItemModel.objects.filter(cart=cart, product=self)

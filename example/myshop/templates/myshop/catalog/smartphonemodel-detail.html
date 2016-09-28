@@ -1,21 +1,30 @@
 {% extends "myshop/catalog/product-detail.html" %}
-{% load i18n cms_tags %}
+{% load i18n static cms_tags sekizai_tags sass_tags %}
 
 {% block main-content %}
+
+{% addtoblock "css" %}<link href="{% sass_src 'node_modules/angular-bootstrap-plus/src/scrollpanel/scrollpanel.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+{% addtoblock "js" %}<script src="{% static 'node_modules/angular-bootstrap-plus/src/scrollpanel/scrollpanel.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+{% addtoblock "ng-requires" %}bs-plus.scrollpanel{% endaddtoblock %}
+
 <div class="container">
 	<div class="row product-detail">
 		<div class="col-xs-12 col-md-8">
 			<h1>{% render_model product "product_name" %}</h1>
-			<pre class="images jfk-scrollbar">
-			{% for img in product.images.all %}
-				<img src="{{ img.url }}" alt="{{ product.product_name }}">
-			{% endfor %}
-			</pre>
+			<bsp-scrollpanel>
+				<ul>{% for img in product.images.all %}
+					<li><img src="{{ img.url }}" alt="{{ product.product_name }}" /></li>
+				{% endfor %}</ul>
+			</bsp-scrollpanel>
 		</div>
 		<div class="col-xs-12 col-md-8">
 			{{ product.description|safe }}
 			<table class="table table-bordered">
 				<tbody class="table-striped">
+					<tr>
+						<td>{% trans "Manufacturer" %}</td>
+						<td>{{ product.manufacturer }}</td>
+					</tr>
 					<tr>
 						<td>{% trans "Battery" %}</td>
 						<td>{{ product.get_battery_type_display }} ({{ product.battery_capacity }} mAh)</td>
@@ -55,4 +64,15 @@
 		</div>
 	</div>
 </div>
+
+{% addtoblock "js" %}<script id="scrollpanel/bsp-scrollpanel.tmpl.html" type="text/ng-template">
+	<panel-control class="left ">
+		<span class="glyphicon glyphicon-chevron-left"></span>
+	</panel-control>
+	<ng-transclude></ng-transclude>
+	<panel-control class="right">
+		<span class="glyphicon glyphicon-chevron-right"></span>
+	</panel-control>
+</script>{% endaddtoblock %}
+
 {% endblock main-content %}

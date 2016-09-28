@@ -3,7 +3,7 @@
 {% addtoblock "css" %}<link href="{% sass_src 'shop/css/dialog.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 {% addtoblock "js" %}<script src="{% static 'shop/js/utils.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% addtoblock "js" %}<script src="{% static 'shop/js/dialogs.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-{% addtoblock "shop-ng-requires" %}django.shop.dialogs{% endaddtoblock %}
+{% addtoblock "ng-requires" %}django.shop.dialogs{% endaddtoblock %}
 
 {% block dialog_form %}{% verbatim %}
 <div class="alert alert-danger">Please extend template <code>shop/checkout/dialog-base.html</code> and override <code>{% block dialog_form %}</code></div>

@@ -35,7 +35,8 @@ class ProductIndex(indexes.SearchIndex):
 
     def render_html(self, prefix, product, postfix):
         """
-        Render a HTML snippet to be stored inside the index database.
+        Render a HTML snippet to be stored inside the index database, so that rendering of the
+        product's list views can be performed without database queries.
         """
         app_label = product._meta.app_label.lower()
         params = [

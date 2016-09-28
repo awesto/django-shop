@@ -4,10 +4,10 @@ from __future__ import unicode_literals
 Django settings for myshop project.
 
 For more information on this file, see
-https://docs.djangoproject.com/en/1.8/topics/settings/
+https://docs.djangoproject.com/en/stable/topics/settings/
 
 For the full list of settings and their values, see
-https://docs.djangoproject.com/en/1.8/ref/settings/
+https://docs.djangoproject.com/en/stable/ref/settings/
 """
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -15,6 +15,7 @@ import os
 from decimal import Decimal
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ImproperlyConfigured
+from cmsplugin_cascade.extra_fields.config import PluginExtraFieldsConfig
 
 SHOP_APP_LABEL = 'myshop'
 BASE_DIR = os.path.dirname(__file__)
@@ -102,13 +103,14 @@ INSTALLED_APPS = (
     'filer',
     'easy_thumbnails',
     'easy_thumbnails.optimize',
-    'parler',
     'post_office',
     'haystack',
     'shop',
     'shop_stripe',
     'myshop',
 )
+if SHOP_TUTORIAL in ('i18n_commodity', 'i18n_smartcard', 'polymorphic'):
+    INSTALLED_APPS += ('parler',)
 
 MIDDLEWARE_CLASSES = (
     'djng.middleware.AngularUrlMiddleware',
@@ -139,7 +141,7 @@ WSGI_APPLICATION = 'wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(WORK_DIR, 'db-{}.sqlite3'.format(SHOP_TUTORIAL)),
+        'NAME': os.path.join(WORK_DIR, SHOP_TUTORIAL, 'db.sqlite3'),
     }
 }
 
@@ -200,7 +202,7 @@ USE_X_FORWARDED_HOST = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = os.path.join(WORK_DIR, 'media')
+MEDIA_ROOT = os.path.join(WORK_DIR, SHOP_TUTORIAL, 'media')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -209,7 +211,7 @@ MEDIA_URL = '/media/'
 
 # Absolute path to the directory that holds static files.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = os.path.join(WORK_DIR, 'static')
+STATIC_ROOT = os.path.join(WORK_DIR, SHOP_TUTORIAL, 'static')
 
 # URL that handles the static files served from STATIC_ROOT.
 # Example: "http://media.lawrence.com/static/"
@@ -224,7 +226,6 @@ STATICFILES_FINDERS = (
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
-    ('bower_components', os.path.join(PROJECT_ROOT, 'bower_components')),
     ('node_modules', os.path.join(PROJECT_ROOT, 'node_modules')),
 )
 
@@ -296,7 +297,7 @@ LOGGING = {
 
 SILENCED_SYSTEM_CHECKS = ('auth.W004')
 
-FIXTURE_DIRS = [os.path.join(PROJECT_ROOT, 'example/fixtures')]
+FIXTURE_DIRS = [os.path.join(WORK_DIR, SHOP_TUTORIAL, 'fixtures')]
 
 ############################################
 # settings for sending mail
@@ -414,18 +415,15 @@ CMS_PLACEHOLDER_CONF = {
         'glossary': CACSCADE_WORKAREA_GLOSSARY,
     },
     'Commodity Details': {
-        #'plugins': ['BootstrapRowPlugin', 'TextPlugin', 'ImagePlugin', 'PicturePlugin'],
-        'plugins': ['BootstrapContainerPlugin'],
+        'plugins': ['BootstrapContainerPlugin', 'BootstrapJumbotronPlugin'],
         'text_only_plugins': ['TextLinkPlugin'],
-        'parent_classes': {'BootstrapContainerPlugin': None},
-        #'parent_classes': {'BootstrapRowPlugin': None},
-        #'require_parent': False,
+        'parent_classes': {'BootstrapContainerPlugin': None, 'BootstrapJumbotronPlugin': None},
         'glossary': CACSCADE_WORKAREA_GLOSSARY,
     },
     'Main Content': {
-        'plugins': ['BootstrapContainerPlugin'],
+        'plugins': ['BootstrapContainerPlugin', 'BootstrapJumbotronPlugin'],
         'text_only_plugins': ['TextLinkPlugin'],
-        'parent_classes': {'BootstrapContainerPlugin': None},
+        'parent_classes': {'BootstrapContainerPlugin': None, 'BootstrapJumbotronPlugin': None},
         'glossary': CACSCADE_WORKAREA_GLOSSARY,
     },
     'Static Footer': {
@@ -439,6 +437,7 @@ CMSPLUGIN_CASCADE_PLUGINS = ('cmsplugin_cascade.segmentation', 'cmsplugin_cascad
     'cmsplugin_cascade.link', 'shop.cascade', 'cmsplugin_cascade.bootstrap3',)
 
 CMSPLUGIN_CASCADE = {
+    'fontawesome_css_url': 'node_modules/font-awesome/css/font-awesome.css',
     'dependencies': {
         'shop/js/admin/shoplinkplugin.js': 'cascade/js/admin/linkpluginbase.js',
     },
@@ -451,19 +450,10 @@ CMSPLUGIN_CASCADE = {
     'bootstrap3': {
         'template_basedir': 'angular-ui',
     },
-    'plugins_with_extra_fields': (
-        'BootstrapButtonPlugin',
-        'BootstrapRowPlugin',
-        'CarouselPlugin',
-        'SimpleWrapperPlugin',
-        'HorizontalRulePlugin',
-        'ExtraAnnotationFormPlugin',
-        'ShopProceedButton',
-        'ShopAddToCartPlugin',
-    ),
     'plugins_with_extra_render_templates': {
         'CustomSnippetPlugin': [
-            ('shop/catalog/product-heading.html', _("Product Heading"))
+            ('shop/catalog/product-heading.html', _("Product Heading")),
+            ('myshop/catalog/manufacturer-filter.html', _("Manufacturer Filter")),
         ],
     },
     'plugins_with_sharables': {
@@ -526,8 +516,8 @@ CKEDITOR_SETTINGS_DESCRIPTION = {
     ],
 }
 
-SELECT2_CSS = 'bower_components/select2/dist/css/select2.min.css'
-SELECT2_JS = 'bower_components/select2/dist/js/select2.min.js'
+SELECT2_CSS = 'node_modules/select2/dist/css/select2.min.css'
+SELECT2_JS = 'node_modules/select2/dist/js/select2.min.js'
 
 
 #############################################
@@ -560,9 +550,11 @@ SHOP_CART_MODIFIERS = (
     'shop.modifiers.taxes.CartExcludedTaxModifier',
     'myshop.modifiers.PostalShippingModifier',
     'myshop.modifiers.CustomerPickupModifier',
-    'myshop.modifiers.StripePaymentModifier',
     'shop.modifiers.defaults.PayInAdvanceModifier',
 )
+if 'shop_stripe' in INSTALLED_APPS:
+    SHOP_CART_MODIFIERS += ('myshop.modifiers.StripePaymentModifier',)
+
 SHOP_EDITCART_NG_MODEL_OPTIONS = "{updateOn: 'default blur', debounce: {'default': 2500, 'blur': 0}}"
 
 SHOP_ORDER_WORKFLOWS = (
@@ -573,8 +565,8 @@ SHOP_ORDER_WORKFLOWS = (
 )
 
 SHOP_STRIPE = {
-    'PUBKEY': 'pk_test_stripe_secret',
-    'APIKEY': 'sk_test_stripe_secret',
+    'PUBKEY': 'pk_test_HlEp5oZyPonE21svenqowhXp',
+    'APIKEY': 'sk_test_xUdHLeFasmOUDvmke4DHGRDP',
     'PURCHASE_DESCRIPTION': _("Thanks for purchasing at MyShop"),
 }
 
