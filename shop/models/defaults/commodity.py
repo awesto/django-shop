@@ -51,11 +51,14 @@ if settings.USE_I18N:
         order = models.PositiveIntegerField(verbose_name=_("Sort by"), db_index=True)
         cms_pages = models.ManyToManyField('cms.Page', through=ProductPage,
             help_text=_("Choose list view this product shall appear on."))
-        sample_image = image.FilerImageField(blank=True)
+        sample_image = image.FilerImageField(verbose_name=_("Sample Image"), blank=True, null=True,
+            help_text=_("Sample image used in the catalog's list view."))
+        show_breadcrumb = models.BooleanField(_("Show Breadcrumb"), default=True,
+            help_text=_("Shall the detail page show the product's breadcrumb."))
         placeholder = PlaceholderField("Commodity Details")
 
         # translatable fields for the catalog's list- and detail views
-        translated_product_name = TranslatedField()
+        product_name = TranslatedField()
         slug = TranslatedField()
         caption = TranslatedField()
 
@@ -73,19 +76,16 @@ if settings.USE_I18N:
         def __str__(self):
             return self.product_code
 
-        def product_name(self):
-            return self.translated_product_name
-
         def get_price(self, request):
             return self.unit_price
 
 
     class CommodityTranslation(TranslatedFieldsModel):
         master = models.ForeignKey(Commodity, related_name='translations', null=True)
-        translated_product_name = models.CharField(max_length=255, verbose_name=_("Product Name"))
+        product_name = models.CharField(max_length=255, verbose_name=_("Product Name"))
         slug = models.SlugField(verbose_name=_("Slug"))
         caption = HTMLField(verbose_name=_("Caption"), blank=True, null=True,
-                                help_text=_("Short description for the catalog list view."))
+                            help_text=_("Short description for the catalog list view."))
 
         class Meta:
             app_label = settings.SHOP_APP_LABEL
@@ -109,7 +109,7 @@ else:
         order = models.PositiveIntegerField(verbose_name=_("Sort by"), db_index=True)
         cms_pages = models.ManyToManyField('cms.Page', through=ProductPage,
             help_text=_("Choose list view this product shall appear on."))
-        sample_image = image.FilerImageField(verbose_name=_("Sample Image"),
+        sample_image = image.FilerImageField(verbose_name=_("Sample Image"), blank=True, null=True,
             help_text=_("Sample image used in the catalog's list view."))
         show_breadcrumb = models.BooleanField(_("Show Breadcrumb"), default=True,
             help_text=_("Shall the detail page show the product's breadcrumb."))

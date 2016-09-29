@@ -8,7 +8,7 @@ from djangocms_text_ckeditor.fields import HTMLField
 from shop.money.fields import MoneyField
 from shop.models.product import BaseProduct, BaseProductManager, CMSPageReferenceMixin
 from shop.models.defaults.mapping import ProductPage, ProductImage
-from .manufacturer import Manufacturer
+from ..manufacturer import Manufacturer
 
 
 @python_2_unicode_compatible
@@ -18,6 +18,9 @@ class SmartCard(CMSPageReferenceMixin, BaseProduct):
     slug = models.SlugField(verbose_name=_("Slug"))
     unit_price = MoneyField(_("Unit price"), decimal_places=3,
         help_text=_("Net price for this product"))
+    caption = HTMLField(verbose_name=_("Caption"),
+        configuration='CKEDITOR_SETTINGS_CAPTION',
+        help_text=_("Short description used in the catalog's list view of products."))
     description = HTMLField(verbose_name=_("Description"),
         configuration='CKEDITOR_SETTINGS_DESCRIPTION',
         help_text=_("Description for the list view of products."))

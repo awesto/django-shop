@@ -19,9 +19,9 @@ Prepare the Installation
 ========================
 
 To run the examples shown in this tutorial, you must install **django-shop** from GitHub, since
-the pip-installable from PyPI only contains the main files. Before proceeding, please make sure
-virtualenv_ is installed on your system, otherwise you would pollute your Python site-packages
-folder.
+the pip-installable from PyPI only contains the framework but not the files required for the demos.
+Before proceeding, please make sure virtualenv_ is installed on your system, otherwise you would
+pollute your Python site-packages folder.
 
 Also ensure that these packages are installed using the favorite package manager of your operating
 system:
@@ -30,8 +30,7 @@ system:
 * Redis: http://redis.io/
 * SQLite: https://www.sqlite.org/
 * Node Package Manager: https://www.npmjs.com/
-* Python 2.7 (Latest minor version recommended)
-* Django 1.9 (Latest minor version recommended)
+* Python 2.7 or 3.4 and later
 
 Note: replace ``requirements/common.txt`` with ``requirements/py2.txt`` below
 if you want to use Python 2. We recommend that you use Python 3.
@@ -47,10 +46,11 @@ if you want to use Python 2. We recommend that you use Python 3.
 	(shoptutorial)$ pip install -r requirements/common.txt
 	(shoptutorial)$ npm install
 
-These statements will setup an environment that runs a demo shop out of the box.
+These statements will setup an environment that runs one of the demo shops out of the box.
 
-You may populate the database with your own products, or if impatient, :ref:`tutorial/quickstart`
-using prepared CMS page layouts, products and media files.
+If you want to populate the database with your own categories, products and pages, proceed as
+described below. Otherwise, or if impatient, you may :ref:`tutorial/quickstart` using prepared
+CMS page layouts, products and media files.
 
 
 .. _tutorial/create-demo-database:
@@ -63,7 +63,7 @@ Finally we must create a database to run our example project:
 .. code-block:: shell
 
 	(shoptutorial)$ cd example
-	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=polymorphic DJANGO_DEBUG=1
+	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=commodity
 	(shoptutorial)$ ./manage.py migrate
 	(shoptutorial)$ ./manage.py createsuperuser
 	Email address: admin@example.org
@@ -81,9 +81,9 @@ Finally point a browser onto http://localhost:8000/ and log in as the superuser 
 Add some pages to the CMS
 =========================
 
-In **djangoSHOP**, every page, with the exception of the product's detail pages, can be rendered by
-the CMS. Therefore, unless you need a special landing page, start immediately with the *Catalog List
-View* of your products. Change into the Django Admin backend, chose the section
+In **djangoSHOP**, every page, can be rendered by the CMS. Therefore, unless you need a special
+landing page, start immediately with the *Catalog's List View* of your products. Change into the
+Django Admin backend, chose the section
 
 **Start > django CMS > Pages**
 

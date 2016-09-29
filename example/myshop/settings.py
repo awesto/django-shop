@@ -4,10 +4,10 @@ from __future__ import unicode_literals
 Django settings for myshop project.
 
 For more information on this file, see
-https://docs.djangoproject.com/en/1.8/topics/settings/
+https://docs.djangoproject.com/en/stable/topics/settings/
 
 For the full list of settings and their values, see
-https://docs.djangoproject.com/en/1.8/ref/settings/
+https://docs.djangoproject.com/en/stable/ref/settings/
 """
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -141,7 +141,7 @@ WSGI_APPLICATION = 'wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(WORK_DIR, 'db-{}.sqlite3'.format(SHOP_TUTORIAL)),
+        'NAME': os.path.join(WORK_DIR, SHOP_TUTORIAL, 'db.sqlite3'),
     }
 }
 
@@ -202,7 +202,7 @@ USE_X_FORWARDED_HOST = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = os.path.join(WORK_DIR, 'media')
+MEDIA_ROOT = os.path.join(WORK_DIR, SHOP_TUTORIAL, 'media')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -211,7 +211,7 @@ MEDIA_URL = '/media/'
 
 # Absolute path to the directory that holds static files.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = os.path.join(WORK_DIR, 'static')
+STATIC_ROOT = os.path.join(WORK_DIR, SHOP_TUTORIAL, 'static')
 
 # URL that handles the static files served from STATIC_ROOT.
 # Example: "http://media.lawrence.com/static/"
@@ -297,7 +297,7 @@ LOGGING = {
 
 SILENCED_SYSTEM_CHECKS = ('auth.W004')
 
-FIXTURE_DIRS = [os.path.join(PROJECT_ROOT, 'example/fixtures')]
+FIXTURE_DIRS = [os.path.join(WORK_DIR, SHOP_TUTORIAL, 'fixtures')]
 
 ############################################
 # settings for sending mail
@@ -565,8 +565,8 @@ SHOP_ORDER_WORKFLOWS = (
 )
 
 SHOP_STRIPE = {
-    'PUBKEY': 'pk_test_stripe_secret',
-    'APIKEY': 'sk_test_stripe_secret',
+    'PUBKEY': 'pk_test_HlEp5oZyPonE21svenqowhXp',
+    'APIKEY': 'sk_test_xUdHLeFasmOUDvmke4DHGRDP',
     'PURCHASE_DESCRIPTION': _("Thanks for purchasing at MyShop"),
 }
 

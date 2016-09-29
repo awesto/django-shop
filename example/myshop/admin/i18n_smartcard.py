@@ -17,7 +17,7 @@ class SmartCardAdmin(SortableAdminMixin, TranslatableAdmin,
             'fields': ('product_name', 'slug', 'product_code', 'unit_price', 'active',),
         }),
         (_("Translatable Fields"), {
-            'fields': ('description',)
+            'fields': ('caption', 'description',)
         }),
         (_("Properties"), {
             'fields': ('manufacturer', 'storage', 'card_type',)

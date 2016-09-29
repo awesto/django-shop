@@ -32,7 +32,7 @@
 				<strong ng-bind="result.price"></strong>
 			</td>
 			<td class="text-center">
-				<a class="btn btn-primary btn-sm" href="{% verbatim %}{{ result.product_url }}{% endverbatim %}">{% trans "Details" %}&nbsp;<i class="glyphicon glyphicon-menu-right"></i></a>
+				<a class="btn btn-primary btn-sm" ng-href="{% verbatim %}{{ result.product_url }}{% endverbatim %}">{% trans "Details" %}&nbsp;<i class="glyphicon glyphicon-menu-right"></i></a>
 			</td>
 		</tr>
 	</tbody>

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 import string
 from importlib import import_module
 from django.conf import settings
@@ -23,11 +24,11 @@ SessionStore = import_module(settings.SESSION_ENGINE).SessionStore()
 
 
 class CustomerState(ChoiceEnum):
-    UNRECOGNIZED = 0;
+    UNRECOGNIZED = 0
     ugettext_noop("CustomerState.Unrecognized")
-    GUEST = 1;
+    GUEST = 1
     ugettext_noop("CustomerState.Guest")
-    REGISTERED = 2;
+    REGISTERED = 2
     ugettext_noop("CustomerState.Registered")
 
 
@@ -330,9 +331,11 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     def get_or_assign_number(self):
         """
-        Hook to get or to assign the customers number. It shall be invoked, every time an Order
-        object is created. If the customer number shall be different from the primary key, then
-        override this method.
+        Hook to get or to assign the customers number. It is invoked, every time an Order object
+        is created. Using a customer number, which is different from the primary key is useful for
+        merchants, wishing to assign sequential numbers only to customers which actually bought
+        something. Otherwise the customer number (primary key) is increased whenever a customer
+        puts something into the cart.
         """
         return self.get_number()
 
@@ -354,7 +357,6 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         else:
             # also delete self through cascading
             self.user.delete(*args, **kwargs)
-
 
 CustomerModel = deferred.MaterializedModel(BaseCustomer)
 

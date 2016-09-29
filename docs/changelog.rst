@@ -4,11 +4,12 @@
 Changelog for djangoSHOP
 ========================
 
-0.9.2.dev
-=========
+0.9.2
+=====
 
 * Minimum required version of django-filer is now 1.2.5.
-* Minimum required version of djangocms-cascade is now 0.10.0.
+* Minimum required version of djangocms-cascade is now 0.10.2.
+* Minimum required version of djangoshop-stripe is now 0.2.0.
 * Changed the default address models to be more generic. Please read the
   :doc:`upgrade instructions <upgrading>` if you are upgrading from 0.9.0 or 0.9.1.
 * Fixed :py:meth:`shop.money.fields.decontruct` to avoid repetitive useless generation of migration

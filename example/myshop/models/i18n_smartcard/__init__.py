@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.utils.six.moves.urllib.parse import urljoin
 from django.utils.encoding import python_2_unicode_compatible
 from djangocms_text_ckeditor.fields import HTMLField
 from parler.managers import TranslatableManager, TranslatableQuerySet
@@ -34,6 +33,7 @@ class SmartCard(CMSPageReferenceMixin, TranslatableModelMixin, BaseProduct):
     slug = models.SlugField(verbose_name=_("Slug"))
     unit_price = MoneyField(_("Unit price"), decimal_places=3,
         help_text=_("Net price for this product"))
+    caption = TranslatedField()
     description = TranslatedField()
 
     # product properties
@@ -79,7 +79,11 @@ class SmartCard(CMSPageReferenceMixin, TranslatableModelMixin, BaseProduct):
 class SmartCardTranslation(TranslatedFieldsModel):
     master = models.ForeignKey(SmartCard, related_name='translations',
         null=True)
+    caption = HTMLField(verbose_name=_("Caption"),
+        configuration='CKEDITOR_SETTINGS_CAPTION',
+        help_text=_("Short description used in the catalog's list view of products."))
     description = HTMLField(verbose_name=_("Description"),
+        configuration='CKEDITOR_SETTINGS_DESCRIPTION',
         help_text=_("Description for the list view of products."))
 
     class Meta:
