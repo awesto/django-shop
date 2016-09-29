@@ -1,0 +1,8 @@
+*
+!docker-files/
+!email_auth/
+!shop/
+!requirements/
+!setup.py
+!package.json
+!README.md
