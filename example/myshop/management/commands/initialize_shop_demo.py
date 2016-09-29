@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import os
 import requests
 try:
     from StringIO import StringIO
@@ -40,13 +41,14 @@ class Command(BaseCommand):
         if self.interactive and input(mesg) != 'yes':
             raise CommandError("Collecting static files cancelled.")
 
-        msg = "Downloading and extracting workdir. Please wait ..."
-        self.stdout.write(msg)
+        extract_to = os.path.join(settings.WORK_DIR, os.pardir)
+        msg = "Downloading workdir and extracting to {}. Please wait ..."
+        self.stdout.write(msg.format(extract_to))
         download_url = self.download_url.format(tutorial=settings.SHOP_TUTORIAL, version=self.version)
         response = requests.get(download_url, stream=True)
         zip_ref = zipfile.ZipFile(StringIO(response.content))
         try:
-            zip_ref.extractall(settings.PROJECT_ROOT, pwd=self.pwd)
+            zip_ref.extractall(extract_to, pwd=self.pwd)
         finally:
             zip_ref.close()
 
