@@ -4,8 +4,8 @@
 Changelog for djangoSHOP
 ========================
 
-0.9.2.dev
-=========
+0.9.2
+=====
 
 * Minimum required version of django-filer is now 1.2.5.
 * Minimum required version of djangocms-cascade is now 0.10.2.
