@@ -43,7 +43,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'Django>=1.9',
+        'Django>=1.9,<1.10',
         'djangocms-cascade>=0.10.2',
         'beautifulsoup4>=4.4.0',
         'django-cms>=3.3.2',
