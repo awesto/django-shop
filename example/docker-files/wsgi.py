@@ -34,7 +34,5 @@ application = get_wsgi_application()
 BOOTSTRAP_FILE = os.path.join(os.getenv('DJANGO_WORKDIR', ''), '.bootstrap')
 if os.path.isfile(BOOTSTRAP_FILE):
     call_command('initialize_shop_demo', interactive=False)
-    call_command('compilescss')
-    call_command('collectstatic', interactive=False, ignore_patterns='*.scss')
     call_command('rebuild_index', interactive=False)
     os.remove(BOOTSTRAP_FILE)
