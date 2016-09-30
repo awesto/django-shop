@@ -8,7 +8,7 @@ ADD myshop /web/django-shop/example/myshop
 COPY docker-files/wsgi.py /web/django-shop/example/wsgi.py
 COPY manage.py /web/django-shop/example/manage.py
 
-# install packages outside of pypi
+# install packages outside of PyPI
 WORKDIR /web/django-shop
 RUN npm install
 
