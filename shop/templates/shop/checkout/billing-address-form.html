@@ -12,7 +12,7 @@
 		<legend>{{ billing_address_form.legend }}</legend>
 	{% if billing_address_form.multi_addr %}
 		<div class="form-group" ng-if="billing_address_form.form_entities.length>0 && data.billing_address.active_priority!='add'">
-			<label class="control-label">{% trans "Chose a previously used billing address" %}</label>
+			<label class="control-label">{% trans "Choose a previously used billing address" %}</label>
 			<select class="form-control input-sm" name="active_priority" ng-change="switchEntity(billing_address_form)" ng-model="data.billing_address.active_priority">
 				<option ng-repeat="addr in billing_address_form.form_entities" ng-selected="{{ billing_address_form.active_priority.value }}=={% verbatim %}{{ addr.value }}" value="{{ addr.value }}">{{ addr.label }}</option{% endverbatim %}>
 				<option value="new">{% trans "Add another billing address" %}</option>
