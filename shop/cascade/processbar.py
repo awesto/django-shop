@@ -10,7 +10,7 @@ from django.forms.fields import IntegerField
 from django.template.loader import select_template
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.forms import ManageChildrenFormMixin
-from cmsplugin_cascade.fields import PartialFormField
+from cmsplugin_cascade.fields import GlossaryField
 from cmsplugin_cascade.link.forms import TextLinkFormMixin
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.widgets import NumberInputWidget
@@ -70,11 +70,9 @@ class ProcessStepPlugin(TransparentMixin, ShopPluginBase):
     allow_children = True
     alien_child_classes = True
     render_template = 'cascade/generic/wrapper.html'
-    glossary_fields = (
-        PartialFormField('step_title',
-            widgets.TextInput(attrs={'size': 150}),
-            label=_("Step Title")
-        ),
+    step_title = GlossaryField(
+        widgets.TextInput(attrs={'size': 150}),
+        label=_("Step Title")
     )
 
     @classmethod

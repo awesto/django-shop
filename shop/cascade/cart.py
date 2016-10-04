@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from django.forms import widgets
 from django.template.loader import select_template, get_template
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import mark_safe
 from cms.plugin_pool import plugin_pool
-from cmsplugin_cascade.fields import PartialFormField
+from cmsplugin_cascade.fields import GlossaryField
 from shop import settings as shop_settings
 from shop.models.cart import CartModel
 from shop.rest.serializers import CartSerializer
@@ -19,13 +20,12 @@ class ShopCartPlugin(ShopPluginBase):
     cache = False
     CHOICES = (('editable', _("Editable Cart")), ('static', _("Static Cart")),
         ('summary', _("Cart Summary")), ('watch', _("Watch List")),)
-    glossary_fields = (
-        PartialFormField('render_type',
-            widgets.RadioSelect(choices=CHOICES),
-            label=_("Render as"),
-            initial='editable',
-            help_text=_("Shall the cart be editable or a static summary?"),
-        ),
+
+    render_type = GlossaryField(
+        widgets.RadioSelect(choices=CHOICES),
+        label=_("Render as"),
+        initial='editable',
+        help_text=_("Shall the cart be editable or a static summary?"),
     )
 
     @classmethod
