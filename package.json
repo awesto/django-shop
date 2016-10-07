@@ -1,7 +1,7 @@
 {
   "name": "django-shop",
   "version": "0.9.2",
-  "description": "This version of django-shop is currently under development. If you want to help out, please have a look at our `Development documentation`_.",
+  "description": "These dependencies are for the demo installations of django-SHOP.",
   "main": "index.js",
   "directories": {
     "doc": "docs",
