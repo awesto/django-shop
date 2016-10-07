@@ -70,7 +70,7 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateM
             self.many = False
         if self.many:
             return self.list(request, *args, **kwargs)
-        response = self.update(request, *args, **kwargs)
+        self.update(request, *args, **kwargs)
         return self.retrieve(request, *args, **kwargs)
 
     def is_last(self):
