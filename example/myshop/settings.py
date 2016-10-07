@@ -454,6 +454,7 @@ CMSPLUGIN_CASCADE = {
     'plugins_with_extra_render_templates': {
         'CustomSnippetPlugin': [
             ('shop/catalog/product-heading.html', _("Product Heading")),
+            ('shop/checkout/forms-digest.html', _("Forms Digest Validation")),
             ('myshop/catalog/manufacturer-filter.html', _("Manufacturer Filter")),
         ],
     },
