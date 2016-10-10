@@ -71,7 +71,7 @@ class ProcessStepPlugin(TransparentMixin, ShopPluginBase):
     alien_child_classes = True
     render_template = 'cascade/generic/wrapper.html'
     step_title = GlossaryField(
-        widgets.TextInput(attrs={'size': 150}),
+        widgets.TextInput(attrs={'size': 50}),
         label=_("Step Title")
     )
 
@@ -89,8 +89,7 @@ plugin_pool.register_plugin(ProcessStepPlugin)
 
 
 class ProcessNextStepForm(TextLinkFormMixin, ModelForm):
-    link_content = CharField(required=False, label=_("Button Content"),
-        widget=widgets.TextInput(attrs={'id': 'id_name'}))
+    link_content = CharField(required=False, label=_("Button Content"), widget=widgets.TextInput())
 
     def __init__(self, raw_data=None, *args, **kwargs):
         instance = kwargs.get('instance')
@@ -104,8 +103,10 @@ class ProcessNextStepPlugin(BootstrapButtonMixin, ShopPluginBase):
     name = _("Next Step Button")
     parent_classes = ('ProcessStepPlugin',)
     form = ProcessNextStepForm
-    fields = ('link_content', 'glossary',)
     model_mixins = (LinkElementMixin,)
+    fields = ('link_content', 'glossary')
+    glossary_field_order = ('button_type', 'button_size', 'button_options', 'quick_float',
+                            'icon_left', 'icon_right')
 
     class Media:
         css = {'all': ('cascade/css/admin/bootstrap.min.css', 'cascade/css/admin/bootstrap-theme.min.css',)}

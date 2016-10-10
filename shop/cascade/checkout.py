@@ -40,6 +40,8 @@ class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
     name = _("Proceed Button")
     parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin',)
     model_mixins = (LinkElementMixin,)
+    glossary_field_order = ('button_type', 'button_size', 'button_options', 'quick_float',
+                            'icon_left', 'icon_right')
 
     def get_form(self, request, obj=None, **kwargs):
         kwargs.update(form=ProceedButtonForm)
