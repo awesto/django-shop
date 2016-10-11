@@ -1,4 +1,4 @@
-{% load i18n static sekizai_tags %}
+{% load i18n static cms_tags sekizai_tags %}
 
 {% addtoblock "js" %}<script src="{% static 'shop/js/cart.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% addtoblock "ng-requires" %}django.shop.cart{% endaddtoblock %}
@@ -33,21 +33,31 @@
 {% block shop-cart-tfoot %}
 	<tfoot>
 		<tr>
-			<td colspan="3" class="text-right"><strong>{% trans "Subtotal" %}</strong></td>
+			<td colspan="2" rowspan="99">
+				{# render the first child plugin of the cart #}
+				{% render_plugin instance.child_plugin_instances.0 %}
+			</td>
+			<td class="text-right"><strong>{% trans "Subtotal" %}</strong></td>
 			<td class="text-right text-nowrap"><strong ng-bind="cart.subtotal"><!-- Subtotal --></strong></td>
 			<td></td>
 		</tr>
 		<tr ng-repeat="extra_row in cart.extra_rows">
-			<td colspan="2" class="no-border"></td>
 			<td class="text-right text-nowrap"><span ng-bind="extra_row.label"></span></td>
 			<td class="text-right text-nowrap"><span ng-bind="extra_row.amount"></span></td>
 			<td></td>
 		</tr>
 		<tr class="double-border">
-			<td colspan="2" class="no-border"></td>
 			<td class="text-right"><h4><strong>{% trans "Total" %}</strong></h4></td>
 			<td class="text-right text-nowrap"><h4><strong ng-bind="cart.total"><!-- Total --></strong></h4></td>
 			<td></td>
+		</tr>
+		<tr class="no-border">
+			<td colspan="3" rowspan="0">
+			{# render all remaining child plugins of the cart #}
+			{% for plugin in instance.child_plugin_instances %}
+				{% if not forloop.first %}{% render_plugin plugin %}{% endif %}
+			{% endfor %}
+			</td>
 		</tr>
 	</tfoot>
 {% endblock shop-cart-tfoot %}
@@ -56,7 +66,7 @@
 <script id="shop/cart-item.html" type="text/ng-template">
 {% block shop-cart-item %}
 	<td>
-		<input type="number" class="form-control" min="1" ng-model="cart_item.quantity" ng-model-options="{{ ng_model_options }}" ng-change="updateCartItem(cart_item)" />
+		<input type="number" class="form-control" min="1" ng-model="cart_item.quantity" ng-model-options="{{ EDITCART_NG_MODEL_OPTIONS }}" ng-change="updateCartItem(cart_item)" />
 	</td>
 	<td>
 		<div class="media" ng-bind-html="cart_item.summary.media"><!-- rendered by products/cart-`product`-media.html --></div>

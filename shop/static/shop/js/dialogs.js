@@ -122,7 +122,7 @@ djangoShopModule.directive('shopDialogForm', ['$q', '$timeout', function($q, $ti
 }]);
 
 
-// Directive shop-dialog-proceed to be added to button elements.
+// Directive <ANY shop-dialog-proceed> to be added to button elements.
 djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djangoUrl', 'djangoShop',
                          function($window, $http, $q, djangoUrl, djangoShop) {
 	var purchaseURL = djangoUrl.reverse('shop:checkout-purchase');
@@ -242,6 +242,66 @@ djangoShopModule.directive('shopFormValidate', function() {
 		}
 	};
 });
+
+
+// Directive <ANY shop-forms-digest ...>
+// Use this as a wrapper around self validating <form ...> elements (see directive below), so that
+// we can disable the proceed button whenever one of those forms does not validate.
+// Such a proceed button shall be rendered as:
+// <button shop-dialog-proceed ng-click="proceedWith('PURCHASE_NOW')" ng-disabled="stepIsValid===false">Purchase Now</button>
+djangoShopModule.directive('shopFormsDigest', function() {
+	return {
+		require: 'shopFormsDigest',
+		scope: true,
+		controller: function($scope) {
+			// check each child form's $valid state and reduce it to one single state scope.stepIsValid
+			this.reduceValidation = function(formId, formIsValid) {
+				$scope.digestValidatedForms[formId] = formIsValid;
+				$scope.stepIsValid = true;
+				angular.forEach($scope.digestValidatedForms, function(validatedForm) {
+					$scope.stepIsValid = $scope.stepIsValid && validatedForm;
+				});
+			};
+		},
+		link: {
+			pre: function(scope) {
+				// a map of booleans keeping the validation state for each of the child forms
+				scope.digestValidatedForms = {};
+			}
+		}
+	};
+});
+
+djangoShopModule.directive('form', ['$timeout', function($timeout) {
+	return {
+		restrict: 'E',
+		require: ['^?shopFormsDigest', 'form'],
+		priority: 1,
+		scope: {},
+		link: function(scope, element, attrs, controllers) {
+			if (!controllers[0])
+				return;  // not for forms outside <ANY shop-forms-digest></ANY shop-form-digest>
+
+			element.find('input').on('keyup change', function() {
+				// delay until validation is ready
+				$timeout(reduceValidation);
+			});
+			element.find('select').on('change', function() {
+				$timeout(reduceValidation);
+			});
+			element.find('textarea').on('blur', function() {
+				$timeout(reduceValidation);
+			});
+
+			// delay first evaluation until form is fully validated
+			$timeout(reduceValidation);
+
+			function reduceValidation() {
+				controllers[0].reduceValidation(scope.$id, controllers[1].$valid);
+			}
+		}
+	};
+}]);
 
 
 })(window.angular);
