@@ -14,6 +14,9 @@ Changelog for djangoSHOP
 * Added AngularJS directive ``<ANY shop-forms-digest>`` which can be used as a wrapper, when the
   proceed button shall be added to a page containing ``<form ...>`` elements with built in
   validation.
+* All Cascade plugins use ``GlossaryField`` instead of a list of ``PartialFormField``s. This is much
+  more "Djangonic", but requires djangocms-cascade version 0.11 or later.
+* All urlpatterns are compatible with configurations adding a final / to the request URL.
 
 0.9.2
 =====
