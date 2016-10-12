@@ -6,8 +6,8 @@ Changelog for djangoSHOP
 
 0.9.3
 =====
-* Added template context processor :function:`shop.context_processors.ng_model_options` to add
-  the settings ``EDITCART_NG_MODEL_OPTIONS`` and ``ADD2CART_NG_MODEL_OPTIONS``. Please check your
+* Added template context processor :func:`shop.context_processors.ng_model_options` to add the
+  settings ``EDITCART_NG_MODEL_OPTIONS`` and ``ADD2CART_NG_MODEL_OPTIONS``. Please check your
   templates to see, if you still use ``ng_model_options``.
 * Allows to add children to the ``CartPlugin``. These children are added to the table foot of the
   rendered cart.
