@@ -39,3 +39,7 @@ RUN useradd -M -d /web -s /bin/bash django
 RUN chown -R django.django /web/{logs,workdir}
 RUN chown -R elasticsearch.elasticsearch /web/elasticsearch
 RUN chown -R redis.redis /web/redis
+
+# install packages outside of PyPI
+WORKDIR /web/django-shop
+RUN npm install

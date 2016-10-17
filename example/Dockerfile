@@ -8,10 +8,6 @@ ADD myshop /web/django-shop/example/myshop
 COPY docker-files/wsgi.py /web/django-shop/example/wsgi.py
 COPY manage.py /web/django-shop/example/manage.py
 
-# install packages outside of PyPI
-WORKDIR /web/django-shop
-RUN npm install
-
 # add uwsgi.ini file into workdir, so that touching this file restarts the Django server
 COPY docker-files/myshop.ini /web/workdir/myshop.ini
 RUN ln -s /web/workdir/myshop.ini /etc/uwsgi.d/myshop.ini
