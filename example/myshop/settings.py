@@ -254,6 +254,7 @@ TEMPLATES = [{
             'cms.context_processors.cms_settings',
             'shop.context_processors.customer',
             'shop.context_processors.version',
+            'shop.context_processors.ng_model_options',
             'shop_stripe.context_processors.public_keys',
         )
     }
@@ -453,6 +454,7 @@ CMSPLUGIN_CASCADE = {
     'plugins_with_extra_render_templates': {
         'CustomSnippetPlugin': [
             ('shop/catalog/product-heading.html', _("Product Heading")),
+            ('shop/checkout/forms-digest.html', _("Forms Digest Validation")),
             ('myshop/catalog/manufacturer-filter.html', _("Manufacturer Filter")),
         ],
     },

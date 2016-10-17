@@ -21,11 +21,11 @@ easy. Just add this small Python module:
 
 	from cms.plugin_pool import plugin_pool
 	from shop.cascade.plugin_base import ShopPluginBase
-	
+
 	class MySnippetPlugin(ShopPluginBase):
 	    name = "My Snippet"
 	    render_template = 'myshop/cascade/my-snippet.html'
-	
+
 	plugin_pool.register_plugin(MySnippetPlugin)
 
 then, in the project's ``settings.py`` register that plugin together with all other **Cascade**
@@ -55,10 +55,10 @@ is where django-sekizai_ helps us:
 	:caption: myshop/cascade/my-snippet.html
 
 	{% load static sekizai_tags %}
-	
+
 	{% addtoblock "css" %}<link href="{% static 'myshop/css/my-snippet.css' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 	{% addtoblock "js" %}<script src="{% static 'myshop/js/my-snippet.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-	
+
 	<div>
 	    my snippet code goes here...
 	</div>
@@ -80,12 +80,7 @@ a text field holding the snippets title, then change the change the plugin code 
 
 	class MySnippetPlugin(ShopPluginBase):
 	    ...
-	    glossary_fields = (
-	        PartialFormField('title',
-	            widgets.TextInput(),
-	            label=_("Title")
-	        ),
-	    )
+	    title = GlossaryField(widgets.TextInput(), label=_("Title"))
 
 Inside the rendering template for that plugin, the newly added title can be accessed as:
 
@@ -114,17 +109,17 @@ of our ordinary shop plugin class:
 	from cms.plugin_pool import plugin_pool
 	from shop.models.cart import CartModel
 	from shop.cascade.plugin_base import DialogFormPluginBase
-	
+
 	class DeliveryDatePlugin(DialogFormPluginBase):
 	    name = "Delivery Date"
 	    form_class = 'myshop.forms.DeliveryDateForm'
 	    render_template = 'myshop/checkout/delivery-date.html'
-	
+
 	    def get_form_data(self, context, instance, placeholder):
 	        cart = CartModel.objects.get_from_request(context['request'])
 	        initial = {'delivery_date': getattr(cart, 'extra', {}).get('delivery_date', '')}
 	        return {'initial': initial}
-	
+
 	DialogFormPluginBase.register_plugin(DeliveryDatePlugin)
 
 here additionally we have to specify a ``form_class``. This form class can inherit from
@@ -136,9 +131,9 @@ almost identical to its Django's counterparts:
 
 	class DeliveryDateForm(DialogForm):
 	    scope_prefix = 'data.delivery_date'
-	
+
 	    date = fields.DateField(label="Delivery date")
-	
+
 	    @classmethod
 	    def form_factory(cls, request, data, cart):
 	        delivery_date_form = cls(data=data)
@@ -159,7 +154,7 @@ The last piece is to put everything together using a form template such as:
 	:caption: templates/myshop/checkout/delivery-date.html
 
 	{% extends "shop/checkout/dialog-base.html" %}
-	
+
 	{% block dialog_form %}
 	<form name="{{ delivery_date_form.form_name }}" novalidate>
 	    {{ delivery_date_form.as_div }}

@@ -18,7 +18,7 @@ Then instead of adding pages and products manually, use the following steps:
 .. code-block:: shell
 
 	(shoptutorial)$ cd django-shop/example
-	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=commodity
+	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=commodity DJANGO_DEBUG=1
 	(shoptutorial)$ ./manage.py initialize_shop_demo
 	(shoptutorial)$ ./manage.py runserver
 
@@ -52,12 +52,12 @@ functionality.
 
 A **Commodity** model contains only the following attributes:
 
-* The name of the product
-* The product code
-* The slug (a short label used as the last bit in the URLs)
-* The product's unit price
-* One sample image to be shown in the catalog's list view
-* A caption to be shown in the catalog's list view
+* The name of the product.
+* The product code.
+* The slug_ (a short label used as the last bit in the URLs).
+* The product's unit price.
+* One sample image to be shown in the catalog's list view.
+* A caption to be shown in the catalog's list view.
 
 The detail view for each product must however be styled individually using a DjangoCMS placeholder
 together with the plugin system provided by djangocms-cascade_. This gives the merchant all the
@@ -81,9 +81,9 @@ The Internationalized Commodity Product Model
 The ``i18n_commodity`` demo shows how to setup a shop, with the same generic product as in the
 previous example, but with these attributes translatable into multiple natural languages:
 
-* The name of the product
-* The slug
-* A caption to be shown in the catalog's list view
+* The name of the product.
+* The slug.
+* A caption to be shown in the catalog's list view.
 
 All other product attributes from our **Commodity** model are shared across all languages.
 
@@ -144,5 +144,5 @@ It also is the preferred way during agile development.
 .. _Docker runtime environment: https://docs.docker.com/windows/
 .. _django-parler: http://django-parler.readthedocs.org/en/latest/
 .. _polymorphism: https://django-polymorphic.readthedocs.org/en/latest/
-.. _slug:
+.. _slug: https://docs.djangoproject.com/en/stable/glossary/#glossary
 .. _djangocms-cascade: http://djangocms-cascade.readthedocs.io/en/latest/

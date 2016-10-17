@@ -1,31 +1,33 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from django.forms import widgets
 from django.template.loader import select_template, get_template
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import mark_safe
 from cms.plugin_pool import plugin_pool
-from cmsplugin_cascade.fields import PartialFormField
+from cmsplugin_cascade.fields import GlossaryField
+from cmsplugin_cascade.mixins import TransparentMixin
 from shop import settings as shop_settings
 from shop.models.cart import CartModel
 from shop.rest.serializers import CartSerializer
 from .plugin_base import ShopPluginBase
 
 
-class ShopCartPlugin(ShopPluginBase):
+class ShopCartPlugin(TransparentMixin, ShopPluginBase):
     name = _("Cart")
     require_parent = True
     parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin', 'BootstrapPanelPlugin',)
     cache = False
+    allow_children = True
     CHOICES = (('editable', _("Editable Cart")), ('static', _("Static Cart")),
         ('summary', _("Cart Summary")), ('watch', _("Watch List")),)
-    glossary_fields = (
-        PartialFormField('render_type',
-            widgets.RadioSelect(choices=CHOICES),
-            label=_("Render as"),
-            initial='editable',
-            help_text=_("Shall the cart be editable or a static summary?"),
-        ),
+
+    render_type = GlossaryField(
+        widgets.RadioSelect(choices=CHOICES),
+        label=_("Render as"),
+        initial='editable',
+        help_text=_("Shall the cart be editable or a static summary?"),
     )
 
     @classmethod
@@ -61,20 +63,19 @@ class ShopCartPlugin(ShopPluginBase):
         return select_template(template_names)
 
     def render(self, context, instance, placeholder):
-        render_type = instance.glossary.get('render_type')
-        if render_type in ('static', 'summary',):
-            # update context for static and summary cart rendering since items are rendered in HTML
-            try:
-                cart = CartModel.objects.get_from_request(context['request'])
+        try:
+            cart = CartModel.objects.get_from_request(context['request'])
+            context['is_cart_filled'] = cart.items.exists()
+            render_type = instance.glossary['render_type']
+            if render_type in ('static', 'summary',):
+                # update context for static and summary cart rendering since items are rendered in HTML
                 cart_serializer = CartSerializer(cart, context=context, label='cart')
                 context['cart'] = cart_serializer.data
                 if render_type == 'summary':
                     # for a cart summary we're only interested into the number of items
                     context['cart']['items'] = len(context['cart']['items'])
-            except CartModel.DoesNotExist:
-                pass
-        else:
-            context['ng_model_options'] = shop_settings.EDITCART_NG_MODEL_OPTIONS
+        except (KeyError, CartModel.DoesNotExist):
+            pass
         return super(ShopCartPlugin, self).render(context, instance, placeholder)
 
 plugin_pool.register_plugin(ShopCartPlugin)

@@ -4,6 +4,20 @@
 Changelog for djangoSHOP
 ========================
 
+0.9.3
+=====
+* Added template context processor :func:`shop.context_processors.ng_model_options` to add the
+  settings ``EDITCART_NG_MODEL_OPTIONS`` and ``ADD2CART_NG_MODEL_OPTIONS``. Please check your
+  templates to see, if you still use ``ng_model_options``.
+* Allows to add children to the ``CartPlugin``. These children are added to the table foot of the
+  rendered cart.
+* Added AngularJS directive ``<ANY shop-forms-digest>`` which can be used as a wrapper, when the
+  proceed button shall be added to a page containing ``<form ...>`` elements with built in
+  validation.
+* All Cascade plugins use ``GlossaryField`` instead of a list of ``PartialFormField`` s. This is
+  much more "Djangonic", but requires djangocms-cascade version 0.11 or later.
+* All urlpatterns are compatible with configurations adding a final / to the request URL.
+
 0.9.2
 =====
 
