@@ -11,7 +11,7 @@ Changelog for djangoSHOP
   templates to see, if you still use ``ng_model_options``.
 * Allows to add children to the ``CartPlugin``. These children are added to the table foot of the
   rendered cart.
-* Added AngularJS directive ``<ANY shop-forms-digest>`` which can be used as a wrapper, when the
+* Added AngularJS directive ``<ANY shop-forms-set>`` which can be used as a wrapper, when the
   proceed button shall be added to a page containing ``<form ...>`` elements with built in
   validation.
 * All Cascade plugins use ``GlossaryField`` instead of a list of ``PartialFormField`` s. This is

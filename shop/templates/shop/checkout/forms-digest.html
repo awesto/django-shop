@@ -1,8 +1,0 @@
-{% extends "shop/checkout/dialog-base.html" %}
-{% load cms_tags %}
-
-{% block dialog_form %}
-<shop-forms-digest>
-	{% for child in instance.child_plugin_instances %}{% render_plugin child %}{% endfor %}
-</shop-forms-digest>
-{% endblock %}
