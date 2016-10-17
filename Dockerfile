@@ -22,7 +22,7 @@ RUN chown redis.redis /etc/uwsgi.d/redis.ini
 
 RUN pip install uwsgi
 ADD requirements /tmp/requirements
-RUN pip install django==1.9.9
+RUN pip install django==1.9.10
 RUN pip install -r /tmp/requirements/py2.txt
 
 RUN mkdir -p /web/{logs,workdir,elasticsearch,redis,django-shop}
