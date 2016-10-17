@@ -18,8 +18,8 @@ Start the container:
 docker start demo-shop-polymorphic-initial
 ```
 
-It may take some time until the container is ready, because beforehand the full-text search index
-must be build.
+It may take some time until the container is ready, because beforehand the shop must be initialized
+and the full-text search index must be build.
 
 Locate the IP address of your docker machine. Here we use 192.168.99.100, but depending your host's
 operating system, run:
