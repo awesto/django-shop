@@ -38,10 +38,12 @@ djangoShopModule.directive('form', ['$timeout', function($timeout) {
 		restrict: 'E',
 		require: ['^?shopFormsDigest', 'form'],
 		priority: 1,
-		scope: {},
 		link: function(scope, element, attrs, controllers) {
 			if (!controllers[0])
 				return;  // not for forms outside <ANY shop-forms-digest></ANY shop-form-digest>
+
+			// create new isolated scope for this form
+			scope = scope.$new(true);
 
 			element.find('input').on('keyup change', function() {
 				// delay until validation is ready
