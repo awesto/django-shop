@@ -298,3 +298,19 @@ class RequiredFormFieldsPlugin(ShopPluginBase):
         return select_template(template_names)
 
 plugin_pool.register_plugin(RequiredFormFieldsPlugin)
+
+
+class ValidateSetOfFormsPlugin(ShopPluginBase):
+    """
+    This plugin wraps arbitrary forms into the Angular directive shopFormsSet.
+    This is required to validate all forms, so that a proceed button is disabled otherwise.
+    """
+    name = _("Validate Set of Forms")
+
+    def get_render_template(self, context, instance, placeholder):
+        return select_template([
+            '{}/checkout/forms-set.html'.format(shop_settings.APP_LABEL),
+            'shop/checkout/forms-set.html',
+        ])
+
+plugin_pool.register_plugin(ValidateSetOfFormsPlugin)
