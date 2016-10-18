@@ -36,7 +36,7 @@ djangoShopModule.directive('shopFormsSet', function() {
 djangoShopModule.directive('form', ['$timeout', function($timeout) {
 	return {
 		restrict: 'E',
-		require: ['^?shopFormsDigest', 'form'],
+		require: ['^?shopFormsSet', 'form'],
 		priority: 1,
 		link: function(scope, element, attrs, controllers) {
 			if (!controllers[0])
