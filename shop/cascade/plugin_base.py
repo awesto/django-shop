@@ -159,8 +159,9 @@ class DialogFormPluginBase(ShopPluginBase):
     """
     require_parent = True
     parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin', 'BootstrapPanelPlugin',
-        'SegmentPlugin', 'SimpleWrapperPlugin')
+        'SegmentPlugin', 'SimpleWrapperPlugin', 'ValidateSetOfFormsPlugin')
     CHOICES = (('form', _("Form dialog")), ('summary', _("Static summary")),)
+
     render_type = GlossaryField(
         widgets.RadioSelect(choices=CHOICES),
         label=_("Render as"),

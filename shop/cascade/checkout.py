@@ -20,6 +20,7 @@ from cmsplugin_cascade.fields import GlossaryField
 from cmsplugin_cascade.link.cms_plugins import TextLinkPlugin
 from cmsplugin_cascade.link.forms import LinkForm, TextLinkFormMixin
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
+from cmsplugin_cascade.mixins import TransparentMixin
 from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
 from shop import settings as shop_settings
 from shop.models.cart import CartModel
@@ -38,7 +39,7 @@ class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
     This button is used to proceed from one checkout step to the next one.
     """
     name = _("Proceed Button")
-    parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin',)
+    parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin', 'ValidateSetOfFormsPlugin')
     model_mixins = (LinkElementMixin,)
     glossary_field_order = ('button_type', 'button_size', 'button_options', 'quick_float',
                             'icon_left', 'icon_right')
@@ -300,12 +301,14 @@ class RequiredFormFieldsPlugin(ShopPluginBase):
 plugin_pool.register_plugin(RequiredFormFieldsPlugin)
 
 
-class ValidateSetOfFormsPlugin(ShopPluginBase):
+class ValidateSetOfFormsPlugin(TransparentMixin, ShopPluginBase):
     """
     This plugin wraps arbitrary forms into the Angular directive shopFormsSet.
     This is required to validate all forms, so that a proceed button is disabled otherwise.
     """
     name = _("Validate Set of Forms")
+    allow_children = True
+    alien_child_classes = True
 
     def get_render_template(self, context, instance, placeholder):
         return select_template([
