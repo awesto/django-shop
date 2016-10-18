@@ -22,7 +22,30 @@ from .product import BaseProduct
 from shop import deferred
 
 
+class OrderQuerySet(models.QuerySet):
+    def _filter_or_exclude(self, negate, *args, **kwargs):
+        """
+        Emulate filter queries on the Order model using a pseudo slug attribute.
+        This allows to use order numbers as slugs, formatted by method `Order.get_number()`.
+        """
+        lookup_kwargs = {}
+        for key, lookup in kwargs.items():
+            try:
+                index = key.index('__')
+                field_name, lookup_type = key[:index], key[index:]
+            except ValueError:
+                field_name, lookup_type = key, ''
+            if field_name == 'slug':
+                key, lookup = self.model.resolve_number(lookup).popitem()
+                lookup_kwargs.update({key + lookup_type: lookup})
+            else:
+                lookup_kwargs.update({key: lookup})
+        return super(OrderQuerySet, self)._filter_or_exclude(negate, *args, **lookup_kwargs)
+
+
 class OrderManager(models.Manager):
+    _queryset_class = OrderQuerySet
+
     @transaction.atomic
     def create_from_cart(self, cart, request):
         """
@@ -181,8 +204,17 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     def get_number(self):
         """
         Hook to get the order number.
+        A class inheriting from Order may transform this into a string which is better readable.
         """
-        return str(self.id)
+        return str(self.pk)
+
+    @classmethod
+    def resolve_number(cls, number):
+        """
+        Return a lookup pair used to filter down a queryset.
+        It should revert the effect from the above method `get_number`.
+        """
+        return dict(pk=number)
 
     @cached_property
     def subtotal(self):
@@ -207,7 +239,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         """
         Returns the URL for the detail view of this order
         """
-        return urljoin(OrderModel.objects.get_summary_url(), str(self.id))
+        return urljoin(OrderModel.objects.get_summary_url(), self.get_number())
 
     @transition(field=status, source='new', target='created')
     def populate_from_cart(self, cart, request):
