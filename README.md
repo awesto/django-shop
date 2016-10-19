@@ -38,7 +38,7 @@ container available on the [Docker Hub](https://hub.docker.com/r/awesto/demo-sho
 If you have a running docker-machine, download and start the demo using:
 
 ```
-docker run -p 9001:9001 --rm  awesto/demo-shop-polymorphic:latest
+docker run -p 9001:9001 --rm awesto/demo-shop-polymorphic:latest
 ```
 
 Then point a browser on the IP address of your docker machine onto port 9001. If unsure invoke
