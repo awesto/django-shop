@@ -15,7 +15,7 @@ it is very common to make mistakes by mixing different currencies. It also is co
 incorrect conversions that generate wrong results. Python doesn't allow developers to associate a
 specific decimal value with a unit.
 
-Starting with version 0.3.0, **django-SHOP** now is shipped with a special factory class:
+Starting with version 0.9, **django-SHOP** now is shipped with a special factory class:
 
 
 MoneyMaker
@@ -32,12 +32,12 @@ Not a Number
 
 In special occurrences we'd rather want to specify "no amount" rather than an amount of 0.00 (zero).
 This can be useful for free samples, or when an item is currently not available. The Decimal type
-denotes a kind of special value a ``NaN`` – for “Not a Number”. Our Money type also knows about
-this special value, and when rendered, ``€ –`` is printed out.
+denotes a kind of special value a ``NaN`` – for "Not a Number". Our Money type also knows about
+this special value, and when rendered, ``€ –`` or ``$ –```` is printed out.
 
 Declaring a Money object without a value, say ``m = Money()`` creates such a special value. The big
 difference as for the ``Decimal`` type is that when adding or subtracting a ``NaN`` to a valid
-value, it is considered zero, rather than changing the result of this operation to ``NaN``.
+value, it is considered zero, rather than changing the result of this operation to ``NaN`` as well.
 
 It also allows us to multiply a Money amount with ``None``. The result of this operation is ``NaN``.
 
@@ -47,22 +47,22 @@ Create a Money type
 
 .. code-block:: python
 
-	>>> from shop.money_maker import MoneyMaker
+	>>> from shop.money import MoneyMaker
 	>>> Money = MoneyMaker()
-	>>> print Money('1.99')
+	>>> print(Money('1.99'))
 	€ 1.99
 
-	>>> print Money('1.55') + Money('8')
+	>>> print(Money('1.55') + Money('8'))
 	€ 9.55
 
 	>>> print Money
 	<class 'shop.money.money_maker.MoneyInEUR'>
 
 	>>> Yen = MoneyMaker('JPY')
-	>>> print Yen('1234.5678')
+	>>> print(Yen('1234.5678'))
 	¥ 1235
 
-	>>> print Money('100') + Yen('1000')
+	>>> print(Money('100') + Yen('1000'))
 	ValueError: Can not add/substract money in different currencies.
 
 How does this work?
@@ -137,5 +137,5 @@ writing REST serializers, use:
 The default REST behavior serializes Decimal types as floats. This is fine if we want to do some
 computations in the browser using JavaScript. However, then the currency information is lost and
 must be re-added somehow to the output strings. It also is a bad idea to do commercial calculations
-using floats, yet JavaScript does not offer any Decimal-like type. I therefore recommend to always
-do the commerce calculations on the server and transfer amount information using JSON strings.
+using floats, yet JavaScript does not offer any Decimal-like type. It therefore is recommended to
+always do the finance arithmetic on the server and transfer amount information using JSON strings.
