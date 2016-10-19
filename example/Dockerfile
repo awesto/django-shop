@@ -1,32 +1,24 @@
-FROM jrief/uwsgi-django-shop:latest
+FROM awesto/uwsgi-django-shop:latest
 
 MAINTAINER Jacob Rief <jacob.rief@gmail.com>
 
-# checkout the merchant's project
-WORKDIR /web
-RUN git clone --depth=1 https://github.com/jrief/django-shop.git
-WORKDIR /web/django-shop
-
-# install packages outside of pypi
-RUN npm install
-RUN bower install --allow-root
+# copy the example project
+RUN mkdir -p /web/django-shop/example
+ADD myshop /web/django-shop/example/myshop
+COPY docker-files/wsgi.py /web/django-shop/example/wsgi.py
+COPY manage.py /web/django-shop/example/manage.py
 
 # add uwsgi.ini file into workdir, so that touching this file restarts the Django server
-ADD myshop.ini /web/workdir/myshop.ini
+COPY docker-files/myshop.ini /web/workdir/myshop.ini
 RUN ln -s /web/workdir/myshop.ini /etc/uwsgi.d/myshop.ini
 
-# add media files
-WORKDIR /web
-RUN wget -q -O- http://downloads.django-shop.org/django-shop-workdir.tar.gz | tar zx
+# convert SASS into css files
+ENV DJANGO_SHOP_TUTORIAL=polymorphic DJANGO_WORKDIR=/web/workdir
+RUN example/manage.py compilescss
+RUN example/manage.py collectstatic --noinput --ignore='*.scss'
 
-# create database and populate static files
-WORKDIR /web/django-shop/example
-ENV DJANGO_SHOP_TUTORIAL=polymorphic DJANGO_WORKDIR=/web/workdir DJANGO_SETTINGS_MODULE=myshop.settings
-RUN ./manage.py migrate
-RUN ./manage.py loaddata fixtures/myshop-$DJANGO_SHOP_TUTORIAL.json
-RUN ./manage.py compilescss
-RUN ./manage.py collectstatic --noinput --ignore='*.scss'
-RUN touch /web/workdir/bootstrap
+# add file removed after bootstrapping uwsgi
+RUN touch /web/workdir/.bootstrap
 RUN chown -R django.django /web/workdir
 
 VOLUME /web

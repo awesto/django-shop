@@ -9,7 +9,7 @@ from django.utils.html import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from cms.apphook_pool import apphook_pool
 from cms.plugin_pool import plugin_pool
-from cmsplugin_cascade.fields import PartialFormField
+from cmsplugin_cascade.fields import GlossaryField
 from shop import settings as shop_settings
 from .plugin_base import ShopPluginBase
 
@@ -18,16 +18,15 @@ class BreadcrumbPlugin(ShopPluginBase):
     name = _("Breadcrumb")
     CHOICES = (('default', _("Default Breadcrumb")), ('soft-root', _("“Soft-Root” Breadcrumb")),
         ('catalog', _("With Catalog Count")), ('empty', _("Hidden Breadcrumb")),)
-    glossary_fields = (
-        PartialFormField('render_type',
-            widgets.RadioSelect(choices=CHOICES),
-            label=_("Render as"),
-            initial='default',
-            help_text=_("Render an alternative Breadcrumb"),
-        ),
-    )
     parent_classes = ()
     allow_children = None
+
+    render_type = GlossaryField(
+        widgets.RadioSelect(choices=CHOICES),
+        label=_("Render as"),
+        initial='default',
+        help_text=_("Render an alternative Breadcrumb"),
+    )
 
     @classmethod
     def get_identifier(cls, instance):

@@ -8,7 +8,7 @@ Besides :ref:`reference/search`, adding a filtering functionality to an e-commer
 very important feature. Customers must be able to narrow down a huge list of available products to
 a small set of desired products using a combination of prepared filter attributes.
 
-In **djangoSHOP**, we model each product according to it's own properties, the color for instance.
+In **django-SHOP**, we model each product according to it's own properties, the color for instance.
 The customer then might filter the listed products, selecting one or more of the given properties,
 the color "blue" for instance.
 
@@ -28,7 +28,7 @@ to implement this kind of filtering functionality on top of the existing product
 Adding a Filter to the List View
 ================================
 
-In **djangoSHOP** showing a list of products, normally is controlled by the classes
+In **django-SHOP** showing a list of products, normally is controlled by the classes
 :class:`shop.views.catalog.ProductListView` or :class:`shop.views.catalog.CMSPageProductListView`.
 By default these View classes are configured to use the default filter backends as provided by the
 REST framework. These filter backends can be configured globally through the settings variable
@@ -123,7 +123,7 @@ To this filter class we can combine as many fields as we need, but in this examp
 the foreign key to the manufacturer model. For all available filter field types, please check the
 appropriate documentation in `Django Filter`_.
 
-We then can add this filter class to our product list view. In **djangoSHOP** this normally is done
+We then can add this filter class to our product list view. In **django-SHOP** this normally is done
 through the url patterns:
 
 .. code-block:: python
@@ -149,7 +149,7 @@ when rendering the product's list view, we might want to add some input fields o
 that the customer can narrow down the result set. To do this, the rendering template requires
 additional context data.
 
-Since **djangoSHOP** honours the principle of cohesion, each filter set is responsible for providing
+Since **django-SHOP** honours the principle of cohesion, each filter set is responsible for providing
 the context required to render it's specific filtering parameters. This extra context must be
 provided by a class-method named ``get_render_context(request, queryset)``, which must return
 a dictionary containing an instance of that filter set.
@@ -173,7 +173,7 @@ us to add a set of filter options to the product's list view, without having to 
 fetch that filtered list from the server.
 
 Since we don't event want to care about controlling change events on the filtering ``<select>`` box,
-**djangoSHOP** is shipped with a reusable directive named ``shopProductFilter``.
+**django-SHOP** is shipped with a reusable directive named ``shopProductFilter``.
 
 Sample HTML snippet:
 

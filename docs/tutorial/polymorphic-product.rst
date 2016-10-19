@@ -31,7 +31,7 @@ Here instead of duplicating all the common fields, we unify them into a common b
 ``Product``. Then that base class shall be extended to become either our known model ``SmartCard``
 or a new model ``SmartPhone``.
 
-To enable polymorphic models in **djangoSHOP**, we require the application django-polymorphic_.
+To enable polymorphic models in **django-SHOP**, we require the application django-polymorphic_.
 Here our models for Smart Cards or Smart Phones will be split up into a generic part and a
 specialized part. The generic part goes into our new ``Product`` model, whereas the specialized
 parts remain in their models.
@@ -53,7 +53,7 @@ and polymorphic models:
 
 The next step is to identify which model attributes qualify for being part of our Product
 model. Unfortunately, there is no silver bullet for this problem and that's one of the reason why
-**djangoSHOP** is shipped without any prepared model for it. If we want to sell both Smart Cards
+**django-SHOP** is shipped without any prepared model for it. If we want to sell both Smart Cards
 and Smart Phones, then this Product model may do its jobs:
 
 .. literalinclude:: /../example/myshop/models/polymorphic/product.py
@@ -129,7 +129,7 @@ generic as possible, and instead use a ``PlaceholderField`` as provided by **dja
 
     from cms.models.fields import PlaceholderField
     from myshop.models.product import Product
-    
+
     class Commodity(Product):
         # other product fields
         placeholder = PlaceholderField("Commodity Details")
@@ -137,7 +137,7 @@ generic as possible, and instead use a ``PlaceholderField`` as provided by **dja
 This allows us to add any arbitrary information to our product's detail page. The only requirement
 for this to work is, that the rendering template adds a templatetag to render this placeholder.
 
-Since the **djangoSHOP** framework looks in the folder ``catalog`` for a template named after its
+Since the **django-SHOP** framework looks in the folder ``catalog`` for a template named after its
 product class, adding this HTML snippet should do the job:
 
 .. code-block:: django
@@ -145,7 +145,7 @@ product class, adding this HTML snippet should do the job:
 
     {% extends "myshop/pages/default.html" %}
     {% load cms_tags %}
-    
+
     <div class="container">
         <div class="row">
             <div class="col-xs-12">
@@ -199,4 +199,4 @@ Cascade about the widths of that column. This has to be done in the settings of 
     }
 
 This placeholder configuration emulates the Bootstrap column as declared by
-``<div class="col-xs-12">``. 
+``<div class="col-xs-12">``.

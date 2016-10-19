@@ -13,7 +13,7 @@ templates, we must provide a few special CMS pages, where we specify those page 
 Customer Self Registering Page
 ==============================
 
-The **djangoSHOP** framework offers a plugin, which offers a form, where customers can enter their
+The **django-SHOP** framework offers a plugin, which offers a form, where customers can enter their
 email address and a password. This plugin is named **Authentication** using the
 *Rendered Form: Register User*.
 

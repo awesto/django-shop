@@ -16,10 +16,11 @@ except ImportError:
 from cms.plugin_pool import plugin_pool
 from djangocms_text_ckeditor.widgets import TextEditorWidget
 from djangocms_text_ckeditor.utils import plugin_tags_to_user_html
-from cmsplugin_cascade.fields import PartialFormField
+from cmsplugin_cascade.fields import GlossaryField
 from cmsplugin_cascade.link.cms_plugins import TextLinkPlugin
 from cmsplugin_cascade.link.forms import LinkForm, TextLinkFormMixin
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
+from cmsplugin_cascade.mixins import TransparentMixin
 from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
 from shop import settings as shop_settings
 from shop.models.cart import CartModel
@@ -38,8 +39,10 @@ class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
     This button is used to proceed from one checkout step to the next one.
     """
     name = _("Proceed Button")
-    parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin',)
+    parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin', 'ValidateSetOfFormsPlugin')
     model_mixins = (LinkElementMixin,)
+    glossary_field_order = ('button_type', 'button_size', 'button_options', 'quick_float',
+                            'icon_left', 'icon_right')
 
     def get_form(self, request, obj=None, **kwargs):
         kwargs.update(form=ProceedButtonForm)
@@ -118,13 +121,11 @@ DialogFormPluginBase.register_plugin(GuestFormPlugin)
 
 
 class CheckoutAddressPluginBase(DialogFormPluginBase):
-    glossary_fields = DialogFormPluginBase.glossary_fields + (
-        PartialFormField('multi_addr',
-            widgets.CheckboxInput(),
-            label=_("Multiple Addresses"),
-            initial=False,
-            help_text=_("Shall the customer be allowed to edit multiple addresses."),
-        ),
+    multi_addr = GlossaryField(
+        widgets.CheckboxInput(),
+        label=_("Multiple Addresses"),
+        initial=False,
+        help_text=_("Shall the customer be allowed to edit multiple addresses."),
     )
 
     def get_form_data(self, context, instance, placeholder):
@@ -167,13 +168,11 @@ class BillingAddressFormPlugin(CheckoutAddressPluginBase):
     form_class = 'shop.forms.checkout.BillingAddressForm'
     template_leaf_name = 'billing-address-{}.html'
 
-    glossary_fields = CheckoutAddressPluginBase.glossary_fields + (
-        PartialFormField('allow_use_shipping',
-            widgets.CheckboxInput(),
-            label=_("Use shipping address"),
-            initial=True,
-            help_text=_("Allow the customer to use the shipping address for billing."),
-        ),
+    allow_use_shipping = GlossaryField(
+        widgets.CheckboxInput(),
+        label=_("Use shipping address"),
+        initial=True,
+        help_text=_("Allow the customer to use the shipping address for billing."),
     )
 
     def get_address(self, cart):
@@ -268,7 +267,7 @@ class AcceptConditionFormPlugin(DialogFormPluginBase):
             text_editor_widget = TextEditorWidget(installed_plugins=[TextLinkPlugin], pk=obj.pk,
                                            placeholder=obj.placeholder, plugin_language=obj.language)
             kwargs['glossary_fields'] = (
-                PartialFormField('html_content', text_editor_widget, label=_("HTML content")),
+                GlossaryField(text_editor_widget, label=_("HTML content"), name='html_content'),
             )
         return super(AcceptConditionFormPlugin, self).get_form(request, obj, **kwargs)
 
@@ -300,3 +299,21 @@ class RequiredFormFieldsPlugin(ShopPluginBase):
         return select_template(template_names)
 
 plugin_pool.register_plugin(RequiredFormFieldsPlugin)
+
+
+class ValidateSetOfFormsPlugin(TransparentMixin, ShopPluginBase):
+    """
+    This plugin wraps arbitrary forms into the Angular directive shopFormsSet.
+    This is required to validate all forms, so that a proceed button is disabled otherwise.
+    """
+    name = _("Validate Set of Forms")
+    allow_children = True
+    alien_child_classes = True
+
+    def get_render_template(self, context, instance, placeholder):
+        return select_template([
+            '{}/checkout/forms-set.html'.format(shop_settings.APP_LABEL),
+            'shop/checkout/forms-set.html',
+        ])
+
+plugin_pool.register_plugin(ValidateSetOfFormsPlugin)

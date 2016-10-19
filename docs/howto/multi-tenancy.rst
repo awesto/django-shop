@@ -4,8 +4,8 @@
 Multi-Tenancy
 =============
 
-If a site built with the **djangoSHOP** framework shall be used by more than one vendor, we speak
-about a multi-tenant environment. **DjangoSHOP** does not implement multi-tenancy out of the box,
+If a site built with the **django-SHOP** framework shall be used by more than one vendor, we speak
+about a multi-tenant environment. **Django-SHOP** does not implement multi-tenancy out of the box,
 it however is quite simple to extend and customize.
 
 
@@ -26,7 +26,7 @@ Since we are free to declare our own product models, This can be achieved by add
 .. code-block:: python
 
 	from shop.models.product import BaseProduct
-	
+
 	class Product(BaseProduct):
 	    # other product attributes
 	    merchant = models.ForeignKey(User, verbose_name=_("Merchant"),

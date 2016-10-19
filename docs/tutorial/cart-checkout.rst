@@ -4,7 +4,7 @@
 Cart and Checkout
 =================
 
-In **djangoSHOP**, the cart and checkout view follow the same idea as all other pages – they are
+In **django-SHOP**, the cart and checkout view follow the same idea as all other pages – they are
 managed by the CMS. Change into the Django admin backend and look for the CMS page tree. A good
 position for adding a page is the root level, but then assure that in Advanced Setting the checkbox
 **Soft root** is set.
@@ -22,7 +22,7 @@ a complete checkout page. In the reference section it is shown in detail how to 
 :ref:`reference/cart-checkout` view, but for this tutorial the best way to proceed is to have a look
 in the prepared demo project for the *Cart* and *Checkout* pages.
 
-A list of plugins specific to **djangoSHOP** can be found in the reference section. They include
+A list of plugins specific to **django-SHOP** can be found in the reference section. They include
 a cart editor, a static cart renderer, forms to enter the customers names, addresses, payment- and
 shipping methods, credit card numbers and some more.
 

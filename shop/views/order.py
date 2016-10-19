@@ -19,6 +19,7 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateM
     renderer_classes = (CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer)
     list_serializer_class = OrderListSerializer
     detail_serializer_class = OrderDetailSerializer
+    lookup_field = lookup_url_kwarg = 'slug'
     many = True
 
     def get_queryset(self):
@@ -45,7 +46,7 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateM
         return [self.request.current_page.get_template()]
 
     def get_object(self):
-        if self.lookup_field not in self.kwargs:
+        if self.lookup_url_kwarg not in self.kwargs:
             return self.get_queryset().first()
         return super(OrderView, self).get_object()
 
@@ -70,7 +71,7 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateM
             self.many = False
         if self.many:
             return self.list(request, *args, **kwargs)
-        response = self.update(request, *args, **kwargs)
+        self.update(request, *args, **kwargs)
         return self.retrieve(request, *args, **kwargs)
 
     def is_last(self):

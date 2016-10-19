@@ -12,6 +12,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.core.management import call_command
 from django.utils.translation import ugettext_lazy as _
 from django.utils.six.moves import input
+from shop import __version__
 try:
     import czipfile as zipfile
 except ImportError:
@@ -21,7 +22,6 @@ except ImportError:
 class Command(BaseCommand):
     help = _("Initialize the workdir to run the demo of myshop.")
     download_url = 'http://downloads.django-shop.org/django-shop-workdir_{tutorial}-{version}.zip'
-    version = '0.9.2'
     pwd = b'z7xv'
 
     def add_arguments(self, parser):
@@ -35,7 +35,7 @@ class Command(BaseCommand):
     def handle(self, verbosity, *args, **options):
         self.set_options(**options)
 
-        mesg = ("\nThis will overwrite your workdir and install a new database for the djangoSHOP demo: {tutorial}\n"
+        mesg = ("\nThis will overwrite your workdir and install a new database for the django-SHOP demo: {tutorial}\n"
                 "Are you sure you want to do this?\n\n"
                 "Type 'yes' to continue, or 'no' to cancel: ").format(tutorial=settings.SHOP_TUTORIAL)
         if self.interactive and input(mesg) != 'yes':
@@ -44,7 +44,7 @@ class Command(BaseCommand):
         extract_to = os.path.join(settings.WORK_DIR, os.pardir)
         msg = "Downloading workdir and extracting to {}. Please wait ..."
         self.stdout.write(msg.format(extract_to))
-        download_url = self.download_url.format(tutorial=settings.SHOP_TUTORIAL, version=self.version)
+        download_url = self.download_url.format(tutorial=settings.SHOP_TUTORIAL, version=__version__)
         response = requests.get(download_url, stream=True)
         zip_ref = zipfile.ZipFile(StringIO(response.content))
         try:
@@ -53,5 +53,6 @@ class Command(BaseCommand):
             zip_ref.close()
 
         call_command('migrate')
-        fixture = '../workdir/{tutorial}/fixtures/myshop.json'.format(tutorial=settings.SHOP_TUTORIAL)
-        call_command('loaddata', fixture)
+        fixture = '{workdir}/{tutorial}/fixtures/myshop.json'
+        call_command('loaddata', fixture.format(workdir=settings.WORK_DIR,
+                                                tutorial=settings.SHOP_TUTORIAL))

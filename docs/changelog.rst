@@ -1,8 +1,24 @@
 .. _changelog:
 
-========================
-Changelog for djangoSHOP
-========================
+=========================
+Changelog for django-SHOP
+=========================
+
+0.9.3
+=====
+* Added template context processor :func:`shop.context_processors.ng_model_options` to add the
+  settings ``EDITCART_NG_MODEL_OPTIONS`` and ``ADD2CART_NG_MODEL_OPTIONS``. Please check your
+  templates to see, if you still use ``ng_model_options``.
+* Allows to add children to the ``CartPlugin``. These children are added to the table foot of the
+  rendered cart.
+* Added AngularJS directive ``<ANY shop-forms-set>`` which can be used as a wrapper, when the
+  proceed button shall be added to a page containing ``<form ...>`` elements with built in
+  validation.
+* All Cascade plugins use ``GlossaryField`` instead of a list of ``PartialFormField`` s. This is
+  much more "Djangonic", but requires djangocms-cascade version 0.11 or later.
+* All urlpatterns are compatible with configurations adding a final / to the request URL.
+* The URL for accessing an Order object, now uses the order number instead of it's primary key.
+
 
 0.9.2
 =====
@@ -91,8 +107,8 @@ Changelog for djangoSHOP
 * Content of Checkout Forms is handled by a single transaction.
 * All models such as Product, Order, OrderItem, Cart, CartItem can be overridden by the merchant's
   implementation. However, we are using the deferred pattern, instead of configuration settings.
-* Categories must be implemented as separate **djangoSHOP** addons. However for many implementations
-  pages form the **djangoCMS** can be used as catalog list views.
+* Categories must be implemented as separate **django-SHOP** addons. However for many
+  implementations pages form the **django-CMS** can be used as catalog list views.
 * The principle on how cart modifiers work, didn't change. There more inversion of control now, in
   that sense, that now the modifiers decide themselves, how to change the subtotal and final total.
 * Existing Payment Providers can be integrated without much hassle.
@@ -101,7 +117,7 @@ Changelog for djangoSHOP
 Since version 0.2.1 a lot of things have changed. Here is a short summary:
 ==========================================================================
 
-* The API of **djangoSHOP** is accessible through a REST interface. This allows us to build MVC on
+* The API of **django-SHOP** is accessible through a REST interface. This allows us to build MVC on
   top of that.
 
 * Changed the two OneToOne relations from model Address to User, one was used for shipping, one for

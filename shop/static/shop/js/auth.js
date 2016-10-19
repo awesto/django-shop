@@ -5,7 +5,7 @@
 var djangoShopModule = angular.module('django.shop.auth', []);
 
 // Directive for element: <shop-auth-form ng-form action="...">
-// handle a djangoSHOP's forms related to authentication
+// handle a django-SHOP's forms related to authentication
 djangoShopModule.directive('shopAuthForm', ['$window', '$http', '$timeout',
                                    function($window, $http, $timeout) {
 	return {

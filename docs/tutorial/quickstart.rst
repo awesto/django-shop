@@ -4,6 +4,44 @@
 Quickstart a Running Demo
 =========================
 
+Using a Docker image
+====================
+
+To get a first impression of the **django-SHOP** demos, please use one of the prepared Docker
+images. If not already available on your workstation, first install the
+`Docker runtime environment`_ and start a Docker machine.
+
+To run a fully configured **django-SHOP** image on your local machine:
+
+.. code-block:: bash
+
+	docker run -p 9001:9001 --name demo-shop-polymorphic-initial awesto/demo-shop-polymorphic:latest
+
+This image is rather large (~2 GB), therefore it may take some time to download.
+
+Locate the IP address of the running container using ``docker-machine ip default``. Then point
+a browser onto this address using port 9001, for instance http://192.168.99.100:9001/en/
+
+Please note that before the server starts, a full-text index is built and the images are
+thumbnailed; this takes some additional time. Therefore, if you stop the running container with
+
+.. code-block:: bash
+
+	docker stop demo-shop-polymorphic-initial
+
+instead of re-running the supplied Docker image, it is recommended to restart the just created
+container with
+
+.. code-block:: bash
+
+	$ docker start demo-shop-polymorphic-initial
+
+To access the administration backed, navigate to http://192.168.99.100:9001/en/admin/ and sign
+in as user "*admin*" with password "*secret*". If you now navigate to any page of the shop, you may
+switch into live edit mode and change the content of the various pages, including the product's
+details pages.
+
+
 Running Demos Locally
 =====================
 
@@ -18,7 +56,7 @@ Then instead of adding pages and products manually, use the following steps:
 .. code-block:: shell
 
 	(shoptutorial)$ cd django-shop/example
-	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=commodity
+	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=commodity DJANGO_DEBUG=1
 	(shoptutorial)$ ./manage.py initialize_shop_demo
 	(shoptutorial)$ ./manage.py compilescss
 	(shoptutorial)$ ./manage.py runserver
@@ -28,7 +66,7 @@ Point a browser onto http://localhost:8000/admin/ and sign in as user *admin* wi
 
 This runs the demo for :ref:`tutorial/commodity`.
 
-.. note:: The first time, **djangoSHOP** renders a page, images must be thumbnailed and cropped.
+.. note:: The first time, **django-SHOP** renders a page, images must be thumbnailed and cropped.
 	This is an expensive operation which runs only once. Therefore please be patient, when loading
 	pages for the first time.
 
@@ -47,18 +85,18 @@ The Commodity Product Model
 
 The ``commodity`` demo shows how to setup a monolingual shop, with a generic product, named
 **Commodity**. The product model :class:`shop.models.defauls.commodity.Commodity` is part of the
-**djangoSHOP** framework. It is intended for shops where the merchant does not want to create a
+**django-SHOP** framework. It is intended for shops where the merchant does not want to create a
 customized product model, but rather prefers to create the product's detail views using common CMS
 functionality.
 
 A **Commodity** model contains only the following attributes:
 
-* The name of the product
-* The product code
-* The slug (a short label used as the last bit in the URLs)
-* The product's unit price
-* One sample image to be shown in the catalog's list view
-* A caption to be shown in the catalog's list view
+* The name of the product.
+* The product code.
+* The slug_ (a short label used as the last bit in the URLs).
+* The product's unit price.
+* One sample image to be shown in the catalog's list view.
+* A caption to be shown in the catalog's list view.
 
 The detail view for each product must however be styled individually using a DjangoCMS placeholder
 together with the plugin system provided by djangocms-cascade_. This gives the merchant all the
@@ -82,9 +120,9 @@ The Internationalized Commodity Product Model
 The ``i18n_commodity`` demo shows how to setup a shop, with the same generic product as in the
 previous example, but with these attributes translatable into multiple natural languages:
 
-* The name of the product
-* The slug
-* A caption to be shown in the catalog's list view
+* The name of the product.
+* The slug.
+* A caption to be shown in the catalog's list view.
 
 All other product attributes from our **Commodity** model are shared across all languages.
 
@@ -135,7 +173,7 @@ adopt the template for adding the product to the cart.
 Use one of the demos as a starting point for your project
 =========================================================
 
-Depending on the needs of your e-commerce site, the easiest approach to start with **djangoSHOP**
+Depending on the needs of your e-commerce site, the easiest approach to start with **django-SHOP**
 is to use the demo which is most similar to one of the five from above. Then by copying example,
 create a repository of the merchant's implementation. Starting from a working example and gradually
 modifying it until reaching your final goals, typically is much easier than starting from scratch.
@@ -145,5 +183,5 @@ It also is the preferred way during agile development.
 .. _Docker runtime environment: https://docs.docker.com/windows/
 .. _django-parler: http://django-parler.readthedocs.org/en/latest/
 .. _polymorphism: https://django-polymorphic.readthedocs.org/en/latest/
-.. _slug:
+.. _slug: https://docs.djangoproject.com/en/stable/glossary/#glossary
 .. _djangocms-cascade: http://djangocms-cascade.readthedocs.io/en/latest/

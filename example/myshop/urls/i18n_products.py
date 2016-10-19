@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-These URL routings are used by the example `i18n_commodity` as found in the djangoSHOP's tutorials.
+These URL routings are used by the example `i18n_commodity` as found in the django-SHOP's tutorials.
 The difference here is that we modified the lookup_field for slug, since it is translated.
 """
 from __future__ import unicode_literals
