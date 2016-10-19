@@ -1,18 +1,15 @@
-===========
-django-SHOP
-===========
+# django-SHOP
 
 [![Build Status](https://travis-ci.org/awesto/django-shop.svg)](https://travis-ci.org/awesto/django-shop)
 [![PyPI version](https://img.shields.io/pypi/v/django-shop.svg)](https://https://pypi.python.org/pypi/django-shop)
 [![Join the chat at https://gitter.im/awesto/django-shop](https://badges.gitter.im/awesto/django-shop.svg)](https://gitter.im/awesto/django-shop?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Version 0.9 of **djangoSHOP** is a complete rewrite of the old code base but keeps the concepts of
+Version 0.9 of **django-SHOP** is a complete rewrite of the old code base but keeps the concepts of
 model overriding and cart modifiers. Therefore with some effort, it should be possible to migrate
 existing projects to this new release. Please contact me, if you need help.
 
 
-NEWS
-----
+## NEWS
 
 At [PyConDE](https://www.pymunich.com/), Jacob Rief will give a talk on 2016-Oct-30 at 16:00 about the
 newest version of django-SHOP. If you want to get in touch, please follow us on Twitter:
@@ -20,24 +17,21 @@ newest version of django-SHOP. If you want to get in touch, please follow us on 
 [![Twitter Follow](https://img.shields.io/twitter/follow/shields_io.svg?style=social&label=django-SHOP&maxAge=2592000)](https://twitter.com/djangoshop)
 
 
-Running the demo projects
-=========================
+## Running the demo projects
 
 To get a first impression on **django-SHOP**, try out the three full working demo projects.
 
 And remember, I'm always happy to get some feedback on how it works elsewhere.
 
 
-Run the demo in a local virtualenv
-----------------------------------
+### Run the demo in a local virtualenv
 
 Following the instructions  ``docs/tutorial/intro.rst`` and ``docs/tutorial/quickstart.rst``
 should create a running shop in minutes, prefilled with a dozen of products.
 You can even pay by credit card, if you apply for your own testing account at Stripe.
 
 
-Run the demo using Docker
--------------------------
+### Run the demo using Docker
 
 A faster alternative to run the "polymorphic" demo of **django-SHOP** is to use a prepared Docker
 container available on the [Docker Hub](https://hub.docker.com/r/awesto/demo-shop-polymorphic/).
@@ -53,7 +47,7 @@ To access the backend sign in with username *admin* and password *secret*. The f
 of each page takes some time, since beforehand the supplied images have to be thumbnailed.
 
 
-# Django-SHOP
+## Current Status of Django-SHOP
 
 This version of django-SHOP is currently used to implement real e-commerce sites. If you want
 to help out, please have a look at our development documentation in ``docs/contributing.rst``.
@@ -64,7 +58,7 @@ Specifically, we aim at providing a clean, modular and Pythonic/Djangonic implem
 framework, that a moderately experienced Django programmer should be able to pick up and run easily.
 
 
-## Please help
+### Please help
 
 In order to build better demo sites, we need good pictures together with some introductory text
 for arbitrary products. Both, pictures and text must be free of copyright or under an open license
