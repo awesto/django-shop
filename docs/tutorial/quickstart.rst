@@ -4,6 +4,44 @@
 Quickstart a Running Demo
 =========================
 
+Using a Docker image
+====================
+
+To get a first impression of the **django-SHOP** demos, please use one of the prepared Docker
+images. If not already available on your workstation, first install the
+`Docker runtime environment`_ and start a Docker machine.
+
+To run a fully configured **django-SHOP** image on your local machine:
+
+.. code-block:: bash
+
+	docker run -p 9001:9001 --name demo-shop-polymorphic-initial awesto/demo-shop-polymorphic:latest
+
+This image is rather large (~2 GB), therefore it may take some time to download.
+
+Locate the IP address of the running container using ``docker-machine ip default``. Then point
+a browser onto this address using port 9001, for instance http://192.168.99.100:9001/en/
+
+Please note that before the server starts, a full-text index is built and the images are
+thumbnailed; this takes some additional time. Therefore, if you stop the running container with
+
+.. code-block:: bash
+
+	docker stop demo-shop-polymorphic-initial
+
+instead of re-running the supplied Docker image, it is recommended to restart the just created
+container with
+
+.. code-block:: bash demo-shop-polymorphic-initial
+
+	$ docker start
+
+To access the administration backed, navigate to http://192.168.99.100:9001/en/admin/ and sign
+in as user "*admin*" with password "*secret*". If you now navigate to any page of the shop, you may
+switch into live edit mode and change the content of the various pages, including the product's
+details pages.
+
+
 Running Demos Locally
 =====================
 
