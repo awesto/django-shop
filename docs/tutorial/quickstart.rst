@@ -20,6 +20,7 @@ Then instead of adding pages and products manually, use the following steps:
 	(shoptutorial)$ cd django-shop/example
 	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=commodity DJANGO_DEBUG=1
 	(shoptutorial)$ ./manage.py initialize_shop_demo
+	(shoptutorial)$ ./manage.py compilescss
 	(shoptutorial)$ ./manage.py runserver
 
 Point a browser onto http://localhost:8000/admin/ and sign in as user *admin* with password
