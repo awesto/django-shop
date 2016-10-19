@@ -116,7 +116,6 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
             modifier.process_cart_item(self, request)
         self._dirty = False
 
-
 CartItemModel = deferred.MaterializedModel(BaseCartItem)
 
 
@@ -143,9 +142,7 @@ class CartManager(models.Manager):
 
 class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
-    The fundamental parts of a shopping cart. It refers to a rather simple list of items.
-    Ideally it should be bound to a session and not to a User as we want to let
-    people buy from our shop without having to register with us.
+    The fundamental part of a shopping cart.
     """
     customer = deferred.OneToOneField('BaseCustomer', verbose_name=_("Customer"), related_name='cart')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
@@ -260,6 +257,5 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     @classmethod
     def get_default_caption_data(cls):
         return {'num_items': 0, 'total_quantity': 0, 'subtotal': Money(), 'total': Money()}
-
 
 CartModel = deferred.MaterializedModel(BaseCart)

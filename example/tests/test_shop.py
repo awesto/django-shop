@@ -2,20 +2,19 @@
 from __future__ import unicode_literals
 
 import json
+from django.conf import settings
 from django.contrib import admin
-from django.contrib.auth.models import AnonymousUser
-from django.contrib.sessions.models import Session
 from django.core.urlresolvers import reverse
+from django.contrib.sessions.middleware import SessionMiddleware
+from django.contrib.auth.middleware import AuthenticationMiddleware
 from django.test import TestCase, RequestFactory
 from cms.api import add_plugin, create_page
-from cmsplugin_cascade.bootstrap3 import settings
+from cmsplugin_cascade.bootstrap3 import settings as bs3_settings
 from cmsplugin_cascade.bootstrap3.container import (BootstrapContainerPlugin, BootstrapRowPlugin,
         BootstrapColumnPlugin)
+from shop.middleware import CustomerMiddleware
 from shop.money import Money
-from shop.models.customer import VisitingCustomer
-from shop.models.cart import CartModel
 from shop.models.defaults.mapping import ProductPage
-from shop.middleware import get_customer
 
 from myshop.models.polymorphic.smartcard import SmartCard
 from myshop.models.manufacturer import Manufacturer
@@ -56,12 +55,26 @@ class ShopTestCase(TestCase):
         ProductPage.objects.create(page=self.shop_page, product=sdhc_4gb)
         ProductPage.objects.create(page=self.smartcards_page, product=sdhc_4gb)
 
-    def add_product2cart(self):
-        sdhc_4gb = SmartCard.objects.get(slug="sdhc-card-4gb")
-        add2cart_url = sdhc_4gb.get_absolute_url() + '/add-to-cart'
+        xtr_sdhc_16gb = SmartCard.objects.create(
+            product_name="EXTREME PLUS SDHC 16GB",
+            slug="extreme-plus-sdhc-16gb",
+            unit_price=Money('8.49'),
+            caption="Up to 80/60MB/s read/write speed",
+            manufacturer=manufacturer,
+            card_type="SDHC",
+            storage=16,
+            speed=80,
+            product_code="sd2016",
+            description="SanDisk Extreme memory cards offer speed, capacity, and durability",
+            order=2,
+        )
+        ProductPage.objects.create(page=self.shop_page, product=xtr_sdhc_16gb)
+        ProductPage.objects.create(page=self.smartcards_page, product=xtr_sdhc_16gb)
+
+    def add_product2cart(self, product):
+        add2cart_url = product.get_absolute_url() + '/add-to-cart'
         response = self.client.get(add2cart_url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
-        self.assertFalse('sessionid' in response.cookies)
         payload = json.loads(response.content.decode('utf-8'))
         print(payload)
 
@@ -70,15 +83,6 @@ class ShopTestCase(TestCase):
         payload['quantity'] = 1
         response = self.client.post(cart_url, payload)
         self.assertEqual(response.status_code, 201)
-        self.assertTrue('sessionid' in response.cookies)
-
-        # check that the item is in the cart
-        request = self.factory.get('/')
-        request.session = Session.objects.get(session_key=response.cookies['sessionid'].value)
-        request.user = AnonymousUser()
-        request.customer = get_customer(request)
-        cart = CartModel.objects.get_from_request(request)
-        self.assertEquals(cart.items.count(), 1)
 
     def create_page_grid(self, page):
         """
@@ -90,7 +94,7 @@ class ShopTestCase(TestCase):
 
         # create container
         BS3_BREAKPOINT_KEYS = list(
-            tp[0] for tp in settings.CMSPLUGIN_CASCADE['bootstrap3']['breakpoints'])
+            tp[0] for tp in bs3_settings.CMSPLUGIN_CASCADE['bootstrap3']['breakpoints'])
         container_element = add_plugin(placeholder, BootstrapContainerPlugin, 'en',
             glossary={'breakpoints': BS3_BREAKPOINT_KEYS})
         container_plugin = container_element.get_plugin_class_instance(self.admin_site)
@@ -109,3 +113,10 @@ class ShopTestCase(TestCase):
         column_plugin = column_element.get_plugin_class_instance()
         self.assertIsInstance(column_plugin, BootstrapColumnPlugin)
         return column_element
+
+    def middleware_process_request(self, request, sessionid=None):
+        if sessionid:
+            request.COOKIES[settings.SESSION_COOKIE_NAME] = sessionid
+        SessionMiddleware().process_request(request)
+        AuthenticationMiddleware().process_request(request)
+        CustomerMiddleware().process_request(request)

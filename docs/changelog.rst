@@ -4,11 +4,28 @@
 Changelog for djangoSHOP
 ========================
 
-0.9.2.dev
-=========
+0.9.3
+=====
+* Added template context processor :func:`shop.context_processors.ng_model_options` to add the
+  settings ``EDITCART_NG_MODEL_OPTIONS`` and ``ADD2CART_NG_MODEL_OPTIONS``. Please check your
+  templates to see, if you still use ``ng_model_options``.
+* Allows to add children to the ``CartPlugin``. These children are added to the table foot of the
+  rendered cart.
+* Added AngularJS directive ``<ANY shop-forms-set>`` which can be used as a wrapper, when the
+  proceed button shall be added to a page containing ``<form ...>`` elements with built in
+  validation.
+* All Cascade plugins use ``GlossaryField`` instead of a list of ``PartialFormField`` s. This is
+  much more "Djangonic", but requires djangocms-cascade version 0.11 or later.
+* All urlpatterns are compatible with configurations adding a final / to the request URL.
+* The URL for accessing an Order object, now uses the order number instead of it's primary key.
+
+
+0.9.2
+=====
 
 * Minimum required version of django-filer is now 1.2.5.
-* Minimum required version of djangocms-cascade is now 0.10.0.
+* Minimum required version of djangocms-cascade is now 0.10.2.
+* Minimum required version of djangoshop-stripe is now 0.2.0.
 * Changed the default address models to be more generic. Please read the
   :doc:`upgrade instructions <upgrading>` if you are upgrading from 0.9.0 or 0.9.1.
 * Fixed :py:meth:`shop.money.fields.decontruct` to avoid repetitive useless generation of migration

@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from cms.api import add_plugin, create_page
 from bs4 import BeautifulSoup
 from shop.cascade.checkout import GuestFormPlugin
-
+from myshop.models.polymorphic.smartcard import SmartCard
 from .test_shop import ShopTestCase
 
 
@@ -30,7 +30,10 @@ class CheckoutTest(ShopTestCase):
     def test_checkout_as_guest(self):
         guestform_element = self.add_guestform_element()
 
-        self.add_product2cart()
+        # add a product anonymously
+        sdhc_4gb = SmartCard.objects.get(slug="sdhc-card-4gb")
+        self.add_product2cart(sdhc_4gb)
+
         continue_as_guest_url = reverse('shop:continue-as-guest')
         response = self.client.post(continue_as_guest_url)
         self.assertEqual(response.status_code, 200)

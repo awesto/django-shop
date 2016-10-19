@@ -12,7 +12,7 @@ from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from django.utils.safestring import mark_safe
 from cms.plugin_pool import plugin_pool
 from django.utils.encoding import python_2_unicode_compatible
-from cmsplugin_cascade.fields import PartialFormField
+from cmsplugin_cascade.fields import GlossaryField
 from cmsplugin_cascade.plugin_base import CascadePluginBase
 from cmsplugin_cascade.link.forms import LinkForm
 from cmsplugin_cascade.link.plugin_base import LinkPluginBase, LinkElementMixin
@@ -159,15 +159,14 @@ class DialogFormPluginBase(ShopPluginBase):
     """
     require_parent = True
     parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin', 'BootstrapPanelPlugin',
-        'SegmentPlugin', 'SimpleWrapperPlugin')
+        'SegmentPlugin', 'SimpleWrapperPlugin', 'ValidateSetOfFormsPlugin')
     CHOICES = (('form', _("Form dialog")), ('summary', _("Static summary")),)
-    glossary_fields = (
-        PartialFormField('render_type',
-            widgets.RadioSelect(choices=CHOICES),
-            label=_("Render as"),
-            initial='form',
-            help_text=_("A dialog can also be rendered as a box containing a read-only summary."),
-        ),
+
+    render_type = GlossaryField(
+        widgets.RadioSelect(choices=CHOICES),
+        label=_("Render as"),
+        initial='form',
+        help_text=_("A dialog can also be rendered as a box containing a read-only summary."),
     )
 
     @classmethod
