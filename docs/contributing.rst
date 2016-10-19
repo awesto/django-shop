@@ -7,15 +7,12 @@ Contributing
 Naming conventions
 ==================
 
-The official name of this project is **djangoSHOP**. Third party plugins for **djangoSHOP** shall
-follow the same naming convention as for plugins of **djangoCMS**: Third party package names shall
-start with **djangoshop** followed by a dash; no space shall be added between **django** and
+The official name of this project is **django-SHOP**. Third party plugins for **django-SHOP** shall
+follow the same naming convention as for plugins of **django-CMS**: Third party package names shall
+start with **djangoshop** followed by a dash; no space or dash shall be added between **django** and
 **shop**, for example: ``djangoshop-stripe``
 
-**DjangoSHOP** should be capitalised at the start of sentences and in title-case headings.
-
-When referring to the package, repositories and any other things in which spaces are not permitted,
-use **django-shop**.
+**Django-SHOP** should be capitalised at the start of sentences and in title-case headings.
 
 
 Running tests
@@ -123,7 +120,7 @@ lines, it is more readable to stay with a long line.
 Use the issue tracker only to report bugs. Send unsolicited pull requests only to fix bug – never
 to add new features.
 
-Use stack-overflow to ask for questions related to **djangoSHOP**.
+Use stack-overflow to ask for questions related to **django-SHOP**.
 
 Most pull requests will be rejected without proper unit testing.
 

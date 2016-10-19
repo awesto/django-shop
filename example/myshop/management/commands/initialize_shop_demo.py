@@ -35,7 +35,7 @@ class Command(BaseCommand):
     def handle(self, verbosity, *args, **options):
         self.set_options(**options)
 
-        mesg = ("\nThis will overwrite your workdir and install a new database for the djangoSHOP demo: {tutorial}\n"
+        mesg = ("\nThis will overwrite your workdir and install a new database for the django-SHOP demo: {tutorial}\n"
                 "Are you sure you want to do this?\n\n"
                 "Type 'yes' to continue, or 'no' to cancel: ").format(tutorial=settings.SHOP_TUTORIAL)
         if self.interactive and input(mesg) != 'yes':

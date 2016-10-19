@@ -4,7 +4,7 @@
 Deferred Model Pattern
 ======================
 
-Until **djangoSHOP** version 0.2, there were abstract and concrete and models: ``BaseProduct`` and
+Until **django-SHOP** version 0.2, there were abstract and concrete and models: ``BaseProduct`` and
 ``Product``, ``BaseCart`` and ``Cart``, ``BaseCartItem`` and ``CartItem``, ``BaseOrder`` and
 ``Order`` and finally, ``BaseOrderItem`` and ``OrderItem``.
 
@@ -21,7 +21,7 @@ This made configuration quite complicate and causes other drawbacks:
   To merchants, this inconsistency in the backend was quite difficult to explain.
 * In the past, mixing subclassed with native models caused many issues with circular dependencies.
 
-Therefore in **djangoSHOP**, since version 0.9 *all* concrete models, ``Product``, ``Order``,
+Therefore in **django-SHOP**, since version 0.9 *all* concrete models, ``Product``, ``Order``,
 ``OrderItem``, ``Cart``, ``CartItem`` have been removed. These model definitions now all are
 abstract and named ``BaseProduct``, ``BaseOrder``, ``BaseOrderItem``, etc. They all have been moved
 into the folder ``shop/models/``, because that's the location a programmer expects them.
@@ -40,10 +40,10 @@ For instance, materialize the cart by using this code snippet inside our own sho
 .. code-block:: python
 
 	from shop.models import cart
-	
+
 	class Cart(cart.BaseCart):
 	    my_extra_field = ...
-	
+
 	    class Meta:
 	        app_label = 'my_shop'
 
@@ -76,7 +76,7 @@ our own shop project:
 .. note:: The comment ``nopyflakes`` has been added to suppress warnings, since these classes
 		arern't used anywhere in ``models.py``.
 
-All the configuration settings from **djangoSHOP** <0.9: ``PRODUCT_MODEL``, ``ORDER_MODEL``,
+All the configuration settings from **django-SHOP** <0.9: ``PRODUCT_MODEL``, ``ORDER_MODEL``,
 ``ORDER_MODEL_ITEM``, etc. are not required anymore and can safely be removed from our
 ``settings.py``.
 
@@ -84,7 +84,7 @@ All the configuration settings from **djangoSHOP** <0.9: ``PRODUCT_MODEL``, ``OR
 Accessing the deferred models
 =============================
 
-Since models in **djangoSHOP** are yet unknown during instantiation, one has to access their
+Since models in **django-SHOP** are yet unknown during instantiation, one has to access their
 materialized instance using the `lazy object pattern`_. For instance in order to access the Cart,
 use:
 
@@ -110,7 +110,7 @@ Mapping of Foreign Keys
 
 One might argue, that this can't work, since foreign keys must refer to a real model, not to
 abstract ones! Therefore one can not add a field ``ForeignKey``, ``OneToOneField`` or
-``ManyToManyField`` which refers an abstract model in the **djangoSHOP** project. But
+``ManyToManyField`` which refers an abstract model in the **django-SHOP** project. But
 relations are fundamental for a properly working software. Imagine a ``CartItem`` without a foreign
 relation to ``Cart``.
 
@@ -118,7 +118,7 @@ Fortunately there is a neat trick to solve this problem. By deferring the mappin
 instead of using a real ``ForeignKey``, one can use a special “lazy” field, declaring a relation
 with an abstract model. Now, whenever the models are “materialized”, then these abstract relations
 are converted into real foreign keys. The only drawback for this solution is, that one may derive
-from an abstract model only once, but for **djangoSHOP** that's a non-issue and doesn't differ from
+from an abstract model only once, but for **django-SHOP** that's a non-issue and doesn't differ from
 the current situation, where one can subclass ``BaseCart`` only once anyway.
 
 Therefore, when using this deferred model pattern, instead of using ``models.ForeignKey``,

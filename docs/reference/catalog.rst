@@ -11,14 +11,14 @@ In this documentation we presume that categories of products are built up using 
 CMS pages in combination with a `djangoCMS apphook`_. This works perfectly well for most
 implementation, but some sites may require categories implemented independently of the CMS.
 
-Using an external **djangoSHOP** plugin for managing categories is a very conceivable solution,
+Using an external **django-SHOP** plugin for managing categories is a very conceivable solution,
 and we will see separate implementations for this feature request. Using such an external category
 plugin can make sense, if this e-commerce site requires hundreds of hierarchical levels and/or
 these categories require a set of attributes which are not available in CMS pages. If you are
 going to use externally implemented categories, please refer to their documentation, since here we
 proceed using CMS pages as categories.
 
-A nice aspect of **djangoSHOP** is, that it doesn't require the programmer to write any special
+A nice aspect of **django-SHOP** is, that it doesn't require the programmer to write any special
 Django Views in order to render the catalog. Instead all merchant dependent business logic goes
 into a serializer, which in this documentation is referred as ``ProductSummarySerializer``.
 
@@ -50,11 +50,11 @@ of the merchant's project:
 
 	from cms.app_base import CMSApp
 	from cms.apphook_pool import apphook_pool
-	
+
 	class ProductsListApp(CMSApp):
 	    name = _("Catalog List")
 	    urls = ['myshop.urls.products']
-	
+
 	apphook_pool.register(ProductsListApp)
 
 as all apphooks, it requires a file defining its urlpatterns:
@@ -67,7 +67,7 @@ as all apphooks, it requires a file defining its urlpatterns:
 	from rest_framework.settings import api_settings
 	from shop.views.catalog import CMSPageProductListView
 	from myshop.serializers import ProductSummarySerializer
-	
+
 	urlpatterns = [
 	    url(r'^$', CMSPageProductListView.as_view(
 	        serializer_class=ProductSummarySerializer,
@@ -149,7 +149,7 @@ requests on all of its sub-URLs. This is done by expanding the current list of u
 	from django.conf.urls import url
 	from shop.views.catalog import ProductRetrieveView
 	from myshop.serializers import ProductDetailSerializer
-	
+
 	urlpatterns = [
 	    # previous patterns
 	    url(r'^(?P<slug>[\w-]+)$', ProductRetrieveView.as_view(
@@ -193,7 +193,7 @@ class. This method then may forward the given product to a the built-in renderer
 
 	class ProductDetailSerializer(ProductDetailSerializerBase):
 	    # other attributes
-	
+
 	    def get_foo(self, product):
 	        return self.render_html(product, 'foo')
 
@@ -224,15 +224,15 @@ be created manually and referenced using the ``though`` parameter, when declarin
 
 	from shop.models.product import BaseProductManager, BaseProduct
 	from shop.models.related import BaseProductPage
-	
+
 	class ProductPage(BaseProductPage):
 	    """Materialize many-to-many relation with CMS pages"""
-	
+
 	class Product(BaseProduct):
 	    # other model fields
 	    cms_pages = models.ManyToManyField('cms.Page',
 	        through=ProductPage)
-	
+
 	    objects = ProductManager()
 
 In this example the class ``ProductPage`` is responsible for storing the mapping information
@@ -242,7 +242,7 @@ between our Product objects and the CMS pages.
 Admin Integration
 ~~~~~~~~~~~~~~~~~
 
-To simplify the declaration of the admin backend used to manage our Product model, **djangoSHOP**
+To simplify the declaration of the admin backend used to manage our Product model, **django-SHOP**
 is shipped with a special mixin class, which shall be added to the product's admin class:
 
 .. code-block:: python
@@ -250,7 +250,7 @@ is shipped with a special mixin class, which shall be added to the product's adm
 	from django.contrib import admin
 	from shop.admin.product import CMSPageAsCategoryMixin
 	from myshop.models import Product
-	
+
 	@admin.register(Product)
 	class ProductAdmin(CMSPageAsCategoryMixin, admin.ModelAdmin):
 	    fields = ('product_name', 'slug', 'product_code',
@@ -261,12 +261,12 @@ This then adds a horizontal filter widget to the product models. Here the mercha
 each CMS page, where the currently edited product shall appear on.
 
 If we are using the method ``render_html()`` to render HTML snippets, these are cached by
-**djangoSHOP**, if caching is configured and enabled for that project. Caching these snippets is
+**django-SHOP**, if caching is configured and enabled for that project. Caching these snippets is
 highly recommended and gives a noticeable performance boost, specially while rendering catalog list
 views.
 
 Since we would have to wait until they expire naturally by reaching their expire time,
-**djangoSHOP** offers a mixin class to be added to the Product admin class, to expire all HTML
+**django-SHOP** offers a mixin class to be added to the Product admin class, to expire all HTML
 snippets of a product altogether, whenever a product in saved in the backend. Simply add
 :class:`shop.admin.product.InvalidateProductCacheMixin` to the ``ProductAdmin`` class described
 above.

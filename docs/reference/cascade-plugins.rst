@@ -42,7 +42,7 @@ This template then usually extends the existing framework template with
 .. code-block:: django
 
 	{% extends "/shop/folder/my-organism.html" %}
-	
+
 	{% block shop-some-identifier %}
 	    <div>...</div>
 	{% endblock %}
@@ -91,7 +91,7 @@ A nice aspect of this approach is, that ...
 * we can arrange each of those form components using the **Structure** editor from **djangoCMS**
   toolbar. This is much faster, than by crafting templates manually.
 
-As we can see from this approach, **djangoSHOP**  places great value on the principles of a
+As we can see from this approach, **django-SHOP**  places great value on the principles of a
 `Single Source of Truth`_, when working with customized database models and forms.
 
 Many of these Forms can be rendered using two different approaches:
@@ -110,7 +110,7 @@ Here we render all model fields as static strings without wrapping it into a for
 used to summarize all inputs, preferably on the last process step.
 
 
-These are the currently available plugins provided by **djangoSHOP** to build the checkout page:
+These are the currently available plugins provided by **django-SHOP** to build the checkout page:
 
 
 Customer Form Plugin
@@ -143,7 +143,7 @@ Both plugins provide a form made up from the model class implementing
 Select the Payment Provider
 ---------------------------
 
-For each payment provider registered within **djangoSHOP**, this plugin creates a list
+For each payment provider registered within **django-SHOP**, this plugin creates a list
 of radio buttons, where customers can chose their desired payment provider. By overriding the
 rendering templates, additional forms, for instance to add credit card data, can be added.
 
@@ -151,7 +151,7 @@ rendering templates, additional forms, for instance to add credit card data, can
 Select a Shipping Method
 ------------------------
 
-For each shipping provider registered within **djangoSHOP**, this plugin creates a list
+For each shipping provider registered within **django-SHOP**, this plugin creates a list
 of radio buttons, where customers can chose their desired shipping method.
 
 
@@ -193,7 +193,7 @@ This proceed button can also handle two non-link targets: "Reload Page" and "Pur
 The first target is useful to reload the page in a changed context, for instance if a site visitor
 logged in and now shall get a personalized page.
 
-The second target is special to **djangoSHOP** and exclusively used, when the customer performs
+The second target is special to **django-SHOP** and exclusively used, when the customer performs
 :ref:`reference/the-purchasing-operation`.
 
 
@@ -350,9 +350,9 @@ Catalog
 
 The catalog list view is handled by the **ShopCatalogPlugin**.
 
-This plugin requires a CMS page, which uses the apphook_ **ProductsListApp**. First assure that we 
+This plugin requires a CMS page, which uses the apphook_ **ProductsListApp**. First assure that we
 :ref:`reference/create-ProductsListApp`. This CMSapp must be implemented by the merchant; it thus
-is part of the project, rather than the **djangoSHOP** framework.
+is part of the project, rather than the **django-SHOP** framework.
 
 
 Viewing Orders
@@ -381,9 +381,9 @@ Search Results
 
 Rendering search results is handled by the **Search Results** plugin.
 
-On a site offering full-text search, add a page to display search results. First assure that we 
+On a site offering full-text search, add a page to display search results. First assure that we
 have a :ref:`reference/search-view` assigned to that page as apphook_. This CMSapp must be
-implemented by the merchant; it thus is part of the project, rather than the **djangoSHOP**
+implemented by the merchant; it thus is part of the project, rather than the **django-SHOP**
 framework.
 
 

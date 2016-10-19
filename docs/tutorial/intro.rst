@@ -42,8 +42,9 @@ if you want to use Python 2. We recommend that you use Python 3.
 	$ mkdir Tutorial; cd Tutorial
 	(shoptutorial)$ git clone --depth 1 https://github.com/awesto/django-shop
 	(shoptutorial)$ cd django-shop
-	(shoptutorial)$ pip install -e .
 	(shoptutorial)$ pip install -r requirements/common.txt
+	(shoptutorial)$ pip install --no-deps -e .
+	(shoptutorial)$ pip install Django==1.9.10
 	(shoptutorial)$ npm install
 
 These statements will setup an environment that runs one of the demo shops out of the box.
@@ -81,7 +82,7 @@ Finally point a browser onto http://localhost:8000/ and log in as the superuser 
 Add some pages to the CMS
 =========================
 
-In **djangoSHOP**, every page, can be rendered by the CMS. Therefore, unless you need a special
+In **django-SHOP**, every page, can be rendered by the CMS. Therefore, unless you need a special
 landing page, start immediately with the *Catalog's List View* of your products. Change into the
 Django Admin backend, chose the section
 

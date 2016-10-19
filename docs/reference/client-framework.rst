@@ -4,21 +4,21 @@
 Client Side Framework
 =====================
 
-While Django doesn't impose any client side framework, **djangoSHOP** has to. Here we have to
+While Django doesn't impose any client side framework, **django-SHOP** has to. Here we have to
 consider that it is unrealistic to expect an e-commerce side, without any client-side operations.
 For instance, during checkout the customer must be able to edit the cart interactively. We also
 might want to offer autocompletion and infinite scroll.
 
-Therefore the author of **djangoSHOP** has decided to add some reusable Javascript code to this
+Therefore the author of **django-SHOP** has decided to add some reusable Javascript code to this
 framework. The most obvious choice would have been jQuery since it is already used by the Django
 administration backend. However by using jQuery, web designers adopting the templates for their
-**djangoSHOP** implementation would inevitably have to adopt Javascript code. In order to prevent
+**django-SHOP** implementation would inevitably have to adopt Javascript code. In order to prevent
 this from happening, another popular Javascript framework was chosen: AngularJS_.
 
 This means that template designers only have to add special HTML directives as provided by the
 framework. They do not have to write or adopt any Javascript code, except for the initialization.
 
-..note:: Since **djangoSHOP** uses REST for every part of the communication, the client side
+..note:: Since **django-SHOP** uses REST for every part of the communication, the client side
 	framework can be replaced by whatever appropriate.
 
 
@@ -40,7 +40,7 @@ as the assets manager:
 .. code-block:: django
 
 	{% load static sekizai_tags %}
-	
+
 	{% addtoblock "js" %}<script src="{% static 'node_modules/picturefill/dist/picturefill.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 	{% addtoblock "js" %}<script src="{% static 'node_modules/angular/angular.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 	{% addtoblock "js" %}<script src="{% static 'node_modules/angular-sanitize/angular-sanitize.min.js' %}"></script>{% endaddtoblock %}
@@ -68,7 +68,7 @@ application. Say, we declare a base template for our project:
 		$locationProvider.html5Mode(false);
 	}]){% render_block "ng-config" postprocessor "djng.sekizai_processors.module_config" %};
 	</script>
-	
+
 	</body>
 
 By using Sekizai's templatetag ``render_block`` inside the initialization and configuration phase
@@ -84,7 +84,7 @@ with:
 	:caption: shop/cart/editable.html
 
 	{% load static sekizai_tags %}
-	
+
 	{% addtoblock "js" %}<script src="{% static 'shop/js/cart.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 	{% addtoblock "ng-requires" %}django.shop.cart{% endaddtoblock %}
 
@@ -96,7 +96,7 @@ and module initialization to whom it concerns.
 Angular Modules
 ===============
 
-The **djangoSHOP** framework declares a bunch of Angular directives and controllers, grouped into
+The **django-SHOP** framework declares a bunch of Angular directives and controllers, grouped into
 separate modules. All these modules are placed into their own JavaScript file and use the same
 but unique naming scheme, for example ``django.shop.auth``, ``django.shop.cart``,
 ``django.shop.catalog`` etc., to avoid conflicts with other third party modules.

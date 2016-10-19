@@ -4,8 +4,8 @@
 Configuration and Settings
 ==========================
 
-The **djangoSHOP** framework itself, requires only a few configuration directives. However, since
-each e-commerce site built around **djangoSHOP** consists of the merchant's own project, plus a
+The **django-SHOP** framework itself, requires only a few configuration directives. However, since
+each e-commerce site built around **django-SHOP** consists of the merchant's own project, plus a
 collection of third party Django apps, here is a summary of mandatory and some optional
 configuration settings:
 
@@ -27,7 +27,7 @@ merchant's implementation.
 Alternative User Model
 ----------------------
 
-Django's built-in User model lacks a few features required by **djangoSHOP**, mainly the
+Django's built-in User model lacks a few features required by **django-SHOP**, mainly the
 possibility to use the email address as the login credential. This overridden model is 100% field
 compatible to Django's internal model and even reuses the database table ``auth_user``.
 
@@ -159,7 +159,7 @@ This is a configuration known to work. Special and optional apps are discussed b
 * ``django_select2`` optionally adds a select field to Django's admin, with integrated
   autocompletion. Very useful for added links to products manually. It presumes that django-select2_
   is installed.
-* ``cmsplugin_cascade`` adds the functionality to add CMS plugins, as provided by **djangoSHOP**,
+* ``cmsplugin_cascade`` adds the functionality to add CMS plugins, as provided by **django-SHOP**,
   to arbitrary CMS placeholders.
 * ``cmsplugin_cascade.clipboard`` allows the site administrator to copy a set of plugins in one
   installation and paste it into the placeholder of another one.
@@ -173,13 +173,13 @@ This is a configuration known to work. Special and optional apps are discussed b
 * ``adminsortable2`` allows the site administrator to sort various items in Django's administration
   backend.
 * ``rest_framework``, ``rest_framework.authtoken`` and ``rest_auth``, required, add the REST
-  functionality to the **djangoSHOP** framework.
-* ``django_fsm`` and ``fsm_admin``, required, add the Finite State Machine to the **djangoSHOP**
+  functionality to the **django-SHOP** framework.
+* ``django_fsm`` and ``fsm_admin``, required, add the Finite State Machine to the **django-SHOP**
   framework.
 * ``djng`` only required for installations using AngularJS, which is the recommended JavaScript
   framework. It adds the interface layer between Django and AngularJS and presumes that
   django-angular_ is installed.
-* ``cms``, ``menus`` and ``treebeard`` are required if **djangoSHOP** is used in combination with
+* ``cms``, ``menus`` and ``treebeard`` are required if **django-SHOP** is used in combination with
   **djangoCMS**.
 * ``compressor``, highly recommended. Concatenates and minifies CSS and JavaScript files on
   production systems. It presumes that django-compressor_ is installed.
@@ -200,7 +200,7 @@ This is a configuration known to work. Special and optional apps are discussed b
 * ``haystack`` optional, handles the interface between Django and Elasticsearch – a full-text
   search engine. It presumes a running and available instance of ElasticSearch and that
   django-haystack_ and drf-haystack_ is installed.
-* ``shop`` the **djangoSHOP** framework.
+* ``shop`` the **django-SHOP** framework.
 * ``my_shop_implementation`` replace this by the merchant's implementation of his shop.
 
 .. _django-polymorphic: https://django-polymorphic.readthedocs.org/
@@ -259,7 +259,7 @@ the list of the default ``STATICFILES_FINDERS``:
 	)
 
 
-Since **djangoSHOP** requires a few third party packages, which are not available from PyPI, they
+Since **django-SHOP** requires a few third party packages, which are not available from PyPI, they
 instead must be installed via ``npm install``. In order to make these files available to our Django
 application, we use the configuration setting:
 
@@ -276,7 +276,7 @@ must be made available:
 .. code-block:: python
 
 	NODE_MODULES_URL = STATIC_URL + 'node_modules/'
-	
+
 	SASS_PROCESSOR_INCLUDE_DIRS = (
 	    os.path.join(PROJECT_ROOT, 'node_modules'),
 	)
@@ -285,7 +285,7 @@ must be made available:
 Template Context Processors
 ---------------------------
 
-Templates rendered by the **djangoSHOP** framework require the Customer object in their context.
+Templates rendered by the **django-SHOP** framework require the Customer object in their context.
 Configure this by adding a special template context processor:
 
 .. code-block:: python
@@ -331,7 +331,7 @@ Money type:
 	    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
 	    'PAGE_SIZE': 12,
 	}
-	
+
 	SERIALIZATION_MODULES = {'json': str('shop.money.serializers')}
 
 
@@ -339,7 +339,7 @@ Django CMS and Cascade settings
 -------------------------------
 
 **DjangoSHOP** requires at least one CMS template. Assure that it contains a placeholder able to
-accept 
+accept
 
 .. code-block:: python
 
@@ -358,7 +358,7 @@ accept
 
 	CMSPLUGIN_CASCADE_PLUGINS = ('cmsplugin_cascade.segmentation', 'cmsplugin_cascade.generic',
 	    'cmsplugin_cascade.link', 'shop.cascade', 'cmsplugin_cascade.bootstrap3',)
-	
+
 	CMSPLUGIN_CASCADE = {
 	    'link_plugin_classes': (
 	        'shop.cascade.plugin_base.CatalogLinkPluginBase',
@@ -388,12 +388,12 @@ accept
 	    },
 	}
 
-Since we want to add arbitrary links onto the detail view of a product, **djangoSHOP** offers
+Since we want to add arbitrary links onto the detail view of a product, **django-SHOP** offers
 a modified link plugin. This has to be enabled using the 3-tuple ``link_plugin_classes``. There
 is also a JavaScript helper ``shop/js/admin/shoplinkplugin.js``, which depends on another JavaScript
 file.
 
-**DjangoShop** uses with AngularJS rather than jQuery to control it's dynamic HTML widgets.
+**Django-SHOP** uses with AngularJS rather than jQuery to control it's dynamic HTML widgets.
 We therefore have to override the default with this settings:
 ``CMSPLUGIN_CASCADE['bootstrap3']['template_basedir']``.
 

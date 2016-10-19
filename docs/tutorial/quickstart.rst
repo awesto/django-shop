@@ -58,6 +58,7 @@ Then instead of adding pages and products manually, use the following steps:
 	(shoptutorial)$ cd django-shop/example
 	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=commodity DJANGO_DEBUG=1
 	(shoptutorial)$ ./manage.py initialize_shop_demo
+	(shoptutorial)$ ./manage.py compilescss
 	(shoptutorial)$ ./manage.py runserver
 
 Point a browser onto http://localhost:8000/admin/ and sign in as user *admin* with password
@@ -65,7 +66,7 @@ Point a browser onto http://localhost:8000/admin/ and sign in as user *admin* wi
 
 This runs the demo for :ref:`tutorial/commodity`.
 
-.. note:: The first time, **djangoSHOP** renders a page, images must be thumbnailed and cropped.
+.. note:: The first time, **django-SHOP** renders a page, images must be thumbnailed and cropped.
 	This is an expensive operation which runs only once. Therefore please be patient, when loading
 	pages for the first time.
 
@@ -84,7 +85,7 @@ The Commodity Product Model
 
 The ``commodity`` demo shows how to setup a monolingual shop, with a generic product, named
 **Commodity**. The product model :class:`shop.models.defauls.commodity.Commodity` is part of the
-**djangoSHOP** framework. It is intended for shops where the merchant does not want to create a
+**django-SHOP** framework. It is intended for shops where the merchant does not want to create a
 customized product model, but rather prefers to create the product's detail views using common CMS
 functionality.
 
@@ -172,7 +173,7 @@ adopt the template for adding the product to the cart.
 Use one of the demos as a starting point for your project
 =========================================================
 
-Depending on the needs of your e-commerce site, the easiest approach to start with **djangoSHOP**
+Depending on the needs of your e-commerce site, the easiest approach to start with **django-SHOP**
 is to use the demo which is most similar to one of the five from above. Then by copying example,
 create a repository of the merchant's implementation. Starting from a working example and gradually
 modifying it until reaching your final goals, typically is much easier than starting from scratch.

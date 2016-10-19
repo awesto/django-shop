@@ -5,7 +5,7 @@ Notifications
 =============
 
 Whenever the status in model ``Order`` changes, the built-in Finite State Machine emits a signal
-using Django's `signaling framework`_. These signals are received by **djangoSHOP**'s Notification
+using Django's `signaling framework`_. These signals are received by **django-SHOP**'s Notification
 Framework.
 
 
@@ -42,7 +42,7 @@ Transitions events are transmitted for changes in the order status. Each order b
 customer, and normally he's the first one to be informed, if something changes.
 
 But other persons in the context of this e-commerce site might also be interested into a
-notification. In **djangoSHOP** all staff Users qualify, as it is assumed that they belong to the
+notification. In **django-SHOP** all staff Users qualify, as it is assumed that they belong to the
 group eligible to manage the site.
 
 
@@ -64,12 +64,12 @@ staff users, otherwise we'd fill up their mail inbox with countless attachments.
 Post Office
 ===========
 
-Emails for order confirmations are send asynchronously by **djangoSHOP**. The reason for this is
+Emails for order confirmations are send asynchronously by **django-SHOP**. The reason for this is
 that it sometimes takes a few seconds for an application server to connect via SMTP, and deliver
 an Email. It is unacceptable to do this synchronously during the most sensitive phase of a purchase
 operation.
 
-Therefore **djangoSHOP** sends all generated emails using the queuing mail system `Post Office`_.
+Therefore **django-SHOP** sends all generated emails using the queuing mail system `Post Office`_.
 This app can hold a set of different email templates, which use the same template language as Django
 itself. Emails can be rendered using plain text, HTML or both.
 
@@ -81,7 +81,7 @@ As an offline operation, ``./manage.py send_queued_mail`` renders and sends queu
 given recipient. During this step, the given template is rendered applying the stored context.
 Their status then changes to "*sent*", or in case of a problem to "*failed*".
 
-If **djangoSHOP** is configured to run in a multilingual environment, post office renders the email
+If **django-SHOP** is configured to run in a multilingual environment, post office renders the email
 in the language used during order creation.
 
 
@@ -99,7 +99,7 @@ templates can be loaded and expanded using the well known templatetag
 
 .. code-block:: django
 
-	{% extends "myshop/email/somebase.html" %} 
+	{% extends "myshop/email/somebase.html" %}
 
 
 Caveats when using an HTML Message
@@ -115,7 +115,7 @@ than a ``<style>`` element containing blocks of CSS. It is recommended to use a 
 `email framework`_ to avoid nasty quirks, when rendering the templates.
 
 Images can be embedded into HTML emails using two different methods. One is to host the image on the
-web-server and to build an absolute URI referring it. Therefore **djangoSHOP** enriches the object
+web-server and to build an absolute URI referring it. Therefore **django-SHOP** enriches the object
 ``RenderContext`` with the base URI for that web-site and stores it as context variable named
 ``ABSOLUTE_BASE_URI``. For privacy reasons, most email clients do not load externally hosted images
 by default – the customer then must actively request to load them from the external sources.

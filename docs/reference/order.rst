@@ -14,7 +14,7 @@ Order Models
 ============
 
 An order consists of two models classes ``Order`` and ``OrderItem``, both inheriting from
-``BaseOrder`` and ``BaseOrderItem`` respectively. As with most models in **djangoSHOP**, they are
+``BaseOrder`` and ``BaseOrderItem`` respectively. As with most models in **django-SHOP**, they are
 :ref:`reference/deferred-models`, so that inheriting from a base class automatically sets the
 foreign keys to the appropriate model. This gives the programmer the flexibility to add as many
 fields to the order, as the merchant requires for his special implementation.
@@ -43,7 +43,7 @@ object by invoking:
 .. code-block:: python
 
 	from shop.models.order import OrderModel
-	
+
 	order = OrderModel.objects.create_from_cart(cart, request)
 
 This operation is atomic and can take some time. It normally is performed by the payment provider,
@@ -68,7 +68,7 @@ Order Numbers
 In commerce it is mandatory that orders are numbered using a unique and continuously increasing
 sequence. Each merchant has his own way to generate this sequence numbers and in some
 implementations it may even come from an external generator, such as an ERP system. Therefore
-**djangoSHOP** does not impose any numbering scheme for the orders. This intentionally is left
+**django-SHOP** does not impose any numbering scheme for the orders. This intentionally is left
 over to the merchant's implementation.
 
 Each Order model must implement two methods, one to create and and one to retrieve the order
@@ -79,10 +79,10 @@ numbers. A simple implementation may look like this:
 	from django.db import models
 	from django.utils.datetime_safe import datetime
 	from shop.models import order
-	
+
 	class Order(order.BaseOrder):
 	    number = models.PositiveIntegerField("Order Number", null=True, default=None, unique=True)
-	
+
 	    def get_or_assign_number(self):
 	        if self.number is None:
 	            epoch = datetime.now().date()
@@ -96,7 +96,7 @@ numbers. A simple implementation may look like this:
 	                # the first order this year
 	                self.number = int('{0}00001'.format(epoch.year))
 	        return self.get_number()
-	
+
 	    def get_number(self):
 	        return '{0}-{1}'.format(str(self.number)[:4], str(self.number)[4:])
 
@@ -107,7 +107,7 @@ digits are a continuous increasing sequence.
 Order Views
 ===========
 
-Displaying the last or former orders in **djangoSHOP** is as simple, as adding two pages to the CMS.
+Displaying the last or former orders in **django-SHOP** is as simple, as adding two pages to the CMS.
 Change into the Django admin backend and enter into the CMS page tree. At an appropriate location
 in that tree add a new page. As page title use "My Orders", "Ihre Bestellungen", "Mis Pedidos", or
 whatever is appropriate in the natural language used for that site. Multilingual CMS installations
@@ -206,7 +206,7 @@ a list of all orders the currently logged in customer has purchased at this shop
 Clicking on one of the orders in this list, changes into a detail view, where one can see a list of
 items purchased during that shopping session:
 
-|order-detail-view| 
+|order-detail-view|
 
 .. |order-detail-view| image:: /_static/order/detail-view.png
 
@@ -240,7 +240,7 @@ Order Workflows are simple plugins that allow the merchant to define rules in a 
 which actions to perform, whenever a certain event happened. A typical event is the confirmation
 of a payment, which itself triggers further actions, say to print a delivery note.
 
-Instead of implementing each possible combination for all of these use cases, the **djangoSHOP**
+Instead of implementing each possible combination for all of these use cases, the **django-SHOP**
 framework offers a `Finite State Machine`_, where only selected state transition can be marked as
 possible. These transition further can trigger other events themselves. This prevents to accidently
 perform invalid actions such as fulfilling orders, which haven't been paid yet.
@@ -257,7 +257,7 @@ An incomplete example:
 
 	class Order(models.Model):
 	    # other attributes
-	
+
 	    @transition(field=status, source='new', target='created')
 	    def populate_from_cart(self, cart, request):
 	        # perform some side effects ...
@@ -267,7 +267,7 @@ database. As we have seen earlier, this object must be populated from the cart. 
 the ``status`` of our new ``Order`` object switches to *created*. This is the default state before
 proceeding to our payment providers.
 
-In **djangoSHOP** the merchant can add as many payment providers he wants. This is done in
+In **django-SHOP** the merchant can add as many payment providers he wants. This is done in
 ``settings.py`` through the configuration directive ``SHOP_ORDER_WORKFLOWS`` which takes a list of
 so called "*Order Workflow Mixin*" classes. On bootstrapping the application and constructing the
 ``Order`` class, it additionally inherits from these mixin classes. This gives the merchant an easy
@@ -315,14 +315,14 @@ for the given transition is met. This then adds a button labeled "*Mark as Paid*
 the admin view. Whenever the merchant clicks on this button, the above method
 ``prepayment_fully_deposited`` is invoked. This then changes the order's status from
 "*awaiting_payment*" to "*prepayment_deposited*". The :ref:`reference/notifications` of
-**djangoSHOP** can intercept this transition change and perform preconfigured action, such as
+**django-SHOP** can intercept this transition change and perform preconfigured action, such as
 sending a payment confirmation email to the customer.
 
 Now that the order has been paid, it time to fulfill it. For this a merchant can use the workflow
 mixin class :class:`shop.shipping.defaults.CommissionGoodsWorkflowMixin`, which gives him a
 hand to keep track on the fulfillment of each order. Since this class doesn't know anything
 about an order status of "*prepayment_deposited*" (this is a private definition of the class
-``PayInAdvanceWorkflowMixin``), **djangoSHOP** provides a status to mark the payment of an order as
+``PayInAdvanceWorkflowMixin``), **django-SHOP** provides a status to mark the payment of an order as
 confirmed. Therefore another transition is added to our mixin class, which is invoked automatically
 by the framework whenever the status changes to "*prepayment_deposited*":
 
@@ -340,7 +340,7 @@ as the source argument for their transition methods.
 For further details on Finite State Machine transitions, please refer to the `FSM docs`_. This
 however does not cover the contents of dictionary ``custom``. One of the attributes in ``custom``
 is ``button="Any Label"`` as explained in the `FSM admin docs`_. The other is ``auto=True``
-and has been introduced by **djangoSHOP** itself. It is used to automatically proceed from
+and has been introduced by **django-SHOP** itself. It is used to automatically proceed from
 one target to another one, without manual intervention, such as clicking onto a button.
 
 
@@ -349,7 +349,7 @@ Signals
 
 Each state transition emits a signal_ before and after performing the status change. These signals,
 ``pre_transition`` and ``post_transition`` can be received by any registered signal handler. In
-**djangoSHOP**, the notification framework listens for these events and creates appropriate
+**django-SHOP**, the notification framework listens for these events and creates appropriate
 notification e-mails, if configured.
 
 But sometimes simple notifications are not enough, and the merchant's implementation must perform
@@ -363,14 +363,14 @@ In Django, we typically register signal handlers in the ``ready`` method of the 
 	:caption: myshop/apps.py
 
 	from django.apps import AppConfig
-	
+
 	class MyShopConfig(AppConfig):
 	    name = 'my_shop'
-	
+
 	    def ready(self):
 	        from django_fsm.signals import post_transition
 	        post_transition.connect(order_event_notification)
-	
+
 	def order_event_notification(sender, instance=None, target=None, **kwargs):
 	    if target == 'payment_confirmed':
 	        # do whatever appropriate
@@ -404,7 +404,7 @@ must manage all incoming orders, payments, customer annotations, deliveries, etc
 common tasks, the backend shall prevent careless mistakes. For instance, it should be impossible
 to ship unpaid goods or to cancel a delivered order.
 
-Since the **djangoSHOP** framework does not know which class model is used to implement an
+Since the **django-SHOP** framework does not know which class model is used to implement an
 ``Order``, it intentionally doesn't register its prepared administration class for that model.
 This has to be done by the project implementing the show. It allows to add additional fields and
 other mixin classes, before registration.
@@ -419,7 +419,7 @@ implemented as:
 	from shop.models.order import OrderModel
 	from shop.admin.order import (PrintOrderAdminMixin,
 	    BaseOrderAdmin, OrderPaymentInline, OrderItemInline)
-	
+
 	@admin.register(OrderModel)
 	class OrderAdmin(PrintOrderAdminMixin, BaseOrderAdmin):
 	    fields = BaseOrderAdmin.fields + (

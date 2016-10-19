@@ -33,7 +33,7 @@ Django does not explicitly allow such user objects in it's database models. But 
 flag ``is_active``, we can fool an application to interpret such a *guest visitor* as a faked
 anonymous user.
 
-However, since such an approach is unportable across all Django based applications, **djangoSHOP**
+However, since such an approach is unportable across all Django based applications, **django-SHOP**
 introduces a new database model – the ``Customer`` model, which extends the existing ``User`` model.
 
 
@@ -65,7 +65,7 @@ whenever an anonymous user decides to register and authenticate himself in the f
 Adding the Customer model to our application
 ============================================
 
-As almost all models in **djangoSHOP**, the ``Customer`` model itself, uses the
+As almost all models in **django-SHOP**, the ``Customer`` model itself, uses the
 :ref:`reference/deferred-models`. This means that the Django project is responsible for
 materializing that model and additionally allows the merchant to add arbitrary fields to *his*
 ``Customer`` model. Sound choices are a phone number, birth date, a boolean to signal whether the
@@ -94,11 +94,11 @@ Configure the Middleware
 
 A Customer object is created automatically with each visitor accessing the site. Whenever Django's
 internal AuthenticationMiddleware_ adds an ``AnonymousUser`` to the request object, then the
-**djangoSHOP**'s CustomerMiddleware adds a ``VisitingCustomer`` to the request object as well.
+**django-SHOP**'s CustomerMiddleware adds a ``VisitingCustomer`` to the request object as well.
 Neither the ``AnonymousUser`` nor the ``VisitingCustomer`` are stored inside the database.
 
 Whenever the AuthenticationMiddleware adds an instantiated ``User`` to the request object,
-then the **djangoSHOP**'s CustomerMiddleware adds an instantiated ``Customer`` to the request object
+then the **django-SHOP**'s CustomerMiddleware adds an instantiated ``Customer`` to the request object
 as well. If no associated ``Customer`` exists yet, the CustomerMiddleware creates one.
 
 Therefore add the CustomerMiddleware *after* the AuthenticationMiddleware in the project's
@@ -158,7 +158,7 @@ is no reverse relation from a ``Customer`` pointing onto the given ``User`` obje
 
 This can happen for ``User`` objects added manually or by other Django applications.
 
-During database queries, **djangoSHOP** always performs and INNER JOIN between the customer and the
+During database queries, **django-SHOP** always performs and INNER JOIN between the customer and the
 user table. Therefore it performs better to query the ``User`` via the ``Customer`` object, rather
 than vice versa.
 
@@ -173,7 +173,7 @@ session-Id to the client, and the server will not allocate a session bucket. The
 a ``VisitingCustomer`` object associated with an ``AnonymousUser`` object to the request. These
 two objects are not stored inside the database.
 
-Whenever such an anonymous user/visiting customer adds *his first item to the cart*, **djangoSHOP**
+Whenever such an anonymous user/visiting customer adds *his first item to the cart*, **django-SHOP**
 instantiates a user object in the database and associates it with a customer object. Such a
 customer is considered as "unregistered" and invoking ``customer.is_authenticated()`` will return
 ``False``; here its associated ``User`` model is inactive and has an unusable password.
@@ -198,7 +198,7 @@ Some may argue that adding unregistered and guest customers to the user table is
 hack. So, what are the alternatives?
 
 We could keep the cart of anonymous customers in the session store. This was the procedure used
-until **djangoSHOP** version 0.2. It however required to keep two different models of the cart,
+until **django-SHOP** version 0.2. It however required to keep two different models of the cart,
 one session based and one relational. Not very practical, specially if the cart model should be
 overridable by the merchant's own implementation.
 
@@ -227,7 +227,7 @@ Authenticating against the Email Address
 
 Nowadays it is quite common, to use the email address for authenticating, rather than an explicit
 account identifier. This in Django is not possible without replacing the built-in ``User`` model.
-Since for an e-commerce site this authentication variant is rather important, **djangoSHOP** is
+Since for an e-commerce site this authentication variant is rather important, **django-SHOP** is
 shipped with an optional drop-in replacement for the built-in ``User`` model.
 
 This ``User`` model is almost identical to the existing ``User`` model as found in
@@ -275,7 +275,7 @@ other hand can not sign in, but *they may return someday*. By having a unique em
 Django application ``email_auth`` would lock them out and guests would be allowed to buy only once,
 but not a second time – something we certainly do not want!
 
-Therefore **djangoSHOP** offers two configurable options:
+Therefore **django-SHOP** offers two configurable options:
 
 * Customers can declare themselves as guests, each time they buy something. This is the default
   setting, but causes to have non-unique email addresses in the database.
@@ -347,7 +347,7 @@ This table summarizes to possible mappings between a Django ``User`` model [1]_ 
 Manage Customers
 ----------------
 
-**djangoSHOP** is shipped with a special management command which informs the merchant about the
+**Django-SHOP** is shipped with a special management command which informs the merchant about the
 state of customers. In the project's folder, invoke on the command line:
 
 .. code-block:: shell
