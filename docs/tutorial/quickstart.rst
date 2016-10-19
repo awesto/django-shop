@@ -32,9 +32,9 @@ thumbnailed; this takes some additional time. Therefore, if you stop the running
 instead of re-running the supplied Docker image, it is recommended to restart the just created
 container with
 
-.. code-block:: bash demo-shop-polymorphic-initial
+.. code-block:: bash
 
-	$ docker start
+	$ docker start demo-shop-polymorphic-initial
 
 To access the administration backed, navigate to http://192.168.99.100:9001/en/admin/ and sign
 in as user "*admin*" with password "*secret*". If you now navigate to any page of the shop, you may
