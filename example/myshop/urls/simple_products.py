@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 """
 These URL routings are used by the example `commodity`, `smartcard` and `i18n_smartcard` as found
-in the djangoSHOP's tutorials.
+in the django-SHOP's tutorials.
 This is the simplest way of routing and a good default to start with.
 """
 

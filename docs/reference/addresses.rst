@@ -5,7 +5,7 @@ Designing an Address Model
 ==========================
 
 Depending on the merchant's needs, the business model and the catchment area of the site, the used
-address models may vary widely. Since **djangoSHOP** allows to subclass almost every database model,
+address models may vary widely. Since **django-SHOP** allows to subclass almost every database model,
 addresses are no exception here. The class :class:`shop.models.address.BaseAddress` only contains
 a foreign key to the Customer model and a priority field used to sort multiple addresses by
 relevance.
@@ -76,7 +76,7 @@ fulfill your requirements.
 Multiple Addresses
 ==================
 
-In **djangoSHOP**, if the merchant activates this feature, while setting up the site, customers
+In **django-SHOP**, if the merchant activates this feature, while setting up the site, customers
 can register more than one address. Multiple addresses can be activated, when editing the
 **Shipping Address Form Plugin** or the **Billing Address Form Plugin**.
 
@@ -104,7 +104,7 @@ Most customers use their shipping address for billing. Therefore, unless you hav
 needs, it is suggested to share all address fields required for shipping, also with the billing
 address. The customer then can reuse the shipping address for billing, if he desires to.
 Technically, if the billing address is unset, the shipping address is used anyway, but in
-**djangoSHOP** the merchant has to actively give permission to his customers, to reuse this address
+**django-SHOP** the merchant has to actively give permission to his customers, to reuse this address
 for billing.
 
 The merchant has to actively allow this setting on the site, while editing the **Billing Address
@@ -152,7 +152,7 @@ Address Form Styling
 --------------------
 
 One problem which remains with automatic form generation, is how to style the input fields.
-Therefore, **djangoSHOP** wraps every input field into a ``<div>``-element using a CSS class named
+Therefore, **django-SHOP** wraps every input field into a ``<div>``-element using a CSS class named
 according to the field. This for instance is useful to shorten some input fields and/or place it
 onto the same line.
 

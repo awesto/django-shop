@@ -4,7 +4,7 @@
 Cart and Checkout
 =================
 
-In **djangoSHOP** the cart's content is always stored inside the database. In previous versions of
+In **django-SHOP** the cart's content is always stored inside the database. In previous versions of
 the software, the cart's content was kept inside the session for anonymous users and stored in the
 database for logged in users. Now the cart is always stored in the database. This approach
 simplifies the code and saves some random access memory, but adds another minor problem:
@@ -30,7 +30,7 @@ By invoking
 	Customers in this shop: total=3408, anonymous=140, expired=88,
 	    active=1108, guests=2159, registered=1109, staff=5.
 
-we gather some statistics about customers having visited of our **djangoSHOP** site. In this example
+we gather some statistics about customers having visited of our **django-SHOP** site. In this example
 we see that 1109 customers bought as registered users, while 2159 bought as guests. There are 88
 customers in the database, but they don't have any associated session anymore, hence they can be
 considered as expired. Invoking
@@ -47,7 +47,7 @@ Cart Models
 ===========
 
 The cart consists of two models classes ``Cart`` and ``CartItem``, both inheriting from ``BaseCart``
-and ``BaseCartItem`` respectively. As with most models in **djangoSHOP**, these are using the
+and ``BaseCartItem`` respectively. As with most models in **django-SHOP**, these are using the
 :ref:`reference/deferred-models`, so that inheriting from a base class automatically sets the
 foreign keys to the appropriate model. This gives the programmer the flexibility to add as many
 fields to the cart, as the merchant requires for his special implementation.
@@ -86,7 +86,7 @@ Adding a product to the cart, must be performed by invoking:
 This returns a new cart item object, if the given product could not be found in the current cart.
 Otherwise it returns the existing cart item, increasing the quantity by the given value. For
 products with variations it's not always trivial to determine if they shall be considered as
-existing cart items, or as new ones. Since **djangoSHOP** can't tell that difference for any kind
+existing cart items, or as new ones. Since **django-SHOP** can't tell that difference for any kind
 of product, it delegates this question. Therefore the class implementing the shop's products shall
 override their method ``is_in_cart``. This method is used to tell the ``CartItemManager`` whether a
 product has already been added to the cart or is new.
@@ -98,7 +98,7 @@ in the cart. This updates the line totals, the subtotal, extra costs and the fin
 Watch List
 ----------
 
-Instead of implementing a separate watch-list (some would say wish-list), **djangoSHOP** uses a
+Instead of implementing a separate watch-list (some would say wish-list), **django-SHOP** uses a
 simple trick. Whenever the quantity of a cart item is zero, this item is considered to be in the
 watch list. Otherwise it is considered to be in the cart. The train of though is as follows:
 A quantity of zero, never makes sense for items in the cart. On the other side, any quantity
@@ -109,7 +109,7 @@ the same as keeping an eye on it, without actually wanting it to purchase.
 Cart Views
 ==========
 
-Displaying the cart in **djangoSHOP** is as simple, as adding any other page to the CMS. Change into
+Displaying the cart in **django-SHOP** is as simple, as adding any other page to the CMS. Change into
 the Django admin backend and enter into the CMS page tree. At an appropriate location in that tree
 add a new page. As page title use "Cart", "Basket", "Warenkorb", "Cesta", or whatever is appropriate
 in the natural language used for that site. Multilingual CMS installations offer a page title for
@@ -272,7 +272,7 @@ Cart Modifiers are simple plugins that allow the merchant to define rules in a p
 how the totals of a cart are computed and how they are labeled. A typical job is to compute tax
 rates, adding discounts, shipping and payment costs, etc.
 
-Instead of implementing each possible combination for all of these use cases, the **djangoSHOP**
+Instead of implementing each possible combination for all of these use cases, the **django-SHOP**
 framework offers an API, where third party applications can hooks into every computational step.
 One thing to note here is that Cart Modifiers are not only invoked, when the cart is complete and
 the customer wants to proceed to the checkout, but also for each item before being added to the
@@ -307,7 +307,7 @@ modifiers are ran for that item. This allows the ``ItemModelSerializer``, to eve
 price of a product, depending on the total content of the cart.
 
 Cart modifiers are easy to write and they normally consist only of a few lines of code. It is the
-intention of **djangoSHOP** to seed an eco-system for these kinds of plugins. Besides computing
+intention of **django-SHOP** to seed an eco-system for these kinds of plugins. Besides computing
 the total, cart modifiers can also be used to sum up the weight, if the merchant's product models
 specifies it.
 
@@ -359,8 +359,8 @@ How Modifiers work
 Cart modifiers should extend the :class:`shop.modifiers.base.BaseCartModifier` class and extend one
 or more of the given methods:
 
-.. note:: Until version 0.2 of **djangoSHOP**, the Cart Modifiers returned the amount and label
-	for the extra item rows, and **djangoSHOP** added them up. Since Version 0.3 cart modifiers
+.. note:: Until version 0.2 of **django-SHOP**, the Cart Modifiers returned the amount and label
+	for the extra item rows, and **django-SHOP** added them up. Since Version 0.3 cart modifiers
 	must change the line subtotals and cart total themselves.
 
 .. autoclass:: shop.modifiers.base.BaseCartModifier

@@ -6,7 +6,7 @@ Django SHOP documentation
 This is the documentation starting from version 0.9; if you are looking for the documentation of
 django-shop version 0.2, please check the sidebar of RTD.
 
-Version 0.9 of **djangoSHOP** is a complete rewrite of the code base, keeping the concepts of model
+Version 0.9 of **django-SHOP** is a complete rewrite of the code base, keeping the concepts of model
 overriding and cart modifiers. With some effort it should be possible to migrate existing projects
 to this new release.
 
@@ -27,7 +27,7 @@ If you are upgrading from an earlier version, please be sure to read the
 Tutorial
 ========
 
-This tutorial shows how to setup a working e-commerce site with **djangoSHOP** using the given
+This tutorial shows how to setup a working e-commerce site with **django-SHOP** using the given
 dependencies. The code required to setup this demo can be found in the example/myshop folder.
 
 .. toctree::
@@ -46,7 +46,7 @@ dependencies. The code required to setup this demo can be found in the example/m
 Reference
 ==========
 
-Reference to classes and concepts used in **djangoSHOP**
+Reference to classes and concepts used in **django-SHOP**
 
 .. toctree::
     :maxdepth: 1
@@ -77,7 +77,7 @@ Reference to classes and concepts used in **djangoSHOP**
 How To's
 ========
 
-Some recipes on how to perform certain tasks in **djangoSHOP**.
+Some recipes on how to perform certain tasks in **django-SHOP**.
 
 *This collection of recipes unfortunately is not finished yet.*
 

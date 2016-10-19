@@ -15,13 +15,13 @@ Search Engine API
 
 In Django the most popular API for full-text search is Haystack_. While other indexing backends,
 such as Solr and Whoosh might work as well, the best results have been achieved with Elasticsearch_.
-Therefore this documentation focuses exclusively on Elasticsearch. And since in **djangoSHOP** every
+Therefore this documentation focuses exclusively on Elasticsearch. And since in **django-SHOP** every
 programming interface uses REST, search is no exception here. Fortunately there is a project named
 drf-haystack_, which "restifies" our search results, if we use a special serializer class.
 
 In this document we assume that the merchant only wants to index his products, but not any arbitrary
-content, such as for example the terms and condition, as found outside **djangoSHOP**, but inside
-**djangoCMS**. The latter would however be perfectly feasible.
+content, such as for example the terms and condition, as found outside **django-SHOP**, but inside
+**django-CMS**. The latter would however be perfectly feasible.
 
 
 Configuration
@@ -269,7 +269,7 @@ as all apphooks, it requires a file defining its urlpatterns:
 Display Search Results
 ----------------------
 
-As with all other pages in **djangoSHOP**, the page displaying our search results is a normal CMS
+As with all other pages in **django-SHOP**, the page displaying our search results is a normal CMS
 page too. It is suggested to create this page on the root level of the page tree.
 
 As the page title use "*Search*" or whatever is appropriate as expression. Then we change into
@@ -305,7 +305,7 @@ in the product database. However, the site visitor sometimes might just refine t
 shown in the catalog's list view. Here loading a new page which uses a completely different layout,
 may by inappropriate.
 
-Instead, when someone enters some text into the search field, **djangoSHOP** starts to narrow down
+Instead, when someone enters some text into the search field, **django-SHOP** starts to narrow down
 the list of items in the Catalog List View by typing query terms into the search field. This is
 specially useful in situations where hundreds of products are displayed together on the same page
 and the customer needs to pick out the correct one by entering some search terms.
@@ -343,7 +343,7 @@ auto-completion, because here we reuse the same layout for the product's list vi
 The Client Side
 ---------------
 
-To facilitate the placement of the search input field, **djangoSHOP** ships with a reusable
+To facilitate the placement of the search input field, **django-SHOP** ships with a reusable
 AngularJS directive ``shopProductSearch``, which is declared inside the module
 ``shop/js/search-form.js``.
 

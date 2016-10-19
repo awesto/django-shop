@@ -4,7 +4,7 @@
 Money Types
 ===========
 
-Until **djangoSHOP** version 0.2, amounts relating to money were kept inside a ``Decimal`` type
+Until **django-SHOP** version 0.2, amounts relating to money were kept inside a ``Decimal`` type
 and stored in the database model using a ``DecimalField``. In shop installations with only one
 available currency, this wasn't a major issue, because the currency symbol could be hard-coded
 anywhere on the site.
@@ -15,7 +15,7 @@ it is very common to make mistakes by mixing different currencies. It also is co
 incorrect conversions that generate wrong results. Python doesn't allow developers to associate a
 specific decimal value with a unit.
 
-Starting with version 0.3.0, **djangoSHOP** now is shipped with a special factory class:
+Starting with version 0.3.0, **django-SHOP** now is shipped with a special factory class:
 
 
 MoneyMaker
@@ -51,17 +51,17 @@ Create a Money type
 	>>> Money = MoneyMaker()
 	>>> print Money('1.99')
 	€ 1.99
-	
+
 	>>> print Money('1.55') + Money('8')
 	€ 9.55
-	
+
 	>>> print Money
 	<class 'shop.money.money_maker.MoneyInEUR'>
-	
+
 	>>> Yen = MoneyMaker('JPY')
 	>>> print Yen('1234.5678')
 	¥ 1235
-	
+
 	>>> print Money('100') + Yen('1000')
 	ValueError: Can not add/substract money in different currencies.
 
@@ -130,7 +130,7 @@ writing REST serializers, use:
 
 	from rest_framework import serializers
 	from shop.money.rest import MoneyField
-	
+
 	class SomeSerializer(serializers.ModelSerializer):
 	    price = MoneyField()
 

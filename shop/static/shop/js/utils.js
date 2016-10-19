@@ -5,7 +5,7 @@
 var djangoShopModule = angular.module('django.shop.utils', []);
 
 // Directive <shop-time>
-// handle a djangoSHOP's timestamp
+// handle a django-SHOP's timestamp
 djangoShopModule.directive('shopTimestamp', ['$filter', '$locale', function($filter, $locale) {
 	return {
 		restrict: 'EAC',

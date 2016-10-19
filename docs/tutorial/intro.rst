@@ -81,7 +81,7 @@ Finally point a browser onto http://localhost:8000/ and log in as the superuser 
 Add some pages to the CMS
 =========================
 
-In **djangoSHOP**, every page, can be rendered by the CMS. Therefore, unless you need a special
+In **django-SHOP**, every page, can be rendered by the CMS. Therefore, unless you need a special
 landing page, start immediately with the *Catalog's List View* of your products. Change into the
 Django Admin backend, chose the section
 

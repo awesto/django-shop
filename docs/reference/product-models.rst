@@ -6,7 +6,7 @@ Product Models
 
 Products can vary wildly, and modeling them is not always trivial. Some products are salable in
 pieces, while others are continues. Trying to define a set of product models, capable for describing
-all such scenarios is impossible – 
+all such scenarios is impossible –
 
 
 Describe Products by customizing the Model
@@ -31,15 +31,15 @@ to be added.
 .. _Entity Attribute Value: https://en.wikipedia.org/wiki/Entity%E2%80%93attribute%E2%80%93value_model
 
 
-In **djangoSHOP**, the physical representation of a product always maps to its logical
---------------------------------------------------------------------------------------
+In **django-SHOP**, the physical representation of a product always maps to its logical
+---------------------------------------------------------------------------------------
 
-**djangoSHOP**'s approach to this problem is to have a minimal set of models. These abstract models
+**Django-SHOP**'s approach to this problem is to have a minimal set of models. These abstract models
 are stubs providing to subclass the physical models. Hence the logical representation of the
 product conforms to their physical one. Moreover, it is even possible to represent various types of
 products by subclassing polymorphically from an abstract base model. Thanks to Django's Object
 Relational Mapper, modeling the logical representation for a set of products, together with an
-administration backend, becomes almost effortless. 
+administration backend, becomes almost effortless.
 
 Therefore the base class to model a product is a stub which contains only these three fields:
 
@@ -50,7 +50,7 @@ A boolean field ``active``, used to signalize the products availability.
 The attentive reader may wonder, why there not even fields for the most basic requirements of each
 sellable article, there is no product name, no price field and no product code.
 
-The reason for this is, that **djangoSHOP** does not impose any fields, which might require
+The reason for this is, that **django-SHOP** does not impose any fields, which might require
 a different implementation for the merchants use case. However, for a sellable commodity some
 information is fundamental and required. But its up to him how to implement these fields:
 
@@ -69,7 +69,7 @@ to be identifiable. In most cases the product code is implemented by the product
 in some circumstances it may be implemented by the product's variant. The
 ``SmartPhone`` from the demo code is one such example.
 
-The example section of **djangoSHOP** contains a few models which can be copied and adopted to the
+The example section of **django-SHOP** contains a few models which can be copied and adopted to the
 specific needs of the merchants products. Let's have a look at a few use-cases:
 
 
@@ -93,7 +93,7 @@ Therefore we would model our smart-phones using a database model similar to the 
 
 	from shop.models.product import BaseProductManager, BaseProduct
 	from shop.money import Money
-	
+
 	class SmartPhoneModel(BaseProduct):
 	    product_name = models.CharField(max_length=255,
 	        verbose_name=_("Product Name"))
@@ -104,14 +104,14 @@ Therefore we would model our smart-phones using a database model similar to the 
 	    screen_size = models.DecimalField(_("Screen size"),
 	        max_digits=4, decimal_places=2)
 	    # other fields to map the specification sheet
-	
+
 	    objects = BaseProductManager()
 	    lookup_fields = ('product_name__icontains',)
-	
+
 	    def get_price(request):
 	        aggregate = self.smartphone_set.aggregate(models.Min('unit_price'))
 	        return Money(aggregate['unit_price__min'])
-	
+
 	class SmartPhone(models.Model):
 	    product_model = models.ForeignKey(SmartPhoneModel)
 	    product_code = models.CharField(_("Product code"),
@@ -124,7 +124,7 @@ here is, that each product requires a field ``product_name``. This alternatively
 implemented as property.
 
 Another mandatory attribute for each product is the ``ProductManager`` class. It must inheriting
-from ``BaseProductManager``, and adds some methods to generate some special querysets. 
+from ``BaseProductManager``, and adds some methods to generate some special querysets.
 
 Finally, the attribute ``lookup_fields`` contains a list or tuple of  `lookup fields`_. These are
 required by the administration backend, and used when the site editor has to search for certain
@@ -139,7 +139,7 @@ Add multilingual support
 ------------------------
 
 Adding multilingual support to an existing product is quite easy and straight forward. To achieve
-this **djangoSHOP** uses the app django-parler_ which provides Django model translations without
+this **django-SHOP** uses the app django-parler_ which provides Django model translations without
 nasty hacks. All we have to do, is to replace the ProductManager with one capable of handling
 translations:
 
@@ -147,7 +147,7 @@ translations:
 
 	class ProductQuerySet(TranslatableQuerySet, PolymorphicQuerySet):
 	    pass
-	
+
 	class ProductManager(BaseProductManager, TranslatableManager):
 	    queryset_class = ProductQuerySet
 
@@ -159,11 +159,11 @@ our use-case thats only the product's description:
 	class SmartPhoneModel(BaseProduct, TranslatableModel):
 	    # other field remain unchanged
 	    description = TranslatedField()
-	
+
 	class ProductTranslation(TranslatedFieldsModel):
 	    master = models.ForeignKey(SmartPhoneModel, related_name='translations', null=True)
 	    description = HTMLField(help_text=_("Some more detailed description."))
-	
+
 	    class Meta:
 	        unique_together = [('language_code', 'master')]
 
@@ -188,7 +188,7 @@ common base class of both, ``SmartPhone`` and ``SmartCard``:
 	    product_name = models.CharField(max_length=255, verbose_name=_("Product Name"))
 	    slug = models.SlugField(verbose_name=_("Slug"), unique=True)
 	    description = TranslatedField()
-	
+
 	    objects = ProductManager()
 	    lookup_fields = ('product_name__icontains',)
 
@@ -203,13 +203,13 @@ Next we only add the product specific attributes to the class models derived fro
 	    battery_capacity = models.PositiveIntegerField(help_text=_("Battery capacity in mAh"))
 	    ram_storage = models.PositiveIntegerField(help_text=_("RAM storage in MB"))
 	    # and many more attributes as found on the data sheet
-	
+
 	class SmartPhone(models.Model):
 	    product_model = models.ForeignKey(SmartPhoneModel)
 	    product_code = models.CharField(_("Product code"), max_length=255, unique=True)
 	    unit_price = MoneyField(_("Unit price"))
 	    storage = models.PositiveIntegerField(_("Internal Storage"))
-	
+
 	class SmartCard(Product):
 	    product_code = models.CharField(_("Product code"), max_length=255, unique=True)
 	    storage = models.PositiveIntegerField(help_text=_("Storage capacity in GB"))
@@ -242,18 +242,18 @@ parameter, as shown in this example:
 
 	from six import with_metaclass
 	from django.db import models
-	from filer.fields.file import FilerFileField 
+	from filer.fields.file import FilerFileField
 	from shop.models import deferred
 	from shop.models.product import BaseProductManager, BaseProduct
-	
+
 	class ProductFile(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 	    file = FilerFileField()
 	    product = deferred.ForeignKey(BaseProduct)
-	
+
 	class Product(BaseProduct):
 	    # other fields
 	    files = models.ManyToManyField('filer.File', through=ProductFile)
-	
+
 	    objects = ProductManager()
 
 .. note:: Do not use this example for creating a many-to-many field to ``FilerImageField``.

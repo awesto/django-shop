@@ -38,7 +38,7 @@ Product Model Serializers
 
 We already learned how to write model classes and model managers, so what are serializers for?
 
-In **djangoSHOP** the response views do not distinguish whether the product's information shall
+In **django-SHOP** the response views do not distinguish whether the product's information shall
 be rendered as HTML or transferred via JSON. This gives us the ability to use the same business
 logic for web browsers rendering static HTML, single page web applications communicating via AJAX
 or native shopping applications for your mobile devices. This btw. is one of the great benefits
@@ -50,11 +50,11 @@ shop. Then in the browsers URL input field append ``?format=api`` or ``?format=j
 This will render the pure product information, but without embedding it into HTML.
 
 The REST API view is very handy while developing. If you want to hide this on your production
-system , then in your settingy.py remove ``'rest_framework.renderers.BrowsableAPIRenderer'`` from 
+system , then in your settingy.py remove ``'rest_framework.renderers.BrowsableAPIRenderer'`` from
 ``REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES']``.
 
 In the shop's catalog, we need some functionality to render a list view for all products and
-we need a detail view to render each product type. The **djangoSHOP** framework supplies two
+we need a detail view to render each product type. The **django-SHOP** framework supplies two
 such serializers:
 
 
@@ -65,7 +65,7 @@ For each product we want to display in a list view, we need a serializer which c
 of the most important fields of a product. Normally these are the Id, the name and price, the URL
 onto the detail view, a short description and a sample image.
 
-The **djangoSHOP** framework does not know which of those fields have to be serialized, therefore
+The **django-SHOP** framework does not know which of those fields have to be serialized, therefore
 it requires some help from the programmer:
 
 .. code-block:: python
@@ -74,7 +74,7 @@ it requires some help from the programmer:
 
     from shop.rest.serializers import ProductSummarySerializerBase
     from myshop.models.polymorphic.product import Product
-    
+
     class ProductSummarySerializer(ProductSummarySerializerBase):
         class Meta:
             model = Product
@@ -91,10 +91,10 @@ the above class to:
     :linenos:
 
     from rest_framework.serializers import SerializerMethodField
-    
+
     class ProductSummarySerializer(ProductSummarySerializerBase):
         media = SerializerMethodField()
-    
+
         def get_media(self, product):
             return self.render_html(product, 'media')
 
@@ -159,7 +159,7 @@ view makes sense, since we want to expose every possible detail.
     :linenos:
 
     from shop.rest.serializers import ProductDetailSerializerBase
-    
+
     class ProductDetailSerializer(ProductDetailSerializerBase):
         class Meta:
             model = Product
@@ -175,11 +175,11 @@ The ``AddToCartSerializer``
 ---------------------------
 
 Rather than using the detail serializer, the business logic for adding a product to the cart has
-been moved into a specialized serializer. This is because **djangoSHOP** can not presuppose that
+been moved into a specialized serializer. This is because **django-SHOP** can not presuppose that
 products are added to the cart only from within the detail view[#add2cart]_. We also need a way to
 add more than one product variant to the cart from each products detail page.
 
-For this purpose **djangoSHOP** is shipped with an ``AddToCartSerializer``. It can be overridden
+For this purpose **django-SHOP** is shipped with an ``AddToCartSerializer``. It can be overridden
 for special product requirements, but for a standard application it just should work out of the box.
 
 Assure that the context for rendering a product contains the key ``product`` referring to the
@@ -217,11 +217,11 @@ to set a special **djangoCMS** apphook_:
 
     from cms.app_base import CMSApp
     from cms.apphook_pool import apphook_pool
-    
+
     class ProductsListApp(CMSApp):
         name = _("Products List")
         urls = ['myshop.urls.products']
-    
+
     apphook_pool.register(ProductsListApp)
 
 This apphook points onto a list of boilerplate code containing these urlpattern:
@@ -236,7 +236,7 @@ This apphook points onto a list of boilerplate code containing these urlpattern:
     from shop.rest.serializers import AddToCartSerializer
     from shop.views.catalog import (CMSPageProductListView,
         ProductRetrieveView, AddToCartView)
-    
+
     urlpatterns = [
         url(r'^$', CMSPageProductListView.as_view(
             serializer_class=ProductSummarySerializer,
