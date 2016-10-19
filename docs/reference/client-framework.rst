@@ -97,12 +97,14 @@ Angular Modules
 ===============
 
 The **django-SHOP** framework declares a bunch of Angular directives and controllers, grouped into
-separate modules. All these modules are placed into their own JavaScript file and use the same
-but unique naming scheme, for example ``django.shop.auth``, ``django.shop.cart``,
-``django.shop.catalog`` etc., to avoid conflicts with other third party modules.
+separate modules. All these modules are placed into their own JavaScript files for instance
+``static/shop/js/auth.js``, ``static/shop/js/cart.js``, ``static/shop/js/catalog.js``, etc. and use
+a corresponding but unique naming scheme, to avoid conflicts with other third party modules; this
+module naming scheme for the above files is ``django.shop.auth``, ``django.shop.cart``,
+``django.shop.catalog`` etc.
 
 This is where Sekizai's ``render_block`` templatetag, together with the postprocessor
-``module_list`` we can manage our AngularJS dependencies:
+``module_list`` becomes useful. We now can manage our AngularJS dependencies:
 
 .. code-block:: Django
 
