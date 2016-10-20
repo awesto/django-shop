@@ -4,13 +4,27 @@
 Upgrading django-SHOP
 =====================
 
+0.9.3
+=====
+
+This version requires **djangocms-cascade** 0.11.0 or higher. Please ensure to run the migrations
+which convert the Cascade elements:
+
+.. code-block:: bash
+
+	./manage.py migrate shop
+
+
 0.9.2
 =====
+
 The default address models have changed in 0.9.2. If you are upgrading from
 0.9.0 or 0.9.1 and your project is using the default address models, you need
-to add a migration to make the necessary changes to your models::
+to add a migration to make the necessary changes to your models:
 
-    ./manage.py makemigrations --empty yourapp
+.. code-block:: bash
+
+	./manage.py makemigrations --empty yourapp
 
 Next, edit the migration file to look like this:
 
