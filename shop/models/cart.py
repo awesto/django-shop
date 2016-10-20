@@ -93,7 +93,7 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     def __init__(self, *args, **kwargs):
         # reduce the given fields to what the model actually can consume
-        all_field_names = self._meta.get_all_field_names()
+        all_field_names = [field.name for field in self._meta.get_fields(include_parents=True)]
         model_kwargs = {k: v for k, v in kwargs.items() if k in all_field_names}
         super(BaseCartItem, self).__init__(*args, **model_kwargs)
         self.extra_rows = OrderedDict()
