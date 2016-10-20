@@ -18,7 +18,7 @@ from shop.models.defaults.mapping import ProductPage
 
 from myshop.models.polymorphic.smartcard import SmartCard
 from myshop.models.manufacturer import Manufacturer
-from myshop.cms_app import ProductsListApp
+from myshop.cms_apps import ProductsListApp
 
 
 class ShopTestCase(TestCase):
