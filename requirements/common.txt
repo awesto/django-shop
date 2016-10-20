@@ -7,7 +7,7 @@ django-classy-tags==0.7.2
 django-cms==3.3.2
 django-compressor==1.6
 django-filer==1.2.5
-django-filter==0.13.0
+django-filter==0.15.3
 django-fsm==2.4.0
 django-fsm-admin==1.2.3
 django-haystack==2.5.0
@@ -25,7 +25,7 @@ django-treebeard==4.0
 djangocms-bootstrap3==0.1.1
 djangocms-cascade==0.11.0
 djangocms-text-ckeditor==3.0.1
-djangorestframework==3.2.5
+djangorestframework==3.4.7
 drf-haystack==1.5.6
 easy-thumbnails==2.3
 elasticsearch==1.7.0
