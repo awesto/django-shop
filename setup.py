@@ -45,8 +45,6 @@ setup(
     zip_safe=False,
     install_requires=[
         'Django>=1.9,<=1.10',
-        'djangocms-cascade>=0.11.0',
-        'django-cms>=3.3.2,<3.4',
         'django-post-office>=2.0.8',
         'django-filer>=1.2.5',
         'django-ipware>=1.1.1',
