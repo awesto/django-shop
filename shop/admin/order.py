@@ -179,9 +179,9 @@ class PrintOrderAdminMixin(object):
 
     def print_out(self, obj):
         if obj.status == 'pick_goods':
-            button = reverse('admin:print_confirmation', args=(obj.id,)), _("Order Confirmation")
+            button = reverse('admin:print_confirmation', args=(obj.id,)), pgettext_lazy('admin', "Order Confirmation")
         elif obj.status == 'pack_goods':
-            button = reverse('admin:print_invoice', args=(obj.id,)), _("Invoice")
+            button = reverse('admin:print_invoice', args=(obj.id,)), pgettext_lazy('admin', "Invoice")
         else:
             button = None
         if button:
