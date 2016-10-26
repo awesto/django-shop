@@ -59,7 +59,7 @@ attach it to this page. These catalog apphooks are not part of the shop framewor
 created and added to the project:
 
 .. code-block:: python
-    :caption: myshop/cms_app.py
+    :caption: myshop/cms_apps.py
     :name: routing-catalog-list-app
 
     from cms.app_base import CMSApp
@@ -193,7 +193,7 @@ Order List and Detail Views
 The Order List and Detail Views must be accessible through a CMS page, therefore we need a speaking
 URL. This is similar to the Catalog List View. This means that the Order Views require the apphook_
 named "*View Orders*", which must be configured in the advanced settings of the Order's CMS pages.
-This apphook is shipped with **django-SHOP** itself and can be found at ``shop/cms_app.py``.
+This apphook is shipped with **django-SHOP** itself and can be found at ``shop/cms_apps.py``.
 
 As with all other Views used by **django-SHOP**, the content of this View can also be rendered in
 its dictionary structure, instead of HTML. Just append ``?format=api`` to the URL and get the Order

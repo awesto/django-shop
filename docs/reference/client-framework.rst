@@ -99,9 +99,9 @@ Angular Modules
 The **django-SHOP** framework declares a bunch of Angular directives and controllers, grouped into
 separate modules. All these modules are placed into their own JavaScript files for instance
 ``static/shop/js/auth.js``, ``static/shop/js/cart.js``, ``static/shop/js/catalog.js``, etc. and use
-a corresponding but unique naming scheme, to avoid conflicts with other third party modules; this
-module naming scheme for the above files is ``django.shop.auth``, ``django.shop.cart``,
-``django.shop.catalog`` etc.
+a corresponding but unique naming scheme, to avoid conflicts with other third party AngularJS
+modules. The naming scheme for these three modules is unsurprisingly: ``django.shop.auth``,
+``django.shop.cart``, ``django.shop.catalog``, etc.
 
 This is where Sekizai's ``render_block`` templatetag, together with the postprocessor
 ``module_list`` becomes useful. We now can manage our AngularJS dependencies:
@@ -119,6 +119,11 @@ at the end of our initialization statement, we can add arbitrary configuration c
 
 	angular.module('myShop', [/* module dependencies */]
 	).{% render_block "ng-config" postprocessor "djng.sekizai_processors.module_config" %};
+
+The templatetags ``{% render_block "ng-requires" ... %}`` and ``{% render_block "ng-config" ... %}``
+work, because some other template snippets declare ``{% addtoblock "ng-requires" ... %}`` and/or
+``{% addtoblock "ng-config" ... %}``. Sekizai then collects these declarations and combines them
+in ``render_block``.
 
 Unless additional client functionality is required, these are the only parts where our project
 requires us to write JavaScript.
