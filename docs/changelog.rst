@@ -4,6 +4,12 @@
 Changelog for django-SHOP
 =========================
 
+0.9.4
+=====
+* In the backend, OrderAdmin and OrderItemAdmin may render the extra dicts from the model using
+  a special template.
+
+
 0.9.3
 =====
 * Added template context processor :func:`shop.context_processors.ng_model_options` to add the

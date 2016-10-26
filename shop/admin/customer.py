@@ -37,7 +37,6 @@ class CustomerInlineAdmin(admin.StackedInline):
         addresses = [(a.as_text(),) for a in customer.shippingaddress_set.all()]
         return format_html_join('', '<address>{0}</address>', addresses)
     get_shipping_addresses.short_description = ''
-    get_shipping_addresses.allow_tags = True
 
 
 class CustomerCreationForm(UserCreationForm):
