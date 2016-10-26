@@ -5,7 +5,7 @@ Order
 =====
 
 During checkout, at a certain point the customer has to click on a button named "*Purchase Now*".
-This operation performs quite a few tasks, one of them is to convert the cart with its items into
+This operation performs quite a few tasks: One of them is to convert the cart with its items into
 an order. The final task is to reset the cart, which means to remove its content. This operation
 is atomic and not reversible.
 
@@ -17,10 +17,10 @@ An order consists of two models classes ``Order`` and ``OrderItem``, both inheri
 ``BaseOrder`` and ``BaseOrderItem`` respectively. As with most models in **django-SHOP**, they are
 :ref:`reference/deferred-models`, so that inheriting from a base class automatically sets the
 foreign keys to the appropriate model. This gives the programmer the flexibility to add as many
-fields to the order, as the merchant requires for his special implementation.
+fields to the order model, as the merchant requires for his special implementation.
 
-In most use-cases, the default order implementation will do the job. These default classes can be
-found at :class:`shop.models.defaults.order.Order` and
+In most use-cases, the default implementation of the order model will do the job. These default
+classes can be found at :class:`shop.models.defaults.order.Order` and
 :class:`shop.models.defaults.order_item.OrderItem`. To materialize the default implementation, it
 is enough to ``import`` these two files into the merchant's shop project. Otherwise the programmer
 may create his own order implementation inheriting from ``BaseOrder`` and/or ``BaseOrderItem``.
@@ -49,13 +49,13 @@ object by invoking:
 This operation is atomic and can take some time. It normally is performed by the payment provider,
 whenever a successful payment was received.
 
-Since the merchants implementation of ``Cart``, ``CartItem``, ``Order`` and ``OrderItem`` may
-contain extra fields the shop framework isn't aware of, the content of these fields has to be
+Since the merchant's implementation of ``Cart``, ``CartItem``, ``Order`` and ``OrderItem`` may
+contain extra fields the shop framework isn't aware of, the content of these fields also shall be
 transferred, whenever a cart is converted into an order object, during the purchasing operation.
 
-If required the merchant's implementation of ``Order`` shall override the method
-``populate_from_cart(cart, request)``, which provides a hook to copy those extra fields from the cart
-object to the order object.
+If required, the merchant's implementation of ``Order`` shall override the method
+``populate_from_cart(cart, request)``, which provides a hook to copy those extra fields from the
+cart object to the order object.
 
 Similarly the merchant's implementation of ``OrderItem`` shall override the method
 ``populate_from_cart_item(cart_item, request)``, which provides a hook to copy those extra fields
@@ -69,10 +69,7 @@ In commerce it is mandatory that orders are numbered using a unique and continuo
 sequence. Each merchant has his own way to generate this sequence numbers and in some
 implementations it may even come from an external generator, such as an ERP system. Therefore
 **django-SHOP** does not impose any numbering scheme for the orders. This intentionally is left
-over to the merchant's implementation.
-
-Each Order model must implement two methods, one to create and and one to retrieve the order
-numbers. A simple implementation may look like this:
+over to the merchant's implementation, which may be implemented as:
 
 .. code-block:: python
 
@@ -100,18 +97,49 @@ numbers. A simple implementation may look like this:
 	    def get_number(self):
 	        return '{0}-{1}'.format(str(self.number)[:4], str(self.number)[4:])
 
-Here the first four digits specify the year in which the order was generated, whereas the last five
-digits are a continuous increasing sequence.
+	    @classmethod
+	    def resolve_number(cls, number):
+	        number = number[:4] + number[5:]
+	        return dict(number=number)
+
+
+Here we override these three methods, otherwise the order number would be identical to it's primary
+key which is not suitable for all e-commerce sites.
+
+
+Method ``get_or_assign_number()``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Is used to assign a new number to an Order objects, if none has been assigned yet, otherwise it
+returns the assigned one.
+
+
+Method ``get_number()``
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Retrieves the order number assigned to an order in a human readable form. Here the first four
+digits specify the year in which the order was generated, whereas the last five digits are a
+continuous increasing sequence.
+
+
+
+Classmethod ``resolve_number(number)``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Chances are high that we use the order number as slug, or for any other similar identification
+purpose. If we look up for a certain order object using ``Order.objects.get(...)`` or
+``Order.objects.filter(...)``, then we might want to use a number previously retrieved with
+``get_number``. This classmethod therefore must reverse the operation of building order numbers.
 
 
 Order Views
 ===========
 
-Displaying the last or former orders in **django-SHOP** is as simple, as adding two pages to the CMS.
-Change into the Django admin backend and enter into the CMS page tree. At an appropriate location
-in that tree add a new page. As page title use "My Orders", "Ihre Bestellungen", "Mis Pedidos", or
-whatever is appropriate in the natural language used for that site. Multilingual CMS installations
-offer a page title for each language.
+Displaying the last or former orders in **django-SHOP** is as simple, as adding two pages to the
+CMS. Change into the Django admin backend and enter into the CMS page tree. At an appropriate
+location in that tree add a new page. As page title use "My Orders", "Ihre Bestellungen",
+"Mis Pedidos", or whatever is appropriate in the natural language used for that site.
+Multilingual CMS installations offer a page title for each language.
 
 In the CMS page editor click onto the link named **Advanced Settings** at the bottom of the popup
 window. As template, chose the default one, provided it contains at least one big placeholder_.
@@ -399,14 +427,14 @@ Applied to our demo shop, this gives the following graph:
 Order Admin
 ===========
 
-The order editor likely is the most heavily used for each shop installation. Here the merchant
-must manage all incoming orders, payments, customer annotations, deliveries, etc. By automating
-common tasks, the backend shall prevent careless mistakes. For instance, it should be impossible
-to ship unpaid goods or to cancel a delivered order.
+The order admin backend is likely the most heavily used editor for **django-SHOP** installation.
+Here the merchant must manage all incoming orders, payments, customer annotations, deliveries, etc.
+By automating common tasks, the backend shall prevent careless mistakes: It should for instance
+neither be possible to ship unpaid goods, nor to cancel a delivered order.
 
 Since the **django-SHOP** framework does not know which class model is used to implement an
 ``Order``, it intentionally doesn't register its prepared administration class for that model.
-This has to be done by the project implementing the show. It allows to add additional fields and
+This has to be done by the merchant implementing the shop. It allows to add additional fields and
 other mixin classes, before registration.
 
 For instance, the admin class used to manage the ``Order`` model in our shop project, could be
@@ -441,11 +469,37 @@ The template for the invoice and delivery note can easily be adopted to the corp
 plain HTML and CSS.
 
 
+Rendering extra fields
+----------------------
+
+The models ``Order`` and ``OrderItems`` both contain a JSON fiels to hold arbitary data, collected
+during the checkout process. Here for instance, **django-SHOP** stores the computations as performed
+by the :ref:`reference/cart-modifiers`. Displaying them in Django's admin backend would result in
+a rendered Python dictionary, which is not well readable by humans.
+
+Therefore the merchant may add a template, which is rendered using the content of that JSON field,
+named ``extra``. For the implemented order model the merchant may add a template named
+``<myshop>/admin/order-extra.html`` to it's template folder. This template then shall render all the
+fields as available inside that JSON field. Here ``rows`` contains a list of computations added
+by the cart modifiers.
+
+Additionally, a merchant may add templates which are rendered using the contents of the JSON fields,
+for each of the order item associated with the given order. Since order items can refer to different
+types of products, we may add a template for each of them. It is named
+``<myshop>/admin/orderitem-<productname>-extra.html`` whereas *productname* is the class name in
+lowercase of the model implementing that product. If no such template could be found, then a
+template named ``<myshop>/admin/orderitem-product-extra.html`` is used as fallback. If no template
+is provided, then the content of these extra fields is not rendered.
+
+
+
+
 Re-adding an Order to the Cart
 ==============================
 
 Sometimes it can be useful to re-add the content of an order back to the cart. This functionality
-is implemented via the REST-API and can be allowed
+currently is implemented only via the REST-API. By checking the field ``reorder`` before posting
+the data, the content of the given order is copyied into the cart.
 
 
 .. _apphook: http://docs.django-cms.org/en/latest/how_to/apphooks.html
