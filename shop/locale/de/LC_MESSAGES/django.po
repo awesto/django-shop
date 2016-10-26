@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-25 17:35+0200\n"
+"POT-Creation-Date: 2016-10-26 18:58+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: René Fleschenberg <rene@fleschenberg.net>\n"
 "Language-Team: René Fleschenberg <rene@fleschenberg.net>\n"
@@ -22,48 +22,48 @@ msgctxt "customer"
 msgid "Number"
 msgstr "Kundennummer"
 
-#: admin/customer.py:74
+#: admin/customer.py:73
 msgid "Customer State"
 msgstr "Kundesstatus"
 
-#: admin/customer.py:115
+#: admin/customer.py:114
 msgid "Username"
 msgstr "Benutzername"
 
-#: admin/customer.py:122 models/customer.py:216
+#: admin/customer.py:121 models/customer.py:216
 msgid "Salutation"
 msgstr "Anrede"
 
-#: admin/customer.py:129
+#: admin/customer.py:128
 msgid "Staff"
 msgstr ""
 
-#: admin/customer.py:131
+#: admin/customer.py:130
 msgid "User"
 msgstr "Benutzer"
 
-#: admin/customer.py:132
+#: admin/customer.py:131
 msgid "State"
 msgstr "Status"
 
-#: admin/customer.py:137
+#: admin/customer.py:136
 msgid "No data"
 msgstr ""
 
-#: admin/customer.py:138 models/customer.py:217
+#: admin/customer.py:137 models/customer.py:217
 msgid "Last accessed"
 msgstr "Letzter Besuch"
 
-#: admin/customer.py:145
+#: admin/customer.py:144
 msgid "Unexpired"
 msgstr ""
 
-#: admin/customer.py:156 admin/notification.py:19 models/cart.py:147
+#: admin/customer.py:155 admin/notification.py:19 models/cart.py:147
 #: models/order.py:173
 msgid "Customer"
 msgstr "Kunde"
 
-#: admin/customer.py:157
+#: admin/customer.py:156
 msgid "Customers"
 msgstr "Kunden"
 
@@ -109,11 +109,11 @@ msgstr "Lieferschein"
 msgid "Print out"
 msgstr "Ausdrucken"
 
-#: admin/delivery.py:152
+#: admin/delivery.py:151
 msgid "Pending"
 msgstr "In Bearbeitung"
 
-#: admin/delivery.py:153 models/delivery.py:19
+#: admin/delivery.py:152 models/delivery.py:19
 msgid "Fulfilled at"
 msgstr "Erstellt am"
 
@@ -129,52 +129,52 @@ msgstr "Ereignis"
 msgid "Attachments"
 msgstr "Anhänge"
 
-#: admin/order.py:63
+#: admin/order.py:68 admin/order.py:133
 msgctxt "admin"
 msgid "Extra data"
 msgstr "Zusatzinformation"
 
-#: admin/order.py:67
+#: admin/order.py:72
 msgctxt "admin"
 msgid "Status"
 msgstr "Status"
 
-#: admin/order.py:96
+#: admin/order.py:111
 msgctxt "admin"
 msgid "Order number"
 msgstr "Bestellnummer"
 
-#: admin/order.py:100
+#: admin/order.py:115
 msgctxt "admin"
 msgid "Total"
 msgstr "Gesamtsumme"
 
-#: admin/order.py:104
+#: admin/order.py:119
 msgctxt "admin"
 msgid "Subtotal"
 msgstr "Zwischensumme"
 
-#: admin/order.py:108
+#: admin/order.py:123
 msgctxt "admin"
 msgid "Outstanding amount"
 msgstr "Offener Betrag"
 
-#: admin/order.py:122
+#: admin/order.py:141
 msgctxt "admin"
 msgid "Customer"
 msgstr "Kunde"
 
-#: admin/order.py:183
+#: admin/order.py:201
 msgctxt "admin"
 msgid "Order Confirmation"
 msgstr "Bestbestätigung"
 
-#: admin/order.py:185
+#: admin/order.py:203
 msgctxt "admin"
 msgid "Invoice"
 msgstr "Rechnung"
 
-#: admin/order.py:193
+#: admin/order.py:211
 msgctxt "admin"
 msgid "Print out"
 msgstr "Ausdrucken"
@@ -2190,6 +2190,35 @@ msgstr "Ware ausliefern"
 msgid "Ship the goods"
 msgstr "Bestellte Waren ausliefern"
 
+#: templates/shop/admin/edit_inline/stacked.html:8
+msgid "Change"
+msgstr "Ändern"
+
+#: templates/shop/admin/edit_inline/stacked.html:10
+msgid "View on site"
+msgstr ""
+
+#: templates/shop/admin/edit_inline/stacked.html:26
+#: templates/shop/cart/editable.html:84 templates/shop/cart/watch.html:49
+msgid "Remove"
+msgstr "Entfernen"
+
+#: templates/shop/admin/edit_inline/stacked.html:27
+msgid "Add another %(verbose_name)s"
+msgstr "Weitere %(verbose_name)s hinzufügen"
+
+#: templates/shop/admin/order-extra.html:5
+msgid "Shipping"
+msgstr "Versandt"
+
+#: templates/shop/admin/order-extra.html:6
+msgid "Payment"
+msgstr "Bezahlen"
+
+#: templates/shop/admin/order-extra.html:7
+msgid "Annotation"
+msgstr "Anmerkung"
+
 #: templates/shop/auth/change.html:4
 msgid "Change Password"
 msgstr "Passwort ändern"
@@ -2318,10 +2347,6 @@ msgstr "Menge"
 #: templates/shop/order/detail.html:17 templates/shop/print/order.html:11
 msgid "Unit Price"
 msgstr "Einheitspreis"
-
-#: templates/shop/cart/editable.html:84 templates/shop/cart/watch.html:49
-msgid "Remove"
-msgstr "Entfernen"
 
 #: templates/shop/cart/editable.html:87
 msgid "Watch Item"
@@ -2594,9 +2619,6 @@ msgstr "Passwort wurde mit neuem Passwort zurückgesetzt"
 
 #~ msgid "ZIP"
 #~ msgstr "PLZ"
-
-#~ msgid "Location"
-#~ msgstr "Stadt"
 
 #~ msgid "View Orders"
 #~ msgstr "Bestellungen"
