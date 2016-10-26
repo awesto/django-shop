@@ -12,8 +12,9 @@ from django.template import RequestContext
 from django.template.loader import select_template
 from django.utils.html import format_html
 from django.utils.formats import number_format
-from django.utils.translation import ugettext_lazy as _, pgettext_lazy
+from django.utils.translation import pgettext_lazy
 from fsm_admin.mixins import FSMTransitionMixin
+from shop import settings as shop_settings
 from shop.models.customer import CustomerModel
 from shop.models.order import OrderItemModel, OrderPayment
 from shop.modifiers.pool import cart_modifiers_pool
@@ -43,11 +44,10 @@ class OrderItemInline(admin.StackedInline):
     model = OrderItemModel
     extra = 0
     fields = (
-        ('product_code', 'unit_price', 'line_total',),
-        ('quantity',),
-        'get_extra_data',
+        ('product_code', 'unit_price', 'line_total',), ('quantity',), 'render_as_html_extra',
     )
-    readonly_fields = ('product_code', 'quantity', 'unit_price', 'line_total', 'get_extra_data',)
+    readonly_fields = ('product_code', 'quantity', 'unit_price', 'line_total', 'render_as_html_extra',)
+    template = 'shop/admin/edit_inline/stacked.html'
 
     def has_add_permission(self, request, obj=None):
         return False
@@ -58,9 +58,14 @@ class OrderItemInline(admin.StackedInline):
     def get_max_num(self, request, obj=None, **kwargs):
         return self.model.objects.filter(order=obj).count()
 
-    def get_extra_data(self, obj):
-        return obj.extra  # TODO: use a template to format this data
-    get_extra_data.short_description = pgettext_lazy('admin', "Extra data")
+    def render_as_html_extra(self, obj):
+        item_extra_template = select_template([
+            '{0}/admin/orderitem-{1}-extra.html'.format(shop_settings.APP_LABEL, obj.product.product_model),
+            '{0}/admin/orderitem-product-extra.html'.format(shop_settings.APP_LABEL),
+            'shop/admin/orderitem-product-extra.html',
+        ])
+        return item_extra_template.render(obj.extra)
+    render_as_html_extra.short_description = pgettext_lazy('admin', "Extra data")
 
 
 class StatusListFilter(admin.SimpleListFilter):
@@ -85,11 +90,21 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
     fsm_field = ('status',)
     date_hierarchy = 'created_at'
     inlines = (OrderItemInline, OrderPaymentInline,)
-    readonly_fields = ('get_number', 'status_name', 'get_total', 'get_subtotal', 'get_customer_link',
-        'get_outstanding_amount', 'created_at', 'updated_at', 'extra', 'stored_request',)
-    fields = ('get_number', 'status_name', ('created_at', 'updated_at'),
-        ('get_subtotal', 'get_total', 'get_outstanding_amount',), 'get_customer_link', 'extra', 'stored_request',)
+    readonly_fields = ('get_number', 'status_name', 'get_total', 'get_subtotal',
+                       'get_customer_link', 'get_outstanding_amount', 'created_at', 'updated_at',
+                       'render_as_html_extra', 'stored_request',)
+    fields = ('get_number', 'status_name', ('created_at', 'updated_at'), 'get_customer_link',
+              ('get_subtotal', 'get_total', 'get_outstanding_amount',),
+              'render_as_html_extra', 'stored_request',)
     actions = None
+    change_form_template = 'shop/admin/change_form.html'
+
+    def __init__(self, *args, **kwargs):
+        super(BaseOrderAdmin, self).__init__(*args, **kwargs)
+        self.extra_template = select_template([
+            '{}/admin/order-extra.html'.format(shop_settings.APP_LABEL),
+            'shop/admin/order-extra.html',
+        ])
 
     def get_number(self, obj):
         return obj.get_number()
@@ -112,6 +127,10 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+    def render_as_html_extra(self, obj):
+        return self.extra_template.render(obj.extra)
+    render_as_html_extra.short_description = pgettext_lazy('admin', "Extra data")
 
     def get_customer_link(self, obj):
         try:
@@ -196,8 +215,12 @@ class OrderAdmin(BaseOrderAdmin):
     """
     Admin class to be used with `shop.models.defauls.order`
     """
-    fields = BaseOrderAdmin.fields + (('shipping_address_text', 'billing_address_text',),)
+    def get_fields(self, request):
+        fields = list(super(OrderAdmin, self).get_fields(request))
+        fields.extend(['shipping_address_text', 'billing_address_text'])
+        return fields
 
     def get_search_fields(self, request):
-        return super(OrderAdmin, self).get_search_fields(request) + \
-            ('number', 'shipping_address_text', 'billing_address_text',)
+        search_fields = list(super(OrderAdmin, self).get_search_fields(request))
+        search_fields.extend(['number', 'shipping_address_text', 'billing_address_text'])
+        return search_fields
