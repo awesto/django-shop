@@ -120,7 +120,6 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
         except NoReverseMatch:
             return format_html('<strong>{0}</strong>', obj.customer.get_username())
     get_customer_link.short_description = pgettext_lazy('admin', "Customer")
-    get_customer_link.allow_tags = True
 
     def get_search_fields(self, request):
         fields = super(BaseOrderAdmin, self).get_search_fields(request) + \
@@ -190,8 +189,7 @@ class PrintOrderAdminMixin(object):
                 '<span class="object-tools"><a href="{0}" class="viewsitelink" target="_new">{1}</a></span>',
                 *button)
         return ''
-    print_out.short_description = _("Print out")
-    print_out.allow_tags = True
+    print_out.short_description = pgettext_lazy('admin', "Print out")
 
 
 class OrderAdmin(BaseOrderAdmin):
