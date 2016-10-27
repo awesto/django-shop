@@ -10,18 +10,20 @@ collection of third party Django apps, here is a summary of mandatory and some o
 configuration settings:
 
 
-DjangoSHOP settings
-===================
+Django-SHOP specific settings
+=============================
 
 App Label
 ---------
 
-This label is required internally to configure the name of the database tables of used in the
+This label is required internally to configure the name of the database tables used in the
 merchant's implementation.
 
 .. code-block:: python
 
 	SHOP_APP_LABEL = 'myshop'
+
+There is no default setting.
 
 
 Alternative User Model
@@ -29,7 +31,7 @@ Alternative User Model
 
 Django's built-in User model lacks a few features required by **django-SHOP**, mainly the
 possibility to use the email address as the login credential. This overridden model is 100% field
-compatible to Django's internal model and even reuses the database table ``auth_user``.
+compatible to Django's internal model and even reuses it's own database table, namely ``auth_user``.
 
 .. code-block:: python
 
@@ -157,8 +159,8 @@ This is a configuration known to work. Special and optional apps are discussed b
 * ``djangocms_text_ckeditor`` optionally adds a WYSIWYG HTML editor which integrates well with
   **djangoCMS**.
 * ``django_select2`` optionally adds a select field to Django's admin, with integrated
-  autocompletion. Very useful for added links to products manually. It presumes that django-select2_
-  is installed.
+  autocompletion. Very useful for addings links to products manually. It presumes that
+  django-select2_ is installed.
 * ``cmsplugin_cascade`` adds the functionality to add CMS plugins, as provided by **django-SHOP**,
   to arbitrary CMS placeholders.
 * ``cmsplugin_cascade.clipboard`` allows the site administrator to copy a set of plugins in one
@@ -239,7 +241,7 @@ This is a configuration known to work. Special middleware classes are discussed 
 	)
 
 * ``djng.middleware.AngularUrlMiddleware`` adds a special router, so that we can use Django's
-  ``reverse`` function from inside JavaScript.
+  ``reverse`` function from inside JavaScript. Only required in conjunction with django-angular_.
 * ``shop.middleware.CustomerMiddleware`` add the Customer object to each request.
 
 
@@ -285,8 +287,8 @@ must be made available:
 Template Context Processors
 ---------------------------
 
-Templates rendered by the **django-SHOP** framework require the Customer object in their context.
-Configure this by adding a special template context processor:
+Templates rendered by the **django-SHOP** framework require some additional objects or configuration
+settings. Add them to each template using these context processors:
 
 .. code-block:: python
 
@@ -297,13 +299,23 @@ Configure this by adding a special template context processor:
 	            ...
 	            'shop.context_processors.customer',
 	            'shop.context_processors.version',
+	            'shop.context_processors.ng_model_options',
 	        ),
 	    },
 	}]
 
+``shop.context_processors.customer`` adds the Customer object to the rendering context.
 
-Workflow Mixins
----------------
+``shop.context_processors.version`` adds the Django version to the rendering context.
+
+``shop.context_processors.ng_model_options`` adds the :ref:`reference/configuration#angular-specific-settings`
+to the rendering context.
+
+
+Configure the Order Workflow
+----------------------------
+
+The ordering workflow can be configured using a list or tuple of mixin classes.
 
 .. code-block:: python
 
@@ -312,6 +324,30 @@ Workflow Mixins
 	    'shop.shipping.defaults.CommissionGoodsWorkflowMixin',
 	    # other workflow mixins
 	)
+
+This prevents to display all transitions configured by the workflow mixins inside the administration
+backend:
+
+	FSM_ADMIN_FORCE_PERMIT = True
+
+
+Email settings
+--------------
+
+Having w orking outgoing e-mail service is a fundamental requirement for **django-SHOP**.
+Adopt these settings to your configuration. Please remember that e-mail is sent asynchronously
+using django-post_office_.
+
+EMAIL_HOST = 'smtp.example.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'no-reply@example.com'
+EMAIL_HOST_PASSWORD = 'smtp-secret-password'
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'My Shop <no-reply@example.com>'
+EMAIL_REPLY_TO = 'info@example.com'
+EMAIL_BACKEND = 'post_office.EmailBackend'
+
+.. _django-post_office: https://pypi.python.org/pypi/django-post_office
 
 
 REST Framework
@@ -334,11 +370,18 @@ Money type:
 
 	SERIALIZATION_MODULES = {'json': str('shop.money.serializers')}
 
+Since the client side is not allowed to do any price and quantity computations, Decimal values are
+transferred to the client using strings. This also avoids nasty rounding errors.
 
-Django CMS and Cascade settings
+.. code-block:: python
+
+	COERCE_DECIMAL_TO_STRING = True
+
+
+Django-CMS and Cascade settings
 -------------------------------
 
-**DjangoSHOP** requires at least one CMS template. Assure that it contains a placeholder able to
+**Django-SHOP** requires at least one CMS template. Assure that it contains a placeholder able to
 accept
 
 .. code-block:: python
@@ -350,7 +393,7 @@ accept
 	CMS_PERMISSION = False
 
 
-**DjangoSHOP** enriches **djangocms-cascade** with a few shop specific plugins.
+**Django-SHOP** enriches **djangocms-cascade** with a few shop specific plugins.
 
 .. code-block:: python
 
@@ -402,10 +445,11 @@ of djangocms-cascade_.
 
 .. _djangocms-cascade: http://djangocms-cascade.readthedocs.org
 
+
 Full Text Search
 ----------------
 
-Presuming that you installed and run an ElasticSearchEngine server, configure Haystack:
+Presuming that you installed and run an ElasticSearchEngine_ server, configure Haystack:
 
 .. code-block:: python
 
@@ -431,32 +475,43 @@ If you want to index other natural language, say German, add another prefix:
 	}
 	HAYSTACK_ROUTERS = ('shop.search.routers.LanguageRouter',)
 
+.. _ElasticSearchEngine: https://www.elastic.co/products/elasticsearch
 
-Various other settings
-----------------------
 
-For usability reasons it makes sense to update the cart's total upon change only after a certain
-time of inactivity. This configuration sets this to 2500 milliseconds:
+.. _reference/configuration#angular-specific-settings:
+
+AngularJS specific settings
+---------------------------
+
+The cart's totals are updated after an input field has been changed. For usability reasons it makes
+sense to `delay this`_, so that only after a certain time of inactivity, the update is triggered.
+
+.. code-block:: python
+
+	SHOP_ADD2CART_NG_MODEL_OPTIONS = "{updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}"
+
+This configuration updates the cart after changing the quantity and 500 milliseconds of inactivity
+or field blurring. It is used by the "Add to cart" form.
 
 .. code-block:: python
 
 	SHOP_EDITCART_NG_MODEL_OPTIONS = "{updateOn: 'default blur', debounce: {'default': 2500, 'blur': 0}}"
 
-Change the include path to a local directory, if you don't want to rely on a CDN:
+This configuration updates the cart after changing any of the product's quantities and 2.5 seconds
+of inactivity or field blurring. It is used by the "Edit cart" form.
+
+.. _delay this: https://docs.angularjs.org/api/ng/directive/ngModelOptions
+
+
+Select2 specific settings
+-------------------------
+
+django-select2_ adds a configurable autocompletion field to the project.
+
+Change the include path to a local directory, if you prefer to install the JavaScript dependencies
+via ``npm`` instead of relying on a preconfigured CDN:
 
 .. code-block:: python
 
 	SELECT2_CSS = 'node_modules/select2/dist/css/select2.min.css'
 	SELECT2_JS = 'node_modules/select2/dist/js/select2.min.js'
-
-Since the client side is not allowed to do any price and quantity computations, Decimal values are
-transferred to the client using strings. This also avoids nasty rounding errors.
-
-.. code-block:: python
-
-	COERCE_DECIMAL_TO_STRING = True
-
-Prevent to display all transitions configured by the workflow mixins inside the administration
-backend:
-
-	FSM_ADMIN_FORCE_PERMIT = True
