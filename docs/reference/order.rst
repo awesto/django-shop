@@ -162,10 +162,10 @@ CMS Apphook for the Order
 -------------------------
 
 The apphook for the Order View must be provided by the Django project. This is a simple snippet of
-boilerplate which has to be added to the merchant's implementation of that file:
+boilerplate which has to be added to the merchant's implementation of the file
+``myshop/cms_apps.py``:
 
 .. code-block:: python
-	:caption: myshop/cms_apps.py
 
 	from cms.app_base import CMSApp
 	from cms.apphook_pool import apphook_pool
