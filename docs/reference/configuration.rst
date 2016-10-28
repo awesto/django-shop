@@ -234,6 +234,7 @@ This is a configuration known to work. Special middleware classes are discussed 
 	    'django.middleware.locale.LocaleMiddleware',
 	    'django.middleware.common.CommonMiddleware',
 	    'django.middleware.gzip.GZipMiddleware',
+	    'shop.middleware.MethodOverrideMiddleware',
 	    'cms.middleware.language.LanguageCookieMiddleware',
 	    'cms.middleware.user.CurrentUserMiddleware',
 	    'cms.middleware.page.CurrentPageMiddleware',
@@ -243,6 +244,9 @@ This is a configuration known to work. Special middleware classes are discussed 
 * ``djng.middleware.AngularUrlMiddleware`` adds a special router, so that we can use Django's
   ``reverse`` function from inside JavaScript. Only required in conjunction with django-angular_.
 * ``shop.middleware.CustomerMiddleware`` add the Customer object to each request.
+* ``shop.middleware.MethodOverrideMiddleware`` transforms PUT requests wrapped as POST requests
+  back into the PUT method. This is required, since poorly configured proxies sometimes believe that
+  PUT requests are evil.
 
 
 Static Files
