@@ -32,3 +32,14 @@ class CustomerMiddleware(object):
         except AttributeError:
             pass
         return response
+
+
+class MethodOverrideMiddleware(object):
+    METHOD_OVERRIDE_HEADER = 'HTTP_X_HTTP_METHOD_OVERRIDE'
+
+    def process_view(self, request, callback, callback_args, callback_kwargs):
+        if request.method != 'POST':
+            return
+        if self.METHOD_OVERRIDE_HEADER not in request.META:
+            return
+        request.method = request.META[self.METHOD_OVERRIDE_HEADER]

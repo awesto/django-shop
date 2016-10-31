@@ -123,6 +123,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.gzip.GZipMiddleware',
+    'shop.middleware.MethodOverrideMiddleware',
     'cms.middleware.language.LanguageCookieMiddleware',
     'cms.middleware.user.CurrentUserMiddleware',
     'cms.middleware.page.CurrentPageMiddleware',
@@ -560,6 +561,7 @@ SHOP_EDITCART_NG_MODEL_OPTIONS = "{updateOn: 'default blur', debounce: {'default
 
 SHOP_ORDER_WORKFLOWS = (
     'shop.payment.defaults.PayInAdvanceWorkflowMixin',
+    'shop.payment.defaults.CancelOrderWorkflowMixin',
     'shop.shipping.delivery.PartialDeliveryWorkflowMixin' if SHOP_TUTORIAL == 'polymorphic'
     else 'shop.shipping.defaults.CommissionGoodsWorkflowMixin',
     'shop_stripe.payment.OrderWorkflowMixin',
