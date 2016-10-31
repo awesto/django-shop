@@ -76,7 +76,7 @@ class Notification(models.Model):
     mail_to = models.PositiveIntegerField(verbose_name=_("Mail to"), null=True,
                                           blank=True, default=None)
     mail_template = models.ForeignKey(EmailTemplate, verbose_name=_("Template"),
-                            limit_choices_to=Q(language__isnull=True) | Q(language=''))
+                                      limit_choices_to=Q(language__isnull=True) | Q(language=''))
 
     class Meta:
         app_label = 'shop'
