@@ -8,6 +8,7 @@ Changelog for django-SHOP
 =====
 * In the backend, OrderAdmin and OrderItemAdmin may render the extra dicts from the model using
   a special template.
+* Drop support for Django-1.8.
 
 
 0.9.3
