@@ -245,8 +245,7 @@ This is a configuration known to work. Special middleware classes are discussed 
   ``reverse`` function from inside JavaScript. Only required in conjunction with django-angular_.
 * ``shop.middleware.CustomerMiddleware`` add the Customer object to each request.
 * ``shop.middleware.MethodOverrideMiddleware`` transforms PUT requests wrapped as POST requests
-  back into the PUT method. This is required, since poorly configured proxies sometimes believe that
-  PUT requests are evil.
+  back into the PUT method. This is required for compatibility with some JS frameworks and proxies.
 
 
 Static Files
