@@ -224,7 +224,7 @@ child named **Order Views** from section **Shop**.
 We have to perform this operation a second time for the page named "Thanks for Your Order". The
 context menus for copying and pasting may be helpful here.
 
-Note the the page "My Orders" handles two views: By invoking it as a normal CMS page, it renders
+Note that the page "My Orders" handles two views: By invoking it as a normal CMS page, it renders
 a list of all orders the currently logged in customer has purchased at this shop:
 
 |order-list-view|

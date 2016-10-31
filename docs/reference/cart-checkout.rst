@@ -146,8 +146,8 @@ ways:
 Editable Cart
 ~~~~~~~~~~~~~
 
-An "Editable Cart" is rendered using the Angular JS template engine. This means that a customer may
-change the number of items, delete them or move them the the watch-list. Each update is reflected
+An "Editable Cart" is rendered using the Angular JS template engine. This means that a customer
+may change the number of items, delete them or move them to the watch-list. Each update is reflected
 immediately into the cart's subtotal, extra fields and final totals.
 
 Using the above structure, the rendered cart will look similar to this.
