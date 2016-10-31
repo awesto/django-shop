@@ -11,7 +11,7 @@ from django.test import TestCase, RequestFactory
 from cms.api import add_plugin, create_page
 from cmsplugin_cascade.bootstrap3 import settings as bs3_settings
 from cmsplugin_cascade.bootstrap3.container import (BootstrapContainerPlugin, BootstrapRowPlugin,
-        BootstrapColumnPlugin)
+                                                    BootstrapColumnPlugin)
 from shop.middleware import CustomerMiddleware
 from shop.money import Money
 from shop.models.defaults.mapping import ProductPage
@@ -31,11 +31,11 @@ class ShopTestCase(TestCase):
 
     def create_pages(self):
         self.home_page = create_page("HOME", 'myshop/pages/default.html', 'en', published=True,
-                           in_navigation=True)
+                                     in_navigation=True)
         self.shop_page = create_page("Shop", 'INHERIT', 'en', parent=self.home_page, published=True,
                                      in_navigation=True, apphook=ProductsListApp)
         self.smartcards_page = create_page("Smart Cards", 'INHERIT', 'en', parent=self.shop_page,
-                                      published=True, in_navigation=True, apphook=ProductsListApp)
+                                           published=True, in_navigation=True, apphook=ProductsListApp)
 
     def create_products(self):
         manufacturer = Manufacturer.objects.create(name="SanDisk")
@@ -96,20 +96,22 @@ class ShopTestCase(TestCase):
         BS3_BREAKPOINT_KEYS = list(
             tp[0] for tp in bs3_settings.CMSPLUGIN_CASCADE['bootstrap3']['breakpoints'])
         container_element = add_plugin(placeholder, BootstrapContainerPlugin, 'en',
-            glossary={'breakpoints': BS3_BREAKPOINT_KEYS})
+                                       glossary={'breakpoints': BS3_BREAKPOINT_KEYS})
         container_plugin = container_element.get_plugin_class_instance(self.admin_site)
         self.assertIsInstance(container_plugin, BootstrapContainerPlugin)
 
         # add one row
         row_element = add_plugin(placeholder, BootstrapRowPlugin, 'en', target=container_element,
-                               glossary={})
+                                 glossary={})
         row_plugin = row_element.get_plugin_class_instance()
         self.assertIsInstance(row_plugin, BootstrapRowPlugin)
 
         # add one column
         column_element = add_plugin(placeholder, BootstrapColumnPlugin, 'en', target=row_element,
-            glossary={'xs-column-width': 'col-xs-12', 'sm-column-width': 'col-sm-6',
-                      'md-column-width': 'col-md-4', 'lg-column-width': 'col-lg-3'})
+                                    glossary={'xs-column-width': 'col-xs-12',
+                                              'sm-column-width': 'col-sm-6',
+                                              'md-column-width': 'col-md-4',
+                                              'lg-column-width': 'col-lg-3'})
         column_plugin = column_element.get_plugin_class_instance()
         self.assertIsInstance(column_plugin, BootstrapColumnPlugin)
         return column_element

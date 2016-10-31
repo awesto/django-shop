@@ -24,7 +24,7 @@ class AddressTest(TestCase):
 
     def test_shipping_address(self):
         address = {'name': "John Doe", 'address1': "31, Orwell Rd", 'zip_code': "L41RG",
-            'city': "Liverpool", 'country': 'UK'}
+                   'city': "Liverpool", 'country': 'UK'}
         shipping_addr = ShippingAddress.objects.create(priority=1, customer=self.customer, **address)
         self.assertGreaterEqual(shipping_addr.id, 1)
         addr_block = "John Doe\n31, Orwell Rd\nL41RG Liverpool\nUK\n"

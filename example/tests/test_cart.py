@@ -20,7 +20,7 @@ class CartTest(ShopTestCase):
 
         # create a page populated with Cascade elements used for checkout
         self.cart_page = create_page("Cart", 'INHERIT', 'en', parent=self.home_page,
-                                    published=True, in_navigation=True)
+                                     published=True, in_navigation=True)
 
     def add_editable_cart(self):
         """Add one GuestFormPlugin to the current page"""

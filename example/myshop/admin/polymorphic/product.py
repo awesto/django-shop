@@ -10,7 +10,7 @@ from adminsortable2.admin import SortableAdminMixin
 from cms.admin.placeholderadmin import PlaceholderAdminMixin, FrontendEditableAdminMixin
 from parler.admin import TranslatableAdmin
 from polymorphic.admin import (PolymorphicParentModelAdmin, PolymorphicChildModelAdmin,
-    PolymorphicChildModelFilter)
+                               PolymorphicChildModelFilter)
 from shop.admin.product import CMSPageAsCategoryMixin, ProductImageInline, CMSPageFilter
 from myshop.models.polymorphic.product import Product
 from myshop.models.polymorphic.commodity import Commodity
@@ -81,8 +81,8 @@ class SmartPhoneAdmin(SortableAdminMixin, TranslatableAdmin, FrontendEditableAdm
         }),
         (_("Properties"), {
             'fields': ('manufacturer', 'battery_type', 'battery_capacity', 'ram_storage',
-                'wifi_connectivity', 'bluetooth', 'gps', 'operating_system',
-                ('width', 'height', 'weight',), 'screen_size'),
+                       'wifi_connectivity', 'bluetooth', 'gps', 'operating_system',
+                       ('width', 'height', 'weight',), 'screen_size'),
         }),
     )
     filter_horizontal = ('cms_pages',)

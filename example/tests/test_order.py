@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 import json
 from django.core.urlresolvers import reverse
 from cms.api import add_plugin, create_page
-from bs4 import BeautifulSoup
 from shop.cascade.checkout import GuestFormPlugin
 from myshop.models.polymorphic.smartcard import SmartCard
 from .test_shop import ShopTestCase
@@ -17,7 +16,7 @@ class CheckoutTest(ShopTestCase):
 
         # create a page populated with Cascade elements used for checkout
         self.checkout_page = create_page("Checkout", 'INHERIT', 'en', parent=self.home_page,
-                                    published=True, in_navigation=True)
+                                         published=True, in_navigation=True)
 
     def add_guestform_element(self):
         """Add one GuestFormPlugin to the current page"""
@@ -28,6 +27,8 @@ class CheckoutTest(ShopTestCase):
         return guestform_element
 
     def test_checkout_as_guest(self):
+        # from bs4 import BeautifulSoup
+
         guestform_element = self.add_guestform_element()
 
         # add a product anonymously
@@ -40,7 +41,7 @@ class CheckoutTest(ShopTestCase):
 
         response = self.client.get(self.checkout_page.get_absolute_url())
         self.assertEquals(response.status_code, 200)
-        soup = BeautifulSoup(response.content)
+        # soup = BeautifulSoup(response.content)
         # soup.prettify()
         # TODO: check for form
 
