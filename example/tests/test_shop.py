@@ -71,6 +71,22 @@ class ShopTestCase(TestCase):
         ProductPage.objects.create(page=self.shop_page, product=xtr_sdhc_16gb)
         ProductPage.objects.create(page=self.smartcards_page, product=xtr_sdhc_16gb)
 
+        sdxc_pro_32gb = SmartCard.objects.create(
+            product_name="Extreme PRO microSDHC 32GB",
+            slug="extreme-pro-micro-sdhc-32gb",
+            unit_price=Money('12.99'),
+            caption="Up to 80/60MB/s read/write speed",
+            manufacturer=manufacturer,
+            card_type="SDXC",
+            storage=32,
+            speed=80,
+            product_code="sd2018",
+            description="SanDisk Extreme PRO microSDHC/microSDXC cards now come with up to 64GB",
+            order=3,
+        )
+        ProductPage.objects.create(page=self.shop_page, product=sdxc_pro_32gb)
+        ProductPage.objects.create(page=self.smartcards_page, product=sdxc_pro_32gb)
+
     def add_product2cart(self, product):
         add2cart_url = product.get_absolute_url() + '/add-to-cart'
         response = self.client.get(add2cart_url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')

@@ -126,16 +126,19 @@ class CartTest(ShopTestCase):
         self.client.login(username='bart', password='trab')
         sessionid = self.client.session.session_key
 
-        # Bart adds a product
+        # Bart adds two products
         sdhc_4gb = SmartCard.objects.get(slug="sdhc-card-4gb")
         self.add_product2cart(sdhc_4gb)
+        xtr_sdhc_16gb = SmartCard.objects.get(slug="extreme-plus-sdhc-16gb")
+        self.add_product2cart(xtr_sdhc_16gb)
 
         # check that the added item is in the cart
         request = self.factory.get('/')
         self.middleware_process_request(request, sessionid)
         cart = CartModel.objects.get_from_request(request)
-        self.assertEquals(cart.items.count(), 1)
-        self.assertEquals(cart.items.first().product.product_code, sdhc_4gb.product_code)
+        self.assertEquals(cart.items.count(), 2)
+        self.assertEquals(cart.items.all()[0].product.product_code, sdhc_4gb.product_code)
+        self.assertEquals(cart.items.all()[1].product.product_code, xtr_sdhc_16gb.product_code)
 
         self.client.logout()
         self.assertNotEquals(sessionid, self.client.session.session_key)
@@ -147,9 +150,10 @@ class CartTest(ShopTestCase):
         with self.assertRaises(CartModel.DoesNotExist):
             CartModel.objects.get_from_request(request)
 
-        # add another item anonymously
-        xtr_sdhc_16gb = SmartCard.objects.get(slug="extreme-plus-sdhc-16gb")
+        # add two items anonymously
         self.add_product2cart(xtr_sdhc_16gb)
+        sdxc_pro_32gb = SmartCard.objects.get(slug="extreme-pro-micro-sdhc-32gb")
+        self.add_product2cart(sdxc_pro_32gb)
 
         # Bart logs in again
         login_url = reverse('shop:login')
@@ -157,9 +161,14 @@ class CartTest(ShopTestCase):
         response = self.client.post(login_url, credentials)
         self.assertEqual(response.status_code, 200)
 
-        # the cart now should contain both items
+        # the cart now should contain three items
         request = APIRequestFactory().request()
         self.middleware_process_request(request, self.client.session.session_key)
         cart = CartModel.objects.get_from_request(request)
-        self.assertEquals(cart.items.count(), 2)
-        self.assertEquals(cart.items.last().product.product_code, xtr_sdhc_16gb.product_code)
+        self.assertEquals(cart.items.count(), 3)
+        self.assertEquals(cart.items.all()[0].product.product_code, sdhc_4gb.product_code)
+        self.assertEquals(cart.items.all()[0].quantity, 1)
+        self.assertEquals(cart.items.all()[1].product.product_code, xtr_sdhc_16gb.product_code)
+        self.assertEquals(cart.items.all()[1].quantity, 2)
+        self.assertEquals(cart.items.all()[2].product.product_code, sdxc_pro_32gb.product_code)
+        self.assertEquals(cart.items.all()[2].quantity, 1)
