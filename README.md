@@ -11,8 +11,8 @@ existing projects to this new release. Please contact me, if you need help.
 
 ## NEWS
 
-At [PyConDE](https://www.pymunich.com/), Jacob Rief will give a talk on 2016-Oct-30 at 16:00 about the
-newest version of django-SHOP. If you want to get in touch, please follow us on Twitter:
+The core developer of **django-SHOP**, will at [Django under the Hood](https://www.djangounderthehood.com/) from
+November 3rd to 6th, in Amsterdam. If you want to get in touch, please contact me on Twitter:
 
 [![Twitter Follow](https://img.shields.io/twitter/follow/shields_io.svg?style=social&label=django-SHOP&maxAge=2592000)](https://twitter.com/djangoshop)
 
