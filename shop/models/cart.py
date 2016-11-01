@@ -226,6 +226,23 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
             self.items.all().delete()
             self.delete()
 
+    def merge_with(self, other_cart):
+        """
+        Merge the contents of the other cart into this one, afterwards delete it.
+        This is done item by item, so that duplicate items increase the quantity.
+        """
+        # iterate over the cart and add quantities for items from other cart considered as equal
+        for item in self.items.all():
+            other_item = item.product.is_in_cart(other_cart, extra=item.extra)
+            if other_item:
+                item.quantity += other_item.quantity
+                item.save()
+                other_item.delete()
+
+        # the remaining items from the other cart are merged into this one
+        other_cart.items.update(cart=self)
+        other_cart.delete()
+
     def __str__(self):
         return "{}".format(self.pk) if self.pk else '(unsaved)'
 
