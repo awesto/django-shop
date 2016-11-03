@@ -6,7 +6,9 @@ from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from cms.api import add_plugin, create_page
 from bs4 import BeautifulSoup
-from shop.cascade.checkout import GuestFormPlugin, CustomerFormPlugin, ShippingAddressFormPlugin
+from shop.cascade.checkout import (GuestFormPlugin, CustomerFormPlugin, ShippingAddressFormPlugin,
+                                   BillingAddressFormPlugin, PaymentMethodFormPlugin,
+                                   ShippingMethodFormPlugin)
 from myshop.models.polymorphic.smartcard import SmartCard
 from .test_shop import ShopTestCase
 
@@ -74,9 +76,17 @@ class CheckoutTest(ShopTestCase):
     def test_address_forms(self):
         # create a page populated with Cascade elements used for checkout
         placeholder = self.checkout_page.placeholders.get(slot='Main Content')
+
+        # add shipping address to checkout page
         address_form_element = add_plugin(placeholder, ShippingAddressFormPlugin, 'en',
                                           target=self.column_element)
         address_form_element.glossary = {'render_type': 'form'}
+        address_form_element.save()
+
+        # add billing address to checkout page
+        address_form_element = add_plugin(placeholder, BillingAddressFormPlugin, 'en',
+                                          target=self.column_element)
+        address_form_element.glossary = {'render_type': 'form', 'multi_addr': True}
         address_form_element.save()
 
         self.checkout_page.publish('en')
@@ -86,20 +96,30 @@ class CheckoutTest(ShopTestCase):
         self.client.login(username='bart', password='trab')
         self.fill_cart()
 
-        # rendering the same URL should give another result
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
         soup = BeautifulSoup(response.content, 'html.parser')
-        address_form = soup.find('form', {'name': 'shipping_address_form'})
-        self.assertIsNotNone(address_form)
+        shipping_address_form = soup.find('form', {'name': 'shipping_address_form'})
+        self.assertIsNotNone(shipping_address_form)
+        billing_address_form = soup.find('form', {'name': 'billing_address_form'})
+        self.assertIsNotNone(billing_address_form)
 
-        plugin_id_input = address_form.find('input', {'id': 'id_plugin_id'})
-        plugin_order_input = address_form.find('input', {'id': 'id_plugin_order'})
+        shipping_plugin_id_input = shipping_address_form.find('input', {'id': 'id_plugin_id'})
+        shipping_plugin_order_input = shipping_address_form.find('input', {'id': 'id_plugin_order'})
+        billing_plugin_id_input = billing_address_form.find('input', {'id': 'id_plugin_id'})
+        billing_plugin_order_input = billing_address_form.find('input', {'id': 'id_plugin_order'})
 
-        data = {'shipping_address': {
-            'name': "Bart Simpson", 'address1': "Park Ave.", 'address2': "", 'zip_code': "SF123",
-            'city': "Springfield", 'country': "US", 'plugin_id': plugin_id_input['value'],
-            'plugin_order': plugin_order_input['value']}}
+        data = {
+            'shipping_address': {
+                'name': "Bart Simpson", 'address1': "Park Ave.", 'address2': "", 'zip_code': "SF123",
+                'city': "Springfield", 'country': "US",
+                'plugin_id': shipping_plugin_id_input['value'],
+                'plugin_order': shipping_plugin_order_input['value']},
+            'billing_address': {
+                'use_shipping_address': True,
+                'plugin_id': billing_plugin_id_input['value'],
+                'plugin_order': billing_plugin_order_input['value']}
+        }
         url = reverse('shop:checkout-upload')
         response = self.client.post(url, data=json.dumps(data), content_type='application/json')
         payload = json.loads(response.content.decode('utf-8'))
@@ -116,6 +136,76 @@ class CheckoutTest(ShopTestCase):
         self.assertEqual("", address.address2)
         self.assertEqual("Springfield", address.city)
         self.assertEqual("US", address.country)
+        self.assertFalse(bart.customer.billingaddress_set.exists())
+
+        # try with a different billing address
+        data['billing_address'] = {
+            'use_shipping_address': False,
+            'active_priority': 'add',
+            'name': None, 'address1': None, 'address2': None, 'zip_code': None,
+            'city': None, 'country': None,
+            'plugin_id': billing_plugin_id_input['value'],
+            'plugin_order': billing_plugin_order_input['value']
+        }
+        response = self.client.post(url, data=json.dumps(data), content_type='application/json')
+        payload = json.loads(response.content.decode('utf-8'))
+        self.assertIn('billing_address_form', payload['errors'])
+        self.assertIsInstance(payload['errors']['billing_address_form'], dict)
+        errors = payload['errors']['billing_address_form']
+        self.assertTrue('address1' in errors and 'country' in errors and 'city' in errors and
+                        'name' in errors and 'zip_code' in errors)
+
+    def any_method_plugin(self, form_plugin, method_name, method_form_name, modifier_name, modifier_choice):
+        # create a page populated with Cascade elements used for checkout
+        placeholder = self.checkout_page.placeholders.get(slot='Main Content')
+
+        # add shipping address to checkout page
+        any_method_form_element = add_plugin(placeholder, form_plugin, 'en',
+                                             target=self.column_element)
+        any_method_form_element.glossary = {'render_type': 'form'}
+        any_method_form_element.save()
+
+        self.checkout_page.publish('en')
+        url = self.checkout_page.get_absolute_url()
+
+        # login as Bart
+        self.client.login(username='bart', password='trab')
+        self.fill_cart()
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        method_form = soup.find('form', {'name': method_form_name})
+        self.assertIsNotNone(method_form)
+        payment_method_plugin_id_input = method_form.find('input', {'id': 'id_plugin_id'})
+        payment_method_plugin_order_input = method_form.find('input', {'id': 'id_plugin_order'})
+
+        data = {
+            method_name: {
+                modifier_name: '',
+                'plugin_id': payment_method_plugin_id_input['value'],
+                'plugin_order': payment_method_plugin_order_input['value']
+            },
+        }
+        url = reverse('shop:checkout-upload')
+        response = self.client.post(url, data=json.dumps(data), content_type='application/json')
+        payload = json.loads(response.content.decode('utf-8'))
+        self.assertIn(method_form_name, payload['errors'])
+        self.assertTrue(modifier_name in payload['errors'][method_form_name])
+
+        # retry to post the form
+        data[method_name][modifier_name] = modifier_choice
+        response = self.client.post(url, data=json.dumps(data), content_type='application/json')
+        payload = json.loads(response.content.decode('utf-8'))
+        self.assertDictEqual({}, payload['errors'][method_form_name])
+
+    def test_payment_method_plugin(self):
+        self.any_method_plugin(PaymentMethodFormPlugin, 'payment_method', 'payment_method_form',
+                               'payment_modifier', 'pay-in-advance')
+
+    def test_shipping_method_plugin(self):
+        self.any_method_plugin(ShippingMethodFormPlugin, 'shipping_method', 'shipping_method_form',
+                               'shipping_modifier', 'postal-shipping')
 
     def add_guestform_element(self):
         """Add one GuestFormPlugin to the current page"""
