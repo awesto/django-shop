@@ -2,13 +2,10 @@
 from __future__ import unicode_literals
 
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from rest_framework.test import APIClient, APIRequestFactory
 from cms.api import add_plugin, create_page
 from shop.models.cart import CartModel
-from shop.models.customer import CustomerState
-from shop.models.defaults.customer import Customer
 from shop.cascade.cart import ShopCartPlugin
 from myshop.models.polymorphic.smartcard import SmartCard
 from .test_shop import ShopTestCase
@@ -112,17 +109,6 @@ class CartTest(ShopTestCase):
         self.assertEquals(len(response.data['items']), 0)
 
     def test_merge_items(self):
-        BART = {
-            'first_name': 'Bart',
-            'last_name': 'Simpson',
-            'email': 'bart@thesimpsons.com',
-            'password': 'trab',
-        }
-        bart = get_user_model().objects.create_user('bart', **BART)
-        bart = Customer.objects.create(user=bart, salutation='mr',
-                                       recognized=CustomerState.REGISTERED)
-        self.assertTrue(bart.is_registered())
-
         self.client.login(username='bart', password='trab')
         sessionid = self.client.session.session_key
 

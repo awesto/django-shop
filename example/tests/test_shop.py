@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import json
 from django.conf import settings
 from django.contrib import admin
+from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.contrib.auth.middleware import AuthenticationMiddleware
@@ -15,6 +16,8 @@ from cmsplugin_cascade.bootstrap3.container import (BootstrapContainerPlugin, Bo
 from shop.middleware import CustomerMiddleware
 from shop.money import Money
 from shop.models.defaults.mapping import ProductPage
+from shop.models.customer import CustomerState
+from shop.models.defaults.customer import Customer
 
 from myshop.models.polymorphic.smartcard import SmartCard
 from myshop.models.manufacturer import Manufacturer
@@ -28,6 +31,7 @@ class ShopTestCase(TestCase):
         self.admin_site = admin.sites.AdminSite()
         self.create_pages()
         self.create_products()
+        self.create_customers()
 
     def create_pages(self):
         self.home_page = create_page("HOME", 'myshop/pages/default.html', 'en', published=True,
@@ -87,12 +91,23 @@ class ShopTestCase(TestCase):
         ProductPage.objects.create(page=self.shop_page, product=sdxc_pro_32gb)
         ProductPage.objects.create(page=self.smartcards_page, product=sdxc_pro_32gb)
 
+    def create_customers(self):
+        BART = {
+            'first_name': 'Bart',
+            'last_name': 'Simpson',
+            'email': 'bart@thesimpsons.com',
+            'password': 'trab',
+        }
+        bart = get_user_model().objects.create_user('bart', **BART)
+        bart = Customer.objects.create(user=bart, salutation='mr',
+                                       recognized=CustomerState.REGISTERED)
+        self.assertTrue(bart.is_registered())
+
     def add_product2cart(self, product):
         add2cart_url = product.get_absolute_url() + '/add-to-cart'
         response = self.client.get(add2cart_url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         payload = json.loads(response.content.decode('utf-8'))
-        print(payload)
 
         # add two items of that Smart Card
         cart_url = reverse('shop:cart-list')
