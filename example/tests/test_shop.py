@@ -99,9 +99,9 @@ class ShopTestCase(TestCase):
             'password': 'trab',
         }
         bart = get_user_model().objects.create_user('bart', **BART)
-        bart = Customer.objects.create(user=bart, salutation='mr',
-                                       recognized=CustomerState.REGISTERED)
-        self.assertTrue(bart.is_registered())
+        self.customer_bart = Customer.objects.create(user=bart, salutation='mr',
+                                                     recognized=CustomerState.REGISTERED)
+        self.assertTrue(self.customer_bart.is_registered())
 
     def add_product2cart(self, product):
         add2cart_url = product.get_absolute_url() + '/add-to-cart'

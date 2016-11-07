@@ -6,9 +6,11 @@ from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from cms.api import add_plugin, create_page
 from bs4 import BeautifulSoup
-from shop.cascade.checkout import (GuestFormPlugin, CustomerFormPlugin, ShippingAddressFormPlugin,
-                                   BillingAddressFormPlugin, PaymentMethodFormPlugin,
-                                   ShippingMethodFormPlugin)
+from shop.cascade.checkout import (
+    GuestFormPlugin, CustomerFormPlugin, ShippingAddressFormPlugin, BillingAddressFormPlugin,
+    PaymentMethodFormPlugin, ShippingMethodFormPlugin, RequiredFormFieldsPlugin,
+    ExtraAnnotationFormPlugin)
+from shop.models.cart import CartModel
 from myshop.models.polymorphic.smartcard import SmartCard
 from .test_shop import ShopTestCase
 
@@ -177,14 +179,14 @@ class CheckoutTest(ShopTestCase):
 
         method_form = soup.find('form', {'name': method_form_name})
         self.assertIsNotNone(method_form)
-        payment_method_plugin_id_input = method_form.find('input', {'id': 'id_plugin_id'})
-        payment_method_plugin_order_input = method_form.find('input', {'id': 'id_plugin_order'})
+        plugin_id_input = method_form.find('input', {'id': 'id_plugin_id'})
+        plugin_order_input = method_form.find('input', {'id': 'id_plugin_order'})
 
         data = {
             method_name: {
                 modifier_name: '',
-                'plugin_id': payment_method_plugin_id_input['value'],
-                'plugin_order': payment_method_plugin_order_input['value']
+                'plugin_id': plugin_id_input['value'],
+                'plugin_order': plugin_order_input['value']
             },
         }
         url = reverse('shop:checkout-upload')
@@ -206,6 +208,73 @@ class CheckoutTest(ShopTestCase):
     def test_shipping_method_plugin(self):
         self.any_method_plugin(ShippingMethodFormPlugin, 'shipping_method', 'shipping_method_form',
                                'shipping_modifier', 'postal-shipping')
+
+    def test_required_form_plugin(self):
+        # create a page populated with Cascade elements used for checkout
+        placeholder = self.checkout_page.placeholders.get(slot='Main Content')
+
+        # add shipping address to checkout page
+        form_element = add_plugin(placeholder, RequiredFormFieldsPlugin, 'en',
+                                  target=self.column_element)
+        form_element.glossary = {'render_type': 'form'}
+        form_element.save()
+
+        self.checkout_page.publish('en')
+        url = self.checkout_page.get_absolute_url()
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        labels = soup.find_all('label')
+        expected = '*\xa0These fields are required'
+        for label in labels:
+            if label.string == expected:
+                break
+        else:
+            self.fail("Expected element: <label>{}</label>".format(expected))
+
+    def test_extra_annotation_form_plugin(self):
+        # create a page populated with Cascade elements used for checkout
+        placeholder = self.checkout_page.placeholders.get(slot='Main Content')
+
+        # add shipping address to checkout page
+        form_element = add_plugin(placeholder, ExtraAnnotationFormPlugin, 'en',
+                                  target=self.column_element)
+        form_element.glossary = {'render_type': 'form'}
+        form_element.save()
+        self.checkout_page.publish('en')
+
+        url = self.checkout_page.get_absolute_url()
+
+        # login as Bart
+        self.client.login(username='bart', password='trab')
+        self.fill_cart()
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        annotation_form = soup.find('form', {'name': 'extra_annotation_form'})
+        self.assertIsNotNone(annotation_form)
+        plugin_id_input = annotation_form.find('input', {'id': 'id_plugin_id'})
+        plugin_order_input = annotation_form.find('input', {'id': 'id_plugin_order'})
+
+        data = {
+            'extra_annotation': {
+                'annotation': "Please send next Monday",
+                'plugin_id': plugin_id_input['value'],
+                'plugin_order': plugin_order_input['value']},
+        }
+        url = reverse('shop:checkout-upload')
+        response = self.client.post(url, data=json.dumps(data), content_type='application/json')
+        payload = json.loads(response.content.decode('utf-8'))
+        self.assertIn('extra_annotation_form', payload['errors'])
+        self.assertDictEqual(payload['errors']['extra_annotation_form'], {})
+        cart = CartModel.objects.get(customer=self.customer_bart)
+        self.assertIsNotNone(cart)
+        self.assertEqual(cart.extra['annotation'], "Please send next Monday")
+
+        # test if extra annotation is not required
+        response = self.client.post(url, data=json.dumps(data), content_type='application/json')
+        payload = json.loads(response.content.decode('utf-8'))
+        self.assertDictEqual(payload['errors']['extra_annotation_form'], {})
 
     def add_guestform_element(self):
         """Add one GuestFormPlugin to the current page"""
