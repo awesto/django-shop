@@ -11,7 +11,7 @@ Changelog for django-SHOP
 * Drop support for Django-1.8.
 * If an anonymous customer logs in, his current cart is merged with a cart, which has previously
   been created. This has been adopted to re-use the method Product.is_in_cart()
- in and finds it's Merge the contents of the other cart into this one, afterwards delete it.
+  in and finds it's Merge the contents of the other cart into this one, afterwards delete it.
 
 
 0.9.3
