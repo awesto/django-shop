@@ -49,5 +49,6 @@ setup(
         'django-select2>=5.5.0',
         'django-sass-processor>=0.3.4',
         'django-rest-auth>=0.5.0',
+        'bs4>=0.0.1',
     ],
 )
