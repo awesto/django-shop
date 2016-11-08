@@ -46,7 +46,9 @@ djangoShopModule.controller('DialogController',
 		});
 	};
 
-	// hook which may be used by external dialog forms
+	// This function is a noop returning a the promise of the given deferred object for further
+	// processing. Its only purpose is to add a hook in case intermediate asynchronous operations
+	// are required, as in the case of the external dialog form used by djangoshop-stripe.
 	function prepare(deferred) {
 		deferred.resolve();
 		return deferred.promise;
@@ -56,7 +58,7 @@ djangoShopModule.controller('DialogController',
 }]);
 
 
-// Directive <form shop-dialog-form> (must be added as attribute to the <form> element)
+// Directive <form shop-dialog-form ...> (must be added as attribute to the <form> element)
 // It is used to add an `upload()` method to the scope, so that `ng-change="upload()"`
 // can be added to any input element. Use it to upload the models on the server.
 djangoShopModule.directive('shopDialogForm', ['$q', '$timeout', function($q, $timeout) {
@@ -120,9 +122,9 @@ djangoShopModule.directive('shopDialogForm', ['$q', '$timeout', function($q, $ti
 }]);
 
 
-// Directive shop-dialog-proceed to be added to button elements.
-djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djangoUrl', 'djangoShop',
-                         function($window, $http, $q, djangoUrl, djangoShop) {
+// Directive <ANY shop-dialog-proceed> to be added to button elements.
+djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djangoUrl',
+                                         function($window, $http, $q, djangoUrl) {
 	var purchaseURL = djangoUrl.reverse('shop:checkout-purchase');
 	return {
 		restrict: 'EA',
@@ -131,9 +133,8 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 			// add ng-click="proceed()" to button elements wishing to post the content of the
 			// current scope. Returns a promise for further processing.
 			scope.proceed = function() {
-				var deferred = $q.defer();
-				scope.prepare(deferred).then(function() {
-					deferred = $q.defer();
+				var deferred = $q.defer();  // deferred for uploading scope
+				scope.prepare($q.defer()).then(function() {
 					DialogController.uploadScope(scope, deferred);
 				});
 				return deferred.promise;
@@ -142,9 +143,8 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 			// add ng-click="proceedWith(action)" to button elements wishing to
 			// proceed after having posted the content of the current scope.
 			scope.proceedWith = function(action) {
-				var deferred = $q.defer();
-				scope.prepare(deferred).then(function() {
-					deferred = $q.defer();
+				scope.prepare($q.defer()).then(function() {
+					var deferred = $q.defer();  // deferred for uploading scope
 					DialogController.uploadScope(scope, deferred);
 					performAction(deferred.promise, action);
 				});
@@ -188,7 +188,6 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 						$window.location.assign(action);
 					}
 				}).then(function(response) {
-					var result;
 					if (response) {
 						console.log(response);
 						// evaluate expression to proceed on the PSP's server which itself might be a promise

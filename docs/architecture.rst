@@ -4,8 +4,8 @@
 Software Architecture
 =====================
 
-The **djangoSHOP** framework is, as its name implies, a framework and not a software which runs
-out of the box. Instead, an e-commerce site built upon **djangoSHOP**, always consists of this
+The **django-SHOP** framework is, as its name implies, a framework and not a software which runs
+out of the box. Instead, an e-commerce site built upon **django-SHOP**, always consists of this
 framework, a bunch of other Django apps and the **merchant's own implementation**. While this may
 seem more complicate than a ready-to-use solution, it gives the programmer enormous advantages
 during the implementation:
@@ -14,7 +14,7 @@ Not everything can be "explained" to a software system using user interfaces. Wh
 certain point of complexity, it normally is easier to pour those requirements into code, rather
 than to expect yet another set of configuration buttons.
 
-When evaluating **djangoSHOP** with other e-commerce solutions, I therefore suggest to do the
+When evaluating **django-SHOP** with other e-commerce solutions, I therefore suggest to do the
 following litmus test:
 
 Consider a product which shall be sold world-wide. Depending on the country's origin of the request,
@@ -24,7 +24,7 @@ and must be stated separately on the invoice, while in other countries, products
 using net prices, and tax is added later on the invoice.
 
 Instead of looking for software which can handle such a complex requirement, rethink about writing
-your own plugins, able to handle this. With the **django**, **REST** and **djangoSHOP** frameworks,
+your own plugins, able to handle this. With the **django**, **REST** and **django-SHOP** frameworks,
 this normally is possible in a few dozen lines of clearly legible Python code. Compare this to
 solutions, which claim to handle such complex requirements. They normally are shipped containing
 huge amounts of features, which very few merchants ever require, but which bloat the overall system
@@ -38,7 +38,7 @@ Single Source of Truth
 ----------------------
 
 A fundamental aspect of good software design is to follow the principle of "Don't repeat yourself",
-often denoted as DRY. In **djangoSHOP** we aim for a *single source of truth*, wherever possible.
+often denoted as DRY. In **django-SHOP** we aim for a *single source of truth*, wherever possible.
 
 For instance have a look at the :class:`shop.models.address.BaseShippingAddress`. Whenever we
 add, change or remove a field, the ORM mapper of Django gets notified and with
@@ -57,7 +57,7 @@ is, it *must be possible to be implemented* into the merchant's own implementati
 patching the framework itself.
 
 Otherwise *this framework contains a bug* - not just a missing feature! I'm sure some merchants will
-come up with really weird ideas, I never have thought of. If the **djangoSHOP** framework inhibits
+come up with really weird ideas, I never have thought of. If the **django-SHOP** framework inhibits
 to add a feature, then feel free to create a bug report. The claim "*feature completeness*" for a
 framework is the analogue to the term "*Turing completeness*" for programming languages.
 
@@ -71,7 +71,7 @@ party plugins have to subclass its models and to override its templates accordin
 Minimalism
 ----------
 
-In a nutshell, **djangoSHOP** offers this set of basic functionalities, to keep the framework
+In a nutshell, **django-SHOP** offers this set of basic functionalities, to keep the framework
 simple and stupid (KISS) without reinventing the wheel:
 
 * A catalog to display product lists and detail views.
@@ -94,10 +94,10 @@ implement and are best implemented by separate plugins.
 Separation of Concern
 ---------------------
 
-Compared to other e-commerce solutions, the **djangoSHOP** framework has a rather small footprint
+Compared to other e-commerce solutions, the **django-SHOP** framework has a rather small footprint
 in terms of code lines, database tables and classes. This does not mean, that its functionality is
 somehow limited. Instead, the merchant's own implementation can become rather large. This is
-because **djangoSHOP** implies dependencies to many third party Django apps.
+because **django-SHOP** implies dependencies to many third party Django apps.
 
 Having layered systems gives us programmers many advantages:
 
@@ -117,9 +117,9 @@ the huge ecosystems arround Django.
 Inversion of Control
 --------------------
 
-Wherever possible, **djangoSHOP** tries to delegate the responsibility for taking decision to the
+Wherever possible, **django-SHOP** tries to delegate the responsibility for taking decision to the
 merchant's implementation of the site. Let explain this by a small example: When the customer
-adds a product to the cart, **djangoSHOP** consults the implementation of the product to determine
+adds a product to the cart, **django-SHOP** consults the implementation of the product to determine
 whether the given item is already part of the cart or not. This allows the merchant's implementation
 to fine tune its product variants.
 
@@ -147,7 +147,7 @@ method and destination, as well as the payment method may modify the final total
 The checkout process
 --------------------
 
-Her the customer must be able to refine the cart' content: Change the quantity of an item, or remove
+Here the customer must be able to refine the cart' content: Change the quantity of an item, or remove
 that item completely from the cart.
 
 During the checkout process, the customer must enter his addresses and payment informations. These
@@ -163,7 +163,7 @@ The fulfillment phase
 It is now the merchants's turn to take further steps. Depending on the order status, certain
 actions must be performed immediately or the order must be kept in the current state until some
 external events happen. This could be a payment receivement, or that an ordered item arrived in
-stock. While setting up a **djangoSHOP** project, the allowed status transitions for the fulfillment
+stock. While setting up a **django-SHOP** project, the allowed status transitions for the fulfillment
 phase can be plugged together, giving the merchant the possibility to programmatically define his
 order workflows.
 
@@ -179,5 +179,5 @@ Django SHOP defines 5 types of different plugins:
 #. Shipping backends
 #. Order workflow modules
 
-They may be added as a third party **djangoSHOP** plugin, or integrated into the merchant's
+They may be added as a third party **django-SHOP** plugin, or integrated into the merchant's
 implementation.

@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from django.core.exceptions import ValidationError
 from django import forms
-from django.template import Template
+from django.template import engines
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
 from cms.plugin_pool import plugin_pool
@@ -31,7 +31,7 @@ class ShopSearchResultsPlugin(ShopPluginBase):
                     '{}/search/results.html'.format(shop_settings.APP_LABEL),
                     'shop/search/results.html',
             ])
-        return Template('<pre class="bg-danger">This {} plugin is used on a CMS page without an application of type "Search".</pre>'.format(self.name))
+        return engines['django'].from_string('<pre class="bg-danger">This {} plugin is used on a CMS page without an application of type "Search".</pre>'.format(self.name))
 
     def render(self, context, instance, placeholder):
         super(ShopSearchResultsPlugin, self).render(context, instance, placeholder)

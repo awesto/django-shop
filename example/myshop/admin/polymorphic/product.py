@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from django.contrib import admin
 from django.db.models import Max
 from django.template.context import Context
@@ -9,8 +10,8 @@ from adminsortable2.admin import SortableAdminMixin
 from cms.admin.placeholderadmin import PlaceholderAdminMixin, FrontendEditableAdminMixin
 from parler.admin import TranslatableAdmin
 from polymorphic.admin import (PolymorphicParentModelAdmin, PolymorphicChildModelAdmin,
-    PolymorphicChildModelFilter)
-from shop.admin.product import CMSPageAsCategoryMixin, ProductImageInline
+                               PolymorphicChildModelFilter)
+from shop.admin.product import CMSPageAsCategoryMixin, ProductImageInline, CMSPageFilter
 from myshop.models.polymorphic.product import Product
 from myshop.models.polymorphic.commodity import Commodity
 from myshop.models.polymorphic.smartcard import SmartCard
@@ -19,13 +20,16 @@ from myshop.models.polymorphic.smartphone import OperatingSystem, SmartPhone, Sm
 
 class CommodityAdmin(SortableAdminMixin, TranslatableAdmin, FrontendEditableAdminMixin,
                      PlaceholderAdminMixin, CMSPageAsCategoryMixin, admin.ModelAdmin):
+    """
+    Since our Commodity model inherits from polymorphic Product, we have to redefine its admin class.
+    """
     base_model = Product
     fieldsets = (
         (None, {
             'fields': ('product_name', 'slug', 'product_code', 'unit_price', 'active',),
         }),
         (_("Translatable Fields"), {
-            'fields': ('description',)
+            'fields': ('caption',)
         }),
         (_("Properties"), {
             'fields': ('manufacturer',)
@@ -44,7 +48,7 @@ class SmartCardAdmin(SortableAdminMixin, TranslatableAdmin, FrontendEditableAdmi
             'fields': ('product_name', 'slug', 'product_code', 'unit_price', 'active',),
         }),
         (_("Translatable Fields"), {
-            'fields': ('description',)
+            'fields': ('caption', 'description',)
         }),
         (_("Properties"), {
             'fields': ('manufacturer', 'storage', 'card_type', 'speed',)
@@ -73,12 +77,12 @@ class SmartPhoneAdmin(SortableAdminMixin, TranslatableAdmin, FrontendEditableAdm
             'fields': ('product_name', 'slug', 'active',),
         }),
         (_("Translatable Fields"), {
-            'fields': ('description',)
+            'fields': ('caption', 'description',)
         }),
         (_("Properties"), {
             'fields': ('manufacturer', 'battery_type', 'battery_capacity', 'ram_storage',
-                'wifi_connectivity', 'bluetooth', 'gps', 'operating_system',
-                ('width', 'height', 'weight',), 'screen_size'),
+                       'wifi_connectivity', 'bluetooth', 'gps', 'operating_system',
+                       ('width', 'height', 'weight',), 'screen_size'),
         }),
     )
     filter_horizontal = ('cms_pages',)
@@ -105,7 +109,7 @@ class ProductAdmin(SortableAdminMixin, PolymorphicParentModelAdmin):
     list_display = ('product_name', 'get_price', 'product_type', 'active',)
     list_display_links = ('product_name',)
     search_fields = ('product_name',)
-    list_filter = (PolymorphicChildModelFilter,)
+    list_filter = (PolymorphicChildModelFilter, CMSPageFilter,)
     list_per_page = 250
     list_max_show_all = 1000
 

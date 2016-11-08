@@ -23,12 +23,12 @@ djangoShopModule.controller('CartController', ['$scope', '$http', function($scop
 		$http.post(cart_item.url, cart_item, config).then(function(response) {
 			return $http.get($scope.$parent.cartListURL);
 		}).then(function(response) {
+			isLoading = false;
 			angular.copy(response.data, $scope.cart);
 			$scope.$emit('shopUpdateCarticonCaption', response.data);
 		}, function(error) {
-			console.error(error);
-		}, function() {
 			isLoading = false;
+			console.error(error);
 		});
 	}
 
@@ -54,7 +54,7 @@ djangoShopModule.controller('CartController', ['$scope', '$http', function($scop
 
 
 // Directive <shop-cart>
-// Handle a djangoSHOP's cart. Directive <shop-cart watch="watch"> renders the cart as watch-list.
+// Handle a django-SHOP's cart. Directive <shop-cart watch="watch"> renders the cart as watch-list.
 djangoShopModule.directive('shopCart', ['djangoUrl', function(djangoUrl) {
 	var cartListURL = djangoUrl.reverse('shop:cart-list');
 	var watchListURL = djangoUrl.reverse('shop:watch-list');
@@ -75,7 +75,7 @@ djangoShopModule.directive('shopCart', ['djangoUrl', function(djangoUrl) {
 
 
 // Directive <shop-cart-item>
-// handle a djangoSHOP's cart item
+// handle a django-SHOP's cart item
 djangoShopModule.directive('shopCartItem', function() {
 	return {
 		require: '^shopCart',

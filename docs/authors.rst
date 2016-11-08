@@ -1,13 +1,13 @@
 CORE DEVELOPERS
 ===============
 
-* Chris Glass (chrisglass)
-* Martin Brochhaus
 * Jacob Rief
+* René Fleschenberg
 
 CONTRIBUTORS
 ============
 
+* abelradac
 * Adrien Lemaire
 * airtonix
 * Aleš Kocjančič
@@ -18,20 +18,25 @@ CONTRIBUTORS
 * Benjamin Wohlwend
 * Bojan Mihelac
 * Chris Morgan
+* Dino Perovic
 * fivethreeo
 * German Larrain
+* Hamza Khchine
 * ikresoft
 * Issac Kelly
 * Jacek Mitręga
 * Jonas Obrist
-* Justin Steward 
+* Justin Steward
 * Kristian Øllegaard
+* maltitco
 * Martin Ogden
 * Mike Yumatov
 * Pavel Zhukov
 * Per Rosengren
 * Raúl Cumplido
+* Roberth Solís
 * Rolo Mawlabaux
+* rubengrill
 * Simon Luijk
 * Sławomir Ehlert
 * Stephen Muss
@@ -44,3 +49,9 @@ TRANSLATORS
 * Pavel Zhukov (Russian)
 * Pedro Gracia (Spanish)
 * Arturo Fernandez (Spanish)
+
+RETIRED CORE DEVELOPERS
+=======================
+
+* Chris Glass (chrisglass)
+* Martin Brochhaus

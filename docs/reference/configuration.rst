@@ -4,32 +4,34 @@
 Configuration and Settings
 ==========================
 
-The **djangoSHOP** framework itself, requires only a few configuration directives. However, since
-each e-commerce site built around **djangoSHOP** consists of the merchant's own project, plus a
+The **django-SHOP** framework itself, requires only a few configuration directives. However, since
+each e-commerce site built around **django-SHOP** consists of the merchant's own project, plus a
 collection of third party Django apps, here is a summary of mandatory and some optional
 configuration settings:
 
 
-DjangoSHOP settings
-===================
+Django-SHOP specific settings
+=============================
 
 App Label
 ---------
 
-This label is required internally to configure the name of the database tables of used in the
+This label is required internally to configure the name of the database tables used in the
 merchant's implementation.
 
 .. code-block:: python
 
 	SHOP_APP_LABEL = 'myshop'
 
+There is no default setting.
+
 
 Alternative User Model
 ----------------------
 
-Django's built-in User model lacks a few features required by **djangoSHOP**, mainly the
+Django's built-in User model lacks a few features required by **django-SHOP**, mainly the
 possibility to use the email address as the login credential. This overridden model is 100% field
-compatible to Django's internal model and even reuses the database table ``auth_user``.
+compatible to Django's internal model and even reuses it's own database table, namely ``auth_user``.
 
 .. code-block:: python
 
@@ -152,12 +154,14 @@ This is a configuration known to work. Special and optional apps are discussed b
 
 * ``email_auth`` optional but recommended, overrides the built-in authentification. It must be
   located after ``django.contrib.auth``.
-* ``polymorphic`` required only, if the site requires more than one type of product model.
+* ``polymorphic`` only required, if the site requires more than one type of product model.
+  It presumes that django-polymorphic_ is installed.
 * ``djangocms_text_ckeditor`` optionally adds a WYSIWYG HTML editor which integrates well with
   **djangoCMS**.
 * ``django_select2`` optionally adds a select field to Django's admin, with integrated
-  autocompletion. Very useful for added links to products manually.
-* ``cmsplugin_cascade`` adds the functionality to add CMS plugins, as provided by **djangoSHOP**,
+  autocompletion. Very useful for addings links to products manually. It presumes that
+  django-select2_ is installed.
+* ``cmsplugin_cascade`` adds the functionality to add CMS plugins, as provided by **django-SHOP**,
   to arbitrary CMS placeholders.
 * ``cmsplugin_cascade.clipboard`` allows the site administrator to copy a set of plugins in one
   installation and paste it into the placeholder of another one.
@@ -171,29 +175,46 @@ This is a configuration known to work. Special and optional apps are discussed b
 * ``adminsortable2`` allows the site administrator to sort various items in Django's administration
   backend.
 * ``rest_framework``, ``rest_framework.authtoken`` and ``rest_auth``, required, add the REST
-  functionality to the **djangoSHOP** framework.
-* ``django_fsm`` and ``fsm_admin``, required, add the Finite State Machine to the **djangoSHOP**
+  functionality to the **django-SHOP** framework.
+* ``django_fsm`` and ``fsm_admin``, required, add the Finite State Machine to the **django-SHOP**
   framework.
-* ``djng`` required for installations using AngularJS. Adds the interface layer between Django and
-  AngularJS.
-* ``cms``, ``menus`` and ``treebeard`` are required if **djangoSHOP** is used in combination with
+* ``djng`` only required for installations using AngularJS, which is the recommended JavaScript
+  framework. It adds the interface layer between Django and AngularJS and presumes that
+  django-angular_ is installed.
+* ``cms``, ``menus`` and ``treebeard`` are required if **django-SHOP** is used in combination with
   **djangoCMS**.
-* ``compressor``, highly recommended, concatenates and minifies CSS and JavaScript files on
-  production systems.
+* ``compressor``, highly recommended. Concatenates and minifies CSS and JavaScript files on
+  production systems. It presumes that django-compressor_ is installed.
 * ``sekizai``, highly recommended, allows the template designer to group CSS and JavaScript
-  includes.
-* ``sass_processor``, optional but recommended, used to convert SASS into pure CSS.
+  file includes. It presumes that django-sekizai_ is installed.
+* ``sass_processor``, optional but recommended, used to convert SASS into pure CSS together
+  with debugging information. It presumes that django-sass-processor_ is installed.
 * ``django_filters``, optionally used to filter products by their attributes using request
   parameters.
-* ``filer``, highly recommended, manage your media files in Django.
+* ``filer``, highly recommended, manage your media files in Django. It presumes that django-filer_
+  is installed.
 * ``easy_thumbnails`` and ``easy_thumbnails.optimize``, highly recommended, handle thumbnail
-  generation and optimization.
+  generation and optimization. It presumes that easy-thumbnails_ is installed.
 * ``parler`` is an optional framework which handles the translation of models fields into other
   natural languages.
-* ``post_office`` is an asynchronous mail delivery application.
-* ``haystack`` handles the interface between Django and Elasticsearch – a full-text search engine.
-* ``shop`` this framework.
+* ``post_office`` highly recommended. An asynchronous mail delivery application which does not
+  interrupt the request-response cycle when sending mail.
+* ``haystack`` optional, handles the interface between Django and Elasticsearch – a full-text
+  search engine. It presumes a running and available instance of ElasticSearch and that
+  django-haystack_ and drf-haystack_ is installed.
+* ``shop`` the **django-SHOP** framework.
 * ``my_shop_implementation`` replace this by the merchant's implementation of his shop.
+
+.. _django-polymorphic: https://django-polymorphic.readthedocs.org/
+.. _django-select2: https://django-select2.readthedocs.org/
+.. _django-angular: https://django-angular.readthedocs.org/
+.. _django-compressor: https://django-compressor.readthedocs.org/
+.. _django-sekizai: https://django-sekizai.readthedocs.org/
+.. _django-sass-processor: https://github.com/jrief/django-sass-processor/
+.. _django-haystack: https://django-haystack.readthedocs.org/
+.. _drf-haystack: https://drf-haystack.readthedocs.org/
+.. _easy-thumbnails: https://easy-thumbnails.readthedocs.org/
+.. _django-filer: https://django-filer.readthedocs.org/
 
 
 Middleware Classes
@@ -213,15 +234,18 @@ This is a configuration known to work. Special middleware classes are discussed 
 	    'django.middleware.locale.LocaleMiddleware',
 	    'django.middleware.common.CommonMiddleware',
 	    'django.middleware.gzip.GZipMiddleware',
+	    'shop.middleware.MethodOverrideMiddleware',
 	    'cms.middleware.language.LanguageCookieMiddleware',
 	    'cms.middleware.user.CurrentUserMiddleware',
 	    'cms.middleware.page.CurrentPageMiddleware',
 	    'cms.middleware.toolbar.ToolbarMiddleware',
 	)
-	
-	* ``djng.middleware.AngularUrlMiddleware`` adds a special router, so that we can use Django's
-	  ``reverse`` function from inside JavaScript.
-	* ``shop.middleware.CustomerMiddleware`` add the Customer object to each request.
+
+* ``djng.middleware.AngularUrlMiddleware`` adds a special router, so that we can use Django's
+  ``reverse`` function from inside JavaScript. Only required in conjunction with django-angular_.
+* ``shop.middleware.CustomerMiddleware`` add the Customer object to each request.
+* ``shop.middleware.MethodOverrideMiddleware`` transforms PUT requests wrapped as POST requests
+  back into the PUT method. This is required for compatibility with some JS frameworks and proxies.
 
 
 Static Files
@@ -240,15 +264,14 @@ the list of the default ``STATICFILES_FINDERS``:
 	)
 
 
-Since **djangoSHOP** requires third party packages outside of PyPI and installed via
-``bower install`` and ``npm install``, these files must be made available to Django through the
-configuration setting:
+Since **django-SHOP** requires a few third party packages, which are not available from PyPI, they
+instead must be installed via ``npm install``. In order to make these files available to our Django
+application, we use the configuration setting:
 
 .. code-block:: python
 
 	STATICFILES_DIRS = (
 	    os.path.join(BASE_DIR, 'static'),
-	    ('bower_components', os.path.join(PROJECT_ROOT, 'bower_components')),
 	    ('node_modules', os.path.join(PROJECT_ROOT, 'node_modules')),
 	)
 
@@ -258,7 +281,7 @@ must be made available:
 .. code-block:: python
 
 	NODE_MODULES_URL = STATIC_URL + 'node_modules/'
-	
+
 	SASS_PROCESSOR_INCLUDE_DIRS = (
 	    os.path.join(PROJECT_ROOT, 'node_modules'),
 	)
@@ -267,8 +290,8 @@ must be made available:
 Template Context Processors
 ---------------------------
 
-Templates rendered by the **djangoSHOP** framework require the Customer object in their context.
-Configure this by adding a special template context processor:
+Templates rendered by the **django-SHOP** framework require some additional objects or configuration
+settings. Add them to each template using these context processors:
 
 .. code-block:: python
 
@@ -279,13 +302,23 @@ Configure this by adding a special template context processor:
 	            ...
 	            'shop.context_processors.customer',
 	            'shop.context_processors.version',
+	            'shop.context_processors.ng_model_options',
 	        ),
 	    },
 	}]
 
+``shop.context_processors.customer`` adds the Customer object to the rendering context.
 
-Workflow Mixins
----------------
+``shop.context_processors.version`` adds the Django version to the rendering context.
+
+``shop.context_processors.ng_model_options`` adds the :ref:`reference/configuration#angular-specific-settings`
+to the rendering context.
+
+
+Configure the Order Workflow
+----------------------------
+
+The ordering workflow can be configured using a list or tuple of mixin classes.
 
 .. code-block:: python
 
@@ -294,6 +327,30 @@ Workflow Mixins
 	    'shop.shipping.defaults.CommissionGoodsWorkflowMixin',
 	    # other workflow mixins
 	)
+
+This prevents to display all transitions configured by the workflow mixins inside the administration
+backend:
+
+	FSM_ADMIN_FORCE_PERMIT = True
+
+
+Email settings
+--------------
+
+Having w orking outgoing e-mail service is a fundamental requirement for **django-SHOP**.
+Adopt these settings to your configuration. Please remember that e-mail is sent asynchronously
+using django-post_office_.
+
+EMAIL_HOST = 'smtp.example.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'no-reply@example.com'
+EMAIL_HOST_PASSWORD = 'smtp-secret-password'
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'My Shop <no-reply@example.com>'
+EMAIL_REPLY_TO = 'info@example.com'
+EMAIL_BACKEND = 'post_office.EmailBackend'
+
+.. _django-post_office: https://pypi.python.org/pypi/django-post_office
 
 
 REST Framework
@@ -313,15 +370,22 @@ Money type:
 	    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
 	    'PAGE_SIZE': 12,
 	}
-	
+
 	SERIALIZATION_MODULES = {'json': str('shop.money.serializers')}
 
+Since the client side is not allowed to do any price and quantity computations, Decimal values are
+transferred to the client using strings. This also avoids nasty rounding errors.
 
-Django CMS and Cascade settings
+.. code-block:: python
+
+	COERCE_DECIMAL_TO_STRING = True
+
+
+Django-CMS and Cascade settings
 -------------------------------
 
-**DjangoSHOP** requires at least one CMS template. Assure that it contains a placeholder able to
-accept 
+**Django-SHOP** requires at least one CMS template. Assure that it contains a placeholder able to
+accept
 
 .. code-block:: python
 
@@ -332,15 +396,21 @@ accept
 	CMS_PERMISSION = False
 
 
-**DjangoSHOP** requires a few shop specific plugins for **djangocms-cascade**. Additionally we
-gain some functionality to add links from CMS pages to products.
+**Django-SHOP** enriches **djangocms-cascade** with a few shop specific plugins.
 
 .. code-block:: python
 
+	from cmsplugin_cascade.extra_fields.config import PluginExtraFieldsConfig
+
 	CMSPLUGIN_CASCADE_PLUGINS = ('cmsplugin_cascade.segmentation', 'cmsplugin_cascade.generic',
 	    'cmsplugin_cascade.link', 'shop.cascade', 'cmsplugin_cascade.bootstrap3',)
-	
+
 	CMSPLUGIN_CASCADE = {
+	    'link_plugin_classes': (
+	        'shop.cascade.plugin_base.CatalogLinkPluginBase',
+	        'cmsplugin_cascade.link.plugin_base.LinkElementMixin',
+	        'shop.cascade.plugin_base.CatalogLinkForm',
+	    ),
 	    'dependencies': {
 	        'shop/js/admin/shoplinkplugin.js': 'cascade/js/admin/linkpluginbase.js',
 	    },
@@ -348,30 +418,41 @@ gain some functionality to add links from CMS pages to products.
 	    'bootstrap3': {
 	        'template_basedir': 'angular-ui',
 	    },
-	    'plugins_with_extra_fields': (
-	        'BootstrapButtonPlugin',
-	        'BootstrapRowPlugin',
-	        'SimpleWrapperPlugin',
-	        'HorizontalRulePlugin',
-	        'ExtraAnnotationFormPlugin',
-	        'ShopProceedButton',
-	    ),
+	    'plugins_with_extra_fields': {
+	        'ExtraAnnotationFormPlugin': PluginExtraFieldsConfig(),
+	        'ShopProceedButton': PluginExtraFieldsConfig(),
+	        'ShopAddToCartPlugin': PluginExtraFieldsConfig(),
+	    },
 	    'segmentation_mixins': (
-	        ('shop.cascade.segmentation.EmulateCustomerModelMixin', 'shop.cascade.segmentation.EmulateCustomerAdminMixin'),
+	        ('shop.cascade.segmentation.EmulateCustomerModelMixin',
+	         'shop.cascade.segmentation.EmulateCustomerAdminMixin'),
 	    ),
+	    'plugins_with_extra_render_templates': {
+	        'CustomSnippetPlugin': [
+	            ('shop/catalog/product-heading.html', _("Product Heading"))
+	        ],
+	    },
 	}
-	
-	CMSPLUGIN_CASCADE_LINKPLUGIN_CLASSES = (
-	    'shop.cascade.plugin_base.CatalogLinkPluginBase',
-	    'cmsplugin_cascade.link.plugin_base.LinkElementMixin',
-	    'shop.cascade.plugin_base.CatalogLinkForm',
-	)
+
+Since we want to add arbitrary links onto the detail view of a product, **django-SHOP** offers
+a modified link plugin. This has to be enabled using the 3-tuple ``link_plugin_classes``. There
+is also a JavaScript helper ``shop/js/admin/shoplinkplugin.js``, which depends on another JavaScript
+file.
+
+**Django-SHOP** uses with AngularJS rather than jQuery to control it's dynamic HTML widgets.
+We therefore have to override the default with this settings:
+``CMSPLUGIN_CASCADE['bootstrap3']['template_basedir']``.
+
+For a detailed explanation of these configuration settings, please refer to the documentation
+of djangocms-cascade_.
+
+.. _djangocms-cascade: http://djangocms-cascade.readthedocs.org
 
 
 Full Text Search
 ----------------
 
-Presuming that you installed and run an ElasticSearchEngine server, configure Haystack:
+Presuming that you installed and run an ElasticSearchEngine_ server, configure Haystack:
 
 .. code-block:: python
 
@@ -397,32 +478,43 @@ If you want to index other natural language, say German, add another prefix:
 	}
 	HAYSTACK_ROUTERS = ('shop.search.routers.LanguageRouter',)
 
+.. _ElasticSearchEngine: https://www.elastic.co/products/elasticsearch
 
-Various other settings
-----------------------
 
-For usability reasons it makes sense to update the cart's total upon change only after a certain
-time of inactivity. This configuration sets this to 2500 milliseconds:
+.. _reference/configuration#angular-specific-settings:
+
+AngularJS specific settings
+---------------------------
+
+The cart's totals are updated after an input field has been changed. For usability reasons it makes
+sense to `delay this`_, so that only after a certain time of inactivity, the update is triggered.
+
+.. code-block:: python
+
+	SHOP_ADD2CART_NG_MODEL_OPTIONS = "{updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}"
+
+This configuration updates the cart after changing the quantity and 500 milliseconds of inactivity
+or field blurring. It is used by the "Add to cart" form.
 
 .. code-block:: python
 
 	SHOP_EDITCART_NG_MODEL_OPTIONS = "{updateOn: 'default blur', debounce: {'default': 2500, 'blur': 0}}"
 
-Change the include path to a local directory, if you don't want to rely on a CDN:
+This configuration updates the cart after changing any of the product's quantities and 2.5 seconds
+of inactivity or field blurring. It is used by the "Edit cart" form.
+
+.. _delay this: https://docs.angularjs.org/api/ng/directive/ngModelOptions
+
+
+Select2 specific settings
+-------------------------
+
+django-select2_ adds a configurable autocompletion field to the project.
+
+Change the include path to a local directory, if you prefer to install the JavaScript dependencies
+via ``npm`` instead of relying on a preconfigured CDN:
 
 .. code-block:: python
 
-	SELECT2_CSS = 'bower_components/select2/dist/css/select2.min.css'
-	SELECT2_JS = 'bower_components/select2/dist/js/select2.min.js'
-
-Since the client side is not allowed to do any price and quantity computations, Decimal values are
-transferred to the client using strings. This also avoids nasty rounding errors.
-
-.. code-block:: python
-
-	COERCE_DECIMAL_TO_STRING = True
-
-Prevent to display all transitions configured by the workflow mixins inside the administration
-backend:
-
-	FSM_ADMIN_FORCE_PERMIT = True
+	SELECT2_CSS = 'node_modules/select2/dist/css/select2.min.css'
+	SELECT2_JS = 'node_modules/select2/dist/js/select2.min.js'

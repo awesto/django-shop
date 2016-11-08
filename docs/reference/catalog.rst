@@ -11,14 +11,14 @@ In this documentation we presume that categories of products are built up using 
 CMS pages in combination with a `djangoCMS apphook`_. This works perfectly well for most
 implementation, but some sites may require categories implemented independently of the CMS.
 
-Using an external **djangoSHOP** plugin for managing categories is a very conceivable solution,
+Using an external **django-SHOP** plugin for managing categories is a very conceivable solution,
 and we will see separate implementations for this feature request. Using such an external category
 plugin can make sense, if this e-commerce site requires hundreds of hierarchical levels and/or
 these categories require a set of attributes which are not available in CMS pages. If you are
 going to use externally implemented categories, please refer to their documentation, since here we
 proceed using CMS pages as categories.
 
-A nice aspect of **djangoSHOP** is, that it doesn't require the programmer to write any special
+A nice aspect of **django-SHOP** is, that it doesn't require the programmer to write any special
 Django Views in order to render the catalog. Instead all merchant dependent business logic goes
 into a serializer, which in this documentation is referred as ``ProductSummarySerializer``.
 
@@ -42,45 +42,46 @@ Create the ``ProductsListApp``
 ------------------------------
 
 To retrieve a list of product models, the Catalog List View requires a `djangoCMS apphook`_. This
-``ProductsListApp`` must be added into a file named ``cms_app.py`` and located in the root folder
+``ProductsListApp`` must be added into a file named ``cms_apps.py`` and located in the root folder
 of the merchant's project:
 
 .. code-block:: python
-	:caption: myshop/cms_app.py
+	:caption: myshop/cms_apps.py
 
 	from cms.app_base import CMSApp
 	from cms.apphook_pool import apphook_pool
-	
+
 	class ProductsListApp(CMSApp):
 	    name = _("Catalog List")
 	    urls = ['myshop.urls.products']
-	
+
 	apphook_pool.register(ProductsListApp)
 
 as all apphooks, it requires a file defining its urlpatterns:
 
 .. code-block:: python
-	:caption: myshop/urls/products.py
+    :caption: myshop/urls/products.py
+    :name: apphook-urlpatterns
 
-	from django.conf.urls import patterns, url
+	from django.conf.urls import url
 	from rest_framework.settings import api_settings
 	from shop.views.catalog import CMSPageProductListView
 	from myshop.serializers import ProductSummarySerializer
-	
-	urlpatterns = patterns('',
+
+	urlpatterns = [
 	    url(r'^$', CMSPageProductListView.as_view(
 	        serializer_class=ProductSummarySerializer,
 	    )),
 	    # other patterns
-	)
+	]
 
 Here the ``ProductSummarySerializer`` serializes the product models into a representation suitable
 for being rendered inside a CMS page, as well as being converted to JSON. This allows us to reuse
 the same Django View (``CMSPageProductListView``) whenever the catalog list switches into infinite
-scroll mode, where it only requires the product's summary digested as JavaScript objects.
+scroll mode, where it only requires the product's summary, composed of plain old JavaScript objects.
 
-In case we need :ref:`reference/additional-serializer-fields`, lets add them to this class using the
-`serializer fields`_ from the Django RESTFramework library.
+In case we need :ref:`reference/additional-serializer-fields`, let's add them to this class using
+the `serializer fields`_ from the Django RESTFramework library.
 
 
 Add the Catalog to the CMS
@@ -90,19 +91,19 @@ In the page list editor of **djangoCMS**, create a new page at an appropriate lo
 page tree. As the page title and slug we should use something describing our product catalog in a
 way, both meaningful to the customers as well as to search engines.
 
-Next, we change into advanced setting.
+Next, we change into **Advanced Settings** mode.
 
 As a template we use one with a big placeholder, since it must display our list of products.
 
 As **Application**, select "*Catalog List*" or whatever we named our ``ProductsListApp``. This
 selects the apphook we created in the previous section.
 
-Then we save the page, change into **Structure** mode and locate the Main Content Container. Here
-we add a container with a Row and Column. As the child of this column we chose a
-**Catalog List View** plugin from section **Shop**.
+Then we save the page, change into **Structure** mode and locate the placeholder named
+**Main Content**. Add a Container plugin, followed by a Row and then a Column plugin. As the
+child of this column chose the **Catalog List View** plugin from section **Shop**.
 
-Finally we publish the page and enter some text into the search field. Since we haven't assigned
-any products to the CMS page, we won't see anything yet.
+Finally we publish the page. If we have assigned products to that CMS page, they should be rendered
+now.
 
 
 .. _reference/catalog-detail:
@@ -110,8 +111,10 @@ any products to the CMS page, we won't see anything yet.
 Catalog Detail View
 ===================
 
-The product's detail pages are the only ones not being managed by the CMS. This is because we often
-have thousands of products and creating a CMS page for each of them, would be kind of overkill.
+The product's detail pages are the only ones we typically do not control with **djangoCMS**
+placeholders. This is because we often have thousands of products and creating a CMS page for each
+of them, would be kind of overkill. It only makes sense for shops selling up to a dozen of different
+products.
 
 Therefore the template used to render the products's detail view is selected automatically by the
 ``ProductRetrieveView`` [1]_ following these rules:
@@ -130,9 +133,11 @@ Use CMS Placeholders on Detail View
 -----------------------------------
 
 If we require CMS functionality for each product's detail page, its quite simple to achieve. To the
-model class implementing our Product, add `djangoCMS Placeholder field`_ named ``placeholder``.Then
-add the templatetag ``{% render_placeholder product.placeholder %}`` the the template implementing
-the detail view of our product.
+class implementing our product model, add a `djangoCMS Placeholder field`_ named ``placeholder``.
+Then add the templatetag ``{% render_placeholder product.placeholder %}`` to the template
+implementing the detail view of our product. This placeholder then shall be used to add arbitrary
+content to the product's detail page. This for instance can be an additional text paragraphs,
+some images, a carousel or whatever is available from the **djangoCMS** plugin system.
 
 
 Route requests on Detail View
@@ -142,19 +147,20 @@ The ``ProductsListApp``, which we previously have registered into **djangoCMS**,
 requests on all of its sub-URLs. This is done by expanding the current list of urlpatterns:
 
 .. code-block:: python
-	:caption: myshop/urls/products.py
+    :caption: myshop/urls/products.py
+    :name: productlist-urlpatterns
 
-	from django.conf.urls import patterns, url
+	from django.conf.urls import url
 	from shop.views.catalog import ProductRetrieveView
 	from myshop.serializers import ProductDetailSerializer
-	
-	urlpatterns = patterns('',
+
+	urlpatterns = [
 	    # previous patterns
 	    url(r'^(?P<slug>[\w-]+)$', ProductRetrieveView.as_view(
 	        serializer_class=ProductDetailSerializer,
 	    )),
 	    # other patterns
-	)
+	]
 
 All business logic regarding our product now goes into our customized serializer class named
 ``ProductDetailSerializer``. This class then may access the various attributes of our product model
@@ -191,7 +197,7 @@ class. This method then may forward the given product to a the built-in renderer
 
 	class ProductDetailSerializer(ProductDetailSerializerBase):
 	    # other attributes
-	
+
 	    def get_foo(self, product):
 	        return self.render_html(product, 'foo')
 
@@ -222,15 +228,15 @@ be created manually and referenced using the ``though`` parameter, when declarin
 
 	from shop.models.product import BaseProductManager, BaseProduct
 	from shop.models.related import BaseProductPage
-	
+
 	class ProductPage(BaseProductPage):
 	    """Materialize many-to-many relation with CMS pages"""
-	
+
 	class Product(BaseProduct):
 	    # other model fields
 	    cms_pages = models.ManyToManyField('cms.Page',
 	        through=ProductPage)
-	
+
 	    objects = ProductManager()
 
 In this example the class ``ProductPage`` is responsible for storing the mapping information
@@ -240,7 +246,7 @@ between our Product objects and the CMS pages.
 Admin Integration
 ~~~~~~~~~~~~~~~~~
 
-To simplify the declaration of the admin backend used to manage our Product model, **djangoSHOP**
+To simplify the declaration of the admin backend used to manage our Product model, **django-SHOP**
 is shipped with a special mixin class, which shall be added to the product's admin class:
 
 .. code-block:: python
@@ -248,7 +254,7 @@ is shipped with a special mixin class, which shall be added to the product's adm
 	from django.contrib import admin
 	from shop.admin.product import CMSPageAsCategoryMixin
 	from myshop.models import Product
-	
+
 	@admin.register(Product)
 	class ProductAdmin(CMSPageAsCategoryMixin, admin.ModelAdmin):
 	    fields = ('product_name', 'slug', 'product_code',
@@ -259,12 +265,12 @@ This then adds a horizontal filter widget to the product models. Here the mercha
 each CMS page, where the currently edited product shall appear on.
 
 If we are using the method ``render_html()`` to render HTML snippets, these are cached by
-**djangoSHOP**, if caching is configured and enabled for that project. Caching these snippets is
+**django-SHOP**, if caching is configured and enabled for that project. Caching these snippets is
 highly recommended and gives a noticeable performance boost, specially while rendering catalog list
 views.
 
 Since we would have to wait until they expire naturally by reaching their expire time,
-**djangoSHOP** offers a mixin class to be added to the Product admin class, to expire all HTML
+**django-SHOP** offers a mixin class to be added to the Product admin class, to expire all HTML
 snippets of a product altogether, whenever a product in saved in the backend. Simply add
 :class:`shop.admin.product.InvalidateProductCacheMixin` to the ``ProductAdmin`` class described
 above.

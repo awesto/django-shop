@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.conf import settings
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from django.contrib import admin
 from django.core.urlresolvers import reverse
 from django.db.models import Sum
@@ -144,7 +144,6 @@ class DeliveryInline(admin.TabularInline):
         link = reverse('admin:print_delivery_note', args=(obj.id,)), _("Delivery Note")
         return format_html('<a href="{0}" class="viewsitelink" target="_new">{1}</a>', *link)
     print_out.short_description = _("Print out")
-    print_out.allow_tags = True
 
     def fulfilled(self, obj):
         if obj.fulfilled_at:
@@ -158,11 +157,12 @@ class DeliveryOrderAdminMixin(object):
     Add this mixin to the class defining the OrderAdmin
     """
     def get_urls(self):
-        return patterns('',
+        my_urls = [
             url(r'^(?P<delivery_pk>\d+)/print_delivery_note/$',
                 self.admin_site.admin_view(self.render_delivery_note),
                 name='print_delivery_note'),
-        ) + super(DeliveryOrderAdminMixin, self).get_urls()
+        ] + super(DeliveryOrderAdminMixin, self).get_urls()
+        return my_urls
 
     def render_delivery_note(self, request, delivery_pk=None):
         template = select_template([

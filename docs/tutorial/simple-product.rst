@@ -4,13 +4,13 @@
 Modeling a simple product
 =========================
 
-As a simple example, this tutorial uses Smart Cards as its first product. As emphasized in section
-:ref:`tutorial/customer-model`, **djangoSHOP** is not shipped with ready to use product models.
-Instead the merchant must declare these models based on the products properties. Lets have a look
-ar a model describing a typical Smart Card:
+As a simple example, this tutorial uses Smart Cards as its first product. As
+emphasized earlier, **django-SHOP** is not shipped with ready to use product
+models.  Instead the merchant must declare these models based on the products
+properties. Lets have a look ar a model describing a typical Smart Card:
 
-.. literalinclude:: /../example/myshop/models/simple/smartcard.py
-	:caption: myshop/models/simple/smartcard.py
+.. literalinclude:: /../example/myshop/models/smartcard/__init__.py
+	:caption: myshop/models/smartcard.py
 	:linenos:
 	:language: python
 	:lines: 8-11, 15-22, 40-41
@@ -22,7 +22,7 @@ be part of our abstract model ``BaseProduct``.
 
 Additionally a smart card has some product specific properties:
 
-.. literalinclude:: /../example/myshop/models/simple/smartcard.py
+.. literalinclude:: /../example/myshop/models/smartcard/__init__.py
 	:linenos:
 	:language: python
 	:lines: 23-34
@@ -31,7 +31,7 @@ these class attributes depend heavily on the data sheet of the product to sell.
 
 Finally we also want to position our products into categories and sort them:
 
-.. literalinclude:: /../example/myshop/models/simple/smartcard.py
+.. literalinclude:: /../example/myshop/models/smartcard/__init__.py
 	:linenos:
 	:language: python
 	:lines: 34-40
@@ -49,7 +49,7 @@ to a product.
 
 Both fields ``cms_pages`` and ``images`` must use the through_ parameter. This is because we have
 two many-to-many mapping tables which are part of the merchant's project rather than the
-**djangoSHOP** application. The first of those mapping tables has foreign keys onto the models
+**django-SHOP** application. The first of those mapping tables has foreign keys onto the models
 ``cms.Page`` and ``myshop.SmartCard``. The second table has foreign keys onto the models
 ``filer.Image`` and ``myshop.SmartCard`` again. Since the model ``myshop.SmartCard`` has been
 declared by the merchant himself, he also is responsible for managing those many-to-many mapping
@@ -80,11 +80,11 @@ For reasons just explained, it is the responsibility of the project to manage th
 relations between its CMS pages and the images on one side, and the product on the other side.
 Therefore we can't use the built-in admin widget ``FilteredSelectMultiple`` for these relations.
 
-Instead **djangoSHOP** is shipped with a special mixin class ``CMSPageAsCategoryMixin``, which
+Instead **django-SHOP** is shipped with a special mixin class ``CMSPageAsCategoryMixin``, which
 handles the relation between CMS pages and the product. This however implies that the field used
 to specify this relation is named ``cms_pages``.
 
-.. literalinclude:: /../example/myshop/admin/simple/smartcard.py
+.. literalinclude:: /../example/myshop/admin/smartcard.py
 	:linenos:
 	:language: python
 	:lines: 6-

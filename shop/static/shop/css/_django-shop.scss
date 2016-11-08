@@ -1,0 +1,34 @@
+@import "variables";
+@import "bootstrap-sass/assets/stylesheets/bootstrap";
+@import "font-awesome/scss/font-awesome";
+@import "django-angular";
+
+.breadcrumb {
+	margin-top: 20px;
+
+	>li + li::before {
+		// fixes https://github.com/twbs/bootstrap-sass/issues/919
+		content: "/";
+	}
+}
+
+// use it to remove borders in tables
+table tr {
+	&.no-border {
+		td, th {
+			border-top-style: hidden;
+		}
+	}
+	&.double-border {
+		border-top-style: double;
+	}
+	td.no-border, th.no-border {
+		border-top-style: hidden;
+	}
+	td.double-border, th.double-border {
+		border-top-style: double;
+	}
+	td.vertical-align-middle {
+		vertical-align: middle;
+	}
+}

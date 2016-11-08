@@ -5,14 +5,14 @@ Payment Providers
 =================
 
 Payment Providers are simple classes, which create an interface from an external `Payment Service
-Provider`_ (shortcut PSP) to our **djangoSHOP** framework.
+Provider`_ (shortcut PSP) to our **django-SHOP** framework.
 
 Payment Providers must be aggregates of a :ref:`reference/payment-cart-modifier`. Here the Payment
 Cart Modifier computes extra fees when selected as a payment method, whereas our Payment Provider
 class, handles the communication with the configured PSP, whenever the customer submits the purchase
 request.
 
-In **djangoSHOP** Payment Providers normally are packed into separate plugins, so here we will
+In **django-SHOP** Payment Providers normally are packed into separate plugins, so here we will
 show how to create one yourself instead of explaining the configuration of an existing Payment
 gateway.
 
@@ -38,7 +38,7 @@ customer, who himself forwards that token to the shopping site.
 All in all, there are so many different ways to pay, that it is quite tricky to find a generic
 solution compatible for all of them.
 
-Here **djangoSHOP** uses some Javascript during the purchase operation. Lets explain how:
+Here **django-SHOP** uses some Javascript during the purchase operation. Lets explain how:
 
 
 .. _reference/the-purchasing-operation:
@@ -48,9 +48,9 @@ The Purchasing Operation
 
 During checkout, the clients final step is to click onto a button labeled something like "Buy Now".
 This button belongs to an AngularJS controller, provided by the directive ``shop-dialog-proceed``.
-It may look similar to this:
+It may look similar to this::
 
-.. code-block:: javascript
+.. code-block:: html
 
 	<button shop-dialog-proceed ng-click="proceedWith('PURCHASE_NOW')" class="btn btn-success">Buy Now</button>
 
@@ -74,25 +74,25 @@ PSP.
 
 While processing the payment, PSPs usually need to communicate with the shop framework, in order to
 inform us about success or failure of the payment. To communicate with us, they may need a few
-endpoints. Each Payment provider may override the method ``get_urls()`` returning an ``urlpattern``,
-which then is used by the Django URL resolving engine.
+endpoints. Each Payment provider may override the method ``get_urls()`` returning a list of
+urlpatterns, which then is used by the Django URL resolving engine.
 
 .. code-block:: python
 
 	class MyPSP(PaymentProvider):
 	    namespace = 'my-psp-payment'
-	
+
 	    def get_urls(self):
-	        urlpatterns = patterns('',
+	        urlpatterns = [
 	            url(r'^success$', self.success_view, name='success'),
 	            url(r'^failure$', self.failure_view, name='failure'),
-	        )
+	        ]
 	        return urlpatterns
-	
+
 	    def get_payment_request(self, cart, request):
 	        js_expression = 'scope.charge().then(function(response) { $window.location.href=response.data.thank_you_url; });'
 	        return js_expression
-	
+
 	    @classmethod
 	    def success_view(cls, request):
 	        # approve payment using request data returned by PSP
@@ -114,7 +114,7 @@ which then is used by the Django URL resolving engine.
 	function may itself return a new promise, which is resolved by the next ``then()``-handler.
 
 As we can see in this example, by evaluating arbitrary Javascript on the client, combined with
-HTTP-handlers for any endpoint, **djangoSHOP** is able to offer an API where adding new Payment
+HTTP-handlers for any endpoint, **django-SHOP** is able to offer an API where adding new Payment
 Service Providers doesn't require any special tricks.
 
 .. _Payment Service Provider: https://en.wikipedia.org/wiki/Payment_service_provider

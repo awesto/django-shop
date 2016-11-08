@@ -11,7 +11,7 @@ from django.utils.module_loading import import_string
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy, get_language_from_request
 from django.utils.six.moves.urllib.parse import urljoin
-from jsonfield.fields import JSONField
+from shop.models.fields import JSONField
 from ipware.ip import get_ip
 from django_fsm import FSMField, transition
 from cms.models import Page
@@ -19,10 +19,33 @@ from shop import settings as shop_settings
 from shop.models.cart import CartItemModel
 from shop.money.fields import MoneyField, MoneyMaker
 from .product import BaseProduct
-from . import deferred
+from shop import deferred
+
+
+class OrderQuerySet(models.QuerySet):
+    def _filter_or_exclude(self, negate, *args, **kwargs):
+        """
+        Emulate filter queries on the Order model using a pseudo slug attribute.
+        This allows to use order numbers as slugs, formatted by method `Order.get_number()`.
+        """
+        lookup_kwargs = {}
+        for key, lookup in kwargs.items():
+            try:
+                index = key.index('__')
+                field_name, lookup_type = key[:index], key[index:]
+            except ValueError:
+                field_name, lookup_type = key, ''
+            if field_name == 'slug':
+                key, lookup = self.model.resolve_number(lookup).popitem()
+                lookup_kwargs.update({key + lookup_type: lookup})
+            else:
+                lookup_kwargs.update({key: lookup})
+        return super(OrderQuerySet, self)._filter_or_exclude(negate, *args, **lookup_kwargs)
 
 
 class OrderManager(models.Manager):
+    _queryset_class = OrderQuerySet
+
     @transaction.atomic
     def create_from_cart(self, cart, request):
         """
@@ -32,7 +55,7 @@ class OrderManager(models.Manager):
         """
         cart.update(request)
         order = self.model(customer=cart.customer, currency=cart.total.currency,
-            _subtotal=Decimal(0), _total=Decimal(0), stored_request=self.stored_request(request))
+                           _subtotal=Decimal(0), _total=Decimal(0), stored_request=self.stored_request(request))
         order.get_or_assign_number()
         order.save()
         order.customer.get_or_assign_number()
@@ -69,7 +92,7 @@ class OrderManager(models.Manager):
         if request.customer.is_visitor():
             msg = _("Only signed in customers can view their orders")
             raise PermissionDenied(msg)
-        return self.get_queryset().filter(customer=request.customer).order_by('-updated_at',)
+        return self.get_queryset().filter(customer=request.customer).order_by('-updated_at', )
 
     def get_summary_url(self):
         """
@@ -101,6 +124,7 @@ class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
     Add configured Workflow mixin classes to `OrderModel` and `OrderPayment` to customize
     all kinds of state transitions in a pluggable manner.
     """
+
     def __new__(cls, name, bases, attrs):
         if 'BaseOrder' in (b.__name__ for b in bases):
             bases = tuple(import_string(mc) for mc in shop_settings.ORDER_WORKFLOWS) + bases
@@ -149,15 +173,14 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     customer = deferred.ForeignKey('BaseCustomer', verbose_name=_("Customer"), related_name='orders')
     status = FSMField(default='new', protected=True, verbose_name=_("Status"))
     currency = models.CharField(max_length=7, editable=False,
-        help_text=_("Currency in which this order was concluded"))
+                                help_text=_("Currency in which this order was concluded"))
     _subtotal = models.DecimalField(_("Subtotal"), **decimalfield_kwargs)
     _total = models.DecimalField(_("Total"), **decimalfield_kwargs)
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
     updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
-    extra = JSONField(verbose_name=_("Extra fields"), default={},
-        help_text=_("Arbitrary information for this order object on the moment of purchase."))
-    stored_request = JSONField(default={},
-        help_text=_("Parts of the Request objects on the moment of purchase."))
+    extra = JSONField(verbose_name=_("Extra fields"),
+                      help_text=_("Arbitrary information for this order object on the moment of purchase."))
+    stored_request = JSONField(help_text=_("Parts of the Request objects on the moment of purchase."))
 
     objects = OrderManager()
 
@@ -181,8 +204,17 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     def get_number(self):
         """
         Hook to get the order number.
+        A class inheriting from Order may transform this into a string which is better readable.
         """
-        return str(self.id)
+        return str(self.pk)
+
+    @classmethod
+    def resolve_number(cls, number):
+        """
+        Return a lookup pair used to filter down a queryset.
+        It should revert the effect from the above method `get_number`.
+        """
+        return dict(pk=number)
 
     @cached_property
     def subtotal(self):
@@ -207,7 +239,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         """
         Returns the URL for the detail view of this order
         """
-        return urljoin(OrderModel.objects.get_summary_url(), str(self.id))
+        return urljoin(OrderModel.objects.get_summary_url(), self.get_number())
 
     @transition(field=status, source='new', target='created')
     def populate_from_cart(self, cart, request):
@@ -220,13 +252,31 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         self.extra = dict(cart.extra)
         self.extra.update(rows=[(modifier, extra_row.data) for modifier, extra_row in cart.extra_rows.items()])
 
+    @transaction.atomic
+    def readd_to_cart(self, cart):
+        """
+        Re-add the items of this order back to the cart.
+        """
+        for order_item in self.items.all():
+            extra = dict(order_item.extra)
+            extra.pop('rows', None)
+            cart_item = order_item.product.is_in_cart(cart, **extra)
+            if cart_item:
+                cart_item.quantity = max(cart_item.quantity, order_item.quantity)
+            else:
+                cart_item = CartItemModel(cart=cart, product=order_item.product,
+                                          quantity=order_item.quantity, extra=extra)
+            cart_item.save()
+
     def save(self, **kwargs):
         """
-        Before saving the Order object to the database, round the total to the given decimal_places
+        The status of an Order object my change, if auto transistions are specified.
         """
         auto_transition = self._auto_transitions.get(self.status)
         if callable(auto_transition):
             auto_transition(self)
+
+        # round the total to the given decimal_places
         self._subtotal = BaseOrder.round_amount(self._subtotal)
         self._total = BaseOrder.round_amount(self._total)
         super(BaseOrder, self).save(**kwargs)
@@ -266,7 +316,9 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     def status_name(self):
         """Return the human readable name for the current transition state"""
         return self._transition_targets.get(self.status, self.status)
+
     status_name.short_description = pgettext_lazy('order_models', "State")
+
 
 OrderModel = deferred.MaterializedModel(BaseOrder)
 
@@ -277,12 +329,12 @@ class OrderPayment(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     order = deferred.ForeignKey(BaseOrder, verbose_name=_("Order"))
     amount = MoneyField(_("Amount paid"),
-        help_text=_("How much was paid with this particular transfer."))
+                        help_text=_("How much was paid with this particular transfer."))
     transaction_id = models.CharField(_("Transaction ID"), max_length=255,
-        help_text=_("The transaction processor's reference"))
+                                      help_text=_("The transaction processor's reference"))
     created_at = models.DateTimeField(_("Received at"), auto_now_add=True)
     payment_method = models.CharField(_("Payment method"), max_length=50,
-        help_text=_("The payment backend used to process the purchase"))
+                                      help_text=_("The payment backend used to process the purchase"))
 
     class Meta:
         verbose_name = pgettext_lazy('order_models', "Order payment")
@@ -296,17 +348,19 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     order = deferred.ForeignKey(BaseOrder, related_name='items', verbose_name=_("Order"))
     product_name = models.CharField(_("Product name"), max_length=255, null=True, blank=True,
-        help_text=_("Product name at the moment of purchase."))
+                                    help_text=_("Product name at the moment of purchase."))
     product_code = models.CharField(_("Product code"), max_length=255, null=True, blank=True,
-        help_text=_("Product code at the moment of purchase."))
+                                    help_text=_("Product code at the moment of purchase."))
     product = deferred.ForeignKey(BaseProduct, null=True, blank=True, on_delete=models.SET_NULL,
-        verbose_name=_("Product"))
+                                  verbose_name=_("Product"))
     _unit_price = models.DecimalField(_("Unit price"), null=True,  # may be NaN
-        help_text=_("Products unit price at the moment of purchase."), **BaseOrder.decimalfield_kwargs)
+                                      help_text=_("Products unit price at the moment of purchase."),
+                                      **BaseOrder.decimalfield_kwargs)
     _line_total = models.DecimalField(_("Line Total"), null=True,  # may be NaN
-        help_text=_("Line total on the invoice at the moment of purchase."), **BaseOrder.decimalfield_kwargs)
-    extra = JSONField(verbose_name=_("Extra fields"), default={},
-        help_text=_("Arbitrary information for this order item"))
+                                      help_text=_("Line total on the invoice at the moment of purchase."),
+                                      **BaseOrder.decimalfield_kwargs)
+    extra = JSONField(verbose_name=_("Extra fields"),
+                      help_text=_("Arbitrary information for this order item"))
 
     class Meta:
         abstract = True
@@ -328,11 +382,11 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
             msg = "Class `{}` must implement a field named `quantity`."
             raise ImproperlyConfigured(msg.format(cls.__name__))
 
-    @property
+    @cached_property
     def unit_price(self):
         return MoneyMaker(self.order.currency)(self._unit_price)
 
-    @property
+    @cached_property
     def line_total(self):
         return MoneyMaker(self.order.currency)(self._line_total)
 

@@ -6,11 +6,11 @@ from collections import OrderedDict
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import ugettext_lazy as _
-from jsonfield.fields import JSONField
+from shop.models.fields import JSONField
 from shop.modifiers.pool import cart_modifiers_pool
 from shop.money import Money
 from .product import BaseProduct
-from . import deferred
+from shop import deferred
 from shop.models.customer import CustomerModel
 
 
@@ -18,6 +18,7 @@ class CartItemManager(models.Manager):
     """
     Customized model manager for our CartItem model.
     """
+
     def get_or_create(self, **kwargs):
         """
         Create a unique cart item. If the same product exists already in the given cart,
@@ -69,7 +70,7 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     cart = deferred.ForeignKey('BaseCart', related_name='items')
     product = deferred.ForeignKey(BaseProduct)
-    extra = JSONField(default={}, verbose_name=_("Arbitrary information for this cart item"))
+    extra = JSONField(verbose_name=_("Arbitrary information for this cart item"))
 
     objects = CartItemManager()
 
@@ -92,7 +93,7 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     def __init__(self, *args, **kwargs):
         # reduce the given fields to what the model actually can consume
-        all_field_names = self._meta.get_all_field_names()
+        all_field_names = [field.name for field in self._meta.get_fields(include_parents=True)]
         model_kwargs = {k: v for k, v in kwargs.items() if k in all_field_names}
         super(BaseCartItem, self).__init__(*args, **model_kwargs)
         self.extra_rows = OrderedDict()
@@ -141,14 +142,12 @@ class CartManager(models.Manager):
 
 class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
-    The fundamental parts of a shopping cart. It refers to a rather simple list of items.
-    Ideally it should be bound to a session and not to a User as we want to let
-    people buy from our shop without having to register with us.
+    The fundamental part of a shopping cart.
     """
     customer = deferred.OneToOneField('BaseCustomer', verbose_name=_("Customer"), related_name='cart')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
-    extra = JSONField(default={}, verbose_name=_("Arbitrary information for this cart"))
+    extra = JSONField(verbose_name=_("Arbitrary information for this cart"))
 
     # our CartManager determines the cart object from the request.
     objects = CartManager()
@@ -165,8 +164,9 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         self._cached_cart_items = None
         self._dirty = True
 
-    def save(self, *args, **kwargs):
-        super(BaseCart, self).save(*args, **kwargs)
+    def save(self, force_update=False, *args, **kwargs):
+        if self.pk or force_update is False:
+            super(BaseCart, self).save(force_update=force_update, *args, **kwargs)
         self._dirty = True
 
     def update(self, request):
@@ -226,8 +226,25 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
             self.items.all().delete()
             self.delete()
 
+    def merge_with(self, other_cart):
+        """
+        Merge the contents of the other cart into this one, afterwards delete it.
+        This is done item by item, so that duplicate items increase the quantity.
+        """
+        # iterate over the cart and add quantities for items from other cart considered as equal
+        for item in self.items.all():
+            other_item = item.product.is_in_cart(other_cart, extra=item.extra)
+            if other_item:
+                item.quantity += other_item.quantity
+                item.save()
+                other_item.delete()
+
+        # the remaining items from the other cart are merged into this one
+        other_cart.items.update(cart=self)
+        other_cart.delete()
+
     def __str__(self):
-        return "{}".format(self.pk) or '(unsaved)'
+        return "{}".format(self.pk) if self.pk else '(unsaved)'
 
     @property
     def num_items(self):
@@ -241,7 +258,8 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         """
         Returns the total quantity of all items in the cart.
         """
-        return self.items.aggregate(models.Sum('quantity'))['quantity__sum']
+        aggr = self.items.aggregate(quantity=models.Sum('quantity'))
+        return aggr['quantity'] or 0
         # if we would know, that self.items is already evaluated, then this might be faster:
         # return sum([ci.quantity for ci in self.items.all()])
 
