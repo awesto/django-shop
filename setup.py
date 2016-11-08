@@ -55,6 +55,7 @@ setup(
         'Django-Select2>=5.8.9',
         'django-rest-auth>=0.5.0',
         'django-admin-sortable2>=0.6.4',
+        'django-formtools>=1.0',
         'bs4>=0.0.1',
     ],
     # Note: this requires setuptools >= 18.0.
