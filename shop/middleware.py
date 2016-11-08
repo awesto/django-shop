@@ -13,6 +13,10 @@ def get_customer(request, force=False):
 
 
 class CustomerMiddleware(object):
+    """
+    Similar to Django's AuthenticationMiddleware, which adds the user object to the request,
+    this middleware adds the customer object to the request.
+    """
     def process_request(self, request):
         assert hasattr(request, 'session'), (
             "The django-SHOP middleware requires session middleware to be installed. "
@@ -35,6 +39,11 @@ class CustomerMiddleware(object):
 
 
 class MethodOverrideMiddleware(object):
+    """
+    This middleware is required to emulate methods PUT and DELETE using a HTTP method POST
+    as wrapper. Some misconfigured proxies do not pass these methods properly, hence this
+    workaround is required.
+    """
     METHOD_OVERRIDE_HEADER = 'HTTP_X_HTTP_METHOD_OVERRIDE'
 
     def process_view(self, request, callback, callback_args, callback_kwargs):

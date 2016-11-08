@@ -6,7 +6,7 @@ from django.utils.module_loading import import_string
 from rest_framework import serializers
 from rest_framework.fields import empty
 from shop.rest.serializers import (ProductSummarySerializerBase, ProductDetailSerializerBase,
-    AddToCartSerializer)
+                                   AddToCartSerializer)
 from shop.search.serializers import ProductSearchSerializer as ProductSearchSerializerBase
 from .search_indexes import myshop_search_index_classes
 
@@ -28,7 +28,7 @@ class ProductSummarySerializer(ProductSummarySerializerBase):
     class Meta:
         model = Product
         fields = ('id', 'product_name', 'product_url', 'product_model', 'price',
-            'media', 'caption')
+                  'media', 'caption')
 
     def get_media(self, product):
         return self.render_html(product, 'media')

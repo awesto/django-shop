@@ -17,13 +17,11 @@ class SmartCard(CMSPageReferenceMixin, BaseProduct):
     product_name = models.CharField(max_length=255, verbose_name=_("Product Name"))
     slug = models.SlugField(verbose_name=_("Slug"))
     unit_price = MoneyField(_("Unit price"), decimal_places=3,
-        help_text=_("Net price for this product"))
-    caption = HTMLField(verbose_name=_("Caption"),
-        configuration='CKEDITOR_SETTINGS_CAPTION',
-        help_text=_("Short description used in the catalog's list view of products."))
-    description = HTMLField(verbose_name=_("Description"),
-        configuration='CKEDITOR_SETTINGS_DESCRIPTION',
-        help_text=_("Description for the list view of products."))
+                            help_text=_("Net price for this product"))
+    caption = HTMLField(verbose_name=_("Caption"), configuration='CKEDITOR_SETTINGS_CAPTION',
+                        help_text=_("Short description used in the catalog's list view of products."))
+    description = HTMLField(verbose_name=_("Description"), configuration='CKEDITOR_SETTINGS_DESCRIPTION',
+                            help_text=_("Description for the list view of products."))
 
     # product properties
     manufacturer = models.ForeignKey(Manufacturer, verbose_name=_("Manufacturer"))
@@ -34,12 +32,12 @@ class SmartCard(CMSPageReferenceMixin, BaseProduct):
     speed = models.CharField(_("Transfer Speed"), choices=SPEED, max_length=8)
     product_code = models.CharField(_("Product code"), max_length=255, unique=True)
     storage = models.PositiveIntegerField(_("Storage Capacity"),
-        help_text=_("Storage capacity in GB"))
+                                          help_text=_("Storage capacity in GB"))
 
     # controlling the catalog
     order = models.PositiveIntegerField(verbose_name=_("Sort by"), db_index=True)
     cms_pages = models.ManyToManyField('cms.Page', through=ProductPage,
-        help_text=_("Choose list view this product shall appear on."))
+                                       help_text=_("Choose list view this product shall appear on."))
     images = models.ManyToManyField('filer.Image', through=ProductImage)
 
     objects = BaseProductManager()

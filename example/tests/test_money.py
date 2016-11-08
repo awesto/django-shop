@@ -238,7 +238,7 @@ class MoneyDbFieldTests(TestCase):
         m1 = Manufacturer(name="Rosebutt")
         m1.save()
         bag = Commodity.objects.create(unit_price=amount, product_code='B', order=1, product_name="Bag",
-            slug='bag', manufacturer=m1, caption="This is a bag")
+                                       slug='bag', manufacturer=m1, caption="This is a bag")
         self.assertEqual(list(Commodity.objects.filter(unit_price='12.34')), [bag])
         self.assertEqual(list(Commodity.objects.filter(unit_price='12.35')), [])
         self.assertEqual(list(Commodity.objects.filter(unit_price__gt='12.33')), [bag])
