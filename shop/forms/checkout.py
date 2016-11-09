@@ -339,7 +339,8 @@ class AcceptConditionForm(DialogForm):
         plugin_id = data and data.get('plugin_id') or initial and initial.get('plugin_id') or 'none'
         scope_prefix = '{0}.plugin_{1}'.format(self.scope_prefix, plugin_id)
         self.form_name = '{0}.plugin_{1}'.format(self.form_name, plugin_id)
-        super(AcceptConditionForm, self).__init__(data=data, initial=initial, scope_prefix=scope_prefix, *args, **kwargs)
+        super(AcceptConditionForm, self).__init__(data=data, initial=initial,
+                                                  scope_prefix=scope_prefix, *args, **kwargs)
 
     @classmethod
     def form_factory(cls, request, data, cart):

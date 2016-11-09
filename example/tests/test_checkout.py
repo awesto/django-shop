@@ -4,12 +4,14 @@ from __future__ import unicode_literals
 import json
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
+from django.http import QueryDict
+
 from cms.api import add_plugin, create_page
 from bs4 import BeautifulSoup
 from shop.cascade.checkout import (
     GuestFormPlugin, CustomerFormPlugin, ShippingAddressFormPlugin, BillingAddressFormPlugin,
     PaymentMethodFormPlugin, ShippingMethodFormPlugin, RequiredFormFieldsPlugin,
-    ExtraAnnotationFormPlugin)
+    ExtraAnnotationFormPlugin, AcceptConditionFormPlugin)
 from shop.models.cart import CartModel
 from myshop.models.polymorphic.smartcard import SmartCard
 from .test_shop import ShopTestCase
@@ -236,7 +238,7 @@ class CheckoutTest(ShopTestCase):
         # create a page populated with Cascade elements used for checkout
         placeholder = self.checkout_page.placeholders.get(slot='Main Content')
 
-        # add shipping address to checkout page
+        # add extra annotation form to checkout page
         form_element = add_plugin(placeholder, ExtraAnnotationFormPlugin, 'en',
                                   target=self.column_element)
         form_element.glossary = {'render_type': 'form'}
@@ -275,6 +277,53 @@ class CheckoutTest(ShopTestCase):
         response = self.client.post(url, data=json.dumps(data), content_type='application/json')
         payload = json.loads(response.content.decode('utf-8'))
         self.assertDictEqual(payload['errors']['extra_annotation_form'], {})
+
+    def test_accept_condition_form_plugin(self):
+        # create a page populated with Cascade elements used for checkout
+        placeholder = self.checkout_page.placeholders.get(slot='Main Content')
+
+        # add accept condition form plugin to checkout page
+        accept_condition_element = add_plugin(placeholder, AcceptConditionFormPlugin, 'en',
+                                              target=self.column_element)
+        accept_condition_plugin = accept_condition_element.get_plugin_class_instance(self.admin_site)
+        self.assertIsInstance(accept_condition_plugin, AcceptConditionFormPlugin)
+
+        # edit the plugin's content
+        self.client.login(username='admin', password='admin')
+        request = self.client.request()
+
+        post_data = QueryDict('', mutable=True)
+        post_data.update({'html_content': "<p>I have read the terms and conditions and agree with them.</p>"})
+        ModelForm = accept_condition_plugin.get_form(request, accept_condition_element)
+        form = ModelForm(post_data, None, instance=accept_condition_element)
+        self.assertTrue(form.is_valid())
+        accept_condition_plugin.save_model(request, accept_condition_element, form, True)
+
+        # publish the checkout page
+        self.checkout_page.publish('en')
+        self.client.logout()
+
+        # login as Bart
+        self.client.login(username='bart', password='trab')
+        self.fill_cart()
+        url = self.checkout_page.get_absolute_url()
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        print(soup.prettify())
+
+        # find plugin counterpart on public page
+        placeholder = self.checkout_page.publisher_public.placeholders.get(slot='Main Content')
+        plugin = [p for p in placeholder.cmsplugin_set.all() if p.plugin_type == 'AcceptConditionFormPlugin'][0]
+        accept_condition_form = soup.find('form', {'name': 'accept_condition_form.plugin_{}'.format(plugin.id)})
+        self.assertIsNotNone(accept_condition_form)
+        accept_input = accept_condition_form.find('input', {'id': 'id_accept'})
+        accept_paragraph = str(accept_input.find_next_siblings('p')[0])
+        self.assertHTMLEqual(accept_paragraph, "<p>I have read the terms and conditions and agree with them.</p>")
+
+        # check the get_identifier method
+        content = accept_condition_plugin.get_identifier(accept_condition_element)
+        self.assertEqual('I have read ...', content)
 
     def add_guestform_element(self):
         """Add one GuestFormPlugin to the current page"""
