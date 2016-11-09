@@ -298,11 +298,22 @@ class CheckoutSerializer(serializers.Serializer):
 
 
 class CustomerSerializer(serializers.ModelSerializer):
-    salutation = serializers.CharField(source='get_salutation_display')
+    number = serializers.CharField(source='get_number')
 
     class Meta:
         model = CustomerModel
-        fields = ('salutation', 'first_name', 'last_name', 'email', 'extra',)
+        exclude = ('user', 'recognized', 'last_access')
+
+    def get_field_names(self, declared_fields, info):
+        fields = set(super(CustomerSerializer, self).get_field_names(declared_fields, info))
+        fields.update(['first_name', 'last_name', 'email'])
+        return list(fields)
+
+    def build_standard_field(self, field_name, model_field):
+        field_class, field_kwargs = super(CustomerSerializer, self).build_standard_field(field_name, model_field)
+        if issubclass(field_class, serializers.ChoiceField):
+            field_kwargs.update(source='get_{}_display'.format(field_name))
+        return field_class, field_kwargs
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
