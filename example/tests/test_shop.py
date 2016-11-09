@@ -25,12 +25,14 @@ from myshop.cms_apps import ProductsListApp
 
 
 class ShopTestCase(TestCase):
+
     def setUp(self):
         super(ShopTestCase, self).setUp()
         self.factory = RequestFactory()
         self.admin_site = admin.sites.AdminSite()
         self.create_pages()
         self.create_products()
+        self.create_administrator()
         self.create_customers()
 
     def create_pages(self):
@@ -90,6 +92,12 @@ class ShopTestCase(TestCase):
         )
         ProductPage.objects.create(page=self.shop_page, product=sdxc_pro_32gb)
         ProductPage.objects.create(page=self.smartcards_page, product=sdxc_pro_32gb)
+
+    def create_administrator(self):
+        self.administrator = get_user_model().objects.create_user('admin', 'admin@example.com', 'admin')
+        self.administrator.is_staff = True
+        self.administrator.is_superuser = True
+        self.administrator.save()
 
     def create_customers(self):
         BART = {
