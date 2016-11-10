@@ -50,7 +50,7 @@ Django-SHOP supports multiple currencies
 Django-SHOP is shipped with a set of currency types, bringing their own money arithmetic. This
 adds an additional layer of security, because one can not accidentally sum up different currencies.
 These money types always know how to represent themselves in different local environments, prefixing
-their amount with the correct currency symbol. They also offer the special amount “no price”
+their amount with the correct currency symbol. They also offer the special amount "no price"
 (represented by ``–``), which behaves like zero but is handy for gratuitous items.
 
 
