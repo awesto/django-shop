@@ -88,8 +88,8 @@ class CustomerFormPluginBase(DialogFormPluginBase):
 
 class CustomerFormPlugin(CustomerFormPluginBase):
     """
-    Provides the form to edit specific data stored in model `Customer`, if customer declared
-    himself as registered.
+    Provides the form to edit specific data stored in :class:`shop.model.customer.CustomerModel`,
+    if customer declared himself as registered.
     """
     name = _("Customer Form")
     form_class = 'shop.forms.checkout.CustomerForm'
