@@ -13,6 +13,8 @@ Some people might feel that this address model is not suitable for their specifi
 their selling region. Since **django-SHOP** allows to override each model, we simply might want to
 write our own one.
 
+_International Address Fields in Web Forms: http://www.uxmatters.com/mt/archives/2008/06/international-address-fields-in-web-forms.php
+
 
 Overriding the Default Models
 =============================
