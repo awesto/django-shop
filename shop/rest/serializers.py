@@ -11,10 +11,13 @@ from django.template.loader import select_template
 from django.utils.six import with_metaclass
 from django.utils.html import strip_spaces_between_tags
 from django.utils.formats import localize
+from django.utils.module_loading import import_string
 from django.utils.safestring import mark_safe, SafeText
 from django.utils.translation import get_language_from_request
+
 from rest_framework import serializers
 from rest_framework.fields import empty
+
 from shop import settings as shop_settings
 from shop.models.cart import CartModel, CartItemModel, BaseCartItem
 from shop.models.product import ProductModel
@@ -297,23 +300,7 @@ class CheckoutSerializer(serializers.Serializer):
         return serializer.data
 
 
-class CustomerSerializer(serializers.ModelSerializer):
-    number = serializers.CharField(source='get_number')
-
-    class Meta:
-        model = CustomerModel
-        exclude = ('user', 'recognized', 'last_access')
-
-    def get_field_names(self, declared_fields, info):
-        fields = set(super(CustomerSerializer, self).get_field_names(declared_fields, info))
-        fields.update(['first_name', 'last_name', 'email'])
-        return list(fields)
-
-    def build_standard_field(self, field_name, model_field):
-        field_class, field_kwargs = super(CustomerSerializer, self).build_standard_field(field_name, model_field)
-        if issubclass(field_class, serializers.ChoiceField):
-            field_kwargs.update(source='get_{}_display'.format(field_name))
-        return field_class, field_kwargs
+CustomerSerializer = import_string(shop_settings.CUSTOMER_SERIALIZER)
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
