@@ -127,4 +127,4 @@ it.
 License
 =======
 
-**DjangoSHOP** is licensed under the terms of the BSD license.
+**Django-SHOP** is licensed under the terms of the BSD license.

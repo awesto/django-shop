@@ -7,14 +7,14 @@ django-classy-tags==0.7.2
 django-cms==3.3.2
 django-compressor==1.6
 django-filer==1.2.5
-django-filter==0.13.0
+django-filter==0.15.3
 django-fsm==2.4.0
 django-fsm-admin==1.2.3
 django-haystack==2.5.0
 django-ipware==1.1.1
 django-mptt==0.8.6
 django-parler==1.6.4
-django-polymorphic==1.0.1
+django-polymorphic==1.0.2
 django-post-office==2.0.8
 django-rest-auth==0.5.0
 django-sass-processor==0.5.1
@@ -26,6 +26,7 @@ djangocms-bootstrap3==0.1.1
 djangocms-cascade==0.11.0
 djangocms-text-ckeditor==3.0.1
 djangorestframework==3.2.5
+django-formtools==1.0
 drf-haystack==1.5.6
 easy-thumbnails==2.3
 elasticsearch==1.7.0
@@ -47,3 +48,5 @@ Unidecode==0.4.18
 urllib3==1.12
 virtualenv==13.1.2
 wheel==0.24.0
+bs4==0.0.1
+python-dateutil==2.5.3

@@ -12,7 +12,7 @@ from shop.models.defaults.customer import Customer
 # models defined by the myshop instance itself
 if settings.SHOP_TUTORIAL == 'commodity' or settings.SHOP_TUTORIAL == 'i18n_commodity':
     from shop.models.defaults.order_item import OrderItem
-    from shop.models.defaults.commodity import Commodity
+    from shop.models.defaults.commodity import Commodity  # NOQA
 elif settings.SHOP_TUTORIAL == 'smartcard':
     from shop.models.defaults.order_item import OrderItem
     from .smartcard import SmartCard
@@ -25,7 +25,8 @@ elif settings.SHOP_TUTORIAL == 'polymorphic':
     from .polymorphic.smartphone import SmartPhoneModel, SmartPhone
     from shop.models.defaults.delivery import Delivery, DeliveryItem
 
-from shop.models.defaults.order import Order
+from shop.models.defaults.order import Order  # NOQA
+
 
 __all__ = ['ShippingAddress', 'BillingAddress', 'Cart', 'CartItem', 'Customer', 'Order', 'OrderItem',
-    'Commodity', 'SmartCard', 'SmartPhoneModel', 'SmartPhone', 'Delivery', 'DeliveryItem']
+           'Commodity', 'SmartCard', 'SmartPhoneModel', 'SmartPhone', 'Delivery', 'DeliveryItem']

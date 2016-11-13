@@ -1,2 +1,3 @@
 -r test.txt
 -r py2.txt
+funcsigs==1.0.2

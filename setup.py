@@ -22,8 +22,9 @@ CLASSIFIERS = [
     'Intended Audience :: Developers',
     'License :: OSI Approved :: BSD License',
     'Operating System :: OS Independent',
-    'Programming Language :: Python',
-    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 2.7',
+    'Programming Language :: Python :: 3.4',
+    'Programming Language :: Python :: 3.5',
     'Topic :: Software Development :: Libraries :: Application Frameworks',
     'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
 ]
@@ -33,7 +34,7 @@ setup(
     author_email="jacob.rief@gmail.com",
     name="django-shop",
     version=shop.__version__,
-    description="A RESTful Django Shop",
+    description="A RESTful e-commerce framework based on Django",
     long_description=convert('README.md', 'rst'),
     url='http://www.django-shop.org/',
     license='BSD License',
@@ -44,9 +45,6 @@ setup(
     zip_safe=False,
     install_requires=[
         'Django>=1.9,<1.10',
-        'djangocms-cascade>=0.10.2',
-        'beautifulsoup4>=4.4.0',
-        'django-cms>=3.3.2',
         'django-post-office>=2.0.8',
         'django-filer>=1.2.5',
         'django-ipware>=1.1.1',
@@ -57,6 +55,8 @@ setup(
         'Django-Select2>=5.8.9',
         'django-rest-auth>=0.5.0',
         'django-admin-sortable2>=0.6.4',
+        'django-formtools>=1.0',
+        'bs4>=0.0.1',
     ],
     # Note: this requires setuptools >= 18.0.
     extras_require={

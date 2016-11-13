@@ -23,6 +23,6 @@ urlpatterns = [
         lookup_field='translations__slug'
     )),
     url(r'^(?P<slug>[\w-]+)/add-to-cart', AddToCartView.as_view(
-        lookup_field = 'translations__slug'
+        lookup_field='translations__slug'
     )),
 ]

@@ -270,11 +270,13 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
 
     def save(self, **kwargs):
         """
-        Before saving the Order object to the database, round the total to the given decimal_places
+        The status of an Order object my change, if auto transistions are specified.
         """
         auto_transition = self._auto_transitions.get(self.status)
         if callable(auto_transition):
             auto_transition(self)
+
+        # round the total to the given decimal_places
         self._subtotal = BaseOrder.round_amount(self._subtotal)
         self._total = BaseOrder.round_amount(self._total)
         super(BaseOrder, self).save(**kwargs)
@@ -413,6 +415,5 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         self._unit_price = BaseOrder.round_amount(self._unit_price)
         self._line_total = BaseOrder.round_amount(self._line_total)
         super(BaseOrderItem, self).save(*args, **kwargs)
-
 
 OrderItemModel = deferred.MaterializedModel(BaseOrderItem)

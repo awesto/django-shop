@@ -93,7 +93,7 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     def __init__(self, *args, **kwargs):
         # reduce the given fields to what the model actually can consume
-        all_field_names = self._meta.get_all_field_names()
+        all_field_names = [field.name for field in self._meta.get_fields(include_parents=True)]
         model_kwargs = {k: v for k, v in kwargs.items() if k in all_field_names}
         super(BaseCartItem, self).__init__(*args, **model_kwargs)
         self.extra_rows = OrderedDict()
@@ -130,13 +130,13 @@ class CartManager(models.Manager):
         """
         if request.customer.is_visitor():
             raise self.model.DoesNotExist("Cart for visiting customer does not exist.")
-        cart, temp = self.get_or_create(customer=request.customer)
+        cart, created = self.get_or_create(customer=request.customer)
         return cart
 
     def get_or_create_from_request(self, request):
         if request.customer.is_visitor():
             request.customer = CustomerModel.objects.get_or_create_from_request(request)
-        cart, temp = self.get_or_create(customer=request.customer)
+        cart, created = self.get_or_create(customer=request.customer)
         return cart
 
 
@@ -206,6 +206,8 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
         # Iterate over the registered modifiers, to process the cart's summary
         for modifier in cart_modifiers_pool.get_all_modifiers():
+            for item in items:
+                modifier.post_process_cart_item(self, item, request)
             modifier.process_cart(self, request)
 
         # This calls the post_process_cart method from cart modifiers, if any.
@@ -225,6 +227,23 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         if self.pk:
             self.items.all().delete()
             self.delete()
+
+    def merge_with(self, other_cart):
+        """
+        Merge the contents of the other cart into this one, afterwards delete it.
+        This is done item by item, so that duplicate items increase the quantity.
+        """
+        # iterate over the cart and add quantities for items from other cart considered as equal
+        for item in self.items.all():
+            other_item = item.product.is_in_cart(other_cart, extra=item.extra)
+            if other_item:
+                item.quantity += other_item.quantity
+                item.save()
+                other_item.delete()
+
+        # the remaining items from the other cart are merged into this one
+        other_cart.items.update(cart=self)
+        other_cart.delete()
 
     def __str__(self):
         return "{}".format(self.pk) if self.pk else '(unsaved)'

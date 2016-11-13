@@ -44,13 +44,18 @@ class LoginView(OriginalLoginView):
             anonymous_cart = CartModel.objects.get_from_request(self.request)
         except CartModel.DoesNotExist:
             anonymous_cart = None
-        dead_user = None if self.request.user.is_anonymous() or self.request.customer.is_registered() else self.request.customer.user
+        if self.request.user.is_anonymous() or self.request.customer.is_registered():
+            previous_user = None
+        else:
+            previous_user = self.request.customer.user
         super(LoginView, self).login()  # this rotates the session_key
         authenticated_cart = CartModel.objects.get_from_request(self.request)
         if anonymous_cart:
-            anonymous_cart.items.update(cart=authenticated_cart)
-        if dead_user and dead_user.is_active is False:
-            dead_user.delete()  # to keep the database clean
+            # an anonymous customer logged in, now merge his current cart with a cart,
+            # which previously might have been created under his account.
+            authenticated_cart.merge_with(anonymous_cart)
+        if previous_user and previous_user.is_active is False:
+            previous_user.delete()  # keep the database clean and remove this anonymous entity
 
 
 class LogoutView(APIView):

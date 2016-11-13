@@ -12,7 +12,7 @@ from .product import Product
 class SmartCard(Product):
     # common product fields
     unit_price = MoneyField(_("Unit price"), decimal_places=3,
-        help_text=_("Net price for this product"))
+                            help_text=_("Net price for this product"))
 
     # product properties
     CARD_TYPE = (2 * ('{}{}'.format(s, t),)
@@ -22,11 +22,11 @@ class SmartCard(Product):
     speed = models.CharField(_("Transfer Speed"), choices=SPEED, max_length=8)
     product_code = models.CharField(_("Product code"), max_length=255, unique=True)
     storage = models.PositiveIntegerField(_("Storage Capacity"),
-        help_text=_("Storage capacity in GB"))
+                                          help_text=_("Storage capacity in GB"))
     multilingual = TranslatedFields(
         description=HTMLField(verbose_name=_("Description"),
-        configuration='CKEDITOR_SETTINGS_DESCRIPTION',
-        help_text=_("Full description used in the catalog's detail view of Smart Cards.")))
+                              configuration='CKEDITOR_SETTINGS_DESCRIPTION',
+                              help_text=_("Full description used in the catalog's detail view of Smart Cards.")))
 
     class Meta:
         verbose_name = _("Smart Card")

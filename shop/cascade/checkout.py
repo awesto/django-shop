@@ -5,7 +5,7 @@ from django.forms.fields import CharField
 from django.forms import widgets
 from django.template import Engine
 from django.template.loader import select_template
-from django.utils.html import strip_tags, strip_entities
+from django.utils.html import strip_tags
 from django.utils.safestring import mark_safe
 from django.utils.text import Truncator
 from django.utils.translation import ugettext_lazy as _
@@ -88,8 +88,8 @@ class CustomerFormPluginBase(DialogFormPluginBase):
 
 class CustomerFormPlugin(CustomerFormPluginBase):
     """
-    Provides the form to edit specific data stored in model `Customer`, if customer declared
-    himself as registered.
+    Provides the form to edit specific data stored in :class:`shop.model.customer.CustomerModel`,
+    if customer declared himself as registered.
     """
     name = _("Customer Form")
     form_class = 'shop.forms.checkout.CustomerForm'
@@ -256,7 +256,7 @@ class AcceptConditionFormPlugin(DialogFormPluginBase):
     @classmethod
     def get_identifier(cls, instance):
         html_content = cls.html_parser.unescape(instance.glossary.get('html_content', ''))
-        html_content = strip_entities(strip_tags(html_content))
+        html_content = strip_tags(html_content)
         html_content = Truncator(html_content).words(3, truncate=' ...')
         return mark_safe(html_content)
 

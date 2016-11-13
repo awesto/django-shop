@@ -144,7 +144,6 @@ class DeliveryInline(admin.TabularInline):
         link = reverse('admin:print_delivery_note', args=(obj.id,)), _("Delivery Note")
         return format_html('<a href="{0}" class="viewsitelink" target="_new">{1}</a>', *link)
     print_out.short_description = _("Print out")
-    print_out.allow_tags = True
 
     def fulfilled(self, obj):
         if obj.fulfilled_at:

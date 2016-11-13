@@ -312,7 +312,7 @@ and the customer needs to pick out the correct one by entering some search terms
 
 To extend the existing Catalog List View for autocompletion, locate the file containing the
 urlpatterns, which are used by the apphook ``ProductsListApp``. In doubt, consult the file
-``myshop/cms_app.py``.
+``myshop/cms_apps.py``.
 
 To this file with urlpatterns add the following entry:
 

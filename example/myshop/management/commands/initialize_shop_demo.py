@@ -25,9 +25,8 @@ class Command(BaseCommand):
     pwd = b'z7xv'
 
     def add_arguments(self, parser):
-        parser.add_argument('--noinput', '--no-input',
-            action='store_false', dest='interactive', default=True,
-            help="Do NOT prompt the user for input of any kind.")
+        parser.add_argument('--noinput', '--no-input', action='store_false', dest='interactive',
+                            default=True, help="Do NOT prompt the user for input of any kind.")
 
     def set_options(self, **options):
         self.interactive = options['interactive']

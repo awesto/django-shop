@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django import forms
 from django.forms import fields, widgets
 from django.core.exceptions import ValidationError
-from django.template import Template
+from django.template import engines
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
 from cms.plugin_pool import plugin_pool
@@ -46,7 +46,7 @@ class ShopOrderViewsPlugin(ShopPluginBase):
                 'shop/order/detail.html',
             ])
         # can happen, if this plugin is abused outside of an OrderView
-        return Template('<pre class="bg-danger">This {} plugin is used on a CMS page without an application of type "View Order".</pre>'.format(self.name))
+        return engines['django'].from_string('<pre class="bg-danger">This {} plugin is used on a CMS page without an application of type "View Order".</pre>'.format(self.name))
 
 plugin_pool.register_plugin(ShopOrderViewsPlugin)
 

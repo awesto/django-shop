@@ -79,7 +79,7 @@ class CatalogTest(ShopTestCase):
 
         # update quantity
         payload = {'product': sdhc_4gb.pk, 'quantity': 3, 'extra': 'product_code',
-            'summary': {}, 'extra_rows': []}
+                   'summary': {}, 'extra_rows': []}
         response = self.client.put(cart_item['url'], data=json.dumps(payload), content_type='application/json')
         self.assertEqual(response.status_code, 200)
         cart_item = json.loads(response.content.decode('utf-8'))
@@ -131,4 +131,4 @@ class CatalogTest(ShopTestCase):
         self.assertEqual(cart['total_quantity'], 1)
         cart_item = cart['items'].pop()
         self.assertDictContainsSubset({"product": sdhc_4gb.pk, 'quantity': 1,
-            'extra': 'product_code'}, cart_item)
+                                       'extra': 'product_code'}, cart_item)

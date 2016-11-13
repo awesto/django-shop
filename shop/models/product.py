@@ -204,9 +204,9 @@ ProductModel = deferred.MaterializedModel(BaseProduct)
 
 class CMSPageReferenceMixin(object):
     """
-    Products which refer to CMS pages in order to emulate categories, normally need
-    a way to be accessed directly via a URL. Add this mixin to Product classes to
-    add a ``get_absolute_url()`` method.
+    Products which refer to CMS pages in order to emulate categories, normally need a method for
+    being accessed directly through a canonical URL. Add this mixin class for adding a
+    ``get_absolute_url()`` method to any to product model.
     """
     def get_absolute_url(self):
         """

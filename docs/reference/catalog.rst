@@ -42,11 +42,11 @@ Create the ``ProductsListApp``
 ------------------------------
 
 To retrieve a list of product models, the Catalog List View requires a `djangoCMS apphook`_. This
-``ProductsListApp`` must be added into a file named ``cms_app.py`` and located in the root folder
+``ProductsListApp`` must be added into a file named ``cms_apps.py`` and located in the root folder
 of the merchant's project:
 
 .. code-block:: python
-	:caption: myshop/cms_app.py
+	:caption: myshop/cms_apps.py
 
 	from cms.app_base import CMSApp
 	from cms.apphook_pool import apphook_pool
@@ -78,10 +78,10 @@ as all apphooks, it requires a file defining its urlpatterns:
 Here the ``ProductSummarySerializer`` serializes the product models into a representation suitable
 for being rendered inside a CMS page, as well as being converted to JSON. This allows us to reuse
 the same Django View (``CMSPageProductListView``) whenever the catalog list switches into infinite
-scroll mode, where it only requires the product's summary digested as JavaScript objects.
+scroll mode, where it only requires the product's summary, composed of plain old JavaScript objects.
 
-In case we need :ref:`reference/additional-serializer-fields`, lets add them to this class using the
-`serializer fields`_ from the Django RESTFramework library.
+In case we need :ref:`reference/additional-serializer-fields`, let's add them to this class using
+the `serializer fields`_ from the Django RESTFramework library.
 
 
 Add the Catalog to the CMS
@@ -91,7 +91,7 @@ In the page list editor of **djangoCMS**, create a new page at an appropriate lo
 page tree. As the page title and slug we should use something describing our product catalog in a
 way, both meaningful to the customers as well as to search engines.
 
-Next, we change into advanced setting.
+Next, we change into **Advanced Settings** mode.
 
 As a template we use one with a big placeholder, since it must display our list of products.
 
@@ -111,8 +111,10 @@ now.
 Catalog Detail View
 ===================
 
-The product's detail pages are the only ones not being managed by the CMS. This is because we often
-have thousands of products and creating a CMS page for each of them, would be kind of overkill.
+The product's detail pages are the only ones we typically do not control with **djangoCMS**
+placeholders. This is because we often have thousands of products and creating a CMS page for each
+of them, would be kind of overkill. It only makes sense for shops selling up to a dozen of different
+products.
 
 Therefore the template used to render the products's detail view is selected automatically by the
 ``ProductRetrieveView`` [1]_ following these rules:
@@ -131,9 +133,11 @@ Use CMS Placeholders on Detail View
 -----------------------------------
 
 If we require CMS functionality for each product's detail page, its quite simple to achieve. To the
-model class implementing our Product, add `djangoCMS Placeholder field`_ named ``placeholder``.Then
-add the templatetag ``{% render_placeholder product.placeholder %}`` the the template implementing
-the detail view of our product.
+class implementing our product model, add a `djangoCMS Placeholder field`_ named ``placeholder``.
+Then add the templatetag ``{% render_placeholder product.placeholder %}`` to the template
+implementing the detail view of our product. This placeholder then shall be used to add arbitrary
+content to the product's detail page. This for instance can be an additional text paragraphs,
+some images, a carousel or whatever is available from the **djangoCMS** plugin system.
 
 
 Route requests on Detail View

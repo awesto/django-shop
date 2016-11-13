@@ -81,6 +81,12 @@ class BaseCartModifier(object):
         """
         self.add_extra_cart_item_row(cart_item, request)
 
+    def post_process_cart_item(self, cart, item, request):
+        """
+        This will be called for every line item in the Cart, while finally processing the Cart.
+        It may be used to collect the computed line totals for each modifier.
+        """
+
     def process_cart(self, cart, request):
         """
         This will be called once per Cart, after every line item was treated by method

@@ -15,7 +15,7 @@ class Commodity(Product):
 
     # common product fields
     unit_price = MoneyField(_("Unit price"), decimal_places=3,
-        help_text=_("Net price for this product"))
+                            help_text=_("Net price for this product"))
     product_code = models.CharField(_("Product code"), max_length=255, unique=True)
 
     # controlling the catalog

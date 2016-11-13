@@ -35,33 +35,29 @@ class SmartPhoneModel(Product):
         (2, "Bluetooth 3.0"),
         (3, "Bluetooth 2.1"),
     )
-    battery_type = models.PositiveSmallIntegerField(_("Battery type"),
-        choices=BATTERY_TYPES)
+    battery_type = models.PositiveSmallIntegerField(_("Battery type"), choices=BATTERY_TYPES)
     battery_capacity = models.PositiveIntegerField(_("Capacity"),
-        help_text=_("Battery capacity in mAh"))
-    ram_storage = models.PositiveIntegerField(_("RAM"),
-        help_text=_("RAM storage in MB"))
-    wifi_connectivity = models.PositiveIntegerField(_("WiFi"),
-        choices=WIFI_CONNECTIVITY, help_text=_("WiFi Connectivity"))
-    bluetooth = models.PositiveIntegerField(_("Bluetooth"),
-        choices=BLUETOOTH_CONNECTIVITY,
-        help_text=_("Bluetooth Connectivity"))
+                                                   help_text=_("Battery capacity in mAh"))
+    ram_storage = models.PositiveIntegerField(_("RAM"), help_text=_("RAM storage in MB"))
+    wifi_connectivity = models.PositiveIntegerField(_("WiFi"), choices=WIFI_CONNECTIVITY,
+                                                    help_text=_("WiFi Connectivity"))
+    bluetooth = models.PositiveIntegerField(_("Bluetooth"), choices=BLUETOOTH_CONNECTIVITY,
+                                            help_text=_("Bluetooth Connectivity"))
     gps = models.BooleanField(_("GPS"), default=False,
-        help_text=_("GPS integrated"))
-    operating_system = models.ForeignKey(OperatingSystem,
-        verbose_name=_("Operating System"))
+                              help_text=_("GPS integrated"))
+    operating_system = models.ForeignKey(OperatingSystem, verbose_name=_("Operating System"))
     width = models.DecimalField(_("Width"), max_digits=4, decimal_places=1,
-        help_text=_("Width in mm"))
+                                help_text=_("Width in mm"))
     height = models.DecimalField(_("Height"), max_digits=4, decimal_places=1,
-        help_text=_("Height in mm"))
+                                 help_text=_("Height in mm"))
     weight = models.DecimalField(_("Weight"), max_digits=5, decimal_places=1,
-        help_text=_("Weight in gram"))
-    screen_size = models.DecimalField(_("Screen size"), max_digits=4,
-        decimal_places=2,
-        help_text=_("Diagonal screen size in inch"))
+                                 help_text=_("Weight in gram"))
+    screen_size = models.DecimalField(_("Screen size"), max_digits=4, decimal_places=2,
+                                      help_text=_("Diagonal screen size in inch"))
     multilingual = TranslatedFields(description=HTMLField(verbose_name=_("Description"),
-        configuration='CKEDITOR_SETTINGS_DESCRIPTION',
-        help_text=_("Full description used in the catalog's detail view of Smart Cards.")))
+                                    configuration='CKEDITOR_SETTINGS_DESCRIPTION',
+                                    help_text=_("Full description used in the catalog's detail "
+                                                "view of Smart Cards.")))
 
     class Meta:
         verbose_name = _("Smart Phone")
@@ -99,14 +95,12 @@ class SmartPhoneModel(Product):
 
 
 class SmartPhone(models.Model):
-    product = models.ForeignKey(SmartPhoneModel,
-        verbose_name=_("Smart-Phone Model"))
-    product_code = models.CharField(_("Product code"),
-        max_length=255, unique=True)
+    product = models.ForeignKey(SmartPhoneModel, verbose_name=_("Smart-Phone Model"))
+    product_code = models.CharField(_("Product code"), max_length=255, unique=True)
     unit_price = MoneyField(_("Unit price"), decimal_places=3,
-        help_text=_("Net price for this product"))
+                            help_text=_("Net price for this product"))
     storage = models.PositiveIntegerField(_("Internal Storage"),
-        help_text=_("Internal storage in MB"))
+                                          help_text=_("Internal storage in MB"))
 
     def get_price(self, request):
         return self.unit_price
