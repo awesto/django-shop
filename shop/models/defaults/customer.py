@@ -14,6 +14,9 @@ class Customer(BaseCustomer):
     number = models.PositiveIntegerField(_("Customer Number"), null=True, default=None, unique=True)
     salutation = models.CharField(_("Salutation"), max_length=5, choices=SALUTATION)
 
+    def get_number(self):
+        return self.number
+
     def get_or_assign_number(self):
         if self.number is None:
             aggr = Customer.objects.filter(number__isnull=False).aggregate(models.Max('number'))
