@@ -111,7 +111,7 @@ class ShopProductGallery(ShopPluginBase):
         ])
 
     def render(self, context, instance, placeholder):
-        from shop.rest.serializers import product_summary_serializer_class
+        from shop.rest.bases import get_product_summary_serializer_class
 
         product_ids = []
         for instance in instance.sortinline_elements.all():
@@ -120,8 +120,8 @@ class ShopProductGallery(ShopPluginBase):
             except KeyError:
                 pass
         queryset = ProductModel.objects.filter(pk__in=product_ids)
-        serialized = product_summary_serializer_class(queryset, many=True,
-                                                      context={'request': context['request']})
+        serializer_class = get_product_summary_serializer_class()
+        serialized = serializer_class(queryset, many=True, context={'request': context['request']})
         context['products'] = serialized.data
         return context
 
