@@ -208,12 +208,9 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     the django User model if a customer is authenticated. On checkout, a User
     object is created for anonymous customers also (with unusable password).
     """
-    SALUTATION = (('mrs', _("Mrs.")), ('mr', _("Mr.")), ('na', _("(n/a)")))
-
     user = models.OneToOneField(settings.AUTH_USER_MODEL, primary_key=True)
     recognized = CustomerStateField(_("Recognized as"), default=CustomerState.UNRECOGNIZED,
                                     help_text=_("Designates the state the customer is recognized as."))
-    salutation = models.CharField(_("Salutation"), max_length=5, choices=SALUTATION)
     last_access = models.DateTimeField(_("Last accessed"), default=timezone.now)
     extra = JSONField(editable=False, verbose_name=_("Extra information about this customer"))
 
@@ -334,14 +331,15 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         Hook to get or to assign the customers number. It is invoked, every time an Order object
         is created. Using a customer number, which is different from the primary key is useful for
         merchants, wishing to assign sequential numbers only to customers which actually bought
-        something. Otherwise the customer number (primary key) is increased whenever a customer
-        puts something into the cart.
+        something. Otherwise the customer number (primary key) is increased whenever a site visitor
+        puts something into the cart. If he never proceeds to checkout, that entity expires and may
+        be deleted at any time in the future.
         """
         return self.get_number()
 
     def get_number(self):
         """
-        Hook to get the customers number. Customers haven't purchased anything may return None.
+        Hook to get the Customer's number. Customers haven't purchased anything may return None.
         """
         return str(self.user_id)
 
