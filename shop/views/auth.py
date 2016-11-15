@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.contrib.auth import logout
+from django.contrib.auth import logout, get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import NON_FIELD_ERRORS
@@ -123,7 +123,7 @@ class PasswordResetConfirm(GenericAPIView):
     def get(self, request, uidb64=None, token=None):
         data = {'uid': uidb64, 'token': token}
         serializer_class = self.get_serializer_class()
-        password = 'x' * serializer_class._declared_fields['new_password1']._kwargs.get('min_length', 3)
+        password = get_user_model().objects.make_random_password()
         data.update(new_password1=password, new_password2=password)
         serializer = serializer_class(data=data, context=self.get_serializer_context())
         if not serializer.is_valid():
