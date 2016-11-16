@@ -11,16 +11,19 @@ from django.template.loader import select_template
 from django.utils.six import with_metaclass
 from django.utils.html import strip_spaces_between_tags
 from django.utils.formats import localize
+from django.utils.module_loading import import_string
 from django.utils.safestring import mark_safe, SafeText
 from django.utils.translation import get_language_from_request
+
 from rest_framework import serializers
 from rest_framework.fields import empty
+
 from shop import settings as shop_settings
 from shop.models.cart import CartModel, CartItemModel, BaseCartItem
 from shop.models.product import ProductModel
-from shop.models.customer import CustomerModel
 from shop.models.order import OrderModel, OrderItemModel
 from shop.rest.money import MoneyField
+from .bases import get_product_summary_serializer_class, set_product_summary_serializer_class
 
 
 class ProductCommonSerializer(serializers.ModelSerializer):
@@ -79,19 +82,10 @@ class SerializerRegistryMetaclass(serializers.SerializerMetaclass):
     different polymorphic product types in the Catalog, Cart and Order list views.
     """
     def __new__(cls, clsname, bases, attrs):
-        global product_summary_serializer_class
-        if product_summary_serializer_class:
-            msg = "Class `{}` inheriting from `ProductSummarySerializerBase` already registred."
-            raise exceptions.ImproperlyConfigured(msg.format(product_summary_serializer_class.__name__))
         new_class = super(cls, SerializerRegistryMetaclass).__new__(cls, clsname, bases, attrs)
         if clsname != 'ProductSummarySerializerBase':
-            product_summary_serializer_class = new_class
+            set_product_summary_serializer_class(new_class)
         return new_class
-
-product_summary_serializer_class = None
-"""
-Global reference to the common ProductSerializer
-"""
 
 
 class ProductSummarySerializerBase(with_metaclass(SerializerRegistryMetaclass, ProductCommonSerializer)):
@@ -227,8 +221,9 @@ class BaseItemSerializer(ItemModelSerializer):
         return product
 
     def get_summary(self, cart_item):
-        serializer = product_summary_serializer_class(cart_item.product, context=self.context,
-                                                      read_only=True, label=self.root.label)
+        serializer_class = get_product_summary_serializer_class()
+        serializer = serializer_class(cart_item.product, context=self.context,
+                                      read_only=True, label=self.root.label)
         return serializer.data
 
 
@@ -297,29 +292,9 @@ class CheckoutSerializer(serializers.Serializer):
         return serializer.data
 
 
-class CustomerSerializer(serializers.ModelSerializer):
-    salutation = serializers.CharField(source='get_salutation_display')
+CustomerSerializer = import_string(shop_settings.CUSTOMER_SERIALIZER)
 
-    class Meta:
-        model = CustomerModel
-        fields = ('salutation', 'first_name', 'last_name', 'email', 'extra',)
-
-
-class OrderItemSerializer(serializers.ModelSerializer):
-    line_total = MoneyField()
-    unit_price = MoneyField()
-    summary = serializers.SerializerMethodField(
-        help_text="Sub-serializer for fields to be shown in the product's summary.")
-
-    class Meta:
-        model = OrderItemModel
-        exclude = ('id',)
-
-    def get_summary(self, order_item):
-        label = self.context.get('render_label', 'order')
-        serializer = product_summary_serializer_class(order_item.product, context=self.context,
-                                                      read_only=True, label=label)
-        return serializer.data
+OrderItemSerializer = import_string(shop_settings.ORDER_ITEM_SERIALIZER)
 
 
 class OrderListSerializer(serializers.ModelSerializer):

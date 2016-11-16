@@ -23,6 +23,10 @@ DECIMAL_PLACES = getattr(settings, 'SHOP_DECIMAL_PLACES', 2)
 Number of decimal places for the internal representation of a price. Not visible to the customer.
 """
 
+CUSTOMER_SERIALIZER = getattr(settings, 'SHOP_CUSTOMER_SERIALIZER', 'shop.rest.defaults.CustomerSerializer')
+
+ORDER_ITEM_SERIALIZER = getattr(settings, 'SHOP_ORDER_ITEM_SERIALIZER', 'shop.rest.defaults.OrderItemSerializer')
+
 CART_MODIFIERS = getattr(settings, 'SHOP_CART_MODIFIERS', ('shop.modifiers.defaults.DefaultCartModifier',))
 
 VALUE_ADDED_TAX = getattr(settings, 'SHOP_VALUE_ADDED_TAX', Decimal('20'))
