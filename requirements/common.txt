@@ -21,7 +21,7 @@ django-sass-processor==0.5.2
 django-sekizai==0.10.0
 Django-Select2==5.8.9
 djangoshop-stripe==0.2.0
-django-treebeard==4.0
+django-treebeard==4.0.1
 djangocms-bootstrap3==0.1.1
 djangocms-cascade==0.11.0
 djangocms-text-ckeditor==3.0.1
