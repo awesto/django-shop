@@ -181,6 +181,7 @@ class CustomerManager(models.Manager):
     def get_or_create_from_request(self, request):
         if request.user.is_authenticated():
             user = request.user
+            recognized = CustomerState.REGISTERED
         else:
             if not request.session.session_key:
                 request.session.cycle_key()
@@ -191,7 +192,8 @@ class CustomerManager(models.Manager):
             user = get_user_model().objects.create_user(username)
             user.is_active = False
             user.save()
-        customer, created = self.get_or_create(user=user)
+            recognized = CustomerState.UNRECOGNIZED
+        customer, created = self.get_or_create(user=user, recognized=recognized)
         return customer
 
 
