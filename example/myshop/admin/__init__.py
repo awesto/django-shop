@@ -3,9 +3,8 @@ from __future__ import unicode_literals
 
 from django.conf import settings
 
+from shop.admin.defaults import customer
 from shop.models.order import OrderModel
-
-__all__ = ['OrderModel', 'commodity', 'customer']
 
 # models defined by the myshop instance itself
 if settings.SHOP_TUTORIAL in ('commodity', 'i18n_commodity'):
@@ -23,4 +22,4 @@ elif settings.SHOP_TUTORIAL == 'polymorphic':
     from . import manufacturer
     from .polymorphic import product, order
 
-from shop.admin.defaults import customer
+__all__ = ['OrderModel', 'commodity', 'customer']
