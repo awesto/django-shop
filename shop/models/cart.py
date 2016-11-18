@@ -130,13 +130,13 @@ class CartManager(models.Manager):
         """
         if request.customer.is_visitor():
             raise self.model.DoesNotExist("Cart for visiting customer does not exist.")
-        cart, temp = self.get_or_create(customer=request.customer)
+        cart, created = self.get_or_create(customer=request.customer)
         return cart
 
     def get_or_create_from_request(self, request):
         if request.customer.is_visitor():
             request.customer = CustomerModel.objects.get_or_create_from_request(request)
-        cart, temp = self.get_or_create(customer=request.customer)
+        cart, created = self.get_or_create(customer=request.customer)
         return cart
 
 
