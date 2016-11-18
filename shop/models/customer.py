@@ -336,7 +336,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     def get_number(self):
         """
-        Hook to get the Customer's number. Customers haven't purchased anything may return None.
+        Hook to get the customer's number. Customers haven't purchased anything may return None.
         """
         return str(self.user_id)
 
