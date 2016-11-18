@@ -12,9 +12,13 @@ from django.template import Context, engines
 from django.utils.encoding import smart_text
 from django.utils.translation import ugettext_lazy as _, override as translation_override
 from django.utils.six.moves.urllib.parse import urlparse
+
 from post_office import mail
 from post_office.models import Email as OriginalEmail, EmailTemplate
+
 from filer.fields.file import FilerFileField
+
+from shop.serializers import get_registered_serializer_class
 from .customer import CustomerModel
 
 
@@ -137,10 +141,11 @@ def order_event_notification(sender, instance=None, target=None, **kwargs):
 
         # emulate a request object which behaves similar to that one, when the customer submitted its order
         emulated_request = EmulateHttpRequest(instance.customer, instance.stored_request)
+        customer_serializer = get_registered_serializer_class('CustomerSerializer')(instance.customer)
         order_serializer = serializers.OrderDetailSerializer(instance, context={'request': emulated_request})
         language = instance.stored_request.get('language')
         context = {
-            'customer': serializers.CustomerSerializer(instance.customer).data,
+            'customer': customer_serializer.data,
             'data': order_serializer.data,
             'ABSOLUTE_BASE_URI': emulated_request.build_absolute_uri().rstrip('/'),
             'render_language': language,

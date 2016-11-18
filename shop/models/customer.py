@@ -208,12 +208,9 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     the django User model if a customer is authenticated. On checkout, a User
     object is created for anonymous customers also (with unusable password).
     """
-    SALUTATION = (('mrs', _("Mrs.")), ('mr', _("Mr.")), ('na', _("(n/a)")))
-
     user = models.OneToOneField(settings.AUTH_USER_MODEL, primary_key=True)
     recognized = CustomerStateField(_("Recognized as"), default=CustomerState.UNRECOGNIZED,
                                     help_text=_("Designates the state the customer is recognized as."))
-    salutation = models.CharField(_("Salutation"), max_length=5, choices=SALUTATION)
     last_access = models.DateTimeField(_("Last accessed"), default=timezone.now)
     extra = JSONField(editable=False, verbose_name=_("Extra information about this customer"))
 

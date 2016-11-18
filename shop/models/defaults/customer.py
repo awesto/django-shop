@@ -1,14 +1,23 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+
 from shop.models.customer import BaseCustomer
 
 
 class Customer(BaseCustomer):
-    """Default materialized model for Customer"""
+    """
+    Default materialized model for Customer, adding a customer's number and salutation.
+
+    If this model is materialized, then also register the corresponding serializer class
+    :class:`shop.serializers.defaults.customer.CustomerSerializer`.
+    """
+    SALUTATION = (('mrs', _("Mrs.")), ('mr', _("Mr.")), ('na', _("(n/a)")))
 
     number = models.PositiveIntegerField(_("Customer Number"), null=True, default=None, unique=True)
+    salutation = models.CharField(_("Salutation"), max_length=5, choices=SALUTATION)
 
     def get_or_assign_number(self):
         if self.number is None:

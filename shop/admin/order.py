@@ -13,11 +13,14 @@ from django.template.loader import select_template
 from django.utils.html import format_html
 from django.utils.formats import number_format
 from django.utils.translation import pgettext_lazy
+
 from fsm_admin.mixins import FSMTransitionMixin
+
 from shop import settings as shop_settings
 from shop.models.customer import CustomerModel
 from shop.models.order import OrderItemModel, OrderPayment
 from shop.modifiers.pool import cart_modifiers_pool
+from shop.serializers import get_registered_serializer_class
 from shop.rest import serializers
 
 
@@ -174,9 +177,10 @@ class PrintOrderAdminMixin(object):
     def _render_letter(self, request, pk, template):
         order = self.get_object(request, pk)
         context = {'request': request, 'render_label': 'print'}
+        customer_serializer = get_registered_serializer_class('CustomerSerializer')(order.customer)
         order_serializer = serializers.OrderDetailSerializer(order, context=context)
         content = template.render(RequestContext(request, {
-            'customer': serializers.CustomerSerializer(order.customer).data,
+            'customer': customer_serializer.data,
             'data': order_serializer.data,
             'order': order,
         }))

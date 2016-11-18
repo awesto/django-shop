@@ -9,8 +9,10 @@ from django.utils.translation import ugettext_lazy as _
 from cms.plugin_pool import plugin_pool
 from cms.utils.compat.dj import is_installed
 from cmsplugin_cascade.models import SortableInlineCascadeElement
+
 from shop import settings as shop_settings
 from shop.models.product import ProductModel
+from shop.serializers import get_registered_serializer_class
 from .plugin_base import ShopPluginBase, ProductSelectField
 
 if is_installed('adminsortable2'):
@@ -111,8 +113,6 @@ class ShopProductGallery(ShopPluginBase):
         ])
 
     def render(self, context, instance, placeholder):
-        from shop.rest.serializers import product_summary_serializer_class
-
         product_ids = []
         for instance in instance.sortinline_elements.all():
             try:
@@ -120,8 +120,8 @@ class ShopProductGallery(ShopPluginBase):
             except KeyError:
                 pass
         queryset = ProductModel.objects.filter(pk__in=product_ids)
-        serialized = product_summary_serializer_class(queryset, many=True,
-                                                      context={'request': context['request']})
+        ProductSummarySerializer = get_registered_serializer_class('ProductSummarySerializer')
+        serialized = ProductSummarySerializer(queryset, many=True, context={'request': context['request']})
         context['products'] = serialized.data
         return context
 
