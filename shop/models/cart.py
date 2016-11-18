@@ -206,6 +206,8 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
         # Iterate over the registered modifiers, to process the cart's summary
         for modifier in cart_modifiers_pool.get_all_modifiers():
+            for item in items:
+                modifier.post_process_cart_item(self, item, request)
             modifier.process_cart(self, request)
 
         # This calls the post_process_cart method from cart modifiers, if any.

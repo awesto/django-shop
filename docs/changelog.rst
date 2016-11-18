@@ -16,6 +16,7 @@ Changelog for django-SHOP
   implementation. If your project does not use the provided default customer model
   :class:`shop.models.defaults.customer.Customer`, then you should add the ``salutation`` field
   to your implementation of the Customer model, if that makes sense in your use-case.
+* Added method ``post_process_cart_item`` to the Cart Modifiers.
 
 
 0.9.3
