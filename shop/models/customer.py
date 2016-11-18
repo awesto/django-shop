@@ -139,9 +139,9 @@ class CustomerManager(models.Manager):
         return qs
 
     def create(self, *args, **kwargs):
-        customer = super(CustomerManager, self).create(*args, **kwargs)
         if 'user' in kwargs and kwargs['user'].is_authenticated():
-            customer.recognized = CustomerState.REGISTERED
+            kwargs.setdefault('recognized', CustomerState.REGISTERED)
+        customer = super(CustomerManager, self).create(*args, **kwargs)
         return customer
 
     def _get_visiting_user(self, session_key):
@@ -173,8 +173,7 @@ class CustomerManager(models.Manager):
         if request.user.is_authenticated():
             customer, created = self.get_or_create(user=user)
             if created:  # `user` has been created by another app than shop
-                customer.recognized = CustomerState.REGISTERED
-                customer.save()
+                customer.recognize_as_registered()
         else:
             customer = VisitingCustomer()
         return customer
@@ -194,8 +193,7 @@ class CustomerManager(models.Manager):
             user.is_active = False
             user.save()
             recognized = CustomerState.UNRECOGNIZED
-        customer = self.get_or_create(user=user)[0]
-        customer.recognized = recognized
+        customer, created = self.get_or_create(user=user, recognized=recognized)
         return customer
 
 
@@ -211,7 +209,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     SALUTATION = (('mrs', _("Mrs.")), ('mr', _("Mr.")), ('na', _("(n/a)")))
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL, primary_key=True)
-    recognized = CustomerStateField(_("Recognized as"), default=CustomerState.UNRECOGNIZED,
+    recognized = CustomerStateField(_("Recognized as"),
                                     help_text=_("Designates the state the customer is recognized as."))
     salutation = models.CharField(_("Salutation"), max_length=5, choices=SALUTATION)
     last_access = models.DateTimeField(_("Last accessed"), default=timezone.now)
@@ -293,6 +291,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         Recognize the current customer as guest customer.
         """
         self.recognized = CustomerState.GUEST
+        self.save(update_fields=['recognized'])
 
     def is_registered(self):
         """
@@ -305,7 +304,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         Recognize the current customer as registered customer.
         """
         self.recognized = CustomerState.REGISTERED
-
+        self.save(update_fields=['recognized'])
 
     def is_visitor(self):
         """
