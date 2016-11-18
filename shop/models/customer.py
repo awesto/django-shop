@@ -306,11 +306,6 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         """
         self.recognized = CustomerState.REGISTERED
 
-    def unrecognize(self):
-        """
-        Unrecognize the current customer.
-        """
-        self.recognized = CustomerState.UNRECOGNIZED
 
     def is_visitor(self):
         """
