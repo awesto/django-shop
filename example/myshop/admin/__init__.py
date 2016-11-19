@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.conf import settings
+from django.contrib import admin
 
 from shop.admin.defaults import customer
 from shop.models.order import OrderModel
@@ -23,3 +24,5 @@ elif settings.SHOP_TUTORIAL == 'polymorphic':
     from .polymorphic import product, order
 
 __all__ = ['OrderModel', 'commodity', 'customer']
+
+admin.site.site_header = "Django-SHOP administration"

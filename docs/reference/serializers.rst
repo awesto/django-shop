@@ -4,10 +4,10 @@
 REST Serializers
 ================
 
-God application programming style is to strictly separate of *Models*, *Views* and *Controllers*.
-In typical classic Django jargon, *Views* act as, what outsiders normally would denote a controller.
+Good application programming style is to strictly separate of *Models*, *Views* and *Controllers*.
+In typical classic Django jargon, *Views* act as, what outsiders normally denote a controller.
 
-Controllers can sometimes be found on the server and sometimes on the client. In **django-SHOP**
+*Controllers* can sometimes be found on the server and sometimes on the client. In **django-SHOP**
 a significant portion of the controller code is written in JavaScript in the form of Angular
 directives_.
 
@@ -15,6 +15,22 @@ Therefore, all data exchange between the *View* and the *Model* must be performe
 format, namely JSON. This allows us to use the same business logic for the server, as well as for
 the client. It also means, that we could create native mobile apps, which communicate with a
 web-application, without ever seeing a line of HTML code.
+
+Moreover, since **django-SHOP** uses **django-CMS** to organize all available components, a classic
+Django "View" does not make much sense anymore. Therefore, as we evolve our Model-View-Control
+pattern into a modern web application, our REST serializers become the new controllers.
+
+
+From a Database Model to the Serializer
+=======================================
+
+As we already know, all database models from the **django-SHOP** framework are owned by the merchant
+implementation. Model serializers reflect their content and hence are tightly coupled with them.
+We therefore must be able to create our own serializers in a way similar to how we extend our
+database models. This means that we have a set of base serializers, which perform the task required
+by their basic counterpart models. Thus, if we extend these models, we normally also might want to
+extend their serializers.
+
 
 
 Every URL is a REST endpoint
