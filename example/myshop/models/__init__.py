@@ -25,8 +25,5 @@ elif settings.SHOP_TUTORIAL == 'polymorphic':
     from .polymorphic.smartphone import SmartPhoneModel, SmartPhone
     from shop.models.defaults.delivery import Delivery, DeliveryItem
 
-from shop.models.defaults.order import Order  # NOQA
-
-
-__all__ = ['ShippingAddress', 'BillingAddress', 'Cart', 'CartItem', 'Customer', 'Order', 'OrderItem',
+__all__ = ['ShippingAddress', 'BillingAddress', 'Cart', 'CartItem', 'Customer', 'OrderItem',
            'Commodity', 'SmartCard', 'SmartPhoneModel', 'SmartPhone', 'Delivery', 'DeliveryItem']
