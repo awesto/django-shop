@@ -9,6 +9,9 @@ from rest_framework.filters import BaseFilterBackend
 
 
 class CMSPagesFilterBackend(BaseFilterBackend):
+    """
+    Use this backend to only show products assigned to the current page.
+    """
 
     cms_pages_fields = ['cms_pages', ]
 
@@ -17,9 +20,6 @@ class CMSPagesFilterBackend(BaseFilterBackend):
         return queryset.filter(reduce(operator.or_, filter_by_cms_page)).distinct()
 
     def filter_queryset(self, request, queryset, view):
-        """
-        Restrict queryset to entities which have one ore more relations to one or more CMS pages.
-        """
         cms_pages_fields = getattr(view, 'cms_pages_fields', self.cms_pages_fields)
         if not isinstance(cms_pages_fields, (list, tuple)):
             msg = "`cms_pages_fields` must be a list or tuple of fields referring to djangoCMS pages."
@@ -31,6 +31,9 @@ class CMSPagesFilterBackend(BaseFilterBackend):
 
 
 class RecursiveCMSPagesFilterBackend(CMSPagesFilterBackend):
+    """
+    Use this backend to show products assigned to the current page or any of its descendants.
+    """
 
     def _get_filtered_queryset(self, current_page, queryset):
         pages = current_page.get_descendants(include_self=True)
