@@ -27,12 +27,17 @@ from shop.rest.money import MoneyField
 
 class RegistryMixin(object):
     """
-    Serializers wishing to be referenced by other Base Serializers must be registered using:
+    Some of the serializers may be used on their own, or if the merchant wants to inherit from them,
+    then their extended implementation shall be used. Other serializers referencing those
+    alternative implementations, need a way to distinguish which of the classes in the inheritance
+    chain shall be used. This is done through an implicit registry, which knows which of those
+    serializers shall be used.
     ```
-    class SomeSerializer(six.with_metaclass(RegistryMetaclass, RegistryMixin, ModelSerializer)):
+    class BaseSomeSerializer(six.with_metaclass(RegistryMetaclass, RegistryMixin, ModelSerializer)):
         ...
     ```
-    This adds the above class to the serializers registry.
+    This adds `BaseSomeSerializer` to the serializers registry which later can be retrieved using
+    `RegistryMetaclass.get_serializer_class`.
     """
 
 
@@ -45,7 +50,7 @@ class RegistryMetaclass(serializers.SerializerMetaclass):
     in order to add arbitrary methods and/or fields.
 
     In such a way, enriched serializer implementations added to the registry can be retrieved
-    by other base serializers  using:
+    by other base serializers using:
     ```
     SomeSerializer = RegistryMetaclass.get_serializer('SomeSerializer')
     ```
@@ -60,12 +65,12 @@ class RegistryMetaclass(serializers.SerializerMetaclass):
             msg = "Serializer '{0}' must inherit from {1} or derived from thereof."
             raise exceptions.ImproperlyConfigured(msg.format(clsname, serializers.ModelSerializer))
 
-        new_class = super(cls, RegistryMetaclass).__new__(cls, clsname, bases, attrs)
-
         if bases[0] is RegistryMixin:
-             # it's a base serializer declared by the shop framework
+            # it's a base serializer declared by the shop framework
+            new_class = super(cls, RegistryMetaclass).__new__(cls, clsname, bases[1:], attrs)
             cls._serializer_classes[clsname] = new_class
         else:
+            new_class = super(cls, RegistryMetaclass).__new__(cls, clsname, bases, attrs)
             for base_name, base_class in cls._serializer_classes.items():
                 if issubclass(new_class, base_class):
                     # override the assignment of the base serializer from which it inherits
