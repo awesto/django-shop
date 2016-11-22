@@ -71,7 +71,7 @@ class CMSPageProductListView(ProductListView):
     belong to which CMS page.
     """
     renderer_classes = (CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer)
-    filter_backends = [CMSPagesFilterBackend()] + list(api_settings.DEFAULT_FILTER_BACKENDS)
+    filter_backends = [CMSPagesFilterBackend] + list(api_settings.DEFAULT_FILTER_BACKENDS)
     cms_pages_fields = ('cms_pages',)
 
     def get_renderer_context(self):
@@ -79,7 +79,7 @@ class CMSPageProductListView(ProductListView):
         if self.filter_class and renderer_context['request'].accepted_renderer.format == 'html':
             # restrict to products associated to this CMS page only
             backend = CMSPagesFilterBackend()
-            queryset = backend().filter_queryset(self.request, self.get_queryset(), self)
+            queryset = backend.filter_queryset(self.request, self.get_queryset(), self)
             if callable(getattr(self.filter_class, 'get_render_context', None)):
                 renderer_context['filter'] = self.filter_class.get_render_context(self.request, queryset)
             elif isinstance(getattr(self.filter_class, 'render_context', None), dict):
