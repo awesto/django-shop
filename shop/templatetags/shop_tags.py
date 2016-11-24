@@ -3,13 +3,17 @@ from __future__ import unicode_literals
 
 from collections import OrderedDict
 from datetime import datetime
+
 from django import template
 from django.conf import settings
 from django.template.loader import select_template
 from django.utils import formats
+from django.utils.html import force_text
 from django.utils.safestring import mark_safe
 from django.utils.dateformat import format, time_format
+
 from classytags.helpers import InclusionTag
+
 from shop import settings as shop_settings
 from shop.models.cart import CartModel
 from shop.rest.money import JSONRenderer
@@ -100,4 +104,4 @@ def rest_json(value, arg=None):
         msg = "Given value must be of type dict, OrderedDict, list or tuple but it is {}."
         raise ValueError(msg.format(value.__class__.__name__))
     data = JSONRenderer().render(value)
-    return mark_safe(data)
+    return mark_safe(force_text(data))
