@@ -35,7 +35,6 @@ CONTRIBUTORS
 * Mike Yumatov
 * Mikhail Kolesnik
 * Pavel Zhukov
-* Pavel Zhukov
 * Pedro Gracia
 * Per Rosengren
 * Raúl Cumplido
