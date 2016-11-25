@@ -45,6 +45,7 @@ CONTRIBUTORS
 TRANSLATORS
 ===========
 
+* Maltsev Artyom (Russian)
 * Mikhail Kolesnik (Russian)
 * Pavel Zhukov (Russian)
 * Pedro Gracia (Spanish)
