@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.forms.fields import CharField
 from django.forms import widgets
-from django.template import Engine
+from django.template import engines
 from django.template.loader import select_template
 from django.utils.html import strip_tags
 from django.utils.safestring import mark_safe
@@ -82,7 +82,7 @@ class CustomerFormPluginBase(DialogFormPluginBase):
 
     def get_render_template(self, context, instance, placeholder):
         if 'error_message' in context:
-            return Engine().from_string('<p class="text-danger">{{ error_message }}</p>')
+            return engines['django'].from_string('<p class="text-danger">{{ error_message }}</p>')
         return super(CustomerFormPluginBase, self).get_render_template(context, instance, placeholder)
 
 
