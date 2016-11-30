@@ -444,7 +444,7 @@ CMSPLUGIN_CASCADE = {
         'cmsplugin_cascade.link.plugin_base.LinkElementMixin',
         'shop.cascade.plugin_base.CatalogLinkForm',
     ),
-    'alien_plugins': ('TextPlugin', 'TextLinkPlugin',),
+    'alien_plugins': ('TextPlugin', 'TextLinkPlugin', 'AcceptConditionPlugin',),
     'bootstrap3': {
         'template_basedir': 'angular-ui',
     },
