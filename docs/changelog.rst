@@ -6,6 +6,7 @@ Changelog for django-SHOP
 
 0.9.4
 =====
+
 * In the backend, OrderAdmin and OrderItemAdmin may render the extra dicts from the model using
   a special template.
 * Drop support for Django-1.8.
@@ -13,9 +14,18 @@ Changelog for django-SHOP
   been created. This has been adopted to re-use the method Product.is_in_cart()
   in and finds it's Merge the contents of the other cart into this one, afterwards delete it.
 * Added method ``post_process_cart_item`` to the Cart Modifiers.
+* Removed the ``salutation`` field from the ``BaseCustomer`` model, making it optional now. The
+  default implementation of the ``Customer`` model now contains it.
+* Introduced a generic registry class for model serializers. ``ProductSummarySerializerBase`` is
+  replaced by ``BaseProductSummarySerializer`` which is the class used to render a summary of the
+  common product's fields.
+* Started to refactor all model serializers into their own folder ``shop/serializers`` and
+  ``shop/serializers/defaults`` in order to make use of the above registry class.
+
 
 0.9.3
 =====
+
 * Added template context processor :func:`shop.context_processors.ng_model_options` to add the
   settings ``EDITCART_NG_MODEL_OPTIONS`` and ``ADD2CART_NG_MODEL_OPTIONS``. Please check your
   templates to see, if you still use ``ng_model_options``.
