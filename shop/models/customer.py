@@ -319,8 +319,11 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         Guest customers only expire, if they failed fulfilling the purchase (currently not implemented).
         """
         if self.recognized is CustomerState.UNRECOGNIZED:
-            session_key = CustomerManager.decode_session_key(self.user.username)
-            return not SessionStore.exists(session_key)
+            try:
+                session_key = CustomerManager.decode_session_key(self.user.username)
+                return not SessionStore.exists(session_key)
+            except KeyError:
+                pass
         return False
 
     def get_or_assign_number(self):
