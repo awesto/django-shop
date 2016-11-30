@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from distutils.version import LooseVersion
-
 from django.forms.fields import CharField
 from django.forms import widgets
-from django.template import engines, TemplateDoesNotExist
+from django.template import engines
 from django.template.loader import select_template
 from django.utils.html import strip_tags
 from django.utils.safestring import mark_safe
@@ -16,21 +14,15 @@ try:
 except ImportError:
     from HTMLParser import HTMLParser  # py2
 from cms.plugin_pool import plugin_pool
-
-from djangocms_text_ckeditor import __version__ as djangocms_text_ckeditor_version
 from djangocms_text_ckeditor.widgets import TextEditorWidget
 from djangocms_text_ckeditor.utils import plugin_tags_to_user_html
-from djangocms_text_ckeditor.cms_plugins import TextPlugin
-
 from cmsplugin_cascade.fields import GlossaryField
 from cmsplugin_cascade.link.cms_plugins import TextLinkPlugin
 from cmsplugin_cascade.link.forms import LinkForm, TextLinkFormMixin
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.mixins import TransparentMixin
 from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
-
 from shop import settings as shop_settings
-from shop.forms.checkout import AcceptConditionForm
 from shop.models.cart import CartModel
 from shop.modifiers.pool import cart_modifiers_pool
 from .plugin_base import ShopPluginBase, ShopButtonPluginBase, DialogFormPluginBase
@@ -253,9 +245,9 @@ DialogFormPluginBase.register_plugin(ExtraAnnotationFormPlugin)
 
 class AcceptConditionFormPlugin(DialogFormPluginBase):
     """
-    Deprecated. Use AcceptConditionPlugin instead.
+    Provides the form to accept any condition.
     """
-    name = _("Accept Condition (deprecated)")
+    name = _("Accept Condition")
     form_class = 'shop.forms.checkout.AcceptConditionForm'
     template_leaf_name = 'accept-condition.html'
     html_parser = HTMLParser()
@@ -283,46 +275,13 @@ class AcceptConditionFormPlugin(DialogFormPluginBase):
         super(AcceptConditionFormPlugin, self).render(context, instance, placeholder)
         accept_condition_form = context['accept_condition_form.plugin_{}'.format(instance.id)]
         html_content = self.html_parser.unescape(instance.glossary.get('html_content', ''))
-        if LooseVersion(djangocms_text_ckeditor_version) >= LooseVersion('3.1.0'):
-            html_content = plugin_tags_to_user_html(html_content, context)
-        else:
-            html_content = plugin_tags_to_user_html(html_content, context, placeholder)
+        html_content = plugin_tags_to_user_html(html_content, context, placeholder)
         # transfer the stored HTML content into the widget's label
         accept_condition_form['accept'].field.widget.choice_label = mark_safe(html_content)
         context['accept_condition_form'] = accept_condition_form
         return context
 
 DialogFormPluginBase.register_plugin(AcceptConditionFormPlugin)
-
-
-class AcceptConditionPlugin(TextPlugin):
-    name = _("Accept Condition")
-    module = "Shop"
-    FormClass = AcceptConditionForm
-    render_template = 'shop/checkout/accept-condition.html'
-
-    def render(self, context, instance, placeholder):
-        """
-        Return the context to render a checkbox used to accept the terms and conditions
-        """
-        request = context['request']
-        try:
-            cart = CartModel.objects.get_from_request(request)
-            cart.update(request)
-        except CartModel.DoesNotExist:
-            cart = None
-        request._plugin_order = getattr(request, '_plugin_order', 0) + 1
-        form_data = {'cart': cart, 'initial': dict(plugin_id=instance.id, plugin_order=request._plugin_order)}
-        bound_form = self.FormClass(**form_data)
-        context[bound_form.form_name] = bound_form
-        super(AcceptConditionPlugin, self).render(context, instance, placeholder)
-        accept_condition_form = context['accept_condition_form.plugin_{}'.format(instance.id)]
-        # transfer the stored HTML content into the widget's label
-        accept_condition_form['accept'].field.widget.choice_label = mark_safe(context['body'])
-        context['accept_condition_form'] = accept_condition_form
-        return context
-
-plugin_pool.register_plugin(AcceptConditionPlugin)
 
 
 class RequiredFormFieldsPlugin(ShopPluginBase):

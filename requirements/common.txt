@@ -4,7 +4,7 @@ django-allauth==0.23.0
 django-angular==0.8.4
 django-appconf==1.0.1
 django-classy-tags==0.7.2
-django-cms==3.3.3
+django-cms==3.3.2
 django-compressor==1.6
 django-filer==1.2.5
 django-filter==0.15.3
@@ -21,7 +21,7 @@ django-sass-processor==0.5.1
 django-sekizai==0.10.0
 Django-Select2==5.8.9
 djangoshop-stripe==0.2.0
-django-treebeard==4.1.0
+https://github.com/fladi/django-treebeard/archive/django-1.10.zip
 djangocms-bootstrap3==0.1.1
 djangocms-cascade==0.11.0
 djangocms-text-ckeditor==3.0.1
