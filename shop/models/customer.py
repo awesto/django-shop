@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 
 import string
 from importlib import import_module
+import warnings
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
@@ -323,6 +325,8 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
                 session_key = CustomerManager.decode_session_key(self.user.username)
                 return not SessionStore.exists(session_key)
             except KeyError:
+                msg = "Unable to decode username '{}' as session key"
+                warnings.warn(msg.format(self.user.username))
                 return True
         return False
 
