@@ -322,6 +322,11 @@ class AcceptConditionPlugin(TextPlugin):
         context['accept_condition_form'] = accept_condition_form
         return context
 
+    def get_admin_url_name(self, name):
+        model_name = 'acceptcondition'
+        url_name = "%s_%s_%s" % ('shop', model_name, name)
+        return url_name
+
 plugin_pool.register_plugin(AcceptConditionPlugin)
 
 
