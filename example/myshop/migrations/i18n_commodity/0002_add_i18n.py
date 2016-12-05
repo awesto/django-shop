@@ -62,6 +62,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='commodity',
             name='sample_image',
-            field=filer.fields.image.FilerImageField(blank=True, on_delete=django.db.models.deletion.CASCADE, to='filer.Image'),
+            field=filer.fields.image.FilerImageField(blank=True, help_text="Sample image used in the catalog's list view.", null=True, on_delete=django.db.models.deletion.CASCADE, to='filer.Image', verbose_name='Sample Image'),
         ),
     ]
