@@ -49,7 +49,10 @@ def forwards(apps, schema_editor):
         if element.plugin_type != 'AcceptConditionPlugin':
             continue
 
-        old_body = html_parser.unescape(json.loads(element.body).get('html_content'))
+        try:
+            old_body = html_parser.unescape(json.loads(element.body).get('html_content'))
+        except ValueError:
+            continue
         new_body, count = _replace_text_body(
             old_body,
             input_pattern=r'<img ([^>]*)\bid="plugin_obj_(?P<pk>\d+)"([^>]*)/?>',
