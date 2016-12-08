@@ -10,6 +10,10 @@ from django.contrib.sitemaps.views import sitemap
 from django.http import HttpResponse
 from shop.views.auth import PasswordResetConfirm
 from cms.sitemaps import CMSSitemap
+from myshop.sitemap import ProductSitemap
+
+sitemaps = {'cmspages': CMSSitemap,
+            'products': ProductSitemap}
 
 
 def render_robots(request):
@@ -25,7 +29,7 @@ i18n_urls = (
 )
 urlpatterns = [
     url(r'^robots\.txt$', render_robots),
-    url(r'^sitemap\.xml$', sitemap, {'sitemaps': {'cmspages': CMSSitemap}}, name='sitemap'),
+    url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
     url(r'^shop/', include('shop.urls', namespace='shop')),
 ]
 if settings.USE_I18N:
