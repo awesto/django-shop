@@ -76,13 +76,13 @@ class CustomerQuerySet(models.QuerySet):
             if field_name == 'pk':
                 field_name = opts.pk.name
             try:
-                opts.get_field_by_name(field_name)
+                opts.get_field(field_name)
                 if isinstance(lookup, get_user_model()):
                     lookup.pk  # force lazy object to resolve
                 lookup_kwargs[key] = lookup
             except FieldDoesNotExist as fdne:
                 try:
-                    get_user_model()._meta.get_field_by_name(field_name)
+                    get_user_model()._meta.get_field(field_name)
                     lookup_kwargs['user__' + key] = lookup
                 except FieldDoesNotExist:
                     raise fdne
