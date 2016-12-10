@@ -147,7 +147,7 @@ class AddressForm(DialogModelForm):
             address_form = cls(data=data, cart=cart)
             if address_form.is_valid():
                 # prevent adding the same address twice
-                all_field_names = cls.get_model()._meta.get_all_field_names()
+                all_field_names = [f.name for f in cls.get_model()._meta.get_fields()]
                 filter_args = dict((attr, val) for attr, val in address_form.data.items()
                                    if attr in all_field_names and val)
                 filter_args.update(customer=request.customer)
