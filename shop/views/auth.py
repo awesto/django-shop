@@ -44,7 +44,7 @@ class LoginView(OriginalLoginView):
             anonymous_cart = CartModel.objects.get_from_request(self.request)
         except CartModel.DoesNotExist:
             anonymous_cart = None
-        if self.request.user.is_anonymous() or self.request.customer.is_registered():
+        if self.request.customer.user.is_anonymous() or self.request.customer.is_registered():
             previous_user = None
         else:
             previous_user = self.request.customer.user
@@ -54,7 +54,7 @@ class LoginView(OriginalLoginView):
             # an anonymous customer logged in, now merge his current cart with a cart,
             # which previously might have been created under his account.
             authenticated_cart.merge_with(anonymous_cart)
-        if previous_user and previous_user.is_active is False:
+        if previous_user and previous_user.is_active is False and previous_user != self.request.user:
             previous_user.delete()  # keep the database clean and remove this anonymous entity
 
 
