@@ -191,9 +191,13 @@ class CustomerManager(models.Manager):
             username = self.encode_session_key(request.session.session_key)
             # create an inactive intermediate user, which later can declare himself as
             # guest, or register as a valid Django user
-            user = get_user_model().objects.create_user(username)
-            user.is_active = False
-            user.save()
+            try:
+                user = get_user_model().objects.get(username=username)
+            except get_user_model().DoesNotExist:
+                user = get_user_model().objects.create_user(username)
+                user.is_active = False
+                user.save()
+
             recognized = CustomerState.UNRECOGNIZED
         customer, created = self.get_or_create(user=user, recognized=recognized)
         return customer
