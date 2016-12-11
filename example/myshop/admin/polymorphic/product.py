@@ -59,9 +59,7 @@ class SmartCardAdmin(SortableAdminMixin, TranslatableAdmin, FrontendEditableAdmi
     prepopulated_fields = {'slug': ('product_name',)}
 
 
-@admin.register(OperatingSystem)
-class OperatingSystemAdmin(admin.ModelAdmin):
-    pass
+admin.site.register(OperatingSystem, admin.ModelAdmin)
 
 
 class SmartPhoneInline(admin.TabularInline):
