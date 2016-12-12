@@ -189,8 +189,8 @@ class CustomerManager(models.Manager):
                 request.session.cycle_key()
                 assert request.session.session_key
             username = self.encode_session_key(request.session.session_key)
-            # create an inactive intermediate user, which later can declare himself as
-            # guest, or register as a valid Django user
+            # create or get a previously created inactive intermediate user,
+            # which later can declare himself as guest, or register as a valid Django user
             try:
                 user = get_user_model().objects.get(username=username)
             except get_user_model().DoesNotExist:
