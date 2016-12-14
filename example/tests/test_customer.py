@@ -173,6 +173,26 @@ class CustomerTest(TestCase):
         self.assertEqual(customer.last_name, 'Simpson')
         self.assertEqual(customer.email, 'bart@thesimpsons.com')
 
+    def test_get_or_create_authenticated_customer_idempotent(self):
+        lisa = get_user_model().objects.get(username='lisa')
+        self.assertTrue(lisa.is_authenticated())
+        request = self.factory.get('/', follow=True)
+        request.user = lisa
+        request.session = SessionStore()
+        request.session.create()
+        customer1 = Customer.objects.get_or_create_from_request(request)
+        customer2 = Customer.objects.get_or_create_from_request(request)
+        self.assertEqual(customer1, customer2)
+
+    def test_get_or_create_unauthenticated_customer_idempotent(self):
+        request = self.factory.get('/', follow=True)
+        request.user = AnonymousUser()
+        request.session = SessionStore()
+        request.session.create()
+        customer1 = Customer.objects.get_or_create_from_request(request)
+        customer2 = Customer.objects.get_or_create_from_request(request)
+        self.assertEqual(customer1, customer2)
+
     def test_select_related(self):
         """
         Check that all queries on model Customer do an INNER JOIN on table `auth_user`.

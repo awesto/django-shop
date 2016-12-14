@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 
 import string
 from importlib import import_module
+import warnings
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
@@ -187,11 +189,15 @@ class CustomerManager(models.Manager):
                 request.session.cycle_key()
                 assert request.session.session_key
             username = self.encode_session_key(request.session.session_key)
-            # create an inactive intermediate user, which later can declare himself as
-            # guest, or register as a valid Django user
-            user = get_user_model().objects.create_user(username)
-            user.is_active = False
-            user.save()
+            # create or get a previously created inactive intermediate user,
+            # which later can declare himself as guest, or register as a valid Django user
+            try:
+                user = get_user_model().objects.get(username=username)
+            except get_user_model().DoesNotExist:
+                user = get_user_model().objects.create_user(username)
+                user.is_active = False
+                user.save()
+
             recognized = CustomerState.UNRECOGNIZED
         customer, created = self.get_or_create(user=user, recognized=recognized)
         return customer
@@ -288,6 +294,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         Recognize the current customer as guest customer.
         """
         self.recognized = CustomerState.GUEST
+        self.save(update_fields=['recognized'])
 
     def is_registered(self):
         """
@@ -310,13 +317,18 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     def is_expired(self):
         """
-        Return true if the session of an unrecognized customer expired.
+        Return True if the session of an unrecognized customer expired or is not decodable.
         Registered customers never expire.
-        Guest customers only expire, if they failed fulfilling the purchase (currently not implemented).
+        Guest customers only expire, if they failed fulfilling the purchase.
         """
         if self.recognized is CustomerState.UNRECOGNIZED:
-            session_key = CustomerManager.decode_session_key(self.user.username)
-            return not SessionStore.exists(session_key)
+            try:
+                session_key = CustomerManager.decode_session_key(self.user.username)
+                return not SessionStore.exists(session_key)
+            except KeyError:
+                msg = "Unable to decode username '{}' as session key"
+                warnings.warn(msg.format(self.user.username))
+                return True
         return False
 
     def get_or_assign_number(self):
@@ -332,7 +344,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     def get_number(self):
         """
-        Hook to get the Customer's number. Customers haven't purchased anything may return None.
+        Hook to get the customer's number. Customers haven't purchased anything may return None.
         """
         return str(self.user_id)
 
