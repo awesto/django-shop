@@ -2,6 +2,10 @@ FROM awesto/uwsgi-django-shop:latest
 
 MAINTAINER Jacob Rief <jacob.rief@gmail.com>
 
+# install packages outside of PyPI
+WORKDIR /web/django-shop
+RUN npm install
+
 # copy the example project
 RUN mkdir -p /web/django-shop/example
 ADD myshop /web/django-shop/example/myshop
