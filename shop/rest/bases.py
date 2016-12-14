@@ -12,7 +12,6 @@ from shop.rest.money import MoneyField
 __all__ = ['BaseCustomerSerializer', 'OrderItemSerializer', 'get_product_summary_serializer_class',
            'set_product_summary_serializer_class']
 
-_product_summary_serializer_class = None
 
 def get_product_summary_serializer_class():
     """
@@ -27,10 +26,13 @@ def set_product_summary_serializer_class(product_summary_serializer_class):
     """
     global _product_summary_serializer_class
 
-    if _product_summary_serializer_class:
+    try:
+        _product_summary_serializer_class
+    except NameError:
+        _product_summary_serializer_class = product_summary_serializer_class
+    else:
         msg = "Class `{}` inheriting from `ProductSummarySerializerBase` already registred."
         raise exceptions.ImproperlyConfigured(msg.format(product_summary_serializer_class.__name__))
-    _product_summary_serializer_class = product_summary_serializer_class
 
 
 class BaseCustomerSerializer(serializers.ModelSerializer):
