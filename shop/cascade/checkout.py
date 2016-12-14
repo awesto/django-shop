@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.core.exceptions import PermissionDenied
 from django.forms.fields import CharField
 from django.forms import widgets
 from django.template import Engine
@@ -132,7 +133,8 @@ class CheckoutAddressPluginBase(DialogFormPluginBase):
         form_data = super(CheckoutAddressPluginBase, self).get_form_data(context, instance, placeholder)
 
         AddressModel = self.FormClass.get_model()
-        assert form_data['cart'] is not None, "Can not proceed to checkout without cart"
+        if form_data['cart'] is None:
+            raise PermissionDenied("Can not proceed to checkout without cart")
         address = self.get_address(form_data['cart'])
         form_data.update(instance=address)
 
