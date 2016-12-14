@@ -15,7 +15,7 @@ from shop.models.customer import CustomerModel, CustomerState
 class CustomerInlineAdminBase(admin.StackedInline):
     model = CustomerModel
     fieldsets = (
-        (None, {'fields': ('get_number')}),
+        (None, {'fields': ('get_number',)}),
     )
     readonly_fields = ('get_number',)
 

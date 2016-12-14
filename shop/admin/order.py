@@ -160,10 +160,15 @@ class PrintOrderAdminMixin(object):
     A customized OrderAdmin class shall inherit from this mixin class, to add
     methods for printing the delivery note and the invoice.
     """
-    def __init__(self, *args, **kwargs):
-        self.fields += ('print_out',)
-        self.readonly_fields += ('print_out',)
-        super(PrintOrderAdminMixin, self).__init__(*args, **kwargs)
+    def get_fields(self, request, obj=None):
+        fields = list(super(PrintOrderAdminMixin, self).get_fields(request))
+        fields.append('print_out')
+        return fields
+
+    def get_readonly_fields(self, request, obj=None):
+        readonly_fields = list(super(PrintOrderAdminMixin, self).get_readonly_fields(request))
+        readonly_fields.append('print_out')
+        return readonly_fields
 
     def get_urls(self):
         my_urls = [

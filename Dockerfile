@@ -1,13 +1,13 @@
 # uWSGI serving a django-shop application
-# This Dockerfile builds the base image for all merchant implementations using **djangoSHOP**:
-# docker build -t uwsgi-django-shop .
+# This Dockerfile builds the base image for all merchant implementations using **django-SHOP**:
+# docker build -t awesto/uwsgi-django-shop .
 
 FROM awesto/fedora-uwsgi-python:latest
 
 MAINTAINER Jacob Rief <jacob.rief@gmail.com>
 
-#RUN alternatives --install /usr/bin/python python /usr/bin/python3.4 2
-#RUN alternatives --install /usr/bin/python python /usr/bin/python2.7 1
+RUN alternatives --install /usr/bin/python python /usr/bin/python3.5 2
+RUN alternatives --install /usr/bin/python python /usr/bin/python2.7 1
 RUN pip install --upgrade pip
 
 COPY docker-files/uwsgi.ini /etc/uwsgi.ini
@@ -22,8 +22,8 @@ RUN chown redis.redis /etc/uwsgi.d/redis.ini
 
 RUN pip install uwsgi
 ADD requirements /tmp/requirements
-RUN pip install django==1.9.10
-RUN pip install -r /tmp/requirements/py2.txt
+RUN pip install django==1.9.12
+RUN pip install -r /tmp/requirements/common.txt
 
 RUN mkdir -p /web/{logs,workdir,elasticsearch,redis,django-shop}
 COPY LICENSE.txt /web/django-shop
@@ -39,7 +39,3 @@ RUN useradd -M -d /web -s /bin/bash django
 RUN chown -R django.django /web/{logs,workdir}
 RUN chown -R elasticsearch.elasticsearch /web/elasticsearch
 RUN chown -R redis.redis /web/redis
-
-# install packages outside of PyPI
-WORKDIR /web/django-shop
-RUN npm install

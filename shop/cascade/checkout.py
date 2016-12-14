@@ -3,9 +3,10 @@ from __future__ import unicode_literals
 
 from distutils.version import LooseVersion
 
+from django.core.exceptions import PermissionDenied
 from django.forms.fields import CharField
 from django.forms import widgets
-from django.template import engines, TemplateDoesNotExist
+from django.template import engines
 from django.template.loader import select_template
 from django.utils.html import strip_tags
 from django.utils.safestring import mark_safe
@@ -96,8 +97,8 @@ class CustomerFormPluginBase(DialogFormPluginBase):
 
 class CustomerFormPlugin(CustomerFormPluginBase):
     """
-    Provides the form to edit specific data stored in model `Customer`, if customer declared
-    himself as registered.
+    Provides the form to edit specific data stored in :class:`shop.model.customer.CustomerModel`,
+    if customer declared himself as registered.
     """
     name = _("Customer Form")
     form_class = 'shop.forms.checkout.CustomerForm'
@@ -140,7 +141,8 @@ class CheckoutAddressPluginBase(DialogFormPluginBase):
         form_data = super(CheckoutAddressPluginBase, self).get_form_data(context, instance, placeholder)
 
         AddressModel = self.FormClass.get_model()
-        assert form_data['cart'] is not None, "Can not proceed to checkout without cart"
+        if form_data['cart'] is None:
+            raise PermissionDenied("Can not proceed to checkout without cart")
         address = self.get_address(form_data['cart'])
         form_data.update(instance=address)
 
