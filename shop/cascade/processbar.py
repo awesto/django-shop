@@ -15,7 +15,7 @@ from cmsplugin_cascade.link.forms import TextLinkFormMixin
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.widgets import NumberInputWidget
 from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
-from cmsplugin_cascade.mixins import TransparentMixin
+from cmsplugin_cascade.plugin_base import TransparentMixin
 from shop.cascade.plugin_base import ShopPluginBase
 from shop import settings as shop_settings
 

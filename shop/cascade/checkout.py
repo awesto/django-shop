@@ -26,7 +26,7 @@ from cmsplugin_cascade.fields import GlossaryField
 from cmsplugin_cascade.link.cms_plugins import TextLinkPlugin
 from cmsplugin_cascade.link.forms import LinkForm, TextLinkFormMixin
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
-from cmsplugin_cascade.mixins import TransparentMixin
+from cmsplugin_cascade.plugin_base import TransparentMixin
 from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
 
 from shop import settings as shop_settings
