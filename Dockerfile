@@ -20,21 +20,25 @@ COPY docker-files/redis.ini /etc/uwsgi.d/redis.ini
 COPY docker-files/redis.conf /etc/redis.conf
 RUN chown redis.redis /etc/uwsgi.d/redis.ini
 
+RUN cat /etc/resolv.conf
 RUN pip install uwsgi
 ADD requirements /tmp/requirements
-RUN pip install django==1.9.12
+RUN pip install Django==1.9.12
 RUN pip install -r /tmp/requirements/common.txt
 
-RUN mkdir -p /web/{logs,workdir,elasticsearch,redis,django-shop}
-COPY LICENSE.txt /web/django-shop
-COPY README.md /web/django-shop
-COPY MANIFEST.in /web/django-shop
-COPY setup.py /web/django-shop
-COPY package.json /web/django-shop
-ADD email_auth /web/django-shop/email_auth
-ADD shop /web/django-shop/shop
-RUN pip install /web/django-shop
+# copy the local django-shop file into a temporary folder
+RUN mkdir -p /tmp/django-shop
+COPY LICENSE.txt /tmp/django-shop
+COPY README.md /tmp/django-shop
+COPY MANIFEST.in /tmp/django-shop
+COPY setup.py /tmp/django-shop
+ADD email_auth /tmp/django-shop/email_auth
+ADD shop /tmp/django-shop/shop
+# and from there install it into the site-package using setup.py
+RUN pip install /tmp/django-shop
+RUN rm -rf /tmp/django-shop
 
+RUN mkdir -p /web/{logs,workdir,elasticsearch,redis}
 RUN useradd -M -d /web -s /bin/bash django
 RUN chown -R django.django /web/{logs,workdir}
 RUN chown -R elasticsearch.elasticsearch /web/elasticsearch
