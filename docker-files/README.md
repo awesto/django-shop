@@ -26,3 +26,7 @@ By leaving the shell, using *CTRL-D* or typing ``exit``, this container is destr
 
 After the image has been build successfully, it should be tagged with the current version
 number.
+
+```
+docker tag awesto/uwsgi-django-shop awesto/uwsgi-django-shop:0.9.4
+```

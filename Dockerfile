@@ -39,7 +39,8 @@ RUN pip install /tmp/django-shop
 RUN rm -rf /tmp/django-shop
 
 RUN mkdir -p /web/{logs,workdir,elasticsearch,redis}
+RUN mkdir -p /web/logs/elasticsearch
 RUN useradd -M -d /web -s /bin/bash django
 RUN chown -R django.django /web/{logs,workdir}
-RUN chown -R elasticsearch.elasticsearch /web/elasticsearch
+RUN chown -R elasticsearch.elasticsearch /web/elasticsearch /web/logs/elasticsearch
 RUN chown -R redis.redis /web/redis
