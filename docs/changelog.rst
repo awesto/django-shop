@@ -6,16 +6,26 @@ Changelog for django-SHOP
 
 0.9.4
 =====
-* In the backend, OrderAdmin and OrderItemAdmin may render the extra dicts from the model using
-  a special template.
+
+* In the backend, ``OrderAdmin`` and ``OrderItemAdmin`` may render the extra dicts from the model
+  using a special template.
+* In ``OrderAdmin`` use methods ``get_fields()`` and ``get_readonly_fields()`` as intended.
 * Drop support for Django-1.8.
 * If an anonymous customer logs in, his current cart is merged with a cart, which has previously
-  been created. This has been adopted to re-use the method Product.is_in_cart()
+  been created. This has been adopted to re-use the method ``Product.is_in_cart()``.
   in and finds it's Merge the contents of the other cart into this one, afterwards delete it.
-* Added method ``post_process_cart_item`` to the Cart Modifiers.
+* Added method ``post_process_cart_item()`` to the Cart Modifiers.
+* Moved field ``salutation`` from :class:`shop.models.customer.BaseCustomer` into the merchant
+  implementation. If your project does not use the provided default customer model
+  :class:`shop.models.defaults.customer.Customer`, then you should add the ``salutation`` field
+  to your implementation of the Customer model, if that makes sense in your use-case.
+* Started to refactor REST serializers, so that they can easily be overridden by the merchant
+  implementation.
+
 
 0.9.3
 =====
+
 * Added template context processor :func:`shop.context_processors.ng_model_options` to add the
   settings ``EDITCART_NG_MODEL_OPTIONS`` and ``ADD2CART_NG_MODEL_OPTIONS``. Please check your
   templates to see, if you still use ``ng_model_options``.

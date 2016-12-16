@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.views.decorators.cache import never_cache
 from rest_framework import generics, mixins
+from rest_framework.exceptions import NotFound
 from rest_framework.renderers import BrowsableAPIRenderer
 from rest_framework.exceptions import PermissionDenied
 from shop.rest.serializers import OrderListSerializer, OrderDetailSerializer
@@ -73,6 +74,18 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateM
             return self.list(request, *args, **kwargs)
         self.update(request, *args, **kwargs)
         return self.retrieve(request, *args, **kwargs)
+
+    def list(self, request, *args, **kwargs):
+        try:
+            return super(OrderView, self).list(request, *args, **kwargs)
+        except OrderModel.DoesNotExist:
+            raise NotFound("No orders have been found for the current user.")
+
+    def retrieve(self, request, *args, **kwargs):
+        try:
+            return super(OrderView, self).retrieve(request, *args, **kwargs)
+        except OrderModel.DoesNotExist:
+            raise NotFound("No order has been found for the current user.")
 
     def is_last(self):
         """

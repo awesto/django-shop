@@ -4,7 +4,7 @@ django-allauth==0.23.0
 django-angular==0.8.4
 django-appconf==1.0.1
 django-classy-tags==0.7.2
-django-cms==3.3.2
+django-cms==3.3.3
 django-compressor==1.6
 django-filer==1.2.5
 django-filter==0.15.3
@@ -17,13 +17,13 @@ django-parler==1.6.4
 django-polymorphic==1.0.2
 django-post-office==2.0.8
 django-rest-auth==0.5.0
-django-sass-processor==0.5.1
+django-sass-processor==0.5.3
 django-sekizai==0.10.0
 Django-Select2==5.8.9
 djangoshop-stripe==0.2.0
-django-treebeard==4.0
+django-treebeard==4.1.0
 djangocms-bootstrap3==0.1.1
-djangocms-cascade==0.11.0
+djangocms-cascade==0.11.1
 djangocms-text-ckeditor==3.0.1
 djangorestframework==3.2.5
 django-formtools==1.0

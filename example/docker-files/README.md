@@ -1,6 +1,6 @@
 # The merchant Docker image
 
-This Dockerfile builds the final Docker image for **djangoSHOP**.
+This Dockerfile builds the final Docker image for **django-SHOP**.
 Copy these files into the merchants project and adopt the Dockerfile to their needs. Replace
 ``myshop-sample`` with whatever appropriate.
 
