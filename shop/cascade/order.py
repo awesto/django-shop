@@ -11,7 +11,7 @@ from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
 from djng.forms import NgModelFormMixin
 from djng.styling.bootstrap3.forms import Bootstrap3Form
-from shop import settings as shop_settings
+from shop import app_settings
 from .plugin_base import ShopPluginBase
 
 
@@ -36,13 +36,13 @@ class ShopOrderViewsPlugin(ShopPluginBase):
         if many is True:
             # render Order List View
             return select_template([
-                '{}/order/list.html'.format(shop_settings.APP_LABEL),
+                '{}/order/list.html'.format(app_settings.APP_LABEL),
                 'shop/order/list.html',
             ])
         if many is False:
             # render Order Detail View
             return select_template([
-                '{}/order/detail.html'.format(shop_settings.APP_LABEL),
+                '{}/order/detail.html'.format(app_settings.APP_LABEL),
                 'shop/order/detail.html',
             ])
         # can happen, if this plugin is abused outside of an OrderView
@@ -80,7 +80,7 @@ class ShopReorderFormPlugin(BootstrapButtonMixin, ShopPluginBase):
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
-            '{}/order/reorder-form.html'.format(shop_settings.APP_LABEL),
+            '{}/order/reorder-form.html'.format(app_settings.APP_LABEL),
             'shop/order/reorder-form.html',
         ]
         return select_template(template_names)
@@ -105,7 +105,7 @@ class ShopOrderAddendumFormPlugin(BootstrapButtonMixin, ShopPluginBase):
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
-            '{}/order/addenum-form.html'.format(shop_settings.APP_LABEL),
+            '{}/order/addenum-form.html'.format(app_settings.APP_LABEL),
             'shop/order/addenum-form.html',
         ]
         return select_template(template_names)

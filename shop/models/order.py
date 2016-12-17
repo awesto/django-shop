@@ -15,7 +15,7 @@ from shop.models.fields import JSONField
 from ipware.ip import get_ip
 from django_fsm import FSMField, transition
 from cms.models import Page
-from shop import settings as shop_settings
+from shop import app_settings
 from shop.models.cart import CartItemModel
 from shop.money.fields import MoneyField, MoneyMaker
 from .product import BaseProduct
@@ -127,7 +127,7 @@ class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
 
     def __new__(cls, name, bases, attrs):
         if 'BaseOrder' in (b.__name__ for b in bases):
-            bases = tuple(import_string(mc) for mc in shop_settings.ORDER_WORKFLOWS) + bases
+            bases = tuple(import_string(mc) for mc in app_settings.ORDER_WORKFLOWS) + bases
             # merge the dicts of TRANSITION_TARGETS
             attrs.update(_transition_targets={}, _auto_transitions={})
             for b in reversed(bases):

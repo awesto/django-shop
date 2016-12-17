@@ -6,7 +6,7 @@ from django.template import engines
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
 from cms.plugin_pool import plugin_pool
-from shop import settings as shop_settings
+from shop import app_settings
 from .plugin_base import ShopPluginBase
 
 
@@ -28,7 +28,7 @@ class ShopSearchResultsPlugin(ShopPluginBase):
     def get_render_template(self, context, instance, placeholder):
         if instance.page.application_urls == 'ProductSearchApp':
             return select_template([
-                    '{}/search/results.html'.format(shop_settings.APP_LABEL),
+                    '{}/search/results.html'.format(app_settings.APP_LABEL),
                     'shop/search/results.html',
             ])
         return engines['django'].from_string('<pre class="bg-danger">This {} plugin is used on a CMS page without an application of type "Search".</pre>'.format(self.name))

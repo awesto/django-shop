@@ -4,17 +4,17 @@ from django.conf import settings
 from django.template.loader import select_template
 from rest_framework.serializers import CharField
 from rest_auth import serializers
-from shop import settings as shop_settings
+from shop import app_settings
 
 
 class PasswordResetSerializer(serializers.PasswordResetSerializer):
     def save(self):
         subject_template = select_template([
-            '{}/email/reset-password-subject.txt'.format(shop_settings.APP_LABEL),
+            '{}/email/reset-password-subject.txt'.format(app_settings.APP_LABEL),
             'shop/email/reset-password-subject.txt',
         ])
         body_template = select_template([
-            '{}/email/reset-password-body.txt'.format(shop_settings.APP_LABEL),
+            '{}/email/reset-password-body.txt'.format(app_settings.APP_LABEL),
             'shop/email/reset-password-body.txt',
         ])
         opts = {

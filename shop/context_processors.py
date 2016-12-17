@@ -2,9 +2,8 @@
 from __future__ import unicode_literals
 
 from django import __version__
-from django.conf import settings
+from shop import app_settings
 from shop.models.customer import CustomerModel
-from shop import settings as shop_settings
 
 
 def customer(request):
@@ -16,7 +15,7 @@ def customer(request):
 
     context = {
         'customer': request.customer,
-        'site_header': settings.SHOP_APP_LABEL.capitalize(),
+        'site_header': app_settings.APP_LABEL.capitalize(),
     }
     if request.user.is_staff:
         try:
@@ -40,6 +39,6 @@ def ng_model_options(request):
     Add ng-model-options to the context, since these settings must be configurable
     """
     return {
-        'EDITCART_NG_MODEL_OPTIONS': shop_settings.EDITCART_NG_MODEL_OPTIONS,
-        'ADD2CART_NG_MODEL_OPTIONS': shop_settings.ADD2CART_NG_MODEL_OPTIONS,
+        'EDITCART_NG_MODEL_OPTIONS': app_settings.EDITCART_NG_MODEL_OPTIONS,
+        'ADD2CART_NG_MODEL_OPTIONS': app_settings.ADD2CART_NG_MODEL_OPTIONS,
     }

@@ -16,8 +16,8 @@ from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.widgets import NumberInputWidget
 from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
 from cmsplugin_cascade.mixins import TransparentMixin
+from shop import app_settings
 from shop.cascade.plugin_base import ShopPluginBase
-from shop import settings as shop_settings
 
 
 class ProcessBarForm(ManageChildrenFormMixin, ModelForm):
@@ -43,7 +43,7 @@ class ProcessBarPlugin(TransparentMixin, ShopPluginBase):
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
-            '{}/checkout/process-bar.html'.format(shop_settings.APP_LABEL),
+            '{}/checkout/process-bar.html'.format(app_settings.APP_LABEL),
             'shop/checkout/process-bar.html',
         ]
         return select_template(template_names)
@@ -119,7 +119,7 @@ class ProcessNextStepPlugin(BootstrapButtonMixin, ShopPluginBase):
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
-            '{}/checkout/process-next-step.html'.format(shop_settings.APP_LABEL),
+            '{}/checkout/process-next-step.html'.format(app_settings.APP_LABEL),
             'shop/checkout/process-next-step.html',
         ]
         return select_template(template_names)

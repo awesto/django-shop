@@ -8,7 +8,7 @@ from django.utils.html import mark_safe
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.fields import GlossaryField
 from cmsplugin_cascade.mixins import TransparentMixin
-from shop import settings as shop_settings
+from shop import app_settings
 from shop.models.cart import CartModel
 from shop.rest.serializers import CartSerializer
 from .plugin_base import ShopPluginBase
@@ -42,22 +42,22 @@ class ShopCartPlugin(TransparentMixin, ShopPluginBase):
         render_type = instance.glossary.get('render_type')
         if render_type == 'static':
             template_names = [
-                '{}/cart/static.html'.format(shop_settings.APP_LABEL),
+                '{}/cart/static.html'.format(app_settings.APP_LABEL),
                 'shop/cart/static.html',
             ]
         elif render_type == 'summary':
             template_names = [
-                '{}/cart/summary.html'.format(shop_settings.APP_LABEL),
+                '{}/cart/summary.html'.format(app_settings.APP_LABEL),
                 'shop/cart/summary.html',
             ]
         elif render_type == 'watch':
             template_names = [
-                '{}/cart/watch.html'.format(shop_settings.APP_LABEL),
+                '{}/cart/watch.html'.format(app_settings.APP_LABEL),
                 'shop/cart/watch.html',
             ]
         else:
             template_names = [
-                '{}/cart/editable.html'.format(shop_settings.APP_LABEL),
+                '{}/cart/editable.html'.format(app_settings.APP_LABEL),
                 'shop/cart/editable.html',
             ]
         return select_template(template_names)
