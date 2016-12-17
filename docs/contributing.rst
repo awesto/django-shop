@@ -55,7 +55,8 @@ We highly suggest you run the tests suite in a clean environment, using a tool s
 
 That's it! Now, you should be able to run the tests::
 
-	py.test testshop
+	export DJANGO_SHOP_TUTORIAL=polymorphic
+	py.test example
 
 We use `tox <http://codespeak.net/tox/>`_ as a CI tool. To run the full CI test suite and get a
 coverage report, all you have to do is this:
