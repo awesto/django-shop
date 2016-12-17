@@ -11,7 +11,6 @@ from django.template.loader import select_template
 from django.utils.six import with_metaclass
 from django.utils.html import strip_spaces_between_tags
 from django.utils.formats import localize
-from django.utils.module_loading import import_string
 from django.utils.safestring import mark_safe, SafeText
 from django.utils.translation import get_language_from_request
 
@@ -292,9 +291,9 @@ class CheckoutSerializer(serializers.Serializer):
         return serializer.data
 
 
-CustomerSerializer = import_string(app_settings.CUSTOMER_SERIALIZER)
+CustomerSerializer = app_settings.CUSTOMER_SERIALIZER
 
-OrderItemSerializer = import_string(app_settings.ORDER_ITEM_SERIALIZER)
+OrderItemSerializer = app_settings.ORDER_ITEM_SERIALIZER
 
 
 class OrderListSerializer(serializers.ModelSerializer):

@@ -49,15 +49,21 @@ class AppSettings(object):
 
     @property
     def CUSTOMER_SERIALIZER(self):
-        return self._setting('SHOP_CUSTOMER_SERIALIZER',  'shop.rest.defaults.CustomerSerializer')
+        from django.utils.module_loading import import_string
+        return import_string(self._setting('SHOP_CUSTOMER_SERIALIZER',  'shop.rest.defaults.CustomerSerializer'))
 
     @property
     def ORDER_ITEM_SERIALIZER(self):
-        return self._setting('SHOP_ORDER_ITEM_SERIALIZER', 'shop.rest.defaults.OrderItemSerializer')
+        from django.utils.module_loading import import_string
+        return import_string(self._setting('SHOP_ORDER_ITEM_SERIALIZER', 'shop.rest.defaults.OrderItemSerializer'))
 
     @property
     def CART_MODIFIERS(self):
-        return self._setting('SHOP_CART_MODIFIERS', ('shop.modifiers.defaults.DefaultCartModifier',))
+        from django.utils.module_loading import import_string
+        return tuple(
+            import_string(mc)
+            for mc in self._setting('SHOP_CART_MODIFIERS', ('shop.modifiers.defaults.DefaultCartModifier',))
+        )
 
     @property
     def VALUE_ADDED_TAX(self):
@@ -66,7 +72,11 @@ class AppSettings(object):
 
     @property
     def ORDER_WORKFLOWS(self):
-        return self._setting('SHOP_ORDER_WORKFLOWS', ())
+        from django.utils.module_loading import import_string
+        return tuple(
+            import_string(mc)
+            for mc in self._setting('SHOP_ORDER_WORKFLOWS', ())
+        )
 
     @property
     def ADD2CART_NG_MODEL_OPTIONS(self):
