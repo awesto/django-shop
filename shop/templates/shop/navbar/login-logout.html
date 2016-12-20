@@ -6,6 +6,7 @@
 
 {% page_url 'shop-order' as shop_order_url %}
 {% page_url 'shop-customer-details' as customer_details_url %}
+{% page_url 'shop-password-change' as password_change_url %}
 {% page_url 'shop-password-reset' as password_reset_url %}
 {% page_url 'shop-register-customer' as register_customer_url %}
 
@@ -27,8 +28,11 @@
 		{% if customer_details_url %}
 		<li><a href="{{ customer_details_url }}">{% page_attribute "page_title" "shop-customer-details" %}</a></li>
 		{% endif %}
+		{% if password_change_url %}
+		<li><a href="{{ password_change_url }}">{% page_attribute "page_title" "shop-password-change" %}</a></li>
+		{% endif %}
 	{% else %}
-		<shop-auth-form ng-form name="auth_form" action="RELOAD_PAGE" accept-charset="UTF-8" role="form">
+		<shop-auth-form ng-form name="auth_form" action="RELOAD_PAGE" accept-charset="UTF-8" role="form" form-submit-url="{% url "shop:login" %}">
 			<div class="alert alert-danger" ng-show="error_message" ng-cloak>
 				<a class="close" ng-click="dismiss()">×</a>{% verbatim %}{{ error_message }}{% endverbatim %}
 			</div>
@@ -46,7 +50,7 @@
 					<input class="form-control input-sm" type="password" placeholder="{% trans 'Password' %}" name="password" ng-model="form_data.password">
 				</div>
 			</div>
-			<button class="btn btn-primary btn-block" type="button" ng-click="submitForm('{% url "shop:login" %}')">{% trans "Login" %}</button>
+			<button class="btn btn-primary btn-block" type="button" ng-click="submitForm()">{% trans "Login" %}</button>
 		</shop-auth-form>
 		{% if password_reset_url or register_customer_url %}
 		<li role="separator" class="divider"></li>
