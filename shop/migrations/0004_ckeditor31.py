@@ -64,6 +64,7 @@ def forwards(apps, schema_editor):
             # Only update body if there were plugins in the text
             TextModel.objects.filter(pk=element.pk).update(body=new_body)
 
+
 def backwards(apps, schema_editor):
     warnings.warn("Backward migration is not implemented yet")
 
