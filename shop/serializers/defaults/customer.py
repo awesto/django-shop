@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from rest_framework import serializers
 
-from shop.rest.serializers import BaseCustomerSerializer
+from shop.rest.bases import BaseCustomerSerializer
 
 
 class CustomerSerializer(BaseCustomerSerializer):
