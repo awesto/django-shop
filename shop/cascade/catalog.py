@@ -12,7 +12,7 @@ from cmsplugin_cascade.models import SortableInlineCascadeElement
 
 from shop import settings as shop_settings
 from shop.models.product import ProductModel
-from shop.serializers import get_registered_serializer_class
+from shop.rest.bases import get_product_summary_serializer_class
 from .plugin_base import ShopPluginBase, ProductSelectField
 
 if is_installed('adminsortable2'):
@@ -113,11 +113,6 @@ class ShopProductGallery(ShopPluginBase):
         ])
 
     def render(self, context, instance, placeholder):
-<<<<<<< HEAD
-=======
-        from shop.rest.bases import get_product_summary_serializer_class
-
->>>>>>> origin/code-cleanup-for-0.9.4
         product_ids = []
         for instance in instance.sortinline_elements.all():
             try:
@@ -125,13 +120,8 @@ class ShopProductGallery(ShopPluginBase):
             except KeyError:
                 pass
         queryset = ProductModel.objects.filter(pk__in=product_ids)
-<<<<<<< HEAD
-        ProductSummarySerializer = get_registered_serializer_class('ProductSummarySerializer')
-        serialized = ProductSummarySerializer(queryset, many=True, context={'request': context['request']})
-=======
         serializer_class = get_product_summary_serializer_class()
         serialized = serializer_class(queryset, many=True, context={'request': context['request']})
->>>>>>> origin/code-cleanup-for-0.9.4
         context['products'] = serialized.data
         return context
 
