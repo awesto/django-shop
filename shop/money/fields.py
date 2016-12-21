@@ -7,7 +7,7 @@ from django import forms
 from django.db import models
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
-from shop import settings as shop_settings
+from shop import app_settings
 from .money_maker import MoneyMaker, AbstractMoney
 from .iso4217 import CURRENCIES
 
@@ -63,7 +63,7 @@ class MoneyField(models.DecimalField):
     description = _("Money in %(currency_code)s")
 
     def __init__(self, *args, **kwargs):
-        self.currency_code = kwargs.pop('currency', shop_settings.DEFAULT_CURRENCY)
+        self.currency_code = kwargs.pop('currency', app_settings.DEFAULT_CURRENCY)
         self.Money = MoneyMaker(self.currency_code)
         defaults = {
             'max_digits': 30,

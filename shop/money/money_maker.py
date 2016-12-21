@@ -4,13 +4,13 @@ from __future__ import unicode_literals
 from django.utils.encoding import python_2_unicode_compatible
 from decimal import Decimal, InvalidOperation
 from cms.utils.helpers import classproperty
-from shop import settings as shop_settings
+from shop import app_settings
 from .iso4217 import CURRENCIES
 
 
 @python_2_unicode_compatible
 class AbstractMoney(Decimal):
-    MONEY_FORMAT = getattr(shop_settings, 'MONEY_FORMAT')
+    MONEY_FORMAT = getattr(app_settings, 'MONEY_FORMAT')
 
     def __new__(cls, value):
         raise TypeError("Can not instantiate {} as AbstractMoney.".format(value))
@@ -221,7 +221,7 @@ class MoneyMaker(type):
             return self
 
         if currency_code is None:
-            currency_code = shop_settings.DEFAULT_CURRENCY
+            currency_code = app_settings.DEFAULT_CURRENCY
         else:
             currency_code = currency_code.upper()
         if currency_code not in CURRENCIES:

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.conf import settings
 from django.conf.urls import url
 from django.contrib import admin
 from django.core.urlresolvers import reverse
@@ -13,6 +12,7 @@ from django.template.loader import select_template
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
+from shop import app_settings
 from shop.admin.order import OrderItemInline
 from shop.models.order import OrderItemModel
 from shop.models.delivery import DeliveryModel, DeliveryItemModel
@@ -166,7 +166,7 @@ class DeliveryOrderAdminMixin(object):
 
     def render_delivery_note(self, request, delivery_pk=None):
         template = select_template([
-            '{}/print/delivery-note.html'.format(settings.SHOP_APP_LABEL.lower()),
+            '{}/print/delivery-note.html'.format(app_settings.APP_LABEL.lower()),
             'shop/print/delivery-note.html'
         ])
         delivery = DeliveryModel.objects.get(pk=delivery_pk)

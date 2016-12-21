@@ -8,7 +8,7 @@ from django.db import models
 from django.template import Context
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
-from shop import settings as shop_settings
+from shop import app_settings
 from shop import deferred
 
 
@@ -39,8 +39,8 @@ class BaseAddress(models.Model):
         Return the address as plain text to be used for printing, etc.
         """
         template_names = [
-            '{}/{}.txt'.format(shop_settings.APP_LABEL, self.address_type),
-            '{}/address.txt'.format(shop_settings.APP_LABEL),
+            '{}/{}.txt'.format(app_settings.APP_LABEL, self.address_type),
+            '{}/address.txt'.format(app_settings.APP_LABEL),
             'shop/address.txt',
         ]
         template = select_template(template_names)

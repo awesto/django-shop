@@ -11,14 +11,13 @@ from django.template.loader import select_template
 from django.utils.six import with_metaclass
 from django.utils.html import strip_spaces_between_tags
 from django.utils.formats import localize
-from django.utils.module_loading import import_string
 from django.utils.safestring import mark_safe, SafeText
 from django.utils.translation import get_language_from_request
 
 from rest_framework import serializers
 from rest_framework.fields import empty
 
-from shop import settings as shop_settings
+from shop import app_settings
 from shop.models.cart import CartModel, CartItemModel, BaseCartItem
 from shop.models.product import ProductModel
 from shop.models.order import OrderModel, OrderItemModel
@@ -70,7 +69,7 @@ class ProductCommonSerializer(serializers.ModelSerializer):
         absolute_base_uri = request.build_absolute_uri('/').rstrip('/')
         context = RequestContext(request, {'product': product, 'ABSOLUTE_BASE_URI': absolute_base_uri})
         content = strip_spaces_between_tags(template.render(context).strip())
-        cache.set(cache_key, content, shop_settings.CACHE_DURATIONS['product_html_snippet'])
+        cache.set(cache_key, content, app_settings.CACHE_DURATIONS['product_html_snippet'])
         return mark_safe(content)
 
 
@@ -292,9 +291,9 @@ class CheckoutSerializer(serializers.Serializer):
         return serializer.data
 
 
-CustomerSerializer = import_string(shop_settings.CUSTOMER_SERIALIZER)
+CustomerSerializer = app_settings.CUSTOMER_SERIALIZER
 
-OrderItemSerializer = import_string(shop_settings.ORDER_ITEM_SERIALIZER)
+OrderItemSerializer = app_settings.ORDER_ITEM_SERIALIZER
 
 
 class OrderListSerializer(serializers.ModelSerializer):

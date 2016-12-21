@@ -5,7 +5,7 @@ from django.db.models.base import ModelBase
 from django.db import models
 from django.utils import six
 from django.utils.functional import SimpleLazyObject, empty
-from . import settings as shop_settings
+from shop import app_settings
 
 
 class DeferredRelatedField(object):
@@ -57,7 +57,7 @@ class ForeignKeyBuilder(ModelBase):
 
     def __new__(cls, name, bases, attrs):
         class Meta:
-            app_label = shop_settings.APP_LABEL
+            app_label = app_settings.APP_LABEL
 
         attrs.setdefault('Meta', Meta)
         if not hasattr(attrs['Meta'], 'app_label') and not getattr(attrs['Meta'], 'abstract', False):

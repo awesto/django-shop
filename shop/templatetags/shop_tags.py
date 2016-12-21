@@ -10,7 +10,7 @@ from django.utils import formats
 from django.utils.safestring import mark_safe
 from django.utils.dateformat import format, time_format
 from classytags.helpers import InclusionTag
-from shop import settings as shop_settings
+from shop import app_settings
 from shop.models.cart import CartModel
 from shop.rest.money import JSONRenderer
 
@@ -23,7 +23,7 @@ class CartIcon(InclusionTag):
     """
     def get_template(self, context, **kwargs):
         template = select_template([
-            '{}/templatetags/cart-icon.html'.format(shop_settings.APP_LABEL),
+            '{}/templatetags/cart-icon.html'.format(app_settings.APP_LABEL),
             'shop/templatetags/cart-icon.html',
         ])
         return template.template.name

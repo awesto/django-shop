@@ -10,7 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 from cms.apphook_pool import apphook_pool
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.fields import GlossaryField
-from shop import settings as shop_settings
+from shop import app_settings
 from .plugin_base import ShopPluginBase
 
 
@@ -37,7 +37,7 @@ class BreadcrumbPlugin(ShopPluginBase):
         render_type = instance.glossary.get('render_type')
         try:
             return select_template([
-                '{}/breadcrumb/{}.html'.format(shop_settings.APP_LABEL, render_type),
+                '{}/breadcrumb/{}.html'.format(app_settings.APP_LABEL, render_type),
                 'shop/breadcrumb/{}.html'.format(render_type),
             ])
         except TemplateDoesNotExist:
