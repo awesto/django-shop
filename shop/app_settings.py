@@ -106,6 +106,8 @@ class AppSettings(object):
         return result
 
 
+# Change the export value of the module, to allow importing with `from shop import app_settings`
+# For more details, see http://mail.python.org/pipermail/python-ideas/2012-May/014969.html
 import sys  # noqa
 app_settings = AppSettings()
 app_settings.__name__ = __name__
