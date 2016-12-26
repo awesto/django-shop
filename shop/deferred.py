@@ -103,7 +103,10 @@ class ForeignKeyBuilder(ModelBase):
                 continue
             if not isinstance(member, DeferredRelatedField):
                 continue
-            mapmodel = cls._materialized_models.get(member.abstract_model)
+            if member.abstract_model == 'self':
+                mapmodel = Model
+            else:
+                mapmodel = cls._materialized_models.get(member.abstract_model)
             if mapmodel:
                 field = member.MaterializedField(mapmodel, **member.options)
                 field.contribute_to_class(Model, attrname)
