@@ -20,7 +20,7 @@ django-rest-auth==0.5.0
 django-sass-processor==0.5.3
 django-sekizai==0.10.0
 Django-Select2==5.8.9
-djangoshop-stripe==0.2.0
+https://github.com/awesto/djangoshop-stripe/archive/257a33f17df7f6d42e6d9815969ec6c801dcc66c.zip#egg=djangoshop-stripe
 django-treebeard==4.1.0
 djangocms-bootstrap3==0.1.1
 https://github.com/jrief/djangocms-cascade/archive/162da36474f4ffdc77b31351bbe974633ea8cf99.zip#egg=djangocms-cascade
