@@ -67,7 +67,7 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.auth',
     'email_auth',
     'polymorphic',
@@ -108,9 +108,9 @@ INSTALLED_APPS = (
     'shop',
     'shop_stripe',
     'myshop',
-)
+]
 if SHOP_TUTORIAL in ('i18n_commodity', 'i18n_smartcard', 'polymorphic'):
-    INSTALLED_APPS += ('parler',)
+    INSTALLED_APPS.append('parler')
 
 MIDDLEWARE_CLASSES = (
     'djng.middleware.AngularUrlMiddleware',
