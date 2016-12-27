@@ -27,8 +27,8 @@ class AppSettings(object):
         """
         When rendering an amount of type Money, use this format.
         Possible placeholders are:
-        {symbol}: This can be €, $, £, etc.
-        {currency}: This can be EUR, USD, GBP, etc.
+        {symbol}: This is replaced by €, $, £, etc.
+        {currency}: This is replaced by EUR, USD, GBP, etc.
         {amount}: The localized amount.
         """
         return self._setting('SHOP_MONEY_FORMAT', '{symbol} {amount}')
@@ -41,7 +41,7 @@ class AppSettings(object):
     def DECIMAL_PLACES(self):
         """
         Number of decimal places for the internal representation of a price.
-        Not visible to the customer.
+        This is used by the Django admin and is not visible to the customer.
         """
         return self._setting('SHOP_DECIMAL_PLACES', 2)
 
@@ -97,6 +97,7 @@ class AppSettings(object):
     @property
     def CART_MODIFIERS(self):
         from django.utils.module_loading import import_string
+
         return tuple(
             import_string(mc)
             for mc in self._setting('SHOP_CART_MODIFIERS', ('shop.modifiers.defaults.DefaultCartModifier',))
@@ -110,6 +111,7 @@ class AppSettings(object):
     @property
     def ORDER_WORKFLOWS(self):
         from django.utils.module_loading import import_string
+
         return tuple(
             import_string(mc)
             for mc in self._setting('SHOP_ORDER_WORKFLOWS', ())
@@ -117,21 +119,28 @@ class AppSettings(object):
 
     @property
     def ADD2CART_NG_MODEL_OPTIONS(self):
-        return self._setting('SHOP_ADD2CART_NG_MODEL_OPTIONS', "{updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}")
+        """
+        Used to configure the update behavior when changing the quantity of a product, when adding
+        it to the cart. For more information refer to the AngularJS docs at:
+        https://code.angularjs.org/1.3.7/docs/api/ng/directive/ngModelOptions
+        """
+        return self._setting('SHOP_ADD2CART_NG_MODEL_OPTIONS',
+                             "{updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}")
 
     @property
     def EDITCART_NG_MODEL_OPTIONS(self):
         """
-        Use ``SHOP_EDITCART_NG_MODEL_OPTIONS`` and ``SHOP_ADD2CART_NG_MODEL_OPTIONS`` to configure the
-        update behavior when changing the quantity of a cart item. For more information refer to the
-        AngularJS docs: https://code.angularjs.org/1.3.7/docs/api/ng/directive/ngModelOptions
+        Used to configure the update behavior when changing the quantity of a cart item.
+        For more information refer to the AngularJS docs at:
+        https://code.angularjs.org/1.3.7/docs/api/ng/directive/ngModelOptions
         """
-        return self._setting('SHOP_EDITCART_NG_MODEL_OPTIONS', "{updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}")
+        return self._setting('SHOP_EDITCART_NG_MODEL_OPTIONS',
+                             "{updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}")
 
     @property
     def GUEST_IS_ACTIVE_USER(self):
         """
-        If ``SHOP_GUEST_IS_ACTIVE_USER`` is True, Customers which declared themselves as guests, may request
+        If this directive is True, customers which declared themselves as guests, may request
         a password reset, so that they can log into their account at a later time. The default is False.
         """
         return self._setting('SHOP_GUEST_IS_ACTIVE_USER', False)
