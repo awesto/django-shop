@@ -74,6 +74,14 @@ class AppSettings(object):
         return ProductSummarySerializer
 
     @property
+    def PRODUCT_SELECT_SERIALIZER(self):
+        from django.utils.module_loading import import_string
+
+        s = self._setting('SHOP_PRODUCT_SELECT_SERIALIZER', 'shop.serializers.defaults.ProductSelectSerializer')
+        ProductSelectSerializer = import_string(s)
+        return ProductSelectSerializer
+
+    @property
     def ORDER_ITEM_SERIALIZER(self):
         from django.core.exceptions import ImproperlyConfigured
         from django.utils.module_loading import import_string
