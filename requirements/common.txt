@@ -1,5 +1,5 @@
 beautifulsoup4==4.4.1
-django-admin-sortable2==0.6.4
+django-admin-sortable2==0.6.7
 django-allauth==0.23.0
 django-angular==0.8.4
 django-appconf==1.0.1
