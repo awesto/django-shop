@@ -25,7 +25,7 @@ django-treebeard==4.1.0
 djangocms-bootstrap3==0.1.1
 https://github.com/jrief/djangocms-cascade/archive/162da36474f4ffdc77b31351bbe974633ea8cf99.zip#egg=djangocms-cascade
 djangocms-text-ckeditor==3.3.1
-djangorestframework==3.2.5
+djangorestframework==3.5.3
 django-formtools==1.0
 drf-haystack==1.5.6
 easy-thumbnails==2.3
