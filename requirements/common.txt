@@ -1,10 +1,10 @@
-beautifulsoup4==4.4.0
+beautifulsoup4==4.4.1
 django-admin-sortable2==0.6.4
 django-allauth==0.23.0
 django-angular==0.8.4
 django-appconf==1.0.1
 django-classy-tags==0.7.2
-django-cms==3.3.3
+https://github.com/jrief/django-cms/archive/f9b62031f64aa7d775f9d1befa7b6a70d0d1a719.zip#egg=django-cms
 django-compressor==1.6
 django-filer==1.2.5
 django-filter==0.15.3
@@ -12,7 +12,7 @@ django-fsm==2.4.0
 django-fsm-admin==1.2.3
 django-haystack==2.5.0
 django-ipware==1.1.1
-django-mptt==0.8.6
+django-mptt==0.8.7
 django-parler==1.6.4
 django-polymorphic==1.0.2
 django-post-office==2.0.8
@@ -23,8 +23,8 @@ Django-Select2==5.8.9
 djangoshop-stripe==0.2.0
 django-treebeard==4.1.0
 djangocms-bootstrap3==0.1.1
-djangocms-cascade==0.11.1
-djangocms-text-ckeditor==3.0.1
+https://github.com/jrief/djangocms-cascade/archive/162da36474f4ffdc77b31351bbe974633ea8cf99.zip#egg=djangocms-cascade
+djangocms-text-ckeditor==3.3.1
 djangorestframework==3.2.5
 django-formtools==1.0
 drf-haystack==1.5.6
