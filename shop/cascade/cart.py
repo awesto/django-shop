@@ -11,7 +11,7 @@ from cmsplugin_cascade.plugin_base import TransparentContainer
 
 from shop import app_settings
 from shop.models.cart import CartModel
-from shop.rest.serializers import CartSerializer
+from shop.serializers.cart import CartSerializer
 from .plugin_base import ShopPluginBase
 
 

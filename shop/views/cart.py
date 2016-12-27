@@ -7,7 +7,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
 from shop.models.cart import CartModel, CartItemModel
-from shop.rest import serializers
+from shop.serializers.cart import CartSerializer, CartItemSerializer, WatchSerializer, WatchItemSerializer
 
 
 class BaseViewSet(viewsets.ModelViewSet):
@@ -42,8 +42,8 @@ class BaseViewSet(viewsets.ModelViewSet):
 
 class CartViewSet(BaseViewSet):
     serializer_label = 'cart'
-    serializer_class = serializers.CartSerializer
-    item_serializer_class = serializers.CartItemSerializer
+    serializer_class = CartSerializer
+    item_serializer_class = CartItemSerializer
 
     @list_route(methods=['get'])
     def update_caption(self, request):
@@ -58,5 +58,5 @@ class CartViewSet(BaseViewSet):
 
 class WatchViewSet(BaseViewSet):
     serializer_label = 'watch'
-    serializer_class = serializers.WatchSerializer
-    item_serializer_class = serializers.WatchItemSerializer
+    serializer_class = WatchSerializer
+    item_serializer_class = WatchItemSerializer

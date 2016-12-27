@@ -2,13 +2,15 @@
 from __future__ import unicode_literals
 
 from django.views.decorators.cache import never_cache
+
 from rest_framework import generics, mixins
 from rest_framework.exceptions import NotFound
 from rest_framework.renderers import BrowsableAPIRenderer
 from rest_framework.exceptions import PermissionDenied
-from shop.rest.serializers import OrderListSerializer, OrderDetailSerializer
+
 from shop.rest.money import JSONRenderer
 from shop.rest.renderers import CMSPageRenderer
+from shop.serializers.order import OrderListSerializer, OrderDetailSerializer
 from shop.models.order import OrderModel
 
 

@@ -18,7 +18,7 @@ from post_office.models import Email as OriginalEmail, EmailTemplate
 
 from filer.fields.file import FilerFileField
 
-from shop.serializers import get_registered_serializer_class
+from shop import app_settings
 from .customer import CustomerModel
 
 
@@ -130,7 +130,7 @@ class EmulateHttpRequest(HttpRequest):
 
 def order_event_notification(sender, instance=None, target=None, **kwargs):
     from shop.models.order import OrderModel
-    from shop.rest import serializers
+    from shop.serializers.order import OrderDetailSerializer
 
     if not isinstance(instance, OrderModel):
         return
@@ -141,8 +141,8 @@ def order_event_notification(sender, instance=None, target=None, **kwargs):
 
         # emulate a request object which behaves similar to that one, when the customer submitted its order
         emulated_request = EmulateHttpRequest(instance.customer, instance.stored_request)
-        customer_serializer = get_registered_serializer_class('CustomerSerializer')(instance.customer)
-        order_serializer = serializers.OrderDetailSerializer(instance, context={'request': emulated_request})
+        customer_serializer = app_settings.CUSTOMER_SERIALIZER(instance.customer)
+        order_serializer = OrderDetailSerializer(instance, context={'request': emulated_request})
         language = instance.stored_request.get('language')
         context = {
             'customer': customer_serializer.data,

@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.utils.translation import ugettext_lazy as _
 from shop import app_settings
-from shop.rest.serializers import ExtraCartRow
+from shop.serializers.cart import ExtraCartRow
 from .base import BaseCartModifier
 
 

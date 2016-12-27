@@ -13,11 +13,9 @@ class AppSettings(object):
     def APP_LABEL(self):
         from django.core.exceptions import ImproperlyConfigured
 
-        result = self._setting('SHOP_APP_LABEL', None)
-
-        if result is None:
-            raise ImproperlyConfigured('SHOP_APP_LABEL setting must be set')
-
+        result = self._setting('SHOP_APP_LABEL')
+        if not result:
+            raise ImproperlyConfigured("SHOP_APP_LABEL setting must be set")
         return result
 
     @property
@@ -49,13 +47,44 @@ class AppSettings(object):
 
     @property
     def CUSTOMER_SERIALIZER(self):
+        from django.core.exceptions import ImproperlyConfigured
         from django.utils.module_loading import import_string
-        return import_string(self._setting('SHOP_CUSTOMER_SERIALIZER',  'shop.rest.defaults.CustomerSerializer'))
+        from shop.serializers.bases import BaseCustomerSerializer
+
+        s = self._setting('SHOP_CUSTOMER_SERIALIZER', 'shop.serializers.defaults.CustomerSerializer')
+        CustomerSerializer = import_string(s)
+        if not issubclass(CustomerSerializer, BaseCustomerSerializer):
+            raise ImproperlyConfigured(
+                "Serializer class must inherit from 'BaseCustomerSerializer'.")
+        return CustomerSerializer
+
+    @property
+    def PRODUCT_SUMMARY_SERIALIZER(self):
+        from django.core.exceptions import ImproperlyConfigured
+        from django.utils.module_loading import import_string
+        from shop.serializers.bases import BaseProductSummarySerializer
+
+        s = self._setting('SHOP_PRODUCT_SUMMARY_SERIALIZER')
+        if not s:
+            raise ImproperlyConfigured("SHOP_PRODUCT_SUMMARY_SERIALIZER setting must be set")
+        ProductSummarySerializer = import_string(s)
+        if not issubclass(ProductSummarySerializer, BaseProductSummarySerializer):
+            raise ImproperlyConfigured(
+                "Serializer class must inherit from 'BaseProductSummarySerializer'.")
+        return ProductSummarySerializer
 
     @property
     def ORDER_ITEM_SERIALIZER(self):
+        from django.core.exceptions import ImproperlyConfigured
         from django.utils.module_loading import import_string
-        return import_string(self._setting('SHOP_ORDER_ITEM_SERIALIZER', 'shop.rest.defaults.OrderItemSerializer'))
+        from shop.serializers.bases import BaseOrderItemSerializer
+
+        s = self._setting('SHOP_ORDER_ITEM_SERIALIZER', 'shop.serializers.defaults.OrderItemSerializer')
+        OrderItemSerializer = import_string(s)
+        if not issubclass(OrderItemSerializer, BaseOrderItemSerializer):
+            raise ImproperlyConfigured(
+                "Serializer class must inherit from 'BaseOrderItemSerializer'.")
+        return OrderItemSerializer
 
     @property
     def CART_MODIFIERS(self):

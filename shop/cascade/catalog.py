@@ -13,7 +13,6 @@ from cmsplugin_cascade.models import SortableInlineCascadeElement
 
 from shop import app_settings
 from shop.models.product import ProductModel
-from shop.rest.bases import get_product_summary_serializer_class
 from .plugin_base import ShopPluginBase, ProductSelectField
 
 if is_installed('adminsortable2'):
@@ -121,7 +120,7 @@ class ShopProductGallery(WithSortableInlineElementsMixin, ShopPluginBase):
             except KeyError:
                 pass
         queryset = ProductModel.objects.filter(pk__in=product_ids)
-        serializer_class = get_product_summary_serializer_class()
+        serializer_class = app_settings.PRODUCT_SUMMARY_SERIALIZER
         serialized = serializer_class(queryset, many=True, context={'request': context['request']})
         context['products'] = serialized.data
         return context

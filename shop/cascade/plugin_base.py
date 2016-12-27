@@ -10,19 +10,20 @@ from django.utils.html import format_html
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from django.utils.safestring import mark_safe
-from cms.plugin_pool import plugin_pool
 from django.utils.encoding import python_2_unicode_compatible
+
+from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.fields import GlossaryField
 from cmsplugin_cascade.plugin_base import CascadePluginBase
 from cmsplugin_cascade.link.forms import LinkForm
 from cmsplugin_cascade.link.plugin_base import LinkPluginBase, LinkElementMixin
 from cmsplugin_cascade.utils import resolve_dependencies
 from django_select2.forms import HeavySelect2Widget
+
 from shop import app_settings
 from shop.forms.base import DialogFormMixin
 from shop.models.cart import CartModel
 from shop.models.product import ProductModel
-from shop.rest.serializers import ProductSelectSerializer
 
 
 class ShopPluginBase(CascadePluginBase):
@@ -88,7 +89,7 @@ class ShopButtonPluginBase(ShopLinkPluginBase):
 class ProductSelect2Widget(HeavySelect2Widget):
     def render(self, name, value, attrs=None):
         try:
-            result = ProductSelectSerializer(ProductModel.objects.get(pk=value))
+            result = app_settings.PRODUCT_SELECT_SERIALIZER(ProductModel.objects.get(pk=value))
         except (ProductModel.DoesNotExist, ValueError):
             pass
         else:

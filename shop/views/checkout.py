@@ -7,7 +7,7 @@ from rest_framework.decorators import list_route
 from rest_framework.exceptions import ValidationError
 from cms.plugin_pool import plugin_pool
 from shop.cascade.plugin_base import DialogFormPluginBase
-from shop.rest.serializers import CheckoutSerializer
+from shop.serializers.cart import CheckoutSerializer
 from shop.modifiers.pool import cart_modifiers_pool
 from .cart import BaseViewSet
 
