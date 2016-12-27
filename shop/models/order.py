@@ -7,7 +7,6 @@ from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
 from django.utils.encoding import python_2_unicode_compatible
-from django.utils.module_loading import import_string
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy, get_language_from_request
 from django.utils.six.moves.urllib.parse import urljoin
@@ -15,7 +14,7 @@ from shop.models.fields import JSONField
 from ipware.ip import get_ip
 from django_fsm import FSMField, transition
 from cms.models import Page
-from shop import settings as shop_settings
+from shop import app_settings
 from shop.models.cart import CartItemModel
 from shop.money.fields import MoneyField, MoneyMaker
 from .product import BaseProduct
@@ -127,7 +126,7 @@ class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
 
     def __new__(cls, name, bases, attrs):
         if 'BaseOrder' in (b.__name__ for b in bases):
-            bases = tuple(import_string(mc) for mc in shop_settings.ORDER_WORKFLOWS) + bases
+            bases = app_settings.ORDER_WORKFLOWS + bases
             # merge the dicts of TRANSITION_TARGETS
             attrs.update(_transition_targets={}, _auto_transitions={})
             for b in reversed(bases):

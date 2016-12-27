@@ -30,7 +30,7 @@ from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.plugin_base import TransparentContainer
 from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
 
-from shop import settings as shop_settings
+from shop import app_settings
 from shop.forms.checkout import AcceptConditionForm
 from shop.models.cart import CartModel
 from shop.modifiers.pool import cart_modifiers_pool
@@ -59,7 +59,7 @@ class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
-            '{}/checkout/proceed-button.html'.format(shop_settings.APP_LABEL),
+            '{}/checkout/proceed-button.html'.format(app_settings.APP_LABEL),
             'shop/checkout/proceed-button.html',
         ]
         return select_template(template_names)
@@ -342,7 +342,7 @@ class RequiredFormFieldsPlugin(ShopPluginBase):
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
-            '{0}/checkout/{1}'.format(shop_settings.APP_LABEL, self.template_leaf_name),
+            '{0}/checkout/{1}'.format(app_settings.APP_LABEL, self.template_leaf_name),
             'shop/checkout/{}'.format(self.template_leaf_name),
         ]
         return select_template(template_names)
@@ -361,7 +361,7 @@ class ValidateSetOfFormsPlugin(TransparentContainer, ShopPluginBase):
 
     def get_render_template(self, context, instance, placeholder):
         return select_template([
-            '{}/checkout/forms-set.html'.format(shop_settings.APP_LABEL),
+            '{}/checkout/forms-set.html'.format(app_settings.APP_LABEL),
             'shop/checkout/forms-set.html',
         ])
 

@@ -7,7 +7,7 @@ from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 from django.utils.module_loading import import_string
 from cms.plugin_pool import plugin_pool
-from shop import settings as shop_settings
+from shop import app_settings
 from cmsplugin_cascade.link.forms import LinkForm
 from .plugin_base import ShopLinkPluginBase, ShopLinkElementMixin
 
@@ -56,7 +56,7 @@ class ShopAuthenticationPlugin(ShopLinkPluginBase):
     def get_render_template(self, context, instance, placeholder):
         form_type = instance.glossary.get('form_type')
         template_names = [
-            '{}/auth/{}.html'.format(shop_settings.APP_LABEL, form_type),
+            '{}/auth/{}.html'.format(app_settings.APP_LABEL, form_type),
             'shop/auth/{}.html'.format(form_type),
         ]
         return select_template(template_names)

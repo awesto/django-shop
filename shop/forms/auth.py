@@ -10,7 +10,7 @@ from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
 from djng.forms import NgModelFormMixin, NgFormValidationMixin
 from djng.styling.bootstrap3.forms import Bootstrap3ModelForm
-from shop import settings as shop_settings
+from shop import app_settings
 from shop.models.customer import CustomerModel
 
 
@@ -82,13 +82,13 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelF
             'user': user,
         })
         subject = select_template([
-            '{}/email/register-user-subject.txt'.format(shop_settings.APP_LABEL),
+            '{}/email/register-user-subject.txt'.format(app_settings.APP_LABEL),
             'shop/email/register-user-subject.txt',
         ]).render(context)
         # Email subject *must not* contain newlines
         subject = ''.join(subject.splitlines())
         body = select_template([
-            '{}/email/register-user-body.txt'.format(shop_settings.APP_LABEL),
+            '{}/email/register-user-body.txt'.format(app_settings.APP_LABEL),
             'shop/email/register-user-body.txt',
         ]).render(context)
         user.email_user(subject, body)
@@ -107,7 +107,7 @@ class ContinueAsGuestForm(ModelForm):
 
     def save(self, request=None, commit=True):
         self.instance.recognize_as_guest()
-        self.instance.user.is_active = shop_settings.GUEST_IS_ACTIVE_USER
+        self.instance.user.is_active = app_settings.GUEST_IS_ACTIVE_USER
         if self.instance.user.is_active:
             # set a usable password, otherwise the user later can not reset its password
             password = get_user_model().objects.make_random_password(length=30)

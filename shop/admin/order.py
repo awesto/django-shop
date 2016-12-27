@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.conf import settings
 from django.conf.urls import url
 from django.contrib import admin
 from django.core.urlresolvers import reverse, NoReverseMatch
@@ -16,7 +15,7 @@ from django.utils.translation import pgettext_lazy
 
 from fsm_admin.mixins import FSMTransitionMixin
 
-from shop import settings as shop_settings
+from shop import app_settings
 from shop.models.customer import CustomerModel
 from shop.models.order import OrderItemModel, OrderPayment
 from shop.modifiers.pool import cart_modifiers_pool
@@ -63,8 +62,8 @@ class OrderItemInline(admin.StackedInline):
 
     def render_as_html_extra(self, obj):
         item_extra_template = select_template([
-            '{0}/admin/orderitem-{1}-extra.html'.format(shop_settings.APP_LABEL, obj.product.product_model),
-            '{0}/admin/orderitem-product-extra.html'.format(shop_settings.APP_LABEL),
+            '{0}/admin/orderitem-{1}-extra.html'.format(app_settings.APP_LABEL, obj.product.product_model),
+            '{0}/admin/orderitem-product-extra.html'.format(app_settings.APP_LABEL),
             'shop/admin/orderitem-product-extra.html',
         ])
         return item_extra_template.render(obj.extra)
@@ -105,7 +104,7 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
     def __init__(self, *args, **kwargs):
         super(BaseOrderAdmin, self).__init__(*args, **kwargs)
         self.extra_template = select_template([
-            '{}/admin/order-extra.html'.format(shop_settings.APP_LABEL),
+            '{}/admin/order-extra.html'.format(app_settings.APP_LABEL),
             'shop/admin/order-extra.html',
         ])
 
@@ -193,14 +192,14 @@ class PrintOrderAdminMixin(object):
 
     def render_confirmation(self, request, pk=None):
         template = select_template([
-            '{}/print/order-confirmation.html'.format(settings.SHOP_APP_LABEL.lower()),
+            '{}/print/order-confirmation.html'.format(app_settings.APP_LABEL.lower()),
             'shop/print/order-confirmation.html'
         ])
         return self._render_letter(request, pk, template)
 
     def render_invoice(self, request, pk=None):
         template = select_template([
-            '{}/print/invoice.html'.format(settings.SHOP_APP_LABEL.lower()),
+            '{}/print/invoice.html'.format(app_settings.APP_LABEL.lower()),
             'shop/print/invoice.html'
         ])
         return self._render_letter(request, pk, template)

@@ -14,6 +14,7 @@ from cms.models.fields import PlaceholderField
 from filer.fields import image
 from djangocms_text_ckeditor.fields import HTMLField
 from polymorphic.query import PolymorphicQuerySet
+from shop import app_settings
 from shop.models.product import BaseProduct, BaseProductManager, CMSPageReferenceMixin
 from shop.models.defaults.mapping import ProductPage
 from shop.money.fields import MoneyField
@@ -68,7 +69,7 @@ if settings.USE_I18N:
         objects = ProductManager()
 
         class Meta:
-            app_label = settings.SHOP_APP_LABEL
+            app_label = app_settings.APP_LABEL
             ordering = ('order',)
             verbose_name = _("Commodity")
             verbose_name_plural = _("Commodities")
@@ -88,7 +89,7 @@ if settings.USE_I18N:
                             help_text=_("Short description for the catalog list view."))
 
         class Meta:
-            app_label = settings.SHOP_APP_LABEL
+            app_label = app_settings.APP_LABEL
             unique_together = [('language_code', 'master')]
 
 else:
@@ -126,7 +127,7 @@ else:
         objects = BaseProductManager()
 
         class Meta:
-            app_label = settings.SHOP_APP_LABEL
+            app_label = app_settings.APP_LABEL
             ordering = ('order',)
             verbose_name = _("Commodity")
             verbose_name_plural = _("Commodities")
