@@ -56,17 +56,40 @@ DeferredBaseProduct = create_deferred_base_class('DeferredBaseProduct')
 DeferredProduct = create_deferred_class('DeferredProduct', DeferredBaseProduct)
 
 
+# Order is important, it must be declared before DeferredOrder, so that fulfillment tests make sense
+DeferredBaseOrderItemBeforeOrder = create_deferred_base_class('DeferredBaseOrderItemBeforeOrder', {
+    'order': deferred.ForeignKey('DeferredBaseOrder', on_delete=models.CASCADE),
+    'product': deferred.ForeignKey(DeferredBaseProduct, on_delete=models.PROTECT),
+})
+DeferredOrderItemBeforeOrder = create_deferred_class('DeferredOrderItemBeforeOrder', DeferredBaseOrderItemBeforeOrder)
+
+
 RegularOrder = create_regular_class('RegularOrder', {
     'customer': models.ForeignKey(RegularCustomer, on_delete=models.PROTECT),
     'items_simple': models.ManyToManyField(RegularProduct),
-    'items_through': models.ManyToManyField('RegularProduct', through='RegularOrderItem'),
+    'items_through': models.ManyToManyField(RegularProduct, through='RegularOrderItem'),
 })
 DeferredBaseOrder = create_deferred_base_class('DeferredBaseOrder', {
     'customer': deferred.ForeignKey(DeferredBaseCustomer, on_delete=models.PROTECT),
     'items_simple': deferred.ManyToManyField(DeferredBaseProduct),
-    'items_through': deferred.ManyToManyField('DeferredBaseProduct', through='DeferredBaseOrderItem'),
+    'items_through': deferred.ManyToManyField(DeferredBaseProduct, through='DeferredBaseOrderItem'),
+    'items_through_fulfill_by_order': deferred.ManyToManyField(DeferredBaseProduct, through=DeferredBaseOrderItemBeforeOrder),
+    'items_through_fulfill_by_product': deferred.ManyToManyField('DeferredBaseProductAfterOrder', through='DeferredBaseOrderItemBeforeProduct'),
 })
 DeferredOrder = create_deferred_class('DeferredOrder', DeferredBaseOrder)
+
+
+# Order is important, it must be declared before DeferredProductAfterOrder, so that fulfillment tests make sense
+DeferredBaseOrderItemBeforeProduct = create_deferred_base_class('DeferredBaseOrderItemBeforeProduct', {
+    'order': deferred.ForeignKey(DeferredBaseOrder, on_delete=models.CASCADE),
+    'product': deferred.ForeignKey('DeferredBaseProductAfterOrder', on_delete=models.PROTECT),
+})
+DeferredOrderItemBeforeProduct = create_deferred_class('DeferredOrderItemBeforeProduct', DeferredBaseOrderItemBeforeProduct)
+
+
+# Order is important, it must be declared after DeferredOrder, so that fulfillment tests make sense
+DeferredBaseProductAfterOrder = create_deferred_base_class('DeferredBaseProductAfterOrder')
+DeferredProductAfterOrder = create_deferred_class('DeferredProductAfterOrder', DeferredBaseProductAfterOrder)
 
 
 RegularOrderItem = create_regular_class('RegularOrderItem', {
@@ -129,8 +152,8 @@ class DeferredTestCase(TestCase):
     def test_many_to_many_field_simple_deferred(self):
         self._test_many_to_may_field_simple(DeferredOrder, DeferredProduct)
 
-    def _test_many_to_may_field_through(self, order_class, product_class, order_item_class):
-        items_field = order_class._meta.get_field('items_through')
+    def _test_many_to_may_field_through(self, order_class, product_class, order_item_class, items_field_attribute='items_through'):
+        items_field = order_class._meta.get_field(items_field_attribute)
 
         self.assertTrue(items_field.is_relation)
         self.assertTrue(items_field.many_to_many)
@@ -150,6 +173,12 @@ class DeferredTestCase(TestCase):
 
     def test_many_to_many_field_through_deferred(self):
         self._test_many_to_may_field_through(DeferredOrder, DeferredProduct, DeferredOrderItem)
+
+    def test_many_to_many_field_through_deferred_by_order(self):
+        self._test_many_to_may_field_through(DeferredOrder, DeferredProduct, DeferredOrderItemBeforeOrder, items_field_attribute='items_through_fulfill_by_order')
+
+    def test_many_to_many_field_through_deferred_by_product(self):
+        self._test_many_to_may_field_through(DeferredOrder, DeferredProductAfterOrder, DeferredOrderItemBeforeProduct, items_field_attribute='items_through_fulfill_by_product')
 
     def _test_foreign_key_self(self, customer_class):
         advertised_by_field = customer_class._meta.get_field('advertised_by')

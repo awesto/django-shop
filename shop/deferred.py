@@ -43,6 +43,30 @@ class ManyToManyField(DeferredRelatedField):
     """
     MaterializedField = models.ManyToManyField
 
+    def __init__(self, to, **kwargs):
+        super(ManyToManyField, self).__init__(to, **kwargs)
+
+        through = kwargs.get('through')
+
+        if through is None:
+            self.abstract_through_model = None
+        else:
+            try:
+                self.abstract_through_model = through._meta.object_name
+            except AttributeError:
+                assert isinstance(through, six.string_types), (
+                    '%s(%r) is invalid. '
+                    'Through parameter must be either a model or a model name'
+                    % (self.__class__.__name__, through)
+                )
+                self.abstract_through_model = through
+            else:
+                assert through._meta.abstract, (
+                    '%s can only define a through relation '
+                    'with abstract class %s'
+                    % (self.__class__.__name__, through._meta.object_name)
+                )
+
 
 class ForeignKeyBuilder(ModelBase):
     """
@@ -84,7 +108,7 @@ class ForeignKeyBuilder(ModelBase):
                     cls._materialized_models[basename] = Model.__name__
                     # remember the materialized model mapping in the base class for further usage
                     baseclass._materialized_model = Model
-            cls.process_pending_mappings(Model, basename)
+                    cls.process_pending_mappings(Model, basename)
 
         cls.handle_deferred_foreign_fields(Model)
         Model.perform_model_checks()
@@ -101,13 +125,21 @@ class ForeignKeyBuilder(ModelBase):
                 member = getattr(Model, attrname)
             except AttributeError:
                 continue
+
             if not isinstance(member, DeferredRelatedField):
                 continue
+
             if member.abstract_model == 'self':
                 mapmodel = Model
             else:
                 mapmodel = cls._materialized_models.get(member.abstract_model)
-            if mapmodel:
+
+            abstract_through_model = getattr(member, 'abstract_through_model', None)
+            mapmodel_through = cls._materialized_models.get(abstract_through_model)
+
+            if mapmodel and (not abstract_through_model or mapmodel_through):
+                if mapmodel_through:
+                    member.options['through'] = mapmodel_through
                 field = member.MaterializedField(mapmodel, **member.options)
                 field.contribute_to_class(Model, attrname)
             else:
@@ -115,12 +147,28 @@ class ForeignKeyBuilder(ModelBase):
 
     @staticmethod
     def process_pending_mappings(Model, basename):
+        assert basename in ForeignKeyBuilder._materialized_models
+        assert Model._materialized_model
+
         """
         Check for pending mappings and in case, process, and remove them from the list
         """
         for mapping in ForeignKeyBuilder._pending_mappings[:]:
-            if mapping[2].abstract_model == basename:
-                field = mapping[2].MaterializedField(Model, **mapping[2].options)
+            member = mapping[2]
+            mapmodel = ForeignKeyBuilder._materialized_models.get(member.abstract_model)
+            abstract_through_model = getattr(member, 'abstract_through_model', None)
+            mapmodel_through = ForeignKeyBuilder._materialized_models.get(abstract_through_model)
+
+            if member.abstract_model == basename or abstract_through_model == basename:
+                if member.abstract_model == basename and abstract_through_model and not mapmodel_through:
+                    continue
+                elif abstract_through_model == basename and not mapmodel:
+                    continue
+
+                if mapmodel_through:
+                    member.options['through'] = mapmodel_through
+
+                field = member.MaterializedField(mapmodel, **member.options)
                 field.contribute_to_class(mapping[0], mapping[1])
                 ForeignKeyBuilder._pending_mappings.remove(mapping)
 
