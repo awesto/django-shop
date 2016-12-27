@@ -2,6 +2,7 @@
 
 from __future__ import unicode_literals
 
+from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.test import TestCase
 from shop import deferred
@@ -9,18 +10,16 @@ from shop import deferred
 import six
 
 
-def create_regular_class(name, fields={}):
-    class Meta:
-        app_label = 'foo'
-
+def create_regular_class(name, fields={}, meta={}):
+    meta.setdefault('app_label', 'foo')
+    Meta = type(b'Meta', (), meta)
     return type(str(name), (models.Model,), dict(Meta=Meta, __module__=__name__, **fields))
 
 
-def create_deferred_base_class(name, fields={}):
-    class Meta:
-        app_label = 'foo'
-        abstract = True
-
+def create_deferred_base_class(name, fields={}, meta={}):
+    meta.setdefault('app_label', 'foo')
+    meta.setdefault('abstract', True)
+    Meta = type(b'Meta', (), meta)
     return type(
         str(name),
         (six.with_metaclass(deferred.ForeignKeyBuilder, models.Model),),
@@ -28,11 +27,10 @@ def create_deferred_base_class(name, fields={}):
     )
 
 
-def create_deferred_class(name, base, fields={}):
-    class Meta:
-        app_label = 'bar'
-
-    return type(str(name), (base,), dict(Meta=Meta, __module__=__name__, **fields))
+def create_deferred_class(name, base, fields={}, meta={}, mixins=()):
+    meta.setdefault('app_label', 'bar')
+    Meta = type(b'Meta', (), meta)
+    return type(str(name), mixins + (base,), dict(Meta=Meta, __module__=__name__, **fields))
 
 
 RegularUser = create_regular_class('RegularUser')
@@ -192,3 +190,41 @@ class DeferredTestCase(TestCase):
 
     def test_foreign_key_self_deferred(self):
         self._test_foreign_key_self(DeferredCustomer)
+
+    def test_extend_deferred_model_not_allowed(self):
+        with self.assertRaisesRegexp(ImproperlyConfigured, 'Base class DeferredProduct is not abstract'):
+            create_deferred_class('Product', DeferredProduct)
+
+    def test_extend_deferred_base_model_allowed_only_once(self):
+        with self.assertRaisesRegexp(ImproperlyConfigured, "Both Model classes 'Product' and 'DeferredProduct' inherited from abstractbase class DeferredBaseProduct"):
+            create_deferred_class('Product', DeferredBaseProduct)
+
+    def test_mixins_allowed(self):
+        SomeMixin = type(b'SomeMixin', (object,), {})
+        BaseModel = create_regular_class('BaseModel', meta={'abstract': True})
+        MixinBaseProduct = create_deferred_base_class('MixinBaseProduct')
+        MixinProduct = create_deferred_class('MixinProduct', MixinBaseProduct, mixins=(SomeMixin, BaseModel))
+
+        self.assertTrue(issubclass(MixinProduct, SomeMixin))
+        self.assertTrue(issubclass(MixinProduct, BaseModel))
+
+    def test_deferred_base_model_must_be_abstract(self):
+        NonAbstractBaseProduct = create_deferred_base_class('NonAbstractBaseProduct', meta={'abstract': False})
+
+        with self.assertRaisesRegexp(ImproperlyConfigured, 'Base class NonAbstractBaseProduct is not abstract'):
+            create_deferred_class('NonAbstractProduct', NonAbstractBaseProduct)
+
+    def test_check_for_pending_mappings(self):
+        deferred.ForeignKeyBuilder.check_for_pending_mappings()
+
+        PendingMappingBaseCustomer = create_deferred_base_class('PendingMappingBaseCustomer')
+        PendingMappingBaseOrder = create_deferred_base_class('PendingMappingBaseOrder', {
+            'customer': deferred.ForeignKey(PendingMappingBaseCustomer, on_delete=models.PROTECT),
+        })
+
+        deferred.ForeignKeyBuilder.check_for_pending_mappings()
+
+        create_deferred_class('PendingMappingOrder', PendingMappingBaseOrder)
+
+        with self.assertRaisesRegexp(ImproperlyConfigured, "Deferred foreign key 'PendingMappingOrder.customer' has not been mapped"):
+            deferred.ForeignKeyBuilder.check_for_pending_mappings()

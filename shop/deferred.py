@@ -101,7 +101,7 @@ class ForeignKeyBuilder(ModelBase):
             else:
                 if basename in cls._materialized_models:
                     if Model.__name__ != cls._materialized_models[basename]:
-                        raise AssertionError("Both Model classes '%s' and '%s' inherited from abstract"
+                        raise ImproperlyConfigured("Both Model classes '%s' and '%s' inherited from abstract"
                             "base class %s, which is disallowed in this configuration." %
                             (Model.__name__, cls._materialized_models[basename], basename))
                 elif isinstance(baseclass, cls):
