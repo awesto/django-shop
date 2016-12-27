@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from shop.modifiers.defaults import DefaultCartModifier
 from myshop.models.polymorphic.smartphone import SmartPhoneModel
 
