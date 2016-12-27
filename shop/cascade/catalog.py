@@ -8,6 +8,7 @@ from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
 from cms.plugin_pool import plugin_pool
 from cms.utils.compat.dj import is_installed
+from cmsplugin_cascade.mixins import WithSortableInlineElementsMixin
 from cmsplugin_cascade.models import SortableInlineCascadeElement
 
 from shop import settings as shop_settings
@@ -95,7 +96,7 @@ class ProductGalleryInline(SortableInlineAdminMixin, StackedInline):
     verbose_name_plural = _("Product Gallery")
 
 
-class ShopProductGallery(ShopPluginBase):
+class ShopProductGallery(WithSortableInlineElementsMixin, ShopPluginBase):
     name = _("Product Gallery")
     require_parent = True
     parent_classes = ('BootstrapColumnPlugin',)
