@@ -47,6 +47,12 @@ class AppSettings(object):
 
     @property
     def CUSTOMER_SERIALIZER(self):
+        """
+        Depending on the materialized customer model, use this directive to configure the
+        customer serializer.
+
+        Defaults to :class:`shop.serializers.defaults.CustomerSerializer`.
+        """
         from django.core.exceptions import ImproperlyConfigured
         from django.utils.module_loading import import_string
         from shop.serializers.bases import BaseCustomerSerializer
@@ -60,6 +66,14 @@ class AppSettings(object):
 
     @property
     def PRODUCT_SUMMARY_SERIALIZER(self):
+        """
+        Serialize the smallest common denominator of all Product models available in this shop.
+        This serialized data then is used for Catalog List Views, Cart List Views and Order List
+        Views.
+
+        There is no default value.
+        """
+
         from django.core.exceptions import ImproperlyConfigured
         from django.utils.module_loading import import_string
         from shop.serializers.bases import BaseProductSummarySerializer
@@ -75,19 +89,33 @@ class AppSettings(object):
 
     @property
     def PRODUCT_SELECT_SERIALIZER(self):
+        """
+        This serializer is only used by the plugin editors, when selecting a product using a
+        drop down menu with auto-completion.
+
+        Defaults to :class:`shop.serializers.defaults.ProductSelectSerializer`.
+        """
         from django.utils.module_loading import import_string
 
-        s = self._setting('SHOP_PRODUCT_SELECT_SERIALIZER', 'shop.serializers.defaults.ProductSelectSerializer')
+        s = self._setting('SHOP_PRODUCT_SELECT_SERIALIZER',
+                          'shop.serializers.defaults.ProductSelectSerializer')
         ProductSelectSerializer = import_string(s)
         return ProductSelectSerializer
 
     @property
     def ORDER_ITEM_SERIALIZER(self):
+        """
+        Depending on the materialized OrderItem model, use this directive to configure the
+        serializer.
+
+        Defaults to :class:`shop.serializers.defaults.OrderItemSerializer`.
+        """
         from django.core.exceptions import ImproperlyConfigured
         from django.utils.module_loading import import_string
         from shop.serializers.bases import BaseOrderItemSerializer
 
-        s = self._setting('SHOP_ORDER_ITEM_SERIALIZER', 'shop.serializers.defaults.OrderItemSerializer')
+        s = self._setting('SHOP_ORDER_ITEM_SERIALIZER',
+                          'shop.serializers.defaults.OrderItemSerializer')
         OrderItemSerializer = import_string(s)
         if not issubclass(OrderItemSerializer, BaseOrderItemSerializer):
             raise ImproperlyConfigured(
@@ -98,10 +126,9 @@ class AppSettings(object):
     def CART_MODIFIERS(self):
         from django.utils.module_loading import import_string
 
-        return tuple(
-            import_string(mc)
-            for mc in self._setting('SHOP_CART_MODIFIERS', ('shop.modifiers.defaults.DefaultCartModifier',))
-        )
+        cart_modifiers = self._setting('SHOP_CART_MODIFIERS',
+                                       ('shop.modifiers.defaults.DefaultCartModifier',))
+        return tuple(import_string(mc) for mc in cart_modifiers)
 
     @property
     def VALUE_ADDED_TAX(self):
