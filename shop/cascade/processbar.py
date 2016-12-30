@@ -82,7 +82,7 @@ class ProcessStepPlugin(TransparentContainer, ShopPluginBase):
         identifier = super(ProcessStepPlugin, cls).get_identifier(obj)
         content = obj.glossary.get('step_title', '')
         if content:
-            content = unicode(Truncator(content).words(3, truncate=' ...'))
+            content = Truncator(content).words(3, truncate=' ...')
         else:
             content = obj.get_position_in_placeholder()
         return format_html('{0}{1}', identifier, content)
