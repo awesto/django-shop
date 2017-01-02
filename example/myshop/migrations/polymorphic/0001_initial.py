@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ('cms', '0016_auto_20160608_1535'),
         ('contenttypes', '0002_remove_content_type_name'),
-        ('filer', '0007_auto_20161207_1131'),
+        ('filer', '0006_auto_20160623_1627'),
         ('email_auth', '0002_auto_20160327_1119'),
     ]
 

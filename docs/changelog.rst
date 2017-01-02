@@ -13,8 +13,7 @@ Changelog for django-SHOP
 * Drop support for Django-1.8.
 * If an anonymous customer logs in, his current cart is merged with a cart, which has previously
   been created. This has been adopted to re-use the method ``Product.is_in_cart()``.
-  in and finds it's Merge the contents of the other cart into this one, afterwards delete it.
-* Added method ``post_process_cart_item()`` to the Cart Modifiers.
+* Added method ``post_process_cart_item()`` to :class:`shop.modifiers.base.BaseCartModifier`.
 * Moved field ``salutation`` from :class:`shop.models.customer.BaseCustomer` into the merchant
   implementation. If your project does not use the provided default customer model
   :class:`shop.models.defaults.customer.Customer`, then you should add the ``salutation`` field
@@ -27,6 +26,8 @@ Changelog for django-SHOP
 * Renamed ``ProductDetailSerializerBase`` -> ``BaseProductDetailSerializer`` and
   ``ProductSummarySerializerBase`` -> ``BaseProductSummarySerializer`` to be consistent with the
   naming conventions used by the Django REST Framework.
+* AngularJS directive ``<shop-auth-form ...>`` now listens of the event "pressed ENTER key"
+  and submits the form data accordingly.
 
 
 0.9.3
