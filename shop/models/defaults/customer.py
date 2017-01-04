@@ -8,7 +8,12 @@ from shop.models.customer import BaseCustomer
 
 
 class Customer(BaseCustomer):
-    """Default materialized model for Customer"""
+    """
+    Default materialized model for Customer, adding a customer's number and salutation.
+
+    If this model is materialized, then also register the corresponding serializer class
+    :class:`shop.serializers.defaults.customer.CustomerSerializer`.
+    """
     SALUTATION = (('mrs', _("Mrs.")), ('mr', _("Mr.")), ('na', _("(n/a)")))
 
     number = models.PositiveIntegerField(_("Customer Number"), null=True, default=None, unique=True)

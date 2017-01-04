@@ -18,7 +18,7 @@ this from happening, another popular Javascript framework was chosen: AngularJS_
 This means that template designers only have to add special HTML directives as provided by the
 framework. They do not have to write or adopt any Javascript code, except for the initialization.
 
-..note:: Since **django-SHOP** uses REST for every part of the communication, the client side
+.. note:: Since **django-SHOP** uses REST for every part of the communication, the client side
 	framework can be replaced by whatever appropriate.
 
 
@@ -88,7 +88,7 @@ with:
 	{% addtoblock "js" %}<script src="{% static 'shop/js/cart.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 	{% addtoblock "ng-requires" %}django.shop.cart{% endaddtoblock %}
 
-Sekizai then collects the content between these ``addtoblock``s, and renders them using the
+Sekizai then collects the content between these ``addtoblock`` s, and renders them using the
 ``render_block`` statements shown above. This concept allows us to delegate dependency resolution
 and module initialization to whom it concerns.
 

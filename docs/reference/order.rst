@@ -179,15 +179,15 @@ boilerplate which has to be added to the merchant's implementation of the file
 
 
 This apphook uses the class :class:`shop.views.order.OrderView` to render the order's list- and
-detail views using the serializers :class:`shop.rest.serializers.OrderListSerializer` and
-:class:`shop.rest.serializers.OrderDetailSerializer`. Sometimes these defaults aren't enough and
+detail views using the serializers :class:`shop.serializers.order.OrderListSerializer` and
+:class:`shop.serializers.order.OrderDetailSerializer`. Sometimes these defaults aren't enough and
 must be extended by a customized serializer. Say, our Order class contains the rendered
 shipping and billing addresses. Then we can extend our serializer class by adding them:
 
 .. code-block:: python
 	:caption: myshop/serializers.py
 
-	from shop.rest.serializers import OrderDetailSerializer
+	from shop.serializers.order import OrderDetailSerializer
 
 	class CustomOrderSerializer(OrderDetailSerializer):
 	    shipping_address_text = serializers.CharField(read_only=True)

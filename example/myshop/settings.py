@@ -67,7 +67,7 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.auth',
     'email_auth',
     'polymorphic',
@@ -108,9 +108,9 @@ INSTALLED_APPS = (
     'shop',
     'shop_stripe',
     'myshop',
-)
+]
 if SHOP_TUTORIAL in ('i18n_commodity', 'i18n_smartcard', 'polymorphic'):
-    INSTALLED_APPS += ('parler',)
+    INSTALLED_APPS.append('parler')
 
 MIDDLEWARE_CLASSES = (
     'djng.middleware.AngularUrlMiddleware',
@@ -444,7 +444,7 @@ CMSPLUGIN_CASCADE = {
         'cmsplugin_cascade.link.plugin_base.LinkElementMixin',
         'shop.cascade.plugin_base.CatalogLinkForm',
     ),
-    'alien_plugins': ('TextPlugin', 'TextLinkPlugin',),
+    'alien_plugins': ('TextPlugin', 'TextLinkPlugin', 'AcceptConditionPlugin',),
     'bootstrap3': {
         'template_basedir': 'angular-ui',
     },
@@ -455,10 +455,9 @@ CMSPLUGIN_CASCADE = {
         ],
     },
     'plugins_with_sharables': {
-        'BootstrapImagePlugin': ('image-shapes', 'image-width-responsive', 'image-width-fixed',
-                                 'image-height', 'resize-options',),
-        'BootstrapPicturePlugin': ('image-shapes', 'responsive-heights', 'image-size',
-                                   'resize-options',),
+        'BootstrapImagePlugin': ('image_shapes', 'image_width_responsive', 'image_width_fixed',
+                                 'image_height', 'resize_options',),
+        'BootstrapPicturePlugin': ('image_shapes', 'responsive_heights', 'image_size', 'resize_options',),
     },
     'bookmark_prefix': '/',
     'segmentation_mixins': (
@@ -544,6 +543,7 @@ HAYSTACK_ROUTERS = ('shop.search.routers.LanguageRouter',)
 
 SHOP_VALUE_ADDED_TAX = Decimal(19)
 SHOP_DEFAULT_CURRENCY = 'EUR'
+SHOP_PRODUCT_SUMMARY_SERIALIZER = 'myshop.serializers.ProductSummarySerializer'
 SHOP_CART_MODIFIERS = (
     'myshop.polymorphic_modifiers.MyShopCartModifier' if SHOP_TUTORIAL == 'polymorphic'
     else 'shop.modifiers.defaults.DefaultCartModifier',

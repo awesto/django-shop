@@ -79,7 +79,13 @@ class CustomerListFilter(admin.SimpleListFilter):
 
 class CustomerAdminBase(UserAdmin):
     """
-    This ModelAdmin class must be registered inside the implementation of this shop.
+    This ModelAdmin class must be extended and registered inside the merchant's implementation.
+    Since the customer model can differ, the field `inlines` must be specified, for instance
+    ```
+    @admin.register(CustomerProxy)
+    class CustomerAdmin(CustomerAdminBase):
+        inlines = (CustomerInlineAdminBase,)
+    ```
     """
     form = CustomerChangeForm
     add_form = CustomerCreationForm

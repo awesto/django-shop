@@ -289,11 +289,12 @@ class CheckoutTest(ShopTestCase):
         self.assertIsInstance(accept_condition_plugin, AcceptConditionFormPlugin)
 
         # edit the plugin's content
-        self.client.login(username='admin', password='admin')
-        request = self.client.request()
+        self.assertTrue(self.client.login(username='admin', password='admin'))
 
         post_data = QueryDict('', mutable=True)
         post_data.update({'html_content': "<p>I have read the terms and conditions and agree with them.</p>"})
+        request = self.factory.post('/')
+
         ModelForm = accept_condition_plugin.get_form(request, accept_condition_element)
         form = ModelForm(post_data, None, instance=accept_condition_element)
         self.assertTrue(form.is_valid())
@@ -310,7 +311,6 @@ class CheckoutTest(ShopTestCase):
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
         soup = BeautifulSoup(response.content, 'html.parser')
-        print(soup.prettify())
 
         # find plugin counterpart on public page
         placeholder = self.checkout_page.publisher_public.placeholders.get(slot='Main Content')

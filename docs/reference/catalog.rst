@@ -171,15 +171,15 @@ write it as simple as:
 
 .. code-block:: python
 
-	from shop.rest.serializers import ProductDetailSerializerBase
+	from shop.serializers.bases import BaseProductDetailSerializer
 
-	class ProductDetailSerializer(ProductDetailSerializerBase):
+	class ProductDetailSerializer(BaseProductDetailSerializer):
 	    class Meta:
 	        model = Product
 	        exclude = ('active',)
 
-In case we need :ref:`reference/additional-serializer-fields`, lets add them to this class using the
-`serializer fields`_ from the Django RESTFramework library.
+In case we need :ref:`reference/additional-serializer-fields`, let's add them to this class using
+the `serializer fields`_ from the Django RESTFramework library.
 
 
 .. _reference/additional-serializer-fields:
@@ -195,7 +195,7 @@ class. This method then may forward the given product to a the built-in renderer
 
 .. code-block:: python
 
-	class ProductDetailSerializer(ProductDetailSerializerBase):
+	class ProductDetailSerializer(BaseProductDetailSerializer):
 	    # other attributes
 
 	    def get_foo(self, product):

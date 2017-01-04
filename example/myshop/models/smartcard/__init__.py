@@ -8,7 +8,10 @@ from djangocms_text_ckeditor.fields import HTMLField
 from shop.money.fields import MoneyField
 from shop.models.product import BaseProduct, BaseProductManager, CMSPageReferenceMixin
 from shop.models.defaults.mapping import ProductPage, ProductImage
+from shop.models.defaults.order import Order
 from ..manufacturer import Manufacturer
+
+__all__ = ['SmartCard', 'Order']
 
 
 @python_2_unicode_compatible

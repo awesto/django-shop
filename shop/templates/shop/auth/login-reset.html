@@ -3,7 +3,7 @@
 
 {% block form_footer %}
 <div class="form-group">
-	<button type="button" ng-click="submitForm('{% url 'shop:login' %}')" class="btn btn-primary">{% trans "Login" %}</button>
+	<button type="button" ng-click="submitForm('{% url "shop:login" %}')" class="btn btn-primary">{% trans "Login" %}</button>
 	<button type="button" ng-click="showResetForm=!showResetForm;" class="btn btn-link pull-right">{% trans "Password Forgotten?" %}</button>
 </div>
 
@@ -15,7 +15,7 @@
 	</div>
 
 	<div class="form-group" ng-hide="success_message">
-		<button type="button" ng-click="submitForm('{% url 'shop:password-reset' %}', 5000)" class="btn btn-primary">{% trans "Reset Password" %}</button>
+		<button type="button" ng-click="submitForm('{% url "shop:password-reset" %}', 5000)" class="btn btn-primary">{% trans "Reset Password" %}</button>
 	</div>
 </div>
 {% endblock form_footer %}

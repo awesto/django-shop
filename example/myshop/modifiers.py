@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from django.utils.translation import ugettext_lazy as _
 from shop.modifiers.pool import cart_modifiers_pool
-from shop.rest.serializers import ExtraCartRow
+from shop.serializers.cart import ExtraCartRow
 from shop.modifiers.base import ShippingModifier
 from shop.money import Money
 from shop.shipping.defaults import DefaultShippingProvider

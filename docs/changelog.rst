@@ -19,8 +19,14 @@ Changelog for django-SHOP
   implementation. If your project does not use the provided default customer model
   :class:`shop.models.defaults.customer.Customer`, then you should add the ``salutation`` field
   to your implementation of the Customer model, if that makes sense in your use-case.
-* Started to refactor REST serializers, so that they can easily be overridden by the merchant
-  implementation.
+* Refactored the defaults settings for ``shop`` using an ``AppSettings`` object.
+* Refactored all serializers into their own folder ``shop/serializers`` with submodules
+  ``bases``, ``cart``, ``order`` and ``defaults``. The serializers ``CustomerSerializer``,
+  ``ProductSummarySerializer`` and ``OrderItemSerializer`` are configurable through the application
+  settings.
+* Renamed ``ProductDetailSerializerBase`` -> ``BaseProductDetailSerializer`` and
+  ``ProductSummarySerializerBase`` -> ``BaseProductSummarySerializer`` to be consistent with the
+  naming conventions used by the Django REST Framework.
 
 
 0.9.3
