@@ -1,4 +1,4 @@
-{% load shop_tags %}
+{% load cms_tags shop_tags %}
 {{ object.product_name }}
 {{ object.product_code }}
 {{ object.description|striptags }}

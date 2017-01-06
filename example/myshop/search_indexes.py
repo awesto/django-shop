@@ -15,6 +15,7 @@ elif settings.SHOP_TUTORIAL == 'i18n_smartcard':
 elif settings.SHOP_TUTORIAL == 'polymorphic':
     from myshop.models.polymorphic.smartcard import SmartCard
     from myshop.models.polymorphic.smartphone import SmartPhoneModel
+    from myshop.models.polymorphic.commodity import Commodity
 
 
 class ProductIndex(ProductIndexBase):
@@ -35,10 +36,6 @@ if settings.SHOP_TUTORIAL in ('commodity', 'i18n_commodity'):
     class CommodityIndex(ProductIndex, indexes.Indexable):
         def get_model(self):
             return Commodity
-
-        def Xprepare_text(self, product):
-            output = super(CommodityIndex, self).prepare_text(product)
-            return output
     myshop_search_index_classes.append(CommodityIndex)
 
 
@@ -54,3 +51,9 @@ if settings.SHOP_TUTORIAL in ('polymorphic',):
         def get_model(self):
             return SmartPhoneModel
     myshop_search_index_classes.append(SmartPhoneIndex)
+
+
+    class CommodityIndex(ProductIndex, indexes.Indexable):
+        def get_model(self):
+            return Commodity
+    myshop_search_index_classes.append(CommodityIndex)
