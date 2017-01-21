@@ -7,6 +7,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from shop.money import Money, MoneyMaker
 from djangocms_text_ckeditor.fields import HTMLField
 from shop.money.fields import MoneyField
+from parler.managers import TranslatableManager
 from parler.models import TranslatedFields
 from .product import Product
 
@@ -58,6 +59,8 @@ class SmartPhoneModel(Product):
                                     configuration='CKEDITOR_SETTINGS_DESCRIPTION',
                                     help_text=_("Full description used in the catalog's detail "
                                                 "view of Smart Cards.")))
+
+    default_manager = TranslatableManager()
 
     class Meta:
         verbose_name = _("Smart Phone")

@@ -5,6 +5,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from djangocms_text_ckeditor.fields import HTMLField
 from shop.money.fields import MoneyField
+from parler.managers import TranslatableManager
 from parler.models import TranslatedFields
 from .product import Product
 
@@ -27,6 +28,8 @@ class SmartCard(Product):
         description=HTMLField(verbose_name=_("Description"),
                               configuration='CKEDITOR_SETTINGS_DESCRIPTION',
                               help_text=_("Full description used in the catalog's detail view of Smart Cards.")))
+
+    default_manager = TranslatableManager()
 
     class Meta:
         verbose_name = _("Smart Card")
