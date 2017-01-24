@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.conf import settings
 from django.utils.module_loading import import_string
+from django.utils.safestring import mark_safe
 
 from rest_framework import serializers
 from rest_framework.fields import empty
@@ -91,7 +92,7 @@ class ProductSearchSerializer(ProductSearchSerializerBase):
         index_classes = myshop_search_index_classes
 
     def get_media(self, search_result):
-        return search_result.search_media
+        return mark_safe(search_result.search_media)
 
 
 class CatalogSearchSerializer(ProductSearchSerializer):
@@ -99,4 +100,4 @@ class CatalogSearchSerializer(ProductSearchSerializer):
     Serializer to restrict products in the catalog
     """
     def get_media(self, search_result):
-        return search_result.catalog_media
+        return mark_safe(search_result.catalog_media)
