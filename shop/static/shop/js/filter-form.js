@@ -5,7 +5,7 @@ var Module = angular.module('django.shop.filter', []);
 
 // Directive <form shop-product-filter="attribute"> to be used to communicate selected
 // attributes used to narrow down the list of products.
-Module.directive('shopProductFilter', ['$location', '$timeout', function($location, $timeout) {
+Module.directive('shopProductFilter', ['$location', function($location) {
 	return {
 		require: 'form',
 		restrict: 'AC',
@@ -16,11 +16,7 @@ Module.directive('shopProductFilter', ['$location', '$timeout', function($locati
 
 			scope.filters = scope.filters || {};
 			if (params[attr]) {
-				$timeout(function() {
-					// delay until next digest cycle
-					// scope.$emit('shopCatalogFilter', params);
-				});
-				//scope.filters[attr] = params[attr];
+				scope.filters[attr] = params[attr];
 			}
 
 			scope.filterChanged = function() {
