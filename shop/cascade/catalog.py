@@ -6,10 +6,12 @@ from django.forms import widgets
 from django.forms.models import ModelForm
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
+
 from cms.plugin_pool import plugin_pool
 from cms.utils.compat.dj import is_installed
 from cmsplugin_cascade.mixins import WithSortableInlineElementsMixin
 from cmsplugin_cascade.models import SortableInlineCascadeElement
+from cmsplugin_cascade.fields import GlossaryField
 
 from shop import app_settings
 from shop.models.product import ProductModel
@@ -27,11 +29,22 @@ class ShopCatalogPlugin(ShopPluginBase):
     parent_classes = ('BootstrapColumnPlugin', 'SimpleWrapperPlugin',)
     cache = False
 
+    infinite_scroll = GlossaryField(
+        widgets.CheckboxInput(),
+        label=_("Infinite Scroll"),
+        initial=True,
+        help_text=_("Shall the product list view scroll infinitely?"),
+    )
+
     def get_render_template(self, context, instance, placeholder):
         return select_template([
             '{}/catalog/product-list.html'.format(app_settings.APP_LABEL),
             'shop/catalog/product-list.html',
         ])
+
+    def render(self, context, instance, placeholder):
+        context['infinite_scroll'] = bool(instance.glossary.get('infinite_scroll', True))
+        return context
 
 plugin_pool.register_plugin(ShopCatalogPlugin)
 
