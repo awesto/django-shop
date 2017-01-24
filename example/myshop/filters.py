@@ -28,7 +28,9 @@ class ManufacturerFilter(django_filters.FilterSet):
 
     @classmethod
     def get_render_context(cls, request, queryset):
-        filter_set = cls()
+        # create filter set with bound form, to enable the selected option
+        filter_set = cls(data=request.GET)
+
         # we only want to show manufacturers for products available in the current list view
         filter_field = filter_set.filters['manufacturer'].field
         filter_field.queryset = filter_field.queryset.filter(
