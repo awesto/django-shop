@@ -14,6 +14,7 @@ class SearchView(ListModelMixin, HaystackGenericAPIView):
     """
     renderer_classes = (CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer)
     serializer_class = None  # to be set by SearchView.as_view(serializer_class=...)
+    filter_class = None  # may be overridden by SearchView.as_view
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)

@@ -13,7 +13,7 @@ class ProductSearchSerializer(HaystackSerializer):
 
     class Meta:
         fields = ('text', 'autocomplete', 'product_name', 'product_url', 'price',)
-        ignore_fields = ('text', 'autocomplete',)
+        ignore_fields = ('text', 'autocomplete')
         field_aliases = {'q': 'text'}
 
     def get_price(self, search_result):
