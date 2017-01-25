@@ -5,7 +5,7 @@ from django.contrib.admin import StackedInline
 from django.forms import widgets
 from django.forms.models import ModelForm
 from django.template.loader import select_template
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext
 
 from cms.plugin_pool import plugin_pool
 from cms.utils.compat.dj import is_installed
@@ -45,6 +45,12 @@ class ShopCatalogPlugin(ShopPluginBase):
     def render(self, context, instance, placeholder):
         context['infinite_scroll'] = bool(instance.glossary.get('infinite_scroll', True))
         return context
+
+    @classmethod
+    def get_identifier(cls, obj):
+        if obj.glossary.get('infinite_scroll', True):
+            return ugettext("Infinite Scroll")
+        return ugettext("Manual Pagination")
 
 plugin_pool.register_plugin(ShopCatalogPlugin)
 
