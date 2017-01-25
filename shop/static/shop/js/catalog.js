@@ -137,7 +137,6 @@ djangoShopModule.directive('shopCatalogList', ['$window', function($window) {
 		controller: 'CatalogListController',
 		link: function(scope, element, attrs, controller) {
 			var infiniteScroll = scope.$eval(attrs.infiniteScroll);
-			console.log(infiniteScroll);
 
 			scope.$root.$on('shopCatalogSearch', function(event, params) {
 				if (infiniteScroll) {
