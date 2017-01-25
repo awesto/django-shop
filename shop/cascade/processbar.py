@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from django.forms import widgets
 from django.forms.fields import CharField
 from django.forms.models import ModelForm
@@ -8,6 +9,7 @@ from django.utils.text import Truncator
 from django.utils.html import format_html
 from django.forms.fields import IntegerField
 from django.template.loader import select_template
+
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.forms import ManageChildrenFormMixin
 from cmsplugin_cascade.fields import GlossaryField
@@ -107,11 +109,14 @@ class ProcessNextStepPlugin(BootstrapButtonMixin, ShopPluginBase):
     form = ProcessNextStepForm
     model_mixins = (LinkElementMixin,)
     fields = ('link_content', 'glossary')
+    ring_plugin = 'ProceedButtonPlugin'
     glossary_field_order = ('button_type', 'button_size', 'button_options', 'quick_float',
-                            'icon_left', 'icon_right')
+                            'icon_align', 'icon_font', 'symbol')
 
     class Media:
-        css = {'all': ('cascade/css/admin/bootstrap.min.css', 'cascade/css/admin/bootstrap-theme.min.css',)}
+        css = {'all': ('cascade/css/admin/bootstrap.min.css',
+                       'cascade/css/admin/bootstrap-theme.min.css',
+                       'cascade/css/admin/iconplugin.css',)}
 
     @classmethod
     def get_identifier(cls, obj):

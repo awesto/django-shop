@@ -9,12 +9,6 @@ form[shop-dialog-form] {
 }
 
 button[shop-dialog-proceed] {
-	.glyphicon.cascade-icon-left {
-		margin-right: 10px;
-	}
-	.glyphicon.cascade-icon-right {
-		margin-left: 10px;
-	}
 	.glyphicon-refresh-animate {
 		animation: spin 2s linear infinite;
 	}

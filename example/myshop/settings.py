@@ -15,6 +15,9 @@ import os
 from decimal import Decimal
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ImproperlyConfigured
+from django.core.urlresolvers import reverse_lazy
+
+from cmsplugin_cascade.utils import format_lazy
 
 SHOP_APP_LABEL = 'myshop'
 BASE_DIR = os.path.dirname(__file__)
@@ -84,6 +87,7 @@ INSTALLED_APPS = [
     'cmsplugin_cascade.clipboard',
     'cmsplugin_cascade.sharable',
     'cmsplugin_cascade.extra_fields',
+    'cmsplugin_cascade.icon',
     'cmsplugin_cascade.segmentation',
     'cms_bootstrap3',
     'adminsortable2',
@@ -414,13 +418,11 @@ CMS_PLACEHOLDER_CONF = {
     },
     'Commodity Details': {
         'plugins': ['BootstrapContainerPlugin', 'BootstrapJumbotronPlugin'],
-        'text_only_plugins': ['TextLinkPlugin'],
         'parent_classes': {'BootstrapContainerPlugin': None, 'BootstrapJumbotronPlugin': None},
         'glossary': CACSCADE_WORKAREA_GLOSSARY,
     },
     'Main Content': {
         'plugins': ['BootstrapContainerPlugin', 'BootstrapJumbotronPlugin'],
-        'text_only_plugins': ['TextLinkPlugin'],
         'parent_classes': {'BootstrapContainerPlugin': None, 'BootstrapJumbotronPlugin': None},
         'glossary': CACSCADE_WORKAREA_GLOSSARY,
     },
@@ -431,14 +433,17 @@ CMS_PLACEHOLDER_CONF = {
     },
 }
 
-CMSPLUGIN_CASCADE_PLUGINS = ('cmsplugin_cascade.segmentation', 'cmsplugin_cascade.generic',
-                             'cmsplugin_cascade.link', 'shop.cascade', 'cmsplugin_cascade.bootstrap3',)
+CMSPLUGIN_CASCADE_PLUGINS = (
+    'cmsplugin_cascade.segmentation',
+    'cmsplugin_cascade.generic',
+    'cmsplugin_cascade.icon',
+    'cmsplugin_cascade.link',
+    'shop.cascade',
+    'cmsplugin_cascade.bootstrap3',
+)
 
 CMSPLUGIN_CASCADE = {
     'fontawesome_css_url': 'node_modules/font-awesome/css/font-awesome.css',
-    'dependencies': {
-        'shop/js/admin/shoplinkplugin.js': 'cascade/js/admin/linkpluginbase.js',
-    },
     'link_plugin_classes': (
         'shop.cascade.plugin_base.CatalogLinkPluginBase',
         'cmsplugin_cascade.link.plugin_base.LinkElementMixin',
@@ -463,6 +468,7 @@ CMSPLUGIN_CASCADE = {
     'segmentation_mixins': (
         ('shop.cascade.segmentation.EmulateCustomerModelMixin', 'shop.cascade.segmentation.EmulateCustomerAdminMixin'),
     ),
+    'allow_plugin_hiding': True,
 }
 
 CKEDITOR_SETTINGS = {
@@ -482,6 +488,7 @@ CKEDITOR_SETTINGS = {
         ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Table'],
         ['Source']
     ],
+    'stylesSet': format_lazy('default:{}', reverse_lazy('admin:cascade_texticon_wysiwig_config')),
 }
 
 CKEDITOR_SETTINGS_CAPTION = {

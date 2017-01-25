@@ -51,7 +51,13 @@ class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
     parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin', 'ValidateSetOfFormsPlugin')
     model_mixins = (LinkElementMixin,)
     glossary_field_order = ('button_type', 'button_size', 'button_options', 'quick_float',
-                            'icon_left', 'icon_right')
+                            'icon_align', 'icon_font', 'symbol')
+    ring_plugin = 'ProceedButtonPlugin'
+
+    class Media:
+        css = {'all': ('cascade/css/admin/bootstrap.min.css',
+                       'cascade/css/admin/bootstrap-theme.min.css',
+                       'cascade/css/admin/iconplugin.css',)}
 
     def get_form(self, request, obj=None, **kwargs):
         kwargs.update(form=ProceedButtonForm)
