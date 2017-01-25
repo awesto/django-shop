@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 import os
 
-from django.db.models import Q
+from django.db import models
 from django.shortcuts import get_object_or_404
 from django.utils.cache import add_never_cache_headers
 from django.utils.translation import get_language_from_request
@@ -34,7 +34,7 @@ class ProductListView(generics.ListAPIView):
     product_model = ProductModel
     serializer_class = None  # must be overridden by ProductListView.as_view
     filter_class = None  # may be overridden by ProductListView.as_view
-    limit_choices_to = Q()
+    limit_choices_to = models.Q()
 
     def get(self, request, *args, **kwargs):
         # TODO: we must find a better way to invalidate the cache.
@@ -83,7 +83,8 @@ class CMSPageProductListView(ProductListView):
         if self.filter_class and renderer_context['request'].accepted_renderer.format == 'html':
             # restrict to products associated to this CMS page only
             backend = CMSPagesFilterBackend()
-            queryset = backend.filter_queryset(self.request, self.get_queryset(), self)
+            queryset = self.get_queryset()
+            queryset = backend.filter_queryset(self.request, queryset, self)
             if callable(getattr(self.filter_class, 'get_render_context', None)):
                 renderer_context['filter'] = self.filter_class.get_render_context(self.request, queryset)
             elif isinstance(getattr(self.filter_class, 'render_context', None), dict):
@@ -101,7 +102,7 @@ class SyncCatalogView(views.APIView):
     product_field = 'product'
     serializer_class = None  # must be overridden by SyncCatalogView.as_view
     filter_class = None  # may be overridden by SyncCatalogView.as_view
-    limit_choices_to = Q()
+    limit_choices_to = models.Q()
 
     def get_context(self, request, **kwargs):
         filter_kwargs = {'id': request.data.get('id')}
@@ -132,7 +133,7 @@ class AddToCartView(views.APIView):
     product_model = ProductModel
     serializer_class = AddToCartSerializer
     lookup_field = lookup_url_kwarg = 'slug'
-    limit_choices_to = Q()
+    limit_choices_to = models.Q()
 
     def get_context(self, request, **kwargs):
         assert self.lookup_url_kwarg in kwargs
@@ -164,7 +165,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
     lookup_field = lookup_url_kwarg = 'slug'
     product_model = ProductModel
     serializer_class = None  # must be overridden by ProductListView.as_view
-    limit_choices_to = Q()
+    limit_choices_to = models.Q()
 
     def get_template_names(self):
         product = self.get_object()
