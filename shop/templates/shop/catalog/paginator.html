@@ -6,25 +6,25 @@
 
 	{% if paginator.display_page_controls %}
 <div class="row" ng-if="catalog.count===undefined">
-	<div class="col-xs-12" in-view="$inview && loadMore()">{{ paginator.to_html }}</div>
+	<div class="col-xs-12 text-center" in-view="$inview && loadMore()">{{ paginator.to_html }}</div>
 </div>
 	{% endif %}
 
 <div class="row" ng-cloak ng-if="catalog.count>=0">
-	<div class="col-xs-12" ng-if="catalog.count>0">
+	<div class="col-xs-12 text-center" ng-if="catalog.count>0">
 		<ul class="pager">
 			<li ng-if="isLoading"><span>{% trans "Loading more products" %} &hellip;</span></li>
-			<li ng-if="!isLoading"><i in-view="$inview && loadMore(false)">&nbsp;</i></li>
+			<li ng-if="!isLoading"><i in-view="$inview && loadMore()">&nbsp;</i></li>
 		</ul>
 	</div>
-	<div class="col-xs-12" ng-if="catalog.count===0"><h2>{% trans "No products found" %}</h2></div>
+	<div class="col-xs-12 text-center" ng-if="catalog.count===0"><h2>{% trans "No products found" %}</h2></div>
 </div>
 
 {% else %}
 
 	{% if paginator.display_page_controls %}
 <div class="row">
-	<div class="col-xs-12">{{ paginator.to_html }}</div>
+	<div class="col-xs-12 text-center">{{ paginator.to_html }}</div>
 </div>
 	{% endif %}
 
