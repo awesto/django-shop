@@ -14,7 +14,7 @@ class FilterForm(NgModelFormMixin, Bootstrap3Form):
     scope_prefix = 'filters'
 
 
-class ManufacturerFilter(django_filters.FilterSet):
+class ManufacturerFilterSet(django_filters.FilterSet):
     manufacturer = django_filters.ModelChoiceFilter(
         queryset=Manufacturer.objects.all(),
         widget=Select(attrs={'ng-change': 'filterChanged()'}),
