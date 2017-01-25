@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from django.core.exceptions import ValidationError
 from django import forms
+from django.forms import widgets
 from django.template import engines
 from django.template.loader import select_template
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext
+
 from cms.plugin_pool import plugin_pool
+from cmsplugin_cascade.fields import GlossaryField
+
 from shop import app_settings
 from .plugin_base import ShopPluginBase
 
@@ -13,8 +18,9 @@ from .plugin_base import ShopPluginBase
 class ShopSearchResultsForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super(ShopSearchResultsForm, self).clean()
-        if self.instance.page and self.instance.page.application_urls != 'ProductSearchApp':
-            raise ValidationError("This plugin only makes sense on a CMS page with an application of type 'Search'.")
+        page = self.instance.placeholder.page
+        if page and page.application_urls != 'ProductSearchApp':
+            raise ValidationError("This plugin can only be used on a CMS page with an application of type 'Search'.")
         return cleaned_data
 
 
@@ -25,8 +31,15 @@ class ShopSearchResultsPlugin(ShopPluginBase):
     form = ShopSearchResultsForm
     cache = False
 
+    infinite_scroll = GlossaryField(
+        widgets.CheckboxInput(),
+        label=_("Infinite Scroll"),
+        initial=True,
+        help_text=_("Shall the search results scroll infinitely?"),
+    )
+
     def get_render_template(self, context, instance, placeholder):
-        if instance.page.application_urls == 'ProductSearchApp':
+        if instance.placeholder.page.application_urls == 'ProductSearchApp':
             return select_template([
                     '{}/search/results.html'.format(app_settings.APP_LABEL),
                     'shop/search/results.html',
@@ -35,11 +48,20 @@ class ShopSearchResultsPlugin(ShopPluginBase):
 
     def render(self, context, instance, placeholder):
         super(ShopSearchResultsPlugin, self).render(context, instance, placeholder)
+        context['infinite_scroll'] = bool(instance.glossary.get('infinite_scroll', True))
         try:
             if context['edit_mode']:
                 # prevent scrolling while editing
                 context['data']['next'] = None
         finally:
             return context
+
+        return context
+
+    @classmethod
+    def get_identifier(cls, obj):
+        if obj.glossary.get('infinite_scroll', True):
+            return ugettext("Infinite Scroll")
+        return ugettext("Manual Pagination")
 
 plugin_pool.register_plugin(ShopSearchResultsPlugin)
