@@ -13,7 +13,7 @@ class CMSPagesFilterBackend(BaseFilterBackend):
     Use this backend to only show products assigned to the current page.
     """
 
-    cms_pages_fields = ['cms_pages', ]
+    cms_pages_fields = ['cms_pages']
 
     def _get_filtered_queryset(self, current_page, queryset):
         filter_by_cms_page = (Q((field, current_page)) for field in self.cms_pages_fields)
