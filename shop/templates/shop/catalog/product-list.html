@@ -6,7 +6,7 @@
 {% addtoblock "js" %}<script src="{% static 'shop/js/catalog.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% addtoblock "ng-requires" %}django.shop.catalog{% endaddtoblock %}
 
-<shop-catalog-list infinite-scroll="{{ infinite_scroll|yesno:"true,false" }}">
+<shop-catalog-list infinite-scroll="{{ infinite_scroll|yesno:'true,false' }}">
 	<div class="row" ng-if="catalog.count===undefined">
 	{% for product in data.results %}
 		{% include "shop/catalog/product-list-item.html" with ng=0 %}
