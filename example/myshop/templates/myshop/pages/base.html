@@ -53,7 +53,11 @@
 		$httpProvider.defaults.headers.common['X-CSRFToken'] = '{{ csrf_token }}';
 		$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 	}]).config(['$locationProvider', function($locationProvider) {
-		$locationProvider.html5Mode(false);
+		$locationProvider.html5Mode({
+			enabled: true,
+			requireBase: false,
+			rewriteLinks: false
+		});
 	}]){% render_block "ng-config" postprocessor "djng.sekizai_processors.module_config" %};
 	</script>
 </body>
