@@ -1,1 +1,4 @@
-{% extends "search/indexes/myshop/smartphonemodel_text.txt" %}
+{{ object.product_name }}
+{% for product_code in object.smartphone_set.all %}
+{{ product_code }}{% endfor %}
+{{ object.caption|striptags }}
