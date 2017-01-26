@@ -29,7 +29,27 @@ class SearchView(ListModelMixin, HaystackGenericAPIView):
         return [self.request.current_page.get_template()]
 
 
+class CMSPageSearchMixin(object):
+    """
+    Mixin to restrict search results to products associated with the current CMS page only
+    """
+    def get_queryset(self, index_models=[]):
+        search_qs = super(SearchView, self).get_queryset(index_models)
+        catalog_qs = self.product_model.objects.filter(self.limit_choices_to)
+        catalog_qs = CMSPagesFilterBackend().filter_queryset(self.request, catalog_qs, self)
+        primary_keys = [e[0] for e in catalog_qs.values_list('pk')]
+        return search_qs.filter(id__in=primary_keys)
+
+
+class AddSearchContextMixin(object):
+    """
+    A mixin that can be used to enrich the render context by ``autocomplete``, so that
+    templates can decide weather to add a search field or not.
+    """
     def get_renderer_context(self):
+        renderer_context = super(AddSearchContextMixin, self).get_renderer_context()
+        if renderer_context['request'].accepted_renderer.format == 'html':
+            renderer_context['autocomplete'] = True
         return renderer_context
 
 
@@ -92,14 +112,16 @@ class CMSPageCatalogWrapper(object):
 
         self = cls(**initkwargs)
 
-        attrs = dict(view=self, renderer_classes=self.renderer_classes)
-        self.search_view = type(str('CatalogSearchView'), (AddFilterContextMixin, SearchView), attrs).as_view(
+        bases = (AddFilterContextMixin, AddSearchContextMixin, CMSPageSearchMixin, SearchView)
+        attrs = dict(renderer_classes=self.renderer_classes, product_model=self.product_model,
+                     limit_choices_to=self.limit_choices_to, filter_class=self.filter_class)
+        self.search_view = type(str('CatalogSearchView'), bases, attrs).as_view(
             serializer_class=self.search_serializer_class,
         )
 
-        attrs.update(filter_backends=self.filter_backends, filter_class=self.filter_class,
-                     cms_pages_fields=self.cms_pages_fields)
-        self.list_view = type(str('CatalogListView'), (AddFilterContextMixin, ProductListView), attrs).as_view(
+        bases = (AddFilterContextMixin, AddSearchContextMixin, ProductListView)
+        attrs.update(filter_backends=self.filter_backends, cms_pages_fields=self.cms_pages_fields)
+        self.list_view = type(str('CatalogListView'), bases, attrs).as_view(
             serializer_class=self.model_serializer_class,
         )
 
