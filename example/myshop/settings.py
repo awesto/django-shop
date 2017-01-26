@@ -533,14 +533,14 @@ HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
         'URL': 'http://localhost:9200/',
-        'INDEX_NAME': 'myshop-en',
+        'INDEX_NAME': 'myshop-{}-en'.format(SHOP_TUTORIAL),
     },
 }
 if USE_I18N:
     HAYSTACK_CONNECTIONS['de'] = {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
         'URL': 'http://localhost:9200/',
-        'INDEX_NAME': 'myshop-de',
+        'INDEX_NAME': 'myshop-{}-de'.format(SHOP_TUTORIAL),
     }
 
 HAYSTACK_ROUTERS = ('shop.search.routers.LanguageRouter',)
