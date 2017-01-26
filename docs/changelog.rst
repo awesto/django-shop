@@ -4,13 +4,13 @@
 Changelog for django-SHOP
 =========================
 
-0.9.4
-=====
+0.10
+====
 
-* In the backend, ``OrderAdmin`` and ``OrderItemAdmin`` may render the extra dicts from the model
-  using a special template.
+* In the backend, ``OrderAdmin`` and ``OrderItemAdmin`` may render the dictionary ``extra`` from
+  their associated models using a special template.
 * In ``OrderAdmin`` use methods ``get_fields()`` and ``get_readonly_fields()`` as intended.
-* Drop support for Django-1.8.
+* Tested with Django-1.10. Drop support for Django-1.8.
 * If an anonymous customer logs in, his current cart is merged with a cart, which has previously
   been created. This has been adopted to re-use the method ``Product.is_in_cart()``.
 * Added method ``post_process_cart_item()`` to :class:`shop.modifiers.base.BaseCartModifier`.
@@ -20,14 +20,26 @@ Changelog for django-SHOP
   to your implementation of the Customer model, if that makes sense in your use-case.
 * Refactored the defaults settings for ``shop`` using an ``AppSettings`` object.
 * Refactored all serializers into their own folder ``shop/serializers`` with submodules
-  ``bases``, ``cart``, ``order`` and ``defaults``. The serializers ``CustomerSerializer``,
-  ``ProductSummarySerializer`` and ``OrderItemSerializer`` are configurable through the application
-  settings.
+  ``bases.py``, ``cart.py``, ``order.py`` and ``defaults.py``. The serializers
+  ``CustomerSerializer``, ``ProductSummarySerializer`` and ``OrderItemSerializer`` now are
+  configurable through the application settings.
 * Renamed ``ProductDetailSerializerBase`` -> ``BaseProductDetailSerializer`` and
   ``ProductSummarySerializerBase`` -> ``BaseProductSummarySerializer`` to be consistent with the
   naming conventions used by the Django REST Framework.
 * AngularJS directive ``<shop-auth-form ...>`` now listens of the event "pressed ENTER key"
   and submits the form data accordingly.
+* Upgraded to AngularJS version 1.5.9.
+* HTML5 mode is the default now.
+* The previously required additional endpoint for the autocomplete search, can now be be merged
+  into the same endpoint as connected to the catalog's list view. This has been made possible by
+  the wrapper :class:`shop.search.views.CMSPageCatalogWrapper` which dispatch incoming requests
+  to either the :class:`shop.views.catalog.ProductListView` or, for search queries to
+  :class:`shop.search.views.SearchView`.
+* Added choice option "Infinite Scroll" to the Cascade plugins **Catalog List View** and
+  **Search Results**. They influence if the paginator is rendered or trigger an event to load
+  more results from the server.
+* Changed all Cascade plugins to follow the new API introduced in **djangocms-cascade** version 0.12.
+* Directive ``shop-product-filter`` must be member of a ``<form ...>`` element.
 
 
 0.9.3
