@@ -38,9 +38,6 @@
 	{% addtoblock "js" %}<script src="{% static 'myshop/js/navbar.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 	{% addtoblock "ng-requires" %}myshop.navbar{% endaddtoblock %}
 
-	{% addtoblock "js" %}<script src="{% static 'shop/js/utils.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-	{% addtoblock "js" %}<script src="{% static 'shop/js/search-form.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-	{% addtoblock "ng-requires" %}django.shop.search{% endaddtoblock %}
 {% endblock navbar %}
 
 {% block navbar-nav %}
