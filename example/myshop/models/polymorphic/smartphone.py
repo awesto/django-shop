@@ -58,7 +58,7 @@ class SmartPhoneModel(Product):
     multilingual = TranslatedFields(description=HTMLField(verbose_name=_("Description"),
                                     configuration='CKEDITOR_SETTINGS_DESCRIPTION',
                                     help_text=_("Full description used in the catalog's detail "
-                                                "view of Smart Cards.")))
+                                                "view of Smart Phones.")))
 
     default_manager = TranslatableManager()
 

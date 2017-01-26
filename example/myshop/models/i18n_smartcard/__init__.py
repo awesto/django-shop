@@ -89,7 +89,7 @@ class SmartCardTranslation(TranslatedFieldsModel):
                         help_text=_("Short description used in the catalog's list view of products."))
     description = HTMLField(verbose_name=_("Description"),
                             configuration='CKEDITOR_SETTINGS_DESCRIPTION',
-                            help_text=_("Description for the list view of products."))
+                            help_text=_("Full description used in the catalog's detail view of Smart Cards."))
 
     class Meta:
         unique_together = [('language_code', 'master')]
