@@ -34,11 +34,11 @@ class CMSPageSearchMixin(object):
     Mixin to restrict search results to products associated with the current CMS page only
     """
     def get_queryset(self, index_models=[]):
-        search_qs = super(SearchView, self).get_queryset(index_models)
         catalog_qs = self.product_model.objects.filter(self.limit_choices_to)
         catalog_qs = CMSPagesFilterBackend().filter_queryset(self.request, catalog_qs, self)
         primary_keys = [e[0] for e in catalog_qs.values_list('pk')]
-        return search_qs.filter(id__in=primary_keys)
+        search_qs = super(SearchView, self).get_queryset(index_models).filter(id__in=primary_keys)
+        return search_qs
 
 
 class AddSearchContextMixin(object):
