@@ -12,7 +12,7 @@ from shop.models.product import ProductModel
 from shop.rest.filters import CMSPagesFilterBackend
 from shop.rest.renderers import CMSPageRenderer
 from shop.rest.money import JSONRenderer
-from shop.views.catalog import ProductListView
+from shop.views.catalog import ProductListView, AddFilterContextMixin
 
 
 class SearchView(ListModelMixin, HaystackGenericAPIView):
@@ -29,14 +29,7 @@ class SearchView(ListModelMixin, HaystackGenericAPIView):
         return [self.request.current_page.get_template()]
 
 
-class AddFilterContextMixin(object):
     def get_renderer_context(self):
-        renderer_context = super(AddFilterContextMixin, self).get_renderer_context()
-        if self.view.filter_class and renderer_context['request'].accepted_renderer.format == 'html':
-            # restrict to products associated to this CMS page only
-            queryset = self.view.product_model.objects.filter(self.view.limit_choices_to)
-            queryset = CMSPagesFilterBackend().filter_queryset(self.request, queryset, self)
-            renderer_context['filter'] = self.view.filter_class.get_render_context(self.request, queryset)
         return renderer_context
 
 

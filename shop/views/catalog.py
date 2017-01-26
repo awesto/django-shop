@@ -16,6 +16,7 @@ from rest_framework.response import Response
 
 from shop import app_settings
 from shop.models.product import ProductModel
+from shop.rest.filters import CMSPagesFilterBackend
 from shop.rest.money import JSONRenderer
 from shop.rest.renderers import CMSPageRenderer
 from shop.serializers.defaults import AddToCartSerializer
@@ -171,3 +172,18 @@ class ProductSelectView(generics.ListAPIView):
         if len(term) >= 2:
             return ProductModel.objects.select_lookup(term)[:10]
         return ProductModel.objects.all()[:10]
+
+
+class AddFilterContextMixin(object):
+    """
+    A mixin to enrich the render context by ``filter`` containing information
+    on how to render the filter set, supplied by attribute ``filter_class``.
+    """
+    def get_renderer_context(self):
+        renderer_context = super(AddFilterContextMixin, self).get_renderer_context()
+        if self.filter_class and renderer_context['request'].accepted_renderer.format == 'html':
+            # restrict filter set to products associated to this CMS page only
+            catalog_qs = self.product_model.objects.filter(self.limit_choices_to)
+            catalog_qs = CMSPagesFilterBackend().filter_queryset(self.request, catalog_qs, self)
+            renderer_context['filter'] = self.filter_class.get_render_context(self.request, catalog_qs)
+        return renderer_context
