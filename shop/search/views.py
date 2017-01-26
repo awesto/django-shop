@@ -49,7 +49,7 @@ class AddSearchContextMixin(object):
     def get_renderer_context(self):
         renderer_context = super(AddSearchContextMixin, self).get_renderer_context()
         if renderer_context['request'].accepted_renderer.format == 'html':
-            renderer_context['autocomplete'] = True
+            renderer_context['search_autocomplete'] = True
         return renderer_context
 
 
