@@ -84,8 +84,8 @@ autodiscovery, therefore this class must be added to a file named ``search_index
 product model ``SmartCard``, this indexing class then may look like:
 
 .. code-block:: python
-    :caption: myshop/search_indexes.py
-    :name: smartcard-search-indexes
+	:caption: myshop/search_indexes.py
+	:name: smartcard-search-indexes
 
 	from shop.search.indexes import ProductIndex
 	from haystack import indexes
@@ -167,8 +167,8 @@ this is done by the fields ``catalog_media`` and ``search_media``. Since we do n
 a model attribute, we must provide two methods, which creates this content:
 
 .. code-block:: python
-    :caption: myshop/search_indexes.py
-    :name: searchindex-media
+	:caption: myshop/search_indexes.py
+	:name: searchindex-media
 
 	class SmartCardIndex(ProductIndex, indexes.Indexable):
 	    # other fields and methods ...
@@ -207,8 +207,8 @@ to Django database models when serializing their fields. The serializer used to 
 for this demo site, may look like:
 
 .. code-block:: python
-    :caption: myshop/serializers.py
-    :name: serializers
+	:caption: myshop/serializers.py
+	:name: serializers
 
 	from rest_framework import serializers
 	from shop.search.serializers import ProductSearchSerializer as ProductSearchSerializerBase
@@ -238,8 +238,8 @@ In the Search View we link the serializer together with a `djangoCMS apphook`_. 
 ``ProductsListApp`` used to render the catalog view:
 
 .. code-block:: python
-    :caption: myshop/cms_apps.py
-    :name: search-app
+	:caption: myshop/cms_apps.py
+	:name: search-app
 
 	from cms.app_base import CMSApp
 	from cms.apphook_pool import apphook_pool
@@ -297,43 +297,51 @@ found products.
 .. |product-search-results| image:: /_static/product-search-results.png
 
 
+.. _reference/search-autocompletion-catalog:
+
 Autocompletion in Catalog List View
 ===================================
 
 As we have seen in the previous example, the Product Search View is suitable to search for any item
 in the product database. However, the site visitor sometimes might just refine the list of items
-shown in the catalog's list view. Here loading a new page which uses a completely different layout,
-may by inappropriate.
+shown in the catalog's list view. Here, loading a new page which uses a layout able to render every
+kind of product and hence usually differs from the catalog's list layout, may by inappropriate.
 
 Instead, when someone enters some text into the search field, **django-SHOP** starts to narrow down
-the list of items in the Catalog List View by typing query terms into the search field. This is
+the list of items in the catalog's list view by typing query terms into the search field. This is
 specially useful in situations where hundreds of products are displayed together on the same page
 and the customer needs to pick out the correct one by entering some search terms.
 
 To extend the existing Catalog List View for autocompletion, locate the file containing the
 urlpatterns, which are used by the apphook ``ProductsListApp``. In doubt, consult the file
-``myshop/cms_apps.py``.
-
-To this file with urlpatterns add the following entry:
+``myshop/cms_apps.py``. This apphook names a file with urlpatterns. Locate that file and add the
+following entry:
 
 .. code-block:: python
 
 	from django.conf.urls import url
-	from shop.search.views import SearchView
-	from myshop.serializers import CatalogSearchSerializer
+	from shop.search.views import CMSPageCatalogWrapper
+	from myshop.serializers import CatalogSearchSerializer, ProductSummarySerializer
 
 	urlpatterns = [
-	    # previous patterns
-	    url(r'^search-catalog$', SearchView.as_view(
-	        serializer_class=CatalogSearchSerializer,
+	    url(r'^$', CMSPageCatalogWrapper.as_view(
+	        search_serializer_class=CatalogSearchSerializer,
+	        model_serializer_class=ProductSummarySerializer,
 	    )),
 	    # other patterns
 	]
 
-.. note:: Be careful that the regular expression for ``^search-catalog$`` is located *before* the
-	pattern used for the product's detail view; this usually looks like ``^(?P<slug>[\w-]+)$``.
+The view :class'`shop.search.views.CMSPageCatalogWrapper` is a functional wrapper around the
+catalog's products list view and the search view. Depending on weather the request contains a
+search query starting with ``q=<search-term>``, either the search view or the products list view
+is invoked.
 
-The ``CatalogSearchSerializer`` used here is very similar to the ``ProductSearchSerializer`` we have
+This wrapper is required because we typically want the search autocompletion to use the same URL as
+catalog's products list, and hence must route onto the same view class. However the search- and the
+catalog's list view classes have different bases and a completely different implementation, that
+this wrapper is required.
+
+The ``CatalogSearchSerializer`` used here is very similar to the ``ProductSearchSerializer``, we have
 seen in the previous section. The only difference is, that instead of the ``search_media`` field
 is uses the ``catalog_media`` field, which renders the result items media in a layout appropriate
 for the catalog's list view. Therefore this kind of search, normally is used in combination with

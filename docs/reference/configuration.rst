@@ -337,7 +337,7 @@ backend:
 Email settings
 --------------
 
-Having w orking outgoing e-mail service is a fundamental requirement for **django-SHOP**.
+Having a working outgoing e-mail service is a fundamental requirement for **django-SHOP**.
 Adopt these settings to your configuration. Please remember that e-mail is sent asynchronously
 using django-post_office_.
 
@@ -349,6 +349,8 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'My Shop <no-reply@example.com>'
 EMAIL_REPLY_TO = 'info@example.com'
 EMAIL_BACKEND = 'post_office.EmailBackend'
+
+These settings are explained in detail in the Django documentation.
 
 .. _django-post_office: https://pypi.python.org/pypi/django-post_office
 
@@ -411,9 +413,6 @@ accept
 	        'cmsplugin_cascade.link.plugin_base.LinkElementMixin',
 	        'shop.cascade.plugin_base.CatalogLinkForm',
 	    ),
-	    'dependencies': {
-	        'shop/js/admin/shoplinkplugin.js': 'cascade/js/admin/linkpluginbase.js',
-	    },
 	    'alien_plugins': ('TextPlugin', 'TextLinkPlugin',),
 	    'bootstrap3': {
 	        'template_basedir': 'angular-ui',
