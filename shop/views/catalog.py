@@ -184,7 +184,7 @@ class AddFilterContextMixin(object):
         renderer_context = super(AddFilterContextMixin, self).get_renderer_context()
         if self.filter_class and renderer_context['request'].accepted_renderer.format == 'html':
             # restrict filter set to products associated to this CMS page only
-            catalog_qs = self.product_model.objects.filter(self.limit_choices_to)
-            catalog_qs = CMSPagesFilterBackend().filter_queryset(self.request, catalog_qs, self)
-            renderer_context['filter'] = self.filter_class.get_render_context(self.request, catalog_qs)
+            queryset = self.product_model.objects.filter(self.limit_choices_to)
+            queryset = CMSPagesFilterBackend().filter_queryset(self.request, queryset, self)
+            renderer_context['filter'] = self.filter_class.get_render_context(self.request, queryset)
         return renderer_context
