@@ -113,12 +113,18 @@ class CustomerAdminBase(UserAdmin):
     get_username.admin_order_field = 'email'
 
     def recognized(self, user):
+        if user.is_superuser:
+            user_state = _("Administrator")
+        elif user.is_staff:
+            user_state = _("Staff")
+        else:
+            user_state = _("User")
         if hasattr(user, 'customer'):
-            state = user.customer.get_recognized_display()
-            if user.is_staff:
-                state = '{}/{}'.format(state, _("Staff"))
-            return state
-        return _("User")
+            customer_state = user.customer.get_recognized_display()
+            if user.is_staff or user.is_superuser:
+                return '{}/{}'.format(customer_state, user_state)
+            return customer_state
+        return user_state
     recognized.short_description = _("State")
 
     def last_access(self, user):
