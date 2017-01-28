@@ -8,13 +8,16 @@ from django.forms import fields, widgets, ModelForm
 from django.template import Context
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
+
 from djng.forms import NgModelFormMixin, NgFormValidationMixin
 from djng.styling.bootstrap3.forms import Bootstrap3ModelForm
+
 from shop import app_settings
 from shop.models.customer import CustomerModel
+from .base import UniqueEmailValidationMixin
 
 
-class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelForm):
+class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValidationMixin, Bootstrap3ModelForm):
     form_name = 'register_user_form'
     scope_prefix = 'form_data'
     field_css_classes = 'input-group has-feedback'
@@ -41,14 +44,6 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3ModelF
             password = get_user_model().objects.make_random_password(pwd_length)
             data['password1'] = data['password2'] = password
         super(RegisterUserForm, self).__init__(data=data, instance=instance, *args, **kwargs)
-
-    def clean_email(self):
-        # check for uniqueness of email address
-        if get_user_model().objects.filter(is_active=True, email=self.cleaned_data['email']).exists():
-            msg = _("A customer with the e-mail address ‘{email}’ already exists.\n"
-                    "If you have used this address previously, try to reset the password.")
-            raise ValidationError(msg.format(**self.cleaned_data))
-        return self.cleaned_data['email']
 
     def clean(self):
         cleaned_data = super(RegisterUserForm, self).clean()

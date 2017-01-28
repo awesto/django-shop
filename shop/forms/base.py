@@ -2,10 +2,16 @@
 from __future__ import unicode_literals
 
 from formtools.wizard.views import normalize_name
+
+from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.forms import fields
 from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext_lazy as _
+
 from cms.utils.helpers import classproperty
+
 from djng.forms import NgModelFormMixin, NgFormValidationMixin
 from djng.styling.bootstrap3.forms import Bootstrap3Form, Bootstrap3ModelForm
 
@@ -76,3 +82,18 @@ class DialogModelForm(DialogFormMixin, Bootstrap3ModelForm):
     """
     plugin_id = fields.CharField(widget=fields.HiddenInput)
     plugin_order = fields.CharField(widget=fields.HiddenInput)
+
+
+class UniqueEmailValidationMixin(object):
+    """
+    A mixin added to forms which have to validate for the uniqueness of email addresses.
+    """
+    def clean_email(self):
+        if not self.cleaned_data['email']:
+            raise ValidationError(_("Please provide a valid e-mail address"))
+        # check for uniqueness of email address
+        if get_user_model().objects.filter(is_active=True, email=self.cleaned_data['email']).exists():
+            msg = _("A customer with the e-mail address '{email}' already exists.\n"
+                    "If you have used this address previously, try to reset the password.")
+            raise ValidationError(msg.format(**self.cleaned_data))
+        return self.cleaned_data['email']
