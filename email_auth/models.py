@@ -39,7 +39,7 @@ class User(AbstractUser):
         verbose_name_plural = _("Customers")
 
     def get_username(self):
-        if self.is_staff:
+        if self.is_staff or self.is_superuser:
             return self.username
         return self.email or '<anonymous>'
 
