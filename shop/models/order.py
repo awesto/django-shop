@@ -10,15 +10,17 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy, get_language_from_request
 from django.utils.six.moves.urllib.parse import urljoin
-from shop.models.fields import JSONField
-from ipware.ip import get_ip
+
 from django_fsm import FSMField, transition
+from ipware.ip import get_ip
 from cms.models import Page
+
 from shop import app_settings
 from shop.models.cart import CartItemModel
+from shop.models.fields import JSONField
 from shop.money.fields import MoneyField, MoneyMaker
-from .product import BaseProduct
 from shop import deferred
+from .product import BaseProduct
 
 
 class OrderQuerySet(models.QuerySet):
