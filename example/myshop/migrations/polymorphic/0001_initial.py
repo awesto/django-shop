@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
         ('cms', '0016_auto_20160608_1535'),
         ('contenttypes', '0002_remove_content_type_name'),
         ('email_auth', '0003_django110'),
-        ('filer', '0007_auto_20170127_0023'),
+        ('filer', '0007_auto_20161207_1131'),
     ]
 
     operations = [
