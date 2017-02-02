@@ -70,6 +70,7 @@ RegularOrder = create_regular_class('RegularOrder', {
 DeferredBaseOrder = create_deferred_base_class('DeferredBaseOrder', {
     'customer': deferred.ForeignKey(DeferredBaseCustomer, on_delete=models.PROTECT),
     'items_simple': deferred.ManyToManyField(DeferredBaseProduct),
+    'items_simple_fulfill_by_product': deferred.ManyToManyField('DeferredBaseProductAfterOrder'),
     'items_through': deferred.ManyToManyField(DeferredBaseProduct, through='DeferredBaseOrderItem'),
     'items_through_fulfill_by_order': deferred.ManyToManyField(DeferredBaseProduct, through=DeferredBaseOrderItemBeforeOrder),
     'items_through_fulfill_by_product': deferred.ManyToManyField('DeferredBaseProductAfterOrder', through='DeferredBaseOrderItemBeforeProduct'),
@@ -101,27 +102,44 @@ DeferredBaseOrderItem = create_deferred_base_class('DeferredBaseOrderItem', {
 DeferredOrderItem = create_deferred_class('DeferredOrderItem', DeferredBaseOrderItem)
 
 
+OrderPayment = create_deferred_base_class('OrderPayment', {
+    'order': deferred.ForeignKey(DeferredBaseOrder, on_delete=models.CASCADE),
+}, {'abstract': False})
+
+
+DeferredBaseOrderPaymentLog = create_deferred_base_class('DeferredBaseOrderPaymentLog', {
+    'order_payment': deferred.ForeignKey(OrderPayment, on_delete=models.CASCADE),
+})
+DeferredOrderPaymentLog = create_deferred_class('DeferredOrderPaymentLog', DeferredBaseOrderPaymentLog)
+
+
 class DeferredTestCase(TestCase):
 
-    def _test_foreign_key(self, order_class, customer_class):
-        customer_field = order_class._meta.get_field('customer')
+    def assert_same_model(self, to, model):
+        if isinstance(to, six.string_types):
+            self.assertEqual(to, model.__name__)
+        else:
+            self.assertIs(to, model)
 
-        self.assertTrue(customer_field.is_relation)
-        self.assertTrue(customer_field.many_to_one)
-        self.assertIs(customer_field.related_model, customer_class)
+    def _test_foreign_key(self, from_class, to_class, field_attribute):
+        field = from_class._meta.get_field(field_attribute)
+
+        self.assertTrue(field.is_relation)
+        self.assertTrue(field.many_to_one)
+        self.assert_same_model(field.related_model, to_class)
 
     def test_foreign_key_regular(self):
-        self._test_foreign_key(RegularOrder, RegularCustomer)
+        self._test_foreign_key(RegularOrder, RegularCustomer, 'customer')
 
     def test_foreign_key_deferred(self):
-        self._test_foreign_key(DeferredOrder, DeferredCustomer)
+        self._test_foreign_key(DeferredOrder, DeferredCustomer, 'customer')
 
     def _test_one_to_one_field(self, customer_class, user_class):
         user_field = customer_class._meta.get_field('user')
 
         self.assertTrue(user_field.is_relation)
         self.assertTrue(user_field.one_to_one)
-        self.assertIs(user_field.related_model, user_class)
+        self.assert_same_model(user_field.related_model, user_class)
 
     def test_one_to_one_field_regular(self):
         self._test_one_to_one_field(RegularCustomer, RegularUser)
@@ -129,20 +147,20 @@ class DeferredTestCase(TestCase):
     def test_one_to_one_field_deferred(self):
         self._test_one_to_one_field(DeferredCustomer, DeferredUser)
 
-    def _test_many_to_may_field_simple(self, order_class, product_class):
-        items_field = order_class._meta.get_field('items_simple')
+    def _test_many_to_may_field_simple(self, order_class, product_class, items_field_attribute='items_simple'):
+        items_field = order_class._meta.get_field(items_field_attribute)
 
         self.assertTrue(items_field.is_relation)
         self.assertTrue(items_field.many_to_many)
-        self.assertIs(items_field.related_model, product_class)
+        self.assert_same_model(items_field.related_model, product_class)
 
         m2m_field_name = items_field.m2m_field_name()
         m2m_field = items_field.rel.through._meta.get_field(m2m_field_name)
         m2m_reverse_field_name = items_field.m2m_reverse_field_name()
         m2m_reverse_field = items_field.rel.through._meta.get_field(m2m_reverse_field_name)
 
-        self.assertIs(m2m_field.related_model, order_class)
-        self.assertIs(m2m_reverse_field.related_model, product_class)
+        self.assert_same_model(m2m_field.related_model, order_class)
+        self.assert_same_model(m2m_reverse_field.related_model, product_class)
 
     def test_many_to_many_field_simple_regular(self):
         self._test_many_to_may_field_simple(RegularOrder, RegularProduct)
@@ -150,21 +168,24 @@ class DeferredTestCase(TestCase):
     def test_many_to_many_field_simple_deferred(self):
         self._test_many_to_may_field_simple(DeferredOrder, DeferredProduct)
 
+    def test_many_to_many_field_simple_deferred_by_product(self):
+        self._test_many_to_may_field_simple(DeferredOrder, DeferredProductAfterOrder, items_field_attribute='items_simple_fulfill_by_product')
+
     def _test_many_to_may_field_through(self, order_class, product_class, order_item_class, items_field_attribute='items_through'):
         items_field = order_class._meta.get_field(items_field_attribute)
 
         self.assertTrue(items_field.is_relation)
         self.assertTrue(items_field.many_to_many)
-        self.assertIs(items_field.related_model, product_class)
-        self.assertIs(items_field.rel.through, order_item_class)
+        self.assert_same_model(items_field.related_model, product_class)
+        self.assert_same_model(items_field.rel.through, order_item_class)
 
         m2m_field_name = items_field.m2m_field_name()
         m2m_field = items_field.rel.through._meta.get_field(m2m_field_name)
         m2m_reverse_field_name = items_field.m2m_reverse_field_name()
         m2m_reverse_field = items_field.rel.through._meta.get_field(m2m_reverse_field_name)
 
-        self.assertIs(m2m_field.related_model, order_class)
-        self.assertIs(m2m_reverse_field.related_model, product_class)
+        self.assert_same_model(m2m_field.related_model, order_class)
+        self.assert_same_model(m2m_reverse_field.related_model, product_class)
 
     def test_many_to_many_field_through_regular(self):
         self._test_many_to_may_field_through(RegularOrder, RegularProduct, RegularOrderItem)
@@ -183,7 +204,7 @@ class DeferredTestCase(TestCase):
 
         self.assertTrue(advertised_by_field.is_relation)
         self.assertTrue(advertised_by_field.many_to_one)
-        self.assertIs(advertised_by_field.related_model, customer_class)
+        self.assert_same_model(advertised_by_field.related_model, customer_class)
 
     def test_foreign_key_self_regular(self):
         self._test_foreign_key_self(RegularCustomer)
@@ -191,13 +212,47 @@ class DeferredTestCase(TestCase):
     def test_foreign_key_self_deferred(self):
         self._test_foreign_key_self(DeferredCustomer)
 
-    def test_extend_deferred_model_not_allowed(self):
-        with self.assertRaisesRegexp(ImproperlyConfigured, 'Base class DeferredProduct is not abstract'):
-            create_deferred_class('Product', DeferredProduct)
+    def test_extend_deferred_model_allowed(self):
+        """
+        Extending a deferred model is allowed,
+        but deferred relations will still reference the (first) deferred model.
+        """
+        create_deferred_class('Customer', DeferredCustomer)
+
+        OrderBase = create_deferred_base_class('OrderBase', {
+            'customer': deferred.ForeignKey(DeferredBaseCustomer, on_delete=models.PROTECT),
+        })
+        Order = create_deferred_class('Order', OrderBase)
+
+        self._test_foreign_key(DeferredOrder, DeferredCustomer, 'customer')
+        self._test_foreign_key(Order, DeferredCustomer, 'customer')
 
     def test_extend_deferred_base_model_allowed_only_once(self):
-        with self.assertRaisesRegexp(ImproperlyConfigured, "Both Model classes 'Product' and 'DeferredProduct' inherited from abstractbase class DeferredBaseProduct"):
+        with self.assertRaisesRegexp(ImproperlyConfigured, "Both Model classes 'Product' and 'DeferredProduct' inherited from abstract base class DeferredBaseProduct"):
             create_deferred_class('Product', DeferredBaseProduct)
+
+    def test_non_abstract_deferred_base_model_allowed(self):
+        self._test_foreign_key(OrderPayment, DeferredOrder, 'order')
+        self._test_foreign_key(DeferredOrderPaymentLog, OrderPayment, 'order_payment'),
+
+    def test_extend_non_abstract_deferred_base_model_allowed(self):
+        """
+        Extending a non abstract deferred model is allowed,
+        but deferred relations will still reference the (first) deferred model.
+        """
+        create_deferred_class('OrderPaymentSubclass', OrderPayment)
+
+        BaseOrderPaymentLog = create_deferred_base_class('BaseOrderPaymentLog', {
+            'order_payment': deferred.ForeignKey(OrderPayment, on_delete=models.CASCADE),
+        })
+        OrderPaymentLog = create_deferred_class('OrderPaymentLog', BaseOrderPaymentLog)
+
+        self._test_foreign_key(DeferredOrderPaymentLog, OrderPayment, 'order_payment')
+        self._test_foreign_key(OrderPaymentLog, OrderPayment, 'order_payment')
+
+    def test_extend_non_abstract_deferred_base_model_always_allowed(self):
+        create_deferred_class('OrderPaymentSubclass1', OrderPayment)
+        create_deferred_class('OrderPaymentSubclass2', OrderPayment)
 
     def test_mixins_allowed(self):
         SomeMixin = type(b'SomeMixin', (object,), {})
@@ -207,12 +262,6 @@ class DeferredTestCase(TestCase):
 
         self.assertTrue(issubclass(MixinProduct, SomeMixin))
         self.assertTrue(issubclass(MixinProduct, BaseModel))
-
-    def test_deferred_base_model_must_be_abstract(self):
-        NonAbstractBaseProduct = create_deferred_base_class('NonAbstractBaseProduct', meta={'abstract': False})
-
-        with self.assertRaisesRegexp(ImproperlyConfigured, 'Base class NonAbstractBaseProduct is not abstract'):
-            create_deferred_class('NonAbstractProduct', NonAbstractBaseProduct)
 
     def test_check_for_pending_mappings(self):
         deferred.ForeignKeyBuilder.check_for_pending_mappings()
