@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 from datetime import datetime
 from functools import reduce
 import operator
-from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.utils import six
 from django.utils.encoding import force_text
@@ -12,7 +11,6 @@ from django.utils.six.moves.urllib.parse import urljoin
 from django.utils.translation import ugettext_lazy as _
 from polymorphic.manager import PolymorphicManager
 from polymorphic.models import PolymorphicModel
-from polymorphic.base import PolymorphicModelBase
 from shop import deferred
 
 
@@ -38,40 +36,7 @@ class BaseProductManager(PolymorphicManager):
         return queryset
 
 
-class PolymorphicProductMetaclass(PolymorphicModelBase):
-    """
-    The BaseProduct class must refer to their materialized model definition, for instance when
-    accessing its model manager. Since polymoriphic product classes, normally are materialized
-    by more than one model, this metaclass finds the most generic one and associates its
-    MaterializedModel with it.
-    For instance,``ProductModel.objects.all()`` returns all available products from the shop.
-    """
-    def __new__(cls, name, bases, attrs):
-        Model = super(PolymorphicProductMetaclass, cls).__new__(cls, name, bases, attrs)
-        if Model._meta.abstract:
-            return Model
-
-        for baseclass in bases:
-            # since an abstract base class does not have no valid model.Manager,
-            # refer to it via its materialized Product model.
-            if not isinstance(baseclass, cls):
-                continue
-
-            basename = baseclass.__name__
-
-            try:
-                if not issubclass(Model, baseclass._materialized_model):
-                    raise ImproperlyConfigured("Abstract base class {} has already been associated "
-                        "with a model {}, which is different or not a submodel of {}."
-                        .format(name, Model, baseclass._materialized_model))
-            except (AttributeError, TypeError):
-                baseclass._materialized_model = Model
-                deferred.ForeignKeyBuilder._materialized_models[basename] = Model.__name__
-                deferred.ForeignKeyBuilder.process_pending_mappings(Model, basename)
-
-        deferred.ForeignKeyBuilder.handle_deferred_foreign_fields(Model)
-        cls.perform_model_checks(Model)
-        return Model
+class PolymorphicProductMetaclass(deferred.PolymorphicForeignKeyBuilder):
 
     @classmethod
     def perform_model_checks(cls, Model):

@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.test import TestCase
+from polymorphic.models import PolymorphicModel, PolymorphicModelBase
 from shop import deferred
 
 import six
@@ -16,13 +17,20 @@ def create_regular_class(name, fields={}, meta={}):
     return type(str(name), (models.Model,), dict(Meta=Meta, __module__=__name__, **fields))
 
 
-def create_deferred_base_class(name, fields={}, meta={}):
+def create_deferred_base_class(name, fields={}, meta={}, polymorphic=False):
+    metaclass = deferred.ForeignKeyBuilder
+    model_class = models.Model
+
+    if polymorphic:
+        metaclass = deferred.PolymorphicForeignKeyBuilder
+        model_class = PolymorphicModel
+
     meta.setdefault('app_label', 'foo')
     meta.setdefault('abstract', True)
     Meta = type(str('Meta'), (), meta)
     return type(
         str(name),
-        (six.with_metaclass(deferred.ForeignKeyBuilder, models.Model),),
+        (six.with_metaclass(metaclass, model_class),),
         dict(Meta=Meta, __module__=__name__, **fields),
     )
 
@@ -111,6 +119,12 @@ DeferredBaseOrderPaymentLog = create_deferred_base_class('DeferredBaseOrderPayme
     'order_payment': deferred.ForeignKey(OrderPayment, on_delete=models.CASCADE),
 })
 DeferredOrderPaymentLog = create_deferred_class('DeferredOrderPaymentLog', DeferredBaseOrderPaymentLog)
+
+
+DeferredBasePolymorphicProduct = create_deferred_base_class('DeferredBasePolymorphicProduct', {
+    'owner': deferred.ForeignKey(DeferredBaseCustomer, on_delete=models.PROTECT),
+}, polymorphic=True)
+DeferredPolymorphicProduct = create_deferred_class('DeferredPolymorphicProduct', DeferredBasePolymorphicProduct)
 
 
 class DeferredTestCase(TestCase):
@@ -253,6 +267,11 @@ class DeferredTestCase(TestCase):
     def test_extend_non_abstract_deferred_base_model_always_allowed(self):
         create_deferred_class('OrderPaymentSubclass1', OrderPayment)
         create_deferred_class('OrderPaymentSubclass2', OrderPayment)
+
+    def test_polymorphic_base_model(self):
+        self.assertTrue(issubclass(DeferredPolymorphicProduct, PolymorphicModel))
+        self.assertTrue(isinstance(DeferredPolymorphicProduct, PolymorphicModelBase))
+        self._test_foreign_key(DeferredPolymorphicProduct, DeferredCustomer, 'owner')
 
     def test_mixins_allowed(self):
         SomeMixin = type(str('SomeMixin'), (object,), {})

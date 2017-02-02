@@ -114,7 +114,7 @@ class ForeignKeyBuilder(ModelBase):
             cls.process_pending_mappings(Model, basename)
 
         cls.handle_deferred_foreign_fields(Model)
-        Model.perform_model_checks()
+        cls.perform_model_checks(Model)
         return Model
 
     @classmethod
@@ -182,7 +182,7 @@ class ForeignKeyBuilder(ModelBase):
         return object.__getattribute__(self, key)
 
     @classmethod
-    def perform_model_checks(cls):
+    def perform_model_checks(cls, Model):
         """
         Hook for each class inheriting from ForeignKeyBuilder, to perform checks on the
         implementation of the just created class type.
@@ -234,3 +234,13 @@ class MaterializedModel(SimpleLazyObject):
         if self._wrapped is empty:
             self._setup()
         return isinstance(instance, self._materialized_model)
+
+
+try:
+    from polymorphic.models import PolymorphicModelBase
+
+    class PolymorphicForeignKeyBuilder(ForeignKeyBuilder, PolymorphicModelBase):
+        pass
+
+except ImportError:
+    pass
