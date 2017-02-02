@@ -12,14 +12,14 @@ import six
 
 def create_regular_class(name, fields={}, meta={}):
     meta.setdefault('app_label', 'foo')
-    Meta = type(b'Meta', (), meta)
+    Meta = type(str('Meta'), (), meta)
     return type(str(name), (models.Model,), dict(Meta=Meta, __module__=__name__, **fields))
 
 
 def create_deferred_base_class(name, fields={}, meta={}):
     meta.setdefault('app_label', 'foo')
     meta.setdefault('abstract', True)
-    Meta = type(b'Meta', (), meta)
+    Meta = type(str('Meta'), (), meta)
     return type(
         str(name),
         (six.with_metaclass(deferred.ForeignKeyBuilder, models.Model),),
@@ -29,7 +29,7 @@ def create_deferred_base_class(name, fields={}, meta={}):
 
 def create_deferred_class(name, base, fields={}, meta={}, mixins=()):
     meta.setdefault('app_label', 'bar')
-    Meta = type(b'Meta', (), meta)
+    Meta = type(str('Meta'), (), meta)
     return type(str(name), mixins + (base,), dict(Meta=Meta, __module__=__name__, **fields))
 
 
@@ -255,7 +255,7 @@ class DeferredTestCase(TestCase):
         create_deferred_class('OrderPaymentSubclass2', OrderPayment)
 
     def test_mixins_allowed(self):
-        SomeMixin = type(b'SomeMixin', (object,), {})
+        SomeMixin = type(str('SomeMixin'), (object,), {})
         BaseModel = create_regular_class('BaseModel', meta={'abstract': True})
         MixinBaseProduct = create_deferred_base_class('MixinBaseProduct')
         MixinProduct = create_deferred_class('MixinProduct', MixinBaseProduct, mixins=(SomeMixin, BaseModel))
