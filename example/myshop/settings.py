@@ -235,11 +235,6 @@ STATICFILES_DIRS = (
 )
 
 
-# URL prefix for admin media -- CSS, JavaScript and images.
-# Make sure to use a trailing slash.
-# Examples: "http://foo.com/static/admin/", "/static/admin/".
-ADMIN_MEDIA_PREFIX = '/static/admin/'
-
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
     'APP_DIRS': True,
@@ -297,7 +292,7 @@ LOGGING = {
     },
 }
 
-SILENCED_SYSTEM_CHECKS = ('auth.W004')
+SILENCED_SYSTEM_CHECKS = ['auth.W004']
 
 FIXTURE_DIRS = [os.path.join(WORK_DIR, SHOP_TUTORIAL, 'fixtures')]
 
