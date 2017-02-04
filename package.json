@@ -29,10 +29,10 @@
     "angular-messages": "~1.5.11",
     "angular-sanitize": "~1.5.11",
     "angular-ui-bootstrap": "~0.13.4",
-    "bootstrap": "^3.3.7",
-    "bootstrap-sass": "^3.3.7",
-    "font-awesome": "^4.6.3",
-    "picturefill": "^3.0.2",
-    "select2": "^4.0.3"
+    "bootstrap": "~3.3.7",
+    "bootstrap-sass": "~3.3.7",
+    "font-awesome": "~4.6.3",
+    "picturefill": "~3.0.2",
+    "select2": "~4.0.3"
   }
 }
