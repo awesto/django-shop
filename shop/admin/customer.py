@@ -97,9 +97,7 @@ class CustomerAdminBase(UserAdmin):
         return fieldsets
 
     def get_username(self, user):
-        if hasattr(user, 'customer'):
-            return user.customer.get_username()
-        return user.get_username()
+        return str(user)
     get_username.short_description = _("Username")
     get_username.admin_order_field = 'email'
 
