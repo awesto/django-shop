@@ -5,6 +5,8 @@ from django.db.models.base import ModelBase
 from django.db import models
 from django.utils import six
 from django.utils.functional import SimpleLazyObject, empty
+from polymorphic.models import PolymorphicModelBase
+
 from shop import app_settings
 
 
@@ -236,11 +238,5 @@ class MaterializedModel(SimpleLazyObject):
         return isinstance(instance, self._materialized_model)
 
 
-try:
-    from polymorphic.models import PolymorphicModelBase
-
-    class PolymorphicForeignKeyBuilder(ForeignKeyBuilder, PolymorphicModelBase):
-        pass
-
-except ImportError:
+class PolymorphicForeignKeyBuilder(ForeignKeyBuilder, PolymorphicModelBase):
     pass
