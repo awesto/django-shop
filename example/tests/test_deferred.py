@@ -73,13 +73,13 @@ DeferredOrderItemBeforeOrder = create_deferred_class('DeferredOrderItemBeforeOrd
 RegularOrder = create_regular_class('RegularOrder', {
     'customer': models.ForeignKey(RegularCustomer, on_delete=models.PROTECT),
     'items_simple': models.ManyToManyField(RegularProduct),
-    'items_through': models.ManyToManyField(RegularProduct, through='RegularOrderItem'),
+    'items_through_fulfill_by_order_item': models.ManyToManyField('RegularProductAfterOrder', through='RegularOrderItemAfterOrderAndProduct'),
 })
 DeferredBaseOrder = create_deferred_base_class('DeferredBaseOrder', {
     'customer': deferred.ForeignKey(DeferredBaseCustomer, on_delete=models.PROTECT),
     'items_simple': deferred.ManyToManyField(DeferredBaseProduct),
     'items_simple_fulfill_by_product': deferred.ManyToManyField('DeferredBaseProductAfterOrder'),
-    'items_through': deferred.ManyToManyField(DeferredBaseProduct, through='DeferredBaseOrderItem'),
+    'items_through_fulfill_by_order_item': deferred.ManyToManyField('DeferredBaseProductAfterOrder', through='DeferredBaseOrderItemAfterOrderAndProduct'),
     'items_through_fulfill_by_order': deferred.ManyToManyField(DeferredBaseProduct, through=DeferredBaseOrderItemBeforeOrder),
     'items_through_fulfill_by_product': deferred.ManyToManyField('DeferredBaseProductAfterOrder', through='DeferredBaseOrderItemBeforeProduct'),
 })
@@ -95,19 +95,21 @@ DeferredOrderItemBeforeProduct = create_deferred_class('DeferredOrderItemBeforeP
 
 
 # Order is important, it must be declared after DeferredOrder, so that fulfillment tests make sense
+RegularProductAfterOrder = create_regular_class('RegularProductAfterOrder')
 DeferredBaseProductAfterOrder = create_deferred_base_class('DeferredBaseProductAfterOrder')
 DeferredProductAfterOrder = create_deferred_class('DeferredProductAfterOrder', DeferredBaseProductAfterOrder)
 
 
-RegularOrderItem = create_regular_class('RegularOrderItem', {
+# Order is important, it must be declared after DeferredOrder and DeferredPrdoductAfterOrder, so that fulfillment tests make sense
+RegularOrderItemAfterOrderAndProduct = create_regular_class('RegularOrderItemAfterOrderAndProduct', {
     'order': models.ForeignKey(RegularOrder, on_delete=models.CASCADE),
-    'product': models.ForeignKey(RegularProduct, on_delete=models.PROTECT),
+    'product': models.ForeignKey(RegularProductAfterOrder, on_delete=models.PROTECT),
 })
-DeferredBaseOrderItem = create_deferred_base_class('DeferredBaseOrderItem', {
+DeferredBaseOrderItemAfterOrderAndProduct = create_deferred_base_class('DeferredBaseOrderItemAfterOrderAndProduct', {
     'order': deferred.ForeignKey(DeferredBaseOrder, on_delete=models.CASCADE),
-    'product': deferred.ForeignKey(DeferredBaseProduct, on_delete=models.PROTECT),
+    'product': deferred.ForeignKey(DeferredBaseProductAfterOrder, on_delete=models.PROTECT),
 })
-DeferredOrderItem = create_deferred_class('DeferredOrderItem', DeferredBaseOrderItem)
+DeferredOrderItemAfterOrderAndProduct = create_deferred_class('DeferredOrderItemAfterOrderAndProduct', DeferredBaseOrderItemAfterOrderAndProduct)
 
 
 OrderPayment = create_deferred_base_class('OrderPayment', {
@@ -161,7 +163,7 @@ class DeferredTestCase(TestCase):
     def test_one_to_one_field_deferred(self):
         self._test_one_to_one_field(DeferredCustomer, DeferredUser)
 
-    def _test_many_to_may_field_simple(self, order_class, product_class, items_field_attribute='items_simple'):
+    def _test_many_to_may_field_simple(self, order_class, product_class, items_field_attribute):
         items_field = order_class._meta.get_field(items_field_attribute)
 
         self.assertTrue(items_field.is_relation)
@@ -177,15 +179,27 @@ class DeferredTestCase(TestCase):
         self.assert_same_model(m2m_reverse_field.related_model, product_class)
 
     def test_many_to_many_field_simple_regular(self):
-        self._test_many_to_may_field_simple(RegularOrder, RegularProduct)
+        self._test_many_to_may_field_simple(
+            RegularOrder,
+            RegularProduct,
+            items_field_attribute='items_simple',
+        )
 
     def test_many_to_many_field_simple_deferred(self):
-        self._test_many_to_may_field_simple(DeferredOrder, DeferredProduct)
+        self._test_many_to_may_field_simple(
+            DeferredOrder,
+            DeferredProduct,
+            items_field_attribute='items_simple',
+        )
 
     def test_many_to_many_field_simple_deferred_by_product(self):
-        self._test_many_to_may_field_simple(DeferredOrder, DeferredProductAfterOrder, items_field_attribute='items_simple_fulfill_by_product')
+        self._test_many_to_may_field_simple(
+            DeferredOrder,
+            DeferredProductAfterOrder,
+            items_field_attribute='items_simple_fulfill_by_product',
+        )
 
-    def _test_many_to_may_field_through(self, order_class, product_class, order_item_class, items_field_attribute='items_through'):
+    def _test_many_to_may_field_through(self, order_class, product_class, order_item_class, items_field_attribute):
         items_field = order_class._meta.get_field(items_field_attribute)
 
         self.assertTrue(items_field.is_relation)
@@ -202,16 +216,36 @@ class DeferredTestCase(TestCase):
         self.assert_same_model(m2m_reverse_field.related_model, product_class)
 
     def test_many_to_many_field_through_regular(self):
-        self._test_many_to_may_field_through(RegularOrder, RegularProduct, RegularOrderItem)
+        self._test_many_to_may_field_through(
+            RegularOrder,
+            RegularProductAfterOrder,
+            RegularOrderItemAfterOrderAndProduct,
+            items_field_attribute='items_through_fulfill_by_order_item',
+        )
 
     def test_many_to_many_field_through_deferred(self):
-        self._test_many_to_may_field_through(DeferredOrder, DeferredProduct, DeferredOrderItem)
+        self._test_many_to_may_field_through(
+            DeferredOrder,
+            DeferredProductAfterOrder,
+            DeferredOrderItemAfterOrderAndProduct,
+            items_field_attribute='items_through_fulfill_by_order_item',
+        )
 
     def test_many_to_many_field_through_deferred_by_order(self):
-        self._test_many_to_may_field_through(DeferredOrder, DeferredProduct, DeferredOrderItemBeforeOrder, items_field_attribute='items_through_fulfill_by_order')
+        self._test_many_to_may_field_through(
+            DeferredOrder,
+            DeferredProduct,
+            DeferredOrderItemBeforeOrder,
+            items_field_attribute='items_through_fulfill_by_order',
+        )
 
     def test_many_to_many_field_through_deferred_by_product(self):
-        self._test_many_to_may_field_through(DeferredOrder, DeferredProductAfterOrder, DeferredOrderItemBeforeProduct, items_field_attribute='items_through_fulfill_by_product')
+        self._test_many_to_may_field_through(
+            DeferredOrder,
+            DeferredProductAfterOrder,
+            DeferredOrderItemBeforeProduct,
+            items_field_attribute='items_through_fulfill_by_product',
+        )
 
     def _test_foreign_key_self(self, customer_class):
         advertised_by_field = customer_class._meta.get_field('advertised_by')

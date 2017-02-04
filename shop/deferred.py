@@ -90,8 +90,7 @@ class ForeignKeyBuilder(ModelBase):
                 if not isinstance(baseclass, cls):
                     continue
 
-                if not issubclass(baseclass, models.Model):
-                    continue
+                assert issubclass(baseclass, models.Model)
 
                 basename = baseclass.__name__
 
@@ -198,6 +197,10 @@ class ForeignKeyBuilder(ModelBase):
             raise ImproperlyConfigured(msg.format(pm[0][0].__name__, pm[0][1]))
 
 
+class PolymorphicForeignKeyBuilder(ForeignKeyBuilder, PolymorphicModelBase):
+    pass
+
+
 class MaterializedModel(SimpleLazyObject):
     """
     Wrap the base model into a lazy object, so that we can refer to members of its
@@ -236,7 +239,3 @@ class MaterializedModel(SimpleLazyObject):
         if self._wrapped is empty:
             self._setup()
         return isinstance(instance, self._materialized_model)
-
-
-class PolymorphicForeignKeyBuilder(ForeignKeyBuilder, PolymorphicModelBase):
-    pass
