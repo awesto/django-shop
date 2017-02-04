@@ -86,8 +86,8 @@ class CustomerAdminBase(UserAdmin):
     readonly_fields = ('last_login', 'date_joined', 'last_access', 'recognized')
     ordering = ['id']
 
-    class Media:
-        js = ['shop/js/admin/customer.js']
+    #class Media:
+    #    js = ['shop/js/admin/customer.js']
 
     def get_fieldsets(self, request, obj=None):
         fieldsets = super(CustomerAdminBase, self).get_fieldsets(request, obj=obj)
