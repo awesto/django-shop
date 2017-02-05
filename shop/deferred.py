@@ -225,8 +225,14 @@ class MaterializedModel(LazyObject):
             # not self.__class__, because the latter is proxied.
             return type(self)(self._base_model)
         else:
-            # If initialized, return a copy of the wrapped object.
-            return copy.copy(self._wrapped)
+            # In Python 2.7 we can't return `copy.copy(self._wrapped)`,
+            # it fails with `TypeError: can't pickle int objects`.
+            # In Python 3 it works, because it checks if the copied value
+            # is a subclass of `type`.
+            # In this case it just returns the value.
+            # As we know that self._wrapped is a subclass of `type`,
+            # we can just return it here.
+            return self._wrapped
 
     def __deepcopy__(self, memo):
         if self._wrapped is empty:
