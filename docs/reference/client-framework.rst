@@ -5,21 +5,24 @@ Client Side Framework
 =====================
 
 While Django doesn't impose any client side framework, **django-SHOP** has to. Here we have to
-consider that it is unrealistic to expect an e-commerce side, without any client-side operations.
-For instance, during checkout the customer must be able to edit the cart interactively. We also
-might want to offer autocompletion and infinite scroll.
+consider that it is unrealistic to expect that an e-commerce site could operate without any
+client-side JavaScript. For instance, during checkout the customer must be able to edit the cart
+interactively. We also might want to offer autocompletion and infinite scroll.
 
-Therefore the author of **django-SHOP** has decided to add some reusable Javascript code to this
-framework. The most obvious choice would have been jQuery since it is already used by the Django
-administration backend. However by using jQuery, web designers adopting the templates for their
-**django-SHOP** implementation would inevitably have to adopt Javascript code. In order to prevent
-this from happening, another popular Javascript framework was chosen: AngularJS_.
+Therefore the authors of **django-SHOP** have decided to add reusable JavaScript components.
+Here the most obvious choice would have been jQuery, since it is used by the Django administration
+backend. However by using jQuery, web designers adopting templates for their **django-SHOP**
+implementation would inevitably have to write JavaScript code themselves. In order to prevent
+this, another popular client-side framework has been chosen: AngularJS_.
 
-This means that template designers only have to add special HTML directives as provided by the
-framework. They do not have to write or adopt any Javascript code, except for the initialization.
+This means that template designers only have to add shop specific HTML elements. All these
+directives_ are provided by the **django-SHOP** framework. Frontend developers therefore do not
+have to add or adopt any JavaScript code, except for the initialization.
 
 .. note:: Since **django-SHOP** uses REST for every part of the communication, the client side
 	framework can be replaced by whatever appropriate.
+
+.. _directives: https://docs.angularjs.org/guide/directive
 
 
 Initialize the Application
@@ -32,10 +35,10 @@ straight forward. Change the outermost HTML element, which typically is the ``<h
 
 	<html ng-app="myShop">
 
-somewhere in this file, include the Javascript files required by Angular.
+somewhere in this file, include the JavaScript files required by Angular.
 
 For a better organization of the included files, it is strongly recommended to use django-sekizai_
-as the assets manager:
+as assets manager:
 
 .. code-block:: django
 
