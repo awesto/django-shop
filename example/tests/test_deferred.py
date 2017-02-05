@@ -4,10 +4,12 @@ from __future__ import unicode_literals
 
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
+from django.db.models.base import ModelBase
 from django.test import TestCase
 from polymorphic.models import PolymorphicModel, PolymorphicModelBase
 from shop import deferred
 
+import copy
 import six
 
 
@@ -330,3 +332,61 @@ class DeferredTestCase(TestCase):
 
         with self.assertRaisesRegexp(ImproperlyConfigured, "Deferred foreign key 'PendingMappingOrder.customer' has not been mapped"):
             deferred.ForeignKeyBuilder.check_for_pending_mappings()
+
+
+class MaterializedModelTestCase(TestCase):
+
+    def setUp(self):
+        self.OrderModel = deferred.MaterializedModel(DeferredBaseOrder)
+
+    def test_types(self):
+        self.assertTrue(isinstance(self.OrderModel, ModelBase))
+        self.assertTrue(issubclass(self.OrderModel, models.Model))
+        self.assertIs(type(self.OrderModel), deferred.MaterializedModel)
+
+    def test_call(self):
+        order = self.OrderModel()
+
+        self.assertTrue(isinstance(order, DeferredOrder))
+
+    def test_repr(self):
+        self.assertEqual(repr(self.OrderModel), "<MaterializedModel: <class 'tests.test_deferred.DeferredBaseOrder'>>")
+
+        self.OrderModel._setup()
+
+        self.assertEqual(repr(self.OrderModel), "<MaterializedModel: <class 'tests.test_deferred.DeferredOrder'>>")
+
+    def test_copy_uninitialized(self):
+        OrderModelDeepCopy = copy.copy(self.OrderModel)
+
+        self.assertIs(type(OrderModelDeepCopy), deferred.MaterializedModel)
+
+        # Ensure that base_model was copied
+        OrderModelDeepCopy._setup()
+
+    def test_copy_initialized(self):
+        self.OrderModel._setup()
+        OrderModelDeepCopy = copy.copy(self.OrderModel)
+
+        self.assertIs(OrderModelDeepCopy, DeferredOrder)
+
+    def test_deepcopy_uninitialized(self):
+        OrderModelDeepCopy = copy.deepcopy(self.OrderModel)
+
+        self.assertIs(type(OrderModelDeepCopy), deferred.MaterializedModel)
+
+        # Ensure that base_model was copied
+        OrderModelDeepCopy._setup()
+
+    def test_deepcopy_initialized(self):
+        self.OrderModel._setup()
+        OrderModelDeepCopy = copy.deepcopy(self.OrderModel)
+
+        self.assertIs(OrderModelDeepCopy, DeferredOrder)
+
+    def test_error_when_initializing_unmapped_model(self):
+        Unmapped = create_deferred_base_class('Unmapped')
+        UnmappedModel = deferred.MaterializedModel(Unmapped)
+
+        with self.assertRaisesRegexp(ImproperlyConfigured, 'No class implements abstract base model: `Unmapped`.'):
+            UnmappedModel._setup()

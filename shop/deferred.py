@@ -4,7 +4,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db.models.base import ModelBase
 from django.db import models
 from django.utils import six
-from django.utils.functional import SimpleLazyObject, empty
+from django.utils.functional import LazyObject, empty
 from polymorphic.models import PolymorphicModelBase
 
 from shop import app_settings
@@ -201,14 +201,14 @@ class PolymorphicForeignKeyBuilder(ForeignKeyBuilder, PolymorphicModelBase):
     pass
 
 
-class MaterializedModel(SimpleLazyObject):
+class MaterializedModel(LazyObject):
     """
     Wrap the base model into a lazy object, so that we can refer to members of its
     materialized model using lazy evaluation.
     """
     def __init__(self, base_model):
         self.__dict__['_base_model'] = base_model
-        super(SimpleLazyObject, self).__init__()
+        super(MaterializedModel, self).__init__()
 
     def _setup(self):
         self._wrapped = getattr(self._base_model, '_materialized_model')
@@ -219,14 +219,23 @@ class MaterializedModel(SimpleLazyObject):
             self._setup()
         return self._wrapped(*args, **kwargs)
 
+    def __copy__(self):
+        if self._wrapped is empty:
+            # If uninitialized, copy the wrapper. Use type(self),
+            # not self.__class__, because the latter is proxied.
+            return type(self)(self._base_model)
+        else:
+            # If initialized, return a copy of the wrapped object.
+            return copy.copy(self._wrapped)
+
     def __deepcopy__(self, memo):
         if self._wrapped is empty:
-            # We have to use SimpleLazyObject, not self.__class__, because the latter is proxied.
-            result = MaterializedModel(self._base_model)
+            # We have to use type(self), not self.__class__,
+            # because the latter is proxied.
+            result = type(self)(self._base_model)
             memo[id(self)] = result
             return result
-        else:
-            return copy.deepcopy(self._wrapped, memo)
+        return copy.deepcopy(self._wrapped, memo)
 
     def __repr__(self):
         if self._wrapped is empty:
@@ -234,8 +243,3 @@ class MaterializedModel(SimpleLazyObject):
         else:
             repr_attr = self._wrapped
         return '<MaterializedModel: {}>'.format(repr_attr)
-
-    def __instancecheck__(self, instance):
-        if self._wrapped is empty:
-            self._setup()
-        return isinstance(instance, self._materialized_model)
