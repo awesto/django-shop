@@ -131,6 +131,7 @@ MIDDLEWARE_CLASSES = (
     'cms.middleware.language.LanguageCookieMiddleware',
     'cms.middleware.user.CurrentUserMiddleware',
     'cms.middleware.page.CurrentPageMiddleware',
+    'cms.middleware.utils.ApphookReloadMiddleware',
     'cms.middleware.toolbar.ToolbarMiddleware',
     # 'django.middleware.cache.FetchFromCacheMiddleware',
 )
