@@ -169,7 +169,7 @@ djangoShopModule.directive('shopSyncCatalog', function() {
 		controller: function() {},
 		require: 'shopSyncCatalog',
 		link: function(scope, element, attrs, controller) {
-			if (attrs['shopSyncCatalog'] === undefined)
+			if (angular.isUndefined(attrs['shopSyncCatalog']))
 				throw new Error("Directive shop-sync-catalog must point onto an URL");
 			controller.syncCatalogUrl = attrs.shopSyncCatalog;
 		}
@@ -207,7 +207,7 @@ djangoShopModule.directive('shopSyncCatalogItem', function() {
 
 		}],
 		link: function(scope, element, attrs, controllers) {
-			if (attrs['shopSyncCatalogItem'] === undefined)
+			if (angular.isUndefined(attrs['shopSyncCatalogItem']))
 				throw new Error("Directive shop-sync-catalog-item must provide an initialization object");
 			controllers[1].parent = controllers[0];
 			scope.catalog_item = scope.$eval(attrs.shopSyncCatalogItem);

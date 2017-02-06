@@ -47,7 +47,7 @@ class ShopLinkPluginBase(ShopPluginBase):
     ring_plugin = 'ShopLinkPlugin'
 
     class Media:
-        js = ['shop/js/admin/shoplinkplugin.js']
+        js = ['cascade/js/admin/linkplugin.js', 'shop/js/admin/shoplinkplugin.js']
 
     @classmethod
     def get_link(cls, obj):

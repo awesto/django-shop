@@ -59,8 +59,24 @@ class ProductListView(generics.ListAPIView):
 
 class SyncCatalogView(views.APIView):
     """
-    To be used for synchronizing the catalog list view with the cart.
-    Use Angular directive <ANY shop-sync-catalog-item="..."> on each catalog item.
+    View to be attached to an endpoint for synchronizing the catalog list view with the cart.
+    To be used for adding items to the cart from within the list view, rather than the product's
+    detail views.
+    Use Angular directive <ANY shop-sync-catalog-item="..."> on each catalog item to set up
+    the communication with this view.
+    To the ``urlpatterns`` responsible for the list view, add
+    ```
+    urlpatterns = [
+        ...
+        url(r'^sync-catalog$', SyncCatalogView.as_view(
+            serializer_class=SyncCatalogSerializer,
+        )),
+        ...
+    ]
+    ```
+    to the URLs as specified by the merchant's implementation of it's ``ProductsListApp``.
+
+    The class ``SyncCatalogSerializer`` must be provided by the merchant implementation.
     """
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     product_model = ProductModel
