@@ -86,20 +86,20 @@ class CustomerAdminBase(UserAdmin):
     readonly_fields = ('last_login', 'date_joined', 'last_access', 'recognized')
     ordering = ['id']
 
-    class Media:
-        js = ['shop/js/admin/customer.js']
+    #class Media:
+    #    js = ['shop/js/admin/customer.js']
 
     def get_fieldsets(self, request, obj=None):
-        fieldsets = super(CustomerAdminBase, self).get_fieldsets(request, obj=obj)
+        fieldsets = list(super(CustomerAdminBase, self).get_fieldsets(request, obj=obj))
         if obj:
             fieldsets[0][1]['fields'] = ('username', 'recognized', 'password',)
             fieldsets[3][1]['fields'] = ('date_joined', 'last_login', 'last_access',)
+            if not obj.has_usable_password():
+                fieldsets.pop(2)
         return fieldsets
 
     def get_username(self, user):
-        if hasattr(user, 'customer'):
-            return user.customer.get_username()
-        return user.get_username()
+        return str(user)
     get_username.short_description = _("Username")
     get_username.admin_order_field = 'email'
 

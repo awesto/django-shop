@@ -48,7 +48,7 @@ class OrderItemInline(admin.StackedInline):
         ('product_code', 'unit_price', 'line_total',), ('quantity',), 'render_as_html_extra',
     )
     readonly_fields = ('product_code', 'quantity', 'unit_price', 'line_total', 'render_as_html_extra',)
-    template = 'shop/admin/edit_inline/stacked.html'
+    template = 'shop/admin/edit_inline/stacked-order.html'
 
     def has_add_permission(self, request, obj=None):
         return False

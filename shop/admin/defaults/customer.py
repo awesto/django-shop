@@ -15,6 +15,10 @@ class CustomerInlineAdmin(CustomerInlineAdminBase):
     )
     readonly_fields = ('get_number', 'get_shipping_addresses', 'get_billing_addresses')
 
+    def get_number(self, customer):
+        return customer.get_number() or '–'
+    get_number.short_description = _("Customer Number")
+
     def get_shipping_addresses(self, customer):
         addresses = [(a.as_text(),) for a in customer.shippingaddress_set.all()]
         return format_html_join('', '<address>{0}</address>', addresses)
