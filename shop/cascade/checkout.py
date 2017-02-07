@@ -58,6 +58,7 @@ class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
         css = {'all': ('cascade/css/admin/bootstrap.min.css',
                        'cascade/css/admin/bootstrap-theme.min.css',
                        'cascade/css/admin/iconplugin.css',)}
+        js = ['shop/js/admin/proceedbuttonplugin.js']
 
     def get_form(self, request, obj=None, **kwargs):
         kwargs.update(form=ProceedButtonForm)
@@ -149,13 +150,13 @@ class CheckoutAddressPluginBase(DialogFormPluginBase):
         AddressModel = self.FormClass.get_model()
         if form_data['cart'] is None:
             raise PermissionDenied("Can not proceed to checkout without cart")
-        address = self.get_address(form_data['cart'])
+        address = self.get_address(form_data['cart'], instance)
         form_data.update(instance=address)
 
         if instance.glossary.get('multi_addr'):
             addresses = AddressModel.objects.filter(customer=context['request'].customer).order_by('priority')
             form_entities = [dict(value=str(addr.priority),
-                            label="{}. {}".format(number, addr.as_text().replace('\n', ' – ')))
+                                  label="{}. {}".format(number, addr.as_text().replace('\n', ' – ')))
                              for number, addr in enumerate(addresses, 1)]
             form_data.update(multi_addr=True, form_entities=form_entities)
         else:
@@ -168,7 +169,7 @@ class ShippingAddressFormPlugin(CheckoutAddressPluginBase):
     form_class = 'shop.forms.checkout.ShippingAddressForm'
     template_leaf_name = 'shipping-address-{}.html'
 
-    def get_address(self, cart):
+    def get_address(self, cart, instance):
         if cart.shipping_address is None:
             # fallback to another existing shipping address
             address = self.FormClass.get_model().objects.get_fallback(customer=cart.customer)
@@ -191,7 +192,7 @@ class BillingAddressFormPlugin(CheckoutAddressPluginBase):
         help_text=_("Allow the customer to use the shipping address for billing."),
     )
 
-    def get_address(self, cart):
+    def get_address(self, cart, instance):
         # if billing address is None, we use the shipping address
         return cart.billing_address
 

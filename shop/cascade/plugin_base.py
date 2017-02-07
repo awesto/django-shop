@@ -166,6 +166,13 @@ class DialogFormPluginBase(ShopPluginBase):
         help_text=_("A dialog can also be rendered as a box containing a read-only summary."),
     )
 
+    headline_legend = GlossaryField(
+        widgets.CheckboxInput(),
+        label=_("Headline Legend"),
+        initial=True,
+        help_text=_("Render a legend inside the dialog's headline."),
+    )
+
     @classmethod
     def register_plugin(cls, plugin):
         """
@@ -237,4 +244,5 @@ class DialogFormPluginBase(ShopPluginBase):
         form_data['initial'].update(plugin_id=instance.id, plugin_order=request._plugin_order)
         bound_form = self.FormClass(**form_data)
         context[bound_form.form_name] = bound_form
+        context['headline_legend'] = bool(instance.glossary.get('headline_legend', True))
         return super(DialogFormPluginBase, self).render(context, instance, placeholder)

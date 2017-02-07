@@ -9,7 +9,9 @@
 	</div>
 	{% endif %}
 	<fieldset shop-form-validate="!data.billing_address.use_shipping_address" ng-hide="data.billing_address.use_shipping_address" class="animate-show" ng-cloak>
+	{% if headline_legend %}
 		<legend>{{ billing_address_form.legend }}</legend>
+	{% endif %}
 	{% if billing_address_form.multi_addr %}
 		<div class="form-group" ng-if="billing_address_form.form_entities.length>0 && data.billing_address.active_priority!='add'">
 			<label class="control-label">{% trans "Choose a previously used billing address" %}</label>

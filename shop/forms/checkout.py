@@ -207,9 +207,11 @@ class BillingAddressForm(AddressForm):
     default_priority = 'nop'
     plugin_fields = AddressForm.plugin_fields + ('use_shipping_address',)
 
-    use_shipping_address = fields.BooleanField(required=False, initial=True,
+    use_shipping_address = fields.BooleanField(
+        required=False,
+        initial=True,
         widget=CheckboxInput(_("Use shipping address for billing"),
-            attrs={'ng-change': 'switchEntity(billing_address_form)'}))
+                             attrs={'ng-change': 'switchEntity(billing_address_form)'}))
 
     class Meta(AddressForm.Meta):
         model = BillingAddressModel
