@@ -205,7 +205,7 @@ djangoShopModule.directive('shopSyncCatalogItem', function() {
 					console.error('Unable to sync quantity: ' + msg);
 					isLoading = false;
 				});
-			}
+			};
 
 		}],
 		link: function(scope, element, attrs, controllers) {
