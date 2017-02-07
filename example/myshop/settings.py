@@ -116,7 +116,7 @@ INSTALLED_APPS = [
 if SHOP_TUTORIAL in ('i18n_commodity', 'i18n_smartcard', 'polymorphic'):
     INSTALLED_APPS.append('parler')
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE_CLASSES = [
     'djng.middleware.AngularUrlMiddleware',
     # 'django.middleware.cache.UpdateCacheMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -134,7 +134,7 @@ MIDDLEWARE_CLASSES = (
     'cms.middleware.utils.ApphookReloadMiddleware',
     'cms.middleware.toolbar.ToolbarMiddleware',
     # 'django.middleware.cache.FetchFromCacheMiddleware',
-)
+]
 
 MIGRATION_MODULES = {
     'myshop': 'myshop.migrations.{}'.format(SHOP_TUTORIAL)
@@ -547,26 +547,31 @@ HAYSTACK_ROUTERS = ('shop.search.routers.LanguageRouter',)
 SHOP_VALUE_ADDED_TAX = Decimal(19)
 SHOP_DEFAULT_CURRENCY = 'EUR'
 SHOP_PRODUCT_SUMMARY_SERIALIZER = 'myshop.serializers.ProductSummarySerializer'
-SHOP_CART_MODIFIERS = (
-    'myshop.polymorphic_modifiers.MyShopCartModifier' if SHOP_TUTORIAL == 'polymorphic'
-    else 'shop.modifiers.defaults.DefaultCartModifier',
+if SHOP_TUTORIAL == 'polymorphic':
+    SHOP_CART_MODIFIERS = ['myshop.polymorphic_modifiers.MyShopCartModifier']
+else:
+    SHOP_CART_MODIFIERS = ['shop.modifiers.defaults.DefaultCartModifier']
+SHOP_CART_MODIFIERS.extend([
     'shop.modifiers.taxes.CartExcludedTaxModifier',
     'myshop.modifiers.PostalShippingModifier',
     'myshop.modifiers.CustomerPickupModifier',
     'shop.modifiers.defaults.PayInAdvanceModifier',
-)
+])
+
 if 'shop_stripe' in INSTALLED_APPS:
-    SHOP_CART_MODIFIERS += ('myshop.modifiers.StripePaymentModifier',)
+    SHOP_CART_MODIFIERS.append('myshop.modifiers.StripePaymentModifier')
 
 SHOP_EDITCART_NG_MODEL_OPTIONS = "{updateOn: 'default blur', debounce: {'default': 2500, 'blur': 0}}"
 
-SHOP_ORDER_WORKFLOWS = (
+SHOP_ORDER_WORKFLOWS = [
     'shop.payment.defaults.PayInAdvanceWorkflowMixin',
     'shop.payment.defaults.CancelOrderWorkflowMixin',
-    'shop.shipping.delivery.PartialDeliveryWorkflowMixin' if SHOP_TUTORIAL == 'polymorphic'
-    else 'shop.shipping.defaults.CommissionGoodsWorkflowMixin',
     'shop_stripe.payment.OrderWorkflowMixin',
-)
+]
+if SHOP_TUTORIAL == 'polymorphic':
+    SHOP_ORDER_WORKFLOWS.append('shop.shipping.delivery.PartialDeliveryWorkflowMixin')
+else:
+    SHOP_ORDER_WORKFLOWS.append('shop.shipping.defaults.CommissionGoodsWorkflowMixin')
 
 SHOP_STRIPE = {
     'PUBKEY': 'pk_test_HlEp5oZyPonE21svenqowhXp',
