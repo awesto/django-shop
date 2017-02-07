@@ -4,7 +4,9 @@
 {% block dialog_form %}
 <form shop-dialog-form='shipping_address_form.form_entities={{ shipping_address_form.form_entities|rest_json }};' name="{{ shipping_address_form.form_name }}" novalidate>
 	<fieldset>
+	{% if headline_legend %}
 		<legend>{{ shipping_address_form.legend }}</legend>
+	{% endif %}
 	{% if shipping_address_form.multi_addr %}
 		<div class="form-group" ng-if="shipping_address_form.form_entities.length>0 && data.shipping_address.active_priority!='add'">
 			<label class="control-label">{% trans "Choose a previously used shipping address" %}</label>
