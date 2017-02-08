@@ -14,7 +14,7 @@ class Customer(BaseCustomer):
     If this model is materialized, then also register the corresponding serializer class
     :class:`shop.serializers.defaults.customer.CustomerSerializer`.
     """
-    SALUTATION = (('mrs', _("Mrs.")), ('mr', _("Mr.")), ('na', _("(n/a)")))
+    SALUTATION = [('mrs', _("Mrs.")), ('mr', _("Mr.")), ('na', _("(n/a)"))]
 
     number = models.PositiveIntegerField(_("Customer Number"), null=True, default=None, unique=True)
     salutation = models.CharField(_("Salutation"), max_length=5, choices=SALUTATION)
