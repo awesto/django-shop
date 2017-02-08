@@ -1,6 +1,9 @@
 {% load static sekizai_tags sass_tags %}{% spaceless %}
 
-{% addtoblock "css" %}<link href="{% sass_src 'shop/css/dialog.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+{% block extra-styles %}
+	{% addtoblock "css" %}<link href="{% sass_src 'shop/css/dialog.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+{% endblock %}
+
 {% addtoblock "js" %}<script src="{% static 'shop/js/utils.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% addtoblock "js" %}<script src="{% static 'shop/js/dialogs.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% addtoblock "ng-requires" %}django.shop.dialogs{% endaddtoblock %}

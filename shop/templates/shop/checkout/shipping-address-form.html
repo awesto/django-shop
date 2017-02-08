@@ -1,5 +1,10 @@
 {% extends "shop/checkout/dialog-base.html" %}
-{% load i18n shop_tags %}
+{% load i18n sass_tags sekizai_tags shop_tags %}
+
+{% block extra-styles %}
+	{{ block.super }}
+	{% addtoblock "css" %}<link href="{% sass_src 'shop/css/address.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+{% endblock %}
 
 {% block dialog_form %}
 <form shop-dialog-form='shipping_address_form.form_entities={{ shipping_address_form.form_entities|rest_json }};' name="{{ shipping_address_form.form_name }}" novalidate>
