@@ -301,7 +301,7 @@ class AcceptConditionFormPlugin(DialogFormPluginBase):
         context['accept_condition_form'] = accept_condition_form
         return context
 
-DialogFormPluginBase.register_plugin(AcceptConditionFormPlugin)
+# DialogFormPluginBase.register_plugin(AcceptConditionFormPlugin)
 
 
 class AcceptConditionPlugin(TextPlugin):
