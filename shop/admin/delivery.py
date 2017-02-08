@@ -74,11 +74,11 @@ class OrderItemInlineDelivery(OrderItemInline):
         return fields
 
     def get_readonly_fields(self, request, obj=None):
-        fields = list(super(OrderItemInlineDelivery, self).get_readonly_fields(request, obj))
+        readonly_fields = list(super(OrderItemInlineDelivery, self).get_readonly_fields(request, obj))
         if obj:
             if not (obj.status == 'pick_goods' and obj.unfulfilled_items > 0):
-                fields.extend(['get_delivered', 'show_ready'])
-        return fields
+                readonly_fields.extend(['get_delivered', 'show_ready'])
+        return readonly_fields
 
     def get_formset(self, request, obj=None, **kwargs):
         """
