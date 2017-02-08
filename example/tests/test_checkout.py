@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import json
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
+from django.contrib.sessions.backends.db import SessionStore
 from django.http import QueryDict
 
 from cms.api import add_plugin, create_page
@@ -11,7 +12,7 @@ from bs4 import BeautifulSoup
 from shop.cascade.checkout import (
     GuestFormPlugin, CustomerFormPlugin, ShippingAddressFormPlugin, BillingAddressFormPlugin,
     PaymentMethodFormPlugin, ShippingMethodFormPlugin, RequiredFormFieldsPlugin,
-    ExtraAnnotationFormPlugin, AcceptConditionFormPlugin)
+    ExtraAnnotationFormPlugin, AcceptConditionPlugin)
 from shop.models.cart import CartModel
 from myshop.models.polymorphic.smartcard import SmartCard
 from .test_shop import ShopTestCase
@@ -278,22 +279,24 @@ class CheckoutTest(ShopTestCase):
         payload = json.loads(response.content.decode('utf-8'))
         self.assertDictEqual(payload['errors']['extra_annotation_form'], {})
 
-    def test_accept_condition_form_plugin(self):
+    def test_accept_condition_plugin(self):
         # create a page populated with Cascade elements used for checkout
         placeholder = self.checkout_page.placeholders.get(slot='Main Content')
 
         # add accept condition form plugin to checkout page
-        accept_condition_element = add_plugin(placeholder, AcceptConditionFormPlugin, 'en',
+        accept_condition_element = add_plugin(placeholder, AcceptConditionPlugin, 'en',
                                               target=self.column_element)
         accept_condition_plugin = accept_condition_element.get_plugin_class_instance(self.admin_site)
-        self.assertIsInstance(accept_condition_plugin, AcceptConditionFormPlugin)
+        self.assertIsInstance(accept_condition_plugin, AcceptConditionPlugin)
 
         # edit the plugin's content
         self.assertTrue(self.client.login(username='admin', password='admin'))
 
         post_data = QueryDict('', mutable=True)
-        post_data.update({'html_content': "<p>I have read the terms and conditions and agree with them.</p>"})
+        post_data.update({'body': "<p>I have read the terms and conditions and agree with them.</p>"})
         request = self.factory.post('/')
+        request.session = SessionStore()
+        request.session.create()
 
         ModelForm = accept_condition_plugin.get_form(request, accept_condition_element)
         form = ModelForm(post_data, None, instance=accept_condition_element)
@@ -314,16 +317,12 @@ class CheckoutTest(ShopTestCase):
 
         # find plugin counterpart on public page
         placeholder = self.checkout_page.publisher_public.placeholders.get(slot='Main Content')
-        plugin = [p for p in placeholder.cmsplugin_set.all() if p.plugin_type == 'AcceptConditionFormPlugin'][0]
+        plugin = [p for p in placeholder.cmsplugin_set.all() if p.plugin_type == 'AcceptConditionPlugin'][0]
         accept_condition_form = soup.find('form', {'name': 'accept_condition_form.plugin_{}'.format(plugin.id)})
         self.assertIsNotNone(accept_condition_form)
         accept_input = accept_condition_form.find('input', {'id': 'id_accept'})
         accept_paragraph = str(accept_input.find_next_siblings('p')[0])
         self.assertHTMLEqual(accept_paragraph, "<p>I have read the terms and conditions and agree with them.</p>")
-
-        # check the get_identifier method
-        content = accept_condition_plugin.get_identifier(accept_condition_element)
-        self.assertEqual('I have read ...', content)
 
     def add_guestform_element(self):
         """Add one GuestFormPlugin to the current page"""
