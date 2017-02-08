@@ -10,8 +10,8 @@
 {% page_url 'shop-password-reset' as password_reset_url %}
 {% page_url 'shop-register-customer' as register_customer_url %}
 
-<li class="dropdown {{ dropdown_extra_class }}" dropdown auto-close="outsideClick">
-	<a class="dropdown-toggle" dropdown-toggle>
+<li class="dropdown {{ dropdown_extra_class }}" uib-dropdown{% if customer.is_anonymous %} auto-close="disabled{# retest with outsideClick #}"{% endif %}>
+	<a class="dropdown-toggle" uib-dropdown-toggle>
 	{% if customer.is_authenticated %}
 		<i class="fa fa-user"></i>&nbsp;{{ customer.first_name|default:customer }}
 	{% else %}

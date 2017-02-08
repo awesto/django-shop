@@ -13,7 +13,7 @@
 	{% endif %}
 		<input name="q" ng-model="searchQuery" {% if search_autocomplete %}ng-change="autocomplete()" {% endif %}type="text" class="form-control" placeholder="{% trans 'Search' %}" />
 	{% if search_product_url %}
-		<div class="input-group-addon" ng-click="submitSearch()" tooltip="{% trans "Refine your search" %}">
+		<div class="input-group-addon" ng-click="submitSearch()" uib-tooltip="{% trans "Refine your search" %}">
 			<i class="glyphicon glyphicon-search"></i>
 		</div>
 	</div>
