@@ -1,7 +1,13 @@
 {% extends "shop/checkout/dialog-base.html" %}
+{% load i18n %}
 
 {% block dialog_form %}
 <form shop-dialog-form name="{{ shipping_method_form.form_name }}" novalidate>
+	{% if shipping_method_form.has_choices %}
 	{{ shipping_method_form.as_div }}
+	{% else %}
+	<input name="__force_invalidation__" style="display: none;" required />
+	<p class="bg-danger">{% trans "No shipping method available" %}</p>
+	{% endif %}
 </form>
 {% endblock %}

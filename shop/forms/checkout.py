@@ -273,6 +273,9 @@ class PaymentMethodForm(DialogForm):
                 pass
         super(PaymentMethodForm, self).__init__(*args, **kwargs)
 
+    def has_choices(self):
+        return len(self.base_fields['payment_modifier'].choices) > 0
+
     @classmethod
     def form_factory(cls, request, data, cart):
         cart.update(request)
@@ -301,6 +304,9 @@ class ShippingMethodForm(DialogForm):
             except KeyError:
                 pass
         super(ShippingMethodForm, self).__init__(*args, **kwargs)
+
+    def has_choices(self):
+        return len(self.base_fields['shipping_modifier'].choices) > 0
 
     @classmethod
     def form_factory(cls, request, data, cart):
