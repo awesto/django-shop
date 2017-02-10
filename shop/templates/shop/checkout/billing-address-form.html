@@ -8,7 +8,7 @@
 
 {% block dialog_form %}
 <form shop-dialog-form='billing_address_form.form_entities={{ billing_address_form.form_entities|rest_json }};' name="{{ billing_address_form.form_name }}" novalidate>
-	{% if instance.glossary.allow_use_primary %}
+	{% if billing_address_form.allow_use_primary %}
 	<div class="has-feedback form-group">
 		{{ billing_address_form.use_primary_address }}
 	</div>
