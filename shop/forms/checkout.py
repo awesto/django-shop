@@ -98,6 +98,7 @@ class AddressForm(DialogModelForm):
 
     def __init__(self, initial=None, instance=None, *args, **kwargs):
         self.multi_addr = kwargs.pop('multi_addr', False)
+        self.allow_use_primary = kwargs.pop('allow_use_primary', False)
         self.form_entities = kwargs.pop('form_entities', [])
         if instance:
             initial = initial or {}
