@@ -22,7 +22,10 @@ class CheckoutViewSet(BaseViewSet):
         self.dialog_forms = []
         for p in plugin_pool.get_all_plugins():
             if issubclass(p, DialogFormPluginBase):
-                self.dialog_forms.append(import_string(p.form_class))
+                form_classes = getattr(p, 'form_classes', [])
+                if hasattr(p, 'form_class'):
+                    form_classes.append(p.form_class)
+                self.dialog_forms.extend([import_string(fc) for fc in form_classes])
 
     @list_route(methods=['post'], url_path='upload')
     def upload(self, request):

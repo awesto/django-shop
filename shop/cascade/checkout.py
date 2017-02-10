@@ -8,10 +8,11 @@ from django.forms.fields import CharField
 from django.forms import widgets
 from django.template import engines
 from django.template.loader import select_template
-from django.utils.html import strip_tags
+from django.utils.html import strip_tags, format_html
+from django.utils.module_loading import import_string
 from django.utils.safestring import mark_safe
 from django.utils.text import Truncator
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 try:
     from html.parser import HTMLParser  # py3
 except ImportError:
@@ -147,7 +148,7 @@ class CheckoutAddressPluginBase(DialogFormPluginBase):
     def get_form_data(self, context, instance, placeholder):
         form_data = super(CheckoutAddressPluginBase, self).get_form_data(context, instance, placeholder)
 
-        AddressModel = self.FormClass.get_model()
+        AddressModel = self.get_form_class(instance).get_model()
         if form_data['cart'] is None:
             raise PermissionDenied("Can not proceed to checkout without cart")
         address = self.get_address(form_data['cart'], instance)
@@ -172,12 +173,13 @@ class ShippingAddressFormPlugin(CheckoutAddressPluginBase):
     def get_address(self, cart, instance):
         if cart.shipping_address is None:
             # fallback to another existing shipping address
-            address = self.FormClass.get_model().objects.get_fallback(customer=cart.customer)
+            FormClass = self.get_form_class(instance)
+            address = FormClass.get_model().objects.get_fallback(customer=cart.customer)
             cart.shipping_address = address
             cart.save()
         return cart.shipping_address
 
-DialogFormPluginBase.register_plugin(ShippingAddressFormPlugin)
+# DialogFormPluginBase.register_plugin(ShippingAddressFormPlugin)
 
 
 class BillingAddressFormPlugin(CheckoutAddressPluginBase):
@@ -196,7 +198,105 @@ class BillingAddressFormPlugin(CheckoutAddressPluginBase):
         # if billing address is None, we use the shipping address
         return cart.billing_address
 
-DialogFormPluginBase.register_plugin(BillingAddressFormPlugin)
+# DialogFormPluginBase.register_plugin(BillingAddressFormPlugin)
+
+
+class CheckoutAddressPlugin(DialogFormPluginBase):
+    name = _("Checkout Address Form")
+    glossary_field_order = ['address_form', 'render_type', 'allow_multiple', 'headline_legend', 'allow_use_primary']
+    form_classes = ['shop.forms.checkout.ShippingAddressForm', 'shop.forms.checkout.BillingAddressForm']
+    ADDRESS_CHOICES = [('shipping', _("Shipping")), ('billing', _("Billing"))]
+
+    address_form = GlossaryField(
+        widgets.RadioSelect(choices=ADDRESS_CHOICES),
+        label=_("Address Form"),
+        initial=ADDRESS_CHOICES[0][0]
+    )
+
+    allow_multiple = GlossaryField(
+        widgets.CheckboxInput(),
+        label=_("Multiple Addresses"),
+        initial=False,
+        help_text=_("Allow the customer to add and edit multiple addresses."),
+    )
+
+    allow_use_primary = GlossaryField(
+        widgets.CheckboxInput(),
+        label=_("Use primary address"),
+        initial=False,
+        help_text=_("Allow the customer to use the primary address for this secondary form."),
+    )
+
+    def get_form_class(self, instance):
+        if instance.glossary.get('address_form') == 'shipping':
+            return import_string(self.form_classes[0])
+        else:  # address_form == billing
+            return import_string(self.form_classes[1])
+
+    def get_address(self, cart, instance):
+        address = None
+        allow_use_primary = instance.glossary.get('allow_multiple')
+        if instance.glossary.get('address_form') == 'shipping':
+            if cart.shipping_address or allow_use_primary:
+                address = cart.shipping_address
+            elif instance.glossary.get('allow_multiple'):
+                # fallback to another existing shipping address
+                FormClass = self.get_form_class(instance)
+                address = FormClass.get_model().objects.get_fallback(customer=cart.customer)
+                cart.shipping_address = address
+                cart.save()
+        else:  # address_form == billing
+            if cart.billing_address or allow_use_primary:
+                address = cart.billing_address
+            elif instance.glossary.get('allow_multiple'):
+                # fallback to another existing billing address
+                FormClass = self.get_form_class(instance)
+                address = FormClass.get_model().objects.get_fallback(customer=cart.customer)
+                cart.billing_address = address
+                cart.save()
+        return address
+
+    def get_form_data(self, context, instance, placeholder):
+        form_data = super(CheckoutAddressPlugin, self).get_form_data(context, instance, placeholder)
+
+        AddressModel = self.get_form_class(instance).get_model()
+        if form_data['cart'] is None:
+            raise PermissionDenied("Can not proceed to checkout without cart")
+        address = self.get_address(form_data['cart'], instance)
+        form_data.update(instance=address)
+
+        if instance.glossary.get('allow_multiple'):
+            addresses = AddressModel.objects.filter(customer=context['request'].customer).order_by('priority')
+            form_entities = [dict(value=str(addr.priority),
+                                  label="{}. {}".format(number, addr.as_text().replace('\n', ' – ')))
+                             for number, addr in enumerate(addresses, 1)]
+            form_data.update(multi_addr=True, form_entities=form_entities)
+        else:
+            form_data.update(multi_addr=False)
+        form_data.update(allow_use_primary=instance.glossary.get('allow_use_primary', False))
+        return form_data
+
+    @classmethod
+    def get_identifier(cls, instance):
+        identifier = super(CheckoutAddressPlugin, cls).get_identifier(instance)
+        address_form = instance.glossary.get('address_form')
+        address_form = dict(cls.ADDRESS_CHOICES).get(address_form, '')
+        return format_html(pgettext_lazy('get_identifier', "for {} {}"), address_form, identifier)
+
+    def get_render_template(self, context, instance, placeholder):
+        addr_form = instance.glossary.get('address_form')
+        if addr_form not in ['shipping', 'billing']:  # validate
+            addr_form = 'shipping'
+        render_type = instance.glossary.get('render_type')
+        if render_type not in ['form', 'summary']:  # validate
+            render_type = 'form'
+        template_names = [
+            '{0}/checkout/{1}-address-{2}.html'.format(app_settings.APP_LABEL, addr_form, render_type),
+            'shop/checkout/{0}-address-{1}.html'.format(addr_form, render_type),
+        ]
+        return select_template(template_names)
+
+DialogFormPluginBase.register_plugin(CheckoutAddressPlugin)
 
 
 class PaymentMethodFormPlugin(DialogFormPluginBase):

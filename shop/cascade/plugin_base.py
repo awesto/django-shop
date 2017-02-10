@@ -183,14 +183,15 @@ class DialogFormPluginBase(ShopPluginBase):
         if not issubclass(plugin, cls):
             msg = "Can not register plugin class `{}`, since is does not inherit from `{}`."
             raise ImproperlyConfigured(msg.format(plugin.__name__, cls.__name__))
-        if plugin.get_form_class() is None:
-            msg = "Can not register plugin class `{}`, since is does not define a `form_class`."
-            raise ImproperlyConfigured(msg.format(plugin.__name__))
         plugin_pool.register_plugin(plugin)
 
-    @classmethod
-    def get_form_class(cls):
-        return getattr(cls, 'form_class', None)
+    def get_form_class(self, instance):
+        try:
+            return import_string(self.form_class)
+        except AttributeError:
+            msg = "Can not register plugin class '{}', since it neither defines 'form_class' " \
+                  "nor overrides 'get_form_class()'."
+            raise ImproperlyConfigured(msg.format(self.__name__))
 
     @classmethod
     def get_identifier(cls, instance):
@@ -200,7 +201,6 @@ class DialogFormPluginBase(ShopPluginBase):
 
     def __init__(self, *args, **kwargs):
         super(DialogFormPluginBase, self).__init__(*args, **kwargs)
-        self.FormClass = import_string(self.get_form_class())
 
     def get_form_data(self, context, instance, placeholder):
         """
@@ -210,7 +210,7 @@ class DialogFormPluginBase(ShopPluginBase):
          * or `initial` - a dictionary containing initial form data, or if both are set, values
            from `initial` override those of `instance`.
         """
-        if issubclass(self.FormClass, DialogFormMixin):
+        if issubclass(self.get_form_class(instance), DialogFormMixin):
             try:
                 cart = CartModel.objects.get_from_request(context['request'])
                 cart.update(context['request'])
@@ -242,7 +242,7 @@ class DialogFormPluginBase(ShopPluginBase):
         if not isinstance(form_data.get('initial'), dict):
             form_data['initial'] = {}
         form_data['initial'].update(plugin_id=instance.id, plugin_order=request._plugin_order)
-        bound_form = self.FormClass(**form_data)
+        bound_form = self.get_form_class(instance)(**form_data)
         context[bound_form.form_name] = bound_form
         context['headline_legend'] = bool(instance.glossary.get('headline_legend', True))
         return super(DialogFormPluginBase, self).render(context, instance, placeholder)

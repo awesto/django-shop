@@ -75,21 +75,33 @@ class GuestForm(UniqueEmailValidationMixin, DialogModelForm):
 
 class AddressForm(DialogModelForm):
     # field to be superseeded by a select widget
-    active_priority = fields.CharField(required=False, widget=widgets.HiddenInput())
+    active_priority = fields.CharField(
+        required=False,
+        widget=widgets.HiddenInput(),
+    )
+
+    use_primary_address = fields.BooleanField(
+        required=False,
+        initial=True,
+        widget=CheckboxInput("use primary address"),
+    )
 
     # JS function to filter form_entities after removing an entity
     js_filter = 'var list = [].slice.call(arguments); return list.filter(function(a) {{ return a.value != {}; }});'
-    plugin_fields = ('plugin_id', 'plugin_order',)
+    plugin_fields = ['plugin_id', 'plugin_order', 'use_primary_address']
 
     class Meta:
         exclude = ('customer', 'priority',)
+        widgets = {
+            'country': widgets.Select(attrs={'ng-change': 'upload()'}),
+        }
 
     def __init__(self, initial=None, instance=None, *args, **kwargs):
         self.multi_addr = kwargs.pop('multi_addr', False)
         self.form_entities = kwargs.pop('form_entities', [])
         if instance:
             initial = initial or {}
-            initial['active_priority'] = instance.priority
+            initial.update(active_priority=instance.priority, use_primary_address=False)
         super(AddressForm, self).__init__(initial=initial, instance=instance, *args, **kwargs)
 
     @classmethod
@@ -119,7 +131,7 @@ class AddressForm(DialogModelForm):
         except ValueError:
             active_priority = data.get('active_priority')
         except TypeError:
-            active_priority = cls.default_priority
+            active_priority = 'nop' if data.get('use_primary_address') else 'add'
         if not active_address:
             active_address = cls.get_model().objects.get_fallback(customer=request.customer)
 
@@ -181,77 +193,72 @@ class AddressForm(DialogModelForm):
     def get_response_data(self):
         return self.data
 
+    def full_clean(self):
+        super(AddressForm, self).full_clean()
+        if self.is_bound and self['use_primary_address'].value():
+            # reset errors, since then the form is always regarded as valid
+            self._errors = ErrorDict()
+
+    def is_valid(self):
+        return self['use_primary_address'].value() or super(AddressForm, self).is_valid()
+
+    def save(self, commit=True):
+        if not self['use_primary_address'].value():
+            return super(AddressForm, self).save(commit)
+
+    def as_div(self):
+        # Intentionally rendered without field `use_primary_address`, this must be added
+        # on top of the form template manually
+        self.fields.pop('use_primary_address', None)
+        return super(AddressForm, self).as_div()
+
+    def as_text(self):
+        bound_field = self['use_primary_address']
+        if bound_field.value():
+            return bound_field.field.widget.choice_label
+        return super(AddressForm, self).as_text()
+
 
 class ShippingAddressForm(AddressForm):
     scope_prefix = 'data.shipping_address'
     legend = _("Shipping Address")
-    default_priority = 'add'
 
     class Meta(AddressForm.Meta):
         model = ShippingAddressModel
-        widgets = {
-            'country': widgets.Select(attrs={'ng-change': 'upload()'}),
-        }
+
+    def __init__(self, *args, **kwargs):
+        super(ShippingAddressForm, self).__init__(*args, **kwargs)
+        primary_address_widget = self.fields['use_primary_address'].widget
+        primary_address_widget.choice_label = _("Use billing address for shipping")
+        primary_address_widget.attrs.update({'ng-change': 'switchEntity(shipping_address_form)'})
 
     @classmethod
     def get_address(cls, cart):
         return cart.shipping_address
 
     def set_address(self, cart, instance):
-        cart.shipping_address = instance
+        cart.shipping_address = instance if not self['use_primary_address'].value() else None
 
 
 class BillingAddressForm(AddressForm):
     scope_prefix = 'data.billing_address'
     legend = _("Billing Address")
-    default_priority = 'nop'
-    plugin_fields = AddressForm.plugin_fields + ('use_shipping_address',)
-
-    use_shipping_address = fields.BooleanField(
-        required=False,
-        initial=True,
-        widget=CheckboxInput(_("Use shipping address for billing"),
-                             attrs={'ng-change': 'switchEntity(billing_address_form)'}))
 
     class Meta(AddressForm.Meta):
         model = BillingAddressModel
 
-    def __init__(self, initial=None, instance=None, *args, **kwargs):
-        if instance:
-            initial = initial or {}
-            initial['use_shipping_address'] = False
-        super(BillingAddressForm, self).__init__(initial=initial, instance=instance, *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super(BillingAddressForm, self).__init__(*args, **kwargs)
+        primary_address_widget = self.fields['use_primary_address'].widget
+        primary_address_widget.choice_label = _("Use shipping address for billing")
+        primary_address_widget.attrs.update({'ng-change': 'switchEntity(billing_address_form)'})
 
     @classmethod
     def get_address(cls, cart):
         return cart.billing_address
 
     def set_address(self, cart, instance):
-        cart.billing_address = instance if not self['use_shipping_address'].value() else None
-
-    def full_clean(self):
-        super(BillingAddressForm, self).full_clean()
-        if self.is_bound and self['use_shipping_address'].value():
-            # reset errors, since then the form is always regarded as valid
-            self._errors = ErrorDict()
-
-    def is_valid(self):
-        return self['use_shipping_address'].value() or super(BillingAddressForm, self).is_valid()
-
-    def save(self, commit=True):
-        if not self['use_shipping_address'].value():
-            return super(BillingAddressForm, self).save(commit)
-
-    def as_div(self):
-        # Intentionally rendered without field `use_shipping_address`
-        self.fields.pop('use_shipping_address', None)
-        return super(BillingAddressForm, self).as_div()
-
-    def as_text(self):
-        bound_field = self['use_shipping_address']
-        if bound_field.value():
-            return bound_field.field.widget.choice_label
-        return super(BillingAddressForm, self).as_text()
+        cart.billing_address = instance if not self['use_primary_address'].value() else None
 
 
 class PaymentMethodForm(DialogForm):

@@ -8,7 +8,12 @@
 
 {% block dialog_form %}
 <form shop-dialog-form='shipping_address_form.form_entities={{ shipping_address_form.form_entities|rest_json }};' name="{{ shipping_address_form.form_name }}" novalidate>
-	<fieldset>
+	{% if instance.glossary.allow_use_primary %}
+	<div class="has-feedback form-group">
+		{{ shipping_address_form.use_primary_address }}
+	</div>
+	{% endif %}
+	<fieldset shop-form-validate="!data.shipping_address.use_primary_address" ng-hide="data.shipping_address.use_primary_address" class="animate-show" ng-cloak>
 	{% if headline_legend %}
 		<legend>{{ shipping_address_form.legend }}</legend>
 	{% endif %}

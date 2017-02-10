@@ -8,12 +8,12 @@
 
 {% block dialog_form %}
 <form shop-dialog-form='billing_address_form.form_entities={{ billing_address_form.form_entities|rest_json }};' name="{{ billing_address_form.form_name }}" novalidate>
-	{% if instance.glossary.allow_use_shipping %}
+	{% if instance.glossary.allow_use_primary %}
 	<div class="has-feedback form-group">
-		{{ billing_address_form.use_shipping_address }}
+		{{ billing_address_form.use_primary_address }}
 	</div>
 	{% endif %}
-	<fieldset shop-form-validate="!data.billing_address.use_shipping_address" ng-hide="data.billing_address.use_shipping_address" class="animate-show" ng-cloak>
+	<fieldset shop-form-validate="!data.billing_address.use_primary_address" ng-hide="data.billing_address.use_primary_address" class="animate-show" ng-cloak>
 	{% if headline_legend %}
 		<legend>{{ billing_address_form.legend }}</legend>
 	{% endif %}

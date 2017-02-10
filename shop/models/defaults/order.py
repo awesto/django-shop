@@ -45,6 +45,12 @@ class Order(order.BaseOrder):
         return dict(number=number)
 
     def populate_from_cart(self, cart, request):
-        self.shipping_address_text = cart.shipping_address.as_text()
-        self.billing_address_text = cart.billing_address.as_text() if cart.billing_address else self.shipping_address_text
+        self.shipping_address_text = cart.shipping_address.as_text() if cart.shipping_address else ''
+        self.billing_address_text = cart.billing_address.as_text() if cart.billing_address else ''
+
+        # in case one of the addresses was None, the customer presumably intended the other one.
+        if not self.shipping_address_text:
+            self.shipping_address_text = self.billing_address_text
+        if not self.billing_address_text:
+            self.billing_address_text = self.shipping_address_text
         super(Order, self).populate_from_cart(cart, request)
