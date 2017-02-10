@@ -157,10 +157,10 @@ class DialogFormPluginBase(ShopPluginBase):
     require_parent = True
     parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin', 'BootstrapPanelPlugin',
         'SegmentPlugin', 'SimpleWrapperPlugin', 'ValidateSetOfFormsPlugin')
-    CHOICES = (('form', _("Form dialog")), ('summary', _("Static summary")),)
+    RENDER_CHOICES = [('form', _("Form dialog")), ('summary', _("Static summary"))]
 
     render_type = GlossaryField(
-        widgets.RadioSelect(choices=CHOICES),
+        widgets.RadioSelect(choices=RENDER_CHOICES),
         label=_("Render as"),
         initial='form',
         help_text=_("A dialog can also be rendered as a box containing a read-only summary."),
@@ -195,7 +195,7 @@ class DialogFormPluginBase(ShopPluginBase):
     @classmethod
     def get_identifier(cls, instance):
         render_type = instance.glossary.get('render_type')
-        render_type = dict(cls.CHOICES).get(render_type, '')
+        render_type = dict(cls.RENDER_CHOICES).get(render_type, '')
         return format_html(pgettext_lazy('get_identifier', "as {}"), render_type)
 
     def __init__(self, *args, **kwargs):
