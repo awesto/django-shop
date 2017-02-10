@@ -138,6 +138,9 @@ DialogFormPluginBase.register_plugin(GuestFormPlugin)
 
 
 class CheckoutAddressPluginBase(DialogFormPluginBase):
+    """
+    Deprecated
+    """
     multi_addr = GlossaryField(
         widgets.CheckboxInput(),
         label=_("Multiple Addresses"),
@@ -166,6 +169,9 @@ class CheckoutAddressPluginBase(DialogFormPluginBase):
 
 
 class ShippingAddressFormPlugin(CheckoutAddressPluginBase):
+    """
+    Deprecated
+    """
     name = _("Shipping Address Form")
     form_class = 'shop.forms.checkout.ShippingAddressForm'
     template_leaf_name = 'shipping-address-{}.html'
@@ -183,6 +189,9 @@ class ShippingAddressFormPlugin(CheckoutAddressPluginBase):
 
 
 class BillingAddressFormPlugin(CheckoutAddressPluginBase):
+    """
+    Deprecated
+    """
     name = _("Billing Address Form")
     form_class = 'shop.forms.checkout.BillingAddressForm'
     template_leaf_name = 'billing-address-{}.html'
@@ -224,7 +233,7 @@ class CheckoutAddressPlugin(DialogFormPluginBase):
         widgets.CheckboxInput(),
         label=_("Use primary address"),
         initial=False,
-        help_text=_("Allow the customer to use the primary address for this secondary form."),
+        help_text=_("Allow the customer to use the primary address, if this is the secondary form."),
     )
 
     def get_form_class(self, instance):
