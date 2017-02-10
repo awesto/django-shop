@@ -16,8 +16,10 @@ Create a Customized Address Model
 All the fields which make up an address, such as the addressee, the street name, zip code, etc. are
 part of the concrete model implementing an address. It is the merchant's responsibility to define
 which address fields are required for his needs. Therefore the base address model does not contain
-any address related fields, they instead have to be declared by the merchant. A concrete
-implementation of the shipping address model may look like this:
+any address related fields, they instead have to be declared by the merchant.
+
+A concrete implementation of the shipping address model may look like this, which by coincidence
+is similar to the address model as shipped by default. See below.
 
 .. code-block:: python
 
@@ -97,8 +99,8 @@ actual wording of the entered address. It also assures that the address used for
 printed on the invoice is immune against accidental changes after the purchasing operation.
 
 
-Use Shipping Address for Billing
-================================
+Use Shipping Address for Billing or vice versa
+==============================================
 
 Most customers use their shipping address for billing. Therefore, unless you have really special
 needs, it is suggested to share all address fields required for shipping, also with the billing
