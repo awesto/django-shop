@@ -29,10 +29,19 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValid
         required=False,
         help_text=_("Send a randomly generated password to your e-mail address."))
 
-    password1 = fields.CharField(label=_("Choose a password"), widget=widgets.PasswordInput,
-                                 min_length=6, help_text=_("Minimum length is 6 characters."))
-    password2 = fields.CharField(label=_("Repeat password"), widget=widgets.PasswordInput,
-                                 min_length=6, help_text=_("Confirm password."))
+    password1 = fields.CharField(
+        label=_("Choose a password"),
+        widget=widgets.PasswordInput,
+        min_length=6,
+        help_text=_("Minimum length is 6 characters."),
+    )
+
+    password2 = fields.CharField(
+        label=_("Repeat password"),
+        widget=widgets.PasswordInput,
+        min_length=6,
+        help_text=_("Confirm password."),
+    )
 
     class Meta:
         model = CustomerModel
