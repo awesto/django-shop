@@ -142,7 +142,7 @@ class AddressForm(DialogModelForm):
             old_address = cls.get_model().objects.get_fallback(customer=request.customer)
             faked_data = dict((key, getattr(old_address, key, val)) for key, val in data.items())
             if old_address:
-                faked_data.update(active_priority=old_address.priority)
+                faked_data.update(active_priority=str(old_address.priority))
             address_form = cls(data=faked_data, instance=old_address)
             if isinstance(active_priority, int):
                 remove_entity_filter = cls.js_filter.format(active_priority)
@@ -163,7 +163,7 @@ class AddressForm(DialogModelForm):
                         next_address.customer = request.customer
                         next_address.priority = cls.get_model().objects.get_max_priority(request.customer) + 1
                         next_address.save()
-                        address_form.data.update(active_priority=next_address.priority)
+                        address_form.data.update(active_priority=str(next_address.priority))
                     else:
                         address_form.data.update(active_priority='nop')
                     address_form.set_address(cart, next_address)
@@ -186,7 +186,7 @@ class AddressForm(DialogModelForm):
             for attr in cls().get_initial_data().keys():
                 if hasattr(active_address, attr):
                     initial.update({attr: getattr(active_address, attr)})
-            initial.update(active_priority=active_address.priority)
+            initial.update(active_priority=str(active_address.priority))
             address_form = cls(data=initial, instance=current_address)
             address_form.set_address(cart, active_address)
         return address_form

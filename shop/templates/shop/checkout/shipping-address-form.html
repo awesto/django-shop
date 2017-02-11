@@ -21,7 +21,9 @@
 		<div class="form-group" ng-if="shipping_address_form.form_entities.length>0 && data.shipping_address.active_priority!='add'">
 			<label class="control-label">{% trans "Choose a previously used shipping address" %}</label>
 			<select class="form-control input-sm" name="active_priority" ng-change="switchEntity(shipping_address_form)" ng-model="data.shipping_address.active_priority">
-				<option ng-repeat="addr in shipping_address_form.form_entities" ng-selected="{{ shipping_address_form.active_priority.value }}=={% verbatim %}{{ addr.value }}" value="{{ addr.value }}">{{ addr.label }}</option{% endverbatim %}>
+				{% verbatim %}
+				<option ng-repeat="addr in shipping_address_form.form_entities" value="{{ addr.value }}">{{ addr.label }}</option>
+				{% endverbatim %}
 				<option value="new">{% trans "Add a new shipping address" %}</option>
 			</select>
 		</div>
