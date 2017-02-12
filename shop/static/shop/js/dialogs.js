@@ -104,17 +104,19 @@ djangoShopModule.directive('shopDialogForm', ['$q', '$timeout', function($q, $ti
 					DialogController.uploadScope(scope, deferred);
 				}
 				if (angular.isObject(form_controller['form_entities'])) {
-					$q.when(deferred.promise).then(function(response) {
-						var remove_entity_filter;
-						if (angular.isObject(response.data[data_model]) && angular.isString(response.data[data_model].remove_entity_filter)) {
-							remove_entity_filter = new Function(response.data[data_model].remove_entity_filter);
-							form_controller['form_entities'] = remove_entity_filter.apply(null, form_controller['form_entities']);
-						}
-						scope.stepIsValid = response.data.$valid;
-						angular.extend(scope.data, response.data);
-						// skip one digest cycle so that the form can be updated without triggering a change event
-						ready = false; $timeout(function() { ready = true; });
-					});
+					$q.when(deferred.promise).then(removeEntry, removeEntry);
+				}
+
+				function removeEntry(response) {
+					var remove_entity_filter;
+					if (angular.isObject(response.data[data_model]) && angular.isString(response.data[data_model].remove_entity_filter)) {
+						remove_entity_filter = new Function(response.data[data_model].remove_entity_filter);
+						form_controller['form_entities'] = remove_entity_filter.apply(null, form_controller['form_entities']);
+					}
+					scope.stepIsValid = response.data.$valid;
+					angular.extend(scope.data, response.data);
+					// skip one digest cycle so that the form can be updated without triggering a change event
+					ready = false; $timeout(function() { ready = true; });
 				}
 			};
 		}
