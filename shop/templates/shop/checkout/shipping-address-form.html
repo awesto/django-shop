@@ -15,7 +15,12 @@
 	{% endif %}
 	<fieldset shop-form-validate="!data.shipping_address.use_primary_address" ng-hide="data.shipping_address.use_primary_address" class="animate-show" ng-cloak>
 	{% if headline_legend %}
-		<legend>{{ shipping_address_form.legend }}</legend>
+	<legend>{{ shipping_address_form.legend }}</legend>
+	{% verbatim %}
+	<pre>
+	{{ data }}
+	</pre>
+	{% endverbatim %}
 	{% endif %}
 	{% if shipping_address_form.multi_addr %}
 		<div class="form-group" ng-if="shipping_address_form.form_entities.length>0 && data.shipping_address.active_priority!='add'">
