@@ -280,6 +280,13 @@ class CheckoutAddressPlugin(DialogFormPluginBase):
                                   label="{}. {}".format(number, addr.as_text().replace('\n', ' – ')))
                              for number, addr in enumerate(addresses, 1)]
             form_data.update(multi_addr=True, form_entities=form_entities)
+            if instance.glossary.get('address_form') == 'shipping' and form_data['cart'].shipping_address:
+                initial = {'active_priority': form_data['cart'].shipping_address.priority}
+            elif instance.glossary.get('address_form') == 'billing' and form_data['cart'].billing_address:
+                initial = {'active_priority': form_data['cart'].billing_address.priority}
+            else:
+                initial = {'active_priority': 'add'}
+            form_data.update(initial=initial)
         else:
             form_data.update(multi_addr=False)
         form_data.update(allow_use_primary=instance.glossary.get('allow_use_primary', False))
