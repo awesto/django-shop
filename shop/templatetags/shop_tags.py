@@ -98,10 +98,11 @@ def rest_json(value, arg=None):
     """
     Renders a `ReturnDict` as used by the REST framework into a safe JSON string.
     """
-    if not value:
-        return mark_safe('{}')
-    if not isinstance(value, (dict, OrderedDict, list, tuple)):
+    if isinstance(value, (dict, OrderedDict, list, tuple)):
+        data = JSONRenderer().render(value)
+    elif not value:
+        data = '{}'
+    else:
         msg = "Given value must be of type dict, OrderedDict, list or tuple but it is {}."
         raise ValueError(msg.format(value.__class__.__name__))
-    data = JSONRenderer().render(value)
     return mark_safe(force_text(data))
