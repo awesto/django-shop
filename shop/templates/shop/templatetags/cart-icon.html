@@ -5,7 +5,7 @@
 {% addtoblock "ng-requires" %}django.shop.carticon_caption{% endaddtoblock %}
 
 {% page_url 'shop-cart' as shop_cart_url %}
-{% page_attribute 'page_title' 'shop-cart' as tooltip %}
+{% page_attribute 'menu_title' 'shop-cart' as tooltip %}
 
 <a{% if shop_cart_url %} href="{{ shop_cart_url }}" title="{{ tooltip }}"{% endif %}>
 {% block carticon %}

@@ -23,13 +23,13 @@
 			<button class="btn btn-primary btn-block" type="button" ng-click="submitForm('{% url "shop:logout" %}')">{% trans "Logout" %}</button>
 		</shop-auth-form>
 		{% if shop_order_url %}
-		<li><a href="{{ shop_order_url }}">{% page_attribute "page_title" "shop-order" %}</a></li>
+		<li><a href="{{ shop_order_url }}">{% page_attribute "menu_title" "shop-order" %}</a></li>
 		{% endif %}
 		{% if customer_details_url %}
-		<li><a href="{{ customer_details_url }}">{% page_attribute "page_title" "shop-customer-details" %}</a></li>
+		<li><a href="{{ customer_details_url }}">{% page_attribute "menu_title" "shop-customer-details" %}</a></li>
 		{% endif %}
 		{% if password_change_url %}
-		<li><a href="{{ password_change_url }}">{% page_attribute "page_title" "shop-password-change" %}</a></li>
+		<li><a href="{{ password_change_url }}">{% page_attribute "menu_title" "shop-password-change" %}</a></li>
 		{% endif %}
 	{% else %}
 		<shop-auth-form ng-form name="auth_form" action="RELOAD_PAGE" accept-charset="UTF-8" role="form" form-submit-url="{% url "shop:login" %}">
