@@ -10,6 +10,7 @@ addresses are no exception here. The class :class:`shop.models.address.BaseAddre
 a foreign key to the Customer model and a priority field used to sort multiple addresses by
 relevance.
 
+
 Create a Customized Address Model
 =================================
 
@@ -18,8 +19,8 @@ part of the concrete model implementing an address. It is the merchant's respons
 which address fields are required for his needs. Therefore the base address model does not contain
 any address related fields, they instead have to be declared by the merchant.
 
-A concrete implementation of the shipping address model may look like this, which by coincidence
-is similar to the address model as shipped by default. See below.
+A concrete implementation of the shipping address model may look like this, which not really by
+coincidence is similar to the address model as shipped by default. See below.
 
 .. code-block:: python
 
@@ -71,8 +72,9 @@ The Default Address Model
 
 The simplest way is to materialize the required address classes, is to use them from our default
 and convenience models: :class:`shop.models.defaults.address.ShippingAddress` and
-:class:`shop.models.defaults.address.BillingAddress`. Before using them, please check if they
-fulfill your requirements.
+:class:`shop.models.defaults.address.BillingAddress`. Before using them, we check if they
+fulfill your requirements. Otherwise we create our own address models inheriting from
+:class:`shop.models.address.BaseAddress`.
 
 
 Multiple Addresses
@@ -80,7 +82,7 @@ Multiple Addresses
 
 In **django-SHOP**, if the merchant activates this feature, while setting up the site, customers
 can register more than one address. Multiple addresses can be activated, when editing the
-**Shipping Address Form Plugin** or the **Billing Address Form Plugin**.
+**Address Form Plugin**.
 
 Then during checkout, the customer can select one of a previously entered shipping- and
 billing addresses, or if he desires add a new one to his list of existing addresses.
@@ -109,8 +111,8 @@ Technically, if the billing address is unset, the shipping address is used anywa
 **django-SHOP** the merchant has to actively give permission to his customers, to reuse this address
 for billing.
 
-The merchant has to actively allow this setting on the site, while editing the **Billing Address
-Form Plugin**.
+The merchant has to actively allow this setting on the site, while editing the **Address Form
+Plugin**.
 
 
 Address Formatting

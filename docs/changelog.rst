@@ -40,6 +40,11 @@ Changelog for django-SHOP
   more results from the server.
 * Changed all Cascade plugins to follow the new API introduced in **djangocms-cascade** version 0.12.
 * Directive ``shop-product-filter`` must be member of a ``<form ...>`` element.
+* Unified the plugins **ShippingAddressFormPlugin** and **BillingAddressFormPlugin** into one plugin
+  named **CheckoutAddressPlugin**, where the merchant can choose between the shipping- or billing
+  form.
+* Refactored :class:`shop.forms.checkout.AddressForm` and fixed minor bugs when editing multiple
+  addresses.
 
 
 0.9.3

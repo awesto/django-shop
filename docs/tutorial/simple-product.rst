@@ -13,7 +13,7 @@ properties. Lets have a look ar a model describing a typical Smart Card:
 	:caption: myshop/models/smartcard.py
 	:linenos:
 	:language: python
-	:lines: 8-11, 15-22, 40-41
+	:lines: 8-15, 21-40, 90-94
 
 Here our model ``SmartCard`` inherits directly from ``BaseProduct``, which is a stub class, hence
 the most common fields, such as ``product_name``, ``slug`` and ``unit_price`` must be added to our
@@ -25,7 +25,7 @@ Additionally a smart card has some product specific properties:
 .. literalinclude:: /../example/myshop/models/smartcard/__init__.py
 	:linenos:
 	:language: python
-	:lines: 23-34
+	:lines: 48-78
 
 these class attributes depend heavily on the data sheet of the product to sell.
 
@@ -34,7 +34,7 @@ Finally we also want to position our products into categories and sort them:
 .. literalinclude:: /../example/myshop/models/smartcard/__init__.py
 	:linenos:
 	:language: python
-	:lines: 34-40
+	:lines: 79-90
 
 The field ``order`` is used to keep track on the sequence of our products while rendering a list
 view.

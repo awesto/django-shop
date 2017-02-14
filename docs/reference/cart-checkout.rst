@@ -162,7 +162,7 @@ Depending on the chosen template, this layout may vary.
 Static Cart
 ~~~~~~~~~~~~
 
-An alternative to the editable cart is the ‘static cart’. Here the cart items are rendered by
+An alternative to the editable cart is the *static cart*. Here the cart items are rendered by
 the Django template engine. Since here everything is static, the quantity can't be changed anymore
 and the customer would have to proceed to the checkout without being able to change his mind. This
 probably only makes sense when purchasing a single product.
