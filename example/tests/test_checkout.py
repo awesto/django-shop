@@ -117,12 +117,13 @@ class CheckoutTest(ShopTestCase):
 
         data = {
             'shipping_address': {
-                'name': "Bart Simpson", 'address1': "Park Ave.", 'address2': "", 'zip_code': "SF123",
-                'city': "Springfield", 'country': "US",
+                'active_priority': 'add',
+                'name': "Bart Simpson", 'address1': "Park Ave.", 'address2': "",
+                'zip_code': "SF123", 'city': "Springfield", 'country': "US",
                 'plugin_id': shipping_plugin_id_input['value'],
                 'plugin_order': shipping_plugin_order_input['value']},
             'billing_address': {
-                'use_shipping_address': True,
+                'use_primary_address': True,
                 'plugin_id': billing_plugin_id_input['value'],
                 'plugin_order': billing_plugin_order_input['value']}
         }
@@ -130,7 +131,7 @@ class CheckoutTest(ShopTestCase):
         response = self.client.post(url, data=json.dumps(data), content_type='application/json')
         payload = json.loads(response.content.decode('utf-8'))
         self.assertIn('shipping_address_form', payload['errors'])
-        self.assertDictEqual({}, payload['errors']['shipping_address_form'])
+        self.assertDictEqual(payload['errors']['shipping_address_form'], {})
 
         # check if Bart changed his address and zip code
         bart = get_user_model().objects.get(username='bart')
