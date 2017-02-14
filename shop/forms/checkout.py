@@ -165,15 +165,12 @@ class AddressForm(DialogModelForm):
                     else:
                         address_form.data.update(active_priority='nop')
                     address_form.set_address(cart, next_address)
-            else:
-                print(address_form.changed_data)
         elif active_priority == 'new' or active_address is None and not data.get('use_primary_address'):
             # customer selected 'Add another address', hence create a new empty form
             initial = dict((key, val) for key, val in data.items() if key in cls.plugin_fields)
             address_form = cls(initial=initial)
             address_form.data.update(address_form.get_initial_data())
             address_form.data.update(active_priority='add')
-            # address_form.set_address(cart, None)
         elif current_address == active_address:
             # an existing entity of AddressModel was edited
             address_form = cls(data=data, instance=active_address)
@@ -199,9 +196,6 @@ class AddressForm(DialogModelForm):
         if self.is_bound and self['use_primary_address'].value():
             # reset errors, since then the form is always regarded as valid
             self._errors = ErrorDict()
-
-#    def is_valid(self):
-#        return self.is_bound and self['use_primary_address'].value() or super(AddressForm, self).is_valid()
 
     def save(self, commit=True):
         if not self['use_primary_address'].value():
