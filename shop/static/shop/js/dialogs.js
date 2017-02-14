@@ -66,13 +66,14 @@ djangoShopModule.directive('shopDialogForm', ['$q', '$timeout', function($q, $ti
 		restrict: 'A',
 		controller: 'DialogController',
 		link: function(scope, element, attrs, DialogController) {
-			var ready = false;
+			var ready = false;  // until form has been filled to prevent triggering a change event
+
 			if (attrs.shopDialogForm) {
 				// initialize with form data
 				scope.$eval(attrs.shopDialogForm);
 			}
 			$timeout(function() {
-				// form ran its first scope.$digest() cycle
+				// form ran its first scope.$digest() cycle and can now accept change events
 				ready = true;
 			});
 
@@ -92,7 +93,7 @@ djangoShopModule.directive('shopDialogForm', ['$q', '$timeout', function($q, $ti
 
 				function pristineEntity(response) {
 					angular.extend(scope.data, response.data);
-					scope.stepIsValid = response.data.$valid;
+					form_controller.$valid = scope.stepIsValid = response.data.$valid;
 					form_controller.$setPristine();
 				}
 			};
