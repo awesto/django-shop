@@ -27,7 +27,12 @@ class AddressManager(models.Manager):
 
 class BaseAddress(models.Model):
     customer = deferred.ForeignKey('BaseCustomer')
-    priority = models.SmallIntegerField(help_text=_("Priority for using this address"))
+
+    priority = models.SmallIntegerField(
+        default=0,
+        db_index=True,
+        help_text=_("Priority for using this address"),
+    )
 
     class Meta:
         abstract = True

@@ -92,9 +92,6 @@ class AddressForm(DialogModelForm):
 
     class Meta:
         exclude = ('customer', 'priority',)
-        widgets = {
-            'country': widgets.Select(attrs={'ng-change': 'upload()'}),
-        }
 
     def __init__(self, initial=None, instance=None, *args, **kwargs):
         self.multi_addr = kwargs.pop('multi_addr', False)
@@ -138,7 +135,7 @@ class AddressForm(DialogModelForm):
             active_address = cls.get_model().objects.filter(**filter_args).first()
 
         if data.pop('remove_entity', False):
-            if isinstance(active_priority, int):
+            if isinstance(active_priority, int) or data.get('is_pending'):
                 active_address.delete()
             old_address = cls.get_model().objects.get_fallback(customer=request.customer)
             faked_data = dict((key, getattr(old_address, key, val)) for key, val in data.items())
@@ -229,6 +226,9 @@ class ShippingAddressForm(AddressForm):
 
     class Meta(AddressForm.Meta):
         model = ShippingAddressModel
+        widgets = {
+            'country': widgets.Select(attrs={'ng-change': 'updateCountry()'}),
+        }
 
     def __init__(self, *args, **kwargs):
         super(ShippingAddressForm, self).__init__(*args, **kwargs)
