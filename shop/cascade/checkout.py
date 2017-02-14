@@ -267,29 +267,27 @@ class CheckoutAddressPlugin(DialogFormPluginBase):
 
     def get_form_data(self, context, instance, placeholder):
         form_data = super(CheckoutAddressPlugin, self).get_form_data(context, instance, placeholder)
-
-        AddressModel = self.get_form_class(instance).get_model()
         if form_data['cart'] is None:
             raise PermissionDenied("Can not proceed to checkout without cart")
-        address = self.get_address(form_data['cart'], instance)
-        form_data.update(instance=address)
 
+        address = self.get_address(form_data['cart'], instance)
         if instance.glossary.get('allow_multiple'):
+            AddressModel = self.get_form_class(instance).get_model()
             addresses = AddressModel.objects.filter(customer=context['request'].customer).order_by('priority')
             form_entities = [dict(value=str(addr.priority),
                                   label="{}. {}".format(number, addr.as_text().replace('\n', ' – ')))
                              for number, addr in enumerate(addresses, 1)]
             form_data.update(multi_addr=True, form_entities=form_entities)
-            if instance.glossary.get('address_form') == 'shipping' and form_data['cart'].shipping_address:
-                initial = {'active_priority': form_data['cart'].shipping_address.priority}
-            elif instance.glossary.get('address_form') == 'billing' and form_data['cart'].billing_address:
-                initial = {'active_priority': form_data['cart'].billing_address.priority}
-            else:
-                initial = {'active_priority': 'add'}
-            form_data.update(initial=initial)
+            initial = {'active_priority': address.priority if address else 'add'}
         else:
             form_data.update(multi_addr=False)
-        form_data.update(allow_use_primary=instance.glossary.get('allow_use_primary', False))
+            initial = {'active_priority': address.priority if address else 'nop'}
+
+        form_data.update(
+            instance=address,
+            initial=initial,
+            allow_use_primary=instance.glossary.get('allow_use_primary', False)
+        )
         return form_data
 
     @classmethod

@@ -64,7 +64,6 @@ class CheckoutViewSet(BaseViewSet):
                     # keep a summary of of validated form content inside the client's $rootScope
                     checkout_summary[form_class.form_name] = form.as_text()
                 else:
-                    # errors are rendered by the client side validation
                     errors[form_class.form_name] = dict(form.errors)
                 response_data['$valid'] = response_data['$valid'] and form.is_valid()
 

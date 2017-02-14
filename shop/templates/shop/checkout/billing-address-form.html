@@ -15,7 +15,7 @@
 	{% endif %}
 	<fieldset shop-form-validate="!data.billing_address.use_primary_address" ng-hide="data.billing_address.use_primary_address" class="animate-show" ng-cloak>
 	{% if headline_legend %}
-		<legend>{{ billing_address_form.legend }}</legend>
+	<legend>{{ billing_address_form.legend }}</legend>
 	{% endif %}
 	{% if billing_address_form.multi_addr %}
 		<div class="form-group" ng-if="billing_address_form.form_entities.length>0 && data.billing_address.active_priority!='add'">
@@ -33,7 +33,7 @@
 	{% endif %}
 		{{ billing_address_form.as_div }}
 	{% if billing_address_form.multi_addr %}
-		<div class="form-group" ng-if="billing_address_form.form_entities.length>1 || data.billing_address.active_priority=='add'">
+		<div class="form-group" ng-if="billing_address_form.form_entities.length>1 || billing_address_form.form_entities.length>0 && data.billing_address.active_priority=='add'">
 			<button class="btn btn-danger btn-xs" ng-click="removeEntity(billing_address_form, 'billing_address')">
 				<span class="glyphicon glyphicon-remove-circle"></span>&nbsp;{% trans "Remove this address" %}
 			</button>

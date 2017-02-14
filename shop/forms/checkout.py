@@ -124,17 +124,18 @@ class AddressForm(DialogModelForm):
         If the form data is invalid, return an error dictionary to update the response.
         """
         # search for the associated address DB instance or create a new one
-        current_address, active_address = cls.get_address(cart), None
+        current_address = cls.get_address(cart)
         try:
             active_priority = int(data.get('active_priority'))
+        except (ValueError, TypeError):
+            if data.get('use_primary_address'):
+                active_priority = 'nop'
+            else:
+                active_priority = data.get('active_priority', 'new')
+            active_address = cls.get_model().objects.get_fallback(customer=request.customer)
+        else:
             filter_args = dict(customer=request.customer, priority=active_priority)
             active_address = cls.get_model().objects.filter(**filter_args).first()
-        except ValueError:
-            active_priority = data.get('active_priority')
-        except TypeError:
-            active_priority = 'nop' if data.get('use_primary_address') else 'add'
-        if not active_address:
-            active_address = cls.get_model().objects.get_fallback(customer=request.customer)
 
         if data.pop('remove_entity', False):
             if isinstance(active_priority, int):
@@ -167,13 +168,15 @@ class AddressForm(DialogModelForm):
                     else:
                         address_form.data.update(active_priority='nop')
                     address_form.set_address(cart, next_address)
-        elif active_address is None or active_priority == 'new':
+            else:
+                print(address_form.changed_data)
+        elif active_priority == 'new' or active_address is None and not data.get('use_primary_address'):
             # customer selected 'Add another address', hence create a new empty form
             initial = dict((key, val) for key, val in data.items() if key in cls.plugin_fields)
             address_form = cls(initial=initial)
             address_form.data.update(address_form.get_initial_data())
             address_form.data.update(active_priority='add')
-            address_form.set_address(cart, None)
+            # address_form.set_address(cart, None)
         elif current_address == active_address:
             # an existing entity of AddressModel was edited
             address_form = cls(data=data, instance=active_address)
@@ -200,8 +203,8 @@ class AddressForm(DialogModelForm):
             # reset errors, since then the form is always regarded as valid
             self._errors = ErrorDict()
 
-    def is_valid(self):
-        return self['use_primary_address'].value() or super(AddressForm, self).is_valid()
+#    def is_valid(self):
+#        return self.is_bound and self['use_primary_address'].value() or super(AddressForm, self).is_valid()
 
     def save(self, commit=True):
         if not self['use_primary_address'].value():
