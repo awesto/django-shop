@@ -29,7 +29,7 @@ class DialogFormMixin(NgModelFormMixin, NgFormValidationMixin):
 
     def clean(self):
         cleaned_data = dict(super(DialogFormMixin, self).clean())
-        cleaned_data.pop('plugin_id')
+        cleaned_data.pop('plugin_id', None)
         cleaned_data.pop('plugin_order')
         return cleaned_data
 
@@ -72,7 +72,7 @@ class DialogForm(DialogFormMixin, Bootstrap3Form):
     """
     Base class for all dialog forms used with a DialogFormPlugin.
     """
-    plugin_id = fields.CharField(widget=fields.HiddenInput)
+    plugin_id = fields.CharField(widget=fields.HiddenInput, required=False)
     plugin_order = fields.CharField(widget=fields.HiddenInput)
 
 
@@ -80,7 +80,7 @@ class DialogModelForm(DialogFormMixin, Bootstrap3ModelForm):
     """
     Base class for all dialog model forms used with a DialogFormPlugin.
     """
-    plugin_id = fields.CharField(widget=fields.HiddenInput)
+    plugin_id = fields.CharField(widget=fields.HiddenInput, required=False)
     plugin_order = fields.CharField(widget=fields.HiddenInput)
 
 
