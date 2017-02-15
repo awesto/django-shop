@@ -278,14 +278,12 @@ class CheckoutAddressPlugin(DialogFormPluginBase):
                                   label="{}. {}".format(number, addr.as_text().replace('\n', ' – ')))
                              for number, addr in enumerate(addresses, 1)]
             form_data.update(multi_addr=True, form_entities=form_entities)
-            initial = {'active_priority': address.priority if address else 'add'}
         else:
             form_data.update(multi_addr=False)
-            initial = {'active_priority': address.priority if address else 'nop'}
 
         form_data.update(
             instance=address,
-            initial=initial,
+            initial={'active_priority': address.priority if address else 'add'},
             allow_use_primary=instance.glossary.get('allow_use_primary', False)
         )
         return form_data
