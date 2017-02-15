@@ -13,7 +13,7 @@
 		{{ billing_address_form.use_primary_address }}
 	</div>
 	{% endif %}
-	<fieldset shop-form-validate="!data.billing_address.use_primary_address" ng-hide="data.billing_address.use_primary_address" class="animate-show" ng-cloak>
+	<fieldset{% if billing_address_form.allow_use_primary %} shop-form-validate="!data.billing_address.use_primary_address" ng-hide="data.billing_address.use_primary_address" class="animate-show" ng-cloak{% endif %}>
 	{% if headline_legend %}
 	<legend>{{ billing_address_form.legend }}</legend>
 	{% endif %}
