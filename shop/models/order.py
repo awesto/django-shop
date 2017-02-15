@@ -4,8 +4,10 @@ from __future__ import unicode_literals
 from six import with_metaclass
 from decimal import Decimal
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
+from django.core.urlresolvers import reverse
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
+from django.urls.exceptions import NoReverseMatch
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy, get_language_from_request
@@ -116,8 +118,11 @@ class OrderManager(models.Manager):
         try:
             return Page.objects.public().get(reverse_id='shop-order-last').get_absolute_url()
         except Page.DoesNotExist:
-            pass  # TODO: could be retrieved by last order
-        return 'cms-page-with--reverse_id=shop-order-last--does-not-exist/'
+            try:
+                return reverse('shop-order-last')
+            except NoReverseMatch:
+                pass
+        return '/cms-page-or-view-with-reverse_id=shop-order-last-does-not-exist/'
 
 
 class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
