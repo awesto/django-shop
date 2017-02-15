@@ -10,4 +10,12 @@
 	<p class="bg-danger">{% trans "No payment method available" %}</p>
 	{% endif %}
 </form>
-{% endblock %}
+	{% block payment-provider-form %}
+		{% if payment_modifiers.stripe_payment %}
+		<div ng-show="data.payment_method.payment_modifier==='stripe-payment'" ng-cloak>
+			{# reverse dependency can never be reached, if djangoshop-stripe is not installed #}
+			{% include "shop/stripe-creditcard-form.html" %}
+		</div>
+		{% endif %}
+	{% endblock %}
+{% endblock dialog_form %}
