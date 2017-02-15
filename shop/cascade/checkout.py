@@ -212,7 +212,7 @@ class BillingAddressFormPlugin(CheckoutAddressPluginBase):
 
 class CheckoutAddressPlugin(DialogFormPluginBase):
     name = _("Checkout Address Form")
-    glossary_field_order = ['address_form', 'render_type', 'allow_multiple', 'headline_legend', 'allow_use_primary']
+    glossary_field_order = ['address_form', 'render_type', 'allow_multiple', 'allow_use_primary', 'headline_legend']
     form_classes = ['shop.forms.checkout.ShippingAddressForm', 'shop.forms.checkout.BillingAddressForm']
     ADDRESS_CHOICES = [('shipping', _("Shipping")), ('billing', _("Billing"))]
 
