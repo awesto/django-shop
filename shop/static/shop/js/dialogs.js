@@ -210,8 +210,8 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 
 
 // Directive <TAG shop-form-validate="model-to-watch">
-// It is used to override the validation of hidden form fragments.
-// If model-to-watch is false, then input elements inside this DOM tree are not validated.
+// It is used to override the validation of form fragments, which can be hidden.
+// If `model-to-watch` is false, then input elements inside this DOM tree are not validated.
 // This is useful, if a form fragment shall be validated only under certain conditions.
 djangoShopModule.directive('shopFormValidate', function() {
 	return {
