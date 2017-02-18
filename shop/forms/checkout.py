@@ -135,16 +135,25 @@ class AddressForm(DialogModelForm):
             active_address = cls.get_model().objects.filter(**filter_args).first()
 
         if data.pop('remove_entity', False):
-            if isinstance(active_priority, int) or data.get('is_pending'):
+            if active_address and (isinstance(active_priority, int) or data.get('is_pending')):
                 active_address.delete()
             old_address = cls.get_model().objects.get_fallback(customer=request.customer)
-            faked_data = dict((key, getattr(old_address, key, val)) for key, val in data.items())
             if old_address:
-                faked_data.update(active_priority=str(old_address.priority))
-            address_form = cls(data=faked_data, instance=old_address)
-            if isinstance(active_priority, int):
+                faked_data = dict(data)
+                faked_data.update(dict((field.name, old_address.serializable_value(field.name))
+                                       for field in old_address._meta.fields))
+                address_form = cls(data=faked_data)
                 remove_entity_filter = cls.js_filter.format(active_priority)
-                address_form.data.update(remove_entity_filter=mark_safe(remove_entity_filter))
+                address_form.data.update(
+                    active_priority=str(old_address.priority),
+                    remove_entity_filter=mark_safe(remove_entity_filter),
+                )
+            else:
+                address_form = cls()
+                address_form.data.update(active_priority='add',
+                                         plugin_id=data.get('plugin_id'),
+                                         plugin_order=data.get('plugin_order'),
+                )
             address_form.set_address(cart, old_address)
         elif active_priority == 'add':
             # Add a newly filled address for the given customer
