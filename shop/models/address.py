@@ -4,10 +4,13 @@ from __future__ import unicode_literals
 Holds all the information relevant to the client (addresses for instance)
 """
 from six import with_metaclass
+
+from django.conf import settings
 from django.db import models
 from django.template import Context
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
+
 from shop import app_settings
 from shop import deferred
 
@@ -44,7 +47,7 @@ class BaseAddress(models.Model):
         Return the address as plain text to be used for printing, etc.
         """
         template_names = [
-            '{}/{}.txt'.format(app_settings.APP_LABEL, self.address_type),
+            '{}/{}-address.txt'.format(app_settings.APP_LABEL, self.address_type),
             '{}/address.txt'.format(app_settings.APP_LABEL),
             'shop/address.txt',
         ]
@@ -55,7 +58,7 @@ class BaseAddress(models.Model):
 
 
 class BaseShippingAddress(with_metaclass(deferred.ForeignKeyBuilder, BaseAddress)):
-    address_type = 'shipping_address'
+    address_type = 'shipping'
 
     class Meta:
         abstract = True
@@ -64,7 +67,7 @@ ShippingAddressModel = deferred.MaterializedModel(BaseShippingAddress)
 
 
 class BaseBillingAddress(with_metaclass(deferred.ForeignKeyBuilder, BaseAddress)):
-    address_type = 'billing_address'
+    address_type = 'billing'
 
     class Meta:
         abstract = True
