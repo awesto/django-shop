@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from shop.models.address import BaseShippingAddress, BaseBillingAddress, ISO_3166_CODES
+from shop.models.address import BaseShippingAddress, BaseBillingAddress, CountryField
 
 
 class AddressModelMixin(models.Model):
@@ -13,8 +13,7 @@ class AddressModelMixin(models.Model):
     address2 = models.CharField(_("Address line 2"), max_length=1024, blank=True, null=True)
     zip_code = models.CharField(_("ZIP / Postal code"), max_length=12)
     city = models.CharField(_("City"), max_length=1024)
-    country = models.CharField(_("Country"), max_length=3,
-                               choices=ISO_3166_CODES)
+    country = CountryField(_("Country"))
 
     class Meta:
         abstract = True
