@@ -4,26 +4,14 @@
  * of block extra-styles to change these values.
  */
 
-.shop-address-street_name {
-	width: 65%;
-	display: inline-block;
-}
-
-.shop-address-street_number {
-	width: 35%;
-	display: inline-block;
-	margin-left: -4px;
-	padding-left: 15px;
-}
-
 .shop-address-zip_code {
 	width: 35%;
 	display: inline-block;
+	padding-right: 10px;
 }
 
 .shop-address-city {
 	width: 65%;
 	display: inline-block;
-	margin-left: -4px;
-	padding-left: 15px;
+	padding-left: 10px;
 }
