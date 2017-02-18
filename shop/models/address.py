@@ -324,3 +324,23 @@ ISO_3166_CODES = (
     ('ZM', _("Zambia")),
     ('ZW', _("Zimbabwe")),
 )
+
+class CountryField(models.CharField):
+    """
+    This creates a simple input field to choose a country.
+    """
+    def __init__(self, *args, **kwargs):
+        defaults = {
+            'max_length': 3,
+            'choices': ISO_3166_CODES,
+        }
+        defaults.update(kwargs)
+        super(CountryField, self).__init__(*args, **defaults)
+
+    def deconstruct(self):
+        name, path, args, kwargs = super(CountryField, self).deconstruct()
+        if kwargs['max_length'] == 3:
+            kwargs.pop('max_length')
+        if kwargs['choices'] == ISO_3166_CODES:
+            kwargs.pop('choices')
+        return name, path, args, kwargs
