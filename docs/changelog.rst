@@ -45,6 +45,13 @@ Changelog for django-SHOP
   form.
 * Refactored :class:`shop.forms.checkout.AddressForm` and fixed minor bugs when editing multiple
   addresses.
+* In address models, replaced ``CharField`` for ``country`` against a special ``CountryField``.
+* Change value of ``BaseShippingAddress.address_type`` to ``shipping`` and
+  ``BaseBillingAddress.address_type`` to ``billing``.
+* Method ``shop.models.order.OrderManager.get_latest_url()`` falls back to
+  ``reverse('shop-order-last')`` if no such page with ID ``shop-order-last`` was found in the CMS.
+* Use menu_title instead of page title for link and tooltip content.
+* In ``DialogForm``, field ``plugin_id`` is not required anymore.
 
 
 0.9.3
