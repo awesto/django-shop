@@ -7,10 +7,10 @@ Catalog Views
 Now that we know how to create product models and how to administer them, lets have a look on how
 to route them to our views.
 
-When editing the CMS page used for the products list view, open **Advanced Settings** and chose
+When editing the CMS page used for the products list view, open **Advanced Settings** and choose
 **Products List** from the select box labeled **Application**.
 
-Then chose a template with at least one placeholder_. Click onto **View on site** to change into
+Then choose a template with at least one placeholder_. Click onto **View on site** to change into
 front-end editing mode. Locate the main placeholder and add a **Row** followed by a **Column**
 plugin from the section **Bootstrap**. Below that column add a **Catalog List Views** plugin from
 section **Shop**. Then publish the page, it should not display any products yet.

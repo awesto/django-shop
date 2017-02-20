@@ -116,7 +116,7 @@ in the natural language used for that site. Multilingual CMS installations offer
 each language.
 
 In the CMS page editor click onto the link named **Advanced Settings** at the bottom of the popup
-window. As template, chose the default one, provided it contains at least one big placeholder_.
+window. As template, choose the default one, provided it contains at least one big placeholder_.
 
 Enter "shop-cart" into the **Id**-field just below. This identifier is required by some templates
 which link directly onto the cart view page. If this field is not set, some links onto the cart page
@@ -226,7 +226,7 @@ projects ``settings.py``:
 	    )
 	}
 
-This will add an extra select button to the cart editor. The site administrator then can chose
+This will add an extra select button to the cart editor. The site administrator then can choose
 between the default template and an extra editable cart template.
 
 

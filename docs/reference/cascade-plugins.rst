@@ -144,7 +144,7 @@ Select the Payment Provider
 ---------------------------
 
 For each payment provider registered within **django-SHOP**, this plugin creates a list
-of radio buttons, where customers can chose their desired payment provider. By overriding the
+of radio buttons, where customers can choose their desired payment provider. By overriding the
 rendering templates, additional forms, for instance to add credit card data, can be added.
 
 
@@ -152,7 +152,7 @@ Select a Shipping Method
 ------------------------
 
 For each shipping provider registered within **django-SHOP**, this plugin creates a list
-of radio buttons, where customers can chose their desired shipping method.
+of radio buttons, where customers can choose their desired shipping method.
 
 
 Extra Annotations Plugin
