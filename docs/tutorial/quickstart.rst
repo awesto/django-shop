@@ -50,7 +50,7 @@ demo as a starting point for your own project, then this presumably is the bette
 
 Filling your CMS with page content and adding products is a boring job. Impatient users can start
 with one of the five provided demos, using prepared sample data. First assure that all dependencies
-are installed into it's virtual environment as described in section :ref:`tutorial/prepare-installation`.
+are installed into its virtual environment as described in section :ref:`tutorial/prepare-installation`.
 Then instead of adding pages and products manually, use the following steps:
 
 .. code-block:: shell
@@ -152,7 +152,7 @@ The Internationalized Smart Card Model
 The ``i18n_smartcard`` demo is a variation of the above example, with a few attributes translated
 into multiple languages, namely ``caption`` and ``description``. The product name of a Smart Card
 is international anyways and doesn't require to be translated into different langauges. Hence we
-don't require a translatable field for the product name and it's slug.
+don't require a translatable field for the product name and its slug.
 
 
 The Polymorphic Product Model

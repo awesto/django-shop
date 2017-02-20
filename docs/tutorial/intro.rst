@@ -84,11 +84,11 @@ Add some pages to the CMS
 
 In **django-SHOP**, every page, can be rendered by the CMS. Therefore, unless you need a special
 landing page, start immediately with the *Catalog's List View* of your products. Change into the
-Django Admin backend, chose the section
+Django Admin backend, choose the section
 
 **Start > django CMS > Pages**
 
-and add a Page. As its **Title** chose “Smart Cards”. Then change into the **Advanced Settings**
+and add a Page. As its **Title** choose “Smart Cards”. Then change into the **Advanced Settings**
 at the bottom of the page. In this editor window, locate the field **Application** and select
 **Products List**. Then save the page and click on **View on site**.
 

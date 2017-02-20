@@ -100,7 +100,7 @@ selects the apphook we created in the previous section.
 
 Then we save the page, change into **Structure** mode and locate the placeholder named
 **Main Content**. Add a Container plugin, followed by a Row and then a Column plugin. As the
-child of this column chose the **Catalog List View** plugin from section **Shop**.
+child of this column choose the **Catalog List View** plugin from section **Shop**.
 
 Finally we publish the page. If we have assigned products to that CMS page, they should be rendered
 now.
