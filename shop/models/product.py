@@ -18,7 +18,7 @@ from shop import deferred
 
 class BaseProductManager(PolymorphicManager):
     """
-    A base ModelManager for all non-object manipulation needs, mostly statistics and querying.
+    A base ModelManager for all non-object manipulation needs, mostly lookups.
     """
     def select_lookup(self, search_term):
         """
