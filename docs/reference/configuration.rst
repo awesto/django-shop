@@ -31,7 +31,7 @@ Alternative User Model
 
 Django's built-in User model lacks a few features required by **django-SHOP**, mainly the
 possibility to use the email address as the login credential. This overridden model is 100% field
-compatible to Django's internal model and even reuses it's own database table, namely ``auth_user``.
+compatible to Django's internal model and even reuses its own database table, namely ``auth_user``.
 
 .. code-block:: python
 
@@ -438,7 +438,7 @@ a modified link plugin. This has to be enabled using the 3-tuple ``link_plugin_c
 is also a JavaScript helper ``shop/js/admin/shoplinkplugin.js``, which depends on another JavaScript
 file.
 
-**Django-SHOP** uses with AngularJS rather than jQuery to control it's dynamic HTML widgets.
+**Django-SHOP** uses AngularJS rather than jQuery to control its dynamic HTML widgets.
 We therefore have to override the default with this settings:
 ``CMSPLUGIN_CASCADE['bootstrap3']['template_basedir']``.
 

@@ -8,7 +8,7 @@ Besides :ref:`reference/search`, adding a filtering functionality to an e-commer
 very important feature. Customers must be able to narrow down a huge list of available products to
 a small set of desired products using a combination of prepared filter attributes.
 
-In **django-SHOP**, we model each product according to it's own properties, the color for instance.
+In **django-SHOP**, we model each product according to its own properties, the color for instance.
 The customer then might filter the listed products, selecting one or more of the given properties,
 the color "blue" for instance.
 
@@ -150,7 +150,7 @@ that the customer can narrow down the result set. To do this, the rendering temp
 additional context data.
 
 Since **django-SHOP** honours the principle of cohesion, each filter set is responsible for providing
-the context required to render it's specific filtering parameters. This extra context must be
+the context required to render its specific filtering parameters. This extra context must be
 provided by a class-method named ``get_render_context(request, queryset)``, which must return
 a dictionary containing an instance of that filter set.
 

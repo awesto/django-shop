@@ -20,7 +20,7 @@ notification, we get a form mask with four input fields:
 Notification Identifier
 -----------------------
 
-An arbitrary name used to distinguish the different notifications. Its up to the merchant to chose
+An arbitrary name used to distinguish the different notifications. It's up to the merchant to choose
 a meaningful name, "Order confirmed, paid with PayPal" could for instance be a good choice.
 
 
@@ -32,7 +32,7 @@ Each :ref:`reference/order-workflows` declares a set of transition targets. For 
 "*Prepayment deposited*" and "*No Payment Required*".
 
 The merchant can attach a notification for each of these transition targets. Here he must
-chose one from the prepared collection.
+choose one from the prepared collection.
 
 
 The Recipient
@@ -49,7 +49,7 @@ group eligible to manage the site.
 Email Templates
 ---------------
 
-From the section **Start > Post Office > Email Templates**, chose on of the
+From the section **Start > Post Office > Email Templates**, choose on of the
 :ref:`reference/post-office-emails`.
 
 

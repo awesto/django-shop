@@ -56,7 +56,7 @@ Changelog for django-SHOP
 * All Cascade plugins use ``GlossaryField`` instead of a list of ``PartialFormField`` s. This is
   much more "Djangonic", but requires djangocms-cascade version 0.11 or later.
 * All urlpatterns are compatible with configurations adding a final / to the request URL.
-* The URL for accessing an Order object, now uses the order number instead of it's primary key.
+* The URL for accessing an Order object, now uses the order number instead of its primary key.
 
 
 0.9.2
