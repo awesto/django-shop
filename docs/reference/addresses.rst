@@ -24,7 +24,7 @@ coincidence is similar to the address model as shipped by default (see below).
 
 .. code-block:: python
 
-	from shop.models.address import BaseShippingAddress, ISO_3166_CODES
+	from shop.models.address import BaseShippingAddress, CountryField
 
 	class ShippingAddress(BaseShippingAddress):
 	    name = models.CharField("Full name", max_length=1024)
@@ -32,15 +32,15 @@ coincidence is similar to the address model as shipped by default (see below).
 	    address2 = models.CharField("Address line 2", max_length=1024)
 	    zip_code = models.CharField("ZIP / Postal code", max_length=12)
 	    city = models.CharField("City", max_length=1024)
-	    country = models.CharField("Country", max_length=3,
-	                               choices=ISO_3166_CODES)
+	    country = CountryField("Country")
+
 	    class Meta:
 	        verbose_name = "Shipping Address"
 	        verbose_name_plural = "Shipping Addresses"
 
 
-Since the billing address may contain different fields, it must be defined separately from the
-shipping address. To avoid the duplicate definition of common fields for both models, use a mixin
+Since the billing address may contain different fields, its class must be defined separately from
+the shipping address. To avoid duplicate definition of common fields for both models, use a mixin
 class such as:
 
 .. code-block:: python
@@ -76,7 +76,7 @@ fulfill your requirements. Otherwise we create our own address models inheriting
 
 
 .. note:: After changing the address model, remember to create a database migration of the merchant
-	implementation, and apply it.
+	implementation, then apply it.
 
 
 Multiple Addresses
