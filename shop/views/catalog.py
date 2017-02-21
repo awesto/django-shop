@@ -32,7 +32,7 @@ class ProductListView(generics.ListAPIView):
     """
     renderer_classes = (CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer)
     product_model = ProductModel
-    serializer_class = None  # must be overridden by ProductListView.as_view
+    serializer_class = app_settings.PRODUCT_SUMMARY_SERIALIZER  # may be overridden by ProductListView.as_view
     filter_class = None  # may be overridden by ProductListView.as_view
     limit_choices_to = models.Q()
 
