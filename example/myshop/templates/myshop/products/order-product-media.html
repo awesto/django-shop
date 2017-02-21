@@ -1,9 +1,10 @@
-{% load i18n thumbnail %}
+{% load thumbnail %}
 {% thumbnail product.sample_image 80x80 crop as thumb %}
+{% thumbnail product.sample_image 160x160 crop as thumb2 %}
 <div class="media-left">
 {% block media-left %}
 	<a href="{{ product.get_absolute_url }}">
-		<img src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}" />
+		<img src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}" srcset="{{ thumb.url }} 1x, {{ thumb2.url }} 2x" />
 	</a>
 {% endblock %}
 </div>
