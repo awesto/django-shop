@@ -170,26 +170,20 @@ class CheckoutAddressPlugin(DialogFormPluginBase):
             return import_string(self.form_classes[1])
 
     def get_address(self, cart, instance):
-        address = None
-        allow_use_primary = instance.glossary.get('allow_use_primary')
         if instance.glossary.get('address_form') == 'shipping':
-            if cart.shipping_address or allow_use_primary:
+            if cart.shipping_address:
                 address = cart.shipping_address
-            elif instance.glossary.get('allow_multiple'):
+            else:
                 # fallback to another existing shipping address
                 FormClass = self.get_form_class(instance)
                 address = FormClass.get_model().objects.get_fallback(customer=cart.customer)
-                cart.shipping_address = address
-                cart.save()
         else:  # address_form == billing
-            if cart.billing_address or allow_use_primary:
+            if cart.billing_address:
                 address = cart.billing_address
-            elif instance.glossary.get('allow_multiple'):
+            else:
                 # fallback to another existing billing address
                 FormClass = self.get_form_class(instance)
                 address = FormClass.get_model().objects.get_fallback(customer=cart.customer)
-                cart.billing_address = address
-                cart.save()
         return address
 
     def get_form_data(self, context, instance, placeholder):

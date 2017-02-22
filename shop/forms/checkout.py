@@ -98,8 +98,12 @@ class AddressForm(DialogModelForm):
         self.allow_use_primary = kwargs.pop('allow_use_primary', False)
         self.form_entities = kwargs.pop('form_entities', [])
         if instance:
-            initial = initial or {}
-            initial.update(active_priority=instance.priority, use_primary_address=False)
+            cart = kwargs['cart']
+            initial = dict(initial or {}, active_priority=instance.priority)
+            if instance.address_type == 'shipping':
+                initial['use_primary_address'] = cart.shipping_address is None
+            else:  # address_type == billing
+                initial['use_primary_address'] = cart.billing_address is None
         super(AddressForm, self).__init__(initial=initial, instance=instance, *args, **kwargs)
 
     @classmethod
@@ -182,7 +186,7 @@ class AddressForm(DialogModelForm):
             address_form.data.update(active_priority='add')
         elif current_address == active_address:
             # an existing entity of AddressModel was edited
-            address_form = cls(data=data, instance=active_address)
+            address_form = cls(data=data, instance=active_address, cart=cart)
             if address_form.is_valid():
                 next_address = address_form.save()
                 address_form.set_address(cart, next_address)
@@ -193,7 +197,7 @@ class AddressForm(DialogModelForm):
                 if hasattr(active_address, attr):
                     initial.update({attr: getattr(active_address, attr)})
             initial.update(active_priority=str(active_address.priority))
-            address_form = cls(data=initial, instance=current_address)
+            address_form = cls(data=initial, instance=current_address, cart=cart)
             address_form.set_address(cart, active_address)
         return address_form
 
@@ -237,7 +241,6 @@ class ShippingAddressForm(AddressForm):
         super(ShippingAddressForm, self).__init__(*args, **kwargs)
         primary_address_widget = self.fields['use_primary_address'].widget
         primary_address_widget.choice_label = _("Use billing address for shipping")
-        primary_address_widget.attrs.update({'ng-change': 'switchEntity(shipping_address_form)'})
 
     @classmethod
     def get_address(cls, cart):
@@ -258,7 +261,6 @@ class BillingAddressForm(AddressForm):
         super(BillingAddressForm, self).__init__(*args, **kwargs)
         primary_address_widget = self.fields['use_primary_address'].widget
         primary_address_widget.choice_label = _("Use shipping address for billing")
-        primary_address_widget.attrs.update({'ng-change': 'switchEntity(billing_address_form)'})
 
     @classmethod
     def get_address(cls, cart):
