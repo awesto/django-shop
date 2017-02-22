@@ -87,7 +87,7 @@ class AddressForm(DialogModelForm):
     )
 
     # JS function to filter form_entities after removing an entity
-    js_filter = 'var list = [].slice.call(arguments); return list.filter(function(a) {{ return a.value != {}; }});'
+    js_filter = "var list = [].slice.call(arguments); return list.filter(function(a) {{ return a.value != '{}'; }});"
     plugin_fields = ['plugin_id', 'plugin_order', 'use_primary_address']
 
     class Meta:
