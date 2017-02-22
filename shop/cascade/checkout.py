@@ -171,7 +171,7 @@ class CheckoutAddressPlugin(DialogFormPluginBase):
 
     def get_address(self, cart, instance):
         address = None
-        allow_use_primary = instance.glossary.get('allow_multiple')
+        allow_use_primary = instance.glossary.get('allow_use_primary')
         if instance.glossary.get('address_form') == 'shipping':
             if cart.shipping_address or allow_use_primary:
                 address = cart.shipping_address
