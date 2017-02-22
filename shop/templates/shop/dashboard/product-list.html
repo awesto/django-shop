@@ -1,0 +1,18 @@
+{% extends "shop/dashboard/default.html" %}
+
+{% block content %}
+<h1>Products</h1>
+<table class="table">
+	<tbody>
+	{% for product in results %}
+		<tr>
+			<td>{{ product.media }}</td>
+			<td><a href="{% url 'shop:dashboard:product-detail' product.id %}">{{ product.product_name }}</a></td>
+			<td>{{ product.product_model }}</td>
+			<td>{{ product.caption }}</td>
+			<td>{{ product.price }}</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+{% endblock %}

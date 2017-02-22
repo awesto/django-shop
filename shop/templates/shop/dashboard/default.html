@@ -1,0 +1,26 @@
+{% load i18n static sass_tags %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+	<title>django-SHOP Dashboard</title>
+	<meta charset="utf-8">
+	<link href="{% sass_src 'shop/css/dashboard.scss' %}" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+	<header>
+	{% include "shop/dashboard/navbar.html" %}
+	</header>
+
+	<main>
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12">
+					{% block content %}{% endblock %}
+				</div>
+			</div>
+		</div>
+	</main>
+</body>
+
+</html>

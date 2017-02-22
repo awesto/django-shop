@@ -19,7 +19,7 @@ from shop.rest.auth import PasswordResetSerializer, PasswordResetConfirmSerializ
 
 class AuthFormsView(GenericAPIView):
     """
-    Generic view to handle authetication related forms such as user registration
+    Generic view to handle authentication related forms such as user registration
     """
     serializer_class = None
     form_class = None

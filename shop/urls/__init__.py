@@ -5,10 +5,11 @@ from django.conf.urls import include, url
 from . import rest_api
 from . import auth
 from . import payment
-
+from . import dashboard
 
 urlpatterns = [
     url(r'^api/', include(rest_api)),
     url(r'^auth/', include(auth)),
     url(r'^payment/', include(payment)),
+    url(r'^dashboard/', include(dashboard, namespace='dashboard')),
 ]
