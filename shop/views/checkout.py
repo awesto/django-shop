@@ -22,7 +22,10 @@ class CheckoutViewSet(BaseViewSet):
         self.dialog_forms = []
         for p in plugin_pool.get_all_plugins():
             if issubclass(p, DialogFormPluginBase):
-                self.dialog_forms.append(import_string(p.form_class))
+                form_classes = getattr(p, 'form_classes', [])
+                if hasattr(p, 'form_class'):
+                    form_classes.append(p.form_class)
+                self.dialog_forms.extend([import_string(fc) for fc in form_classes])
 
     @list_route(methods=['post'], url_path='upload')
     def upload(self, request):
@@ -61,7 +64,6 @@ class CheckoutViewSet(BaseViewSet):
                     # keep a summary of of validated form content inside the client's $rootScope
                     checkout_summary[form_class.form_name] = form.as_text()
                 else:
-                    # errors are rendered by the client side validation
                     errors[form_class.form_name] = dict(form.errors)
                 response_data['$valid'] = response_data['$valid'] and form.is_valid()
 

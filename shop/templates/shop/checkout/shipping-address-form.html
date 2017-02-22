@@ -1,5 +1,5 @@
 {% extends "shop/checkout/dialog-base.html" %}
-{% load i18n sass_tags sekizai_tags shop_tags %}
+{% load i18n static sass_tags sekizai_tags shop_tags %}
 
 {% block extra-styles %}
 	{{ block.super }}
@@ -7,10 +7,17 @@
 {% endblock %}
 
 {% block dialog_form %}
+{% addtoblock "js" %}<script src="{% static 'shop/js/shipping-address-form.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+
 <form shop-dialog-form='shipping_address_form.form_entities={{ shipping_address_form.form_entities|rest_json }};' name="{{ shipping_address_form.form_name }}" novalidate>
-	<fieldset>
+	{% if shipping_address_form.allow_use_primary %}
+	<div class="has-feedback form-group">
+		{{ shipping_address_form.use_primary_address }}
+	</div>
+	{% endif %}
+	<fieldset{% if shipping_address_form.allow_use_primary %} shop-form-validate="!data.shipping_address.use_primary_address" ng-hide="data.shipping_address.use_primary_address" class="animate-show" ng-cloak{% endif %}>
 	{% if headline_legend %}
-		<legend>{{ shipping_address_form.legend }}</legend>
+	<legend>{{ shipping_address_form.legend }}</legend>
 	{% endif %}
 	{% if shipping_address_form.multi_addr %}
 		<div class="form-group" ng-if="shipping_address_form.form_entities.length>0 && data.shipping_address.active_priority!='add'">
@@ -28,7 +35,7 @@
 	{% endif %}
 		{{ shipping_address_form.as_div }}
 	{% if shipping_address_form.multi_addr %}
-		<div class="form-group" ng-if="shipping_address_form.form_entities.length>1 || data.shipping_address.active_priority=='add'">
+		<div class="form-group" ng-if="shipping_address_form.form_entities.length>1 || shipping_address_form.form_entities.length>0 && data.shipping_address.active_priority=='add'">
 			<button class="btn btn-danger btn-xs" ng-click="removeEntity(shipping_address_form, 'shipping_address')">
 				<span class="glyphicon glyphicon-remove-circle"></span>&nbsp;{% trans "Remove this address" %}
 			</button>
@@ -36,4 +43,5 @@
 	{% endif %}
 	</fieldset>
 </form>
+
 {% endblock %}
