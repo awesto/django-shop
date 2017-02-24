@@ -112,6 +112,7 @@ class CMSPageCatalogWrapper(object):
 
         self = cls(**initkwargs)
 
+        # create the real View to control search results
         bases = (AddFilterContextMixin, AddSearchContextMixin, CMSPageSearchMixin, SearchView)
         attrs = dict(renderer_classes=self.renderer_classes, product_model=self.product_model,
                      limit_choices_to=self.limit_choices_to, filter_class=self.filter_class)
@@ -119,6 +120,7 @@ class CMSPageCatalogWrapper(object):
             serializer_class=self.search_serializer_class,
         )
 
+        # create the real View to control the list of products
         bases = (AddFilterContextMixin, AddSearchContextMixin, ProductListView)
         attrs.update(filter_backends=self.filter_backends, cms_pages_fields=self.cms_pages_fields)
         self.list_view = type(str('CatalogListView'), bases, attrs).as_view(

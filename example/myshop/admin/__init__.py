@@ -10,8 +10,6 @@ from shop.models.defaults.order import Order
 from shop.admin.order import PrintOrderAdminMixin
 from shop.admin.delivery import DeliveryOrderAdminMixin
 
-from . import dashboard
-
 
 # models defined by the myshop instance itself
 if settings.SHOP_TUTORIAL in ('commodity', 'i18n_commodity'):

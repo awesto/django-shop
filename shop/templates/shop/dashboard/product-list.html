@@ -1,17 +1,20 @@
 {% extends "shop/dashboard/default.html" %}
 
 {% block content %}
-<h1>Products</h1>
-<table class="table">
+<table class="table table-striped">
+	<caption>{{ model_options.verbose_name }}</caption>
+	<thead>
+		<tr>{% for field in list_display_fields.values %}
+			<th>{{ field.label }}</th>
+		{% endfor %}</tr>
+	</thead>
 	<tbody>
 	{% for product in results %}
-		<tr>
-			<td>{{ product.media }}</td>
-			<td><a href="{% url 'shop:dashboard:product-detail' product.id %}">{{ product.product_name }}</a></td>
-			<td>{{ product.product_model }}</td>
-			<td>{{ product.caption }}</td>
-			<td>{{ product.price }}</td>
-		</tr>
+		<tr>{% for key, value in product.items %}
+			{% if key in list_display_fields.keys %}
+			<td>{% if key in list_display_links %}<a href="{% url 'dashboard:product-detail' product.pk %}">{% endif %}{{ value }}{% if key in list_display_links %}</a>{% endif %}</td>
+			{% endif %}
+		{% endfor %}</tr>
 	{% endfor %}
 	</tbody>
 </table>

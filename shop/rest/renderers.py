@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
+from collections import OrderedDict
 from rest_framework import renderers
 
 
@@ -33,3 +35,25 @@ class CMSPageRenderer(renderers.TemplateHTMLRenderer):
         # serialized data.
         template_context.update(context)
         return template.render(template_context, request=request)
+
+
+class DashboardRenderer(renderers.TemplateHTMLRenderer):
+    """
+    Modified TemplateHTMLRenderer, which is used to add render the dashboard.
+    """
+    def get_template_context(self, data, renderer_context):
+        view = renderer_context['view']
+        response = renderer_context['response']
+        if response.exception:
+            data['status_code'] = response.status_code
+
+        # erich the context with data from the model
+        options = view.list_serializer_class.Meta.model._meta
+        data['model_options'] = options
+        serializer = view.list_serializer_class()
+        list_display_fields = OrderedDict()
+        for field_name in view.get_list_display():
+            list_display_fields[field_name] = serializer.fields[field_name]
+        data['list_display_fields'] = list_display_fields
+        data['list_display_links'] = view.get_list_display_links()
+        return data
