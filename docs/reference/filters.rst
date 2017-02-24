@@ -31,8 +31,14 @@ Adding a Filter to the List View
 In **django-SHOP** showing a list of products, normally is controlled by the classes
 :class:`shop.views.catalog.ProductListView` or :class:`shop.views.catalog.CMSPageProductListView`.
 By default these View classes are configured to use the default filter backends as provided by the
-REST framework. These filter backends can be configured globally through the settings variable
-``DEFAULT_FILTER_BACKENDS``.
+REST framework. These filter backends can be configured globally through in our settings.py through:
+
+.. code-block:: python
+
+	REST_FRAMEWORK = {
+	    # other settings
+	    'DEFAULT_FILTER_BACKENDS': ['rest_framework.filters.DjangoFilterBackend'],
+	}
 
 Additionally we can subclass the filter backends for each View class in our ``urls.py``. Say, we
 need a special catalog filter, which groups our products by a certain product attribute. Then we
@@ -167,13 +173,13 @@ The Client Side
 ---------------
 
 If your site uses the provided AngularJS directive ``<shop-list-products>``, we typically want to
-use that as well, when the customer applies a product filter. Therefore this directive listens on
-events named ``shopCatalogFilter`` and queries the backend with the given properties. This allows
-us to add a set of filter options to the product's list view, without having to care about how to
-fetch that filtered list from the server.
+use that as well for controlling the list view, when the customer applies a product filter.
+Therefore this directive listens on events named ``shopCatalogFilter`` and queries the backend with
+the given properties. This allows us to add a set of filter options to the product's list view,
+without having to care about how to fetch that filtered list from the server.
 
-Since we don't event want to care about controlling change events on the filtering ``<select>`` box,
-**django-SHOP** is shipped with a reusable directive named ``shopProductFilter``.
+Since we don't event want to add event handlers on the filtering ``<select>`` box, **django-SHOP**
+is shipped with a reusable AngularJS directive named ``shopProductFilter``.
 
 Sample HTML snippet:
 
@@ -190,15 +196,20 @@ that file. Additionally that module must be initialized while bootstrapping our 
 
 	angular.module('myShop', [..., 'django.shop.filter', ...]);
 
-Each time the customer selects another manufacturer, the function ``filterChanged`` emits
-an event intercepted by the AngularJS directive ``shopListProducts``, which consequently
-fetches a list of products using the filtering class as shown above.
+Each time the customer selects another manufacturer, the function ``filterChanged`` emits an event
+intercepted by the AngularJS directive ``shopListProducts``, which consequently fetches a list of
+products using the filtering class as shown above.
+
+Remember to render the input fields as ``<input type="radio" ng-changed="filterChanged()" ...>`` or
+``<select ng-changed="filterChanged()" ...>``. We typically do this when declaring the filter
+attribute in our filter set, using an attribute on the chosen widget, for instance
+``Select(attrs={'ng-change': 'filterChanged()'})``.
 
 Apart from forwarding changes detected in our ``<select>`` box, this directive also modifies the
 URL and appends the selected properties. This is required, whenever the user navigates away from
 the product's list view and returns back, so that the same filters are applied. Additionally the
 directive clears the search query field, because full text search in combination with property
-filtering is confusing and doesn't make sense.
+filtering is confusing and rarely make sense.
 
 .. _Django Filter: http://django-filter.readthedocs.org/en/latest/usage.html
 .. _generic filtering backends: http://www.django-rest-framework.org/api-guide/filtering/#generic-filtering
