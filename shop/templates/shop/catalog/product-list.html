@@ -11,12 +11,12 @@
 	{% addtoblock "css" %}<link href="{% sass_src 'shop/css/product-list.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 
 	<shop-catalog-list infinite-scroll="{{ infinite_scroll|yesno:'true,false' }}">
-		<div class="row" ng-if="catalog.count===undefined">
+		<div ng-if="catalog.count===undefined">
 		{% for product in data.results %}
 			{% include "shop/catalog/product-list-item.html" with ng=0 %}
 		{% endfor %}
 		</div>
-		<div class="row" ng-cloak ng-if="catalog.count>=0">
+		<div ng-cloak ng-if="catalog.count>=0">
 			{% include "shop/catalog/product-list-item.html" with ng=1 %}
 		</div>
 	</shop-catalog-list>
