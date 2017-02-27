@@ -15,6 +15,7 @@ from rest_framework import serializers
 
 from shop import app_settings
 from shop.models.customer import CustomerModel
+from shop.models.product import ProductModel
 from shop.models.order import OrderItemModel
 from shop.rest.money import MoneyField
 
@@ -24,16 +25,26 @@ class BaseCustomerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomerModel
-        fields = ('number', 'first_name', 'last_name', 'email')
+        fields = ['number', 'first_name', 'last_name', 'email']
 
 
-class ProductCommonSerializer(serializers.ModelSerializer):
+class ProductSerializer(serializers.ModelSerializer):
     """
-    Common serializer for the Product model, both for the ProductSummarySerializer and the
-    ProductDetailSerializer.
+    Common serializer for our product model.
     """
     price = serializers.SerializerMethodField()
     availability = serializers.SerializerMethodField()
+    product_type = serializers.CharField(read_only=True)
+    product_model = serializers.CharField(read_only=True)
+    product_url = serializers.URLField(source='get_absolute_url', read_only=True)
+
+    class Meta:
+        model = ProductModel
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('label', 'catalog')
+        super(ProductSerializer, self).__init__(*args, **kwargs)
 
     def get_price(self, product):
         price = product.get_price(self.context['request'])
@@ -73,39 +84,6 @@ class ProductCommonSerializer(serializers.ModelSerializer):
         content = strip_spaces_between_tags(template.render(context).strip())
         cache.set(cache_key, content, app_settings.CACHE_DURATIONS['product_html_snippet'])
         return mark_safe(content)
-
-
-class BaseProductSummarySerializer(ProductCommonSerializer):
-    """
-    Keep a global reference onto the class implementing ``BaseProductSummarySerializer``.
-    There can be only one class instance, because the products summary is the lowest common
-    denominator for all products of this shop instance. Otherwise we would be unable to mix
-    different polymorphic product types in the Catalog, Cart and Order list views.
-
-    Serialize a summary of the polymorphic Product model, suitable for Catalog List Views,
-    Cart List Views and Order List Views.
-    """
-    product_url = serializers.URLField(source='get_absolute_url', read_only=True)
-    product_type = serializers.CharField(read_only=True)
-    product_model = serializers.CharField(read_only=True)
-
-    def __init__(self, *args, **kwargs):
-        kwargs.setdefault('label', 'catalog')
-        super(BaseProductSummarySerializer, self).__init__(*args, **kwargs)
-
-
-class BaseProductDetailSerializer(ProductCommonSerializer):
-    """
-    Serialize all fields of the Product model, for the products detail view.
-    """
-    def __init__(self, *args, **kwargs):
-        kwargs.setdefault('label', 'catalog')
-        super(BaseProductDetailSerializer, self).__init__(*args, **kwargs)
-
-    def to_representation(self, obj):
-        product = super(BaseProductDetailSerializer, self).to_representation(obj)
-        # add a serialized representation of the product to the context
-        return {'product': dict(product)}
 
 
 class BaseOrderItemSerializer(serializers.ModelSerializer):

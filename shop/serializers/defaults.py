@@ -20,7 +20,7 @@ class CustomerSerializer(BaseCustomerSerializer):
     salutation = serializers.CharField(source='get_salutation_display', read_only=True)
 
     class Meta(BaseCustomerSerializer.Meta):
-        fields = BaseCustomerSerializer.Meta.fields + ('salutation',)
+        fields = BaseCustomerSerializer.Meta.fields + ['salutation']
 
 
 class ProductSelectSerializer(serializers.ModelSerializer):
@@ -32,7 +32,7 @@ class ProductSelectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductModel
-        fields = ('id', 'text',)
+        fields = ['id', 'text']
 
     def get_text(self, instance):
         return instance.product_name

@@ -8,6 +8,7 @@ from rest_framework.renderers import BrowsableAPIRenderer
 from rest_framework.settings import api_settings
 from drf_haystack.generics import HaystackGenericAPIView
 
+from shop import app_settings
 from shop.models.product import ProductModel
 from shop.rest.filters import CMSPagesFilterBackend
 from shop.rest.renderers import CMSPageRenderer
@@ -93,7 +94,7 @@ class CMSPageCatalogWrapper(object):
     product_model = ProductModel
     limit_choices_to = models.Q()
     search_serializer_class = None  # must be overridden by CMSPageCatalogWrapper.as_view()
-    model_serializer_class = None  # must be overridden by CMSPageCatalogWrapper.as_view()
+    model_serializer_class = app_settings.PRODUCT_SUMMARY_SERIALIZER  # may be overridden by CMSPageCatalogWrapper.as_view()
     filter_class = None  # may be overridden by CMSPageCatalogWrapper.as_view()
     filter_backends = [CMSPagesFilterBackend] + list(api_settings.DEFAULT_FILTER_BACKENDS)
     cms_pages_fields = ['cms_pages']
