@@ -1,0 +1,45 @@
+{% extends "shop/dashboard/default.html" %}
+{% load static sekizai_tags %}
+
+{% block head %}
+	{% addtoblock "js" %}<script src="{% static 'node_modules/angular-inview/angular-inview.js' %}"></script>{% endaddtoblock %}
+	{% addtoblock "ng-requires" %}angular-inview{% endaddtoblock %}
+{% endblock %}
+
+{% block content %}
+<table shop-dashboard-list="{{ request.path_info }}" class="table table-striped table-hover">
+	<caption>{{ model_options.verbose_name_plural }}</caption>
+	<thead>
+		<tr>{% spaceless %}
+		{% for field in list_display_fields.values %}
+			<th>{{ field.label }}</th>
+		{% endfor %}
+		</tr>{% endspaceless %}
+	</thead>
+	<tbody>
+	{% comment %}
+	{% for product in results %}
+		<tr>{% for key, value in product.items %}
+			{% if key in list_display_fields.keys %}
+			<td>{% if key in list_display_links %}<a href="{% url 'dashboard:product-detail' product.pk %}">{% endif %}{{ value }}{% if key in list_display_links %}</a>{% endif %}</td>
+			{% endif %}
+		{% endfor %}</tr>
+	{% endfor %}
+	{% endcomment %}
+		<tr ng-repeat="entry in results">{% spaceless %}
+		{% for key in list_display_fields.keys %}
+			{% if key in list_display_links %}
+			<td><a ng-href="{{ request.path_info }}{% verbatim %}{{ entry.pk }}{% endverbatim %}" ng-bind-html="entry.{{ key }}"></a></td>
+			{% else %}
+			<td ng-bind-html="entry.{{ key }}"></td>
+			{% endif %}
+		{% endfor %}
+		</tr>{% endspaceless %}
+	</tbody>
+	<tfoot>
+		<tr>{% spaceless %}
+			<td colspan="{{ list_display_fields|length }}" class="text-center" in-view="$inview && loadMore()"><i ng-if="isLoading" class="glyphicon glyphicon-refresh glyphicon-spin"></i></td>
+		</tr>{% endspaceless %}
+	</tfoot>
+</table>
+{% endblock %}

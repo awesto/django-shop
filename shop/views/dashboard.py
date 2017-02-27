@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import os
-
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.renderers import BrowsableAPIRenderer
+from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework import routers
 
@@ -31,20 +30,24 @@ class ProductsDashboard(viewsets.ModelViewSet):
         if self.action == 'list':
             return self.list_serializer_class
         elif self.action == 'retrieve':
-            product = self.get_object()
-            return self.list_serializer_class  # TODO: use the correct
+            #return self.list_serializer_class
+            instance = self.get_object()
+            return self.detail_serializer_classes.get(instance._meta.label_lower,
+                                                      self.list_serializer_class)
         msg = "ViewSet 'ProductsDashboard' is not implemented for action '{}'"
+        return self.list_serializer_class  # TODO: use the correct
         raise NotImplementedError(msg.format(self.action))
 
     def get_serializer(self, *args, **kwargs):
         serializer_class = self.get_serializer_class()
         context = self.get_serializer_context()
-        #context.update(many=kwargs.get('many', False))
         kwargs.update(context=context, label='dashboard')
-        list_fields = ['pk']
-        list_fields.extend(self.get_list_display())
-        serializer_class.Meta.fields = list_fields  # reorder the fields
-        return serializer_class(*args, **kwargs)
+        if kwargs.get('many', False):
+            list_fields = ['pk']
+            list_fields.extend(self.get_list_display())
+            serializer_class.Meta.fields = list_fields  # reorder the fields
+        serializer = serializer_class(*args, **kwargs)
+        return serializer
 
     def get_list_display(self):
         if hasattr(self, 'list_display'):
@@ -56,18 +59,7 @@ class ProductsDashboard(viewsets.ModelViewSet):
             return self.list_display_links
         return self.get_list_display()[:1]
 
-    def get_template_names(self):
-        # TODO: this could be moved to the DashboardRenderer
-        app_label = app_settings.APP_LABEL
-        if self.action == 'list':
-            return [
-                os.path.join(app_label, 'dashboard/product-list.html'),
-                'shop/dashboard/product-list.html',
-            ]
-        elif self.action == 'retrieve':
-            product = self.get_object()
-            return [
-                os.path.join(app_label, 'dashboard/{}-detail.html'.format(product.product_model)),
-                os.path.join(app_label, 'dashboard/product-detail.html'),
-                'shop/dashboard/product-detail.html',
-            ]
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response({'serializer': serializer, 'instance': instance})

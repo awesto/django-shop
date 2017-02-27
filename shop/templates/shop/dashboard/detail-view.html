@@ -1,0 +1,13 @@
+{% extends "shop/dashboard/default.html" %}
+{% load rest_framework %}
+
+{% block content %}
+<h1>{{ product_name }}</h1>
+
+<form action="." method="post">
+    {% csrf_token %}
+    {% render_form serializer %}
+    <input type="submit" value="Save">
+</form>
+
+{% endblock %}
