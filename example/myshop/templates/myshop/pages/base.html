@@ -49,10 +49,9 @@
 	<script type="text/javascript">
 	angular.module('myShop', ['ngAnimate', 'ngSanitize',
 		{% render_block "ng-requires" postprocessor "djng.sekizai_processors.module_list" %}
-	]).config(['$httpProvider', function($httpProvider) {
+	]).config(['$httpProvider', '$locationProvider', function($httpProvider, $locationProvider) {
 		$httpProvider.defaults.headers.common['X-CSRFToken'] = '{{ csrf_token }}';
 		$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-	}]).config(['$locationProvider', function($locationProvider) {
 		$locationProvider.html5Mode({
 			enabled: true,
 			requireBase: false,
