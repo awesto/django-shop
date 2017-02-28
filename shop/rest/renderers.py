@@ -50,14 +50,14 @@ class DashboardRenderer(renderers.TemplateHTMLRenderer):
                 os.path.join(app_label, 'dashboard/list-view.html'),
                 'shop/dashboard/list-view.html',
             ]
-        elif view.action == 'retrieve':
+        elif view.action == 'change':
             obj = view.get_object()
             template_names = [
                 os.path.join(app_label, 'dashboard/{}-detail-view.html'.format(obj.product_model)),
                 os.path.join(app_label, 'dashboard/detail-view.html'),
                 'shop/dashboard/detail-view.html',
             ]
-        elif view.action == 'create':
+        elif view.action == 'add':
             template_names = []
         else:
             msg = "Action '{}' is now declared for rendering the dashboard"

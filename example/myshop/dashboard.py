@@ -14,4 +14,4 @@ class ProductsDashboard(dashboard.ProductsDashboard):
         'myshop.smartphonemodel': SmartPhoneSerializer,
     }
 
-dashboard.router.register('products', ProductsDashboard, base_name='product')
+dashboard.router.register('products', ProductsDashboard)
