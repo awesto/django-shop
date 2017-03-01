@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from collections import OrderedDict
+
 from django.shortcuts import redirect
 
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import detail_route, list_route
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import BrowsableAPIRenderer
 from rest_framework.response import Response
-from rest_framework.routers import DefaultRouter
+from rest_framework.routers import DefaultRouter, Route, DynamicDetailRoute
 from rest_framework.viewsets import ModelViewSet
 
 from shop import app_settings
@@ -17,7 +19,45 @@ from shop.rest.money import JSONRenderer
 from shop.rest.renderers import DashboardRenderer
 from shop.serializers.bases import ProductSerializer
 
-router = DefaultRouter()
+
+class DashboardRouter(DefaultRouter):
+    routes = [
+        # List route.
+        Route(
+            url=r'^{prefix}{trailing_slash}$',
+            mapping={
+                'get': 'list',
+            },
+            name='{basename}-list',
+            initkwargs={'suffix': 'List'}
+        ),
+        # Detail route.
+        Route(
+            url=r'^{prefix}/{lookup}/change{trailing_slash}$',
+            mapping={
+                'get': 'retrieve',
+                'post': 'update',
+            },
+            name='{basename}-change',
+            initkwargs={'suffix': 'Instance'}
+        ),
+        Route(
+            url=r'^{prefix}/add{trailing_slash}$',
+            mapping={
+                'get': 'new',
+                'post': 'create',
+            },
+            name='{basename}-add',
+            initkwargs={'suffix': 'New'}
+        ),
+        # Dynamically generated detail routes.
+        # Generated using @detail_route decorator on methods of the viewset.
+        DynamicDetailRoute(
+            url=r'^{prefix}/{lookup}/{methodname}{trailing_slash}$',
+            name='{basename}-{methodnamehyphen}',
+            initkwargs={}
+        ),
+    ]
 
 
 class DashboardPaginator(LimitOffsetPagination):
@@ -33,11 +73,14 @@ class ProductsDashboard(ModelViewSet):
     queryset = ProductModel.objects.all()
 
     def get_serializer_class(self):
-        if self.action == 'list':
+        if self.suffix == 'List':
             return self.list_serializer_class
-        elif self.action == 'change':
+        elif self.suffix == 'Instance':
             instance = self.get_object()
             return self.detail_serializer_classes.get(instance._meta.label_lower, ProductSerializer)
+        elif self.suffix == 'New':
+            model = self.request.GET.get('model')
+            return self.detail_serializer_classes.get(model, ProductSerializer)
         msg = "ViewSet 'ProductsDashboard' is not implemented for action '{}'"
         return self.list_serializer_class  # TODO: use the correct
         raise NotImplementedError(msg.format(self.action))
@@ -63,16 +106,47 @@ class ProductsDashboard(ModelViewSet):
             return self.list_display_links
         return self.get_list_display()[:1]
 
-    @detail_route(methods=['get', 'post'], url_path='change')
-    def change(self, request, *args, **kwargs):
+    def get_renderer_context(self):
+        template_context = {}
+        if self.action == 'list':
+            list_display_fields = OrderedDict()
+            serializer_class = self.list_serializer_class()
+            for field_name in self.get_list_display():
+                list_display_fields[field_name] = serializer_class.fields[field_name]
+            template_context['list_display_fields'] = list_display_fields
+            template_context['list_display_links'] = self.get_list_display_links()
+            detail_models = {}
+            for name, serializer_class in self.detail_serializer_classes.items():
+                detail_models[name] = serializer_class.Meta.model._meta.verbose_name
+            template_context['detail_models'] = detail_models
+
+        renderer_context = super(ProductsDashboard, self).get_renderer_context()
+        renderer_context['template_context'] = template_context
+        return renderer_context
+
+    def new(self, request, *args, **kwargs):
+        serializer = self.get_serializer()
+        return Response({'serializer': serializer})
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return redirect('dashboard:product-list')
+        return Response({'serializer': serializer})
+
+    def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        if request.method == 'POST':
-            # TODO: handle 'Save', 'Save and continue editing' and 'Cancel'
-            # TODO: use request.resolver_match.url_name.split('-') to redirect on list view
-            serializer = self.get_serializer(instance, data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return redirect('dashboard:product-list')
-        else:
-            serializer = self.get_serializer(instance)
+        serializer = self.get_serializer(instance)
         return Response({'serializer': serializer, 'instance': instance})
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        # TODO: handle 'Save', 'Save and continue editing' and 'Cancel'
+        # TODO: use request.resolver_match.url_name.split('-') to redirect on list view
+        serializer = self.get_serializer(instance, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return redirect('dashboard:product-list')
+
+router = DashboardRouter()

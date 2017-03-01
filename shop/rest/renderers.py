@@ -45,22 +45,25 @@ class DashboardRenderer(renderers.TemplateHTMLRenderer):
     """
     def get_template_names(self, response, view):
         app_label = app_settings.APP_LABEL
-        if view.action == 'list':
+        if view.suffix == 'List':
             template_names = [
                 os.path.join(app_label, 'dashboard/list-view.html'),
                 'shop/dashboard/list-view.html',
             ]
-        elif view.action == 'change':
+        elif view.suffix == 'Instance':
             obj = view.get_object()
             template_names = [
-                os.path.join(app_label, 'dashboard/{}-detail-view.html'.format(obj.product_model)),
-                os.path.join(app_label, 'dashboard/detail-view.html'),
-                'shop/dashboard/detail-view.html',
+                os.path.join(app_label, 'dashboard/{}-change-view.html'.format(obj.product_model)),
+                os.path.join(app_label, 'dashboard/change-view.html'),
+                'shop/dashboard/change-view.html',
             ]
-        elif view.action == 'add':
-            template_names = []
+        elif view.suffix == 'New':
+            template_names = [
+                os.path.join(app_label, 'dashboard/change-view.html'),
+                'shop/dashboard/change-view.html',
+            ]
         else:
-            msg = "Action '{}' is now declared for rendering the dashboard"
+            msg = "The given route for '{}' must be declared for rendering the dashboard"
             raise NotImplementedError(msg.format(view.action))
         return template_names
 
@@ -73,10 +76,11 @@ class DashboardRenderer(renderers.TemplateHTMLRenderer):
         # erich the context with data from the model
         options = view.list_serializer_class.Meta.model._meta
         data['model_options'] = options
-        serializer = view.list_serializer_class()
-        list_display_fields = OrderedDict()
-        for field_name in view.get_list_display():
-            list_display_fields[field_name] = serializer.fields[field_name]
-        data['list_display_fields'] = list_display_fields
-        data['list_display_links'] = view.get_list_display_links()
+        data.update(renderer_context['template_context'])
+        # if view.action == 'list':
+        #     list_display_fields = OrderedDict()
+        #     for field_name in view.get_list_display():
+        #         list_display_fields[field_name] = serializer.fields[field_name]
+        #     data['list_display_fields'] = list_display_fields
+        #     data['list_display_links'] = view.get_list_display_links()
         return data
