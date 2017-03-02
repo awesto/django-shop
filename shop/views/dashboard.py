@@ -3,9 +3,9 @@ from __future__ import unicode_literals
 
 from collections import OrderedDict
 
+from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 
-from rest_framework.decorators import detail_route, list_route
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import BrowsableAPIRenderer
@@ -108,7 +108,7 @@ class ProductsDashboard(ModelViewSet):
 
     def get_renderer_context(self):
         template_context = {}
-        if self.action == 'list':
+        if self.suffix == 'List':
             list_display_fields = OrderedDict()
             serializer_class = self.list_serializer_class()
             for field_name in self.get_list_display():
@@ -119,6 +119,8 @@ class ProductsDashboard(ModelViewSet):
             for name, serializer_class in self.detail_serializer_classes.items():
                 detail_models[name] = serializer_class.Meta.model._meta.verbose_name
             template_context['detail_models'] = detail_models
+            detail_url = reverse('dashboard:product-change', args=(':PK:',))
+            template_context['detail_ng_href'] = detail_url.replace(':PK:', '{{ entry.pk }}')
 
         renderer_context = super(ProductsDashboard, self).get_renderer_context()
         renderer_context['template_context'] = template_context

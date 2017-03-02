@@ -1,5 +1,5 @@
 {% extends "shop/dashboard/default.html" %}
-{% load i18n static sekizai_tags dashboard_tags %}
+{% load i18n static sekizai_tags %}
 
 {% block head %}
 	{% addtoblock "js" %}<script src="{% static 'node_modules/angular-inview/angular-inview.js' %}"></script>{% endaddtoblock %}
@@ -18,7 +18,6 @@
 			</button>
 			<ul class="dropdown-menu" uib-dropdown-menu role="menu">
 			{% for key, name in detail_models.items %}
-				{% url 'dashboard:product-add' %}
 				{% url 'dashboard:product-add' as add_url %}
 				<li role="menuitem"><a href="{{ add_url }}?model={{ key }}">{{ name }}</a></li>
 			{% endfor %}
@@ -33,12 +32,11 @@
 		</tr>{% endspaceless %}
 	</thead>
 	<tbody>
-		{% url 'dashboard:product-change' pk=':PK:' as detail_url %}
 		<tr ng-repeat="entry in results">{% spaceless %}
 		{% for key in list_display_fields.keys %}
 			{% if key in list_display_links %}
 			<td>
-				<a ng-href="{{ detail_url|mustaches:":PK:entry.pk" }}" ng-bind-html="entry.{{ key }}"></a>
+				<a ng-href="{{ detail_ng_href }}" ng-bind-html="entry.{{ key }}"></a>
 			</td>
 			{% else %}
 			<td ng-bind-html="entry.{{ key }}"></td>
@@ -48,7 +46,9 @@
 	</tbody>
 	<tfoot>
 		<tr>{% spaceless %}
-			<td colspan="{{ list_display_fields|length }}" class="text-center" in-view="$inview && loadMore()"><i ng-if="isLoading" class="glyphicon glyphicon-refresh glyphicon-spin"></i></td>
+			<td colspan="{{ list_display_fields|length }}" class="text-center" in-view="$inview && loadMore()">
+				<i ng-if="isLoading" class="glyphicon glyphicon-refresh glyphicon-spin"></i>
+			</td>
 		</tr>{% endspaceless %}
 	</tfoot>
 </table>
