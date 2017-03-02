@@ -85,13 +85,6 @@ class ProductSerializer(serializers.ModelSerializer):
         cache.set(cache_key, content, app_settings.CACHE_DURATIONS['product_html_snippet'])
         return mark_safe(content)
 
-    def create(self, validated_data):
-        #self.base_model.objects.aggregate(
-        #    max_order=Max(self.default_order_field)
-        #)['max_order'] or 0
-        # TODO: add a mixin for max_order
-        return super(ProductSerializer, self).create(validated_data)
-
 
 class BaseOrderItemSerializer(serializers.ModelSerializer):
     line_total = MoneyField()
