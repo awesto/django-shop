@@ -64,10 +64,10 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValid
         return cleaned_data
 
     def save(self, request=None, commit=True):
-        self.instance.recognize_as_registered()
         self.instance.user.is_active = True
         self.instance.user.email = self.cleaned_data['email']
         self.instance.user.set_password(self.cleaned_data['password1'])
+        self.instance.recognize_as_registered()
         customer = super(RegisterUserForm, self).save(commit)
         password = self.cleaned_data['password1']
         if self.cleaned_data['preset_password']:
