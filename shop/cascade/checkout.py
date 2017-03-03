@@ -277,7 +277,7 @@ class AcceptConditionFormPlugin(DialogFormPluginBase):
         super(AcceptConditionFormPlugin, self).render(context, instance, placeholder)
         accept_condition_form = context['accept_condition_form.plugin_{}'.format(instance.id)]
         html_content = self.html_parser.unescape(instance.glossary.get('html_content', ''))
-        html_content = plugin_tags_to_user_html(html_content, context, placeholder)
+        html_content = plugin_tags_to_user_html(html_content, context)
         # transfer the stored HTML content into the widget's label
         accept_condition_form['accept'].field.widget.choice_label = mark_safe(html_content)
         context['accept_condition_form'] = accept_condition_form
