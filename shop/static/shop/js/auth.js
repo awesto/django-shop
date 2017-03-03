@@ -14,8 +14,10 @@ djangoShopModule.directive('shopAuthForm', ['$window', '$http', '$timeout',
 		scope: true,  // do not change this
 		link: function(scope, element, attrs) {
 			var timer = null, form = scope[attrs.name];
-			if (attrs.action === undefined)
+			if (angular.isUndefined(attrs.action))
 				throw new Error("Form does not contain an `action` keyword");
+			if (angular.isUndefined(form))
+				throw new Error("Form has no `name`");
 			scope.success_message = scope.error_message = '';
 
 			function proceedWithAction(response) {
