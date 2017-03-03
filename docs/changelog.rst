@@ -52,6 +52,8 @@ Changelog for django-SHOP
   ``reverse('shop-order-last')`` if no such page with ID ``shop-order-last`` was found in the CMS.
 * Use menu_title instead of page title for link and tooltip content.
 * In ``DialogForm``, field ``plugin_id`` is not required anymore.
+* After a new customer recognized himself, the signal ``customer_recognized`` is fired so that
+  other apps can act upon.
 
 
 0.9.3
