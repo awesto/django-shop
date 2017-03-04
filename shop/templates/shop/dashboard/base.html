@@ -13,6 +13,20 @@
 	{% include "shop/dashboard/navbar.html" %}
 	</header>
 
+	<div class="container">
+	{% block breadcrumbs %}
+		<ul class="breadcrumb">
+		{% for breadcrumb_name, breadcrumb_url in breadcrumblist %}
+			{% if forloop.last %}
+			<li class="active">{{ breadcrumb_name }}</li>
+			{% else %}
+			<li><a href="{{ breadcrumb_url }}">{{ breadcrumb_name }}</a></li>
+			{% endif %}
+		{% endfor %}
+		</ul>
+	{% endblock %}
+	</div>
+
 	<main>
 		<div class="container">
 			<div class="row">

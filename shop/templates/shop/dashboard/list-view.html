@@ -1,4 +1,4 @@
-{% extends "shop/dashboard/default.html" %}
+{% extends "shop/dashboard/base.html" %}
 {% load i18n static sekizai_tags %}
 
 {% block head %}
@@ -17,7 +17,7 @@
 				{% blocktrans with entity=model_options.verbose_name %}Add new {{ entity }}{% endblocktrans %}&emsp;<span class="caret"></span>
 			</button>
 			<ul class="dropdown-menu" uib-dropdown-menu role="menu">
-			{% for key, name in detail_models.items %}
+			{% for key, name in detail_models %}
 				{% url 'dashboard:product-add' as add_url %}
 				<li role="menuitem"><a href="{{ add_url }}?model={{ key }}">{{ name }}</a></li>
 			{% endfor %}

@@ -5,12 +5,14 @@ from collections import OrderedDict
 
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
+from django.utils.translation import ugettext_lazy as _
 
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.renderers import BrowsableAPIRenderer
+from rest_framework.renderers import BrowsableAPIRenderer, TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter, Route, DynamicDetailRoute
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from shop import app_settings
@@ -18,6 +20,24 @@ from shop.models.product import ProductModel
 from shop.rest.money import JSONRenderer
 from shop.rest.renderers import DashboardRenderer
 from shop.serializers.bases import ProductSerializer
+
+
+class DashboardView(APIView):
+    """
+    View to handle to main dashboard page.
+    """
+    renderer_classes = (TemplateHTMLRenderer,)
+    template_name = 'shop/dashboard/root.html'
+
+    @classmethod
+    def get_breadcrumbs(cls):
+        return [(_("Dashboard"), reverse('dashboard:root'))]
+
+    def get(self, request, *args, **kwargs):
+        context = {
+            'breadcrumblist': self.get_breadcrumbs()
+        }
+        return Response(context, template_name=self.template_name)
 
 
 class DashboardRouter(DefaultRouter):
@@ -106,8 +126,19 @@ class ProductsDashboard(ModelViewSet):
             return self.list_display_links
         return self.get_list_display()[:1]
 
+    def get_breadcrumbs(self):
+        breadcrumbs = DashboardView.get_breadcrumbs()
+        breadcrumbs.append((ProductModel.Meta.verbose_name_plural, reverse('dashboard:product-list')))
+        if self.suffix == 'Instance':
+            instance = self.get_object()
+            breadcrumbs.append((str(instance), self.request.path_info))
+        elif self.suffix == 'New':
+            options = self.get_serializer_class().Meta.model._meta
+            breadcrumbs.append((_("Add {}").format(options.verbose_name), self.request.path_info))
+        return breadcrumbs
+
     def get_renderer_context(self):
-        template_context = {}
+        template_context = {'breadcrumblist': self.get_breadcrumbs()}
         if self.suffix == 'List':
             list_display_fields = OrderedDict()
             serializer_class = self.list_serializer_class()
@@ -115,9 +146,9 @@ class ProductsDashboard(ModelViewSet):
                 list_display_fields[field_name] = serializer_class.fields[field_name]
             template_context['list_display_fields'] = list_display_fields
             template_context['list_display_links'] = self.get_list_display_links()
-            detail_models = {}
+            detail_models = []
             for name, serializer_class in self.detail_serializer_classes.items():
-                detail_models[name] = serializer_class.Meta.model._meta.verbose_name
+                detail_models.append((name, serializer_class.Meta.model._meta.verbose_name))
             template_context['detail_models'] = detail_models
             detail_url = reverse('dashboard:product-change', args=(':PK:',))
             template_context['detail_ng_href'] = detail_url.replace(':PK:', '{{ entry.pk }}')

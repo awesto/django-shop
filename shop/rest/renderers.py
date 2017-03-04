@@ -2,8 +2,9 @@
 from __future__ import unicode_literals
 
 import os
-from collections import OrderedDict
+
 from rest_framework import renderers
+
 from shop import app_settings
 
 
@@ -77,10 +78,5 @@ class DashboardRenderer(renderers.TemplateHTMLRenderer):
         options = view.list_serializer_class.Meta.model._meta
         data['model_options'] = options
         data.update(renderer_context['template_context'])
-        # if view.action == 'list':
-        #     list_display_fields = OrderedDict()
-        #     for field_name in view.get_list_display():
-        #         list_display_fields[field_name] = serializer.fields[field_name]
-        #     data['list_display_fields'] = list_display_fields
-        #     data['list_display_links'] = view.get_list_display_links()
+
         return data
