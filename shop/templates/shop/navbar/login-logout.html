@@ -19,7 +19,7 @@
 	{% endif %}<b class="caret"></b></a>
 	<ul class="dropdown-menu shop-dropdown-forms">
 	{% if customer.is_authenticated %}
-		<shop-auth-form ng-form action="RELOAD_PAGE" role="form">
+		<shop-auth-form name="logout_form" ng-form action="RELOAD_PAGE" role="form">
 			<button class="btn btn-primary btn-block" type="button" ng-click="submitForm('{% url "shop:logout" %}')">{% trans "Logout" %}</button>
 		</shop-auth-form>
 		{% if shop_order_url %}

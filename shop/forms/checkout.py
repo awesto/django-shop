@@ -36,7 +36,6 @@ class CustomerForm(DialogModelForm):
         super(CustomerForm, self).__init__(initial=initial, instance=instance, *args, **kwargs)
 
     def save(self, commit=True):
-        self.instance.recognize_as_registered()
         for f in self.Meta.custom_fields:
             setattr(self.instance, f, self.cleaned_data[f])
         return super(CustomerForm, self).save(commit)
@@ -45,6 +44,7 @@ class CustomerForm(DialogModelForm):
     def form_factory(cls, request, data, cart):
         customer_form = cls(data=data, instance=request.customer)
         if customer_form.is_valid():
+            customer_form.instance.recognize_as_registered(request, commit=False)
             customer_form.save()
         return customer_form
 
@@ -69,6 +69,7 @@ class GuestForm(UniqueEmailValidationMixin, DialogModelForm):
     def form_factory(cls, request, data, cart):
         customer_form = cls(data=data, instance=request.customer.user)
         if customer_form.is_valid():
+            customer_form.instance.recognize_as_guest(request, commit=False)
             customer_form.save()
         return customer_form
 
