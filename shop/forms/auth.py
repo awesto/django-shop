@@ -67,7 +67,7 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValid
         self.instance.user.is_active = True
         self.instance.user.email = self.cleaned_data['email']
         self.instance.user.set_password(self.cleaned_data['password1'])
-        self.instance.recognize_as_registered()
+        self.instance.recognize_as_registered(request, commit=False)
         customer = super(RegisterUserForm, self).save(commit)
         password = self.cleaned_data['password1']
         if self.cleaned_data['preset_password']:
@@ -110,7 +110,7 @@ class ContinueAsGuestForm(ModelForm):
         fields = ()  # this form doesn't show any fields
 
     def save(self, request=None, commit=True):
-        self.instance.recognize_as_guest()
+        self.instance.recognize_as_guest(request, commit=False)
         self.instance.user.is_active = app_settings.GUEST_IS_ACTIVE_USER
         if self.instance.user.is_active:
             # set a usable password, otherwise the user later can not reset its password
