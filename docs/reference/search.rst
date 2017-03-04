@@ -321,18 +321,17 @@ following entry:
 
 	from django.conf.urls import url
 	from shop.search.views import CMSPageCatalogWrapper
-	from myshop.serializers import CatalogSearchSerializer, ProductSummarySerializer
+	from myshop.serializers import CatalogSearchSerializer
 
 	urlpatterns = [
 	    url(r'^$', CMSPageCatalogWrapper.as_view(
 	        search_serializer_class=CatalogSearchSerializer,
-	        model_serializer_class=ProductSummarySerializer,
 	    )),
 	    # other patterns
 	]
 
 The view :class'`shop.search.views.CMSPageCatalogWrapper` is a functional wrapper around the
-catalog's products list view and the search view. Depending on weather the request contains a
+catalog's products list view and the search view. Depending on whether the request contains a
 search query starting with ``q=<search-term>``, either the search view or the products list view
 is invoked.
 
@@ -341,11 +340,11 @@ catalog's products list, and hence must route onto the same view class. However 
 catalog's list view classes have different bases and a completely different implementation, that
 this wrapper is required.
 
-The ``CatalogSearchSerializer`` used here is very similar to the ``ProductSearchSerializer``, we have
-seen in the previous section. The only difference is, that instead of the ``search_media`` field
-is uses the ``catalog_media`` field, which renders the result items media in a layout appropriate
-for the catalog's list view. Therefore this kind of search, normally is used in combination with
-auto-completion, because here we reuse the same layout for the product's list view.
+The ``CatalogSearchSerializer`` used here is very similar to the ``ProductSearchSerializer``, we
+have seen in the previous section. The only difference is, that instead of the ``search_media``
+field is uses the ``catalog_media`` field, which renders the result items media in a layout
+appropriate for the catalog's list view. Therefore this kind of search, normally is used in
+combination with auto-completion, because here we reuse the same layout for the product's list view.
 
 
 The Client Side

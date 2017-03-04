@@ -57,11 +57,9 @@ we then replace the default filter backends by our own implementation:
 	from django.conf.urls import url
 	from rest_framework.settings import api_settings
 	from shop.views.catalog import ProductListView
-	from myshop.serializers import ProductSummarySerializer
 
 	urlpatterns = [
 	    url(r'^$', ProductListView.as_view(
-	        serializer_class=ProductSummarySerializer,
 	        filter_backends=[CatalogFilterBackend],
 	    ),
 	]
@@ -131,7 +129,6 @@ through the url patterns:
 
 	urlpatterns = [
 	    url(r'^$', ProductListView.as_view(
-	        serializer_class=ProductSummarySerializer,
 	        filter_class=ProductFilter,
 	    )),
 	    # other patterns
