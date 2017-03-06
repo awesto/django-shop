@@ -19,7 +19,8 @@ class ManufacturerFilterSet(django_filters.FilterSet):
         queryset=Manufacturer.objects.all(),
         widget=Select(attrs={'ng-change': 'filterChanged()'}),
         empty_label=_("Any Manufacturer"),
-        help_text=_("Restrict product on this manufacturer only"))
+        help_text=_("Restrict product on this manufacturer only"),
+    )
 
     class Meta:
         model = Product
