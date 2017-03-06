@@ -12,6 +12,7 @@
 <table shop-dashboard-list="{{ request.path_info }}" class="table table-striped table-hover">
 	<caption>
 		<strong>{{ model_options.verbose_name_plural }}</strong>
+		{% if has_add_permissions %}
 		<div class="btn-group pull-right" uib-dropdown>
 			<button type="button" class="btn btn-danger" uib-dropdown-toggle>
 				{% blocktrans with entity=model_options.verbose_name %}Add new {{ entity }}{% endblocktrans %}&emsp;<span class="caret"></span>
@@ -23,6 +24,7 @@
 			{% endfor %}
 			</ul>
 		</div>
+		{% endif %}
 	</caption>
 	<thead>
 		<tr>{% spaceless %}

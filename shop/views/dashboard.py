@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from collections import OrderedDict
 
+from django.contrib.auth import get_permission_codename
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy as _
@@ -138,7 +139,12 @@ class ProductsDashboard(ModelViewSet):
         return breadcrumbs
 
     def get_renderer_context(self):
-        template_context = {'breadcrumblist': self.get_breadcrumbs()}
+        template_context = {
+            'breadcrumblist': self.get_breadcrumbs(),
+            'has_add_permission': self.has_add_permission(),
+            #'has_change_permission': self.has_change_permission(obj),
+            #'has_delete_permission': self.has_delete_permission(obj),
+        }
         if self.suffix == 'List':
             list_display_fields = OrderedDict()
             serializer_class = self.list_serializer_class()
@@ -156,6 +162,14 @@ class ProductsDashboard(ModelViewSet):
         renderer_context = super(ProductsDashboard, self).get_renderer_context()
         renderer_context['template_context'] = template_context
         return renderer_context
+
+    def has_add_permission(self):
+        """
+        Returns True if the given request has permission to add an object.
+        Can be overridden by the user in subclasses.
+        """
+        codename = get_permission_codename('add', ProductModel._meta)
+        return self.request.user.has_perm('{}.{}'.format(app_settings.APP_LABEL, codename))
 
     def new(self, request, *args, **kwargs):
         serializer = self.get_serializer()
