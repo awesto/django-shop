@@ -9,7 +9,6 @@ from django.db import models
 from django.db.models import Q
 from django.http.request import HttpRequest
 from django.template import Context, engines
-from django.utils.encoding import smart_text
 from django.utils.translation import ugettext_lazy as _, override as translation_override
 from django.utils.six.moves.urllib.parse import urlparse
 
@@ -31,8 +30,6 @@ class Email(OriginalEmail):
         proxy = True
 
     def email_message(self, connection=None):
-        subject = smart_text(self.subject)
-
         if self.template is not None:
             render_language = self.context.get('render_language', settings.LANGUAGE_CODE)
             context = Context(self.context)
