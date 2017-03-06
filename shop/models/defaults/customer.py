@@ -16,8 +16,18 @@ class Customer(BaseCustomer):
     """
     SALUTATION = [('mrs', _("Mrs.")), ('mr', _("Mr.")), ('na', _("(n/a)"))]
 
-    number = models.PositiveIntegerField(_("Customer Number"), null=True, default=None, unique=True)
-    salutation = models.CharField(_("Salutation"), max_length=5, choices=SALUTATION)
+    number = models.PositiveIntegerField(
+        _("Customer Number"),
+        null=True,
+        default=None,
+        unique=True,
+    )
+
+    salutation = models.CharField(
+        _("Salutation"),
+        max_length=5,
+        choices=SALUTATION,
+    )
 
     def get_number(self):
         return self.number
