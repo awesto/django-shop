@@ -74,9 +74,10 @@ class CMSPageAsCategoryMixin(object):
 class InvalidateProductCacheMixin(object):
     def __init__(self, *args, **kwargs):
         if not hasattr(cache, 'delete_pattern'):
-            warnings.warn("Your caching backend does not support deletion by key patterns. "
-                "Please use `django-redis-cache`, or wait until the product's HTML snippet cache "
-                "expires by itself")
+            warnings.warn("\n"
+                "Your caching backend does not support deletion by key patterns.\n"
+                "Please use 'django-redis-cache', or wait until the product's HTML\n"
+                "snippet cache expires by itself.")
         super(InvalidateProductCacheMixin, self).__init__(*args, **kwargs)
 
     def save_model(self, request, product, form, change):
