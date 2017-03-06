@@ -131,7 +131,7 @@ djangoShopModule.controller('CatalogListController', [
 // of the catalog's list views. If infinite scroll is true, use the scope function ``loadMore()``
 // which shall be invoked by another directive, for instance <ANY in-view> when reaching the
 // end of the listed items.
-djangoShopModule.directive('shopCatalogList', ['$window', function($window) {
+djangoShopModule.directive('shopCatalogList', ['$window', '$timeout', function($window, $timeout) {
 	return {
 		restrict: 'EAC',
 		controller: 'CatalogListController',
@@ -152,7 +152,10 @@ djangoShopModule.directive('shopCatalogList', ['$window', function($window) {
 					controller.resetProductsList();
 					controller.loadProducts({params: params});
 				} else {
-					$window.location.reload();
+					// delay until next digest cycle
+					$timeout(function() {
+						$window.location.reload();
+					});
 				}
 			});
 
