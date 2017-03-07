@@ -57,6 +57,7 @@ Changelog for django-SHOP
 * Unified ``ProductCommonSerializer``, ``ProductSummarySerializer`` and ``ProductDetailSerializer``
   into a single ``ProductSerializer``, which acts as default for the ``ProductListView`` and
   ``ProductRetrieveView``.
+* Dependency to **djangocms-cascade** is optional now.
 
 
 0.9.3
