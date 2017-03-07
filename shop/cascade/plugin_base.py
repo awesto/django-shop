@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.conf import settings
 from django.apps import apps
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.forms import ChoiceField, widgets
@@ -11,6 +12,9 @@ from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from django.utils.safestring import mark_safe
 from django.utils.encoding import python_2_unicode_compatible
+
+if 'cmsplugin_cascade' not in settings.INSTALLED_APPS:
+    raise ImproperlyConfigured("Please add 'cmsplugin_cascade' to your INSTALLED_APPS")
 
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.fields import GlossaryField

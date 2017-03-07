@@ -1,15 +1,19 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.core.exceptions import ImproperlyConfigured
 from django.db import transaction
 from django.utils.module_loading import import_string
+
 from rest_framework.decorators import list_route
 from rest_framework.exceptions import ValidationError
+
 from cms.plugin_pool import plugin_pool
-from shop.cascade.plugin_base import DialogFormPluginBase
+
+from shop import app_settings
 from shop.serializers.cart import CheckoutSerializer
 from shop.modifiers.pool import cart_modifiers_pool
-from .cart import BaseViewSet
+from shop.views.cart import BaseViewSet
 
 
 class CheckoutViewSet(BaseViewSet):
@@ -19,13 +23,20 @@ class CheckoutViewSet(BaseViewSet):
 
     def __init__(self, **kwargs):
         super(CheckoutViewSet, self).__init__(**kwargs)
-        self.dialog_forms = []
-        for p in plugin_pool.get_all_plugins():
-            if issubclass(p, DialogFormPluginBase):
-                form_classes = getattr(p, 'form_classes', [])
-                if hasattr(p, 'form_class'):
-                    form_classes.append(p.form_class)
-                self.dialog_forms.extend([import_string(fc) for fc in form_classes])
+        self.dialog_forms = set([import_string(fc) for fc in app_settings.SHOP_DIALOG_FORMS])
+        try:
+            from shop.cascade.plugin_base import DialogFormPluginBase
+        except ImproperlyConfigured:
+            # cmsplugins_cascade has not been installed
+            pass
+        else:
+            # gather form classes from Cascade plugins for our checkout views
+            for p in plugin_pool.get_all_plugins():
+                if issubclass(p, DialogFormPluginBase):
+                    if hasattr(p, 'form_classes'):
+                        self.dialog_forms.update([import_string(fc) for fc in p.form_classes])
+                    if hasattr(p, 'form_class'):
+                        self.dialog_forms.add(import_string(p.form_class))
 
     @list_route(methods=['post'], url_path='upload')
     def upload(self, request):
