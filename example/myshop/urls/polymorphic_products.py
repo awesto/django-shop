@@ -12,8 +12,7 @@ from shop.search.views import CMSPageCatalogWrapper
 from shop.views.catalog import AddToCartView, ProductRetrieveView
 
 from myshop.filters import ManufacturerFilterSet
-from myshop.serializers import (ProductSummarySerializer, ProductDetailSerializer,
-                                AddSmartCardToCartSerializer, AddSmartPhoneToCartSerializer,
+from myshop.serializers import (AddSmartCardToCartSerializer, AddSmartPhoneToCartSerializer,
                                 CatalogSearchSerializer)
 
 
@@ -21,11 +20,8 @@ urlpatterns = [
     url(r'^$', CMSPageCatalogWrapper.as_view(
         filter_class=ManufacturerFilterSet,
         search_serializer_class=CatalogSearchSerializer,
-        model_serializer_class=ProductSummarySerializer,
     )),
-    url(r'^(?P<slug>[\w-]+)/?$', ProductRetrieveView.as_view(
-        serializer_class=ProductDetailSerializer,
-    )),
+    url(r'^(?P<slug>[\w-]+)/?$', ProductRetrieveView.as_view()),
     url(r'^(?P<slug>[\w-]+)/add-to-cart', AddToCartView.as_view(
         serializer_class=AddSmartCardToCartSerializer,
     )),

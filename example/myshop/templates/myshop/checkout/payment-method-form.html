@@ -1,6 +1,0 @@
-<form shop-dialog-form name="{{ payment_method_form.form_name }}" novalidate>
-	{{ payment_method_form.as_div }}
-</form>
-{% if payment_modifiers.stripe_payment %}
-	{% include "shop/stripe-creditcard-form.html" %}
-{% endif %}

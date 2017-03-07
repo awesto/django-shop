@@ -54,6 +54,9 @@ Changelog for django-SHOP
 * In ``DialogForm``, field ``plugin_id`` is not required anymore.
 * After a new customer recognized himself, the signal ``customer_recognized`` is fired so that
   other apps can act upon.
+* Unified ``ProductCommonSerializer``, ``ProductSummarySerializer`` and ``ProductDetailSerializer``
+  into a single ``ProductSerializer``, which acts as default for the ``ProductListView`` and
+  ``ProductRetrieveView``.
 
 
 0.9.3

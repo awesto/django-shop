@@ -71,20 +71,26 @@ class AppSettings(object):
         This serialized data then is used for Catalog List Views, Cart List Views and Order List
         Views.
 
-        There is no default value.
+        Defaults to a minimalistic Product serializer.
         """
 
         from django.core.exceptions import ImproperlyConfigured
         from django.utils.module_loading import import_string
-        from shop.serializers.bases import BaseProductSummarySerializer
+        from shop.serializers.bases import ProductSerializer
 
-        s = self._setting('SHOP_PRODUCT_SUMMARY_SERIALIZER')
-        if not s:
-            raise ImproperlyConfigured("SHOP_PRODUCT_SUMMARY_SERIALIZER setting must be set")
-        ProductSummarySerializer = import_string(s)
-        if not issubclass(ProductSummarySerializer, BaseProductSummarySerializer):
-            raise ImproperlyConfigured(
-                "Serializer class must inherit from 'BaseProductSummarySerializer'.")
+        pss = self._setting('SHOP_PRODUCT_SUMMARY_SERIALIZER')
+        if pss:
+            ProductSummarySerializer = import_string(pss)
+            if not issubclass(ProductSummarySerializer, ProductSerializer):
+                raise ImproperlyConfigured(
+                    "Serializer class must inherit from 'ProductSerializer'.")
+        else:
+            class ProductSummarySerializer(ProductSerializer):
+                """
+                Fallback serializer for the summary of our Product model.
+                """
+                class Meta(ProductSerializer.Meta):
+                    fields = ['id', 'product_name', 'product_url', 'product_model', 'price']
         return ProductSummarySerializer
 
     @property

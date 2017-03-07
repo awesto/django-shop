@@ -3,8 +3,8 @@
 
 var djangoShopModule = angular.module('django.shop.catalog', ['ui.bootstrap', 'django.shop.utils']);
 
-djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$modal',
-                                      function($scope, $http, $window, $modal) {
+djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$uibModal',
+                                      function($scope, $http, $window, $uibModal) {
 	var prevContext = null, updateUrl;
 
 	this.setUpdateUrl = function(update_url) {
@@ -32,7 +32,7 @@ djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$mo
 	};
 
 	$scope.addToCart = function(cart_url, extra_context) {
-		$modal.open({
+		$uibModal.open({
 			templateUrl: 'AddToCartModalDialog.html',
 			controller: 'ModalInstanceCtrl',
 			resolve: {
@@ -51,25 +51,25 @@ djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$mo
 }]);
 
 djangoShopModule.controller('ModalInstanceCtrl',
-    ['$scope', '$http', '$modalInstance', 'modal_context',
-    function($scope, $http, $modalInstance, modal_context) {
+    ['$scope', '$http', '$uibModalInstance', 'modal_context',
+    function($scope, $http, $uibModalInstance, modal_context) {
 	var isLoading = false;
 	$scope.proceed = function(next_url) {
 		if (isLoading)
 			return;
 		isLoading = true;
 		$http.post(modal_context.cart_url, $scope.context).success(function() {
-			$modalInstance.close(next_url);
+			$uibModalInstance.close(next_url);
 		}).error(function() {
 			// TODO: tell us something went wrong
-			$modalInstance.dismiss('cancel');
+			$uibModalInstance.dismiss('cancel');
 		}).finally(function() {
 			isLoading = false;
 		});
 	};
 
 	$scope.cancel = function () {
-		$modalInstance.dismiss('cancel');
+		$uibModalInstance.dismiss('cancel');
 	};
 
 	$scope.context = angular.copy(modal_context.context);
@@ -131,7 +131,7 @@ djangoShopModule.controller('CatalogListController', [
 // of the catalog's list views. If infinite scroll is true, use the scope function ``loadMore()``
 // which shall be invoked by another directive, for instance <ANY in-view> when reaching the
 // end of the listed items.
-djangoShopModule.directive('shopCatalogList', ['$window', function($window) {
+djangoShopModule.directive('shopCatalogList', ['$window', '$timeout', function($window, $timeout) {
 	return {
 		restrict: 'EAC',
 		controller: 'CatalogListController',
@@ -152,7 +152,10 @@ djangoShopModule.directive('shopCatalogList', ['$window', function($window) {
 					controller.resetProductsList();
 					controller.loadProducts({params: params});
 				} else {
-					$window.location.reload();
+					// delay until next digest cycle
+					$timeout(function() {
+						$window.location.reload();
+					});
 				}
 			});
 
