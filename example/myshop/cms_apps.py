@@ -11,27 +11,35 @@ from menus.menu_pool import menu_pool
 
 class ProductsListApp(CMSApp):
     name = _("Products List")
-    if settings.SHOP_TUTORIAL == 'polymorphic':
-        urls = ['myshop.urls.polymorphic_products']
-    elif settings.SHOP_TUTORIAL == 'i18n_commodity':
-        urls = ['myshop.urls.i18n_products']
-    else:
-        urls = ['myshop.urls.simple_products']
 
+    def get_urls(self, page=None, language=None, **kwargs):
+        if settings.SHOP_TUTORIAL == 'polymorphic':
+            return ['myshop.urls.polymorphic_products']
+        elif settings.SHOP_TUTORIAL == 'i18n_commodity':
+            return ['myshop.urls.i18n_products']
+        else:
 apphook_pool.register(ProductsListApp)
+            return ['myshop.urls.simple_products']
+
 
 
 class ProductSearchApp(CMSApp):
     name = _("Search")
-    urls = ['myshop.urls.search']
+
+    def get_urls(self, page=None, language=None, **kwargs):
+        return ['myshop.urls.search']
 
 apphook_pool.register(ProductSearchApp)
 
 
 class OrderApp(CMSApp):
     name = _("View Orders")
-    urls = ['shop.urls.order']
     cache_placeholders = False
+
+    def get_urls(self, page=None, language=None, **kwargs):
+        if page and page.reverse_id == 'shop-order-last':
+            return ['shop.urls.order_last']
+        return ['shop.urls.order']
 
 apphook_pool.register(OrderApp)
 

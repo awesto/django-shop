@@ -24,6 +24,7 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateM
     detail_serializer_class = OrderDetailSerializer
     lookup_field = lookup_url_kwarg = 'slug'
     many = True
+    is_last = False
 
     def get_queryset(self):
         return OrderModel.objects.filter_from_request(self.request)
@@ -36,9 +37,9 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateM
     def get_renderer_context(self):
         renderer_context = super(OrderView, self).get_renderer_context()
         if self.request.accepted_renderer.format == 'html':
-            renderer_context['many'] = self.many
-            if self.many is False:
-                # add an extra ance to the breadcrumb
+            renderer_context.update(many=self.many, is_last=self.is_last)
+            if self.many is False and self.is_last is False:
+                # add an extra ance to the breadcrumb to show the order number
                 try:
                     renderer_context['extra_ance'] = self.get_object().get_number()
                 except (AttributeError, PermissionDenied):
@@ -63,15 +64,11 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateM
 
     @never_cache
     def get(self, request, *args, **kwargs):
-        if self.is_last():
-            self.many = False
         if self.many:
             return self.list(request, *args, **kwargs)
         return self.retrieve(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        if self.is_last():
-            self.many = False
         if self.many:
             return self.list(request, *args, **kwargs)
         self.update(request, *args, **kwargs)
@@ -88,10 +85,3 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateM
             return super(OrderView, self).retrieve(request, *args, **kwargs)
         except OrderModel.DoesNotExist:
             raise NotFound("No order has been found for the current user.")
-
-    def is_last(self):
-        """
-        Return true, if the last order shall be rendered.
-        Useful to render a Thank-You view immediately after a purchase.
-        """
-        return self.request.current_page.reverse_id == 'shop-order-last'
