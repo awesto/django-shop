@@ -9,8 +9,8 @@ from cms.cms_menus import SoftRootCutter
 from menus.menu_pool import menu_pool
 
 
-class ProductsListApp(CMSApp):
-    name = _("Products List")
+class CatalogListApp(CMSApp):
+    name = _("Catalog List")
 
     def get_urls(self, page=None, language=None, **kwargs):
         if settings.SHOP_TUTORIAL == 'polymorphic':
@@ -18,9 +18,9 @@ class ProductsListApp(CMSApp):
         elif settings.SHOP_TUTORIAL == 'i18n_commodity':
             return ['myshop.urls.i18n_products']
         else:
-apphook_pool.register(ProductsListApp)
             return ['myshop.urls.simple_products']
 
+apphook_pool.register(CatalogListApp)
 
 
 class ProductSearchApp(CMSApp):
