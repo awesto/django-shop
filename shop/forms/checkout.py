@@ -69,7 +69,7 @@ class GuestForm(UniqueEmailValidationMixin, DialogModelForm):
     def form_factory(cls, request, data, cart):
         customer_form = cls(data=data, instance=request.customer.user)
         if customer_form.is_valid():
-            customer_form.instance.recognize_as_guest(request, commit=False)
+            customer_form.instance.customer.recognize_as_guest(request, commit=False)
             customer_form.save()
         return customer_form
 
