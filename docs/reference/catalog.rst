@@ -33,16 +33,16 @@ whether the e-commerce aspect of that site is the most prominent part or just a 
 select an appropriate location in the page tree and create a new page. This will become the root
 of our catalog list.
 
-But first we must :ref:`reference/create-ProductsListApp`.
+But first we must :ref:`reference/create-CatalogListApp`.
 
 
-.. _reference/create-ProductsListApp:
+.. _reference/create-CatalogListApp:
 
-Create the ``ProductsListApp``
-------------------------------
+Create the ``CatalogListApp``
+-----------------------------
 
 To retrieve a list of product models, the Catalog List View requires a `djangoCMS apphook`_. This
-``ProductsListApp`` must be added into a file named ``cms_apps.py`` and located in the root folder
+``CatalogListApp`` must be added into a file named ``cms_apps.py`` and located in the root folder
 of the merchant's project:
 
 .. code-block:: python
@@ -51,11 +51,13 @@ of the merchant's project:
 	from cms.app_base import CMSApp
 	from cms.apphook_pool import apphook_pool
 
-	class ProductsListApp(CMSApp):
+	class CatalogListApp(CMSApp):
 	    name = _("Catalog List")
-	    urls = ['myshop.urls.products']
 
-	apphook_pool.register(ProductsListApp)
+	    def get_urls(self, page=None, language=None, **kwargs):
+	        return ['myshop.urls.products']
+
+	apphook_pool.register(CatalogListApp)
 
 as all apphooks, it requires a file defining its urlpatterns:
 

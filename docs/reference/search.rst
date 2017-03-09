@@ -246,7 +246,9 @@ In the Search View we link the serializer together with a `djangoCMS apphook`_. 
 
 	class ProductSearchApp(CMSApp):
 	    name = _("Search")
-	    urls = ['myshop.urls.search']
+
+	    def get_urls(self, page=None, language=None, **kwargs):
+	        return ['myshop.urls.search']
 
 	apphook_pool.register(ProductSearchApp)
 
