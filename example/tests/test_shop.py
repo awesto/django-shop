@@ -21,7 +21,7 @@ from shop.models.defaults.customer import Customer
 
 from myshop.models.polymorphic.smartcard import SmartCard
 from myshop.models.manufacturer import Manufacturer
-from myshop.cms_apps import ProductsListApp
+from myshop.cms_apps import CatalogListApp
 
 
 class ShopTestCase(TestCase):
@@ -42,12 +42,12 @@ class ShopTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
         self.shop_page = create_page("Shop", 'INHERIT', 'en', parent=self.home_page, published=True,
-                                     in_navigation=True, apphook=ProductsListApp)
+                                     in_navigation=True, apphook=CatalogListApp)
         response = self.client.get(self.shop_page.get_absolute_url())
         self.assertEqual(response.status_code, 200)
 
         self.smartcards_page = create_page("Smart Cards", 'INHERIT', 'en', parent=self.shop_page,
-                                           published=True, in_navigation=True, apphook=ProductsListApp)
+                                           published=True, in_navigation=True, apphook=CatalogListApp)
         response = self.client.get(self.smartcards_page.get_absolute_url())
         self.assertEqual(response.status_code, 200)
 
