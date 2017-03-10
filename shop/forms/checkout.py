@@ -6,6 +6,7 @@ from django.forms import fields, widgets
 from django.forms.utils import ErrorDict
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
+from django.utils.functional import cached_property
 
 from djng.styling.bootstrap3.forms import Bootstrap3ModelForm
 from djng.styling.bootstrap3.widgets import RadioSelect, RadioFieldRenderer, CheckboxInput
@@ -111,7 +112,7 @@ class AddressForm(DialogModelForm):
     def get_model(cls):
         return cls.Meta.model
 
-    @property
+    @cached_property
     def field_css_classes(self):
         css_classes = {'*': getattr(Bootstrap3ModelForm, 'field_css_classes')}
         for name, field in self.fields.items():
