@@ -23,13 +23,13 @@ class CatalogListApp(CMSApp):
 apphook_pool.register(CatalogListApp)
 
 
-class ProductSearchApp(CMSApp):
-    name = _("Search")
+class CatalogSearchApp(CMSApp):
+    name = _("Catalog Search")
 
     def get_urls(self, page=None, language=None, **kwargs):
         return ['myshop.urls.search']
 
-apphook_pool.register(ProductSearchApp)
+apphook_pool.register(CatalogSearchApp)
 
 
 class OrderApp(CMSApp):

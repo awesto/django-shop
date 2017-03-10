@@ -234,8 +234,8 @@ Search View
 ===========
 
 In the Search View we link the serializer together with a `djangoCMS apphook`_. This
-``ProductSearchApp`` can be added to the same file, we already used to declare the
-``ProductsListApp`` used to render the catalog view:
+``CatalogSearchApp`` can be added to the same file, we already used to declare the
+``CatalogListApp`` used to render the catalog view:
 
 .. code-block:: python
 	:caption: myshop/cms_apps.py
@@ -244,13 +244,13 @@ In the Search View we link the serializer together with a `djangoCMS apphook`_. 
 	from cms.app_base import CMSApp
 	from cms.apphook_pool import apphook_pool
 
-	class ProductSearchApp(CMSApp):
-	    name = _("Search")
+	class CatalogSearchApp(CMSApp):
+	    name = _("Catalog Search")
 
 	    def get_urls(self, page=None, language=None, **kwargs):
 	        return ['myshop.urls.search']
 
-	apphook_pool.register(ProductSearchApp)
+	apphook_pool.register(CatalogSearchApp)
 
 as all apphooks, it requires a file defining its urlpatterns:
 
