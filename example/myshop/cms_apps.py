@@ -2,16 +2,14 @@
 from __future__ import unicode_literals
 
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
-from cms.app_base import CMSApp
 from cms.apphook_pool import apphook_pool
 from cms.cms_menus import SoftRootCutter
 from menus.menu_pool import menu_pool
 
+from shop.cms_apphooks import CatalogListCMSApp, CatalogSearchCMSApp, OrderCMSApp
 
-class CatalogListApp(CMSApp):
-    name = _("Catalog List")
 
+class CatalogListApp(CatalogListCMSApp):
     def get_urls(self, page=None, language=None, **kwargs):
         if settings.SHOP_TUTORIAL == 'polymorphic':
             return ['myshop.urls.polymorphic_products']
@@ -23,23 +21,15 @@ class CatalogListApp(CMSApp):
 apphook_pool.register(CatalogListApp)
 
 
-class CatalogSearchApp(CMSApp):
-    name = _("Catalog Search")
-
+class CatalogSearchApp(CatalogSearchCMSApp):
     def get_urls(self, page=None, language=None, **kwargs):
         return ['myshop.urls.search']
 
 apphook_pool.register(CatalogSearchApp)
 
 
-class OrderApp(CMSApp):
-    name = _("View Orders")
-    cache_placeholders = False
-
-    def get_urls(self, page=None, language=None, **kwargs):
-        if page and page.reverse_id == 'shop-order-last':
-            return ['shop.urls.order_last']
-        return ['shop.urls.order']
+class OrderApp(OrderCMSApp):
+    pass
 
 apphook_pool.register(OrderApp)
 
