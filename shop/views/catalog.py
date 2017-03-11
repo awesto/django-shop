@@ -28,8 +28,8 @@ class ProductListView(generics.ListAPIView):
     This view is used to list all products which shall be visible below a certain URL.
 
     Usage: Add it to the urlpatterns responsible for rendering the catalog's views. The
-    file containing this patterns can be referenced by the CMS apphook ``ProductsListApp``
-    and used by the CMS pages responsible for rendering the catalog's list.
+    file containing this patterns can be referenced by the CMS apphook used by the CMS pages
+    responsible for rendering the catalog's list view.
     ```
     urlpatterns = [
         url(r'^$', ProductListView.as_view()),
@@ -98,7 +98,7 @@ class SyncCatalogView(views.APIView):
         ...
     ]
     ```
-    to the URLs as specified by the merchant's implementation of its ``ProductsListApp``.
+    to the URLs as specified by the merchant's implementation of its catalog list.
 
     The class ``SyncCatalogSerializer`` must be provided by the merchant implementation.
     """
