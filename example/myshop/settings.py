@@ -419,7 +419,11 @@ CMS_PLACEHOLDER_CONF = {
     },
     'Main Content': {
         'plugins': ['BootstrapContainerPlugin', 'BootstrapJumbotronPlugin'],
-        'parent_classes': {'BootstrapContainerPlugin': None, 'BootstrapJumbotronPlugin': None},
+        'parent_classes': {
+            'BootstrapContainerPlugin': None,
+            'BootstrapJumbotronPlugin': None,
+            'TextLinkPlugin': ['TextPlugin', 'AcceptConditionPlugin'],
+        },
         'glossary': CACSCADE_WORKAREA_GLOSSARY,
     },
     'Static Footer': {
