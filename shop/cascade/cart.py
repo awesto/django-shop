@@ -7,17 +7,18 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.html import mark_safe
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.fields import GlossaryField
-from cmsplugin_cascade.mixins import TransparentMixin
+from cmsplugin_cascade.plugin_base import TransparentContainer
+
 from shop import app_settings
 from shop.models.cart import CartModel
-from shop.rest.serializers import CartSerializer
+from shop.serializers.cart import CartSerializer
 from .plugin_base import ShopPluginBase
 
 
-class ShopCartPlugin(TransparentMixin, ShopPluginBase):
+class ShopCartPlugin(TransparentContainer, ShopPluginBase):
     name = _("Cart")
     require_parent = True
-    parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin', 'BootstrapPanelPlugin',)
+    parent_classes = ('BootstrapColumnPlugin',)
     cache = False
     allow_children = True
     CHOICES = (('editable', _("Editable Cart")), ('static', _("Static Cart")),

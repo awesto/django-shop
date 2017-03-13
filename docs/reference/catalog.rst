@@ -4,7 +4,7 @@
 Catalog
 =======
 
-The catalog probably is that part, where customers of our e-commerce site spend the most time.
+The catalog presumably is that part, where customers of our e-commerce site spend the most time.
 Often it even makes sense, to start the :ref:`reference/catalog-list` on the main landing page.
 
 In this documentation we presume that categories of products are built up using specially tagged
@@ -20,7 +20,7 @@ proceed using CMS pages as categories.
 
 A nice aspect of **django-SHOP** is, that it doesn't require the programmer to write any special
 Django Views in order to render the catalog. Instead all merchant dependent business logic goes
-into a serializer, which in this documentation is referred as ``ProductSummarySerializer``.
+into a serializer, which in this documentation is referred as ``ProductSerializer``.
 
 
 .. _reference/catalog-list:
@@ -28,21 +28,21 @@ into a serializer, which in this documentation is referred as ``ProductSummarySe
 Catalog List View
 =================
 
-In this documentation, the catalog list view is implemented as a **djangoCMS** page. Depending on
-whether the e-commerce aspect of that site is the most prominent part, or just a niche of the CMS
+In this documentation, the catalog list view is implemented as a **django-CMS** page. Depending on
+whether the e-commerce aspect of that site is the most prominent part or just a niche of the CMS,
 select an appropriate location in the page tree and create a new page. This will become the root
 of our catalog list.
 
-But first we must :ref:`reference/create-ProductsListApp`.
+But first we must :ref:`reference/create-CatalogListApp`.
 
 
-.. _reference/create-ProductsListApp:
+.. _reference/create-CatalogListApp:
 
-Create the ``ProductsListApp``
-------------------------------
+Create the ``CatalogListApp``
+-----------------------------
 
 To retrieve a list of product models, the Catalog List View requires a `djangoCMS apphook`_. This
-``ProductsListApp`` must be added into a file named ``cms_apps.py`` and located in the root folder
+``CatalogListApp`` must be added into a file named ``cms_apps.py`` and located in the root folder
 of the merchant's project:
 
 .. code-block:: python
@@ -51,11 +51,13 @@ of the merchant's project:
 	from cms.app_base import CMSApp
 	from cms.apphook_pool import apphook_pool
 
-	class ProductsListApp(CMSApp):
+	class CatalogListApp(CMSApp):
 	    name = _("Catalog List")
-	    urls = ['myshop.urls.products']
 
-	apphook_pool.register(ProductsListApp)
+	    def get_urls(self, page=None, language=None, **kwargs):
+	        return ['myshop.urls.products']
+
+	apphook_pool.register(CatalogListApp)
 
 as all apphooks, it requires a file defining its urlpatterns:
 
@@ -66,22 +68,57 @@ as all apphooks, it requires a file defining its urlpatterns:
 	from django.conf.urls import url
 	from rest_framework.settings import api_settings
 	from shop.views.catalog import CMSPageProductListView
-	from myshop.serializers import ProductSummarySerializer
 
 	urlpatterns = [
-	    url(r'^$', CMSPageProductListView.as_view(
-	        serializer_class=ProductSummarySerializer,
+	    url(r'^$', CMSPageProductListView.as_view()),
+	    # other patterns
+	]
+
+By default the ``CMSPageProductListView`` renders the catalog list of products assigned to the
+current CMS page. In this example, only model attributes for fields declared in the default
+``ProductSummarySerializer`` are available in the render context for the used CMS template, as well
+as for a representation in JSON suitable for client side rendered list views. This allows us to
+reuse the same Django View (``CMSPageProductListView``) whenever the catalog list switches into
+infinite scroll mode, where it only requires the product's summary, composed of plain old JavaScript
+objects.
+
+
+.. _reference/customized-product-serializer:
+
+Customized Product Serializer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In case we need :ref:`reference/additional-serializer-fields`, let's add them to this class using
+the `serializer fields`_ from the Django RESTFramework library. This can be useful for product
+serializers which shall provide more information on our catalog list view.
+
+For this customized serializer, we normally only require a few attributes from our model, therefore
+we can write it as:
+
+.. code-block:: python
+
+	from shop.serializers.bases import ProductSerializer
+
+	class CustomizedProductSerializer(ProductSerializer):
+	    class Meta:
+	        model = Product
+	        fields = [all-the-fields-required-for-the-list-view]
+
+Additionally, we have to rewrite the URL pattern from above as:
+
+.. code-block:: python
+
+	from myshop.serializers import CustomizedProductSerializer
+
+	urlpatterns = [
+	    url(CMSPageProductListView.as_view(
+	        serializer_class=CustomizedProductSerializer,
 	    )),
 	    # other patterns
 	]
 
-Here the ``ProductSummarySerializer`` serializes the product models into a representation suitable
-for being rendered inside a CMS page, as well as being converted to JSON. This allows us to reuse
-the same Django View (``CMSPageProductListView``) whenever the catalog list switches into infinite
-scroll mode, where it only requires the product's summary, composed of plain old JavaScript objects.
-
-In case we need :ref:`reference/additional-serializer-fields`, let's add them to this class using
-the `serializer fields`_ from the Django RESTFramework library.
+Here the ``CustomizedProductSerializer`` is a more specialized representation of our product
+model.
 
 
 Add the Catalog to the CMS
@@ -100,7 +137,7 @@ selects the apphook we created in the previous section.
 
 Then we save the page, change into **Structure** mode and locate the placeholder named
 **Main Content**. Add a Container plugin, followed by a Row and then a Column plugin. As the
-child of this column chose the **Catalog List View** plugin from section **Shop**.
+child of this column choose the **Catalog List View** plugin from section **Shop**.
 
 Finally we publish the page. If we have assigned products to that CMS page, they should be rendered
 now.
@@ -152,34 +189,31 @@ requests on all of its sub-URLs. This is done by expanding the current list of u
 
 	from django.conf.urls import url
 	from shop.views.catalog import ProductRetrieveView
-	from myshop.serializers import ProductDetailSerializer
+
+	urlpatterns = [
+	    # previous patterns
+	    url(r'^(?P<slug>[\w-]+)$', ProductRetrieveView.as_view()),
+	    # more patterns
+	]
+
+If we need additional business logic regarding our product, we can create a customized serializer
+class, named for instance ``CustomizedProductDetailSerializer``. This class then may access the
+various attributes of our product model, recombine them and/or merge them into a serializable
+representation, as described in :ref:`reference/customized-product-serializer`.
+
+Additionally, we have to rewrite the URL pattern from above as:
+
+.. code-block:: python
+
+	from myshop.serializers import CustomizedProductDetailSerializer
 
 	urlpatterns = [
 	    # previous patterns
 	    url(r'^(?P<slug>[\w-]+)$', ProductRetrieveView.as_view(
-	        serializer_class=ProductDetailSerializer,
+	        serializer_class=CustomizedProductDetailSerializer,
 	    )),
-	    # other patterns
+	    # more patterns
 	]
-
-All business logic regarding our product now goes into our customized serializer class named
-``ProductDetailSerializer``. This class then may access the various attributes of our product model
-and merge them into a serializable representation.
-
-This serialized representation normally requires all attributes from our model, therefore we can
-write it as simple as:
-
-.. code-block:: python
-
-	from shop.rest.serializers import ProductDetailSerializerBase
-
-	class ProductDetailSerializer(ProductDetailSerializerBase):
-	    class Meta:
-	        model = Product
-	        exclude = ('active',)
-
-In case we need :ref:`reference/additional-serializer-fields`, lets add them to this class using the
-`serializer fields`_ from the Django RESTFramework library.
 
 
 .. _reference/additional-serializer-fields:
@@ -195,7 +229,7 @@ class. This method then may forward the given product to a the built-in renderer
 
 .. code-block:: python
 
-	class ProductDetailSerializer(ProductDetailSerializerBase):
+	class ProductDetailSerializer(BaseProductDetailSerializer):
 	    # other attributes
 
 	    def get_foo(self, product):
@@ -258,7 +292,7 @@ is shipped with a special mixin class, which shall be added to the product's adm
 	@admin.register(Product)
 	class ProductAdmin(CMSPageAsCategoryMixin, admin.ModelAdmin):
 	    fields = ('product_name', 'slug', 'product_code',
-	        'unit_price', 'active', 'description',)
+	              'unit_price', 'active', 'description',)
 	    # other admin declarations
 
 This then adds a horizontal filter widget to the product models. Here the merchant must select

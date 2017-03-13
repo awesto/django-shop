@@ -31,7 +31,7 @@ Alternative User Model
 
 Django's built-in User model lacks a few features required by **django-SHOP**, mainly the
 possibility to use the email address as the login credential. This overridden model is 100% field
-compatible to Django's internal model and even reuses it's own database table, namely ``auth_user``.
+compatible to Django's internal model and even reuses its own database table, namely ``auth_user``.
 
 .. code-block:: python
 
@@ -337,7 +337,7 @@ backend:
 Email settings
 --------------
 
-Having w orking outgoing e-mail service is a fundamental requirement for **django-SHOP**.
+Having a working outgoing e-mail service is a fundamental requirement for **django-SHOP**.
 Adopt these settings to your configuration. Please remember that e-mail is sent asynchronously
 using django-post_office_.
 
@@ -349,6 +349,8 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'My Shop <no-reply@example.com>'
 EMAIL_REPLY_TO = 'info@example.com'
 EMAIL_BACKEND = 'post_office.EmailBackend'
+
+These settings are explained in detail in the Django documentation.
 
 .. _django-post_office: https://pypi.python.org/pypi/django-post_office
 
@@ -411,9 +413,6 @@ accept
 	        'cmsplugin_cascade.link.plugin_base.LinkElementMixin',
 	        'shop.cascade.plugin_base.CatalogLinkForm',
 	    ),
-	    'dependencies': {
-	        'shop/js/admin/shoplinkplugin.js': 'cascade/js/admin/linkpluginbase.js',
-	    },
 	    'alien_plugins': ('TextPlugin', 'TextLinkPlugin',),
 	    'bootstrap3': {
 	        'template_basedir': 'angular-ui',
@@ -439,7 +438,7 @@ a modified link plugin. This has to be enabled using the 3-tuple ``link_plugin_c
 is also a JavaScript helper ``shop/js/admin/shoplinkplugin.js``, which depends on another JavaScript
 file.
 
-**Django-SHOP** uses with AngularJS rather than jQuery to control it's dynamic HTML widgets.
+**Django-SHOP** uses AngularJS rather than jQuery to control its dynamic HTML widgets.
 We therefore have to override the default with this settings:
 ``CMSPLUGIN_CASCADE['bootstrap3']['template_basedir']``.
 

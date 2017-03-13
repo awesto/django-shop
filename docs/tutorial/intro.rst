@@ -32,9 +32,6 @@ system:
 * Node Package Manager: https://www.npmjs.com/
 * Python 2.7 or 3.4 and later
 
-Note: replace ``requirements/common.txt`` with ``requirements/py2.txt`` below
-if you want to use Python 2. We recommend that you use Python 3.
-
 .. code-block:: shell
 
 	$ virtualenv shoptutorial
@@ -44,10 +41,13 @@ if you want to use Python 2. We recommend that you use Python 3.
 	(shoptutorial)$ cd django-shop
 	(shoptutorial)$ pip install -r requirements/common.txt
 	(shoptutorial)$ pip install --no-deps -e .
-	(shoptutorial)$ pip install Django==1.9.10
+	(shoptutorial)$ pip install Django==1.10.5
 	(shoptutorial)$ npm install
 
 These statements will setup an environment that runs one of the demo shops out of the box.
+
+.. note:: We recommend that you use Python 3, but if you stuck with Python-2.7, please note that
+	you have to replace ``requirements/common.txt`` with ``requirements/py2.txt``.
 
 If you want to populate the database with your own categories, products and pages, proceed as
 described below. Otherwise, or if impatient, you may :ref:`tutorial/quickstart` using prepared
@@ -84,11 +84,11 @@ Add some pages to the CMS
 
 In **django-SHOP**, every page, can be rendered by the CMS. Therefore, unless you need a special
 landing page, start immediately with the *Catalog's List View* of your products. Change into the
-Django Admin backend, chose the section
+Django Admin backend, choose the section
 
 **Start > django CMS > Pages**
 
-and add a Page. As its **Title** chose “Smart Cards”. Then change into the **Advanced Settings**
+and add a Page. As its **Title** choose “Smart Cards”. Then change into the **Advanced Settings**
 at the bottom of the page. In this editor window, locate the field **Application** and select
 **Products List**. Then save the page and click on **View on site**.
 

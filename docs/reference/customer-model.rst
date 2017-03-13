@@ -19,7 +19,7 @@ way to the checkout, they decide whether to create a user account, use an existi
 as guest. Here's where things get complicated.
 
 First of all, for non-authenticated site visitors, the cart does not belong to anybody. But each
-cart must be associated with *it's* current site visitor, hence the generic anonymous user object
+cart must be associated with *its* current site visitor, hence the generic anonymous user object
 is not appropriate for this purpose. Unfortunately the Django framework does not offer an explicit
 but anonymous user object based on the assigned session-Id.
 
@@ -29,7 +29,7 @@ database. These kind of users would be regarded as fakes: Unable to log in, rese
 etc. The only information which must be stored for such a faked user, is their email address
 otherwise they couldn't be informed, whenever the state of their order changes.
 
-Django does not explicitly allow such user objects in it's database models. But by using the boolean
+Django does not explicitly allow such user objects in its database models. But by using the boolean
 flag ``is_active``, we can fool an application to interpret such a *guest visitor* as a faked
 anonymous user.
 

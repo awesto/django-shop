@@ -4,14 +4,14 @@ from __future__ import unicode_literals
 from django.contrib.sitemaps import Sitemap
 from django.conf import settings
 
-if settings.SHOP_TUTORIAL in ('commodity', 'i18n_commodity'):
+if settings.SHOP_TUTORIAL in ['i18n_commodity', 'commodity']:
     from shop.models.defaults.commodity import Commodity as Product
-elif settings.SHOP_TUTORIAL == 'smartcard':
-    from myshop.models.smartcard import SmartCard as Product
-elif settings.SHOP_TUTORIAL == 'i18n_smartcard':
-    from myshop.models.i18n_smartcard import SmartCard as Product
-elif settings.SHOP_TUTORIAL == 'polymorphic':
-    from myshop.models.polymorphic.product import Product
+
+elif settings.SHOP_TUTORIAL in ['i18n_smartcard', 'smartcard']:
+    from myshop.models import SmartCard as Product
+
+elif settings.SHOP_TUTORIAL in ['i18n_polymorphic', 'polymorphic']:
+    from myshop.models import Product
 
 
 class ProductSitemap(Sitemap):

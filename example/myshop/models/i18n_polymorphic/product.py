@@ -33,21 +33,45 @@ class Product(CMSPageReferenceMixin, TranslatableModelMixin, BaseProduct):
     our different product types. These common fields are also used to build up the view displaying
     a list of all products.
     """
-    product_name = models.CharField(max_length=255, verbose_name=_("Product Name"))
-    slug = models.SlugField(verbose_name=_("Slug"), unique=True)
+    product_name = models.CharField(
+        _("Product Name"),
+        max_length=255,
+    )
+
+    slug = models.SlugField(
+        _("Slug"),
+        unique=True,
+    )
+
     caption = TranslatedField()
 
     # common product properties
-    manufacturer = models.ForeignKey(Manufacturer, verbose_name=_("Manufacturer"))
+    manufacturer = models.ForeignKey(
+        Manufacturer,
+        verbose_name=_("Manufacturer"),
+    )
 
     # controlling the catalog
-    order = models.PositiveIntegerField(verbose_name=_("Sort by"), db_index=True)
-    cms_pages = models.ManyToManyField('cms.Page', through=ProductPage,
-                                       help_text=_("Choose list view this product shall appear on."))
-    images = models.ManyToManyField('filer.Image', through=ProductImage)
+    order = models.PositiveIntegerField(
+        _("Sort by"),
+        db_index=True,
+    )
+
+    cms_pages = models.ManyToManyField(
+        'cms.Page',
+        through=ProductPage,
+        help_text=_("Choose list view this product shall appear on."),
+    )
+
+    images = models.ManyToManyField(
+        'filer.Image',
+        through=ProductImage,
+    )
 
     class Meta:
         ordering = ('order',)
+        verbose_name = _("Product")
+        verbose_name_plural = _("Products")
 
     objects = ProductManager()
 
@@ -71,11 +95,19 @@ class Product(CMSPageReferenceMixin, TranslatableModelMixin, BaseProduct):
 
 
 class ProductTranslation(TranslatedFieldsModel):
-    master = models.ForeignKey(Product, related_name='translations', null=True)
+    master = models.ForeignKey(
+        Product,
+        related_name='translations',
+        null=True,
+    )
+
     caption = HTMLField(
-        verbose_name=_("Caption"), blank=True, null=True,
+        verbose_name=_("Caption"),
+        blank=True,
+        null=True,
         configuration='CKEDITOR_SETTINGS_CAPTION',
-        help_text=_("Short description used in the catalog's list view of products."))
+        help_text=_("Short description used in the catalog's list view of products."),
+    )
 
     class Meta:
         unique_together = [('language_code', 'master')]

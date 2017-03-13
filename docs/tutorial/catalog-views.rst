@@ -7,10 +7,10 @@ Catalog Views
 Now that we know how to create product models and how to administer them, lets have a look on how
 to route them to our views.
 
-When editing the CMS page used for the products list view, open **Advanced Settings** and chose
+When editing the CMS page used for the products list view, open **Advanced Settings** and choose
 **Products List** from the select box labeled **Application**.
 
-Then chose a template with at least one placeholder_. Click onto **View on site** to change into
+Then choose a template with at least one placeholder_. Click onto **View on site** to change into
 front-end editing mode. Locate the main placeholder and add a **Row** followed by a **Column**
 plugin from the section **Bootstrap**. Below that column add a **Catalog List Views** plugin from
 section **Shop**. Then publish the page, it should not display any products yet.
@@ -72,10 +72,10 @@ it requires some help from the programmer:
     :caption: myshop/product_serializers.py
     :linenos:
 
-    from shop.rest.serializers import ProductSummarySerializerBase
+    from shop.serializers.bases import BaseProductSummarySerializer
     from myshop.models.polymorphic.product import Product
 
-    class ProductSummarySerializer(ProductSummarySerializerBase):
+    class ProductSummarySerializer(BaseProductSummarySerializer):
         class Meta:
             model = Product
             fields = ('id', 'product_name', 'product_url',
@@ -92,7 +92,7 @@ the above class to:
 
     from rest_framework.serializers import SerializerMethodField
 
-    class ProductSummarySerializer(ProductSummarySerializerBase):
+    class ProductSummarySerializer(BaseProductSummarySerializer):
         media = SerializerMethodField()
 
         def get_media(self, product):
@@ -156,14 +156,14 @@ not interested in, rather than naming the fields we want to include. This for th
 view makes sense, since we want to expose every possible detail.
 
 .. code-block:: python
-    :linenos:
+	:linenos:
 
-    from shop.rest.serializers import ProductDetailSerializerBase
+	from shop.serializers.bases import BaseProductDetailSerializer
 
-    class ProductDetailSerializer(ProductDetailSerializerBase):
-        class Meta:
-            model = Product
-            exclude = ('active',)
+	class ProductDetailSerializer(BaseProductDetailSerializer):
+	    class Meta:
+	        model = Product
+	        exclude = ('active',)
 
 
 .. _RESTful: https://en.wikipedia.org/wiki/Representational_state_transfer

@@ -172,6 +172,8 @@ class CMSPageReferenceMixin(object):
     being accessed directly through a canonical URL. Add this mixin class for adding a
     ``get_absolute_url()`` method to any to product model.
     """
+    category_fields = ['cms_pages']  # used by ProductIndex to fill the categories
+
     def get_absolute_url(self):
         """
         Return the absolute URL of a product

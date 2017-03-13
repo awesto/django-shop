@@ -37,14 +37,15 @@ class User(AbstractUser):
         db_table = 'auth_user'
         verbose_name = _("Customer")
         verbose_name_plural = _("Customers")
+        swappable = 'AUTH_USER_MODEL'
 
     def get_username(self):
-        if self.is_staff:
-            return self.username
-        return self.email or '<anonymous>'
+        return self.email
 
     def __str__(self):
-        return self.get_username()
+        if self.is_staff or self.is_superuser:
+            return self.username
+        return self.email or '<anonymous>'
 
     def get_full_name(self):
         full_name = super(User, self).get_full_name()

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from django.forms import widgets
 from django.forms.fields import CharField
 from django.forms.models import ModelForm
@@ -8,14 +9,15 @@ from django.utils.text import Truncator
 from django.utils.html import format_html
 from django.forms.fields import IntegerField
 from django.template.loader import select_template
+
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.forms import ManageChildrenFormMixin
 from cmsplugin_cascade.fields import GlossaryField
 from cmsplugin_cascade.link.forms import TextLinkFormMixin
-from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.widgets import NumberInputWidget
 from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
-from cmsplugin_cascade.mixins import TransparentMixin
+from cmsplugin_cascade.plugin_base import TransparentWrapper, TransparentContainer
+
 from shop import app_settings
 from shop.cascade.plugin_base import ShopPluginBase
 
@@ -27,10 +29,11 @@ class ProcessBarForm(ManageChildrenFormMixin, ModelForm):
         help_text=_("Number of steps for this proceed bar."))
 
 
-class ProcessBarPlugin(TransparentMixin, ShopPluginBase):
+class ProcessBarPlugin(TransparentWrapper, ShopPluginBase):
     name = _("Process Bar")
     form = ProcessBarForm
-    parent_classes = ('BootstrapRowPlugin', 'BootstrapColumnPlugin',)
+    parent_classes = ('BootstrapColumnPlugin',)
+    direct_child_classes = ('ProcessStepPlugin',)
     require_parent = True
     allow_children = True
 
@@ -63,9 +66,9 @@ class ProcessBarPlugin(TransparentMixin, ShopPluginBase):
 plugin_pool.register_plugin(ProcessBarPlugin)
 
 
-class ProcessStepPlugin(TransparentMixin, ShopPluginBase):
+class ProcessStepPlugin(TransparentContainer, ShopPluginBase):
     name = _("Process Step")
-    parent_classes = ('ProcessBarPlugin',)
+    direct_parent_classes = parent_classes = ('ProcessBarPlugin',)
     require_parent = True
     allow_children = True
     alien_child_classes = True
@@ -80,7 +83,7 @@ class ProcessStepPlugin(TransparentMixin, ShopPluginBase):
         identifier = super(ProcessStepPlugin, cls).get_identifier(obj)
         content = obj.glossary.get('step_title', '')
         if content:
-            content = unicode(Truncator(content).words(3, truncate=' ...'))
+            content = Truncator(content).words(3, truncate=' ...')
         else:
             content = obj.get_position_in_placeholder()
         return format_html('{0}{1}', identifier, content)
@@ -103,13 +106,16 @@ class ProcessNextStepPlugin(BootstrapButtonMixin, ShopPluginBase):
     name = _("Next Step Button")
     parent_classes = ('ProcessStepPlugin',)
     form = ProcessNextStepForm
-    model_mixins = (LinkElementMixin,)
     fields = ('link_content', 'glossary')
+    ring_plugin = 'ProcessNextStepPlugin'
     glossary_field_order = ('button_type', 'button_size', 'button_options', 'quick_float',
-                            'icon_left', 'icon_right')
+                            'icon_align', 'icon_font', 'symbol')
 
     class Media:
-        css = {'all': ('cascade/css/admin/bootstrap.min.css', 'cascade/css/admin/bootstrap-theme.min.css',)}
+        css = {'all': ('cascade/css/admin/bootstrap.min.css',
+                       'cascade/css/admin/bootstrap-theme.min.css',
+                       'cascade/css/admin/iconplugin.css',)}
+        js = ['shop/js/admin/nextstepplugin.js']
 
     @classmethod
     def get_identifier(cls, obj):

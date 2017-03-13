@@ -1,10 +1,10 @@
 {% load i18n menu_tags %}{% spaceless %}
 {% if languages|length > 1 %}
-<li class="dropdown {{ dropdown_extra_class }}" dropdown>
-	<a class="dropdown-toggle" dropdown-toggle><i class="fa fa-language"></i>&nbsp;{% trans "Language" %} <b class="caret"></b></a>
-	<ul class="dropdown-menu" role="menu">
+<li class="dropdown {{ dropdown_extra_class }}" uib-dropdown>
+	<a class="dropdown-toggle" uib-dropdown-toggle><i class="fa fa-language"></i>&nbsp;{% trans "Language" %} <b class="caret"></b></a>
+	<ul uib-dropdown-menu class="dropdown-menu" role="menu" aria-labelledby="single-button">
 	{% for language in languages %}
-		<li{% ifequal current_language language.0 %} class="active"{% endifequal %}>
+		<li{% ifequal current_language language.0 %} class="active"{% endifequal %} role="menuitem">
 			<a href="{% page_language_url language.0 %}" title="{{ language.1 }}">{{ language.1 }}</a>
 		</li>
 	{% endfor %}

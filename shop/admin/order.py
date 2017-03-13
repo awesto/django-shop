@@ -12,12 +12,14 @@ from django.template.loader import select_template
 from django.utils.html import format_html
 from django.utils.formats import number_format
 from django.utils.translation import pgettext_lazy
+
 from fsm_admin.mixins import FSMTransitionMixin
+
 from shop import app_settings
 from shop.models.customer import CustomerModel
 from shop.models.order import OrderItemModel, OrderPayment
 from shop.modifiers.pool import cart_modifiers_pool
-from shop.rest import serializers
+from shop.serializers.order import OrderDetailSerializer
 
 
 class OrderPaymentInline(admin.TabularInline):
@@ -46,7 +48,7 @@ class OrderItemInline(admin.StackedInline):
         ('product_code', 'unit_price', 'line_total',), ('quantity',), 'render_as_html_extra',
     )
     readonly_fields = ('product_code', 'quantity', 'unit_price', 'line_total', 'render_as_html_extra',)
-    template = 'shop/admin/edit_inline/stacked.html'
+    template = 'shop/admin/edit_inline/stacked-order.html'
 
     def has_add_permission(self, request, obj=None):
         return False
@@ -140,15 +142,15 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
     get_customer_link.short_description = pgettext_lazy('admin', "Customer")
 
     def get_search_fields(self, request):
-        fields = super(BaseOrderAdmin, self).get_search_fields(request) + \
-            ('customer__user__email', 'customer__user__last_name',)
+        search_fields = list(super(BaseOrderAdmin, self).get_search_fields(request))
+        search_fields.extend(['customer__user__email', 'customer__user__last_name'])
         try:
             # if CustomerModel contains a number field, let search for it
             if isinstance(CustomerModel._meta.get_field('number'), Field):
-                fields += ('customer__number',)
+                search_fields.append('customer__number')
         except FieldDoesNotExist:
             pass
-        return fields
+        return search_fields
 
 
 class PrintOrderAdminMixin(object):
@@ -157,12 +159,12 @@ class PrintOrderAdminMixin(object):
     methods for printing the delivery note and the invoice.
     """
     def get_fields(self, request, obj=None):
-        fields = list(super(PrintOrderAdminMixin, self).get_fields(request))
+        fields = list(super(PrintOrderAdminMixin, self).get_fields(request, obj))
         fields.append('print_out')
         return fields
 
     def get_readonly_fields(self, request, obj=None):
-        readonly_fields = list(super(PrintOrderAdminMixin, self).get_readonly_fields(request))
+        readonly_fields = list(super(PrintOrderAdminMixin, self).get_readonly_fields(request, obj))
         readonly_fields.append('print_out')
         return readonly_fields
 
@@ -178,9 +180,10 @@ class PrintOrderAdminMixin(object):
     def _render_letter(self, request, pk, template):
         order = self.get_object(request, pk)
         context = {'request': request, 'render_label': 'print'}
-        order_serializer = serializers.OrderDetailSerializer(order, context=context)
+        customer_serializer = app_settings.CUSTOMER_SERIALIZER(order.customer)
+        order_serializer = OrderDetailSerializer(order, context=context)
         content = template.render(RequestContext(request, {
-            'customer': serializers.CustomerSerializer(order.customer).data,
+            'customer': customer_serializer.data,
             'data': order_serializer.data,
             'order': order,
         }))
@@ -219,8 +222,8 @@ class OrderAdmin(BaseOrderAdmin):
     """
     Admin class to be used with `shop.models.defauls.order`
     """
-    def get_fields(self, request):
-        fields = list(super(OrderAdmin, self).get_fields(request))
+    def get_fields(self, request, obj=None):
+        fields = list(super(OrderAdmin, self).get_fields(request, obj))
         fields.extend(['shipping_address_text', 'billing_address_text'])
         return fields
 

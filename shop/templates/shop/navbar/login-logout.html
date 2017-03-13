@@ -6,11 +6,12 @@
 
 {% page_url 'shop-order' as shop_order_url %}
 {% page_url 'shop-customer-details' as customer_details_url %}
+{% page_url 'shop-password-change' as password_change_url %}
 {% page_url 'shop-password-reset' as password_reset_url %}
 {% page_url 'shop-register-customer' as register_customer_url %}
 
-<li class="dropdown {{ dropdown_extra_class }}" dropdown auto-close="outsideClick">
-	<a class="dropdown-toggle" dropdown-toggle>
+<li class="dropdown {{ dropdown_extra_class }}" uib-dropdown{% if customer.is_anonymous %} auto-close="disabled{# retest with outsideClick #}"{% endif %}>
+	<a class="dropdown-toggle" uib-dropdown-toggle>
 	{% if customer.is_authenticated %}
 		<i class="fa fa-user"></i>&nbsp;{{ customer.first_name|default:customer }}
 	{% else %}
@@ -18,17 +19,20 @@
 	{% endif %}<b class="caret"></b></a>
 	<ul class="dropdown-menu shop-dropdown-forms">
 	{% if customer.is_authenticated %}
-		<shop-auth-form ng-form action="RELOAD_PAGE" role="form">
+		<shop-auth-form name="logout_form" ng-form action="RELOAD_PAGE" role="form">
 			<button class="btn btn-primary btn-block" type="button" ng-click="submitForm('{% url "shop:logout" %}')">{% trans "Logout" %}</button>
 		</shop-auth-form>
 		{% if shop_order_url %}
-		<li><a href="{{ shop_order_url }}">{% page_attribute "page_title" "shop-order" %}</a></li>
+		<li><a href="{{ shop_order_url }}">{% page_attribute "menu_title" "shop-order" %}</a></li>
 		{% endif %}
 		{% if customer_details_url %}
-		<li><a href="{{ customer_details_url }}">{% page_attribute "page_title" "shop-customer-details" %}</a></li>
+		<li><a href="{{ customer_details_url }}">{% page_attribute "menu_title" "shop-customer-details" %}</a></li>
+		{% endif %}
+		{% if password_change_url %}
+		<li><a href="{{ password_change_url }}">{% page_attribute "menu_title" "shop-password-change" %}</a></li>
 		{% endif %}
 	{% else %}
-		<shop-auth-form ng-form name="auth_form" action="RELOAD_PAGE" accept-charset="UTF-8" role="form">
+		<shop-auth-form ng-form name="auth_form" action="RELOAD_PAGE" accept-charset="UTF-8" role="form" form-submit-url="{% url "shop:login" %}">
 			<div class="alert alert-danger" ng-show="error_message" ng-cloak>
 				<a class="close" ng-click="dismiss()">×</a>{% verbatim %}{{ error_message }}{% endverbatim %}
 			</div>
@@ -46,7 +50,7 @@
 					<input class="form-control input-sm" type="password" placeholder="{% trans 'Password' %}" name="password" ng-model="form_data.password">
 				</div>
 			</div>
-			<button class="btn btn-primary btn-block" type="button" ng-click="submitForm('{% url "shop:login" %}')">{% trans "Login" %}</button>
+			<button class="btn btn-primary btn-block" type="button" ng-click="submitForm()">{% trans "Login" %}</button>
 		</shop-auth-form>
 		{% if password_reset_url or register_customer_url %}
 		<li role="separator" class="divider"></li>

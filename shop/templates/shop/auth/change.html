@@ -5,19 +5,29 @@
 
 {% block form_content %}
 	{{ block.super }}
-<label class="control-label">{% trans "New Password" %}</label>
-<div style="margin-bottom: 25px" class="input-group">
-	<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
-	<input type="password" class="form-control" name="new_password1" ng-model="form_data.new_password1" placeholder="{% trans 'New Password' %}" />
+<div class="form-group has-feedback" style="margin-bottom: 25px;">
+	<label class="control-label">{% trans "New Password" %}</label>
+	<div class="input-group">
+		<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+		<input type="password" class="form-control" name="new_password1" ng-model="form_data.new_password1" placeholder="{% trans 'New Password' %}" />
+	</div>
+	<ul ng-messages="{{ form_name }}.new_password1.$error" ng-show="{{ form_name }}.new_password1.$pristine" class="shop-form-error" ng-cloak>
+		<li ng-message="rejected"><span ng-bind="{{ form_name }}.new_password1.$message"></span></li>
+	</ul>
 </div>
 
-<label class="control-label">{% trans "Confirm Password" %}</label>
-<div style="margin-bottom: 25px" class="input-group">
-	<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
-	<input type="password" class="form-control" name="new_password2" ng-model="form_data.new_password2" placeholder="{% trans 'Confirm Password' %}" />
+<div class="form-group has-feedback" style="margin-bottom: 25px;">
+	<label class="control-label">{% trans "Confirm Password" %}</label>
+	<div class="input-group">
+		<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+		<input type="password" class="form-control" name="new_password2" ng-model="form_data.new_password2" placeholder="{% trans 'Confirm Password' %}" />
+	</div>
+	<ul ng-messages="{{ form_name }}.new_password2.$error" ng-show="{{ form_name }}.new_password2.$pristine" class="shop-form-error" ng-cloak>
+		<li ng-message="rejected"><span ng-bind="{{ form_name }}.new_password2.$message"></span></li>
+	</ul>
 </div>
 
 <div class="form-group">
-	<button type="button" ng-click="submitForm('{% url 'shop:password-change' %}', 5000)" class="btn btn-primary">{% trans "Submit Changes" %}</button>
+	<button type="button" ng-click="submitForm('{% url "shop:password-change" %}', 2000)" class="btn btn-primary">{% trans "Submit Changes" %}</button>
 </div>
 {% endblock form_content %}

@@ -3,7 +3,7 @@ from django.test import TestCase
 
 import json
 
-from myshop.models.polymorphic.product import Product
+from myshop.models import Product
 from myshop.models.manufacturer import Manufacturer
 
 

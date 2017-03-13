@@ -1,6 +1,11 @@
+{% extends "shop/checkout/dialog-base.html" %}
+{% block dialog_form %}
 <form name="{{ customer_form.form_name }}" novalidate>
 	<fieldset>
+	{% if headline_legend %}
 		<legend>{{ customer_form.legend }}</legend>
+	{% endif %}
 		{{ customer_form.as_div }}
 	</fieldset>
 </form>
+{% endblock %}

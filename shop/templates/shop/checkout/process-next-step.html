@@ -1,7 +1,9 @@
 {% extends "shop/checkout/dialog-base.html" %}
+{% load sekizai_tags %}
 
 {% block dialog_form %}
-	{% with instance_css_classes=instance.css_classes instance_inline_styles=instance.inline_styles %}
-	<button shop-dialog-proceed ng-click="nextStep(proceed())" ng-disabled="stepIsValid===false" {% if instance_css_classes %} class="{{ instance_css_classes }}"{% endif %}{% if instance_inline_styles %} style="{{ instance_inline_styles }}"{% endif %}>{{ icon_left }}{{ instance.content }}{{ icon_right }}</button>
+{% if stylesheet_url %}{% addtoblock "css" %}<link href="{{ stylesheet_url }}" rel="stylesheet" type="text/css" />{% endaddtoblock %}{% endif %}
+	{% with instance_css_classes=instance.css_classes instance_inline_styles=instance.inline_styles instance_content=instance.glossary.link_content%}
+	<button shop-dialog-proceed ng-click="nextStep(proceed())" ng-disabled="stepIsValid===false" {% if instance_css_classes %} class="{{ instance_css_classes }}"{% endif %}{% if instance_inline_styles %} style="{{ instance_inline_styles }}"{% endif %}>{{ icon_left }}{{ instance_content }}{{ icon_right }}</button>
 	{% endwith %}
 {% endblock %}

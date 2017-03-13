@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django import get_version
 from django.apps import AppConfig
 from django.utils.translation import ugettext_lazy as _
 
@@ -25,8 +24,3 @@ class ShopConfig(AppConfig):
 
         # perform some sanity checks
         ForeignKeyBuilder.check_for_pending_mappings()
-
-
-def get_tuple_version(version=None):
-    version = version or get_version()
-    return tuple(map(lambda n: int(n), version.split('.')))

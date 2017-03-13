@@ -18,6 +18,7 @@ class ProductIndex(indexes.SearchIndex):
     autocomplete = indexes.EdgeNgramField(use_template=True)
     product_name = indexes.CharField(stored=True, indexed=False, model_attr='product_name')
     product_url = indexes.CharField(stored=True, indexed=False, model_attr='get_absolute_url')
+    categories = indexes.MultiValueField(stored=True, indexed=False)
 
     def get_model(self):
         """
@@ -32,6 +33,11 @@ class ProductIndex(indexes.SearchIndex):
         with translation.override(self.language):
             data = super(ProductIndex, self).prepare(product)
         return data
+
+    def prepare_categories(self, product):
+        category_fields = getattr(product, 'category_fields', [])
+        category_ids = set(page.pk for field in category_fields for page in getattr(product, field).all())
+        return category_ids
 
     def render_html(self, prefix, product, postfix):
         """
