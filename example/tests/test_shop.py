@@ -19,7 +19,7 @@ from shop.models.defaults.mapping import ProductPage
 from shop.models.customer import CustomerState
 from shop.models.defaults.customer import Customer
 
-from myshop.models.polymorphic.smartcard import SmartCard
+from myshop.models import SmartCard
 from myshop.models.manufacturer import Manufacturer
 from myshop.cms_apps import CatalogListApp
 
