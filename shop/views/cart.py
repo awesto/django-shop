@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.db.models.query import QuerySet
 from django.utils.cache import add_never_cache_headers
 from rest_framework import viewsets
-from rest_framework.decorators import list_route
+from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from shop.models.cart import CartModel, CartItemModel
 from shop.serializers.cart import CartSerializer, CartItemSerializer, WatchSerializer, WatchItemSerializer
@@ -44,6 +44,10 @@ class CartViewSet(BaseViewSet):
     serializer_label = 'cart'
     serializer_class = CartSerializer
     item_serializer_class = CartItemSerializer
+
+    @detail_route(methods=['post'])
+    def post(self, *args, **kwargs):
+        return self.update(*args, **kwargs)
 
     @list_route(methods=['get'])
     def update_caption(self, request):
