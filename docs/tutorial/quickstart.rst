@@ -159,9 +159,13 @@ The Polymorphic Product Model
 -----------------------------
 
 The ``polymorphic`` demo is a combination from all of the examples from above. Here we declare a
-base product model using the class :class:`myshop.models.polymorphic.Product`. We also declare
-common fields available in all of our different product types. These common fields are used to build
-up the view displaying a list of all products.
+base product model using the class :class:`myshop.models.polymorphic_.Product`. We also declare
+common fields available in all of our different product types. These fields act as the smallest
+common denominator for the views where we want to display summary information about our products,
+independently of their characteristics.
+
+List views showing a summary information about our products are the *Cart View*, the *Order Detail
+View* and eventually the *Catalog List View*.
 
 The model classes for Smart Card, Smart Phone and a variation of Commodity then inherit from this
 base product class. These models additionally can declare attributes required to describe the
@@ -170,14 +174,33 @@ for the detail views of each of them. Since Smart Phones allow product variation
 adopt the template for adding the product to the cart.
 
 
+The Internationalized Polymorphic Product Model
+-----------------------------------------------
+
+The ``i18n_polymorphic`` demo is a variation of the above example, with a few attributes translated
+into multiple languages, namely ``caption`` and ``description``. This sample implementation does not
+use translated slugs, although this would be possible.
+
+
 Use one of the demos as a starting point for your project
 =========================================================
 
-Depending on the needs of your e-commerce site, the easiest approach to start with **django-SHOP**
-is to use the demo which is most similar to one of the five from above. Then by copying example,
-create a repository of the merchant's implementation. Starting from a working example and gradually
-modifying it until reaching your final goals, typically is much easier than starting from scratch.
-It also is the preferred way during agile development.
+Depending on the needs of your e-commerce site, the easiest approach to start with your
+implementation of **django-SHOP**, is to use one of the six demo samples from above:
+
+* If you only require a free form product description, go ahead with the ``commodity`` or
+  ``i18n_commodity`` sample.
+* If you need a shop with one specific product type, then go ahead with the ``smartcard`` or
+  ``i18n_smartcard`` sample. Rename the product model to whatever makes sense and add additional
+  fields to describe the properties of your model.
+* If you need a shop with different product types, then go ahead with the ``polymorphic`` or
+  ``i18n_polymorphic`` sample. Specify the common fields in the product's base class and
+  add additional fields to describe the properties each of your product model.
+
+It also is suggested to reuse the current structure of CMS pages and placeholders from the given
+sample. Having a working implementation you may gradually modifying it until reaching your final
+goal. Typically this approach is much easier than starting from scratch and also is the preferred
+way during agile development.
 
 
 .. _Docker runtime environment: https://docs.docker.com/windows/

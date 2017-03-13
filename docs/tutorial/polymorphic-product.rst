@@ -44,7 +44,7 @@ and polymorphic models:
 .. _django-polymorphic: https://django-polymorphic.readthedocs.org/
 .. _Model Manager: https://docs.djangoproject.com/en/stable/topics/db/managers/
 
-.. literalinclude:: /../example/myshop/models/polymorphic/product.py
+.. literalinclude:: /../example/myshop/models/polymorphic_/product.py
     :caption: myshop/models/i18n/polymorphic/product.py
     :name: polymorphic-demo-model
     :linenos:
@@ -56,7 +56,7 @@ model. Unfortunately, there is no silver bullet for this problem and that's one 
 **django-SHOP** is shipped without any prepared model for it. If we want to sell both Smart Cards
 and Smart Phones, then this Product model may do its jobs:
 
-.. literalinclude:: /../example/myshop/models/polymorphic/product.py
+.. literalinclude:: /../example/myshop/models/polymorphic_/product.py
     :caption: myshop/models/i18n/polymorphic/product.py
     :linenos:
     :language: python
@@ -69,7 +69,7 @@ Model for Smart Card
 The model used to store translated fields is the same as in our last example. The new model for
 Smart Cards now inherits from Product:
 
-.. literalinclude:: /../example/myshop/models/polymorphic/smartcard.py
+.. literalinclude:: /../example/myshop/models/polymorphic_/smartcard.py
     :caption: myshop/models/i18n/polymorphic/smartcard.py
     :linenos:
     :language: python
@@ -96,7 +96,7 @@ This means that for some Smart Phone models, there is be more than one *Add to c
 When modeling, we therefore require two different classes, one for the Smart Phone model and one
 for each Smart Phone variation.
 
-.. literalinclude:: /../example/myshop/models/polymorphic/smartphone.py
+.. literalinclude:: /../example/myshop/models/polymorphic_/smartphone.py
     :caption: myshop/models/polymorphic/smartphone.py
     :linenos:
     :language: python
@@ -107,7 +107,7 @@ product. In this situation, most merchants extol the prices as: *Price starting 
 
 The concrete Smart Phone then is modeled as:
 
-.. literalinclude:: /../example/myshop/models/polymorphic/smartphone.py
+.. literalinclude:: /../example/myshop/models/polymorphic_/smartphone.py
     :linenos:
     :language: python
     :lines: 94-103
