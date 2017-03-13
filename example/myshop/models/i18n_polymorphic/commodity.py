@@ -13,11 +13,17 @@ class Commodity(Product):
     """
     This Commodity model inherits from polymorphic Product, and therefore has to be redefined.
     """
+    unit_price = MoneyField(
+        _("Unit price"),
+        decimal_places=3,
+        help_text=_("Net price for this product"),
+    )
 
-    # common product fields
-    unit_price = MoneyField(_("Unit price"), decimal_places=3,
-                            help_text=_("Net price for this product"))
-    product_code = models.CharField(_("Product code"), max_length=255, unique=True)
+    product_code = models.CharField(
+        _("Product code"),
+        max_length=255,
+        unique=True,
+    )
 
     # controlling the catalog
     placeholder = PlaceholderField("Commodity Details")

@@ -10,55 +10,35 @@ from django.utils.translation import ugettext_lazy as _
 from adminsortable2.admin import SortableAdminMixin, PolymorphicSortableAdminMixin
 
 from cms.admin.placeholderadmin import PlaceholderAdminMixin, FrontendEditableAdminMixin
-from parler.admin import TranslatableAdmin
 from polymorphic.admin import (PolymorphicParentModelAdmin, PolymorphicChildModelAdmin,
                                PolymorphicChildModelFilter)
 
 from shop.admin.product import CMSPageAsCategoryMixin, ProductImageInline, CMSPageFilter
 
 from myshop.models import Product, Commodity, SmartCard, SmartPhone, SmartPhoneModel
-from myshop.models.i18n_polymorphic.smartphone import OperatingSystem
+from myshop.models.polymorphic_.smartphone import OperatingSystem
 
 
-class CommodityAdmin(SortableAdminMixin, TranslatableAdmin, FrontendEditableAdminMixin,
-                     PlaceholderAdminMixin, CMSPageAsCategoryMixin, admin.ModelAdmin):
+class CommodityAdmin(SortableAdminMixin, FrontendEditableAdminMixin, PlaceholderAdminMixin,
+                     CMSPageAsCategoryMixin, admin.ModelAdmin):
     """
     Since our Commodity model inherits from polymorphic Product, we have to redefine its admin class.
     """
     base_model = Product
-    fieldsets = (
-        (None, {
-            'fields': ('product_name', 'slug', 'product_code', 'unit_price', 'active',),
-        }),
-        (_("Translatable Fields"), {
-            'fields': ('caption',)
-        }),
-        (_("Properties"), {
-            'fields': ('manufacturer',)
-        }),
-    )
+    fields = ['product_name', 'slug', 'product_code', 'unit_price', 'active', 'caption', 'manufacturer']
     filter_horizontal = ('cms_pages',)
     inlines = (ProductImageInline,)
-    prepopulated_fields = {'slug': ('product_name',)}
+    prepopulated_fields = {'slug': ['product_name']}
 
 
-class SmartCardAdmin(SortableAdminMixin, TranslatableAdmin, FrontendEditableAdminMixin,
+class SmartCardAdmin(SortableAdminMixin, FrontendEditableAdminMixin,
                      CMSPageAsCategoryMixin, PlaceholderAdminMixin, PolymorphicChildModelAdmin):
     base_model = Product
-    fieldsets = (
-        (None, {
-            'fields': ('product_name', 'slug', 'product_code', 'unit_price', 'active',),
-        }),
-        (_("Translatable Fields"), {
-            'fields': ('caption', 'description',)
-        }),
-        (_("Properties"), {
-            'fields': ('manufacturer', 'storage', 'card_type', 'speed',)
-        }),
-    )
-    filter_horizontal = ('cms_pages',)
+    fields = ['product_name', 'slug', 'product_code', 'unit_price', 'active', 'caption',
+              'description', 'manufacturer', 'storage', 'card_type', 'speed']
+    filter_horizontal = ['cms_pages']
     inlines = (ProductImageInline,)
-    prepopulated_fields = {'slug': ('product_name',)}
+    prepopulated_fields = {'slug': ['product_name']}
 
 admin.site.register(OperatingSystem, admin.ModelAdmin)
 
@@ -68,23 +48,13 @@ class SmartPhoneInline(admin.TabularInline):
     extra = 0
 
 
-class SmartPhoneAdmin(SortableAdminMixin, TranslatableAdmin, FrontendEditableAdminMixin,
-                      CMSPageAsCategoryMixin, PlaceholderAdminMixin, PolymorphicChildModelAdmin):
+class SmartPhoneAdmin(SortableAdminMixin, FrontendEditableAdminMixin, CMSPageAsCategoryMixin,
+                      PlaceholderAdminMixin, PolymorphicChildModelAdmin):
     base_model = Product
-    fieldsets = (
-        (None, {
-            'fields': ('product_name', 'slug', 'active',),
-        }),
-        (_("Translatable Fields"), {
-            'fields': ('caption', 'description',)
-        }),
-        (_("Properties"), {
-            'fields': ('manufacturer', 'battery_type', 'battery_capacity', 'ram_storage',
-                       'wifi_connectivity', 'bluetooth', 'gps', 'operating_system',
-                       ('width', 'height', 'weight',), 'screen_size'),
-        }),
-    )
-    filter_horizontal = ('cms_pages',)
+    fields = ['product_name', 'slug', 'active', 'caption', 'description', 'manufacturer',
+              'battery_type', 'battery_capacity', 'ram_storage', 'wifi_connectivity', 'bluetooth',
+              'gps', 'operating_system', ('width', 'height', 'weight'), 'screen_size']
+    filter_horizontal = ['cms_pages']
     inlines = (ProductImageInline, SmartPhoneInline,)
     prepopulated_fields = {'slug': ('product_name',)}
 

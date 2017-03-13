@@ -11,7 +11,7 @@ from shop.cms_apphooks import CatalogListCMSApp, CatalogSearchCMSApp, OrderCMSAp
 
 class CatalogListApp(CatalogListCMSApp):
     def get_urls(self, page=None, language=None, **kwargs):
-        if settings.SHOP_TUTORIAL == 'polymorphic':
+        if settings.SHOP_TUTORIAL in ['i18n_polymorphic', 'polymorphic']:
             return ['myshop.urls.polymorphic_products']
         elif settings.SHOP_TUTORIAL == 'i18n_commodity':
             return ['myshop.urls.i18n_products']

@@ -6,8 +6,7 @@ from rest_framework.fields import empty
 from shop.serializers.bases import ProductSerializer
 from shop.serializers.defaults import AddToCartSerializer
 
-from myshop.models.polymorphic.smartcard import SmartCard
-from myshop.models.polymorphic.smartphone import SmartPhoneModel
+from myshop.models import SmartCard, SmartPhoneModel
 
 
 class SmartCardSerializer(ProductSerializer):

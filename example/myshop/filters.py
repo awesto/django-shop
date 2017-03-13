@@ -6,8 +6,8 @@ from django.utils.translation import ugettext_lazy as _
 import django_filters
 from djng.forms import NgModelFormMixin
 from djng.styling.bootstrap3.forms import Bootstrap3Form
-from .models.manufacturer import Manufacturer
-from .models.polymorphic.product import Product
+from myshop.models.manufacturer import Manufacturer
+from myshop.models import Product
 
 
 class FilterForm(NgModelFormMixin, Bootstrap3Form):

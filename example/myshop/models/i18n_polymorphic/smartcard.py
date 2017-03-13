@@ -12,22 +12,46 @@ from .product import Product
 
 class SmartCard(Product):
     # common product fields
-    unit_price = MoneyField(_("Unit price"), decimal_places=3,
-                            help_text=_("Net price for this product"))
+    unit_price = MoneyField(
+        _("Unit price"),
+        decimal_places=3,
+        help_text=_("Net price for this product"),
+    )
 
     # product properties
     CARD_TYPE = (2 * ('{}{}'.format(s, t),)
                  for t in ('SD', 'SDXC', 'SDHC', 'SDHC II') for s in ('', 'micro '))
-    card_type = models.CharField(_("Card Type"), choices=CARD_TYPE, max_length=15)
+    card_type = models.CharField(
+        _("Card Type"),
+        choices=CARD_TYPE,
+        max_length=15,
+    )
+
     SPEED = [(str(s), "{} MB/s".format(s)) for s in (4, 20, 30, 40, 48, 80, 95, 280)]
-    speed = models.CharField(_("Transfer Speed"), choices=SPEED, max_length=8)
-    product_code = models.CharField(_("Product code"), max_length=255, unique=True)
-    storage = models.PositiveIntegerField(_("Storage Capacity"),
-                                          help_text=_("Storage capacity in GB"))
+    speed = models.CharField(
+        _("Transfer Speed"),
+        choices=SPEED,
+        max_length=8,
+    )
+
+    product_code = models.CharField(
+        _("Product code"),
+        max_length=255,
+        unique=True,
+    )
+
+    storage = models.PositiveIntegerField(
+        _("Storage Capacity"),
+        help_text=_("Storage capacity in GB"),
+    )
+
     multilingual = TranslatedFields(
-        description=HTMLField(verbose_name=_("Description"),
-                              configuration='CKEDITOR_SETTINGS_DESCRIPTION',
-                              help_text=_("Full description used in the catalog's detail view of Smart Cards.")))
+        description=HTMLField(
+            verbose_name=_("Description"),
+            configuration='CKEDITOR_SETTINGS_DESCRIPTION',
+            help_text=_("Full description used in the catalog's detail view of Smart Cards."),
+        ),
+    )
 
     default_manager = TranslatableManager()
 
