@@ -162,16 +162,17 @@ The ``polymorphic`` demo is a combination from all of the examples from above. H
 base product model using the class :class:`myshop.models.polymorphic_.Product`. We also declare
 common fields available in all of our different product types. These fields act as the smallest
 common denominator for the views where we want to display summary information about our products,
-independently of their characteristics.
+independently of their characteristics. This generally is the product's name, a thumbnailed image,
+the price and often a caption.
 
 List views showing a summary information about our products are the *Cart View*, the *Order Detail
 View* and eventually the *Catalog List View*.
 
-The model classes for Smart Card, Smart Phone and a variation of Commodity then inherit from this
+The model classes for Smart Card, Smart Phone and a variation of Commodity then inherits from this
 base product class. These models additionally can declare attributes required to describe the
 physical properties of each product type. Since they vary, we also have to create special templates
-for the detail views of each of them. Since Smart Phones allow product variations, we even must
-adopt the template for adding the product to the cart.
+for the detail views of each of them. Smart Phones for instance allow product variations, therefore
+we must adopt the template for adding the product to the cart.
 
 
 The Internationalized Polymorphic Product Model
@@ -179,7 +180,7 @@ The Internationalized Polymorphic Product Model
 
 The ``i18n_polymorphic`` demo is a variation of the above example, with a few attributes translated
 into multiple languages, namely ``caption`` and ``description``. This sample implementation does not
-use translated slugs, although this would be possible.
+use translated slugs, although it would be possible.
 
 
 Use one of the demos as a starting point for your project
@@ -198,9 +199,8 @@ implementation of **django-SHOP**, is to use one of the six demo samples from ab
   add additional fields to describe the properties each of your product model.
 
 It also is suggested to reuse the current structure of CMS pages and placeholders from the given
-sample. Having a working implementation you may gradually modifying it until reaching your final
-goal. Typically this approach is much easier than starting from scratch and also is the preferred
-way during agile development.
+samples. Having a working implementation, it is much easier to gradually modify it, until you reach
+a final goal, rather than starting with an empty site from scratch.
 
 
 .. _Docker runtime environment: https://docs.docker.com/windows/
