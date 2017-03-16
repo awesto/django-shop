@@ -29,3 +29,15 @@ class OrderCMSApp(CMSApp):
         if page and page.reverse_id == 'shop-order-last':
             return ['shop.urls.order_last']
         return ['shop.urls.order']
+        # TODO: can be simplified into, after merging https://github.com/divio/django-cms/pull/5898
+        # from django.conf.urls import url
+        # from shop.views.order import OrderView
+        #
+        # if page and page.reverse_id == 'shop-order-last':
+        #     return [
+        #         url(r'^$', OrderView.as_view(many=False, is_last=True)),
+        #     ]
+        # return [
+        #     url(r'^$', OrderView.as_view()),
+        #     url(r'^(?P<slug>[\w-]+)/?$', OrderView.as_view(many=False)),
+        # ]
