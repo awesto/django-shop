@@ -1,11 +1,11 @@
 beautifulsoup4==4.5.1
-django-admin-sortable2==0.6.9
+django-admin-sortable2==0.6.10
 django-allauth==0.23.0
 django-angular==0.8.4
 django-appconf==1.0.1
 django-classy-tags==0.8.0
 django-cms==3.4.2
-django-compressor==1.6
+django-compressor==2.1.1
 django-filer==1.2.7
 django-filter==1.0.1
 django-fsm==2.4.0
@@ -24,7 +24,7 @@ django-sekizai==0.10.0
 Django-Select2==5.8.10
 django-treebeard==4.1.0
 djangocms-bootstrap3==0.2.0
-djangocms-cascade==0.12rc1
+djangocms-cascade==0.12.0
 djangocms-text-ckeditor==3.4.0
 djangorestframework==3.5.3
 django-formtools==1.0
@@ -53,4 +53,4 @@ urllib3==1.12
 virtualenv==13.1.2
 wheel==0.24.0
 bs4==0.0.1
-https://github.com/awesto/djangoshop-stripe/archive/0.2.0.zip#egg=djangoshop-stripe
+djangoshop-stripe==0.2.1
