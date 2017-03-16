@@ -167,17 +167,11 @@ boilerplate which has to be added to the merchant's implementation of the file
 
 .. code-block:: python
 
-	from cms.app_base import CMSApp
 	from cms.apphook_pool import apphook_pool
+	from shop.cms_apphooks import OrderCMSApp
 
-	class OrderApp(CMSApp):
-	    name = "View Orders"
-	    cache_placeholders = False
-
-	    def get_urls(self, page=None, language=None, **kwargs):
-	        if page and page.reverse_id == 'shop-order-last':
-	            return ['shop.urls.order_last']
-	        return ['shop.urls.order']
+	class OrderApp(OrderCMSApp):
+	    pass
 
 	apphook_pool.register(OrderApp)
 

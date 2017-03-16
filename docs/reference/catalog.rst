@@ -48,12 +48,10 @@ of the merchant's project:
 .. code-block:: python
 	:caption: myshop/cms_apps.py
 
-	from cms.app_base import CMSApp
 	from cms.apphook_pool import apphook_pool
+	from shop.cms_apphooks import CatalogListCMSApp
 
-	class CatalogListApp(CMSApp):
-	    name = _("Catalog List")
-
+	class CatalogListApp(CatalogListCMSApp):
 	    def get_urls(self, page=None, language=None, **kwargs):
 	        return ['myshop.urls.products']
 
@@ -66,21 +64,19 @@ as all apphooks, it requires a file defining its urlpatterns:
     :name: apphook-urlpatterns
 
 	from django.conf.urls import url
-	from rest_framework.settings import api_settings
-	from shop.views.catalog import CMSPageProductListView
+	from shop.views.catalog import ProductListView
 
 	urlpatterns = [
-	    url(r'^$', CMSPageProductListView.as_view()),
+	    url(r'^$', ProductListView.as_view()),
 	    # other patterns
 	]
 
-By default the ``CMSPageProductListView`` renders the catalog list of products assigned to the
-current CMS page. In this example, only model attributes for fields declared in the default
+By default the ``ProductListView`` renders the catalog list of products assigned to the current CMS
+page. In this example, only model attributes for fields declared in the default
 ``ProductSummarySerializer`` are available in the render context for the used CMS template, as well
 as for a representation in JSON suitable for client side rendered list views. This allows us to
-reuse the same Django View (``CMSPageProductListView``) whenever the catalog list switches into
-infinite scroll mode, where it only requires the product's summary, composed of plain old JavaScript
-objects.
+reuse this Django View (``ProductListView``) whenever the catalog list switches into infinite scroll
+mode, where it only requires the product's summary, composed of plain old JavaScript objects.
 
 
 .. _reference/customized-product-serializer:
@@ -108,23 +104,25 @@ Additionally, we have to rewrite the URL pattern from above as:
 
 .. code-block:: python
 
+	from django.conf.urls import url
+	from shop.views.catalog import ProductListView
 	from myshop.serializers import CustomizedProductSerializer
 
 	urlpatterns = [
-	    url(CMSPageProductListView.as_view(
+	    url(ProductListView.as_view(
 	        serializer_class=CustomizedProductSerializer,
 	    )),
 	    # other patterns
 	]
 
-Here the ``CustomizedProductSerializer`` is a more specialized representation of our product
-model.
+Here the ``CustomizedProductSerializer`` is used to create a more specialized representation of our
+product model.
 
 
 Add the Catalog to the CMS
 --------------------------
 
-In the page list editor of **djangoCMS**, create a new page at an appropriate location of the
+In the page list editor of **django-CMS**, create a new page at an appropriate location of the
 page tree. As the page title and slug we should use something describing our product catalog in a
 way, both meaningful to the customers as well as to search engines.
 
@@ -132,8 +130,8 @@ Next, we change into **Advanced Settings** mode.
 
 As a template we use one with a big placeholder, since it must display our list of products.
 
-As **Application**, select "*Catalog List*" or whatever we named our ``ProductsListApp``. This
-selects the apphook we created in the previous section.
+As **Application**, select "*Catalog List*". This selects the apphook we created in the previous
+section.
 
 Then we save the page, change into **Structure** mode and locate the placeholder named
 **Main Content**. Add a Container plugin, followed by a Row and then a Column plugin. As the
@@ -148,12 +146,12 @@ now.
 Catalog Detail View
 ===================
 
-The product's detail pages are the only ones we typically do not control with **djangoCMS**
+The product's detail pages are the only ones we typically do not control with **django-CMS**
 placeholders. This is because we often have thousands of products and creating a CMS page for each
 of them, would be kind of overkill. It only makes sense for shops selling up to a dozen of different
 products.
 
-Therefore the template used to render the products's detail view is selected automatically by the
+Therefore, the template used to render the products's detail view is selected automatically by the
 ``ProductRetrieveView`` [1]_ following these rules:
 
 * look for a template named ``<myshop>/catalog/<product-model-name>-detail.html`` [2]_ [3]_,
@@ -180,7 +178,7 @@ some images, a carousel or whatever is available from the **djangoCMS** plugin s
 Route requests on Detail View
 -----------------------------
 
-The ``ProductsListApp``, which we previously have registered into **djangoCMS**, is able to route
+The ``ProductsListApp``, which we previously have registered into **django-CMS**, is able to route
 requests on all of its sub-URLs. This is done by expanding the current list of urlpatterns:
 
 .. code-block:: python
@@ -224,16 +222,16 @@ Additional Product Serializer Fields
 Sometimes such a serializer field shall return a HTML snippet; this for instance is required for
 image source (``<img src="..." />``) tags, which must thumbnailed by the server when rendered using
 the appropriate `templatetags from the easythumbnail`_ library. For these use cases add a field
-of type ``foo = SerializerMethodField()`` with an appropriate method ``get_foo()`` to our serializer
-class. This method then may forward the given product to a the built-in renderer:
+of type ``media = SerializerMethodField()`` with an appropriate method ``get_media()`` to our
+serializer class. This method then may forward the given product to a the built-in renderer:
 
 .. code-block:: python
 
 	class ProductDetailSerializer(BaseProductDetailSerializer):
 	    # other attributes
 
-	    def get_foo(self, product):
-	        return self.render_html(product, 'foo')
+	    def get_media(self, product):
+	        return self.render_html(product, 'media')
 
 This HTML renderer method looks up for a template following these rules:
 
@@ -247,6 +245,7 @@ This HTML renderer method looks up for a template following these rules:
 .. [5] ``<product-model-name>`` is the class name of the product model in lowercase.
 .. [6] ``<field-name>`` is the attribute name of the just declared field in lowercase.
 
+
 Emulate Categories
 ------------------
 
@@ -254,7 +253,7 @@ Since we want to use CMS pages to emulate categories, the product model must dec
 between the CMS pages and itself. This usually is done by adding a Many-to-Many field named
 ``cms_pages`` to our Product model.
 
-Since we work with deferred models, we can not use the mapping table, which normally is generated
+As we work with deferred models, we can not use the mapping table, which normally is generated
 automatically for Many-to-Many fields by the Django framework. Instead, this mapping table must
 be created manually and referenced using the ``though`` parameter, when declaring the field:
 
@@ -268,8 +267,10 @@ be created manually and referenced using the ``though`` parameter, when declarin
 
 	class Product(BaseProduct):
 	    # other model fields
-	    cms_pages = models.ManyToManyField('cms.Page',
-	        through=ProductPage)
+	    cms_pages = models.ManyToManyField(
+	        'cms.Page',
+	        through=ProductPage
+	    )
 
 	    objects = ProductManager()
 
@@ -291,8 +292,10 @@ is shipped with a special mixin class, which shall be added to the product's adm
 
 	@admin.register(Product)
 	class ProductAdmin(CMSPageAsCategoryMixin, admin.ModelAdmin):
-	    fields = ('product_name', 'slug', 'product_code',
-	              'unit_price', 'active', 'description',)
+	    fields = [
+	        'product_name', 'slug', 'product_code',
+	        'unit_price', 'active', 'description'
+	    ]
 	    # other admin declarations
 
 This then adds a horizontal filter widget to the product models. Here the merchant must select
