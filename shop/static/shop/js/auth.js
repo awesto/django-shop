@@ -14,8 +14,10 @@ djangoShopModule.directive('shopAuthForm', ['$window', '$http', '$timeout',
 		scope: true,  // do not change this
 		link: function(scope, element, attrs) {
 			var timer = null, form = scope[attrs.name];
-			if (attrs.action === undefined)
+			if (angular.isUndefined(attrs.action))
 				throw new Error("Form does not contain an `action` keyword");
+			if (angular.isUndefined(form))
+				throw new Error("Form has no `name`");
 			scope.success_message = scope.error_message = '';
 
 			function proceedWithAction(response) {
@@ -30,6 +32,7 @@ djangoShopModule.directive('shopAuthForm', ['$window', '$http', '$timeout',
 
 			// Submit auth form data. Use `delay` in milliseconds to postpone final action.
 			scope.submitForm = function(submitURL, delay) {
+				submitURL = submitURL || attrs.formSubmitUrl;
 				$http.post(submitURL, scope.form_data).success(function(response) {
 					if (response.success) {
 						scope.success_message = response.success;
@@ -86,6 +89,16 @@ djangoShopModule.directive('shopAuthForm', ['$window', '$http', '$timeout',
 			scope.$on('$destroy', function(event) {
 				if (timer) {
 					$timeout.cancel(timer);
+				}
+			});
+
+			element.bind('keyup', function(event) {
+				if (event.which === 13) {
+					// trigger on pressed Enter key
+					scope.$apply(function() {
+						scope.$eval(scope.submitForm());
+					});
+					event.preventDefault();
 				}
 			});
 		}

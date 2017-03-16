@@ -38,9 +38,6 @@
 	{% addtoblock "js" %}<script src="{% static 'myshop/js/navbar.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 	{% addtoblock "ng-requires" %}myshop.navbar{% endaddtoblock %}
 
-	{% addtoblock "js" %}<script src="{% static 'shop/js/utils.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-	{% addtoblock "js" %}<script src="{% static 'shop/js/search-form.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-	{% addtoblock "ng-requires" %}django.shop.search{% endaddtoblock %}
 {% endblock navbar %}
 
 {% block navbar-nav %}
@@ -52,11 +49,7 @@
 		{% include "shop/navbar/login-logout.html" %}
 		{% endwith %}
 		{% if shop_watch_url %}
-		<li>
-			<a href="{{ shop_watch_url }}" title="{% page_attribute 'page_title' 'shop-watch-list' %}">
-				<i class="fa fa-heart fa-lg"></i>
-			</a>
-		</li>
+		<li>{% include "shop/navbar/watch-icon.html" %}</li>
 		{% endif %}
 		<li>{% cart_icon %}</li>
 	</ul>

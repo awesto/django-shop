@@ -2,13 +2,17 @@
 from __future__ import unicode_literals
 
 import warnings
+
 from django import forms
 from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
+
 from adminsortable2.admin import SortableInlineAdminMixin
+
 from cms.models import Page
+
 from shop.models.related import ProductPageModel, ProductImageModel
 
 
@@ -16,6 +20,17 @@ class ProductImageInline(SortableInlineAdminMixin, admin.StackedInline):
     model = ProductImageModel
     extra = 1
     ordering = ('order',)
+
+
+def _find_catalog_list_apphook():
+    from shop.cms_apphooks import CatalogListCMSApp
+    from cms.apphook_pool import apphook_pool
+
+    for name, app in apphook_pool.apps.items():
+        if isinstance(app, CatalogListCMSApp):
+            return name
+    else:
+        raise ImproperlyConfigured("You must register a CMS apphook of type `CatalogListCMSApp`.")
 
 
 class CMSPageAsCategoryMixin(object):
@@ -46,7 +61,10 @@ class CMSPageAsCategoryMixin(object):
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         if db_field.name == 'cms_pages':
             # restrict many-to-many field for cms_pages to ProductApp only
-            limit_choices_to = {'publisher_is_draft': False, 'application_urls': 'ProductsListApp'}
+            limit_choices_to = {
+                'publisher_is_draft': False,
+                'application_urls': getattr(self, 'limit_to_cmsapp', _find_catalog_list_apphook()),
+            }
             queryset = Page.objects.filter(**limit_choices_to)
             widget = admin.widgets.FilteredSelectMultiple(_("CMS Pages"), False)
             field = forms.ModelMultipleChoiceField(queryset=queryset, widget=widget)
@@ -74,9 +92,10 @@ class CMSPageAsCategoryMixin(object):
 class InvalidateProductCacheMixin(object):
     def __init__(self, *args, **kwargs):
         if not hasattr(cache, 'delete_pattern'):
-            warnings.warn("Your caching backend does not support deletion by key patterns. "
-                "Please use `django-redis-cache`, or wait until the product's HTML snippet cache "
-                "expires by itself")
+            warnings.warn("\n"
+                "Your caching backend does not support deletion by key patterns.\n"
+                "Please use 'django-redis-cache', or wait until the product's HTML\n"
+                "snippet cache expires by itself.")
         super(InvalidateProductCacheMixin, self).__init__(*args, **kwargs)
 
     def save_model(self, request, product, form, change):
@@ -100,7 +119,10 @@ class CMSPageFilter(admin.SimpleListFilter):
     parameter_name = 'category'
 
     def lookups(self, request, model_admin):
-        limit_choices_to = {'publisher_is_draft': False, 'application_urls': 'ProductsListApp'}
+        limit_choices_to = {
+            'publisher_is_draft': False,
+            'application_urls': getattr(self, 'limit_to_cmsapp', _find_catalog_list_apphook())
+        }
         queryset = Page.objects.filter(**limit_choices_to)
         return [(page.id, page.get_title()) for page in queryset]
 

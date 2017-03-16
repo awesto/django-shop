@@ -17,7 +17,7 @@ from shop.money.money_maker import AbstractMoney, MoneyMaker, _make_money
 from shop.money.fields import MoneyField as MoneyDbField
 from shop.rest.money import MoneyField, JSONRenderer
 from myshop.models.manufacturer import Manufacturer
-from myshop.models.polymorphic.commodity import Commodity
+from myshop.models import Commodity
 
 
 class AbstractMoneyTest(TestCase):

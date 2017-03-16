@@ -144,7 +144,7 @@ Select the Payment Provider
 ---------------------------
 
 For each payment provider registered within **django-SHOP**, this plugin creates a list
-of radio buttons, where customers can chose their desired payment provider. By overriding the
+of radio buttons, where customers can choose their desired payment provider. By overriding the
 rendering templates, additional forms, for instance to add credit card data, can be added.
 
 
@@ -152,7 +152,7 @@ Select a Shipping Method
 ------------------------
 
 For each shipping provider registered within **django-SHOP**, this plugin creates a list
-of radio buttons, where customers can chose their desired shipping method.
+of radio buttons, where customers can choose their desired shipping method.
 
 
 Extra Annotations Plugin
@@ -351,7 +351,7 @@ Catalog
 The catalog list view is handled by the **ShopCatalogPlugin**.
 
 This plugin requires a CMS page, which uses the apphook_ **ProductsListApp**. First assure that we
-:ref:`reference/create-ProductsListApp`. This CMSapp must be implemented by the merchant; it thus
+:ref:`reference/create-CatalogListApp`. This CMSapp must be implemented by the merchant; it thus
 is part of the project, rather than the **django-SHOP** framework.
 
 

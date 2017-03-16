@@ -4,8 +4,10 @@ from cms.models import Page
 from django.core.exceptions import ImproperlyConfigured
 from django.test import RequestFactory, TestCase
 
+from shop.models.defaults.mapping import ProductPage
 from shop.rest.filters import RecursiveCMSPagesFilterBackend
-from myshop.models.polymorphic.product import Product, ProductPage
+
+from myshop.models import Product
 from myshop.models.manufacturer import Manufacturer
 
 

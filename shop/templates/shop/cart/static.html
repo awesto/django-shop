@@ -1,4 +1,6 @@
-{% load i18n sekizai_tags %}
+{% load i18n static sekizai_tags %}
+
+{% addtoblock "js" %}<script src="{% static 'djng/js/django-angular.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% addtoblock "ng-requires" %}djng.forms{% endaddtoblock %}
 
 <table class="table table-condensed">

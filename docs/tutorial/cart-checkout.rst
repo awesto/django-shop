@@ -53,7 +53,7 @@ Please note that the Authentication plugins **Login & Reset**, **Register User**
 **Continue as guest** must reload the current page. This is because during these steps a new
 session-id is assigned, which requires a full page reload.
 
-After reloading the page, the customer is considered as “recognized”. Since there are a few forms
+After reloading the page, the customer is considered as "recognized". Since there are a few forms
 to be filled, this example uses a **Process Bar** plugin, which emulates a few sub-pages, which then
 can be filled out by the customer step-by-step.
 

@@ -4,26 +4,32 @@ from __future__ import unicode_literals
 from django.core.exceptions import PermissionDenied
 from django.forms.fields import CharField
 from django.forms import widgets
-from django.template import Engine
+from django.template import engines
 from django.template.loader import select_template
-from django.utils.html import strip_tags
+from django.utils.html import strip_tags, format_html
+from django.utils.module_loading import import_string
 from django.utils.safestring import mark_safe
 from django.utils.text import Truncator
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 try:
     from html.parser import HTMLParser  # py3
 except ImportError:
     from HTMLParser import HTMLParser  # py2
 from cms.plugin_pool import plugin_pool
+
 from djangocms_text_ckeditor.widgets import TextEditorWidget
 from djangocms_text_ckeditor.utils import plugin_tags_to_user_html
+from djangocms_text_ckeditor.cms_plugins import TextPlugin
+
 from cmsplugin_cascade.fields import GlossaryField
 from cmsplugin_cascade.link.cms_plugins import TextLinkPlugin
 from cmsplugin_cascade.link.forms import LinkForm, TextLinkFormMixin
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
-from cmsplugin_cascade.mixins import TransparentMixin
+from cmsplugin_cascade.plugin_base import TransparentContainer
 from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
+
 from shop import app_settings
+from shop.forms.checkout import AcceptConditionForm
 from shop.models.cart import CartModel
 from shop.modifiers.pool import cart_modifiers_pool
 from .plugin_base import ShopPluginBase, ShopButtonPluginBase, DialogFormPluginBase
@@ -43,7 +49,14 @@ class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
     parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin', 'ValidateSetOfFormsPlugin')
     model_mixins = (LinkElementMixin,)
     glossary_field_order = ('button_type', 'button_size', 'button_options', 'quick_float',
-                            'icon_left', 'icon_right')
+                            'icon_align', 'icon_font', 'symbol')
+    ring_plugin = 'ProceedButtonPlugin'
+
+    class Media:
+        css = {'all': ('cascade/css/admin/bootstrap.min.css',
+                       'cascade/css/admin/bootstrap-theme.min.css',
+                       'cascade/css/admin/iconplugin.css',)}
+        js = ['shop/js/admin/proceedbuttonplugin.js']
 
     def get_form(self, request, obj=None, **kwargs):
         kwargs.update(form=ProceedButtonForm)
@@ -83,7 +96,7 @@ class CustomerFormPluginBase(DialogFormPluginBase):
 
     def get_render_template(self, context, instance, placeholder):
         if 'error_message' in context:
-            return Engine().from_string('<p class="text-danger">{{ error_message }}</p>')
+            return engines['django'].from_string('<p class="text-danger">{{ error_message }}</p>')
         return super(CustomerFormPluginBase, self).get_render_template(context, instance, placeholder)
 
 
@@ -121,67 +134,99 @@ class GuestFormPlugin(CustomerFormPluginBase):
 DialogFormPluginBase.register_plugin(GuestFormPlugin)
 
 
-class CheckoutAddressPluginBase(DialogFormPluginBase):
-    multi_addr = GlossaryField(
+class CheckoutAddressPlugin(DialogFormPluginBase):
+    name = _("Checkout Address Form")
+    glossary_field_order = ['address_form', 'render_type', 'allow_multiple', 'allow_use_primary', 'headline_legend']
+    form_classes = ['shop.forms.checkout.ShippingAddressForm', 'shop.forms.checkout.BillingAddressForm']
+    ADDRESS_CHOICES = [('shipping', _("Shipping")), ('billing', _("Billing"))]
+
+    address_form = GlossaryField(
+        widgets.RadioSelect(choices=ADDRESS_CHOICES),
+        label=_("Address Form"),
+        initial=ADDRESS_CHOICES[0][0]
+    )
+
+    allow_multiple = GlossaryField(
         widgets.CheckboxInput(),
         label=_("Multiple Addresses"),
         initial=False,
-        help_text=_("Shall the customer be allowed to edit multiple addresses."),
+        help_text=_("Allow the customer to add and edit multiple addresses."),
     )
 
-    def get_form_data(self, context, instance, placeholder):
-        form_data = super(CheckoutAddressPluginBase, self).get_form_data(context, instance, placeholder)
+    allow_use_primary = GlossaryField(
+        widgets.CheckboxInput(),
+        label=_("Use primary address"),
+        initial=False,
+        help_text=_("Allow the customer to use the primary address, if this is the secondary form."),
+    )
 
-        AddressModel = self.FormClass.get_model()
+    def get_form_class(self, instance):
+        if instance.glossary.get('address_form') == 'shipping':
+            return import_string(self.form_classes[0])
+        else:  # address_form == billing
+            return import_string(self.form_classes[1])
+
+    def get_address(self, cart, instance):
+        if instance.glossary.get('address_form') == 'shipping':
+            if cart.shipping_address:
+                address = cart.shipping_address
+            else:
+                # fallback to another existing shipping address
+                FormClass = self.get_form_class(instance)
+                address = FormClass.get_model().objects.get_fallback(customer=cart.customer)
+        else:  # address_form == billing
+            if cart.billing_address:
+                address = cart.billing_address
+            else:
+                # fallback to another existing billing address
+                FormClass = self.get_form_class(instance)
+                address = FormClass.get_model().objects.get_fallback(customer=cart.customer)
+        return address
+
+    def get_form_data(self, context, instance, placeholder):
+        form_data = super(CheckoutAddressPlugin, self).get_form_data(context, instance, placeholder)
         if form_data['cart'] is None:
             raise PermissionDenied("Can not proceed to checkout without cart")
-        address = self.get_address(form_data['cart'])
-        form_data.update(instance=address)
 
-        if instance.glossary.get('multi_addr'):
+        address = self.get_address(form_data['cart'], instance)
+        if instance.glossary.get('allow_multiple'):
+            AddressModel = self.get_form_class(instance).get_model()
             addresses = AddressModel.objects.filter(customer=context['request'].customer).order_by('priority')
             form_entities = [dict(value=str(addr.priority),
-                            label="{}. {}".format(number, addr.as_text().replace('\n', ' – ')))
+                                  label="{}. {}".format(number, addr.as_text().replace('\n', ' – ')))
                              for number, addr in enumerate(addresses, 1)]
             form_data.update(multi_addr=True, form_entities=form_entities)
         else:
             form_data.update(multi_addr=False)
+
+        form_data.update(
+            instance=address,
+            initial={'active_priority': address.priority if address else 'add'},
+            allow_use_primary=instance.glossary.get('allow_use_primary', False)
+        )
         return form_data
 
+    @classmethod
+    def get_identifier(cls, instance):
+        identifier = super(CheckoutAddressPlugin, cls).get_identifier(instance)
+        address_form = instance.glossary.get('address_form')
+        address_form = dict(cls.ADDRESS_CHOICES).get(address_form, '')
+        return format_html(pgettext_lazy('get_identifier', "for {} {}"), address_form, identifier)
 
-class ShippingAddressFormPlugin(CheckoutAddressPluginBase):
-    name = _("Shipping Address Form")
-    form_class = 'shop.forms.checkout.ShippingAddressForm'
-    template_leaf_name = 'shipping-address-{}.html'
+    def get_render_template(self, context, instance, placeholder):
+        addr_form = instance.glossary.get('address_form')
+        if addr_form not in ['shipping', 'billing']:  # validate
+            addr_form = 'shipping'
+        render_type = instance.glossary.get('render_type')
+        if render_type not in ['form', 'summary']:  # validate
+            render_type = 'form'
+        template_names = [
+            '{0}/checkout/{1}-address-{2}.html'.format(app_settings.APP_LABEL, addr_form, render_type),
+            'shop/checkout/{0}-address-{1}.html'.format(addr_form, render_type),
+        ]
+        return select_template(template_names)
 
-    def get_address(self, cart):
-        if cart.shipping_address is None:
-            # fallback to another existing shipping address
-            address = self.FormClass.get_model().objects.get_fallback(customer=cart.customer)
-            cart.shipping_address = address
-            cart.save()
-        return cart.shipping_address
-
-DialogFormPluginBase.register_plugin(ShippingAddressFormPlugin)
-
-
-class BillingAddressFormPlugin(CheckoutAddressPluginBase):
-    name = _("Billing Address Form")
-    form_class = 'shop.forms.checkout.BillingAddressForm'
-    template_leaf_name = 'billing-address-{}.html'
-
-    allow_use_shipping = GlossaryField(
-        widgets.CheckboxInput(),
-        label=_("Use shipping address"),
-        initial=True,
-        help_text=_("Allow the customer to use the shipping address for billing."),
-    )
-
-    def get_address(self, cart):
-        # if billing address is None, we use the shipping address
-        return cart.billing_address
-
-DialogFormPluginBase.register_plugin(BillingAddressFormPlugin)
+DialogFormPluginBase.register_plugin(CheckoutAddressPlugin)
 
 
 class PaymentMethodFormPlugin(DialogFormPluginBase):
@@ -247,9 +292,9 @@ DialogFormPluginBase.register_plugin(ExtraAnnotationFormPlugin)
 
 class AcceptConditionFormPlugin(DialogFormPluginBase):
     """
-    Provides the form to accept any condition.
+    Deprecated. Use AcceptConditionPlugin instead.
     """
-    name = _("Accept Condition")
+    name = _("Accept Condition (deprecated)")
     form_class = 'shop.forms.checkout.AcceptConditionForm'
     template_leaf_name = 'accept-condition.html'
     html_parser = HTMLParser()
@@ -277,13 +322,48 @@ class AcceptConditionFormPlugin(DialogFormPluginBase):
         super(AcceptConditionFormPlugin, self).render(context, instance, placeholder)
         accept_condition_form = context['accept_condition_form.plugin_{}'.format(instance.id)]
         html_content = self.html_parser.unescape(instance.glossary.get('html_content', ''))
-        html_content = plugin_tags_to_user_html(html_content, context, placeholder)
+        html_content = plugin_tags_to_user_html(html_content, context)
         # transfer the stored HTML content into the widget's label
         accept_condition_form['accept'].field.widget.choice_label = mark_safe(html_content)
         context['accept_condition_form'] = accept_condition_form
         return context
 
-DialogFormPluginBase.register_plugin(AcceptConditionFormPlugin)
+# DialogFormPluginBase.register_plugin(AcceptConditionFormPlugin)
+
+
+class AcceptConditionPlugin(TextPlugin):
+    name = _("Accept Condition")
+    module = "Shop"
+    FormClass = AcceptConditionForm
+    render_template = 'shop/checkout/accept-condition.html'
+
+    def render(self, context, instance, placeholder):
+        """
+        Return the context to render a checkbox used to accept the terms and conditions
+        """
+        request = context['request']
+        try:
+            cart = CartModel.objects.get_from_request(request)
+            cart.update(request)
+        except CartModel.DoesNotExist:
+            cart = None
+        request._plugin_order = getattr(request, '_plugin_order', 0) + 1
+        form_data = {'cart': cart, 'initial': dict(plugin_id=instance.id, plugin_order=request._plugin_order)}
+        bound_form = self.FormClass(**form_data)
+        context[bound_form.form_name] = bound_form
+        super(AcceptConditionPlugin, self).render(context, instance, placeholder)
+        accept_condition_form = context['accept_condition_form.plugin_{}'.format(instance.id)]
+        # transfer the stored HTML content into the widget's label
+        accept_condition_form['accept'].field.widget.choice_label = mark_safe(context['body'])
+        context['accept_condition_form'] = accept_condition_form
+        return context
+
+    def get_admin_url_name(self, name):
+        model_name = 'acceptcondition'
+        url_name = "%s_%s_%s" % ('shop', model_name, name)
+        return url_name
+
+plugin_pool.register_plugin(AcceptConditionPlugin)
 
 
 class RequiredFormFieldsPlugin(ShopPluginBase):
@@ -292,6 +372,7 @@ class RequiredFormFieldsPlugin(ShopPluginBase):
     """
     name = _("Required Form Fields")
     template_leaf_name = 'required-form-fields.html'
+    parent_classes = ('BootstrapColumnPlugin',)
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
@@ -303,7 +384,7 @@ class RequiredFormFieldsPlugin(ShopPluginBase):
 plugin_pool.register_plugin(RequiredFormFieldsPlugin)
 
 
-class ValidateSetOfFormsPlugin(TransparentMixin, ShopPluginBase):
+class ValidateSetOfFormsPlugin(TransparentContainer, ShopPluginBase):
     """
     This plugin wraps arbitrary forms into the Angular directive shopFormsSet.
     This is required to validate all forms, so that a proceed button is disabled otherwise.

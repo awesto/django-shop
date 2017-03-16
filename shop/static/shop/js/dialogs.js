@@ -2,7 +2,7 @@
 'use strict';
 
 // module: django.shop, TODO: move this into a summary JS file
-var djangoShopModule = angular.module('django.shop.dialogs', ['djng.urls', 'djng.forms', 'django.shop.utils']);
+var djangoShopModule = angular.module('django.shop.dialogs', ['djng.urls', 'djng.forms']);
 
 
 // Shared controller for all forms, links and buttons using shop-dialog elements. It just adds
@@ -66,13 +66,14 @@ djangoShopModule.directive('shopDialogForm', ['$q', '$timeout', function($q, $ti
 		restrict: 'A',
 		controller: 'DialogController',
 		link: function(scope, element, attrs, DialogController) {
-			var ready = false;
+			var ready = false;  // until form has been filled to prevent triggering a change event
+
 			if (attrs.shopDialogForm) {
 				// initialize with form data
 				scope.$eval(attrs.shopDialogForm);
 			}
 			$timeout(function() {
-				// form ran its first scope.$digest() cycle
+				// form ran its first scope.$digest() cycle and can now accept change events
 				ready = true;
 			});
 
@@ -92,7 +93,7 @@ djangoShopModule.directive('shopDialogForm', ['$q', '$timeout', function($q, $ti
 
 				function pristineEntity(response) {
 					angular.extend(scope.data, response.data);
-					scope.stepIsValid = response.data.$valid;
+					form_controller.$valid = scope.stepIsValid = response.data.$valid;
 					form_controller.$setPristine();
 				}
 			};
@@ -104,17 +105,19 @@ djangoShopModule.directive('shopDialogForm', ['$q', '$timeout', function($q, $ti
 					DialogController.uploadScope(scope, deferred);
 				}
 				if (angular.isObject(form_controller['form_entities'])) {
-					$q.when(deferred.promise).then(function(response) {
-						var remove_entity_filter;
-						if (angular.isObject(response.data[data_model]) && angular.isString(response.data[data_model].remove_entity_filter)) {
-							remove_entity_filter = new Function(response.data[data_model].remove_entity_filter);
-							form_controller['form_entities'] = remove_entity_filter.apply(null, form_controller['form_entities']);
-						}
-						scope.stepIsValid = response.data.$valid;
-						angular.extend(scope.data, response.data);
-						// skip one digest cycle so that the form can be updated without triggering a change event
-						ready = false; $timeout(function() { ready = true; });
-					});
+					$q.when(deferred.promise).then(removeEntry, removeEntry);
+				}
+
+				function removeEntry(response) {
+					var remove_entity_filter;
+					if (angular.isObject(response.data[data_model]) && angular.isString(response.data[data_model].remove_entity_filter)) {
+						remove_entity_filter = new Function(response.data[data_model].remove_entity_filter);
+						form_controller['form_entities'] = remove_entity_filter.apply(null, form_controller['form_entities']);
+					}
+					scope.stepIsValid = response.data.$valid;
+					angular.extend(scope.data, response.data);
+					// skip one digest cycle so that the form can be updated without triggering a change event
+					ready = false; $timeout(function() { ready = true; });
 				}
 			};
 		}
@@ -154,9 +157,9 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 			// disables the button and replaces existing Glyphicons against a spinning wheel.
 			function disableButton() {
 				element.attr('disabled', 'disabled');
-				angular.forEach(element.find('span'), function(span) {
+				angular.forEach(element.find('i'), function(span) {
 					span = angular.element(span);
-					if (span.hasClass('glyphicon')) {
+					if (span.hasClass('cascade-icon-left') || span.hasClass('cascade-icon-right')) {
 						span.attr('deactivated-class', span.attr('class'));
 						span.attr('class', 'glyphicon glyphicon-refresh glyphicon-refresh-animate');
 					}
@@ -208,8 +211,8 @@ djangoShopModule.directive('shopDialogProceed', ['$window', '$http', '$q', 'djan
 
 
 // Directive <TAG shop-form-validate="model-to-watch">
-// It is used to override the validation of hidden form fragments.
-// If model-to-watch is false, then input elements inside this DOM tree are not validated.
+// It is used to override the validation of form fragments, which can be hidden.
+// If `model-to-watch` is false, then input elements inside this DOM tree are not validated.
 // This is useful, if a form fragment shall be validated only under certain conditions.
 djangoShopModule.directive('shopFormValidate', function() {
 	return {

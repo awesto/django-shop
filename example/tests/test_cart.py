@@ -7,7 +7,7 @@ from rest_framework.test import APIClient, APIRequestFactory
 from cms.api import add_plugin, create_page
 from shop.models.cart import CartModel
 from shop.cascade.cart import ShopCartPlugin
-from myshop.models.polymorphic.smartcard import SmartCard
+from myshop.models import SmartCard
 from .test_shop import ShopTestCase
 
 

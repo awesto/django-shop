@@ -6,9 +6,11 @@ from django.template.loader import select_template
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 from django.utils.module_loading import import_string
+
 from cms.plugin_pool import plugin_pool
-from shop import app_settings
 from cmsplugin_cascade.link.forms import LinkForm
+
+from shop import app_settings
 from .plugin_base import ShopLinkPluginBase, ShopLinkElementMixin
 
 AUTH_FORM_TYPES = (
@@ -43,6 +45,7 @@ class ShopAuthenticationPlugin(ShopLinkPluginBase):
     name = _("Authentication")
     parent_classes = ('BootstrapColumnPlugin',)
     model_mixins = (ShopLinkElementMixin,)
+    form = ShopAuthForm
     fields = ('form_type', ('link_type', 'cms_page'), 'glossary',)
     cache = False
 
@@ -51,10 +54,6 @@ class ShopAuthenticationPlugin(ShopLinkPluginBase):
         identifier = super(ShopAuthenticationPlugin, cls).get_identifier(instance)
         content = dict(ft[:2] for ft in AUTH_FORM_TYPES).get(instance.glossary.get('form_type'), _("unknown"))
         return format_html('{0}{1}', identifier, content)
-
-    def get_form(self, request, obj=None, **kwargs):
-        kwargs.update(form=ShopAuthForm)
-        return super(ShopAuthenticationPlugin, self).get_form(request, obj, **kwargs)
 
     def get_render_template(self, context, instance, placeholder):
         form_type = instance.glossary.get('form_type')

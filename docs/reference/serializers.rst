@@ -4,10 +4,10 @@
 REST Serializers
 ================
 
-God application programming style is to strictly separate of *Models*, *Views* and *Controllers*.
-In typical classic Django jargon, *Views* act as, what outsiders normally would denote a controller.
+Good application programming style is to strictly separate of *Models*, *Views* and *Controllers*.
+In typical classic Django jargon, *Views* act as, what outsiders normally denote a controller.
 
-Controllers can sometimes be found on the server and sometimes on the client. In **django-SHOP**
+*Controllers* can sometimes be found on the server and sometimes on the client. In **django-SHOP**
 a significant portion of the controller code is written in JavaScript in the form of Angular
 directives_.
 
@@ -15,6 +15,22 @@ Therefore, all data exchange between the *View* and the *Model* must be performe
 format, namely JSON. This allows us to use the same business logic for the server, as well as for
 the client. It also means, that we could create native mobile apps, which communicate with a
 web-application, without ever seeing a line of HTML code.
+
+Moreover, since **django-SHOP** uses **django-CMS** to organize all available components, a classic
+Django "View" does not make much sense anymore. Therefore, as we evolve our Model-View-Control
+pattern into a modern web application, our REST serializers become the new controllers.
+
+
+From a Database Model to the Serializer
+=======================================
+
+As we already know, all database models from the **django-SHOP** framework are owned by the merchant
+implementation. Model serializers reflect their content and hence are tightly coupled with them.
+We therefore must be able to create our own serializers in a way similar to how we extend our
+database models. This means that we have a set of base serializers, which perform the task required
+by their basic counterpart models. Thus, if we extend these models, we normally also might want to
+extend their serializers.
+
 
 
 Every URL is a REST endpoint
@@ -54,51 +70,14 @@ representation such as:
 Routing to these endpoints
 --------------------------
 
-Since we are using CMS pages to display the catalog's list view, we must provide an apphook_ to
-attach it to this page. These catalog apphooks are not part of the shop framework, but must be
-created and added to the project:
-
-.. code-block:: python
-    :caption: myshop/cms_apps.py
-    :name: routing-catalog-list-app
-
-    from cms.app_base import CMSApp
-    from cms.apphook_pool import apphook_pool
-
-    class CatalogListApp(CMSApp):
-        name = "Catalog List"
-        urls = ['myshop.urls.catalog']
-
-    apphook_pool.register(CatalogListApp)
-
-We now must add routes for all sub-URLs of the given CMS page implementing the catalog list:
-
-.. code-block:: python
-    :caption: myshop/urls/catalog.py
-    :name: routing-catalog-list-app-cms-pages
-
-    from django.conf.urls import url
-    from rest_framework.settings import api_settings
-    from shop.rest.filters import CMSPagesFilterBackend
-    from shop.views.catalog import (AddToCartView, CMSPageProductListView,
-        ProductRetrieveView)
-    from myshop.serializers import (ProductSummarySerializer,
-        ProductDetailSerializer)
-
-    urlpatterns = [
-        url(r'^$', CMSPageProductListView.as_view(
-            serializer_class=ProductSummarySerializer,
-        )),
-        url(r'^(?P<slug>[\w-]+)$', ProductRetrieveView.as_view(
-            serializer_class=ProductDetailSerializer,
-        )),
-        url(r'^(?P<slug>[\w-]+)/add-to-cart', AddToCartView.as_view()
-        ),
-    ]
+Since we are using CMS pages to display the catalog's list view, we must provide an apphook_ which
+must be attached to this page. Since these catalog apphooks can vary in many ways they are not part
+of the shop framework, but must be created and added to the project as the
+:ref:`reference/create-CatalogListApp`.
 
 
-Products List View
-~~~~~~~~~~~~~~~~~~
+Catalog List View
+~~~~~~~~~~~~~~~~~
 
 The urlpattern matching the regular expression ``^$`` routes onto the catalog list view class
 :class:`shop.views.catalog.CMSPageProductListView` passing in a special serializer class, for
@@ -113,13 +92,13 @@ filters for restricting the list of items.
 As we (ab)use CMS pages as categories, we somehow must assign them to our products. Therefore our
 example project assigns a many-to-many field named ``cms_pages`` to our Product model. Using this
 field, the merchant can assign each product to one or more CMS pages, using the apphook
-``Products List``.
+``Catalog List``.
 
 This special ``filter_backend``, :class:`shop.rest.filters.CMSPagesFilterBackend`, is responsible
 for restricting selected products on the current catalog list view.
 
 
-Product Detail View
+Catalog Detail View
 ~~~~~~~~~~~~~~~~~~~
 
 The urlpattern matching the regular expression ``^(?P<slug>[\w-]+)$`` routes onto the class

@@ -5,10 +5,14 @@ from django.contrib.admin import StackedInline
 from django.forms import widgets
 from django.forms.models import ModelForm
 from django.template.loader import select_template
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext
+
 from cms.plugin_pool import plugin_pool
 from cms.utils.compat.dj import is_installed
+from cmsplugin_cascade.mixins import WithSortableInlineElementsMixin
 from cmsplugin_cascade.models import SortableInlineCascadeElement
+from cmsplugin_cascade.fields import GlossaryField
+
 from shop import app_settings
 from shop.models.product import ProductModel
 from .plugin_base import ShopPluginBase, ProductSelectField
@@ -25,11 +29,28 @@ class ShopCatalogPlugin(ShopPluginBase):
     parent_classes = ('BootstrapColumnPlugin', 'SimpleWrapperPlugin',)
     cache = False
 
+    infinite_scroll = GlossaryField(
+        widgets.CheckboxInput(),
+        label=_("Infinite Scroll"),
+        initial=True,
+        help_text=_("Shall the product list view scroll infinitely?"),
+    )
+
     def get_render_template(self, context, instance, placeholder):
         return select_template([
             '{}/catalog/product-list.html'.format(app_settings.APP_LABEL),
             'shop/catalog/product-list.html',
         ])
+
+    def render(self, context, instance, placeholder):
+        context['infinite_scroll'] = bool(instance.glossary.get('infinite_scroll', True))
+        return context
+
+    @classmethod
+    def get_identifier(cls, obj):
+        if obj.glossary.get('infinite_scroll', True):
+            return ugettext("Infinite Scroll")
+        return ugettext("Manual Pagination")
 
 plugin_pool.register_plugin(ShopCatalogPlugin)
 
@@ -93,7 +114,7 @@ class ProductGalleryInline(SortableInlineAdminMixin, StackedInline):
     verbose_name_plural = _("Product Gallery")
 
 
-class ShopProductGallery(ShopPluginBase):
+class ShopProductGallery(WithSortableInlineElementsMixin, ShopPluginBase):
     name = _("Product Gallery")
     require_parent = True
     parent_classes = ('BootstrapColumnPlugin',)
@@ -111,8 +132,6 @@ class ShopProductGallery(ShopPluginBase):
         ])
 
     def render(self, context, instance, placeholder):
-        from shop.rest.bases import get_product_summary_serializer_class
-
         product_ids = []
         for instance in instance.sortinline_elements.all():
             try:
@@ -120,7 +139,7 @@ class ShopProductGallery(ShopPluginBase):
             except KeyError:
                 pass
         queryset = ProductModel.objects.filter(pk__in=product_ids)
-        serializer_class = get_product_summary_serializer_class()
+        serializer_class = app_settings.PRODUCT_SUMMARY_SERIALIZER
         serialized = serializer_class(queryset, many=True, context={'request': context['request']})
         context['products'] = serialized.data
         return context

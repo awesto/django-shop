@@ -12,14 +12,10 @@ env:
 
 install:
   - pip install tox
-  - npm install
+  - cd example && npm install
 
 script:
   - "if [[ $TRAVIS_PYTHON_VERSION == '2.7' && $DJANGOVER ]]; then export TOX_ENV=py27-$DJANGOVER; fi"
   - "if [[ $TRAVIS_PYTHON_VERSION == '3.4' && $DJANGOVER ]]; then export TOX_ENV=py34-$DJANGOVER; fi"
   - "if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $DJANGOVER ]]; then export TOX_ENV=py35-$DJANGOVER; fi"
   - tox -r -e "$TOX_ENV"
-
-matrix:
-  allow_failures:
-  - env: DJANGOVER=django110

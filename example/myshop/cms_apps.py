@@ -2,36 +2,34 @@
 from __future__ import unicode_literals
 
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
-from cms.app_base import CMSApp
 from cms.apphook_pool import apphook_pool
 from cms.cms_menus import SoftRootCutter
 from menus.menu_pool import menu_pool
 
-
-class ProductsListApp(CMSApp):
-    name = _("Products List")
-    if settings.SHOP_TUTORIAL == 'polymorphic':
-        urls = ['myshop.urls.polymorphic_products']
-    elif settings.SHOP_TUTORIAL == 'i18n_commodity':
-        urls = ['myshop.urls.i18n_products']
-    else:
-        urls = ['myshop.urls.simple_products']
-
-apphook_pool.register(ProductsListApp)
+from shop.cms_apphooks import CatalogListCMSApp, CatalogSearchCMSApp, OrderCMSApp
 
 
-class ProductSearchApp(CMSApp):
-    name = _("Search")
-    urls = ['myshop.urls.search']
+class CatalogListApp(CatalogListCMSApp):
+    def get_urls(self, page=None, language=None, **kwargs):
+        if settings.SHOP_TUTORIAL in ['i18n_polymorphic', 'polymorphic']:
+            return ['myshop.urls.polymorphic_products']
+        elif settings.SHOP_TUTORIAL == 'i18n_commodity':
+            return ['myshop.urls.i18n_products']
+        else:
+            return ['myshop.urls.simple_products']
 
-apphook_pool.register(ProductSearchApp)
+apphook_pool.register(CatalogListApp)
 
 
-class OrderApp(CMSApp):
-    name = _("View Orders")
-    urls = ['shop.urls.order']
-    cache_placeholders = False
+class CatalogSearchApp(CatalogSearchCMSApp):
+    def get_urls(self, page=None, language=None, **kwargs):
+        return ['myshop.urls.search']
+
+apphook_pool.register(CatalogSearchApp)
+
+
+class OrderApp(OrderCMSApp):
+    pass
 
 apphook_pool.register(OrderApp)
 

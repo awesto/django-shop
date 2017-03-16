@@ -6,20 +6,21 @@ from django.utils.translation import ugettext_lazy as _
 import django_filters
 from djng.forms import NgModelFormMixin
 from djng.styling.bootstrap3.forms import Bootstrap3Form
-from .models.manufacturer import Manufacturer
-from .models.polymorphic.product import Product
+from myshop.models.manufacturer import Manufacturer
+from myshop.models import Product
 
 
 class FilterForm(NgModelFormMixin, Bootstrap3Form):
     scope_prefix = 'filters'
 
 
-class ManufacturerFilter(django_filters.FilterSet):
+class ManufacturerFilterSet(django_filters.FilterSet):
     manufacturer = django_filters.ModelChoiceFilter(
         queryset=Manufacturer.objects.all(),
         widget=Select(attrs={'ng-change': 'filterChanged()'}),
         empty_label=_("Any Manufacturer"),
-        help_text=_("Restrict product on this manufacturer only"))
+        help_text=_("Restrict product on this manufacturer only"),
+    )
 
     class Meta:
         model = Product
@@ -28,7 +29,9 @@ class ManufacturerFilter(django_filters.FilterSet):
 
     @classmethod
     def get_render_context(cls, request, queryset):
-        filter_set = cls()
+        # create filter set with bound form, to enable the selected option
+        filter_set = cls(data=request.GET)
+
         # we only want to show manufacturers for products available in the current list view
         filter_field = filter_set.filters['manufacturer'].field
         filter_field.queryset = filter_field.queryset.filter(

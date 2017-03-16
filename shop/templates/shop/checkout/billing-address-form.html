@@ -1,20 +1,29 @@
 {% extends "shop/checkout/dialog-base.html" %}
-{% load i18n shop_tags %}
+{% load i18n sass_tags sekizai_tags shop_tags %}
+
+{% block extra-styles %}
+	{{ block.super }}
+	{% addtoblock "css" %}<link href="{% sass_src 'shop/css/address.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+{% endblock %}
 
 {% block dialog_form %}
 <form shop-dialog-form='billing_address_form.form_entities={{ billing_address_form.form_entities|rest_json }};' name="{{ billing_address_form.form_name }}" novalidate>
-	{% if instance.glossary.allow_use_shipping %}
+	{% if billing_address_form.allow_use_primary %}
 	<div class="has-feedback form-group">
-		{{ billing_address_form.use_shipping_address }}
+		{{ billing_address_form.use_primary_address }}
 	</div>
 	{% endif %}
-	<fieldset shop-form-validate="!data.billing_address.use_shipping_address" ng-hide="data.billing_address.use_shipping_address" class="animate-show" ng-cloak>
-		<legend>{{ billing_address_form.legend }}</legend>
+	<fieldset{% if billing_address_form.allow_use_primary %} shop-form-validate="!data.billing_address.use_primary_address" ng-hide="data.billing_address.use_primary_address" class="animate-show" ng-cloak{% endif %}>
+	{% if headline_legend %}
+	<legend>{{ billing_address_form.legend }}</legend>
+	{% endif %}
 	{% if billing_address_form.multi_addr %}
 		<div class="form-group" ng-if="billing_address_form.form_entities.length>0 && data.billing_address.active_priority!='add'">
 			<label class="control-label">{% trans "Choose a previously used billing address" %}</label>
 			<select class="form-control input-sm" name="active_priority" ng-change="switchEntity(billing_address_form)" ng-model="data.billing_address.active_priority">
-				<option ng-repeat="addr in billing_address_form.form_entities" ng-selected="{{ billing_address_form.active_priority.value }}=={% verbatim %}{{ addr.value }}" value="{{ addr.value }}">{{ addr.label }}</option{% endverbatim %}>
+				{% verbatim %}
+				<option ng-repeat="addr in billing_address_form.form_entities" value="{{ addr.value }}">{{ addr.label }}</option>
+				{% endverbatim %}
 				<option value="new">{% trans "Add another billing address" %}</option>
 			</select>
 		</div>
@@ -24,7 +33,7 @@
 	{% endif %}
 		{{ billing_address_form.as_div }}
 	{% if billing_address_form.multi_addr %}
-		<div class="form-group" ng-if="billing_address_form.form_entities.length>1 || data.billing_address.active_priority=='add'">
+		<div class="form-group" ng-if="billing_address_form.form_entities.length>1 || billing_address_form.form_entities.length>0 && data.billing_address.active_priority=='add'">
 			<button class="btn btn-danger btn-xs" ng-click="removeEntity(billing_address_form, 'billing_address')">
 				<span class="glyphicon glyphicon-remove-circle"></span>&nbsp;{% trans "Remove this address" %}
 			</button>

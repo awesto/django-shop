@@ -7,24 +7,21 @@ variations to the cart.
 from __future__ import unicode_literals
 
 from django.conf.urls import url
-from shop.views.catalog import AddToCartView, CMSPageProductListView, ProductRetrieveView
-from shop.search.views import SearchView
-from myshop.filters import ManufacturerFilter
-from myshop.serializers import (ProductSummarySerializer, ProductDetailSerializer,
-                                AddSmartCardToCartSerializer, AddSmartPhoneToCartSerializer,
+
+from shop.search.views import CMSPageCatalogWrapper
+from shop.views.catalog import AddToCartView, ProductRetrieveView
+
+from myshop.filters import ManufacturerFilterSet
+from myshop.serializers import (AddSmartCardToCartSerializer, AddSmartPhoneToCartSerializer,
                                 CatalogSearchSerializer)
 
+
 urlpatterns = [
-    url(r'^$', CMSPageProductListView.as_view(
-        serializer_class=ProductSummarySerializer,
-        filter_class=ManufacturerFilter,
+    url(r'^$', CMSPageCatalogWrapper.as_view(
+        filter_class=ManufacturerFilterSet,
+        search_serializer_class=CatalogSearchSerializer,
     )),
-    url(r'^search-catalog$', SearchView.as_view(
-        serializer_class=CatalogSearchSerializer,
-    )),
-    url(r'^(?P<slug>[\w-]+)/?$', ProductRetrieveView.as_view(
-        serializer_class=ProductDetailSerializer,
-    )),
+    url(r'^(?P<slug>[\w-]+)/?$', ProductRetrieveView.as_view()),
     url(r'^(?P<slug>[\w-]+)/add-to-cart', AddToCartView.as_view(
         serializer_class=AddSmartCardToCartSerializer,
     )),

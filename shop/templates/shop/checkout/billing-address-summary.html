@@ -1,4 +1,6 @@
 <div class="form-group">
+	{% if headline_legend %}
 	<h4>{{ billing_address_form.legend }}</h4>
+	{% endif %}
 	<pre class="shop-checkout-summary" djng-bind-if="checkout_summary.billing_address_form">{{ billing_address_form.as_text }}</pre>
 </div>

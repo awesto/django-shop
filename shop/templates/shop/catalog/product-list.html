@@ -1,20 +1,27 @@
 {% load i18n static sekizai_tags sass_tags %}
 
-{% addtoblock "css" %}<link href="{% sass_src 'shop/css/product-list.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+{% addtoblock "js" %}<script src="{% static 'node_modules/angular-ui-bootstrap/ui-bootstrap-tpls.min.js' %}"></script>{% endaddtoblock %}
+{% addtoblock "ng-requires" %}ui.bootstrap{% endaddtoblock %}
 
 {% addtoblock "js" %}<script src="{% static 'shop/js/utils.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% addtoblock "js" %}<script src="{% static 'shop/js/catalog.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% addtoblock "ng-requires" %}django.shop.catalog{% endaddtoblock %}
 
-<shop-catalog-list>
-	<div class="row" ng-if="catalog.count===undefined">
-	{% for product in data.results %}
-		{% include "shop/catalog/product-list-item.html" with ng=0 %}
-	{% endfor %}
-	</div>
-	<div class="row" ng-cloak ng-if="catalog.count>=0">
-		{% include "shop/catalog/product-list-item.html" with ng=1 %}
-	</div>
-</shop-catalog-list>
+{% block catalog-list %}
+	{% addtoblock "css" %}<link href="{% sass_src 'shop/css/product-list.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 
-{% include "shop/catalog/paginator.html" %}
+	<shop-catalog-list infinite-scroll="{{ infinite_scroll|yesno:'true,false' }}">
+		<div ng-if="catalog.count===undefined">
+		{% for product in data.results %}
+			{% include "shop/catalog/product-list-item.html" with ng=0 %}
+		{% endfor %}
+		</div>
+		<div ng-cloak ng-if="catalog.count>=0">
+			{% include "shop/catalog/product-list-item.html" with ng=1 %}
+		</div>
+	</shop-catalog-list>
+{% endblock catalog-list %}
+
+{% block paginator %}
+	{% include "shop/catalog/paginator.html" %}
+{% endblock %}

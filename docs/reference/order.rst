@@ -103,7 +103,7 @@ over to the merchant's implementation, which may be implemented as:
 	        return dict(number=number)
 
 
-Here we override these three methods, otherwise the order number would be identical to it's primary
+Here we override these three methods, otherwise the order number would be identical to its primary
 key which is not suitable for all e-commerce sites.
 
 
@@ -142,19 +142,19 @@ location in that tree add a new page. As page title use "My Orders", "Ihre Beste
 Multilingual CMS installations offer a page title for each language.
 
 In the CMS page editor click onto the link named **Advanced Settings** at the bottom of the popup
-window. As template, chose the default one, provided it contains at least one big placeholder_.
+window. As template, choose the default one, provided it contains at least one big placeholder_.
 
 Enter "*shop-order*" into the **Id**-field just below. This identifier is required by some templates
 which link directly onto the orders list view page. If this field is not set, some links onto this
 page might not work properly.
 
 The Order Views must be rendered by their own CMS apphook_. Locate the field **Application** and
-chose "*View Orders*".
+choose "*View Orders*".
 
 Below this "My Orders" page, add another page named "Thanks for Your Order", "Danke für Ihre
 Bestellung" or "Gracias por su pedido". Change into the **Advanced Settings** view and as the
 rendering template select "*Inherit the template of the nearest ancestor*". Next enter
-"*shop-order-last*" into the **Id**-field just below. As **Application** chose again
+"*shop-order-last*" into the **Id**-field just below. As **Application** choose again
 "*View Orders*".
 
 
@@ -167,27 +167,25 @@ boilerplate which has to be added to the merchant's implementation of the file
 
 .. code-block:: python
 
-	from cms.app_base import CMSApp
 	from cms.apphook_pool import apphook_pool
+	from shop.cms_apphooks import OrderCMSApp
 
-	class OrderApp(CMSApp):
-	    name = "View Orders"
-	    urls = ['shop.urls.order']
-	    cache_placeholders = False
+	class OrderApp(OrderCMSApp):
+	    pass
 
 	apphook_pool.register(OrderApp)
 
 
 This apphook uses the class :class:`shop.views.order.OrderView` to render the order's list- and
-detail views using the serializers :class:`shop.rest.serializers.OrderListSerializer` and
-:class:`shop.rest.serializers.OrderDetailSerializer`. Sometimes these defaults aren't enough and
+detail views using the serializers :class:`shop.serializers.order.OrderListSerializer` and
+:class:`shop.serializers.order.OrderDetailSerializer`. Sometimes these defaults aren't enough and
 must be extended by a customized serializer. Say, our Order class contains the rendered
 shipping and billing addresses. Then we can extend our serializer class by adding them:
 
 .. code-block:: python
 	:caption: myshop/serializers.py
 
-	from shop.rest.serializers import OrderDetailSerializer
+	from shop.serializers.order import OrderDetailSerializer
 
 	class CustomOrderSerializer(OrderDetailSerializer):
 	    shipping_address_text = serializers.CharField(read_only=True)
@@ -479,7 +477,7 @@ a rendered Python dictionary, which is not well readable by humans.
 
 Therefore the merchant may add a template, which is rendered using the content of that JSON field,
 named ``extra``. For the implemented order model the merchant may add a template named
-``<myshop>/admin/order-extra.html`` to it's template folder. This template then shall render all the
+``<myshop>/admin/order-extra.html`` to its template folder. This template then shall render all the
 fields as available inside that JSON field. Here ``rows`` contains a list of computations added
 by the cart modifiers.
 

@@ -1,1 +1,3 @@
-{% extends "search/indexes/myshop/commodity_text.txt" %}
+{{ object.product_name }}
+{{ object.product_code }}
+{{ object.caption|striptags }}

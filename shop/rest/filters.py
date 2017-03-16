@@ -13,10 +13,10 @@ class CMSPagesFilterBackend(BaseFilterBackend):
     Use this backend to only show products assigned to the current page.
     """
 
-    cms_pages_fields = ['cms_pages', ]
+    cms_pages_fields = ['cms_pages']
 
-    def _get_filtered_queryset(self, current_page, queryset):
-        filter_by_cms_page = (Q((field, current_page)) for field in self.cms_pages_fields)
+    def _get_filtered_queryset(self, current_page, queryset, cms_pages_fields):
+        filter_by_cms_page = (Q((field, current_page)) for field in cms_pages_fields)
         return queryset.filter(reduce(operator.or_, filter_by_cms_page)).distinct()
 
     def filter_queryset(self, request, queryset, view):
@@ -27,7 +27,7 @@ class CMSPagesFilterBackend(BaseFilterBackend):
         current_page = request.current_page
         if current_page.publisher_is_draft:
             current_page = current_page.publisher_public
-        return self._get_filtered_queryset(current_page, queryset)
+        return self._get_filtered_queryset(current_page, queryset, cms_pages_fields)
 
 
 class RecursiveCMSPagesFilterBackend(CMSPagesFilterBackend):
@@ -35,7 +35,7 @@ class RecursiveCMSPagesFilterBackend(CMSPagesFilterBackend):
     Use this backend to show products assigned to the current page or any of its descendants.
     """
 
-    def _get_filtered_queryset(self, current_page, queryset):
+    def _get_filtered_queryset(self, current_page, queryset, cms_pages_fields):
         pages = current_page.get_descendants(include_self=True)
         filter_by_cms_page = (Q((field + "__in", pages)) for field in self.cms_pages_fields)
         return queryset.filter(reduce(operator.or_, filter_by_cms_page)).distinct()
