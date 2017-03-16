@@ -56,6 +56,7 @@ setup(
         'django-rest-auth>=0.5.0',
         'django-admin-sortable2>=0.6.4',
         'django-formtools>=1.0',
+        'djangocms-text-ckeditor>=3.2.1',
         'bs4>=0.0.1',
     ],
     # Note: this requires setuptools >= 18.0.
