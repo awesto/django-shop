@@ -9,8 +9,7 @@
 	<meta name="robots" content="{{ ROBOTS_META_TAGS }}" />
 	<meta name="description" content="{% block meta-description %}{% endblock %}" />
 	{% block head %}{% endblock head %}
-	{% render_block "ext-css" %}
-	{% render_block "css" postprocessor "compressor.contrib.sekizai.compress" %}
+	{% render_block "css" postprocessor "myshop.sekizai_processors.compress" %}
 </head>
 
 {% addtoblock "js" %}<script src="{% static 'node_modules/picturefill/dist/picturefill.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
@@ -44,8 +43,7 @@
 	{% block footer %}{% endblock footer %}
 	</footer>
 
-	{% render_block "ext-js" %}
-	{% render_block "js" postprocessor "compressor.contrib.sekizai.compress" %}
+	{% render_block "js" postprocessor "myshop.sekizai_processors.compress" %}
 	<script type="text/javascript">
 	angular.module('myShop', ['ngAnimate', 'ngSanitize',
 		{% render_block "ng-requires" postprocessor "djng.sekizai_processors.module_list" %}
