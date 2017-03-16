@@ -6,16 +6,12 @@
 
 Version 0.9 of **django-SHOP** is a complete rewrite of the old code base but keeps the concepts of
 model overriding and cart modifiers. Therefore with some effort, it should be possible to migrate
-existing projects to this new release. Please contact me, if you need help.
+existing projects to this new release. Please contact us, if you need help.
 
 
 ## NEWS
 
-The core developer of **django-SHOP**, will at [Django under the Hood](https://www.djangounderthehood.com/) from
-November 3rd to 6th, in Amsterdam. If you want to get in touch, please contact me on Twitter:
-
 [![Twitter Follow](https://img.shields.io/twitter/follow/shields_io.svg?style=social&label=django-SHOP&maxAge=2592000)](https://twitter.com/djangoshop)
-
 
 ## Running the demo projects
 
