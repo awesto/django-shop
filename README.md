@@ -3,18 +3,20 @@
 [![Build Status](https://travis-ci.org/awesto/django-shop.svg)](https://travis-ci.org/awesto/django-shop)
 [![PyPI version](https://img.shields.io/pypi/v/django-shop.svg)](https://https://pypi.python.org/pypi/django-shop)
 [![Join the chat at https://gitter.im/awesto/django-shop](https://badges.gitter.im/awesto/django-shop.svg)](https://gitter.im/awesto/django-shop?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Twitter Follow](https://img.shields.io/twitter/follow/shields_io.svg?style=social&label=django-SHOP&maxAge=2592000)](https://twitter.com/djangoshop)
 
-Version 0.9 of **django-SHOP** is a complete rewrite of the old code base but keeps the concepts of
-model overriding and cart modifiers. Therefore with some effort, it should be possible to migrate
-existing projects to this new release. Please contact me, if you need help.
+Version 0.10 of **django-SHOP** is heading towards API stability. Before upgrading to this version
+please read carfully the Changelog, as the API has been simplified and now is much more generic than
+in version 0.9.
+
+Please get in touch with us on Gitter, if you have problems to upgrade your 0.9 projects. This will
+help us to adopt the migration path.
 
 
 ## NEWS
 
-The core developer of **django-SHOP**, will at [Django under the Hood](https://www.djangounderthehood.com/) from
-November 3rd to 6th, in Amsterdam. If you want to get in touch, please contact me on Twitter:
-
-[![Twitter Follow](https://img.shields.io/twitter/follow/shields_io.svg?style=social&label=django-SHOP&maxAge=2592000)](https://twitter.com/djangoshop)
+The core developer of **django-SHOP**, will be [Django Con Europe](https://2017.djangocon.eu/) from
+April 3rd to 7th, in Florence, Italy. If you want to get in touch, please contact me on Twitter:
 
 
 ## Running the demo projects
@@ -26,19 +28,19 @@ And remember, I'm always happy to get some feedback on how it works elsewhere.
 
 ### Run the demo in a local virtualenv
 
-Following the instructions  ``docs/tutorial/intro.rst`` and ``docs/tutorial/quickstart.rst``
-should create a running shop in minutes, prefilled with a dozen of products.
-You can even pay by credit card, if you apply for your own testing account at Stripe.
+Following the instructions  ``docs/tutorial/intro.rst`` should create a running shop in minutes,
+prefilled with a dozen of products. You can even pay by credit card, if you apply for your own
+testing account at Stripe.
 
 
 ### Run the demo using Docker
 
 A faster alternative to run the "polymorphic" demo of **django-SHOP** is to use a prepared Docker
-container available on the [Docker Hub](https://hub.docker.com/r/awesto/demo-shop-polymorphic/).
+container available on the [Docker Hub](https://hub.docker.com/r/awesto/demo-shop/).
 If you have a running docker-machine, download and start the demo using:
 
 ```
-docker run -p 9001:9001 --rm awesto/demo-shop-polymorphic:latest
+docker run --name demo-shop-i18n_polymorphic --env DJANGO_SHOP_TUTORIAL=i18n_polymorphic -p 9001:9001 awesto/demo-shop:latest
 ```
 
 Then point a browser on the IP address of your docker machine onto port 9001. If unsure invoke
@@ -50,22 +52,11 @@ of each page takes some time, since beforehand the supplied images have to be th
 ## Current Status of Django-SHOP
 
 This version of django-SHOP is currently used to implement real e-commerce sites. If you want
-to help out, please have a look at our development documentation in ``docs/contributing.rst``.
+to get involved in the development, please have a look at our documentation in ``docs/contributing.rst``.
+
 
 **Django-SHOP** aims to be a the easy, fun and fast shop counterpart to django CMS.
 
-Specifically, we aim at providing a clean, modular and Pythonic/Djangonic implementation of a shop
-framework, that a moderately experienced Django programmer should be able to pick up and run easily.
-
-
-### Please help
-
-In order to build better demo sites, we need good pictures together with some introductory text
-for arbitrary products. Both, pictures and text must be free of copyright or under an open license
-(CC-by-SA, or similar). If you can provide these assets, please get in touch with Jacob Rief
-or René Fleschenberg by email.
-
-We also need ...
-* more tests.
-* translations into other natural languages.
-* a native English speaker to check the documentation.
+Specifically, we aim at providing a clean, modular and Pythonic/Djangonic implementation of an
+e-commerce framework, that a moderately experienced Django programmer should be able to pick up
+and run easily.
