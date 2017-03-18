@@ -9,7 +9,6 @@
 	<meta name="robots" content="{{ ROBOTS_META_TAGS }}" />
 	<meta name="description" content="{% block meta-description %}{% endblock %}" />
 	{% block head %}{% endblock head %}
-	{% render_block "ext-css" %}
 	{% render_block "css" postprocessor "shop.sekizai_processors.compress" %}
 </head>
 
@@ -44,7 +43,6 @@
 	{% block footer %}{% endblock footer %}
 	</footer>
 
-	{% render_block "ext-js" %}
 	{% render_block "js" postprocessor "shop.sekizai_processors.compress" %}
 	<script type="text/javascript">
 	angular.module('myShop', ['ngAnimate', 'ngSanitize',

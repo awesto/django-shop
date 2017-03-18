@@ -53,4 +53,4 @@ urllib3==1.12
 virtualenv==13.1.2
 wheel==0.24.0
 bs4==0.0.1
-djangoshop-stripe==0.2.1
+djangoshop-stripe==0.2.2
