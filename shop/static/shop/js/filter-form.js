@@ -10,25 +10,20 @@ Module.directive('shopProductFilter', ['$location', function($location) {
 		require: 'form',
 		restrict: 'AC',
 		link: function(scope, element, attrs) {
-			var params = $location.search(), filter_attrs;
-			if (angular.isUndefined(attrs['shopProductFilter']))
+			var params = $location.search(), attr = attrs['shopProductFilter'];
+			if (!attr)
 				throw new Error("Directive shop-attribute-filter requires an attribute.");
-			filter_attrs = scope.$eval(attrs['shopProductFilter']) || [attrs['shopProductFilter']];
 
 			scope.filters = scope.filters || {};
-			angular.forEach(filter_attrs, function(attr) {
-				if (params[attr]) {
-					scope.filters[attr] = params[attr];
-				}
-			});
+			if (params[attr]) {
+				scope.filters[attr] = params[attr];
+			}
 
 			scope.filterChanged = function() {
 				var params = {};
-				angular.forEach(filter_attrs, function(attr) {
-					if (scope.filters[attr]) {
-						params[attr] = scope.filters[attr];
-					}
-				});
+				if (scope.filters[attr]) {
+					params[attr] = scope.filters[attr];
+				}
 				$location.search(params);
 				scope.searchQuery = '';  // remove content in search field
 				scope.$emit('shopCatalogFilter', params);
