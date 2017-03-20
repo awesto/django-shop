@@ -255,7 +255,6 @@ TEMPLATES = [{
             'sekizai.context_processors.sekizai',
             'cms.context_processors.cms_settings',
             'shop.context_processors.customer',
-            'shop.context_processors.version',
             'shop.context_processors.ng_model_options',
             'shop_stripe.context_processors.public_keys',
         )
