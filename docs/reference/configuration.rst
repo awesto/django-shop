@@ -26,6 +26,16 @@ merchant's implementation.
 There is no default setting.
 
 
+Site Framework
+--------------
+
+You should always activate Django's site framework and set a default for
+
+.. code-block:: python
+
+	SITE_ID = 1
+
+
 Alternative User Model
 ----------------------
 
@@ -42,7 +52,7 @@ complain if we do not silence this system check:
 
 .. code-block:: python
 
-	SILENCED_SYSTEM_CHECKS = ('auth.W004')
+	SILENCED_SYSTEM_CHECKS = ['auth.W004']
 
 For further information, please refer to the :ref:`reference/customer-model` documentation.
 
@@ -52,10 +62,12 @@ Authentication Backends
 
 .. code-block:: python
 
-	AUTHENTICATION_BACKENDS = (
+	AUTHENTICATION_BACKENDS = [
 	    'django.contrib.auth.backends.ModelBackend',
 	    'allauth.account.auth_backends.AuthenticationBackend',
-	)
+	]
+
+.. _allauth: http://django-allauth.readthedocs.io/en/latest/
 
 
 Currency
@@ -93,11 +105,11 @@ on whatever appropriate.
 
 .. code-block:: python
 
-	SHOP_CART_MODIFIERS = (
+	SHOP_CART_MODIFIERS = [
 	    'shop.modifiers.defaults.DefaultCartModifier',
 	    'shop.modifiers.taxes.CartExcludedTaxModifier',
 	    # other modifiers
-	)
+	]
 
 For further information, please refer to the :ref:`reference/cart-modifiers` documentation.
 
@@ -109,7 +121,7 @@ This is a configuration known to work. Special and optional apps are discussed b
 
 .. code-block:: python
 
-	INSTALLED_APPS = (
+	INSTALLED_APPS = [
 	    'django.contrib.auth',
 	    'email_auth',
 	    'polymorphic',
@@ -150,7 +162,7 @@ This is a configuration known to work. Special and optional apps are discussed b
 	    'haystack',
 	    'shop',
 	    'my_shop_implementation',
-	)
+	]
 
 * ``email_auth`` optional but recommended, overrides the built-in authentification. It must be
   located after ``django.contrib.auth``.
@@ -162,7 +174,8 @@ This is a configuration known to work. Special and optional apps are discussed b
   autocompletion. Very useful for addings links to products manually. It presumes that
   django-select2_ is installed.
 * ``cmsplugin_cascade`` adds the functionality to add CMS plugins, as provided by **django-SHOP**,
-  to arbitrary CMS placeholders.
+  to arbitrary CMS placeholders. This setting including submodules can be removed, if all templates
+  are created manually.
 * ``cmsplugin_cascade.clipboard`` allows the site administrator to copy a set of plugins in one
   installation and paste it into the placeholder of another one.
 * ``cmsplugin_cascade.sharable`` allows the site administrator to share a preconfigurable set
@@ -256,26 +269,25 @@ the list of the default ``STATICFILES_FINDERS``:
 
 .. code-block:: python
 
-	STATICFILES_FINDERS = (
+	STATICFILES_FINDERS = [
 	    'django.contrib.staticfiles.finders.FileSystemFinder',
 	    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 	    'sass_processor.finders.CssFinder',
 	    'compressor.finders.CompressorFinder',
-	)
+	]
 
 
-Since **django-SHOP** requires a few third party packages, which are not available from PyPI, they
+**Django-SHOP** requires a few third party packages, which are not available from PyPI, they
 instead must be installed via ``npm install``. In order to make these files available to our Django
 application, we use the configuration setting:
 
 .. code-block:: python
 
-	STATICFILES_DIRS = (
-	    os.path.join(BASE_DIR, 'static'),
-	    ('node_modules', os.path.join(PROJECT_ROOT, 'node_modules')),
-	)
+	STATICFILES_DIRS = [
+	    ('node_modules', '/path/to/project/node_modules'),
+	]
 
-Some files installed by ``npm`` are processed by **django-sass-processor** and hence their path
+Some files installed by ``npm`` are processed by django-sass-processor_ and hence their path
 must be made available:
 
 .. code-block:: python
@@ -285,6 +297,13 @@ must be made available:
 	SASS_PROCESSOR_INCLUDE_DIRS = (
 	    os.path.join(PROJECT_ROOT, 'node_modules'),
 	)
+
+* The string provided by ``NODE_MODULES_URL`` is used by the special function ``get-setting()``
+  in the provided SASS files.
+* ``SASS_PROCESSOR_INCLUDE_DIRS`` extends the list of folders to look for ``@import ...`` statements
+  in the provided SASS files.
+
+.. _django-sass-processor: https://github.com/jrief/django-sass-processor
 
 
 Template Context Processors
@@ -301,15 +320,12 @@ settings. Add them to each template using these context processors:
 	        'context_processors': (
 	            ...
 	            'shop.context_processors.customer',
-	            'shop.context_processors.version',
 	            'shop.context_processors.ng_model_options',
 	        ),
 	    },
 	}]
 
 ``shop.context_processors.customer`` adds the Customer object to the rendering context.
-
-``shop.context_processors.version`` adds the Django version to the rendering context.
 
 ``shop.context_processors.ng_model_options`` adds the :ref:`reference/configuration#angular-specific-settings`
 to the rendering context.
@@ -337,22 +353,113 @@ backend:
 Email settings
 --------------
 
-Having a working outgoing e-mail service is a fundamental requirement for **django-SHOP**.
-Adopt these settings to your configuration. Please remember that e-mail is sent asynchronously
-using django-post_office_.
+Since **django-SHOP** communicates with its customers via email, having a working outgoing e-mail
+service is a fundamental requirement for **django-SHOP**. Adopt these settings to your
+configuration. Please remember that e-mail is sent asynchronously via django-post_office_.
 
-EMAIL_HOST = 'smtp.example.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'no-reply@example.com'
-EMAIL_HOST_PASSWORD = 'smtp-secret-password'
-EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'My Shop <no-reply@example.com>'
-EMAIL_REPLY_TO = 'info@example.com'
-EMAIL_BACKEND = 'post_office.EmailBackend'
+.. code-block:: python
 
-These settings are explained in detail in the Django documentation.
+	EMAIL_HOST = 'smtp.example.com'
+	EMAIL_PORT = 587
+	EMAIL_HOST_USER = 'no-reply@example.com'
+	EMAIL_HOST_PASSWORD = 'smtp-secret-password'
+	EMAIL_USE_TLS = True
+	DEFAULT_FROM_EMAIL = 'My Shop <no-reply@example.com>'
+	EMAIL_REPLY_TO = 'info@example.com'
+	EMAIL_BACKEND = 'post_office.EmailBackend'
 
 .. _django-post_office: https://pypi.python.org/pypi/django-post_office
+
+
+Session Handling
+----------------
+
+For performance reasons it is recommended to use a memory based session store such as Redis, rather
+than a database or disk based store.
+
+.. code-block:: python
+
+	SESSION_ENGINE = 'redis_sessions.session'
+	SESSION_SAVE_EVERY_REQUEST = True
+	SESSION_REDIS_PREFIX = 'myshop-session'
+	SESSION_REDIS_DB = 0
+
+
+Caching Backend
+---------------
+
+For performance reasons it is recommended to use a memory based cache such as Redis, rather than a
+disk based store. In comparison to memcached, Redis can invalidate cache entries using keys with
+wildcards, which is a big advantage in **django-SHOP**.
+
+	CACHES = {
+	    'default': {
+	        'BACKEND': 'redis_cache.RedisCache',
+	        'LOCATION': os.environ.get('REDIS_LOCATION', 'redis://localhost:6379/0'),
+	        'KEY_PREFIX': 'myshop-cache',
+	    },
+	}
+
+	CACHE_MIDDLEWARE_ALIAS = 'default'
+	CACHE_MIDDLEWARE_SECONDS = 3600
+	CACHE_MIDDLEWARE_KEY_PREFIX = 'myshop-cache'
+
+
+Internationalisation Support
+============================
+
+Always localize decimal numbers unless you operate you site in the United States:
+
+.. code-block:: python
+
+	USE_L10N = True
+
+
+These settings for internationalisation are known to work in combination with django-cms_ and
+django-parler_.
+
+	USE_I18N = True
+
+	LANGUAGE_CODE = 'en'
+
+	LANGUAGES = [
+	    ('en', "English"),
+	    ('de', "Deutsch"),
+	]
+
+	PARLER_DEFAULT_LANGUAGE = 'en'
+
+	PARLER_LANGUAGES = {
+	    1: [
+	        {'code': 'de'},
+	        {'code': 'en'},
+	    ],
+	    'default': {
+	        'fallbacks': ['de', 'en'],
+	    },
+	}
+
+	CMS_LANGUAGES = {
+	    'default': {
+	        'fallbacks': ['en', 'de'],
+	        'redirect_on_fallback': True,
+	        'public': True,
+	        'hide_untranslated': False,
+	    },
+	    1: [{
+	        'public': True,
+	        'code': 'en',
+	        'hide_untranslated': False,
+	        'name': 'English',
+	        'redirect_on_fallback': True,
+	    }, {
+	        'public': True,
+	        'code': 'de',
+	        'hide_untranslated': False,
+	        'name': 'Deutsch',
+	        'redirect_on_fallback': True,
+	    },]
+	}
 
 
 REST Framework
@@ -373,7 +480,7 @@ Money type:
 	    'PAGE_SIZE': 12,
 	}
 
-	SERIALIZATION_MODULES = {'json': str('shop.money.serializers')}
+	SERIALIZATION_MODULES = {'json': 'shop.money.serializers'}
 
 Since the client side is not allowed to do any price and quantity computations, Decimal values are
 transferred to the client using strings. This also avoids nasty rounding errors.
@@ -391,11 +498,55 @@ accept
 
 .. code-block:: python
 
-	CMS_TEMPLATES = (
+	CMS_TEMPLATES = [
 	    ('myshop/pages/default.html', _("Default Page")),
-	)
+	]
 
 	CMS_PERMISSION = False
+
+	cascade_workarea_glossary = {
+	    'breakpoints': ['xs', 'sm', 'md', 'lg'],
+	    'container_max_widths': {'xs': 750, 'sm': 750, 'md': 970, 'lg': 1170},
+	    'fluid': False,
+	    'media_queries': {
+	        'xs': ['(max-width: 768px)'],
+	        'sm': ['(min-width: 768px)', '(max-width: 992px)'],
+	        'md': ['(min-width: 992px)', '(max-width: 1200px)'],
+	        'lg': ['(min-width: 1200px)'],
+	    },
+	}
+
+	CMS_PLACEHOLDER_CONF = {
+	    'Breadcrumb': {
+	        'plugins': ['BreadcrumbPlugin'],
+	        'parent_classes': {'BreadcrumbPlugin': None},
+	        'glossary': cascade_workarea_glossary,
+	    },
+	    'Commodity Details': {
+	        'plugins': ['BootstrapContainerPlugin', 'BootstrapJumbotronPlugin'],
+	        'parent_classes': {
+	            'BootstrapContainerPlugin': None,
+	            'BootstrapJumbotronPlugin': None,
+	        },
+	        'glossary': cascade_workarea_glossary,
+	    },
+	    'Main Content': {
+	        'plugins': ['BootstrapContainerPlugin', 'BootstrapJumbotronPlugin'],
+	        'parent_classes': {
+	            'BootstrapContainerPlugin': None,
+	            'BootstrapJumbotronPlugin': None,
+	            'TextLinkPlugin': ['TextPlugin', 'AcceptConditionPlugin'],
+	        },
+	        'glossary': cascade_workarea_glossary,
+	    },
+	    'Static Footer': {
+	        'plugins': ['BootstrapContainerPlugin', ],
+	        'parent_classes': {
+	            'BootstrapContainerPlugin': None,
+	        },
+	        'glossary': cascade_workarea_glossary,
+	    },
+	}
 
 
 **Django-SHOP** enriches **djangocms-cascade** with a few shop specific plugins.
@@ -404,39 +555,40 @@ accept
 
 	from cmsplugin_cascade.extra_fields.config import PluginExtraFieldsConfig
 
-	CMSPLUGIN_CASCADE_PLUGINS = ('cmsplugin_cascade.segmentation', 'cmsplugin_cascade.generic',
-	    'cmsplugin_cascade.link', 'shop.cascade', 'cmsplugin_cascade.bootstrap3',)
+	CMSPLUGIN_CASCADE_PLUGINS = [
+	    'cmsplugin_cascade.segmentation',
+	    'cmsplugin_cascade.generic',
+	    'cmsplugin_cascade.icon',
+	    'cmsplugin_cascade.link',
+	    'shop.cascade',
+	    'cmsplugin_cascade.bootstrap3',
+	]
 
 	CMSPLUGIN_CASCADE = {
-	    'link_plugin_classes': (
+	    'link_plugin_classes': [
 	        'shop.cascade.plugin_base.CatalogLinkPluginBase',
 	        'cmsplugin_cascade.link.plugin_base.LinkElementMixin',
 	        'shop.cascade.plugin_base.CatalogLinkForm',
-	    ),
-	    'alien_plugins': ('TextPlugin', 'TextLinkPlugin',),
+	    ],
+	    'alien_plugins': ['TextPlugin', 'TextLinkPlugin', 'AcceptConditionPlugin'],
 	    'bootstrap3': {
 	        'template_basedir': 'angular-ui',
 	    },
-	    'plugins_with_extra_fields': {
-	        'ExtraAnnotationFormPlugin': PluginExtraFieldsConfig(),
-	        'ShopProceedButton': PluginExtraFieldsConfig(),
-	        'ShopAddToCartPlugin': PluginExtraFieldsConfig(),
+	    'plugins_with_sharables': {
+	        'BootstrapImagePlugin': ['image_shapes', 'image_width_responsive', 'image_width_fixed',
+	                                 'image_height', 'resize_options'],
+	        'BootstrapPicturePlugin': ['image_shapes', 'responsive_heights', 'image_size', 'resize_options'],
 	    },
-	    'segmentation_mixins': (
-	        ('shop.cascade.segmentation.EmulateCustomerModelMixin',
-	         'shop.cascade.segmentation.EmulateCustomerAdminMixin'),
-	    ),
-	    'plugins_with_extra_render_templates': {
-	        'CustomSnippetPlugin': [
-	            ('shop/catalog/product-heading.html', _("Product Heading"))
-	        ],
-	    },
+	    'bookmark_prefix': '/',
+	    'segmentation_mixins': [
+	        ('shop.cascade.segmentation.EmulateCustomerModelMixin', 'shop.cascade.segmentation.EmulateCustomerAdminMixin'),
+	    ],
+	    'allow_plugin_hiding': True,
 	}
 
+
 Since we want to add arbitrary links onto the detail view of a product, **django-SHOP** offers
-a modified link plugin. This has to be enabled using the 3-tuple ``link_plugin_classes``. There
-is also a JavaScript helper ``shop/js/admin/shoplinkplugin.js``, which depends on another JavaScript
-file.
+a modified link plugin. This has to be enabled using the 3-tuple ``link_plugin_classes``.
 
 **Django-SHOP** uses AngularJS rather than jQuery to control its dynamic HTML widgets.
 We therefore have to override the default with this settings:
@@ -446,6 +598,85 @@ For a detailed explanation of these configuration settings, please refer to the 
 of djangocms-cascade_.
 
 .. _djangocms-cascade: http://djangocms-cascade.readthedocs.org
+
+
+CK Text Editor settings
+-----------------------
+
+By default, **django-CMS** uses the CKEditor_ plugin which can be heavily configured. Settings which
+have shown to be useful are:
+
+.. code-block:: python
+
+	CKEDITOR_SETTINGS_CAPTION = {
+	    'language': '{{ language }}',
+	    'skin': 'moono',
+	    'height': 70,
+	    'toolbar_HTMLField': [
+	        ['Undo', 'Redo'],
+	        ['Format', 'Styles'],
+	        ['Bold', 'Italic', 'Underline', '-', 'Subscript', 'Superscript', '-', 'RemoveFormat'],
+	        ['Source']
+	    ],
+	}
+
+	CKEDITOR_SETTINGS_DESCRIPTION = {
+	    'language': '{{ language }}',
+	    'skin': 'moono',
+	    'height': 250,
+	    'toolbar_HTMLField': [
+	        ['Undo', 'Redo'],
+	        ['cmsplugins', '-', 'ShowBlocks'],
+	        ['Format', 'Styles'],
+	        ['TextColor', 'BGColor', '-', 'PasteText', 'PasteFromWord'],
+	        ['Maximize', ''],
+	        '/',
+	        ['Bold', 'Italic', 'Underline', '-', 'Subscript', 'Superscript', '-', 'RemoveFormat'],
+	        ['JustifyLeft', 'JustifyCenter', 'JustifyRight'],
+	        ['HorizontalRule'],
+	        ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Table'],
+	        ['Source']
+	    ],
+	}
+
+.. _CKEditor: https://github.com/divio/djangocms-text-ckeditor
+
+
+Media assets handling
+---------------------
+
+**Django-CMS** and **django-SHOP** rely on django-filer_ in combination with easy-thumbnails_ to
+manage the media assets.
+
+.. code-block:: python
+
+	MEDIA_ROOT = '/path/to/project/media'
+
+	MEDIA_URL = '/media/'
+
+	FILER_ALLOW_REGULAR_USERS_TO_ADD_ROOT_FOLDERS = True
+
+	FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880
+
+	THUMBNAIL_OPTIMIZE_COMMAND = {
+	    'gif': '/usr/bin/optipng {filename}',
+	    'jpeg': '/usr/bin/jpegoptim {filename}',
+	    'png': '/usr/bin/optipng {filename}'
+	}
+
+	THUMBNAIL_PRESERVE_EXTENSIONS = True
+
+	THUMBNAIL_PROCESSORS = [
+	    'easy_thumbnails.processors.colorspace',
+	    'easy_thumbnails.processors.autocrop',
+	    'filer.thumbnail_processors.scale_and_crop_with_subject_location',
+	    'easy_thumbnails.processors.filters',
+	]
+
+all settings are explained in detail in the documentation of django-filer_ and easy-thumbnails_.
+
+.. _django-filer: https://django-filer.readthedocs.io/
+.. _easy-thumbnails: https://easy-thumbnails.readthedocs.io/
 
 
 Full Text Search
@@ -477,8 +708,8 @@ If you want to index other natural language, say German, add another prefix:
 	}
 	HAYSTACK_ROUTERS = ('shop.search.routers.LanguageRouter',)
 
-.. _ElasticSearchEngine: https://www.elastic.co/products/elasticsearch
 
+.. _ElasticSearchEngine: https://www.elastic.co/products/elasticsearch
 
 .. _reference/configuration#angular-specific-settings:
 
