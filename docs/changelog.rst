@@ -4,65 +4,23 @@
 Changelog for django-SHOP
 =========================
 
-0.10
-====
-
-* In the backend, ``OrderAdmin`` and ``OrderItemAdmin`` may render the dictionary ``extra`` from
-  their associated models using a special template.
-* In ``OrderAdmin`` use methods ``get_fields()`` and ``get_readonly_fields()`` as intended.
-* Tested with Django-1.10. Drop support for Django-1.8.
+0.9.4
+=====
+* In the backend, OrderAdmin and OrderItemAdmin may render the extra dicts from the model using
+  a special template.
+* Drop support for Django-1.8.
 * If an anonymous customer logs in, his current cart is merged with a cart, which has previously
-  been created. This has been adopted to re-use the method ``Product.is_in_cart()``.
-* Added method ``post_process_cart_item()`` to :class:`shop.modifiers.base.BaseCartModifier`.
+  been created. This has been adopted to re-use the method Product.is_in_cart()
+  in and finds it's Merge the contents of the other cart into this one, afterwards delete it.
 * Moved field ``salutation`` from :class:`shop.models.customer.BaseCustomer` into the merchant
   implementation. If your project does not use the provided default customer model
   :class:`shop.models.defaults.customer.Customer`, then you should add the ``salutation`` field
   to your implementation of the Customer model, if that makes sense in your use-case.
-* Refactored the defaults settings for ``shop`` using an ``AppSettings`` object.
-* Refactored all serializers into their own folder ``shop/serializers`` with submodules
-  ``bases.py``, ``cart.py``, ``order.py`` and ``defaults.py``. The serializers
-  ``CustomerSerializer``, ``ProductSummarySerializer`` and ``OrderItemSerializer`` now are
-  configurable through the application settings.
-* Renamed ``ProductDetailSerializerBase`` -> ``BaseProductDetailSerializer`` and
-  ``ProductSummarySerializerBase`` -> ``BaseProductSummarySerializer`` to be consistent with the
-  naming conventions used by the Django REST Framework.
-* AngularJS directive ``<shop-auth-form ...>`` now listens of the event "pressed ENTER key"
-  and submits the form data accordingly.
-* Upgraded to AngularJS version 1.5.9.
-* HTML5 mode is the default now.
-* The previously required additional endpoint for the autocomplete search, can now be be merged
-  into the same endpoint as connected to the catalog's list view. This has been made possible by
-  the wrapper :class:`shop.search.views.CMSPageCatalogWrapper` which dispatch incoming requests
-  to either the :class:`shop.views.catalog.ProductListView` or, for search queries to
-  :class:`shop.search.views.SearchView`.
-* Added choice option "Infinite Scroll" to the Cascade plugins **Catalog List View** and
-  **Search Results**. They influence if the paginator is rendered or trigger an event to load
-  more results from the server.
-* Changed all Cascade plugins to follow the new API introduced in **djangocms-cascade** version 0.12.
-* Directive ``shop-product-filter`` must be member of a ``<form ...>`` element.
-* Unified the plugins **ShippingAddressFormPlugin** and **BillingAddressFormPlugin** into one plugin
-  named **CheckoutAddressPlugin**, where the merchant can choose between the shipping- or billing
-  form.
-* Refactored :class:`shop.forms.checkout.AddressForm` and fixed minor bugs when editing multiple
-  addresses.
-* In address models, replaced ``CharField`` for ``country`` against a special ``CountryField``.
-* Change value of ``BaseShippingAddress.address_type`` to ``shipping`` and
-  ``BaseBillingAddress.address_type`` to ``billing``.
-* Method ``shop.models.order.OrderManager.get_latest_url()`` falls back to
-  ``reverse('shop-order-last')`` if no such page with ID ``shop-order-last`` was found in the CMS.
-* Use menu_title instead of page title for link and tooltip content.
-* In ``DialogForm``, field ``plugin_id`` is not required anymore.
-* After a new customer recognized himself, the signal ``customer_recognized`` is fired so that
-  other apps can act upon.
-* Unified ``ProductCommonSerializer``, ``ProductSummarySerializer`` and ``ProductDetailSerializer``
-  into a single ``ProductSerializer``, which acts as default for the ``ProductListView`` and
-  ``ProductRetrieveView``.
-* Dependency to **djangocms-cascade** is optional now.
+* Added method ``post_process_cart_item`` to the Cart Modifiers.
 
 
 0.9.3
 =====
-
 * Added template context processor :func:`shop.context_processors.ng_model_options` to add the
   settings ``EDITCART_NG_MODEL_OPTIONS`` and ``ADD2CART_NG_MODEL_OPTIONS``. Please check your
   templates to see, if you still use ``ng_model_options``.
@@ -74,7 +32,7 @@ Changelog for django-SHOP
 * All Cascade plugins use ``GlossaryField`` instead of a list of ``PartialFormField`` s. This is
   much more "Djangonic", but requires djangocms-cascade version 0.11 or later.
 * All urlpatterns are compatible with configurations adding a final / to the request URL.
-* The URL for accessing an Order object, now uses the order number instead of its primary key.
+* The URL for accessing an Order object, now uses the order number instead of it's primary key.
 
 
 0.9.2
