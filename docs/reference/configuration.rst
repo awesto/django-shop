@@ -677,9 +677,6 @@ manage the media assets.
 
 all settings are explained in detail in the documentation of django-filer_ and easy-thumbnails_.
 
-.. _django-filer: https://django-filer.readthedocs.io/
-.. _easy-thumbnails: https://easy-thumbnails.readthedocs.io/
-
 
 Full Text Search
 ----------------
