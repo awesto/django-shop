@@ -317,6 +317,8 @@ urlpatterns, which are used by the apphook ``ProductsListApp``. In doubt, consul
 ``myshop/cms_apps.py``. This apphook names a file with urlpatterns. Locate that file and add the
 following entry:
 
+TODO: mention that a ProductModel used in a catalog, must also inherit from CMSPageReferenceMixin.
+
 .. code-block:: python
 
 	from django.conf.urls import url

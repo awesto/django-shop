@@ -33,6 +33,12 @@ optionally be added to the merchant representation.
 All AngularJS directives for the catalog list and catalog search view support infinite scroll, as
 well as manual pagination.
 
+After upgrading to **angular-ui-bootstrap** version 0.14, all corresponding directives have to be
+prefixed with ``uib-...``.
+
+There is no more need for a special URL pattern to handle auto-completion search. Instead use the
+wrapping view :class:`shop.search.views.CMSPageCatalogWrapper`.
+
 
 0.9.3
 =====
