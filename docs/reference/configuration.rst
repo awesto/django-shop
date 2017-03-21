@@ -463,6 +463,9 @@ django-parler_.
 	    },]
 	}
 
+.. _django-cms: https://django-cms.readthedocs.io/
+.. _django-parler: https://django-parler.readthedocs.io/
+
 
 REST Framework
 --------------
