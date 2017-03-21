@@ -4,8 +4,9 @@
 Changelog for django-SHOP
 =========================
 
-0.10
-====
+
+0.10.0
+======
 
 * In the backend, ``OrderAdmin`` and ``OrderItemAdmin`` may render the dictionary ``extra`` from
   their associated models using a special template.
