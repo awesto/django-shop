@@ -56,6 +56,9 @@ Changelog for django-SHOP
   into a single ``ProductSerializer``, which acts as default for the ``ProductListView`` and
   ``ProductRetrieveView``.
 * Dependency to **djangocms-cascade** is optional now.
+* Added alternative compressor for ``{% render_block "js/css" "shop.sekizai_processors.compress" %}``
+  which can handle JS/CSS files provided using ``{% addtoblock "js/css" ... %}`` even if located
+  outside the ``/static/`` folders.
 
 
 0.9.3
