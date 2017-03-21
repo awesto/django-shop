@@ -19,7 +19,7 @@ class ShopSearchResultsForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super(ShopSearchResultsForm, self).clean()
         page = self.instance.placeholder.page
-        if page and page.application_urls != 'ProductSearchApp':
+        if page and page.application_urls != 'CatalogSearchApp':
             raise ValidationError("This plugin can only be used on a CMS page with an application of type 'Search'.")
         return cleaned_data
 
@@ -39,12 +39,13 @@ class ShopSearchResultsPlugin(ShopPluginBase):
     )
 
     def get_render_template(self, context, instance, placeholder):
-        if instance.placeholder.page.application_urls == 'ProductSearchApp':
+        if instance.placeholder.page.application_urls == 'CatalogSearchApp':
             return select_template([
                     '{}/search/results.html'.format(app_settings.APP_LABEL),
                     'shop/search/results.html',
             ])
-        return engines['django'].from_string('<pre class="bg-danger">This {} plugin is used on a CMS page without an application of type "Search".</pre>'.format(self.name))
+        msg = '<pre class="bg-danger">This {} plugin is used on a CMS page without an application of type "Search".</pre>'
+        return engines['django'].from_string(msg.format(self.name))
 
     def render(self, context, instance, placeholder):
         super(ShopSearchResultsPlugin, self).render(context, instance, placeholder)

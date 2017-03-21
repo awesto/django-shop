@@ -11,7 +11,7 @@ from shop.models.fields import JSONField
 
 from myshop.models import Cart, CartItem, Customer
 from myshop.models.manufacturer import Manufacturer
-from myshop.models.polymorphic.commodity import Commodity
+from myshop.models import Commodity
 
 
 class JsonModel(models.Model):

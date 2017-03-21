@@ -33,12 +33,19 @@ class Command(BaseCommand):
 
     def handle(self, verbosity, *args, **options):
         self.set_options(**options)
+        fixture = '{workdir}/{tutorial}/fixtures/myshop.json'.format(workdir=settings.WORK_DIR,
+                                                                     tutorial=settings.SHOP_TUTORIAL)
 
-        mesg = ("\nThis will overwrite your workdir and install a new database for the django-SHOP demo: {tutorial}\n"
-                "Are you sure you want to do this?\n\n"
-                "Type 'yes' to continue, or 'no' to cancel: ").format(tutorial=settings.SHOP_TUTORIAL)
-        if self.interactive and input(mesg) != 'yes':
-            raise CommandError("Collecting static files cancelled.")
+        if self.interactive:
+            mesg = ("\nThis will overwrite your workdir and install a new database for the django-SHOP demo: {tutorial}\n"
+                    "Are you sure you want to do this?\n\n"
+                    "Type 'yes' to continue, or 'no' to cancel: ").format(tutorial=settings.SHOP_TUTORIAL)
+            if input(mesg) != 'yes':
+                raise CommandError("Collecting static files cancelled.")
+        else:
+            if os.path.isfile(fixture):
+                self.stdout.write(self.style.WARNING("Can not override downloaded data in input-less mode."))
+                return
 
         extract_to = os.path.join(settings.WORK_DIR, os.pardir)
         msg = "Downloading workdir and extracting to {}. Please wait ..."
@@ -52,6 +59,5 @@ class Command(BaseCommand):
             zip_ref.close()
 
         call_command('migrate')
-        fixture = '{workdir}/{tutorial}/fixtures/myshop.json'
-        call_command('loaddata', fixture.format(workdir=settings.WORK_DIR,
-                                                tutorial=settings.SHOP_TUTORIAL))
+        call_command('loaddata', fixture)
+        call_command('fix_filer_bug_965')

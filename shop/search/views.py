@@ -77,7 +77,7 @@ class CMSPageCatalogWrapper(object):
 
     :param limit_choices_to: Limit the queryset of product models to these choices.
 
-    :param filter_class: A filter set which must be inherit from :class:`django_filters.FilterSet`.
+    :param filter_class: A filter set which must inherit from :class:`django_filters.FilterSet`.
 
     :param search_serializer_class: The serializer class used to process the queryset returned
         by Haystack, while performing an autocomplete lookup.

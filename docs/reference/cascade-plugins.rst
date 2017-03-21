@@ -351,7 +351,7 @@ Catalog
 The catalog list view is handled by the **ShopCatalogPlugin**.
 
 This plugin requires a CMS page, which uses the apphook_ **ProductsListApp**. First assure that we
-:ref:`reference/create-ProductsListApp`. This CMSapp must be implemented by the merchant; it thus
+:ref:`reference/create-CatalogListApp`. This CMSapp must be implemented by the merchant; it thus
 is part of the project, rather than the **django-SHOP** framework.
 
 

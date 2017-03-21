@@ -2,27 +2,25 @@ FROM awesto/uwsgi-django-shop:latest
 
 MAINTAINER Jacob Rief <jacob.rief@gmail.com>
 
-# install packages outside of PyPI
-WORKDIR /web/django-shop
-RUN npm install
-
 # copy the example project
-RUN mkdir -p /web/django-shop/example
-ADD myshop /web/django-shop/example/myshop
-COPY docker-files/wsgi.py /web/django-shop/example/wsgi.py
-COPY manage.py /web/django-shop/example/manage.py
+RUN mkdir -p /web/demo-shop
+ADD myshop /web/demo-shop/myshop
+COPY docker-files/wsgi.py /web/demo-shop/wsgi.py
+COPY manage.py /web/demo-shop/manage.py
+COPY package.json /web/demo-shop/package.json
+
+# install packages outside of PyPI
+WORKDIR /web/demo-shop
+RUN npm install
 
 # add uwsgi.ini file into workdir, so that touching this file restarts the Django server
 COPY docker-files/myshop.ini /web/workdir/myshop.ini
 RUN ln -s /web/workdir/myshop.ini /etc/uwsgi.d/myshop.ini
 
 # convert SASS into css files
-ENV DJANGO_SHOP_TUTORIAL=polymorphic DJANGO_WORKDIR=/web/workdir
-RUN example/manage.py compilescss
-RUN example/manage.py collectstatic --noinput --ignore='*.scss'
-
-# add file removed after bootstrapping uwsgi
-RUN touch /web/workdir/.bootstrap
+ENV DJANGO_WORKDIR=/web/workdir
+RUN DJANGO_SHOP_TUTORIAL=commodity ./manage.py compilescss
+RUN DJANGO_SHOP_TUTORIAL=commodity ./manage.py collectstatic --noinput --ignore='*.scss'
 RUN chown -R django.django /web/workdir
 
 VOLUME /web

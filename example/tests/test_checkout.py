@@ -14,7 +14,7 @@ from shop.cascade.checkout import (
     PaymentMethodFormPlugin, ShippingMethodFormPlugin, RequiredFormFieldsPlugin,
     ExtraAnnotationFormPlugin, AcceptConditionPlugin)
 from shop.models.cart import CartModel
-from myshop.models.polymorphic.smartcard import SmartCard
+from myshop.models import SmartCard
 from .test_shop import ShopTestCase
 
 

@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 import json
 from django.core.urlresolvers import reverse
-from myshop.models.polymorphic.smartcard import SmartCard
+from myshop.models import SmartCard
 from bs4 import BeautifulSoup
 from .test_shop import ShopTestCase
 

@@ -26,7 +26,8 @@ class AuthFormsView(GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         if request.customer.is_visitor():
-            errors = {NON_FIELD_ERRORS: _("Unable to proceed as guest without items in the cart.")}
+            errmsg = _("Unable to proceed to the checkout page without items in the cart.")
+            errors = {NON_FIELD_ERRORS: errmsg}
             return Response(errors, status=status.HTTP_400_BAD_REQUEST)
         form = self.form_class(data=request.data, instance=request.customer)
         if form.is_valid():

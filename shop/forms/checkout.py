@@ -6,6 +6,7 @@ from django.forms import fields, widgets
 from django.forms.utils import ErrorDict
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
+from django.utils.functional import cached_property
 
 from djng.styling.bootstrap3.forms import Bootstrap3ModelForm
 from djng.styling.bootstrap3.widgets import RadioSelect, RadioFieldRenderer, CheckboxInput
@@ -69,7 +70,7 @@ class GuestForm(UniqueEmailValidationMixin, DialogModelForm):
     def form_factory(cls, request, data, cart):
         customer_form = cls(data=data, instance=request.customer.user)
         if customer_form.is_valid():
-            customer_form.instance.recognize_as_guest(request, commit=False)
+            request.customer.recognize_as_guest(request, commit=False)
             customer_form.save()
         return customer_form
 
@@ -111,7 +112,7 @@ class AddressForm(DialogModelForm):
     def get_model(cls):
         return cls.Meta.model
 
-    @property
+    @cached_property
     def field_css_classes(self):
         css_classes = {'*': getattr(Bootstrap3ModelForm, 'field_css_classes')}
         for name, field in self.fields.items():

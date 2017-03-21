@@ -6,16 +6,18 @@ from django.db.models import Max
 from django.template.context import Context
 from django.template.loader import get_template
 from django.utils.translation import ugettext_lazy as _
+
 from adminsortable2.admin import SortableAdminMixin, PolymorphicSortableAdminMixin
+
 from cms.admin.placeholderadmin import PlaceholderAdminMixin, FrontendEditableAdminMixin
 from parler.admin import TranslatableAdmin
 from polymorphic.admin import (PolymorphicParentModelAdmin, PolymorphicChildModelAdmin,
                                PolymorphicChildModelFilter)
+
 from shop.admin.product import CMSPageAsCategoryMixin, ProductImageInline, CMSPageFilter
-from myshop.models.polymorphic.product import Product
-from myshop.models.polymorphic.commodity import Commodity
-from myshop.models.polymorphic.smartcard import SmartCard
-from myshop.models.polymorphic.smartphone import OperatingSystem, SmartPhone, SmartPhoneModel
+
+from myshop.models import Product, Commodity, SmartCard, SmartPhone, SmartPhoneModel
+from myshop.models.i18n_polymorphic.smartphone import OperatingSystem
 
 
 class CommodityAdmin(SortableAdminMixin, TranslatableAdmin, FrontendEditableAdminMixin,
@@ -57,7 +59,6 @@ class SmartCardAdmin(SortableAdminMixin, TranslatableAdmin, FrontendEditableAdmi
     filter_horizontal = ('cms_pages',)
     inlines = (ProductImageInline,)
     prepopulated_fields = {'slug': ('product_name',)}
-
 
 admin.site.register(OperatingSystem, admin.ModelAdmin)
 

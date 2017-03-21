@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from distutils.version import LooseVersion
-
 from django.core.exceptions import PermissionDenied
 from django.forms.fields import CharField
 from django.forms import widgets
@@ -19,7 +17,6 @@ except ImportError:
     from HTMLParser import HTMLParser  # py2
 from cms.plugin_pool import plugin_pool
 
-from djangocms_text_ckeditor import __version__ as djangocms_text_ckeditor_version
 from djangocms_text_ckeditor.widgets import TextEditorWidget
 from djangocms_text_ckeditor.utils import plugin_tags_to_user_html
 from djangocms_text_ckeditor.cms_plugins import TextPlugin
@@ -325,10 +322,7 @@ class AcceptConditionFormPlugin(DialogFormPluginBase):
         super(AcceptConditionFormPlugin, self).render(context, instance, placeholder)
         accept_condition_form = context['accept_condition_form.plugin_{}'.format(instance.id)]
         html_content = self.html_parser.unescape(instance.glossary.get('html_content', ''))
-        if LooseVersion(djangocms_text_ckeditor_version) >= LooseVersion('3.1.0'):
-            html_content = plugin_tags_to_user_html(html_content, context)
-        else:
-            html_content = plugin_tags_to_user_html(html_content, context, placeholder)
+        html_content = plugin_tags_to_user_html(html_content, context)
         # transfer the stored HTML content into the widget's label
         accept_condition_form['accept'].field.widget.choice_label = mark_safe(html_content)
         context['accept_condition_form'] = accept_condition_form

@@ -25,15 +25,16 @@ BASE_DIR = os.path.dirname(__file__)
 SHOP_TUTORIAL = os.environ.get('DJANGO_SHOP_TUTORIAL')
 if SHOP_TUTORIAL is None:
     raise ImproperlyConfigured("Environment variable DJANGO_SHOP_TUTORIAL is not set")
-if SHOP_TUTORIAL not in ('commodity', 'i18n_commodity', 'smartcard', 'i18n_smartcard', 'polymorphic',):
+if SHOP_TUTORIAL not in ['commodity', 'i18n_commodity', 'smartcard', 'i18n_smartcard',
+                         'i18n_polymorphic', 'polymorphic']:
     msg = "Environment variable DJANGO_SHOP_TUTORIAL has an invalid value `{}`"
     raise ImproperlyConfigured(msg.format(SHOP_TUTORIAL))
 
 # Root directory for this django project
-PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, os.path.pardir, os.path.pardir))
+PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, os.path.pardir))
 
 # Directory where working files, such as media and databases are kept
-WORK_DIR = os.environ.get('DJANGO_WORKDIR', os.path.join(PROJECT_ROOT, 'workdir'))
+WORK_DIR = os.environ.get('DJANGO_WORKDIR', os.path.abspath(os.path.join(PROJECT_ROOT, os.path.pardir, 'workdir')))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -113,7 +114,7 @@ INSTALLED_APPS = [
     'shop_stripe',
     'myshop',
 ]
-if SHOP_TUTORIAL in ('i18n_commodity', 'i18n_smartcard', 'polymorphic'):
+if SHOP_TUTORIAL in ['i18n_commodity', 'i18n_smartcard', 'i18n_polymorphic']:
     INSTALLED_APPS.append('parler')
 
 MIDDLEWARE_CLASSES = [
@@ -156,7 +157,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en'
 
-if SHOP_TUTORIAL in ('i18n_smartcard', 'i18n_commodity', 'polymorphic'):
+if SHOP_TUTORIAL in ['i18n_smartcard', 'i18n_commodity', 'i18n_polymorphic']:
     USE_I18N = True
 
     LANGUAGES = (
@@ -217,7 +218,7 @@ MEDIA_URL = '/media/'
 
 # Absolute path to the directory that holds static files.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = os.path.join(WORK_DIR, SHOP_TUTORIAL, 'static')
+STATIC_ROOT = os.path.join(WORK_DIR, 'static')
 
 # URL that handles the static files served from STATIC_ROOT.
 # Example: "http://media.lawrence.com/static/"
@@ -419,7 +420,11 @@ CMS_PLACEHOLDER_CONF = {
     },
     'Main Content': {
         'plugins': ['BootstrapContainerPlugin', 'BootstrapJumbotronPlugin'],
-        'parent_classes': {'BootstrapContainerPlugin': None, 'BootstrapJumbotronPlugin': None},
+        'parent_classes': {
+            'BootstrapContainerPlugin': None,
+            'BootstrapJumbotronPlugin': None,
+            'TextLinkPlugin': ['TextPlugin', 'AcceptConditionPlugin'],
+        },
         'glossary': CACSCADE_WORKAREA_GLOSSARY,
     },
     'Static Footer': {
@@ -546,7 +551,7 @@ HAYSTACK_ROUTERS = ('shop.search.routers.LanguageRouter',)
 SHOP_VALUE_ADDED_TAX = Decimal(19)
 SHOP_DEFAULT_CURRENCY = 'EUR'
 SHOP_PRODUCT_SUMMARY_SERIALIZER = 'myshop.serializers.ProductSummarySerializer'
-if SHOP_TUTORIAL == 'polymorphic':
+if SHOP_TUTORIAL in ['i18n_polymorphic', 'polymorphic']:
     SHOP_CART_MODIFIERS = ['myshop.polymorphic_modifiers.MyShopCartModifier']
 else:
     SHOP_CART_MODIFIERS = ['shop.modifiers.defaults.DefaultCartModifier']
@@ -567,7 +572,7 @@ SHOP_ORDER_WORKFLOWS = [
     'shop.payment.defaults.CancelOrderWorkflowMixin',
     'shop_stripe.payment.OrderWorkflowMixin',
 ]
-if SHOP_TUTORIAL == 'polymorphic':
+if SHOP_TUTORIAL in ['i18n_polymorphic', 'polymorphic']:
     SHOP_ORDER_WORKFLOWS.append('shop.shipping.delivery.PartialDeliveryWorkflowMixin')
 else:
     SHOP_ORDER_WORKFLOWS.append('shop.shipping.defaults.CommissionGoodsWorkflowMixin')

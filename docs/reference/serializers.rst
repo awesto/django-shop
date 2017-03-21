@@ -70,51 +70,14 @@ representation such as:
 Routing to these endpoints
 --------------------------
 
-Since we are using CMS pages to display the catalog's list view, we must provide an apphook_ to
-attach it to this page. These catalog apphooks are not part of the shop framework, but must be
-created and added to the project:
-
-.. code-block:: python
-    :caption: myshop/cms_apps.py
-    :name: routing-catalog-list-app
-
-    from cms.app_base import CMSApp
-    from cms.apphook_pool import apphook_pool
-
-    class CatalogListApp(CMSApp):
-        name = "Catalog List"
-        urls = ['myshop.urls.catalog']
-
-    apphook_pool.register(CatalogListApp)
-
-We now must add routes for all sub-URLs of the given CMS page implementing the catalog list:
-
-.. code-block:: python
-    :caption: myshop/urls/catalog.py
-    :name: routing-catalog-list-app-cms-pages
-
-    from django.conf.urls import url
-    from rest_framework.settings import api_settings
-    from shop.rest.filters import CMSPagesFilterBackend
-    from shop.views.catalog import (AddToCartView, CMSPageProductListView,
-        ProductRetrieveView)
-    from myshop.serializers import (ProductSummarySerializer,
-        ProductDetailSerializer)
-
-    urlpatterns = [
-        url(r'^$', CMSPageProductListView.as_view(
-            serializer_class=ProductSummarySerializer,
-        )),
-        url(r'^(?P<slug>[\w-]+)$', ProductRetrieveView.as_view(
-            serializer_class=ProductDetailSerializer,
-        )),
-        url(r'^(?P<slug>[\w-]+)/add-to-cart', AddToCartView.as_view()
-        ),
-    ]
+Since we are using CMS pages to display the catalog's list view, we must provide an apphook_ which
+must be attached to this page. Since these catalog apphooks can vary in many ways they are not part
+of the shop framework, but must be created and added to the project as the
+:ref:`reference/create-CatalogListApp`.
 
 
-Products List View
-~~~~~~~~~~~~~~~~~~
+Catalog List View
+~~~~~~~~~~~~~~~~~
 
 The urlpattern matching the regular expression ``^$`` routes onto the catalog list view class
 :class:`shop.views.catalog.CMSPageProductListView` passing in a special serializer class, for
@@ -129,13 +92,13 @@ filters for restricting the list of items.
 As we (ab)use CMS pages as categories, we somehow must assign them to our products. Therefore our
 example project assigns a many-to-many field named ``cms_pages`` to our Product model. Using this
 field, the merchant can assign each product to one or more CMS pages, using the apphook
-``Products List``.
+``Catalog List``.
 
 This special ``filter_backend``, :class:`shop.rest.filters.CMSPagesFilterBackend`, is responsible
 for restricting selected products on the current catalog list view.
 
 
-Product Detail View
+Catalog Detail View
 ~~~~~~~~~~~~~~~~~~~
 
 The urlpattern matching the regular expression ``^(?P<slug>[\w-]+)$`` routes onto the class

@@ -1,6 +1,6 @@
-import os
 from django.core.management import call_command
 from django.core.wsgi import get_wsgi_application
+
 try:
     import uwsgidecorators
 
@@ -29,10 +29,3 @@ except ImportError:
     print("uwsgidecorators not found. Cron and timers are disabled")
 
 application = get_wsgi_application()
-
-# rebuild full text search index on first bootstrap
-BOOTSTRAP_FILE = os.path.join(os.getenv('DJANGO_WORKDIR', ''), '.bootstrap')
-if os.path.isfile(BOOTSTRAP_FILE):
-    call_command('initialize_shop_demo', interactive=False)
-    call_command('rebuild_index', interactive=False)
-    os.remove(BOOTSTRAP_FILE)

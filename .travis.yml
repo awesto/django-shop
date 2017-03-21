@@ -12,7 +12,7 @@ env:
 
 install:
   - pip install tox
-  - npm install
+  - cd example && npm install
 
 script:
   - "if [[ $TRAVIS_PYTHON_VERSION == '2.7' && $DJANGOVER ]]; then export TOX_ENV=py27-$DJANGOVER; fi"

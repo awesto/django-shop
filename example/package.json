@@ -1,6 +1,6 @@
 {
   "name": "django-shop",
-  "version": "0.9.3",
+  "version": "0.10.0",
   "description": "These dependencies are for the demo installations of django-SHOP.",
   "main": "index.js",
   "directories": {
@@ -19,6 +19,7 @@
   "bugs": {
     "url": "https://github.com/jrief/django-shop/issues"
   },
+  "readme": "docker-files/README.md",
   "homepage": "https://github.com/jrief/django-shop#readme",
   "dependencies": {
     "angular": "~1.5.11",

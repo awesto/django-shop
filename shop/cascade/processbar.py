@@ -14,7 +14,6 @@ from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.forms import ManageChildrenFormMixin
 from cmsplugin_cascade.fields import GlossaryField
 from cmsplugin_cascade.link.forms import TextLinkFormMixin
-from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.widgets import NumberInputWidget
 from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
 from cmsplugin_cascade.plugin_base import TransparentWrapper, TransparentContainer

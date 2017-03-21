@@ -138,6 +138,11 @@ class AppSettings(object):
 
     @property
     def VALUE_ADDED_TAX(self):
+        """
+        Use this convenience settings if you can apply the same tax rate for all products
+        and you use one of the default tax modifiers ``CartIncludeTaxModifier`` or
+        ``CartExcludedTaxModifier``. Don't use this, if your products require individual tax rates.
+        """
         from decimal import Decimal
         return self._setting('SHOP_VALUE_ADDED_TAX', Decimal('20'))
 
@@ -183,6 +188,16 @@ class AppSettings(object):
         result = self._setting('SHOP_CACHE_DURATIONS') or {}
         result.setdefault('product_html_snippet', 86400)
         return result
+
+    @property
+    def SHOP_DIALOG_FORMS(self):
+        """
+        Specify a list of dialog forms available in our ``shop.views.checkout.CheckoutViewSet``.
+        This allows us to use its endpoint ``resolve('shop:checkout-upload')`` in a generic way.
+
+        If Cascade plugins are used for the forms in the checkout view, this list can be empty.
+        """
+        return self._setting('SHOP_DIALOG_FORMS', [])
 
 
 # Change the export value of the module, to allow importing with `from shop import app_settings`
