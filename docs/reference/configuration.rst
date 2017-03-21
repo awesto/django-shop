@@ -390,6 +390,8 @@ For performance reasons it is recommended to use a memory based cache such as Re
 disk based store. In comparison to memcached, Redis can invalidate cache entries using keys with
 wildcards, which is a big advantage in **django-SHOP**.
 
+.. code-block:: python
+
 	CACHES = {
 	    'default': {
 	        'BACKEND': 'redis_cache.RedisCache',
@@ -415,6 +417,8 @@ Always localize decimal numbers unless you operate you site in the United States
 
 These settings for internationalisation are known to work in combination with django-cms_ and
 django-parler_.
+
+.. code-block:: python
 
 	USE_I18N = True
 
