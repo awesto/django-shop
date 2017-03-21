@@ -303,8 +303,6 @@ must be made available:
 * ``SASS_PROCESSOR_INCLUDE_DIRS`` extends the list of folders to look for ``@import ...`` statements
   in the provided SASS files.
 
-.. _django-sass-processor: https://github.com/jrief/django-sass-processor
-
 
 Template Context Processors
 ---------------------------
