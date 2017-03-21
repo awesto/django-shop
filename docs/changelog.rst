@@ -4,8 +4,9 @@
 Changelog for django-SHOP
 =========================
 
-0.10
-====
+
+0.10.0
+======
 
 * In the backend, ``OrderAdmin`` and ``OrderItemAdmin`` may render the dictionary ``extra`` from
   their associated models using a special template.
@@ -23,9 +24,6 @@ Changelog for django-SHOP
   ``bases.py``, ``cart.py``, ``order.py`` and ``defaults.py``. The serializers
   ``CustomerSerializer``, ``ProductSummarySerializer`` and ``OrderItemSerializer`` now are
   configurable through the application settings.
-* Renamed ``ProductDetailSerializerBase`` -> ``BaseProductDetailSerializer`` and
-  ``ProductSummarySerializerBase`` -> ``BaseProductSummarySerializer`` to be consistent with the
-  naming conventions used by the Django REST Framework.
 * AngularJS directive ``<shop-auth-form ...>`` now listens of the event "pressed ENTER key"
   and submits the form data accordingly.
 * Upgraded to AngularJS version 1.5.9.

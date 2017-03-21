@@ -29,7 +29,10 @@ Since we are free to declare our own product models, This can be achieved by add
 
 	class Product(BaseProduct):
 	    # other product attributes
-	    merchant = models.ForeignKey(User, verbose_name=_("Merchant"),
-	        limit_choices_to={'is_staff': True})
+	    merchant = models.ForeignKey(
+	        User,
+	        verbose_name=_("Merchant"),
+	        limit_choices_to={'is_staff': True},
+	    )
 
 .. note:: unfinished docs
