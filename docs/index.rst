@@ -111,19 +111,6 @@ To be written
     howto/multi-tenancy
     howto/secure-catalog
 
-Obsolete documentation
-======================
-
-This documentation is only kept arond for historical reasons, please do not use
-it.
-
-.. toctree::
-    :maxdepth: 1
-
-    plugins
-    settings
-    various-ideas
-
 License
 =======
 
