@@ -25,15 +25,6 @@ def customer(request):
     return context
 
 
-def version(request):
-    """
-    Add version to context, since in Django-1.9 the path for jquery changed
-    """
-    return {
-        'DJANGO_VERSION': __version__,
-    }
-
-
 def ng_model_options(request):
     """
     Add ng-model-options to the context, since these settings must be configurable

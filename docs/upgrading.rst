@@ -4,6 +4,42 @@
 Upgrading django-SHOP
 =====================
 
+0.10.0
+======
+
+This version requires **django-CMS** version 3.4.2 or higher and **djangocms-cascade** version
+0.12.0 or higher. It is well tested with Django-1.10 but should work as well with Django-1.9.
+
+There has been a lot of effort in getting a cleaner and more consistent API. If you upgrade from
+version 0.9 please note the following changes:
+
+The REST serializers have been moved into their own submodule ``shop.serializers``. They now are
+separated into ``bases`` and ``defaults`` following the same naming convention as beeing used
+in ``shop.models`` and ``shop.admin``. Please ensure that you change your import statements.
+
+Serializers ``ProductCommonSerializer``, ``ProductSummarySerializer`` and ``ProductDetailSerializer``
+have been unified into a single ``ProductSerializer``, which acts as default for the
+``ProductListView`` and the ``ProductRetrieveView``. The ``ProductSummarySerializer`` (which is used
+to serialize attributes available across all products of the site) now must be configured using the
+settings directive ``SHOP_PRODUCT_SUMMARY_SERIALIZER``.
+
+All Angular directives have been checked for HTML5 mode compatibility. It is strongly recommended
+over hashbang mode.
+
+Billing and shipping address have been unified into one single address form which makes them easier
+to interchange. The ``salutation`` field has been removed from the address model and can now
+optionally be added to the merchant representation.
+
+All AngularJS directives for the catalog list and catalog search view support infinite scroll, as
+well as manual pagination.
+
+After upgrading to **angular-ui-bootstrap** version 0.14, all corresponding directives have to be
+prefixed with ``uib-...``.
+
+There is no more need for a special URL pattern to handle auto-completion search. Instead use the
+wrapping view :class:`shop.search.views.CMSPageCatalogWrapper`.
+
+
 0.9.3
 =====
 

@@ -4,16 +4,17 @@
 Changelog for django-SHOP
 =========================
 
-0.10
-====
+
+0.10.0
+======
 
 * In the backend, ``OrderAdmin`` and ``OrderItemAdmin`` may render the dictionary ``extra`` from
   their associated models using a special template.
 * In ``OrderAdmin`` use methods ``get_fields()`` and ``get_readonly_fields()`` as intended.
 * Tested with Django-1.10. Drop support for Django-1.8.
 * If an anonymous customer logs in, his current cart is merged with a cart, which has previously
-  been created. This has been adopted to re-use the method ``Product.is_in_cart()``.
-* Added method ``post_process_cart_item()`` to :class:`shop.modifiers.base.BaseCartModifier`.
+  been created. This has been adopted to re-use the method Product.is_in_cart()
+  in and finds it's Merge the contents of the other cart into this one, afterwards delete it.
 * Moved field ``salutation`` from :class:`shop.models.customer.BaseCustomer` into the merchant
   implementation. If your project does not use the provided default customer model
   :class:`shop.models.defaults.customer.Customer`, then you should add the ``salutation`` field
@@ -23,9 +24,6 @@ Changelog for django-SHOP
   ``bases.py``, ``cart.py``, ``order.py`` and ``defaults.py``. The serializers
   ``CustomerSerializer``, ``ProductSummarySerializer`` and ``OrderItemSerializer`` now are
   configurable through the application settings.
-* Renamed ``ProductDetailSerializerBase`` -> ``BaseProductDetailSerializer`` and
-  ``ProductSummarySerializerBase`` -> ``BaseProductSummarySerializer`` to be consistent with the
-  naming conventions used by the Django REST Framework.
 * AngularJS directive ``<shop-auth-form ...>`` now listens of the event "pressed ENTER key"
   and submits the form data accordingly.
 * Upgraded to AngularJS version 1.5.9.
@@ -61,11 +59,11 @@ Changelog for django-SHOP
 * Added alternative compressor for ``{% render_block "js/css" "shop.sekizai_processors.compress" %}``
   which can handle JS/CSS files provided using ``{% addtoblock "js/css" ... %}`` even if located
   outside the ``/static/`` folders.
+* Added method ``post_process_cart_item`` to the Cart Modifiers.
 
 
 0.9.3
 =====
-
 * Added template context processor :func:`shop.context_processors.ng_model_options` to add the
   settings ``EDITCART_NG_MODEL_OPTIONS`` and ``ADD2CART_NG_MODEL_OPTIONS``. Please check your
   templates to see, if you still use ``ng_model_options``.
@@ -77,7 +75,7 @@ Changelog for django-SHOP
 * All Cascade plugins use ``GlossaryField`` instead of a list of ``PartialFormField`` s. This is
   much more "Djangonic", but requires djangocms-cascade version 0.11 or later.
 * All urlpatterns are compatible with configurations adding a final / to the request URL.
-* The URL for accessing an Order object, now uses the order number instead of its primary key.
+* The URL for accessing an Order object, now uses the order number instead of it's primary key.
 
 
 0.9.2
