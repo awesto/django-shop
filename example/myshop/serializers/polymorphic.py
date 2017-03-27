@@ -16,22 +16,6 @@ class SmartCardSerializer(ProductSerializer):
                   'product_code', 'storage']
 
 
-class AddSmartCardToCartSerializer(AddToCartSerializer):
-    """
-    Modified AddToCartSerializer which handles SmartCards
-    """
-    def get_instance(self, context, data, extra_args):
-        product = context['product']
-        extra = context['request'].data.get('extra', {})
-        extra.setdefault('product_code', product.product_code)
-        instance = {
-            'product': product.id,
-            'unit_price': product.unit_price,
-            'extra': extra,
-        }
-        return instance
-
-
 class SmartPhoneSerializer(ProductSerializer):
     class Meta:
         model = SmartPhoneModel
@@ -44,14 +28,21 @@ class AddSmartPhoneToCartSerializer(AddToCartSerializer):
     """
     def get_instance(self, context, data, extra_args):
         product = context['product']
-        extra = data['extra'] if data is not empty else {}
+        if data is empty:
+            product_code = None
+            extra = {}
+        else:
+            product_code = data.get('product_code')
+            extra = data.get('extra', {})
         try:
-            variant = product.get_product_variant(extra.get('product_code'))
+            variant = product.get_product_variant(product_code=product_code)
         except product.DoesNotExist:
             variant = product.smartphone_set.first()
+        extra.update(storage=variant.storage)
         instance = {
             'product': product.id,
+            'product_code': variant.product_code,
             'unit_price': variant.unit_price,
-            'extra': {'product_code': variant.product_code, 'storage': variant.storage}
+            'extra': extra,
         }
         return instance
