@@ -24,7 +24,7 @@ django-sekizai==0.10.0
 Django-Select2==5.8.10
 django-treebeard==4.1.0
 djangocms-bootstrap3==0.2.0
-djangocms-cascade==0.12.1
+djangocms-cascade==0.12.3
 djangocms-text-ckeditor==3.4.0
 djangorestframework==3.5.3
 django-formtools==1.0
