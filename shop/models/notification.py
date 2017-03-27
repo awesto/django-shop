@@ -129,7 +129,7 @@ def order_event_notification(sender, instance=None, target=None, **kwargs):
     from shop.models.order import OrderModel
     from shop.serializers.order import OrderDetailSerializer
 
-    if not isinstance(instance, OrderModel):
+    if not isinstance(instance, OrderModel._materialized_model):
         return
     for notification in Notification.objects.filter(transition_target=target):
         recipient = notification.get_recipient(instance)
