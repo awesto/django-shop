@@ -24,3 +24,29 @@ class ShopConfig(AppConfig):
 
         # perform some sanity checks
         ForeignKeyBuilder.check_for_pending_mappings()
+
+        # add pending patches to Django-CMS
+        self.monkeypatch_django_cms()
+
+    def monkeypatch_django_cms(self):
+        """
+        This monkey patch can be removed when https://github.com/divio/django-cms/pull/5898
+        has been merged
+        """
+        from importlib import import_module
+        from django.core.exceptions import ImproperlyConfigured
+        from django.utils import six
+        from cms import appresolver
+
+        def get_app_urls(urls):
+            for urlconf in urls:
+                if isinstance(urlconf, six.string_types):
+                    mod = import_module(urlconf)
+                    if not hasattr(mod, 'urlpatterns'):
+                        raise ImproperlyConfigured(
+                            "URLConf `%s` has no urlpatterns attribute" % urlconf)
+                    yield getattr(mod, 'urlpatterns')
+                else:
+                    yield [urlconf]
+
+        appresolver.get_app_urls = get_app_urls
