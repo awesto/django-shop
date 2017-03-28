@@ -14,7 +14,7 @@ Describe Products by customizing the Model
 
 **DjangoSHOP** requires to describe products instead of prescribing prefabricated models.
 
-All in all, we know best how our products should be modelled!
+All in all, the merchant always knows best how to describe his products!
 
 
 E-commerce solutions, claiming to be plug-and-play, usually use one of these (anti-)patterns
@@ -66,8 +66,8 @@ whatever else.
 An optional, but highly recommended field is the products item number, declared as
 ``product_code``. It shall return a unique and language independent identifier for each product,
 to be identifiable. In most cases the product code is implemented by the product model itself, but
-in some circumstances it may be implemented by the product's variant. The
-``SmartPhone`` from the demo code is one such example.
+in some circumstances it may be implemented by the product's variant. The product model
+``SmartPhone``, as referenced in the demo code, is one such example.
 
 The example section of **django-SHOP** contains a few models which can be copied and adopted to the
 specific needs of the merchants products. Let's have a look at a few use-cases:
@@ -95,17 +95,31 @@ Therefore we would model our smart-phones using a database model similar to the 
 	from shop.money import Money
 
 	class SmartPhoneModel(BaseProduct):
-	    product_name = models.CharField(max_length=255,
-	        verbose_name=_("Product Name"))
-	    slug = models.SlugField(verbose_name=_("Slug"))
-	    description = HTMLField(help_text=_("Detailed description."))
-	    manufacturer = models.ForeignKey(Manufacturer,
-	        verbose_name=_("Manufacturer"))
-	    screen_size = models.DecimalField(_("Screen size"),
-	        max_digits=4, decimal_places=2)
+	    product_name = models.CharField(
+	        _("Product Name"),
+	        max_length=255,
+	    )
+
+	    slug = models.SlugField(_("Slug"))
+
+	    description = HTMLField(
+	        help_text=_("Detailed description."),
+	    )
+
+	    manufacturer = models.ForeignKey(
+	        Manufacturer,
+	        verbose_name=_("Manufacturer"),
+	    )
+
+	    screen_size = models.DecimalField(
+	        _("Screen size"),
+	        max_digits=4,
+	        decimal_places=2,
+	    )
 	    # other fields to map the specification sheet
 
 	    objects = BaseProductManager()
+
 	    lookup_fields = ('product_name__icontains',)
 
 	    def get_price(request):
@@ -114,16 +128,21 @@ Therefore we would model our smart-phones using a database model similar to the 
 
 	class SmartPhone(models.Model):
 	    product_model = models.ForeignKey(SmartPhoneModel)
-	    product_code = models.CharField(_("Product code"),
-	        max_length=255, unique=True)
+	    product_code = models.CharField(
+	        _("Product code"),
+	        max_length=255,
+	        unique=True,
+	    )
+
 	    unit_price = MoneyField(_("Unit price"))
+
 	    storage = models.PositiveIntegerField(_("Internal Storage"))
 
 Lets go into the details of these classes. The model fields are self-explanatory. Something to note
 here is, that each product requires a field ``product_name``. This alternatively can also be
-implemented as property.
+implemented as a translatable field using **django-parler**.
 
-Another mandatory attribute for each product is the ``ProductManager`` class. It must inheriting
+Another mandatory attribute for each product is the ``ProductManager`` class. It must inherit
 from ``BaseProductManager``, and adds some methods to generate some special querysets.
 
 Finally, the attribute ``lookup_fields`` contains a list or tuple of  `lookup fields`_. These are
@@ -161,8 +180,15 @@ our use-case thats only the product's description:
 	    description = TranslatedField()
 
 	class ProductTranslation(TranslatedFieldsModel):
-	    master = models.ForeignKey(SmartPhoneModel, related_name='translations', null=True)
-	    description = HTMLField(help_text=_("Some more detailed description."))
+	    master = models.ForeignKey(
+	        SmartPhoneModel,
+	        related_name='translations',
+	        null=True,
+	    )
+
+	    description = HTMLField(
+	        help_text=_("Some more detailed description."),
+	    )
 
 	    class Meta:
 	        unique_together = [('language_code', 'master')]
@@ -185,39 +211,89 @@ common base class of both, ``SmartPhone`` and ``SmartCard``:
 .. code-block:: python
 
 	class Product(BaseProduct, TranslatableModel):
-	    product_name = models.CharField(max_length=255, verbose_name=_("Product Name"))
-	    slug = models.SlugField(verbose_name=_("Slug"), unique=True)
+	    product_name = models.CharField(
+	        _("Product Name"),
+	        max_length=255,
+	    )
+
+	    slug = models.SlugField(
+	        _("Slug"),
+	        unique=True,
+	    )
+
 	    description = TranslatedField()
 
 	    objects = ProductManager()
-	    lookup_fields = ('product_name__icontains',)
+	    lookup_fields = ['product_name__icontains']
 
 Next we only add the product specific attributes to the class models derived from ``Product``:
 
 .. code-block:: python
 
 	class SmartPhoneModel(Product):
-	    manufacturer = models.ForeignKey(Manufacturer, verbose_name=_("Manufacturer"))
-	    screen_size = models.DecimalField(_("Screen size"), max_digits=4, decimal_places=2)
-	    battery_type = models.PositiveSmallIntegerField(_("Battery type"), choices=BATTERY_TYPES)
-	    battery_capacity = models.PositiveIntegerField(help_text=_("Battery capacity in mAh"))
-	    ram_storage = models.PositiveIntegerField(help_text=_("RAM storage in MB"))
+	    manufacturer = models.ForeignKey(
+	        Manufacturer,
+	        verbose_name=_("Manufacturer"),
+	    )
+
+	    screen_size = models.DecimalField(
+	        _("Screen size"),
+	        max_digits=4,
+	        decimal_places=2,
+	    )
+
+	    battery_type = models.PositiveSmallIntegerField(
+	        _("Battery type"),
+	        choices=BATTERY_TYPES,
+	    )
+
+	    battery_capacity = models.PositiveIntegerField(
+	        help_text=_("Battery capacity in mAh"),
+	    )
+
+	    ram_storage = models.PositiveIntegerField(
+	        help_text=_("RAM storage in MB"),
+	    )
 	    # and many more attributes as found on the data sheet
 
 	class SmartPhone(models.Model):
 	    product_model = models.ForeignKey(SmartPhoneModel)
-	    product_code = models.CharField(_("Product code"), max_length=255, unique=True)
+	    product_code = models.CharField(
+	        _("Product code"),
+	        max_length=255,
+	        unique=True,
+	    )
+
 	    unit_price = MoneyField(_("Unit price"))
+
 	    storage = models.PositiveIntegerField(_("Internal Storage"))
 
 	class SmartCard(Product):
-	    product_code = models.CharField(_("Product code"), max_length=255, unique=True)
+	    product_code = models.CharField(
+	        _("Product code"),
+	        max_length=255,
+	        unique=True,
+	    )
+
 	    storage = models.PositiveIntegerField(help_text=_("Storage capacity in GB"))
+
 	    unit_price = MoneyField(_("Unit price"))
-	    CARD_TYPE = (2 * ('{}{}'.format(s, t),) for t in ('SD', 'SDXC', 'SDHC', 'SDHC II') for s in ('', 'micro '))
-	    card_type = models.CharField(_("Card Type"), choices=CARD_TYPE, max_length=15)
-	    SPEED = ((str(s), "{} MB/s".format(s)) for s in (4, 20, 30, 40, 48, 80, 95, 280))
-	    speed = models.CharField(_("Transfer Speed"), choices=SPEED, max_length=8)
+
+	    CARD_TYPE = [2 * ('{}{}'.format(s, t),)
+	                 for t in ('SD', 'SDXC', 'SDHC', 'SDHC II') for s in ('', 'micro ')]
+	    card_type = models.CharField(
+	        _("Card Type"),
+	        choices=CARD_TYPE,
+	        max_length=15,
+	    )
+
+	    SPEED = [(str(s), "{} MB/s".format(s))
+	             for s in (4, 20, 30, 40, 48, 80, 95, 280)]
+	    speed = models.CharField(
+	        _("Transfer Speed"),
+	        choices=SPEED,
+	        max_length=8,
+	    )
 
 If *MyShop* would sell the iPhone5 with 16GB and 32GB storage as independent products, then we could
 unify the classes ``SmartPhoneModel`` and ``SmartPhone`` and move the attributes ``product_code``
