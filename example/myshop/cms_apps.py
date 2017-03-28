@@ -2,11 +2,16 @@
 from __future__ import unicode_literals
 
 from django.conf import settings
+from django.conf.urls import url
+
 from cms.apphook_pool import apphook_pool
 from cms.cms_menus import SoftRootCutter
 from menus.menu_pool import menu_pool
 
 from shop.cms_apphooks import CatalogListCMSApp, CatalogSearchCMSApp, OrderCMSApp
+from shop.search.views import SearchView
+
+from myshop.serializers import ProductSearchSerializer
 
 
 class CatalogListApp(CatalogListCMSApp):
@@ -23,7 +28,11 @@ apphook_pool.register(CatalogListApp)
 
 class CatalogSearchApp(CatalogSearchCMSApp):
     def get_urls(self, page=None, language=None, **kwargs):
-        return ['myshop.urls.search']
+        return [
+            url(r'^', SearchView.as_view(
+                serializer_class=ProductSearchSerializer,
+            )),
+        ]
 
 apphook_pool.register(CatalogSearchApp)
 
