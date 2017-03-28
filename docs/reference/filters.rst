@@ -180,8 +180,17 @@ Sample HTML snippet:
 	  {{ filter.filter_set.form }}
 	</div>
 
-This directive is declared inside the shop's ``shop/js/filters.js`` module, so make sure to include
-that file. Additionally that module must be initialized while bootstrapping our Angular application:
+or if your filter set forms uses more than one attribute:
+
+.. code-block:: django
+
+	<div shop-product-filter="['manufacturer', 'brand']">
+	  {{ filter.filter_set.form }}
+	</div>
+
+The Angular directive ``shopProductFilter`` is declared inside the shop's ``shop/js/filters.js``
+module, so make sure to include that file. Additionally, that module must be initialized while
+bootstrapping our Angular application:
 
 .. code-block:: javascript
 
