@@ -59,7 +59,10 @@ implementation. Such a migration file must contain a datamigration, for instance
 
 
 	def backwards(apps, schema_editor):
-	    pass
+	    CartItem = apps.get_model('myshop', 'CartItem')
+	    for item in CartItem.objects.all():
+	        item.extra['product_code'] = item.product_code
+	        item.save()
 
 
 	class Migration(migrations.Migration):
