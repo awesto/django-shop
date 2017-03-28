@@ -94,7 +94,7 @@ or if you to test only a specific class
 .. note::
 
 	Using tox and py.test is optional. If you prefer the conventional way of running tests, you can
-	do this: ``django-admin.py test tests --settings shop.testsettings``
+	do this: ``django-admin.py test tests --settings shop.testsettings``.
 
 
 Community

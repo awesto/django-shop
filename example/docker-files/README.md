@@ -8,13 +8,13 @@ Build the Docker image with:
 
 ```
 cd django-shop/example
-docker build -t demo-shop .
+docker build -t awesto/demo-shop .
 ```
 
 Create and start the Docker container with:
 
 ```
-docker create --name demo-shop-i18n_polymorphic --env DJANGO_SHOP_TUTORIAL=i18n_polymorphic -p 9001:9001 demo-shop
+docker create --name demo-shop-i18n_polymorphic --env DJANGO_SHOP_TUTORIAL=i18n_polymorphic -p 9001:9001 awesto/demo-shop
 docker start demo-shop-i18n_polymorphic
 ```
 

@@ -303,8 +303,6 @@ must be made available:
 * ``SASS_PROCESSOR_INCLUDE_DIRS`` extends the list of folders to look for ``@import ...`` statements
   in the provided SASS files.
 
-.. _django-sass-processor: https://github.com/jrief/django-sass-processor
-
 
 Template Context Processors
 ---------------------------
@@ -392,6 +390,8 @@ For performance reasons it is recommended to use a memory based cache such as Re
 disk based store. In comparison to memcached, Redis can invalidate cache entries using keys with
 wildcards, which is a big advantage in **django-SHOP**.
 
+.. code-block:: python
+
 	CACHES = {
 	    'default': {
 	        'BACKEND': 'redis_cache.RedisCache',
@@ -417,6 +417,8 @@ Always localize decimal numbers unless you operate you site in the United States
 
 These settings for internationalisation are known to work in combination with django-cms_ and
 django-parler_.
+
+.. code-block:: python
 
 	USE_I18N = True
 
@@ -460,6 +462,9 @@ django-parler_.
 	        'redirect_on_fallback': True,
 	    },]
 	}
+
+.. _django-cms: https://django-cms.readthedocs.io/
+.. _django-parler: https://django-parler.readthedocs.io/
 
 
 REST Framework
@@ -674,9 +679,6 @@ manage the media assets.
 	]
 
 all settings are explained in detail in the documentation of django-filer_ and easy-thumbnails_.
-
-.. _django-filer: https://django-filer.readthedocs.io/
-.. _easy-thumbnails: https://easy-thumbnails.readthedocs.io/
 
 
 Full Text Search

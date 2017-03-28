@@ -1,14 +1,7 @@
 
 =========================
-Django SHOP documentation
+Django-SHOP documentation
 =========================
-
-This is the documentation starting from version 0.9; if you are looking for the documentation of
-django-shop version 0.2, please check the sidebar of RTD.
-
-Version 0.9 of **django-SHOP** is a complete rewrite of the code base, keeping the concepts of model
-overriding and cart modifiers. With some effort it should be possible to migrate existing projects
-to this new release.
 
 .. toctree::
     :maxdepth: 1
@@ -110,19 +103,6 @@ To be written
     howto/how-to-payment
     howto/multi-tenancy
     howto/secure-catalog
-
-Obsolete documentation
-======================
-
-This documentation is only kept arond for historical reasons, please do not use
-it.
-
-.. toctree::
-    :maxdepth: 1
-
-    plugins
-    settings
-    various-ideas
 
 License
 =======

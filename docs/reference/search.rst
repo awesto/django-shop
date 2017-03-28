@@ -305,7 +305,7 @@ Autocompletion in Catalog List View
 As we have seen in the previous example, the Product Search View is suitable to search for any item
 in the product database. However, the site visitor sometimes might just refine the list of items
 shown in the catalog's list view. Here, loading a new page which uses a layout able to render every
-kind of product and hence usually differs from the catalog's list layout, may by inappropriate.
+kind of product usually differs from the catalog's list layout, and hence may by inappropriate.
 
 Instead, when someone enters some text into the search field, **django-SHOP** starts to narrow down
 the list of items in the catalog's list view by typing query terms into the search field. This is
@@ -316,6 +316,30 @@ To extend the existing Catalog List View for autocompletion, locate the file con
 urlpatterns, which are used by the apphook ``ProductsListApp``. In doubt, consult the file
 ``myshop/cms_apps.py``. This apphook names a file with urlpatterns. Locate that file and add the
 following entry:
+
+In order to use the Product Search View, our Product Model must inherit from
+:class:`shop.models.product.CMSPageReferenceMixin`. This is because we must add a reference to the
+CMS pages our products are assigned to, into the search index database. Such a product may for
+instance be declared as:
+
+.. code-block:: python
+
+	from shop.models.product import BaseProduct, BaseProductManager, CMSPageReferenceMixin
+
+	class MyProduct(CMSPageReferenceMixin, BaseProduct):
+	    ...
+
+	    objects = BaseProductManager()
+
+	    ...
+
+We normally want to use the same URL to render the catalog's list view, as well as the
+autocomplete view, and hence must route onto the same view class. However the search- and the
+catalog's list view classes have different bases and a completely different implementation.
+
+The normal List View uses a Django queryset to iterate over the products, while the autocomplete
+View uses a Haystack Search queryset. Therefore we wrap both View classes into
+:class:`shop.search.views.CMSPageCatalogWrapper` and use it in our URL routing such as:
 
 .. code-block:: python
 
@@ -330,15 +354,9 @@ following entry:
 	    # other patterns
 	]
 
-The view :class'`shop.search.views.CMSPageCatalogWrapper` is a functional wrapper around the
-catalog's products list view and the search view. Depending on whether the request contains a
-search query starting with ``q=<search-term>``, either the search view or the products list view
-is invoked.
-
-This wrapper is required because we typically want the search autocompletion to use the same URL as
-catalog's products list, and hence must route onto the same view class. However the search- and the
-catalog's list view classes have different bases and a completely different implementation, that
-this wrapper is required.
+The view class ``CMSPageCatalogWrapper`` is a functional wrapper around the catalog's products list
+view and the search view. Depending on whether the request contains a search query starting with
+``q=<search-term>``, either the search view or the normal products list view is invoked.
 
 The ``CatalogSearchSerializer`` used here is very similar to the ``ProductSearchSerializer``, we
 have seen in the previous section. The only difference is, that instead of the ``search_media``
