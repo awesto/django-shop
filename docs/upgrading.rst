@@ -41,9 +41,16 @@ prefixed with ``uib-...``.
 There is no more need for a special URL pattern to handle auto-completion search. Instead use the
 wrapping view :class:`shop.search.views.CMSPageCatalogWrapper`.
 
-The model ``CartItem`` has a new CharField ``product_code``. This replaces the ``product_code``
-otherwise kept inside its ``extra`` dict. This requires a database migration on the merchant
-implementation. Such a migration file must contain a datamigration, for instance:
+The model ``CartItem`` has a new CharField ``product_code``. This replaces the ``product_code``,
+which optionally is kept inside its ``extra`` dict. This requires to simplify some templates
+implementing ``{{ somevar.extra.product_code }}`` into ``{{ somevar.product_code }}``; it applies to
+the cart, the add-to-cart and the order templates. Also check for ``ProductSerializer``s implemented
+for products with variations.
+
+Look for methods implementing ``get_product_variant`` since its signature changed.
+
+requires a database migration by the
+merchant implementation. Such a migration file must contain a datamigration, for instance:
 
 .. code-block:: python
 

@@ -60,9 +60,11 @@ Changelog for django-SHOP
   which can handle JS/CSS files provided using ``{% addtoblock "js/css" ... %}`` even if located
   outside the ``/static/`` folders.
 * Added method ``post_process_cart_item`` to the Cart Modifiers.
-* Moved ``product_code`` from dict ``CartItem.extra`` into ``CartItem`` itself. This simplifies
-  a lot of boilerplate code, otherwise required by the merchant implementation. Please read
-  :ref:`upgrading-0.10`.
+* In ``CartItem`` the ``product_code`` is mandatory now. It moves from being optionally kept in dict
+  ``CartItem.extra`` into the ``CartItem`` model itself. This simplifies a lot of boilerplate code,
+  otherwise required by the merchant implementation. Please read :ref:`upgrading-0.10` for details.
+* In :class:`shop.models.product.BaseProduct` added a hook method ``get_product_variant(self, **kwargs)``
+  which can be overridden by products with variations to return a product variant.
 
 
 0.9.3
