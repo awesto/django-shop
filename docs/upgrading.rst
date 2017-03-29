@@ -44,8 +44,8 @@ wrapping view :class:`shop.search.views.CMSPageCatalogWrapper`.
 The model ``CartItem`` has a new CharField ``product_code``. This replaces the ``product_code``,
 which optionally is kept inside its ``extra`` dict. This requires to simplify some templates
 implementing ``{{ somevar.extra.product_code }}`` into ``{{ somevar.product_code }}``; it applies to
-the cart, the add-to-cart and the order templates. Also check for ``ProductSerializer``s implemented
-for products with variations.
+the cart, the add-to-cart and the order templates. Also check for ``ProductSerializer``-s
+implemented for products with variations.
 
 Look for methods implementing ``get_product_variant`` since its signature changed.
 
