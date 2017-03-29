@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import os
 
 from rest_framework import renderers
+from rest_framework.compat import template_render
 
 from shop import app_settings
 
@@ -17,15 +18,16 @@ class CMSPageRenderer(renderers.TemplateHTMLRenderer):
     context as ``data``. Therefore keep in mind that templates for REST's `TemplateHTMLRenderer`
     are not compatible with this renderer.
     """
-    def render(self, data, accepted_media_type=None, context=None):
-        request = context['request']
-        response = context['response']
-        template_context = {}
+    def render(self, data, accepted_media_type=None, renderer_context=None):
+        renderer_context = renderer_context or {}
+        view = renderer_context['view']
+        request = renderer_context['request']
+        response = renderer_context['response']
+        template_context = self.get_template_context(data, renderer_context)
 
         if response.exception:
             template = self.get_exception_template(response)
         else:
-            view = context['view']
             template_names = self.get_template_names(response, view)
             template = self.resolve_template(template_names)
             template_context['paginator'] = view.paginator
@@ -33,11 +35,8 @@ class CMSPageRenderer(renderers.TemplateHTMLRenderer):
             template_context['edit_mode'] = request.current_page.publisher_is_draft
 
         template_context['data'] = data
-        # To keep compatibility with previous versions, we copy the renderer context to the template
-        # context. Maybe it would be a good idea to not do this, to force templates to use the
-        # serialized data.
-        template_context.update(context)
-        return template.render(template_context, request=request)
+        template_context.update(renderer_context)
+        return template_render(template, template_context, request=request)
 
 
 class DashboardRenderer(renderers.TemplateHTMLRenderer):

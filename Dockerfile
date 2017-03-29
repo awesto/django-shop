@@ -4,7 +4,7 @@
 
 FROM awesto/fedora-uwsgi-python:latest
 
-MAINTAINER Jacob Rief <jacob.rief@gmail.com>
+LABEL Description="Official django-SHOP image" Maintainer="Jacob Rief <jacob.rief@gmail.com>"
 
 RUN alternatives --install /usr/bin/python python /usr/bin/python3.5 2
 RUN alternatives --install /usr/bin/python python /usr/bin/python2.7 1
