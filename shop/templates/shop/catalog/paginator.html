@@ -1,6 +1,7 @@
-{% load i18n static sekizai_tags %}{% spaceless %}
+{% load i18n static sass_tags sekizai_tags %}{% spaceless %}
 
 {% if infinite_scroll %}
+	{% addtoblock "css" %}<link href="{% sass_src 'shop/css/paginator.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 	{% addtoblock "js" %}<script src="{% static 'node_modules/angular-inview/angular-inview.js' %}"></script>{% endaddtoblock %}
 	{% addtoblock "ng-requires" %}angular-inview{% endaddtoblock %}
 
@@ -13,7 +14,7 @@
 <div class="row" ng-cloak ng-if="catalog.count>=0">
 	<div class="col-xs-12 text-center" ng-if="catalog.count>0">
 		<ul class="pager">
-			<li ng-if="isLoading"><span>{% trans "Loading more products" %} &hellip;</span></li>
+			<li ng-if="isLoading"><span>{% trans "Loading more products" %}&emsp;<i class="glyphicon glyphicon-refresh glyphicon-spin"></i></span></li>
 			<li ng-if="!isLoading"><i in-view="$inview && loadMore()">&nbsp;</i></li>
 		</ul>
 	</div>
