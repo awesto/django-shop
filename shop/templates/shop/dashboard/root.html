@@ -1,5 +1,9 @@
 {% extends "shop/dashboard/base.html" %}
+{% load static sekizai_tags %}
 
 {% block content %}
-<h1>Dashboard Root</h1>
+	{% addtoblock "js" %}<script src="{% static 'node_modules/ng-admin/build/ng-admin.min.js' %}"></script>{% endaddtoblock %}
+	{% addtoblock "ng-requires" %}ng-admin{% endaddtoblock %}
+	{% addtoblock "ng-config" %}['NgAdminConfigurationProvider', function(nga) {var admin = nga.application('My First Admin'); nga.configure(admin);}]{% endaddtoblock %}
+	<h1>Dashboard Root</h1>
 {% endblock content %}
