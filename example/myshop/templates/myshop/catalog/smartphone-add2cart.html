@@ -14,7 +14,7 @@
 	<tbody>
 		<tr>
 			<td>
-				<select class="form-control" ng-model="context.extra.product_code" ng-change="updateContext()" >
+				<select class="form-control" ng-model="context.product_code" ng-change="updateContext()" >
 	{% for smartphone in product.smartphone_set.all %}
 					<option value="{{ smartphone.product_code }}">
 		{% if smartphone.storage == 0 %}{% trans "Pluggable" %}{% else %}{{ smartphone.storage }} GB{% endif %}

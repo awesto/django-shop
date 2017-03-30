@@ -51,7 +51,7 @@ class CatalogTest(ShopTestCase):
         payload = json.loads(response.content.decode('utf-8'))
         self.assertIsInstance(payload, dict)
         self.assertDictContainsSubset(
-            {'quantity': 1, 'unit_price': "€ 3.99", 'product': 1, 'extra': {'product_code': "sd1041"}},
+            {'quantity': 1, 'unit_price': "€ 3.99", 'product': 1, 'extra': {}, 'product_code': "sd1041"},
             payload)
 
         # add two items of that Smart Card
