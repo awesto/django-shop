@@ -33,6 +33,7 @@
     "bootstrap": "~3.3.7",
     "bootstrap-sass": "~3.3.7",
     "font-awesome": "~4.6.3",
+    "ng-admin": "^1.0.2",
     "picturefill": "~3.0.2",
     "select2": "~4.0.3"
   }

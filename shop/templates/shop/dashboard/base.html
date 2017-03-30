@@ -5,10 +5,11 @@
 	<title>django-SHOP Dashboard</title>
 	<meta charset="utf-8">
 	{% block head %}{% endblock head %}
-	<link href="{% sass_src 'shop/css/dashboard.scss' %}" rel="stylesheet" type="text/css" />
+	{% render_block "css" %}
 </head>
 
 <body>
+	{% comment %}
 	<header>
 	{% include "shop/dashboard/navbar.html" %}
 	</header>
@@ -26,6 +27,7 @@
 		</ul>
 	{% endblock %}
 	</div>
+	{% endcomment %}
 
 	<main>
 		<div class="container">
@@ -43,19 +45,19 @@
 	<script type="text/javascript">
 	angular.module('djangoShopDashboard', [
 		{% render_block "ng-requires" postprocessor "djng.sekizai_processors.module_list" %}
-	]).config(['$httpProvider', '$locationProvider',
-		function($httpProvider, $locationProvider) {
+	]).config(['$httpProvider', '$locationProvider', function($httpProvider, $locationProvider) {
 		$httpProvider.defaults.headers.common['X-CSRFToken'] = '{{ csrf_token }}';
 		$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+		/*
 		$locationProvider.html5Mode({
 			enabled: true,
 			requireBase: false,
 			rewriteLinks: false
 		});
+		*/
 	}]){% render_block "ng-config" postprocessor "djng.sekizai_processors.module_config" %};
 	</script>
-	<script src="{% static 'shop/js/dashboard.js' %}" type="text/javascript"></script>
-
+	{% block last %}{% endblock %}
 </body>
 
 </html>
