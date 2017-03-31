@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.conf.urls import url, include
+
+from shop.views.dashboard import router
 from shop.views import dashboard
 
 from myshop.serializers.polymorphic import SmartCardSerializer, SmartPhoneSerializer
@@ -14,4 +17,9 @@ class ProductsDashboard(dashboard.ProductsDashboard):
         'myshop.smartphonemodel': SmartPhoneSerializer,
     }
 
-dashboard.router.register('products', ProductsDashboard)
+router.register('products', ProductsDashboard)
+
+
+urlpatterns = [
+    url(r'^', include(router.urls)),
+]

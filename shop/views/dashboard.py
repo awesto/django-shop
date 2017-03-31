@@ -6,7 +6,6 @@ from collections import OrderedDict
 from django.contrib.auth import get_permission_codename
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
-from django.utils.translation import ugettext_lazy as _
 
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
@@ -23,25 +22,9 @@ from shop.rest.renderers import DashboardRenderer
 from shop.serializers.bases import ProductSerializer
 
 
-class DashboardView(APIView):
-    """
-    View to handle to main dashboard page.
-    """
-    renderer_classes = (TemplateHTMLRenderer,)
-    template_name = 'shop/dashboard/root.html'
-
-    @classmethod
-    def get_breadcrumbs(cls):
-        return [(_("Dashboard"), reverse('dashboard:root'))]
-
-    def get(self, request, *args, **kwargs):
-        context = {
-            'breadcrumblist': self.get_breadcrumbs()
-        }
-        return Response(context, template_name=self.template_name)
-
-
 class DashboardRouter(DefaultRouter):
+    root_view_name = 'dashboard-root'
+
     routes = [
         # List route.
         Route(
@@ -79,6 +62,30 @@ class DashboardRouter(DefaultRouter):
             initkwargs={}
         ),
     ]
+
+    def get_api_root_view(self, api_urls=None):
+        #api_root_dict = OrderedDict()
+        #list_name = self.routes[0].name
+        #for prefix, viewset, basename in self.registry:
+        #    api_root_dict[prefix] = list_name.format(basename=basename)
+        registry = self.registry
+
+        class RootView(APIView):
+            """
+            View to handle to root dashboard page.
+            """
+            renderer_classes = (TemplateHTMLRenderer,)
+            template_name = 'shop/dashboard/root.html'
+
+            def get(self, request, *args, **kwargs):
+                context = {
+                    'registry': registry,
+                }
+                return Response(context, template_name=self.template_name)
+
+        return RootView.as_view()
+
+router = DashboardRouter()
 
 
 class DashboardPaginator(LimitOffsetPagination):
@@ -127,20 +134,8 @@ class ProductsDashboard(ModelViewSet):
             return self.list_display_links
         return self.get_list_display()[:1]
 
-    def get_breadcrumbs(self):
-        breadcrumbs = DashboardView.get_breadcrumbs()
-        breadcrumbs.append((ProductModel.Meta.verbose_name_plural, reverse('dashboard:product-list')))
-        if self.suffix == 'Instance':
-            instance = self.get_object()
-            breadcrumbs.append((str(instance), self.request.path_info))
-        elif self.suffix == 'New':
-            options = self.get_serializer_class().Meta.model._meta
-            breadcrumbs.append((_("Add {}").format(options.verbose_name), self.request.path_info))
-        return breadcrumbs
-
     def get_renderer_context(self):
         template_context = {
-            'breadcrumblist': self.get_breadcrumbs(),
             'has_add_permission': self.has_add_permission(),
             #'has_change_permission': self.has_change_permission(obj),
             #'has_delete_permission': self.has_delete_permission(obj),
@@ -195,5 +190,3 @@ class ProductsDashboard(ModelViewSet):
         if serializer.is_valid():
             serializer.save()
             return redirect('dashboard:product-list')
-
-router = DashboardRouter()
