@@ -6,6 +6,8 @@ from collections import OrderedDict
 from django.contrib.auth import get_permission_codename
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
+from django.utils.html import format_html, format_html_join
+from django.utils.safestring import mark_safe
 
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
@@ -23,7 +25,7 @@ from shop.serializers.bases import ProductSerializer
 
 
 class DashboardRouter(DefaultRouter):
-    root_view_name = 'dashboard-root'
+    root_view_name = 'root'
 
     routes = [
         # List route.
@@ -37,7 +39,7 @@ class DashboardRouter(DefaultRouter):
         ),
         # Detail route.
         Route(
-            url=r'^{prefix}/{lookup}/change{trailing_slash}$',
+            url=r'^{prefix}/{lookup}{trailing_slash}$',
             mapping={
                 'get': 'retrieve',
                 'post': 'update',
@@ -64,28 +66,26 @@ class DashboardRouter(DefaultRouter):
     ]
 
     def get_api_root_view(self, api_urls=None):
-        #api_root_dict = OrderedDict()
-        #list_name = self.routes[0].name
-        #for prefix, viewset, basename in self.registry:
-        #    api_root_dict[prefix] = list_name.format(basename=basename)
-        registry = self.registry
+        dashboard_entities = OrderedDict()
+        for prefix, viewset, basename in self.registry:
+            dashboard_entities[prefix] = viewset()
 
         class RootView(APIView):
             """
             View to handle to root dashboard page.
             """
             renderer_classes = (TemplateHTMLRenderer,)
-            template_name = 'shop/dashboard/root.html'
+            template_name = 'shop/dashboard/main.html'
 
             def get(self, request, *args, **kwargs):
                 context = {
-                    'registry': registry,
+                    'dashboard_entities': dashboard_entities,
                 }
                 return Response(context, template_name=self.template_name)
 
         return RootView.as_view()
 
-router = DashboardRouter()
+router = DashboardRouter(trailing_slash=False)
 
 
 class DashboardPaginator(LimitOffsetPagination):
@@ -96,7 +96,7 @@ class ProductsDashboard(ModelViewSet):
     renderer_classes = (DashboardRenderer, JSONRenderer, BrowsableAPIRenderer)
     pagination_class = DashboardPaginator
     list_serializer_class = app_settings.PRODUCT_SUMMARY_SERIALIZER
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
     detail_serializer_classes = {}
     queryset = ProductModel.objects.all()
 
@@ -117,24 +117,41 @@ class ProductsDashboard(ModelViewSet):
         serializer_class = self.get_serializer_class()
         context = self.get_serializer_context()
         kwargs.update(context=context, label='dashboard')
-        if kwargs.get('many', False):
-            list_fields = ['pk']
-            list_fields.extend(self.get_list_display())
-            serializer_class.Meta.fields = list_fields  # reorder the fields
+        #if kwargs.get('many', False):
+        #    list_fields = ['pk']
+        #    list_fields.extend(self.get_list_display())
+        #    serializer_class.Meta.fields = list_fields  # reorder the fields
         serializer = serializer_class(*args, **kwargs)
         return serializer
 
-    def get_list_display(self):
-        if hasattr(self, 'list_display'):
-            return self.list_display
-        return self.list_serializer_class.Meta.fields
+    def get_list_fields(self):
+        serializer = self.get_serializer_class()()
+        field_names = getattr(self, 'list_display', serializer.get_fields().keys())
+        detail_links = getattr(self, 'list_display_links', [field_names[0]])
 
-    def get_list_display_links(self):
+        list_fields = []
+        for field_name in field_names:
+            serializer_field = serializer.get_fields()[field_name]
+            field_type = serializer_field.style.get('field_type', 'string')
+            bits = ['field("{}", "{}")'.format(field_name, field_type)]
+            if field_name in detail_links:
+                bits.append('isDetailLink(true)')
+            list_fields.append(mark_safe('.'.join(bits)))
+        return list_fields
+
+    def get_detail_fields(self):
+        serializer = self.get_serializer_class()()
+        field_names = getattr(self, 'list_display', serializer.get_fields().keys())
+
+        detail_fields = []
+        return detail_fields
+
+    def Xget_list_display_links(self):
         if hasattr(self, 'list_display_links'):
             return self.list_display_links
         return self.get_list_display()[:1]
 
-    def get_renderer_context(self):
+    def Xget_renderer_context(self):
         template_context = {
             'has_add_permission': self.has_add_permission(),
             #'has_change_permission': self.has_change_permission(obj),
@@ -166,6 +183,10 @@ class ProductsDashboard(ModelViewSet):
         codename = get_permission_codename('add', ProductModel._meta)
         return self.request.user.has_perm('{}.{}'.format(app_settings.APP_LABEL, codename))
 
+    def list(self, request, *args, **kwargs):
+        response = super(ProductsDashboard, self).list(request, *args, **kwargs)
+        return response
+
     def new(self, request, *args, **kwargs):
         serializer = self.get_serializer()
         return Response({'serializer': serializer})
@@ -177,7 +198,7 @@ class ProductsDashboard(ModelViewSet):
             return redirect('dashboard:product-list')
         return Response({'serializer': serializer})
 
-    def retrieve(self, request, *args, **kwargs):
+    def Xretrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return Response({'serializer': serializer, 'instance': instance})

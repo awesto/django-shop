@@ -1,24 +1,30 @@
-{% extends "shop/dashboard/base.html" %}
-{% load static sekizai_tags %}
-
-{% block content %}
-	{% addtoblock "css" %}<link rel="stylesheet" href="{% static 'node_modules/ng-admin/build/ng-admin.min.css' %}">{% endaddtoblock %}
-	{% addtoblock "js" %}<script src="{% static 'node_modules/ng-admin/build/ng-admin.min.js' %}"></script>{% endaddtoblock %}
-	{% addtoblock "ng-requires" %}ng-admin{% endaddtoblock %}
-	<div ui-view="ng-admin"></div>
-{% endblock content %}
-
-{% block last %}
-	<script type="text/javascript">
 (function(angular, undefined) {
 'use strict';
 
 var djangoShopDashboard = angular.module('djangoShopDashboard');
 
+djangoShopDashboard.config(['RestangularProvider', function(RestangularProvider) {
+	RestangularProvider.addFullRequestInterceptor(function(element, operation, what, url, headers, params) {
+		if (operation == "getList") {
+		}
+		return {params: params};
+	});
+
+	RestangularProvider.addResponseInterceptor(function(data, operation, what, url, response, deferred) {
+		if (operation == "getList") {
+			response.totalCount = data.count;
+			return data.results;
+		}
+		return data;
+	});
+
+}]);
+
 djangoShopDashboard.config(['NgAdminConfigurationProvider', function(nga) {
 	var admin = nga.application("Dashboard");
 
-	admin.baseApiUrl('http://jsonplaceholder.typicode.com/');
+	//admin.baseApiUrl('http://jsonplaceholder.typicode.com/');
+	admin.baseApiUrl("{% url 'dashboard:root' %}");
 
 	var user = nga.entity('users');
 	// set the fields of the user entity list view
@@ -72,10 +78,28 @@ djangoShopDashboard.config(['NgAdminConfigurationProvider', function(nga) {
 
 	admin.addEntity(post);
 
+	{% for name, viewset in dashboard_entities.items %}
+	(function() {
+		// create entity for each viewset
+		var entity = nga.entity("{{ name }}");
+
+		// configute the list view
+		entity.listView().fields([{% for field in viewset.get_list_fields %}
+			nga.{{ field }}{% if not forloop.last %},{% endif %}{% endfor %}
+		]);
+
+		// configute the detail views
+		entity.editionView().fields([
+			nga.field('caption')
+		]);
+
+		// register entity in admin
+		admin.addEntity(entity);
+	})();
+	{% endfor %}
+
 	// attach the admin application to the DOM and execute it
 	nga.configure(admin);
 }]);
 
 })(window.angular);
-	</script>
-{% endblock %}
