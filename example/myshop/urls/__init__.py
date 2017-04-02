@@ -8,9 +8,13 @@ from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.http import HttpResponse
-from shop.views.auth import PasswordResetConfirm
+
 from cms.sitemaps import CMSSitemap
+
+from shop.views.auth import PasswordResetConfirm
+
 from myshop.sitemap import ProductSitemap
+from myshop.dashboard import router
 
 sitemaps = {'cmspages': CMSSitemap,
             'products': ProductSitemap}
@@ -31,7 +35,7 @@ urlpatterns = [
     url(r'^robots\.txt$', render_robots),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
     url(r'^shop/', include('shop.urls', namespace='shop')),
-    url(r'^dashboard/', include('myshop.urls.dashboard', namespace='dashboard')),
+    url(r'^dashboard/', include(router.urls, namespace='dashboard')),
 ]
 if settings.USE_I18N:
     urlpatterns.extend(i18n_patterns(*i18n_urls))

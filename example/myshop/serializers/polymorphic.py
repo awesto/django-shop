@@ -6,14 +6,14 @@ from rest_framework.fields import empty
 from shop.serializers.bases import ProductSerializer
 from shop.serializers.defaults import AddToCartSerializer
 
-from myshop.models import SmartCard, SmartPhoneModel
+from myshop.models import Product, SmartCard, SmartPhoneModel
 
 
 class SmartCardSerializer(ProductSerializer):
     class Meta:
         model = SmartCard
         fields = ['product_name', 'slug', 'unit_price', 'manufacturer', 'card_type', 'speed',
-                  'product_code', 'storage']
+                  'product_code', 'storage', 'caption']
 
 
 class SmartPhoneSerializer(ProductSerializer):

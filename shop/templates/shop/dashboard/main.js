@@ -84,13 +84,13 @@ djangoShopDashboard.config(['NgAdminConfigurationProvider', function(nga) {
 		var entity = nga.entity("{{ name }}");
 
 		// configute the list view
-		entity.listView().fields([{% for field in viewset.get_list_fields %}
+		entity.listView().fields([{% for field in viewset.list_fields %}
 			nga.{{ field }}{% if not forloop.last %},{% endif %}{% endfor %}
 		]);
 
 		// configute the detail views
-		entity.editionView().fields([
-			nga.field('caption')
+		entity.editionView().fields([{% for field in viewset.detail_fields %}
+			nga.{{ field }}{% if not forloop.last %},{% endif %}{% endfor %}
 		]);
 
 		// register entity in admin

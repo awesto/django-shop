@@ -7,6 +7,7 @@ from django.contrib.auth import get_permission_codename
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.utils.html import format_html, format_html_join
+from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 
 from rest_framework.pagination import LimitOffsetPagination
@@ -95,9 +96,9 @@ class DashboardPaginator(LimitOffsetPagination):
 class ProductsDashboard(ModelViewSet):
     renderer_classes = (DashboardRenderer, JSONRenderer, BrowsableAPIRenderer)
     pagination_class = DashboardPaginator
-    list_serializer_class = app_settings.PRODUCT_SUMMARY_SERIALIZER
-    #permission_classes = [IsAuthenticated]
+    list_serializer_class = None
     detail_serializer_classes = {}
+    #permission_classes = [IsAuthenticated]
     queryset = ProductModel.objects.all()
 
     def get_serializer_class(self):
@@ -124,26 +125,31 @@ class ProductsDashboard(ModelViewSet):
         serializer = serializer_class(*args, **kwargs)
         return serializer
 
-    def get_list_fields(self):
-        serializer = self.get_serializer_class()()
+    @cached_property
+    def list_fields(self):
+        serializer = self.list_serializer_class()
         field_names = getattr(self, 'list_display', serializer.get_fields().keys())
         detail_links = getattr(self, 'list_display_links', [field_names[0]])
 
         list_fields = []
-        for field_name in field_names:
-            serializer_field = serializer.get_fields()[field_name]
-            field_type = serializer_field.style.get('field_type', 'string')
-            bits = ['field("{}", "{}")'.format(field_name, field_type)]
-            if field_name in detail_links:
+        for name, field in serializer.get_fields().items():
+            field_type = field.style.get('field_type', 'string')
+            bits = ['field("{}", "{}")'.format(name, field_type)]
+            if name in detail_links:
                 bits.append('isDetailLink(true)')
             list_fields.append(mark_safe('.'.join(bits)))
+
         return list_fields
 
-    def get_detail_fields(self):
-        serializer = self.get_serializer_class()()
-        field_names = getattr(self, 'list_display', serializer.get_fields().keys())
-
+    @cached_property
+    def detail_fields(self):
         detail_fields = []
+        for serializer_class in self.detail_serializer_classes.values():
+            for name, field in serializer_class().get_fields().items():
+                field_type = field.style.get('field_type', 'string')
+                bits = ['field("{}", "{}")'.format(name, field_type)]
+                detail_fields.append(mark_safe('.'.join(bits)))
+
         return detail_fields
 
     def Xget_list_display_links(self):
