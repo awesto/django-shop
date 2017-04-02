@@ -135,21 +135,27 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
 
     def get_availability(self, request):
         """
-        Hook for checking the availability of a product. It returns a list of tuples with this
-        notation:
-        - Number of items available for this product until the specified period expires.
-          If this value is ``True``, then infinitely many items are available.
-        - Until which timestamp, in UTC, the specified number of items are available.
-        This function can return more than one tuple. If the list is empty, then the product is
-        considered as not available.
-        Use the `request` object to vary the availability according to the logged in user,
-        its country code or language.
+        Hook for checking the availability of a product.
+
+        Args:
+            Use the ``request`` object to vary the availability according to the logged
+            in user, its geo-location, language or whatever can be determined using the 
+            request object. 
+        
+        Returns:
+            A list of tuples with this notation:
+            * Number of items available for this product until the specified period expires.
+              If this value is ``True``, then infinitely many items are available.
+            * Until which timestamp, in UTC, the specified number of items are available.
+
+            This method can return more than one tuple. If the list is empty, then the
+            product is considered as not available.
         """
         return [(True, datetime.max)]  # Infinite number of products available until eternity
 
     def is_in_cart(self, cart, watched=False, **kwargs):
         """
-        Checks if the current product is already in the given cart, and if so, returns the
+        Hook to check if the current product is already in the given cart, and if so, returns the
         corresponding cart_item.
 
         Args:
