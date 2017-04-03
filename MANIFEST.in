@@ -1,7 +1,6 @@
 include LICENSE.txt
 include README.md
 include setup.py
-include package.json
 recursive-include email_auth *.py
 recursive-include shop *.py
 recursive-include shop/static *
