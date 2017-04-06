@@ -148,6 +148,7 @@ class ProductsDashboard(ModelViewSet):
             for name, field in serializer_class().get_fields().items():
                 field_type = field.style.get('field_type', 'string')
                 bits = ['field("{}", "{}")'.format(name, field_type)]
+                #bits.append('cssClass()')
                 detail_fields.append(mark_safe('.'.join(bits)))
 
         return detail_fields

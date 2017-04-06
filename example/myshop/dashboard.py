@@ -34,13 +34,19 @@ class SmartCardSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class SmartPhoneSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SmartPhoneModel
+        fields = '__all__'
+
+
 class ProductsDashboard(dashboard.ProductsDashboard):
     list_display = ['product_name', 'product_code', 'price', 'active']
     list_display_links = ['product_name']
     list_serializer_class = ProductSerializer
     detail_serializer_classes = {
         'myshop.smartcard': SmartCardSerializer,
-        #'myshop.smartphonemodel': SmartPhoneSerializer,
+        'myshop.smartphonemodel': SmartPhoneSerializer,
     }
 
 router.register('products', ProductsDashboard)
