@@ -47,7 +47,7 @@ class CartItemManager(models.Manager):
         Use this method to fetch items for shopping from the cart. It rearranges the result set
         according to the defined modifiers.
         """
-        cart_items = self.filter(cart=cart, quantity__gt=0)
+        cart_items = self.filter(cart=cart, quantity__gt=0).order_by('id')
         for modifier in cart_modifiers_pool.get_all_modifiers():
             cart_items = modifier.arrange_cart_items(cart_items, request)
         return cart_items
