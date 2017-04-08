@@ -4,8 +4,10 @@ from __future__ import unicode_literals
 from collections import OrderedDict
 
 from django.contrib.auth import get_permission_codename
+from django.contrib.contenttypes.models import ContentType, ContentTypeManager
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
+from django.template import Context, Template
 from django.utils.html import format_html, format_html_join
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
@@ -141,14 +143,26 @@ class ProductsDashboard(ModelViewSet):
 
         return list_fields
 
-    @cached_property
+    #@cached_property
+    @property
     def detail_fields(self):
-        detail_fields = []
+        template = Template("""template(function(entry) {
+            console.log(entry);
+            if (entry.values.polymorphic_ctype == {{ ctype.id }})
+                return '<!-- hidden field -->';
+            return '<ma-input-field field="::field" value="::value"></ma-input-field>';
+        }, true)
+        """)
+        #template = '<span><ma-number-column field="::field" value="::entry.values[field.name()]"></ma-number-column></span>'
+        detail_fields = OrderedDict()
         for serializer_class in self.detail_serializer_classes.values():
+            ctype = ContentType.objects.get_for_model(serializer_class.Meta.model)
             for name, field in serializer_class().get_fields().items():
                 field_type = field.style.get('field_type', 'string')
                 bits = ['field("{}", "{}")'.format(name, field_type)]
-                #bits.append('cssClass()')
+                if name == 'battery_type':
+                    bits.append(template.render(Context({'ctype': ctype})))
+                    #bits.append('template("", true)')
                 detail_fields.append(mark_safe('.'.join(bits)))
 
         return detail_fields
