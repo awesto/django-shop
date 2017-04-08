@@ -18,7 +18,6 @@ class CatalogTest(ShopTestCase):
         self.assertEqual(soup.title.string, "Smart Cards")
         breadcrumb = soup.find('ol', class_='breadcrumb')
         list_items = breadcrumb.find_all('li')
-        print(list_items)
         self.assertEqual(list_items[0].a.string, "HOME")
         self.assertEqual(list_items[1].a.string, "Shop")
         self.assertDictEqual(list_items[2].attrs, {'class': ['active']})
@@ -31,7 +30,6 @@ class CatalogTest(ShopTestCase):
         self.assertEquals(response.status_code, 200)
 
         soup = BeautifulSoup(response.content, 'html.parser')
-        print(soup.prettify())
         self.assertEqual(soup.title.string, "SDHC Card 4GB")
         breadcrumb = soup.find('ol', class_='breadcrumb')
         list_items = breadcrumb.find_all('li')
