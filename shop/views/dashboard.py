@@ -148,24 +148,40 @@ class ProductsDashboard(ModelViewSet):
     def detail_fields(self):
         template = Template("""template(function(entry) {
             console.log(entry);
+            {% spaceless %}{% with tag="ma-string-column" %}
+            {% for ctype in ctypes %}
             if (entry.values.polymorphic_ctype == {{ ctype.id }})
-                return '<!-- hidden field -->';
-            return '<ma-input-field field="::field" value="::value"></ma-input-field>';
+                return '<ma-field field="::field" value="entry.values[field.name()]" entry="entry" entity="::entity"></ma-field>';
+            {% endfor %}
+            {% endwith %}{% endspaceless %}
         }, true)
         """)
+        # <ma-field field="::field" value="entry.values[field.name()]" entry="entry" entity="::entity" form="formController.form" datastore="::formController.dataStore" class="ng-scope ng-isolate-scope"><div id="row-images" class="form-field form-group has-feedback ng-scope" ng-class="getFieldValidationClass()">
         #template = '<span><ma-number-column field="::field" value="::entry.values[field.name()]"></ma-number-column></span>'
         detail_fields = OrderedDict()
-        for serializer_class in self.detail_serializer_classes.values():
-            ctype = ContentType.objects.get_for_model(serializer_class.Meta.model)
+        for serializer_id, serializer_class in enumerate(self.detail_serializer_classes.values()):
             for name, field in serializer_class().get_fields().items():
                 field_type = field.style.get('field_type', 'string')
-                bits = ['field("{}", "{}")'.format(name, field_type)]
-                if name == 'battery_type':
-                    bits.append(template.render(Context({'ctype': ctype})))
-                    #bits.append('template("", true)')
-                detail_fields.append(mark_safe('.'.join(bits)))
+                if name in detail_fields:
+                    if detail_fields[name][0] != field_type:
+                        detail_fields[name + str(serializer_id)] = (field_type, [serializer_class])
+                    else:
+                        detail_fields[name][1].append(serializer_class)
+                else:
+                    detail_fields[name] = (field_type, [serializer_class])
 
-        return detail_fields
+        result_list = []
+        for key, values in detail_fields.items():
+            bits = ['field("{}", "{}")'.format(key, values[0])]
+            if len(values[1]) < len(self.detail_serializer_classes):
+                # this field it not available for all serializer classes,
+                # handle polymorphism using a template to hide it conditionally
+                ctypes = [ContentType.objects.get_for_model(sc.Meta.model) for sc in values[1]]
+                context = Context({'ctypes': ctypes, 'field_type': values[0]})
+                bits.append(template.render(context))
+            result_list.append(mark_safe('.'.join(bits)))
+
+        return result_list
 
     def Xget_list_display_links(self):
         if hasattr(self, 'list_display_links'):
