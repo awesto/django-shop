@@ -172,7 +172,6 @@ class AddressForm(DialogModelForm):
                 filter_args.update(customer=request.customer)
                 try:
                     existing_address = cls.get_model().objects.get(**filter_args)
-                    address_form.set_address(cart, existing_address)
                 except cls.get_model().DoesNotExist:
                     next_address = address_form.save(commit=False)
                     if next_address:
