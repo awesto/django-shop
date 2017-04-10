@@ -5,6 +5,12 @@ Changelog for django-SHOP
 =========================
 
 
+0.10.1
+======
+
+* Fixed #537 and #539: Rendering `data` in template has different results after upgrading to 0.10.
+
+
 0.10.0
 ======
 
