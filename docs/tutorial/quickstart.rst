@@ -23,11 +23,12 @@ To run a fully configured **django-SHOP** container on your local machine:
 This image is rather large (~2 GB), therefore it may take some time to download.
 
 Locate the IP address of the running container using ``docker-machine ip default``. Then point
-a browser onto this address using port 9001, for instance http://192.168.99.100:9001/
+a browser onto this address using port 9001, for instance http://192.168.99.100:9001/ (the IP
+address may vary depending on your Docker machine settings).
 
 After the container started, it may take a few minutes until the database is ready. The first time
-a page is loaded, also takes additional time because all images must be thumbnailed. Therefore, if
-you stop the running container with
+a page is loaded, this also takes additional time because all images must be thumbnailed. Therefore,
+if you stop the running container with
 
 .. code-block:: bash
 

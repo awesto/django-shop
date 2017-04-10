@@ -51,7 +51,7 @@ system:
 	(shoptutorial)$ cd django-shop
 	(shoptutorial)$ pip install -r requirements/common.txt
 	(shoptutorial)$ pip install --no-deps -e .
-	(shoptutorial)$ pip install Django==1.10.5
+	(shoptutorial)$ pip install 'Django<1.11'
 	(shoptutorial)$ cd example
 	(shoptutorial)$ npm install
 
@@ -84,6 +84,12 @@ Finally we must create a database to run our example project:
 	Password (again):
 	Superuser created successfully.
 	(shoptutorial)$ ./manage.py runserver
+
+If Elasticsearch is installed and running, optionally build the search index:
+
+.. code-block:: shell
+
+	(shoptutorial)$ ./manage.py rebuild_index
 
 Finally point a browser onto http://localhost:8000/ and log in as the superuser you just created.
 
