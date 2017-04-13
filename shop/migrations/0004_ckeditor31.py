@@ -80,7 +80,7 @@ class Migration(migrations.Migration):
                             "SELECT cmsplugin_ptr_id, glossary FROM cmsplugin_cascade_element "
                             "INNER JOIN cms_cmsplugin ON cmsplugin_ptr_id=id WHERE plugin_type='AcceptConditionFormPlugin';", None)]),
         migrations.RunSQL([("UPDATE cms_cmsplugin SET plugin_type='AcceptConditionPlugin' WHERE id IN ("
-                            "SELECT id FROM  cms_cmsplugin WHERE plugin_type='AcceptConditionFormPlugin');", None)]),
+                            "SELECT id FROM (SELECT * FROM cms_cmsplugin) AS plugins WHERE plugin_type='AcceptConditionFormPlugin');", None)]),
         migrations.RunSQL([("DELETE FROM cmsplugin_cascade_element WHERE cmsplugin_ptr_id IN ("
                             "SELECT id FROM  cms_cmsplugin WHERE plugin_type='AcceptConditionPlugin');", None)]),
         migrations.RunPython(forwards, backwards),

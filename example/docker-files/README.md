@@ -8,13 +8,13 @@ Build the Docker image with:
 
 ```
 cd django-shop/example
-docker build -t awesto/demo-shop .
+docker build -t awesto/django-shop-demo .
 ```
 
 Create and start the Docker container with:
 
 ```
-docker create --name demo-shop-i18n_polymorphic --env DJANGO_SHOP_TUTORIAL=i18n_polymorphic -p 9001:9001 awesto/demo-shop
+docker create --name demo-shop-i18n_polymorphic --env DJANGO_SHOP_TUTORIAL=i18n_polymorphic -p 9001:9001 awesto/django-shop-demo
 docker start demo-shop-i18n_polymorphic
 ```
 
@@ -42,7 +42,7 @@ The container keeps all non-reproducible data in a separate volume named ``/web`
 mounted by external containers. To access this volume, start a throw away container with:
 
 ```
-docker run --rm -ti --volumes-from demo-shop-i18n_polymorphic demo-shop /bin/bash
+docker run --rm -ti --volumes-from demo-shop-i18n_polymorphic django-shop-demo /bin/bash
 [root@97f8bf18bf5d example]# ll /web/logs
 ```
 

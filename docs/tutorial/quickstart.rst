@@ -18,7 +18,7 @@ To run a fully configured **django-SHOP** container on your local machine:
 
 .. code-block:: bash
 
-	docker run --name demo-shop-i18n_polymorphic --env DJANGO_SHOP_TUTORIAL=i18n_polymorphic -p 9001:9001 awesto/demo-shop:latest
+	docker run --name demo-shop-i18n_polymorphic --env DJANGO_SHOP_TUTORIAL=i18n_polymorphic -p 9001:9001 awesto/django-shop-demo:latest
 
 This image is rather large (~2 GB), therefore it may take some time to download.
 
