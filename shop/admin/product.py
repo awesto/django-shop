@@ -67,7 +67,8 @@ class CMSPageAsCategoryMixin(object):
             }
             queryset = Page.objects.filter(**limit_choices_to)
             widget = admin.widgets.FilteredSelectMultiple(_("CMS Pages"), False)
-            field = forms.ModelMultipleChoiceField(queryset=queryset, widget=widget)
+            required = not db_field.blank
+            field = forms.ModelMultipleChoiceField(queryset=queryset, widget=widget, required=required)
             return field
         return super(CMSPageAsCategoryMixin, self).formfield_for_manytomany(db_field, request, **kwargs)
 
