@@ -4,22 +4,24 @@ from __future__ import unicode_literals
 
 from django import VERSION
 
-if VERSION >= (1, 10):
-
-    import django.contrib.auth.validators
-    from django.db import migrations, models
+from django.db import migrations, models
 
 
-    class Migration(migrations.Migration):
+class Migration(migrations.Migration):
 
-        dependencies = [
-            ('email_auth', '0003_django110'),
-        ]
+    dependencies = [
+        ('email_auth', '0003_django110'),
+    ]
 
-        operations = [
+    operations = []
+
+    if VERSION >= (1, 10):
+        import django.contrib.auth.validators
+
+        operations.append(
             migrations.AlterField(
                 model_name='user',
                 name='username',
                 field=models.CharField(error_messages={'unique': 'A user with that username already exists.'}, help_text='Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.', max_length=150, unique=True, validators=[django.contrib.auth.validators.UnicodeUsernameValidator()], verbose_name='username'),
-            ),
-        ]
+            )
+        )
