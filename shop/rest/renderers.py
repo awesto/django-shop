@@ -19,7 +19,7 @@ class CMSPageRenderer(renderers.TemplateHTMLRenderer):
         view = renderer_context['view']
         request = renderer_context['request']
         response = renderer_context['response']
-        template_context = self.get_template_context(data, renderer_context)
+        template_context = self.get_template_context(dict(data), renderer_context)
 
         if response.exception:
             template = self.get_exception_template(response)
