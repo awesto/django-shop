@@ -15,8 +15,9 @@ help us to adopt the migration path.
 
 ## NEWS
 
-The core developer of **django-SHOP**, will be at [Django Con Europe](https://2017.djangocon.eu/) from
-April 3rd to 7th, in Florence, Italy. If you want to get in touch, please contact me on Gitter or Twitter.
+The core developer of **django-SHOP**, will be at [PyCon Web 2017](https://www.pymunich.com/) from
+May 27th to 28th, in Munich, Germany. If you want to get in touch, please contact me on Gitter or
+Twitter.
 
 
 ## Running the demo projects
@@ -42,9 +43,10 @@ docker run --name demo-shop-i18n_polymorphic --env DJANGO_SHOP_TUTORIAL=i18n_pol
 ```
 
 Then point a browser on the IP address of your docker machine onto port 9001. If unsure invoke
-``docker-machine ip``. This could for instance be http://192.168.99.100:9001/ .
+``docker-machine ip``. This for instance could be http://192.168.99.100:9001/ .
 To access the backend, sign in with username *admin* and password *secret*. The first invocation
-of each page takes some time, since beforehand the supplied images have to be thumbnailed.
+may take a few minutes, since additional assets have to be downloaded and the supplied images have
+to be thumbnailed.
 
 
 ## Current Status of Django-SHOP
@@ -53,8 +55,11 @@ This version of django-SHOP is currently used to implement real e-commerce sites
 to get involved in the development, please have a look at our documentation in ``docs/contributing.rst``.
 
 
-**Django-SHOP** aims to be a the easy, fun and fast shop counterpart to django CMS.
+**Django-SHOP** aims to be a the easy, fun and fast shop counterpart to **django-CMS**.
 
 Specifically, we aim at providing a clean, modular and Pythonic/Djangonic implementation of an
-e-commerce framework, that a moderately experienced Django programmer should be able to pick up
+e-commerce framework, that a moderately experienced Django developer should be able to pick up
 and run easily.
+
+Whenever possible, extra features shall be added to third party libraries. This implies that
+**django-SHOP** aims to provide an API, which allows merchants to add every feature they desire.
