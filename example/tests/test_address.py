@@ -78,6 +78,12 @@ class AddressFormTest(APITestCase):
                          "Lauren Callagar\n117, Lake St.\nCA 90066 Los Angeles\nUnited States\n")
         self.assertIsNone(self.cart.billing_address)
 
+        # add the same address a second time and check that it's not duplicated
+        response = self.client.post(url, payload, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(ShippingAddress.objects.filter(customer=self.customer).count(), 1)
+        self.assertEqual(BillingAddress.objects.filter(customer=self.customer).count(), 0)
+
     def test_add_second_shipping_address(self):
         first_address = {
             "name": "Charles Smith",
@@ -153,3 +159,19 @@ class AddressFormTest(APITestCase):
         print(self.cart.shipping_address_id)
         self.assertEqual(self.cart.shipping_address.as_text(),
                          "Charles Smith\n507, Dudley St.\nPA 19148 Philadelphia\nUnited States\n")
+
+        # and removes the address in Philadelphia, leaving only Baltimore
+        payload['shipping_address'] = dict(response['data']['shipping_address'], remove_entity=True)
+        response = self.client.post(url, payload, format='json')
+        self.assertEqual(response.status_code, 200)
+        response = json.loads(response.content.decode('utf-8'))
+        self.assertTrue(response['data']['$valid'])
+        self.assertDictContainsSubset({'active_priority': '2', 'city': "Baltimore"},
+                                      response['data']['shipping_address'])
+
+        # check the database's content
+        self.assertEqual(ShippingAddress.objects.filter(customer=self.customer).count(), 1)
+        self.assertEqual(BillingAddress.objects.filter(customer=self.customer).count(), 0)
+        self.cart.refresh_from_db()
+        self.assertEqual(self.cart.shipping_address.as_text(),
+                         "Charles Smith\n1012, Madison Ave\nMD 21201 Baltimore\nUnited States\n")
