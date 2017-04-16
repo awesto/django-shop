@@ -196,7 +196,7 @@ class CheckoutAddressPlugin(DialogFormPluginBase):
             for number, addr in enumerate(addresses, 1):
                 form_entities.append({
                     'value': str(addr.priority),
-                     'label': "{}. {}".format(number, addr.as_text().strip().replace('\n', ' – '))
+                    'label': "{}. {}".format(number, addr.as_text().strip().replace('\n', ' – '))
                 })
             form_data.update(multi_addr=True, form_entities=form_entities)
         else:
