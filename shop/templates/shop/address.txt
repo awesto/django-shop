@@ -1,6 +1,5 @@
 {{ address.name }}
 {{ address.address1 }}{% if address.address2 %}
-{{ address.address2 }}
-{% endif %}
+{{ address.address2 }}{% endif %}
 {{ address.zip_code }} {{ address.city }}
 {{ address.get_country_display }}

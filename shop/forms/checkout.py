@@ -146,8 +146,9 @@ class AddressForm(DialogModelForm):
             old_address = cls.get_model().objects.get_fallback(customer=request.customer)
             if old_address:
                 faked_data = dict(data)
-                faked_data.update(dict((field.name, old_address.serializable_value(field.name))
-                                       for field in old_address._meta.fields))
+                faked_data.update(
+                    dict((field.name, old_address.serializable_value(field.name))
+                         for field in old_address._meta.fields))
                 address_form = cls(data=faked_data)
                 remove_entity_filter = cls.js_filter.format(active_priority)
                 address_form.data.update(
@@ -156,9 +157,10 @@ class AddressForm(DialogModelForm):
                 )
             else:
                 address_form = cls()
-                address_form.data.update(active_priority='add',
-                                         plugin_id=data.get('plugin_id'),
-                                         plugin_order=data.get('plugin_order'),
+                address_form.data.update(
+                    active_priority='add',
+                    plugin_id=data.get('plugin_id'),
+                    plugin_order=data.get('plugin_order'),
                 )
             address_form.set_address(cart, old_address)
         elif active_priority == 'add':
