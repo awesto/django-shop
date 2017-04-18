@@ -33,6 +33,11 @@ the pip-installable from PyPI only contains the framework, but not the files req
 Before proceeding, please make sure virtualenv_ is installed on your system, otherwise you would
 pollute your Python site-packages folder.
 
+Because we are using the current Github master for this tutorial, you must also
+use the documentation for the current Github master. If you are reading this
+document on Read The Docs, please look for the version selector (usually at the
+bottom of the screen) and select "latest".
+
 Also ensure that these packages are installed using the favorite package manager of your operating
 system:
 
