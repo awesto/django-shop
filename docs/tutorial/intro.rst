@@ -50,7 +50,7 @@ system:
 .. code-block:: shell
 
 	$ mkdir Tutorial; cd Tutorial
-	$ virtualenv shoptutorial
+	$ virtualenv -p $(which python3) shoptutorial
 	$ source shoptutorial/bin/activate
 	(shoptutorial)$ git clone --depth 1 https://github.com/awesto/django-shop
 	(shoptutorial)$ cd django-shop
