@@ -52,6 +52,7 @@ system:
 	$ mkdir Tutorial; cd Tutorial
 	$ virtualenv -p $(which python3) shoptutorial
 	$ source shoptutorial/bin/activate
+	(shoptutorial)$ pip install -U pip setuptools
 	(shoptutorial)$ git clone --depth 1 https://github.com/awesto/django-shop
 	(shoptutorial)$ cd django-shop
 	(shoptutorial)$ pip install -r requirements/common.txt
