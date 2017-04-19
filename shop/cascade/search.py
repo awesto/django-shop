@@ -18,7 +18,7 @@ from .plugin_base import ShopPluginBase
 class ShopSearchResultsForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super(ShopSearchResultsForm, self).clean()
-        page = self.instance.placeholder.page
+        page = self.instance.placeholder.page if self.instance.placeholder_id else None
         if page and page.application_urls != 'CatalogSearchApp':
             raise ValidationError("This plugin can only be used on a CMS page with an application of type 'Search'.")
         return cleaned_data
