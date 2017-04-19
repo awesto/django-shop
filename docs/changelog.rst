@@ -5,6 +5,19 @@ Changelog for django-SHOP
 =========================
 
 
+0.10.2
+======
+
+* Fixed migration error in ``0004_ckeditor31.py``.
+* Fixed #554: Email is no longer created when notification is triggered.
+* Fixed: Using a ``ManyToManyField`` through ``ProductPage`` ignores the blank attribute,
+  when saving a product in the admin backend.
+* Hard code "Cart" into tooltip for cart icon, until https://github.com/divio/django-cms/issues/5930
+  is fixed.
+* Renders a nicer summary when rendering a multiple address form.
+* Fixed: When placeholder is ``None`` raises AttributeError.
+
+
 0.10.1
 ======
 
