@@ -57,8 +57,6 @@ class ShopSearchResultsPlugin(ShopPluginBase):
         finally:
             return context
 
-        return context
-
     @classmethod
     def get_identifier(cls, obj):
         if obj.glossary.get('infinite_scroll', True):
