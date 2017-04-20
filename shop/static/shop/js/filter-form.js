@@ -21,10 +21,11 @@ Module.directive('shopProductFilter', ['$location', function($location) {
 
 			scope.filterChanged = function() {
 				var params = {};
-				if (scope.filters[attr]) {
-					params[attr] = scope.filters[attr];
-				}
-				$location.search(params);
+				angular.forEach(filter_attrs, function(attr) {
+					if (scope.filters[attr]) {
+						params[attr] = scope.filters[attr];
+					}
+				});
 				scope.searchQuery = '';  // remove content in search field
 				scope.$emit('shopCatalogFilter', params);
 			};
