@@ -29,7 +29,6 @@ Module.directive('shopProductFilter', ['$location', function($location) {
 						params[attr] = scope.filters[attr];
 					}
 				});
-				$location.search(params);
 				scope.searchQuery = '';  // remove content in search field
 				scope.$emit('shopCatalogFilter', params);
 			};
