@@ -135,17 +135,17 @@ class SmartPhoneModel(Product):
     def is_in_cart(self, cart, watched=False, **kwargs):
         from shop.models.cart import CartItemModel
         try:
-            product_code = kwargs['extra']['product_code']
+            product_code = kwargs['product_code']
         except KeyError:
             return
         cart_item_qs = CartItemModel.objects.filter(cart=cart, product=self)
         for cart_item in cart_item_qs:
-            if cart_item.extra.get('product_code') == product_code:
+            if cart_item.product_code == product_code:
                 return cart_item
 
-    def get_product_variant(self, product_code):
+    def get_product_variant(self, **kwargs):
         try:
-            return self.smartphone_set.get(product_code=product_code)
+            return self.smartphone_set.get(**kwargs)
         except SmartPhone.DoesNotExist as e:
             raise SmartPhoneModel.DoesNotExist(e)
 

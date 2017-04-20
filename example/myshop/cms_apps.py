@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.conf import settings
+
 from cms.apphook_pool import apphook_pool
 from cms.cms_menus import SoftRootCutter
 from menus.menu_pool import menu_pool
@@ -24,6 +25,15 @@ apphook_pool.register(CatalogListApp)
 class CatalogSearchApp(CatalogSearchCMSApp):
     def get_urls(self, page=None, language=None, **kwargs):
         return ['myshop.urls.search']
+        # TODO: can be simplified into, after merging https://github.com/divio/django-cms/pull/5898
+        # from django.conf.urls import url
+        # from shop.search.views import SearchView
+        # from myshop.serializers import ProductSearchSerializer
+        # return [
+        #     url(r'^', SearchView.as_view(
+        #         serializer_class=ProductSearchSerializer,
+        #     )),
+        # ]
 
 apphook_pool.register(CatalogSearchApp)
 

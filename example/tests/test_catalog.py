@@ -18,7 +18,6 @@ class CatalogTest(ShopTestCase):
         self.assertEqual(soup.title.string, "Smart Cards")
         breadcrumb = soup.find('ol', class_='breadcrumb')
         list_items = breadcrumb.find_all('li')
-        print(list_items)
         self.assertEqual(list_items[0].a.string, "HOME")
         self.assertEqual(list_items[1].a.string, "Shop")
         self.assertDictEqual(list_items[2].attrs, {'class': ['active']})
@@ -31,7 +30,6 @@ class CatalogTest(ShopTestCase):
         self.assertEquals(response.status_code, 200)
 
         soup = BeautifulSoup(response.content, 'html.parser')
-        print(soup.prettify())
         self.assertEqual(soup.title.string, "SDHC Card 4GB")
         breadcrumb = soup.find('ol', class_='breadcrumb')
         list_items = breadcrumb.find_all('li')
@@ -51,7 +49,7 @@ class CatalogTest(ShopTestCase):
         payload = json.loads(response.content.decode('utf-8'))
         self.assertIsInstance(payload, dict)
         self.assertDictContainsSubset(
-            {'quantity': 1, 'unit_price': "€ 3.99", 'product': 1, 'extra': {'product_code': "sd1041"}},
+            {'quantity': 1, 'unit_price': "€ 3.99", 'product': 1, 'extra': {}, 'product_code': "sd1041"},
             payload)
 
         # add two items of that Smart Card

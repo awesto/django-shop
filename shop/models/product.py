@@ -126,6 +126,13 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         msg = "Method get_price() must be implemented by subclass: `{}`"
         raise NotImplementedError(msg.format(self.__class__.__name__))
 
+    def get_product_variant(self, **kwargs):
+        """
+        Hook for returning the variant of a product using parameters passed in by **kwargs.
+        If the product has no variants, then return the product itself.
+        """
+        return self
+
     def get_availability(self, request):
         """
         Hook for checking the availability of a product. It returns a list of tuples with this

@@ -1,0 +1,13 @@
+{% extends "myshop/pages/default.html" %}
+
+{% block breadcrumb %}{% endblock %}
+
+{% block main-content %}
+<div class="container">
+	<div class="row">
+		<div class="col-xs-12">
+			<h2>{{ exception|default:"Forbidden" }}</h2>
+		</div>
+	</div>
+</div>
+{% endblock %}

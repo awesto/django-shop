@@ -24,9 +24,9 @@ docker run --rm -ti awesto/uwsgi-django-shop /bin/bash
 By leaving the shell, using *CTRL-D* or typing ``exit``, this container is destroyed.
 
 
-After the image has been build successfully, it should be tagged with the current version
+After the image has been build successfully, it should be tagged with the latest version
 number.
 
 ```
-docker tag awesto/uwsgi-django-shop awesto/uwsgi-django-shop:0.9.4
+docker tag awesto/uwsgi-django-shop awesto/uwsgi-django-shop:<latest-version-number>
 ```
