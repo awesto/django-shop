@@ -1,7 +1,7 @@
 .. _tutorial/quickstart:
 
 ======================
-Qucikstart with Docker
+Quickstart with Docker
 ======================
 
 To get a first impression of the **django-SHOP** demos, please use one of the prepared Docker
@@ -24,7 +24,8 @@ This image is rather large (~2 GB), therefore it may take some time to download.
 
 Locate the IP address of the running container using ``docker-machine ip default``. Then point
 a browser onto this address using port 9001, for instance http://192.168.99.100:9001/ (the IP
-address may vary depending on your Docker machine settings).
+address may vary depending on your Docker machine settings) or http://localhost:9001/ if running on
+Linux.
 
 After the container started, it may take a few minutes until the database is ready. The first time
 a page is loaded, this also takes additional time because all images must be thumbnailed. Therefore,
