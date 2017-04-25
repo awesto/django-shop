@@ -83,13 +83,15 @@ djangoShopDashboard.config(['NgAdminConfigurationProvider', function(nga) {
 		// create entity for each viewset
 		var entity = nga.entity("{{ name }}");
 
-		// configute the list view
 		entity.listView().fields([{% for field in viewset.list_fields %}
 			nga.{{ field }}{% if not forloop.last %},{% endif %}{% endfor %}
 		]);
 
-		// configute the detail views
-		entity.editionView().fields([{% for field in viewset.detail_fields %}
+		entity.creationView().fields([{% for field in viewset.creation_fields %}
+			nga.{{ field }}{% if not forloop.last %},{% endif %}{% endfor %}
+		]);
+
+		entity.editionView().fields([{% for field in viewset.edition_fields %}
 			nga.{{ field }}{% if not forloop.last %},{% endif %}{% endfor %}
 		]);
 

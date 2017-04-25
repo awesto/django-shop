@@ -12,7 +12,7 @@ from shop.views.dashboard import router
 from myshop.models import Product, SmartCard, SmartPhoneModel
 
 
-class ProductSerializer(serializers.ModelSerializer):
+class ProductListSerializer(serializers.ModelSerializer):
     price = serializers.SerializerMethodField()
     product_code = serializers.SerializerMethodField()
 
@@ -28,22 +28,26 @@ class ProductSerializer(serializers.ModelSerializer):
         return localize(price)
 
 
-class SmartCardSerializer(serializers.ModelSerializer):
+class BaseProductSerializer(serializers.ModelSerializer):
+    pass
+
+
+class SmartCardSerializer(BaseProductSerializer):
     class Meta:
         model = SmartCard
-        fields = '__all__'
+        exclude = ['id', 'polymorphic_ctype', 'created_at', 'updated_at']
 
 
-class SmartPhoneSerializer(serializers.ModelSerializer):
+class SmartPhoneSerializer(BaseProductSerializer):
     class Meta:
         model = SmartPhoneModel
-        fields = '__all__'
+        exclude = ['id', 'polymorphic_ctype', 'created_at', 'updated_at']
 
 
 class ProductsDashboard(dashboard.ProductsDashboard):
     list_display = ['product_name', 'product_code', 'price', 'active']
     list_display_links = ['product_name']
-    list_serializer_class = ProductSerializer
+    list_serializer_class = ProductListSerializer
     detail_serializer_classes = {
         'myshop.smartcard': SmartCardSerializer,
         'myshop.smartphonemodel': SmartPhoneSerializer,

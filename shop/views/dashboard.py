@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from collections import OrderedDict
+import json
+from collections import OrderedDict, namedtuple
 
 from django.contrib.auth import get_permission_codename
 from django.contrib.contenttypes.models import ContentType, ContentTypeManager
@@ -9,6 +10,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.template import Context, Template
 from django.utils.html import format_html, format_html_join
+from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 
@@ -22,6 +24,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from shop import app_settings
 from shop.models.product import ProductModel
+from shop.money.serializers import JSONEncoder
 from shop.rest.money import JSONRenderer
 from shop.rest.renderers import DashboardRenderer
 from shop.serializers.bases import ProductSerializer
@@ -40,14 +43,15 @@ class DashboardRouter(DefaultRouter):
             name='{basename}-list',
             initkwargs={'suffix': 'List'}
         ),
-        # Detail route.
+        # Detail routes
         Route(
             url=r'^{prefix}/{lookup}{trailing_slash}$',
             mapping={
                 'get': 'retrieve',
-                'post': 'update',
+                'put': 'update',
+                'delete': 'destroy',
             },
-            name='{basename}-change',
+            name='{basename}-detail',
             initkwargs={'suffix': 'Instance'}
         ),
         Route(
@@ -59,6 +63,7 @@ class DashboardRouter(DefaultRouter):
             name='{basename}-add',
             initkwargs={'suffix': 'New'}
         ),
+
         # Dynamically generated detail routes.
         # Generated using @detail_route decorator on methods of the viewset.
         DynamicDetailRoute(
@@ -95,6 +100,9 @@ class DashboardPaginator(LimitOffsetPagination):
     default_limit = 20
 
 
+NgField = namedtuple('NgField', ['field_type', 'serializers'])
+
+
 class ProductsDashboard(ModelViewSet):
     renderer_classes = (DashboardRenderer, JSONRenderer, BrowsableAPIRenderer)
     pagination_class = DashboardPaginator
@@ -112,18 +120,14 @@ class ProductsDashboard(ModelViewSet):
         elif self.suffix == 'New':
             model = self.request.GET.get('model')
             return self.detail_serializer_classes.get(model, ProductSerializer)
-        msg = "ViewSet 'ProductsDashboard' is not implemented for action '{}'"
         return self.list_serializer_class  # TODO: use the correct
+        msg = "ViewSet 'ProductsDashboard' is not implemented for action '{}'"
         raise NotImplementedError(msg.format(self.action))
 
     def get_serializer(self, *args, **kwargs):
         serializer_class = self.get_serializer_class()
         context = self.get_serializer_context()
         kwargs.update(context=context, label='dashboard')
-        #if kwargs.get('many', False):
-        #    list_fields = ['pk']
-        #    list_fields.extend(self.get_list_display())
-        #    serializer_class.Meta.fields = list_fields  # reorder the fields
         serializer = serializer_class(*args, **kwargs)
         return serializer
 
@@ -143,44 +147,69 @@ class ProductsDashboard(ModelViewSet):
 
         return list_fields
 
-    #@cached_property
     @property
-    def detail_fields(self):
+    def creation_fields(self):
         template = Template("""template(function(entry) {
             console.log(entry);
+            {% spaceless %}{% with tag="ma-string-column" %}
+            {% for ctype in ctypes %}
+            return '<ma-field ng-if="entry.values.polymorphic_ctype=={{ ctype.id }}" field="::field" value="entry.values[field.name()]" entry="entry" entity="::entity"></ma-field>';
+            {% endfor %}
+            {% endwith %}{% endspaceless %}
+        }, true)""")
+        choices = []
+        pt_field = 'field("polymorphic_ctype", "choice").label("{}").choices({})'
+        for serializer_class in self.detail_serializer_classes.values():
+            choices.append({
+                'value': ContentType.objects.get_for_model(serializer_class.Meta.model).id,
+                'label': serializer_class.Meta.model._meta.verbose_name,
+            })
+        fields = [mark_safe(pt_field.format(_("Product Type"), json.dumps(choices, cls=JSONEncoder)))]
+        fields.extend(self.get_detail_fields(template))
+        return fields
+
+    #@cached_property
+    @property
+    def edition_fields(self):
+        template = Template("""template(function(entry) {
             {% spaceless %}{% with tag="ma-string-column" %}
             {% for ctype in ctypes %}
             if (entry.values.polymorphic_ctype == {{ ctype.id }})
                 return '<ma-field field="::field" value="entry.values[field.name()]" entry="entry" entity="::entity"></ma-field>';
             {% endfor %}
             {% endwith %}{% endspaceless %}
-        }, true)
-        """)
+        }, true)""")
         # <ma-field field="::field" value="entry.values[field.name()]" entry="entry" entity="::entity" form="formController.form" datastore="::formController.dataStore" class="ng-scope ng-isolate-scope"><div id="row-images" class="form-field form-group has-feedback ng-scope" ng-class="getFieldValidationClass()">
         #template = '<span><ma-number-column field="::field" value="::entry.values[field.name()]"></ma-number-column></span>'
+        return self.get_detail_fields(template)
+
+    def get_detail_fields(self, template):
         detail_fields = OrderedDict()
         for serializer_id, serializer_class in enumerate(self.detail_serializer_classes.values()):
             for name, field in serializer_class().get_fields().items():
                 field_type = field.style.get('field_type', 'string')
                 if name in detail_fields:
-                    if detail_fields[name][0] != field_type:
-                        detail_fields[name + str(serializer_id)] = (field_type, [serializer_class])
+                    if detail_fields[name].field_type != field_type:
+                        detail_fields[name + str(serializer_id)] = NgField(field_type, [serializer_class])
                     else:
-                        detail_fields[name][1].append(serializer_class)
+                        detail_fields[name].serializers.append(serializer_class)
                 else:
-                    detail_fields[name] = (field_type, [serializer_class])
+                    detail_fields[name] = NgField(field_type, [serializer_class])
+
+        #print(detail_fields)
 
         result_list = []
-        for key, values in detail_fields.items():
-            bits = ['field("{}", "{}")'.format(key, values[0])]
-            if len(values[1]) < len(self.detail_serializer_classes):
+        for key, ng_field in detail_fields.items():
+            bits = ['field("{}", "{}")'.format(key, ng_field.field_type)]
+            if len(ng_field.serializers) < len(self.detail_serializer_classes):
                 # this field it not available for all serializer classes,
                 # handle polymorphism using a template to hide it conditionally
-                ctypes = [ContentType.objects.get_for_model(sc.Meta.model) for sc in values[1]]
-                context = Context({'ctypes': ctypes, 'field_type': values[0]})
+                ctypes = [ContentType.objects.get_for_model(sc.Meta.model) for sc in ng_field.serializers]
+                context = Context({'ctypes': ctypes, 'field_type': ng_field.field_type})
                 bits.append(template.render(context))
             result_list.append(mark_safe('.'.join(bits)))
 
+        print(result_list)
         return result_list
 
     def Xget_list_display_links(self):
@@ -235,16 +264,14 @@ class ProductsDashboard(ModelViewSet):
             return redirect('dashboard:product-list')
         return Response({'serializer': serializer})
 
-    def Xretrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        return Response({'serializer': serializer, 'instance': instance})
+    def retrieve(self, request, *args, **kwargs):
+        response = super(ProductsDashboard, self).retrieve(request, *args, **kwargs)
+        return response
 
     def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        # TODO: handle 'Save', 'Save and continue editing' and 'Cancel'
-        # TODO: use request.resolver_match.url_name.split('-') to redirect on list view
-        serializer = self.get_serializer(instance, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return redirect('dashboard:product-list')
+        response = super(ProductsDashboard, self).update(request, *args, **kwargs)
+        return response
+
+    def destroy(self, request, *args, **kwargs):
+        response = super(ProductsDashboard, self).destroy(request, *args, **kwargs)
+        return response
