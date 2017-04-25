@@ -9,6 +9,7 @@ from django.http import QueryDict
 
 from cms.api import add_plugin, create_page
 from bs4 import BeautifulSoup
+
 from shop.cascade.checkout import (
     GuestFormPlugin, CustomerFormPlugin, CheckoutAddressPlugin,
     PaymentMethodFormPlugin, ShippingMethodFormPlugin, RequiredFormFieldsPlugin,
