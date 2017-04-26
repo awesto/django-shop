@@ -28,19 +28,16 @@ class ProductListSerializer(serializers.ModelSerializer):
         return localize(price)
 
 
-class BaseProductSerializer(serializers.ModelSerializer):
+class SmartCardSerializer(serializers.ModelSerializer):
     class Meta:
-        exclude = ['created_at', 'updated_at']
-
-
-class SmartCardSerializer(BaseProductSerializer):
-    class Meta(BaseProductSerializer.Meta):
         model = SmartCard
+        exclude = ['order']
 
 
-class SmartPhoneSerializer(BaseProductSerializer):
-    class Meta(BaseProductSerializer.Meta):
+class SmartPhoneSerializer(serializers.ModelSerializer):
+    class Meta:
         model = SmartPhoneModel
+        exclude = ['order']
 
 
 class ProductsDashboard(dashboard.ProductsDashboard):
