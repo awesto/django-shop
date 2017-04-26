@@ -1,3 +1,4 @@
+{% load i18n %}
 (function(angular, undefined) {
 'use strict';
 
@@ -93,8 +94,21 @@ djangoShopDashboard.config(['NgAdminConfigurationProvider', function(nga) {
 
 		entity.editionView().fields([{% for field in viewset.edition_fields %}
 			nga.{{ field }}{% if not forloop.last %},{% endif %}{% endfor %}
-		]);
-
+		]).onSubmitError(['error', 'entity', 'form', 'progression', 'notification',
+		function(error, entity, form, progression, notification) {
+			debugger;
+			angular.forEach(error.data, function(value, field_name) {
+				if (form[field_name]) {
+					form[field_name].$setValidity(false);
+				}
+			});
+			// stop the progress bar
+			progression.done();
+			// add a notification
+			notification.log("{% trans 'Some values are invalid, see details in the form' %}", { addnCls: 'humane-flatty-error' });
+			// cancel the default action (default error messages)
+			return false;
+		}]);
 		// register entity in admin
 		admin.addEntity(entity);
 	})();

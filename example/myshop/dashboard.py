@@ -29,19 +29,18 @@ class ProductListSerializer(serializers.ModelSerializer):
 
 
 class BaseProductSerializer(serializers.ModelSerializer):
-    pass
+    class Meta:
+        exclude = ['created_at', 'updated_at']
 
 
 class SmartCardSerializer(BaseProductSerializer):
-    class Meta:
+    class Meta(BaseProductSerializer.Meta):
         model = SmartCard
-        exclude = ['id', 'polymorphic_ctype', 'created_at', 'updated_at']
 
 
 class SmartPhoneSerializer(BaseProductSerializer):
-    class Meta:
+    class Meta(BaseProductSerializer.Meta):
         model = SmartPhoneModel
-        exclude = ['id', 'polymorphic_ctype', 'created_at', 'updated_at']
 
 
 class ProductsDashboard(dashboard.ProductsDashboard):

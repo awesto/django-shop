@@ -9,11 +9,11 @@ from django.contrib.contenttypes.models import ContentType, ContentTypeManager
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.template import Context, Template
-from django.utils.html import format_html, format_html_join
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 
+from rest_framework import fields
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import BrowsableAPIRenderer, TemplateHTMLRenderer
@@ -33,12 +33,13 @@ from shop.serializers.bases import ProductSerializer
 class DashboardRouter(DefaultRouter):
     root_view_name = 'root'
 
-    routes = [
+    Xroutes = [
         # List route.
         Route(
             url=r'^{prefix}{trailing_slash}$',
             mapping={
                 'get': 'list',
+                'post': 'create'
             },
             name='{basename}-list',
             initkwargs={'suffix': 'List'}
@@ -54,16 +55,6 @@ class DashboardRouter(DefaultRouter):
             name='{basename}-detail',
             initkwargs={'suffix': 'Instance'}
         ),
-        Route(
-            url=r'^{prefix}/add{trailing_slash}$',
-            mapping={
-                'get': 'new',
-                'post': 'create',
-            },
-            name='{basename}-add',
-            initkwargs={'suffix': 'New'}
-        ),
-
         # Dynamically generated detail routes.
         # Generated using @detail_route decorator on methods of the viewset.
         DynamicDetailRoute(
@@ -100,7 +91,7 @@ class DashboardPaginator(LimitOffsetPagination):
     default_limit = 20
 
 
-NgField = namedtuple('NgField', ['field_type', 'serializers'])
+NgField = namedtuple('NgField', ['field_type', 'serializers', 'validation'])
 
 
 class ProductsDashboard(ModelViewSet):
@@ -153,7 +144,7 @@ class ProductsDashboard(ModelViewSet):
             console.log(entry);
             {% spaceless %}{% with tag="ma-string-column" %}
             {% for ctype in ctypes %}
-            return '<ma-field ng-if="entry.values.polymorphic_ctype=={{ ctype.id }}" field="::field" value="entry.values[field.name()]" entry="entry" entity="::entity"></ma-field>';
+            return '<ma-field ng-if="entry.values.polymorphic_ctype=={{ ctype.id }}" field="::field" value="entry.values[field.name()]" entry="entry" entity="::entity" form="formController.form" datastore="::formController.dataStore"></ma-field>';
             {% endfor %}
             {% endwith %}{% endspaceless %}
         }, true)""")
@@ -175,27 +166,34 @@ class ProductsDashboard(ModelViewSet):
             {% spaceless %}{% with tag="ma-string-column" %}
             {% for ctype in ctypes %}
             if (entry.values.polymorphic_ctype == {{ ctype.id }})
-                return '<ma-field field="::field" value="entry.values[field.name()]" entry="entry" entity="::entity"></ma-field>';
+                return '<ma-field field="::field" value="entry.values[field.name()]" entry="entry" entity="::entity" form="formController.form" datastore="::formController.dataStore"></ma-field>';
             {% endfor %}
             {% endwith %}{% endspaceless %}
         }, true)""")
         # <ma-field field="::field" value="entry.values[field.name()]" entry="entry" entity="::entity" form="formController.form" datastore="::formController.dataStore" class="ng-scope ng-isolate-scope"><div id="row-images" class="form-field form-group has-feedback ng-scope" ng-class="getFieldValidationClass()">
         #template = '<span><ma-number-column field="::field" value="::entry.values[field.name()]"></ma-number-column></span>'
+        # <ma-field field="::field" value="entry.values[field.name()]" entry="entry" entity="::entity" form="formController.form" datastore="::formController.dataStore"></ma-field>
         return self.get_detail_fields(template)
 
     def get_detail_fields(self, template):
         detail_fields = OrderedDict()
         for serializer_id, serializer_class in enumerate(self.detail_serializer_classes.values()):
             for name, field in serializer_class().get_fields().items():
-                field_type = field.style.get('field_type', 'string')
+                if field.read_only:
+                    continue
+                field_type = self.get_field_type(field)
+                validation = {'required': field.required}
                 if name in detail_fields:
                     if detail_fields[name].field_type != field_type:
-                        detail_fields[name + str(serializer_id)] = NgField(field_type, [serializer_class])
+                        ng_field = NgField(field_type, [serializer_class], validation)
+                        detail_fields[name + str(serializer_id)] = ng_field
                     else:
-                        detail_fields[name].serializers.append(serializer_class)
+                        ng_field = detail_fields[name]
+                        ng_field.serializers.append(serializer_class)
                 else:
-                    detail_fields[name] = NgField(field_type, [serializer_class])
+                    ng_field = detail_fields[name] = NgField(field_type, [serializer_class], validation)
 
+                print(ng_field)
         #print(detail_fields)
 
         result_list = []
@@ -207,10 +205,24 @@ class ProductsDashboard(ModelViewSet):
                 ctypes = [ContentType.objects.get_for_model(sc.Meta.model) for sc in ng_field.serializers]
                 context = Context({'ctypes': ctypes, 'field_type': ng_field.field_type})
                 bits.append(template.render(context))
+
+            bits.append('validation({})'.format(json.dumps(ng_field.validation)))
             result_list.append(mark_safe('.'.join(bits)))
 
         print(result_list)
         return result_list
+
+    def get_field_type(self, field):
+        """
+        Method used to map Django's Field class to the field type used by ng-admin
+        """
+        if 'field_type' in field.style:
+            return field.style['field_type']
+        if isinstance(field, fields.BooleanField):
+            return 'boolean'
+        if isinstance(field, fields.ChoiceField):
+            return 'choice'
+        return 'string'
 
     def Xget_list_display_links(self):
         if hasattr(self, 'list_display_links'):
@@ -252,10 +264,6 @@ class ProductsDashboard(ModelViewSet):
     def list(self, request, *args, **kwargs):
         response = super(ProductsDashboard, self).list(request, *args, **kwargs)
         return response
-
-    def new(self, request, *args, **kwargs):
-        serializer = self.get_serializer()
-        return Response({'serializer': serializer})
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
