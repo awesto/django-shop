@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ('contenttypes', '0002_remove_content_type_name'),
         ('filer', '0007_auto_20161016_1055'),
-        ('email_auth', '0005_auto_20170426_2133'),
+        ('email_auth', '0004_auto_20170411_1733'),
     ]
 
     operations = [
