@@ -26,7 +26,7 @@ SHOP_TUTORIAL = os.environ.get('DJANGO_SHOP_TUTORIAL')
 if SHOP_TUTORIAL is None:
     raise ImproperlyConfigured("Environment variable DJANGO_SHOP_TUTORIAL is not set")
 if SHOP_TUTORIAL not in ['commodity', 'i18n_commodity', 'smartcard', 'i18n_smartcard',
-                         'i18n_polymorphic', 'polymorphic']:
+                         'i18n_polymorphic', 'polymorphic', 'i18n_dashboard']:
     msg = "Environment variable DJANGO_SHOP_TUTORIAL has an invalid value `{}`"
     raise ImproperlyConfigured(msg.format(SHOP_TUTORIAL))
 
@@ -114,7 +114,7 @@ INSTALLED_APPS = [
     'shop_stripe',
     'myshop',
 ]
-if SHOP_TUTORIAL in ['i18n_commodity', 'i18n_smartcard', 'i18n_polymorphic']:
+if SHOP_TUTORIAL.startswith('i18n_'):
     INSTALLED_APPS.append('parler')
 
 MIDDLEWARE_CLASSES = [
@@ -157,7 +157,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en'
 
-if SHOP_TUTORIAL in ['i18n_smartcard', 'i18n_commodity', 'i18n_polymorphic']:
+if SHOP_TUTORIAL.startswith('i18n_'):
     USE_I18N = True
 
     LANGUAGES = (

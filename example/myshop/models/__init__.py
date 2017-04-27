@@ -39,6 +39,12 @@ elif settings.SHOP_TUTORIAL == 'i18n_polymorphic':
     from .i18n_polymorphic.smartcard import SmartCard
     from .i18n_polymorphic.smartphone import SmartPhoneModel, SmartPhone
 
+elif settings.SHOP_TUTORIAL == 'i18n_dashboard':
+    from shop.models.defaults.order_item import OrderItem
+    from .i18n_dashboard.product import Product
+    from .i18n_dashboard.smartcard import SmartCard
+    from .i18n_dashboard.smartphone import SmartPhoneModel, SmartPhone
+
 if settings.SHOP_TUTORIAL in ['polymorphic', 'i18n_polymorphic']:
     from shop.models.defaults.delivery import Delivery, DeliveryItem
     __all__.extend(['Product', 'SmartCard', 'SmartPhoneModel', 'SmartPhone', 'Delivery', 'DeliveryItem'])

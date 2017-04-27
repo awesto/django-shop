@@ -40,7 +40,7 @@ elif settings.SHOP_TUTORIAL in ['smartcard', 'i18n_smartcard']:
 
     __all__.append('ProductDetailSerializer')
 
-elif settings.SHOP_TUTORIAL in ['i18n_polymorphic', 'polymorphic']:
+elif settings.SHOP_TUTORIAL in ['i18n_polymorphic', 'polymorphic', 'i18n_dashboard', 'dashboard']:
 
     from .polymorphic import (SmartCardSerializer, SmartPhoneSerializer, AddSmartPhoneToCartSerializer)
 

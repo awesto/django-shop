@@ -13,12 +13,12 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 
-from rest_framework import fields
-from rest_framework.pagination import LimitOffsetPagination
+from rest_framework import fields, relations
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import BrowsableAPIRenderer, TemplateHTMLRenderer
 from rest_framework.response import Response
-from rest_framework.routers import DefaultRouter, Route, DynamicDetailRoute
+from rest_framework.routers import DefaultRouter
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
@@ -26,43 +26,13 @@ from shop import app_settings
 from shop.models.product import ProductModel
 from shop.money.serializers import JSONEncoder
 from shop.rest.money import JSONRenderer
+from shop.rest.fields import AmountField
 from shop.rest.renderers import DashboardRenderer
 from shop.serializers.bases import ProductSerializer
 
 
 class DashboardRouter(DefaultRouter):
     root_view_name = 'root'
-
-    Xroutes = [
-        # List route.
-        Route(
-            url=r'^{prefix}{trailing_slash}$',
-            mapping={
-                'get': 'list',
-                'post': 'create'
-            },
-            name='{basename}-list',
-            initkwargs={'suffix': 'List'}
-        ),
-        # Detail routes
-        Route(
-            url=r'^{prefix}/{lookup}{trailing_slash}$',
-            mapping={
-                'get': 'retrieve',
-                'put': 'update',
-                'delete': 'destroy',
-            },
-            name='{basename}-detail',
-            initkwargs={'suffix': 'Instance'}
-        ),
-        # Dynamically generated detail routes.
-        # Generated using @detail_route decorator on methods of the viewset.
-        DynamicDetailRoute(
-            url=r'^{prefix}/{lookup}/{methodname}{trailing_slash}$',
-            name='{basename}-{methodnamehyphen}',
-            initkwargs={}
-        ),
-    ]
 
     def get_api_root_view(self, api_urls=None):
         dashboard_entities = OrderedDict()
@@ -87,11 +57,13 @@ class DashboardRouter(DefaultRouter):
 router = DashboardRouter(trailing_slash=False)
 
 
-class DashboardPaginator(LimitOffsetPagination):
-    default_limit = 20
+class DashboardPaginator(PageNumberPagination):
+    page_size = 20
+    page_query_param = '_page'
+    page_size_query_param = '_perPage'
 
 
-NgField = namedtuple('NgField', ['field_type', 'serializers', 'validation'])
+NgField = namedtuple('NgField', ['field_type', 'serializers', 'extra_bits', 'template_context'])
 
 
 class ProductsDashboard(ModelViewSet):
@@ -108,12 +80,8 @@ class ProductsDashboard(ModelViewSet):
         elif self.suffix == 'Instance':
             instance = self.get_object()
             return self.detail_serializer_classes.get(instance._meta.label_lower, ProductSerializer)
-        elif self.suffix == 'New':
-            model = self.request.GET.get('model')
-            return self.detail_serializer_classes.get(model, ProductSerializer)
-        return self.list_serializer_class  # TODO: use the correct
-        msg = "ViewSet 'ProductsDashboard' is not implemented for action '{}'"
-        raise NotImplementedError(msg.format(self.action))
+        msg = "ViewSet 'ProductsDashboard' is not implemented for suffix '{}'"
+        raise NotImplementedError(msg.format(self.suffix))
 
     def get_serializer(self, *args, **kwargs):
         serializer_class = self.get_serializer_class()
@@ -141,20 +109,19 @@ class ProductsDashboard(ModelViewSet):
     @property
     def creation_fields(self):
         template = Template("""template(function(entry) {
-            console.log(entry);
-            {% spaceless %}{% with tag="ma-string-column" %}
+            {% spaceless %}
             {% for ctype in ctypes %}
-            return '<ma-field ng-if="entry.values.polymorphic_ctype=={{ ctype.id }}" field="::field" value="entry.values[field.name()]" entry="entry" entity="::entity" form="formController.form" datastore="::formController.dataStore"></ma-field>';
+            return '<{{ field_tag }} ng-if="entry.values.polymorphic_ctype=={{ ctype.id }}" field="::field" value="entry.values[field.name()]" entry="entry" entity="::entity" form="formController.form" datastore="::formController.dataStore"></{{ field_tag }}>';
             {% endfor %}
-            {% endwith %}{% endspaceless %}
-        }, true)""")
+            {% endspaceless %}
+        }, {{ include_label }})""")
         choices = []
-        pt_field = 'field("polymorphic_ctype", "choice").label("{}").choices({})'
         for serializer_class in self.detail_serializer_classes.values():
             choices.append({
                 'value': ContentType.objects.get_for_model(serializer_class.Meta.model).id,
                 'label': serializer_class.Meta.model._meta.verbose_name,
             })
+        pt_field = 'field("polymorphic_ctype", "choice").label("{}").choices({})'
         fields = [mark_safe(pt_field.format(_("Product Type"), json.dumps(choices, cls=JSONEncoder)))]
         fields.extend(self.get_detail_fields(template))
         return fields
@@ -166,13 +133,10 @@ class ProductsDashboard(ModelViewSet):
             {% spaceless %}{% with tag="ma-string-column" %}
             {% for ctype in ctypes %}
             if (entry.values.polymorphic_ctype == {{ ctype.id }})
-                return '<ma-field field="::field" value="entry.values[field.name()]" entry="entry" entity="::entity" form="formController.form" datastore="::formController.dataStore"></ma-field>';
+                return '<{{ field_tag }} field="::field" value="entry.values[field.name()]" entry="entry" entity="::entity" form="formController.form" datastore="::formController.dataStore"></{{ field_tag }}>';
             {% endfor %}
             {% endwith %}{% endspaceless %}
-        }, true)""")
-        # <ma-field field="::field" value="entry.values[field.name()]" entry="entry" entity="::entity" form="formController.form" datastore="::formController.dataStore" class="ng-scope ng-isolate-scope"><div id="row-images" class="form-field form-group has-feedback ng-scope" ng-class="getFieldValidationClass()">
-        #template = '<span><ma-number-column field="::field" value="::entry.values[field.name()]"></ma-number-column></span>'
-        # <ma-field field="::field" value="entry.values[field.name()]" entry="entry" entity="::entity" form="formController.form" datastore="::formController.dataStore"></ma-field>
+        }, {{ include_label }})""")
         return self.get_detail_fields(template)
 
     def get_detail_fields(self, template):
@@ -181,77 +145,58 @@ class ProductsDashboard(ModelViewSet):
             for name, field in serializer_class().get_fields().items():
                 if field.read_only:
                     continue
-                field_type = self.get_field_type(field)
-                validation = {'required': field.required}
+                field_type, extra_bits, template_context = self.get_field_context(field)
                 if name in detail_fields:
                     if detail_fields[name].field_type != field_type:
-                        ng_field = NgField(field_type, [serializer_class], validation)
+                        ng_field = NgField(field_type, [serializer_class], extra_bits, template_context)
                         detail_fields[name + str(serializer_id)] = ng_field
                     else:
-                        ng_field = detail_fields[name]
-                        ng_field.serializers.append(serializer_class)
+                        detail_fields[name].serializers.append(serializer_class)
                 else:
-                    ng_field = detail_fields[name] = NgField(field_type, [serializer_class], validation)
-
-                print(ng_field)
-        #print(detail_fields)
+                    detail_fields[name] = NgField(field_type, [serializer_class], extra_bits, template_context)
 
         result_list = []
         for key, ng_field in detail_fields.items():
-            bits = ['field("{}", "{}")'.format(key, ng_field.field_type)]
+            bits = ['field("{}", "{}")'.format(key, ng_field.field_type)] + ng_field.extra_bits
             if len(ng_field.serializers) < len(self.detail_serializer_classes):
-                # this field it not available for all serializer classes,
-                # handle polymorphism using a template to hide it conditionally
+                # this field it not available for all serializer classes, handle polymorphism using
+                # a template to hide the field conditionally depending on the model's content type
                 ctypes = [ContentType.objects.get_for_model(sc.Meta.model) for sc in ng_field.serializers]
-                context = Context({'ctypes': ctypes, 'field_type': ng_field.field_type})
-                bits.append(template.render(context))
-
-            bits.append('validation({})'.format(json.dumps(ng_field.validation)))
+                render_context = Context(dict(ng_field.template_context, ctypes=ctypes))
+                bits.append(template.render(render_context))
             result_list.append(mark_safe('.'.join(bits)))
 
-        print(result_list)
         return result_list
 
-    def get_field_type(self, field):
+    def get_field_context(self, field):
         """
         Method used to map Django's Field class to the field type used by ng-admin
         """
-        if 'field_type' in field.style:
-            return field.style['field_type']
+        extra_bits = ['validation({})'.format(json.dumps({'required': field.required}))]
+        context = {'field_tag': 'ma-field', 'include_label': 'true'}
+        if field.label is not None:
+            extra_bits.append('label("{}")'.format(field.label))
+
         if isinstance(field, fields.BooleanField):
-            return 'boolean'
-        if isinstance(field, fields.ChoiceField):
-            return 'choice'
-        return 'string'
+            field_type = 'boolean'
+        elif isinstance(field, fields.IntegerField):
+            field_type = 'number'
+        elif isinstance(field, AmountField):
+            field_type = 'number'
+            #extra_bits.append('format("$0,000.00")')
+            #context.update(field_tag='ma-number-column', include_label='false')
+        elif isinstance(field, fields.FloatField):
+            field_type = 'float'
+        elif isinstance(field, fields.EmailField):
+            field_type = 'email'
+        elif isinstance(field, (fields.ChoiceField, relations.PrimaryKeyRelatedField)):
+            field_type = 'choice'
+            choices = [{'value': value, 'label': label} for value, label in field.choices.items()]
+            extra_bits.append('choices({})'.format(json.dumps(choices, cls=JSONEncoder)))
+        else:
+            field_type = 'string'
 
-    def Xget_list_display_links(self):
-        if hasattr(self, 'list_display_links'):
-            return self.list_display_links
-        return self.get_list_display()[:1]
-
-    def Xget_renderer_context(self):
-        template_context = {
-            'has_add_permission': self.has_add_permission(),
-            #'has_change_permission': self.has_change_permission(obj),
-            #'has_delete_permission': self.has_delete_permission(obj),
-        }
-        if self.suffix == 'List':
-            list_display_fields = OrderedDict()
-            serializer_class = self.list_serializer_class()
-            for field_name in self.get_list_display():
-                list_display_fields[field_name] = serializer_class.fields[field_name]
-            template_context['list_display_fields'] = list_display_fields
-            template_context['list_display_links'] = self.get_list_display_links()
-            detail_models = []
-            for name, serializer_class in self.detail_serializer_classes.items():
-                detail_models.append((name, serializer_class.Meta.model._meta.verbose_name))
-            template_context['detail_models'] = detail_models
-            detail_url = reverse('dashboard:product-change', args=(':PK:',))
-            template_context['detail_ng_href'] = detail_url.replace(':PK:', '{{ entry.pk }}')
-
-        renderer_context = super(ProductsDashboard, self).get_renderer_context()
-        renderer_context['template_context'] = template_context
-        return renderer_context
+        return field_type, extra_bits, context
 
     def has_add_permission(self):
         """

@@ -8,6 +8,7 @@ from rest_framework import serializers
 
 from shop.views import dashboard
 from shop.views.dashboard import router
+from shop.rest.fields import AmountField
 
 from myshop.models import Product, SmartCard, SmartPhoneModel
 
@@ -29,15 +30,19 @@ class ProductListSerializer(serializers.ModelSerializer):
 
 
 class SmartCardSerializer(serializers.ModelSerializer):
+    unit_price = AmountField()
+
     class Meta:
         model = SmartCard
-        exclude = ['order']
+        fields = '__all__'
 
 
 class SmartPhoneSerializer(serializers.ModelSerializer):
+    #unit_price = AmountField()
+
     class Meta:
         model = SmartPhoneModel
-        exclude = ['order']
+        fields = '__all__'
 
 
 class ProductsDashboard(dashboard.ProductsDashboard):

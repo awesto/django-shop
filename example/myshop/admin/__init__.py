@@ -15,6 +15,7 @@ from shop.admin.delivery import DeliveryOrderAdminMixin
 if settings.SHOP_TUTORIAL in ['commodity', 'i18n_commodity']:
     from shop.admin.defaults import commodity
 
+    __all__ = ['customer', 'commodity']
 else:
     from . import manufacturer
 
@@ -25,6 +26,8 @@ else:
     elif settings.SHOP_TUTORIAL in ['i18n_polymorphic', 'polymorphic']:
         class OrderAdmin(PrintOrderAdminMixin, DeliveryOrderAdminMixin, OrderAdmin):
             pass
+
+    __all__ = ['customer']
 
 admin.site.register(Order, OrderAdmin)
 
@@ -40,7 +43,7 @@ elif settings.SHOP_TUTORIAL == 'polymorphic':
 elif settings.SHOP_TUTORIAL == 'i18n_polymorphic':
     from . import i18n_polymorphic
 
-
-__all__ = ['commodity', 'customer']
+elif settings.SHOP_TUTORIAL == 'i18n_dashboard':
+    from . import i18n_dashboard
 
 admin.site.site_header = "Django-SHOP administration"
