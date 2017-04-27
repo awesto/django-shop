@@ -21,7 +21,11 @@ class JSONRenderer(renderers.JSONRenderer):
 
 
 class MoneyField(serializers.Field):
-    """Money objects are serialized into their readable notation."""
+    """
+    Money objects are serialized into their read-only notation, for instance € 9.99.
+    This differs from pure amounts, which do not hold the currency symbol and hence are
+    suitable for reading and writing.
+    """
 
     def __init__(self, *args, **kwargs):
         kwargs.update(read_only=True)
