@@ -6,14 +6,13 @@ from collections import OrderedDict, namedtuple
 
 from django.contrib.auth import get_permission_codename
 from django.contrib.contenttypes.models import ContentType, ContentTypeManager
-from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.template import Context, Template
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 
-from rest_framework import fields, relations
+from rest_framework import fields, relations, serializers
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import BrowsableAPIRenderer, TemplateHTMLRenderer
@@ -27,7 +26,6 @@ from shop.models.product import ProductModel
 from shop.money.serializers import JSONEncoder
 from shop.rest.money import JSONRenderer
 from shop.rest.fields import AmountField
-from shop.rest.renderers import DashboardRenderer
 from shop.serializers.bases import ProductSerializer
 
 
@@ -67,7 +65,7 @@ NgField = namedtuple('NgField', ['field_type', 'serializers', 'extra_bits', 'tem
 
 
 class ProductsDashboard(ModelViewSet):
-    renderer_classes = (DashboardRenderer, JSONRenderer, BrowsableAPIRenderer)
+    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     pagination_class = DashboardPaginator
     list_serializer_class = None
     detail_serializer_classes = {}
@@ -182,7 +180,7 @@ class ProductsDashboard(ModelViewSet):
         elif isinstance(field, fields.IntegerField):
             field_type = 'number'
         elif isinstance(field, AmountField):
-            field_type = 'number'
+            field_type = 'float'
             #extra_bits.append('format("$0,000.00")')
             #context.update(field_tag='ma-number-column', include_label='false')
         elif isinstance(field, fields.FloatField):
@@ -193,6 +191,9 @@ class ProductsDashboard(ModelViewSet):
             field_type = 'choice'
             choices = [{'value': value, 'label': label} for value, label in field.choices.items()]
             extra_bits.append('choices({})'.format(json.dumps(choices, cls=JSONEncoder)))
+        elif isinstance(field, serializers.ListSerializer):
+            field_type = 'embedded_list'
+            extra_bits.append('targetFields([nga.field("unit_price"), nga.field("product_code"), nga.field("storage")])')
         else:
             field_type = 'string'
 

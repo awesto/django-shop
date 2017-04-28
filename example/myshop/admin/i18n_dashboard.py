@@ -11,7 +11,7 @@ from parler.admin import TranslatableAdmin
 from polymorphic.admin import (PolymorphicParentModelAdmin, PolymorphicChildModelAdmin,
                                PolymorphicChildModelFilter)
 
-from myshop.models import Product, SmartCard, SmartPhone, SmartPhoneModel
+from myshop.models import Product, SmartCard, SmartPhoneVariant, SmartPhoneModel
 from myshop.models.i18n_dashboard.smartphone import OperatingSystem
 
 
@@ -34,7 +34,7 @@ admin.site.register(OperatingSystem, admin.ModelAdmin)
 
 
 class SmartPhoneInline(admin.TabularInline):
-    model = SmartPhone
+    model = SmartPhoneVariant
     extra = 0
 
 

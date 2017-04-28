@@ -9,21 +9,23 @@ from shop.models.defaults.cart import Cart
 from shop.models.defaults.cart_item import CartItem
 from shop.models.defaults.customer import Customer
 
-__all__ = ['ShippingAddress', 'BillingAddress', 'Cart', 'CartItem', 'Customer', 'OrderItem',
-           'Commodity', 'SmartCard', 'SmartPhoneModel', 'SmartPhone', 'Delivery', 'DeliveryItem']
+__all__ = ['ShippingAddress', 'BillingAddress', 'Cart', 'CartItem', 'Customer', 'OrderItem']
 
 # models defined by the myshop instance itself
 if settings.SHOP_TUTORIAL == 'commodity' or settings.SHOP_TUTORIAL == 'i18n_commodity':
     from shop.models.defaults.order_item import OrderItem
     from shop.models.defaults.commodity import Commodity
+    __all__.append('Commodity')
 
 elif settings.SHOP_TUTORIAL == 'smartcard':
     from shop.models.defaults.order_item import OrderItem
     from .smartcard import SmartCard
+    __all__.append('SmartCard')
 
 elif settings.SHOP_TUTORIAL == 'i18n_smartcard':
     from shop.models.defaults.order_item import OrderItem
     from .i18n_smartcard import SmartCard
+    __all__.append('SmartCard')
 
 elif settings.SHOP_TUTORIAL == 'polymorphic':
     from .polymorphic_.order import OrderItem
@@ -31,6 +33,7 @@ elif settings.SHOP_TUTORIAL == 'polymorphic':
     from .polymorphic_.commodity import Commodity
     from .polymorphic_.smartcard import SmartCard
     from .polymorphic_.smartphone import SmartPhoneModel, SmartPhone
+    __all__.extend(['Commodity', 'SmartCard', 'SmartPhoneModel', 'SmartPhone'])
 
 elif settings.SHOP_TUTORIAL == 'i18n_polymorphic':
     from .i18n_polymorphic.order import OrderItem
@@ -38,13 +41,15 @@ elif settings.SHOP_TUTORIAL == 'i18n_polymorphic':
     from .i18n_polymorphic.commodity import Commodity
     from .i18n_polymorphic.smartcard import SmartCard
     from .i18n_polymorphic.smartphone import SmartPhoneModel, SmartPhone
+    __all__.extend(['Commodity', 'SmartCard', 'SmartPhoneModel', 'SmartPhone'])
 
 elif settings.SHOP_TUTORIAL == 'i18n_dashboard':
     from shop.models.defaults.order_item import OrderItem
     from .i18n_dashboard.product import Product
     from .i18n_dashboard.smartcard import SmartCard
-    from .i18n_dashboard.smartphone import SmartPhoneModel, SmartPhone
+    from .i18n_dashboard.smartphone import SmartPhoneModel, SmartPhoneVariant
+    __all__.extend(['SmartCard', 'SmartPhoneModel', 'SmartPhoneVariant'])
 
 if settings.SHOP_TUTORIAL in ['polymorphic', 'i18n_polymorphic']:
     from shop.models.defaults.delivery import Delivery, DeliveryItem
-    __all__.extend(['Product', 'SmartCard', 'SmartPhoneModel', 'SmartPhone', 'Delivery', 'DeliveryItem'])
+    __all__.extend(['Delivery', 'DeliveryItem'])
