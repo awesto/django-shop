@@ -9,8 +9,9 @@ from rest_framework.compat import set_many
 from rest_framework.exceptions import ValidationError
 from rest_framework.utils import model_meta
 
-from shop.views import dashboard
-from shop.views.dashboard import router
+from shop.dashboard.router import router
+from shop.dashboard.serializers import ProductVariantSerializer
+from shop.dashboard.viewsets import ProductsDashboard as BaseProductsDashboard
 from shop.rest.fields import AmountField
 
 from myshop.models import Product, SmartCard, SmartPhoneModel, SmartPhoneVariant
@@ -40,36 +41,12 @@ class SmartCardSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class SmartPhoneVariantListSerializer(serializers.ListSerializer):
-    def update(self, instance, validated_data):
-        item_mapping = {item.id: item for item in getattr(instance, self.field_name).all()}
-
-        items, data_mapping = [], []
-        for data in validated_data:
-            if 'id' in data:
-                # perform updates
-                data_mapping.append(data['id'])
-                item = item_mapping.get(data['id'])
-                items.append(self.child.update(item, data))
-            else:
-                # perform creations
-                data.update(product=self.parent.instance)
-                items.append(self.child.create(data))
-
-        # perform deletions
-        for item_id, item in item_mapping.items():
-            if item_id not in data_mapping:
-                item.delete()
-
-        return items
-
-
 class SmartPhoneVariantSerializer(serializers.ModelSerializer):
     unit_price = AmountField()
 
     class Meta:
         model = SmartPhoneVariant
-        list_serializer_class = SmartPhoneVariantListSerializer
+        list_serializer_class = ProductVariantSerializer
         fields = '__all__'
         extra_kwargs = {
             'id': {
@@ -149,7 +126,7 @@ class SmartPhoneSerializer(serializers.ModelSerializer):
         return instance
 
 
-class ProductsDashboard(dashboard.ProductsDashboard):
+class ProductsDashboard(BaseProductsDashboard):
     list_display = ['product_name', 'product_code', 'price', 'active']
     list_display_links = ['product_name']
     list_serializer_class = ProductListSerializer

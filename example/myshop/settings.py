@@ -111,6 +111,7 @@ INSTALLED_APPS = [
     'post_office',
     'haystack',
     'shop',
+    'shop.dashboard',
     'shop_stripe',
     'myshop',
 ]

@@ -5,7 +5,7 @@ import json
 from collections import OrderedDict, namedtuple
 
 from django.contrib.auth import get_permission_codename
-from django.contrib.contenttypes.models import ContentType, ContentTypeManager
+from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import redirect
 from django.template import Context, Template
 from django.utils.translation import ugettext_lazy as _
@@ -15,10 +15,8 @@ from django.utils.safestring import mark_safe
 from rest_framework import fields, relations, serializers
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.renderers import BrowsableAPIRenderer, TemplateHTMLRenderer
+from rest_framework.renderers import BrowsableAPIRenderer
 from rest_framework.response import Response
-from rest_framework.routers import DefaultRouter
-from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from shop import app_settings
@@ -29,39 +27,13 @@ from shop.rest.fields import AmountField
 from shop.serializers.bases import ProductSerializer
 
 
-class DashboardRouter(DefaultRouter):
-    root_view_name = 'root'
-
-    def get_api_root_view(self, api_urls=None):
-        dashboard_entities = OrderedDict()
-        for prefix, viewset, basename in self.registry:
-            dashboard_entities[prefix] = viewset()
-
-        class RootView(APIView):
-            """
-            View to handle to root dashboard page.
-            """
-            renderer_classes = (TemplateHTMLRenderer,)
-            template_name = 'shop/dashboard/main.html'
-
-            def get(self, request, *args, **kwargs):
-                context = {
-                    'dashboard_entities': dashboard_entities,
-                }
-                return Response(context, template_name=self.template_name)
-
-        return RootView.as_view()
-
-router = DashboardRouter(trailing_slash=False)
+NgField = namedtuple('NgField', ['field_type', 'serializers', 'extra_bits', 'template_context'])
 
 
 class DashboardPaginator(PageNumberPagination):
     page_size = 20
     page_query_param = '_page'
     page_size_query_param = '_perPage'
-
-
-NgField = namedtuple('NgField', ['field_type', 'serializers', 'extra_bits', 'template_context'])
 
 
 class ProductsDashboard(ModelViewSet):
