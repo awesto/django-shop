@@ -33,7 +33,7 @@ class ProductSerializer(serializers.ModelSerializer):
     Common serializer for our product model.
     """
     price = serializers.SerializerMethodField()
-    availability = serializers.SerializerMethodField(style={'field_type': 'boolean'})
+    availability = serializers.SerializerMethodField()
     product_type = serializers.CharField(read_only=True)
     product_model = serializers.CharField(read_only=True)
     product_url = serializers.URLField(source='get_absolute_url', read_only=True)
