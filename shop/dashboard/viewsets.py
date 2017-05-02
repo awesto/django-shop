@@ -7,7 +7,6 @@ from decimal import Decimal
 
 from django.contrib.auth import get_permission_codename
 from django.contrib.contenttypes.models import ContentType
-from django.shortcuts import redirect
 from django.template import Context, Template
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
@@ -18,7 +17,6 @@ from rest_framework.fields import empty
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import BrowsableAPIRenderer
-from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from shop import app_settings
@@ -26,7 +24,7 @@ from shop.models.product import ProductModel
 from shop.money.serializers import JSONEncoder
 from shop.rest.money import JSONRenderer
 from shop.rest.fields import AmountField
-from shop.dashboard.serializers import ProductDetailSerializer
+from shop.dashboard.serializers import ProductListSerializer, ProductDetailSerializer
 
 
 NgField = namedtuple('NgField', ['field_type', 'serializers', 'extra_bits', 'template_context'])
@@ -41,7 +39,7 @@ class DashboardPaginator(PageNumberPagination):
 class ProductsDashboard(ModelViewSet):
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     pagination_class = DashboardPaginator
-    list_serializer_class = None
+    list_serializer_class = ProductListSerializer
     detail_serializer_classes = {}  # for polymorphic products
     detail_serializer_class = ProductDetailSerializer  # for uniform products
     #permission_classes = [IsAuthenticated]
@@ -52,10 +50,17 @@ class ProductsDashboard(ModelViewSet):
             return self.list_serializer_class
         elif self.action in ['retrieve', 'update', 'delete']:
             instance = self.get_object()
-            return self.detail_serializer_classes.get(instance._meta.label_lower, self.detail_serializer_class)
+            return self.detail_serializer_classes.get(instance._meta.label_lower,
+                                                      self.detail_serializer_class)
         elif self.action == 'create':
-            # TODO: evaluate the product type
-            return self.detail_serializer_class
+            try:
+                ctype = ContentType.objects.get_for_id(self.request.data.get('polymorphic_ctype'))
+            except ContentType.DoesNotExist:
+                # fallback to default detail serializer class
+                return self.detail_serializer_class
+            else:
+                return self.detail_serializer_classes.get(ctype.model_class()._meta.label_lower,
+                                                          self.detail_serializer_class)
         msg = "ViewSet 'ProductsDashboard' is not implemented for action '{}'"
         raise NotImplementedError(msg.format(self.action))
 
@@ -69,7 +74,7 @@ class ProductsDashboard(ModelViewSet):
     @cached_property
     def list_fields(self):
         serializer = self.list_serializer_class()
-        field_names = getattr(self, 'list_display', serializer.get_fields().keys())
+        field_names = getattr(self, 'list_display', list(serializer.get_fields()))
         detail_links = getattr(self, 'list_display_links', [field_names[0]])
 
         list_fields = []
@@ -164,6 +169,7 @@ class ProductsDashboard(ModelViewSet):
             else:
                 default_value = '"{}"'.format(field.default)
             extra_bits.append('defaultValue({})'.format(default_value))
+
         if isinstance(field, fields.BooleanField):
             field_type = 'boolean'
         elif isinstance(field, fields.IntegerField):
@@ -185,6 +191,9 @@ class ProductsDashboard(ModelViewSet):
             extra_bits.append('targetFields([nga.field("unit_price"), nga.field("product_code"), nga.field("storage")])')
         else:
             field_type = 'string'
+
+        # in case the field declares its own field type
+        field_type = field.style.get('field_type', field_type)
 
         return field_type, extra_bits, context
 

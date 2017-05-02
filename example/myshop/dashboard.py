@@ -1,41 +1,21 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.utils.formats import localize
-from django.utils.translation import ugettext_lazy as _
-
 from rest_framework import serializers
 from rest_framework.compat import set_many
 from rest_framework.exceptions import ValidationError
 from rest_framework.utils import model_meta
 
 from shop.dashboard.router import router
-from shop.dashboard.serializers import ProductVariantSerializer
+from shop.dashboard.serializers import (ProductListSerializer, ProductDetailSerializer,
+                                        ProductVariantSerializer)
 from shop.dashboard.viewsets import ProductsDashboard as BaseProductsDashboard
 from shop.rest.fields import AmountField
 
-from myshop.models import Product, SmartCard, SmartPhoneModel, SmartPhoneVariant
+from myshop.models import SmartCard, SmartPhoneModel, SmartPhoneVariant
 
 
-class ProductListSerializer(serializers.ModelSerializer):
-    price = serializers.SerializerMethodField()
-    product_code = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Product
-        fields = ['id', 'product_name', 'product_code', 'price', 'active']
-
-    def get_product_code(self, product):
-        return getattr(product, 'product_code', _("n.a."))
-
-    def get_price(self, product):
-        price = product.get_price(self.context['request'])
-        return localize(price)
-
-
-class SmartCardSerializer(serializers.ModelSerializer):
-    unit_price = AmountField()
-
+class SmartCardSerializer(ProductDetailSerializer):
     class Meta:
         model = SmartCard
         fields = '__all__'
