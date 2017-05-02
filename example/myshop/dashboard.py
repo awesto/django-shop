@@ -89,12 +89,6 @@ class SmartPhoneSerializer(serializers.ModelSerializer):
         return instance
 
     def update(self, instance, validated_data):
-        # handle nested serialized data
-        #for attr, serializer_field in self.fields.items():
-        #    if isinstance(serializer_field, serializers.ListSerializer):
-        #        instance.variants = serializer_field.update(instance, self.data[attr])
-
-        # pilfered from super method
         info = model_meta.get_field_info(instance)
         for attr, value in validated_data.items():
             if isinstance(self.fields[attr], serializers.ListSerializer):
@@ -105,24 +99,6 @@ class SmartPhoneSerializer(serializers.ModelSerializer):
                 setattr(instance, attr, value)
 
         instance.save()
-        return instance
-
-
-        # handle nested serialized data
-        for key, serializer_field in self.fields.items():
-            if isinstance(serializer_field, serializers.ListSerializer):
-                instance.variants = serializer_field.update(instance, self.data[key])
-            else:
-                serializer_field.setattr(key, validated_data[key])
-        # smart_phone_variants = validated_data.pop('variants')
-        # for variant_data in smart_phone_variants:
-        #     pk = variant_data.pop('id', None)
-        #     product_code = variant_data.get('product_code')
-        #     qs = SmartPhoneVariant._default_manager.filter(product_code=product_code)
-        #     if pk:
-        #         if SmartPhoneVariant._default_manager.exclude(pk=pk).exists():
-        #             raise ValidationError(self.message, code='unique')
-        #         SmartPhoneVariant.objects.create(product=instance, **variant_data)
         return instance
 
 
