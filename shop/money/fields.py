@@ -103,7 +103,7 @@ class MoneyField(models.DecimalField):
         return self.Money(value)
 
     def get_db_prep_save(self, value, connection):
-        if value.is_nan():
+        if isinstance(value, Decimal) and value.is_nan():
             return None
         return super(MoneyField, self).get_db_prep_save(value, connection)
 
