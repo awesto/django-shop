@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import json
 from collections import OrderedDict, namedtuple
+from decimal import Decimal
 
 from django.contrib.auth import get_permission_codename
 from django.contrib.contenttypes.models import ContentType
@@ -25,7 +26,7 @@ from shop.models.product import ProductModel
 from shop.money.serializers import JSONEncoder
 from shop.rest.money import JSONRenderer
 from shop.rest.fields import AmountField
-from shop.serializers.bases import ProductSerializer
+from shop.dashboard.serializers import ProductDetailSerializer
 
 
 NgField = namedtuple('NgField', ['field_type', 'serializers', 'extra_bits', 'template_context'])
@@ -41,18 +42,22 @@ class ProductsDashboard(ModelViewSet):
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     pagination_class = DashboardPaginator
     list_serializer_class = None
-    detail_serializer_classes = {}
+    detail_serializer_classes = {}  # for polymorphic products
+    detail_serializer_class = ProductDetailSerializer  # for uniform products
     #permission_classes = [IsAuthenticated]
     queryset = ProductModel.objects.all()
 
     def get_serializer_class(self):
-        if self.suffix == 'List':
+        if self.action == 'list':
             return self.list_serializer_class
-        elif self.suffix == 'Instance':
+        elif self.action in ['retrieve', 'update', 'delete']:
             instance = self.get_object()
-            return self.detail_serializer_classes.get(instance._meta.label_lower, ProductSerializer)
-        msg = "ViewSet 'ProductsDashboard' is not implemented for suffix '{}'"
-        raise NotImplementedError(msg.format(self.suffix))
+            return self.detail_serializer_classes.get(instance._meta.label_lower, self.detail_serializer_class)
+        elif self.action == 'create':
+            # TODO: evaluate the product type
+            return self.detail_serializer_class
+        msg = "ViewSet 'ProductsDashboard' is not implemented for action '{}'"
+        raise NotImplementedError(msg.format(self.action))
 
     def get_serializer(self, *args, **kwargs):
         serializer_class = self.get_serializer_class()
@@ -92,8 +97,11 @@ class ProductsDashboard(ModelViewSet):
                 'value': ContentType.objects.get_for_model(serializer_class.Meta.model).id,
                 'label': serializer_class.Meta.model._meta.verbose_name,
             })
-        pt_field = 'field("polymorphic_ctype", "choice").label("{}").choices({})'
-        fields = [mark_safe(pt_field.format(_("Product Type"), json.dumps(choices, cls=JSONEncoder)))]
+        fields = []
+        if self.detail_serializer_classes:
+            # add select box to choose product type
+            pt_field = 'field("polymorphic_ctype", "choice").label("{}").choices({})'
+            fields.append(mark_safe(pt_field.format(_("Product Type"), json.dumps(choices, cls=JSONEncoder))))
         fields.extend(self.get_detail_fields(template))
         return fields
 
@@ -111,8 +119,9 @@ class ProductsDashboard(ModelViewSet):
         return self.get_detail_fields(template)
 
     def get_detail_fields(self, template):
+        serializer_classes = self.detail_serializer_classes or {'product': self.detail_serializer_class}
         detail_fields = OrderedDict()
-        for serializer_id, serializer_class in enumerate(self.detail_serializer_classes.values()):
+        for serializer_id, serializer_class in enumerate(serializer_classes.values()):
             for name, field in serializer_class().get_fields().items():
                 if field.read_only:
                     continue
@@ -129,7 +138,7 @@ class ProductsDashboard(ModelViewSet):
         result_list = []
         for key, ng_field in detail_fields.items():
             bits = ['field("{}", "{}")'.format(key, ng_field.field_type)] + ng_field.extra_bits
-            if len(ng_field.serializers) < len(self.detail_serializer_classes):
+            if len(ng_field.serializers) < len(serializer_classes):
                 # this field it not available for all serializer classes, handle polymorphism using
                 # a template to hide the field conditionally depending on the model's content type
                 ctypes = [ContentType.objects.get_for_model(sc.Meta.model) for sc in ng_field.serializers]
@@ -148,8 +157,13 @@ class ProductsDashboard(ModelViewSet):
         if field.label is not None:
             extra_bits.append('label("{}")'.format(field.label))
         if field.default is not empty:
-            extra_bits.append('defaultValue({})'.format(field.default))
-
+            if isinstance(field.default, bool):
+                default_value = str(field.default).lower()
+            elif isinstance(field.default, (float, int, Decimal)):
+                default_value = field.default
+            else:
+                default_value = '"{}"'.format(field.default)
+            extra_bits.append('defaultValue({})'.format(default_value))
         if isinstance(field, fields.BooleanField):
             field_type = 'boolean'
         elif isinstance(field, fields.IntegerField):
@@ -182,25 +196,6 @@ class ProductsDashboard(ModelViewSet):
         codename = get_permission_codename('add', ProductModel._meta)
         return self.request.user.has_perm('{}.{}'.format(app_settings.APP_LABEL, codename))
 
-    def list(self, request, *args, **kwargs):
-        response = super(ProductsDashboard, self).list(request, *args, **kwargs)
-        return response
-
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return redirect('dashboard:product-list')
-        return Response({'serializer': serializer})
-
-    def retrieve(self, request, *args, **kwargs):
-        response = super(ProductsDashboard, self).retrieve(request, *args, **kwargs)
-        return response
-
-    def update(self, request, *args, **kwargs):
-        response = super(ProductsDashboard, self).update(request, *args, **kwargs)
-        return response
-
-    def destroy(self, request, *args, **kwargs):
-        response = super(ProductsDashboard, self).destroy(request, *args, **kwargs)
+        response = super(ProductsDashboard, self).create(request, *args, **kwargs)
         return response

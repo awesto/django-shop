@@ -1,7 +1,26 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.utils.translation import ugettext_lazy as _
+
 from rest_framework import serializers
+
+from shop.models.product import ProductModel
+from shop.rest.fields import AmountField
+
+
+class ProductDetailSerializer(serializers.ModelSerializer):
+    """
+    Default serializer for standard products. Replace this in the merchant implementation
+    implementing the class `ProductsDashboard` with a specialized serializer, in case
+    the product model does not contain a `unit_price` field.
+    """
+    unit_price = AmountField()
+    active = serializers.BooleanField(default=True, label=_("Active"))
+
+    class Meta:
+        model = ProductModel
+        fields = '__all__'
 
 
 class ProductVariantSerializer(serializers.ListSerializer):
