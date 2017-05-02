@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from collections import OrderedDict
-
 from django.utils.formats import localize
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import serializers
 from rest_framework.compat import set_many
+from rest_framework.exceptions import ValidationError
 from rest_framework.utils import model_meta
 
 from shop.views import dashboard
@@ -43,18 +42,18 @@ class SmartCardSerializer(serializers.ModelSerializer):
 
 class SmartPhoneVariantListSerializer(serializers.ListSerializer):
     def update(self, instance, validated_data):
-        # Maps for id->instance and id->data item.
         variant_mapping = {variant.id: variant for variant in getattr(instance, self.field_name).all()}
-        data_mapping = {item['id']: item for item in validated_data}
 
         # Perform creations and updates.
-        variants = []
-        for variant_id, data in data_mapping.items():
-            variant = variant_mapping.get(variant_id)
-            if variant is None:
-                variants.append(self.child.create(data))
-            else:
+        variants, data_mapping = [], []
+        for data in validated_data:
+            if 'id' in data:
+                data_mapping.append(data['id'])
+                variant = variant_mapping.get(data['id'])
                 variants.append(self.child.update(variant, data))
+            else:
+                data.update(product=self.parent.instance)
+                variants.append(self.child.create(data))
 
         # Perform deletions.
         for variant_id, variant in variant_mapping.items():
@@ -70,11 +69,13 @@ class SmartPhoneVariantSerializer(serializers.ModelSerializer):
     class Meta:
         model = SmartPhoneVariant
         list_serializer_class = SmartPhoneVariantListSerializer
-        #fields = '__all__'
-        exclude = ['product']
+        fields = '__all__'
         extra_kwargs = {
             'id': {
                 'read_only': False,
+                'required': False,
+            },
+            'product': {
                 'required': False,
             },
             'product_code': {
@@ -82,8 +83,10 @@ class SmartPhoneVariantSerializer(serializers.ModelSerializer):
             }
         }
 
-    def validate(self, data):
-        return super(SmartPhoneVariantSerializer, self).validate(data)
+    def validate_product(self, data):
+        if data.pk != self.parent.parent.instance.pk:
+            raise ValidationError("Product ID mismatch")
+        return data
 
 
 class SmartPhoneSerializer(serializers.ModelSerializer):
