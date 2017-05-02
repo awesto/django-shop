@@ -13,6 +13,7 @@ from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 
 from rest_framework import fields, relations, serializers
+from rest_framework.fields import empty
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import BrowsableAPIRenderer
@@ -146,6 +147,8 @@ class ProductsDashboard(ModelViewSet):
         context = {'field_tag': 'ma-field', 'include_label': 'true'}
         if field.label is not None:
             extra_bits.append('label("{}")'.format(field.label))
+        if field.default is not empty:
+            extra_bits.append('defaultValue({})'.format(field.default))
 
         if isinstance(field, fields.BooleanField):
             field_type = 'boolean'

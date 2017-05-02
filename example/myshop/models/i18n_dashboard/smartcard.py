@@ -21,7 +21,7 @@ class SmartCard(Product):
 
     # product properties
     CARD_TYPE = (2 * ('{}{}'.format(s, t),)
-                 for t in ('SD', 'SDXC', 'SDHC', 'SDHC II') for s in ('', 'micro '))
+                 for t in ['SD', 'SDXC', 'SDHC', 'SDHC II'] for s in ['', 'micro '])
     card_type = models.CharField(
         _("Card Type"),
         choices=CARD_TYPE,
