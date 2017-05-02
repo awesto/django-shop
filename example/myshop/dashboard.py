@@ -42,25 +42,26 @@ class SmartCardSerializer(serializers.ModelSerializer):
 
 class SmartPhoneVariantListSerializer(serializers.ListSerializer):
     def update(self, instance, validated_data):
-        variant_mapping = {variant.id: variant for variant in getattr(instance, self.field_name).all()}
+        item_mapping = {item.id: item for item in getattr(instance, self.field_name).all()}
 
-        # Perform creations and updates.
-        variants, data_mapping = [], []
+        items, data_mapping = [], []
         for data in validated_data:
             if 'id' in data:
+                # perform updates
                 data_mapping.append(data['id'])
-                variant = variant_mapping.get(data['id'])
-                variants.append(self.child.update(variant, data))
+                item = item_mapping.get(data['id'])
+                items.append(self.child.update(item, data))
             else:
+                # perform creations
                 data.update(product=self.parent.instance)
-                variants.append(self.child.create(data))
+                items.append(self.child.create(data))
 
-        # Perform deletions.
-        for variant_id, variant in variant_mapping.items():
-            if variant_id not in data_mapping:
-                variant.delete()
+        # perform deletions
+        for item_id, item in item_mapping.items():
+            if item_id not in data_mapping:
+                item.delete()
 
-        return variants
+        return items
 
 
 class SmartPhoneVariantSerializer(serializers.ModelSerializer):
