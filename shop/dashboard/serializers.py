@@ -1,12 +1,29 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.utils.formats import localize
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import serializers
 
 from shop.models.product import ProductModel
 from shop.rest.fields import AmountField
+
+
+class ProductListSerializer(serializers.ModelSerializer):
+    price = serializers.SerializerMethodField()
+    product_code = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ProductModel
+        fields = ['id', 'product_name', 'product_code', 'price', 'active']
+
+    def get_product_code(self, product):
+        return getattr(product, 'product_code', _("n.a."))
+
+    def get_price(self, product):
+        price = product.get_price(self.context['request'])
+        return localize(price)
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):

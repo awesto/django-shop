@@ -7,7 +7,6 @@ from decimal import Decimal
 
 from django.contrib.auth import get_permission_codename
 from django.contrib.contenttypes.models import ContentType
-from django.shortcuts import redirect
 from django.template import Context, Template
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
@@ -18,7 +17,6 @@ from rest_framework.fields import empty
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import BrowsableAPIRenderer
-from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from shop import app_settings
@@ -52,10 +50,17 @@ class ProductsDashboard(ModelViewSet):
             return self.list_serializer_class
         elif self.action in ['retrieve', 'update', 'delete']:
             instance = self.get_object()
-            return self.detail_serializer_classes.get(instance._meta.label_lower, self.detail_serializer_class)
+            return self.detail_serializer_classes.get(instance._meta.label_lower,
+                                                      self.detail_serializer_class)
         elif self.action == 'create':
-            # TODO: evaluate the product type
-            return self.detail_serializer_class
+            try:
+                ctype = ContentType.objects.get_for_id(self.request.data.get('polymorphic_ctype'))
+            except ContentType.DoesNotExist:
+                # fallback to default detail serializer class
+                return self.detail_serializer_class
+            else:
+                return self.detail_serializer_classes.get(ctype.model_class()._meta.label_lower,
+                                                          self.detail_serializer_class)
         msg = "ViewSet 'ProductsDashboard' is not implemented for action '{}'"
         raise NotImplementedError(msg.format(self.action))
 
