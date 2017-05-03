@@ -6,11 +6,10 @@ from rest_framework.compat import set_many
 from rest_framework.exceptions import ValidationError
 from rest_framework.utils import model_meta
 
-from shop.dashboard.router import router
 from shop.dashboard.serializers import (ProductListSerializer, ProductDetailSerializer,
                                         InlineListSerializer)
+from shop.dashboard.fields import AmountField
 from shop.dashboard.viewsets import ProductsDashboard as BaseProductsDashboard
-from shop.rest.fields import AmountField
 
 from myshop.models import SmartCard, SmartPhoneModel, SmartPhoneVariant
 
@@ -90,5 +89,3 @@ class ProductsDashboard(BaseProductsDashboard):
         'myshop.smartcard': SmartCardSerializer,
         'myshop.smartphonemodel': SmartPhoneSerializer,
     }
-
-router.register('products', ProductsDashboard)

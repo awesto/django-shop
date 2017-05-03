@@ -56,7 +56,7 @@ class ProductDetailSerializer(DashboardModelSerializer):
         fields = '__all__'
 
 
-class InlineListSerializer(DashboardModelSerializer):
+class InlineListSerializer(serializers.ListSerializer):
     def update(self, instance, validated_data):
         item_mapping = {item.id: item for item in getattr(instance, self.field_name).all()}
 
