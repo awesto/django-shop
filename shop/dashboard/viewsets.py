@@ -105,8 +105,10 @@ class ProductsDashboard(ModelViewSet):
         fields = []
         if self.detail_serializer_classes:
             # add select box to choose product type
-            pt_field = 'field("polymorphic_ctype", "choice").label("{}").choices({})'
-            fields.append(mark_safe(pt_field.format(_("Product Type"), json.dumps(choices, cls=JSONEncoder))))
+            pt_field = 'field("polymorphic_ctype", "choice").label("{}").choices({}).defaultValue({})'
+            fields.append(mark_safe(pt_field.format(_("Product Type"),
+                                                    json.dumps(choices, cls=JSONEncoder),
+                                                    choices[0]['value'])))
         fields.extend(self.get_detail_fields(template))
         return fields
 
