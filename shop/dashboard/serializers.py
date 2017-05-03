@@ -40,7 +40,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ProductVariantSerializer(serializers.ListSerializer):
+class InlineListSerializer(serializers.ListSerializer):
     def update(self, instance, validated_data):
         item_mapping = {item.id: item for item in getattr(instance, self.field_name).all()}
 

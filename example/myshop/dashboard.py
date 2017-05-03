@@ -8,7 +8,7 @@ from rest_framework.utils import model_meta
 
 from shop.dashboard.router import router
 from shop.dashboard.serializers import (ProductListSerializer, ProductDetailSerializer,
-                                        ProductVariantSerializer)
+                                        InlineListSerializer)
 from shop.dashboard.viewsets import ProductsDashboard as BaseProductsDashboard
 from shop.rest.fields import AmountField
 
@@ -26,7 +26,7 @@ class SmartPhoneVariantSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SmartPhoneVariant
-        list_serializer_class = ProductVariantSerializer
+        list_serializer_class = InlineListSerializer
         fields = '__all__'
         extra_kwargs = {
             'id': {
