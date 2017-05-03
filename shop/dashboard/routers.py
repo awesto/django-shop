@@ -31,5 +31,3 @@ class DashboardRouter(DefaultRouter):
                 return Response(context, template_name=self.template_name)
 
         return RootView.as_view()
-
-router = DashboardRouter(trailing_slash=False)
