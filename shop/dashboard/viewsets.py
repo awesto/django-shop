@@ -184,7 +184,10 @@ class ProductsDashboard(ModelViewSet):
             field_type = 'email'
         elif isinstance(field, fields.ImageField):
             field_type = 'file'
-            extra_bits.append('uploadInformation({"url": "upload_url", "apifilename": "picture_name"})')
+            extra_bits.extend([
+                'uploadInformation({"url": "upload_url", "apifilename": "picture_name"})',
+                'validation({required: false})',
+            ])
         elif isinstance(field, (fields.ChoiceField, relations.PrimaryKeyRelatedField)):
             field_type = 'choice'
             choices = [{'value': value, 'label': label} for value, label in field.choices.items()]
