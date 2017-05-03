@@ -1,16 +1,32 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.db import models
 from django.utils.formats import localize
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import serializers
 
 from shop.models.product import ProductModel
-from shop.rest.fields import AmountField
+from shop.money.fields import MoneyField
+from shop.dashboard.fields import AmountField, FileField, ImageField, TextField
 
 
-class ProductListSerializer(serializers.ModelSerializer):
+class DashboardModelSerializer(serializers.ModelSerializer):
+    """
+    Modified implementation of a DRF `ModelSerializer`, which maps the model fields to different
+    implementations of serializer fields.
+    """
+    serializer_field_mapping = dict(serializers.ModelSerializer.serializer_field_mapping)
+    serializer_field_mapping.update({
+        models.FileField: FileField,
+        models.ImageField: ImageField,
+        models.TextField: TextField,
+        MoneyField: AmountField,
+    })
+
+
+class ProductListSerializer(DashboardModelSerializer):
     price = serializers.SerializerMethodField()
     product_code = serializers.SerializerMethodField()
 
@@ -26,7 +42,7 @@ class ProductListSerializer(serializers.ModelSerializer):
         return localize(price)
 
 
-class ProductDetailSerializer(serializers.ModelSerializer):
+class ProductDetailSerializer(DashboardModelSerializer):
     """
     Default serializer for standard products. Replace this in the merchant implementation
     implementing the class `ProductsDashboard` with a specialized serializer, in case
@@ -40,7 +56,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class InlineListSerializer(serializers.ListSerializer):
+class InlineListSerializer(DashboardModelSerializer):
     def update(self, instance, validated_data):
         item_mapping = {item.id: item for item in getattr(instance, self.field_name).all()}
 

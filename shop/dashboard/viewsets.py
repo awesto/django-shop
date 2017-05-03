@@ -7,23 +7,27 @@ from decimal import Decimal
 
 from django.contrib.auth import get_permission_codename
 from django.contrib.contenttypes.models import ContentType
+from django.core.urlresolvers import reverse_lazy
 from django.template import Context, Template
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 
 from rest_framework import fields, relations, serializers
+from rest_framework.decorators import detail_route
 from rest_framework.fields import empty
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.parsers import FileUploadParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import BrowsableAPIRenderer
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from shop import app_settings
 from shop.models.product import ProductModel
 from shop.money.serializers import JSONEncoder
 from shop.rest.money import JSONRenderer
-from shop.rest.fields import AmountField
+from shop.dashboard.fields import AmountField, TextField
 from shop.dashboard.serializers import ProductListSerializer, ProductDetailSerializer
 
 
@@ -44,6 +48,7 @@ class ProductsDashboard(ModelViewSet):
     detail_serializer_class = ProductDetailSerializer  # for uniform products
     #permission_classes = [IsAuthenticated]
     queryset = ProductModel.objects.all()
+    fileupload_url = reverse_lazy('dashboard:fileupload')
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -87,7 +92,7 @@ class ProductsDashboard(ModelViewSet):
 
         return list_fields
 
-    @property
+    @cached_property
     def creation_fields(self):
         template = Template("""template(function(entry) {
             {% spaceless %}
@@ -112,8 +117,7 @@ class ProductsDashboard(ModelViewSet):
         fields.extend(self.get_detail_fields(template))
         return fields
 
-    #@cached_property
-    @property
+    @cached_property
     def edition_fields(self):
         template = Template("""template(function(entry) {
             {% spaceless %}{% with tag="ma-string-column" %}
@@ -176,6 +180,8 @@ class ProductsDashboard(ModelViewSet):
             field_type = 'boolean'
         elif isinstance(field, fields.IntegerField):
             field_type = 'number'
+        elif isinstance(field, TextField):
+            field_type = 'wysiwyg'
         elif isinstance(field, AmountField):
             field_type = 'float'
             #extra_bits.append('format("$0,000.00")')
@@ -186,22 +192,22 @@ class ProductsDashboard(ModelViewSet):
             field_type = 'email'
         elif isinstance(field, fields.ImageField):
             field_type = 'file'
-            extra_bits.extend([
-                'uploadInformation({"url": "upload_url", "apifilename": "picture_name"})',
-                'validation({required: false})',
-            ])
         elif isinstance(field, (fields.ChoiceField, relations.PrimaryKeyRelatedField)):
             field_type = 'choice'
             choices = [{'value': value, 'label': label} for value, label in field.choices.items()]
             extra_bits.append('choices({})'.format(json.dumps(choices, cls=JSONEncoder)))
         elif isinstance(field, serializers.ListSerializer):
             field_type = 'embedded_list'
+            # TODO: this list must be extracted from the sub fields
             extra_bits.append('targetFields([nga.field("unit_price"), nga.field("product_code"), nga.field("storage")])')
         else:
             field_type = 'string'
 
         # in case the field declares its own field type
         field_type = field.style.get('field_type', field_type)
+
+        if field_type == 'file':
+            extra_bits.append('uploadInformation({{"url": "{}"}})'.format(self.fileupload_url))
 
         return field_type, extra_bits, context
 
@@ -212,7 +218,3 @@ class ProductsDashboard(ModelViewSet):
         """
         codename = get_permission_codename('add', ProductModel._meta)
         return self.request.user.has_perm('{}.{}'.format(app_settings.APP_LABEL, codename))
-
-    def create(self, request, *args, **kwargs):
-        response = super(ProductsDashboard, self).create(request, *args, **kwargs)
-        return response
