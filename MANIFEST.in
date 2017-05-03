@@ -6,4 +6,5 @@ recursive-include email_auth *.py
 recursive-include shop *.py
 recursive-include shop/static *
 recursive-include shop/templates *
+recursive-include shop/dashboard/templates *
 recursive-include shop/locale *
