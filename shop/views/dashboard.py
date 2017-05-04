@@ -23,25 +23,10 @@ from shop.rest.renderers import DashboardRenderer
 from shop.serializers.bases import ProductSerializer
 
 
-class DashboardView(APIView):
-    """
-    View to handle to main dashboard page.
-    """
-    renderer_classes = (TemplateHTMLRenderer,)
-    template_name = 'shop/dashboard/root.html'
-
-    @classmethod
-    def get_breadcrumbs(cls):
-        return [(_("Dashboard"), reverse('dashboard:root'))]
-
-    def get(self, request, *args, **kwargs):
-        context = {
-            'breadcrumblist': self.get_breadcrumbs()
-        }
-        return Response(context, template_name=self.template_name)
-
-
 class DashboardRouter(DefaultRouter):
+    root_view_name = 'root'
+    root_template_name = 'shop/dashboard/root.html'
+
     routes = [
         # List route.
         Route(
@@ -79,6 +64,29 @@ class DashboardRouter(DefaultRouter):
             initkwargs={}
         ),
     ]
+
+    @classmethod
+    def get_breadcrumbs(cls):
+        return [(_("Dashboard"), reverse('dashboard:root'))]
+
+    def get_api_root_view(self, api_urls=None):
+        dashboard_entities = OrderedDict()
+        for prefix, viewset, basename in self.registry:
+            dashboard_entities[prefix] = viewset()
+
+        class RootView(APIView):
+            """
+            View to handle to root dashboard page.
+            """
+            renderer_classes = (TemplateHTMLRenderer,)
+
+            def get(self, request, *args, **kwargs):
+                context = {
+                    'breadcrumblist': DashboardRouter.get_breadcrumbs()
+                }
+                return Response(context, template_name=DashboardRouter.root_template_name)
+
+        return RootView.as_view()
 
 
 class DashboardPaginator(LimitOffsetPagination):
@@ -128,7 +136,7 @@ class ProductsDashboard(ModelViewSet):
         return self.get_list_display()[:1]
 
     def get_breadcrumbs(self):
-        breadcrumbs = DashboardView.get_breadcrumbs()
+        breadcrumbs = DashboardRouter.get_breadcrumbs()
         breadcrumbs.append((ProductModel.Meta.verbose_name_plural, reverse('dashboard:product-list')))
         if self.suffix == 'Instance':
             instance = self.get_object()
@@ -195,5 +203,3 @@ class ProductsDashboard(ModelViewSet):
         if serializer.is_valid():
             serializer.save()
             return redirect('dashboard:product-list')
-
-router = DashboardRouter()
