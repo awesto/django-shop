@@ -13,7 +13,7 @@ CURRENCIES = {
     'AUD': ('036', 2, '$', _("Australian Dollar")),
     'BHD': ('048', 3, '.د.ب', _('Bahraini dinar')),
     'BRL': ('986', 2, 'R$', _("Brazilian Real")),
-    'CHF': ('756', 2, 'SFr.', _("Swiss Franc")),
+    'CHF': ('756', 2, 'SFr․', _("Swiss Franc")),  # Unicode 8228 as dot to prevent formatting issues
     'CNY': ('156', 2, '¥', _("Chinese Yuan")),
     'CZK': ('203', 2, 'Kč', _("Czech Koruna")),
     'EUR': ('978', 2, '€', _("Euro")),

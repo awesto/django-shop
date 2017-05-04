@@ -4,8 +4,10 @@
 Upgrading django-SHOP
 =====================
 
-0.10.0
-======
+.. _upgrading-0.10:
+
+Upgrading to 0.10.0
+===================
 
 This version requires **django-CMS** version 3.4.2 or higher and **djangocms-cascade** version
 0.12.0 or higher. It is well tested with Django-1.10 but should work as well with Django-1.9.
@@ -38,6 +40,53 @@ prefixed with ``uib-...``.
 
 There is no more need for a special URL pattern to handle auto-completion search. Instead use the
 wrapping view :class:`shop.search.views.CMSPageCatalogWrapper`.
+
+The model ``CartItem`` has a new CharField ``product_code``. This replaces the ``product_code``,
+which optionally is kept inside its ``extra`` dict. This requires to simplify some templates
+implementing ``{{ somevar.extra.product_code }}`` into ``{{ somevar.product_code }}``; it applies to
+the cart, the add-to-cart and the order templates. Also check for ``ProductSerializer``-s
+implemented for products with variations.
+
+Look for methods implementing ``get_product_variant`` since its signature changed.
+
+requires a database migration by the
+merchant implementation. Such a migration file must contain a datamigration, for instance:
+
+.. code-block:: python
+
+	from __future__ import unicode_literals
+
+	from django.db import migrations, models
+
+	def forwards(apps, schema_editor):
+	    CartItem = apps.get_model('myshop', 'CartItem')
+	    for item in CartItem.objects.all():
+	        item.product_code = item.extra.get('product_code', '')
+	        item.save()
+
+
+	def backwards(apps, schema_editor):
+	    CartItem = apps.get_model('myshop', 'CartItem')
+	    for item in CartItem.objects.all():
+	        item.extra['product_code'] = item.product_code
+	        item.save()
+
+
+	class Migration(migrations.Migration):
+
+	    dependencies = [
+	        ('myshop', '0001_initial'),
+	    ]
+
+	    operations = [
+	        migrations.AddField(
+	            model_name='cartitem',
+	            name='product_code',
+	            field=models.CharField(blank=True, help_text='Product code of added item.', max_length=255, null=True, verbose_name='Product code'),
+	        ),
+	        migrations.RunPython(forwards, reverse_code=backwards),
+	    ]
+
 
 
 0.9.3

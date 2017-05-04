@@ -46,7 +46,8 @@ class AddToCartSerializer(serializers.Serializer):
     unit_price = MoneyField(read_only=True)
     subtotal = MoneyField(read_only=True)
     product = serializers.IntegerField(read_only=True, help_text="The product's primary key")
-    extra = serializers.DictField(read_only=True)
+    product_code = serializers.CharField(read_only=True, help_text="Exact product code of the cart item")
+    extra = serializers.DictField(read_only=True, default={})
 
     def __init__(self, instance=None, data=empty, **kwargs):
         context = kwargs.get('context', {})
@@ -63,10 +64,18 @@ class AddToCartSerializer(serializers.Serializer):
             super(AddToCartSerializer, self).__init__(instance, data, **kwargs)
 
     def get_instance(self, context, data, extra_args):
+        """
+        Method to store the ordered products in the cart item instance.
+        Remember to override this method, if the ``product_code`` is part of the
+        variation rather than being part of the product itself.
+        """
         product = context['product']
+        extra = data['extra'] if data is not empty else {}
         return {
             'product': product.id,
+            'product_code': product.product_code,
             'unit_price': product.get_price(context['request']),
+            'extra': extra,
         }
 
 
@@ -75,7 +84,7 @@ class OrderItemSerializer(BaseOrderItemSerializer):
         help_text="Sub-serializer for fields to be shown in the product's summary.")
 
     class Meta(BaseOrderItemSerializer.Meta):
-        fields = ('line_total', 'unit_price', 'quantity', 'summary', 'extra')
+        fields = ['line_total', 'unit_price', 'product_code', 'quantity', 'summary', 'extra']
 
     def get_summary(self, order_item):
         label = self.context.get('render_label', 'order')

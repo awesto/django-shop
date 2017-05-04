@@ -42,11 +42,9 @@ elif settings.SHOP_TUTORIAL in ['smartcard', 'i18n_smartcard']:
 
 elif settings.SHOP_TUTORIAL in ['i18n_polymorphic', 'polymorphic']:
 
-    from .polymorphic import (SmartCardSerializer, AddSmartCardToCartSerializer,
-                              SmartPhoneSerializer, AddSmartPhoneToCartSerializer)
+    from .polymorphic import (SmartCardSerializer, SmartPhoneSerializer, AddSmartPhoneToCartSerializer)
 
-    __all__.extend(['SmartCardSerializer', 'AddSmartCardToCartSerializer',
-                    'SmartPhoneSerializer', 'AddSmartPhoneToCartSerializer'])
+    __all__.extend(['SmartCardSerializer', 'SmartPhoneSerializer', 'AddSmartPhoneToCartSerializer'])
 
 
 class ProductSearchSerializer(BaseProductSearchSerializer):

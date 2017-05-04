@@ -5,7 +5,12 @@
 {% addtoblock "ng-requires" %}django.shop.carticon_caption{% endaddtoblock %}
 
 {% page_url 'shop-cart' as shop_cart_url %}
+{% comment %}
 {% page_attribute 'menu_title' 'shop-cart' as tooltip %}
+until https://github.com/divio/django-cms/issues/5930 is fixed, we must hard code the `tooltip`
+context variable, otherwise this HTML fragment fails silently if the cart page does not exist.
+{% endcomment %}
+{% trans "Cart" as tooltip %}
 
 <a{% if shop_cart_url %} href="{{ shop_cart_url }}" title="{{ tooltip }}"{% endif %}>
 {% block carticon %}

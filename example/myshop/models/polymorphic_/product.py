@@ -75,11 +75,3 @@ class Product(CMSPageReferenceMixin, BaseProduct):
     @property
     def sample_image(self):
         return self.images.first()
-
-    def get_product_variant(self, extra):
-        """
-        Get a variant of the product or itself, if the product has no flavors.
-        Raises `Product.objects.DoesNotExists` if there is no variant for the given `extra`.
-        """
-        msg = "Method get_product_variant(extra) must be implemented by subclass: `{}`"
-        raise NotImplementedError(msg.format(self.__class__.__name__))

@@ -192,9 +192,12 @@ class CheckoutAddressPlugin(DialogFormPluginBase):
         if instance.glossary.get('allow_multiple'):
             AddressModel = self.get_form_class(instance).get_model()
             addresses = AddressModel.objects.filter(customer=context['request'].customer).order_by('priority')
-            form_entities = [dict(value=str(addr.priority),
-                                  label="{}. {}".format(number, addr.as_text().replace('\n', ' – ')))
-                             for number, addr in enumerate(addresses, 1)]
+            form_entities = []
+            for number, addr in enumerate(addresses, 1):
+                form_entities.append({
+                    'value': str(addr.priority),
+                    'label': "{}. {}".format(number, addr.as_text().strip().replace('\n', ' – '))
+                })
             form_data.update(multi_addr=True, form_entities=form_entities)
         else:
             form_data.update(multi_addr=False)

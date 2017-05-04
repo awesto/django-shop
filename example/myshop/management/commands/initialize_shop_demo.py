@@ -12,7 +12,6 @@ from django.core.management.base import BaseCommand, CommandError
 from django.core.management import call_command
 from django.utils.translation import ugettext_lazy as _
 from django.utils.six.moves import input
-from shop import __version__
 try:
     import czipfile as zipfile
 except ImportError:
@@ -20,6 +19,7 @@ except ImportError:
 
 
 class Command(BaseCommand):
+    version = 10
     help = _("Initialize the workdir to run the demo of myshop.")
     download_url = 'http://downloads.django-shop.org/django-shop-workdir_{tutorial}-{version}.zip'
     pwd = b'z7xv'
@@ -50,7 +50,7 @@ class Command(BaseCommand):
         extract_to = os.path.join(settings.WORK_DIR, os.pardir)
         msg = "Downloading workdir and extracting to {}. Please wait ..."
         self.stdout.write(msg.format(extract_to))
-        download_url = self.download_url.format(tutorial=settings.SHOP_TUTORIAL, version=__version__)
+        download_url = self.download_url.format(tutorial=settings.SHOP_TUTORIAL, version=self.version)
         response = requests.get(download_url, stream=True)
         zip_ref = zipfile.ZipFile(StringIO(response.content))
         try:

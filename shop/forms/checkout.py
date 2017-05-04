@@ -146,8 +146,9 @@ class AddressForm(DialogModelForm):
             old_address = cls.get_model().objects.get_fallback(customer=request.customer)
             if old_address:
                 faked_data = dict(data)
-                faked_data.update(dict((field.name, old_address.serializable_value(field.name))
-                                       for field in old_address._meta.fields))
+                faked_data.update(
+                    dict((field.name, old_address.serializable_value(field.name))
+                         for field in old_address._meta.fields))
                 address_form = cls(data=faked_data)
                 remove_entity_filter = cls.js_filter.format(active_priority)
                 address_form.data.update(
@@ -156,9 +157,10 @@ class AddressForm(DialogModelForm):
                 )
             else:
                 address_form = cls()
-                address_form.data.update(active_priority='add',
-                                         plugin_id=data.get('plugin_id'),
-                                         plugin_order=data.get('plugin_order'),
+                address_form.data.update(
+                    active_priority='add',
+                    plugin_id=data.get('plugin_id'),
+                    plugin_order=data.get('plugin_order'),
                 )
             address_form.set_address(cart, old_address)
         elif active_priority == 'add':
@@ -170,7 +172,9 @@ class AddressForm(DialogModelForm):
                 filter_args = dict((attr, val) for attr, val in address_form.data.items()
                                    if attr in all_field_names and val)
                 filter_args.update(customer=request.customer)
-                if not cls.get_model().objects.filter(**filter_args).exists():
+                try:
+                    existing_address = cls.get_model().objects.get(**filter_args)
+                except cls.get_model().DoesNotExist:
                     next_address = address_form.save(commit=False)
                     if next_address:
                         next_address.customer = request.customer
@@ -180,6 +184,8 @@ class AddressForm(DialogModelForm):
                     else:
                         address_form.data.update(active_priority='nop')
                     address_form.set_address(cart, next_address)
+                else:
+                    address_form.set_address(cart, existing_address)
         elif active_priority == 'new' or active_address is None and not data.get('use_primary_address'):
             # customer selected 'Add another address', hence create a new empty form
             initial = dict((key, val) for key, val in data.items() if key in cls.plugin_fields)

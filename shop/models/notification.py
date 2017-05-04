@@ -11,6 +11,7 @@ from django.http.request import HttpRequest
 from django.template import Context, engines
 from django.utils.translation import ugettext_lazy as _, override as translation_override
 from django.utils.six.moves.urllib.parse import urlparse
+from shop.models.order import BaseOrder
 
 from post_office import mail
 from post_office.models import Email as OriginalEmail, EmailTemplate
@@ -126,10 +127,9 @@ class EmulateHttpRequest(HttpRequest):
 
 
 def order_event_notification(sender, instance=None, target=None, **kwargs):
-    from shop.models.order import OrderModel
     from shop.serializers.order import OrderDetailSerializer
 
-    if not isinstance(instance, OrderModel):
+    if not isinstance(instance, BaseOrder):
         return
     for notification in Notification.objects.filter(transition_target=target):
         recipient = notification.get_recipient(instance)

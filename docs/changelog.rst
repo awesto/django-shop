@@ -5,6 +5,25 @@ Changelog for django-SHOP
 =========================
 
 
+0.10.2
+======
+
+* Fixed migration error in ``0004_ckeditor31.py``.
+* Fixed #554: Email is no longer created when notification is triggered.
+* Fixed: Using a ``ManyToManyField`` through ``ProductPage`` ignores the blank attribute,
+  when saving a product in the admin backend.
+* Hard code "Cart" into tooltip for cart icon, until https://github.com/divio/django-cms/issues/5930
+  is fixed.
+* Renders a nicer summary when rendering a multiple address form.
+* Fixed: When placeholder is ``None`` raises AttributeError.
+
+
+0.10.1
+======
+
+* Fixed #537 and #539: Rendering `data` in template has different results after upgrading to 0.10.
+
+
 0.10.0
 ======
 
@@ -60,6 +79,11 @@ Changelog for django-SHOP
   which can handle JS/CSS files provided using ``{% addtoblock "js/css" ... %}`` even if located
   outside the ``/static/`` folders.
 * Added method ``post_process_cart_item`` to the Cart Modifiers.
+* In ``CartItem`` the ``product_code`` is mandatory now. It moves from being optionally kept in dict
+  ``CartItem.extra`` into the ``CartItem`` model itself. This simplifies a lot of boilerplate code,
+  otherwise required by the merchant implementation. Please read :ref:`upgrading-0.10` for details.
+* In :class:`shop.models.product.BaseProduct` added a hook method ``get_product_variant(self, **kwargs)``
+  which can be overridden by products with variations to return a product variant.
 
 
 0.9.3

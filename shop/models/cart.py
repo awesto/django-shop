@@ -47,7 +47,7 @@ class CartItemManager(models.Manager):
         Use this method to fetch items for shopping from the cart. It rearranges the result set
         according to the defined modifiers.
         """
-        cart_items = self.filter(cart=cart, quantity__gt=0)
+        cart_items = self.filter(cart=cart, quantity__gt=0).order_by('id')
         for modifier in cart_modifiers_pool.get_all_modifiers():
             cart_items = modifier.arrange_cart_items(cart_items, request)
         return cart_items
@@ -70,6 +70,8 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     cart = deferred.ForeignKey('BaseCart', related_name='items')
     product = deferred.ForeignKey(BaseProduct)
+    product_code = models.CharField(_("Product code"), max_length=255, null=True, blank=True,
+                                    help_text=_("Product code of added item."))
     extra = JSONField(verbose_name=_("Arbitrary information for this cart item"))
 
     objects = CartItemManager()
