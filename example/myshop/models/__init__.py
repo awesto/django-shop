@@ -32,16 +32,16 @@ elif settings.SHOP_TUTORIAL == 'polymorphic':
     from .polymorphic_.product import Product
     from .polymorphic_.commodity import Commodity
     from .polymorphic_.smartcard import SmartCard
-    from .polymorphic_.smartphone import SmartPhoneModel, SmartPhone
-    __all__.extend(['Commodity', 'SmartCard', 'SmartPhoneModel', 'SmartPhone'])
+    from .polymorphic_.smartphone import SmartPhoneModel, SmartPhoneVariant
+    __all__.extend(['Commodity', 'SmartCard', 'SmartPhoneModel', 'SmartPhoneVariant'])
 
 elif settings.SHOP_TUTORIAL == 'i18n_polymorphic':
     from .i18n_polymorphic.order import OrderItem
     from .i18n_polymorphic.product import Product
     from .i18n_polymorphic.commodity import Commodity
     from .i18n_polymorphic.smartcard import SmartCard
-    from .i18n_polymorphic.smartphone import SmartPhoneModel, SmartPhone
-    __all__.extend(['Commodity', 'SmartCard', 'SmartPhoneModel', 'SmartPhone'])
+    from .i18n_polymorphic.smartphone import SmartPhoneModel, SmartPhoneVariant
+    __all__.extend(['Commodity', 'SmartCard', 'SmartPhoneModel', 'SmartPhoneVariant'])
 
 elif settings.SHOP_TUTORIAL == 'i18n_dashboard':
     from shop.models.defaults.order_item import OrderItem
