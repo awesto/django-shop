@@ -8,8 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 
 from shop.models.product import ProductModel
-from shop.money.fields import MoneyField
-from shop.dashboard.fields import AmountField, FileField, ImageField, TextField
+from shop.dashboard.fields import FileField, ImageField, TextField
 
 
 class DashboardModelSerializer(serializers.ModelSerializer):
@@ -22,7 +21,6 @@ class DashboardModelSerializer(serializers.ModelSerializer):
         models.FileField: FileField,
         models.ImageField: ImageField,
         models.TextField: TextField,
-        MoneyField: AmountField,
     })
 
 
@@ -48,12 +46,16 @@ class ProductDetailSerializer(DashboardModelSerializer):
     implementing the class `ProductsDashboard` with a specialized serializer, in case
     the product model does not contain a `unit_price` field.
     """
-    unit_price = AmountField()
     active = serializers.BooleanField(default=True, label=_("Active"))
 
     class Meta:
         model = ProductModel
         fields = '__all__'
+        extra_kwargs = {
+            'unit_price': {
+                'coerce_to_string': False,
+            }
+        }
 
 
 class InlineListSerializer(serializers.ListSerializer):

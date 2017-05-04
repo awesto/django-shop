@@ -8,7 +8,6 @@ from rest_framework.utils import model_meta
 
 from shop.dashboard.serializers import (ProductListSerializer, ProductDetailSerializer,
                                         InlineListSerializer)
-from shop.dashboard.fields import AmountField
 from shop.dashboard.viewsets import ProductsDashboard as BaseProductsDashboard
 
 from myshop.models import SmartCard, SmartPhoneModel, SmartPhoneVariant
@@ -21,8 +20,6 @@ class SmartCardSerializer(ProductDetailSerializer):
 
 
 class SmartPhoneVariantSerializer(serializers.ModelSerializer):
-    unit_price = AmountField()
-
     class Meta:
         model = SmartPhoneVariant
         list_serializer_class = InlineListSerializer
@@ -39,6 +36,9 @@ class SmartPhoneVariantSerializer(serializers.ModelSerializer):
             },
             'product_code': {
                 'validators': [],
+            },
+            'unit_price': {
+                'coerce_to_string': False,
             }
         }
 
@@ -54,6 +54,20 @@ class SmartPhoneSerializer(serializers.ModelSerializer):
     class Meta:
         model = SmartPhoneModel
         fields = '__all__'
+        extra_kwargs = {
+            'width': {
+                'coerce_to_string': False,
+            },
+            'height': {
+                'coerce_to_string': False,
+            },
+            'weight': {
+                'coerce_to_string': False,
+            },
+            'screen_size': {
+                'coerce_to_string': False,
+            },
+        }
 
     def validate(self, data):
         data = super(SmartPhoneSerializer, self).validate(data)

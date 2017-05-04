@@ -1,31 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.utils import six
-
 from rest_framework.settings import api_settings
 from rest_framework import fields
-
-from shop.money import Money
-
-
-class AmountField(fields.FloatField):
-    """
-    Serializer field for bidirectional exchange of Money amounts. Internally the serialized
-    amount is converted to a float without currency symbol and hence suitable to be used in
-    input fields.
-    """
-    def to_representation(self, obj):
-        return float(obj)
-
-    def to_internal_value(self, data):
-        if isinstance(data, six.text_type) and len(data) > self.MAX_STRING_LENGTH:
-            self.fail('max_string_length')
-
-        try:
-            return Money(data)
-        except (TypeError, ValueError):
-            self.fail('invalid')
 
 
 class FileField(fields.FileField):

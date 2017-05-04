@@ -25,7 +25,7 @@ from shop import app_settings
 from shop.models.product import ProductModel
 from shop.money.serializers import JSONEncoder
 from shop.rest.money import JSONRenderer
-from shop.dashboard.fields import AmountField, TextField
+from shop.dashboard.fields import TextField
 from shop.dashboard.serializers import ProductListSerializer, ProductDetailSerializer
 
 
@@ -185,22 +185,20 @@ class ProductsDashboard(ModelViewSet):
             field_type = 'boolean'
         elif isinstance(field, fields.IntegerField):
             field_type = 'number'
-        elif isinstance(field, TextField):
-            field_type = 'wysiwyg'
-        elif isinstance(field, AmountField):
-            field_type = 'float'
-            #extra_bits.append('format("$0,000.00")')
-            #context.update(field_tag='ma-number-column', include_label='false')
         elif isinstance(field, (fields.FloatField, fields.DecimalField)):
             field_type = 'float'
         elif isinstance(field, fields.EmailField):
             field_type = 'email'
-        elif isinstance(field, fields.ImageField):
-            field_type = 'file'
+        elif isinstance(field, TextField):
+            field_type = 'wysiwyg'
+        elif isinstance(field, serializers.CharField):
+            field_type = 'string'
         elif isinstance(field, (fields.ChoiceField, relations.PrimaryKeyRelatedField)):
             field_type = 'choice'
             choices = [{'value': value, 'label': label} for value, label in field.choices.items()]
             extra_bits.append('choices({})'.format(json.dumps(choices, cls=JSONEncoder)))
+        elif isinstance(field, fields.ImageField):
+            field_type = 'file'
         elif isinstance(field, serializers.ListSerializer):
             field_type = 'embedded_list'
             target_fields = []
@@ -212,8 +210,6 @@ class ProductsDashboard(ModelViewSet):
                 bits = ['nga.field("{}", "{}")'.format(key, ch_ft)] + ch_xbits
                 target_fields.append('.'.join(bits))
             extra_bits.append('targetFields([' + ', '.join(target_fields) + '])')
-        elif isinstance(field, serializers.CharField):
-            field_type = 'string'
         else:
             raise HiddenDashboardField
 
