@@ -31,9 +31,11 @@ class SmartPhoneVariantSerializer(serializers.ModelSerializer):
             'id': {
                 'read_only': False,
                 'required': False,
+                'style': {'hidden': True},
             },
             'product': {
                 'required': False,
+                'style': {'hidden': True},
             },
             'product_code': {
                 'validators': [],

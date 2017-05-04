@@ -14,13 +14,11 @@ from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 
 from rest_framework import fields, relations, serializers
-from rest_framework.decorators import detail_route
+from rest_framework.exceptions import APIException
 from rest_framework.fields import empty
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.parsers import FileUploadParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import BrowsableAPIRenderer
-from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from shop import app_settings
@@ -40,6 +38,10 @@ class DashboardPaginator(PageNumberPagination):
     page_size_query_param = '_perPage'
 
 
+class HiddenDashboardField(APIException):
+    pass
+
+
 class ProductsDashboard(ModelViewSet):
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     pagination_class = DashboardPaginator
@@ -53,7 +55,7 @@ class ProductsDashboard(ModelViewSet):
     def get_serializer_class(self):
         if self.action == 'list':
             return self.list_serializer_class
-        elif self.action in ['retrieve', 'update', 'delete']:
+        elif self.action in ['retrieve', 'update', 'partial_update', 'delete']:
             instance = self.get_object()
             return self.detail_serializer_classes.get(instance._meta.label_lower,
                                                       self.detail_serializer_class)
@@ -134,9 +136,10 @@ class ProductsDashboard(ModelViewSet):
         detail_fields = OrderedDict()
         for serializer_id, serializer_class in enumerate(serializer_classes.values()):
             for name, field in serializer_class().get_fields().items():
-                if field.read_only:
+                try:
+                    field_type, extra_bits, template_context = self.get_field_context(field)
+                except HiddenDashboardField:
                     continue
-                field_type, extra_bits, template_context = self.get_field_context(field)
                 if name in detail_fields:
                     if detail_fields[name].field_type != field_type:
                         ng_field = NgField(field_type, [serializer_class], extra_bits, template_context)
@@ -163,6 +166,8 @@ class ProductsDashboard(ModelViewSet):
         """
         Method used to map Django's Field class to the field type used by ng-admin
         """
+        if field.read_only or field.style.get('hidden'):
+            raise HiddenDashboardField
         extra_bits = ['validation({})'.format(json.dumps({'required': field.required}))]
         context = {'field_tag': 'ma-field', 'include_label': 'true'}
         if field.label is not None:
@@ -186,7 +191,7 @@ class ProductsDashboard(ModelViewSet):
             field_type = 'float'
             #extra_bits.append('format("$0,000.00")')
             #context.update(field_tag='ma-number-column', include_label='false')
-        elif isinstance(field, fields.FloatField):
+        elif isinstance(field, (fields.FloatField, fields.DecimalField)):
             field_type = 'float'
         elif isinstance(field, fields.EmailField):
             field_type = 'email'
@@ -198,10 +203,19 @@ class ProductsDashboard(ModelViewSet):
             extra_bits.append('choices({})'.format(json.dumps(choices, cls=JSONEncoder)))
         elif isinstance(field, serializers.ListSerializer):
             field_type = 'embedded_list'
-            # TODO: this list must be extracted from the sub fields
-            extra_bits.append('targetFields([nga.field("unit_price"), nga.field("product_code"), nga.field("storage")])')
-        else:
+            target_fields = []
+            for key, child_field in field.child.fields.items():
+                try:
+                    ch_ft, ch_xbits, ch_ctx = self.get_field_context(child_field)
+                except HiddenDashboardField:
+                    continue
+                bits = ['nga.field("{}", "{}")'.format(key, ch_ft)] + ch_xbits
+                target_fields.append('.'.join(bits))
+            extra_bits.append('targetFields([' + ', '.join(target_fields) + '])')
+        elif isinstance(field, serializers.CharField):
             field_type = 'string'
+        else:
+            raise HiddenDashboardField
 
         # in case the field declares its own field type
         field_type = field.style.get('field_type', field_type)
