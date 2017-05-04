@@ -87,7 +87,7 @@ class ProductsDashboard(ModelViewSet):
         list_fields = []
         for name, field in serializer.get_fields().items():
             field_type = field.style.get('field_type', 'string')
-            bits = ['field("{}", "{}")'.format(name, field_type)]
+            bits = ['nga.field("{}", "{}")'.format(name, field_type)]
             if name in detail_links:
                 bits.append('isDetailLink(true)')
             list_fields.append(mark_safe('.'.join(bits)))
@@ -151,7 +151,7 @@ class ProductsDashboard(ModelViewSet):
 
         result_list = []
         for key, ng_field in detail_fields.items():
-            bits = ['field("{}", "{}")'.format(key, ng_field.field_type)] + ng_field.extra_bits
+            bits = ['nga.field("{}", "{}")'.format(key, ng_field.field_type)] + ng_field.extra_bits
             if len(ng_field.serializers) < len(serializer_classes):
                 # this field it not available for all serializer classes, handle polymorphism using
                 # a template to hide the field conditionally depending on the model's content type

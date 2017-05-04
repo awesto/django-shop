@@ -31,15 +31,15 @@ djangoShopDashboard.config(['NgAdminConfigurationProvider', function(nga) {
 		var entity = nga.entity("{{ name }}");
 
 		entity.listView().fields([{% for field in viewset.list_fields %}
-			nga.{{ field }}{% if not forloop.last %},{% endif %}{% endfor %}
+			{{ field }}{% if not forloop.last %},{% endif %}{% endfor %}
 		]);
 
 		entity.creationView().fields([{% for field in viewset.creation_fields %}
-			nga.{{ field }}{% if not forloop.last %},{% endif %}{% endfor %}
+			{{ field }}{% if not forloop.last %},{% endif %}{% endfor %}
 		]);
 
 		entity.editionView().fields([{% for field in viewset.edition_fields %}
-			nga.{{ field }}{% if not forloop.last %},{% endif %}{% endfor %}
+			{{ field }}{% if not forloop.last %},{% endif %}{% endfor %}
 		]).onSubmitError(['error', 'entity', 'form', 'progression', 'notification',
 		function(error, entity, form, progression, notification) {
 			angular.forEach(error.data, function(value, field_name) {
