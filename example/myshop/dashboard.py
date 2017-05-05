@@ -6,6 +6,7 @@ from rest_framework.compat import set_many
 from rest_framework.exceptions import ValidationError
 from rest_framework.utils import model_meta
 
+from shop import app_settings
 from shop.dashboard import viewsets
 from shop.dashboard import routers
 from shop.dashboard.serializers import (ProductDetailSerializer, InlineListSerializer)
@@ -97,9 +98,10 @@ class SmartPhoneSerializer(serializers.ModelSerializer):
         return instance
 
 
-class ProductsDashboard(viewsets.ProductsDashboard):
+class ProductsDashboard(viewsets.DashboardViewSet):
     list_display = ['media', 'product_name', 'caption', 'price']
     list_display_links = ['product_name']
+    list_serializer_class = app_settings.PRODUCT_SUMMARY_SERIALIZER
     detail_serializer_classes = {
         'myshop.smartcard': SmartCardSerializer,
         'myshop.smartphonemodel': SmartPhoneSerializer,

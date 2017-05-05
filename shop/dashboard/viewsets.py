@@ -18,7 +18,6 @@ from shop import app_settings
 from shop.models.product import ProductModel
 from shop.rest.money import JSONRenderer
 from shop.rest.renderers import DashboardRenderer
-from shop.serializers.bases import ProductSerializer
 from .routers import DashboardRouter
 
 
@@ -26,12 +25,13 @@ class DashboardPaginator(LimitOffsetPagination):
     default_limit = 20
 
 
-class ProductsDashboard(ModelViewSet):
+class DashboardViewSet(ModelViewSet):
     renderer_classes = (DashboardRenderer, JSONRenderer, BrowsableAPIRenderer)
     pagination_class = DashboardPaginator
-    list_serializer_class = app_settings.PRODUCT_SUMMARY_SERIALIZER
     permission_classes = [IsAuthenticated]
-    detail_serializer_classes = {}
+    list_serializer_class = None  # must be overridden
+    detail_serializer_class = None  # either this must be overridden
+    detail_serializer_classes = {}  # or this must be overridden
     queryset = ProductModel.objects.all()
 
     def get_serializer_class(self):
@@ -39,11 +39,11 @@ class ProductsDashboard(ModelViewSet):
             return self.list_serializer_class
         elif self.suffix == 'Instance':
             instance = self.get_object()
-            return self.detail_serializer_classes.get(instance._meta.label_lower, ProductSerializer)
+            return self.detail_serializer_classes.get(instance._meta.label_lower, self.detail_serializer_class)
         elif self.suffix == 'New':
             model = self.request.GET.get('model')
-            return self.detail_serializer_classes.get(model, ProductSerializer)
-        msg = "ViewSet 'ProductsDashboard' is not implemented for action '{}'"
+            return self.detail_serializer_classes.get(model, self.detail_serializer_class)
+        msg = "'DashboardViewSet' is not implemented for action '{}'"
         return self.list_serializer_class  # TODO: use the correct
         raise NotImplementedError(msg.format(self.action))
 
@@ -93,14 +93,17 @@ class ProductsDashboard(ModelViewSet):
                 list_display_fields[field_name] = serializer_class.fields[field_name]
             template_context['list_display_fields'] = list_display_fields
             template_context['list_display_links'] = self.get_list_display_links()
-            detail_models = []
-            for name, serializer_class in self.detail_serializer_classes.items():
-                detail_models.append((name, serializer_class.Meta.model._meta.verbose_name))
+            if self.detail_serializer_classes:
+                detail_models = []
+                for name, serializer_class in self.detail_serializer_classes.items():
+                    detail_models.append((name, serializer_class.Meta.model._meta.verbose_name))
+            else:
+                detail_models = [(serializer_class.Meta.model._meta.verbose_name, serializer_class.Meta.model._meta.verbose_name)]  # TODO: use a suitable key
             template_context['detail_models'] = detail_models
-            detail_url = reverse('dashboard:product-change', args=(':PK:',))
+            detail_url = reverse('dashboard:product-change', args=(':PK:',))  # TODO: use the correct list view
             template_context['detail_ng_href'] = detail_url.replace(':PK:', '{{ entry.pk }}')
 
-        renderer_context = super(ProductsDashboard, self).get_renderer_context()
+        renderer_context = super(DashboardViewSet, self).get_renderer_context()
         renderer_context['template_context'] = template_context
         return renderer_context
 
@@ -109,7 +112,7 @@ class ProductsDashboard(ModelViewSet):
         Returns True if the given request has permission to add an object.
         Can be overridden by the user in subclasses.
         """
-        codename = get_permission_codename('add', ProductModel._meta)
+        codename = get_permission_codename('add', ProductModel._meta)  # TODO use the correct model
         return self.request.user.has_perm('{}.{}'.format(app_settings.APP_LABEL, codename))
 
     def new(self, request, *args, **kwargs):
@@ -120,7 +123,7 @@ class ProductsDashboard(ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return redirect('dashboard:product-list')
+            return redirect('dashboard:product-list')  # TODO: use the correct list view
         return Response({'serializer': serializer})
 
     def retrieve(self, request, *args, **kwargs):
@@ -135,4 +138,4 @@ class ProductsDashboard(ModelViewSet):
         serializer = self.get_serializer(instance, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return redirect('dashboard:product-list')
+            return redirect('dashboard:product-list')  # TODO: use the correct list view
