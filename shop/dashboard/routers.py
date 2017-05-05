@@ -25,6 +25,7 @@ class DashboardRouter(DefaultRouter):
             url=r'^{prefix}{trailing_slash}$',
             mapping={
                 'get': 'list',
+                'post': 'update',
             },
             name='{basename}-list',
             initkwargs={'suffix': 'List'}
