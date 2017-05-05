@@ -17,7 +17,7 @@ from rest_framework.viewsets import ModelViewSet
 from shop import app_settings
 from shop.models.product import ProductModel
 from shop.rest.money import JSONRenderer
-from shop.rest.renderers import DashboardRenderer
+from shop.dashboard.renderers import DashboardRenderer
 from .routers import DashboardRouter
 
 
