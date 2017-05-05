@@ -14,7 +14,10 @@ from rest_framework.views import APIView
 
 class DashboardRouter(DefaultRouter):
     root_view_name = 'root'
-    root_template_name = 'shop/dashboard/root.html'
+
+    def __init__(self, *args, **kwargs):
+        self.root_template_name = kwargs.pop('root_template_name', 'shop/dashboard/root.html')
+        super(DashboardRouter, self).__init__(*args, **kwargs)
 
     routes = [
         # List route.
@@ -68,11 +71,12 @@ class DashboardRouter(DefaultRouter):
             View to handle to root dashboard page.
             """
             renderer_classes = (TemplateHTMLRenderer,)
+            root_template_name = self.root_template_name
 
             def get(self, request, *args, **kwargs):
                 context = {
                     'breadcrumblist': DashboardRouter.get_breadcrumbs()
                 }
-                return Response(context, template_name=DashboardRouter.root_template_name)
+                return Response(context, template_name=self.root_template_name)
 
         return RootView.as_view()
