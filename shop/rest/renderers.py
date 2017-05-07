@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import os
-
 from rest_framework import renderers
 from rest_framework.compat import template_render
-
-from shop import app_settings
 
 
 class CMSPageRenderer(renderers.TemplateHTMLRenderer):
