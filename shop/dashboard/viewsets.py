@@ -42,7 +42,7 @@ class HiddenDashboardField(APIException):
     pass
 
 
-class ProductsDashboard(ModelViewSet):
+class DashboardViewSet(ModelViewSet):
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     pagination_class = DashboardPaginator
     list_serializer_class = ProductListSerializer

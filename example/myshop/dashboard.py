@@ -8,7 +8,7 @@ from rest_framework.utils import model_meta
 
 from shop.dashboard.serializers import (ProductListSerializer, ProductDetailSerializer,
                                         InlineListSerializer)
-from shop.dashboard.viewsets import ProductsDashboard as BaseProductsDashboard
+from shop.dashboard.viewsets import DashboardViewSet
 
 from myshop.models import SmartCard, SmartPhoneModel, SmartPhoneVariant
 
@@ -97,7 +97,7 @@ class SmartPhoneSerializer(serializers.ModelSerializer):
         return instance
 
 
-class ProductsDashboard(BaseProductsDashboard):
+class ProductsDashboard(DashboardViewSet):
     list_display = ['product_name', 'product_code', 'price', 'active']
     list_display_links = ['product_name']
     list_serializer_class = ProductListSerializer
