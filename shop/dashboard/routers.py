@@ -12,6 +12,10 @@ from rest_framework.views import APIView
 class DashboardRouter(DefaultRouter):
     root_view_name = 'root'
 
+    def __init__(self, *args, **kwargs):
+        self.root_template_name = kwargs.pop('root_template_name', 'shop/dashboard/main.html')
+        super(DashboardRouter, self).__init__(*args, **kwargs)
+
     def get_api_root_view(self, api_urls=None):
         dashboard_entities = OrderedDict()
         for prefix, viewset, basename in self.registry:
@@ -22,12 +26,12 @@ class DashboardRouter(DefaultRouter):
             View to handle to root dashboard page.
             """
             renderer_classes = (TemplateHTMLRenderer,)
-            template_name = 'shop/dashboard/main.html'
+            root_template_name = self.root_template_name
 
             def get(self, request, *args, **kwargs):
                 context = {
                     'dashboard_entities': dashboard_entities,
                 }
-                return Response(context, template_name=self.template_name)
+                return Response(context, template_name=self.root_template_name)
 
         return RootView.as_view()

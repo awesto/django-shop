@@ -18,20 +18,81 @@
 	<script src="{% static 'node_modules/angular-i18n/angular-locale_de.js' %}"></script>
 	<script src="{% static 'node_modules/ng-admin/build/ng-admin.min.js' %}"></script>
 	<script type="text/javascript">
-	angular.module('djangoShopDashboard', ['ngSanitize', 'ng-admin'])
-	.config(['$httpProvider', '$locationProvider', function($httpProvider, $locationProvider) {
-		$httpProvider.defaults.headers.common['X-CSRFToken'] = '{{ csrf_token }}';
-		/*
-		$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-		$locationProvider.html5Mode({
-			enabled: true,
-			requireBase: false,
-			rewriteLinks: false
-		});
-		*/
-	}]);
+angular.module('djangoShopDashboard', ['ngSanitize', 'ng-admin'])
+.config(['$httpProvider', '$locationProvider', function($httpProvider, $locationProvider) {
+	$httpProvider.defaults.headers.common['X-CSRFToken'] = '{{ csrf_token }}';
+	/*
+	$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+	$locationProvider.html5Mode({
+		enabled: true,
+		requireBase: false,
+		rewriteLinks: false
+	});
+	*/
+}]);
 
-	{% include "shop/dashboard/main.js" %}
+(function(angular, undefined) {
+'use strict';
+
+var djangoShopDashboard = angular.module('djangoShopDashboard');
+
+djangoShopDashboard.config(['RestangularProvider', function(RestangularProvider) {
+	RestangularProvider.addFullRequestInterceptor(function(element, operation, what, url, headers, params) {
+		if (operation == "getList") {
+		}
+		return {params: params};
+	});
+
+	RestangularProvider.addResponseInterceptor(function(data, operation, what, url, response, deferred) {
+		if (operation == "getList") {
+			response.totalCount = data.count;
+			return data.results;
+		}
+		return data;
+	});
+
+}]);
+
+djangoShopDashboard.config(['NgAdminConfigurationProvider', function(nga) {
+	var admin = nga.application("Dashboard");
+	admin.baseApiUrl("{% url 'dashboard:root' %}");
+
+	{% for name, viewset in dashboard_entities.items %}
+	(function() {
+		var entity = nga.entity("{{ name }}");
+
+		entity.listView().fields([{% for field in viewset.list_fields %}
+			{{ field }}{% if not forloop.last %},{% endif %}{% endfor %}
+		]);
+
+		entity.creationView().fields([{% for field in viewset.creation_fields %}
+			{{ field }}{% if not forloop.last %},{% endif %}{% endfor %}
+		]);
+
+		entity.editionView().fields([{% for field in viewset.edition_fields %}
+			{{ field }}{% if not forloop.last %},{% endif %}{% endfor %}
+		]).onSubmitError(['error', 'entity', 'form', 'progression', 'notification',
+		function(error, entity, form, progression, notification) {
+			angular.forEach(error.data, function(value, field_name) {
+				if (form[field_name]) {
+					form[field_name].$setValidity(false);
+				}
+			});
+			progression.done();
+			notification.log("{% trans 'Some values are invalid, see details in the form' %}", { addnCls: 'humane-flatty-error' });
+			return false;
+		}]);
+		admin.addEntity(entity);
+	})();
+	{% endfor %}
+
+	{% block extra-entities %}{% endblock %}
+
+	nga.configure(admin);
+}]);
+
+})(window.angular);
+
 	</script>
 </body>
 
