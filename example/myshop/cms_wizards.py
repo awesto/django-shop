@@ -7,7 +7,7 @@ from cms.wizards.wizard_base import Wizard
 from cms.wizards.wizard_pool import wizard_pool
 
 
-if settings.SHOP_TUTORIAL in ('commodity', 'i18n_commodity'):
+if settings.SHOP_TUTORIAL in ['commodity', 'i18n_commodity']:
     from shop.models.defaults.commodity import Commodity
     from shop.forms.wizards import CommodityWizardForm
 
