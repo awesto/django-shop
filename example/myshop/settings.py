@@ -110,6 +110,7 @@ INSTALLED_APPS = [
     'easy_thumbnails.optimize',
     'post_office',
     'haystack',
+    'webpack_loader',
     'shop',
     'shop.dashboard',
     'shop_stripe',
@@ -234,8 +235,9 @@ STATICFILES_FINDERS = [
 
 STATICFILES_DIRS = [
     ('node_modules', os.path.join(PROJECT_ROOT, 'node_modules')),
+    ('webpack_bundles', os.path.join(WORK_DIR, 'webpack_bundles')),
+    #os.path.join(PROJECT_ROOT, 'assets'),
 ]
-
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -587,6 +589,17 @@ SHOP_STRIPE = {
     'PUBKEY': 'pk_test_HlEp5oZyPonE21svenqowhXp',
     'APIKEY': 'sk_test_xUdHLeFasmOUDvmke4DHGRDP',
     'PURCHASE_DESCRIPTION': _("Thanks for purchasing at MyShop"),
+}
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'CACHE': not DEBUG,
+        'BUNDLE_DIR_NAME': 'webpack_bundles/', # must end with slash
+        'STATS_FILE': os.path.join(WORK_DIR, 'webpack_bundles/webpack-stats.json'),
+        'POLL_INTERVAL': 0.1,
+        'TIMEOUT': None,
+        'IGNORE': ['.+\.hot-update.js', '.+\.map']
+    }
 }
 
 try:

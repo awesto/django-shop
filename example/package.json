@@ -36,5 +36,11 @@
     "ng-admin": "^1.0.5",
     "picturefill": "~3.0.2",
     "select2": "~4.0.3"
+  },
+  "devDependencies": {
+    "babel": "^6.23.0",
+    "babel-loader": "^7.0.0",
+    "webpack": "^2.5.1",
+    "webpack-bundle-tracker": "^0.2.0"
   }
 }
