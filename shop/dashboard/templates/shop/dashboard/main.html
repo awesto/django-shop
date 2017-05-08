@@ -1,4 +1,4 @@
-{% load i18n static sass_tags sekizai_tags %}
+{% load i18n static sass_tags sekizai_tags webpack_loader %}
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}" ng-app="djangoShopDashboard">
 <head>
@@ -30,23 +30,15 @@ angular.module('djangoShopDashboard', ['ngSanitize', 'ng-admin'])
 	});
 	*/
 }]);
-
+	</script>
+	{% render_bundle 'main' 'js' %}
+	<script type="text/javascript">
 (function(angular, undefined) {
 'use strict';
 
 var djangoShopDashboard = angular.module('djangoShopDashboard');
 
 djangoShopDashboard.config(['RestangularProvider', function(RestangularProvider) {
-
-/*
-	RestangularProvider.addFullRequestInterceptor(function(element, operation, what, url, headers, params) {
-debugger;
-		if (operation == "getList") {
-		}
-		return {params: params};
-	});
-*/
-
 	RestangularProvider.addResponseInterceptor(function(data, operation, what, url, response, deferred) {
 		if (operation == "getList") {
 			response.totalCount = data.count;
@@ -56,10 +48,6 @@ debugger;
 	});
 
 	{% block RestangularProvider %}{% endblock %}
-}]);
-
-djangoShopDashboard.config(['$httpProvider', function($httpProvider) {
-	{% block httpProvider %}{% endblock %}
 }]);
 
 djangoShopDashboard.config(['NgAdminConfigurationProvider', function(nga) {
@@ -75,6 +63,7 @@ djangoShopDashboard.config(['NgAdminConfigurationProvider', function(nga) {
 			.link('/{{ name }}/edit/')
 			//.active(path => path.indexOf('/profile') === 0)
 		);
+		entity.url("{{ name }}/change");
 		{% else %}
 		entity.label("{{ viewset.get_label }}");
 
