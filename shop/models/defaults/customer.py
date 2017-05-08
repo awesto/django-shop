@@ -29,6 +29,10 @@ class Customer(BaseCustomer):
         choices=SALUTATION,
     )
 
+    class Meta:
+        verbose_name = _("Customer")
+        verbose_name_plural = _("Customers")
+
     def get_number(self):
         return self.number
 

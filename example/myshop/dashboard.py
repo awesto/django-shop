@@ -119,7 +119,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class ProfileViewSet(DashboardViewSet):
-    list_serializer_class = ProfileSerializer
+    list_serializer_class = detail_serializer_class = ProfileSerializer
     singleton = True
 
     def __init__(self, *args, **kwargs):

@@ -8,7 +8,7 @@ from shop.dashboard.views import FileUploadView
 
 from myshop.dashboard import ProductsViewSet, ProfileViewSet
 
-router = DashboardRouter(trailing_slash=False, root_template_name='myshop/dashboard.html')
+router = DashboardRouter(trailing_slash=False)
 router.register('products', ProductsViewSet)
 router.register('profile', ProfileViewSet)
 

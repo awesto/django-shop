@@ -79,6 +79,12 @@ class DashboardViewSet(ModelViewSet):
         serializer = serializer_class(*args, **kwargs)
         return serializer
 
+    def get_label(self):
+        if self.singleton:
+            return self.list_serializer_class.Meta.model._meta.verbose_name
+        else:
+            return self.list_serializer_class.Meta.model._meta.verbose_name_plural
+
     @cached_property
     def list_fields(self):
         serializer = self.list_serializer_class()
@@ -133,7 +139,7 @@ class DashboardViewSet(ModelViewSet):
         return self.get_detail_fields(template)
 
     def get_detail_fields(self, template):
-        serializer_classes = self.detail_serializer_classes or {'product': self.detail_serializer_class}
+        serializer_classes = self.detail_serializer_classes or {'default': self.detail_serializer_class}
         detail_fields = OrderedDict()
         for serializer_id, serializer_class in enumerate(serializer_classes.values()):
             for name, field in serializer_class().get_fields().items():

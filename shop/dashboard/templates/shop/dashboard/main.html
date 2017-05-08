@@ -67,9 +67,16 @@ djangoShopDashboard.config(['NgAdminConfigurationProvider', function(nga) {
 	admin.baseApiUrl("{% url 'dashboard:root' %}");
 
 	{% for name, viewset in dashboard_entities.items %}
-		{% if not viewset.singleton %}
 	(function() {
 		var entity = nga.entity("{{ name }}");
+		{% if viewset.singleton %}
+		admin.menu().addChild(nga.menu()
+			.title("{{ viewset.get_label }}")
+			.link('/{{ name }}/edit/')
+			//.active(path => path.indexOf('/profile') === 0)
+		);
+		{% else %}
+		entity.label("{{ viewset.get_label }}");
 
 		entity.listView().fields([{% for field in viewset.list_fields %}
 			{{ field }}{% if not forloop.last %},{% endif %}{% endfor %}
@@ -78,7 +85,7 @@ djangoShopDashboard.config(['NgAdminConfigurationProvider', function(nga) {
 		entity.creationView().fields([{% for field in viewset.creation_fields %}
 			{{ field }}{% if not forloop.last %},{% endif %}{% endfor %}
 		]);
-
+		{% endif %}
 		entity.editionView().fields([{% for field in viewset.edition_fields %}
 			{{ field }}{% if not forloop.last %},{% endif %}{% endfor %}
 		]).onSubmitError(['error', 'entity', 'form', 'progression', 'notification',
@@ -92,10 +99,8 @@ djangoShopDashboard.config(['NgAdminConfigurationProvider', function(nga) {
 			notification.log("{% trans 'Some values are invalid, see details in the form' %}", { addnCls: 'humane-flatty-error' });
 			return false;
 		}]);
-
 		admin.addEntity(entity);
 	})();
-		{% endif %}
 	{% endfor %}
 
 	{% block NgAdminConfigurationProvider %}{% endblock %}
