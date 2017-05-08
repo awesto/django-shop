@@ -37,11 +37,15 @@ angular.module('djangoShopDashboard', ['ngSanitize', 'ng-admin'])
 var djangoShopDashboard = angular.module('djangoShopDashboard');
 
 djangoShopDashboard.config(['RestangularProvider', function(RestangularProvider) {
+
+/*
 	RestangularProvider.addFullRequestInterceptor(function(element, operation, what, url, headers, params) {
+debugger;
 		if (operation == "getList") {
 		}
 		return {params: params};
 	});
+*/
 
 	RestangularProvider.addResponseInterceptor(function(data, operation, what, url, response, deferred) {
 		if (operation == "getList") {
@@ -51,6 +55,11 @@ djangoShopDashboard.config(['RestangularProvider', function(RestangularProvider)
 		return data;
 	});
 
+	{% block RestangularProvider %}{% endblock %}
+}]);
+
+djangoShopDashboard.config(['$httpProvider', function($httpProvider) {
+	{% block httpProvider %}{% endblock %}
 }]);
 
 djangoShopDashboard.config(['NgAdminConfigurationProvider', function(nga) {
@@ -58,6 +67,7 @@ djangoShopDashboard.config(['NgAdminConfigurationProvider', function(nga) {
 	admin.baseApiUrl("{% url 'dashboard:root' %}");
 
 	{% for name, viewset in dashboard_entities.items %}
+		{% if not viewset.singleton %}
 	(function() {
 		var entity = nga.entity("{{ name }}");
 
@@ -82,11 +92,13 @@ djangoShopDashboard.config(['NgAdminConfigurationProvider', function(nga) {
 			notification.log("{% trans 'Some values are invalid, see details in the form' %}", { addnCls: 'humane-flatty-error' });
 			return false;
 		}]);
+
 		admin.addEntity(entity);
 	})();
+		{% endif %}
 	{% endfor %}
 
-	{% block extra-entities %}{% endblock %}
+	{% block NgAdminConfigurationProvider %}{% endblock %}
 
 	nga.configure(admin);
 }]);

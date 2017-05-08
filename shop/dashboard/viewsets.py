@@ -45,12 +45,13 @@ class HiddenDashboardField(APIException):
 class DashboardViewSet(ModelViewSet):
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     pagination_class = DashboardPaginator
-    list_serializer_class = ProductListSerializer
+    list_serializer_class = None
     detail_serializer_classes = {}  # for polymorphic products
-    detail_serializer_class = ProductDetailSerializer  # for uniform products
+    detail_serializer_class = None  # for uniform products
     #permission_classes = [IsAuthenticated]
     queryset = ProductModel.objects.all()
     fileupload_url = reverse_lazy('dashboard:fileupload')
+    singleton = False
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -112,7 +113,7 @@ class DashboardViewSet(ModelViewSet):
         fields = []
         if self.detail_serializer_classes:
             # add select box to choose product type
-            pt_field = 'field("polymorphic_ctype", "choice").label("{}").choices({}).defaultValue({})'
+            pt_field = 'nga.field("polymorphic_ctype", "choice").label("{}").choices({}).defaultValue({})'
             fields.append(mark_safe(pt_field.format(_("Product Type"),
                                                     json.dumps(choices, cls=JSONEncoder),
                                                     choices[0]['value'])))
