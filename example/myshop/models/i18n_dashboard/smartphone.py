@@ -154,7 +154,7 @@ class SmartPhoneModel(Product):
 class SmartPhoneVariant(models.Model):
     product = models.ForeignKey(
         SmartPhoneModel,
-        verbose_name=_("Smart-Phone Model"),
+        verbose_name=_("Smart Phone Variant"),
         related_name='variants',
     )
 

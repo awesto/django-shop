@@ -47,3 +47,9 @@ class ImageField(fields.ImageField):
 
 class TextField(fields.CharField):
     pass
+
+
+class AmountField(fields.DecimalField):
+    def __init__(self, *args, **kwargs):
+        kwargs.update(coerce_to_string=False)
+        super(AmountField, self).__init__(*args, **kwargs)

@@ -25,7 +25,7 @@ from shop import app_settings
 from shop.models.product import ProductModel
 from shop.money.serializers import JSONEncoder
 from shop.rest.money import JSONRenderer
-from shop.dashboard.fields import TextField
+from shop.dashboard.fields import TextField, AmountField
 from shop.dashboard.serializers import ProductListSerializer, ProductDetailSerializer
 
 
@@ -158,13 +158,16 @@ class DashboardViewSet(ModelViewSet):
 
         result_list = []
         for key, ng_field in detail_fields.items():
-            bits = ['nga.field("{}", "{}")'.format(key, ng_field.field_type)] + ng_field.extra_bits
-            if len(ng_field.serializers) < len(serializer_classes):
-                # this field it not available for all serializer classes, handle polymorphism using
-                # a template to hide the field conditionally depending on the model's content type
-                ctypes = [ContentType.objects.get_for_model(sc.Meta.model) for sc in ng_field.serializers]
-                render_context = Context(dict(ng_field.template_context, ctypes=ctypes))
-                bits.append(template.render(render_context))
+            if ng_field.field_type == 'amount':  # TODO: remove this, just to keep field simple for testing
+                bits = ['nga.field("{}", "{}")'.format(key, ng_field.field_type)]
+            else:
+                bits = ['nga.field("{}", "{}")'.format(key, ng_field.field_type)] + ng_field.extra_bits
+                if len(ng_field.serializers) < len(serializer_classes):
+                    # this field it not available for all serializer classes, handle polymorphism using
+                    # a template to hide the field conditionally depending on the model's content type
+                    ctypes = [ContentType.objects.get_for_model(sc.Meta.model) for sc in ng_field.serializers]
+                    render_context = Context(dict(ng_field.template_context, ctypes=ctypes))
+                    bits.append(template.render(render_context))
             result_list.append(mark_safe('.'.join(bits)))
 
         return result_list
@@ -192,6 +195,8 @@ class DashboardViewSet(ModelViewSet):
             field_type = 'boolean'
         elif isinstance(field, fields.IntegerField):
             field_type = 'number'
+        elif isinstance(field, AmountField):
+            field_type = 'float'  # TODO: use amount
         elif isinstance(field, (fields.FloatField, fields.DecimalField)):
             field_type = 'float'
         elif isinstance(field, fields.EmailField):
