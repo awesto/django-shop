@@ -13,24 +13,6 @@
 		<div ui-view="ng-admin"></div>
 	</main>
 
-	<script src="{% static 'node_modules/angular/angular.min.js' %}" type="text/javascript"></script>
-	<script src="{% static 'node_modules/angular-sanitize/angular-sanitize.min.js' %}" type="text/javascript"></script>
-	<script src="{% static 'node_modules/angular-i18n/angular-locale_de.js' %}"></script>
-	<script src="{% static 'node_modules/ng-admin/build/ng-admin.min.js' %}"></script>
-	<script type="text/javascript">
-angular.module('djangoShopDashboard', ['ngSanitize', 'ng-admin'])
-.config(['$httpProvider', '$locationProvider', function($httpProvider, $locationProvider) {
-	$httpProvider.defaults.headers.common['X-CSRFToken'] = '{{ csrf_token }}';
-	/*
-	$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-	$locationProvider.html5Mode({
-		enabled: true,
-		requireBase: false,
-		rewriteLinks: false
-	});
-	*/
-}]);
-	</script>
 	{% render_bundle 'main' 'js' %}
 	<script type="text/javascript">
 (function(angular, undefined) {

@@ -1,40 +1,30 @@
-var path = require('path');
-var webpack = require('webpack');
+// compile all JS files using
+// ./node_modules/.bin/webpack --config webpack.config.js --watch
+
 var BundleTracker = require('webpack-bundle-tracker');
+var path = require('path');
 
 module.exports = {
-	context: __dirname,
-	entry: './assets/js/index',
+	entry: [
+		'./assets/js/main.js',
+	],
 	output: {
 		path: path.resolve('../workdir/webpack_bundles/'),
 		filename: "[name]-[hash].js"
 	},
 	module: {
-        loaders: [
-            { test: /\.js$/, loader: 'babel-loader' },
-            { test: /\.html$/, loader: 'html-loader' },
-        ],
+		loaders: [
+			{ test: /\.js$/, loader: 'babel', query: {compact: false} },
+			{ test: /\.html$/, loader: 'html' },
+			{ test: /\.(woff2?|svg|ttf|eot)(\?.*)?$/, loader: 'url' },
+		],
 	},
 	plugins: [
 		new BundleTracker({
 			filename: '../workdir/webpack_bundles/webpack-stats.json'
 		}),
 	],
-    externals: {
-        'text-encoding': 'window'
-    }
-}
-
-/*
-
-module.exports = {
-  entry: './app/assets/frontend/main.jsx',
-  output: {
-    path: __dirname + '/app/assets/javascripts',
-    filename: 'bundle.js'
-  },
-  resolve: {
-    extensions: ['', '.js', '.jsx']
-  },
-}
-*/
+	externals: {
+		'text-encoding': 'window'
+	}
+};
