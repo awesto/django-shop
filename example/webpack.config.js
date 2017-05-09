@@ -9,7 +9,32 @@ module.exports = {
 		path: path.resolve('../workdir/webpack_bundles/'),
 		filename: "[name]-[hash].js"
 	},
+	module: {
+        loaders: [
+            { test: /\.js$/, loader: 'babel-loader' },
+            { test: /\.html$/, loader: 'html-loader' },
+        ],
+	},
 	plugins: [
-		new BundleTracker({filename: '../workdir/webpack_bundles/webpack-stats.json'})
-	]
+		new BundleTracker({
+			filename: '../workdir/webpack_bundles/webpack-stats.json'
+		}),
+	],
+    externals: {
+        'text-encoding': 'window'
+    }
 }
+
+/*
+
+module.exports = {
+  entry: './app/assets/frontend/main.jsx',
+  output: {
+    path: __dirname + '/app/assets/javascripts',
+    filename: 'bundle.js'
+  },
+  resolve: {
+    extensions: ['', '.js', '.jsx']
+  },
+}
+*/
