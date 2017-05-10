@@ -4,8 +4,8 @@
 {% block content %}
 <h1>{{ product_name }}</h1>
 
-<form action="{{ request.get_full_path }}" method="post">{% csrf_token %}
-	{% render_form serializer %}
+<form name="{{ serializer.form_name }}" action="{{ request.get_full_path }}" method="post">{% csrf_token %}
+	{% render_form serializer 'djng/vertical/' %}
 	<button class="btn btn-success" type="submit" name="proceed" value="save">{% trans "Save" %}</button>
 </form>
 

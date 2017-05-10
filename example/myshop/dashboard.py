@@ -15,6 +15,9 @@ from myshop.models import SmartCard, SmartPhoneModel, SmartPhoneVariant
 
 
 class SmartCardSerializer(ProductDetailSerializer):
+    form_name = 'smartcard_form'
+    scope_prefix = 'smartcard'
+
     class Meta:
         model = SmartCard
         fields = '__all__'
