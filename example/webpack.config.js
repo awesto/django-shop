@@ -14,7 +14,7 @@ module.exports = {
 	},
 	module: {
 		loaders: [
-			{ test: /\.js$/, loader: 'babel', query: {compact: false} },
+			{ test: /\.js$/, loader: 'babel', query: {compact: false}, exclude: /node_modules\/(?!admin-config)/ },
 			{ test: /\.html$/, loader: 'html' },
 			{ test: /\.(woff2?|svg|ttf|eot)(\?.*)?$/, loader: 'url' },
 		],
