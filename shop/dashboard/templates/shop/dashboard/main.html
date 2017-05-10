@@ -20,6 +20,10 @@
 
 var djangoShopDashboard = angular.module('djangoShopDashboard');
 
+djangoShopDashboard.config(['$httpProvider', function(httpProvider) {
+	httpProvider.defaults.headers.common['X-CSRFToken'] = '{{ csrf_token }}';
+}]);
+
 djangoShopDashboard.config(['RestangularProvider', function(RestangularProvider) {
 	RestangularProvider.addResponseInterceptor(function(data, operation, what, url, response, deferred) {
 		if (operation == "getList") {
