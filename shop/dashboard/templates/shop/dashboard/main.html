@@ -51,6 +51,7 @@ djangoShopDashboard.config(['NgAdminConfigurationProvider', function(nga) {
 		);
 		entity.url("{{ name }}/change");
 		{% else %}
+			{# presumable we have to add the menu again #}
 		entity.label("{{ viewset.get_label }}");
 
 		entity.listView().fields([{% for field in viewset.list_fields %}
