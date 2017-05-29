@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from django.contrib.auth import logout, get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.tokens import default_token_generator
-from django.core.exceptions import NON_FIELD_ERRORS
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
+
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView
@@ -13,7 +14,9 @@ from rest_framework.permissions import AllowAny
 from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer, BrowsableAPIRenderer
 from rest_framework.response import Response
 from rest_auth.views import LoginView as OriginalLoginView
+
 from shop.models.cart import CartModel
+from shop.models.customer import CustomerModel
 from shop.rest.auth import PasswordResetSerializer, PasswordResetConfirmSerializer
 
 
@@ -26,10 +29,10 @@ class AuthFormsView(GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         if request.customer.is_visitor():
-            errmsg = _("Unable to proceed to the checkout page without items in the cart.")
-            errors = {NON_FIELD_ERRORS: errmsg}
-            return Response(errors, status=status.HTTP_400_BAD_REQUEST)
-        form = self.form_class(data=request.data, instance=request.customer)
+            customer = CustomerModel.objects.get_or_create_from_request(request)
+        else:
+            customer = request.customer
+        form = self.form_class(data=request.data, instance=customer)
         if form.is_valid():
             form.save(request=request)
             return Response(form.data, status=status.HTTP_200_OK)
