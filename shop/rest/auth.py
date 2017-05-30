@@ -8,14 +8,16 @@ from shop import app_settings
 
 
 class PasswordResetSerializer(serializers.PasswordResetSerializer):
+    base_template = 'reset-password'
+
     def save(self):
         subject_template = select_template([
-            '{}/email/reset-password-subject.txt'.format(app_settings.APP_LABEL),
-            'shop/email/reset-password-subject.txt',
+            '{}/email/{}-subject.txt'.format(app_settings.APP_LABEL, self.base_template),
+            'shop/email/{}-subject.txt'.format(self.base_template),
         ])
         body_template = select_template([
-            '{}/email/reset-password-body.txt'.format(app_settings.APP_LABEL),
-            'shop/email/reset-password-body.txt',
+            '{}/email/{}-body.txt'.format(app_settings.APP_LABEL, self.base_template),
+            'shop/email/{}-body.txt'.format(self.base_template),
         ])
         opts = {
             'use_https': self.context['request'].is_secure(),

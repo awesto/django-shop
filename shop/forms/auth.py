@@ -13,10 +13,9 @@ from django.utils.translation import ugettext_lazy as _
 from djng.forms import NgModelFormMixin, NgFormValidationMixin
 from djng.styling.bootstrap3.forms import Bootstrap3ModelForm
 
-from rest_auth.serializers import PasswordResetSerializer
-
 from shop import app_settings
 from shop.models.customer import CustomerModel
+from shop.rest.auth import PasswordResetSerializer
 from .base import UniqueEmailValidationMixin
 
 
@@ -102,23 +101,7 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValid
 
 
 class RegisterUserActivateSerializer(PasswordResetSerializer):
-    def save(self):
-        subject_template = select_template([
-            '{}/email/reset-password-subject.txt'.format(app_settings.APP_LABEL),
-            'shop/email/reset-password-subject.txt',
-        ])
-        body_template = select_template([
-            '{}/email/reset-password-body.txt'.format(app_settings.APP_LABEL),
-            'shop/email/reset-password-body.txt',
-        ])
-        opts = {
-            'use_https': self.context['request'].is_secure(),
-            'from_email': getattr(settings, 'DEFAULT_FROM_EMAIL'),
-            'request': self.context['request'],
-            'subject_template_name': subject_template.template.name,
-            'email_template_name': body_template.template.name,
-        }
-        self.reset_form.save(**opts)
+    base_template = 'register-user-activate'
 
 
 class RegisterUserActivateForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValidationMixin, Bootstrap3ModelForm):
