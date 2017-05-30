@@ -151,4 +151,4 @@ class PasswordResetConfirm(GenericAPIView):
         login(request, user)
 
         msg = _("The password for '{email}' has been reset by a new password.")
-        return Response({"success": msg.format(email=customer.email)})
+        return Response({'success': msg.format(email=customer.email)})
