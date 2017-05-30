@@ -21,6 +21,7 @@ AUTH_FORM_TYPES = (
     ('reset', _("Password Reset Form")),
     ('change', _("Change Password Form")),
     ('register-user', _("Register User"), 'shop.forms.auth.RegisterUserForm'),
+    ('register-user-activate', _("Register User with Activation"), 'shop.forms.auth.RegisterUserActivateForm'),
     ('continue-as-guest', _("Continue as guest")),
 )
 
@@ -40,7 +41,7 @@ class ShopAuthForm(LinkForm):
 class ShopAuthenticationPlugin(ShopLinkPluginBase):
     """
     A placeholder plugin which provides various authentication forms, such as login-, logout-,
-    register-, and other forms. They can be added any placeholder using the Cascade framework.
+    register-, and other forms. They can be added to any placeholder using the Cascade framework.
     """
     name = _("Authentication")
     parent_classes = ('BootstrapColumnPlugin',)
@@ -70,10 +71,10 @@ class ShopAuthenticationPlugin(ShopLinkPluginBase):
         form_type = instance.glossary.get('form_type')
         if form_type:
             # prevent a malicious database entry to import an ineligible file
-            form_type = AUTH_FORM_TYPES[[ft[0] for ft in AUTH_FORM_TYPES].index(form_type)]
             try:
+                form_type = AUTH_FORM_TYPES[[ft[0] for ft in AUTH_FORM_TYPES].index(form_type)]
                 FormClass = import_string(form_type[2])
-            except (ImportError, IndexError):
+            except (ImportError, IndexError, ValueError):
                 # TODO: other unresolvable may need another form name
                 context['form_name'] = 'auth_form'
             else:

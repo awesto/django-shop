@@ -20,13 +20,13 @@ def render_robots(request):
     permission = 'noindex' in settings.ROBOTS_META_TAGS and 'Disallow' or 'Allow'
     return HttpResponse('User-Agent: *\n%s: /\n' % permission, content_type='text/plain')
 
-i18n_urls = (
+i18n_urls = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^password-reset-confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/?$',
         PasswordResetConfirm.as_view(template_name='myshop/pages/password-reset-confirm.html'),
         name='password_reset_confirm'),
     url(r'^', include('cms.urls')),
-)
+]
 urlpatterns = [
     url(r'^robots\.txt$', render_robots),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='sitemap'),

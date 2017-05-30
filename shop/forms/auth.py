@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.conf import settings
 from django.contrib.auth import get_user_model, authenticate, login
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ValidationError
@@ -11,6 +12,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from djng.forms import NgModelFormMixin, NgFormValidationMixin
 from djng.styling.bootstrap3.forms import Bootstrap3ModelForm
+
+from rest_auth.serializers import PasswordResetSerializer
 
 from shop import app_settings
 from shop.models.customer import CustomerModel
@@ -45,7 +48,7 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValid
 
     class Meta:
         model = CustomerModel
-        fields = ('email', 'password1', 'password2',)
+        fields = ['email', 'password1', 'password2']
 
     def __init__(self, data=None, instance=None, *args, **kwargs):
         if data and data.get('preset_password', False):
@@ -96,6 +99,55 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValid
             'shop/email/register-user-body.txt',
         ]).render(context)
         user.email_user(subject, body)
+
+
+class RegisterUserActivateSerializer(PasswordResetSerializer):
+    def save(self):
+        subject_template = select_template([
+            '{}/email/reset-password-subject.txt'.format(app_settings.APP_LABEL),
+            'shop/email/reset-password-subject.txt',
+        ])
+        body_template = select_template([
+            '{}/email/reset-password-body.txt'.format(app_settings.APP_LABEL),
+            'shop/email/reset-password-body.txt',
+        ])
+        opts = {
+            'use_https': self.context['request'].is_secure(),
+            'from_email': getattr(settings, 'DEFAULT_FROM_EMAIL'),
+            'request': self.context['request'],
+            'subject_template_name': subject_template.template.name,
+            'email_template_name': body_template.template.name,
+        }
+        self.reset_form.save(**opts)
+
+
+class RegisterUserActivateForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValidationMixin, Bootstrap3ModelForm):
+    form_name = 'register_user_form'
+    scope_prefix = 'form_data'
+    field_css_classes = 'input-group has-feedback'
+
+    email = fields.EmailField(label=_("Your e-mail address"))
+
+    class Meta:
+        model = CustomerModel
+        fields = ['email']
+
+    def save(self, request=None, commit=True):
+        self.instance.user.is_active = True
+        self.instance.user.email = self.cleaned_data['email']
+        password = get_user_model().objects.make_random_password(20)
+        self.instance.user.set_password(password)
+        self.instance.user.save()
+        self.instance.recognize_as_guest(request, commit=False)
+
+        serializer = RegisterUserActivateSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            msg = _("A link to activate this account has been sent to '{email}'.")
+            self.data.update(success=msg.format(**self.cleaned_data))
+            serializer.save()
+
+        customer = super(RegisterUserActivateForm, self).save(commit)
+        return customer
 
 
 class ContinueAsGuestForm(ModelForm):

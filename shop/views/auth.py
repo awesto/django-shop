@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.contrib.auth import logout, get_user_model
+from django.contrib.auth import logout, get_user_model, authenticate, login
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_text
@@ -142,4 +142,13 @@ class PasswordResetConfirm(GenericAPIView):
                 serializer.errors, status=status.HTTP_400_BAD_REQUEST
             )
         serializer.save()
-        return Response({"success": _("Password has been reset with the new password.")})
+
+        # TODO: the following code can be simplified to ``customer = serializer.save().customer``
+        # whenever https://github.com/Tivix/django-rest-auth/pull/334 has been merged
+        customer = serializer.set_password_form.user.customer
+        customer.recognize_as_registered(request)
+        user = authenticate(username=customer.user.username, password=serializer.data['new_password1'])
+        login(request, user)
+
+        msg = _("The password for '{email}' has been reset by a new password.")
+        return Response({"success": msg.format(email=customer.email)})
