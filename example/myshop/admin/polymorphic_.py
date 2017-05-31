@@ -15,7 +15,7 @@ from polymorphic.admin import (PolymorphicParentModelAdmin, PolymorphicChildMode
 
 from shop.admin.product import CMSPageAsCategoryMixin, ProductImageInline, CMSPageFilter
 
-from myshop.models import Product, Commodity, SmartCard, SmartPhone, SmartPhoneModel
+from myshop.models import Product, Commodity, SmartCard, SmartPhoneVariant, SmartPhoneModel
 from myshop.models.polymorphic_.smartphone import OperatingSystem
 
 
@@ -44,7 +44,7 @@ admin.site.register(OperatingSystem, admin.ModelAdmin)
 
 
 class SmartPhoneInline(admin.TabularInline):
-    model = SmartPhone
+    model = SmartPhoneVariant
     extra = 0
 
 
