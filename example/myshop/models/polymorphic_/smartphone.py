@@ -124,9 +124,9 @@ class SmartPhoneModel(Product):
         Return the starting price for instances of this smart phone model.
         """
         if not hasattr(self, '_price'):
-            if self.smartphone_set.exists():
-                currency = self.smartphone_set.first().unit_price.currency
-                aggr = self.smartphone_set.aggregate(models.Min('unit_price'))
+            if self.variants.exists():
+                currency = self.variants.first().unit_price.currency
+                aggr = self.variants.aggregate(models.Min('unit_price'))
                 self._price = MoneyMaker(currency)(aggr['unit_price__min'])
             else:
                 self._price = Money()
@@ -145,15 +145,16 @@ class SmartPhoneModel(Product):
 
     def get_product_variant(self, **kwargs):
         try:
-            return self.smartphone_set.get(**kwargs)
-        except SmartPhone.DoesNotExist as e:
+            return self.variants.get(**kwargs)
+        except SmartPhoneVariant.DoesNotExist as e:
             raise SmartPhoneModel.DoesNotExist(e)
 
 
-class SmartPhone(models.Model):
+class SmartPhoneVariant(models.Model):
     product = models.ForeignKey(
         SmartPhoneModel,
-        verbose_name=_("Smart-Phone Model"),
+        verbose_name=_("Smartphone Model"),
+        related_name='variants',
     )
 
     product_code = models.CharField(
