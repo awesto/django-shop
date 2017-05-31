@@ -88,6 +88,10 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
     active = models.BooleanField(default=True, verbose_name=_("Active"),
         help_text=_("Is this product publicly visible."))
+    # TODO: override MoneyField for the admin
+    # formfield_overrides = {
+    #     MoneyField: {'widget': RichTextEditorWidget},
+    # }
 
     class Meta:
         abstract = True
