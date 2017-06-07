@@ -1,0 +1,10 @@
+{% extends "shop/checkout/customer-form.html" %}
+{% load static sekizai_tags %}
+
+{% block dialog_form %}
+	{{ block.super }}
+	{% addtoblock "css" %}<link href="{% static 'djng/css/fileupload.css' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+	{% addtoblock "js" %}<script src="{% static 'node_modules/ng-file-upload/dist/ng-file-upload.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+	{% addtoblock "js" %}<script src="{% static 'djng/js/django-angular.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+	{% addtoblock "ng-requires" %}djng.fileupload{% endaddtoblock %}
+{% endblock %}

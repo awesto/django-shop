@@ -7,7 +7,6 @@ from django.conf import settings
 from shop.models.defaults.address import ShippingAddress, BillingAddress
 from shop.models.defaults.cart import Cart
 from shop.models.defaults.cart_item import CartItem
-from shop.models.defaults.customer import Customer
 
 __all__ = ['ShippingAddress', 'BillingAddress', 'Cart', 'CartItem', 'Customer', 'OrderItem',
            'Commodity', 'SmartCard', 'SmartPhoneModel', 'SmartPhoneVariant', 'Delivery', 'DeliveryItem']
@@ -16,14 +15,17 @@ __all__ = ['ShippingAddress', 'BillingAddress', 'Cart', 'CartItem', 'Customer', 
 if settings.SHOP_TUTORIAL == 'commodity' or settings.SHOP_TUTORIAL == 'i18n_commodity':
     from shop.models.defaults.order_item import OrderItem
     from shop.models.defaults.commodity import Commodity
+    from shop.models.defaults.customer import Customer
 
 elif settings.SHOP_TUTORIAL == 'smartcard':
     from shop.models.defaults.order_item import OrderItem
     from .smartcard import SmartCard
+    from shop.models.defaults.customer import Customer
 
 elif settings.SHOP_TUTORIAL == 'i18n_smartcard':
     from shop.models.defaults.order_item import OrderItem
     from .i18n_smartcard import SmartCard
+    from shop.models.defaults.customer import Customer
 
 elif settings.SHOP_TUTORIAL == 'polymorphic':
     from .polymorphic_.order import OrderItem
@@ -31,6 +33,7 @@ elif settings.SHOP_TUTORIAL == 'polymorphic':
     from .polymorphic_.commodity import Commodity
     from .polymorphic_.smartcard import SmartCard
     from .polymorphic_.smartphone import SmartPhoneModel, SmartPhoneVariant
+    from shop.models.defaults.customer import Customer
 
 elif settings.SHOP_TUTORIAL == 'i18n_polymorphic':
     from .i18n_polymorphic.order import OrderItem
@@ -38,6 +41,7 @@ elif settings.SHOP_TUTORIAL == 'i18n_polymorphic':
     from .i18n_polymorphic.commodity import Commodity
     from .i18n_polymorphic.smartcard import SmartCard
     from .i18n_polymorphic.smartphone import SmartPhoneModel, SmartPhoneVariant
+    from .customer import Customer
 
 if settings.SHOP_TUTORIAL in ['polymorphic', 'i18n_polymorphic']:
     from shop.models.defaults.delivery import Delivery, DeliveryItem
