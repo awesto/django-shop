@@ -1,7 +1,6 @@
 (function(angular, undefined) {
 'use strict';
 
-// module: django.shop, TODO: move this into a summary JS file
 var djangoShopModule = angular.module('django.shop.forms-set', ['djng.urls', 'djng.forms']);
 
 
@@ -33,14 +32,48 @@ djangoShopModule.directive('shopFormsSet', function() {
 	};
 });
 
-djangoShopModule.directive('form', ['$timeout', function($timeout) {
+
+djangoShopModule.directive('form', ['$window', '$http', '$timeout', 'djangoForm', function($window, $http, $timeout, djangoForm) {
 	return {
 		restrict: 'E',
 		require: ['^?shopFormsSet', 'form'],
 		priority: 1,
 		link: function(scope, element, attrs, controllers) {
+			var uploadURL = attrs.action, scopeForm = scope[attrs.name], scopeData = scope[attrs.scopeModel];
 			if (!controllers[0])
 				return;  // not for forms outside <ANY shop-forms-digest></ANY shop-form-digest>
+
+			function performSumission(action, method) {
+				if (!uploadURL || !scopeForm || !scopeData)
+					throw new URIError("One or more attributes are missing on this form declaration: 'action', 'name' or 'scope-model'");
+				$http({
+					url: uploadURL,
+					method: method,
+					data: scopeData
+				}).then(function(response) {
+					if (!djangoForm.setErrors(scopeForm, response.errors)) {
+						if (action === 'RELOAD_PAGE') {
+							$window.location.reload();
+						} else if (action !== 'DO_NOTHING') {
+							if (response.data.success_url) {
+								$window.location.assign(response.data.success_url);
+							} else {
+								$window.location.assign(action);
+							}
+						}
+					}
+				}, function(response) {
+					console.error(response);
+				});
+			}
+
+			scope.create = function(action) {
+				performSumission(action, 'POST');
+			};
+
+			scope.update = function(action) {
+				performSumission(action, 'PUT');
+			};
 
 			// create new isolated scope for this form
 			scope = scope.$new(true);
