@@ -177,6 +177,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         'new': _("New order without content"),
         'created': _("Order freshly created"),
         'payment_confirmed': _("Payment confirmed"),
+        'payment_declined': _("Payment declined"),
     }
     decimalfield_kwargs = {
         'max_digits': 30,
@@ -230,14 +231,14 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         """
         return dict(pk=number)
 
-    @cached_property
+    @property
     def subtotal(self):
         """
         The summed up amount for all ordered items excluding extra order lines.
         """
         return MoneyMaker(self.currency)(self._subtotal)
 
-    @cached_property
+    @property
     def total(self):
         """
         The final total to charge for this order.
@@ -396,11 +397,11 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
             msg = "Class `{}` must implement a field named `quantity`."
             raise ImproperlyConfigured(msg.format(cls.__name__))
 
-    @cached_property
+    @property
     def unit_price(self):
         return MoneyMaker(self.order.currency)(self._unit_price)
 
-    @cached_property
+    @property
     def line_total(self):
         return MoneyMaker(self.order.currency)(self._line_total)
 
