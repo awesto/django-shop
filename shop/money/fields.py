@@ -36,7 +36,13 @@ class MoneyFormField(forms.DecimalField):
     the Money representation is required.
     """
     def __init__(self, money_class=None, **kwargs):
+        if money_class is None:
+            money_class = MoneyMaker()
+        if not issubclass(money_class, AbstractMoney):
+            raise AttributeError("Given `money_class` does not declare a valid money type")
         self.Money = money_class
+        if 'widget' not in kwargs:
+            kwargs['widget'] = MoneyFieldWidget(attrs={'currency_code': money_class.currency})
         super(MoneyFormField, self).__init__(**kwargs)
 
     def prepare_value(self, value):
