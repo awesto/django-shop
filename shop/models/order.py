@@ -104,13 +104,19 @@ class OrderManager(models.Manager):
         """
         Returns the URL of the page with the list view for all orders related to the current customer
         """
-        if not hasattr(self, '_summary_url'):
-            try:
-                page = Page.objects.public().get(reverse_id='shop-order')
-            except Page.DoesNotExist:
-                page = Page.objects.public().filter(application_urls='OrderApp').first()
-            finally:
-                self._summary_url = page and page.get_absolute_url() or 'cms-page-with--reverse_id=shop-order--does-not-exist/'
+        if hasattr(self, '_summary_url'):
+            return self._summary_url
+        try:  # via CMS pages
+            page = Page.objects.public().get(reverse_id='shop-order')
+        except Page.DoesNotExist:
+            page = Page.objects.public().filter(application_urls='OrderApp').first()
+        if page:
+            self._summary_url = page.get_absolute_url()
+        else:
+            try:  # through hardcoded urlpatterns
+                self._summary_url = reverse('shop-order')
+            except NoReverseMatch:
+                self._summary_url = 'cms-page_or_view_with_reverse_id=shop-order_does_not_exist/'
         return self._summary_url
 
     def get_latest_url(self):
@@ -124,8 +130,7 @@ class OrderManager(models.Manager):
             try:
                 return reverse('shop-order-last')
             except NoReverseMatch:
-                pass
-        return '/cms-page-or-view-with-reverse_id=shop-order-last-does-not-exist/'
+                return '/cms-page_or_view_with_reverse_id=shop-order-last_does_not_exist/'
 
 
 class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
