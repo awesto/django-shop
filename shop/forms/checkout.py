@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
 
 from djng.styling.bootstrap3.forms import Bootstrap3ModelForm
-from djng.styling.bootstrap3.widgets import RadioSelect, RadioFieldRenderer, CheckboxInput
+from djng.styling.bootstrap3.widgets import RadioSelect, RadioFieldRenderer, CheckboxInput, RadioChoiceInput
 
 from shop.models.address import ShippingAddressModel, BillingAddressModel
 from shop.models.customer import CustomerModel
@@ -278,11 +278,28 @@ class BillingAddressForm(AddressForm):
         cart.billing_address = instance if not self['use_primary_address'].value() else None
 
 
+class ValueInsertRadioChoiceInput(RadioChoiceInput):
+    """replaces '$value$' with the input field value in all string attributes"""
+    def tag(self, attrs=None):
+        attrs = attrs or self.attrs
+        for key, value in attrs.items():
+            if isinstance(value, str):
+                attrs[key] = value.replace('$value$', self.choice_value)
+        return super(ValueInsertRadioChoiceInput, self).tag(attrs)
+
+
+class ValueInsertRenderer(RadioFieldRenderer):
+    choice_input_class = ValueInsertRadioChoiceInput
+
+
 class PaymentMethodForm(DialogForm):
+    # from 2nd element of prefix used, always in response after 'data'
+    # is put assigned using `$rootScope.data = response.data;`
     scope_prefix = 'data.payment_method'
 
     payment_modifier = fields.ChoiceField(label=_("Payment Method"),
-        widget=RadioSelect(renderer=RadioFieldRenderer, attrs={'ng-change': 'upload()'})
+        widget=RadioSelect(renderer=ValueInsertRenderer, attrs={'ng-change': 'upload()',
+            'ng-disabled': "$root.data.payment_method.choices.indexOf('$value$') === -1"})
     )
 
     def __init__(self, *args, **kwargs):
@@ -308,6 +325,14 @@ class PaymentMethodForm(DialogForm):
             cart.extra.update(payment_method_form.cleaned_data,
                 payment_extra_data=data.get('payment_data', {}))
         return payment_method_form
+
+    def get_response_data(self):
+        """
+        Override default that returns nothing.
+        Add 'choices' payment modifier list for dynamic client-side disable
+        """
+        choices = [choice[0] for choice in self.base_fields['payment_modifier'].choices]
+        return {'choices': choices}
 
 
 class ShippingMethodForm(DialogForm):
