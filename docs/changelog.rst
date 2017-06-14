@@ -5,6 +5,10 @@ Changelog for django-SHOP
 =========================
 
 
+0.10.3
+======
+* Fix: :class:`shop.rest.renderers.CMSPageRenderer` always uses the template offered by the CMS page,
+  rather than invoking method ``get_template_names()`` from the corresponding ``APIView`` class.
 0.10.2
 ======
 

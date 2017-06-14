@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from rest_framework import renderers
 from rest_framework.compat import template_render
+from rest_framework.exceptions import APIException
 
 
 class CMSPageRenderer(renderers.TemplateHTMLRenderer):
@@ -21,10 +22,14 @@ class CMSPageRenderer(renderers.TemplateHTMLRenderer):
         response = renderer_context['response']
         template_context = self.get_template_context(dict(data), renderer_context)
 
+        if not getattr(request, 'current_page', None):
+            msg = "APIView class '{}' with 'renderer_class=(CMSPageRenderer, ...)' can only be used by a CMSApp"
+            response = view.handle_exception(APIException(detail=msg.format(view.__class__)))
+
         if response.exception:
             template = self.get_exception_template(response)
         else:
-            template_names = self.get_template_names(response, view)
+            template_names = [request.current_page.get_template()]
             template = self.resolve_template(template_names)
             template_context['paginator'] = view.paginator
             # set edit_mode, so that otherwise invisible placeholders can be edited inline
