@@ -9,6 +9,8 @@ Changelog for django-SHOP
 ======
 * Fix: :class:`shop.rest.renderers.CMSPageRenderer` always uses the template offered by the CMS page,
   rather than invoking method ``get_template_names()`` from the corresponding ``APIView`` class.
+* Feature: Add class:`shop.rest.renderers.ShopTemplateHTMLRenderer` which is the counterpart of
+  :class:`shop.rest.renderers.CMSPageRenderer`, usable for hardcoded Django views.
 0.10.2
 ======
 

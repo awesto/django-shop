@@ -5,6 +5,45 @@ from rest_framework import renderers
 from rest_framework.compat import template_render
 from rest_framework.exceptions import APIException
 
+from shop.models.cart import CartModel
+from shop.serializers.cart import CartSerializer
+
+
+class ShopTemplateHTMLRenderer(renderers.TemplateHTMLRenderer):
+    """
+    Modified TemplateHTMLRenderer, which shall be used to render templates used by django-SHOP.
+    Instead of polluting the template context with the serialized data, that information is
+    stored inside a separate `data` attribute, which allows to add a Cart and Paginator object.
+
+    Templates created for this renderer are compatible with the `CMSPageRenderer` (see below).
+    """
+    def render(self, data, accepted_media_type=None, context=None):
+        request = context['request']
+        response = context['response']
+        template_context = {}
+
+        if response.exception:
+            template = self.get_exception_template(response)
+        else:
+            view = context['view']
+            template_names = self.get_template_names(response, view)
+            template = self.resolve_template(template_names)
+            template_context['paginator'] = view.paginator
+
+        template_context['data'] = data
+        self.update_with_cart_context(context)
+        template_context.update(context)
+        return template.render(template_context, request=request)
+
+    def update_with_cart_context(self, context):
+        try:
+            cart = CartModel.objects.get_from_request(context['request'])
+            context['is_cart_filled'] = cart.items.exists()
+            cart_serializer = CartSerializer(cart, context=context, label='cart')
+            context['cart'] = cart_serializer.data
+        except (KeyError, CartModel.DoesNotExist):
+            pass
+
 
 class CMSPageRenderer(renderers.TemplateHTMLRenderer):
     """
