@@ -13,9 +13,9 @@ Changelog for django-SHOP
   :class:`shop.rest.renderers.CMSPageRenderer`, usable for hardcoded Django views.
 * Refactor: In examples *polymorphic* and *i18n_polymorphic*, renamed ``SmartPhone`` to ``SmartPhoneVariant``.
 * Feature: In :class:`shop.money.fields.MoneyFormField` use a widget which renders the currency.
-* Fix: Handle non-decimal types in :method:`shop.money.fields.MoneyField.get_db_prep_save`.
+* Fix: Handle non-decimal types in :meth:`shop.money.fields.MoneyField.get_db_prep_save`.
 * Fix: In AngularJS, changes on filters and the search field did not work on Safari.
-* Fix: In :method:`shop.views.auth.AuthFormsView.post` create a customer object from request for
+* Fix: In :meth:`shop.views.auth.AuthFormsView.post` create a customer object from request for
   a visiting customers, rather than responding with *BAD REQUEST*.
 
 
