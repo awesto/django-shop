@@ -10,6 +10,8 @@ Changelog for django-SHOP
 
 * Fixed: :meth:`shop.models.order.OrderManager.get_summary_url` only worked for views rendered
   as CMS page. Now it also works for static Django views.
+* In :class:`shop.serializers.order.OrderListSerializer` removed fields which never are used and
+  reverted the inclusion logic to include fields explicitly instead of excluding.
 
 
 0.10.2
