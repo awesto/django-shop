@@ -135,11 +135,15 @@ class PaymentModifier(BaseCartModifier):
         """
         raise NotImplemented("Must be implemented by the inheriting class")
 
-    def is_active(self, cart):
+    def is_active(self, cart, request=None):
         """
         Returns true if this payment modifier is active.
+        Deprecation: calls should always supply a request so that '=None' can be removed
         """
-        return cart.extra.get('payment_modifier') == self.identifier
+        try:
+            return request.data['payment_method']['payment_modifier'] == self.identifier
+        except (AttributeError, KeyError):
+            return cart.extra.get('payment_modifier') == self.identifier
 
     def is_disabled(self, cart):
         """
@@ -167,11 +171,15 @@ class ShippingModifier(BaseCartModifier):
         """
         raise NotImplemented("Must be implemented by the inheriting class")
 
-    def is_active(self, cart):
+    def is_active(self, cart, request=None):
         """
         Returns true if this shipping modifier is active.
+        Deprecation: calls should always supply a request so that '=None' can be removed
         """
-        return cart.extra.get('shipping_modifier') == self.identifier
+        try:
+            return request.data['shipping_method']['shipping_modifier'] == self.identifier
+        except (AttributeError, KeyError):
+            return cart.extra.get('shipping_modifier') == self.identifier
 
     def is_disabled(self, cart):
         """

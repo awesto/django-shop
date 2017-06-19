@@ -330,6 +330,7 @@ class PaymentMethodForm(DialogForm):
         """
         Override default that returns nothing.
         Add 'choices' payment modifier list for dynamic client-side disable
+        Must match the __init__ choices, otherwise validation will differ between server & client
         """
         choices = [choice[0] for choice in self.base_fields['payment_modifier'].choices]
         return {'choices': choices}
