@@ -42,8 +42,8 @@ class Order(order.BaseOrder):
 
     @classmethod
     def resolve_number(cls, number):
-        number = number[:4] + number[5:]
-        return dict(number=number)
+        bits = number.split('-')
+        return dict(number=''.join(bits))
 
     def populate_from_cart(self, cart, request):
         self.shipping_address_text = cart.shipping_address.as_text() if cart.shipping_address else ''
