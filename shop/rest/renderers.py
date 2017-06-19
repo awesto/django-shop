@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.template import Context
+
 from rest_framework import renderers
 from rest_framework.compat import template_render
 from rest_framework.exceptions import APIException
@@ -17,22 +19,24 @@ class ShopTemplateHTMLRenderer(renderers.TemplateHTMLRenderer):
 
     Templates created for this renderer are compatible with the `CMSPageRenderer` (see below).
     """
-    def render(self, data, accepted_media_type=None, context=None):
-        request = context['request']
-        response = context['response']
-        template_context = {}
+    def render(self, data, accepted_media_type=None, renderer_context=None):
+        request = renderer_context['request']
+        response = renderer_context['response']
 
         if response.exception:
             template = self.get_exception_template(response)
-        else:
-            view = context['view']
-            template_names = self.get_template_names(response, view)
-            template = self.resolve_template(template_names)
-            template_context['paginator'] = view.paginator
+            template_context = Context(self.get_template_context(data, renderer_context))
+            return template.render(template_context)
 
-        template_context['data'] = data
-        self.update_with_cart_context(context)
-        template_context.update(context)
+        view = renderer_context['view']
+        template_names = self.get_template_names(response, view)
+        template = self.resolve_template(template_names)
+        template_context = {
+            'paginator': view.paginator,
+            'data': data,
+        }
+        self.update_with_cart_context(renderer_context)
+        template_context.update(renderer_context)
         return template.render(template_context, request=request)
 
     def update_with_cart_context(self, context):
@@ -59,7 +63,6 @@ class CMSPageRenderer(renderers.TemplateHTMLRenderer):
         view = renderer_context['view']
         request = renderer_context['request']
         response = renderer_context['response']
-        template_context = self.get_template_context(dict(data), renderer_context)
 
         if not getattr(request, 'current_page', None):
             msg = "APIView class '{}' with 'renderer_class=(CMSPageRenderer, ...)' can only be used by a CMSApp"
@@ -67,13 +70,17 @@ class CMSPageRenderer(renderers.TemplateHTMLRenderer):
 
         if response.exception:
             template = self.get_exception_template(response)
-        else:
-            template_names = [request.current_page.get_template()]
-            template = self.resolve_template(template_names)
-            template_context['paginator'] = view.paginator
-            # set edit_mode, so that otherwise invisible placeholders can be edited inline
-            template_context['edit_mode'] = request.current_page.publisher_is_draft
+            template_context = Context(self.get_template_context(data, renderer_context))
+            return template.render(template_context)
 
-        template_context['data'] = data
-        template_context.update(renderer_context)
+        template_names = [request.current_page.get_template()]
+        template = self.resolve_template(template_names)
+        template_context = self.get_template_context(dict(data), renderer_context)
+        template_context.update(
+            renderer_context,
+            paginator=view.paginator,
+            # set edit_mode, so that otherwise invisible placeholders can be edited inline
+            edit_mode=getattr(request.current_page, 'publisher_is_draft', False),
+            data=data,
+        )
         return template_render(template, template_context, request=request)
