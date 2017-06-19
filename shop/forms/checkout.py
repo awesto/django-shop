@@ -294,7 +294,7 @@ class ValueInsertRenderer(RadioFieldRenderer):
 
 class PaymentMethodForm(DialogForm):
     # from 2nd element of prefix used, always in response after 'data'
-    # is put assigned using `$rootScope.data = response.data;`
+    # is assigned using `$rootScope.data = response.data;`
     scope_prefix = 'data.payment_method'
 
     payment_modifier = fields.ChoiceField(label=_("Payment Method"),
