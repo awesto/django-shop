@@ -17,6 +17,8 @@ Changelog for django-SHOP
 * Fix: In AngularJS, changes on filters and the search field did not work on Safari.
 * Fix: In :meth:`shop.views.auth.AuthFormsView.post` create a customer object from request for
   a visiting customers, rather than responding with *BAD REQUEST*.
+* Fixed: :meth:`shop.models.order.OrderManager.get_summary_url` only worked for views rendered
+  as CMS page. Now it also works for static Django views.
 
 
 0.10.2
