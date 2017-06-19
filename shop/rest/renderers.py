@@ -73,14 +73,16 @@ class CMSPageRenderer(renderers.TemplateHTMLRenderer):
             template_context = Context(self.get_template_context(data, renderer_context))
             return template.render(template_context)
 
+        # set edit_mode, so that otherwise invisible placeholders can be edited inline
+        edit_mode = getattr(request.current_page, 'publisher_is_draft', False)
+
         template_names = [request.current_page.get_template()]
         template = self.resolve_template(template_names)
         template_context = self.get_template_context(dict(data), renderer_context)
         template_context.update(
             renderer_context,
             paginator=view.paginator,
-            # set edit_mode, so that otherwise invisible placeholders can be edited inline
-            edit_mode=getattr(request.current_page, 'publisher_is_draft', False),
+            edit_mode=edit_mode,
             data=data,
         )
         return template_render(template, template_context, request=request)
