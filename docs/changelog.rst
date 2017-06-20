@@ -5,6 +5,13 @@ Changelog for django-SHOP
 =========================
 
 
+0.10.3
+======
+
+* Fixed: :meth:`shop.models.order.OrderManager.get_summary_url` only worked for views rendered
+  as CMS page. Now it also works for static Django views.
+
+
 0.10.2
 ======
 
