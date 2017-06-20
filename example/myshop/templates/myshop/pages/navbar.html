@@ -1,6 +1,8 @@
 {% extends "bootstrap/includes/ng-nav-navbar.html" %}
 {% load static i18n cms_tags menu_tags sekizai_tags sass_tags shop_tags %}
 
+{% page_url 'shop-watch-list' as shop_watch_list_url %}{% if not shop_watch_list_url %}{% url "shop-watch-list" as shop_watch_list_url %}{% endif %}
+
 {% block navbar %}
 	<div class="navbar-extra-top">
 		<div class="container">
@@ -41,16 +43,13 @@
 {% endblock navbar %}
 
 {% block navbar-nav %}
-	{% page_url 'shop-watch-list' as shop_watch_url %}
 	{{ block.super }}
 	<ul class="nav navbar-nav navbar-right">
 		{% with dropdown_extra_class="collapsed-nav" %}
 		{% language_chooser "shop/navbar/language-chooser.html" %}
 		{% include "shop/navbar/login-logout.html" %}
 		{% endwith %}
-		{% if shop_watch_url %}
-		<li>{% include "shop/navbar/watch-icon.html" %}</li>
-		{% endif %}
+		{% include "shop/navbar/watch-icon.html" %}
 		<li>{% cart_icon %}</li>
 	</ul>
 	{% include "shop/navbar/search-form.html" with search_form_classes="shop-search-form navbar-form navbar-right hidden-xs" %}

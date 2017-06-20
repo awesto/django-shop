@@ -1,5 +1,6 @@
 {% load cms_tags %}
+{% page_url "shop-watch-list" as shop_watch_list_url %}{% if not shop_watch_list_url %}{% url "shop-watch-list" as shop_watch_list_url %}{% endif %}
+{% if shop_watch_list_url %}
 {% page_attribute 'menu_title' 'shop-watch-list' as tooltip %}
-<a href="{{ shop_watch_url }}" title="{{ tooltip }}">
-	<i class="fa fa-heart fa-lg" uib-tooltip="{{ tooltip }}"></i>
-</a>
+<li><a href="{{ shop_watch_list_url }}" title="{{ tooltip }}"><i class="fa fa-heart fa-lg" uib-tooltip="{{ tooltip }}"></i></a></li>
+{% endif %}
