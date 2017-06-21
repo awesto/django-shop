@@ -221,7 +221,7 @@ class MoneyDbFieldTests(TestCase):
     def test_default(self):
         EUR = MoneyMaker('EUR')
         f = MoneyDbField(currency='EUR', null=False)
-        self.assertEqual(f.get_default(), EUR())
+        self.assertEqual(f.get_default(), None)
         f = MoneyDbField(currency='EUR', null=True)
         self.assertEqual(f.get_default(), EUR())
         f = MoneyDbField(currency='EUR')
