@@ -220,12 +220,13 @@ class MoneyDbFieldTests(TestCase):
 
     def test_default(self):
         EUR = MoneyMaker('EUR')
-        f = MoneyDbField(currency='EUR', null=False)
-        self.assertEqual(f.get_default(), EUR())
+        OneEuro = EUR(1)
         f = MoneyDbField(currency='EUR', null=True)
+        self.assertEqual(f.get_default(), None)
+        f = MoneyDbField(currency='EUR', null=True, default=EUR())
         self.assertEqual(f.get_default(), EUR())
-        f = MoneyDbField(currency='EUR')
-        self.assertEqual(f.get_default(), EUR())
+        f = MoneyDbField(currency='EUR', null=False, default=OneEuro)
+        self.assertEqual(f.get_default(), OneEuro)
 
     def test_format(self):
         f = MoneyDbField(max_digits=5, decimal_places=3)
