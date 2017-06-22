@@ -14,7 +14,7 @@ Changelog for django-SHOP
   :class:`shop.rest.renderers.CMSPageRenderer`, usable for hardcoded Django views.
 * Refactor: In examples *polymorphic* and *i18n_polymorphic*, renamed ``SmartPhone`` to ``SmartPhoneVariant``.
 * Feature: In :class:`shop.money.fields.MoneyFormField` use a widget which renders the currency.
-* Refactor: In :class:`shop.money.fields.MoneyField` drop support for implicit default value, since it
+* Refactor: In :class:`shop.money.fields.MoneyField`, drop support for implicit default value, since it
   causes more trouble than benefit.
 * Fix: Handle non-decimal types in :meth:`shop.money.fields.MoneyField.get_db_prep_save`.
 * Fix: In AngularJS, changes on filters and the search field did not work on Safari.
