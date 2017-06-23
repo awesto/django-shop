@@ -22,6 +22,8 @@ Changelog for django-SHOP
   a visiting customers, rather than responding with *BAD REQUEST*.
 * Fixed: :meth:`shop.models.order.OrderManager.get_summary_url` only worked for views rendered
   as CMS page. Now it also works for static Django views.
+* Do not render buttons and links related to the watch-list, when it is not available.
+
 
 0.10.2
 ======
