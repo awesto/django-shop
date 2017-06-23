@@ -1,6 +1,6 @@
 # django-SHOP
 
-[![Build Status](https://travis-ci.org/awesto/django-shop.svg)](https://travis-ci.org/awesto/django-shop)
+[![Build Status](https://travis-ci.org/awesto/django-shop.svg?branch=master)](https://travis-ci.org/awesto/django-shop.svg?branch=master)
 [![PyPI version](https://img.shields.io/pypi/v/django-shop.svg)](https://https://pypi.python.org/pypi/django-shop)
 [![Join the chat at https://gitter.im/awesto/django-shop](https://badges.gitter.im/awesto/django-shop.svg)](https://gitter.im/awesto/django-shop?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Twitter Follow](https://img.shields.io/twitter/follow/shields_io.svg?style=social&label=django-SHOP&maxAge=2592000)](https://twitter.com/djangoshop)
@@ -13,13 +13,6 @@ Please get in touch with us on Gitter, if you have problems to upgrade your 0.9 
 help us to adopt the migration path.
 
 
-## NEWS
-
-The core developer of **django-SHOP**, will be at [PyCon Web 2017](https://www.pymunich.com/) from
-May 27th to 28th, in Munich, Germany. If you want to get in touch, please contact me on Gitter or
-Twitter.
-
-
 ## Running the demo projects
 
 To get a first impression on **django-SHOP**, try out one of the six fully working demo projects.
@@ -27,9 +20,9 @@ To get a first impression on **django-SHOP**, try out one of the six fully worki
 
 ### Run the demo in a local virtualenv
 
-Following the instructions  ``docs/tutorial/intro.rst`` should create a running shop in minutes,
-prefilled with a dozen of products. You can even pay by credit card, if you apply for your own
-testing account at Stripe.
+Following the [introduction instructions](http://django-shop.readthedocs.io/en/latest/tutorial/intro.html)
+should create a running shop in minutes, prefilled with a dozen of products. You can even pay by credit
+card, if you apply for your own testing account at Stripe.
 
 
 ### Run the demo using Docker
