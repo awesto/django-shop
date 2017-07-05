@@ -10,7 +10,7 @@ from .iso4217 import CURRENCIES
 
 @python_2_unicode_compatible
 class AbstractMoney(Decimal):
-    MONEY_FORMAT = getattr(app_settings, 'MONEY_FORMAT')
+    MONEY_FORMAT = app_settings.MONEY_FORMAT
 
     def __new__(cls, value):
         raise TypeError("Can not instantiate {} as AbstractMoney.".format(value))
