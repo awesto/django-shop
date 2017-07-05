@@ -74,7 +74,6 @@ class MoneyField(models.DecimalField):
         defaults = {
             'max_digits': 30,
             'decimal_places': CURRENCIES[self.currency_code][1],
-            'default': self.Money(0) if kwargs.get('null', False) else self.Money(),
         }
         defaults.update(kwargs)
         super(MoneyField, self).__init__(*args, **defaults)
@@ -85,7 +84,6 @@ class MoneyField(models.DecimalField):
             kwargs.pop('max_digits')
         if kwargs['decimal_places'] == CURRENCIES[self.currency_code][1]:
             kwargs.pop('decimal_places')
-        kwargs.pop('default')
         return name, path, args, kwargs
 
     def to_python(self, value):

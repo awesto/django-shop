@@ -22,25 +22,28 @@
 	<span class="help-block">{{ register_user_form.preset_password.help_text }}</span>
 </div>
 
-<div shop-form-validate="!form_data.preset_password" ng-hide="form_data.preset_password" style="margin-top: 20px;">
+<div ng-hide="form_data.preset_password" style="margin-top: 20px;">
 	<div class="form-group has-feedback">
 		{{ register_user_form.password1.label_tag }}
 		<div class="input-group" ng-class="hasError('password1')">
 			<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
 			{{ register_user_form.password1 }}
 		</div>
-		<ul ng-messages="register_user_form.password1.$error" ng-show="register_user_form.password1.$pristine" class="shop-form-error" ng-cloak>
+		<ul ng-messages="register_user_form.password1.$error" class="shop-form-error" ng-cloak>
+			<li ng-message="minlength">{% trans "Password is too short" %}</li>
 			<li ng-message="rejected"><span ng-bind="register_user_form.password1.$message"></span></li>
 		</ul>
 		<span class="help-block">{{ register_user_form.password1.help_text }}</span>
 	</div>
 
 	<div class="form-group has-feedback">
+		{{ register_user_form.password2.label_tag }}
 		<div class="input-group" ng-class="hasError('password2')">
 			<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
 			{{ register_user_form.password2 }}
 		</div>
-		<ul ng-messages="register_user_form.password2.$error" ng-show="register_user_form.password2.$pristine" class="shop-form-error" ng-cloak>
+		<ul ng-messages="register_user_form.password2.$error" class="shop-form-error" ng-cloak>
+			<li ng-message="minlength">{% trans "Password is too short" %}</li>
 			<li ng-message="rejected"><span ng-bind="register_user_form.password2.$message"></span></li>
 		</ul>
 		<span class="help-block">{{ register_user_form.password2.help_text }}</span>
@@ -48,6 +51,6 @@
 </div>
 
 <div class="form-group">
-	<button type="button" ng-click="submitForm('{% url 'shop:register-user' %}', 5000)" class="btn btn-primary">{% trans "Register" %}</button>
+	<button type="button" ng-click="submitForm('{% url 'shop:register-user' %}', 5000)" ng-disabled="register_user_form.$invalid && !form_data.preset_password" class="btn btn-primary">{% trans "Register" %}</button>
 </div>
 {% endblock form_content %}

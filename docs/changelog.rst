@@ -8,9 +8,20 @@ Changelog for django-SHOP
 0.10.3
 ======
 
+* Fix: :class:`shop.rest.renderers.CMSPageRenderer` always uses the template offered by the CMS page,
+  rather than invoking method ``get_template_names()`` from the corresponding ``APIView`` class.
+* Feature: Add class:`shop.rest.renderers.ShopTemplateHTMLRenderer` which is the counterpart of
+  :class:`shop.rest.renderers.CMSPageRenderer`, usable for hardcoded Django views.
+* Refactor: In examples *polymorphic* and *i18n_polymorphic*, renamed ``SmartPhone`` to ``SmartPhoneVariant``.
+* Feature: In :class:`shop.money.fields.MoneyFormField` use a widget which renders the currency.
+* Refactor: In :class:`shop.money.fields.MoneyField`, drop support for implicit default value, since it
+  causes more trouble than benefit.
+* Fix: Handle non-decimal types in :meth:`shop.money.fields.MoneyField.get_db_prep_save`.
+* Fix: In AngularJS, changes on filters and the search field did not work on Safari.
+* Fix: In :meth:`shop.views.auth.AuthFormsView.post` create a customer object from request for
+  a visiting customers, rather than responding with *BAD REQUEST*.
 * Fixed: :meth:`shop.models.order.OrderManager.get_summary_url` only worked for views rendered
   as CMS page. Now it also works for static Django views.
-
 
 0.10.2
 ======
