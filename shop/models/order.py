@@ -251,7 +251,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
 
     def get_absolute_url(self):
         """
-        Returns the URL for the detail view of this order
+        Returns the URL for the detail view of this order.
         """
         return urljoin(OrderModel.objects.get_summary_url(), self.get_number())
 
