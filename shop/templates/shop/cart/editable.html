@@ -1,7 +1,12 @@
 {% load i18n static cms_tags sekizai_tags %}
 
+{% addtoblock "js" %}<script src="{% static 'djng/js/django-angular.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+{% addtoblock "ng-requires" %}djng.forms{% endaddtoblock %}
+
 {% addtoblock "js" %}<script src="{% static 'shop/js/cart.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% addtoblock "ng-requires" %}django.shop.cart{% endaddtoblock %}
+
+{% page_url "shop-watch-list" as shop_watch_list_url %}{% if not shop_watch_list_url %}{% url "shop-watch-list" as shop_watch_list_url %}{% endif %}
 
 {% block shop-cart-table %}
 <table shop-cart class="table table-hover">
@@ -83,9 +88,11 @@
 		<button type="button" class="btn btn-xs btn-danger btn-block" ng-click="deleteCartItem(cart_item)">
 			<span class="glyphicon glyphicon-remove-circle"></span>&nbsp;{% trans "Remove" %}
 		</button>
+	{% if shop_watch_list_url %}
 		<button type="button" class="btn btn-xs btn-info btn-block" ng-click="watchCartItem(cart_item)">
 			<span class="glyphicon glyphicon-ok-circle"></span>&nbsp;{% trans "Watch Item" %}
 		</button>
+	{% endif %}
 	</td>
 {% endblock shop-cart-item %}
 </script>
