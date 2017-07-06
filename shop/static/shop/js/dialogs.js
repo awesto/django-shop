@@ -38,7 +38,13 @@ djangoShopModule.controller('DialogController',
 					deferred.resolve(response);
 				}
 			}
+			if (scope.hasOwnProperty('cart')) {
+				scope.cart = response.cart;
+			}
 			$rootScope.cart = response.cart;
+			if (scope.hasOwnProperty('checkout_summary')) {
+				scope.checkout_summary = response.checkout_summary;
+			}
 			$rootScope.checkout_summary = response.checkout_summary;
 		}).error(function(errors) {
 			console.error("Unable to upload checkout forms:");
