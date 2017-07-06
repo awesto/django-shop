@@ -154,5 +154,5 @@ class CheckoutSerializer(serializers.Serializer):
     cart = serializers.SerializerMethodField()
 
     def get_cart(self, instance):
-        serializer = BaseCartSerializer(instance, context=self.context, label='cart')
+        serializer = CartSerializer(instance, context=self.context, label='cart')
         return serializer.data

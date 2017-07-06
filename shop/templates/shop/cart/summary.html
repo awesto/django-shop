@@ -5,7 +5,7 @@
 
 <div class="panel panel-default">
 	<ul class="list-group">
-		<li class="list-group-item">{% trans "Number of items" %}:<div class="pull-right half-width"><strong djng-bind-if="cart.items">{{ cart.items }}</strong></div></li>
+		<li class="list-group-item">{% trans "Number of items" %}:<div class="pull-right half-width"><strong djng-bind-if="cart.num_items">{{ cart.num_items }}</strong></div></li>
 		<li class="list-group-item">{% trans "Subtotal" %}:<div class="pull-right half-width"><strong djng-bind-if="cart.subtotal">{{ cart.subtotal }}</strong></div></li>
 	{% for extra_row in cart.extra_rows %}
 		<li class="list-group-item" ng-if="!cart">
