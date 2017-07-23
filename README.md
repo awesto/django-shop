@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/awesto/django-shop.svg?branch=master)](https://travis-ci.org/awesto/django-shop.svg?branch=master)
 [![PyPI version](https://img.shields.io/pypi/v/django-shop.svg)](https://https://pypi.python.org/pypi/django-shop)
 [![Join the chat at https://gitter.im/awesto/django-shop](https://badges.gitter.im/awesto/django-shop.svg)](https://gitter.im/awesto/django-shop?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Twitter Follow](https://img.shields.io/twitter/follow/shields_io.svg?style=social&label=django-SHOP&maxAge=2592000)](https://twitter.com/djangoshop)
+[![Twitter Follow](https://img.shields.io/twitter/follow/djangoSHOP.svg?style=social&label=djangoSHOP)](https://twitter.com/djangoSHOP)
 
 Version 0.10 of **django-SHOP** is heading towards API stability. Before upgrading to this version
 please read carfully the Changelog, as the API has been simplified and now is much more generic than
