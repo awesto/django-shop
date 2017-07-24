@@ -2,7 +2,7 @@
 # This Dockerfile builds the base image for all merchant implementations using **django-SHOP**:
 # docker build -t awesto/uwsgi-django-shop .
 
-FROM awesto/fedora-uwsgi-python:latest
+FROM awesto/fedora-uwsgi-python:5
 
 LABEL Description="Official django-SHOP image" Maintainer="Jacob Rief <jacob.rief@gmail.com>"
 
@@ -23,7 +23,7 @@ RUN chown redis.redis /etc/uwsgi.d/redis.ini
 RUN cat /etc/resolv.conf
 RUN pip install uwsgi
 ADD requirements /tmp/requirements
-RUN pip install Django==1.10.5
+RUN pip install Django==1.10.7
 RUN pip install -r /tmp/requirements/common.txt
 
 # copy the local django-shop file into a temporary folder
