@@ -6,6 +6,10 @@ FROM awesto/fedora-uwsgi-python:5
 
 LABEL Description="Official django-SHOP image" Maintainer="Jacob Rief <jacob.rief@gmail.com>"
 
+RUN dnf upgrade -y
+RUN dnf install -y redis java
+RUN rpm -i https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.7.5.noarch.rpm
+
 RUN alternatives --install /usr/bin/python python /usr/bin/python3.5 2
 RUN alternatives --install /usr/bin/python python /usr/bin/python2.7 1
 RUN pip install --upgrade pip
