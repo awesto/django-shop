@@ -5,7 +5,7 @@ Changelog for django-SHOP
 =========================
 
 
-0.10.3
+0.11.0
 ======
 
 * Fix: :class:`shop.rest.renderers.CMSPageRenderer` always uses the template offered by the CMS page,
@@ -20,8 +20,19 @@ Changelog for django-SHOP
 * Fix: In AngularJS, changes on filters and the search field did not work on Safari.
 * Fix: In :meth:`shop.views.auth.AuthFormsView.post` create a customer object from request for
   a visiting customers, rather than responding with *BAD REQUEST*.
-* Fixed: :meth:`shop.models.order.OrderManager.get_summary_url` only worked for views rendered
+* Fix: :meth:`shop.models.order.OrderManager.get_summary_url` only worked for views rendered
   as CMS page. Now it also works for static Django views.
+* Simplified all methods ``get_urls()`` from all classes derived from ``CMSApp`` by exploiting
+  CMS-PR 5898 introduced with django-CMS-3.4.4.
+* Remove field ``customer`` from :class:`shop.serializers.order.OrderListSerializer`, since it
+  interfered with the ``customer`` object on the global template_context namespace, causing template
+  `shop/navbar/login-logout.html` to fail.
+* Management command ``fix_filer_bug_965`` is obsolete with django-filer-1.2.8.
+* Fix: Use caption in Order Detail View.
+* Add Leaflet Map plugin from djangocms-cascade for demonstration purpose.
+* Moved ``package.json`` into ``example/package.json`` (and with it ``node_modules``) since it
+  shall be part of the project, rather than the Django app.
+
 
 0.10.2
 ======
