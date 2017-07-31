@@ -2,12 +2,13 @@
 from __future__ import unicode_literals
 
 from django.contrib.auth import get_user_model
-from django.forms import fields, widgets
+from django.forms import widgets
 from django.forms.utils import ErrorDict
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
 
+from djng.forms import fields
 from djng.styling.bootstrap3.forms import Bootstrap3ModelForm
 
 from shop.models.address import ShippingAddressModel, BillingAddressModel
@@ -26,8 +27,8 @@ class CustomerForm(DialogModelForm):
 
     class Meta:
         model = CustomerModel
-        exclude = ('user', 'recognized', 'number', 'last_access',)
-        custom_fields = ('email', 'first_name', 'last_name',)
+        exclude = ['user', 'recognized', 'number', 'last_access']
+        custom_fields = ['email', 'first_name', 'last_name']
 
     def __init__(self, initial=None, instance=None, *args, **kwargs):
         initial = dict(initial) if initial else {}
@@ -58,7 +59,7 @@ class GuestForm(UniqueEmailValidationMixin, DialogModelForm):
 
     class Meta:
         model = get_user_model()  # since we only use the email field, use the User model directly
-        fields = ('email',)
+        fields = ['email']
 
     def __init__(self, initial=None, instance=None, *args, **kwargs):
         if isinstance(instance, CustomerModel):
@@ -82,7 +83,7 @@ class AddressForm(DialogModelForm):
     )
 
     use_primary_address = fields.BooleanField(
-        label=_("Use primary address"),  # label will be overridden by Shipping/Billing/AddressForm
+        label="use primary address",  # label will be overridden by Shipping/Billing/AddressForm
         required=False,
         initial=True,
         widget=widgets.CheckboxInput(),

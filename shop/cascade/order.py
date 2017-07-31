@@ -2,15 +2,17 @@
 from __future__ import unicode_literals
 
 from django import forms
-from django.forms import fields, widgets
+from django.forms import widgets
 from django.core.exceptions import ValidationError
 from django.template import engines
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
-from djng.forms import NgModelFormMixin
+
+from djng.forms import fields, NgModelFormMixin
 from djng.styling.bootstrap3.forms import Bootstrap3Form
+
 from shop import app_settings
 from .plugin_base import ShopPluginBase
 
