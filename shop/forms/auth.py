@@ -23,6 +23,7 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValid
     field_css_classes = 'input-group has-feedback'
 
     email = fields.EmailField(label=_("Your e-mail address"))
+
     preset_password = fields.BooleanField(
         label=_("Preset password"),
         widget=widgets.CheckboxInput(),
