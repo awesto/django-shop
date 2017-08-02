@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from six import with_metaclass
 from decimal import Decimal
+
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.core.urlresolvers import reverse
 from django.db import models, transaction
@@ -324,6 +325,13 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         """
 
     @classmethod
+    def get_all_transitions(cls):
+        """
+        Returns a generator over all transition objects for this Order model.
+        """
+        return cls.status.field.get_all_transitions(OrderModel)
+
+    @classmethod
     def get_transition_name(cls, target):
         """Return the human readable name for a given transition target"""
         return cls._transition_targets.get(target, target)
@@ -333,7 +341,6 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         return self._transition_targets.get(self.status, self.status)
 
     status_name.short_description = pgettext_lazy('order_models', "State")
-
 
 OrderModel = deferred.MaterializedModel(BaseOrder)
 

@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from collections import OrderedDict
+
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.forms import widgets
 from django.utils.translation import ugettext_lazy as _
+
 from shop.models.notification import Notification, NotificationAttachment
 from shop.models.order import OrderModel
 
@@ -30,8 +33,7 @@ class NotificationAdmin(admin.ModelAdmin):
 
     def get_transition_choices(self):
         choices = OrderedDict()
-        status_field = [f for f in OrderModel._meta.fields if f.name == 'status'].pop()
-        for transition in status_field.get_all_transitions(OrderModel):
+        for transition in OrderModel.get_all_transitions():
             if transition.target:
                 transition_name = OrderModel.get_transition_name(transition.target)
                 choices[transition.target] = transition_name
