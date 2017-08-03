@@ -21,7 +21,7 @@ from django_fsm import FSMField, transition
 from ipware.ip import get_ip
 from cms.models import Page
 
-from shop import app_settings
+from shop.conf import app_settings
 from shop.models.cart import CartItemModel
 from shop.models.fields import JSONField
 from shop.money.fields import MoneyField, MoneyMaker

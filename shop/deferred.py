@@ -7,7 +7,7 @@ from django.utils import six
 from django.utils.functional import LazyObject, empty
 from polymorphic.models import PolymorphicModelBase
 
-from shop import app_settings
+from shop.conf import app_settings
 
 
 class DeferredRelatedField(object):

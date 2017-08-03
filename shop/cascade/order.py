@@ -13,7 +13,7 @@ from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
 from djng.forms import fields, NgModelFormMixin
 from djng.styling.bootstrap3.forms import Bootstrap3Form
 
-from shop import app_settings
+from shop.conf import app_settings
 from .plugin_base import ShopPluginBase
 
 

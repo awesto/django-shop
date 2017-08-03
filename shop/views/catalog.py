@@ -14,7 +14,7 @@ from rest_framework import views
 from rest_framework.renderers import BrowsableAPIRenderer
 from rest_framework.response import Response
 
-from shop import app_settings
+from shop.conf import app_settings
 from shop.models.product import ProductModel
 from shop.rest.filters import CMSPagesFilterBackend
 from shop.rest.money import JSONRenderer

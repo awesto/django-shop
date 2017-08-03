@@ -5,7 +5,7 @@ from django.db import models
 
 from rest_framework import serializers
 
-from shop import app_settings
+from shop.conf import app_settings
 from shop.models.cart import CartModel, CartItemModel, BaseCartItem
 from shop.rest.money import MoneyField
 

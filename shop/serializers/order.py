@@ -5,7 +5,7 @@ from django.utils import timezone
 
 from rest_framework import serializers
 
-from shop import app_settings
+from shop.conf import app_settings
 from shop.models.cart import CartModel
 from shop.models.order import OrderModel
 from shop.rest.money import MoneyField

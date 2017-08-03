@@ -18,7 +18,7 @@ from cmsplugin_cascade.widgets import NumberInputWidget
 from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
 from cmsplugin_cascade.plugin_base import TransparentWrapper, TransparentContainer
 
-from shop import app_settings
+from shop.conf import app_settings
 from shop.cascade.plugin_base import ShopPluginBase
 
 

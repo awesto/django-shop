@@ -13,7 +13,7 @@ from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
-from shop import app_settings
+from shop.conf import app_settings
 from shop.admin.order import OrderItemInline
 from shop.models.order import OrderItemModel
 from shop.models.delivery import DeliveryModel, DeliveryItemModel

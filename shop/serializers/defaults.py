@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from rest_framework import serializers
 from rest_framework.fields import empty
 
-from shop import app_settings
+from shop.conf import app_settings
 from shop.models.product import ProductModel
 from shop.rest.money import MoneyField
 from shop.serializers.bases import BaseCustomerSerializer

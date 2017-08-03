@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.utils.encoding import python_2_unicode_compatible
 from decimal import Decimal, InvalidOperation
 from cms.utils.helpers import classproperty
-from shop import app_settings
+from shop.conf import app_settings
 from .iso4217 import CURRENCIES
 
 

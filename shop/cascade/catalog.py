@@ -13,7 +13,7 @@ from cmsplugin_cascade.mixins import WithSortableInlineElementsMixin
 from cmsplugin_cascade.models import SortableInlineCascadeElement
 from cmsplugin_cascade.fields import GlossaryField
 
-from shop import app_settings
+from shop.conf import app_settings
 from shop.models.product import ProductModel
 from .plugin_base import ShopPluginBase, ProductSelectField
 

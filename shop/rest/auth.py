@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from django.conf import settings
 from django.template.loader import select_template
+
 from rest_framework.serializers import CharField
 from rest_auth import serializers
-from shop import app_settings
+
+from shop.conf import app_settings
 
 
 class PasswordResetSerializer(serializers.PasswordResetSerializer):

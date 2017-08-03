@@ -12,7 +12,7 @@ from django.utils.translation import get_language_from_request
 
 from rest_framework import serializers
 
-from shop import app_settings
+from shop.conf import app_settings
 from shop.models.customer import CustomerModel
 from shop.models.product import ProductModel
 from shop.models.order import OrderItemModel

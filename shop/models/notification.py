@@ -18,7 +18,7 @@ from post_office.models import Email as OriginalEmail, EmailTemplate
 
 from filer.fields.file import FilerFileField
 
-from shop import app_settings
+from shop.conf import app_settings
 from .customer import CustomerModel
 
 

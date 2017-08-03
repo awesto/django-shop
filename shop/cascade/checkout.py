@@ -28,7 +28,7 @@ from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.plugin_base import TransparentContainer
 from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
 
-from shop import app_settings
+from shop.conf import app_settings
 from shop.forms.checkout import AcceptConditionForm
 from shop.models.cart import CartModel
 from shop.modifiers.pool import cart_modifiers_pool

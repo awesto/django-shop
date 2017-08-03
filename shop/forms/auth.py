@@ -12,7 +12,7 @@ from django.utils.translation import ugettext_lazy as _
 from djng.forms import fields, NgModelFormMixin, NgFormValidationMixin
 from djng.styling.bootstrap3.forms import Bootstrap3ModelForm
 
-from shop import app_settings
+from shop.conf import app_settings
 from shop.models.customer import CustomerModel
 from .base import UniqueEmailValidationMixin
 

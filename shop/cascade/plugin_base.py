@@ -23,7 +23,7 @@ from cmsplugin_cascade.link.forms import LinkForm
 from cmsplugin_cascade.link.plugin_base import LinkPluginBase, LinkElementMixin
 from django_select2.forms import HeavySelect2Widget
 
-from shop import app_settings
+from shop.conf import app_settings
 from shop.forms.base import DialogFormMixin
 from shop.models.cart import CartModel
 from shop.models.product import ProductModel

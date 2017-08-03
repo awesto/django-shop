@@ -9,7 +9,7 @@ from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.fields import GlossaryField
 from cmsplugin_cascade.plugin_base import TransparentContainer
 
-from shop import app_settings
+from shop.conf import app_settings
 from shop.models.cart import CartModel
 from shop.serializers.cart import CartSerializer
 from .plugin_base import ShopPluginBase

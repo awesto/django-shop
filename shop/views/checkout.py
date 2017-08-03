@@ -10,7 +10,7 @@ from rest_framework.exceptions import ValidationError
 
 from cms.plugin_pool import plugin_pool
 
-from shop import app_settings
+from shop.conf import app_settings
 from shop.serializers.cart import CheckoutSerializer
 from shop.modifiers.pool import cart_modifiers_pool
 from shop.views.cart import BaseViewSet
