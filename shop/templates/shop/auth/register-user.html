@@ -22,7 +22,7 @@
 	<span class="help-block">{{ register_user_form.preset_password.help_text }}</span>
 </div>
 
-<div ng-hide="form_data.preset_password" style="margin-top: 20px;">
+<div ng-if="!form_data.preset_password" style="margin-top: 20px;">
 	<div class="form-group has-feedback">
 		{{ register_user_form.password1.label_tag }}
 		<div class="input-group" ng-class="hasError('password1')">
@@ -51,6 +51,6 @@
 </div>
 
 <div class="form-group">
-	<button type="button" ng-click="submitForm('{% url 'shop:register-user' %}', 5000)" ng-disabled="register_user_form.$invalid && !form_data.preset_password" class="btn btn-primary">{% trans "Register" %}</button>
+	<button type="button" ng-click="submitForm('{% url 'shop:register-user' %}', 5000)" ng-disabled="register_user_form.$invalid" class="btn btn-primary">{% trans "Register" %}</button>
 </div>
 {% endblock form_content %}
