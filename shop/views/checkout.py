@@ -67,7 +67,9 @@ class CheckoutViewSet(BaseViewSet):
         # save data, get text representation and collect potential errors
         errors, checkout_summary, response_data = {}, {}, {'$valid': True}
         with transaction.atomic():
+            # only validates the relevant submitted checkout page form data
             for form_class, data in dialog_data:
+                # payment & shipping method forms call cart.update(request) which runs all modifiers
                 form = form_class.form_factory(request, data, cart)
                 if form.is_valid():
                     # empty error dict forces revalidation by the client side validation
@@ -85,8 +87,9 @@ class CheckoutViewSet(BaseViewSet):
                     response_data[key] = update_data
             cart.save()
 
-        # add possible form errors for giving feedback to the customer
+        # produces a response with correct cart contents by running all modifiers via cart.update(request)
         response = self.list(request)
+        # adds the rest of the data for the checkout forms including customer feedback errors
         response.data.update(errors=errors, checkout_summary=checkout_summary, data=response_data)
         return response
 
