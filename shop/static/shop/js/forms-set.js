@@ -33,6 +33,10 @@ djangoShopModule.directive('shopFormsSet', function() {
 	};
 });
 
+
+// This directive enriches AngularJS's internal form-controller if it is wrapped inside a
+// <ANY shop-forms-set ...> directive. It's only purpose is to summarize the validity of the given forms,
+// so that buttons rendered outside of the forms can check the ``stepIsValid`` attribute.
 djangoShopModule.directive('form', ['$timeout', function($timeout) {
 	return {
 		restrict: 'E',

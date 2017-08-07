@@ -37,12 +37,13 @@ class Order(order.BaseOrder):
         return self.get_number()
 
     def get_number(self):
-        return str(self.number)[:4] + '-' + str(self.number)[4:]
+        number = str(self.number)
+        return '{}-{}'.format(number[:4], number[4:])
 
     @classmethod
     def resolve_number(cls, number):
-        number = number[:4] + number[5:]
-        return dict(number=number)
+        bits = number.split('-')
+        return dict(number=''.join(bits))
 
     def populate_from_cart(self, cart, request):
         self.shipping_address_text = cart.shipping_address.as_text() if cart.shipping_address else ''

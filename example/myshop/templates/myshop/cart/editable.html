@@ -24,8 +24,10 @@
 		<button type="button" class="btn btn-xs btn-danger btn-block" ng-click="deleteCartItem(cart_item)">
 			<span class="glyphicon glyphicon-remove-circle"></span>&nbsp;{% trans "Remove" %}
 		</button>
+	{% if shop_watch_list_url %}
 		<button type="button" class="btn btn-xs btn-info btn-block" ng-click="watchCartItem(cart_item)">
 			<span class="glyphicon glyphicon-ok-circle"></span>&nbsp;{% trans "Watch Item" %}
 		</button>
+	{% endif %}
 	</td>
 {% endblock shop-cart-item %}

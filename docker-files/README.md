@@ -14,7 +14,7 @@ Since it's Dockerfile does not contain a ``CMD`` statement, starting that Docker
 container, doesn't make much sense. However, one might want to look around and examine the file
 structure.
 
-To start the container, invoke:
+To start with a throwaway container, invoke:
 
 ```
 docker run --rm -ti awesto/uwsgi-django-shop /bin/bash

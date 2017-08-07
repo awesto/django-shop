@@ -93,13 +93,19 @@ class OrderManager(models.Manager):
         """
         Returns the URL of the page with the list view for all orders related to the current customer
         """
-        if not hasattr(self, '_summary_url'):
-            try:
-                page = Page.objects.public().get(reverse_id='shop-order')
-            except Page.DoesNotExist:
-                page = Page.objects.public().filter(application_urls='OrderApp').first()
-            finally:
-                self._summary_url = page and page.get_absolute_url() or 'cms-page-with--reverse_id=shop-order--does-not-exist/'
+        if hasattr(self, '_summary_url'):
+            return self._summary_url
+        try:  # via CMS pages
+            page = Page.objects.public().get(reverse_id='shop-order')
+        except Page.DoesNotExist:
+            page = Page.objects.public().filter(application_urls='OrderApp').first()
+        if page:
+            self._summary_url = page.get_absolute_url()
+        else:
+            try:  # through hardcoded urlpatterns
+                self._summary_url = reverse('shop-order')
+            except NoReverseMatch:
+                self._summary_url = 'cms-page_or_view_with_reverse_id=shop-order_does_not_exist/'
         return self._summary_url
 
     def get_latest_url(self):
@@ -113,8 +119,7 @@ class OrderManager(models.Manager):
             try:
                 return reverse('shop-order-last')
             except NoReverseMatch:
-                pass
-        return '/cms-page-or-view-with-reverse_id=shop-order-last-does-not-exist/'
+                return '/cms-page_or_view_with_reverse_id=shop-order-last_does_not_exist/'
 
 
 class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
@@ -161,6 +166,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         'new': _("New order without content"),
         'created': _("Order freshly created"),
         'payment_confirmed': _("Payment confirmed"),
+        'payment_declined': _("Payment declined"),
     }
     decimalfield_kwargs = {
         'max_digits': 30,
@@ -214,14 +220,14 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         """
         return dict(pk=number)
 
-    @cached_property
+    @property
     def subtotal(self):
         """
         The summed up amount for all ordered items excluding extra order lines.
         """
         return MoneyMaker(self.currency)(self._subtotal)
 
-    @cached_property
+    @property
     def total(self):
         """
         The final total to charge for this order.
@@ -235,7 +241,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
 
     def get_absolute_url(self):
         """
-        Returns the URL for the detail view of this order
+        Returns the URL for the detail view of this order.
         """
         return urljoin(OrderModel.objects.get_summary_url(), self.get_number())
 
@@ -395,11 +401,11 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
             msg = "Class `{}` must implement a field named `quantity`."
             raise ImproperlyConfigured(msg.format(cls.__name__))
 
-    @cached_property
+    @property
     def unit_price(self):
         return MoneyMaker(self.order.currency)(self._unit_price)
 
-    @cached_property
+    @property
     def line_total(self):
         return MoneyMaker(self.order.currency)(self._line_total)
 
