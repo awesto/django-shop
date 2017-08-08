@@ -70,7 +70,7 @@ class AddToCartSerializer(serializers.Serializer):
         variation rather than being part of the product itself.
         """
         product = context['product']
-        extra = data.get('extra', {})
+        extra = data.get('extra', {}) if data is not empty else {}
         return {
             'product': product.id,
             'product_code': product.product_code,
