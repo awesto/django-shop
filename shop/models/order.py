@@ -144,8 +144,8 @@ class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
         Model = super(WorkflowMixinMetaclass, cls).__new__(cls, name, bases, attrs)
         return Model
 
-    @staticmethod
-    def add_to_auto_transitions(base):
+    @classmethod
+    def add_to_auto_transitions(cls, base):
         result = {}
         for name, method in base.__dict__.items():
             if callable(method) and hasattr(method, '_django_fsm'):
