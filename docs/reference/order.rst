@@ -368,7 +368,8 @@ For further details on Finite State Machine transitions, please refer to the `FS
 however does not cover the contents of dictionary ``custom``. One of the attributes in ``custom``
 is ``button="Any Label"`` as explained in the `FSM admin docs`_. The other is ``auto=True``
 and has been introduced by **django-SHOP** itself. It is used to automatically proceed from
-one target to another one, without manual intervention, such as clicking onto a button.
+one target to another one, without manual intervention, such as clicking a button in the admin or
+calling another transition method.
 
 
 Signals
@@ -396,7 +397,8 @@ In Django, we typically register signal handlers in the ``ready`` method of the 
 
 	    def ready(self):
 	        from django_fsm.signals import post_transition
-	        post_transition.connect(order_event_notification)
+	        from shop.models import OrderModel
+	        post_transition.connect(order_event_notification, sender=OrderModel)
 
 	def order_event_notification(sender, instance=None, target=None, **kwargs):
 	    if target == 'payment_confirmed':

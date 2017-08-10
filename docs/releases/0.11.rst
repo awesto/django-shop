@@ -2,6 +2,9 @@
 Release notes for version 0.11
 ==============================
 
+Order Model
+===========
+
 Since some payment providers require to have an existing order object before the payment is
 fulfilled, method ``OrderManager.create_from_cart()`` does not invoke the method
 ``order.populate_from_cart()`` anymore. This now must be performed by the payment service provider
@@ -11,3 +14,7 @@ in two steps:
 
 	order = OrderModel.objects.create_from_cart(cart, request)
 	order.populate_from_cart(cart, request)
+
+
+
+Renamed related field ``order.payment_set`` to ``order.payments``

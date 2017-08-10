@@ -305,7 +305,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         """
         The amount paid is the sum of related orderpayments
         """
-        amount = self.orderpayment_set.aggregate(amount=Sum('amount'))['amount']
+        amount = self.payments.aggregate(amount=Sum('amount'))['amount']
         if amount is None:
             amount = MoneyMaker(self.currency)()
         return amount
@@ -346,14 +346,33 @@ class OrderPayment(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     A model to hold received payments for a given order.
     """
-    order = deferred.ForeignKey(BaseOrder, verbose_name=_("Order"))
-    amount = MoneyField(_("Amount paid"),
-                        help_text=_("How much was paid with this particular transfer."))
-    transaction_id = models.CharField(_("Transaction ID"), max_length=255,
-                                      help_text=_("The transaction processor's reference"))
-    created_at = models.DateTimeField(_("Received at"), auto_now_add=True)
-    payment_method = models.CharField(_("Payment method"), max_length=50,
-                                      help_text=_("The payment backend used to process the purchase"))
+    order = deferred.ForeignKey(
+        BaseOrder,
+        related_name='payments',
+        verbose_name=_("Order"),
+    )
+
+    amount = MoneyField(
+        _("Amount paid"),
+        help_text=_("How much was paid with this particular transfer."),
+    )
+
+    transaction_id = models.CharField(
+        _("Transaction ID"),
+        max_length=255,
+        help_text=_("The transaction processor's reference"),
+    )
+
+    created_at = models.DateTimeField(
+        _("Received at"),
+        auto_now_add=True,
+    )
+
+    payment_method = models.CharField(
+        _("Payment method"),
+        max_length=50,
+        help_text=_("The payment backend used to process the purchase"),
+    )
 
     class Meta:
         verbose_name = pgettext_lazy('order_models', "Order payment")
