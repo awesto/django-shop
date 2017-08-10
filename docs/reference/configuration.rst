@@ -671,12 +671,12 @@ manage the media assets.
 
 	THUMBNAIL_PRESERVE_EXTENSIONS = True
 
-	THUMBNAIL_PROCESSORS = [
+	THUMBNAIL_PROCESSORS = (
 	    'easy_thumbnails.processors.colorspace',
 	    'easy_thumbnails.processors.autocrop',
 	    'filer.thumbnail_processors.scale_and_crop_with_subject_location',
 	    'easy_thumbnails.processors.filters',
-	]
+	)
 
 all settings are explained in detail in the documentation of django-filer_ and easy-thumbnails_.
 
