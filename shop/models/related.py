@@ -23,7 +23,8 @@ class ChoiceEnumMeta(enum.EnumMeta):
 
 
 @python_2_unicode_compatible
-class ChoiceEnum(with_metaclass(ChoiceEnumMeta, enum.Enum)):
+class ChoiceEnum(enum.Enum):
+    __metaclass__ = ChoiceEnumMeta
     """
     Utility class to handle choices in Django model fields
     """
