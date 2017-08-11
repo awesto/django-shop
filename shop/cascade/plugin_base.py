@@ -203,9 +203,6 @@ class DialogFormPluginBase(ShopPluginBase):
         render_type = dict(cls.RENDER_CHOICES).get(render_type, '')
         return format_html(pgettext_lazy('get_identifier', "as {}"), render_type)
 
-    def __init__(self, *args, **kwargs):
-        super(DialogFormPluginBase, self).__init__(*args, **kwargs)
-
     def get_form_data(self, context, instance, placeholder):
         """
         Returns data to initialize the corresponding dialog form.
