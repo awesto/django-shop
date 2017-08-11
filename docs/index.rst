@@ -90,6 +90,7 @@ Development and Community
     :maxdepth: 1
 
     changelog
+    releases/0.11
     upgrading
     contributing
     authors
