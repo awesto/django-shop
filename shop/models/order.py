@@ -142,7 +142,7 @@ class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
 
     def __new__(cls, name, bases, attrs):
         if 'BaseOrder' in (b.__name__ for b in bases):
-            bases = app_settings.ORDER_WORKFLOWS + bases
+            bases = tuple(app_settings.ORDER_WORKFLOWS) + bases
             # merge the dicts of TRANSITION_TARGETS
             attrs.update(_transition_targets={}, _auto_transitions={})
             for b in reversed(bases):
