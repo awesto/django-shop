@@ -51,6 +51,8 @@ class DefaultSettings(object):
         Number of decimal places for the internal representation of a price.
         This is purely used by the Django admin and is not the number of digits
         visible by the customer.
+
+        Defaults to 2.
         """
         return self._setting('SHOP_DECIMAL_PLACES', 2)
 
@@ -82,7 +84,6 @@ class DefaultSettings(object):
 
         Defaults to a minimalistic Product serializer.
         """
-
         from django.core.exceptions import ImproperlyConfigured
         from django.utils.module_loading import import_string
         from shop.serializers.bases import ProductSerializer
@@ -140,32 +141,41 @@ class DefaultSettings(object):
     @property
     def SHOP_CART_MODIFIERS(self):
         """
-        Specifies a list of cart modifiers
+        Specifies the list of :ref:`reference/cart-modifiers`. They are are applied on each cart item and the
+        cart final sums.
+
+        This list typically starts with ``'shop.modifiers.defaults.DefaultCartModifier'`` as its first entry,
+        followed by other cart modifiers.
         """
         from django.utils.module_loading import import_string
 
-        cart_modifiers = self._setting('SHOP_CART_MODIFIERS',
-                                       ('shop.modifiers.defaults.DefaultCartModifier',))
+        cart_modifiers = self._setting('SHOP_CART_MODIFIERS', ['shop.modifiers.defaults.DefaultCartModifier'])
         return tuple(import_string(mc) for mc in cart_modifiers)
 
     @property
     def SHOP_VALUE_ADDED_TAX(self):
         """
         Use this convenience settings if you can apply the same tax rate for all products
-        and you use one of the default tax modifiers ``CartIncludeTaxModifier`` or
-        ``CartExcludedTaxModifier``. Don't use this, if your products require individual tax rates.
+        and you use one of the default tax modifiers :class:`shop.modifiers.taxes.CartIncludeTaxModifier`
+        or :class:`shop.modifiers.taxes.CartExcludedTaxModifier`.
+
+        If your products require individual tax rates or you ship into states with different tax rates,
+        then you must provide your own tax modifier.
         """
         from decimal import Decimal
         return self._setting('SHOP_VALUE_ADDED_TAX', Decimal('20'))
 
     @property
     def SHOP_ORDER_WORKFLOWS(self):
+        """
+        Specifies a list of :ref:`reference/order-workflows`. Order workflows are applied after
+        an order has been created and conduct the vendor through the steps of receiving the payments
+        until fulfilling the shipment.
+        """
         from django.utils.module_loading import import_string
 
-        return tuple(
-            import_string(mc)
-            for mc in self._setting('SHOP_ORDER_WORKFLOWS', ())
-        )
+        order_workflows = self._setting('SHOP_ORDER_WORKFLOWS', [])
+        return [import_string(mc) for mc in order_workflows]
 
     @property
     def SHOP_ADD2CART_NG_MODEL_OPTIONS(self):
@@ -192,13 +202,21 @@ class DefaultSettings(object):
     @property
     def SHOP_GUEST_IS_ACTIVE_USER(self):
         """
-        If this directive is True, customers which declared themselves as guests, may request
-        a password reset, so that they can log into their account at a later time. The default is False.
+        If this directive is ``True``, customers which declared themselves as guests, may request
+        a password reset, so that they can log into their account at a later time.
+
+        The default is ``False``.
         """
         return self._setting('SHOP_GUEST_IS_ACTIVE_USER', False)
 
     @property
     def SHOP_CACHE_DURATIONS(self):
+        """
+        In the product's list views, HTML snippets are created for the summary representation of
+        each product.
+
+        By default these snippet are cached for one day.
+        """
         result = self._setting('SHOP_CACHE_DURATIONS') or {}
         result.setdefault('product_html_snippet', 86400)
         return result
@@ -206,7 +224,7 @@ class DefaultSettings(object):
     @property
     def SHOP_DIALOG_FORMS(self):
         """
-        Specify a list of dialog forms available in our ``shop.views.checkout.CheckoutViewSet``.
+        Specify a list of dialog forms available in our :ref:`shop.views.checkout.CheckoutViewSet`.
         This allows us to use its endpoint ``resolve('shop:checkout-upload')`` in a generic way.
 
         If Cascade plugins are used for the forms in the checkout view, this list can be empty.

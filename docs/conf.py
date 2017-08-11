@@ -14,6 +14,7 @@
 import os
 import sys
 import datetime
+from django.conf import settings
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -50,8 +51,10 @@ copyright = datetime.date.today().strftime('Copyright %Y, Jacob Rief')
 # built documents.
 #
 # The short X.Y version.
-path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
 sys.path.insert(0, path)
+settings.configure()
+
 import shop
 
 version = shop.__version__
@@ -91,6 +94,8 @@ pygments_style = 'sphinx'
 
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
+
+autodoc_member_order = 'bysource'
 
 
 # -- Options for HTML output ---------------------------------------------------
