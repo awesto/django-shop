@@ -31,4 +31,11 @@
 	</tbody>
 	{% endblock shop-order-tbody %}
 
+	{% block shop-order-tfoot %}
+	<tfoot>
+		<tr>
+			<td colspan="4" class="text-center">{{ paginator.to_html }}</td>
+		</tr>
+	</tfoot>
+	{% endblock shop-order-tfoot %}
 {% endblock shop-order-table %}
