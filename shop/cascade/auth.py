@@ -81,6 +81,6 @@ class ShopAuthenticationPlugin(ShopLinkPluginBase):
                 context['form_name'] = FormClass.form_name
                 context[FormClass.form_name] = FormClass()
         context['action'] = instance.link
-        return super(ShopAuthenticationPlugin, self).render(context, instance, placeholder)
+        return self.super(ShopAuthenticationPlugin, self).render(context, instance, placeholder)
 
 plugin_pool.register_plugin(ShopAuthenticationPlugin)

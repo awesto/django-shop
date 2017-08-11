@@ -245,8 +245,8 @@ class DialogFormPluginBase(ShopPluginBase):
         request._plugin_order = getattr(request, '_plugin_order', 0) + 1
         if not isinstance(form_data.get('initial'), dict):
             form_data['initial'] = {}
-        form_data['initial'].update(plugin_id=instance.id, plugin_order=request._plugin_order)
+        form_data['initial'].update(plugin_id=instance.pk, plugin_order=request._plugin_order)
         bound_form = self.get_form_class(instance)(**form_data)
         context[bound_form.form_name] = bound_form
         context['headline_legend'] = bool(instance.glossary.get('headline_legend', True))
-        return super(DialogFormPluginBase, self).render(context, instance, placeholder)
+        return self.super(DialogFormPluginBase, self).render(context, instance, placeholder)

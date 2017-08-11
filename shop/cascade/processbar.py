@@ -52,8 +52,8 @@ class ProcessBarPlugin(TransparentWrapper, ShopPluginBase):
         return select_template(template_names)
 
     def render(self, context, instance, placeholder):
-        super(ProcessBarPlugin, self).render(context, instance, placeholder)
-        num_children = instance.get_children().count()
+        self.super(ProcessBarPlugin, self).render(context, instance, placeholder)
+        num_children = instance.get_num_children()
         if num_children > 0:
             context['step_css_width'] = '{:3.2f}%'.format(100. / num_children)
         return context

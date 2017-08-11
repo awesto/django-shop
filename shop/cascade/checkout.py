@@ -22,6 +22,7 @@ from djangocms_text_ckeditor.utils import plugin_tags_to_user_html
 from djangocms_text_ckeditor.cms_plugins import TextPlugin
 
 from cmsplugin_cascade.fields import GlossaryField
+from cmsplugin_cascade.minions import minion_plugin_map, minion_element_map, TextMinionPlugin, TextMinionElement
 from cmsplugin_cascade.link.cms_plugins import TextLinkPlugin
 from cmsplugin_cascade.link.forms import LinkForm, TextLinkFormMixin
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
@@ -70,7 +71,7 @@ class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
         return select_template(template_names)
 
     def render(self, context, instance, placeholder):
-        super(ShopProceedButton, self).render(context, instance, placeholder)
+        self.super(ShopProceedButton, self).render(context, instance, placeholder)
         try:
             cart = CartModel.objects.get_from_request(context['request'])
             cart.update(context['request'])
@@ -90,14 +91,14 @@ class CustomerFormPluginBase(DialogFormPluginBase):
     cache = False
 
     def get_form_data(self, context, instance, placeholder):
-        form_data = super(CustomerFormPluginBase, self).get_form_data(context, instance, placeholder)
+        form_data = self.super(CustomerFormPluginBase, self).get_form_data(context, instance, placeholder)
         form_data.update(instance=context['request'].customer)
         return form_data
 
     def get_render_template(self, context, instance, placeholder):
         if 'error_message' in context:
             return engines['django'].from_string('<p class="text-danger">{{ error_message }}</p>')
-        return super(CustomerFormPluginBase, self).get_render_template(context, instance, placeholder)
+        return self.super(CustomerFormPluginBase, self).get_render_template(context, instance, placeholder)
 
 
 class CustomerFormPlugin(CustomerFormPluginBase):
@@ -112,7 +113,7 @@ class CustomerFormPlugin(CustomerFormPluginBase):
         if not context['request'].customer.is_registered():
             context['error_message'] = _("Only registered customers can access this form.")
             return context
-        return super(CustomerFormPlugin, self).render(context, instance, placeholder)
+        return self.super(CustomerFormPlugin, self).render(context, instance, placeholder)
 
 DialogFormPluginBase.register_plugin(CustomerFormPlugin)
 
@@ -129,7 +130,7 @@ class GuestFormPlugin(CustomerFormPluginBase):
         if not context['customer'].is_guest():
             context['error_message'] = _("Only guest customers can access this form.")
             return context
-        return super(GuestFormPlugin, self).render(context, instance, placeholder)
+        return self.super(GuestFormPlugin, self).render(context, instance, placeholder)
 
 DialogFormPluginBase.register_plugin(GuestFormPlugin)
 
@@ -184,7 +185,7 @@ class CheckoutAddressPlugin(DialogFormPluginBase):
         return address
 
     def get_form_data(self, context, instance, placeholder):
-        form_data = super(CheckoutAddressPlugin, self).get_form_data(context, instance, placeholder)
+        form_data = self.super(CheckoutAddressPlugin, self).get_form_data(context, instance, placeholder)
         if form_data['cart'] is None:
             raise PermissionDenied("Can not proceed to checkout without cart")
 
@@ -238,14 +239,14 @@ class PaymentMethodFormPlugin(DialogFormPluginBase):
     template_leaf_name = 'payment-method-{}.html'
 
     def get_form_data(self, context, instance, placeholder):
-        form_data = super(PaymentMethodFormPlugin, self).get_form_data(context, instance, placeholder)
+        form_data = self.super(PaymentMethodFormPlugin, self).get_form_data(context, instance, placeholder)
         cart = form_data.get('cart')
         if cart:
             form_data.update(initial={'payment_modifier': cart.extra.get('payment_modifier')})
         return form_data
 
     def render(self, context, instance, placeholder):
-        super(PaymentMethodFormPlugin, self).render(context, instance, placeholder)
+        self.super(PaymentMethodFormPlugin, self).render(context, instance, placeholder)
         for payment_modifier in cart_modifiers_pool.get_payment_modifiers():
             payment_modifier.update_render_context(context)
         return context
@@ -261,14 +262,14 @@ class ShippingMethodFormPlugin(DialogFormPluginBase):
     template_leaf_name = 'shipping-method-{}.html'
 
     def get_form_data(self, context, instance, placeholder):
-        form_data = super(ShippingMethodFormPlugin, self).get_form_data(context, instance, placeholder)
+        form_data = self.super(ShippingMethodFormPlugin, self).get_form_data(context, instance, placeholder)
         cart = form_data.get('cart')
         if cart:
             form_data.update(initial={'shipping_modifier': cart.extra.get('shipping_modifier')})
         return form_data
 
     def render(self, context, instance, placeholder):
-        super(ShippingMethodFormPlugin, self).render(context, instance, placeholder)
+        self.super(ShippingMethodFormPlugin, self).render(context, instance, placeholder)
         for shipping_modifier in cart_modifiers_pool.get_shipping_modifiers():
             shipping_modifier.update_render_context(context)
         return context
@@ -284,7 +285,7 @@ class ExtraAnnotationFormPlugin(DialogFormPluginBase):
     template_leaf_name = 'extra-annotation-{}.html'
 
     def get_form_data(self, context, instance, placeholder):
-        form_data = super(ExtraAnnotationFormPlugin, self).get_form_data(context, instance, placeholder)
+        form_data = self.super(ExtraAnnotationFormPlugin, self).get_form_data(context, instance, placeholder)
         cart = form_data.get('cart')
         if cart:
             form_data.update(initial={'annotation': cart.extra.get('annotation', '')})
@@ -322,7 +323,7 @@ class AcceptConditionFormPlugin(DialogFormPluginBase):
         return super(AcceptConditionFormPlugin, self).get_form(request, obj, **kwargs)
 
     def render(self, context, instance, placeholder):
-        super(AcceptConditionFormPlugin, self).render(context, instance, placeholder)
+        self.super(AcceptConditionFormPlugin, self).render(context, instance, placeholder)
         accept_condition_form = context['accept_condition_form.plugin_{}'.format(instance.id)]
         html_content = self.html_parser.unescape(instance.glossary.get('html_content', ''))
         html_content = plugin_tags_to_user_html(html_content, context)
@@ -333,12 +334,9 @@ class AcceptConditionFormPlugin(DialogFormPluginBase):
 
 # DialogFormPluginBase.register_plugin(AcceptConditionFormPlugin)
 
-
-class AcceptConditionPlugin(TextPlugin):
-    name = _("Accept Condition")
-    module = "Shop"
-    FormClass = AcceptConditionForm
+class AcceptConditionMixin(object):
     render_template = 'shop/checkout/accept-condition.html'
+    FormClass = AcceptConditionForm
 
     def render(self, context, instance, placeholder):
         """
@@ -351,22 +349,33 @@ class AcceptConditionPlugin(TextPlugin):
         except CartModel.DoesNotExist:
             cart = None
         request._plugin_order = getattr(request, '_plugin_order', 0) + 1
-        form_data = {'cart': cart, 'initial': dict(plugin_id=instance.id, plugin_order=request._plugin_order)}
+        form_data = {'cart': cart, 'initial': dict(plugin_id=instance.pk, plugin_order=request._plugin_order)}
         bound_form = self.FormClass(**form_data)
         context[bound_form.form_name] = bound_form
-        super(AcceptConditionPlugin, self).render(context, instance, placeholder)
-        accept_condition_form = context['accept_condition_form.plugin_{}'.format(instance.id)]
+        super(AcceptConditionMixin, self).render(context, instance, placeholder)
+        accept_condition_form = context['accept_condition_form.plugin_{}'.format(instance.pk)]
         # transfer the stored HTML content into the widget's label
         accept_condition_form['accept'].field.widget.choice_label = mark_safe(context['body'])
         context['accept_condition_form'] = accept_condition_form
         return context
+
+
+class AcceptConditionPlugin(AcceptConditionMixin, TextPlugin):
+    name = _("Accept Condition")
+    module = "Shop"
 
     def get_admin_url_name(self, name):
         model_name = 'acceptcondition'
         url_name = "%s_%s_%s" % ('shop', model_name, name)
         return url_name
 
+
+class AcceptConditionMinion(AcceptConditionMixin, TextMinionPlugin):
+    pass
+
 plugin_pool.register_plugin(AcceptConditionPlugin)
+minion_plugin_map['AcceptConditionPlugin'] = AcceptConditionMinion
+minion_element_map['AcceptConditionPlugin'] = TextMinionElement
 
 
 class RequiredFormFieldsPlugin(ShopPluginBase):

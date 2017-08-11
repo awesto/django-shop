@@ -77,6 +77,6 @@ class ShopCartPlugin(TransparentContainer, ShopPluginBase):
                     context['cart']['items'] = len(context['cart']['items'])
         except (KeyError, CartModel.DoesNotExist):
             pass
-        return super(ShopCartPlugin, self).render(context, instance, placeholder)
+        return self.super(ShopCartPlugin, self).render(context, instance, placeholder)
 
 plugin_pool.register_plugin(ShopCartPlugin)
