@@ -65,6 +65,7 @@ Reference to classes and concepts used in **django-SHOP**
     reference/shipping-providers
     reference/special-cms-pages
     reference/cart-icon
+    reference/settings
 
 
 How To's
