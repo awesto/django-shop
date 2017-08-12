@@ -9,16 +9,16 @@
 	<label class="control-label">{% trans "Your e-mail address" %}</label>
 	<div class="input-group" ng-class="hasError('username')">
 		<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
-		<input type="email" class="form-control" name="username" ng-model="form_data.username" value="" placeholder="{% trans 'Email' %}" />
+		<input type="email" class="form-control" name="username" ng-model="form_data.username" value="" ng-required="true" placeholder="{% trans 'Email' %}" />
 	</div>
-	<ul ng-messages="auth_form.username.$error" class="shop-form-error" ng-cloak>
-		<li ng-show="auth_form.username.$dirty" ng-message="email">{% trans "Please provide a valid email address" %}</li>
+	<ul ng-messages="login_form.username.$error" class="shop-form-error" ng-cloak>
+		<li ng-message="email">{% trans "Please provide a valid email address" %}</li>
 	</ul>
 </div>
 
 <div class="form-group has-feedback" style="margin-bottom: 20px">
 	<label class="control-label">{% trans "Password" %}</label>
-	<div class="input-group">
+	<div class="input-group" ng-class="hasError('password')">
 		<span class="input-group-addon"><i class="fa fa-unlock-alt fa-fw"></i></span>
 		<input type="password" class="form-control" name="password" ng-model="form_data.password" placeholder="{% trans 'Password' %}" />
 	</div>
