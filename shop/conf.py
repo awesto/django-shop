@@ -224,7 +224,7 @@ class DefaultSettings(object):
     @property
     def SHOP_DIALOG_FORMS(self):
         """
-        Specify a list of dialog forms available in our :ref:`shop.views.checkout.CheckoutViewSet`.
+        Specify a list of dialog forms available in our :class:`shop.views.checkout.CheckoutViewSet`.
         This allows us to use its endpoint ``resolve('shop:checkout-upload')`` in a generic way.
 
         If Cascade plugins are used for the forms in the checkout view, this list can be empty.

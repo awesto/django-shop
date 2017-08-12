@@ -45,9 +45,10 @@ object by invoking:
 	from shop.models.order import OrderModel
 
 	order = OrderModel.objects.create_from_cart(cart, request)
+	order.populate_from_cart(cart, request)
 
-This operation is atomic and can take some time. It normally is performed by the payment provider,
-whenever a successful payment was received.
+This invocation of ``order.populate_from_cart`` operation is atomic and can take some time. It
+normally is performed by the payment provider, whenever a successful payment was received.
 
 Since the merchant's implementation of ``Cart``, ``CartItem``, ``Order`` and ``OrderItem`` may
 contain extra fields the shop framework isn't aware of, the content of these fields also shall be
@@ -288,10 +289,10 @@ An incomplete example:
 	    def populate_from_cart(self, cart, request):
 	        # perform some side effects ...
 
-Whenever an ``Order`` object is initialized, its ``status`` is *new* and not yet persisted in the
-database. As we have seen earlier, this object must be populated from the cart. If this succeeds,
-the ``status`` of our new ``Order`` object switches to *created*. This is the default state before
-proceeding to our payment providers.
+Whenever an ``Order`` object is initialized, its ``status`` is *new* and is not yet populated
+with cart items, meaning that it resides in a pending state. As we have seen earlier, this object
+must be populated from the cart. If this succeeds, the ``status`` of our new ``Order`` object
+switches to *created*.
 
 In **django-SHOP** the merchant can add as many payment providers he wants. This is done in
 ``settings.py`` through the configuration directive ``SHOP_ORDER_WORKFLOWS`` which takes a list of

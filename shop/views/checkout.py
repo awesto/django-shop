@@ -17,6 +17,9 @@ from shop.views.cart import BaseViewSet
 
 
 class CheckoutViewSet(BaseViewSet):
+    """
+    View for our REST endpoint to communicate with the various forms used during the checkout.
+    """
     serializer_label = 'checkout'
     serializer_class = CheckoutSerializer
     item_serializer_class = None

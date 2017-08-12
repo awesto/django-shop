@@ -32,7 +32,6 @@ by their basic counterpart models. Thus, if we extend these models, we normally 
 extend their serializers.
 
 
-
 Every URL is a REST endpoint
 ============================
 
