@@ -24,7 +24,7 @@ django-sekizai==0.10.0
 Django-Select2==5.8.10
 django-treebeard==4.1.1
 djangocms-bootstrap3==0.2.0
-djangocms-cascade==0.13.1
+git+https://github.com/jrief/djangocms-cascade.git@drafts/static-json-rendering#egg=djangocms-cascade
 djangocms-text-ckeditor==3.4.0
 djangorestframework==3.6.3
 django-formtools==2.0
