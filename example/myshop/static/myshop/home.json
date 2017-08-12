@@ -67,7 +67,7 @@
           ],
           "background_horizontal_position":"center"
         },
-        "pk":14801
+        "pk":15056
       },
       []
     ],
@@ -105,7 +105,7 @@
             "lg"
           ]
         },
-        "pk":14802
+        "pk":15057
       },
       [
         [
@@ -119,7 +119,7 @@
                 "margin-bottom":""
               }
             },
-            "pk":14803
+            "pk":15058
           },
           [
             [
@@ -134,7 +134,7 @@
                   },
                   "xs-column-width":"col-xs-12"
                 },
-                "pk":14804
+                "pk":15059
               },
               [
                 [
@@ -160,7 +160,7 @@
                         "wrap"
                       ]
                     },
-                    "pk":14805
+                    "pk":15060
                   },
                   [
                     [
@@ -180,14 +180,14 @@
                           "image_title":"",
                           "alt_tag":""
                         },
-                        "pk":14806
+                        "pk":15061
                       },
                       [
                         [
                           "TextPlugin",
                           {
                             "body":"<h3>Django under the Hood</h3>\n\n<p>Conference ending</p>",
-                            "pk":14807
+                            "pk":15062
                           },
                           []
                         ]
@@ -210,14 +210,14 @@
                           "image_title":"",
                           "alt_tag":""
                         },
-                        "pk":14808
+                        "pk":15063
                       },
                       [
                         [
                           "TextPlugin",
                           {
-                            "body":"<h1>Social Event</h1>\n\n<p>at <cms-plugin id=\"14810\" alt=\"Link - Pllek \" title=\"Link - Pllek\"></cms-plugin>, Amsterdam</p>",
-                            "pk":14809
+                            "body":"<h1>Social Event</h1>\n\n<p>at <cms-plugin id=\"15065\" alt=\"Link - Pllek \" title=\"Link - Pllek\"></cms-plugin>, Amsterdam</p>",
+                            "pk":15064
                           },
                           [
                             [
@@ -232,7 +232,7 @@
                                   "target":"",
                                   "title":""
                                 },
-                                "pk":14810
+                                "pk":15065
                               },
                               []
                             ]
@@ -257,7 +257,7 @@
                           "image_title":"",
                           "alt_tag":""
                         },
-                        "pk":14811
+                        "pk":15066
                       },
                       []
                     ]
@@ -269,7 +269,7 @@
                     "glossary":{
                       "hide_plugin":""
                     },
-                    "pk":14812,
+                    "pk":15067,
                     "inlines":[
                       {
                         "product":{
@@ -325,7 +325,7 @@
                 "margin-bottom":"20px"
               }
             },
-            "pk":14813
+            "pk":15068
           },
           [
             [
@@ -340,7 +340,7 @@
                   },
                   "xs-column-width":"col-xs-4"
                 },
-                "pk":14814
+                "pk":15069
               },
               [
                 [
@@ -364,7 +364,7 @@
                         "#000000"
                       ]
                     },
-                    "pk":14815
+                    "pk":15070
                   },
                   []
                 ]
@@ -382,7 +382,7 @@
                   },
                   "xs-column-width":"col-xs-4"
                 },
-                "pk":14816
+                "pk":15071
               },
               [
                 [
@@ -406,7 +406,7 @@
                         "#000000"
                       ]
                     },
-                    "pk":14817,
+                    "pk":15072,
                     "shared_glossary":"HeadIcon"
                   },
                   []
@@ -425,7 +425,7 @@
                   },
                   "xs-column-width":"col-xs-4"
                 },
-                "pk":14818
+                "pk":15073
               },
               [
                 [
@@ -449,7 +449,7 @@
                         "#000000"
                       ]
                     },
-                    "pk":14819,
+                    "pk":15074,
                     "shared_glossary":"HeadIcon"
                   },
                   []
@@ -469,7 +469,7 @@
                 "margin-bottom":"30px"
               }
             },
-            "pk":14820
+            "pk":15075
           },
           [
             [
@@ -499,178 +499,54 @@
                   "md-column-width":"",
                   "xs-column-ordering":""
                 },
-                "pk":14821
+                "pk":15076
               },
               [
                 [
-                  "BootstrapTabSetPlugin",
+                  "BootstrapPanelPlugin",
                   {
                     "glossary":{
-                      "justified":"on"
+                      "heading_size":"",
+                      "panel_type":"panel-warning",
+                      "heading":"Panel Heading",
+                      "hide_plugin":"",
+                      "footer":"Panel Footer"
                     },
-                    "pk":14822
+                    "pk":15077
                   },
                   [
                     [
-                      "BootstrapTabPanePlugin",
+                      "LeafletPlugin",
                       {
                         "glossary":{
-                          "tab_title":"Left"
+                          "hide_plugin":"",
+                          "map_position":{
+                            "lat":47.944636605532914,
+                            "lng":12.570934295654299,
+                            "zoom":12
+                          },
+                          "render_template":"cascade/plugins/googlemap.html",
+                          "map_height":"400px",
+                          "map_width":"100%"
                         },
-                        "pk":14823
-                      },
-                      [
-                        [
-                          "TextPlugin",
+                        "pk":15078,
+                        "inlines":[
                           {
-                            "body":"<h3>Vestibulum id ligula porta felis euismod semper</h3>\n\n<p><cms-plugin id=\"14827\" alt='Icon - fontawesome: <i class=\"icon-retweet\"></i> ' title='Icon - fontawesome: <i class=\"icon-retweet\"></i>'></cms-plugin>\u00a0Vestibulum <cms-plugin id=\"14828\" alt='Icon - fontawesome: <i class=\"icon-camera-alt\"></i> ' title='Icon - fontawesome: <i class=\"icon-camera-alt\"></i>'></cms-plugin>\u00a0id ligula porta felis euismod semper. <cms-plugin id=\"14825\" alt=\"Link - Nullam \" title=\"Link - Nullam\"></cms-plugin> id dolor id nibh ultricies vehicula ut id elit. <cms-plugin id=\"14826\" alt=\"Link - Cras \" title=\"Link - Cras\"></cms-plugin> mattis consectetur purus sit amet fermentum. <cms-plugin id=\"14829\" alt=\"Link - Donec \" title=\"Link - Donec\"></cms-plugin> sed odio dui. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.</p>",
-                            "pk":14824
-                          },
-                          [
-                            [
-                              "TextLinkPlugin",
-                              {
-                                "glossary":{
-                                  "link_content":"Nullam",
-                                  "link":{
-                                    "pk":56,
-                                    "model":"myshop.Product",
-                                    "type":"product"
-                                  },
-                                  "target":"",
-                                  "title":""
-                                },
-                                "pk":14825
-                              },
-                              []
-                            ],
-                            [
-                              "TextLinkPlugin",
-                              {
-                                "glossary":{
-                                  "link_content":"Cras",
-                                  "link":{
-                                    "pk":55,
-                                    "model":"myshop.Product",
-                                    "type":"product"
-                                  },
-                                  "target":"",
-                                  "title":""
-                                },
-                                "pk":14826
-                              },
-                              []
-                            ],
-                            [
-                              "TextIconPlugin",
-                              {
-                                "glossary":{
-                                  "icon_font":"4",
-                                  "symbol":"retweet"
-                                },
-                                "pk":14827
-                              },
-                              []
-                            ],
-                            [
-                              "TextIconPlugin",
-                              {
-                                "glossary":{
-                                  "icon_font":"4",
-                                  "symbol":"camera-alt"
-                                },
-                                "pk":14828
-                              },
-                              []
-                            ],
-                            [
-                              "TextLinkPlugin",
-                              {
-                                "glossary":{
-                                  "link_content":"Donec",
-                                  "link":{
-                                    "pk":50,
-                                    "model":"myshop.Product",
-                                    "type":"product"
-                                  },
-                                  "target":"",
-                                  "title":""
-                                },
-                                "pk":14829
-                              },
-                              []
-                            ]
-                          ]
-                        ],
-                        [
-                          "BootstrapButtonPlugin",
-                          {
-                            "glossary":{
-                              "icon_align":"icon-right",
-                              "symbol":"angle-circled-right",
-                              "button_size":"btn-lg",
-                              "quick_float":"",
-                              "button_options":[],
-                              "icon_font":"4",
-                              "link_content":"Proceed",
-                              "link":{
-                                "pk":54,
-                                "model":"myshop.Product",
-                                "type":"product"
-                              },
-                              "button_type":"btn-info",
-                              "hide_plugin":""
+                            "position":{
+                              "lat":47.92554522341879,
+                              "lng":12.618141174316406
                             },
-                            "pk":14830
-                          },
-                          []
+                            "popup_text":null,
+                            "title":"Marker",
+                            "marker_width":"",
+                            "marker_anchor":{
+                              "top":"",
+                              "left":""
+                            }
+                          }
                         ]
-                      ]
-                    ],
-                    [
-                      "BootstrapTabPanePlugin",
-                      {
-                        "glossary":{
-                          "tab_title":"Right"
-                        },
-                        "pk":14831
                       },
-                      [
-                        [
-                          "BootstrapImagePlugin",
-                          {
-                            "glossary":{
-                              "image_width_responsive":"100%",
-                              "target":"",
-                              "title":"",
-                              "image":{
-                                "pk":1,
-                                "model":"filer.Image"
-                              },
-                              "alt_tag":"",
-                              "hide_plugin":"",
-                              "image_width_fixed":"",
-                              "image_height":"90%",
-                              "link":{
-                                "type":"none"
-                              },
-                              "resize_options":[
-                                "upscale",
-                                "crop",
-                                "subject_location",
-                                "high_resolution"
-                              ],
-                              "image_title":"",
-                              "image_shapes":[
-                                "img-responsive",
-                                "img-thumbnail"
-                              ]
-                            },
-                            "pk":14832
-                          },
-                          []
-                        ]
-                      ]
+                      []
                     ]
                   ]
                 ]
@@ -703,17 +579,18 @@
                   "lg-column-width":"",
                   "xs-column-ordering":""
                 },
-                "pk":14833
+                "pk":15079
               },
               [
                 [
                   "BootstrapAccordionPlugin",
                   {
                     "glossary":{
-                      "first_is_open":"on",
-                      "close_others":"on"
+                      "hide_plugin":"",
+                      "close_others":"on",
+                      "first_is_open":"on"
                     },
-                    "pk":14834
+                    "pk":15080
                   },
                   [
                     [
@@ -724,14 +601,14 @@
                           "panel_type":"panel-success",
                           "panel_title":"First"
                         },
-                        "pk":14835
+                        "pk":15081
                       },
                       [
                         [
                           "TextPlugin",
                           {
-                            "body":"<p>Nullam id dolor id nibh ultricies vehicula ut id elit. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. <cms-plugin id=\"14837\" alt=\"Link - Donec \" title=\"Link - Donec\"></cms-plugin> id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit sit amet non magna.</p>",
-                            "pk":14836
+                            "body":"<p>Nullam id dolor id nibh ultricies vehicula ut id elit. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. <cms-plugin id=\"15083\" alt=\"Link - Donec \" title=\"Link - Donec\"></cms-plugin> id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit sit amet non magna.</p>",
+                            "pk":15082
                           },
                           [
                             [
@@ -748,7 +625,7 @@
                                   "target":"",
                                   "title":""
                                 },
-                                "pk":14837
+                                "pk":15083
                               },
                               []
                             ]
@@ -764,7 +641,7 @@
                           "panel_type":"panel-success",
                           "panel_title":"Second"
                         },
-                        "pk":14838
+                        "pk":15084
                       },
                       [
                         [
@@ -795,59 +672,182 @@
                                 "img-responsive"
                               ]
                             },
-                            "pk":14839
+                            "pk":15085
+                          },
+                          []
+                        ]
+                      ]
+                    ]
+                  ]
+                ],
+                [
+                  "BootstrapTabSetPlugin",
+                  {
+                    "glossary":{
+                      "justified":"on"
+                    },
+                    "pk":15086
+                  },
+                  [
+                    [
+                      "BootstrapTabPanePlugin",
+                      {
+                        "glossary":{
+                          "tab_title":"Left"
+                        },
+                        "pk":15087
+                      },
+                      [
+                        [
+                          "TextPlugin",
+                          {
+                            "body":"<h3>Vestibulum id ligula porta felis euismod semper</h3>\n\n<p><cms-plugin id=\"15091\" alt='Icon - fontawesome: <i class=\"icon-retweet\"></i> ' title='Icon - fontawesome: <i class=\"icon-retweet\"></i>'></cms-plugin>\u00a0Vestibulum <cms-plugin id=\"15092\" alt='Icon - fontawesome: <i class=\"icon-camera-alt\"></i> ' title='Icon - fontawesome: <i class=\"icon-camera-alt\"></i>'></cms-plugin>\u00a0id ligula porta felis euismod semper. <cms-plugin id=\"15089\" alt=\"Link - Nullam \" title=\"Link - Nullam\"></cms-plugin> id dolor id nibh ultricies vehicula ut id elit. <cms-plugin id=\"15090\" alt=\"Link - Cras \" title=\"Link - Cras\"></cms-plugin> mattis consectetur purus sit amet fermentum. <cms-plugin id=\"15093\" alt=\"Link - Donec \" title=\"Link - Donec\"></cms-plugin> sed odio dui. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.</p>",
+                            "pk":15088
+                          },
+                          [
+                            [
+                              "TextLinkPlugin",
+                              {
+                                "glossary":{
+                                  "link_content":"Nullam",
+                                  "link":{
+                                    "pk":56,
+                                    "model":"myshop.Product",
+                                    "type":"product"
+                                  },
+                                  "target":"",
+                                  "title":""
+                                },
+                                "pk":15089
+                              },
+                              []
+                            ],
+                            [
+                              "TextLinkPlugin",
+                              {
+                                "glossary":{
+                                  "link_content":"Cras",
+                                  "link":{
+                                    "pk":55,
+                                    "model":"myshop.Product",
+                                    "type":"product"
+                                  },
+                                  "target":"",
+                                  "title":""
+                                },
+                                "pk":15090
+                              },
+                              []
+                            ],
+                            [
+                              "TextIconPlugin",
+                              {
+                                "glossary":{
+                                  "icon_font":"4",
+                                  "symbol":"retweet"
+                                },
+                                "pk":15091
+                              },
+                              []
+                            ],
+                            [
+                              "TextIconPlugin",
+                              {
+                                "glossary":{
+                                  "icon_font":"4",
+                                  "symbol":"camera-alt"
+                                },
+                                "pk":15092
+                              },
+                              []
+                            ],
+                            [
+                              "TextLinkPlugin",
+                              {
+                                "glossary":{
+                                  "link_content":"Donec",
+                                  "link":{
+                                    "pk":50,
+                                    "model":"myshop.Product",
+                                    "type":"product"
+                                  },
+                                  "target":"",
+                                  "title":""
+                                },
+                                "pk":15093
+                              },
+                              []
+                            ]
+                          ]
+                        ],
+                        [
+                          "BootstrapButtonPlugin",
+                          {
+                            "glossary":{
+                              "icon_align":"icon-right",
+                              "symbol":"angle-circled-right",
+                              "button_size":"btn-lg",
+                              "quick_float":"",
+                              "button_options":[],
+                              "icon_font":"4",
+                              "link_content":"Proceed",
+                              "link":{
+                                "pk":54,
+                                "model":"myshop.Product",
+                                "type":"product"
+                              },
+                              "button_type":"btn-info",
+                              "hide_plugin":""
+                            },
+                            "pk":15094
                           },
                           []
                         ]
                       ]
                     ],
                     [
-                      "BootstrapAccordionPanelPlugin",
+                      "BootstrapTabPanePlugin",
                       {
                         "glossary":{
-                          "heading_size":"",
-                          "panel_type":"panel-warning",
-                          "hide_plugin":"",
-                          "panel_title":"Panel 3"
+                          "tab_title":"Right"
                         },
-                        "pk":14840
+                        "pk":15095
                       },
-                      []
+                      [
+                        [
+                          "BootstrapSecondaryMenuPlugin",
+                          {
+                            "glossary":{
+                              "page_id":"shop-order",
+                              "hide_plugin":"",
+                              "render_template":"cascade/bootstrap3/secmenu-list-group.html"
+                            },
+                            "pk":15096
+                          },
+                          []
+                        ],
+                        [
+                          "HeadingPlugin",
+                          {
+                            "glossary":{
+                              "content":"Heading with Anchor",
+                              "element_id":"anchor1",
+                              "tag_type":"h1",
+                              "hide_plugin":"",
+                              "extra_inline_styles:Margins":{
+                                "margin-right":"",
+                                "margin-top":"10px",
+                                "margin-bottom":"10px",
+                                "margin-left":""
+                              }
+                            },
+                            "pk":15097
+                          },
+                          []
+                        ]
+                      ]
                     ]
                   ]
-                ],
-                [
-                  "LeafletPlugin",
-                  {
-                    "glossary":{
-                      "hide_plugin":"",
-                      "map_position":{
-                        "lat":47.944636605532914,
-                        "lng":12.570934295654299,
-                        "zoom":12
-                      },
-                      "render_template":"cascade/plugins/googlemap.html",
-                      "map_height":"400px",
-                      "map_width":"100%"
-                    },
-                    "pk":14841,
-                    "inlines":[
-                      {
-                        "position":{
-                          "lat":47.92554522341879,
-                          "lng":12.618141174316406
-                        },
-                        "popup_text":null,
-                        "title":"Marker",
-                        "marker_width":"",
-                        "marker_anchor":{
-                          "top":"",
-                          "left":""
-                        }
-                      }
-                    ]
-                  },
-                  []
                 ]
               ]
             ]
