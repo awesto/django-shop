@@ -428,7 +428,7 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         # for historical integrity, store the product's name and price at the moment of purchase
         self.product_name = cart_item.product.product_name
         self.product_code = cart_item.product_code
-        self._unit_price = Decimal(cart_item.product.get_price(request))
+        self._unit_price = Decimal(cart_item.unit_price)
         self._line_total = Decimal(cart_item.line_total)
         self.quantity = cart_item.quantity
         self.extra = dict(cart_item.extra)
