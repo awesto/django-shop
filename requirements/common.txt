@@ -1,7 +1,6 @@
-beautifulsoup4==4.5.1
 django-admin-sortable2==0.6.14
 django-allauth==0.23.0
-git+https://github.com/jrief/django-angular.git@releases/1.1.x#egg=django-angular
+django-angular==1.1
 django-appconf==1.0.1
 django-classy-tags==0.8.0
 django-cms==3.4.4

@@ -32,6 +32,8 @@ Changelog for django-SHOP
 * Add Leaflet Map plugin from djangocms-cascade for demonstration purpose.
 * Moved ``package.json`` into ``example/package.json`` (and with it ``node_modules``) since it
   shall be part of the project, rather than the Django app.
+* Fix: In :meth:`shop.models.order.BaseOrderItem.populate_from_cart_item` the ``unit_price`` is
+  takes from the ``cart_item``, rather than beeing recalculated.
 
 
 0.10.2

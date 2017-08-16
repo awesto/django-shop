@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.html import mark_safe
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.fields import GlossaryField
-from cmsplugin_cascade.plugin_base import TransparentContainer
+from cmsplugin_cascade.plugin_base import TransparentContainer, TransparentWrapper
 
 from shop.conf import app_settings
 from shop.models.cart import CartModel
@@ -15,14 +15,29 @@ from shop.serializers.cart import CartSerializer
 from .plugin_base import ShopPluginBase
 
 
-class ShopCartPlugin(TransparentContainer, ShopPluginBase):
+class ShopExtendableMixin(object):
+    @property
+    def left_extension(self):
+        result = [cp for cp in self.child_plugin_instances if cp.plugin_type == 'ShopLeftExtension']
+        if result:
+            return result[0]
+
+    @property
+    def right_extension(self):
+        result = [cp for cp in self.child_plugin_instances if cp.plugin_type == 'ShopRightExtension']
+        if result:
+            return result[0]
+
+
+class ShopCartPlugin(TransparentWrapper, ShopPluginBase):
     name = _("Cart")
     require_parent = True
     parent_classes = ('BootstrapColumnPlugin',)
     cache = False
     allow_children = True
-    CHOICES = (('editable', _("Editable Cart")), ('static', _("Static Cart")),
-        ('summary', _("Cart Summary")), ('watch', _("Watch List")),)
+    model_mixins = (ShopExtendableMixin,)
+    CHOICES = [('editable', _("Editable Cart")), ('static', _("Static Cart")),
+               ('summary', _("Cart Summary")), ('watch', _("Watch List"))]
 
     render_type = GlossaryField(
         widgets.RadioSelect(choices=CHOICES),
@@ -79,4 +94,32 @@ class ShopCartPlugin(TransparentContainer, ShopPluginBase):
             pass
         return self.super(ShopCartPlugin, self).render(context, instance, placeholder)
 
+    @classmethod
+    def get_child_classes(cls, slot, page, instance=None):
+        child_classes = ['ShopLeftExtension', 'ShopRightExtension', None]
+        # allow only one left and one right extension
+        for child in instance.get_children():
+            child_classes.remove(child.plugin_type)
+        return child_classes
+
 plugin_pool.register_plugin(ShopCartPlugin)
+
+
+class ShopLeftExtension(TransparentContainer, ShopPluginBase):
+    name = _("Left Extension")
+    require_parent = True
+    parent_classes = ('ShopCartPlugin',)
+    allow_children = True
+    render_template = 'cascade/generic/naked.html'
+
+plugin_pool.register_plugin(ShopLeftExtension)
+
+
+class ShopRightExtension(TransparentContainer, ShopPluginBase):
+    name = _("Right Extension")
+    require_parent = True
+    parent_classes = ('ShopCartPlugin',)
+    allow_children = True
+    render_template = 'cascade/generic/naked.html'
+
+plugin_pool.register_plugin(ShopRightExtension)

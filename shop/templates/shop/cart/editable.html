@@ -40,8 +40,7 @@
 	<tfoot ng-show="cart.num_items>0">
 		<tr>
 			<td colspan="2" rowspan="99">
-				{# render the first child plugin of the cart #}
-				{% render_plugin instance.child_plugin_instances.0 %}
+				{% render_plugin instance.left_extension %}
 			</td>
 			<td class="text-right"><strong>{% trans "Subtotal" %}</strong></td>
 			<td class="text-right text-nowrap"><strong ng-bind="cart.subtotal"><!-- Subtotal --></strong></td>
@@ -59,10 +58,7 @@
 		</tr>
 		<tr class="no-border">
 			<td colspan="3" rowspan="0">
-			{# render all remaining child plugins of the cart #}
-			{% for plugin in instance.child_plugin_instances %}
-				{% if not forloop.first %}{% render_plugin plugin %}{% endif %}
-			{% endfor %}
+				{% render_plugin instance.right_extension %}
 			</td>
 		</tr>
 	</tfoot>
