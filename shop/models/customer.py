@@ -22,7 +22,7 @@ from django.utils.six import with_metaclass
 from shop import deferred
 from shop.models.fields import JSONField
 from shop.signals import customer_recognized
-from .related import ChoiceEnum
+from shop.models.fields import ChoiceEnum, ChoiceEnumField
 
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore()
 
@@ -34,33 +34,6 @@ class CustomerState(ChoiceEnum):
     ugettext_noop("CustomerState.Guest")
     REGISTERED = 2
     ugettext_noop("CustomerState.Registered")
-
-
-class CustomerStateField(models.PositiveSmallIntegerField):
-    description = _("Customer recognition state")
-
-    def __init__(self, *args, **kwargs):
-        kwargs.update(choices=CustomerState.choices())
-        kwargs.setdefault('default', CustomerState.UNRECOGNIZED)
-        super(CustomerStateField, self).__init__(*args, **kwargs)
-
-    def deconstruct(self):
-        name, path, args, kwargs = super(CustomerStateField, self).deconstruct()
-        del kwargs['choices']
-        if kwargs['default'] is CustomerState.UNRECOGNIZED:
-            del kwargs['default']
-        elif isinstance(kwargs['default'], CustomerState):
-            kwargs['default'] = kwargs['default'].value
-        return name, path, args, kwargs
-
-    def from_db_value(self, value, expression, connection, context):
-        return CustomerState(value)
-
-    def get_prep_value(self, state):
-        return state.value
-
-    def to_python(self, state):
-        return CustomerState(state)
 
 
 class CustomerQuerySet(models.QuerySet):
@@ -219,11 +192,26 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     the django User model if a customer is authenticated. On checkout, a User
     object is created for anonymous customers also (with unusable password).
     """
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, primary_key=True)
-    recognized = CustomerStateField(_("Recognized as"),
-                                    help_text=_("Designates the state the customer is recognized as."))
-    last_access = models.DateTimeField(_("Last accessed"), default=timezone.now)
-    extra = JSONField(editable=False, verbose_name=_("Extra information about this customer"))
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        primary_key=True,
+    )
+
+    recognized = ChoiceEnumField(
+        _("Recognized as"),
+        enum_type=CustomerState,
+        help_text=_("Designates the state the customer is recognized as."),
+    )
+
+    last_access = models.DateTimeField(
+        _("Last accessed"),
+        default=timezone.now,
+    )
+
+    extra = JSONField(
+        editable=False,
+        verbose_name=_("Extra information about this customer"),
+    )
 
     objects = CustomerManager()
 
