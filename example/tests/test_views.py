@@ -1,17 +1,14 @@
-from django.core.urlresolvers import reverse
-from django.test import TestCase
-
 import json
 
-from myshop.models import Product
-from myshop.models.manufacturer import Manufacturer
+from django.core.urlresolvers import reverse
 
+from .models import Commodity
+from .test_shop import ShopTestCase
 
-class ProductSelectViewTest(TestCase):
+class ProductSelectViewTest(ShopTestCase):
 
     def setUp(self):
-        manufacturer = Manufacturer.objects.create(name="testmanufacturer")
-        Product.objects.create(product_name="testproduct1", order=1, manufacturer=manufacturer)
+        Commodity.objects.create(product_name="testproduct1", order=1)
 
     def test_finds_product_case_insensitive(self):
         response = self.client.get(reverse('shop:select-product') + "?term=Prod")

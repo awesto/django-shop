@@ -7,7 +7,7 @@ from rest_framework.test import APIClient, APIRequestFactory
 from cms.api import add_plugin, create_page
 from shop.models.cart import CartModel
 from shop.cascade.cart import ShopCartPlugin
-from myshop.models import SmartCard
+from .models import Commodity
 from .test_shop import ShopTestCase
 
 
@@ -36,7 +36,7 @@ class CartTest(ShopTestCase):
         self.assertFalse('sessionid' in response.cookies)
 
         # add a product anonymously
-        sdhc_4gb = SmartCard.objects.get(slug="sdhc-card-4gb")
+        sdhc_4gb = Commodity.objects.get(slug="sdhc-card-4gb")
         self.add_product2cart(sdhc_4gb)
 
         # now a session must be assigned to the client
@@ -113,9 +113,9 @@ class CartTest(ShopTestCase):
         sessionid = self.client.session.session_key
 
         # Bart adds two products
-        sdhc_4gb = SmartCard.objects.get(slug="sdhc-card-4gb")
+        sdhc_4gb = Commodity.objects.get(slug="sdhc-card-4gb")
         self.add_product2cart(sdhc_4gb)
-        xtr_sdhc_16gb = SmartCard.objects.get(slug="extreme-plus-sdhc-16gb")
+        xtr_sdhc_16gb = Commodity.objects.get(slug="extreme-plus-sdhc-16gb")
         self.add_product2cart(xtr_sdhc_16gb)
 
         # check that the added item is in the cart
@@ -138,7 +138,7 @@ class CartTest(ShopTestCase):
 
         # add two items anonymously
         self.add_product2cart(xtr_sdhc_16gb)
-        sdxc_pro_32gb = SmartCard.objects.get(slug="extreme-pro-micro-sdhc-32gb")
+        sdxc_pro_32gb = Commodity.objects.get(slug="extreme-pro-micro-sdhc-32gb")
         self.add_product2cart(sdxc_pro_32gb)
 
         # Bart logs in again

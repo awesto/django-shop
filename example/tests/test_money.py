@@ -16,8 +16,8 @@ from rest_framework import serializers
 from shop.money.money_maker import AbstractMoney, MoneyMaker, _make_money
 from shop.money.fields import MoneyField as MoneyDbField
 from shop.rest.money import MoneyField, JSONRenderer
-from myshop.models.manufacturer import Manufacturer
-from myshop.models import Commodity
+
+from .models import Commodity
 
 
 class AbstractMoneyTest(TestCase):
@@ -236,10 +236,8 @@ class MoneyDbFieldTests(TestCase):
 
     def test_filter_with_strings(self):
         amount = MoneyMaker('EUR')('12.34')
-        m1 = Manufacturer(name="Rosebutt")
-        m1.save()
         bag = Commodity.objects.create(unit_price=amount, product_code='B', order=1, product_name="Bag",
-                                       slug='bag', manufacturer=m1, caption="This is a bag")
+                                       slug='bag', caption="This is a bag")
         self.assertEqual(list(Commodity.objects.filter(unit_price='12.34')), [bag])
         self.assertEqual(list(Commodity.objects.filter(unit_price='12.35')), [])
         self.assertEqual(list(Commodity.objects.filter(unit_price__gt='12.33')), [bag])

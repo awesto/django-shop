@@ -3,9 +3,9 @@ from __future__ import unicode_literals
 
 import json
 from django.core.urlresolvers import reverse
-from myshop.models import SmartCard
 from bs4 import BeautifulSoup
 from .test_shop import ShopTestCase
+from .models import Commodity
 
 
 class CatalogTest(ShopTestCase):
@@ -24,7 +24,7 @@ class CatalogTest(ShopTestCase):
         self.assertEqual(list_items[2].string, "Smart Cards")
 
     def test_detail_view(self):
-        sdhc_4gb = SmartCard.objects.get(slug="sdhc-card-4gb")
+        sdhc_4gb = Commodity.objects.get(slug="sdhc-card-4gb")
         url = sdhc_4gb.get_absolute_url()
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
@@ -41,7 +41,7 @@ class CatalogTest(ShopTestCase):
 
     def test_add2cart(self):
         # from the product's detail page add our sample item to the cart
-        sdhc_4gb = SmartCard.objects.get(slug="sdhc-card-4gb")
+        sdhc_4gb = Commodity.objects.get(slug="sdhc-card-4gb")
         add2cart_url = sdhc_4gb.get_absolute_url() + '/add-to-cart'
         response = self.client.get(add2cart_url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)

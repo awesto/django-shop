@@ -14,8 +14,8 @@ from shop.cascade.checkout import (
     GuestFormPlugin, CustomerFormPlugin, CheckoutAddressPlugin,
     PaymentMethodFormPlugin, ShippingMethodFormPlugin, RequiredFormFieldsPlugin,
     ExtraAnnotationFormPlugin, AcceptConditionPlugin)
-from shop.models.cart import CartModel
-from myshop.models import SmartCard
+
+from .models import Cart, Commodity
 from .test_shop import ShopTestCase
 
 
@@ -28,7 +28,7 @@ class CheckoutTest(ShopTestCase):
 
     def fill_cart(self):
         # add a product to cart
-        sdhc_4gb = SmartCard.objects.get(slug="sdhc-card-4gb")
+        sdhc_4gb = Commodity.objects.get(slug="sdhc-card-4gb")
         self.add_product2cart(sdhc_4gb)
 
     def test_customer_form(self):
@@ -273,7 +273,7 @@ class CheckoutTest(ShopTestCase):
         payload = json.loads(response.content.decode('utf-8'))
         self.assertIn('extra_annotation_form', payload['errors'])
         self.assertDictEqual(payload['errors']['extra_annotation_form'], {})
-        cart = CartModel.objects.get(customer=self.customer_bart)
+        cart = Cart.objects.get(customer=self.customer_bart)
         self.assertIsNotNone(cart)
         self.assertEqual(cart.extra['annotation'], "Please send next Monday")
 

@@ -16,13 +16,11 @@ from cmsplugin_cascade.bootstrap3.container import (BootstrapContainerPlugin, Bo
                                                     BootstrapColumnPlugin)
 from shop.middleware import CustomerMiddleware
 from shop.money import Money
-from shop.models.defaults.mapping import ProductPage
 from shop.models.customer import CustomerState
-from shop.models.defaults.customer import Customer
+from shop.models.defaults.mapping import ProductPage
 
-from myshop.models import SmartCard
-from myshop.models.manufacturer import Manufacturer
-from myshop.cms_apps import CatalogListApp
+from .cms_apps import CatalogListApp
+from .models import Commodity, Customer
 
 
 class ShopTestCase(TestCase):
@@ -53,16 +51,11 @@ class ShopTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def create_products(self):
-        manufacturer = Manufacturer.objects.create(name="SanDisk")
-        sdhc_4gb = SmartCard.objects.create(
+        sdhc_4gb = Commodity.objects.create(
             product_name="SDHC Card 4GB",
             slug="sdhc-card-4gb",
             unit_price=Money('3.99'),
             caption="Dependability and solid performance",
-            manufacturer=manufacturer,
-            card_type="SDHC",
-            storage=4,
-            speed=4,
             product_code="sd1041",
             description="SanDisk SDHC and SDXC memory cards are great",
             order=1
@@ -70,15 +63,11 @@ class ShopTestCase(TestCase):
         ProductPage.objects.create(page=self.shop_page, product=sdhc_4gb)
         ProductPage.objects.create(page=self.smartcards_page, product=sdhc_4gb)
 
-        xtr_sdhc_16gb = SmartCard.objects.create(
+        xtr_sdhc_16gb = Commodity.objects.create(
             product_name="EXTREME PLUS SDHC 16GB",
             slug="extreme-plus-sdhc-16gb",
             unit_price=Money('8.49'),
             caption="Up to 80/60MB/s read/write speed",
-            manufacturer=manufacturer,
-            card_type="SDHC",
-            storage=16,
-            speed=80,
             product_code="sd2016",
             description="SanDisk Extreme memory cards offer speed, capacity, and durability",
             order=2,
@@ -86,15 +75,11 @@ class ShopTestCase(TestCase):
         ProductPage.objects.create(page=self.shop_page, product=xtr_sdhc_16gb)
         ProductPage.objects.create(page=self.smartcards_page, product=xtr_sdhc_16gb)
 
-        sdxc_pro_32gb = SmartCard.objects.create(
+        sdxc_pro_32gb = Commodity.objects.create(
             product_name="Extreme PRO microSDHC 32GB",
             slug="extreme-pro-micro-sdhc-32gb",
             unit_price=Money('12.99'),
             caption="Up to 80/60MB/s read/write speed",
-            manufacturer=manufacturer,
-            card_type="SDXC",
-            storage=32,
-            speed=80,
             product_code="sd2018",
             description="SanDisk Extreme PRO microSDHC/microSDXC cards now come with up to 64GB",
             order=3,
