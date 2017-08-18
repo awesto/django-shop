@@ -22,7 +22,7 @@ from djangocms_text_ckeditor.utils import plugin_tags_to_user_html
 from djangocms_text_ckeditor.cms_plugins import TextPlugin
 
 from cmsplugin_cascade.fields import GlossaryField
-from cmsplugin_cascade.minions import minion_plugin_map, minion_element_map, TextMinionPlugin, TextMinionElement
+from cmsplugin_cascade.strides import strides_plugin_map, strides_element_map, TextStridePlugin, TextStrideElement
 from cmsplugin_cascade.link.cms_plugins import TextLinkPlugin
 from cmsplugin_cascade.link.forms import LinkForm, TextLinkFormMixin
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
@@ -370,12 +370,12 @@ class AcceptConditionPlugin(AcceptConditionMixin, TextPlugin):
         return url_name
 
 
-class AcceptConditionMinion(AcceptConditionMixin, TextMinionPlugin):
+class AcceptConditionMinion(AcceptConditionMixin, TextStridePlugin):
     pass
 
 plugin_pool.register_plugin(AcceptConditionPlugin)
-minion_plugin_map['AcceptConditionPlugin'] = AcceptConditionMinion
-minion_element_map['AcceptConditionPlugin'] = TextMinionElement
+strides_plugin_map['AcceptConditionPlugin'] = AcceptConditionMinion
+strides_element_map['AcceptConditionPlugin'] = TextStrideElement
 
 
 class RequiredFormFieldsPlugin(ShopPluginBase):
