@@ -191,11 +191,16 @@ class DialogFormPluginBase(ShopPluginBase):
 
     def get_form_class(self, instance):
         try:
-            return import_string(self.form_class)
+            if issubclass(self.form_class, DialogFormMixin):
+                return self.form_class
+            elif isinstance(self.form_class, str):
+                return import_string(self.form_class)
+            msg = "Can not register plugin class '{}', since 'form_class' neither defines " \
+                  "a DialogForm nor a DialogModelForm."
         except AttributeError:
             msg = "Can not register plugin class '{}', since it neither defines 'form_class' " \
                   "nor overrides 'get_form_class()'."
-            raise ImproperlyConfigured(msg.format(self.__name__))
+        raise ImproperlyConfigured(msg.format(self.__name__))
 
     @classmethod
     def get_identifier(cls, instance):
