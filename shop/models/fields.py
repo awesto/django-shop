@@ -32,6 +32,14 @@ class JSONField(_JSONField):
 
 
 class ChoiceEnumMeta(enum.EnumMeta):
+    def __new__(cls, name, bases, attrs):
+        new_class = super(ChoiceEnumMeta, cls).__new__(cls, name, bases, attrs)
+        values = [p.value for p in new_class.__members__.values()]
+        if len(values) > len(set(values)):
+            msg = "Duplicate values found in class '{}'".format(name)
+            raise ValueError(msg)
+        return new_class
+
     def __call__(cls, value, *args, **kwargs):
         if isinstance(value, string_types):
             try:
@@ -47,23 +55,18 @@ class ChoiceEnum(with_metaclass(ChoiceEnumMeta, enum.Enum)):
     Utility class to handle choices in Django model fields
     """
     def __str__(self):
-        return self.name
+        return ugettext_lazy('.'.join((self.__class__.__name__, self.name)))
 
     @classmethod
     def default(cls):
         try:
-            return next(iter(cls.__members__.values()))
+            return next(iter(cls))
         except StopIteration:
             return None
 
     @classmethod
     def choices(cls):
-        values = [p.value for p in cls.__members__.values()]
-        if len(values) > len(set(values)):
-            msg = "Duplicate values found in {}".format(cls.__class__.__name__)
-            raise ValueError(msg)
-        choices = [(prop.value, ugettext_lazy('.'.join((cls.__name__, attr))))
-                   for attr, prop in cls.__members__.items()]
+        choices = [(c.value, str(c)) for c in cls]
         return choices
 
 
@@ -92,7 +95,9 @@ class ChoiceEnumField(models.PositiveSmallIntegerField):
         return self.enum_type(value)
 
     def get_prep_value(self, state):
-        return state.value
+        if isinstance(state, self.enum_type):
+            return state.value
+        return state
 
     def to_python(self, state):
         return self.enum_type(state)

@@ -5,10 +5,11 @@ from collections import OrderedDict
 
 from django.contrib import admin
 from django.contrib.auth import get_user_model
-from django.forms import widgets
+from django.core.exceptions import ValidationError
+from django.forms import fields, models, widgets
 from django.utils.translation import ugettext_lazy as _
 
-from shop.models.notification import Notification, NotificationAttachment
+from shop.models.notification import Notify, Notification, NotificationAttachment
 from shop.models.order import OrderModel
 
 
@@ -17,19 +18,28 @@ class NotificationAttachmentAdmin(admin.TabularInline):
     extra = 0
 
 
-@admin.register(Notification)
-class NotificationAdmin(admin.ModelAdmin):
-    USER_CHOICES = (('', _("Nobody")), (0, _("Customer")),)
-    list_display = ('name', 'transition_name', 'recipient', 'mail_template', 'num_attachments')
-    inlines = (NotificationAttachmentAdmin,)
-    save_as = True
+class NotificationForm(models.ModelForm):
+    notify_recipient = fields.ChoiceField(label=_("Recipient"))
 
-    def get_form(self, request, obj=None, **kwargs):
-        kwargs.update(widgets={
-            'transition_target': widgets.Select(choices=self.get_transition_choices()),
-            'mail_to': widgets.Select(choices=self.get_mailto_choices()),
-        })
-        return super(NotificationAdmin, self).get_form(request, obj, **kwargs)
+    class Meta:
+        model = Notification
+        exclude = ['notify', 'recipient']
+        widgets = {
+            'transition_target': widgets.Select(),
+            'notify_recipient': widgets.Select(),
+        }
+
+    def __init__(self, *args, **kwargs):
+        if 'instance' in kwargs:
+            initial = kwargs.get('initial', {})
+            if kwargs['instance'].notify is Notify.RECIPIENT:
+                initial['notify_recipient'] = kwargs['instance'].recipient_id
+            else:
+                initial['notify_recipient'] = kwargs['instance'].notify.name
+            kwargs.update(initial=initial)
+        super(NotificationForm, self).__init__(*args, **kwargs)
+        self.fields['transition_target'].widget.choices = self.get_transition_choices()
+        self.fields['notify_recipient'].choices = self.get_recipient_choices()
 
     def get_transition_choices(self):
         choices = OrderedDict()
@@ -39,12 +49,34 @@ class NotificationAdmin(admin.ModelAdmin):
                 choices[transition.target] = transition_name
         return choices.items()
 
-    def get_mailto_choices(self):
-        choices = list(self.USER_CHOICES)
+    def get_recipient_choices(self):
+        """
+        Instead of offering one field for the recipient and one for whom to notify, we
+        merge staff users with the context dependent recipients.
+        """
+        choices = [(n.name, str(n)) for n in Notify if n is not Notify.RECIPIENT]
         for user in get_user_model().objects.filter(is_staff=True):
-            email = '{0} {1} <{2}>'.format(user.first_name, user.last_name, user.email)
+            email = '{0} <{1}>'.format(user.get_full_name(), user.email)
             choices.append((user.id, email))
         return choices
+
+    def save(self, commit=True):
+        obj = super(NotificationForm, self).save(commit=commit)
+        try:
+            obj.recipient = get_user_model().objects.get(pk=self.cleaned_data['notify_recipient'])
+            obj.notify = Notify.RECIPIENT
+        except (ValueError, get_user_model().DoesNotExist):
+            obj.recipient = None
+            obj.notify = getattr(Notify, self.cleaned_data['notify_recipient'])
+        return obj
+
+
+@admin.register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ['name', 'transition_name', 'get_recipient', 'mail_template', 'num_attachments']
+    inlines = (NotificationAttachmentAdmin,)
+    form = NotificationForm
+    save_as = True
 
     def transition_name(self, obj):
         return OrderModel.get_transition_name(obj.transition_target)
@@ -54,12 +86,9 @@ class NotificationAdmin(admin.ModelAdmin):
         return obj.notificationattachment_set.count()
     num_attachments.short_description = _("Attachments")
 
-    def recipient(self, obj):
-        try:
-            if obj.mail_to > 0:
-                user = get_user_model().objects.get(id=obj.mail_to, is_staff=True)
-                return '{0} {1} <{2}>'.format(user.first_name, user.last_name, user.email)
-            else:
-                return OrderedDict(self.USER_CHOICES)[obj.mail_to]
-        except (get_user_model().DoesNotExist, KeyError):
-            return _("Nobody")
+    def get_recipient(self, obj):
+        if obj.notify is Notify.RECIPIENT:
+            return '{0} <{1}>'.format(obj.recipient.get_full_name(), obj.recipient.email)
+        else:
+            return str(obj.notify)
+    get_recipient.short_description = _("Mail Recipient")

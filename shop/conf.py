@@ -33,6 +33,17 @@ class DefaultSettings(object):
         return self._setting('SHOP_DEFAULT_CURRENCY', 'EUR')
 
     @property
+    def SHOP_VENDOR_EMAIL(self):
+        """
+        The vendor's email addresses, unless specified through the ``Order`` object.
+        """
+        try:
+            default_email = self._setting('ADMINS')[0][1]
+        except IndexError:
+            default_email = None
+        return self._setting('SHOP_VENDOR_EMAIL', default_email)
+
+    @property
     def SHOP_MONEY_FORMAT(self):
         """
         When rendering an amount of type Money, use this format.
