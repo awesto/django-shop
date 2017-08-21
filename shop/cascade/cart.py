@@ -102,6 +102,14 @@ class ShopCartPlugin(TransparentWrapper, ShopPluginBase):
             child_classes.remove(child.plugin_type)
         return child_classes
 
+    @classmethod
+    def get_child_classes(cls, slot, page, instance=None):
+        child_classes = ['ShopLeftExtension', 'ShopRightExtension', None]
+        # allow only one left and one right extension
+        for child in instance.get_children():
+            child_classes.remove(child.plugin_type)
+        return child_classes
+
 plugin_pool.register_plugin(ShopCartPlugin)
 
 
