@@ -71,22 +71,22 @@ class SmartPhoneInline(admin.TabularInline):
 class SmartPhoneAdmin(SortableAdminMixin, TranslatableAdmin, FrontendEditableAdminMixin,
                       CMSPageAsCategoryMixin, PlaceholderAdminMixin, PolymorphicChildModelAdmin):
     base_model = Product
-    fieldsets = (
+    fieldsets = [
         (None, {
-            'fields': ('product_name', 'slug', 'active',),
+            'fields': ['product_name', 'slug', 'active'],
         }),
         (_("Translatable Fields"), {
-            'fields': ('caption', 'description',)
+            'fields': ['caption', 'description'],
         }),
         (_("Properties"), {
-            'fields': ('manufacturer', 'battery_type', 'battery_capacity', 'ram_storage',
+            'fields': ['manufacturer', 'battery_type', 'battery_capacity', 'ram_storage',
                        'wifi_connectivity', 'bluetooth', 'gps', 'operating_system',
-                       ('width', 'height', 'weight',), 'screen_size'),
+                       ('width', 'height', 'weight',), 'screen_size'],
         }),
-    )
-    filter_horizontal = ('cms_pages',)
+    ]
+    filter_horizontal = ['cms_pages']
     inlines = (ProductImageInline, SmartPhoneInline,)
-    prepopulated_fields = {'slug': ('product_name',)}
+    prepopulated_fields = {'slug': ['product_name'],}
 
     def save_model(self, request, obj, form, change):
         if not change:
@@ -104,11 +104,11 @@ class SmartPhoneAdmin(SortableAdminMixin, TranslatableAdmin, FrontendEditableAdm
 @admin.register(Product)
 class ProductAdmin(PolymorphicSortableAdminMixin, PolymorphicParentModelAdmin):
     base_model = Product
-    child_models = ((SmartPhoneModel, SmartPhoneAdmin), (SmartCard, SmartCardAdmin), (Commodity, CommodityAdmin),)
-    list_display = ('product_name', 'get_price', 'product_type', 'active',)
-    list_display_links = ('product_name',)
-    search_fields = ('product_name',)
-    list_filter = (PolymorphicChildModelFilter, CMSPageFilter,)
+    child_models = [(SmartPhoneModel, SmartPhoneAdmin), (SmartCard, SmartCardAdmin), (Commodity, CommodityAdmin)]
+    list_display = ['product_name', 'get_price', 'product_type', 'active']
+    list_display_links = ['product_name']
+    search_fields = ['product_name']
+    list_filter = [PolymorphicChildModelFilter, CMSPageFilter]
     list_per_page = 250
     list_max_show_all = 1000
 

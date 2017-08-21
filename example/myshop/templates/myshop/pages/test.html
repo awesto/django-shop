@@ -1,8 +1,8 @@
-{% load static cms_tags sekizai_tags djng_tags i18n %}
+{% load static i18n cascade_tags djng_tags sekizai_tags sass_tags %}
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}" ng-app="myShop">
 <head>
-	<title>{% block title %}django SHOP demo{% endblock %}</title>
+	<title>Test page</title>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,6 +12,8 @@
 	{% render_block "css" postprocessor "shop.sekizai_processors.compress" %}
 </head>
 
+{% addtoblock "css" %}<link href="{% sass_src 'myshop/css/default.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+
 {% addtoblock "js" %}<script src="{% static 'node_modules/picturefill/dist/picturefill.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% addtoblock "js" %}<script src="{% static 'node_modules/angular/angular.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% addtoblock "js" %}<script src="{% static 'node_modules/angular-sanitize/angular-sanitize.min.js' %}"></script>{% endaddtoblock %}
@@ -19,24 +21,12 @@
 {% addtoblock "js" %}<script src="{% static 'node_modules/angular-animate/angular-animate.min.js' %}"></script>{% endaddtoblock %}
 
 <body>
-	{% cms_toolbar %}
 	<header>
-	{% block header %}{% endblock %}
+	{% include "myshop/pages/navbar.html" with navbar_classes="navbar-default navbar-fixed-top" %}
 	</header>
 
 	<main>
-	{% block breadcrumb %}{% endblock %}
-
-	{% block main-content %}
-		<div class="container">
-			<div class="row shop-starter-template">
-				<div class="col-xs-12">
-					<h1>Base Template</h1>
-					<p class="lead">This document does not contain any content yet.</p>
-				</div>
-			</div>
-		</div>
-	{% endblock main-content %}
+		{% render_cascade "myshop/home.json" %}
 	</main>
 
 	<footer class="footer">

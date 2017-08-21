@@ -1,6 +1,6 @@
 django-admin-sortable2==0.6.14
 django-allauth==0.23.0
-django-angular==1.1
+django-angular==1.1.1
 django-appconf==1.0.1
 django-classy-tags==0.8.0
 django-cms==3.4.4
@@ -23,7 +23,7 @@ django-sekizai==0.10.0
 Django-Select2==5.8.10
 django-treebeard==4.1.1
 djangocms-bootstrap3==0.2.0
-djangocms-cascade==0.13.1
+djangocms-cascade==0.14
 djangocms-text-ckeditor==3.4.0
 djangorestframework==3.6.3
 django-formtools==2.0

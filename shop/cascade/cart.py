@@ -92,7 +92,15 @@ class ShopCartPlugin(TransparentWrapper, ShopPluginBase):
                     context['cart']['items'] = len(context['cart']['items'])
         except (KeyError, CartModel.DoesNotExist):
             pass
-        return super(ShopCartPlugin, self).render(context, instance, placeholder)
+        return self.super(ShopCartPlugin, self).render(context, instance, placeholder)
+
+    @classmethod
+    def get_child_classes(cls, slot, page, instance=None):
+        child_classes = ['ShopLeftExtension', 'ShopRightExtension', None]
+        # allow only one left and one right extension
+        for child in instance.get_children():
+            child_classes.remove(child.plugin_type)
+        return child_classes
 
     @classmethod
     def get_child_classes(cls, slot, page, instance=None):

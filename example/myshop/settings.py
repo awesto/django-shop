@@ -383,6 +383,7 @@ THUMBNAIL_PROCESSORS = (
 
 CMS_TEMPLATES = [
     ('myshop/pages/default.html', _("Default Page")),
+    ('myshop/pages/test.html', _("Test Page")),
 ]
 
 CMS_CACHE_DURATIONS = {
