@@ -34,6 +34,8 @@ Changelog for django-SHOP
   shall be part of the project, rather than the Django app.
 * Fix: In :meth:`shop.models.order.BaseOrderItem.populate_from_cart_item` the ``unit_price`` is
   takes from the ``cart_item``, rather than beeing recalculated.
+* :class:`shop.cascade.cart.ShopCartPlugin` accepts two children: ``ShopLeftExtension`` and ``ShopRightExtension``
+  which can be used to add plugins inside the cart's table footer.
 
 
 0.10.2
