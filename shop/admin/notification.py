@@ -30,7 +30,7 @@ class NotificationForm(models.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        if 'instance' in kwargs:
+        if kwargs.get('instance'):
             initial = kwargs.get('initial', {})
             if kwargs['instance'].notify is Notify.RECIPIENT:
                 initial['notify_recipient'] = kwargs['instance'].recipient_id
@@ -67,7 +67,7 @@ class NotificationForm(models.ModelForm):
             obj.notify = Notify.RECIPIENT
         except (ValueError, get_user_model().DoesNotExist):
             obj.recipient = None
-            obj.notify = getattr(Notify, self.cleaned_data['notify_recipient'])
+            obj.notify = getattr(Notify, self.cleaned_data['notify_recipient'], Notify.NOBODY)
         return obj
 
 

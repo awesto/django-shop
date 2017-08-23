@@ -122,10 +122,6 @@ class Notification(models.Model):
     def __str__(self):
         return self.name
 
-    def clean(self):
-        if self.notify is Notify.RECIPIENT and not self.recipient:
-            raise ValidationError(_("Missing recipient on Notification object"))
-
     def get_recipient(self, order):
         if self.notify is Notify.RECIPIENT:
             return self.recipient.email
