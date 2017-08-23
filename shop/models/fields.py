@@ -101,3 +101,7 @@ class ChoiceEnumField(models.PositiveSmallIntegerField):
 
     def to_python(self, state):
         return self.enum_type(state)
+
+    def value_to_string(self, obj):
+        value = self.value_from_object(obj)
+        return value.name
