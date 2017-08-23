@@ -29,11 +29,11 @@ SessionStore = import_module(settings.SESSION_ENGINE).SessionStore()
 
 class CustomerState(ChoiceEnum):
     UNRECOGNIZED = 0
-    ugettext_noop("CustomerState.Unrecognized")
+    ugettext_noop("CustomerState.UNRECOGNIZED")
     GUEST = 1
-    ugettext_noop("CustomerState.Guest")
+    ugettext_noop("CustomerState.GUEST")
     REGISTERED = 2
-    ugettext_noop("CustomerState.Registered")
+    ugettext_noop("CustomerState.REGISTERED")
 
 
 class CustomerQuerySet(models.QuerySet):
