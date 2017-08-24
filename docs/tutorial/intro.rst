@@ -55,6 +55,7 @@ system:
 	(shoptutorial)$ pip install -U pip setuptools
 	(shoptutorial)$ git clone --depth 1 https://github.com/awesto/django-shop
 	(shoptutorial)$ cd django-shop
+	(shoptutorial)$ pip install 'Django<1.11'
 	(shoptutorial)$ pip install -r requirements/common.txt
 	(shoptutorial)$ pip install --no-deps -e .
 	(shoptutorial)$ cd example
