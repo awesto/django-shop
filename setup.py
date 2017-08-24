@@ -45,7 +45,7 @@ setup(
     zip_safe=False,
     install_requires=[
         'Django>=1.9.12,<1.11',
-        'django-post-office>=2.0.8',
+        'django-post-office>=3.0.0',
         'django-filer>=1.2.8',
         'django-ipware>=1.1.1',
         'django-fsm>=2.4.0',
@@ -55,7 +55,6 @@ setup(
         'Django-Select2>=5.8.9',
         'django-rest-auth>=0.9.1',
         'django-admin-sortable2>=0.6.15',
-        'djangocms-text-ckeditor>=3.4.0',
         'django-formtools>=1.0',
         'djangocms-cascade>=0.14.1',
         'bs4>=0.0.1',
