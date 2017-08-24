@@ -54,7 +54,6 @@ djangoShopModule.provider('djangoShop', function() {
 // If ``some_value`` is 3, then the above is rendered as ``<div>1</div><div>2</div><div>3</div>``.
 djangoShopModule.filter('range', function() {
 	return function(end, start) {
-		console.log(end);
 		var direction, result = [];
 		if (angular.isNumber(end)) {
 			start = angular.isNumber(start) ? start : 0;
