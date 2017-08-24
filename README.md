@@ -7,11 +7,10 @@
 [![Twitter Follow](https://img.shields.io/twitter/follow/djangoSHOP.svg?style=social&label=djangoSHOP)](https://twitter.com/djangoSHOP)
 
 
-Version 0.10 of **django-SHOP** is heading towards API stability. Before upgrading to this version
-please read carfully the Changelog, as the API has been simplified and now is much more generic than
-in version 0.9.
+On 2017-08-24 version 0.11 of **django-SHOP** has been released. Before upgrading to this version
+please read carfully the Changelog, as the API has been slightly modified.
 
-Please get in touch with us on Gitter, if you have problems to upgrade your 0.9 projects. This will
+Please get in touch with us on Gitter, if you have problems to upgrade your projects. This will
 help us to adopt the migration path.
 
 
@@ -30,7 +29,7 @@ card, if you apply for your own testing account at Stripe.
 ### Run the demo using Docker
 
 A faster alternative to run one of the demos of **django-SHOP**, is to use a prepared Docker
-container available on the [Docker Hub](https://hub.docker.com/r/awesto/demo-shop/).
+container available on the [Docker Hub](https://hub.docker.com/r/awesto/django-shop-demo/).
 If you have a running docker-machine, download and start the demo using:
 
 ```
