@@ -36,6 +36,23 @@ Changelog for django-SHOP
   takes from the ``cart_item``, rather than beeing recalculated.
 * :class:`shop.cascade.cart.ShopCartPlugin` accepts two children: ``ShopLeftExtension`` and ``ShopRightExtension``
   which can be used to add plugins inside the cart's table footer.
+* In :class:`shop.models.notification.Notification` renamed field ``mail_to`` to ``recipient`` and
+  converted it to a ``ForeignKey``. Added an enum field ``notify`` to distinguish between different
+  kinds of recipients.
+* Refactored ``CustomerStateField`` into a reusable :class:`shop.models.fields.ChoiceEnumField` which
+  can be used for both, ``Notify`` as well as ``CustomerState``.
+* Adopted to **djangocms-cascade** version 0.14, which allows to render static pages using plugin
+  descriptions in JSON.
+* Added Paginator to Order List View.
+* Refactored ``shop.app_settings`` into ``shop.conf.app_settings`` to be usable by Sphinx in docstrings.
+* Added :meth:`shop.models.order.BaseOrder.get_all_transitions()` which returns all possible transitions
+  for the the Order class.
+* In :class:`shop.rest.renderers.ShopTemplateHTMLRenderer` do not pollute ``template_context`` with
+  serialized data on the root level.
+* Fix #623: Template ``auth/register-user.html`` did not validate properly, when Reset password was checked.
+* Added AngularJS filter ``range`` to emulate enumerations in JavaScript.
+* Fallback to hard-coded URL if CMS page for "Continue Shopping" is missing.
+
 
 
 0.10.2
