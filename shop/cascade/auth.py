@@ -75,7 +75,8 @@ class ShopAuthenticationPlugin(ShopLinkPluginBase):
             try:
                 FormClass = import_string(form_type[2])
             except (ImportError, IndexError):
-                context['form_name'] = '{0}_form'.format(*form_type)
+                form_name = form_type[0].replace('-', '_')
+                context['form_name'] = '{0}_form'.format(form_name)
             else:
                 context['form_name'] = FormClass.form_name
                 context[FormClass.form_name] = FormClass()
