@@ -33,7 +33,7 @@ container available on the [Docker Hub](https://hub.docker.com/r/awesto/django-s
 If you have a running docker-machine, download and start the demo using:
 
 ```
-docker run --name demo-shop-i18n_polymorphic --env DJANGO_SHOP_TUTORIAL=i18n_polymorphic -p 9001:9001 awesto/demo-shop:latest
+docker run --name demo-shop-i18n_polymorphic --env DJANGO_SHOP_TUTORIAL=i18n_polymorphic -p 9001:9001 awesto/django-shop-demo:latest
 ```
 
 Then point a browser on the IP address of your docker machine onto port 9001. If unsure invoke
