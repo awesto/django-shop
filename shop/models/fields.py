@@ -92,7 +92,10 @@ class ChoiceEnumField(models.PositiveSmallIntegerField):
         return name, path, args, kwargs
 
     def from_db_value(self, value, expression, connection, context):
-        return self.enum_type(value)
+        try:
+            return self.enum_type(value)
+        except ValueError:
+            return value
 
     def get_prep_value(self, state):
         if isinstance(state, self.enum_type):
