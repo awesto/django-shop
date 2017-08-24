@@ -6,7 +6,7 @@ import enum
 from django.conf import settings
 from django.db import models
 from django.utils.six import python_2_unicode_compatible, with_metaclass, string_types
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import ugettext_lazy as _, ugettext
 
 
 postgresql_engine_names = [
@@ -55,7 +55,7 @@ class ChoiceEnum(with_metaclass(ChoiceEnumMeta, enum.Enum)):
     Utility class to handle choices in Django model fields
     """
     def __str__(self):
-        return ugettext_lazy('.'.join((self.__class__.__name__, self.name)))
+        return ugettext('.'.join((self.__class__.__name__, self.name)))
 
     @classmethod
     def default(cls):
@@ -71,7 +71,7 @@ class ChoiceEnum(with_metaclass(ChoiceEnumMeta, enum.Enum)):
 
 
 class ChoiceEnumField(models.PositiveSmallIntegerField):
-    description = ugettext_lazy("Customer recognition state")
+    description = _("Customer recognition state")
 
     def __init__(self, *args, **kwargs):
         self.enum_type = kwargs.pop('enum_type', ChoiceEnum)
