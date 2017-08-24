@@ -24,10 +24,7 @@ sys.path.insert(0, os.path.abspath('../example'))
 os.environ['DJANGO_SETTINGS_MODULE'] = 'myshop.settings'
 os.environ['DJANGO_SHOP_TUTORIAL'] = 'commodity'
 
-print(sys.path)
 from django.conf import settings
-import django
-django.setup()
 
 # -- General configuration -----------------------------------------------------
 
