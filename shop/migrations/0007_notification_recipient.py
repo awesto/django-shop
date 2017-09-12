@@ -41,11 +41,17 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.AddField(
+            model_name='notification',
+            name='notify',
+            field=shop.models.fields.ChoiceEnumField(verbose_name='Whom to notify', default=Notify.NOBODY),
+        ),
         migrations.RenameField(
             model_name='notification',
             old_name='mail_to',
             new_name='recipient',
         ),
+        migrations.RunPython(forwards, reverse_code=backwards),
         migrations.AlterField(
             model_name='notification',
             name='recipient',
@@ -56,10 +62,4 @@ class Migration(migrations.Migration):
             options={'ordering': ['transition_target', 'recipient_id'], 'verbose_name': 'Notification',
                      'verbose_name_plural': 'Notifications'},
         ),
-        migrations.AddField(
-            model_name='notification',
-            name='notify',
-            field=shop.models.fields.ChoiceEnumField(verbose_name='Whom to notify', default=Notify.NOBODY),
-        ),
-        migrations.RunPython(forwards, reverse_code=backwards),
     ]
