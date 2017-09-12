@@ -14,9 +14,9 @@ def forwards(apps, schema_editor):
         return
     Notification = apps.get_model('shop', 'Notification')
     for row in Notification.objects.all():
-        if row.recipient_id is None:
+        if row.mail_to is None:
             row.notify = Notify.NOBODY
-        if row.recipient_id == 0:
+        if row.mail_to == 0:
             row.notify = Notify.CUSTOMER
         row.save(update_fields=['notify'])
 
@@ -27,10 +27,10 @@ def backwards(apps, schema_editor):
     Notification = apps.get_model('shop', 'Notification')
     for row in Notification.objects.all():
         if row.notify is Notify.NOBODY:
-            row.recipient_id = None
+            row.mail_to = None
         if row.notify is Notify.CUSTOMER:
-            row.recipient_id = 0
-        row.save(update_fields=['recipient_id'])
+            row.mail_to = 0
+        row.save(update_fields=['mail_to'])
 
 
 class Migration(migrations.Migration):
@@ -46,12 +46,12 @@ class Migration(migrations.Migration):
             name='notify',
             field=shop.models.fields.ChoiceEnumField(verbose_name='Whom to notify', default=Notify.NOBODY),
         ),
+        migrations.RunPython(forwards, reverse_code=backwards),
         migrations.RenameField(
             model_name='notification',
             old_name='mail_to',
             new_name='recipient',
         ),
-        migrations.RunPython(forwards, reverse_code=backwards),
         migrations.AlterField(
             model_name='notification',
             name='recipient',
