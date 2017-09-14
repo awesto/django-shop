@@ -87,12 +87,16 @@ class CancelOrderWorkflowMixin(object):
     TRANSITION_TARGETS = {
         'order_canceled': _("Order Canceled"),
     }
+    UNCANCELABLE_TARGETS = ['order_canceled']
 
     def no_open_deposits(self):
         return self.amount_paid == 0
 
+    def cancelable(self):
+        return self.status not in self.UNCANCELABLE_TARGETS
+
     @transition(field='status', source=['*'], target='order_canceled',
-        conditions=[no_open_deposits], custom=dict(admin=True, button_name=_("Cancel Order")))
+        conditions=[no_open_deposits, cancelable], custom=dict(admin=True, button_name=_("Cancel Order")))
     def cancel_order(self):
         """
         Signals that an Order shall be canceled.
