@@ -9,7 +9,7 @@ Changelog for django-SHOP
 ======
 
 * Fix migration ``0007_notification`` to handle field ``mail_to`` correctly.
-* Allo transition to cancel order only for special targets.
+* Allow transition to cancel order only for special targets.
 
 
 0.11

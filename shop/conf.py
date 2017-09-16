@@ -214,7 +214,8 @@ class DefaultSettings(object):
     def SHOP_GUEST_IS_ACTIVE_USER(self):
         """
         If this directive is ``True``, customers which declared themselves as guests, may request
-        a password reset, so that they can log into their account at a later time.
+        a password reset, so that they can log into their account at a later time. Then it also
+        makes sense to set the ``email`` field in model ``email_auth.User`` as unique.
 
         The default is ``False``.
         """
