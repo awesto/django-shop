@@ -3,7 +3,7 @@
 {% addtoblock "css" %}<link href="{% sass_src 'shop/css/order.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 
 {% addtoblock "js" %}<script src="{% static 'shop/js/utils.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-{% addtoblock "ng-requires" %}django.shop.utils{% endaddtoblock %}
+{% add_data "ng-requires" "django.shop.utils" %}
 {% addtoblock "ng-config" %}['djangoShopProvider', function(djangoShopProvider) { djangoShopProvider.setTranslations('list-of-time-lemmas'); }]{% endaddtoblock %}
 
 <table class="table table-condensed">

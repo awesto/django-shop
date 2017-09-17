@@ -56,8 +56,8 @@
 
 	{% render_block "js" postprocessor "shop.sekizai_processors.compress" %}
 	<script type="text/javascript">
-	angular.module('myShop', ['ngAnimate', 'ngSanitize',
-		{% render_block "ng-requires" postprocessor "djng.sekizai_processors.module_list" %}
+	angular.module('myShop', ['ngAnimate', 'ngSanitize', {% with_data "ng-requires" as ng_requires %}
+		{% for module in ng_requires %}'{{ module }}'{% if not forloop.last %}, {% endif %}{% endfor %}{% end_with_data %}
 	]).config(['$httpProvider', '$locationProvider', function($httpProvider, $locationProvider) {
 		$httpProvider.defaults.headers.common['X-CSRFToken'] = '{{ csrf_token }}';
 		$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -66,7 +66,9 @@
 			requireBase: false,
 			rewriteLinks: false
 		});
-	}]){% render_block "ng-config" postprocessor "djng.sekizai_processors.module_config" %};
+	}]){% with_data "ng-config" as configs %}
+		{% for config in configs %}.config({{ config }}){% endfor %};
+	{% end_with_data %}
 	</script>
 </body>
 
