@@ -14,12 +14,17 @@
 import os
 import sys
 import datetime
-from django.conf import settings
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('../example'))
+
+os.environ['DJANGO_SETTINGS_MODULE'] = 'myshop.settings'
+os.environ['DJANGO_SHOP_TUTORIAL'] = 'commodity'
+
+from django.conf import settings
 
 # -- General configuration -----------------------------------------------------
 
