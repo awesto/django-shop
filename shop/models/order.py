@@ -320,6 +320,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
                 cart_item.quantity = max(cart_item.quantity, order_item.quantity)
             else:
                 cart_item = CartItemModel(cart=cart, product=order_item.product,
+                                          product_code=order_item.product_code,
                                           quantity=order_item.quantity, extra=extra)
             cart_item.save()
 
