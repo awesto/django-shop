@@ -6,7 +6,10 @@
 
 	{% block shop-order-caption %}
 	<caption>
-		<h4>{% trans "Order" %} {{ data.number }} <small>{% trans "from" context "order-detail" %} <span shop-timestamp="{{ data.created_at }}"></span></small></h4>
+		<h4>{% trans "Order" %} {{ data.number }}
+			<small>{% trans "from" context "order-detail" %} <span shop-timestamp="{{ data.created_at }}"></span></small>
+			<span class="badge pull-right">{% trans "Status" %}: {{ data.status }}</span>
+		</h4>
 	</caption>
 	{% endblock %}
 
