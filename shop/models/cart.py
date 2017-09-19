@@ -68,10 +68,21 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     This is a holder for the quantity of items in the cart and, obviously, a
     pointer to the actual Product being purchased
     """
-    cart = deferred.ForeignKey('BaseCart', related_name='items')
+    cart = deferred.ForeignKey(
+        'BaseCart',
+        related_name='items',
+    )
+
     product = deferred.ForeignKey(BaseProduct)
-    product_code = models.CharField(_("Product code"), max_length=255, null=True, blank=True,
-                                    help_text=_("Product code of added item."))
+
+    product_code = models.CharField(
+        _("Product code"),
+        max_length=255,
+        null=True,
+        blank=True,
+        help_text=_("Product code of added item."),
+    )
+
     extra = JSONField(verbose_name=_("Arbitrary information for this cart item"))
 
     objects = CartItemManager()
@@ -146,9 +157,22 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     The fundamental part of a shopping cart.
     """
-    customer = deferred.OneToOneField('BaseCustomer', verbose_name=_("Customer"), related_name='cart')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
-    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
+    customer = deferred.OneToOneField(
+        'BaseCustomer',
+        verbose_name=_("Customer"),
+        related_name='cart',
+    )
+
+    created_at = models.DateTimeField(
+        _("Created at"),
+        auto_now_add=True,
+    )
+
+    updated_at = models.DateTimeField(
+        _("Updated at"),
+        auto_now=True,
+    )
+
     extra = JSONField(verbose_name=_("Arbitrary information for this cart"))
 
     # our CartManager determines the cart object from the request.
