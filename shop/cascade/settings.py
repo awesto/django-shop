@@ -4,4 +4,4 @@ from __future__ import unicode_literals
 from django.conf import settings
 
 CASCADE_PLUGINS = getattr(settings, 'SHOP_CASCADE_PLUGINS',
-    ('auth', 'breadcrumb', 'catalog', 'cart', 'checkout', 'order', 'processbar', 'search',))
+    ('auth', 'breadcrumb', 'catalog', 'cart', 'checkout', 'extensions', 'order', 'processbar', 'search',))
