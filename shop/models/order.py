@@ -363,6 +363,15 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         by all external plugins to check, if an Order object has been fully paid.
         """
 
+    def cancelable(self):
+        """
+        Returns True if the current Order is cancelable.
+
+        This method is just a hook and must be overridden by a mixin class
+        managing Order cancellations.
+        """
+        return False
+
     def refund_payment(self):
         """
         Hook to handle payment refunds.
