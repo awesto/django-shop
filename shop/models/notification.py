@@ -4,22 +4,23 @@ from __future__ import unicode_literals
 from bs4 import BeautifulSoup
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
+from django.core.exceptions import ValidationError
 from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.db import models
 from django.db.models import Q
 from django.http.request import HttpRequest
 from django.template import Context, engines
-from django.utils.translation import ugettext_lazy as _, override as translation_override
 from django.utils.six.moves.urllib.parse import urlparse
-from shop.models.order import BaseOrder
+from django.utils.translation import ugettext_lazy as _, override as translation_override, ugettext_noop
 
 from post_office import mail
 from post_office.models import Email as OriginalEmail, EmailTemplate
 
 from filer.fields.file import FilerFileField
 
-from shop import app_settings
-from .customer import CustomerModel
+from shop.conf import app_settings
+from shop.models.order import BaseOrder
+from shop.models.fields import ChoiceEnum, ChoiceEnumField
 
 
 class Email(OriginalEmail):
@@ -69,29 +70,67 @@ class EmailManager(models.Manager):
 OriginalEmail.add_to_class('objects', EmailManager())
 
 
+class Notify(ChoiceEnum):
+    RECIPIENT = 0
+    ugettext_noop("Notify.RECIPIENT")
+    VENDOR = 1
+    ugettext_noop("Notify.VENDOR")
+    CUSTOMER = 2
+    ugettext_noop("Notify.CUSTOMER")
+    NOBODY = 9
+    ugettext_noop("Notify.NOBODY")
+
+
 class Notification(models.Model):
     """
     A task executed on receiving a signal.
     """
-    name = models.CharField(max_length=50, verbose_name=_("Name"))
-    transition_target = models.CharField(max_length=50, verbose_name=_("Event"))
-    mail_to = models.PositiveIntegerField(verbose_name=_("Mail to"), null=True,
-                                          blank=True, default=None)
-    mail_template = models.ForeignKey(EmailTemplate, verbose_name=_("Template"),
-                                      limit_choices_to=Q(language__isnull=True) | Q(language=''))
+    name = models.CharField(
+        max_length=50,
+        verbose_name=_("Name"),
+    )
+
+    transition_target = models.CharField(
+        max_length=50,
+        verbose_name=_("Event"),
+    )
+
+    notify = ChoiceEnumField(
+        _("Whom to notify"),
+        enum_type=Notify,
+    )
+
+    recipient = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name=_("Recipient"),
+        null=True,
+        limit_choices_to={'is_staff': True},
+    )
+
+    mail_template = models.ForeignKey(
+        EmailTemplate,
+        verbose_name=_("Template"),
+        limit_choices_to=Q(language__isnull=True) | Q(language=''),
+    )
 
     class Meta:
         app_label = 'shop'
         verbose_name = _("Notification")
         verbose_name_plural = _("Notifications")
-        ordering = ('transition_target', 'mail_to')
+        ordering = ['transition_target', 'recipient_id']
+
+    def __str__(self):
+        return self.name
 
     def get_recipient(self, order):
-        if self.mail_to is None:
-            return
-        if self.mail_to == 0:
+        if self.notify is Notify.RECIPIENT:
+            return self.recipient.email
+        if self.notify is Notify.CUSTOMER:
             return order.customer.email
-        return CustomerModel.objects.get(pk=self.mail_to).email
+        if self.notify is Notify.VENDOR:
+            if hasattr(order, 'vendor'):
+                return order.vendor.email
+            return app_settings.SHOP_VENDOR_EMAIL
 
 
 class NotificationAttachment(models.Model):
@@ -154,5 +193,5 @@ def order_event_notification(sender, instance=None, target=None, **kwargs):
         attachments = {}
         for notiatt in notification.notificationattachment_set.all():
             attachments[notiatt.attachment.original_filename] = notiatt.attachment.file.file
-        mail.send(recipient, template=notification.mail_template, context=context,
+        mail.send(recipient, template=template, context=context,
                   attachments=attachments, render_on_delivery=True)

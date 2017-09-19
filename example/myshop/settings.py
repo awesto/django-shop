@@ -383,6 +383,7 @@ THUMBNAIL_PROCESSORS = (
 
 CMS_TEMPLATES = [
     ('myshop/pages/default.html', _("Default Page")),
+    ('myshop/pages/test.html', _("Test Page")),  # to show strides rendering via {% render_cascade ... %}
 ]
 
 CMS_CACHE_DURATIONS = {
@@ -441,6 +442,7 @@ CMSPLUGIN_CASCADE_PLUGINS = [
     'cmsplugin_cascade.segmentation',
     'cmsplugin_cascade.generic',
     'cmsplugin_cascade.icon',
+    'cmsplugin_cascade.leaflet',
     'cmsplugin_cascade.link',
     'shop.cascade',
     'cmsplugin_cascade.bootstrap3',
@@ -466,6 +468,11 @@ CMSPLUGIN_CASCADE = {
         'BootstrapImagePlugin': ['image_shapes', 'image_width_responsive', 'image_width_fixed',
                                  'image_height', 'resize_options'],
         'BootstrapPicturePlugin': ['image_shapes', 'responsive_heights', 'image_size', 'resize_options'],
+    },
+    'leaflet': {
+        'tilesURL': 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}',
+        'accessToken': 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw',
+        'apiKey': 'AIzaSyD71sHrtkZMnLqTbgRmY_NsO0A9l9BQmv4',
     },
     'bookmark_prefix': '/',
     'segmentation_mixins': [

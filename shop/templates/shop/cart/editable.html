@@ -1,4 +1,4 @@
-{% load i18n static cms_tags sekizai_tags %}
+{% load i18n static cascade_tags cms_tags sekizai_tags %}
 
 {% addtoblock "js" %}<script src="{% static 'djng/js/django-angular.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% addtoblock "ng-requires" %}djng.forms{% endaddtoblock %}
@@ -16,7 +16,7 @@
 
 <script id="shop/cart.html" type="text/ng-template">
 {% block shop-cart-thead %}
-	<thead>
+	<thead ng-if="cart.num_items>0">
 		<tr>
 			<th class="col-xs-2 col-md-1 text-center">{% trans "Quantity" %}</th>
 			<th class="col-xs-7 text-center">{% trans "Product" %}</th>
@@ -25,6 +25,7 @@
 			<th class="col-xs-1"></th>
 		</tr>
 	</thead>
+	<caption ng-if="cart.num_items==0">{% trans "There are no items in the cart" %}</caption>
 {% endblock shop-cart-thead %}
 
 {% block shop-cart-tbody %}
@@ -36,11 +37,10 @@
 {% endblock shop-cart-tbody %}
 
 {% block shop-cart-tfoot %}
-	<tfoot>
+	<tfoot ng-show="cart.num_items>0">
 		<tr>
 			<td colspan="2" rowspan="99">
-				{# render the first child plugin of the cart #}
-				{% render_plugin instance.child_plugin_instances.0 %}
+				{% render_plugin instance.left_extension %}
 			</td>
 			<td class="text-right"><strong>{% trans "Subtotal" %}</strong></td>
 			<td class="text-right text-nowrap"><strong ng-bind="cart.subtotal"><!-- Subtotal --></strong></td>
@@ -58,10 +58,7 @@
 		</tr>
 		<tr class="no-border">
 			<td colspan="3" rowspan="0">
-			{# render all remaining child plugins of the cart #}
-			{% for plugin in instance.child_plugin_instances %}
-				{% if not forloop.first %}{% render_plugin plugin %}{% endif %}
-			{% endfor %}
+				{% render_plugin instance.right_extension %}
 			</td>
 		</tr>
 	</tfoot>

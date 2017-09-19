@@ -76,7 +76,8 @@
 	</div>
 	{% endblock add-to-cart-modal-body %}
 
-	{% block add-to-cart-modal-footer %}{% page_url "shop-cart" as shop_cart_url %}
+	{% block add-to-cart-modal-footer %}
+		{% page_url "shop-cart" as shop_cart_url %}{% if not shop_cart_url %}{% url "shop-cart" as shop_cart_url %}{% endif %}
 	<div class="modal-footer">
 		{% if shop_cart_url %}
 		<button class="btn btn-primary" ng-click="proceed('{{ shop_cart_url }}')">{% trans "Show Cart" %}</button>

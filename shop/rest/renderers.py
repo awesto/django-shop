@@ -11,7 +11,23 @@ from shop.models.cart import CartModel
 from shop.serializers.cart import CartSerializer
 
 
-class ShopTemplateHTMLRenderer(renderers.TemplateHTMLRenderer):
+class TemplateContextMixin(object):
+    """
+    Alternative implementation which does not pollute the template context with
+    the serialized data on the root scope.
+    """
+    def get_template_context(self, data, renderer_context):
+        response = renderer_context['response']
+        if response.exception:
+            return {'status_code': response.status_code}
+        else:
+            view = renderer_context['view']
+            key = getattr(view, 'context_data_name', 'data')
+            return {key: data}
+
+
+
+class ShopTemplateHTMLRenderer(TemplateContextMixin, renderers.TemplateHTMLRenderer):
     """
     Modified TemplateHTMLRenderer, which shall be used to render templates used by django-SHOP.
     Instead of polluting the template context with the serialized data, that information is
@@ -31,12 +47,9 @@ class ShopTemplateHTMLRenderer(renderers.TemplateHTMLRenderer):
         view = renderer_context['view']
         template_names = self.get_template_names(response, view)
         template = self.resolve_template(template_names)
-        template_context = {
-            'paginator': view.paginator,
-            'data': data,
-        }
+        template_context = self.get_template_context(data, renderer_context)
         self.update_with_cart_context(renderer_context)
-        template_context.update(renderer_context)
+        template_context.update(renderer_context, paginator=view.paginator)
         return template.render(template_context, request=request)
 
     def update_with_cart_context(self, context):
@@ -49,7 +62,7 @@ class ShopTemplateHTMLRenderer(renderers.TemplateHTMLRenderer):
             pass
 
 
-class CMSPageRenderer(renderers.TemplateHTMLRenderer):
+class CMSPageRenderer(TemplateContextMixin, renderers.TemplateHTMLRenderer):
     """
     Modified TemplateHTMLRenderer, which is able to render CMS pages containing the templatetag
     `{% render_placeholder ... %}`, and which accept ordinary Python objects in their rendering
@@ -78,11 +91,10 @@ class CMSPageRenderer(renderers.TemplateHTMLRenderer):
 
         template_names = [request.current_page.get_template()]
         template = self.resolve_template(template_names)
-        template_context = self.get_template_context(dict(data), renderer_context)
+        template_context = self.get_template_context(data, renderer_context)
         template_context.update(
             renderer_context,
             paginator=view.paginator,
             edit_mode=edit_mode,
-            data=data,
         )
         return template_render(template, template_context, request=request)

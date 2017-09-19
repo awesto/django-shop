@@ -1,6 +1,6 @@
 {
   "name": "django-shop",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "These dependencies are for the demo installations of django-SHOP.",
   "main": "index.js",
   "directories": {
@@ -33,6 +33,8 @@
     "bootstrap": "~3.3.7",
     "bootstrap-sass": "~3.3.7",
     "font-awesome": "~4.6.3",
+    "leaflet": "^1.1.0",
+    "leaflet-easybutton": "^2.2.0",
     "picturefill": "~3.0.2",
     "select2": "~4.0.3"
   }

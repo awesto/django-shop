@@ -7,7 +7,7 @@ from django.utils import six
 from django.utils.functional import LazyObject, empty
 from polymorphic.models import PolymorphicModelBase
 
-from shop import app_settings
+from shop.conf import app_settings
 
 
 class DeferredRelatedField(object):
@@ -62,11 +62,14 @@ class ManyToManyField(DeferredRelatedField):
 
 class ForeignKeyBuilder(ModelBase):
     """
-    Here the magic happens: All known and deferred foreign keys are mapped to their correct model's
-    counterpart.
+    In Django we can not point a ``OneToOneField``, ``ForeignKey`` or ``ManyToManyField`` onto
+    an abstract Model class. In Django-SHOP this limitation is circumvented by creating deferred
+    foreign keys, which are mapped to their correct model's counterpart during the model materialization
+    step.
+
     If the main application stores its models in its own directory, add to settings.py:
     SHOP_APP_LABEL = 'myshop'
-    so that the models are created inside your own shop instatiation.
+    so that the models are created inside your own shop instantiation.
     """
     _materialized_models = {}
     _pending_mappings = []

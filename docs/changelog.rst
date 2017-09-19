@@ -4,9 +4,20 @@
 Changelog for django-SHOP
 =========================
 
-
-0.10.3
+0.11.2
 ======
+* Do not render buttons and links related to the watch-list, when it is not available.
+
+
+0.11.1
+======
+
+* Fix migration ``0007_notification`` to handle field ``mail_to`` correctly.
+* Allow transition to cancel order only for special targets.
+
+
+0.11
+====
 
 * Fix: :class:`shop.rest.renderers.CMSPageRenderer` always uses the template offered by the CMS page,
   rather than invoking method ``get_template_names()`` from the corresponding ``APIView`` class.
@@ -20,9 +31,38 @@ Changelog for django-SHOP
 * Fix: In AngularJS, changes on filters and the search field did not work on Safari.
 * Fix: In :meth:`shop.views.auth.AuthFormsView.post` create a customer object from request for
   a visiting customers, rather than responding with *BAD REQUEST*.
-* Fixed: :meth:`shop.models.order.OrderManager.get_summary_url` only worked for views rendered
+* Fix: :meth:`shop.models.order.OrderManager.get_summary_url` only worked for views rendered
   as CMS page. Now it also works for static Django views.
-* Do not render buttons and links related to the watch-list, when it is not available.
+* Simplified all methods ``get_urls()`` from all classes derived from ``CMSApp`` by exploiting
+  CMS-PR 5898 introduced with django-CMS-3.4.4.
+* Remove field ``customer`` from :class:`shop.serializers.order.OrderListSerializer`, since it
+  interfered with the ``customer`` object on the global template_context namespace, causing template
+  `shop/navbar/login-logout.html` to fail.
+* Management command ``fix_filer_bug_965`` is obsolete with django-filer-1.2.8.
+* Fix: Use caption in Order Detail View.
+* Add Leaflet Map plugin from djangocms-cascade for demonstration purpose.
+* Moved ``package.json`` into ``example/package.json`` (and with it ``node_modules``) since it
+  shall be part of the project, rather than the Django app.
+* Fix: In :meth:`shop.models.order.BaseOrderItem.populate_from_cart_item` the ``unit_price`` is
+  takes from the ``cart_item``, rather than beeing recalculated.
+* :class:`shop.cascade.cart.ShopCartPlugin` accepts two children: ``ShopLeftExtension`` and ``ShopRightExtension``
+  which can be used to add plugins inside the cart's table footer.
+* In :class:`shop.models.notification.Notification` renamed field ``mail_to`` to ``recipient`` and
+  converted it to a ``ForeignKey``. Added an enum field ``notify`` to distinguish between different
+  kinds of recipients.
+* Refactored ``CustomerStateField`` into a reusable :class:`shop.models.fields.ChoiceEnumField` which
+  can be used for both, ``Notify`` as well as ``CustomerState``.
+* Adopted to **djangocms-cascade** version 0.14, which allows to render static pages using plugin
+  descriptions in JSON.
+* Added Paginator to Order List View.
+* Refactored ``shop.app_settings`` into ``shop.conf.app_settings`` to be usable by Sphinx in docstrings.
+* Added :meth:`shop.models.order.BaseOrder.get_all_transitions()` which returns all possible transitions
+  for the the Order class.
+* In :class:`shop.rest.renderers.ShopTemplateHTMLRenderer` do not pollute ``template_context`` with
+  serialized data on the root level.
+* Fix #623: Template ``auth/register-user.html`` did not validate properly, when Reset password was checked.
+* Added AngularJS filter ``range`` to emulate enumerations in JavaScript.
+* Fallback to hard-coded URL if CMS page for "Continue Shopping" is missing.
 
 
 0.10.2

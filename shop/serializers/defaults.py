@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from rest_framework import serializers
 from rest_framework.fields import empty
 
-from shop import app_settings
+from shop.conf import app_settings
 from shop.models.product import ProductModel
 from shop.rest.money import MoneyField
 from shop.serializers.bases import BaseCustomerSerializer
@@ -13,9 +13,11 @@ from .bases import BaseOrderItemSerializer
 
 class CustomerSerializer(BaseCustomerSerializer):
     """
-    This CustomerSerializer shall be used as a default, if used in combination with
-    :class:`shop.models.defaults.customer.CustomerSerializer`.
-    Replace it by another serializer, for alternative Customer Models.
+    If the chosen customer model is the default :class:`shop.models.defaults.Customer`, then this
+    serializer shall be used.
+
+    If another customer model is used, then add a customized ``CustomerSerializer`` to your project
+    and point your configuration settings ``SHOP_CUSTOMER_SERIALIZER`` onto it.
     """
     salutation = serializers.CharField(source='get_salutation_display', read_only=True)
 
@@ -25,8 +27,11 @@ class CustomerSerializer(BaseCustomerSerializer):
 
 class ProductSelectSerializer(serializers.ModelSerializer):
     """
-    A simple serializer to convert the product's name and code for rendering the select widget
-    when looking up for a product.
+    A simple serializer to convert the product's name and code for while rendering the `Select2 Widget`_
+    when looking up for a product. This serializer shall return a list of 2-tuples, whose 1st entry is the
+    primary key of the product and the second entry is the rendered name.
+
+    .. _Select2 Widget: https://github.com/applegrew/django-select2
     """
     text = serializers.SerializerMethodField()
 
@@ -40,7 +45,11 @@ class ProductSelectSerializer(serializers.ModelSerializer):
 
 class AddToCartSerializer(serializers.Serializer):
     """
-    Serialize fields used in the "Add to Cart" dialog box.
+    By default, this serializer is used by the view class :class:`shop.views.catalog.AddToCartView`,
+    which handles the communication from the "Add to Cart" dialog box.
+
+    This serializer shall be replaced by an alternative implementation, if product variations are used
+    on the same catalog's detail view.
     """
     quantity = serializers.IntegerField(default=1, min_value=1)
     unit_price = MoneyField(read_only=True)
@@ -70,7 +79,7 @@ class AddToCartSerializer(serializers.Serializer):
         variation rather than being part of the product itself.
         """
         product = context['product']
-        extra = data['extra'] if data is not empty else {}
+        extra = data.get('extra', {}) if data is not empty else {}
         return {
             'product': product.id,
             'product_code': product.product_code,

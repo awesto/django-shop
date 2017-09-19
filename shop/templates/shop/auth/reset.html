@@ -5,10 +5,16 @@
 
 {% block form_content %}
 	{{ block.super }}
-<label class="control-label" ng-hide="success_message">{% trans "Your e-mail address" %}</label>
-<div style="margin-bottom: 20px" class="input-group" ng-hide="success_message">
-	<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
-	<input type="text" class="form-control" name="email" ng-model="form_data.email" value="" placeholder="{% trans 'Email' %}" />
+<div class="form-group has-feedback" style="margin-bottom: 20px">
+	<label class="control-label" ng-hide="success_message">{% trans "Your e-mail address" %}</label>
+	<div class="input-group" ng-hide="success_message">
+		<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+		<input type="email" class="form-control" name="email" ng-model="form_data.email" value="" placeholder="{% trans 'Email' %}" />
+	</div>
+	<ul ng-messages="reset_form.email.$error" class="shop-form-error" ng-cloak>
+		<li ng-show="reset_form.email.$touched" ng-message="email">{% trans "Please provide a valid email address" %}</li>
+		<li ng-show="reset_form.email.$pristine" ng-message="rejected"><span ng-bind="reset_form.email.$message"></span></li>
+	</ul>
 </div>
 
 <div class="form-group" ng-hide="success_message">

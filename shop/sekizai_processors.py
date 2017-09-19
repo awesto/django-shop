@@ -23,7 +23,7 @@ def compress(context, data, name):
     # separate compressable from uncompressable files
     parser = get_class(settings.COMPRESS_PARSER)(data)
     compressor = Compressor()
-    compressable_elements, expanded_elements = [], []
+    compressable_elements, expanded_elements, deferred_elements = [], [], []
     if name == 'js':
         for elem in parser.js_elems():
             attribs = parser.elem_attribs(elem)
@@ -31,7 +31,10 @@ def compress(context, data, name):
                 if 'src' in attribs:
                     compressor.get_basename(attribs['src'])
             except UncompressableFileError:
-                expanded_elements.append(elem)
+                if 'defer' in attribs:
+                    deferred_elements.append(elem)
+                else:
+                    expanded_elements.append(elem)
             else:
                 compressable_elements.append(elem)
     elif name == 'css':
@@ -50,4 +53,11 @@ def compress(context, data, name):
     expanded_node = CompressorNode(nodelist=TextNode(data), kind=name, mode='file')
     data = ''.join(parser.elem_str(e) for e in compressable_elements)
     compressable_node = CompressorNode(nodelist=TextNode(data), kind=name, mode='file')
-    return expanded_node.get_original_content(context=context) + compressable_node.render(context=context)
+    data = ''.join(parser.elem_str(e) for e in deferred_elements)
+    deferred_node = CompressorNode(nodelist=TextNode(data), kind=name, mode='file')
+
+    return '\n'.join([
+        expanded_node.get_original_content(context=context),
+        compressable_node.render(context=context),
+        deferred_node.get_original_content(context=context),
+    ])

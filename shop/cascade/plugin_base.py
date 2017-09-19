@@ -23,7 +23,7 @@ from cmsplugin_cascade.link.forms import LinkForm
 from cmsplugin_cascade.link.plugin_base import LinkPluginBase, LinkElementMixin
 from django_select2.forms import HeavySelect2Widget
 
-from shop import app_settings
+from shop.conf import app_settings
 from shop.forms.base import DialogFormMixin
 from shop.models.cart import CartModel
 from shop.models.product import ProductModel
@@ -203,9 +203,6 @@ class DialogFormPluginBase(ShopPluginBase):
         render_type = dict(cls.RENDER_CHOICES).get(render_type, '')
         return format_html(pgettext_lazy('get_identifier', "as {}"), render_type)
 
-    def __init__(self, *args, **kwargs):
-        super(DialogFormPluginBase, self).__init__(*args, **kwargs)
-
     def get_form_data(self, context, instance, placeholder):
         """
         Returns data to initialize the corresponding dialog form.
@@ -245,8 +242,8 @@ class DialogFormPluginBase(ShopPluginBase):
         request._plugin_order = getattr(request, '_plugin_order', 0) + 1
         if not isinstance(form_data.get('initial'), dict):
             form_data['initial'] = {}
-        form_data['initial'].update(plugin_id=instance.id, plugin_order=request._plugin_order)
+        form_data['initial'].update(plugin_id=instance.pk, plugin_order=request._plugin_order)
         bound_form = self.get_form_class(instance)(**form_data)
         context[bound_form.form_name] = bound_form
         context['headline_legend'] = bool(instance.glossary.get('headline_legend', True))
-        return super(DialogFormPluginBase, self).render(context, instance, placeholder)
+        return self.super(DialogFormPluginBase, self).render(context, instance, placeholder)

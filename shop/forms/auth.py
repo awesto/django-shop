@@ -4,15 +4,15 @@ from __future__ import unicode_literals
 from django.contrib.auth import get_user_model, authenticate, login
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ValidationError
-from django.forms import fields, widgets, ModelForm
+from django.forms import widgets, ModelForm
 from django.template import Context
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
 
-from djng.forms import NgModelFormMixin, NgFormValidationMixin
+from djng.forms import fields, NgModelFormMixin, NgFormValidationMixin
 from djng.styling.bootstrap3.forms import Bootstrap3ModelForm
 
-from shop import app_settings
+from shop.conf import app_settings
 from shop.models.customer import CustomerModel
 from .base import UniqueEmailValidationMixin
 
@@ -23,6 +23,7 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValid
     field_css_classes = 'input-group has-feedback'
 
     email = fields.EmailField(label=_("Your e-mail address"))
+
     preset_password = fields.BooleanField(
         label=_("Preset password"),
         widget=widgets.CheckboxInput(),
@@ -45,7 +46,7 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValid
 
     class Meta:
         model = CustomerModel
-        fields = ('email', 'password1', 'password2',)
+        fields = ['email', 'password1', 'password2']
 
     def __init__(self, data=None, instance=None, *args, **kwargs):
         if data and data.get('preset_password', False):

@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.utils.encoding import python_2_unicode_compatible
 from decimal import Decimal, InvalidOperation
+
+from django.utils import six
+from django.utils.encoding import python_2_unicode_compatible
+
 from cms.utils.helpers import classproperty
-from shop import app_settings
+
+from shop.conf import app_settings
 from .iso4217 import CURRENCIES
 
 
@@ -140,6 +144,14 @@ class AbstractMoney(Decimal):
 
     def __deepcopy__(self, memo):
         return self.__class__(self._cents)
+
+    if six.PY2:
+        def __nonzero__(self):
+            return Decimal.__nonzero__(self) and not self.is_nan()
+
+    if six.PY3:
+        def __bool__(self):
+            return Decimal.__bool__(self) and not self.is_nan()
 
     @classproperty
     def currency(cls):

@@ -13,7 +13,7 @@ from cmsplugin_cascade.mixins import WithSortableInlineElementsMixin
 from cmsplugin_cascade.models import SortableInlineCascadeElement
 from cmsplugin_cascade.fields import GlossaryField
 
-from shop import app_settings
+from shop.conf import app_settings
 from shop.models.product import ProductModel
 from .plugin_base import ShopPluginBase, ProductSelectField
 
@@ -133,9 +133,9 @@ class ShopProductGallery(WithSortableInlineElementsMixin, ShopPluginBase):
 
     def render(self, context, instance, placeholder):
         product_ids = []
-        for instance in instance.sortinline_elements.all():
+        for inline in instance.sortinline_elements.all():
             try:
-                product_ids.append(instance.glossary['product']['pk'])
+                product_ids.append(inline.glossary['product']['pk'])
             except KeyError:
                 pass
         queryset = ProductModel.objects.filter(pk__in=product_ids)

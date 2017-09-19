@@ -10,9 +10,9 @@ framework, a bunch of other Django apps and the **merchant's own implementation*
 seem more complicate than a ready-to-use solution, it gives the programmer enormous advantages
 during the implementation:
 
-Not everything can be "explained" to a software system using user interfaces. When reaching a
-certain point of complexity, it normally is easier to pour those requirements into code, rather
-than to expect yet another set of configuration buttons.
+Not everything can be "explained" to a software system using graphical user interfaces. After
+reaching a certain point of complexity, it normally is easier to pour those requirements into
+executable code, rather than to expect yet another set of configuration buttons.
 
 When evaluating **django-SHOP** with other e-commerce solutions, I therefore suggest to do the
 following litmus test:
