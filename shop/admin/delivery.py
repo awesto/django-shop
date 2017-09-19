@@ -184,7 +184,8 @@ class DeliveryOrderAdminMixin(object):
     def get_inline_instances(self, request, obj=None):
         inline_instances = [
             OrderItemInlineDelivery(self.model, self.admin_site) if isinstance(instance, OrderItemInline) else instance
-            for instance in super(DeliveryOrderAdminMixin, self).get_inline_instances(request, obj)]
+            for instance in super(DeliveryOrderAdminMixin, self).get_inline_instances(request, obj)
+        ]
         if obj.status in ('pick_goods', 'pack_goods',):
             inline_instances.append(DeliveryInline(self.model, self.admin_site))
         return inline_instances
