@@ -3,9 +3,13 @@ from __future__ import unicode_literals
 
 from django.forms.widgets import Select
 from django.utils.translation import ugettext_lazy as _
-import django_filters
+from django_filters import FilterSet
+
 from djng.forms import NgModelFormMixin
 from djng.styling.bootstrap3.forms import Bootstrap3Form
+
+from shop.filters import ModelChoiceFilter
+
 from myshop.models.manufacturer import Manufacturer
 from myshop.models import Product
 
@@ -14,8 +18,8 @@ class FilterForm(NgModelFormMixin, Bootstrap3Form):
     scope_prefix = 'filters'
 
 
-class ManufacturerFilterSet(django_filters.FilterSet):
-    manufacturer = django_filters.ModelChoiceFilter(
+class ManufacturerFilterSet(FilterSet):
+    manufacturer = ModelChoiceFilter(
         queryset=Manufacturer.objects.all(),
         widget=Select(attrs={'ng-change': 'filterChanged()'}),
         empty_label=_("Any Manufacturer"),

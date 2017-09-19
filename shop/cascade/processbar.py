@@ -18,7 +18,7 @@ from cmsplugin_cascade.widgets import NumberInputWidget
 from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
 from cmsplugin_cascade.plugin_base import TransparentWrapper, TransparentContainer
 
-from shop import app_settings
+from shop.conf import app_settings
 from shop.cascade.plugin_base import ShopPluginBase
 
 
@@ -52,8 +52,8 @@ class ProcessBarPlugin(TransparentWrapper, ShopPluginBase):
         return select_template(template_names)
 
     def render(self, context, instance, placeholder):
-        super(ProcessBarPlugin, self).render(context, instance, placeholder)
-        num_children = instance.get_children().count()
+        self.super(ProcessBarPlugin, self).render(context, instance, placeholder)
+        num_children = instance.get_num_children()
         if num_children > 0:
             context['step_css_width'] = '{:3.2f}%'.format(100. / num_children)
         return context

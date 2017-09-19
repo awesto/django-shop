@@ -14,7 +14,7 @@ from django.utils.dateformat import format, time_format
 
 from classytags.helpers import InclusionTag
 
-from shop import app_settings
+from shop.conf import app_settings
 from shop.models.cart import CartModel
 from shop.rest.money import JSONRenderer
 

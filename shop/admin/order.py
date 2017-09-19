@@ -15,7 +15,7 @@ from django.utils.translation import pgettext_lazy
 
 from fsm_admin.mixins import FSMTransitionMixin
 
-from shop import app_settings
+from shop.conf import app_settings
 from shop.models.customer import CustomerModel
 from shop.models.order import OrderItemModel, OrderPayment
 from shop.modifiers.pool import cart_modifiers_pool

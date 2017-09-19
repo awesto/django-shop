@@ -33,6 +33,14 @@ djangoShopModule.directive('shopFormsSet', function() {
 	};
 });
 
+
+// <ANY shop-forms-set ...> directive. One purpose is to summarize the validity of the given forms, so that buttons
+// rendered outside of the <form ...> element but inside the <ANY shop-forms-set ...> element can check the
+// ``stepIsValid`` attribute.
+// Another purpose of this directive is to summarize the scope-models of the given forms, so that the scope can
+// be uploaded to the endpoint URL using one submission.
+// Usage: <form name="my_name" scope-model="my_data" novalidate> where `my_data` is used to access the form's
+// data inside the scope.
 djangoShopModule.directive('form', ['$timeout', function($timeout) {
 	return {
 		restrict: 'E',

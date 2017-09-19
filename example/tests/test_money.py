@@ -30,8 +30,8 @@ class MoneyMakerTest(TestCase):
 
     def test_create_money_type_without_arguments(self):
         Money = MoneyMaker()
-        money = Money()
-        self.assertTrue(money.is_nan())
+        amount = Money()
+        self.assertTrue(amount.is_nan())
 
     def test_create_money_type_with_unknown_currency(self):
         self.assertRaises(ValueError, lambda: MoneyMaker(currency_code="ABC"))
@@ -201,6 +201,15 @@ class MoneyMakerTest(TestCase):
         money = Money('1.23')
         self.assertEqual(money.as_integer(), 123)
 
+    def test_as_bool(self):
+        Money = MoneyMaker()
+        amount = Money('1.23')
+        self.assertTrue(bool(amount))
+        amount = Money(0)
+        self.assertFalse(bool(amount))
+        amount = Money()
+        self.assertFalse(bool(amount))
+
     def test_pickle(self):
         Money = MoneyMaker()
         money = Money('1.23')
@@ -220,12 +229,13 @@ class MoneyDbFieldTests(TestCase):
 
     def test_default(self):
         EUR = MoneyMaker('EUR')
-        f = MoneyDbField(currency='EUR', null=False)
-        self.assertEqual(f.get_default(), EUR())
+        OneEuro = EUR(1)
         f = MoneyDbField(currency='EUR', null=True)
+        self.assertEqual(f.get_default(), None)
+        f = MoneyDbField(currency='EUR', null=True, default=EUR())
         self.assertEqual(f.get_default(), EUR())
-        f = MoneyDbField(currency='EUR')
-        self.assertEqual(f.get_default(), EUR())
+        f = MoneyDbField(currency='EUR', null=False, default=OneEuro)
+        self.assertEqual(f.get_default(), OneEuro)
 
     def test_format(self):
         f = MoneyDbField(max_digits=5, decimal_places=3)

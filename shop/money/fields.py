@@ -2,12 +2,14 @@
 from __future__ import unicode_literals
 
 from decimal import Decimal
+
 from django.core.exceptions import ValidationError
 from django import forms
 from django.db import models
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
-from shop import app_settings
+
+from shop.conf import app_settings
 from .money_maker import MoneyMaker, AbstractMoney
 from .iso4217 import CURRENCIES
 
@@ -36,7 +38,13 @@ class MoneyFormField(forms.DecimalField):
     the Money representation is required.
     """
     def __init__(self, money_class=None, **kwargs):
+        if money_class is None:
+            money_class = MoneyMaker()
+        if not issubclass(money_class, AbstractMoney):
+            raise AttributeError("Given `money_class` does not declare a valid money type")
         self.Money = money_class
+        if 'widget' not in kwargs:
+            kwargs['widget'] = MoneyFieldWidget(attrs={'currency_code': money_class.currency})
         super(MoneyFormField, self).__init__(**kwargs)
 
     def prepare_value(self, value):
@@ -68,7 +76,6 @@ class MoneyField(models.DecimalField):
         defaults = {
             'max_digits': 30,
             'decimal_places': CURRENCIES[self.currency_code][1],
-            'default': self.Money(0) if kwargs.get('null', False) else self.Money(),
         }
         defaults.update(kwargs)
         super(MoneyField, self).__init__(*args, **defaults)
@@ -79,7 +86,6 @@ class MoneyField(models.DecimalField):
             kwargs.pop('max_digits')
         if kwargs['decimal_places'] == CURRENCIES[self.currency_code][1]:
             kwargs.pop('decimal_places')
-        kwargs.pop('default')
         return name, path, args, kwargs
 
     def to_python(self, value):
