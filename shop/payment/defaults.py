@@ -25,7 +25,7 @@ class ForwardFundPayment(PaymentProvider):
         return '$window.location.href="{}";'.format(thank_you_url)
 
 
-class PayInAdvanceWorkflowMixin(object):
+class ManualPaymentWorkflowMixin(object):
     """
     Add this class to `settings.SHOP_ORDER_WORKFLOWS` to mix it into your `OrderModel`.
     It adds all the methods required for state transitions, when used with the
@@ -37,8 +37,16 @@ class PayInAdvanceWorkflowMixin(object):
         'no_payment_required': _("No Payment Required"),
     }
 
+    def __init__(self, *args, **kwargs):
+        if not isinstance(self, BaseOrder):
+            raise ImproperlyConfigured("class 'ManualPaymentWorkflowMixin' is not of type 'BaseOrder'")
+
+        CancelOrderWorkflowMixin.CANCELABLE_SOURCES.update(['awaiting_payment', 'prepayment_deposited',
+                                                            'no_payment_required'])
+        super(ManualPaymentWorkflowMixin, self).__init__(*args, **kwargs)
+
     def is_fully_paid(self):
-        return super(PayInAdvanceWorkflowMixin, self).is_fully_paid()
+        return super(ManualPaymentWorkflowMixin, self).is_fully_paid()
 
     @transition(field='status', source=['created'], target='no_payment_required')
     def no_payment_required(self):
@@ -57,21 +65,21 @@ class PayInAdvanceWorkflowMixin(object):
         return self.amount_paid > 0 and self.amount_paid < self.total
 
     @transition(field='status', source=['awaiting_payment'], target='awaiting_payment',
-        conditions=[deposited_too_little], custom=dict(admin=True, button_name=_("Deposited too little")))
+                conditions=[deposited_too_little], custom=dict(admin=True, button_name=_("Deposited too little")))
     def prepayment_partially_deposited(self):
         """
         Signals that the current Order received a payment, which was not enough.
         """
 
     @transition(field='status', source=['awaiting_payment'], target='prepayment_deposited',
-        conditions=[is_fully_paid], custom=dict(admin=True, button_name=_("Mark as Paid")))
+                conditions=[is_fully_paid], custom=dict(admin=True, button_name=_("Mark as Paid")))
     def prepayment_fully_deposited(self):
         """
         Signals that the current Order received a payment, which fully covers the requested sum.
         """
 
     @transition(field='status', source=['prepayment_deposited', 'no_payment_required'],
-        custom=dict(auto=True))
+                custom=dict(auto=True))
     def acknowledge_prepayment(self):
         """
         Acknowledge the payment. This method is invoked automatically.
