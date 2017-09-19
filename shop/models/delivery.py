@@ -14,12 +14,32 @@ class BaseDelivery(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     Shipping provider to keep track on each delivery.
     """
     order = deferred.ForeignKey(BaseOrder)
-    shipping_id = models.CharField(_("Shipping ID"), max_length=255, null=True, blank=True,
-        help_text=_("The transaction processor's reference"))
-    fulfilled_at = models.DateTimeField(_("Fulfilled at"), null=True, blank=True)
-    shipped_at = models.DateTimeField(_("Shipped at"), null=True, blank=True)
-    shipping_method = models.CharField(_("Shipping method"), max_length=50,
-        help_text=_("The shipping backend used to deliver the items for this order"))
+
+    shipping_id = models.CharField(
+        _("Shipping ID"),
+        max_length=255,
+        null=True,
+        blank=True,
+        help_text=_("The transaction processor's reference"),
+    )
+
+    fulfilled_at = models.DateTimeField(
+        _("Fulfilled at"),
+        null=True,
+        blank=True,
+    )
+
+    shipped_at = models.DateTimeField(
+        _("Shipped at"),
+        null=True,
+        blank=True,
+    )
+
+    shipping_method = models.CharField(
+        _("Shipping method"),
+        max_length=50,
+        help_text=_("The shipping backend used to deliver the items for this order"),
+    )
 
     class Meta:
         abstract = True
@@ -41,9 +61,16 @@ class BaseDeliveryItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model))
     Abstract base class to keep track on the delivered quantity for each ordered item. Since the
     quantity can be any numerical value, it has to be defined by the class implementing this model.
     """
-    delivery = deferred.ForeignKey(BaseDelivery, verbose_name=_("Delivery"),
-        help_text=_("Refer to the shipping provider used to ship this item"))
-    item = deferred.ForeignKey(BaseOrderItem, verbose_name=_("Ordered item"))
+    delivery = deferred.ForeignKey(
+        BaseDelivery,
+        verbose_name=_("Delivery"),
+        help_text=_("Refer to the shipping provider used to ship this item"),
+    )
+
+    item = deferred.ForeignKey(
+        BaseOrderItem,
+        verbose_name=_("Ordered item"),
+    )
 
     class Meta:
         abstract = True
