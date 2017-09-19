@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 
 from django.core import exceptions
 from django.core.cache import cache
-from django.template import RequestContext
 from django.template import TemplateDoesNotExist
 from django.template.loader import select_template
 from django.utils.html import strip_spaces_between_tags
@@ -13,7 +12,7 @@ from django.utils.translation import get_language_from_request
 
 from rest_framework import serializers
 
-from shop import app_settings
+from shop.conf import app_settings
 from shop.models.customer import CustomerModel
 from shop.models.product import ProductModel
 from shop.models.order import OrderItemModel
@@ -80,8 +79,8 @@ class ProductSerializer(serializers.ModelSerializer):
         # when rendering emails, we require an absolute URI, so that media can be accessed from
         # the mail client
         absolute_base_uri = request.build_absolute_uri('/').rstrip('/')
-        context = RequestContext(request, {'product': product, 'ABSOLUTE_BASE_URI': absolute_base_uri})
-        content = strip_spaces_between_tags(template.render(context).strip())
+        context = {'product': product, 'ABSOLUTE_BASE_URI': absolute_base_uri}
+        content = strip_spaces_between_tags(template.render(context, request).strip())
         cache.set(cache_key, content, app_settings.CACHE_DURATIONS['product_html_snippet'])
         return mark_safe(content)
 

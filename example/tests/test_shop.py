@@ -10,7 +10,8 @@ from django.contrib.sessions.middleware import SessionMiddleware
 from django.contrib.auth.middleware import AuthenticationMiddleware
 from django.test import TestCase, RequestFactory
 from cms.api import add_plugin, create_page
-from cmsplugin_cascade.bootstrap3 import settings as bs3_settings
+
+from cmsplugin_cascade import app_settings
 from cmsplugin_cascade.bootstrap3.container import (BootstrapContainerPlugin, BootstrapRowPlugin,
                                                     BootstrapColumnPlugin)
 from shop.middleware import CustomerMiddleware
@@ -141,7 +142,7 @@ class ShopTestCase(TestCase):
 
         # create container
         BS3_BREAKPOINT_KEYS = list(
-            tp[0] for tp in bs3_settings.CMSPLUGIN_CASCADE['bootstrap3']['breakpoints'])
+            tp[0] for tp in app_settings.CMSPLUGIN_CASCADE['bootstrap3']['breakpoints'])
         container_element = add_plugin(placeholder, BootstrapContainerPlugin, 'en',
                                        glossary={'breakpoints': BS3_BREAKPOINT_KEYS})
         container_plugin = container_element.get_plugin_class_instance(self.admin_site)

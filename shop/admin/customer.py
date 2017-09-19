@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib import admin
+from django.utils.encoding import force_str
 from django.utils.timezone import localtime
 from django.utils.translation import pgettext_lazy, ugettext_lazy as _
 
@@ -111,7 +112,7 @@ class CustomerAdminBase(UserAdmin):
         else:
             user_state = _("User")
         if hasattr(user, 'customer'):
-            customer_state = user.customer.get_recognized_display()
+            customer_state = force_str(user.customer.recognized)
             if user.is_staff or user.is_superuser:
                 return '{}/{}'.format(customer_state, user_state)
             return customer_state

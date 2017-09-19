@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _, ugettext
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.fields import GlossaryField
 
-from shop import app_settings
+from shop.conf import app_settings
 from .plugin_base import ShopPluginBase
 
 

@@ -8,7 +8,7 @@ from rest_framework.renderers import BrowsableAPIRenderer
 from rest_framework.settings import api_settings
 from drf_haystack.generics import HaystackGenericAPIView
 
-from shop import app_settings
+from shop.conf import app_settings
 from shop.models.product import ProductModel
 from shop.rest.filters import CMSPagesFilterBackend
 from shop.rest.renderers import CMSPageRenderer

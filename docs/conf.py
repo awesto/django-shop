@@ -18,7 +18,13 @@ import datetime
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('../example'))
+
+os.environ['DJANGO_SETTINGS_MODULE'] = 'myshop.settings'
+os.environ['DJANGO_SHOP_TUTORIAL'] = 'commodity'
+
+from django.conf import settings
 
 # -- General configuration -----------------------------------------------------
 
@@ -50,8 +56,10 @@ copyright = datetime.date.today().strftime('Copyright %Y, Jacob Rief')
 # built documents.
 #
 # The short X.Y version.
-path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
 sys.path.insert(0, path)
+settings.configure()
+
 import shop
 
 version = shop.__version__
@@ -91,6 +99,8 @@ pygments_style = 'sphinx'
 
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
+
+autodoc_member_order = 'bysource'
 
 
 # -- Options for HTML output ---------------------------------------------------

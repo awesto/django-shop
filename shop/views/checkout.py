@@ -10,13 +10,16 @@ from rest_framework.exceptions import ValidationError
 
 from cms.plugin_pool import plugin_pool
 
-from shop import app_settings
+from shop.conf import app_settings
 from shop.serializers.cart import CheckoutSerializer
 from shop.modifiers.pool import cart_modifiers_pool
 from shop.views.cart import BaseViewSet
 
 
 class CheckoutViewSet(BaseViewSet):
+    """
+    View for our REST endpoint to communicate with the various forms used during the checkout.
+    """
     serializer_label = 'checkout'
     serializer_class = CheckoutSerializer
     item_serializer_class = None

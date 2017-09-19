@@ -5,7 +5,7 @@ from django.db import models
 
 from rest_framework import serializers
 
-from shop import app_settings
+from shop.conf import app_settings
 from shop.models.cart import CartModel, CartItemModel, BaseCartItem
 from shop.rest.money import MoneyField
 
@@ -15,10 +15,14 @@ class ExtraCartRow(serializers.Serializer):
     This data structure holds extra information for each item, or for the whole cart, while
     processing the cart using their modifiers.
     """
-    label = serializers.CharField(read_only=True,
-        help_text="A short description of this row in a natural language.")
-    amount = MoneyField(read_only=True,
-        help_text="The price difference, if applied.")
+    label = serializers.CharField(
+        read_only=True,
+        help_text="A short description of this row in a natural language.",
+    )
+
+    amount = MoneyField(
+        help_text="The price difference, if applied.",
+    )
 
 
 class ExtraCartRowList(serializers.Serializer):
@@ -150,5 +154,5 @@ class CheckoutSerializer(serializers.Serializer):
     cart = serializers.SerializerMethodField()
 
     def get_cart(self, instance):
-        serializer = BaseCartSerializer(instance, context=self.context, label='cart')
+        serializer = CartSerializer(instance, context=self.context, label='cart')
         return serializer.data

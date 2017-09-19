@@ -2,14 +2,14 @@
 from __future__ import unicode_literals
 
 from django.contrib.auth import get_user_model
-from django.forms import fields, widgets
+from django.forms import widgets
 from django.forms.utils import ErrorDict
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
 
+from djng.forms import fields
 from djng.styling.bootstrap3.forms import Bootstrap3ModelForm
-from djng.styling.bootstrap3.widgets import RadioSelect, RadioFieldRenderer, CheckboxInput
 
 from shop.models.address import ShippingAddressModel, BillingAddressModel
 from shop.models.customer import CustomerModel
@@ -27,8 +27,8 @@ class CustomerForm(DialogModelForm):
 
     class Meta:
         model = CustomerModel
-        exclude = ('user', 'recognized', 'number', 'last_access',)
-        custom_fields = ('email', 'first_name', 'last_name',)
+        exclude = ['user', 'recognized', 'number', 'last_access']
+        custom_fields = ['email', 'first_name', 'last_name']
 
     def __init__(self, initial=None, instance=None, *args, **kwargs):
         initial = dict(initial) if initial else {}
@@ -59,7 +59,7 @@ class GuestForm(UniqueEmailValidationMixin, DialogModelForm):
 
     class Meta:
         model = get_user_model()  # since we only use the email field, use the User model directly
-        fields = ('email',)
+        fields = ['email']
 
     def __init__(self, initial=None, instance=None, *args, **kwargs):
         if isinstance(instance, CustomerModel):
@@ -83,9 +83,10 @@ class AddressForm(DialogModelForm):
     )
 
     use_primary_address = fields.BooleanField(
+        label="use primary address",  # label will be overridden by Shipping/Billing/AddressForm
         required=False,
         initial=True,
-        widget=CheckboxInput("use primary address"),
+        widget=widgets.CheckboxInput(),
     )
 
     # JS function to filter form_entities after removing an entity
@@ -281,8 +282,9 @@ class BillingAddressForm(AddressForm):
 class PaymentMethodForm(DialogForm):
     scope_prefix = 'data.payment_method'
 
-    payment_modifier = fields.ChoiceField(label=_("Payment Method"),
-        widget=RadioSelect(renderer=RadioFieldRenderer, attrs={'ng-change': 'upload()'})
+    payment_modifier = fields.ChoiceField(
+        label=_("Payment Method"),
+        widget=widgets.RadioSelect(attrs={'ng-change': 'upload()'}),
     )
 
     def __init__(self, *args, **kwargs):
@@ -313,8 +315,9 @@ class PaymentMethodForm(DialogForm):
 class ShippingMethodForm(DialogForm):
     scope_prefix = 'data.shipping_method'
 
-    shipping_modifier = fields.ChoiceField(label=_("Shipping Method"),
-        widget=RadioSelect(renderer=RadioFieldRenderer, attrs={'ng-change': 'upload()'})
+    shipping_modifier = fields.ChoiceField(
+        label=_("Shipping Method"),
+        widget=widgets.RadioSelect(attrs={'ng-change': 'upload()'}),
     )
 
     def __init__(self, *args, **kwargs):
@@ -344,8 +347,11 @@ class ShippingMethodForm(DialogForm):
 class ExtraAnnotationForm(DialogForm):
     scope_prefix = 'data.extra_annotation'
 
-    annotation = fields.CharField(label=_("Extra annotation for this order"), required=False,
-                                  widget=widgets.Textarea)
+    annotation = fields.CharField(
+        label=_("Extra annotation for this order"),
+        required=False,
+        widget=widgets.Textarea,
+    )
 
     @classmethod
     def form_factory(cls, request, data, cart):
@@ -358,7 +364,10 @@ class ExtraAnnotationForm(DialogForm):
 class AcceptConditionForm(DialogForm):
     scope_prefix = 'data.accept_condition'
 
-    accept = fields.BooleanField(required=True, widget=CheckboxInput(None))
+    accept = fields.BooleanField(
+        required=True,
+        widget=widgets.CheckboxInput(),
+    )
 
     def __init__(self, data=None, initial=None, *args, **kwargs):
         plugin_id = data and data.get('plugin_id') or initial and initial.get('plugin_id') or 'none'

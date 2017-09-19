@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.forms.fields import ChoiceField
 from django.template.loader import select_template
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
@@ -10,7 +9,9 @@ from django.utils.module_loading import import_string
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.link.forms import LinkForm
 
-from shop import app_settings
+from djng.forms.fields import ChoiceField
+
+from shop.conf import app_settings
 from .plugin_base import ShopLinkPluginBase, ShopLinkElementMixin
 
 AUTH_FORM_TYPES = (
@@ -74,12 +75,12 @@ class ShopAuthenticationPlugin(ShopLinkPluginBase):
             try:
                 FormClass = import_string(form_type[2])
             except (ImportError, IndexError):
-                # TODO: other unresolvable may need another form name
-                context['form_name'] = 'auth_form'
+                form_name = form_type[0].replace('-', '_')
+                context['form_name'] = '{0}_form'.format(form_name)
             else:
                 context['form_name'] = FormClass.form_name
                 context[FormClass.form_name] = FormClass()
         context['action'] = instance.link
-        return super(ShopAuthenticationPlugin, self).render(context, instance, placeholder)
+        return self.super(ShopAuthenticationPlugin, self).render(context, instance, placeholder)
 
 plugin_pool.register_plugin(ShopAuthenticationPlugin)

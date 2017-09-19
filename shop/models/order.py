@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from six import with_metaclass
 from decimal import Decimal
+
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.core.urlresolvers import reverse
 from django.db import models, transaction
@@ -20,7 +21,7 @@ from django_fsm import FSMField, transition
 from ipware.ip import get_ip
 from cms.models import Page
 
-from shop import app_settings
+from shop.conf import app_settings
 from shop.models.cart import CartItemModel
 from shop.models.fields import JSONField
 from shop.money.fields import MoneyField, MoneyMaker
@@ -52,29 +53,18 @@ class OrderQuerySet(models.QuerySet):
 class OrderManager(models.Manager):
     _queryset_class = OrderQuerySet
 
-    @transaction.atomic
     def create_from_cart(self, cart, request):
         """
-        This creates a new Order object with all its OrderItems using the current Cart object
-        with its Cart Items. Whenever on Order Item is created from a Cart Item, that item is
-        removed from the Cart.
+        This creates a new empty Order object with a valid order number. This order is not
+        populated with any cart items yet. This must be performed in the next step by calling
+        ``order.populate_from_cart(cart, request)``.
+        If this method is not invoked, the order object remains in state ``new``.
         """
         cart.update(request)
+        cart.customer.get_or_assign_number()
         order = self.model(customer=cart.customer, currency=cart.total.currency,
                            _subtotal=Decimal(0), _total=Decimal(0), stored_request=self.stored_request(request))
         order.get_or_assign_number()
-        order.save()
-        order.customer.get_or_assign_number()
-        for cart_item in cart.items.all():
-            cart_item.update(request)
-            order_item = OrderItemModel(order=order)
-            try:
-                order_item.populate_from_cart_item(cart_item, request)
-                order_item.save()
-                cart_item.delete()
-            except CartItemModel.DoesNotExist:
-                pass
-        order.populate_from_cart(cart, request)
         order.save()
         return order
 
@@ -141,7 +131,7 @@ class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
 
     def __new__(cls, name, bases, attrs):
         if 'BaseOrder' in (b.__name__ for b in bases):
-            bases = app_settings.ORDER_WORKFLOWS + bases
+            bases = tuple(app_settings.ORDER_WORKFLOWS) + bases
             # merge the dicts of TRANSITION_TARGETS
             attrs.update(_transition_targets={}, _auto_transitions={})
             for b in reversed(bases):
@@ -177,6 +167,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         'new': _("New order without content"),
         'created': _("Order freshly created"),
         'payment_confirmed': _("Payment confirmed"),
+        'payment_declined': _("Payment declined"),
     }
     decimalfield_kwargs = {
         'max_digits': 30,
@@ -230,14 +221,14 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         """
         return dict(pk=number)
 
-    @cached_property
+    @property
     def subtotal(self):
         """
         The summed up amount for all ordered items excluding extra order lines.
         """
         return MoneyMaker(self.currency)(self._subtotal)
 
-    @cached_property
+    @property
     def total(self):
         """
         The final total to charge for this order.
@@ -255,16 +246,31 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         """
         return urljoin(OrderModel.objects.get_summary_url(), self.get_number())
 
+    @transaction.atomic
     @transition(field=status, source='new', target='created')
     def populate_from_cart(self, cart, request):
         """
-        Populate the order object with the fields from the given cart. Override this method,
-        in case a customized cart has some fields which have to be transfered to the cart.
+        Populate the order object with the fields from the given cart.
+        For each cart item a corresponding order item is created populating its fields and removing
+        that cart item.
+
+        Override this method, in case a customized cart has some fields which have to be transfered
+        to the cart.
         """
+        for cart_item in cart.items.all():
+            cart_item.update(request)
+            order_item = OrderItemModel(order=self)
+            try:
+                order_item.populate_from_cart_item(cart_item, request)
+                order_item.save()
+                cart_item.delete()
+            except CartItemModel.DoesNotExist:
+                pass
         self._subtotal = Decimal(cart.subtotal)
         self._total = Decimal(cart.total)
         self.extra = dict(cart.extra)
         self.extra.update(rows=[(modifier, extra_row.data) for modifier, extra_row in cart.extra_rows.items()])
+        self.save()
 
     @transaction.atomic
     def readd_to_cart(self, cart):
@@ -323,6 +329,13 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         """
 
     @classmethod
+    def get_all_transitions(cls):
+        """
+        Returns a generator over all transition objects for this Order model.
+        """
+        return cls.status.field.get_all_transitions(OrderModel)
+
+    @classmethod
     def get_transition_name(cls, target):
         """Return the human readable name for a given transition target"""
         return cls._transition_targets.get(target, target)
@@ -332,7 +345,6 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         return self._transition_targets.get(self.status, self.status)
 
     status_name.short_description = pgettext_lazy('order_models', "State")
-
 
 OrderModel = deferred.MaterializedModel(BaseOrder)
 
@@ -396,11 +408,11 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
             msg = "Class `{}` must implement a field named `quantity`."
             raise ImproperlyConfigured(msg.format(cls.__name__))
 
-    @cached_property
+    @property
     def unit_price(self):
         return MoneyMaker(self.order.currency)(self._unit_price)
 
-    @cached_property
+    @property
     def line_total(self):
         return MoneyMaker(self.order.currency)(self._line_total)
 
@@ -416,7 +428,7 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         # for historical integrity, store the product's name and price at the moment of purchase
         self.product_name = cart_item.product.product_name
         self.product_code = cart_item.product_code
-        self._unit_price = Decimal(cart_item.product.get_price(request))
+        self._unit_price = Decimal(cart_item.unit_price)
         self._line_total = Decimal(cart_item.line_total)
         self.quantity = cart_item.quantity
         self.extra = dict(cart_item.extra)
