@@ -45,15 +45,6 @@ class ShopLeftExtension(TransparentContainer, ShopPluginBase):
     allow_children = True
     render_template = 'cascade/generic/naked.html'
 
-    @classmethod
-    def get_child_classes(cls, slot, page, instance=None):
-        child_classes = super(ShopLeftExtension, cls).get_child_classes(slot, page, instance=instance)
-        print("----------------------")
-        print(instance)
-        print(child_classes)
-        print
-        return child_classes
-
 plugin_pool.register_plugin(ShopLeftExtension)
 
 
