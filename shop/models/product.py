@@ -84,10 +84,21 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
     a field ``product_code = models.CharField(_("Product code"), max_length=255, unique=True)``
     to the class implementing the product.
     """
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
-    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
-    active = models.BooleanField(default=True, verbose_name=_("Active"),
-        help_text=_("Is this product publicly visible."))
+    created_at = models.DateTimeField(
+        _("Created at"),
+        auto_now_add=True,
+    )
+
+    updated_at = models.DateTimeField(
+        _("Updated at"),
+        auto_now=True,
+    )
+
+    active = models.BooleanField(
+        _("Active"),
+        default=True,
+        help_text=_("Is this product publicly visible."),
+    )
 
     class Meta:
         abstract = True
