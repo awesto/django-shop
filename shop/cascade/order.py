@@ -9,11 +9,13 @@ from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
+from cmsplugin_cascade.plugin_base import TransparentWrapper
 
 from djng.forms import fields, NgModelFormMixin
 from djng.styling.bootstrap3.forms import Bootstrap3Form
 
 from shop.conf import app_settings
+from .extensions import ShopExtendableMixin, LeftRightExtensionMixin
 from .plugin_base import ShopPluginBase
 
 
@@ -26,10 +28,12 @@ class ShopOrderViewsForm(forms.ModelForm):
         return cleaned_data
 
 
-class ShopOrderViewsPlugin(ShopPluginBase):
+class ShopOrderViewsPlugin(LeftRightExtensionMixin, TransparentWrapper, ShopPluginBase):
     name = _("Order Views")
     require_parent = True
     parent_classes = ('BootstrapColumnPlugin',)
+    allow_children = True
+    model_mixins = (ShopExtendableMixin,)
     form = ShopOrderViewsForm
     cache = False
 
@@ -73,9 +77,11 @@ class ReorderButtonForm(ShopOrderViewsForm):
 
 class ShopReorderFormPlugin(BootstrapButtonMixin, ShopPluginBase):
     name = _("Reorder Button")
-    parent_classes = ('BootstrapColumnPlugin', 'SimpleWrapperPlugin',)
+    parent_classes = ('ShopOrderViewsPlugin',)
     form = ReorderButtonForm
     fields = ('button_content', 'glossary',)
+    glossary_field_order = ('button_type', 'button_size', 'button_options', 'quick_float',
+                            'icon_align', 'icon_font', 'symbol')
 
     class Media:
         css = {'all': ('cascade/css/admin/bootstrap.min.css', 'cascade/css/admin/bootstrap-theme.min.css',)}
