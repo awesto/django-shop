@@ -19,6 +19,7 @@ from myshop.models import Product, Commodity, SmartCard, SmartPhoneVariant, Smar
 from myshop.models.polymorphic_.smartphone import OperatingSystem
 
 
+@admin.register(Commodity)
 class CommodityAdmin(SortableAdminMixin, FrontendEditableAdminMixin, PlaceholderAdminMixin,
                      CMSPageAsCategoryMixin, admin.ModelAdmin):
     """
@@ -31,6 +32,7 @@ class CommodityAdmin(SortableAdminMixin, FrontendEditableAdminMixin, Placeholder
     prepopulated_fields = {'slug': ['product_name']}
 
 
+@admin.register(SmartCard)
 class SmartCardAdmin(SortableAdminMixin, FrontendEditableAdminMixin,
                      CMSPageAsCategoryMixin, PlaceholderAdminMixin, PolymorphicChildModelAdmin):
     base_model = Product
@@ -48,6 +50,7 @@ class SmartPhoneInline(admin.TabularInline):
     extra = 0
 
 
+@admin.register(SmartPhoneModel)
 class SmartPhoneAdmin(SortableAdminMixin, FrontendEditableAdminMixin, CMSPageAsCategoryMixin,
                       PlaceholderAdminMixin, PolymorphicChildModelAdmin):
     base_model = Product
@@ -74,10 +77,10 @@ class SmartPhoneAdmin(SortableAdminMixin, FrontendEditableAdminMixin, CMSPageAsC
 @admin.register(Product)
 class ProductAdmin(PolymorphicSortableAdminMixin, PolymorphicParentModelAdmin):
     base_model = Product
-    child_models = ((SmartPhoneModel, SmartPhoneAdmin), (SmartCard, SmartCardAdmin), (Commodity, CommodityAdmin),)
-    list_display = ('product_name', 'get_price', 'product_type', 'active',)
-    list_display_links = ('product_name',)
-    search_fields = ('product_name',)
+    child_models = [SmartPhoneModel, SmartCard, Commodity]
+    list_display = ['product_name', 'get_price', 'product_type', 'active']
+    list_display_links = ['product_name']
+    search_fields = ['product_name']
     list_filter = (PolymorphicChildModelFilter, CMSPageFilter,)
     list_per_page = 250
     list_max_show_all = 1000

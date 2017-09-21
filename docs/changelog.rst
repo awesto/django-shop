@@ -7,6 +7,7 @@ Changelog for django-SHOP
 0.11.2
 ======
 * Do not render buttons and links related to the watch-list, when it is not available.
+* Fix: Adopt polymorphic ModelAdmin-s to django-polymorphic>=1.0.
 
 
 0.11.1
