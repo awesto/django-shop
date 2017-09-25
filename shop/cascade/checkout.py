@@ -38,8 +38,11 @@ from .plugin_base import ShopPluginBase, ShopButtonPluginBase, DialogFormPluginB
 
 class ProceedButtonForm(TextLinkFormMixin, LinkForm):
     link_content = CharField(label=_("Button Content"))
-    LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")), ('RELOAD_PAGE', _("Reload Page")),
-        ('PURCHASE_NOW', _("Purchase Now")),)
+    LINK_TYPE_CHOICES = [
+        ('cmspage', _("CMS Page")),
+        ('RELOAD_PAGE', _("Reload Page")),
+        ('PURCHASE_NOW', _("Purchase Now")),
+    ]
 
 
 class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
@@ -49,19 +52,23 @@ class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
     name = _("Proceed Button")
     parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin', 'ValidateSetOfFormsPlugin')
     model_mixins = (LinkElementMixin,)
-    glossary_field_order = ('button_type', 'button_size', 'button_options', 'quick_float',
-                            'icon_align', 'icon_font', 'symbol')
+    glossary_field_order = ('disable_invalid', 'button_type', 'button_size', 'button_options',
+                            'quick_float', 'icon_align', 'icon_font', 'symbol')
+    form = ProceedButtonForm
     ring_plugin = 'ProceedButtonPlugin'
+
+    disable_invalid = GlossaryField(
+        widgets.CheckboxInput(),
+        label=_("Disable if invalid"),
+        initial=True,
+        help_text=_("Disable button if any form in this set is invalid")
+    )
 
     class Media:
         css = {'all': ('cascade/css/admin/bootstrap.min.css',
                        'cascade/css/admin/bootstrap-theme.min.css',
                        'cascade/css/admin/iconplugin.css',)}
         js = ['shop/js/admin/proceedbuttonplugin.js']
-
-    def get_form(self, request, obj=None, **kwargs):
-        kwargs.update(form=ProceedButtonForm)
-        return super(ShopProceedButton, self).get_form(request, obj, **kwargs)
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
@@ -71,8 +78,8 @@ class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
         return select_template(template_names)
 
     def render(self, context, instance, placeholder):
-        self.super(ShopProceedButton, self).render(context, instance, placeholder)
-        try:
+        context = self.super(ShopProceedButton, self).render(context, instance, placeholder)
+        context['disable_invalid'] = instance.glossary.get('disable_invalid', True)
             cart = CartModel.objects.get_from_request(context['request'])
             cart.update(context['request'])
             context['cart'] = cart
