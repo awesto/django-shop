@@ -4,16 +4,18 @@ from __future__ import unicode_literals
 from django.contrib.auth import logout, get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.tokens import default_token_generator
+from django.core.exceptions import NON_FIELD_ERRORS
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.exceptions import ValidationError
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer, BrowsableAPIRenderer
 from rest_framework.response import Response
-from rest_auth.views import LoginView as OriginalLoginView
+from rest_auth.views import LoginView as OriginalLoginView, PasswordChangeView as OriginalPasswordChangeView
 
 from shop.models.cart import CartModel
 from shop.models.customer import CustomerModel
@@ -32,11 +34,18 @@ class AuthFormsView(GenericAPIView):
             customer = CustomerModel.objects.get_or_create_from_request(request)
         else:
             customer = request.customer
-        form = self.form_class(data=request.data, instance=customer)
+        form_data = request.data.get(self.form_class.scope_prefix, {})
+        form = self.form_class(data=form_data, instance=customer)
         if form.is_valid():
             form.save(request=request)
-            return Response(form.data, status=status.HTTP_200_OK)
-        return Response(dict(form.errors), status=status.HTTP_400_BAD_REQUEST)
+            response_data = {form.form_name: {
+                'success_message': _("Successfully registered yourself."),
+            }}
+            return Response(response_data, status=status.HTTP_200_OK)
+        errors = dict(form.errors)
+        if 'email' in errors:
+            errors.update({NON_FIELD_ERRORS: errors.pop('email')})
+        return Response({form.form_name: errors}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
 
 class LoginView(OriginalLoginView):
@@ -61,6 +70,19 @@ class LoginView(OriginalLoginView):
         if previous_user and previous_user.is_active is False and previous_user != self.request.user:
             previous_user.delete()  # keep the database clean and remove this anonymous entity
 
+    def post(self, request, *args, **kwargs):
+        self.request = request
+        form_data = request.data.get('form_data', {})
+        self.serializer = self.get_serializer(data=form_data)
+        if self.serializer.is_valid():
+            self.login()
+            return self.get_response()
+
+        exc = ValidationError({'login_form': self.serializer.errors})
+        response = self.handle_exception(exc)
+        self.response = self.finalize_response(request, response, *args, **kwargs)
+        return self.response
+
 
 class LogoutView(APIView):
     """
@@ -75,7 +97,21 @@ class LogoutView(APIView):
             pass
         logout(request)
         request.user = AnonymousUser()
-        return Response({'success': _("Successfully logged out.")}, status=status.HTTP_200_OK)
+        response_data = {'logout_form': {'success_message': _("Successfully logged out.")}}
+        return Response(response_data)
+
+
+class PasswordChangeView(OriginalPasswordChangeView):
+    def put(self, request, *args, **kwargs):
+        form_data = request.data.get('form_data', {})
+        serializer = self.get_serializer(data=form_data)
+        if serializer.is_valid():
+            serializer.save()
+            response_data = {'change_form': {
+                'success_message': _("Password has been changed successfully."),
+            }}
+            return Response(response_data)
+        return Response({'change_form': serializer.errors}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
 
 class PasswordResetView(GenericAPIView):
@@ -89,17 +125,17 @@ class PasswordResetView(GenericAPIView):
     permission_classes = (AllowAny,)
 
     def post(self, request, *args, **kwargs):
-        # Create a serializer with request.data
-        serializer = self.get_serializer(data=request.data)
+        form_data = request.data.get('form_data', {})
+        serializer = self.get_serializer(data=form_data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         serializer.save()
         # Return the success message with OK HTTP status
         msg = _("Instructions on how to reset the password have been sent to '{email}'.")
-        return Response(
-            {'success': msg.format(**serializer.data)},
-            status=status.HTTP_200_OK
-        )
+        response_data = {'reset_form': {
+            'success_message': msg.format(**serializer.data),
+        }}
+        return Response(response_data)
 
 
 class PasswordResetConfirm(GenericAPIView):

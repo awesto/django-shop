@@ -2,31 +2,35 @@
 {% load i18n %}
 
 {% block form_title %}{% trans "Sign In" %}{% endblock %}
+{% block form_attrs %}{{ block.super }}djng-endpoint="{% url 'shop:login' %}" {% endblock %}
 
 {% block form_content %}
 	{{ block.super }}
-<div class="form-group has-feedback" style="margin-bottom: 10px">
-	<label class="control-label">{% trans "Your e-mail address" %}</label>
-	<div class="input-group" ng-class="hasError('username')">
-		<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
-		<input type="email" class="form-control" name="username" ng-model="form_data.username" value="" ng-required="true" placeholder="{% trans 'Email' %}" />
+	<div class="form-group has-feedback" style="margin-bottom: 10px">
+		<label class="control-label">{% trans "Your e-mail address" %}</label>
+		<div class="input-group" ng-class="hasError('username')">
+			<span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+			<input class="form-control" name="username" ng-model="form_data.username" value="" ng-required="true" placeholder="{% trans 'Email or Username' %}" />
+		</div>
+		<ul ng-show="{{ form_name }}.username.$dirty && {{ form_name }}.username.$touched" class="djng-field-errors" ng-cloak>
+			<li ng-show="{{ form_name }}.username.$error.required" class="invalid">{% trans "This field is required." %}</li>
+		</ul>
 	</div>
-	<ul ng-messages="login_form.username.$error" class="shop-form-error" ng-cloak>
-		<li ng-message="email">{% trans "Please provide a valid email address" %}</li>
-	</ul>
-</div>
 
-<div class="form-group has-feedback" style="margin-bottom: 20px">
-	<label class="control-label">{% trans "Password" %}</label>
-	<div class="input-group" ng-class="hasError('password')">
-		<span class="input-group-addon"><i class="fa fa-unlock-alt fa-fw"></i></span>
-		<input type="password" class="form-control" name="password" ng-model="form_data.password" placeholder="{% trans 'Password' %}" />
+	<div class="form-group has-feedback" style="margin-bottom: 20px">
+		<label class="control-label">{% trans "Password" %}</label>
+		<div class="input-group" ng-class="hasError('password')">
+			<span class="input-group-addon"><i class="fa fa-unlock-alt fa-fw"></i></span>
+			<input type="password" class="form-control" name="password" ng-model="form_data.password" ng-required="true" placeholder="{% trans 'Password' %}" />
+		</div>
 	</div>
-</div>
 
+	<div class="form-group">
 	{% block form_footer %}
-<div class="form-group">
-	<button type="button" ng-click="submitForm('{% url "shop:login" %}')" class="btn btn-primary">{% trans "Login" %}</button>
-</div>
+		<button type="button" ng-click="do(disable()).then(create()).then(showOk()).then(delay(500)).then(reloadPage()).catch(showFail()).then(delay(500)).finally(restore())" ng-disabled="isDisabled()" class="btn btn-primary">
+			{% trans "Login" %}
+			&emsp;<i class="glyphicon glyphicon-log-in"></i>
+		</button>
 	{% endblock form_footer %}
+	</div>
 {% endblock %}

@@ -1,10 +1,7 @@
-{% load static sekizai_tags sass_tags %}
+{% load i18n static sekizai_tags %}
 
-{% addtoblock "js" %}<script src="{% static 'shop/js/auth.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-{% addtoblock "ng-requires" %}django.shop.auth{% endaddtoblock %}
-
-{% addtoblock "js" %}<script src="{% static 'node_modules/angular-messages/angular-messages.min.js' %}"></script>{% endaddtoblock %}
-{% addtoblock "ng-requires" %}ngMessages{% endaddtoblock %}
+{% addtoblock "js" %}<script src="{% static 'djng/js/django-angular.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+{% add_data "ng-requires" "djng" %}
 
 {% if customer.is_authenticated %}
 <div class="panel panel-info">
@@ -13,16 +10,21 @@
 	</div>
 
 	<div class="panel-body">
-		<shop-auth-form ng-form name="{{ form_name }}" action="{{ action }}" role="form">
+		<form {% block form_attrs %}name="{{ form_name }}" {% endblock %} role="form">
 	{% block form_content %}
-		<div class="alert alert-success" ng-show="success_message" ng-cloak>
-			<a class="close" ng-click="dismiss()">×</a>{% verbatim %}{{ success_message }}{% endverbatim %}
-		</div>
-		<div class="alert alert-danger" ng-show="error_message" ng-cloak>
-			<a class="close" ng-click="dismiss()">×</a>{% verbatim %}{{ error_message }}{% endverbatim %}
-		</div>
+			<div class="alert alert-success" ng-show="successMessageVisible()" ng-cloak>
+				<a class="close" ng-click="dismissSubmitMessage()">×</a>
+				<p ng-bind="getSubmitMessage()"></p>
+			</div>
+
+			<div class="alert alert-danger" ng-show="rejectMessageVisible()" ng-cloak>
+				<a class="close" ng-click="dismissSubmitMessage()">×</a>
+				<p ng-bind="getSubmitMessage()"></p>
+			</div>
 	{% endblock form_content %}
-		</shop-auth-form>
+		</form>
 	</div>
 </div>
+{% else %}
+<div class="bg-warning">{% trans "This page shall only be reachable by authenticated users" %}</div>
 {% endif %}

@@ -2,55 +2,59 @@
 {% load i18n %}
 
 {% block form_title %}{% trans "Register Yourself" %}{% endblock %}
+{% block form_attrs %}{{ block.super }}djng-endpoint="{% url 'shop:register-user' %}"{% endblock %}
 
 {% block form_content %}
-{{ block.super }}
-<div class="form-group has-feedback" style="margin-bottom: 20px">
-	{{ register_user_form.email.label_tag }}
-	<div class="input-group" ng-class="hasError('email')">
-		<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
-		{{ register_user_form.email }}
-	</div>
-	<ul ng-messages="register_user_form.email.$error" class="shop-form-error" ng-cloak>
-		<li ng-show="register_user_form.email.$dirty" ng-message="email">{% trans "Please provide a valid email address" %}</li>
-		<li ng-show="register_user_form.email.$pristine" ng-message="rejected"><span ng-bind="register_user_form.email.$message"></span></li>
-	</ul>
-</div>
-
-<div class="form-group">
-	{{ register_user_form.preset_password }}
-	<span class="help-block">{{ register_user_form.preset_password.help_text }}</span>
-</div>
-
-<div ng-if="!form_data.preset_password" style="margin-top: 20px;">
-	<div class="form-group has-feedback">
-		{{ register_user_form.password1.label_tag }}
-		<div class="input-group" ng-class="hasError('password1')">
-			<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
-			{{ register_user_form.password1 }}
+	{{ block.super }}
+	<div class="form-group has-feedback" style="margin-bottom: 20px">
+		{{ register_user_form.email.label_tag }}
+		<div class="input-group" ng-class="hasError('email')">
+			<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+			{{ register_user_form.email }}
 		</div>
-		<ul ng-messages="register_user_form.password1.$error" class="shop-form-error" ng-cloak>
-			<li ng-message="minlength">{% trans "Password is too short" %}</li>
-			<li ng-message="rejected"><span ng-bind="register_user_form.password1.$message"></span></li>
+		<ul ng-show="register_user_form.email.$dirty && register_user_form.email.$touched" class="djng-field-errors" ng-cloak>
+			<li ng-show="register_user_form.email.$error.required" class="invalid">{% trans "This field is required." %}</li>
+			<li ng-show="register_user_form.email.$error.email" class="invalid">{% trans "Enter a valid email address." %}</li>
+			<li ng-show="register_user_form.email.$valid" class="valid"></li>
 		</ul>
-		<span class="help-block">{{ register_user_form.password1.help_text }}</span>
 	</div>
 
-	<div class="form-group has-feedback">
-		{{ register_user_form.password2.label_tag }}
-		<div class="input-group" ng-class="hasError('password2')">
-			<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
-			{{ register_user_form.password2 }}
+	<div class="form-group">
+		{{ register_user_form.preset_password }}
+		<span class="help-block">{{ register_user_form.preset_password.help_text }}</span>
+	</div>
+
+	<div ng-if="!form_data.preset_password" style="margin-top: 20px;">
+		<div class="form-group has-feedback">
+			{{ register_user_form.password1.label_tag }}
+			<div class="input-group" ng-class="hasError('password1')">
+				<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+				{{ register_user_form.password1 }}
+			</div>
+			<ul ng-show="register_user_form.password1.$dirty && register_user_form.password1.$touched" class="djng-field-errors" ng-cloak>
+				<li ng-show="register_user_form.password1.$error.required" class="invalid">{% trans "This field is required." %}</li>
+				<li ng-show="register_user_form.password1.$error.minlength" class="invalid">{% trans "Password is too short" %}</li>
+				<li ng-show="register_user_form.password1.$valid" class="valid"></li>
+			</ul>
+			<span class="help-block">{{ register_user_form.password1.help_text }}</span>
 		</div>
-		<ul ng-messages="register_user_form.password2.$error" class="shop-form-error" ng-cloak>
-			<li ng-message="minlength">{% trans "Password is too short" %}</li>
-			<li ng-message="rejected"><span ng-bind="register_user_form.password2.$message"></span></li>
-		</ul>
-		<span class="help-block">{{ register_user_form.password2.help_text }}</span>
-	</div>
-</div>
 
-<div class="form-group">
-	<button type="button" ng-click="submitForm('{% url 'shop:register-user' %}', 5000)" ng-disabled="register_user_form.$invalid" class="btn btn-primary">{% trans "Register" %}</button>
-</div>
+		<div class="form-group has-feedback">
+			{{ register_user_form.password2.label_tag }}
+			<div class="input-group" ng-class="hasError('password2')">
+				<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+				{{ register_user_form.password2 }}
+			</div>
+			<ul ng-show="register_user_form.password2.$dirty && register_user_form.password2.$touched" class="djng-field-errors" ng-cloak>
+				<li ng-show="register_user_form.password2.$error.required" class="invalid">{% trans "This field is required." %}</li>
+				<li ng-show="register_user_form.password2.$error.minlength" class="invalid">{% trans "Password is too short" %}</li>
+				<li ng-show="register_user_form.password2.$valid" class="valid"></li>
+			</ul>
+			<span class="help-block">{{ register_user_form.password2.help_text }}</span>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<button type="button" ng-click="do(disable()).then(create()).then(delay(2500)){# .then(redirectTo('{{ redirect_to }}')) #}.finally(restore())" ng-disabled="isDisabled()" class="btn btn-primary">{% trans "Register" %}</button>
+	</div>
 {% endblock form_content %}

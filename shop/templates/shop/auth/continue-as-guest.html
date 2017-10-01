@@ -2,11 +2,15 @@
 {% load i18n %}
 
 {% block form_title %}{% trans "Proceed as guest" %}{% endblock %}
+{% block form_attrs %}{{ block.super }}djng-endpoint="{% url 'shop:continue-as-guest' %}"{% endblock %}
 
 {% block form_content %}
-{{ block.super }}
-
-<div class="form-group">
-	<button type="button" ng-click="submitForm('{% url 'shop:continue-as-guest' %}')" class="btn btn-primary">{% trans "Continue as guest" %}</button>
-</div>
+	{{ block.super }}
+	<input type="hidden" name="dummy" ng-model="dummy" />
+	<div class="form-group">
+		<button type="button" ng-click="do(create()).then(showOk()).then(delay(500)).finally(restore())" class="btn btn-primary">
+			{% trans "Continue as guest" %}
+			&emsp;<i class="glyphicon glyphicon-log-in"></i>
+		</button>
+	</div>
 {% endblock form_content %}

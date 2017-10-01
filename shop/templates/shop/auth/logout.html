@@ -1,10 +1,13 @@
 {% extends "shop/auth/authenticated-base.html" %}
 {% load i18n %}
 
-{% block form_title %}{% blocktrans %}Authenticated as: {{ user }}{% endblocktrans %}{% endblock %}
+{% block form_title %}{% trans "Logout" %}{% endblock %}
+
+{% block form_attrs %}{{ block.super }} djng-endpoint="{% url 'shop:logout' %}"{% endblock %}
 
 {% block form_content %}
-<div class="form-group">
-	<button type="button" ng-click="submitForm('{% url 'shop:logout' %}')" class="btn btn-primary">{% trans "Logout" %}</button>
-</div>
-{% endblock %}
+	{{ block.super }}
+	<div class="form-group">
+		<button type="button" ng-click="do(disable()).then(create()).then(delay(2500)).then(redirectTo('{{ redirect_to }}')).finally(restore())" class="btn btn-primary">{% trans "Logout" %}</button>
+	</div>
+{% endblock form_content %}
