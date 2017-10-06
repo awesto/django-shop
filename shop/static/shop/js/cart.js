@@ -8,9 +8,9 @@ djangoShopModule.controller('CartController', ['$scope', '$http', function($scop
 	var isLoading = false;
 
 	this.loadCart = function() {
-		$http.get($scope.cartListURL).success(function(cart) {
-			$scope.cart = cart;
-		}).error(function(msg) {
+		$http.get($scope.cartListURL).then(function(response) {
+			$scope.cart = response.data;
+		}).catch(function(msg) {
 			console.error('Unable to fetch shopping cart: ' + msg);
 		});
 	}

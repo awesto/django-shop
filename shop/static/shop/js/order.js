@@ -18,7 +18,7 @@ djangoShopModule.directive('shopOrderForm', ['$http', '$window', function($http,
 				scope.$eval(attrs.shopOrderForm);
 			};
 			scope.update = function(action) {
-				$http.post($window.location, scope.data).success(function(response) {
+				$http.post($window.location, scope.data).then(function(response) {
 					if (action) {
 						$window.location.assign(action);
 					} else {

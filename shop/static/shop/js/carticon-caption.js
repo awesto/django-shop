@@ -18,9 +18,9 @@ djangoShopModule.directive('shopCarticonCaption', ['$rootScope', '$http', 'djang
 		templateUrl: 'shop/carticon-caption.html',
 		link: function(scope, element, attrs) {
 			function updateCarticonCaption() {
-				$http.get(updateCaptionURL).success(function(caption) {
-					angular.extend(scope.caption, caption);
-				}).error(function(msg) {
+				$http.get(updateCaptionURL).then(function(response) {
+					angular.extend(scope.caption, response.data);
+				}).catch(function(msg) {
 					console.error("Unable to fetch caption for cart icon: " + msg);
 				});
 			}
