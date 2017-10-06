@@ -18,7 +18,7 @@ from .base import DialogForm, DialogModelForm, UniqueEmailValidationMixin
 
 
 class CustomerForm(DialogModelForm):
-    scope_prefix = 'data.customer'
+    scope_prefix = 'customer'
     legend = _("Customer's Details")
 
     email = fields.EmailField(label=_("Email address"))
@@ -51,7 +51,7 @@ class CustomerForm(DialogModelForm):
 
 
 class GuestForm(UniqueEmailValidationMixin, DialogModelForm):
-    scope_prefix = 'data.guest'
+    scope_prefix = 'guest'
     form_name = 'customer_form'  # Override form name to reuse template `customer-form.html`
     legend = _("Customer's Email")
 
@@ -237,7 +237,7 @@ class AddressForm(DialogModelForm):
 
 
 class ShippingAddressForm(AddressForm):
-    scope_prefix = 'data.shipping_address'
+    scope_prefix = 'shipping_address'
     legend = _("Shipping Address")
 
     class Meta(AddressForm.Meta):
@@ -260,7 +260,7 @@ class ShippingAddressForm(AddressForm):
 
 
 class BillingAddressForm(AddressForm):
-    scope_prefix = 'data.billing_address'
+    scope_prefix = 'billing_address'
     legend = _("Billing Address")
 
     class Meta(AddressForm.Meta):
@@ -280,7 +280,7 @@ class BillingAddressForm(AddressForm):
 
 
 class PaymentMethodForm(DialogForm):
-    scope_prefix = 'data.payment_method'
+    scope_prefix = 'payment_method'
 
     payment_modifier = fields.ChoiceField(
         label=_("Payment Method"),
@@ -313,7 +313,7 @@ class PaymentMethodForm(DialogForm):
 
 
 class ShippingMethodForm(DialogForm):
-    scope_prefix = 'data.shipping_method'
+    scope_prefix = 'shipping_method'
 
     shipping_modifier = fields.ChoiceField(
         label=_("Shipping Method"),
@@ -345,7 +345,7 @@ class ShippingMethodForm(DialogForm):
 
 
 class ExtraAnnotationForm(DialogForm):
-    scope_prefix = 'data.extra_annotation'
+    scope_prefix = 'extra_annotation'
 
     annotation = fields.CharField(
         label=_("Extra annotation for this order"),
@@ -362,7 +362,7 @@ class ExtraAnnotationForm(DialogForm):
 
 
 class AcceptConditionForm(DialogForm):
-    scope_prefix = 'data.accept_condition'
+    scope_prefix = 'accept_condition'
 
     accept = fields.BooleanField(
         required=True,

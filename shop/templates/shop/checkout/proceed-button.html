@@ -1,9 +1,15 @@
-{% extends "shop/checkout/dialog-base.html" %}
-{% load sekizai_tags %}
+{% load static sekizai_tags %}{% spaceless %}
 
-{% block dialog_form %}
-	{% if stylesheet_url %}{% addtoblock "css" %}<link href="{{ stylesheet_url }}" rel="stylesheet" type="text/css" />{% endaddtoblock %}{% endif %}
-	{% with instance_css_classes=instance.css_classes instance_inline_styles=instance.inline_styles %}
-	{% block proceed-button %}<button shop-dialog-proceed ng-click="proceedWith('{{ instance.link }}')" ng-disabled="stepIsValid===false"{% if instance_css_classes %} class="{{ instance_css_classes }}"{% endif %}{% if instance_inline_styles %} style="{{ instance_inline_styles }}"{% endif %}>{{ icon_left }}{{ instance.content }}{{ icon_right }}</button>{% endblock %}
-	{% endwith %}
-{% endblock %}
+{% addtoblock "css" %}<link href="{% static 'djng/css/styles.css' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+{% if stylesheet_url %}{% addtoblock "css" %}<link href="{{ stylesheet_url }}" rel="stylesheet" type="text/css" />{% endaddtoblock %}{% endif %}
+
+{% addtoblock "js" %}<script src="{% static 'djng/js/django-angular.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+{% add_data "ng-requires" "djng.forms" %}
+
+{% with instance_css_classes=instance.css_classes instance_inline_styles=instance.inline_styles %}
+	<button ng-click="do(update()){{ proceed_with }}"{% if disable_invalid %} ng-disabled="setIsInvalid"{% endif %}{% if instance_css_classes %} class="{{ instance_css_classes }}"{% endif %}{% if instance_inline_styles %} style="{{ instance_inline_styles }}"{% endif %}>
+		{{ icon_left }}{{ instance.content }}{{ icon_right }}
+	</button>
+{% endwith %}
+
+{% endspaceless %}

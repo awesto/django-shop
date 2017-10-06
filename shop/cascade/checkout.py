@@ -80,11 +80,22 @@ class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
     def render(self, context, instance, placeholder):
         context = self.super(ShopProceedButton, self).render(context, instance, placeholder)
         context['disable_invalid'] = instance.glossary.get('disable_invalid', True)
+        try:  # TODO: consider to handle this in a different way
             cart = CartModel.objects.get_from_request(context['request'])
             cart.update(context['request'])
             context['cart'] = cart
         except CartModel.DoesNotExist:
             pass
+
+        # handle further actions
+        if instance.link == 'RELOAD_PAGE':
+            context['proceed_with'] = ".then(reloadPage())"
+        elif instance.link == 'PURCHASE_NOW':
+            context['proceed_with'] = ".then(alert('Purchase'))"
+        elif instance.link == 'DO_NOTHING':
+            context['proceed_with'] = ''
+        else:
+            context['proceed_with'] = ".then(redirectTo('{}'))".format(instance.link)
         return context
 
 plugin_pool.register_plugin(ShopProceedButton)
@@ -408,7 +419,7 @@ class ValidateSetOfFormsPlugin(TransparentContainer, ShopPluginBase):
     This plugin wraps arbitrary forms into the Angular directive shopFormsSet.
     This is required to validate all forms, so that a proceed button is disabled otherwise.
     """
-    name = _("Validate Set of Forms")
+    name = _("Manage Set of Forms")
     allow_children = True
     alien_child_classes = True
 
