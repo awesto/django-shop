@@ -54,7 +54,7 @@
 					<input class="form-control input-sm" type="password" placeholder="{% trans 'Password' %}" name="password" ng-model="form_data.password" ng-required="true">
 				</div>
 			</div>
-			<button class="btn btn-primary btn-block" type="button" ng-click="do(disable()).then(create()).then(showOk()).then(delay(500)).then(reloadPage()).catch(showFail()).then(delay(500)).finally(restore())" ng-disabled="isDisabled()">
+			<button class="btn btn-primary btn-block" type="button" ng-click="do(disable()).then(create()).then(showOK()).then(delay(500)).then(reloadPage()).catch(showFail()).then(delay(500)).finally(restore())" ng-disabled="isDisabled()">
 				{% trans "Login" %}
 				&emsp;<i class="glyphicon glyphicon glyphicon-log-in"></i>
 			</button>
