@@ -27,7 +27,7 @@
 
 	<div class="form-group">
 	{% block form_footer %}
-		<button type="button" ng-click="do(disable()).then(create()).then(showOk()).then(delay(500)).then(reloadPage()).catch(showFail()).then(delay(500)).finally(restore())" ng-disabled="isDisabled()" class="btn btn-primary">
+		<button type="button" ng-click="do(disable()).then(create()).then(showOK()).then(delay(500)).then(reloadPage()).catch(showFail()).then(delay(500)).finally(restore())" ng-disabled="isDisabled()" class="btn btn-primary">
 			{% trans "Login" %}
 			&emsp;<i class="glyphicon glyphicon-log-in"></i>
 		</button>

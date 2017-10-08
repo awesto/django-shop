@@ -8,7 +8,7 @@
 	{{ block.super }}
 	<input type="hidden" name="dummy" ng-model="dummy" />
 	<div class="form-group">
-		<button type="button" ng-click="do(create()).then(showOk()).then(delay(500)).finally(restore())" class="btn btn-primary">
+		<button type="button" ng-click="do(create()).then(showOK()).then(delay(500)).finally(restore())" class="btn btn-primary">
 			{% trans "Continue as guest" %}
 			&emsp;<i class="glyphicon glyphicon-log-in"></i>
 		</button>
