@@ -42,7 +42,7 @@ class CheckoutViewSet(BaseViewSet):
                     if hasattr(p, 'form_class'):
                         self.dialog_forms.add(import_string(p.form_class))
 
-    @list_route(methods=['post', 'put'], url_path='upload')
+    @list_route(methods=['put'], url_path='upload')
     def upload(self, request):
         """
         All forms using the AngularJS directive `shop-dialog-form` have an implicit scope containing
@@ -100,10 +100,8 @@ class CheckoutViewSet(BaseViewSet):
     def purchase(self, request):
         """
         This is the final step on converting a cart into an order object. It normally is used in
-        combination with the AngularJS directive `shop-dialog-proceed` used in combination with
-        `proceedWith("PURCHASE_NOW")`.
-        Use the plugin `shop.cascade.checkout.ProceedButtonPlugin` to render such a button into
-        any placeholder field.
+        combination with the plugin :class:`shop.cascade.checkout.ProceedButtonPlugin` to render
+        a button labeled "Purchase Now".
         """
         cart = self.get_queryset()
         if cart.pk is None:

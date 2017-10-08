@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 from django.contrib.auth import get_user_model
 from django.forms import widgets
 from django.forms.utils import ErrorDict
-from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
 
@@ -96,12 +95,12 @@ class AddressForm(DialogModelForm):
     class Meta:
         exclude = ('customer', 'priority',)
 
-    def __init__(self, initial=None, instance=None, *args, **kwargs):
+    def __init__(self, initial=None, instance=None, cart=None, *args, **kwargs):
+        self.cart = cart
         self.multi_addr = kwargs.pop('multi_addr', False)
         self.allow_use_primary = kwargs.pop('allow_use_primary', False)
-        self.form_entities = kwargs.pop('form_entities', [])
+        self.populate_siblings_summary()
         if instance:
-            cart = kwargs['cart']
             initial = dict(initial or {}, active_priority=instance.priority)
             if instance.address_type == 'shipping':
                 initial['use_primary_address'] = cart.shipping_address is None
@@ -135,36 +134,13 @@ class AddressForm(DialogModelForm):
             if data.get('use_primary_address'):
                 active_priority = 'nop'
             else:
-                active_priority = data.get('active_priority', 'new')
+                active_priority = data.get('active_priority', 'add')
             active_address = cls.get_model().objects.get_fallback(customer=request.customer)
         else:
             filter_args = dict(customer=request.customer, priority=active_priority)
             active_address = cls.get_model().objects.filter(**filter_args).first()
 
-        if data.pop('remove_entity', False):
-            if active_address and (isinstance(active_priority, int) or data.get('is_pending')):
-                active_address.delete()
-            old_address = cls.get_model().objects.get_fallback(customer=request.customer)
-            if old_address:
-                faked_data = dict(data)
-                faked_data.update(
-                    dict((field.name, old_address.serializable_value(field.name))
-                         for field in old_address._meta.fields))
-                address_form = cls(data=faked_data)
-                remove_entity_filter = cls.js_filter.format(active_priority)
-                address_form.data.update(
-                    active_priority=str(old_address.priority),
-                    remove_entity_filter=mark_safe(remove_entity_filter),
-                )
-            else:
-                address_form = cls()
-                address_form.data.update(
-                    active_priority='add',
-                    plugin_id=data.get('plugin_id'),
-                    plugin_order=data.get('plugin_order'),
-                )
-            address_form.set_address(cart, old_address)
-        elif active_priority == 'add':
+        if active_priority == 'add':
             # Add a newly filled address for the given customer
             address_form = cls(data=data, cart=cart)
             if address_form.is_valid():
@@ -187,7 +163,8 @@ class AddressForm(DialogModelForm):
                     address_form.set_address(cart, next_address)
                 else:
                     address_form.set_address(cart, existing_address)
-        elif active_priority == 'new' or active_address is None and not data.get('use_primary_address'):
+                address_form.populate_siblings_summary()
+        elif active_address is None and not data.get('use_primary_address'):
             # customer selected 'Add another address', hence create a new empty form
             initial = dict((key, val) for key, val in data.items() if key in cls.plugin_fields)
             address_form = cls(initial=initial)
@@ -210,8 +187,19 @@ class AddressForm(DialogModelForm):
             address_form.set_address(cart, active_address)
         return address_form
 
-    def get_response_data(self):
-        return self.data
+    def populate_siblings_summary(self):
+        """
+        Build a list of value-labels to populate the address choosing element
+        """
+        self.siblings_summary = []
+        if self.cart is not None:
+            AddressModel = self.get_model()
+            addresses = AddressModel.objects.filter(customer=self.cart.customer).order_by('priority')
+            for number, addr in enumerate(addresses, 1):
+                self.siblings_summary.append({
+                    'value': str(addr.priority),
+                    'label': "{}. {}".format(number, addr.as_text().strip().replace('\n', ' – '))
+                })
 
     def full_clean(self):
         super(AddressForm, self).full_clean()
@@ -222,6 +210,9 @@ class AddressForm(DialogModelForm):
     def save(self, commit=True):
         if not self['use_primary_address'].value():
             return super(AddressForm, self).save(commit)
+
+    def get_response_data(self):
+        return dict(self.data, siblings_summary=self.siblings_summary)
 
     def as_div(self):
         # Intentionally rendered without field `use_primary_address`, this must be added
@@ -243,7 +234,7 @@ class ShippingAddressForm(AddressForm):
     class Meta(AddressForm.Meta):
         model = ShippingAddressModel
         widgets = {
-            'country': widgets.Select(attrs={'ng-change': 'updateCountry()'}),
+            'country': widgets.Select(attrs={'ng-change': 'updateSiblingAddress(shipping_address.active_priority)'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -284,7 +275,7 @@ class PaymentMethodForm(DialogForm):
 
     payment_modifier = fields.ChoiceField(
         label=_("Payment Method"),
-        widget=widgets.RadioSelect(attrs={'ng-change': 'upload()'}),
+        widget=widgets.RadioSelect(attrs={'ng-change': 'updateMethodForm()'}),
     )
 
     def __init__(self, *args, **kwargs):
@@ -317,7 +308,7 @@ class ShippingMethodForm(DialogForm):
 
     shipping_modifier = fields.ChoiceField(
         label=_("Shipping Method"),
-        widget=widgets.RadioSelect(attrs={'ng-change': 'upload()'}),
+        widget=widgets.RadioSelect(attrs={'ng-change': 'updateMethodForm()'}),
     )
 
     def __init__(self, *args, **kwargs):

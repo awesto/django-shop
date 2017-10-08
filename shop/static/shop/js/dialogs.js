@@ -23,7 +23,7 @@ djangoShopModule.controller('DialogController',
 	}
 
 	this.uploadScope = function(scope, deferred) {
-		$http.post(uploadURL, scope.data).success(function(response) {
+		$http.post(uploadURL, scope.data).then(function(response) {
 			var hasErrors = false;
 			if (deferred) {
 				// only report errors, when the customer clicked onto a button using the
@@ -46,7 +46,7 @@ djangoShopModule.controller('DialogController',
 				scope.checkout_summary = response.checkout_summary;
 			}
 			$rootScope.checkout_summary = response.checkout_summary;
-		}).error(function(errors) {
+		}).catch(function(errors) {
 			console.error("Unable to upload checkout forms:");
 			console.log(errors);
 		});

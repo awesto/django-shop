@@ -52,8 +52,8 @@ class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
     name = _("Proceed Button")
     parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin', 'ValidateSetOfFormsPlugin')
     model_mixins = (LinkElementMixin,)
-    glossary_field_order = ('disable_invalid', 'button_type', 'button_size', 'button_options',
-                            'quick_float', 'icon_align', 'icon_font', 'symbol')
+    glossary_field_order = ['disable_invalid', 'button_type', 'button_size', 'button_options',
+                            'quick_float', 'icon_align', 'icon_font', 'symbol']
     form = ProceedButtonForm
     ring_plugin = 'ProceedButtonPlugin'
 
@@ -71,32 +71,19 @@ class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
         js = ['shop/js/admin/proceedbuttonplugin.js']
 
     def get_render_template(self, context, instance, placeholder):
+        if instance.link == 'RELOAD_PAGE':
+            button_template = 'reload-button'
+        elif instance.link == 'PURCHASE_NOW':
+            button_template = 'purchase-button'
+        elif instance.link == 'DO_NOTHING':
+            button_template = 'noop-button'
+        else:
+            button_template = 'proceed-button'
         template_names = [
-            '{}/checkout/proceed-button.html'.format(app_settings.APP_LABEL),
-            'shop/checkout/proceed-button.html',
+            '{}/checkout/{}.html'.format(app_settings.APP_LABEL, button_template),
+            'shop/checkout/{}.html'.format(button_template),
         ]
         return select_template(template_names)
-
-    def render(self, context, instance, placeholder):
-        context = self.super(ShopProceedButton, self).render(context, instance, placeholder)
-        context['disable_invalid'] = instance.glossary.get('disable_invalid', True)
-        try:  # TODO: consider to handle this in a different way
-            cart = CartModel.objects.get_from_request(context['request'])
-            cart.update(context['request'])
-            context['cart'] = cart
-        except CartModel.DoesNotExist:
-            pass
-
-        # handle further actions
-        if instance.link == 'RELOAD_PAGE':
-            context['proceed_with'] = ".then(reloadPage())"
-        elif instance.link == 'PURCHASE_NOW':
-            context['proceed_with'] = ".then(alert('Purchase'))"
-        elif instance.link == 'DO_NOTHING':
-            context['proceed_with'] = ''
-        else:
-            context['proceed_with'] = ".then(redirectTo('{}'))".format(instance.link)
-        return context
 
 plugin_pool.register_plugin(ShopProceedButton)
 
@@ -209,15 +196,7 @@ class CheckoutAddressPlugin(DialogFormPluginBase):
 
         address = self.get_address(form_data['cart'], instance)
         if instance.glossary.get('allow_multiple'):
-            AddressModel = self.get_form_class(instance).get_model()
-            addresses = AddressModel.objects.filter(customer=context['request'].customer).order_by('priority')
-            form_entities = []
-            for number, addr in enumerate(addresses, 1):
-                form_entities.append({
-                    'value': str(addr.priority),
-                    'label': "{}. {}".format(number, addr.as_text().strip().replace('\n', ' – '))
-                })
-            form_data.update(multi_addr=True, form_entities=form_entities)
+            form_data.update(multi_addr=True)
         else:
             form_data.update(multi_addr=False)
 
