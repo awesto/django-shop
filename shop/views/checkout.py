@@ -6,24 +6,23 @@ from django.db import transaction
 from django.utils.module_loading import import_string
 
 from rest_framework.decorators import list_route
-from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
 
 from cms.plugin_pool import plugin_pool
 
 from shop.conf import app_settings
-from shop.serializers.cart import CheckoutSerializer
+from shop.models.cart import CartModel
+from shop.serializers.checkout import CheckoutSerializer
 from shop.modifiers.pool import cart_modifiers_pool
-from shop.views.cart import BaseViewSet
 
 
-class CheckoutViewSet(BaseViewSet):
+class CheckoutViewSet(GenericViewSet):
     """
     View for our REST endpoint to communicate with the various forms used during the checkout.
     """
     serializer_label = 'checkout'
     serializer_class = CheckoutSerializer
-    item_serializer_class = None
 
     def __init__(self, **kwargs):
         super(CheckoutViewSet, self).__init__(**kwargs)
@@ -52,11 +51,8 @@ class CheckoutViewSet(BaseViewSet):
         to all forms registered through a `DialogFormPluginBase`.
         Afterwards the cart is updated, so that all cart modifiers run and adopt those changes.
         """
-        cart = self.get_queryset()
-        if cart is None:
-            raise ValidationError("Can not proceed to checkout without a cart")
-
         # sort posted form data by plugin order
+        cart = CartModel.objects.get_from_request(request)
         dialog_data = []
         for form_class in self.dialog_forms:
             if form_class.scope_prefix in request.data:
@@ -90,11 +86,18 @@ class CheckoutViewSet(BaseViewSet):
 
         # add possible form errors for giving feedback to the customer
         if set_is_valid:
-            response = self.list(request)
-            response.data.update(response_data)
-            return response
+            return Response(response_data)
         else:
             return Response(errors, status=422)
+
+    @list_route(methods=['get'], url_path='digest')
+    def digest(self, request):
+        """
+        Returns the summaries of the cart and various checkout forms to be rendered in non-editable fields.
+        """
+        cart = CartModel.objects.get_from_request(request)
+        serializer = self.serializer_class(cart, context=self.get_serializer_context(), label=self.serializer_label)
+        return Response(serializer.data)
 
     @list_route(methods=['post'], url_path='purchase')
     def purchase(self, request):
@@ -103,9 +106,7 @@ class CheckoutViewSet(BaseViewSet):
         combination with the plugin :class:`shop.cascade.checkout.ProceedButtonPlugin` to render
         a button labeled "Purchase Now".
         """
-        cart = self.get_queryset()
-        if cart.pk is None:
-            raise ValidationError("Can not purchase without a cart")
+        cart = CartModel.objects.get_from_request(request)
         cart.update(request)
         cart.save()
 
