@@ -1,6 +1,10 @@
+{% extends "shop/checkout/digest-base.html" %}
+
+{% block summary_tag %}
 <div class="form-group">
 	{% if headline_legend %}
 	<h4>{{ customer_form.legend }}</h4>
 	{% endif %}
-	<pre class="shop-checkout-summary" djng-bind-if="checkout_summary.customer_form">{{ customer_form.as_text }}</pre>
+	<pre shop-checkout-digest="{% url 'shop:checkout-digest' %}" class="shop-checkout-summary" djng-bind-if="checkout_digest.customer_tag">{{ customer_form.as_text }}</pre>
 </div>
+{% endblock %}
