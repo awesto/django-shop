@@ -148,11 +148,3 @@ class WatchSerializer(BaseCartSerializer):
     def to_representation(self, cart):
         # grandparent super
         return super(BaseCartSerializer, self).to_representation(cart)
-
-
-class CheckoutSerializer(serializers.Serializer):
-    cart = serializers.SerializerMethodField()
-
-    def get_cart(self, instance):
-        serializer = CartSerializer(instance, context=self.context, label='cart')
-        return serializer.data
