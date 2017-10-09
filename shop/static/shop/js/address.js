@@ -9,7 +9,7 @@ var dialogFormDirective = ['$timeout', function($timeout) {
 		require: ['^?djngEndpoint', '?ngModel'],
 		link: function(scope, element, attrs, controllers) {
 			var endpointController, modelController;
-			if (!controllers[0])
+			if (!controllers[0] || !controllers[1])
 				return;
 
 			$timeout(function() {
