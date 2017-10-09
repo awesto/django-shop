@@ -97,7 +97,9 @@ class CheckoutViewSet(GenericViewSet):
         """
         cart = CartModel.objects.get_from_request(request)
         serializer = self.serializer_class(cart, context=self.get_serializer_context(), label=self.serializer_label)
-        return Response(serializer.data)
+        response_data = {'checkout_digest': dict(serializer.data)}
+        response_data['cart'] = response_data['checkout_digest'].pop('cart')
+        return Response(data=response_data)
 
     @list_route(methods=['post'], url_path='purchase')
     def purchase(self, request):
@@ -110,13 +112,13 @@ class CheckoutViewSet(GenericViewSet):
         cart.update(request)
         cart.save()
 
-        response = self.list(request)
+        response_data = {}
         # Iterate over the registered modifiers, and search for the active payment service provider
         for modifier in cart_modifiers_pool.get_payment_modifiers():
             if modifier.is_active(cart):
                 payment_provider = getattr(modifier, 'payment_provider', None)
                 if payment_provider:
                     expression = payment_provider.get_payment_request(cart, request)
-                    response.data.update(expression=expression)
+                    response_data.update(expression=expression)
                 break
-        return response
+        return Response(data=response_data)
