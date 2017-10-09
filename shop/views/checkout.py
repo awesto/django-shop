@@ -64,15 +64,13 @@ class CheckoutViewSet(GenericViewSet):
         dialog_data = sorted(dialog_data, key=lambda tpl: int(tpl[1]['plugin_order']))
 
         # save data, get text representation and collect potential errors
-        errors, checkout_summary, response_data, set_is_valid = {}, {}, {}, True  # TODO:
+        errors, response_data, set_is_valid = {}, {}, True
         with transaction.atomic():
             for form_class, data in dialog_data:
                 form = form_class.form_factory(request, data, cart)
                 if form.is_valid():
                     # empty error dict forces revalidation by the client side validation
                     errors[form_class.form_name] = {}
-                    # keep a summary of of validated form content inside the client's $rootScope
-                    checkout_summary[form_class.form_name] = form.as_text()
                 else:
                     errors[form_class.form_name] = dict(errors=form.errors)
                     set_is_valid = False
@@ -81,6 +79,8 @@ class CheckoutViewSet(GenericViewSet):
                 update_data = form.get_response_data()
                 if isinstance(update_data, dict):
                     response_data[form_class.form_name] = update_data
+
+            # persist changes in cart
             if set_is_valid:
                 cart.save()
 
