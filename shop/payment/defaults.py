@@ -57,21 +57,21 @@ class PayInAdvanceWorkflowMixin(object):
         return self.amount_paid > 0 and self.amount_paid < self.total
 
     @transition(field='status', source=['awaiting_payment'], target='awaiting_payment',
-        conditions=[deposited_too_little], custom=dict(admin=True, button_name=_("Deposited too little")))
+                conditions=[deposited_too_little], custom=dict(admin=True, button_name=_("Deposited too little")))
     def prepayment_partially_deposited(self):
         """
         Signals that the current Order received a payment, which was not enough.
         """
 
     @transition(field='status', source=['awaiting_payment'], target='prepayment_deposited',
-        conditions=[is_fully_paid], custom=dict(admin=True, button_name=_("Mark as Paid")))
+                conditions=[is_fully_paid], custom=dict(admin=True, button_name=_("Mark as Paid")))
     def prepayment_fully_deposited(self):
         """
         Signals that the current Order received a payment, which fully covers the requested sum.
         """
 
     @transition(field='status', source=['prepayment_deposited', 'no_payment_required'],
-        custom=dict(auto=True))
+                custom=dict(auto=True))
     def acknowledge_prepayment(self):
         """
         Acknowledge the payment. This method is invoked automatically.
@@ -96,7 +96,7 @@ class CancelOrderWorkflowMixin(object):
         return self.status not in self.UNCANCELABLE_TARGETS
 
     @transition(field='status', source=['*'], target='order_canceled',
-        conditions=[no_open_deposits, cancelable], custom=dict(admin=True, button_name=_("Cancel Order")))
+                conditions=[no_open_deposits, cancelable], custom=dict(admin=True, button_name=_("Cancel Order")))
     def cancel_order(self):
         """
         Signals that an Order shall be canceled.
