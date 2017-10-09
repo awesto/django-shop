@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block dialog_form %}
-<form djng-endpoint="{% url 'shop:checkout-upload' %}" name="{{ shipping_method_form.form_name }}" novalidate>
+<form shop-shipping-method djng-endpoint="{% url 'shop:checkout-upload' %}" name="{{ shipping_method_form.form_name }}" novalidate>
 	{% if shipping_method_form.has_choices %}
 	{{ shipping_method_form.as_div }}
 	{% else %}

@@ -275,7 +275,7 @@ class PaymentMethodForm(DialogForm):
 
     payment_modifier = fields.ChoiceField(
         label=_("Payment Method"),
-        widget=widgets.RadioSelect(attrs={'ng-change': 'updateMethodForm()'}),
+        widget=widgets.RadioSelect(attrs={'ng-change': 'updatePaymentMethod()'}),
     )
 
     def __init__(self, *args, **kwargs):
@@ -308,7 +308,7 @@ class ShippingMethodForm(DialogForm):
 
     shipping_modifier = fields.ChoiceField(
         label=_("Shipping Method"),
-        widget=widgets.RadioSelect(attrs={'ng-change': 'updateMethodForm()'}),
+        widget=widgets.RadioSelect(attrs={'ng-change': 'updateShippingMethod()'}),
     )
 
     def __init__(self, *args, **kwargs):
