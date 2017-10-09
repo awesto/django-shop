@@ -72,16 +72,30 @@ class DialogForm(DialogFormMixin, Bootstrap3Form):
     """
     Base class for all dialog forms used with a DialogFormPlugin.
     """
-    plugin_id = fields.CharField(widget=widgets.HiddenInput, required=False)
-    plugin_order = fields.CharField(widget=widgets.HiddenInput)
+    plugin_id = fields.CharField(
+        widget=widgets.HiddenInput,
+        required=False,
+    )
+
+    plugin_order = fields.CharField(
+        widget=widgets.HiddenInput,
+    )
 
 
 class DialogModelForm(DialogFormMixin, Bootstrap3ModelForm):
     """
     Base class for all dialog model forms used with a DialogFormPlugin.
     """
-    plugin_id = fields.CharField(widget=widgets.HiddenInput, required=False)
-    plugin_order = fields.CharField(widget=widgets.HiddenInput)
+    plugin_id = fields.CharField(
+        widget=widgets.HiddenInput,
+        required=False,
+        render_label=False,
+    )
+
+    plugin_order = fields.CharField(
+        widget=widgets.HiddenInput,
+        render_label=False,
+    )
 
 
 class UniqueEmailValidationMixin(object):
