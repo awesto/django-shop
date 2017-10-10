@@ -1,7 +1,7 @@
 (function(angular, undefined) {
 'use strict';
 
-var module = angular.module('django.shop.address', ['djng']);
+var module = angular.module('django.shop.address', ['djng.forms']);
 
 module.directive('shopAddressForm', ['$timeout', function($timeout) {
 	return {

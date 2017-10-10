@@ -1,7 +1,7 @@
 (function(angular, undefined) {
 'use strict';
 
-var module = angular.module('django.shop.method-form', ['djng']);
+var module = angular.module('django.shop.method-form', ['djng.forms']);
 
 
 module.directive('shopMethodForm', ['$timeout', function($timeout) {

@@ -1,7 +1,7 @@
 (function(angular, undefined) {
 'use strict';
 
-var module = angular.module('django.shop.purchase-button', ['djng']);
+var module = angular.module('django.shop.purchase-button', ['djng.forms']);
 
 
 module.directive('button', ['$http', '$log', '$q', function($http, $log, $q) {
