@@ -15,7 +15,7 @@ class CheckoutSerializer(serializers.Serializer):
     billing_address_tag = serializers.SerializerMethodField()
     shipping_method_tag = serializers.SerializerMethodField()
     payment_method_tag = serializers.SerializerMethodField()
-    annotation_tag = serializers.SerializerMethodField()
+    extra_annotation_tag = serializers.SerializerMethodField()
 
     def get_cart(self, cart):
         serializer = CartSerializer(cart, context=self.context, label='cart')
@@ -56,7 +56,7 @@ class CheckoutSerializer(serializers.Serializer):
         except AttributeError:
             return
 
-    def get_annotation_tag(self, cart):
+    def get_extra_annotation_tag(self, cart):
         try:
             form = ExtraAnnotationForm(initial=cart.extra, cart=cart)
             return form.as_text()
