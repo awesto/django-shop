@@ -234,7 +234,7 @@ class ShippingAddressForm(AddressForm):
     class Meta(AddressForm.Meta):
         model = ShippingAddressModel
         widgets = {
-            'country': widgets.Select(attrs={'ng-change': 'updateSiblingAddress(shipping_address.active_priority)'}),
+            'country': widgets.Select(attrs={'ng-change': 'updateSiblingAddress()'}),
         }
 
     def __init__(self, *args, **kwargs):

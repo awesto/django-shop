@@ -14,19 +14,19 @@
 
 {% block dialog_form %}
 
-<form djng-endpoint="{% url 'shop:edit-shipping-address' '{{ priority }}' %}" name="{{ shipping_address_form.form_name }}" novalidate>
+<form shop-address-form djng-endpoint="{% url 'shop:edit-shipping-address' '{{ priority }}' %}" name="{{ shipping_address_form.form_name }}" novalidate>
 	{% if shipping_address_form.allow_use_primary %}
 	<div class="has-feedback form-group">
 		{{ shipping_address_form.use_primary_address }}
 	</div>
 	{% endif %}
-	<fieldset{% if shipping_address_form.allow_use_primary %} ng-hide="data.shipping_address.use_primary_address" class="animate-show" ng-cloak{% endif %}>
+	<fieldset{% if shipping_address_form.allow_use_primary %} ng-hide="shipping_address.use_primary_address" class="animate-show" ng-cloak{% endif %}>
 	{% if headline_legend %}
 	<legend>{{ shipping_address_form.legend }}</legend>
 	{% endif %}
 	{% if shipping_address_form.multi_addr %}
-		<input type="hidden" name="siblings_summary" ng-model="shipping_address.siblings_summary" ng-init="shipping_address.siblings_summary={{ shipping_address_form.siblings_summary|rest_json|force_escape }};" autocomplete="off" />
-		<div class="form-group" ng-if="shipping_address.siblings_summary.length>0">
+		<input type="hidden" name="siblings_summary" ng-model="shipping_address.siblings_summary" ng-init="shipping_address.siblings_summary={{ shipping_address_form.siblings_summary|rest_json|force_escape }};" />
+		<div class="form-group" ng-show="shipping_address.siblings_summary.length>0">
 			<label class="control-label">{% trans "Choose a previously used shipping address" %}</label>
 			<select class="form-control input-sm" name="active_priority" ng-change="switchSiblingAddress()" ng-model="shipping_address.active_priority">
 				{% verbatim %}
@@ -38,13 +38,12 @@
 	{% endif %}
 		{{ shipping_address_form.as_div }}
 	{% if shipping_address_form.multi_addr %}
-		<div class="form-group" ng-if="shipping_address.siblings_summary.length>1 || shipping_address.siblings_summary.length>0 && shipping_address.active_priority=='add'">
-			<button class="btn btn-danger btn-xs" ng-click="deleteSiblingAddress(shipping_address.active_priority)">
+		<div class="form-group" ng-show="shipping_address.siblings_summary.length>1 || shipping_address.siblings_summary.length>0 && shipping_address.active_priority=='add'">
+			<button class="btn btn-danger btn-xs" ng-click="deleteSiblingAddress()">
 				<span class="glyphicon glyphicon-remove-circle"></span>&nbsp;{% trans "Remove this address" %}
 			</button>
 		</div>
 	{% endif %}
 	</fieldset>
 </form>
-
 {% endblock %}
