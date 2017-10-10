@@ -3,41 +3,48 @@
 
 var module = angular.module('django.shop.address', ['djng']);
 
-var dialogFormDirective = ['$timeout', function($timeout) {
+module.directive('shopAddressForm', ['$timeout', function($timeout) {
 	return {
-		restrict: 'E',
-		require: ['^?djngEndpoint', '?ngModel'],
+		restrict: 'A',
+		require: ['form', 'djngEndpoint'],
+		scope: true,
 		link: function(scope, element, attrs, controllers) {
-			var endpointController, modelController;
-			if (!controllers[0] || !controllers[1])
-				return;
+			var formController = controllers[0], endpointController = controllers[1], ready = false, watchers = [];
+
+			scope.switchSiblingAddress = function() {
+				if (ready)
+					return endpointController.uploadScope('GET', {priority: formController.active_priority.$modelValue});
+			};
+
+			scope.deleteSiblingAddress = function() {
+				return endpointController.uploadScope('DELETE', {priority: formController.active_priority.$modelValue});
+			};
+
+			scope.updateSiblingAddress = function() {
+				if (ready && formController.$valid)
+					return endpointController.uploadScope('PUT', {priority: formController.active_priority.$modelValue});
+			};
+
+			function validateForm() {
+				formController.$valid = formController.$valid || formController.use_primary_address.$modelValue;
+				formController.$invalid = !formController.$valid;
+			}
 
 			$timeout(function() {
 				// delay until first digest cycle
-				endpointController = controllers[0];
-				modelController = controllers[1];
+				ready = true;
 			});
+			if (formController.hasOwnProperty('use_primary_address')) {
+				watchers.push(scope.$watch(attrs.name + '.$valid', validateForm));
+				watchers.push(scope.$watch(attrs.name + '.use_primary_address.$modelValue', validateForm));
+			}
 
-			scope.switchSiblingAddress = function() {
-				if (endpointController && modelController)
-					return endpointController.uploadScope('GET', {priority: modelController.$modelValue});
-			};
-
-			scope.deleteSiblingAddress = function(priority) {
-				if (endpointController)
-					return endpointController.uploadScope('DELETE', {priority: priority});
-			};
-
-			scope.updateSiblingAddress = function(priority) {
-				if (endpointController)
-					return endpointController.uploadScope('PUT', {priority: priority});
-			};
+			scope.$on('$destroy', function() {
+				angular.forEach(watchers, watcher);
+			});
 		}
-	};
-}];
-
-module.directive('select', dialogFormDirective);
-module.directive('button', dialogFormDirective);
+	}
+}]);
 
 
 })(window.angular);
