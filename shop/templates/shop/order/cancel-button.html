@@ -9,22 +9,16 @@
 	<p class="bg-warning">{% blocktrans %}
 		Please embed this plugin into a <code>SegmentationPlugin</code> with condition <code>if not many</code>.
 	{% endblocktrans %}</p>
-{% else %}
-	{% if show_history and data.extra.addenum %}
-		<label>{% trans "Previous annotations" %}</label>
-		<dl class="dl-horizontal">
-		{% for timestamp, annotation in data.extra.addenum %}
-			<dt shop-timestamp="{{ timestamp }}" time-format="d. MMM yyyy, HH:mm"></dt><dd>{{ annotation }}</dd>
-		{% endfor %}
-		</dl>
-	{% endif %}
+{% elif data.cancelable %}
+	{% page_url "shop-cart" as shop_cart_url %}
 	{% with instance_css_classes=instance.css_classes instance_inline_styles=instance.inline_styles %}
-	<form name="{{ addenum_form.form_name }}" djng-forms-set upload-url="{{ request.path_info }}" novalidate>
-		{{ addenum_form.as_div }}
-		<button ng-click="create().then(reloadPage())" ng-disabled="setIsInvalid"{% if instance_css_classes %} class="{{ instance_css_classes }}"{% endif %}{% if instance_inline_styles %} style="{{ instance_inline_styles }}"{% endif %}>
+	<djng-forms-set upload-url="{{ request.path_info }}">
+		<button ng-click="create({cancel: true}).then(reloadPage())"{% if instance_css_classes %} class="{{ instance_css_classes }}"{% endif %}{% if instance_inline_styles %} style="{{ instance_inline_styles }}"{% endif %}>
 			{{ icon_left }}{{ button_label }}{{ icon_right }}
 		</button>
-	</form>
+	</djng-forms-set>
 	{% endwith %}
+{% else %}
+	<div class="well well-sm text-center">{% trans "This Order can't be cancelled" %}</div>
 {% endif %}
 {% endspaceless %}

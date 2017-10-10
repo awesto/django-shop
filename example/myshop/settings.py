@@ -579,7 +579,7 @@ if 'shop_stripe' in INSTALLED_APPS:
 SHOP_EDITCART_NG_MODEL_OPTIONS = "{updateOn: 'default blur', debounce: {'default': 2500, 'blur': 0}}"
 
 SHOP_ORDER_WORKFLOWS = [
-    'shop.payment.defaults.PayInAdvanceWorkflowMixin',
+    'shop.payment.defaults.ManualPaymentWorkflowMixin',
     'shop.payment.defaults.CancelOrderWorkflowMixin',
     'shop_stripe.payment.OrderWorkflowMixin',
 ]

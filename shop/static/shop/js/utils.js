@@ -44,7 +44,7 @@ djangoShopModule.provider('djangoShop', function() {
 });
 
 
-// Use to filter to create a list of intergers for iteration by ``ng-repeat`` and similar.
+// Used as filter to create a list of integers for iteration by ``ng-repeat`` and similar.
 // Usage: ``<div ng-repeat="x in some_value|range:1" ng-bind="x"></div>``
 // If ``some_value`` is 3, then the above is rendered as ``<div>1</div><div>2</div><div>3</div>``.
 djangoShopModule.filter('range', function() {
