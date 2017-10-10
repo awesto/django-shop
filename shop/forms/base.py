@@ -89,13 +89,9 @@ class DialogModelForm(DialogFormMixin, Bootstrap3ModelForm):
     plugin_id = fields.CharField(
         widget=widgets.HiddenInput,
         required=False,
-        render_label=False,
     )
 
-    plugin_order = fields.CharField(
-        widget=widgets.HiddenInput,
-        render_label=False,
-    )
+    plugin_order = fields.CharField(widget=widgets.HiddenInput)
 
 
 class UniqueEmailValidationMixin(object):
