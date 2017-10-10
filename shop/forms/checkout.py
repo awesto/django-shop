@@ -88,8 +88,6 @@ class AddressForm(DialogModelForm):
         widget=widgets.CheckboxInput(),
     )
 
-    # JS function to filter form_entities after removing an entity
-    js_filter = "var list = [].slice.call(arguments); return list.filter(function(a) {{ return a.value != '{}'; }});"
     plugin_fields = ['plugin_id', 'plugin_order', 'use_primary_address']
 
     class Meta:
@@ -240,8 +238,7 @@ class ShippingAddressForm(AddressForm):
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('auto_id', 'shipping_address_%s')
         super(ShippingAddressForm, self).__init__(*args, **kwargs)
-        primary_address_widget = self.fields['use_primary_address'].widget
-        primary_address_widget.choice_label = _("Use billing address for shipping")
+        self.fields['use_primary_address'].widget.choice_label = _("Use billing address for shipping")
 
     @classmethod
     def get_address(cls, cart):
@@ -261,8 +258,7 @@ class BillingAddressForm(AddressForm):
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('auto_id', 'billing_address_%s')
         super(BillingAddressForm, self).__init__(*args, **kwargs)
-        primary_address_widget = self.fields['use_primary_address'].widget
-        primary_address_widget.choice_label = _("Use shipping address for billing")
+        self.fields['use_primary_address'].widget.choice_label = _("Use shipping address for billing")
 
     @classmethod
     def get_address(cls, cart):

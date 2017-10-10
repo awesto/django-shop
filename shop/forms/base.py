@@ -63,8 +63,8 @@ class DialogFormMixin(NgModelFormMixin, NgFormValidationMixin):
 
     def get_response_data(self):
         """
-        Hook to respond with an updated version of the form data. This response then is merged
-        into the scope by dialogs.js
+        Hook to respond with an updated version of the form data. This response then shall
+        override the forms content.
         """
 
 
