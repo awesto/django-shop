@@ -10,7 +10,7 @@
 <a{% if shop_cart_url %} href="{{ shop_cart_url }}" title="{{ tooltip }}"{% endif %}>
 {% block carticon %}
 	<i class="fa fa-shopping-cart fa-fw fa-lg" uib-tooltip="{{ tooltip }}"></i>
-	<shop-carticon-caption endpoint="{% url 'shop:cart-fetch-caption' %}" initial-caption="{num_items: {{ cart.num_items|default:0 }} }"></shop-carticon-caption>
+	<shop-carticon-caption endpoint="{% url 'shop:cart-fetch-caption' %}"{% if cart %} initial-caption="{num_items: {{ cart.num_items|default:0 }} }"{% endif %}></shop-carticon-caption>
 {% endblock %}
 </a>
 

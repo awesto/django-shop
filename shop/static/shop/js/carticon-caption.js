@@ -5,14 +5,15 @@
 var djangoShopModule = angular.module('django.shop.carticon_caption', []);
 
 // Directive <shop-carticon-caption endpoint="{% url 'shop:cart-fetch-caption' %}" initial-caption="{num_items: 7}">
-// Use this directive to handle the caption often displayed near a cart item. This caption
-// can for instance show the number of items in the cart, the total quantity of all items, the
-// final total of the cart, or whatever the merchant desires.
+// Use this directive to handle the caption, often displayed near by the cart item symbol.
+// This caption can for instance show the number of items in the cart, the total quantity of all items,
+// the final total of the cart, or whatever the merchant desires. Override the `CartIconCaptionSerializer`
+// to add alternative fields.
 // Whenever this directive receives an event of type `shop.carticon.caption`, then it updates
-// the cart-icon caption with the current state of the cart. The emitter of that event may pass in
-// the new caption object itself, otherwise this directive will fetch that data from the server.
-djangoShopModule.directive('shopCarticonCaption', ['$rootScope', '$http', '$log',
-                                           function($rootScope, $http, $log) {
+// the cart-icon's caption with an actual state of the cart. The emitter of that event may pass
+// the new caption object itself, otherwise this directive will fetch the caption data from the server.
+djangoShopModule.directive('shopCarticonCaption', ['$rootScope', '$http', '$timeout',
+                                           function($rootScope, $http, $timeout) {
 	return {
 		restrict: 'E',
 		templateUrl: 'shop/carticon-caption.html',
@@ -22,12 +23,14 @@ djangoShopModule.directive('shopCarticonCaption', ['$rootScope', '$http', '$log'
 				throw new Error("The directive <shop-carticon-caption ...> must specify an endpoint.")
 
 			scope.caption = scope.$eval(attrs.initialCaption);
+			if (!scope.caption) {
+				scope.caption = {};
+				$timeout(fetchCaption);
+			}
 
 			function fetchCaption() {
 				$http.get(attrs.endpoint).then(function(response) {
 					angular.extend(scope.caption, response.data);
-				}).catch(function(msg) {
-					$log.error("Unable to fetch caption for cart icon: " + msg);
 				});
 			}
 
