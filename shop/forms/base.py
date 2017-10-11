@@ -21,6 +21,8 @@ class DialogFormMixin(NgModelFormMixin, NgFormValidationMixin):
 
     def __init__(self, *args, **kwargs):
         kwargs.pop('cart', None)  # cart object must be removed, otherwise underlying methods complain
+        auto_name = self.__class__.__name__.replace('Form', '').lower()
+        kwargs.setdefault('auto_id', '{}_%s'.format(auto_name))
         super(DialogFormMixin, self).__init__(*args, **kwargs)
 
     @classproperty

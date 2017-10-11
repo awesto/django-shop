@@ -236,7 +236,6 @@ class ShippingAddressForm(AddressForm):
         }
 
     def __init__(self, *args, **kwargs):
-        kwargs.setdefault('auto_id', 'shipping_address_%s')
         super(ShippingAddressForm, self).__init__(*args, **kwargs)
         self.fields['use_primary_address'].widget.choice_label = _("Use billing address for shipping")
 
@@ -256,7 +255,6 @@ class BillingAddressForm(AddressForm):
         model = BillingAddressModel
 
     def __init__(self, *args, **kwargs):
-        kwargs.setdefault('auto_id', 'billing_address_%s')
         super(BillingAddressForm, self).__init__(*args, **kwargs)
         self.fields['use_primary_address'].widget.choice_label = _("Use shipping address for billing")
 
