@@ -3,9 +3,12 @@ from __future__ import unicode_literals
 
 from django.db.models.query import QuerySet
 from django.utils.cache import add_never_cache_headers
+
 from rest_framework import viewsets
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
+
+from shop.conf import app_settings
 from shop.models.cart import CartModel, CartItemModel
 from shop.serializers.cart import CartSerializer, CartItemSerializer, WatchSerializer, WatchItemSerializer
 
@@ -44,9 +47,11 @@ class CartViewSet(BaseViewSet):
     serializer_label = 'cart'
     serializer_class = CartSerializer
     item_serializer_class = CartItemSerializer
+    caption_serializer_class = app_settings.SHOP_CART_ICON_CAPTION_SERIALIZER
 
     @list_route(methods=['get'])
     def update_caption(self, request):
+        # deprecated
         cart = self.get_queryset()
         if cart:
             cart.update(request)
@@ -54,6 +59,14 @@ class CartViewSet(BaseViewSet):
         else:
             caption = CartModel.get_default_caption_data()
         return Response(caption)
+
+    @list_route(methods=['get'], url_path='fetch-caption')
+    def fetch_caption(self, request):
+        cart = self.get_queryset()
+        if cart:
+            cart.update(request)
+        serializer = self.caption_serializer_class(instance=cart)
+        return Response(data=serializer.data)
 
 
 class WatchViewSet(BaseViewSet):

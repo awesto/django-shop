@@ -7,6 +7,7 @@ from rest_framework import serializers
 
 from shop.conf import app_settings
 from shop.models.cart import CartModel, CartItemModel, BaseCartItem
+from shop.money import Money
 from shop.rest.money import MoneyField
 
 
@@ -114,6 +115,19 @@ class WatchItemSerializer(BaseItemSerializer):
         return super(WatchItemSerializer, self).create(validated_data)
 
 
+class CartIconCaptionSerializer(serializers.ModelSerializer):
+    """
+    The default serializer used to render the information nearby the cart icon symbol, normally
+    located on the top right of e-commerce sites.
+    """
+    num_items = serializers.IntegerField(read_only=True, default=0)
+    total = MoneyField(default=Money())
+
+    class Meta:
+        model = CartModel
+        fields = ['num_items', 'total']
+
+
 class BaseCartSerializer(serializers.ModelSerializer):
     subtotal = MoneyField()
     total = MoneyField()
@@ -121,7 +135,7 @@ class BaseCartSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CartModel
-        fields = ('subtotal', 'total', 'extra_rows')
+        fields = ['subtotal', 'total', 'extra_rows']
 
     def to_representation(self, cart):
         cart.update(self.context['request'])
@@ -135,7 +149,7 @@ class CartSerializer(BaseCartSerializer):
     num_items = serializers.IntegerField()
 
     class Meta(BaseCartSerializer.Meta):
-        fields = ('items', 'total_quantity', 'num_items') + BaseCartSerializer.Meta.fields
+        fields = ['items', 'total_quantity', 'num_items'] + BaseCartSerializer.Meta.fields
 
 
 class WatchSerializer(BaseCartSerializer):
@@ -143,7 +157,7 @@ class WatchSerializer(BaseCartSerializer):
     num_items = serializers.IntegerField()
 
     class Meta(BaseCartSerializer.Meta):
-        fields = ('items', 'num_items')
+        fields = ['items', 'num_items']
 
     def to_representation(self, cart):
         # grandparent super

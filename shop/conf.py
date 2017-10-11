@@ -130,6 +130,22 @@ class DefaultSettings(object):
         return ProductSelectSerializer
 
     @property
+    def SHOP_CART_ICON_CAPTION_SERIALIZER(self):
+        """
+        This serializer is used to provide the data required to render the information nearby the
+        cart icon symbol. Since this icon normally is visible all the time, and hence updated quite
+        frequently, only add fields which are necessary.
+
+        Defaults to :class:`shop.serializers.cart.CartIconCaptionSerializer`.
+        """
+        from django.utils.module_loading import import_string
+
+        s = self._setting('SHOP_CART_ICON_CAPTION_SERIALIZER',
+                          'shop.serializers.cart.CartIconCaptionSerializer')
+        CartIconCaptionSerializer = import_string(s)
+        return CartIconCaptionSerializer
+
+    @property
     def SHOP_ORDER_ITEM_SERIALIZER(self):
         """
         Depending on the materialized OrderItem model, use this directive to configure the

@@ -2,39 +2,43 @@
 'use strict';
 
 // module: django.shop, TODO: move this into a summary JS file
-var djangoShopModule = angular.module('django.shop.carticon_caption', ['djng.urls']);
+var djangoShopModule = angular.module('django.shop.carticon_caption', []);
 
-// Directive <ANY shop-carticon-caption caption-data="{num_items: 7}">
+// Directive <shop-carticon-caption endpoint="{% url 'shop:cart-fetch-caption' %}" initial-caption="{num_items: 7}">
 // Use this directive to handle the caption often displayed near a cart item. This caption
 // can for instance show the number of items in the cart, the total quantity of all items, the
 // final total of the cart, or whatever the merchant desires.
-// Whenever this directive receives an event of type `shopUpdateCarticonCaption`, then it updates
+// Whenever this directive receives an event of type `shop.carticon.caption`, then it updates
 // the cart-icon caption with the current state of the cart. The emitter of that event may pass in
 // the new caption object itself, otherwise this directive will fetch that data from the server.
-djangoShopModule.directive('shopCarticonCaption', ['$rootScope', '$http', 'djangoUrl', function($rootScope, $http, djangoUrl) {
-	var updateCaptionURL = djangoUrl.reverse('shop:cart-update-caption');
-
+djangoShopModule.directive('shopCarticonCaption', ['$rootScope', '$http', '$log',
+                                           function($rootScope, $http, $log) {
 	return {
+		restrict: 'E',
 		templateUrl: 'shop/carticon-caption.html',
+		scope: true,
 		link: function(scope, element, attrs) {
-			function updateCarticonCaption() {
-				$http.get(updateCaptionURL).then(function(response) {
+			if (!angular.isString(attrs.endpoint))
+				throw new Error("The directive <shop-carticon-caption ...> must specify an endpoint.")
+
+			scope.caption = scope.$eval(attrs.initialCaption);
+
+			function fetchCaption() {
+				$http.get(attrs.endpoint).then(function(response) {
 					angular.extend(scope.caption, response.data);
 				}).catch(function(msg) {
-					console.error("Unable to fetch caption for cart icon: " + msg);
+					$log.error("Unable to fetch caption for cart icon: " + msg);
 				});
 			}
 
-			scope.caption = scope.$eval(attrs.captionData);
-
-			// listen on events of type `shopUpdateCarticonCaption`
-			$rootScope.$on('shopUpdateCarticonCaption', function(event, caption) {
+			// listen on events named `shop.carticon.caption`
+			$rootScope.$on('shop.carticon.caption', function(event, caption) {
 				if (angular.isObject(caption)) {
 					// the updated carticon's caption is passed in by the emitter
 					angular.extend(scope.caption, caption);
 				} else {
 					// otherwise update the carticon's caption fetching the server
-					updateCarticonCaption();
+					fetchCaption();
 				}
 			});
 		}

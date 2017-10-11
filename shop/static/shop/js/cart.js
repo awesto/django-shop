@@ -28,7 +28,7 @@ djangoShopModule.controller('CartController', ['$scope', '$http', function($scop
 		}).then(function(response) {
 			isLoading = false;
 			angular.copy(response.data, $scope.cart);
-			$scope.$emit('shopUpdateCarticonCaption', response.data);
+			$scope.$emit('shop.carticon.caption');
 		}, function(error) {
 			isLoading = false;
 			console.error(error);

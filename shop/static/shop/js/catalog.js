@@ -204,7 +204,7 @@ djangoShopModule.directive('shopSyncCatalogItem', function() {
 					delete response.data.cart;
 					prev_item = response.data;
 					angular.extend($scope.catalog_item, response.data);
-					$scope.$emit('shopUpdateCarticonCaption', cart);
+					$scope.$emit('shop.carticon.caption', cart);
 					isLoading = false;
 				}).catch(function(response) {
 					console.error('Unable to sync quantity: ' + response.statusText);
