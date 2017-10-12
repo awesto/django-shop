@@ -44,12 +44,9 @@ class CheckoutViewSet(GenericViewSet):
     @list_route(methods=['put'], url_path='upload')
     def upload(self, request):
         """
-        All forms using the AngularJS directive `shop-dialog-form` have an implicit scope containing
-        an `upload()` function. This function then may be connected to any input element, say
-        `ng-change="upload()"`. If such an event triggers, the scope data is send to this `upload()`
-        method using an Ajax POST request. This `upload()` method then dispatches the form data
-        to all forms registered through a `DialogFormPluginBase`.
-        Afterwards the cart is updated, so that all cart modifiers run and adopt those changes.
+        Use this REST endpoint to upload the payload of all forms used to setup the checkout
+        dialogs. This method takes care to dispatch the uploaded payload to each corresponding
+        form.
         """
         # sort posted form data by plugin order
         cart = CartModel.objects.get_from_request(request)

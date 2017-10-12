@@ -27,8 +27,8 @@
 	{% if shipping_address_form.multi_addr %}
 		<input type="hidden" name="siblings_summary" ng-model="shipping_address.siblings_summary" ng-init="shipping_address.siblings_summary={{ shipping_address_form.siblings_summary|rest_json|force_escape }};" />
 		<div class="form-group" ng-show="shipping_address.siblings_summary.length>0">
-			<label class="control-label">{% trans "Choose a previously used shipping address" %}</label>
-			<select class="form-control input-sm" name="active_priority" ng-change="switchSiblingAddress()" ng-model="shipping_address.active_priority">
+			<label for="shipping_address_active_priority" class="control-label">{% trans "Choose a previously used shipping address" %}</label>
+			<select id="shipping_address_active_priority" class="form-control input-sm" name="active_priority" ng-change="switchSiblingAddress(shipping_address.active_priority)" ng-model="shipping_address.active_priority">
 				{% verbatim %}
 				<option ng-repeat="addr in shipping_address.siblings_summary" value="{{ addr.value }}">{{ addr.label }}</option>
 				{% endverbatim %}

@@ -11,9 +11,9 @@ module.directive('shopAddressForm', ['$timeout', function($timeout) {
 		link: function(scope, element, attrs, controllers) {
 			var formController = controllers[0], endpointController = controllers[1], ready = false, watchers = [];
 
-			scope.switchSiblingAddress = function() {
+			scope.switchSiblingAddress = function(activePriority) {
 				if (ready)
-					return endpointController.uploadScope('GET', {priority: formController.active_priority.$modelValue});
+					return endpointController.uploadScope('GET', {priority: activePriority});
 			};
 
 			scope.deleteSiblingAddress = function() {
