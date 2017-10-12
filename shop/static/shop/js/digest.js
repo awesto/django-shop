@@ -4,25 +4,54 @@
 var module = angular.module('django.shop.digest', []);
 
 
-// Use the directive <ANY shop-checkout-digest="path/to/endpoint"> as a wrapper around all checkout
-// forms and the cart summary. It enriches the scope with objects `cart` and
-// `checkout_digest`. They contain the current state of the cart and the checkout
-// digest tags.
-module.directive('shopCheckoutDigest', ['$http', '$rootScope', function($http, $rootScope) {
-	return {
-		restrict: 'EA',
-		link: function(scope, element, attrs) {
-			var endpoint = attrs.shopCheckoutDigest;
-			if (!angular.isString(endpoint))
-				throw new Error("The directive 'shop-checkout-digest' must specify an endpoint.")
+module.provider('checkoutDigest', function() {
+	var isDirty = false, initialDigest = {}, endpointURL;
 
-			if (!$rootScope.$$listeners['shop.checkout.digest']) {
-				$rootScope.$on('shop.checkout.digest', function() {
-					$http.get(endpoint).then(function(response) {
-						angular.extend($rootScope, response.data);
-					});
-				});
+	this.setEndpoint = function(url) {
+		endpointURL = url;
+	};
+
+	this.setInitial = function(initialTag) {
+		if (angular.isObject(initialTag)) {
+			angular.extend(initialDigest, initialTag);
+		} else {
+			isDirty = true;
+		}
+	};
+
+	this.$get = ['$http', '$rootScope', '$timeout', function($http, $rootScope, $timeout) {
+		// register the listener once for all directives of this page
+		$rootScope.checkoutDigest = {};
+		$rootScope.$on('shop.checkout.digest', fetchCheckoutDigest);
+		$timeout(function() {
+			if (isDirty) {
+				fetchCheckoutDigest();
+			} else {
+				angular.extend($rootScope.checkoutDigest, initialDigest);
 			}
+		});
+
+		function fetchCheckoutDigest() {
+			$http.get(endpointURL).then(function(response) {
+				angular.extend($rootScope.checkoutDigest, response.data.checkout_digest);
+			});
+		}
+
+		return this;
+	}];
+});
+
+
+// Use the directive <shop-checkout-digest initial-digest="{extra_annotation: 'wait til Monday'}">
+// as a wrapper around all checkout forms and the cart summary. It enriches the scope with objects
+// `cart` and `checkout_digest`. They contain the current state of the cart and the checkout
+// digest tags.
+module.directive('shopCheckoutDigest', ['checkoutDigest', function(checkoutDigest) {
+	return {
+		restrict: 'E',
+		scope: true,
+		link: function(scope, element, attrs) {
+			checkoutDigest.setInitial(scope.$eval(attrs.initialTag));
 		}
 	};
 }]);

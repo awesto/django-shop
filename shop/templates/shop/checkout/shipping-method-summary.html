@@ -5,6 +5,8 @@
 	{% if headline_legend %}
 	<h4>{{ shipping_method_form.shipping_modifier.label }}</h4>
 	{% endif %}
-	<pre class="shop-checkout-summary" djng-bind-if="checkout_digest.shipping_method_tag">{{ shipping_method_form.as_text }}</pre>
+	<shop-checkout-digest initial-tag="{shipping_method_tag: '{{ shipping_method_form.as_text }}'}">
+		<pre ng-bind="checkoutDigest.shipping_method_tag" class="shop-checkout-summary"></pre>
+	</shop-checkout-digest>
 </div>
 {% endblock %}
