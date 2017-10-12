@@ -12,8 +12,8 @@ var djangoShopModule = angular.module('django.shop.carticon_caption', []);
 // Whenever this directive receives an event of type `shop.carticon.caption`, then it updates
 // the cart-icon's caption with an actual state of the cart. The emitter of that event may pass
 // the new caption object itself, otherwise this directive will fetch the caption data from the server.
-djangoShopModule.directive('shopCarticonCaption', ['$rootScope', '$http', '$timeout',
-                                           function($rootScope, $http, $timeout) {
+djangoShopModule.directive('shopCarticonCaption', ['$http', '$rootScope', '$timeout',
+                                           function($http, $rootScope, $timeout) {
 	return {
 		restrict: 'E',
 		templateUrl: 'shop/carticon-caption.html',
