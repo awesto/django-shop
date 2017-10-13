@@ -12,7 +12,7 @@
 {% page_url "shop-watch-list" as shop_watch_list_url %}{% if not shop_watch_list_url %}{% url "shop-watch-list" as shop_watch_list_url %}{% endif %}
 
 {% block shop-cart-table %}
-<table shop-cart class="table table-hover">
+<table shop-cart endpoint="{% url 'shop:cart-list' %}" class="table table-hover">
 	<!-- content is rendered via ng-template "shop/cart.html" -->
 </table>
 {% endblock shop-cart-table %}
