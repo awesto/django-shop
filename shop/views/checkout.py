@@ -5,6 +5,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db import transaction
 from django.utils.module_loading import import_string
 
+from rest_framework import status
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
@@ -85,7 +86,7 @@ class CheckoutViewSet(GenericViewSet):
         if set_is_valid:
             return Response(response_data)
         else:
-            return Response(errors, status=422)
+            return Response(errors, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
     @list_route(methods=['get'], url_path='digest')
     def digest(self, request):

@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import json
 
+from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -38,7 +39,7 @@ class AddressEditView(GenericAPIView):
                 else:
                     raise CartModel.DoesNotExist()
             except (ShippingAddressModel.DoesNotExist, BillingAddressModel.DoesNotExist):
-                return Response(status=410)
+                return Response(status=status.HTTP_410_GONE)
             else:
                 cart = CartModel.objects.get_from_request(request)
                 form = self.form_class(instance=instance, cart=cart)
@@ -52,7 +53,7 @@ class AddressEditView(GenericAPIView):
         form = self.form_class(data=data, cart=cart)
         if form.is_valid():
             return Response()
-        return Response(status=422)
+        return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
     def delete(self, request, priority=None, *args, **kwargs):
         if priority != 'add':
