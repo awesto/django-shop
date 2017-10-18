@@ -1,17 +1,17 @@
-{% extends "shop/auth/authenticated-base.html" %}
+{% extends "./authenticated-base.html" %}
 {% load i18n %}
 
-{% block form_title %}{% trans "Change Password" %}{% endblock %}
-{% block form_attrs %}{{ block.super }} djng-endpoint="{% url 'shop:password-change' %}"{% endblock %}
+{% block form-title %}{% trans "Change Password" %}{% endblock %}
 
-{% block form_content %}
-	{{ block.super }}
+{% block form-content %}
+<form name="{{ form_name }}" djng-endpoint="{% url 'shop:password-change' %}" role="form" novalidate>
+	{% include "./form-messages.html" %}
 
 	<div class="form-group has-feedback" style="margin-bottom: 25px;">
 		<label class="control-label">{% trans "New Password" %}</label>
 		<div class="input-group">
 			<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
-			<input type="password" class="form-control" name="new_password1" ng-model="form_data.new_password1" placeholder="New Password" required>
+			<input type="password" class="form-control" name="new_password1" ng-model="form_data.new_password1" ng-change="dismissSubmitMessage()" placeholder="{% trans 'New Password' %}" ng-required="true">
 		</div>
 		<ul ng-show="change_form.new_password1.$error.rejected && change_form.new_password1.$pristine" class="shop-form-error" ng-cloak>
 			<li ng-bind="change_form.new_password1.$message"></li>
@@ -22,7 +22,7 @@
 		<label class="control-label">{% trans "Confirm Password" %}</label>
 		<div class="input-group">
 			<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
-			<input type="password" class="form-control" name="new_password2" ng-model="form_data.new_password2" placeholder="Confirm Password" required>
+			<input type="password" class="form-control" name="new_password2" ng-model="form_data.new_password2" ng-change="dismissSubmitMessage()" placeholder="{% trans 'Confirm Password' %}" ng-required="true">
 		</div>
 		<ul ng-show="change_form.new_password2.$error.rejected && change_form.new_password2.$pristine" class="shop-form-error" ng-cloak>
 			<li ng-bind="change_form.new_password2.$message"></li>
@@ -30,6 +30,7 @@
 	</div>
 
 	<div class="form-group">
-		<button type="button" ng-disabled="{{ form_name }}.$invalid" ng-click="do(update()).then(delay(2500)).then(redirectTo('{{ redirect_to }}'))" class="btn btn-primary">{% trans "Change Password" %}</button>
+		<button type="button" ng-disabled="isDisabled()" ng-click="{% include "./proceed-with.html" with delay=1500 %}" class="btn btn-primary">{% trans "Change Password" %}</button>
 	</div>
-{% endblock form_content %}
+</form>
+{% endblock form-content %}

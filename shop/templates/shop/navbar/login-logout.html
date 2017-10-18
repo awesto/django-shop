@@ -36,7 +36,7 @@
 		{% endif %}
 	{% else %}
 		<li><form name="login_form" djng-endpoint="{% url 'shop:login' %}" accept-charset="UTF-8" role="form">
-			<div class="alert alert-danger" ng-show="rejectMessageVisible()" ng-cloak>
+			<div class="alert alert-danger" ng-show="rejectMessageIsVisible()" ng-cloak>
 				<a class="close" ng-click="dismissSubmitMessage()">×</a>
 				<p ng-bind="getSubmitMessage()"></p>
 			</div>
@@ -44,14 +44,14 @@
 				<label class="control-label" for="username">{% trans 'E-Mail' %}</label>
 				<div class="input-group">
 					<div class="input-group-addon"><i class="fa fa-user"></i></div>
-					<input class="form-control input-sm" type="text" placeholder="{% trans 'E-Mail' %}" name="username" ng-model="form_data.username" ng-required="true">
+					<input class="form-control input-sm" type="text" placeholder="{% trans 'E-Mail' %}" name="username" ng-model="form_data.username" ng-required="true" ng-change="dismissSubmitMessage()">
 				</div>
 			</div>
 			<div class="form-group form-group-sm">
 				<label class="control-label" for="password">{% trans 'Password' %}</label>
 				<div class="input-group">
 					<div class="input-group-addon"><i class="fa fa-unlock-alt"></i></div>
-					<input class="form-control input-sm" type="password" placeholder="{% trans 'Password' %}" name="password" ng-model="form_data.password" ng-required="true">
+					<input class="form-control input-sm" type="password" placeholder="{% trans 'Password' %}" name="password" ng-model="form_data.password" ng-required="true" ng-change="dismissSubmitMessage()">
 				</div>
 			</div>
 			<button class="btn btn-primary btn-block" type="button" ng-click="do(disable()).then(create()).then(showOK()).then(delay(500)).then(reloadPage()).catch(showFail()).then(delay(500)).finally(restore())" ng-disabled="isDisabled()">

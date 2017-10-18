@@ -1,11 +1,12 @@
-{% extends "shop/auth/anonymous-base.html" %}
+{% extends "./anonymous-base.html" %}
 {% load i18n %}
 
-{% block form_title %}{% trans "Register Yourself" %}{% endblock %}
-{% block form_attrs %}{{ block.super }}djng-endpoint="{% url 'shop:register-user' %}"{% endblock %}
+{% block form-title %}{% trans "Register Yourself" %}{% endblock %}
 
-{% block form_content %}
-	{{ block.super }}
+{% block form-content %}
+<form name="{{ form_name }}" djng-endpoint="{% url 'shop:register-user' %}" role="form" novalidate>
+	{% include "./form-messages.html" %}
+
 	<div class="form-group has-feedback" style="margin-bottom: 20px">
 		{{ register_user_form.email.label_tag }}
 		<div class="input-group" ng-class="hasError('email')">
@@ -36,7 +37,7 @@
 				<li ng-show="register_user_form.password1.$error.minlength" class="invalid">{% trans "Password is too short" %}</li>
 				<li ng-show="register_user_form.password1.$valid" class="valid"></li>
 			</ul>
-			<span class="help-block">{{ register_user_form.password1.help_text }}</span>
+			<span class="help-block">{{ register_user_form.password1.help_text|safe }}</span>
 		</div>
 
 		<div class="form-group has-feedback">
@@ -50,11 +51,12 @@
 				<li ng-show="register_user_form.password2.$error.minlength" class="invalid">{% trans "Password is too short" %}</li>
 				<li ng-show="register_user_form.password2.$valid" class="valid"></li>
 			</ul>
-			<span class="help-block">{{ register_user_form.password2.help_text }}</span>
+			<span class="help-block">{{ register_user_form.password2.help_text|safe }}</span>
 		</div>
 	</div>
 
 	<div class="form-group">
-		<button type="button" ng-click="do(disable()).then(create()).then(delay(2500)){# .then(redirectTo('{{ redirect_to }}')) #}.finally(restore())" ng-disabled="isDisabled()" class="btn btn-primary">{% trans "Register" %}</button>
+		<button type="button" ng-click="{% include './proceed-with.html' %}" ng-disabled="isDisabled()" class="btn btn-primary">{% trans "Register" %}</button>
 	</div>
-{% endblock form_content %}
+</form>
+{% endblock form-content %}

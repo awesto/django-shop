@@ -1,13 +1,14 @@
-{% extends "shop/auth/authenticated-base.html" %}
+{% extends "./authenticated-base.html" %}
 {% load i18n %}
 
-{% block form_title %}{% trans "Logout" %}{% endblock %}
+{% block form-title %}{% trans "Logout" %}{% endblock %}
 
-{% block form_attrs %}{{ block.super }} djng-endpoint="{% url 'shop:logout' %}"{% endblock %}
-
-{% block form_content %}
-	{{ block.super }}
+{% block form-content %}
+<form name="{{ form_name }}" djng-endpoint="{% url 'shop:logout' %}" role="form" novalidate>
 	<div class="form-group">
-		<button type="button" ng-click="do(disable()).then(create()).then(delay(2500)).then(redirectTo('{{ redirect_to }}')).finally(restore())" class="btn btn-primary">{% trans "Logout" %}</button>
+		<button type="button" ng-click="{% include "./proceed-with.html" %}" class="btn btn-primary">
+			{% trans "Logout" %}&emsp;<i class="glyphicon glyphicon-log-out"></i>
+		</button>
 	</div>
-{% endblock form_content %}
+</form>
+{% endblock form-content %}
