@@ -102,7 +102,7 @@ class LogoutView(APIView):
 
 
 class PasswordChangeView(OriginalPasswordChangeView):
-    def put(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         form_data = request.data.get('form_data', {})
         serializer = self.get_serializer(data=form_data)
         if serializer.is_valid():
