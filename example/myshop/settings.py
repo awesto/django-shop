@@ -66,6 +66,13 @@ TIME_ZONE = 'Europe/Vienna'
 # allowing to login via email address
 AUTH_USER_MODEL = 'email_auth.User'
 
+AUTH_PASSWORD_VALIDATORS = [{
+    'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    'OPTIONS': {
+        'min_length': 6,
+    }
+}]
+
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
