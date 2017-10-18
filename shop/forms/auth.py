@@ -22,7 +22,10 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValid
     scope_prefix = 'form_data'
     field_css_classes = 'input-group has-feedback'
 
-    email = fields.EmailField(label=_("Your e-mail address"))
+    email = fields.EmailField(
+        label=_("Your e-mail address"),
+        widget=widgets.EmailInput(attrs={'ng-change': 'dismissSubmitMessage()', 'placeholder': _("E-mail address")})
+    )
 
     preset_password = fields.BooleanField(
         label=_("Preset password"),
@@ -32,14 +35,14 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValid
 
     password1 = fields.CharField(
         label=_("Choose a password"),
-        widget=widgets.PasswordInput,
+        widget=widgets.PasswordInput(attrs={'ng-change': 'dismissSubmitMessage()', 'placeholder': _("Password")}),
         min_length=6,
         help_text=_("Minimum length is 6 characters."),
     )
 
     password2 = fields.CharField(
         label=_("Repeat password"),
-        widget=widgets.PasswordInput,
+        widget=widgets.PasswordInput(attrs={'ng-change': 'dismissSubmitMessage()', 'placeholder': _("Password")}),
         min_length=6,
         help_text=_("Confirm password."),
     )
