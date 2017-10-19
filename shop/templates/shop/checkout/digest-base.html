@@ -1,9 +1,5 @@
 {% load static sekizai_tags sass_tags %}{% spaceless %}
 
-{% block extra-styles %}
-	{% addtoblock "css" %}<link href="{% sass_src 'shop/css/digest.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
-{% endblock %}
-
 {% block extra-scripts %}
 	{% addtoblock "js" %}<script src="{% static 'shop/js/digest.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 	{% add_data "ng-requires" "django.shop.digest" %}
