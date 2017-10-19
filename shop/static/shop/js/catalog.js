@@ -138,7 +138,7 @@ djangoShopModule.directive('shopCatalogList', ['$location', '$window', '$timeout
 		link: function(scope, element, attrs, controller) {
 			var infiniteScroll = scope.$eval(attrs.infiniteScroll);
 
-			scope.$root.$on('shopCatalogSearch', function(event, params) {
+			scope.$root.$on('shop.catalog.search', function(event, params) {
 				if (infiniteScroll) {
 					controller.resetProductsList();
 					controller.loadProducts({params: params});
@@ -147,7 +147,7 @@ djangoShopModule.directive('shopCatalogList', ['$location', '$window', '$timeout
 				}
 			});
 
-			scope.$root.$on('shopCatalogFilter', function(event, params) {
+			scope.$root.$on('shop.catalog.filter', function(event, params) {
 				if (infiniteScroll) {
 					controller.resetProductsList();
 					controller.loadProducts({params: params});
