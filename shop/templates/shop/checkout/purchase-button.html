@@ -7,4 +7,4 @@
 	{% add_data "ng-requires" "django.shop.purchase-button" %}
 {% endblock %}
 
-{% block ng-click %}do(prepare()).then(spinner()).then(update()).then(purchaseNow('{% url 'shop:checkout-purchase' %}')).finally(restore()){% endblock %}
+{% block ng-click %}do(spinner()).then(prepare()).then(update()).then(purchaseNow('{% url 'shop:checkout-purchase' %}')).finally(restore()){% endblock %}
