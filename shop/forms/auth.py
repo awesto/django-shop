@@ -25,7 +25,7 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValid
 
     email = fields.EmailField(
         label=_("Your e-mail address"),
-        widget=widgets.EmailInput(attrs={'ng-change': 'dismissSubmitMessage()', 'placeholder': _("E-mail address")})
+        widget=widgets.EmailInput(attrs={'placeholder': _("E-mail address")})
     )
 
     preset_password = fields.BooleanField(
@@ -41,7 +41,7 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValid
 
     password1 = fields.CharField(
         label=_("New password"),
-        widget=widgets.PasswordInput(attrs={'ng-change': 'dismissSubmitMessage()', 'placeholder': _("Password")}),
+        widget=widgets.PasswordInput(attrs={'placeholder': _("Password")}),
         strip=False,
         help_text=password_validation.password_validators_help_text_html(),
     )
@@ -49,7 +49,7 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValid
     password2 = fields.CharField(
         label=_("New password confirmation"),
         strip=False,
-        widget=widgets.PasswordInput(attrs={'ng-change': 'dismissSubmitMessage()', 'placeholder': _("Password")}),
+        widget=widgets.PasswordInput(attrs={'placeholder': _("Password")}),
         help_text=format_html('<ul><li>{}</li></ul>', _("Confirm the password.")),
     )
 
