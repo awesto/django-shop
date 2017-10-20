@@ -32,7 +32,9 @@ class DialogFormMixin(NgModelFormMixin, NgFormValidationMixin):
     def clean(self):
         cleaned_data = dict(super(DialogFormMixin, self).clean())
         cleaned_data.pop('plugin_id', None)
-        cleaned_data.pop('plugin_order')
+        if cleaned_data.pop('plugin_order', None) is None:
+            msg = "Field 'plugin_order' is a hidden but required field in each form inheriting from DialogFormMixin"
+            raise ValidationError(msg)
         return cleaned_data
 
     def as_text(self):
