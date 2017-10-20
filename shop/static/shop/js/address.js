@@ -12,8 +12,11 @@ module.directive('shopAddressForm', ['$timeout', function($timeout) {
 			var formController = controllers[0], endpointController = controllers[1], ready = false, watchers = [];
 
 			scope.switchSiblingAddress = function(activePriority) {
-				if (ready)
-					return endpointController.uploadScope('GET', {priority: activePriority});
+				if (ready) {
+					endpointController.uploadScope('GET', {priority: activePriority}).then(function(request) {
+						formController.$setPristine();
+					});
+				}
 			};
 
 			scope.deleteSiblingAddress = function() {
