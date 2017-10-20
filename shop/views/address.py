@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 
 import json
 
+from django.db import transaction
+
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -57,21 +59,27 @@ class AddressEditView(GenericAPIView):
         return Response(response_data, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
     def delete(self, request, priority=None, *args, **kwargs):
-        if priority != 'add':
-            try:
-                if self.form_class.__name__ == 'BillingAddressForm':
-                    request.customer.billingaddress_set.get(priority=priority).delete()
-                elif self.form_class.__name__ == 'ShippingAddressForm':
-                    request.customer.shippingaddress_set.get(priority=priority).delete()
-            except (ShippingAddressModel.DoesNotExist, BillingAddressModel.DoesNotExist):
-                pass
-
-        # take the last of the remaining addresses
-        if self.form_class.__name__ == 'BillingAddressForm':
-            instance = request.customer.billingaddress_set.last()
-        elif self.form_class.__name__ == 'ShippingAddressForm':
-            instance = request.customer.shippingaddress_set.last()
         cart = CartModel.objects.get_from_request(request)
+        with transaction.atomic():
+            if priority != 'add':
+                try:
+                    if self.form_class.__name__ == 'BillingAddressForm':
+                        request.customer.billingaddress_set.get(priority=priority).delete()
+                    elif self.form_class.__name__ == 'ShippingAddressForm':
+                        request.customer.shippingaddress_set.get(priority=priority).delete()
+                except (ShippingAddressModel.DoesNotExist, BillingAddressModel.DoesNotExist):
+                    pass
+
+            # take the last of the remaining addresses
+            if self.form_class.__name__ == 'BillingAddressForm':
+                instance = request.customer.billingaddress_set.last()
+                cart.billing_address = instance
+            elif self.form_class.__name__ == 'ShippingAddressForm':
+                instance = request.customer.shippingaddress_set.last()
+                cart.shipping_address = instance
+            cart.save()
+
+        # repopulate the form with address fields from the last remaining address
         form = self.form_class(instance=instance, cart=cart)
         initial_data = dict((k, v) for k, v in form.get_initial_data().items() if k in self.visible_fields)
         initial_data.update(active_priority=str(instance.priority), siblings_summary=form.siblings_summary)
