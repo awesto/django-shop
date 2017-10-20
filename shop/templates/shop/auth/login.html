@@ -11,7 +11,7 @@
 		<label class="control-label">{% trans "Your e-mail address" %}</label>
 		<div class="input-group" ng-class="hasError('username')">
 			<span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
-			<input class="form-control" name="username" ng-model="form_data.username" value="" ng-required="true" ng-change="dismissSubmitMessage()" placeholder="{% trans 'Email or Username' %}" />
+			<input class="form-control" name="username" ng-model="form_data.username" value="" ng-required="true" placeholder="{% trans 'Email or Username' %}" />
 		</div>
 		<ul ng-show="{{ form_name }}.username.$dirty && {{ form_name }}.username.$touched" class="djng-field-errors" ng-cloak>
 			<li ng-show="{{ form_name }}.username.$error.required" class="invalid">{% trans "This field is required." %}</li>
@@ -22,7 +22,7 @@
 		<label class="control-label">{% trans "Password" %}</label>
 		<div class="input-group" ng-class="hasError('password')">
 			<span class="input-group-addon"><i class="fa fa-unlock-alt fa-fw"></i></span>
-			<input type="password" class="form-control" name="password" ng-model="form_data.password" ng-required="true" ng-change="dismissSubmitMessage()" placeholder="{% trans 'Password' %}" />
+			<input type="password" class="form-control" name="password" ng-model="form_data.password" ng-required="true" placeholder="{% trans 'Password' %}" />
 		</div>
 	</div>
 

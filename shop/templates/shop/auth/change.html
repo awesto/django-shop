@@ -11,7 +11,7 @@
 		<label class="control-label">{% trans "New Password" %}</label>
 		<div class="input-group">
 			<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
-			<input type="password" class="form-control" name="new_password1" ng-model="form_data.new_password1" ng-change="dismissSubmitMessage()" placeholder="{% trans 'New Password' %}" ng-required="true">
+			<input type="password" class="form-control" name="new_password1" ng-model="form_data.new_password1" placeholder="{% trans 'New Password' %}" ng-required="true">
 		</div>
 		<ul ng-show="change_form.new_password1.$error.rejected && change_form.new_password1.$pristine" class="shop-form-error" ng-cloak>
 			<li ng-bind="change_form.new_password1.$message"></li>
@@ -22,7 +22,7 @@
 		<label class="control-label">{% trans "Confirm Password" %}</label>
 		<div class="input-group">
 			<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
-			<input type="password" class="form-control" name="new_password2" ng-model="form_data.new_password2" ng-change="dismissSubmitMessage()" placeholder="{% trans 'Confirm Password' %}" ng-required="true">
+			<input type="password" class="form-control" name="new_password2" ng-model="form_data.new_password2" placeholder="{% trans 'Confirm Password' %}" ng-required="true">
 		</div>
 		<ul ng-show="change_form.new_password2.$error.rejected && change_form.new_password2.$pristine" class="shop-form-error" ng-cloak>
 			<li ng-bind="change_form.new_password2.$message"></li>
