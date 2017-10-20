@@ -53,7 +53,8 @@ class AddressEditView(GenericAPIView):
         form = self.form_class(data=data, cart=cart)
         if form.is_valid():
             return Response()
-        return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+        response_data = {self.form_class.form_name: dict(errors=form.errors)}
+        return Response(response_data, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
     def delete(self, request, priority=None, *args, **kwargs):
         if priority != 'add':
