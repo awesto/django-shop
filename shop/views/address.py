@@ -61,14 +61,13 @@ class AddressEditView(GenericAPIView):
     def delete(self, request, priority=None, *args, **kwargs):
         cart = CartModel.objects.get_from_request(request)
         with transaction.atomic():
-            if priority != 'add':
-                try:
-                    if self.form_class.__name__ == 'BillingAddressForm':
-                        request.customer.billingaddress_set.get(priority=priority).delete()
-                    elif self.form_class.__name__ == 'ShippingAddressForm':
-                        request.customer.shippingaddress_set.get(priority=priority).delete()
-                except (ShippingAddressModel.DoesNotExist, BillingAddressModel.DoesNotExist):
-                    pass
+            try:
+                if self.form_class.__name__ == 'BillingAddressForm':
+                    request.customer.billingaddress_set.get(priority=priority).delete()
+                elif self.form_class.__name__ == 'ShippingAddressForm':
+                    request.customer.shippingaddress_set.get(priority=priority).delete()
+            except (ValueError, ShippingAddressModel.DoesNotExist, BillingAddressModel.DoesNotExist):
+                pass
 
             # take the last of the remaining addresses
             if self.form_class.__name__ == 'BillingAddressForm':
