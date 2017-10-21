@@ -56,7 +56,7 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
                 ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated at')),
                 ('extra', shop.models.fields.JSONField(verbose_name='Arbitrary information for this cart')),
-                ('billing_address', models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='+', to='myshop.BillingAddress')),
+                ('billing_address', models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.SET_DEFAULT, related_name='+', to='myshop.BillingAddress')),
             ],
         ),
         migrations.CreateModel(
@@ -242,7 +242,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='cart',
             name='shipping_address',
-            field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='+', to='myshop.ShippingAddress'),
+            field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.SET_DEFAULT, related_name='+', to='myshop.ShippingAddress'),
         ),
         migrations.AddField(
             model_name='billingaddress',
