@@ -200,7 +200,7 @@ Changelog for django-SHOP
 * Added method ``post_process_cart_item`` to the Cart Modifiers.
 * In ``CartItem`` the ``product_code`` is mandatory now. It moves from being optionally kept in dict
   ``CartItem.extra`` into the ``CartItem`` model itself. This simplifies a lot of boilerplate code,
-  otherwise required by the merchant implementation. Please read :ref:`upgrading-0.10` for details.
+  otherwise required by the merchant implementation. Please read :ref:`release-notes/0.10` for details.
 * In :class:`shop.models.product.BaseProduct` added a hook method ``get_product_variant(self, **kwargs)``
   which can be overridden by products with variations to return a product variant.
 

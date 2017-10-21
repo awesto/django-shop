@@ -121,7 +121,6 @@ class AddressFormTest(APITestCase):
         payload = {'shipping_address': dict(first_address, plugin_order='1', active_priority='add')}
         response = self.client.put(edit_address_url, payload, format='json')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, '')
         self.assertEqual(ShippingAddress.objects.filter(customer=self.customer).count(), 0)
 
         # associate that address with the current cart
