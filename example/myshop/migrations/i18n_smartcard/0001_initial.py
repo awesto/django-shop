@@ -25,10 +25,10 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('email_auth', '0003_django110'),
         ('cms', '0016_auto_20160608_1535'),
         ('filer', '0007_auto_20161016_1055'),
         ('contenttypes', '0002_remove_content_type_name'),
+        ('email_auth', '0004_auto_20170411_1733'),
     ]
 
     operations = [
