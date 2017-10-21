@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import json
-
 from django.db import transaction
 
 from rest_framework import status
@@ -50,7 +48,7 @@ class AddressEditView(GenericAPIView):
         return Response({self.form_class.form_name: initial_data})
 
     def put(self, request, *args, **kwargs):
-        data = json.loads(request.body).get(self.form_class.scope_prefix, {})
+        data = request.data.get(self.form_class.scope_prefix, {})
         cart = CartModel.objects.get_from_request(request)
         form = self.form_class(data=data, cart=cart)
         if form.is_valid():
