@@ -1,4 +1,4 @@
-.. _0.10:
+.. _release-notes/0.10:
 
 ==============================
 Release notes for version 0.10

@@ -200,7 +200,7 @@ Changelog for django-SHOP
 * Added method ``post_process_cart_item`` to the Cart Modifiers.
 * In ``CartItem`` the ``product_code`` is mandatory now. It moves from being optionally kept in dict
   ``CartItem.extra`` into the ``CartItem`` model itself. This simplifies a lot of boilerplate code,
-  otherwise required by the merchant implementation. Please read :ref:`upgrading-0.10` for details.
+  otherwise required by the merchant implementation. Please read :ref:`release-notes/0.10` for details.
 * In :class:`shop.models.product.BaseProduct` added a hook method ``get_product_variant(self, **kwargs)``
   which can be overridden by products with variations to return a product variant.
 
@@ -228,7 +228,7 @@ Changelog for django-SHOP
 * Minimum required version of djangocms-cascade is now 0.10.2.
 * Minimum required version of djangoshop-stripe is now 0.2.0.
 * Changed the default address models to be more generic. Please read the
-  :doc:`upgrade instructions <upgrading>` if you are upgrading from 0.9.0 or 0.9.1.
+  :ref:`release-notes/0.9` if you are upgrading from 0.9.0 or 0.9.1.
 * Fixed :py:meth:`shop.money.fields.decontruct` to avoid repetitive useless generation of migration
   files.
 * Using cached_property decoration for methods ``unit_price`` and ``line_total`` in

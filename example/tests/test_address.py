@@ -121,7 +121,6 @@ class AddressFormTest(APITestCase):
         payload = {'shipping_address': dict(first_address, plugin_order='1', active_priority='add')}
         response = self.client.put(edit_address_url, payload, format='json')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, '')
         self.assertEqual(ShippingAddress.objects.filter(customer=self.customer).count(), 0)
 
         # associate that address with the current cart
@@ -157,7 +156,7 @@ class AddressFormTest(APITestCase):
         edit_address_url = reverse('shop:edit-shipping-address', kwargs={'priority': active_priority})
         response = self.client.get(edit_address_url)
         self.assertEqual(response.status_code, 200)
-        payload = {'shipping_address': json.loads(response.content).get('shipping_address_form')}
+        payload = {'shipping_address': json.loads(response.content.decode('utf-8')).get('shipping_address_form')}
         payload['shipping_address'].update(plugin_order='1', active_priority=active_priority)
         response = self.client.put(url, payload, format='json')
         self.assertEqual(response.status_code, 200)

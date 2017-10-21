@@ -1,4 +1,4 @@
-.. _0.11:
+.. _release-notes/0.11:
 
 ==============================
 Release notes for version 0.11
