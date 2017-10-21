@@ -120,15 +120,14 @@ class ShopTestCase(TestCase):
                                                      recognized=CustomerState.REGISTERED)
         self.assertTrue(self.customer_bart.is_registered())
 
-    def add_product2cart(self, product):
+    def add_product2cart(self, product, quantity=1):
         add2cart_url = product.get_absolute_url() + '/add-to-cart'
         response = self.client.get(add2cart_url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         payload = json.loads(response.content.decode('utf-8'))
 
-        # add two items of that Smart Card
         cart_url = reverse('shop:cart-list')
-        payload['quantity'] = 1
+        payload['quantity'] = quantity
         response = self.client.post(cart_url, payload)
         self.assertEqual(response.status_code, 201)
 

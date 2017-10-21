@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
+
 from rest_framework.test import APIClient, APIRequestFactory
 from cms.api import add_plugin, create_page
 from shop.models.cart import CartModel
@@ -140,11 +141,15 @@ class CartTest(ShopTestCase):
         self.add_product2cart(xtr_sdhc_16gb)
         sdxc_pro_32gb = SmartCard.objects.get(slug="extreme-pro-micro-sdhc-32gb")
         self.add_product2cart(sdxc_pro_32gb)
+        request = self.factory.get('/')
+        self.middleware_process_request(request, self.client.session.session_key)
+        cart = CartModel.objects.get_from_request(request)
+        self.assertEquals(cart.items.count(), 2)
 
         # Bart logs in again
         login_url = reverse('shop:login')
-        credentials = dict(username='bart', password='trab')
-        response = self.client.post(login_url, credentials)
+        form_data = '{"form_data": {"username": "bart", "password": "trab"}}'
+        response = self.client.post(login_url, form_data, content_type='application/json')
         self.assertEqual(response.status_code, 200)
 
         # the cart now should contain three items
