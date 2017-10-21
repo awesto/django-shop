@@ -60,11 +60,13 @@ Changelog for django-SHOP
   current cart's content. Fetching from there is emit a ``shop.checkout.digest`` event.
 * Added directives ``shop-payment-method`` and ``shop-shipping-method`` which update the cart and
   emit a ``shop.checkout.digest`` event on change.
-* Fix: All form input field get their own unique HTML ``id``. Previously some ``id``s were used
+* Fix: All form input field get their own unique HTML ``id``. Previously some ``id``'s were used
   twice and caused collisions.
 * Fix: Do not rebuild list of cart items, on each change of quantity.
 * Separate ``CartController`` into itself and a ``CartItemControler``.
 * Consistent naming of emit and broadcast events.
+* Remove ``angular-message`` from the list of npm dependencies.
+
 
 0.11.1
 ======
