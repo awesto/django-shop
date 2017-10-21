@@ -1,10 +1,10 @@
 django-admin-sortable2==0.6.15
 django-allauth==0.23.0
-django-angular==1.1.2
+https://github.com/jrief/django-angular/archive/releases/2.0.x.zip
 django-appconf==1.0.1
 django-classy-tags==0.8.0
 django-cms==3.4.4
-django-compressor==2.1.1
+django-compressor==2.2
 django-filer==1.2.8
 django-filter==1.0.4
 django-fsm==2.6.0
@@ -21,7 +21,7 @@ django-rest-auth==0.9.1
 django-sass-processor==0.5.4
 django-sekizai==0.10.0
 Django-Select2==5.8.10
-django-treebeard==4.1.1
+django-treebeard==4.1.2
 djangocms-bootstrap3==0.3.1
 djangocms-cascade==0.14.1
 djangocms-text-ckeditor==3.4.0
