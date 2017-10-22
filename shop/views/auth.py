@@ -132,7 +132,11 @@ class PasswordResetConfirm(GenericAPIView):
         serializer = serializer_class(data=data, context=self.get_serializer_context())
         if not serializer.is_valid():
             return Response({'validlink': False})
-        return Response({'validlink': True, 'user_name': force_text(serializer.user)})
+        return Response({
+            'validlink': True,
+            'user_name': force_text(serializer.user),
+            'form_name': 'password_reset_form',
+        })
 
     def post(self, request, uidb64=None, token=None):
         data = dict(request.data, uid=uidb64, token=token)
