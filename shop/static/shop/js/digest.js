@@ -11,7 +11,7 @@ module.provider('checkoutDigest', function() {
 		endpointURL = url;
 	};
 
-	this.setInitial = function(initialTag) {
+	this.setInitialTag = function(initialTag) {
 		if (angular.isObject(initialTag)) {
 			angular.extend(initialDigest, initialTag);
 		} else {
@@ -42,7 +42,7 @@ module.provider('checkoutDigest', function() {
 });
 
 
-// Use the directive <shop-checkout-digest initial-digest="{extra_annotation: 'wait til Monday'}">
+// Use the directive <shop-checkout-digest initial-tag="{extra_annotation: 'wait til Monday'}">
 // as a wrapper around all checkout forms and the cart summary. It enriches the scope with objects
 // `cart` and `checkout_digest`. They contain the current state of the cart and the checkout
 // digest tags.
@@ -51,7 +51,7 @@ module.directive('shopCheckoutDigest', ['checkoutDigest', function(checkoutDiges
 		restrict: 'E',
 		scope: true,
 		link: function(scope, element, attrs) {
-			checkoutDigest.setInitial(scope.$eval(attrs.initialTag));
+			checkoutDigest.setInitialTag(scope.$eval(attrs.initialTag));
 		}
 	};
 }]);
