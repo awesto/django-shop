@@ -4,6 +4,15 @@
 Changelog for django-SHOP
 =========================
 
+0.11.2
+======
+
+* Do not render buttons and links related to the watch-list, when it is not available.
+* Use Sekizai's internal ``{% with_data ... %}`` to render Sekizai blocks ``ng-requires`` and
+  ``ng-config`` rather than using the deprecated postprocessors ``djng.sekizai_processors.module_list``
+  and ``djng.sekizai_processors.module_config``. Adopt your templates accordingly as explained
+  in :ref:`reference/client-framework`
+
 
 0.11.1
 ======
@@ -59,7 +68,6 @@ Changelog for django-SHOP
 * Fix #623: Template ``auth/register-user.html`` did not validate properly, when Reset password was checked.
 * Added AngularJS filter ``range`` to emulate enumerations in JavaScript.
 * Fallback to hard-coded URL if CMS page for "Continue Shopping" is missing.
-
 
 
 0.10.2
