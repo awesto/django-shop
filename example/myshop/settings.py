@@ -579,16 +579,21 @@ SHOP_CART_MODIFIERS.extend([
     'shop.modifiers.defaults.PayInAdvanceModifier',
 ])
 
-if 'shop_stripe' in INSTALLED_APPS:
-    SHOP_CART_MODIFIERS.append('myshop.modifiers.StripePaymentModifier')
-
 SHOP_EDITCART_NG_MODEL_OPTIONS = "{updateOn: 'default blur', debounce: {'default': 2500, 'blur': 0}}"
 
 SHOP_ORDER_WORKFLOWS = [
     'shop.payment.defaults.ManualPaymentWorkflowMixin',
     'shop.payment.defaults.CancelOrderWorkflowMixin',
-    'shop_stripe.payment.OrderWorkflowMixin',
 ]
+
+if 'shop_stripe' in INSTALLED_APPS:
+    SHOP_CART_MODIFIERS.append('myshop.modifiers.StripePaymentModifier')
+    SHOP_ORDER_WORKFLOWS.append('shop_stripe.payment.OrderWorkflowMixin')
+
+if 'shop_sendcloud' in INSTALLED_APPS:
+    SHOP_CART_MODIFIERS.append('shop_sendcloud.modifiers.SendcloudShippingModifier')
+    SHOP_ORDER_WORKFLOWS.append('shop_sendcloud.shipping.OrderWorkflowMixin')
+
 if SHOP_TUTORIAL in ['i18n_polymorphic', 'polymorphic']:
     SHOP_ORDER_WORKFLOWS.append('shop.shipping.delivery.PartialDeliveryWorkflowMixin')
 else:
@@ -597,6 +602,12 @@ else:
 SHOP_STRIPE = {
     'PUBKEY': 'pk_test_HlEp5oZyPonE21svenqowhXp',
     'APIKEY': 'sk_test_xUdHLeFasmOUDvmke4DHGRDP',
+    'PURCHASE_DESCRIPTION': _("Thanks for purchasing at MyShop"),
+}
+
+SHOP_SENDCLOUD = {
+    'API_KEY': 'f94fbf418c324388a33304709ae7b0f9',
+    'API_SECRET': 'da9c12c1b2904ffc98a80c0117b27f90',
     'PURCHASE_DESCRIPTION': _("Thanks for purchasing at MyShop"),
 }
 

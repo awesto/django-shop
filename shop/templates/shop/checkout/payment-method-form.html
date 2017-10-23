@@ -19,10 +19,10 @@
 	{% if show_additional_charge %}
 	<div class="additional-charge">
 		{% for choice, label in payment_method_form.payment_modifier.field.choices %}
-		<p ng-repeat="extra_row in cart.extra_rows|filter:{modifier:'{{ choice }}'}">{% verbatim %}+ {{ extra_row.amount }}{% endverbatim %}</p>
+		<p ng-repeat="extra_row in cart.extra_rows|filter:{modifier:'{{ choice }}'}">{% trans "Additional charge" %}: {% verbatim %}{{ extra_row.amount }}{% endverbatim %}</p>
 		{% endfor %}
 		{% if payment_modifiers.initial_row %}
-		<p ng-if="!cart.extra_rows">+ {{ payment_modifiers.initial_row.amount }}</p>
+		<p ng-if="!cart.extra_rows">{% trans "Additional charge" %}: {{ payment_modifiers.initial_row.amount }}</p>
 		{% endif %}
 	</div>
 	{% endif %}
