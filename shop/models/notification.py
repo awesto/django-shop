@@ -9,12 +9,14 @@ from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.db import models
 from django.db.models import Q
 from django.http.request import HttpRequest
-from django.template import Context, engines
+from django.template import Context, Template
 from django.utils.six.moves.urllib.parse import urlparse
 from django.utils.translation import ugettext_lazy as _, override as translation_override, ugettext_noop
 
 from post_office import mail
 from post_office.models import Email as OriginalEmail, EmailTemplate
+from post_office.compat import smart_text
+from post_office.connections import connections
 
 from filer.fields.file import FilerFileField
 
@@ -78,43 +80,44 @@ class Email(OriginalEmail):
     class Meta:
         proxy = True
 
-    def email_message(self, connection=None):
+    def prepare_email_message(self):
         if self.template is not None:
             render_language = self.context.get('render_language', settings.LANGUAGE_CODE)
-            context = Context(self.context)
+            _context = Context(self.context)
             with translation_override(render_language):
-                subject = engines['django'].from_string(self.template.subject).render(context)
-                message = engines['django'].from_string(self.template.content).render(context)
-                html_message = engines['django'].from_string(self.template.html_content).render(context)
+                subject = Template(self.template.subject).render(_context)
+                message = Template(self.template.content).render(_context)
+                html_message = Template(self.template.html_content).render(_context)
         else:
-            subject = self.subject
+            subject = smart_text(self.subject)
             message = self.message
             html_message = self.html_message
+
+        connection = connections[self.backend_alias or 'default']
 
         if html_message:
             if not message:
                 message = html_to_text(html_message)
-            mailmsg = EmailMultiAlternatives(
+            msg = EmailMultiAlternatives(
                 subject=subject, body=message, from_email=self.from_email,
                 to=self.to, bcc=self.bcc, cc=self.cc,
-                connection=connection, headers=self.headers)
-            mailmsg.attach_alternative(html_message, 'text/html')
+                headers=self.headers, connection=connection)
+            msg.attach_alternative(html_message, 'text/html')
         else:
-            mailmsg = EmailMessage(
+            msg = EmailMessage(
                 subject=subject, body=message, from_email=self.from_email,
                 to=self.to, bcc=self.bcc, cc=self.cc,
-                connection=connection, headers=self.headers)
+                headers=self.headers, connection=connection)
 
         for attachment in self.attachments.all():
-            mailmsg.attach(attachment.name, attachment.file.read())
-        return mailmsg
+            msg.attach(attachment.name, attachment.file.read(), mimetype=attachment.mimetype or None)
+            attachment.file.close()
 
+        self._cached_email_message = msg
+        return msg
 
-class EmailManager(models.Manager):
-    def get_queryset(self):
-        return Email.objects.get_queryset()
-
-OriginalEmail.add_to_class('objects', EmailManager())
+# Monkey-patch post_office method
+OriginalEmail.prepare_email_message = Email.prepare_email_message
 
 
 class Notify(ChoiceEnum):
