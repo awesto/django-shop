@@ -143,13 +143,19 @@ class BaseCartSerializer(serializers.ModelSerializer):
         return representation
 
 
-class CartSerializer(BaseCartSerializer):
-    items = CartItemSerializer(many=True, read_only=True)
+class CartSummarySerializer(BaseCartSerializer):
     total_quantity = serializers.IntegerField()
     num_items = serializers.IntegerField()
 
     class Meta(BaseCartSerializer.Meta):
-        fields = ['items', 'total_quantity', 'num_items'] + BaseCartSerializer.Meta.fields
+        fields = ['total_quantity', 'num_items'] + BaseCartSerializer.Meta.fields
+
+
+class CartSerializer(CartSummarySerializer):
+    items = CartItemSerializer(many=True, read_only=True)
+
+    class Meta(BaseCartSerializer.Meta):
+        fields = ['items'] + CartSummarySerializer.Meta.fields
 
 
 class WatchSerializer(BaseCartSerializer):

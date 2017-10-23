@@ -15,6 +15,7 @@ from cms.plugin_pool import plugin_pool
 from shop.conf import app_settings
 from shop.models.cart import CartModel
 from shop.serializers.checkout import CheckoutSerializer
+from shop.serializers.cart import CartSummarySerializer
 from shop.modifiers.pool import cart_modifiers_pool
 
 
@@ -24,6 +25,7 @@ class CheckoutViewSet(GenericViewSet):
     """
     serializer_label = 'checkout'
     serializer_class = CheckoutSerializer
+    cart_serializer_class = CartSummarySerializer
 
     def __init__(self, **kwargs):
         super(CheckoutViewSet, self).__init__(**kwargs)
@@ -94,9 +96,14 @@ class CheckoutViewSet(GenericViewSet):
         Returns the summaries of the cart and various checkout forms to be rendered in non-editable fields.
         """
         cart = CartModel.objects.get_from_request(request)
-        serializer = self.serializer_class(cart, context=self.get_serializer_context(), label=self.serializer_label)
-        response_data = {'checkout_digest': dict(serializer.data)}
-        response_data['cart'] = response_data['checkout_digest'].pop('cart')
+        cart.update(request)
+        context = self.get_serializer_context()
+        checkout_serializer = self.serializer_class(cart, context=context, label=self.serializer_label)
+        cart_serializer = self.cart_serializer_class(cart, context=context, label='cart')
+        response_data = {
+            'checkout_digest': checkout_serializer.data,
+            'cart_summary': cart_serializer.data,
+        }
         return Response(data=response_data)
 
     @list_route(methods=['post'], url_path='purchase')

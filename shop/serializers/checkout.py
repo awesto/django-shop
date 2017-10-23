@@ -5,21 +5,15 @@ from rest_framework import serializers
 
 from shop.forms.checkout import (
     ShippingAddressForm, BillingAddressForm, CustomerForm, ShippingMethodForm, PaymentMethodForm, ExtraAnnotationForm)
-from .cart import CartSerializer
 
 
 class CheckoutSerializer(serializers.Serializer):
-    cart = serializers.SerializerMethodField()
     customer_tag = serializers.SerializerMethodField()
     shipping_address_tag = serializers.SerializerMethodField()
     billing_address_tag = serializers.SerializerMethodField()
     shipping_method_tag = serializers.SerializerMethodField()
     payment_method_tag = serializers.SerializerMethodField()
     extra_annotation_tag = serializers.SerializerMethodField()
-
-    def get_cart(self, cart):
-        serializer = CartSerializer(cart, context=self.context, label='cart')
-        return serializer.data
 
     def get_customer_tag(self, cart):
         try:

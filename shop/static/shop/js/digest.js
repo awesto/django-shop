@@ -33,6 +33,8 @@ module.provider('checkoutDigest', function() {
 
 		function fetchCheckoutDigest() {
 			$http.get(endpointURL).then(function(response) {
+				$rootScope.cart = angular.isObject($rootScope.cart) ? $rootScope.cart : {};
+				angular.extend($rootScope.cart, response.data.cart_summary);
 				angular.extend($rootScope.checkoutDigest, response.data.checkout_digest);
 			});
 		}
