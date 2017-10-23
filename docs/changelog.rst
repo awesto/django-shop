@@ -65,6 +65,9 @@ Changelog for django-SHOP
 * Fix: Do not rebuild list of cart items, on each change of quantity.
 * Separate ``CartController`` into itself and a ``CartItemControler``.
 * Consistent naming of emit and broadcast events.
+* Introduce ``CartSummarySerializer`` to retrieve a smaller checkout digest.
+* In Shipping- and Payment Method Form, optionally show additional charges below the radio fields,
+  depending on the selected method.
 * Remove ``angular-message`` from the list of npm dependencies.
 
 
