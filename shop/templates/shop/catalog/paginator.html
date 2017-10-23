@@ -3,7 +3,7 @@
 {% if infinite_scroll %}
 	{% addtoblock "css" %}<link href="{% sass_src 'shop/css/paginator.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 	{% addtoblock "js" %}<script src="{% static 'node_modules/angular-inview/angular-inview.js' %}"></script>{% endaddtoblock %}
-	{% addtoblock "ng-requires" %}angular-inview{% endaddtoblock %}
+	{% add_data "ng-requires" "angular-inview" %}
 
 	{% if paginator.display_page_controls %}
 <div class="row" ng-if="catalog.count===undefined">

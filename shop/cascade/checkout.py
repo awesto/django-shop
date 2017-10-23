@@ -49,6 +49,7 @@ class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
     name = _("Proceed Button")
     parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin', 'ValidateSetOfFormsPlugin')
     model_mixins = (LinkElementMixin,)
+    form = ProceedButtonForm
     glossary_field_order = ('button_type', 'button_size', 'button_options', 'quick_float',
                             'icon_align', 'icon_font', 'symbol')
     ring_plugin = 'ProceedButtonPlugin'
@@ -58,10 +59,6 @@ class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
                        'cascade/css/admin/bootstrap-theme.min.css',
                        'cascade/css/admin/iconplugin.css',)}
         js = ['shop/js/admin/proceedbuttonplugin.js']
-
-    def get_form(self, request, obj=None, **kwargs):
-        kwargs.update(form=ProceedButtonForm)
-        return super(ShopProceedButton, self).get_form(request, obj, **kwargs)
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [

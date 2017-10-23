@@ -1,0 +1,22 @@
+{% load i18n static sekizai_tags cms_tags %}{% spaceless %}
+
+{% addtoblock "js" %}<script src="{% static 'djng/js/django-angular.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+{% add_data "ng-requires" "djng.forms-set" %}
+
+{% if stylesheet_url %}{% addtoblock "css" %}<link href="{{ stylesheet_url }}" rel="stylesheet" type="text/css" />{% endaddtoblock %}{% endif %}
+
+{% if many %}
+	<p class="bg-warning">{% blocktrans %}
+		Please embed this plugin into a <code>SegmentationPlugin</code> with condition <code>if not many</code>.
+	{% endblocktrans %}</p>
+{% else %}
+	{% page_url "shop-cart" as shop_cart_url %}
+	{% with instance_css_classes=instance.css_classes instance_inline_styles=instance.inline_styles %}
+	<djng-forms-set upload-url="{{ request.path_info }}">
+		<button ng-click="create({reorder: true}).then(redirectTo('{{ shop_cart_url }}'))" {% if instance_css_classes %} class="{{ instance_css_classes }}"{% endif %}{% if instance_inline_styles %} style="{{ instance_inline_styles }}"{% endif %}>
+			{{ icon_left }}{{ button_label }}{{ icon_right }}
+		</button>
+	</djng-forms-set>
+	{% endwith %}
+{% endif %}
+{% endspaceless %}

@@ -31,7 +31,7 @@ class DefaultCartModifier(BaseCartModifier):
 
 class PayInAdvanceModifier(PaymentModifier):
     """
-    This modifiers has not influence on the cart final. It can be used,
+    This modifiers has no influence on the cart final. It can be used,
     to enable the customer to pay the products on delivery.
     """
     identifier = 'pay-in-advance'
