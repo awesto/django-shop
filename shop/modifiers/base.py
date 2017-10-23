@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from shop.models.cart import CartModel
-
 
 class BaseCartModifier(object):
     """
@@ -155,6 +153,8 @@ class PaymentModifier(BaseCartModifier):
         """
         Hook to update the rendering context with payment specific data.
         """
+        from shop.models.cart import CartModel
+
         if 'payment_modifiers' not in context:
             context['payment_modifiers'] = {}
         try:
@@ -196,6 +196,8 @@ class ShippingModifier(BaseCartModifier):
         """
         Hook to update the rendering context with shipping specific data.
         """
+        from shop.models.cart import CartModel
+
         if 'shipping_modifiers' not in context:
             context['shipping_modifiers'] = {}
         try:
