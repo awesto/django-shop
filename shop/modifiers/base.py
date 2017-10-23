@@ -163,7 +163,7 @@ class PaymentModifier(BaseCartModifier):
                 cart.update(context['request'])
                 data = cart.extra_rows[self.identifier].data
                 data.update(modifier=self.identifier)
-                context['shipping_modifiers']['initial_row'] = data
+                context['payment_modifiers']['initial_row'] = data
         except (KeyError, CartModel.DoesNotExist):
             pass
 
