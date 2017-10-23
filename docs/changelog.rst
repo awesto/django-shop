@@ -76,10 +76,25 @@ Changelog for django-SHOP
 =======
 
 * Do not render buttons and links related to the watch-list, when it is not available.
+* Fix: Adopt polymorphic ModelAdmin-s to django-polymorphic>=1.0.
 * Use Sekizai's internal ``{% with_data ... %}`` to render Sekizai blocks ``ng-requires`` and
   ``ng-config`` rather than using the deprecated postprocessors ``djng.sekizai_processors.module_list``
   and ``djng.sekizai_processors.module_config``. Adopt your templates accordingly as explained
   in :ref:`reference/client-framework`
+* Use Sekizai's internal templatetags ``{% with_data ... %}`` and ``{% with_data %}`` to render Sekizai
+  blocks ``ng-requires`` and ``ng-config`` rather than using the deprecated postprocessors
+  ``djng.sekizai_processors.module_list`` and ``djng.sekizai_processors.module_config``. Adopt your
+  templates accordingly as explained in :ref:`reference/client-framework`.
+* Rename ``PayInAdvanceWorkflowMixin`` to ``ManualPaymentWorkflowMixin``, since its purpose is to
+  handle all incoming/outgoing payments manually.
+* Move ``LeftExtensionPlugin`` and ``RightExtensionPlugin`` into module ``shop/cascade/extensions``
+  and allow them to be used on the ``ShopOrderViewsPlugin`` as well.
+* ``ShopOrderAddendumFormPlugin`` can optionally render historical annotations for the given order.
+* Added hook methods ``cancelable()`` and ``refund_payment()`` to ``BaseOrder`` to allow
+  a better order cancelling interface.
+* Paid but unshipped orders, now can be refunded. Possible be refactoring class
+  ``CancelOrderWorkflowMixin``, which handles payment refunds.
+* Add Order status to Order Detail View, so that the customer immediately sees what's going on.
 
 
 0.11.1

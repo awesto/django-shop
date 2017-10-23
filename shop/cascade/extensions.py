@@ -27,7 +27,7 @@ class ShopExtendableMixin(object):
 
 class LeftRightExtensionMixin(object):
     """
-    Plugin classes wishing to use extensions, shall inherits from this class.
+    Plugin classes wishing to use extensions shall inherit from this class.
     """
     @classmethod
     def get_child_classes(cls, slot, page, instance=None):
