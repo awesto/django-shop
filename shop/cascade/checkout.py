@@ -235,6 +235,13 @@ class PaymentMethodFormPlugin(DialogFormPluginBase):
     form_class = 'shop.forms.checkout.PaymentMethodForm'
     template_leaf_name = 'payment-method-{}.html'
 
+    show_additional_charge = GlossaryField(
+        widgets.CheckboxInput(),
+        label=_("Show additional charge"),
+        initial=True,
+        help_text=_("Add an extra line showing the additional charge depending on the chosen payment method."),
+    )
+
     def get_form_data(self, context, instance, placeholder):
         form_data = self.super(PaymentMethodFormPlugin, self).get_form_data(context, instance, placeholder)
         cart = form_data.get('cart')
@@ -246,6 +253,7 @@ class PaymentMethodFormPlugin(DialogFormPluginBase):
         self.super(PaymentMethodFormPlugin, self).render(context, instance, placeholder)
         for payment_modifier in cart_modifiers_pool.get_payment_modifiers():
             payment_modifier.update_render_context(context)
+        context['show_additional_charge'] = instance.glossary.get('show_additional_charge', False)
         return context
 
 if cart_modifiers_pool.get_payment_modifiers():
@@ -258,6 +266,13 @@ class ShippingMethodFormPlugin(DialogFormPluginBase):
     form_class = 'shop.forms.checkout.ShippingMethodForm'
     template_leaf_name = 'shipping-method-{}.html'
 
+    show_additional_charge = GlossaryField(
+        widgets.CheckboxInput(),
+        label=_("Show additional charge"),
+        initial=True,
+        help_text=_("Add an extra line showing the additional charge depending on the chosen shipping method."),
+    )
+
     def get_form_data(self, context, instance, placeholder):
         form_data = self.super(ShippingMethodFormPlugin, self).get_form_data(context, instance, placeholder)
         cart = form_data.get('cart')
@@ -269,6 +284,7 @@ class ShippingMethodFormPlugin(DialogFormPluginBase):
         self.super(ShippingMethodFormPlugin, self).render(context, instance, placeholder)
         for shipping_modifier in cart_modifiers_pool.get_shipping_modifiers():
             shipping_modifier.update_render_context(context)
+        context['show_additional_charge'] = instance.glossary.get('show_additional_charge', False)
         return context
 
 if cart_modifiers_pool.get_shipping_modifiers():

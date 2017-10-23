@@ -1,5 +1,10 @@
 {% extends "shop/checkout/dialog-base.html" %}
-{% load i18n static sekizai_tags %}
+{% load i18n static sass_tags sekizai_tags %}
+
+{% block extra-styles %}
+	{{ block.super }}
+	{% addtoblock "css" %}<link href="{% sass_src 'shop/css/method-form.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+{% endblock %}
 
 {% block extra-scripts %}
 	{{ block.super }}
@@ -9,12 +14,22 @@
 
 {% block dialog_form %}
 <form shop-method-form djng-endpoint="{% url 'shop:checkout-upload' %}" name="{{ shipping_method_form.form_name }}" novalidate>
-	{% if shipping_method_form.has_choices %}
+{% if shipping_method_form.has_choices %}
 	{{ shipping_method_form.as_div }}
-	{% else %}
+	{% if show_additional_charge %}
+	<div class="additional-charge">
+		{% for choice, label in shipping_method_form.shipping_modifier.field.choices %}
+		<p ng-repeat="extra_row in cart.extra_rows|filter:{modifier:'{{ choice }}'}">{% verbatim %}+ {{ extra_row.amount }}{% endverbatim %}</p>
+		{% endfor %}
+		{% if shipping_modifiers.initial_row %}
+		<p ng-if="!cart.extra_rows">+ {{ shipping_modifiers.initial_row.amount }}</p>
+		{% endif %}
+	</div>
+	{% endif %}
+{% else %}
 	<input name="__force_invalidation__" style="display: none;" required />
 	<p class="bg-danger">{% trans "No shipping method available" %}</p>
-	{% endif %}
+{% endif %}
 </form>
 	{% block shipping-provider-form %}{% endblock %}
 {% endblock %}

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from shop.models.cart import CartModel
+
 
 class BaseCartModifier(object):
     """
@@ -155,6 +157,15 @@ class PaymentModifier(BaseCartModifier):
         """
         if 'payment_modifiers' not in context:
             context['payment_modifiers'] = {}
+        try:
+            cart = CartModel.objects.get_from_request(context['request'])
+            if self.is_active(cart):
+                cart.update(context['request'])
+                data = cart.extra_rows[self.identifier].data
+                data.update(modifier=self.identifier)
+                context['shipping_modifiers']['initial_row'] = data
+        except (KeyError, CartModel.DoesNotExist):
+            pass
 
 
 class ShippingModifier(BaseCartModifier):
@@ -187,3 +198,12 @@ class ShippingModifier(BaseCartModifier):
         """
         if 'shipping_modifiers' not in context:
             context['shipping_modifiers'] = {}
+        try:
+            cart = CartModel.objects.get_from_request(context['request'])
+            if self.is_active(cart):
+                cart.update(context['request'])
+                data = cart.extra_rows[self.identifier].data
+                data.update(modifier=self.identifier)
+                context['shipping_modifiers']['initial_row'] = data
+        except (KeyError, CartModel.DoesNotExist):
+            pass

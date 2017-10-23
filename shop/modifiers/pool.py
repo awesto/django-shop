@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 from shop.conf import app_settings
-from .base import ShippingModifier, PaymentModifier
 
 
 class CartModifiersPool(object):
@@ -24,12 +23,14 @@ class CartModifiersPool(object):
         """
         Returns all registered shipping modifiers of this shop instance.
         """
+        from shop.modifiers.base import ShippingModifier
         return [m for m in self.get_all_modifiers() if isinstance(m, ShippingModifier)]
 
     def get_payment_modifiers(self):
         """
         Returns all registered payment modifiers of this shop instance.
         """
+        from shop.modifiers.base import PaymentModifier
         return [m for m in self.get_all_modifiers() if isinstance(m, PaymentModifier)]
 
 cart_modifiers_pool = CartModifiersPool()
