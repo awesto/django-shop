@@ -33,7 +33,8 @@ class OrderListSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderModel
         fields = ['number', 'url', 'created_at', 'updated_at', 'subtotal', 'total', 'status',
-                  'shipping_address_text', 'billing_address_text']
+                  'shipping_address_text', 'billing_address_text']  # TODO: these fields are not part of the base model
+        read_only_fields = ['shipping_address_text', 'billing_address_text']
 
 
 class OrderDetailSerializer(OrderListSerializer):
@@ -45,6 +46,7 @@ class OrderDetailSerializer(OrderListSerializer):
     extra = serializers.DictField(read_only=True)
     amount_paid = MoneyField(read_only=True)
     outstanding_amount = MoneyField(read_only=True)
+    cancelable = serializers.BooleanField(read_only=True)
 
     is_partially_paid = serializers.SerializerMethodField(
         method_name='get_partially_paid',
@@ -61,9 +63,15 @@ class OrderDetailSerializer(OrderListSerializer):
         default=False,
     )
 
+    cancel = serializers.BooleanField(
+        write_only=True,
+        default=False,
+    )
+
     class Meta:
         model = OrderModel
         exclude = ['id', 'customer', 'stored_request', '_subtotal', '_total']
+        read_only_fields = ['shipping_address_text', 'billing_address_text']  # TODO: not part of OrderBase
 
     def get_partially_paid(self, order):
         return order.amount_paid > 0
@@ -73,8 +81,11 @@ class OrderDetailSerializer(OrderListSerializer):
         if validated_data.get('annotation'):
             timestamp = timezone.now().isoformat()
             order.extra['addenum'].append((timestamp, validated_data['annotation']))
-        if validated_data.get('reorder'):
+            order.save()
+        if validated_data['reorder'] is True:
             cart = CartModel.objects.get_from_request(self.context['request'])
             order.readd_to_cart(cart)
-        order.save()
+        if validated_data['cancel'] is True and order.cancelable():
+            order.cancel_order()
+            order.save()
         return order

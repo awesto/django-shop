@@ -2,11 +2,11 @@
 
 {% if infinite_scroll %}
 	{% addtoblock "js" %}<script src="{% static 'node_modules/angular-inview/angular-inview.js' %}"></script>{% endaddtoblock %}
-	{% addtoblock "ng-requires" %}angular-inview{% endaddtoblock %}
+	{% add_data "ng-requires" "angular-inview" %}
 {% endif %}
 
 {% addtoblock "js" %}<script src="{% static 'shop/js/search-results.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-{% addtoblock "ng-requires" %}django.shop.searchResults{% endaddtoblock %}
+{% add_data "ng-requires" "django.shop.searchResults" %}
 {% addtoblock "ng-config" %}['searchResultsProvider', function(provider) { provider.setSearchResults({{ data|rest_json }}); }]{% endaddtoblock %}
 
 {% block search-results-table %}
