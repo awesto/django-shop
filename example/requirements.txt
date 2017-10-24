@@ -1,0 +1,2 @@
+stripe==1.37.0
+djangoshop-stripe==0.12

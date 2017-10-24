@@ -26,7 +26,7 @@ djangocms-bootstrap3==0.3.1
 djangocms-cascade==0.14.1
 djangocms-text-ckeditor==3.4.0
 djangorestframework==3.6.3
-django-formtools==2.0
+django-formtools==2.1
 drf-haystack==1.6.1
 easy-thumbnails==2.4.1
 elasticsearch==1.7.0
@@ -45,10 +45,8 @@ redis==2.10.3
 requests==2.7.0
 requests-oauthlib==0.5.0
 six==1.10.0
-stripe==1.37.0
 Unidecode==0.4.18
 urllib3==1.12
 virtualenv==13.1.2
 wheel==0.24.0
 bs4==0.0.1
-djangoshop-stripe==0.3.4
