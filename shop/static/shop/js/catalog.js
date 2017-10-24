@@ -92,38 +92,38 @@ djangoShopModule.directive('shopAddToCart', function() {
 });
 
 
-djangoShopModule.controller('CatalogListController', [
-    '$scope', '$http', 'djangoShop', function($scope, $http, djangoShop) {
-	var self = this;
+djangoShopModule.controller('CatalogListController', ['$log', '$scope', '$http', 'djangoShop',
+                                             function($log, $scope, $http, djangoShop) {
+	var self = this, isLoading = false, fetchURL = null;
 
 	this.loadProducts = function(config) {
-		if ($scope.isLoading || $scope.fetchURL === null)
+		if (isLoading || fetchURL === null)
 			return;
-		$scope.isLoading = true;
-		$http.get($scope.fetchURL, config).then(function(response) {
-			$scope.fetchURL = response.data.next;
+		isLoading = true;
+		$http.get(fetchURL, config).then(function(response) {
+			fetchURL = response.data.next;
 			$scope.catalog.count = response.data.count;
 			$scope.catalog.products = $scope.catalog.products.concat(response.data.results);
-			$scope.isLoading = false;
+			isLoading = false;
 		}).catch(function() {
-			$scope.fetchURL = null;
-			$scope.isLoading = false;
+			fetchURL = null;
+			isLoading = false;
 		});
 	};
 
 	this.resetProductsList = function() {
-		$scope.fetchURL = djangoShop.getLocationPath();
+		fetchURL = djangoShop.getLocationPath();
 		$scope.catalog.products = [];
 	};
 
 	$scope.loadMore = function() {
 		var config = {params: djangoShop.paramsFromSearchQuery.apply(this, arguments)};
-		console.log('load more products ...');
+		$log.log('load more products ...');
 		self.loadProducts(config);
 	};
 
 	$scope.catalog = {};
-	$scope.isLoading = false;
+	isLoading = false;
 }]);
 
 
