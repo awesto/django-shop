@@ -1,4 +1,4 @@
-FROM awesto/uwsgi-django-shop:0.11
+FROM awesto/uwsgi-django-shop:0.12
 
 LABEL Description="Run one of 6 django-SHOP demos" Maintainer="Jacob Rief <jacob.rief@gmail.com>"
 
@@ -8,6 +8,10 @@ ADD myshop /web/demo-shop/myshop
 COPY docker-files/wsgi.py /web/demo-shop/wsgi.py
 COPY manage.py /web/demo-shop/manage.py
 COPY package.json /web/demo-shop/package.json
+
+# install project specifiy requirements
+ADD requirements.txt /tmp/requirements/demo.txt
+RUN pip install -r /tmp/requirements/demo.txt
 
 # install packages outside of PyPI
 WORKDIR /web/demo-shop

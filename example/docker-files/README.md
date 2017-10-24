@@ -60,6 +60,17 @@ docker stop demo-shop-i18n_polymorphic
 docker rm demo-shop-i18n_polymorphic
 ```
 
+## Access the running container
+
+By invoking
+
+```
+docker exec -ti demo-shop-i18n_polymorphic /bin/bash
+```
+
+you can access the running container directly, just as if you would ssh into it.
+
+
 ## Separation of code from data
 
 Docker makes it very easy to separate code from data by providing sharable volumes. Therefore

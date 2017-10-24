@@ -27,7 +27,7 @@ RUN chown redis.redis /etc/uwsgi.d/redis.ini
 RUN cat /etc/resolv.conf
 RUN pip install uwsgi
 ADD requirements /tmp/requirements
-RUN pip install Django==1.10.7
+RUN pip install Django==1.10.8
 RUN pip install -r /tmp/requirements/common.txt
 
 # copy the local django-shop file into a temporary folder
