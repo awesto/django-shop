@@ -42,7 +42,7 @@
 		{% endif %}
 	{% endblock shop-order-tfoot %}
 
-	<!-- {# DON'T DELETE THIS LINE #}{% render_plugin instance.left_extension %} -->
-	<!-- {# DON'T DELETE THIS LINE #}{% render_plugin instance.right_extension %} -->
+	{% if instance.left_extension %}<!-- {# DON'T DELETE THIS LINE #}{% render_plugin instance.left_extension %} -->{% endif %}
+	{% if instance.right_extension %}<!-- {# DON'T DELETE THIS LINE #}{% render_plugin instance.right_extension %} -->{% endif %}
 
 {% endblock shop-order-table %}
