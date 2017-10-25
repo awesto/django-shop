@@ -605,12 +605,6 @@ SHOP_STRIPE = {
     'PURCHASE_DESCRIPTION': _("Thanks for purchasing at MyShop"),
 }
 
-SHOP_SENDCLOUD = {
-    'API_KEY': 'f94fbf418c324388a33304709ae7b0f9',
-    'API_SECRET': 'da9c12c1b2904ffc98a80c0117b27f90',
-    'PURCHASE_DESCRIPTION': _("Thanks for purchasing at MyShop"),
-}
-
 try:
     from .private_settings import *  # NOQA
 except ImportError:
