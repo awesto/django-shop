@@ -8,6 +8,11 @@ Changelog for django-SHOP
 ======
 
 * Do not render buttons and links related to the watch-list, when it is not available.
+* Fix: Adopt polymorphic ModelAdmin-s to django-polymorphic>=1.0.
+* Use Sekizai's internal ``{% with_data ... %}`` to render Sekizai blocks ``ng-requires`` and
+  ``ng-config`` rather than using the deprecated postprocessors ``djng.sekizai_processors.module_list``
+  and ``djng.sekizai_processors.module_config``. Adopt your templates accordingly as explained
+  in :ref:`reference/client-framework`
 * Use Sekizai's internal templatetags ``{% with_data ... %}`` and ``{% with_data %}`` to render Sekizai
   blocks ``ng-requires`` and ``ng-config`` rather than using the deprecated postprocessors
   ``djng.sekizai_processors.module_list`` and ``djng.sekizai_processors.module_config``. Adopt your
