@@ -2,9 +2,9 @@
 from __future__ import unicode_literals
 
 from bs4 import BeautifulSoup
+
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
-from django.core.exceptions import ValidationError
 from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.db import models
 from django.db.models import Q
