@@ -1,4 +1,4 @@
-FROM awesto/uwsgi-django-shop:0.11
+FROM awesto/uwsgi-django-shop:0.11.2
 
 LABEL Description="Run one of 6 django-SHOP demos" Maintainer="Jacob Rief <jacob.rief@gmail.com>"
 
