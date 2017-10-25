@@ -98,6 +98,7 @@ Changelog for django-SHOP
 
 * Fix migration ``0007_notification`` to handle field ``mail_to`` correctly.
 * Allow transition to cancel order only for special targets.
+* Add operator to test Money type against booleans.
 
 
 0.11

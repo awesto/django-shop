@@ -7,8 +7,12 @@
 [![Twitter Follow](https://img.shields.io/twitter/follow/djangoSHOP.svg?style=social&label=djangoSHOP)](https://twitter.com/djangoSHOP)
 
 
-On 2017-08-24 version 0.11 of **django-SHOP** has been released. Before upgrading to this version
-please read carfully the Changelog, as the API has been slightly modified.
+## Breaking News
+django-SHOP 0.12 is in review phase.
+Please check this [pull request](https://github.com/awesto/django-shop/pull/669/files).
+
+Before upgrading to this version please read carfully the Changelog, as some REST endpoints now
+behave in a more standarized manner.
 
 Please get in touch with us on Gitter, if you have problems to upgrade your projects. This will
 help us to adopt the migration path.
