@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import enum
+import six
 
 from django.conf import settings
 from django.db import models
@@ -42,7 +43,7 @@ class ChoiceEnumMeta(enum.EnumMeta):
 
 
 @python_2_unicode_compatible
-class ChoiceEnum(with_metaclass(ChoiceEnumMeta, enum.Enum)):
+class ChoiceEnum(six.with_metaclass(ChoiceEnumMeta, enum.Enum)):
     """
     Utility class to handle choices in Django model fields
     """
