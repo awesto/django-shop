@@ -118,7 +118,8 @@ INSTALLED_APPS = [
     'post_office',
     'haystack',
     'shop',
-    'shop_stripe',
+    #'shop_stripe',
+    'shop_sendcloud',
     'myshop',
 ]
 if SHOP_TUTORIAL in ['i18n_commodity', 'i18n_smartcard', 'i18n_polymorphic']:
@@ -568,13 +569,13 @@ HAYSTACK_ROUTERS = [
 SHOP_VALUE_ADDED_TAX = Decimal(19)
 SHOP_DEFAULT_CURRENCY = 'EUR'
 SHOP_PRODUCT_SUMMARY_SERIALIZER = 'myshop.serializers.ProductSummarySerializer'
+
 if SHOP_TUTORIAL in ['i18n_polymorphic', 'polymorphic']:
     SHOP_CART_MODIFIERS = ['myshop.polymorphic_modifiers.MyShopCartModifier']
 else:
     SHOP_CART_MODIFIERS = ['shop.modifiers.defaults.DefaultCartModifier']
 SHOP_CART_MODIFIERS.extend([
     'shop.modifiers.taxes.CartExcludedTaxModifier',
-    'myshop.modifiers.PostalShippingModifier',
     'myshop.modifiers.CustomerPickupModifier',
     'shop.modifiers.defaults.PayInAdvanceModifier',
     'shop.modifiers.defaults.WeightedCartModifier',
@@ -592,8 +593,10 @@ if 'shop_stripe' in INSTALLED_APPS:
     SHOP_ORDER_WORKFLOWS.append('shop_stripe.payment.OrderWorkflowMixin')
 
 if 'shop_sendcloud' in INSTALLED_APPS:
-    SHOP_CART_MODIFIERS.append('shop_sendcloud.modifiers.SendcloudShippingModifier')
+    SHOP_CART_MODIFIERS.append('shop_sendcloud.modifiers.SendcloudShippingModifiers')
     SHOP_ORDER_WORKFLOWS.append('shop_sendcloud.shipping.OrderWorkflowMixin')
+else:
+    SHOP_CART_MODIFIERS.append('myshop.modifiers.PostalShippingModifier')
 
 if SHOP_TUTORIAL in ['i18n_polymorphic', 'polymorphic']:
     SHOP_ORDER_WORKFLOWS.append('shop.shipping.delivery.PartialDeliveryWorkflowMixin')
