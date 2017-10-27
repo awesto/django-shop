@@ -149,6 +149,12 @@ class SmartPhoneModel(Product):
         except SmartPhoneVariant.DoesNotExist as e:
             raise SmartPhoneModel.DoesNotExist(e)
 
+    def get_weight(self):
+        """
+        Gross weight in kg
+        """
+        return (self.weight + 500) / 1000
+
 
 class SmartPhoneVariant(models.Model):
     product = models.ForeignKey(
