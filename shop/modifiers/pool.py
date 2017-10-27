@@ -17,7 +17,12 @@ class CartModifiersPool(object):
         Returns all registered modifiers of this shop instance.
         """
         if not self.USE_CACHE or not self._modifiers_list:
-            self._modifiers_list = [mc() for mc in app_settings.CART_MODIFIERS]
+            self._modifiers_list = []
+            for modifiers_class in app_settings.CART_MODIFIERS:
+                if issubclass(modifiers_class, (list, tuple)):
+                    self._modifiers_list.extend([mc() for mc in modifiers_class()])
+                else:
+                    self._modifiers_list.append(modifiers_class())
         return self._modifiers_list
 
     def get_shipping_modifiers(self):
