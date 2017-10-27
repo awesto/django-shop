@@ -294,7 +294,7 @@ class Migration(migrations.Migration):
                 ('product_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='myshop.Product')),
                 ('unit_price', shop.money.fields.MoneyField(decimal_places=3, help_text='Net price for this product', verbose_name='Unit price')),
                 ('card_type', models.CharField(choices=[('SD', 'SD'), ('micro SD', 'micro SD'), ('SDXC', 'SDXC'), ('micro SDXC', 'micro SDXC'), ('SDHC', 'SDHC'), ('micro SDHC', 'micro SDHC'), ('SDHC II', 'SDHC II'), ('micro SDHC II', 'micro SDHC II')], max_length=15, verbose_name='Card Type')),
-                ('speed', models.CharField(choices=[(b'4', '4 MB/s'), (b'20', '20 MB/s'), (b'30', '30 MB/s'), (b'40', '40 MB/s'), (b'48', '48 MB/s'), (b'80', '80 MB/s'), (b'95', '95 MB/s'), (b'280', '280 MB/s')], max_length=8, verbose_name='Transfer Speed')),
+                ('speed', models.CharField(choices=[('4', '4 MB/s'), ('20', '20 MB/s'), ('30', '30 MB/s'), ('40', '40 MB/s'), ('48', '48 MB/s'), ('80', '80 MB/s'), ('95', '95 MB/s'), ('280', '280 MB/s')], max_length=8, verbose_name='Transfer Speed')),
                 ('product_code', models.CharField(max_length=255, unique=True, verbose_name='Product code')),
                 ('storage', models.PositiveIntegerField(help_text='Storage capacity in GB', verbose_name='Storage Capacity')),
             ],
