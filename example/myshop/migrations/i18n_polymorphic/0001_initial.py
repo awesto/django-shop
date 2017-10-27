@@ -17,8 +17,8 @@ import shop.models.address
 import shop.models.fields
 import shop.models.product
 import shop.money.fields
-import shop.payment.defaults
-import shop.shipping.delivery
+import shop.payment.workflows
+import shop.shipping.workflows
 import shop_stripe.payment
 
 
@@ -135,7 +135,7 @@ class Migration(migrations.Migration):
                 'verbose_name': 'Order',
                 'verbose_name_plural': 'Orders',
             },
-            bases=(shop.payment.defaults.ManualPaymentWorkflowMixin, shop.payment.defaults.CancelOrderWorkflowMixin, shop_stripe.payment.OrderWorkflowMixin, shop.shipping.delivery.PartialDeliveryWorkflowMixin, models.Model),
+            bases=(shop.payment.workflows.ManualPaymentWorkflowMixin, shop.payment.workflows.CancelOrderWorkflowMixin, shop_stripe.payment.OrderWorkflowMixin, shop.shipping.workflows.PartialDeliveryWorkflowMixin, models.Model),
         ),
         migrations.CreateModel(
             name='OrderItem',
