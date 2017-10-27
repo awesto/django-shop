@@ -61,3 +61,6 @@ class SmartCard(Product):
 
     def get_price(self, request):
         return self.unit_price
+
+    def get_weight(self):
+        return 0.2

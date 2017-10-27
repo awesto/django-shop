@@ -180,6 +180,13 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         cart_item_qs = CartItemModel.objects.filter(cart=cart, product=self)
         return cart_item_qs.first()
 
+    def get_weight(self):
+        """
+        Optional hook to return the product's gross weight in kg. This information is required to
+        estimate the shipping costs. The merchants product model shall override this method.
+        """
+        return 0
+
 ProductModel = deferred.MaterializedModel(BaseProduct)
 
 

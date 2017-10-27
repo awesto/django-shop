@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from decimal import Decimal
+
 from django.utils.translation import ugettext_lazy as _
+
 from shop.modifiers.base import PaymentModifier, ShippingModifier
 from shop.money import AbstractMoney, Money
 from shop.payment.defaults import ForwardFundPayment
@@ -27,6 +30,23 @@ class DefaultCartModifier(BaseCartModifier):
             cart.subtotal = Money(cart.subtotal)
         cart.total = cart.subtotal
         return super(DefaultCartModifier, self).process_cart(cart, request)
+
+
+class WeightedCartModifier(BaseCartModifier):
+    """
+    This modifier is required for all shopping cart where we are interested into its weight.
+    It sums up the weight of all articles, ie. multiplying the items weight with the chosen
+    quantity.
+    If this modifier is used, the classes implementing the product shall override their
+    method ``get_weight()``, which must return the weight in kg as Decimal type.
+    """
+    def pre_process_cart(self, cart, request):
+        cart.weight = Decimal(0)
+        return super(WeightedCartModifier, self).process_cart(cart, request)
+
+    def pre_process_cart_item(self, cart, cart_item, request):
+        cart.weight += Decimal(cart_item.product.get_weight() * cart_item.quantity)
+        return super(WeightedCartModifier, self).process_cart_item(cart_item, request)
 
 
 class PayInAdvanceModifier(PaymentModifier):

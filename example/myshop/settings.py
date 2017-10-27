@@ -634,6 +634,7 @@ SHOP_CART_MODIFIERS.extend([
     'myshop.modifiers.PostalShippingModifier',
     'myshop.modifiers.CustomerPickupModifier',
     'shop.modifiers.defaults.PayInAdvanceModifier',
+    'shop.modifiers.defaults.WeightedCartModifier',
 ])
 
 SHOP_EDITCART_NG_MODEL_OPTIONS = "{updateOn: 'default blur', debounce: {'default': 2500, 'blur': 0}}"
