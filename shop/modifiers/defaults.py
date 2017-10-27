@@ -3,12 +3,7 @@ from __future__ import unicode_literals
 
 from decimal import Decimal
 
-from django.utils.translation import ugettext_lazy as _
-
-from shop.modifiers.base import PaymentModifier, ShippingModifier
 from shop.money import AbstractMoney, Money
-from shop.payment.defaults import ForwardFundPayment
-from shop.shipping.defaults import DefaultShippingProvider
 from .base import BaseCartModifier
 
 
@@ -47,27 +42,3 @@ class WeightedCartModifier(BaseCartModifier):
     def pre_process_cart_item(self, cart, cart_item, request):
         cart.weight += Decimal(cart_item.product.get_weight() * cart_item.quantity)
         return super(WeightedCartModifier, self).process_cart_item(cart_item, request)
-
-
-class PayInAdvanceModifier(PaymentModifier):
-    """
-    This modifiers has no influence on the cart final. It can be used,
-    to enable the customer to pay the products on delivery.
-    """
-    identifier = 'pay-in-advance'
-    payment_provider = ForwardFundPayment()
-
-    def get_choice(self):
-        return (self.identifier, _("Pay in advance"))
-
-
-class SelfCollectionModifier(ShippingModifier):
-    """
-    This modifiers has not influence on the cart final. It can be used,
-    to enable the customer to pick up the products in the shop.
-    """
-    identifier = 'self-collection'
-    shipping_provider = DefaultShippingProvider()
-
-    def get_choice(self):
-        return (self.identifier, _("Self collection"))

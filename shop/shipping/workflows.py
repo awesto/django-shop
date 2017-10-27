@@ -4,8 +4,33 @@ from __future__ import unicode_literals
 from django.db.models import Sum
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
+
 from django_fsm import transition
+
 from shop.models.delivery import DeliveryModel
+
+
+class CommissionGoodsWorkflowMixin(object):
+    """
+    Add this class to `settings.SHOP_ORDER_WORKFLOWS` to mix it into your `OrderModel`.
+    It does not support partial delivery.
+    It adds all the methods required for state transitions, while picking and packing
+    the ordered goods for shipping.
+    """
+    TRANSITION_TARGETS = {
+        'pick_goods': _("Picking goods"),
+        'ready_for_delivery': _("Ready for delivery"),
+    }
+
+    @transition(field='status', source=['payment_confirmed'], target='pick_goods',
+                custom=dict(admin=True, button_name=_("Pick the goods")))
+    def pick_goods(self, by=None):
+        """Change status to 'pick_goods'."""
+
+    @transition(field='status', source=['pick_goods'], target='ready_for_delivery',
+                custom=dict(admin=True, button_name=_("Pack the goods")))
+    def pack_goods(self, by=None):
+        """Change status to 'pack_goods'."""
 
 
 class PartialDeliveryWorkflowMixin(object):
