@@ -72,7 +72,7 @@ class CheckoutViewSet(GenericViewSet):
                     # empty error dict forces revalidation by the client side validation
                     errors[form_class.form_name] = {}
                 else:
-                    errors[form_class.form_name] = dict(errors=form.errors)
+                    errors[form_class.form_name] = form.errors
                     set_is_valid = False
 
                 # by updating the response data, we can override the form's content
