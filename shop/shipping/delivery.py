@@ -18,8 +18,7 @@ class PartialDeliveryWorkflowMixin(object):
     """
     TRANSITION_TARGETS = {
         'pick_goods': _("Picking goods"),
-        'pack_goods': _("Packing goods"),
-        'ship_goods': _("Ship goods"),
+        'ready_for_delivery': _("Ready for delivery"),
     }
 
     @cached_property
@@ -34,22 +33,17 @@ class PartialDeliveryWorkflowMixin(object):
     def ready_for_delivery(self):
         return self.is_fully_paid() and self.unfulfilled_items > 0
 
-    @transition(field='status', source=['payment_confirmed', 'pack_goods', 'ship_goods'],
+    @transition(field='status', source=['payment_confirmed', 'ready_for_delivery', 'ship_goods'],
                 target='pick_goods', conditions=[ready_for_delivery],
-        custom=dict(admin=True, button_name=_("Pick the goods")))
+                custom=dict(admin=True, button_name=_("Pick the goods")))
     def pick_goods(self, by=None):
         """Change status to 'pick_goods'."""
         shipping_method = self.extra.get('shipping_modifier')
         if shipping_method:
             DeliveryModel.objects.get_or_create(order=self, shipping_method=shipping_method, fulfilled_at=None)
 
-    @transition(field='status', source=['pick_goods'], target='pack_goods',
-        custom=dict(admin=True, button_name=_("Pack the goods")))
+    @transition(field='status', source=['pick_goods'], target='ready_for_delivery',
+                custom=dict(admin=True, button_name=_("Pack the goods")))
     def pack_goods(self, by=None):
         """Prepare shipping object and change status to 'pack_goods'."""
         self._transition_to_pack_goods = True  # hack to determine this transition in admin backend
-
-    @transition(field='status', source=['pack_goods'], target='ship_goods',
-        custom=dict(admin=True, button_name=_("Ship the goods")))
-    def ship_goods(self, by=None):
-        """Use selected shipping object and change status to 'ship_goods'."""
