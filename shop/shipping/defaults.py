@@ -22,15 +22,15 @@ class CommissionGoodsWorkflowMixin(object):
     """
     TRANSITION_TARGETS = {
         'pick_goods': _("Picking goods"),
-        'pack_goods': _("Packing goods"),
+        'ready_for_delivery': _("Ready for delivery"),
     }
 
     @transition(field='status', source=['payment_confirmed'], target='pick_goods',
-        custom=dict(admin=True, button_name=_("Pick the goods")))
+                custom=dict(admin=True, button_name=_("Pick the goods")))
     def pick_goods(self, by=None):
         """Change status to 'pick_goods'."""
 
-    @transition(field='status', source=['pick_goods'],
-        target='pack_goods', custom=dict(admin=True, button_name=_("Pack the goods")))
+    @transition(field='status', source=['pick_goods'], target='ready_for_delivery',
+                custom=dict(admin=True, button_name=_("Pack the goods")))
     def pack_goods(self, by=None):
         """Change status to 'pack_goods'."""
