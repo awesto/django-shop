@@ -118,9 +118,9 @@ INSTALLED_APPS = [
     'easy_thumbnails.optimize',
     'post_office',
     'haystack',
-    'shop',
-    #'shop_stripe',
+    'shop_stripe',
     'shop_sendcloud',
+    'shop',
     'myshop',
 ]
 if SHOP_TUTORIAL in ['i18n_commodity', 'i18n_smartcard', 'i18n_polymorphic']:
