@@ -175,7 +175,7 @@ class DefaultSettings(object):
         from django.utils.module_loading import import_string
 
         cart_modifiers = self._setting('SHOP_CART_MODIFIERS', ['shop.modifiers.defaults.DefaultCartModifier'])
-        return tuple(import_string(mc) for mc in cart_modifiers)
+        return [import_string(mc) for mc in cart_modifiers]
 
     @property
     def SHOP_VALUE_ADDED_TAX(self):
