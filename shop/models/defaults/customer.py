@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from phonenumber_field.modelfields import PhoneNumberField
+
 from shop.models.customer import BaseCustomer
 
 
@@ -27,6 +29,12 @@ class Customer(BaseCustomer):
         _("Salutation"),
         max_length=5,
         choices=SALUTATION,
+    )
+
+    phone_number = PhoneNumberField(
+        _("Phone number"),
+        blank=True,
+        null=True,
     )
 
     def get_number(self):

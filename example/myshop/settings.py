@@ -90,6 +90,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
     'djangocms_text_ckeditor',
+    'phonenumber_field',
     'django_select2',
     'cmsplugin_cascade',
     'cmsplugin_cascade.clipboard',
