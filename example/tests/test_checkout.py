@@ -156,8 +156,8 @@ class CheckoutTest(ShopTestCase):
         self.assertEqual(response.status_code, 422)
         response = json.loads(response.content.decode('utf-8'))
         self.assertIn('billing_address_form', response)
-        self.assertIsInstance(response['billing_address_form']['errors'], dict)
-        errors = response['billing_address_form']['errors']
+        self.assertIsInstance(response['billing_address_form'], dict)
+        errors = response['billing_address_form']
         self.assertTrue('address1' in errors and 'country' in errors and 'city' in errors and
                         'name' in errors and 'zip_code' in errors)
 
@@ -199,7 +199,7 @@ class CheckoutTest(ShopTestCase):
         self.assertEqual(response.status_code, 422)
         payload = json.loads(response.content.decode('utf-8'))
         self.assertIn(method_form_name, payload)
-        self.assertListEqual(payload[method_form_name]['errors'][modifier_name],
+        self.assertListEqual(payload[method_form_name][modifier_name],
                              ["This field is required."])
 
         # retry to post the form
@@ -353,7 +353,7 @@ class CheckoutTest(ShopTestCase):
         checkout_upload_url = reverse('shop:checkout-upload')
         response = self.client.put(checkout_upload_url, json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 422)
-        errors = json.loads(response.content.decode('utf-8'))['customer_form']['errors']
+        errors = json.loads(response.content.decode('utf-8'))['customer_form']
         self.assertListEqual(errors['email'],
                              ["A customer with the e-mail address 'admin@example.com' already exists.\nIf you have used this address previously, try to reset the password."])
         data['guest']['email'] = "newbie@example.com"
