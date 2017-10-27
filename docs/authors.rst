@@ -34,6 +34,7 @@ CONTRIBUTORS
 * Martin Ogden
 * Mike Yumatov
 * Mikhail Kolesnik
+* Nicolas Pascal
 * Pavel Zhukov
 * Pedro Gracia
 * Per Rosengren
