@@ -633,15 +633,15 @@ SHOP_CART_MODIFIERS.extend([
     'shop.modifiers.taxes.CartExcludedTaxModifier',
     'myshop.modifiers.PostalShippingModifier',
     'myshop.modifiers.CustomerPickupModifier',
-    'shop.modifiers.defaults.PayInAdvanceModifier',
+    'shop.payment.modifiers.PayInAdvanceModifier',
     'shop.modifiers.defaults.WeightedCartModifier',
 ])
 
 SHOP_EDITCART_NG_MODEL_OPTIONS = "{updateOn: 'default blur', debounce: {'default': 2500, 'blur': 0}}"
 
 SHOP_ORDER_WORKFLOWS = [
-    'shop.payment.defaults.ManualPaymentWorkflowMixin',
-    'shop.payment.defaults.CancelOrderWorkflowMixin',
+    'shop.payment.workflows.ManualPaymentWorkflowMixin',
+    'shop.payment.workflows.CancelOrderWorkflowMixin',
 ]
 
 if 'shop_stripe' in INSTALLED_APPS:
@@ -649,13 +649,15 @@ if 'shop_stripe' in INSTALLED_APPS:
     SHOP_ORDER_WORKFLOWS.append('shop_stripe.payment.OrderWorkflowMixin')
 
 if 'shop_sendcloud' in INSTALLED_APPS:
-    SHOP_CART_MODIFIERS.append('shop_sendcloud.modifiers.SendcloudShippingModifier')
-    SHOP_ORDER_WORKFLOWS.append('shop_sendcloud.shipping.OrderWorkflowMixin')
+    SHOP_CART_MODIFIERS.append('shop_sendcloud.modifiers.SendcloudShippingModifiers')
+    SHOP_ORDER_WORKFLOWS.append('shop_sendcloud.workflows.OrderWorkflowMixin')
+else:
+    SHOP_CART_MODIFIERS.append('myshop.modifiers.PostalShippingModifier')
 
 if SHOP_TUTORIAL in ['i18n_polymorphic', 'polymorphic']:
-    SHOP_ORDER_WORKFLOWS.append('shop.shipping.delivery.PartialDeliveryWorkflowMixin')
+    SHOP_ORDER_WORKFLOWS.append('shop.shipping.workflows.PartialDeliveryWorkflowMixin')
 else:
-    SHOP_ORDER_WORKFLOWS.append('shop.shipping.defaults.CommissionGoodsWorkflowMixin')
+    SHOP_ORDER_WORKFLOWS.append('shop.shipping.workflows.CommissionGoodsWorkflowMixin')
 
 SHOP_STRIPE = {
     'PUBKEY': 'pk_test_HlEp5oZyPonE21svenqowhXp',

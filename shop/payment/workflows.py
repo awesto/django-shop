@@ -3,9 +3,10 @@ from __future__ import unicode_literals
 
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import ugettext_lazy as _
-
 from django_fsm import transition, RETURN_VALUE
+from shop.models.order import BaseOrder
 
+''' check if this is somewhere else
 from shop.models.order import BaseOrder, OrderModel
 from .base import PaymentProvider
 
@@ -27,6 +28,7 @@ class ForwardFundPayment(PaymentProvider):
         order.save()
         thank_you_url = OrderModel.objects.get_latest_url()
         return 'window.location.href="{}";'.format(thank_you_url)
+'''
 
 
 class ManualPaymentWorkflowMixin(object):
