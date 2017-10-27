@@ -146,14 +146,18 @@ class CartManager(models.Manager):
         """
         if request.customer.is_visitor():
             raise self.model.DoesNotExist("Cart for visiting customer does not exist.")
-        cart, created = self.get_or_create(customer=request.customer)
-        return cart
+        if not hasattr(request, '_cached_cart'):
+            request._cached_cart, created = self.get_or_create(customer=request.customer)
+        return request._cached_cart
 
     def get_or_create_from_request(self, request):
+        has_cached_cart = hasattr(request, '_cached_cart')
         if request.customer.is_visitor():
             request.customer = CustomerModel.objects.get_or_create_from_request(request)
-        cart, created = self.get_or_create(customer=request.customer)
-        return cart
+            has_cached_cart = False
+        if not has_cached_cart:
+            request._cached_cart, created = self.get_or_create(customer=request.customer)
+        return request._cached_cart
 
 
 class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
