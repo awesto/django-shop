@@ -143,6 +143,7 @@ class CartTest(ShopTestCase):
         self.add_product2cart(sdxc_pro_32gb)
         request = self.factory.get('/')
         self.middleware_process_request(request, self.client.session.session_key)
+        self.assertTrue(request.customer.is_anonymous())
         cart = CartModel.objects.get_from_request(request)
         self.assertEquals(cart.items.count(), 2)
 

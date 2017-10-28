@@ -146,7 +146,7 @@ class CartManager(models.Manager):
         """
         if request.customer.is_visitor():
             raise self.model.DoesNotExist("Cart for visiting customer does not exist.")
-        if not hasattr(request, '_cached_cart'):
+        if not hasattr(request, '_cached_cart') or request._cached_cart.customer.user_id != request.customer.user_id:
             request._cached_cart, created = self.get_or_create(customer=request.customer)
         return request._cached_cart
 
@@ -155,7 +155,7 @@ class CartManager(models.Manager):
         if request.customer.is_visitor():
             request.customer = CustomerModel.objects.get_or_create_from_request(request)
             has_cached_cart = False
-        if not has_cached_cart:
+        if not has_cached_cart or request._cached_cart.customer.user_id != request.customer.user_id:
             request._cached_cart, created = self.get_or_create(customer=request.customer)
         return request._cached_cart
 
@@ -267,6 +267,8 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         This is done item by item, so that duplicate items increase the quantity.
         """
         # iterate over the cart and add quantities for items from other cart considered as equal
+        if self.id == other_cart.id:
+            raise RuntimeError("Can not merge cart with itself")
         for item in self.items.all():
             other_item = item.product.is_in_cart(other_cart, extra=item.extra)
             if other_item:
