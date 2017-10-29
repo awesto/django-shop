@@ -54,7 +54,7 @@ class AddressFormTest(APITestCase):
         response = json.loads(response.content.decode('utf-8'))
         self.assertTrue('shipping_address_form' in response)
         self.assertDictEqual({'city': ["This field is required."]},
-                             response['shipping_address_form']['errors'])
+                             response['shipping_address_form'])
         self.assertTrue('billing_address_form' in response)
         self.assertDictEqual(response['billing_address_form'], {})
 
