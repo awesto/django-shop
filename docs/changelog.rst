@@ -29,6 +29,23 @@ WiP (0.13)
   **djangocms-cascade** version 0.16.
 
 
+0.13
+====
+
+* Drop support for Django-1.9, add support for Django-1.11.
+* Add method ``get_weight()`` to product model, so that a cart modifier may sum up the product weights.
+* Configured Cart modifiers may be a list, rather than a single instance.
+* In prepared shipping workflows, rename transition target ``pack_goods`` to ``ready_for_delivery``.
+* Refactor shipping and payment modifiers in ``shop/modifiers/defaults.py`` into their own files
+  ``shop/shipping/modifiers.py`` and ``shop/payment/modifiers.py``.
+* Refactor shipping workflows in ``shop/shipping/base.py`` and ``shop/shipping/defaults.py`` into their
+  own file ``shop/shipping/workflows.py``.
+* Refactor payment workflows in ``shop/payment/base.py`` and ``shop/shipping/defaults.py`` into their
+  own file ``shop/payment/workflows.py``.
+* Remove unused class ``ShippingProvider``.
+* Add support for SendCloud integration.
+
+
 0.12
 ====
 
