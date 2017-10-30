@@ -14,12 +14,16 @@ class ShopExtendableMixin(object):
     """
     @property
     def left_extension(self):
+        if self.child_plugin_instances is None:
+            return
         result = [cp for cp in self.child_plugin_instances if cp.plugin_type == 'ShopLeftExtension']
         if result:
             return result[0]
 
     @property
     def right_extension(self):
+        if self.child_plugin_instances is None:
+            return
         result = [cp for cp in self.child_plugin_instances if cp.plugin_type == 'ShopRightExtension']
         if result:
             return result[0]
