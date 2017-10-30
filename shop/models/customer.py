@@ -267,6 +267,13 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     def groups(self):
         return self.user.groups
 
+    @classmethod
+    def reorder_form_fields(self, field_order):
+        """
+        Hook to modify the list of fields used in corresponding form.
+        """
+        return field_order
+
     def is_anonymous(self):
         return self.recognized in (CustomerState.UNRECOGNIZED, CustomerState.GUEST)
 

@@ -20,14 +20,14 @@ class CustomerForm(DialogModelForm):
     scope_prefix = 'customer'
     legend = _("Customer's Details")
 
-    email = fields.EmailField(label=_("Email address"))
     first_name = fields.CharField(label=_("First Name"))
     last_name = fields.CharField(label=_("Last Name"))
+    email = fields.EmailField(label=_("Email address"))
 
     class Meta:
         model = CustomerModel
         exclude = ['user', 'recognized', 'number', 'last_access']
-        custom_fields = ['email', 'first_name', 'last_name']
+        custom_fields = ['first_name', 'last_name', 'email']
 
     def __init__(self, initial=None, instance=None, *args, **kwargs):
         initial = dict(initial) if initial else {}
@@ -39,6 +39,12 @@ class CustomerForm(DialogModelForm):
         for f in self.Meta.custom_fields:
             setattr(self.instance, f, self.cleaned_data[f])
         return super(CustomerForm, self).save(commit)
+
+    def order_fields(self, field_order):
+        if field_order is None:
+            field_order = list(self.Meta.custom_fields)
+        field_order = self._meta.model.reorder_form_fields(field_order)
+        super(CustomerForm, self).order_fields(field_order)
 
     @classmethod
     def form_factory(cls, request, data, cart):
