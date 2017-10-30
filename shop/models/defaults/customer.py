@@ -50,5 +50,4 @@ class Customer(BaseCustomer):
     @classmethod
     def reorder_form_fields(self, field_order):
         field_order.insert(0, 'salutation')
-        field_order.append('phone_number')
         return field_order
