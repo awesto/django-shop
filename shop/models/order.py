@@ -380,6 +380,11 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         Hook to handle payment refunds.
         """
 
+    def withdraw_from_delivery(self):
+        """
+        Hook to withdraw shipping order.
+        """
+
     @classmethod
     def get_all_transitions(cls):
         """

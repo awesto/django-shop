@@ -106,7 +106,7 @@ class CancelOrderWorkflowMixin(object):
     Add this class to `settings.SHOP_ORDER_WORKFLOWS` to mix it into your `OrderModel`.
     It adds all the methods required for state transitions, to cancel an order.
     """
-    CANCELABLE_SOURCES = {'new', 'created', 'payment_confirmed', 'payment_declined'}
+    CANCELABLE_SOURCES = {'new', 'created', 'payment_confirmed', 'payment_declined', 'ready_for_delivery'}
     TRANSITION_TARGETS = {
         'refund_payment': _("Refund payment"),
         'order_canceled': _("Order Canceled"),
@@ -121,6 +121,7 @@ class CancelOrderWorkflowMixin(object):
         """
         Signals that an Order shall be canceled.
         """
+        self.withdraw_from_delivery()
         if self.amount_paid:
             self.refund_payment()
         return 'refund_payment' if self.amount_paid else 'order_canceled'
