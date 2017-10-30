@@ -307,46 +307,6 @@ class ExtraAnnotationFormPlugin(DialogFormPluginBase):
 DialogFormPluginBase.register_plugin(ExtraAnnotationFormPlugin)
 
 
-class AcceptConditionFormPlugin(DialogFormPluginBase):
-    """
-    Deprecated. Use AcceptConditionPlugin instead.
-    """
-    name = _("Accept Condition (deprecated)")
-    form_class = 'shop.forms.checkout.AcceptConditionForm'
-    template_leaf_name = 'accept-condition.html'
-    html_parser = HTMLParser()
-    change_form_template = 'cascade/admin/text_plugin_change_form.html'
-
-    @classmethod
-    def get_identifier(cls, instance):
-        html_content = cls.html_parser.unescape(instance.glossary.get('html_content', ''))
-        html_content = strip_tags(html_content)
-        html_content = Truncator(html_content).words(3, truncate=' ...')
-        return mark_safe(html_content)
-
-    def get_form(self, request, obj=None, **kwargs):
-        if obj:
-            html_content = self.html_parser.unescape(obj.glossary.get('html_content', ''))
-            obj.glossary.update(html_content=html_content)
-            text_editor_widget = TextEditorWidget(installed_plugins=[TextLinkPlugin], pk=obj.pk,
-                                           placeholder=obj.placeholder, plugin_language=obj.language)
-            kwargs['glossary_fields'] = (
-                GlossaryField(text_editor_widget, label=_("HTML content"), name='html_content'),
-            )
-        return super(AcceptConditionFormPlugin, self).get_form(request, obj, **kwargs)
-
-    def render(self, context, instance, placeholder):
-        self.super(AcceptConditionFormPlugin, self).render(context, instance, placeholder)
-        accept_condition_form = context['accept_condition_form.plugin_{}'.format(instance.id)]
-        html_content = self.html_parser.unescape(instance.glossary.get('html_content', ''))
-        html_content = plugin_tags_to_user_html(html_content, context)
-        # transfer the stored HTML content into the widget's label
-        accept_condition_form['accept'].field.widget.choice_label = mark_safe(html_content)
-        context['accept_condition_form'] = accept_condition_form
-        return context
-
-# DialogFormPluginBase.register_plugin(AcceptConditionFormPlugin)
-
 class AcceptConditionMixin(object):
     render_template = 'shop/checkout/accept-condition.html'
     FormClass = AcceptConditionForm
