@@ -6,7 +6,6 @@ Holds all the information relevant to the client (addresses for instance)
 from six import with_metaclass
 
 from django.db import models
-from django.template import Context
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
 
@@ -51,7 +50,7 @@ class BaseAddress(models.Model):
             'shop/address.txt',
         ]
         template = select_template(template_names)
-        context = Context({'address': self})
+        context = {'address': self}
         return template.render(context)
     as_text.short_description = _("Address")
 
