@@ -368,7 +368,8 @@ class AcceptConditionMixin(object):
         super(AcceptConditionMixin, self).render(context, instance, placeholder)
         accept_condition_form = context['accept_condition_form.plugin_{}'.format(instance.pk)]
         # transfer the stored HTML content into the widget's label
-        accept_condition_form['accept'].field.widget.choice_label = mark_safe(context['body'])
+        accept_condition_form['accept'].field.label = mark_safe(context['body'])
+        accept_condition_form['accept'].field.widget.choice_label = accept_condition_form['accept'].field.label  # Django < 1.11
         context['accept_condition_form'] = accept_condition_form
         return context
 

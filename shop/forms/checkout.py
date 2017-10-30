@@ -10,6 +10,7 @@ from django.utils.functional import cached_property
 from djng.forms import fields
 from djng.styling.bootstrap3.forms import Bootstrap3ModelForm
 
+from shop.forms.widgets import CheckboxInput, RadioSelect, Select
 from shop.models.address import ShippingAddressModel, BillingAddressModel
 from shop.models.customer import CustomerModel
 from shop.modifiers.pool import cart_modifiers_pool
@@ -85,7 +86,7 @@ class AddressForm(DialogModelForm):
         label="use primary address",  # label will be overridden by Shipping/Billing/AddressForm
         required=False,
         initial=True,
-        widget=widgets.CheckboxInput(),
+        widget=CheckboxInput(),
     )
 
     plugin_fields = ['plugin_id', 'plugin_order', 'use_primary_address']
@@ -232,12 +233,13 @@ class ShippingAddressForm(AddressForm):
     class Meta(AddressForm.Meta):
         model = ShippingAddressModel
         widgets = {
-            'country': widgets.Select(attrs={'ng-change': 'updateSiblingAddress()'}),
+            'country': Select(attrs={'ng-change': 'updateSiblingAddress()'}),
         }
 
     def __init__(self, *args, **kwargs):
         super(ShippingAddressForm, self).__init__(*args, **kwargs)
-        self.fields['use_primary_address'].widget.choice_label = _("Use billing address for shipping")
+        self.fields['use_primary_address'].label = _("Use billing address for shipping")
+        self.fields['use_primary_address'].widget.choice_label = self.fields['use_primary_address'].label  # Django < 1.11
 
     @classmethod
     def get_address(cls, cart):
@@ -256,7 +258,8 @@ class BillingAddressForm(AddressForm):
 
     def __init__(self, *args, **kwargs):
         super(BillingAddressForm, self).__init__(*args, **kwargs)
-        self.fields['use_primary_address'].widget.choice_label = _("Use shipping address for billing")
+        self.fields['use_primary_address'].label = _("Use shipping address for billing")
+        self.fields['use_primary_address'].widget.choice_label = self.fields['use_primary_address'].label  # Django < 1.11
 
     @classmethod
     def get_address(cls, cart):
@@ -271,7 +274,7 @@ class PaymentMethodForm(DialogForm):
 
     payment_modifier = fields.ChoiceField(
         label=_("Payment Method"),
-        widget=widgets.RadioSelect(attrs={'ng-change': 'updateMethod()'}),
+        widget=RadioSelect(attrs={'ng-change': 'updateMethod()'}),
     )
 
     def __init__(self, *args, **kwargs):
@@ -304,7 +307,7 @@ class ShippingMethodForm(DialogForm):
 
     shipping_modifier = fields.ChoiceField(
         label=_("Shipping Method"),
-        widget=widgets.RadioSelect(attrs={'ng-change': 'updateMethod()'}),
+        widget=RadioSelect(attrs={'ng-change': 'updateMethod()'}),
     )
 
     def __init__(self, *args, **kwargs):
@@ -353,7 +356,7 @@ class AcceptConditionForm(DialogForm):
 
     accept = fields.BooleanField(
         required=True,
-        widget=widgets.CheckboxInput(),
+        widget=CheckboxInput(),
     )
 
     def __init__(self, data=None, initial=None, *args, **kwargs):
