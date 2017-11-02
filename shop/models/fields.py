@@ -99,7 +99,7 @@ class ChoiceEnumField(models.PositiveSmallIntegerField):
         return self.enum_type(state)
 
     def value_to_string(self, obj):
-        value = getattr(obj, self.name)
+        value = getattr(obj, self.name, obj)
         if not isinstance(value, self.enum_type):
             raise ValueError("Value must be of type {}".format(self.enum_type))
         return value.name
