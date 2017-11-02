@@ -111,8 +111,8 @@ class OrderItemInlineDelivery(OrderItemInline):
 class DeliveryInline(admin.TabularInline):
     model = DeliveryModel
     extra = 0
-    fields = ('shipping_id', 'shipping_method', 'delivered_items', 'print_out', 'fulfilled',)
-    readonly_fields = ('delivered_items', 'print_out', 'fulfilled',)
+    fields = ['shipping_id', 'shipping_method', 'delivered_items', 'print_out', 'fulfilled']
+    readonly_fields = ['delivered_items', 'print_out', 'fulfilled']
 
     def get_formset(self, request, obj=None, **kwargs):
         """
