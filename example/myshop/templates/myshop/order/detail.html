@@ -15,12 +15,13 @@
 		<td class="text-right">{{ item.line_total }}</td>
 	</tr>
 	<tr class="no-border">
-		<td colspan="3">
+		<td colspan="2">
 			{{ item.summary.body|safe }}
 			{% for key, extra_row in item.extra.rows %}
 			<div>{{ extra_row.label }}: {{ extra_row.amount }}</div>
 			{% endfor %}
 		</td>
+		<td class="text-right" colspan="2">{% trans "Delivery Status" %}: <em>{{ item.delivery_status }}</em></td>
 	</tr>
 	{% endfor %}
 </tbody>
