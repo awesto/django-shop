@@ -65,7 +65,7 @@ class PartialDeliveryWorkflowMixin(object):
         """Change status to 'pick_goods'."""
         shipping_method = self.extra.get('shipping_modifier')
         if shipping_method:
-            DeliveryModel.objects.get_or_create(order=self, shipping_method=shipping_method, fulfilled_at=None)
+            DeliveryModel.objects.get_or_create(order=self, defaults={'shipping_method': shipping_method})
 
     @transition(field='status', source=['pick_goods'], target='ready_for_delivery',
                 custom=dict(admin=True, button_name=_("Pack the goods")))

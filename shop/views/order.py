@@ -47,7 +47,7 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateM
 
     def get_object(self):
         if self.lookup_url_kwarg not in self.kwargs:
-            return self.get_queryset().first()
+            return self.get_queryset().first()  # Order for thank-you view
         return super(OrderView, self).get_object()
 
     @property
