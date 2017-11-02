@@ -596,12 +596,10 @@ if 'shop_stripe' in INSTALLED_APPS:
 if 'shop_sendcloud' in INSTALLED_APPS:
     SHOP_CART_MODIFIERS.append('shop_sendcloud.modifiers.SendcloudShippingModifiers')
     SHOP_ORDER_WORKFLOWS.append('shop_sendcloud.workflows.OrderWorkflowMixin')
-else:
-    SHOP_CART_MODIFIERS.append('myshop.modifiers.PostalShippingModifier')
-
-if SHOP_TUTORIAL in ['i18n_polymorphic', 'polymorphic']:
+    SHOP_ORDER_ITEM_SERIALIZER = 'shop_sendcloud.serializers.OrderItemSerializer'
     SHOP_ORDER_WORKFLOWS.append('shop.shipping.workflows.PartialDeliveryWorkflowMixin')
 else:
+    SHOP_CART_MODIFIERS.append('myshop.modifiers.PostalShippingModifier')
     SHOP_ORDER_WORKFLOWS.append('shop.shipping.workflows.CommissionGoodsWorkflowMixin')
 
 SHOP_STRIPE = {
