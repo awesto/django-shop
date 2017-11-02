@@ -155,6 +155,13 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
             pass
         return search_fields
 
+    def get_form(self, request, obj=None, **kwargs):
+        ModelForm = super(BaseOrderAdmin, self).get_form(request, obj, **kwargs)
+        if obj:
+            # store the requested transition inside the instance, so that the model's `clean()` method can access it
+            obj._fsm_requested_transition = self._get_requested_transition(request)
+        return ModelForm
+
 
 class PrintOrderAdminMixin(object):
     """
