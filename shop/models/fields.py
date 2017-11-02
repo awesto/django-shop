@@ -93,9 +93,7 @@ class ChoiceEnumField(models.PositiveSmallIntegerField):
     def get_prep_value(self, state):
         if isinstance(state, self.enum_type):
             return state.value
-        if isinstance(state, int):
-            return state
-        raise ValueError("Value must be of type {}".format(self.enum_type))
+        return state
 
     def to_python(self, state):
         return self.enum_type(state)
