@@ -57,6 +57,14 @@ class MyChoices(ChoiceEnum):
     B = 1
 
 
+class MyModel(models.Model):
+    f = ChoiceEnumField(enum_type=MyChoices)
+
+    class Meta:
+        app_label = 'shop'
+        managed = False
+
+
 class EnumTest(TestCase):
     def test_enum(self):
         choice_a = MyChoices.A
@@ -98,12 +106,9 @@ class EnumFieldTests(TestCase):
         f = ChoiceEnumField(enum_type=MyChoices)
         self.assertEqual(f.get_prep_value(MyChoices.A), 0)
         self.assertEqual(f.get_prep_value(MyChoices.B), 1)
-        with self.assertRaises(ValueError):
-            f.get_prep_value('X')
 
     def test_value_to_string(self):
-        f = ChoiceEnumField(enum_type=MyChoices)
-        self.assertEqual(f.value_to_string(MyChoices.A), 'A')
-        self.assertEqual(f.value_to_string(MyChoices.B), 'B')
+        obj = MyModel(f=MyChoices.A)
+        self.assertEqual(ChoiceEnumField(name='f').value_to_string(obj), 'A')
         with self.assertRaises(ValueError):
-            f.value_to_string(0)
+            ChoiceEnumField(name='f').value_to_string(0)

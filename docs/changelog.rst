@@ -91,6 +91,7 @@ Changelog for django-SHOP
 * Paid but unshipped orders, now can be refunded. Possible be refactoring class
   ``CancelOrderWorkflowMixin``, which handles payment refunds.
 * Add Order status to Order Detail View, so that the customer immediately sees what's going on.
+* Add support for Python-3.6.
 
 
 0.11.1

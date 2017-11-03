@@ -6,7 +6,7 @@ import six
 
 from django.conf import settings
 from django.db import models
-from django.utils.six import python_2_unicode_compatible, with_metaclass, string_types
+from django.utils.six import python_2_unicode_compatible, string_types
 from django.utils.translation import ugettext_lazy as _, ugettext
 
 
@@ -99,7 +99,7 @@ class ChoiceEnumField(models.PositiveSmallIntegerField):
         return self.enum_type(state)
 
     def value_to_string(self, obj):
-        value = getattr(obj, self.name)
+        value = getattr(obj, self.name, obj)
         if not isinstance(value, self.enum_type):
             raise ValueError("Value must be of type {}".format(self.enum_type))
         return value.name
