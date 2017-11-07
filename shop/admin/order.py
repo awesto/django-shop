@@ -86,17 +86,17 @@ class StatusListFilter(admin.SimpleListFilter):
 
 
 class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
-    list_display = ('get_number', 'customer', 'status_name', 'total', 'created_at',)
-    list_filter = (StatusListFilter,)
-    fsm_field = ('status',)
+    list_display = ['get_number', 'customer', 'status_name', 'total', 'is_fully_paid', 'created_at']
+    list_filter = [StatusListFilter]
+    fsm_field = ['status']
     date_hierarchy = 'created_at'
     inlines = (OrderItemInline, OrderPaymentInline,)
-    readonly_fields = ('get_number', 'status_name', 'get_total', 'get_subtotal',
-                       'get_customer_link', 'get_outstanding_amount', 'created_at', 'updated_at',
-                       'render_as_html_extra', 'stored_request',)
-    fields = ('get_number', 'status_name', ('created_at', 'updated_at'), 'get_customer_link',
-              ('get_subtotal', 'get_total', 'get_outstanding_amount',),
-              'render_as_html_extra', 'stored_request',)
+    readonly_fields = ['get_number', 'status_name', 'get_total', 'get_subtotal',
+                       'get_customer_link', 'get_outstanding_amount', 'is_fully_paid',
+                       'created_at', 'updated_at', 'render_as_html_extra', 'stored_request']
+    fields = ['get_number', 'status_name', ('created_at', 'updated_at'), 'get_customer_link',
+              ('get_subtotal', 'get_total', 'get_outstanding_amount', 'is_fully_paid'),
+              'render_as_html_extra', 'stored_request']
     actions = None
     change_form_template = 'shop/admin/change_form.html'
 
@@ -122,6 +122,11 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
     def get_outstanding_amount(self, obj):
         return number_format(obj.outstanding_amount)
     get_outstanding_amount.short_description = pgettext_lazy('admin', "Outstanding amount")
+
+    def is_fully_paid(self, obj):
+        return obj.is_fully_paid()
+    is_fully_paid.short_description = pgettext_lazy('admin', "Is fully paid")
+    is_fully_paid.boolean = True
 
     def has_add_permission(self, request):
         return False
