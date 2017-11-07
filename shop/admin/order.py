@@ -226,18 +226,3 @@ class PrintOrderAdminMixin(object):
                 *button)
         return ''
     print_out.short_description = pgettext_lazy('admin', "Print out")
-
-
-class OrderAdmin(BaseOrderAdmin):
-    """
-    Admin class to be used with `shop.models.defauls.order`
-    """
-    def get_fields(self, request, obj=None):
-        fields = list(super(OrderAdmin, self).get_fields(request, obj))
-        fields.extend(['shipping_address_text', 'billing_address_text'])
-        return fields
-
-    def get_search_fields(self, request):
-        search_fields = list(super(OrderAdmin, self).get_search_fields(request))
-        search_fields.extend(['number', 'shipping_address_text', 'billing_address_text'])
-        return search_fields
