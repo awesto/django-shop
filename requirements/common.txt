@@ -25,8 +25,8 @@ django-treebeard==4.1.1
 djangocms-bootstrap3==0.3.1
 djangocms-cascade==0.14.1
 djangocms-text-ckeditor==3.4.0
-djangorestframework==3.6.3
-django-formtools==2.0
+djangorestframework==3.7.3
+django-formtools==2.1
 drf-haystack==1.6.1
 easy-thumbnails==2.4.1
 elasticsearch==1.7.0

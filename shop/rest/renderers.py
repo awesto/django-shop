@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 from django.template import Context
 
 from rest_framework import renderers
-from rest_framework.compat import template_render
 from rest_framework.exceptions import APIException
 
 from shop.models.cart import CartModel
@@ -97,4 +96,4 @@ class CMSPageRenderer(TemplateContextMixin, renderers.TemplateHTMLRenderer):
             paginator=view.paginator,
             edit_mode=edit_mode,
         )
-        return template_render(template, template_context, request=request)
+        return template.render(template_context, request=request)
