@@ -10,19 +10,21 @@ from django_fsm import transition
 from shop.models.delivery import DeliveryModel
 
 
-class CommissionGoodsWorkflowMixin(object):
-    """
-    Add this class to `settings.SHOP_ORDER_WORKFLOWS` to mix it into your `OrderModel`.
-    It does not support partial delivery.
-    It adds all the methods required for state transitions, while picking and packing
-    the ordered goods for shipping.
-    """
+class ShippingWorkflowMixinBase(object):
     TRANSITION_TARGETS = {
         'pick_goods': _("Picking goods"),
         'pack_goods': _("Packing goods"),
         'ready_for_delivery': _("Ready for delivery"),
     }
 
+
+class CommissionGoodsWorkflowMixin(ShippingWorkflowMixinBase):
+    """
+    Add this class to `settings.SHOP_ORDER_WORKFLOWS` to mix it into your `OrderModel`.
+    It does not support partial delivery.
+    It adds all the methods required for state transitions, while picking and packing
+    the ordered goods for shipping.
+    """
     @transition(field='status', source=['payment_confirmed'], target='pick_goods',
                 custom=dict(admin=True, button_name=_("Pick the goods")))
     def pick_goods(self, by=None):
@@ -34,7 +36,7 @@ class CommissionGoodsWorkflowMixin(object):
         """Change status to 'pack_goods'."""
 
 
-class PartialDeliveryWorkflowMixin(object):
+class PartialDeliveryWorkflowMixin(ShippingWorkflowMixinBase):
     """
     Add this class to `settings.SHOP_ORDER_WORKFLOWS` to mix it into the `OrderModel`.
     This mixin supports partial delivery, hence the model `Delivery` and `DeliveryItem` must
@@ -42,12 +44,6 @@ class PartialDeliveryWorkflowMixin(object):
     It adds all the methods required for state transitions, while picking, packing and shipping
     the ordered goods for delivery.
     """
-    TRANSITION_TARGETS = {
-        'pick_goods': _("Picking goods"),
-        'pack_goods': _("Packing goods"),
-        'ready_for_delivery': _("Ready for delivery"),
-    }
-
     @cached_property
     def unfulfilled_items(self):
         unfulfilled_items = 0
