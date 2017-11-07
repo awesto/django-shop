@@ -186,8 +186,8 @@ class DeliveryOrderAdminMixin(object):
             OrderItemInlineDelivery(self.model, self.admin_site) if isinstance(instance, OrderItemInline) else instance
             for instance in super(DeliveryOrderAdminMixin, self).get_inline_instances(request, obj)
         ]
-        if obj.status in ('pick_goods', 'pack_goods',):
-            inline_instances.append(DeliveryInline(self.model, self.admin_site))
+        # TODO: add OrderPaymentInline and DeliveryInline only if status requires editing them
+        inline_instances.append(DeliveryInline(self.model, self.admin_site))
         return inline_instances
 
     def save_related(self, request, form, formsets, change):
