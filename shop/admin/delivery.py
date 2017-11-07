@@ -174,11 +174,11 @@ class DeliveryOrderAdminMixin(object):
         context = {'request': request, 'render_label': 'print'}
         customer_serializer = app_settings.CUSTOMER_SERIALIZER(delivery.order.customer)
         order_serializer = OrderDetailSerializer(delivery.order, context=context)
-        content = template.render(RequestContext(request, {
+        content = template.render({
             'customer': customer_serializer.data,
             'data': order_serializer.data,
             'delivery': delivery,
-        }))
+        })
         return HttpResponse(content)
 
     def get_inline_instances(self, request, obj=None):
