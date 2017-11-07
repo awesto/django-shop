@@ -42,28 +42,31 @@ class DialogFormMixin(NgModelFormMixin, NgFormValidationMixin):
         Dialog Forms rendered as summary just display their values instead of input fields.
         This is useful to render a summary of a previously filled out form.
         """
-        output = []
-        for name in self.fields.keys():
-            bound_field = self[name]
-            value = bound_field.value()
-            if bound_field.is_hidden:
-                continue
-            if isinstance(value, (list, tuple)):
-                line = []
-                cast_to = type(tuple(bound_field.field.choices)[0][0])
-                for v in value:
+        try:
+            return mark_safe(self.instance.as_text())
+        except (AttributeError, TypeError):
+            output = []
+            for name in self.fields.keys():
+                bound_field = self[name]
+                value = bound_field.value()
+                if bound_field.is_hidden:
+                    continue
+                if isinstance(value, (list, tuple)):
+                    line = []
+                    cast_to = type(tuple(bound_field.field.choices)[0][0])
+                    for v in value:
+                        try:
+                            line.append(dict(bound_field.field.choices)[cast_to(v)])
+                        except (AttributeError, KeyError):
+                            pass
+                    output.append(force_text(', '.join(line)))
+                elif value:
                     try:
-                        line.append(dict(bound_field.field.choices)[cast_to(v)])
+                        value = dict(bound_field.field.choices)[value]
                     except (AttributeError, KeyError):
                         pass
-                output.append(force_text(', '.join(line)))
-            elif value:
-                try:
-                    value = dict(bound_field.field.choices)[value]
-                except (AttributeError, KeyError):
-                    pass
-                output.append(force_text(value))
-        return mark_safe('\n'.join(output))
+                    output.append(force_text(value))
+            return mark_safe('\n'.join(output))
 
     def get_response_data(self):
         """
