@@ -26,6 +26,12 @@ else:
         class OrderAdmin(PrintOrderAdminMixin, DeliveryOrderAdminMixin, OrderAdmin):
             pass
 
+if 'shop_sendcloud' in settings.INSTALLED_APPS:
+    from shop_sendcloud.admin import SendCloudOrderAdminMixin
+
+    class OrderAdmin(SendCloudOrderAdminMixin, OrderAdmin):
+        pass
+
 admin.site.register(Order, OrderAdmin)
 
 if settings.SHOP_TUTORIAL == 'smartcard':
