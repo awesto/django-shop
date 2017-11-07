@@ -51,9 +51,6 @@ class ManualPaymentWorkflowMixin(object):
                                                             'no_payment_required'])
         super(ManualPaymentWorkflowMixin, self).__init__(*args, **kwargs)
 
-    def is_fully_paid(self):
-        return super(ManualPaymentWorkflowMixin, self).is_fully_paid()
-
     @transition(field='status', source=['created'], target='no_payment_required')
     def no_payment_required(self):
         """
@@ -67,22 +64,18 @@ class ManualPaymentWorkflowMixin(object):
         Invoked by ForwardFundPayment.get_payment_request.
         """
 
-    def deposited_too_little(self):
-        return self.amount_paid > 0 and self.amount_paid < self.total
+    def payment_deposited(self):
+        return self.amount_paid > 0
 
-    @transition(field='status', source=['awaiting_payment'], target='awaiting_payment',
-                conditions=[deposited_too_little], custom=dict(admin=True, button_name=_("Deposited too little")))
-    def prepayment_partially_deposited(self):
+    @transition(field='status', source=['awaiting_payment'],
+                target=RETURN_VALUE('awaiting_payment', 'prepayment_deposited'),
+                conditions=[payment_deposited],
+                custom=dict(admin=True, button_name=_("Payment Received")))
+    def prepayment_deposited(self):
         """
-        Signals that the current Order received a payment, which was not enough.
+        Signals that the current Order received a payment.
         """
-
-    @transition(field='status', source=['awaiting_payment'], target='prepayment_deposited',
-                conditions=[is_fully_paid], custom=dict(admin=True, button_name=_("Mark as Paid")))
-    def prepayment_fully_deposited(self):
-        """
-        Signals that the current Order received a payment, which fully covers the requested sum.
-        """
+        return 'prepayment_deposited' if self.is_fully_paid() else 'awaiting_payment'
 
     @transition(field='status', source=['prepayment_deposited', 'no_payment_required'],
                 custom=dict(auto=True))
