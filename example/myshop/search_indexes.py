@@ -6,13 +6,13 @@ from haystack import indexes
 from shop.search.indexes import ProductIndex as ProductIndexBase
 
 
-if settings.SHOP_TUTORIAL in ['i18n_commodity', 'commodity']:
+if settings.SHOP_TUTORIAL == 'commodity':
     from shop.models.defaults.commodity import Commodity
 
-elif settings.SHOP_TUTORIAL in ['i18n_smartcard', 'smartcard']:
+elif settings.SHOP_TUTORIAL == 'smartcard':
     from myshop.models import SmartCard
 
-elif settings.SHOP_TUTORIAL in ['i18n_polymorphic', 'polymorphic']:
+elif settings.SHOP_TUTORIAL == 'polymorphic':
     from myshop.models import SmartCard, SmartPhoneModel, Commodity
 
 
@@ -30,19 +30,19 @@ class ProductIndex(ProductIndexBase):
 
 myshop_search_index_classes = []
 
-if settings.SHOP_TUTORIAL in ['i18n_commodity', 'commodity', 'i18n_polymorphic', 'polymorphic']:
+if settings.SHOP_TUTORIAL in ['commodity', 'polymorphic']:
     class CommodityIndex(ProductIndex, indexes.Indexable):
         def get_model(self):
             return Commodity
     myshop_search_index_classes.append(CommodityIndex)
 
-if settings.SHOP_TUTORIAL in ['i18n_smartcard', 'smartcard', 'i18n_polymorphic', 'polymorphic']:
+if settings.SHOP_TUTORIAL in ['smartcard', 'polymorphic']:
     class SmartCardIndex(ProductIndex, indexes.Indexable):
         def get_model(self):
             return SmartCard
     myshop_search_index_classes.append(SmartCardIndex)
 
-if settings.SHOP_TUTORIAL in ['i18n_polymorphic', 'polymorphic']:
+if settings.SHOP_TUTORIAL == 'polymorphic':
     class SmartPhoneIndex(ProductIndex, indexes.Indexable):
         def get_model(self):
             return SmartPhoneModel

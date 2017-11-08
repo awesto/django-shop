@@ -23,7 +23,7 @@ class ProductSummarySerializer(ProductSerializer):
     def get_media(self, product):
         return self.render_html(product, 'media')
 
-if settings.SHOP_TUTORIAL in ['commodity', 'i18n_commodity']:
+if settings.SHOP_TUTORIAL == 'commodity':
 
     class ProductDetailSerializer(ProductSerializer):
         class Meta(ProductSerializer.Meta):
@@ -31,7 +31,7 @@ if settings.SHOP_TUTORIAL in ['commodity', 'i18n_commodity']:
 
     __all__.append('ProductDetailSerializer')
 
-elif settings.SHOP_TUTORIAL in ['smartcard', 'i18n_smartcard']:
+elif settings.SHOP_TUTORIAL == 'smartcard':
 
     class ProductDetailSerializer(ProductSerializer):
         class Meta(ProductSerializer.Meta):
@@ -40,7 +40,7 @@ elif settings.SHOP_TUTORIAL in ['smartcard', 'i18n_smartcard']:
 
     __all__.append('ProductDetailSerializer')
 
-elif settings.SHOP_TUTORIAL in ['i18n_polymorphic', 'polymorphic']:
+elif settings.SHOP_TUTORIAL == 'polymorphic':
 
     from .polymorphic import (SmartCardSerializer, SmartPhoneSerializer, AddSmartPhoneToCartSerializer)
 

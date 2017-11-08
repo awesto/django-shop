@@ -123,8 +123,6 @@ INSTALLED_APPS = [
     'shop',
     'myshop',
 ]
-if SHOP_TUTORIAL in ['i18n_commodity', 'i18n_smartcard', 'i18n_polymorphic']:
-    INSTALLED_APPS.append('parler')
 
 MIDDLEWARE_CLASSES = [
     # 'django.middleware.cache.UpdateCacheMiddleware',
@@ -159,18 +157,51 @@ DATABASES = {
     }
 }
 
+FIXTURE_DIRS = [os.path.join(WORK_DIR, SHOP_TUTORIAL, 'fixtures')]
+
+# Absolute path to the directory that holds media.
+# Example: "/home/media/media.lawrence.com/"
+MEDIA_ROOT = os.path.join(WORK_DIR, SHOP_TUTORIAL, 'media')
+
+# URL that handles the media served from MEDIA_ROOT. Make sure to use a
+# trailing slash.
+# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
+MEDIA_URL = '/media/'
+
+# Absolute path to the directory that holds static files.
+# Example: "/home/media/media.lawrence.com/static/"
+STATIC_ROOT = os.path.join(WORK_DIR, 'static')
+
+# URL that handles the static files served from STATIC_ROOT.
+# Example: "http://media.lawrence.com/static/"
+STATIC_URL = '/static/'
+
+STATICFILES_FINDERS = [
+    'myshop.finders.FileSystemFinder',  # or 'django.contrib.staticfiles.finders.FileSystemFinder',
+    'myshop.finders.AppDirectoriesFinder',  # or 'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'sass_processor.finders.CssFinder',
+    'compressor.finders.CompressorFinder',
+]
+
+STATICFILES_DIRS = [
+    ('node_modules', os.path.join(PROJECT_ROOT, 'node_modules')),
+]
+
 # Internationalization
 # https://docs.djangoproject.com/en/stable/topics/i18n/
 
 LANGUAGE_CODE = 'en'
 
-if SHOP_TUTORIAL in ['i18n_smartcard', 'i18n_commodity', 'i18n_polymorphic']:
+if SHOP_TUTORIAL.startswith('i18n_'):
+    SHOP_TUTORIAL = SHOP_TUTORIAL[5:]
     USE_I18N = True
 
     LANGUAGES = (
         ('en', "English"),
         ('de', "Deutsch"),
     )
+
+    INSTALLED_APPS.append('parler')
 
     PARLER_DEFAULT_LANGUAGE = 'en'
 
@@ -213,35 +244,6 @@ USE_L10N = True
 USE_TZ = True
 
 USE_X_FORWARDED_HOST = True
-
-# Absolute path to the directory that holds media.
-# Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = os.path.join(WORK_DIR, SHOP_TUTORIAL, 'media')
-
-# URL that handles the media served from MEDIA_ROOT. Make sure to use a
-# trailing slash.
-# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = '/media/'
-
-# Absolute path to the directory that holds static files.
-# Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = os.path.join(WORK_DIR, 'static')
-
-# URL that handles the static files served from STATIC_ROOT.
-# Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/static/'
-
-STATICFILES_FINDERS = [
-    'myshop.finders.FileSystemFinder',  # or 'django.contrib.staticfiles.finders.FileSystemFinder',
-    'myshop.finders.AppDirectoriesFinder',  # or 'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'sass_processor.finders.CssFinder',
-    'compressor.finders.CompressorFinder',
-]
-
-STATICFILES_DIRS = [
-    ('node_modules', os.path.join(PROJECT_ROOT, 'node_modules')),
-]
-
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -300,8 +302,6 @@ LOGGING = {
 }
 
 SILENCED_SYSTEM_CHECKS = ['auth.W004']
-
-FIXTURE_DIRS = [os.path.join(WORK_DIR, SHOP_TUTORIAL, 'fixtures')]
 
 ############################################
 # settings for sending mail
@@ -571,7 +571,7 @@ SHOP_VALUE_ADDED_TAX = Decimal(19)
 SHOP_DEFAULT_CURRENCY = 'EUR'
 SHOP_PRODUCT_SUMMARY_SERIALIZER = 'myshop.serializers.ProductSummarySerializer'
 
-if SHOP_TUTORIAL in ['i18n_polymorphic', 'polymorphic']:
+if SHOP_TUTORIAL == 'polymorphic':
     SHOP_CART_MODIFIERS = ['myshop.polymorphic_modifiers.MyShopCartModifier']
 else:
     SHOP_CART_MODIFIERS = ['shop.modifiers.defaults.DefaultCartModifier']
@@ -595,9 +595,11 @@ if 'shop_stripe' in INSTALLED_APPS:
 
 if 'shop_sendcloud' in INSTALLED_APPS:
     SHOP_CART_MODIFIERS.append('shop_sendcloud.modifiers.SendcloudShippingModifiers')
-    SHOP_ORDER_WORKFLOWS.append('shop_sendcloud.workflows.OrderWorkflowMixin')
     SHOP_ORDER_ITEM_SERIALIZER = 'shop_sendcloud.serializers.OrderItemSerializer'
-    SHOP_ORDER_WORKFLOWS.append('shop.shipping.workflows.PartialDeliveryWorkflowMixin')
+    SHOP_ORDER_WORKFLOWS.extend([
+        'shop.shipping.workflows.CommissionGoodsWorkflowMixin',
+        'shop_sendcloud.workflows.SingularOrderWorkflowMixin',
+    ])
 else:
     SHOP_CART_MODIFIERS.append('myshop.modifiers.PostalShippingModifier')
     SHOP_ORDER_WORKFLOWS.append('shop.shipping.workflows.CommissionGoodsWorkflowMixin')

@@ -21,7 +21,7 @@ except ImportError:
 class Command(BaseCommand):
     version = 12
     help = _("Initialize the workdir to run the demo of myshop.")
-    download_url = 'http://downloads.django-shop.org/django-shop-workdir_{tutorial}-{version}.zip'
+    download_url = 'http://downloads.django-shop.org/django-shop-workdir_{prefix}{tutorial}-{version}.zip'
     pwd = b'z7xv'
 
     def add_arguments(self, parser):
@@ -33,9 +33,9 @@ class Command(BaseCommand):
 
     def handle(self, verbosity, *args, **options):
         self.set_options(**options)
-        fixture = '{workdir}/{tutorial}/fixtures/myshop.json'.format(workdir=settings.WORK_DIR,
-                                                                     tutorial=settings.SHOP_TUTORIAL)
-
+        fixture = '{workdir}/{prefix}{tutorial}/fixtures/myshop.json'
+        prefix = 'i18n_' if settings.USE_I18N else ''
+        fixture = fixture.format(workdir=settings.WORK_DIR, prefix=prefix, tutorial=settings.SHOP_TUTORIAL)
         if self.interactive:
             mesg = ("\nThis will overwrite your workdir and install a new database for the django-SHOP demo: {tutorial}\n"
                     "Are you sure you want to do this?\n\n"
@@ -50,7 +50,8 @@ class Command(BaseCommand):
         extract_to = os.path.join(settings.WORK_DIR, os.pardir)
         msg = "Downloading workdir and extracting to {}. Please wait ..."
         self.stdout.write(msg.format(extract_to))
-        download_url = self.download_url.format(tutorial=settings.SHOP_TUTORIAL, version=self.version)
+        prefix = 'i18n_' if settings.USE_I18N else ''
+        download_url = self.download_url.format(prefix=prefix, tutorial=settings.SHOP_TUTORIAL, version=self.version)
         response = requests.get(download_url, stream=True)
         zip_ref = zipfile.ZipFile(StringIO(response.content))
         try:

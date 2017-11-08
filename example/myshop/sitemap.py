@@ -4,13 +4,13 @@ from __future__ import unicode_literals
 from django.contrib.sitemaps import Sitemap
 from django.conf import settings
 
-if settings.SHOP_TUTORIAL in ['i18n_commodity', 'commodity']:
+if settings.SHOP_TUTORIAL == 'commodity':
     from shop.models.defaults.commodity import Commodity as Product
 
-elif settings.SHOP_TUTORIAL in ['i18n_smartcard', 'smartcard']:
+elif settings.SHOP_TUTORIAL == 'smartcard':
     from myshop.models import SmartCard as Product
 
-elif settings.SHOP_TUTORIAL in ['i18n_polymorphic', 'polymorphic']:
+elif settings.SHOP_TUTORIAL == 'polymorphic':
     from myshop.models import Product
 
 

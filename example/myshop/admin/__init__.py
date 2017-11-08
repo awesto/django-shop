@@ -12,18 +12,17 @@ from shop.admin.delivery import DeliveryOrderAdminMixin
 
 
 # models defined by the myshop instance itself
-if settings.SHOP_TUTORIAL in ['commodity', 'i18n_commodity']:
+if settings.SHOP_TUTORIAL == 'commodity':
     from shop.admin.defaults import commodity
 
 else:
     from . import manufacturer
 
-    if settings.SHOP_TUTORIAL in ['i18n_smartcard', 'smartcard']:
-        class OrderAdmin(PrintOrderAdminMixin, OrderAdmin):
-            pass
-
-    elif settings.SHOP_TUTORIAL in ['i18n_polymorphic', 'polymorphic']:
+    if 'shop.shipping.workflows.PartialDeliveryWorkflowMixin' in settings.SHOP_ORDER_WORKFLOWS:
         class OrderAdmin(PrintOrderAdminMixin, DeliveryOrderAdminMixin, OrderAdmin):
+            pass
+    else:
+        class OrderAdmin(PrintOrderAdminMixin, OrderAdmin):
             pass
 
 if 'shop_sendcloud' in settings.INSTALLED_APPS:
@@ -35,17 +34,16 @@ if 'shop_sendcloud' in settings.INSTALLED_APPS:
 admin.site.register(Order, OrderAdmin)
 
 if settings.SHOP_TUTORIAL == 'smartcard':
-    from . import smartcard
-
-elif settings.SHOP_TUTORIAL == 'i18n_smartcard':
-    from . import i18n_smartcard
+    if settings.USE_I18N:
+        from . import i18n_smartcard
+    else:
+        from . import smartcard
 
 elif settings.SHOP_TUTORIAL == 'polymorphic':
-    from . import polymorphic_
-
-elif settings.SHOP_TUTORIAL == 'i18n_polymorphic':
-    from . import i18n_polymorphic
-
+    if settings.USE_I18N:
+        from . import i18n_polymorphic
+    else:
+        from . import polymorphic_
 
 __all__ = ['commodity', 'customer']
 
