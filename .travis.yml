@@ -9,7 +9,6 @@ python:
 env:
   - DJANGOVER=django19
   - DJANGOVER=django110
-  - DJANGOVER=django111
   - TOX_ENV=docs
 
 install:
