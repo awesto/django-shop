@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from shop.modifiers.defaults import DefaultCartModifier
 
 
-class MyShopCartModifier(DefaultCartModifier):
+class VariantCartModifier(DefaultCartModifier):
     """
     Extended default cart modifier which handles the price for product variations
     """

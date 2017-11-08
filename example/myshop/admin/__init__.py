@@ -14,16 +14,15 @@ from shop.admin.delivery import DeliveryOrderAdminMixin
 # models defined by the myshop instance itself
 if settings.SHOP_TUTORIAL == 'commodity':
     from shop.admin.defaults import commodity
-
 else:
     from . import manufacturer
 
-    if 'shop.shipping.workflows.PartialDeliveryWorkflowMixin' in settings.SHOP_ORDER_WORKFLOWS:
-        class OrderAdmin(PrintOrderAdminMixin, DeliveryOrderAdminMixin, OrderAdmin):
-            pass
-    else:
-        class OrderAdmin(PrintOrderAdminMixin, OrderAdmin):
-            pass
+if settings.SHOP_PARTIAL_DELIVERY:
+    class OrderAdmin(PrintOrderAdminMixin, DeliveryOrderAdminMixin, OrderAdmin):
+        pass
+else:
+    class OrderAdmin(PrintOrderAdminMixin, OrderAdmin):
+        pass
 
 if 'shop_sendcloud' in settings.INSTALLED_APPS:
     from shop_sendcloud.admin import SendCloudOrderAdminMixin

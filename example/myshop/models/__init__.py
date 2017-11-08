@@ -4,43 +4,46 @@ from __future__ import unicode_literals
 from django.conf import settings
 
 # import default models from shop to materialize them
-from shop_sendcloud.models import ShippingAddress, BillingAddress
+if 'shop_sendcloud' in settings.INSTALLED_APPS:
+    from shop_sendcloud.models import ShippingAddress, BillingAddress
+    from shop_sendcloud.models import Customer
+else:
+    from shop.models.defaults.address import ShippingAddress, BillingAddress
+    from shop.models.defaults.customer import Customer
+
 from shop.models.defaults.cart import Cart
 from shop.models.defaults.cart_item import CartItem
 
 __all__ = ['ShippingAddress', 'BillingAddress', 'Cart', 'CartItem', 'Customer', 'OrderItem',
-           'Commodity', 'SmartCard', 'SmartPhoneModel', 'SmartPhoneVariant', 'Delivery', 'DeliveryItem']
+           'Commodity', 'SmartCard', 'SmartPhoneModel', 'SmartPhoneVariant']
 
 # models defined by the myshop instance itself
 if settings.SHOP_TUTORIAL == 'commodity':
-    from shop.models.defaults.customer import Customer
     from shop.models.defaults.order_item import OrderItem
     from shop.models.defaults.commodity import Commodity
 
-elif settings.SHOP_TUTORIAL == 'smartcard':
-    from shop.models.defaults.customer import Customer
+if settings.SHOP_TUTORIAL == 'smartcard':
     from shop.models.defaults.order_item import OrderItem
     if settings.USE_I18N:
         from .i18n_smartcard import SmartCard
     else:
         from .smartcard import SmartCard
 
-elif settings.SHOP_TUTORIAL == 'polymorphic':
-    # TODO: use other settings to determine Delivery and SendCloud
+if settings.SHOP_TUTORIAL == 'polymorphic':
     if settings.USE_I18N:
-        from shop_sendcloud.models import Customer
         from .i18n_polymorphic.order import OrderItem
         from .i18n_polymorphic.product import Product
         from .i18n_polymorphic.commodity import Commodity
         from .i18n_polymorphic.smartcard import SmartCard
         from .i18n_polymorphic.smartphone import SmartPhoneModel, SmartPhoneVariant
     else:
-        from shop.models.defaults.customer import Customer
         from .polymorphic_.order import OrderItem
         from .polymorphic_.product import Product
         from .polymorphic_.commodity import Commodity
         from .polymorphic_.smartcard import SmartCard
         from .polymorphic_.smartphone import SmartPhoneModel, SmartPhoneVariant
+    __all__.extend(['SmartCard', 'SmartPhoneModel', 'SmartPhoneVariant'])
 
+if settings.SHOP_PARTIAL_DELIVERY:
     from shop.models.defaults.delivery import Delivery, DeliveryItem
-    __all__.extend(['SmartCard', 'SmartPhoneModel', 'SmartPhoneVariant', 'Delivery', 'DeliveryItem'])
+    __all__.extend(['Delivery', 'DeliveryItem'])

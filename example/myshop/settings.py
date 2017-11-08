@@ -25,10 +25,6 @@ BASE_DIR = os.path.dirname(__file__)
 SHOP_TUTORIAL = os.environ.get('DJANGO_SHOP_TUTORIAL')
 if SHOP_TUTORIAL is None:
     raise ImproperlyConfigured("Environment variable DJANGO_SHOP_TUTORIAL is not set")
-if SHOP_TUTORIAL not in ['commodity', 'i18n_commodity', 'smartcard', 'i18n_smartcard',
-                         'i18n_polymorphic', 'polymorphic']:
-    msg = "Environment variable DJANGO_SHOP_TUTORIAL has an invalid value `{}`"
-    raise ImproperlyConfigured(msg.format(SHOP_TUTORIAL))
 
 # Root directory for this django project
 PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, os.path.pardir))
@@ -191,6 +187,12 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/stable/topics/i18n/
 
 LANGUAGE_CODE = 'en'
+
+if SHOP_TUTORIAL.startswith('partdel_'):
+    SHOP_PARTIAL_DELIVERY = True
+    SHOP_TUTORIAL = SHOP_TUTORIAL[8:]
+else:
+    SHOP_PARTIAL_DELIVERY = False
 
 if SHOP_TUTORIAL.startswith('i18n_'):
     SHOP_TUTORIAL = SHOP_TUTORIAL[5:]
@@ -567,14 +569,19 @@ HAYSTACK_ROUTERS = [
 ############################################
 # settings for django-shop and its plugins
 
+if SHOP_TUTORIAL not in ['commodity', 'smartcard', 'polymorphic']:
+    msg = "Environment variable DJANGO_SHOP_TUTORIAL has an invalid value `{}`"
+    raise ImproperlyConfigured(msg.format(SHOP_TUTORIAL))
+
 SHOP_VALUE_ADDED_TAX = Decimal(19)
 SHOP_DEFAULT_CURRENCY = 'EUR'
 SHOP_PRODUCT_SUMMARY_SERIALIZER = 'myshop.serializers.ProductSummarySerializer'
 
 if SHOP_TUTORIAL == 'polymorphic':
-    SHOP_CART_MODIFIERS = ['myshop.polymorphic_modifiers.MyShopCartModifier']
+    SHOP_CART_MODIFIERS = ['myshop.polymorphic_modifiers.VariantCartModifier']  # for smartphone variants
 else:
     SHOP_CART_MODIFIERS = ['shop.modifiers.defaults.DefaultCartModifier']
+
 SHOP_CART_MODIFIERS.extend([
     'shop.modifiers.taxes.CartExcludedTaxModifier',
     'myshop.modifiers.CustomerPickupModifier',
@@ -596,13 +603,22 @@ if 'shop_stripe' in INSTALLED_APPS:
 if 'shop_sendcloud' in INSTALLED_APPS:
     SHOP_CART_MODIFIERS.append('shop_sendcloud.modifiers.SendcloudShippingModifiers')
     SHOP_ORDER_ITEM_SERIALIZER = 'shop_sendcloud.serializers.OrderItemSerializer'
-    SHOP_ORDER_WORKFLOWS.extend([
-        'shop.shipping.workflows.CommissionGoodsWorkflowMixin',
-        'shop_sendcloud.workflows.SingularOrderWorkflowMixin',
-    ])
+    if SHOP_PARTIAL_DELIVERY:
+        SHOP_ORDER_WORKFLOWS.extend([
+            'shop.shipping.workflows.PartialDeliveryWorkflowMixin',
+            'shop_sendcloud.workflows.CommonOrderWorkflowMixin',
+        ])
+    else:
+        SHOP_ORDER_WORKFLOWS.extend([
+            'shop.shipping.workflows.CommissionGoodsWorkflowMixin',
+            'shop_sendcloud.workflows.SingularOrderWorkflowMixin',
+        ])
 else:
     SHOP_CART_MODIFIERS.append('myshop.modifiers.PostalShippingModifier')
-    SHOP_ORDER_WORKFLOWS.append('shop.shipping.workflows.CommissionGoodsWorkflowMixin')
+    if SHOP_PARTIAL_DELIVERY:
+        SHOP_ORDER_WORKFLOWS.append('shop.shipping.workflows.PartialDeliveryWorkflowMixin')
+    else:
+        SHOP_ORDER_WORKFLOWS.append('shop.shipping.workflows.CommissionGoodsWorkflowMixin')
 
 SHOP_STRIPE = {
     'PUBKEY': 'pk_test_HlEp5oZyPonE21svenqowhXp',
