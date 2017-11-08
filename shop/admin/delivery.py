@@ -7,7 +7,6 @@ from django.core.urlresolvers import reverse
 from django.db.models import Sum
 from django.forms import models, widgets, ValidationError
 from django.http import HttpResponse
-from django.template import RequestContext
 from django.template.loader import select_template
 from django.utils import timezone
 from django.utils.html import format_html
@@ -182,11 +181,14 @@ class DeliveryOrderAdminMixin(object):
         return HttpResponse(content)
 
     def get_inline_instances(self, request, obj=None):
+        """
+        Replace `OrderItemInline` by `OrderItemInlineDelivery` for that instance.
+        """
         inline_instances = [
             OrderItemInlineDelivery(self.model, self.admin_site) if isinstance(instance, OrderItemInline) else instance
             for instance in super(DeliveryOrderAdminMixin, self).get_inline_instances(request, obj)
         ]
-        # TODO: add OrderPaymentInline and DeliveryInline only if status requires editing them
+        # TODO: add DeliveryInline only if status requires to edit them
         inline_instances.append(DeliveryInline(self.model, self.admin_site))
         return inline_instances
 
