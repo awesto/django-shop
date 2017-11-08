@@ -46,7 +46,6 @@ redis==2.10.6
 requests==2.18.4
 requests-oauthlib==0.5.0
 six==1.11.0
-stripe==1.37.0
 Unidecode==0.4.18
 urllib3==1.22
 virtualenv==13.1.2
