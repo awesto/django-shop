@@ -90,7 +90,7 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
     list_filter = [StatusListFilter]
     fsm_field = ['status']
     date_hierarchy = 'created_at'
-    inlines = (OrderItemInline, OrderPaymentInline,)
+    inlines = [OrderItemInline]
     readonly_fields = ['get_number', 'status_name', 'get_total', 'get_subtotal',
                        'get_customer_link', 'get_outstanding_amount', 'is_fully_paid',
                        'created_at', 'updated_at', 'render_as_html_extra', 'stored_request']
