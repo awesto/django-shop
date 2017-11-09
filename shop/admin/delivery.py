@@ -107,6 +107,25 @@ class OrderItemInlineDelivery(OrderItemInline):
     show_ready.short_description = _("Ready for delivery")
 
 
+class DeliveryForm(models.ModelForm):
+    class Meta:
+        model = DeliveryModel
+        exclude = ()
+
+    def __init__(self, *args, **kwargs):
+        super(DeliveryForm, self).__init__(*args, **kwargs)
+        instance = kwargs.get('instance')
+        if instance and instance.shipped_at:
+            self['shipping_id'].field.widget.attrs.update(readonly='readonly')
+        if app_settings.SHOP_OVERRIDE_SHIPPING_METHOD:
+            choices = [sm.get_choice() for sm in cart_modifiers_pool.get_shipping_modifiers()]
+            self['shipping_method'].field.widget = widgets.Select(choices=choices)
+
+    def has_changed(self):
+        """Force form to changed"""
+        return True
+
+
 class DeliveryInline(admin.TabularInline):
     model = DeliveryModel
     extra = 0
