@@ -48,14 +48,14 @@ class OrderItemForm(models.ModelForm):
         aggr = instance.deliveryitem_set.aggregate(delivered=Sum('quantity'))
         return aggr['delivered'] or 0
 
-    def clean(self):
-        cleaned_data = super(OrderItemForm, self).clean()
-        if cleaned_data.get('deliver_quantity') is not None:
-            if cleaned_data['deliver_quantity'] < 0:
+    def clean_deliver_quantity(self):
+        deliver_quantity = self.cleaned_data.get('deliver_quantity')
+        if deliver_quantity is not None:
+            if deliver_quantity < 0:
                 raise ValidationError(_("Only a positive number of items can be delivered"), code='invalid')
-            if cleaned_data['deliver_quantity'] > self.instance.quantity - self.get_delivered(self.instance):
+            if deliver_quantity > self.instance.quantity - self.get_delivered(self.instance):
                 raise ValidationError(_("The number of items to deliver exceeds the ordered quantity"), code='invalid')
-        return cleaned_data
+            return deliver_quantity
 
     def has_changed(self):
         """Force form to changed"""
@@ -107,26 +107,34 @@ class OrderItemInlineDelivery(OrderItemInline):
     show_ready.short_description = _("Ready for delivery")
 
 
+class DeliveryForm(models.ModelForm):
+    class Meta:
+        model = DeliveryModel
+        exclude = ()
+
+    def __init__(self, *args, **kwargs):
+        super(DeliveryForm, self).__init__(*args, **kwargs)
+        instance = kwargs.get('instance')
+        if instance and instance.shipped_at:
+            self['shipping_id'].field.widget.attrs.update(readonly='readonly')
+        if app_settings.SHOP_OVERRIDE_SHIPPING_METHOD:
+            choices = [sm.get_choice() for sm in cart_modifiers_pool.get_shipping_modifiers()]
+            self['shipping_method'].field.widget = widgets.Select(choices=choices)
+
+
 class DeliveryInline(admin.TabularInline):
     model = DeliveryModel
+    form = DeliveryForm
     extra = 0
-    fields = ['shipping_id', 'shipping_method', 'delivered_items', 'print_out', 'fulfilled']
-    readonly_fields = ['delivered_items', 'print_out', 'fulfilled']
-
-    def get_formset(self, request, obj=None, **kwargs):
-        """
-        Convert the field `shipping_method` into a select box with all possible shipping methods.
-        """
-        choices = [sm.get_choice() for sm in cart_modifiers_pool.get_shipping_modifiers()]
-        kwargs.update(widgets={'shipping_method': widgets.Select(choices=choices)})
-        formset = super(DeliveryInline, self).get_formset(request, obj, **kwargs)
-        return formset
+    fields = ['shipping_id', 'shipping_method' if app_settings.SHOP_OVERRIDE_SHIPPING_METHOD else 'get_shipping_method',
+              'delivered_items', 'print_out', 'fulfilled', 'shipped']
+    readonly_fields = ['delivered_items', 'print_out', 'fulfilled', 'shipped']
+    if not app_settings.SHOP_OVERRIDE_SHIPPING_METHOD:
+        readonly_fields.append('get_shipping_method')
 
     def get_max_num(self, request, obj=None, **kwargs):
         qs = self.model.objects.filter(order=obj)
-        if obj.status != 'pick_goods' or qs.filter(fulfilled_at__isnull=True) or obj.unfulfilled_items == 0:
-            return qs.count()
-        return qs.count() + 1
+        return qs.count()
 
     def has_delete_permission(self, request, obj=None):
         return False
@@ -145,11 +153,22 @@ class DeliveryInline(admin.TabularInline):
         return format_html('<a href="{0}" class="viewsitelink" target="_new">{1}</a>', *link)
     print_out.short_description = _("Print out")
 
+    def get_shipping_method(self, obj):
+        choices = dict(sm.get_choice() for sm in cart_modifiers_pool.get_shipping_modifiers())
+        return choices.get(obj.shipping_method, _("Unknown"))
+    get_shipping_method.short_description = _("Shipping Method")
+
     def fulfilled(self, obj):
         if obj.fulfilled_at:
             return timezone.localtime(obj.fulfilled_at).ctime()  # TODO: find the correct time format
         return _("Pending")
     fulfilled.short_description = _("Fulfilled at")
+
+    def shipped(self, obj):
+        if obj.shipped_at:
+            return timezone.localtime(obj.fulfilled_at).ctime()  # TODO: find the correct time format
+        return _("Pending")
+    shipped.short_description = _("Shipped at")
 
 
 class DeliveryOrderAdminMixin(object):
@@ -188,39 +207,23 @@ class DeliveryOrderAdminMixin(object):
             OrderItemInlineDelivery(self.model, self.admin_site) if isinstance(instance, OrderItemInline) else instance
             for instance in super(DeliveryOrderAdminMixin, self).get_inline_instances(request, obj)
         ]
-        # TODO: add DeliveryInline only if status requires to edit them
-        inline_instances.append(DeliveryInline(self.model, self.admin_site))
+        if obj.ready_for_shipping():
+            inline_instances.append(DeliveryInline(self.model, self.admin_site))
         return inline_instances
 
     def save_related(self, request, form, formsets, change):
         super(DeliveryOrderAdminMixin, self).save_related(request, form, formsets, change)
-        if hasattr(form.instance, '_transition_to_pack_goods') or (
-                form.instance.status == 'pick_goods' and 'status' not in form.changed_data):
-            # merchant clicked on button: "Pack the Goods", "Save and continue" or "Save"
-            self._mark_items_for_delivery(formsets)
-
-    def _mark_items_for_delivery(self, formsets):
-        # create a DeliveryItem for each OrderItem marked to be shipped with this Delivery object
         orderitem_formset = [fs for fs in formsets if issubclass(fs.model, OrderItemModel)]
-        delivery_formset = [fs for fs in formsets if issubclass(fs.model, DeliveryModel)]
-        if orderitem_formset and delivery_formset:
-            orderitem_formset = orderitem_formset[0]
-            delivery_formset = delivery_formset[0]
-            if delivery_formset.new_objects:
-                delivery = delivery_formset.new_objects[0]
-            else:
-                delivery = delivery_formset.queryset.filter(fulfilled_at__isnull=True).last()
-            if delivery:
-                count_items = 0
-                for data in orderitem_formset.cleaned_data:
+        if form.instance.status == 'pack_goods' and orderitem_formset:
+            count = sum([oi['deliver_quantity'] for oi in orderitem_formset[0].cleaned_data
+                               if oi.get('deliver_quantity') and not oi.get('canceled')], 0)
+            if count > 0:
+                delivery = DeliveryModel.objects.create(order=form.instance)
+                for data in orderitem_formset[0].cleaned_data:
                     if data['deliver_quantity'] > 0 and not data['canceled']:
                         DeliveryItemModel.objects.create(delivery=delivery, item=data['id'],
                                                          quantity=data['deliver_quantity'])
-                        count_items += 1
-                if count_items > 0:
                     # mark Delivery object as fulfilled
                     delivery.fulfilled_at = timezone.now()
+                    delivery.shipping_method = form.instance.extra.get('shipping_modifier')
                     delivery.save()
-                else:
-                    # since no OrderItem was added to this delivery, discard it
-                    delivery.delete()
