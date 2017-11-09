@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, NavigableString, Tag
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ValidationError
@@ -9,18 +9,67 @@ from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.db import models
 from django.db.models import Q
 from django.http.request import HttpRequest
-from django.template import Context, engines
+from django.template import Context, Template
 from django.utils.six.moves.urllib.parse import urlparse
 from django.utils.translation import ugettext_lazy as _, override as translation_override, ugettext_noop
 
 from post_office import mail
 from post_office.models import Email as OriginalEmail, EmailTemplate
+from post_office.compat import smart_text
+from post_office.connections import connections
 
 from filer.fields.file import FilerFileField
 
 from shop.conf import app_settings
 from shop.models.order import BaseOrder
 from shop.models.fields import ChoiceEnum, ChoiceEnumField
+
+
+def html_to_text(html):
+    "Creates a formatted text email message as a string from a rendered html template (page)"
+    soup = BeautifulSoup(html, 'html.parser')
+    # Ignore anything in head
+    body, text = soup.body, []
+    for element in body.descendants:
+        # We use type and not isinstance since comments, cdata, etc are subclasses that we don't want
+        if type(element) == NavigableString:
+            parent_tags = (t for t in element.parents if type(t) == Tag)
+            hidden = False
+            for parent_tag in parent_tags:
+                # Ignore any text inside a non-displayed tag
+                # We also behave is if scripting is enabled (noscript is ignored)
+                # The list of non-displayed tags and attributes from the W3C specs:
+                if (parent_tag.name in ('area', 'base', 'basefont', 'datalist', 'head', 'link',
+                                        'meta', 'noembed', 'noframes', 'param', 'rp', 'script',
+                                        'source', 'style', 'template', 'track', 'title', 'noscript') or
+                    parent_tag.has_attr('hidden') or
+                    (parent_tag.name == 'input' and parent_tag.get('type') == 'hidden')):
+                    hidden = True
+                    break
+            if hidden:
+                continue
+
+            # remove any multiple and leading/trailing whitespace
+            string = ' '.join(element.string.split())
+            if string:
+                if element.parent.name == 'a':
+                    a_tag = element.parent
+                    # replace link text with the link
+                    string = a_tag['href']
+                    # concatenate with any non-empty immediately previous string
+                    if (    type(a_tag.previous_sibling) == NavigableString and
+                            a_tag.previous_sibling.string.strip() ):
+                        text[-1] = text[-1] + ' ' + string
+                        continue
+                elif element.previous_sibling and element.previous_sibling.name == 'a':
+                    text[-1] = text[-1] + ' ' + string
+                    continue
+                elif element.parent.name == 'p':
+                    # Add extra paragraph formatting newline
+                    string = '\n' + string
+                text += [string]
+    doc = '\n'.join(text)
+    return doc
 
 
 class Email(OriginalEmail):
@@ -31,43 +80,44 @@ class Email(OriginalEmail):
     class Meta:
         proxy = True
 
-    def email_message(self, connection=None):
+    def prepare_email_message(self):
         if self.template is not None:
             render_language = self.context.get('render_language', settings.LANGUAGE_CODE)
-            context = Context(self.context)
+            _context = Context(self.context)
             with translation_override(render_language):
-                subject = engines['django'].from_string(self.template.subject).render(context)
-                message = engines['django'].from_string(self.template.content).render(context)
-                html_message = engines['django'].from_string(self.template.html_content).render(context)
+                subject = Template(self.template.subject).render(_context)
+                message = Template(self.template.content).render(_context)
+                html_message = Template(self.template.html_content).render(_context)
         else:
-            subject = self.subject
+            subject = smart_text(self.subject)
             message = self.message
             html_message = self.html_message
 
+        connection = connections[self.backend_alias or 'default']
+
         if html_message:
             if not message:
-                message = BeautifulSoup(html_message).text
-            mailmsg = EmailMultiAlternatives(
+                message = html_to_text(html_message)
+            msg = EmailMultiAlternatives(
                 subject=subject, body=message, from_email=self.from_email,
                 to=self.to, bcc=self.bcc, cc=self.cc,
-                connection=connection, headers=self.headers)
-            mailmsg.attach_alternative(html_message, 'text/html')
+                headers=self.headers, connection=connection)
+            msg.attach_alternative(html_message, 'text/html')
         else:
-            mailmsg = EmailMessage(
+            msg = EmailMessage(
                 subject=subject, body=message, from_email=self.from_email,
                 to=self.to, bcc=self.bcc, cc=self.cc,
-                connection=connection, headers=self.headers)
+                headers=self.headers, connection=connection)
 
         for attachment in self.attachments.all():
-            mailmsg.attach(attachment.name, attachment.file.read())
-        return mailmsg
+            msg.attach(attachment.name, attachment.file.read(), mimetype=attachment.mimetype or None)
+            attachment.file.close()
 
+        self._cached_email_message = msg
+        return msg
 
-class EmailManager(models.Manager):
-    def get_queryset(self):
-        return Email.objects.get_queryset()
-
-OriginalEmail.add_to_class('objects', EmailManager())
+# Monkey-patch post_office method
+OriginalEmail.prepare_email_message = Email.prepare_email_message
 
 
 class Notify(ChoiceEnum):
