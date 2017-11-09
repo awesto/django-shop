@@ -121,6 +121,10 @@ class DeliveryForm(models.ModelForm):
             choices = [sm.get_choice() for sm in cart_modifiers_pool.get_shipping_modifiers()]
             self['shipping_method'].field.widget = widgets.Select(choices=choices)
 
+    def has_changed(self):
+        """Force form to changed"""
+        return True
+
 
 class DeliveryInline(admin.TabularInline):
     model = DeliveryModel

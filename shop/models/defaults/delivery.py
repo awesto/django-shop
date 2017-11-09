@@ -14,7 +14,8 @@ class Delivery(BaseDelivery):
     def clean(self):
         if self.order._fsm_requested_transition == ('status', 'ship_goods'):
             if self.shipping_id:
-                self.shipped_at = timezone.now()
+                if not self.shipped_at:
+                    self.shipped_at = timezone.now()
             else:
                 msg = _("Please provide a valid Shipping ID")
                 raise ValidationError(msg)
