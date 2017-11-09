@@ -7,8 +7,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from django_fsm import transition
 
-from shop.models.delivery import DeliveryModel
-
 
 class ShippingWorkflowMixinBase(object):
     TRANSITION_TARGETS = {
@@ -56,17 +54,25 @@ class PartialDeliveryWorkflowMixin(ShippingWorkflowMixinBase):
     def ready_for_picking(self):
         return self.is_fully_paid() and self.unfulfilled_items > 0
 
-    @transition(field='status', source=['payment_confirmed', 'ready_for_delivery', 'ship_goods'],
-                target='pick_goods', conditions=[ready_for_picking],
+    def ready_for_shipping(self):
+        return self.delivery_set.filter(shipped_at__isnull=True).exists()
+
+    @transition(field='status', source='*', target='pick_goods', conditions=[ready_for_picking],
                 custom=dict(admin=True, button_name=_("Pick the goods")))
     def pick_goods(self, by=None):
         """Change status to 'pick_goods'."""
-        shipping_method = self.extra.get('shipping_modifier')
-        if shipping_method:
-            DeliveryModel.objects.get_or_create(order=self, defaults={'shipping_method': shipping_method})
 
     @transition(field='status', source=['pick_goods'], target='pack_goods',
                 custom=dict(admin=True, button_name=_("Pack the goods")))
     def pack_goods(self, by=None):
         """Prepare shipping object and change status to 'pack_goods'."""
-        self._transition_to_pack_goods = True  # hack to determine this transition in admin backend
+
+    @transition(field='status', source='*', target='ship_goods', conditions=[ready_for_shipping],
+                custom=dict(admin=True, button_name=_("Ship the goods")))
+    def ship_goods(self, by=None):
+        """Ship the goods."""
+
+    @transition(field='status', source='ship_goods', target='ready_for_delivery',
+                custom=dict(auto=True))
+    def prepare_for_delivery(self, by=None):
+        """Put the parcel into the outgoing delivery."""

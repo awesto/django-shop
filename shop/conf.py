@@ -236,6 +236,19 @@ class DefaultSettings(object):
         return self._setting('SHOP_GUEST_IS_ACTIVE_USER', False)
 
     @property
+    def SHOP_OVERRIDE_SHIPPING_METHOD(self):
+        """
+        If this directive is ``True``, the merchant is allowed to override the shipping method the
+        customer has chosen while performing the checkout.
+
+        Note that if alternative shipping is more expensive, usually the merchant has to come up
+        for the additional costs.
+
+        The default is ``False``.
+        """
+        return self._setting('SHOP_OVERRIDE_SHIPPING_METHOD', False)
+
+    @property
     def SHOP_CACHE_DURATIONS(self):
         """
         In the product's list views, HTML snippets are created for the summary representation of
