@@ -23,24 +23,29 @@ elif settings.SHOP_TUTORIAL == 'smartcard':
 
 elif settings.SHOP_TUTORIAL == 'i18n_smartcard':
     from shop.models.defaults.order_item import OrderItem
-    from .i18n_smartcard import SmartCard
+    if settings.USE_I18N:
+        from .i18n_smartcard import SmartCard
+    else:
+        from .smartcard import SmartCard
 
-elif settings.SHOP_TUTORIAL == 'polymorphic':
-    from .polymorphic_.order import OrderItem
-    from .polymorphic_.product import Product
-    from .polymorphic_.commodity import Commodity
-    from .polymorphic_.smartcard import SmartCard
-    from .polymorphic_.smartphone import SmartPhoneModel, SmartPhoneVariant
+if settings.SHOP_TUTORIAL == 'polymorphic':
+    if settings.USE_I18N:
+        from .i18n_polymorphic.order import OrderItem
+        from .i18n_polymorphic.product import Product
+        from .i18n_polymorphic.commodity import Commodity
+        from .i18n_polymorphic.smartcard import SmartCard
+        from .i18n_polymorphic.smartphone import SmartPhoneModel, SmartPhoneVariant
+    else:
+        from .polymorphic_.order import OrderItem
+        from .polymorphic_.product import Product
+        from .polymorphic_.commodity import Commodity
+        from .polymorphic_.smartcard import SmartCard
+        from .polymorphic_.smartphone import SmartPhoneModel, SmartPhoneVariant
+    __all__.extend(['SmartCard', 'SmartPhoneModel', 'SmartPhoneVariant'])
 
-elif settings.SHOP_TUTORIAL == 'i18n_polymorphic':
-    from .i18n_polymorphic.order import OrderItem
-    from .i18n_polymorphic.product import Product
-    from .i18n_polymorphic.commodity import Commodity
-    from .i18n_polymorphic.smartcard import SmartCard
-    from .i18n_polymorphic.smartphone import SmartPhoneModel, SmartPhoneVariant
-
-if settings.SHOP_TUTORIAL in ['polymorphic', 'i18n_polymorphic']:
-    from shop.models.defaults.delivery import Delivery, DeliveryItem
+if settings.SHOP_PARTIAL_DELIVERY:
+    from shop.models.defaults.delivery import Delivery
+    from shop.models.defaults.delivery_item import DeliveryItem
     __all__.extend(['Delivery', 'DeliveryItem'])
 elif 'shop_sendcloud' in settings.INSTALLED_APPS:
     from shop.models.defaults.delivery import Delivery
