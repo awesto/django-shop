@@ -121,6 +121,10 @@ INSTALLED_APPS = [
     'easy_thumbnails.optimize',
     'post_office',
     'haystack',
+<<<<<<< HEAD
+=======
+    'shop_stripe',
+>>>>>>> 9b761a1... add sendcloud to targets
     'shop',
     'shop_stripe',
     'myshop',
@@ -177,7 +181,18 @@ if os.getenv('POSTGRES_DB') and os.getenv('POSTGRES_USER'):
 
 LANGUAGE_CODE = 'en'
 
-if SHOP_TUTORIAL in ['i18n_smartcard', 'i18n_commodity', 'i18n_polymorphic']:
+if SHOP_TUTORIAL.startswith('sendcloud_'):
+    INSTALLED_APPS.insert(INSTALLED_APPS.index('shop'), 'shop_sendcloud')
+    SHOP_TUTORIAL = SHOP_TUTORIAL[10:]
+
+if SHOP_TUTORIAL.startswith('partdel_'):
+    SHOP_PARTIAL_DELIVERY = True
+    SHOP_TUTORIAL = SHOP_TUTORIAL[8:]
+else:
+    SHOP_PARTIAL_DELIVERY = False
+
+if SHOP_TUTORIAL.startswith('i18n_'):
+    SHOP_TUTORIAL = SHOP_TUTORIAL[5:]
     USE_I18N = True
 
     LANGUAGES = (

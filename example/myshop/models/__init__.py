@@ -41,4 +41,7 @@ elif settings.SHOP_TUTORIAL == 'i18n_polymorphic':
 
 if settings.SHOP_TUTORIAL in ['polymorphic', 'i18n_polymorphic']:
     from shop.models.defaults.delivery import Delivery, DeliveryItem
-    __all__.extend(['SmartCard', 'SmartPhoneModel', 'SmartPhoneVariant', 'Delivery', 'DeliveryItem'])
+    __all__.extend(['Delivery', 'DeliveryItem'])
+elif 'shop_sendcloud' in settings.INSTALLED_APPS:
+    from shop.models.defaults.delivery import Delivery
+    __all__.append('Delivery')
