@@ -115,7 +115,6 @@ INSTALLED_APPS = [
     'post_office',
     'haystack',
     'shop_stripe',
-    'shop_sendcloud',
     'shop',
     'myshop',
 ]
@@ -187,6 +186,10 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/stable/topics/i18n/
 
 LANGUAGE_CODE = 'en'
+
+if SHOP_TUTORIAL.startswith('sendcloud_'):
+    INSTALLED_APPS.insert(INSTALLED_APPS.index('shop'), 'shop_sendcloud')
+    SHOP_TUTORIAL = SHOP_TUTORIAL[10:]
 
 if SHOP_TUTORIAL.startswith('partdel_'):
     SHOP_PARTIAL_DELIVERY = True
