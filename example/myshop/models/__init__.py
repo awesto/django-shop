@@ -44,9 +44,13 @@ if settings.SHOP_TUTORIAL == 'polymorphic':
     __all__.extend(['SmartCard', 'SmartPhoneModel', 'SmartPhoneVariant'])
 
 if settings.SHOP_PARTIAL_DELIVERY:
-    from shop.models.defaults.delivery import Delivery
+    if 'shop_sendcloud' in settings.INSTALLED_APPS:
+        from shop_sendcloud.models.delivery import Delivery
+    else:
+        from shop.models.defaults.delivery import Delivery
     from shop.models.defaults.delivery_item import DeliveryItem
     __all__.extend(['Delivery', 'DeliveryItem'])
-elif 'shop_sendcloud' in settings.INSTALLED_APPS:
-    from shop.models.defaults.delivery import Delivery
-    __all__.append('Delivery')
+else:
+    if 'shop_sendcloud' in settings.INSTALLED_APPS:
+        from shop_sendcloud.models.delivery import Delivery
+        __all__.append('Delivery')
