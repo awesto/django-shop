@@ -8,7 +8,6 @@ from shop.admin.defaults import customer
 from shop.admin.defaults.order import OrderAdmin
 from shop.models.defaults.order import Order
 from shop.admin.order import PrintOrderAdminMixin
-from shop.admin.delivery import DeliveryOrderAdminMixin
 
 
 # models defined by the myshop instance itself
@@ -18,6 +17,8 @@ else:
     from . import manufacturer
 
 if settings.SHOP_PARTIAL_DELIVERY:
+    from shop.admin.delivery import DeliveryOrderAdminMixin
+
     class OrderAdmin(PrintOrderAdminMixin, DeliveryOrderAdminMixin, OrderAdmin):
         pass
 else:
