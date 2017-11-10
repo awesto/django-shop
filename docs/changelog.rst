@@ -35,15 +35,32 @@ WiP (0.13)
 * Drop support for Django-1.9, add support for Django-1.11.
 * Add method ``get_weight()`` to product model, so that a cart modifier may sum up the product weights.
 * Configured Cart modifiers may be a list, rather than a single instance.
-* In prepared shipping workflows, rename transition target ``pack_goods`` to ``ready_for_delivery``.
 * Refactor shipping and payment modifiers in ``shop/modifiers/defaults.py`` into their own files
   ``shop/shipping/modifiers.py`` and ``shop/payment/modifiers.py``.
 * Refactor shipping workflows in ``shop/shipping/base.py`` and ``shop/shipping/defaults.py`` into their
-  own file ``shop/shipping/workflows.py``.
+  own file ``shop/shipping/workflows.py``. Extract ``TRANSITION_TARGETS`` into their common base class.
 * Refactor payment workflows in ``shop/payment/base.py`` and ``shop/shipping/defaults.py`` into their
   own file ``shop/payment/workflows.py``.
 * Remove unused class ``ShippingProvider``.
-* Add support for SendCloud integration.
+* Add support for SendCloud_ integration.
+* When partial delivery is configured, it now is possible to create multiple deliveries concurrently.
+* Add configuration directive ``SHOP_MANUAL_SHIPPING_ID`` which shall be used to make the input field
+  for the "Shipping ID" readonly.
+* Add configuration directive ``SHOP_OVERRIDE_SHIPPING_METHOD`` which shall be used to allow the
+  merchant to choose another shipping provider, instead of that selected by the customer.
+* Model ``DeliveryItem`` was moved into ``shop.models.defaults.delivery_item`` to prevent accidental
+  instantiation.
+* Add ``OrderPaymentInline`` to ``OrderAdmin`` only, if status requires a payment or a refund.
+* In ``OrderAdmin`` add tick to inform about a fullfilled Order payment.
+* In ``ManualPaymentWorkflowMixin`` unified methods ``prepayment_partially_deposited()`` and
+  ``prepayment_fully_deposited()`` into method ``payment_deposited()``.
+* Add method ``__str__()`` to model ``BaseDelivery``.
+* All models which can be used in the DialogForm, can offer a method ``as_text()`` which may render
+  a nicely formatted representation of its content.
+* Add method ``reorder_form_fields`` to Customer model, so that inheriting models can fix the order
+  of form fields.
+
+.. _SendCloud: https://www.sendcloud.eu/
 
 
 0.12
