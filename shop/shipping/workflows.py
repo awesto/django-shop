@@ -23,6 +23,9 @@ class CommissionGoodsWorkflowMixin(ShippingWorkflowMixinBase):
     It adds all the methods required for state transitions, while picking and packing
     the ordered goods for shipping.
     """
+    def ready_for_picking(self):
+        return self.is_fully_paid() and self.unfulfilled_items > 0
+
     @transition(field='status', source=['payment_confirmed'], target='pick_goods',
                 custom=dict(admin=True, button_name=_("Pick the goods")))
     def pick_goods(self, by=None):
@@ -32,6 +35,16 @@ class CommissionGoodsWorkflowMixin(ShippingWorkflowMixinBase):
                 custom=dict(admin=True, button_name=_("Pack the goods")))
     def pack_goods(self, by=None):
         """Change status to 'pack_goods'."""
+
+    @transition(field='status', source='pack_goods', target='ship_goods',
+                custom=dict(admin=True, button_name=_("Ship the goods")))
+    def ship_goods(self, by=None):
+        """Ship the goods."""
+
+    @transition(field='status', source='ship_goods', target='ready_for_delivery',
+                custom=dict(auto=True))
+    def prepare_for_delivery(self, by=None):
+        """Put the parcel into the outgoing delivery."""
 
 
 class PartialDeliveryWorkflowMixin(ShippingWorkflowMixinBase):
