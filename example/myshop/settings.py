@@ -604,17 +604,18 @@ if 'shop_stripe' in INSTALLED_APPS:
     SHOP_ORDER_WORKFLOWS.append('shop_stripe.payment.OrderWorkflowMixin')
 
 if 'shop_sendcloud' in INSTALLED_APPS:
+    SHOP_MANUAL_SHIPPING_ID = False
     SHOP_CART_MODIFIERS.append('shop_sendcloud.modifiers.SendcloudShippingModifiers')
-    SHOP_ORDER_ITEM_SERIALIZER = 'shop_sendcloud.serializers.OrderItemSerializer'
     if SHOP_PARTIAL_DELIVERY:
+        SHOP_ORDER_ITEM_SERIALIZER = 'shop_sendcloud.serializers.OrderItemSerializer'
         SHOP_ORDER_WORKFLOWS.extend([
-            'shop.shipping.workflows.PartialDeliveryWorkflowMixin',
             'shop_sendcloud.workflows.CommonOrderWorkflowMixin',
+            'shop.shipping.workflows.PartialDeliveryWorkflowMixin',
         ])
     else:
         SHOP_ORDER_WORKFLOWS.extend([
-            'shop.shipping.workflows.CommissionGoodsWorkflowMixin',
             'shop_sendcloud.workflows.SingularOrderWorkflowMixin',
+            'shop.shipping.workflows.CommissionGoodsWorkflowMixin',
         ])
 else:
     SHOP_CART_MODIFIERS.append('myshop.modifiers.PostalShippingModifier')

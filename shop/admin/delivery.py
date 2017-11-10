@@ -115,7 +115,7 @@ class DeliveryForm(models.ModelForm):
     def __init__(self, *args, **kwargs):
         super(DeliveryForm, self).__init__(*args, **kwargs)
         instance = kwargs.get('instance')
-        if instance and instance.shipped_at:
+        if app_settings.SHOP_MANUAL_SHIPPING_ID and instance and instance.shipped_at:
             self['shipping_id'].field.widget.attrs.update(readonly='readonly')
         if app_settings.SHOP_OVERRIDE_SHIPPING_METHOD:
             choices = [sm.get_choice() for sm in cart_modifiers_pool.get_shipping_modifiers()]
@@ -133,6 +133,8 @@ class DeliveryInline(admin.TabularInline):
     fields = ['shipping_id', 'shipping_method' if app_settings.SHOP_OVERRIDE_SHIPPING_METHOD else 'get_shipping_method',
               'delivered_items', 'print_out', 'fulfilled', 'shipped']
     readonly_fields = ['delivered_items', 'print_out', 'fulfilled', 'shipped']
+    if not app_settings.SHOP_MANUAL_SHIPPING_ID:
+        readonly_fields.append('shipping_id')
     if not app_settings.SHOP_OVERRIDE_SHIPPING_METHOD:
         readonly_fields.append('get_shipping_method')
 
