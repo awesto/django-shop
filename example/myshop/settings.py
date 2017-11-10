@@ -121,10 +121,6 @@ INSTALLED_APPS = [
     'easy_thumbnails.optimize',
     'post_office',
     'haystack',
-<<<<<<< HEAD
-=======
-    'shop_stripe',
->>>>>>> 9b761a1... add sendcloud to targets
     'shop',
     'shop_stripe',
     'myshop',
@@ -664,8 +660,19 @@ if 'shop_stripe' in INSTALLED_APPS:
     SHOP_ORDER_WORKFLOWS.append('shop_stripe.payment.OrderWorkflowMixin')
 
 if 'shop_sendcloud' in INSTALLED_APPS:
+    SHOP_MANUAL_SHIPPING_ID = False
     SHOP_CART_MODIFIERS.append('shop_sendcloud.modifiers.SendcloudShippingModifiers')
-    SHOP_ORDER_WORKFLOWS.append('shop_sendcloud.workflows.OrderWorkflowMixin')
+    if SHOP_PARTIAL_DELIVERY:
+        SHOP_ORDER_ITEM_SERIALIZER = 'shop_sendcloud.serializers.OrderItemSerializer'
+        SHOP_ORDER_WORKFLOWS.extend([
+            'shop_sendcloud.workflows.CommonOrderWorkflowMixin',
+            'shop.shipping.workflows.PartialDeliveryWorkflowMixin',
+        ])
+    else:
+        SHOP_ORDER_WORKFLOWS.extend([
+            'shop_sendcloud.workflows.SingularOrderWorkflowMixin',
+            'shop.shipping.workflows.CommissionGoodsWorkflowMixin',
+        ])
 else:
     SHOP_CART_MODIFIERS.append('myshop.modifiers.PostalShippingModifier')
 

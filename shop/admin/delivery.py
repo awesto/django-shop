@@ -115,7 +115,7 @@ class DeliveryForm(models.ModelForm):
     def __init__(self, *args, **kwargs):
         super(DeliveryForm, self).__init__(*args, **kwargs)
         instance = kwargs.get('instance')
-        if instance and instance.shipped_at:
+        if app_settings.SHOP_MANUAL_SHIPPING_ID and instance and instance.shipped_at:
             self['shipping_id'].field.widget.attrs.update(readonly='readonly')
         if app_settings.SHOP_OVERRIDE_SHIPPING_METHOD:
             choices = [sm.get_choice() for sm in cart_modifiers_pool.get_shipping_modifiers()]
@@ -129,17 +129,13 @@ class DeliveryForm(models.ModelForm):
 class DeliveryInline(admin.TabularInline):
     model = DeliveryModel
     extra = 0
-    fields = ('shipping_id', 'shipping_method', 'delivered_items', 'print_out', 'fulfilled',)
-    readonly_fields = ('delivered_items', 'print_out', 'fulfilled',)
-
-    def get_formset(self, request, obj=None, **kwargs):
-        """
-        Convert the field `shipping_method` into a select box with all possible shipping methods.
-        """
-        choices = [sm.get_choice() for sm in cart_modifiers_pool.get_shipping_modifiers()]
-        kwargs.update(widgets={'shipping_method': widgets.Select(choices=choices)})
-        formset = super(DeliveryInline, self).get_formset(request, obj, **kwargs)
-        return formset
+    fields = ['shipping_id', 'shipping_method' if app_settings.SHOP_OVERRIDE_SHIPPING_METHOD else 'get_shipping_method',
+              'delivered_items', 'print_out', 'fulfilled', 'shipped']
+    readonly_fields = ['delivered_items', 'print_out', 'fulfilled', 'shipped']
+    if not app_settings.SHOP_MANUAL_SHIPPING_ID:
+        readonly_fields.append('shipping_id')
+    if not app_settings.SHOP_OVERRIDE_SHIPPING_METHOD:
+        readonly_fields.append('get_shipping_method')
 
     def get_max_num(self, request, obj=None, **kwargs):
         qs = self.model.objects.filter(order=obj)
