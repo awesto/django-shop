@@ -138,11 +138,11 @@ class CheckoutTest(ShopTestCase):
         # check if Bart changed his address and zip code
         bart = get_user_model().objects.get(username='bart')
         self.assertIsNotNone(bart.customer)
-        self.assertEqual("Mr.", bart.customer.get_salutation_display())
+        self.assertEqual(bart.customer.get_salutation_display(), "Mr.")
         address = bart.customer.shippingaddress_set.first()
         self.assertEqual(address.name, "Bart Simpson")
         self.assertEqual(address.address1, "Park Ave.")
-        self.assertEqual(address.address2, empty_field)
+        self.assertEqual(address.address2, None)
         self.assertEqual(address.city, "Springfield")
         self.assertEqual(address.country, "US")
         self.assertFalse(bart.customer.billingaddress_set.exists())
@@ -324,13 +324,11 @@ class CheckoutTest(ShopTestCase):
         placeholder = self.checkout_page.publisher_public.placeholders.get(slot='Main Content')
         plugin = [p for p in placeholder.cmsplugin_set.all() if p.plugin_type == 'AcceptConditionPlugin'][0]
         accept_condition_form = soup.find('form', {'name': 'accept_condition_form.plugin_{}'.format(plugin.id)})
-        accept_input = accept_condition_form.find('input', {'id': 'acceptcondition_accept'})
-        if DJANGO_VERSION < (1, 11):
-            accept_paragraph = str(accept_input.find_next_siblings('p')[0])
-            self.assertHTMLEqual(accept_paragraph, "<p>I have read the terms and conditions and agree with them.</p>")
-        else:
-            accept_paragraph = str(accept_input.find_next_siblings('strong')[0])
-            self.assertHTMLEqual(accept_paragraph, "<strong><p>I have read the terms and conditions and agree with them.</p></strong>")
+        self.assertIsNotNone(accept_condition_form)
+        accept_input = accept_condition_form.find(id="acceptcondition_accept")
+        self.assertIsNotNone(accept_input)
+        accept_paragraph = str(accept_input.find_next_siblings('strong')[0])
+        self.assertHTMLEqual(accept_paragraph, "<strong><p>I have read the terms and conditions and agree with them.</p></strong>")
 
     def add_guestform_element(self):
         """Add one GuestFormPlugin to the current page"""
