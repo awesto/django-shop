@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 
 import json
+
+from django import VERSION as DJANGO_VERSION
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.contrib.sessions.backends.db import SessionStore
@@ -128,6 +130,8 @@ class CheckoutTest(ShopTestCase):
                 'plugin_id': billing_plugin_id_input['value'],
                 'plugin_order': billing_plugin_order_input['value']}
         }
+        empty_field = None if DJANGO_VERSION >= (1, 11) else ''
+
         url = reverse('shop:checkout-upload')
         response = self.client.post(url, data=json.dumps(data), content_type='application/json')
         payload = json.loads(response.content.decode('utf-8'))
@@ -139,11 +143,11 @@ class CheckoutTest(ShopTestCase):
         self.assertIsNotNone(bart.customer)
         self.assertEqual("Mr.", bart.customer.get_salutation_display())
         address = bart.customer.shippingaddress_set.first()
-        self.assertEqual("Bart Simpson", address.name)
-        self.assertEqual("Park Ave.", address.address1)
-        self.assertEqual("", address.address2)
-        self.assertEqual("Springfield", address.city)
-        self.assertEqual("US", address.country)
+        self.assertEqual(address.name, "Bart Simpson")
+        self.assertEqual(address.address1, "Park Ave.")
+        self.assertEqual(address.address2, empty_field)
+        self.assertEqual(address.city, "Springfield")
+        self.assertEqual(address.country, "US")
         self.assertFalse(bart.customer.billingaddress_set.exists())
 
         # try with a different billing address
