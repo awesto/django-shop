@@ -178,6 +178,7 @@ if os.getenv('POSTGRES_DB') and os.getenv('POSTGRES_USER'):
 LANGUAGE_CODE = 'en'
 
 if SHOP_TUTORIAL.startswith('sendcloud_'):
+    INSTALLED_APPS.insert(INSTALLED_APPS.index('django_select2'), 'phonenumber_field')
     INSTALLED_APPS.insert(INSTALLED_APPS.index('shop'), 'shop_sendcloud')
     SHOP_TUTORIAL = SHOP_TUTORIAL[10:]
 
