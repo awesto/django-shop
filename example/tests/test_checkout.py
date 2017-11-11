@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 
 import json
+
+from django import VERSION as DJANGO_VERSION
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.contrib.sessions.backends.db import SessionStore
@@ -124,6 +126,8 @@ class CheckoutTest(ShopTestCase):
                 'plugin_id': billing_plugin_id_input['value'],
                 'plugin_order': billing_plugin_order_input['value']}
         }
+        empty_field = None if DJANGO_VERSION >= (1, 11) else ''
+
         url = reverse('shop:checkout-upload')
         response = self.client.put(url, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 200)
@@ -138,7 +142,7 @@ class CheckoutTest(ShopTestCase):
         address = bart.customer.shippingaddress_set.first()
         self.assertEqual(address.name, "Bart Simpson")
         self.assertEqual(address.address1, "Park Ave.")
-        self.assertEqual(address.address2, None)
+        self.assertEqual(address.address2, empty_field)
         self.assertEqual(address.city, "Springfield")
         self.assertEqual(address.country, "US")
         self.assertFalse(bart.customer.billingaddress_set.exists())

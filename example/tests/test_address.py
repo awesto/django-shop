@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import json
 
+from django import VERSION as DJANGO_VERSION
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 
@@ -101,7 +102,8 @@ class AddressFormTest(APITestCase):
             'city': "Baltimore",
             'zip_code': "MD 21201",
             'country': "US",
-         }
+        }
+        empty_field = None if DJANGO_VERSION >= (1, 11) else ''
 
         edit_address_url = reverse('shop:edit-shipping-address', kwargs={'priority':'add'})
         response = self.client.get(edit_address_url)
@@ -166,7 +168,7 @@ class AddressFormTest(APITestCase):
         self.assertEqual(response['shipping_address_form'].pop('plugin_order'), '1')
         siblings_summary = response['shipping_address_form'].pop('siblings_summary')
         self.assertEqual(len(siblings_summary), 2)
-        self.assertEqual(response['shipping_address_form'].pop('address2'), None)
+        self.assertEqual(response['shipping_address_form'].pop('address2'), empty_field)
         self.assertDictEqual(response['shipping_address_form'], first_address)
 
         # check that Charles selected the first address
@@ -183,7 +185,7 @@ class AddressFormTest(APITestCase):
         ])
         self.assertEqual(response['shipping_address_form'].pop('active_priority'), '2')
         self.assertFalse(response['shipping_address_form'].pop('use_primary_address'))
-        self.assertEqual(response['shipping_address_form'].pop('address2'), None)
+        self.assertEqual(response['shipping_address_form'].pop('address2'), empty_field)
         self.assertDictEqual(response['shipping_address_form'], second_address)
 
         # check that Charles selected the second address
