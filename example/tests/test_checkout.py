@@ -327,8 +327,8 @@ class CheckoutTest(ShopTestCase):
         self.assertIsNotNone(accept_condition_form)
         accept_input = accept_condition_form.find(id="acceptcondition_accept")
         self.assertIsNotNone(accept_input)
-        accept_paragraph = str(accept_input.find_next_siblings('strong')[0])
-        self.assertHTMLEqual(accept_paragraph, "<strong><p>I have read the terms and conditions and agree with them.</p></strong>")
+        accept_paragraph = str(accept_input.find_next_siblings('p')[0])
+        self.assertHTMLEqual(accept_paragraph, "<p>I have read the terms and conditions and agree with them.</p>")
 
     def add_guestform_element(self):
         """Add one GuestFormPlugin to the current page"""
