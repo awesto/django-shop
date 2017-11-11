@@ -86,7 +86,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
     'djangocms_text_ckeditor',
-    'phonenumber_field',
     'django_select2',
     'cmsplugin_cascade',
     'cmsplugin_cascade.clipboard',
@@ -188,6 +187,7 @@ STATICFILES_DIRS = [
 LANGUAGE_CODE = 'en'
 
 if SHOP_TUTORIAL.startswith('sendcloud_'):
+    INSTALLED_APPS.insert(INSTALLED_APPS.index('django_select2'), 'phonenumber_field')
     INSTALLED_APPS.insert(INSTALLED_APPS.index('shop'), 'shop_sendcloud')
     SHOP_TUTORIAL = SHOP_TUTORIAL[10:]
 
