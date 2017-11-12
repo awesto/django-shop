@@ -43,7 +43,7 @@
 	<tfoot ng-show="cart.num_items>0">
 		<tr>
 			<td colspan="2" rowspan="99">
-				{% render_plugin instance.left_extension %}
+				{% if instance.left_extension %}{% render_plugin instance.left_extension %}{% endif %}
 			</td>
 			<td class="text-right"><strong>{% trans "Subtotal" %}</strong></td>
 			<td class="text-right text-nowrap"><strong ng-bind="cart.subtotal"><!-- Subtotal --></strong></td>
@@ -61,7 +61,7 @@
 		</tr>
 		<tr class="no-border">
 			<td colspan="3" rowspan="0">
-				{% render_plugin instance.right_extension %}
+				{% if instance.right_extension %}{% render_plugin instance.right_extension %}{% endif %}
 			</td>
 		</tr>
 	</tfoot>
