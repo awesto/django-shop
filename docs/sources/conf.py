@@ -22,8 +22,6 @@ sys.path.insert(0, os.path.abspath('../..'))
 sys.path.insert(0, os.path.abspath('../_ext'))
 #sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../sphinxcontrib-confluencebuilder')))
 
-print(sys.path)
-
 os.environ['DJANGO_SETTINGS_MODULE'] = 'myshop.settings'
 os.environ['DJANGO_SHOP_TUTORIAL'] = 'commodity'
 
@@ -40,7 +38,7 @@ extensions = [
     'djangodocs',
     'sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
-    'sphinxcontrib.confluencebuilder',
+    'htmlbuilder',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
