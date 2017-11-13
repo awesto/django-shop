@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.template import Context
-
 from rest_framework import renderers
-from rest_framework.compat import template_render
 from rest_framework.exceptions import APIException
 
 from shop.models.cart import CartModel
@@ -41,7 +38,7 @@ class ShopTemplateHTMLRenderer(TemplateContextMixin, renderers.TemplateHTMLRende
 
         if response.exception:
             template = self.get_exception_template(response)
-            template_context = Context(self.get_template_context(data, renderer_context))
+            template_context = self.get_template_context(data, renderer_context)
             return template.render(template_context)
 
         view = renderer_context['view']
@@ -83,7 +80,7 @@ class CMSPageRenderer(TemplateContextMixin, renderers.TemplateHTMLRenderer):
 
         if response.exception:
             template = self.get_exception_template(response)
-            template_context = Context(self.get_template_context(data, renderer_context))
+            template_context = self.get_template_context(data, renderer_context)
             return template.render(template_context)
 
         # set edit_mode, so that otherwise invisible placeholders can be edited inline
@@ -97,4 +94,4 @@ class CMSPageRenderer(TemplateContextMixin, renderers.TemplateHTMLRenderer):
             paginator=view.paginator,
             edit_mode=edit_mode,
         )
-        return template_render(template, template_context, request=request)
+        return template.render(template_context, request=request)
