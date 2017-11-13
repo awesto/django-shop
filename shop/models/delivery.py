@@ -2,13 +2,17 @@
 from __future__ import unicode_literals
 
 from six import with_metaclass
+
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
-from .order import BaseOrder, BaseOrderItem, OrderItemModel
+
 from shop import deferred
+from shop.models.order import BaseOrder, BaseOrderItem, OrderItemModel
 
 
+@python_2_unicode_compatible
 class BaseDelivery(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     Shipping provider to keep track on each delivery.
@@ -45,6 +49,9 @@ class BaseDelivery(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         abstract = True
         verbose_name = _("Delivery")
         verbose_name_plural = _("Deliveries")
+
+    def __str__(self):
+        return _("Delivery ID: {}").format(self.id)
 
     @classmethod
     def perform_model_checks(cls):
