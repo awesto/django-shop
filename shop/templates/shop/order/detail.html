@@ -49,7 +49,7 @@
 	<tfoot>
 		<tr>
 			<td colspan="2" rowspan="99">
-				{% render_plugin instance.left_extension %}
+				{% if instance.left_extension %}{% render_plugin instance.left_extension %}{% endif %}
 			</td>
 			<td><h5>{% trans "Subtotal" %}</h5></td>
 			<td class="text-right">
@@ -76,7 +76,7 @@
 		</tr>
 		<tr class="no-border">
 			<td colspan="3" rowspan="0">
-				{% render_plugin instance.right_extension %}
+				{% if instance.right_extension %}{% render_plugin instance.right_extension %}{% endif %}
 			</td>
 		</tr>
 	</tfoot>
