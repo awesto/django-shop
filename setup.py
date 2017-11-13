@@ -3,18 +3,15 @@
 from __future__ import unicode_literals
 
 from setuptools import setup, find_packages
-import sys
 import shop
 try:
     from pypandoc import convert
 except ImportError:
+    import io
+
     def convert(filename, fmt):
-        if sys.version_info[0] < 3:
-            with open(filename) as fd:
-                return fd.read()
-        else:
-            with open(filename, encoding="utf-8") as fd:
-                return fd.read()
+        with io.open(filename, encoding='utf-8') as fd:
+            return fd.read()
 
 CLASSIFIERS = [
     'Environment :: Web Environment',
