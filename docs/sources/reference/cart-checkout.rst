@@ -9,7 +9,7 @@ simplifies the code and saves some random access memory, but adds another minor 
 
 From a technical point of view, the checkout page is the same as the cart. They can both be on
 separate pages, or be merged on the same page. Since what we would normally name the
-"*Checkout Page*", is only a collection of :doc:`reference/cascade-plugins`, we won't go into
+"*Checkout Page*", is only a collection of :doc:`cascade-plugins`, we won't go into
 further detail here.
 
 
@@ -46,7 +46,7 @@ Cart Models
 
 The cart consists of two models classes ``Cart`` and ``CartItem``, both inheriting from ``BaseCart``
 and ``BaseCartItem`` respectively. As with most models in **django-SHOP**, these are using the
-:ref:`reference/deferred-models`, so that inheriting from a base class automatically sets the
+:doc:`deferred-models`, so that inheriting from a base class automatically sets the
 foreign keys to the appropriate model. This gives the programmer the flexibility to add as many
 fields to the cart, as the merchant requires for his special implementation.
 
@@ -240,7 +240,7 @@ the end of each page, so that the customer can easily proceed to the next one.
 On the checkout page, the customer has to fill out a few forms. These can be a contact form,
 shipping and billing addresses, payment and shipping methods, and many more. Which ones depend on
 the configuration, the legal regulations and the requirements of the shop's implementation. In
-:ref:`reference/cascade-plugins` all shop specific CMS plugins are listed. They can be combined
+:doc:`cascade-plugins` all shop specific CMS plugins are listed. They can be combined
 into whatever makes sense for a successful checkout.
 
 

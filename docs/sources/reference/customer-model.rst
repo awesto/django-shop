@@ -64,7 +64,7 @@ Adding the Customer model to our application
 ============================================
 
 As almost all models in **django-SHOP**, the ``Customer`` model itself, uses the
-:ref:`reference/deferred-models`. This means that the Django project is responsible for
+:doc:`deferred-models`. This means that the Django project is responsible for
 materializing that model and additionally allows the merchant to add arbitrary fields to *his*
 ``Customer`` model. Sound choices are a phone number, birth date, a boolean to signal whether the
 customer shall receive newsletters, his rebate status, etc.

@@ -93,4 +93,4 @@ because the merchant might want to arrange the order of the images and therefore
 
 
 Extend our simple product to support other natural languages by
-:doc:`tutorial/multilingual-product`.
+:doc:`multilingual-product`.

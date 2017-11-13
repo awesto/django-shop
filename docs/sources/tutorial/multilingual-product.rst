@@ -68,4 +68,4 @@ that these fields are translatable.
 
 
 Extend our discrete product type, to polymorphic models which are able to support many different
-product types: :doc:`tutorial/polymorphic-product`.
+product types: :doc:`/tutorial/polymorphic-product`.

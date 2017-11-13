@@ -13,7 +13,7 @@ Order Models
 
 An order consists of two models classes ``Order`` and ``OrderItem``, both inheriting from
 ``BaseOrder`` and ``BaseOrderItem`` respectively. As with most models in **django-SHOP**, they are
-:ref:`reference/deferred-models`, so that inheriting from a base class automatically sets the
+:doc:`deferred-models`, so that inheriting from a base class automatically sets the
 foreign keys to the appropriate model. This gives the programmer the flexibility to add as many
 fields to the order model, as the merchant requires for his special implementation.
 
@@ -339,7 +339,7 @@ entered payment equals or exceeds the order's total, this method returns ``True`
 for the given transition is met. This then adds a button labeled "*Mark as Paid*" at the bottom of
 the admin view. Whenever the merchant clicks on this button, the above method
 ``prepayment_fully_deposited`` is invoked. This then changes the order's status from
-"*awaiting_payment*" to "*prepayment_deposited*". The :ref:`reference/notifications` of
+"*awaiting_payment*" to "*prepayment_deposited*". The :doc:`notifications` of
 **django-SHOP** can intercept this transition change and perform preconfigured action, such as
 sending a payment confirmation email to the customer.
 

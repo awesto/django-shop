@@ -12,7 +12,7 @@ Django-SHOP documentation
 
 Upgrading
 =========
-If you are upgrading from an earlier version, please be sure to read the :doc:`release-notes`.
+If you are upgrading from an earlier version, please be sure to read the :doc:`/release-notes/index`.
 
 
 Tutorial
@@ -100,6 +100,7 @@ To be written
     :maxdepth: 1
 
     howto/address-model
+    howto/how-to-payment
     howto/multi-tenancy
     howto/secure-catalog
 

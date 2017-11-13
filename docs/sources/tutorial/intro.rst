@@ -65,7 +65,7 @@ These statements will setup an environment that runs one of the demo shops out o
 	you have to replace ``requirements/common.txt`` with ``requirements/py2.txt``.
 
 If you want to populate the database with your own categories, products and pages, proceed as
-described below. Otherwise, or if impatient, you may :ref:`tutorial/quickstart` using prepared
+described below. Otherwise, or if impatient, you may :doc:`/tutorial/quickstart` using prepared
 CMS page layouts, products and media files.
 
 

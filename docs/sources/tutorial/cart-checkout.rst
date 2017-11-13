@@ -1,6 +1,6 @@
-=================
-Cart and Checkout
-=================
+================================
+Building Cart and Checkout Pages
+================================
 
 In **django-SHOP**, the cart and checkout view follow the same idea as all other pages – they are
 managed by the CMS. Change into the Django admin backend and look for the CMS page tree. A good
@@ -17,7 +17,7 @@ position normally is just below the Cart page.
 The Checkout pages presumably are the most complicated page to setup. Therefore no generic receipt
 can be presented here. Instead some CMS plugins will be listed here. They can be useful to compose
 a complete checkout page. In the reference section it is shown in detail how to create a
-:doc:`reference/cart-checkout` view, but for this tutorial the best way to proceed is to have a look
+:doc:`../reference/cart-checkout` view, but for this tutorial the best way to proceed is to have a look
 in the prepared demo project for the *Cart* and *Checkout* pages.
 
 A list of plugins specific to **django-SHOP** can be found in the reference section. They include

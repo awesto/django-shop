@@ -52,7 +52,7 @@ complain if we do not silence this system check:
 
 	SILENCED_SYSTEM_CHECKS = ['auth.W004']
 
-For further information, please refer to the :ref:`reference/customer-model` documentation.
+For further information, please refer to the :doc:`customer-model` documentation.
 
 
 Authentication Backends

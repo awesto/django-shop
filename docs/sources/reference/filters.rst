@@ -2,7 +2,7 @@
 Filter Products by its Attributes
 =================================
 
-Besides :ref:`reference/search`, adding a filtering functionality to an e-commerce site is another
+Besides :doc:`search`, adding a filtering functionality to an e-commerce site is another
 very important feature. Customers must be able to narrow down a huge list of available products to
 a small set of desired products using a combination of prepared filter attributes.
 

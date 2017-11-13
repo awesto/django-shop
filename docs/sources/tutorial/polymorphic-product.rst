@@ -111,7 +111,7 @@ The concrete Smart Phone then is modeled as:
     :lines: 94-103
 
 
-To proceed with purchasing, customers need some :doc:`tutorial/cart-checkout` pages.
+To proceed with purchasing, customers need some :doc:`cart-checkout` pages.
 
 
 Model for a generic Commodity
