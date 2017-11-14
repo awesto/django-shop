@@ -162,6 +162,9 @@ MEDIA_ROOT = os.path.join(WORK_DIR, SHOP_TUTORIAL, 'media')
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
 MEDIA_URL = '/media/'
 
+# Absolute path where HTML fragments for the documentation are found
+DOCS_ROOT = os.path.abspath(os.path.join(PROJECT_ROOT, os.path.pardir, 'docs/_build/fragments'))
+
 # Absolute path to the directory that holds static files.
 # Example: "/home/media/media.lawrence.com/static/"
 STATIC_ROOT = os.path.join(WORK_DIR, 'static')

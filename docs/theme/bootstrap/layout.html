@@ -1,0 +1,52 @@
+{% extends "basic/layout.html" %}
+
+{% set bootstrap_version, navbar_version = "3.3.7", "" %}
+{% set bs_span_prefix = "col-md-" %}
+
+{% set script_files = script_files + [
+    '_static/js/jquery-1.11.0.min.js',
+    '_static/js/jquery-fix.js',
+    '_static/bootstrap-' + bootstrap_version + '/js/bootstrap.min.js',
+    '_static/bootstrap-sphinx.js'
+  ]
+%}
+
+{%- set render_sidebar = (not embedded) and (not theme_nosidebar|tobool) and sidebars %}
+
+{%- set bs_content_width = render_sidebar and "9" or "12"%}
+
+{%- block doctype -%}{%- endblock %}
+
+{%- macro bsidebar() %}
+  {%- if render_sidebar %}
+  <div class="{{ bs_span_prefix }}3">
+    <div id="sidebar" class="bs-sidenav" role="complementary">
+      {%- for sidebartemplate in sidebars %}
+        {%- include sidebartemplate %}
+      {%- endfor %}
+    </div>
+  </div>
+  {%- endif %}
+{%- endmacro %}
+
+{%- block extrahead %}{%- endblock %}
+
+{# Silence the sidebar's, relbar's #}
+{% block header %}{% endblock %}
+{% block relbar1 %}{% endblock %}
+{% block relbar2 %}{% endblock %}
+{% block sidebarsourcelink %}{% endblock %}
+
+{%- block content %}
+<div class="container">
+  <div class="row">
+    {%- block sidebar1 %}{{ bsidebar() }}{%- endblock %}
+    <div class="{{ bs_span_prefix }}{{ bs_content_width }} content">
+      {% block body %}{% endblock %}
+    </div>
+    {% block sidebar2 %} {# possible location for sidebar #} {% endblock %}
+  </div>
+</div>
+{%- endblock %}
+
+{%- block footer %}{%- endblock %}

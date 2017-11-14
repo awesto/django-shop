@@ -20,7 +20,6 @@ import datetime
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('../..'))
 sys.path.insert(0, os.path.abspath('../_ext'))
-#sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../sphinxcontrib-confluencebuilder')))
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'myshop.settings'
 os.environ['DJANGO_SHOP_TUTORIAL'] = 'commodity'
@@ -38,7 +37,7 @@ extensions = [
     'djangodocs',
     'sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
-    'htmlbuilder',
+    'fragmentsbuilder',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -62,8 +61,6 @@ copyright = datetime.date.today().strftime('Copyright %Y, Jacob Rief')
 # built documents.
 #
 # The short X.Y version.
-path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
-sys.path.insert(0, path)
 settings.configure()
 
 import shop
@@ -238,6 +235,6 @@ htmlhelp_basename = 'DjangoShopdoc'
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 #man_pages = [
-#    ('index_', 'djangoshop', u'Django SHOP Documentation',
-#     [u'Chris Glass'], 1)
+#    ('index_', 'djangoshop', 'Django SHOP Documentation',
+#     ['Jacob Rief'], 1)
 #]
