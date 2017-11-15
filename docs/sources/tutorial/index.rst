@@ -2,12 +2,15 @@
 Tutorial
 ========
 
-This tutorial is aimed at people new to django SHOP but already familiar with Django. If you aren't
+This tutorial is aimed at people new to **django-SHOP** but already familiar with Django. If you aren't
 yet, reading their excellent `Django Tutorial`_ is highly recommended.
 
 
 Introduction
 ============
+
+This tutorial shows how to setup a working e-commerce site using the provided dependencies. The code
+required to setup this demo can be found in the example/myshop folder.
 
 **Django-SHOP** is shipped with 6 demos: :ref:`tutorial/product-model-commodity`,
 :ref:`tutorial/product-model-i18n_commodity`, :ref:`tutorial/product-model-smartcard`,
@@ -20,8 +23,6 @@ is to install them manually, and :ref:`tutorial/populate-database-fixtures`.
 If you have a Docker runtime on your host, an even quicker approach is to
 :ref:`tutorial/prepared-docker-image`.
 
-
-.. _tutorial/prepare-installation:
 
 Prepare the Installation
 ========================
@@ -294,6 +295,16 @@ implementation of **django-SHOP**, is to use one of the six demo samples from ab
 It also is suggested to reuse the current structure of CMS pages and placeholders from the given
 samples. Having a working implementation, it is much easier to gradually modify it, until you reach
 a final goal, rather than starting with an empty site from scratch.
+
+.. toctree::
+    :maxdepth: 1
+
+    quickstart
+    simple-product
+    multilingual-product
+    polymorphic-product
+    catalog-views
+    cart-checkout
 
 .. _Django Tutorial: https://docs.djangoproject.com/en/stable/intro/tutorial01/
 .. _django-parler: http://django-parler.readthedocs.org/en/latest/

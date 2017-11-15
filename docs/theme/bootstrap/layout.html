@@ -1,7 +1,6 @@
-{% extends "basic/layout.html" %}
+{#% extends "basic/layout.html" %#}
 
 {% set bootstrap_version, navbar_version = "3.3.7", "" %}
-{% set bs_span_prefix = "col-md-" %}
 
 {% set script_files = script_files + [
     '_static/js/jquery-1.11.0.min.js',
@@ -19,12 +18,12 @@
 
 {%- macro bsidebar() %}
   {%- if render_sidebar %}
-  <div class="{{ bs_span_prefix }}3">
-    <div id="sidebar" class="bs-sidenav" role="complementary">
+  <div class="col-md-3" role="complementary">
+    <nav id="sidebar" class="bs-docs-sidebar hidden-print hidden-sm hidden-xs affix">
       {%- for sidebartemplate in sidebars %}
         {%- include sidebartemplate %}
       {%- endfor %}
-    </div>
+    </nav>
   </div>
   {%- endif %}
 {%- endmacro %}
@@ -40,11 +39,10 @@
 {%- block content %}
 <div class="container">
   <div class="row">
-    {%- block sidebar1 %}{{ bsidebar() }}{%- endblock %}
-    <div class="{{ bs_span_prefix }}{{ bs_content_width }} content">
+    <div class="col-md-{{ bs_content_width }} content" role="main">
       {% block body %}{% endblock %}
     </div>
-    {% block sidebar2 %} {# possible location for sidebar #} {% endblock %}
+    {%- block sidebar1 %}{{ bsidebar() }}{%- endblock %}
   </div>
 </div>
 {%- endblock %}

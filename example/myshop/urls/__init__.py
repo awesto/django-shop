@@ -11,6 +11,7 @@ from django.http import HttpResponse
 from shop.views.auth import PasswordResetConfirm
 from cms.sitemaps import CMSSitemap
 from myshop.sitemap import ProductSitemap
+from myshop.views import DocumentationView
 
 sitemaps = {'cmspages': CMSSitemap,
             'products': ProductSitemap}
@@ -31,10 +32,10 @@ urlpatterns = [
     url(r'^robots\.txt$', render_robots),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
     url(r'^shop/', include('shop.urls', namespace='shop')),
+    url(r'^docs/(?P<page>\S+)$', DocumentationView.as_view()),
 ]
 if settings.USE_I18N:
     urlpatterns.extend(i18n_patterns(*i18n_urls))
 else:
     urlpatterns.extend(i18n_urls)
 urlpatterns.extend(static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT))
-urlpatterns.extend(static('docs', document_root=settings.DOCS_ROOT))

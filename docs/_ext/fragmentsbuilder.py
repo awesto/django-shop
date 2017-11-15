@@ -4,6 +4,7 @@ import json, os
 
 from docutils import nodes
 from sphinx.builders.html import StandaloneHTMLBuilder
+from sphinx.environment.adapters.toctree import TocTree
 from sphinx.util import os_path
 
 
@@ -14,6 +15,9 @@ class FragmentsBuilder(StandaloneHTMLBuilder):
         super(FragmentsBuilder, self).__init__(app)
         self.config.html_theme = 'bootstrap'
         self.config.html_theme_path.append(os.path.abspath(os.path.join(__file__, os.pardir, os.pardir, 'theme')))
+        self.config.html_sidebars = {
+            '**': ['globaltoc.html'],
+        }
         self.docsmap_file = os.path.join(self.outdir, 'docsmap.json')
         if os.path.exists(self.docsmap_file):
             with open(self.docsmap_file, 'r') as fh:
@@ -39,10 +43,13 @@ class FragmentsBuilder(StandaloneHTMLBuilder):
                 docurl = os_path(docname) + self.out_suffix
                 self.docs_map[docname] = docurl, doctitle
                 print(doctitle + ': ' + docurl)
+            self.globalcontext['toctree'] = lambda **kw: self._get_local_toctree(docname, **kw)
 
-    def Xget_relative_uri(self, from_, to, typ=None):
-        relative_uri = super(FragmentsBuilder, self).get_relative_uri(from_, to, typ)
-        return relative_uri
+    def _get_local_toctree(self, docname, **kwargs):
+        # type: (unicode, bool, Any) -> unicode
+        partials = TocTree(self.env).get_toctree_for(docname, self, collapse=True, includehidden=True, maxdepth=0)
+#        partials = TocTree(self.env).get_toc_for(docname, self)
+        return self.render_partial(partials)['fragment']
 
     def finish(self):
         super(FragmentsBuilder, self).finish()

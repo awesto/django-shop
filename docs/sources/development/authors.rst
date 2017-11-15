@@ -1,10 +1,14 @@
-CORE DEVELOPERS
+=======
+Authors
+=======
+
+Core Developers
 ===============
 
 * Jacob Rief
 * René Fleschenberg
 
-CONTRIBUTORS
+Contributors
 ============
 
 * abelradac
@@ -47,7 +51,7 @@ CONTRIBUTORS
 * Stephen Muss
 * Thomas Woolford
 
-RETIRED CORE DEVELOPERS
+Retired Core Developers
 =======================
 
 * Chris Glass (chrisglass)
