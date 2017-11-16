@@ -277,8 +277,8 @@ into multiple languages, namely ``caption`` and ``description``. This sample imp
 use translated slugs, although it would be possible.
 
 
-Use one of the demos as a starting point for your project
-=========================================================
+Starting with a Sample Project
+==============================
 
 Depending on the needs of your e-commerce site, the easiest approach to start with your
 implementation of **django-SHOP**, is to use one of the six demo samples from above:

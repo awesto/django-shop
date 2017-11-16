@@ -11,3 +11,4 @@ Django-SHOP Documentation
     reference/index
     howto/index
     development/index
+    release-notes/index
