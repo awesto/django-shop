@@ -646,7 +646,8 @@ div.math:hover a.headerlink {
   width: initial;
 }
 
-#django-shop-documentation {
+.section {
+  margin-top: 30px;
   margin-bottom: 30px;
 }
 
