@@ -3,12 +3,11 @@ from __future__ import unicode_literals
 import json, os
 
 from docutils import nodes
-from sphinx.builders.html import StandaloneHTMLBuilder
+from sphinx.builders.html import DirectoryHTMLBuilder
 from sphinx.environment.adapters.toctree import TocTree
-from sphinx.util import os_path
 
 
-class FragmentsBuilder(StandaloneHTMLBuilder):
+class FragmentsBuilder(DirectoryHTMLBuilder):
     name = 'fragments'
 
     def __init__(self, app):
@@ -40,15 +39,14 @@ class FragmentsBuilder(StandaloneHTMLBuilder):
 
             doctitle = first_section[idx].astext()
             if doctitle:
-                docurl = os_path(docname) + self.out_suffix
-                self.docs_map[docname] = docurl, doctitle
-                print(doctitle + ': ' + docurl)
+                self.docs_map[docname] = doctitle
             self.globalcontext['toctree'] = lambda **kw: self._get_local_toctree(docname, **kw)
 
-    def _get_local_toctree(self, docname, **kwargs):
+    def _get_local_toctree(self, docname, collapse=True, **kwds):
         # type: (unicode, bool, Any) -> unicode
-        partials = TocTree(self.env).get_toctree_for(docname, self, collapse=True, includehidden=True, maxdepth=0)
-#        partials = TocTree(self.env).get_toc_for(docname, self)
+        if 'includehidden' not in kwds:
+            kwds['includehidden'] = False
+        partials = TocTree(self.env).get_toctree_for(docname, self, collapse, **kwds)
         return self.render_partial(partials)['fragment']
 
     def finish(self):

@@ -641,3 +641,34 @@ div.math:hover a.headerlink {
         display: none;
     }
 }
+
+.content[role="main"] .container {
+  width: initial;
+}
+
+#django-shop-documentation {
+  margin-bottom: 30px;
+}
+
+#sidebar {
+  margin: 50px 0;
+  position: fixed;
+}
+
+#sidebar ul {
+  list-style: none;
+  padding-left: 20px;
+}
+
+#sidebar > ul {
+  padding-left: 0;
+}
+
+#sidebar ul>li>a {
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 30px;
+    font-size: 12px;
+    font-weight: 400;
+    color: rgb(118, 118, 118);
+}

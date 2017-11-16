@@ -2,7 +2,7 @@
 django.jQuery(function($) {
 	'use strict';
 
-	django.cascade.MyShopLinkPlugin = ring.create(eval(django.cascade.ring_plugin_bases.MyShopLinkPlugin), {
+	django.cascade.DocumentationLinkPlugin = ring.create(eval(django.cascade.ring_plugin_bases.DocumentationLinkPlugin), {
 		constructor: function() {
 			this.$super();
 

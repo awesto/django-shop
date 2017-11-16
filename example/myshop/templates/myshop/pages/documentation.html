@@ -1,0 +1,10 @@
+{% extends "myshop/pages/default.html" %}
+{% load static sekizai_tags raw_include %}
+
+{% block head %}
+	{{ block.super }}
+	{% addtoblock "css" %}<link href="{% static 'myshop/css/basic.css' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+	{% addtoblock "css" %}<link href="{% static 'myshop/css/bootstrap-sphinx.css' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+{% endblock head %}
+
+{% block main-content %}{% if page_content %}{{ page_content }}{% else %}{% raw_include "index.html" %}{% endif %}{% endblock %}

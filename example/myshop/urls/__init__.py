@@ -26,13 +26,13 @@ i18n_urls = (
     url(r'^password-reset-confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/?$',
         PasswordResetConfirm.as_view(template_name='myshop/pages/password-reset-confirm.html'),
         name='password_reset_confirm'),
+    url(r'^docs/(?P<page>\S+)/$', DocumentationView.as_view(), name='documentation'),
     url(r'^', include('cms.urls')),
 )
 urlpatterns = [
     url(r'^robots\.txt$', render_robots),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
     url(r'^shop/', include('shop.urls', namespace='shop')),
-    url(r'^docs/(?P<page>\S+)$', DocumentationView.as_view()),
 ]
 if settings.USE_I18N:
     urlpatterns.extend(i18n_patterns(*i18n_urls))

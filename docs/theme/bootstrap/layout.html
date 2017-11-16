@@ -19,7 +19,7 @@
 {%- macro bsidebar() %}
   {%- if render_sidebar %}
   <div class="col-md-3" role="complementary">
-    <nav id="sidebar" class="bs-docs-sidebar hidden-print hidden-sm hidden-xs affix">
+    <nav id="sidebar" class="hidden-print hidden-sm hidden-xs">
       {%- for sidebartemplate in sidebars %}
         {%- include sidebartemplate %}
       {%- endfor %}

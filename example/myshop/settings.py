@@ -184,6 +184,9 @@ STATICFILES_DIRS = [
     ('node_modules', os.path.join(PROJECT_ROOT, 'node_modules')),
 ]
 
+# Absolute path to the directory holding documentation fragments created by Sphinx.
+DOCS_ROOT = os.path.abspath(os.path.join(PROJECT_ROOT, os.path.pardir, 'docs/_build/fragments'))
+
 # Internationalization
 # https://docs.djangoproject.com/en/stable/topics/i18n/
 
@@ -398,7 +401,7 @@ THUMBNAIL_PROCESSORS = (
 
 CMS_TEMPLATES = [
     ('myshop/pages/default.html', _("Default Page")),
-    ('myshop/pages/test.html', _("Test Page")),  # to show strides rendering via {% render_cascade ... %}
+    ('myshop/pages/documentation.html', _("Documentation Page")),
 ]
 
 CMS_CACHE_DURATIONS = {
@@ -465,9 +468,9 @@ CMSPLUGIN_CASCADE_PLUGINS = [
 
 CMSPLUGIN_CASCADE = {
     'link_plugin_classes': [
-        'myshop.cascade.MyShopLinkPluginBase',
+        'myshop.cascade.DocumentationLinkPluginBase',
         'cmsplugin_cascade.link.plugin_base.LinkElementMixin',
-        'myshop.cascade.MyShopCatalogLinkForm',
+        'myshop.cascade.DocumentationLinkForm',
     ],
     'alien_plugins': ['TextPlugin', 'TextLinkPlugin', 'AcceptConditionPlugin'],
     'bootstrap3': {

@@ -120,8 +120,12 @@ class CatalogLinkForm(LinkForm):
     """
     LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")), ('product', _("Product")),
                          ('exturl', _("External URL")), ('email', _("Mail To")),)
-    product = ProductSelectField(required=False, label='',
-        help_text=_("An internal link onto a product from the shop"))
+
+    product = ProductSelectField(
+        required=False,
+        label='',
+        help_text=_("An internal link onto a product from the shop"),
+    )
 
     def clean_product(self):
         if self.cleaned_data.get('link_type') == 'product':
