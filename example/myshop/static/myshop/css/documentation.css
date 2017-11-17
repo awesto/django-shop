@@ -315,7 +315,11 @@ div.admonition dl {
     margin-bottom: 0;
 }
 
-p.admonition-title {
+div.admonition.note p {
+    margin-left: 2em;
+}
+
+div.admonition p.admonition-title {
     margin: 0px 10px 5px 0px;
     font-weight: bold;
 }
@@ -560,7 +564,7 @@ div.code-block-caption span.caption-text {
 }
 
 div.literal-block-wrapper {
-    padding: 1em 1em 0;
+    padding: 0;
 }
 
 div.literal-block-wrapper div.highlight {
