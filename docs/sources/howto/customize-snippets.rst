@@ -2,9 +2,9 @@
 Add Customized HTML Snippets
 ============================
 
-When working in *Structure Mode* as provided by **djangoCMS**, while editing the DOM tree inside a
-placeholder, we might want to add a HTML snippet which is not part of the **Cascade** ecosystem.
-Instead of creating an additional Django template, it often is much easier to just add a  customized
+When we working with **django-CMS** in *Structure Mode*, while editing the DOM tree inside a
+placeholder, we might want to use an HTML snippet which is not part of the **Cascade** ecosystem.
+Instead of creating an additional Django template, it often is much easier to just add a customized
 plugin. This plugin then is available when editing a placeholder in *Structure Mode*.
 
 
