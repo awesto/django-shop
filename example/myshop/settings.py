@@ -93,6 +93,7 @@ INSTALLED_APPS = [
     'cmsplugin_cascade.extra_fields',
     'cmsplugin_cascade.icon',
     'cmsplugin_cascade.segmentation',
+    'cmsplugin_cascade.sphinx',
     'cms_bootstrap3',
     'adminsortable2',
     'rest_framework',
@@ -162,6 +163,9 @@ MEDIA_ROOT = os.path.join(WORK_DIR, SHOP_TUTORIAL, 'media')
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
 MEDIA_URL = '/media/'
 
+# Absolute path where HTML fragments for the documentation are found
+SPHINX_DOCS_ROOT = os.path.abspath(os.path.join(PROJECT_ROOT, os.path.pardir, 'docs/_build/fragments'))
+
 # Absolute path to the directory that holds static files.
 # Example: "/home/media/media.lawrence.com/static/"
 STATIC_ROOT = os.path.join(WORK_DIR, 'static')
@@ -171,8 +175,8 @@ STATIC_ROOT = os.path.join(WORK_DIR, 'static')
 STATIC_URL = '/static/'
 
 STATICFILES_FINDERS = [
-    'myshop.finders.FileSystemFinder',  # or 'django.contrib.staticfiles.finders.FileSystemFinder',
-    'myshop.finders.AppDirectoriesFinder',  # or 'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'myshop.finders.FileSystemFinder',  # or 'shop.cascade.plugin_base.CatalogLinkPluginBase',
+    'myshop.finders.AppDirectoriesFinder',  # or 'shop.cascade.plugin_base.CatalogLinkForm',
     'sass_processor.finders.CssFinder',
     'compressor.finders.CompressorFinder',
 ]
@@ -395,7 +399,7 @@ THUMBNAIL_PROCESSORS = (
 
 CMS_TEMPLATES = [
     ('myshop/pages/default.html', _("Default Page")),
-    ('myshop/pages/test.html', _("Test Page")),  # to show strides rendering via {% render_cascade ... %}
+    ('myshop/pages/documentation.html', _("Documentation Page")),
 ]
 
 CMS_CACHE_DURATIONS = {
@@ -462,9 +466,9 @@ CMSPLUGIN_CASCADE_PLUGINS = [
 
 CMSPLUGIN_CASCADE = {
     'link_plugin_classes': [
-        'shop.cascade.plugin_base.CatalogLinkPluginBase',
+        'myshop.cascade.DocumentationLinkPluginBase',  # 'cmsplugin_cascade.sphinx.link_plugin.SphinxDocsLinkPlugin',
         'cmsplugin_cascade.link.plugin_base.LinkElementMixin',
-        'shop.cascade.plugin_base.CatalogLinkForm',
+        'myshop.cascade.DocumentationLinkForm',  # 'cmsplugin_cascade.sphinx.link_plugin.SphinxDocsLinkForm',
     ],
     'alien_plugins': ['TextPlugin', 'TextLinkPlugin', 'AcceptConditionPlugin'],
     'bootstrap3': {

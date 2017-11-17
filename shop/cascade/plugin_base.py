@@ -118,10 +118,18 @@ class CatalogLinkForm(LinkForm):
     Note: In this form class the field ``product`` is missing. It is added later, when the shop's
     Product knows about its materialized model.
     """
-    LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")), ('product', _("Product")),
-                         ('exturl', _("External URL")), ('email', _("Mail To")),)
-    product = ProductSelectField(required=False, label='',
-        help_text=_("An internal link onto a product from the shop"))
+    LINK_TYPE_CHOICES = [
+        ('cmspage', _("CMS Page")),
+        ('product', _("Product")),
+        ('exturl', _("External URL")),
+        ('email', _("Mail To")),
+    ]
+
+    product = ProductSelectField(
+        required=False,
+        label='',
+        help_text=_("An internal link onto a product from the shop"),
+    )
 
     def clean_product(self):
         if self.cleaned_data.get('link_type') == 'product':
