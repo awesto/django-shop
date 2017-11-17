@@ -1,4 +1,3 @@
-@import "variables";
 @import "bootstrap-sass/assets/stylesheets/bootstrap";
 @import "font-awesome/scss/font-awesome";
 @import "django-angular";
@@ -12,7 +11,7 @@
 	}
 }
 
-// use it to remove borders in tables
+// remove borders in tables
 table tr {
 	&.no-border {
 		td, th {
