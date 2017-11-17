@@ -12,3 +12,4 @@ Django-SHOP Documentation
     howto/index
     development/index
     release-notes/index
+    glossary
