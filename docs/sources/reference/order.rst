@@ -1,21 +1,22 @@
-=====
-Order
-=====
+==============
+Placing Orders
+==============
 
 During checkout, at a certain point the customer has to click on a button named "*Purchase Now*".
-This operation performs quite a few tasks: One of them is to convert the cart with its items into
-an order. The final task is to reset the cart, which means to remove its content. This operation
-is atomic and not reversible.
+This operation performs quite a few tasks: One of them is to convert the cart with all of its
+items into an order object. The final task is to reset the cart, which means to remove its content.
+This operation is atomic and not reversible.
 
 
 Order Models
 ============
 
-An order consists of two models classes ``Order`` and ``OrderItem``, both inheriting from
-``BaseOrder`` and ``BaseOrderItem`` respectively. As with most models in **django-SHOP**, they are
-:doc:`deferred-models`, so that inheriting from a base class automatically sets the
-foreign keys to the appropriate model. This gives the programmer the flexibility to add as many
-fields to the order model, as the merchant requires for his special implementation.
+An order consists of two model classes ``Order`` and ``OrderItem``, both inheriting from
+:class:`shop.models.order.BaseOrder` and :class:`shop.models.order.BaseOrderItem`. As with most
+models in **django-SHOP**, they are :doc:`deferred-models`, so that inheriting from a base class
+automatically sets the foreign keys to the appropriate model. This gives the programmer the
+flexibility to add as many fields to its ``Order`` and ``OrderItem`` models, as the merchant
+requires for his special implementation.
 
 In most use-cases, the default implementation of the order model will do the job. These default
 classes can be found at :class:`shop.models.defaults.order.Order` and
@@ -24,12 +25,15 @@ is enough to ``import`` these two files into the merchant's shop project. Otherw
 may create his own order implementation inheriting from ``BaseOrder`` and/or ``BaseOrderItem``.
 
 .. note:: Assure that the model ``OrderItem`` is imported (and materialized) before model
-		``Product`` and classes derived from it.
+		``Product`` and classes inheriting from thereof.
 
 The order item quantity can not always be represented by natural numbers, therefore this field must
-be added to the ``OrderItem`` implementation rather than its base class. Since the quantity is
+be implemented to the ``OrderItem`` model, rather than its base class. Since the quantity is
 copied from the cart item to the order item, its field type must must correspond to that of
 ``CartItem.quantity``.
+
+While **django-SHOP** spins up, these fields are checked for their compatibility. Otherwise
+a configuration exception is raised.
 
 
 Create an Order from the Cart

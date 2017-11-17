@@ -1,36 +1,40 @@
-============================
-Managing the Deliver Process
-============================
+=============================
+Managing the Delivery Process
+=============================
 
 Depending on the merchant's setup, an order can be considered as one inseparably unit, or if partial
-shipping shall be allowed, as a collection of single products, which can be delivered individually.
+shipping shall be allowed, as a collection of single items, which can be delivered individually.
 
-To enable partial shipping, assure the instantiation of both classes
+To enable partial shipping, assure the materialization of two classes inheriting from
 :class:`shop.models.delivery.BaseDelivery` and :class:`shop.models.delivery.BaseDeliveryItem`. The
-easiest way to do this is to import the materialized classes into an existing model class:
+easiest way to do this is to import the default classes:
 
 .. code-block:: python
 
-	from shop.models.defaults.delivery import Delivery, DeliveryItem
+	from shop.models.defaults.delivery import Delivery
+	from shop.models.defaults.delivery_item import DeliveryItem
 
 Typically, this is done in the project's ``admin.py`` file.
+
+As with all models in **django-SHOP**, you can implement your own version of the delivery model.
+This for instance is required, if the delivered quantity can not be expressed by an integer field.
 
 
 Partial Delivery Workflow
 =========================
 
-The class implementing the ``Order``, requires additional methods provided by the mixin class
-:class:`shop.shipping.delivery.PartialDeliveryWorkflowMixin`. Mix this class into the ``Order``
-class by configuring
+The class implementing our ``Order`` model, requires additional methods provided by the mixin class
+:class:`shop.shipping.delivery.PartialDeliveryWorkflowMixin`. Add this mixin class to the ordering
+workflow by configuring:
 
 .. code-block:: python
 
 	SHOP_ORDER_WORKFLOWS = (
 	    # other workflow mixins
-	    'shop.shipping.defaults.PartialDeliveryWorkflowMixin',
+	    'shop.shipping.workflows.PartialDeliveryWorkflowMixin',
 	)
 
-.. note:: Do not combine this mixin with the class ``CommissionGoodsWorkflowMixin``.
+.. note:: Do not combine this mixin class with :class:`shop.shipping.workflows.CommissionGoodsWorkflowMixin`.
 
 
 Administration Backend
@@ -43,12 +47,12 @@ to the class class implementing the ``OrderAdmin``:
 	:caption: myshop/admin/order.py
 
 	from django.contrib import admin
-	from shop.admin.order import BaseOrderAdmin
+	from shop.admin.defaults.order import OrderAdmin
 	from shop.models.defaults.order import Order
 	from shop.admin.delivery import DeliveryOrderAdminMixin
 
 	@admin.register(Order)
-	class OrderAdmin(DeliveryOrderAdminMixin, BaseOrderAdmin):
+	class OrderAdmin(DeliveryOrderAdminMixin, OrderAdmin):
 	    pass
 
 
