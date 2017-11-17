@@ -175,8 +175,8 @@ STATIC_ROOT = os.path.join(WORK_DIR, 'static')
 STATIC_URL = '/static/'
 
 STATICFILES_FINDERS = [
-    'myshop.finders.FileSystemFinder',  # or 'django.contrib.staticfiles.finders.FileSystemFinder',
-    'myshop.finders.AppDirectoriesFinder',  # or 'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'myshop.finders.FileSystemFinder',  # or 'shop.cascade.plugin_base.CatalogLinkPluginBase',
+    'myshop.finders.AppDirectoriesFinder',  # or 'shop.cascade.plugin_base.CatalogLinkForm',
     'sass_processor.finders.CssFinder',
     'compressor.finders.CompressorFinder',
 ]
@@ -184,9 +184,6 @@ STATICFILES_FINDERS = [
 STATICFILES_DIRS = [
     ('node_modules', os.path.join(PROJECT_ROOT, 'node_modules')),
 ]
-
-# Absolute path to the directory holding documentation fragments created by Sphinx.
-DOCS_ROOT = os.path.abspath(os.path.join(PROJECT_ROOT, os.path.pardir, 'docs/_build/fragments'))
 
 # Internationalization
 # https://docs.djangoproject.com/en/stable/topics/i18n/
