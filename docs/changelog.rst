@@ -4,7 +4,6 @@
 Changelog for django-SHOP
 =========================
 
-
 0.12
 ====
 
@@ -71,7 +70,17 @@ Changelog for django-SHOP
 * Remove ``angular-message`` from the list of npm dependencies.
 
 
-=======
+0.11.3
+======
+
+* Fix: Problems with missing Left- and Right Extension Plugin.
+* Ready for Django-1.11 if used with django-CMS-3.4.5
+* Ready for django-restframework-3.7
+* Tested with recent versions of other third party libraries.
+* Fix issues with enum types when importing fixtures.
+* Add Swedish Kronor to currencies.
+
+
 0.11.2
 =======
 

@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import json
 
+from django import VERSION as DJANGO_VERSION
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 
@@ -101,7 +102,8 @@ class AddressFormTest(APITestCase):
             'city': "Baltimore",
             'zip_code': "MD 21201",
             'country': "US",
-         }
+        }
+        url = reverse('shop:checkout-upload')
 
         edit_address_url = reverse('shop:edit-shipping-address', kwargs={'priority':'add'})
         response = self.client.get(edit_address_url)
@@ -171,7 +173,8 @@ class AddressFormTest(APITestCase):
 
         # check that Charles selected the first address
         self.cart.refresh_from_db()
-        self.assertEqual(str(self.cart.shipping_address.priority), '1')
+        self.assertEqual(self.cart.shipping_address.as_text(),
+                         "Charles Smith\n507, Dudley St.\nPA 19148 Philadelphia\nUnited States\n")
 
         # now Charles removes his first address
         response = self.client.delete(edit_address_url)
