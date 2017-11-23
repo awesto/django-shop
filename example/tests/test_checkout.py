@@ -325,10 +325,9 @@ class CheckoutTest(ShopTestCase):
         plugin = [p for p in placeholder.cmsplugin_set.all() if p.plugin_type == 'AcceptConditionPlugin'][0]
         accept_condition_form = soup.find('form', {'name': 'accept_condition_form.plugin_{}'.format(plugin.id)})
         self.assertIsNotNone(accept_condition_form)
-        accept_input = accept_condition_form.find('input', {'id': 'id_accept'})
-        if DJANGO_VERSION < (1, 11):  # temporarily disabled - it works in version 0.13
-            accept_paragraph = str(accept_input.find_next_siblings('p')[0])
-            self.assertHTMLEqual(accept_paragraph, "<p>I have read the terms and conditions and agree with them.</p>")
+        accept_input = accept_condition_form.find('input', {'id': 'acceptcondition_accept'})
+        accept_paragraph = str(accept_input.find_next_siblings('p')[0])
+        self.assertHTMLEqual(accept_paragraph, "<p>I have read the terms and conditions and agree with them.</p>")
 
     def add_guestform_element(self):
         """Add one GuestFormPlugin to the current page"""
