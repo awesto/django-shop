@@ -1,0 +1,64 @@
+{% extends "shop/dashboard/main.html" %}
+
+{% block NgAdminConfigurationProvider %}
+(function() {
+	var entity = nga.entity("extra");
+	entity.label("Extra");
+
+	entity.listView().fields([
+		nga.field("id", "string"),
+		nga.field("product_name", "string"),
+	]);
+
+	entity.creationView().fields([
+		nga.field("id", "string"),
+		nga.field("product_name", "string"),
+		nga.field("price", "amount")
+	]);
+
+	entity.editionView().fields([
+		nga.field("id", "string"),
+		nga.field("product_name", "string"),
+		nga.field("price", "float")
+	]);
+
+	admin.addEntity(entity);
+})();
+
+{% endblock %}
+
+
+{% comment %}
+add this to example/myshop/dashboard.py:
+
+from rest_framework.viewsets import ViewSet
+from rest_framework.response import Response
+
+class ExtraViewSet(ViewSet):
+    def list(self, request):
+        data = {
+            "count": 1,
+             "next": None,
+             "previous": None,
+             "results": [
+                 {"id": 1, "product_name": "Foo"},
+             ]
+        }
+        return Response(data)
+
+    def retrieve(self, request, pk=None):
+        data = {
+            "id": 1,
+            "product_name": "Foo",
+            "price": 1.23
+        }
+        return Response(data)
+
+
+add this to example/myshop/urls/dashboard.py:
+
+router = DashboardRouter(trailing_slash=False, root_template_name='myshop/dashboard.html')
+router.register('extra', ExtraViewSet, base_name='extra')
+
+
+{% endcomment %}
