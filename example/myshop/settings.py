@@ -175,8 +175,8 @@ STATIC_ROOT = os.path.join(WORK_DIR, 'static')
 STATIC_URL = '/static/'
 
 STATICFILES_FINDERS = [
-    'myshop.finders.FileSystemFinder',  # or 'shop.cascade.plugin_base.CatalogLinkPluginBase',
-    'myshop.finders.AppDirectoriesFinder',  # or 'shop.cascade.plugin_base.CatalogLinkForm',
+    'myshop.finders.FileSystemFinder',  # or 'django.contrib.staticfiles.finders.FileSystemFinder',
+    'myshop.finders.AppDirectoriesFinder',  # or 'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'sass_processor.finders.CssFinder',
     'compressor.finders.CompressorFinder',
 ]
