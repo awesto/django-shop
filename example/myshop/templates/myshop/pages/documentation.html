@@ -3,8 +3,7 @@
 
 {% block head %}
 	{{ block.super }}
-	{% addtoblock "css" %}<link href="{% static 'myshop/css/documentation.css' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
-	{% addtoblock "css" %}<link href="{% static 'myshop/css/bootstrap-sphinx.css' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+	{% addtoblock "css" %}<link href="{% static 'cascade/sphinx/css/bootstrap-sphinx.css' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 {% endblock head %}
 
 {% block main-content %}{% if page_content %}{{ page_content }}{% else %}{% sphinx_docs_include "index.html" %}{% endif %}{% endblock %}
