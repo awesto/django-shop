@@ -40,16 +40,20 @@ class ProductListView(generics.ListAPIView):
 
     You may add these attributes to the ``as_view()`` method:
 
-    :param renderer_classes: A list or tuple of REST renderer classes.
+    :param renderer_classes: A list or tuple of `REST renderer`_ classes.
 
     :param product_model: The product model onto which the filter set is applied.
 
     :param serializer_class: The serializer class used to process the queryset returned
-        by the catalog's product list view.
+        by the catalog's product list view. It defaults to the ``PRODUCT_SUMMARY_SERIALIZER``
+        setting.
 
     :param limit_choices_to: Limit the queryset of product models to these choices.
+        By default, all products are part of the queryset.
 
     :param filter_class: A filter set which must be inherit from :class:`django_filters.FilterSet`.
+
+    .. _REST renderer: http://www.django-rest-framework.org/api-guide/renderers/
     """
 
     renderer_classes = (CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer)
@@ -160,7 +164,7 @@ class AddToCartView(views.APIView):
 
 class ProductRetrieveView(generics.RetrieveAPIView):
     """
-    This view is used to retrieve and render a certain product.
+    This view is used to retrieve and render the details of a specific product.
 
     Usage: Add it to the urlpatterns responsible for rendering the catalog's views. The
     file containing this patterns can be referenced by the CMS apphook ``ProductsListApp``
@@ -174,7 +178,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
     ```
     You may add these attributes to the ``as_view()`` method:
 
-    :param renderer_classes: A list or tuple of REST renderer classes.
+    :param renderer_classes: A list or tuple of `REST renderer`_ classes.
 
     :param lookup_field: The model field used to retrieve the product instance.
 
@@ -184,6 +188,8 @@ class ProductRetrieveView(generics.RetrieveAPIView):
         by the catalog's product detail view.
 
     :param limit_choices_to: Limit the queryset of product models to these choices.
+
+    .. _REST renderer: http://www.django-rest-framework.org/api-guide/renderers/
     """
 
     renderer_classes = (ShopTemplateHTMLRenderer, JSONRenderer, BrowsableAPIRenderer)
