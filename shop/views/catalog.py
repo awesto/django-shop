@@ -29,14 +29,13 @@ class ProductListView(generics.ListAPIView):
 
     Usage: Add it to the urlpatterns responsible for rendering the catalog's views. The
     file containing this patterns can be referenced by the CMS apphook used by the CMS pages
-    responsible for rendering the catalog's list view.
-    ```
-    urlpatterns = [
-        url(r'^$', ProductListView.as_view()),
-        url(r'^(?P<slug>[\w-]+)/?$', ProductRetrieveView.as_view()),  # see below
-        ...
-    ]
-    ```
+    responsible for rendering the catalog's list view::
+
+        urlpatterns = [
+            url(r'^$', ProductListView.as_view()),
+            url(r'^(?P<slug>[\w-]+)/?$', ProductRetrieveView.as_view()),
+            ...
+        ]
 
     You may add these attributes to the ``as_view()`` method:
 
