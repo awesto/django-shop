@@ -239,7 +239,7 @@ class ProductSelectView(generics.ListAPIView):
         term = self.request.GET.get('term', '')
         if len(term) >= 2:
             return ProductModel.objects.select_lookup(term)
-        return ProductModel.objects.all(
+        return ProductModel.objects.all()
 
 
 class AddFilterContextMixin(object):
