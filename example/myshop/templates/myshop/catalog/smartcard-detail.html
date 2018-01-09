@@ -1,5 +1,5 @@
 {% extends "myshop/catalog/product-detail.html" %}
-{% load i18n cms_tags thumbnail %}
+{% load i18n cms_tags thumbnail rest_framework %}
 
 {% block main-content %}
 <div class="container">
@@ -15,6 +15,13 @@
 		</div>
 		<div class="col-xs-12 col-md-8">
 			{{ product.description|safe }}
+			{% if user.is_staff %}
+			<form action="." method="post" style="margin-bottom: 20px;">
+				{% csrf_token %}
+				{% render_form serializer %}
+				<button class="btn btn-primary" type="submit">{% trans "Update" %}</button>
+			</form>
+			{% else %}
 			<table class="table table-bordered">
 				<tbody class="table-striped">
 					<tr>
@@ -35,6 +42,7 @@
 					</tr>
 				</tbody>
 			</table>
+			{% endif %}
 			<!-- include "Add to Cart" dialog box -->
 			{% include "shop/catalog/product-add2cart.html" %}
 		</div>

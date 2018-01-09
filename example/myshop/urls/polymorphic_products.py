@@ -13,6 +13,7 @@ from shop.views.catalog import AddToCartView, ProductRetrieveView
 
 from myshop.filters import ManufacturerFilterSet
 from myshop.serializers import (AddSmartPhoneToCartSerializer, CatalogSearchSerializer)
+from myshop.views import MyProductDetailView
 
 
 urlpatterns = [
@@ -20,7 +21,7 @@ urlpatterns = [
         filter_class=ManufacturerFilterSet,
         search_serializer_class=CatalogSearchSerializer,
     )),
-    url(r'^(?P<slug>[\w-]+)/?$', ProductRetrieveView.as_view()),
+    url(r'^(?P<slug>[\w-]+)/?$', MyProductDetailView.as_view()),
     url(r'^(?P<slug>[\w-]+)/add-to-cart', AddToCartView.as_view()),
     url(r'^(?P<slug>[\w-]+)/add-smartphone-to-cart', AddToCartView.as_view(
         serializer_class=AddSmartPhoneToCartSerializer,
