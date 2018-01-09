@@ -5,6 +5,8 @@ The difference here is that we modified the lookup_field for slug, since it is t
 """
 from __future__ import unicode_literals
 
+raise NotImplementedError("Deprecated View")
+
 from django.conf.urls import url
 
 from shop.views.catalog import ProductListView, ProductRetrieveView, AddToCartView
