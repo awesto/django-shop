@@ -6,7 +6,7 @@ The catalog presumably is that part, where customers of our e-commerce site spen
 Often it even makes sense, to start the :ref:`reference/catalog-list` on the main landing page.
 
 In this documentation we presume that categories of products are built up using specially tagged
-CMS pages in combination with a `djangoCMS apphook`_. This works perfectly well for most
+CMS pages in combination with a `django-CMS apphook`_. This works perfectly well for most
 implementation, but some sites may require categories implemented independently of the CMS.
 
 Using an external **django-SHOP** plugin for managing categories is a very conceivable solution,
@@ -39,7 +39,7 @@ But first we must :ref:`reference/create-CatalogListApp`.
 Create the ``CatalogListApp``
 -----------------------------
 
-To retrieve a list of product models, the Catalog List View requires a `djangoCMS apphook`_. This
+To retrieve a list of product models, the Catalog List View requires a `django-CMS apphook`_. This
 ``CatalogListApp`` must be added into a file named ``cms_apps.py`` and located in the root folder
 of the merchant's project:
 
@@ -66,7 +66,7 @@ as all apphooks, it requires a file defining its urlpatterns:
 
 	urlpatterns = [
 	    url(r'^$', ProductListView.as_view()),
-	    # other patterns
+	    # more patterns
 	]
 
 By default the ``ProductListView`` renders the catalog list of products assigned to the current CMS
@@ -76,6 +76,29 @@ as for a representation in JSON suitable for client side rendered list views. Th
 reuse this Django View (``ProductListView``) whenever the catalog list switches into infinite scroll
 mode, where it only requires the product's summary, composed of plain old JavaScript objects.
 
+For simplicity, we may merge the contents from file ``myshop/urls/products.py`` into
+``myshop/cms_apps.py``, so that the method ``CatalogListApp.get_urls(...)`` returns the URL
+patterns directly:
+
+.. code-block:: python
+
+	from cms.apphook_pool import apphook_pool
+	from django.conf.urls import url
+	from shop.cms_apphooks import CatalogListCMSApp
+	from shop.views.catalog import ProductListView
+
+	class CatalogListApp(CatalogListCMSApp):
+	    def get_urls(self, page=None, language=None, **kwargs):
+	        return [
+	            url(r'^$', ProductListView.as_view()),
+	            # more patterns
+	        ]
+
+
+Interface of ``ProductListView``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: shop.views.catalog.ProductListView
 
 .. _reference/customized-product-serializer:
 
@@ -110,7 +133,7 @@ Additionally, we have to rewrite the URL pattern from above as:
 	    url(ProductListView.as_view(
 	        serializer_class=CustomizedProductSerializer,
 	    )),
-	    # other patterns
+	    # more patterns
 	]
 
 Here the ``CustomizedProductSerializer`` is used to create a more specialized representation of our
@@ -144,33 +167,25 @@ now.
 Catalog Detail View
 ===================
 
-The product's detail pages are the only ones we typically do not control with **django-CMS**
+The product's detail pages are the only ones, which we typically do not control with **django-CMS**
 placeholders. This is because we often have thousands of products and creating a CMS page for each
 of them, would be kind of overkill. It only makes sense for shops selling up to a dozen of different
-products.
+products. For the latter use-case, **django-SHOP** ships with a special type of product, actually
+:class:`shop.models.defaults.commodity.Commodity`.
 
-Therefore, the template used to render the products's detail view is selected automatically by the
-``ProductRetrieveView`` [1]_ following these rules:
-
-* look for a template named ``<myshop>/catalog/<product-model-name>-detail.html`` [2]_ [3]_,
-  otherwise
-* look for a template named ``<myshop>/catalog/product-detail.html`` [2]_, otherwise
-* use the template ``shop/catalog/product-detail.html``.
-
-.. [1] This is the View class responsible for rendering the product's detail view.
-.. [2] ``<myshop>`` is the app label of the project in lowercase.
-.. [3] ``<product-model-name>`` is the class name of the product model in lowercase.
+Normally, however we use the product's detail view and associate it with a template, specifically
+adopted to the product's properties.
 
 
 Use CMS Placeholders on Detail View
 -----------------------------------
 
 If we require CMS functionality for each product's detail page, its quite simple to achieve. To the
-class implementing our product model, add a `djangoCMS Placeholder field`_ named ``placeholder``.
+class implementing our product model, add a `django-CMS Placeholder field`_ named ``placeholder``.
 Then add the templatetag ``{% render_placeholder product.placeholder %}`` to the template
 implementing the detail view of our product. This placeholder then shall be used to add arbitrary
 content to the product's detail page. This for instance can be an additional text paragraphs,
-some images, a carousel or whatever is available from the **djangoCMS** plugin system.
+some images, a carousel or whatever is available from the **django-CMS** plugin system.
 
 
 Route requests on Detail View
@@ -187,7 +202,7 @@ requests on all of its sub-URLs. This is done by expanding the current list of u
 	from shop.views.catalog import ProductRetrieveView
 
 	urlpatterns = [
-	    # previous patterns
+	    url(r'^$', ProductListView.as_view()),  # from above
 	    url(r'^(?P<slug>[\w-]+)$', ProductRetrieveView.as_view()),
 	    # more patterns
 	]
@@ -213,6 +228,22 @@ Additionally, we have to rewrite the URL pattern from above as:
 
 
 .. _reference/additional-serializer-fields:
+
+Template for the product's detail view
+--------------------------------------
+
+Therefore, the template used to render the products's detail view is selected automatically by the
+``ProductRetrieveView`` [1]_ following these rules:
+
+* look for a template named ``<myshop>/catalog/<product-model-name>-detail.html`` [2]_ [3]_,
+  otherwise
+* look for a template named ``<myshop>/catalog/product-detail.html`` [2]_, otherwise
+* use the template ``shop/catalog/product-detail.html``.
+
+.. [1] This is the View class responsible for rendering the product's detail view.
+.. [2] ``<myshop>`` is the app label of the project in lowercase.
+.. [3] ``<product-model-name>`` is the class name of the product model in lowercase.
+
 
 Additional Product Serializer Fields
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -313,8 +344,8 @@ above.
 .. note:: Due to the way keys are handled in many caching systems, the ``InvalidateProductCacheMixin``
 	only makes sense if used in combination with the redis_cache_ backend.
 
-.. _djangoCMS apphook: http://docs.django-cms.org/en/stable/how_to/apphooks.html
-.. _djangoCMS Placeholder field: http://django-cms.readthedocs.org/en/stable/how_to/placeholders.html
+.. _django-CMS apphook: http://docs.django-cms.org/en/stable/how_to/apphooks.html
+.. _django-CMS Placeholder field: http://django-cms.readthedocs.org/en/stable/how_to/placeholders.html
 .. _serializer fields: http://www.django-rest-framework.org/api-guide/fields/
 .. _templatetags from the easythumbnail: https://easy-thumbnails.readthedocs.org/en/stable/usage/#templates
 .. _redis_cache: http://django-redis-cache.readthedocs.org/en/stable/

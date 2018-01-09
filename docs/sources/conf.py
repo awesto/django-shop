@@ -20,11 +20,10 @@ import datetime
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('../..'))
 sys.path.insert(0, os.path.abspath('../_ext'))
+sys.path.insert(0, os.path.abspath('../../example'))
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'myshop.settings'
 os.environ['DJANGO_SHOP_TUTORIAL'] = 'commodity'
-
-from django.conf import settings
 
 # -- General configuration -----------------------------------------------------
 
@@ -61,9 +60,11 @@ copyright = datetime.date.today().strftime('Copyright %Y, Jacob Rief')
 # built documents.
 #
 # The short X.Y version.
-settings.configure()
-
+import django
 import shop
+
+django.setup()
+#django.conf.settings.configure()
 
 version = shop.__version__
 # The full version, including alpha/beta/rc tags.
