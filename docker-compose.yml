@@ -1,0 +1,47 @@
+version: '2.0'
+
+services:
+  postgresdb:
+    restart: always
+    image: postgres
+    env_file:
+      - example/docker-files/environ
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - shopnet
+
+  redishost:
+    image: redis
+    volumes:
+      - 'redisdata:/data'
+    networks:
+      - shopnet
+
+  django:
+    restart: always
+    build:
+      context: .
+      dockerfile: example/docker-files/Dockerfile
+    image: demoshop
+    environment:
+      - DJANGO_SHOP_TUTORIAL=i18n_polymorphic
+    env_file:
+      - example/docker-files/environ
+    volumes:
+      - shopmedia:/web/workdir/media
+    depends_on:
+      - postgresdb
+      - redishost
+    ports:
+      - '9009:9009'
+    networks:
+      - shopnet
+
+networks:
+  shopnet:
+
+volumes:
+  pgdata:
+  redisdata:
+  shopmedia:

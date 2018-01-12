@@ -264,6 +264,32 @@ TEMPLATES = [{
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+REDIS_HOST = os.getenv('REDIS_HOST')
+
+if REDIS_HOST:
+    SESSION_ENGINE = 'redis_sessions.session'
+    SESSION_SAVE_EVERY_REQUEST = True
+
+    SESSION_REDIS = {
+        'host': REDIS_HOST,
+        'port': 6379,
+        'db': 0,
+        'socket_timeout': 1
+    }
+
+    CACHES = {
+        'default': {
+            'BACKEND': 'redis_cache.RedisCache',
+            'LOCATION': 'redis://{}:6379/1'.format(REDIS_HOST),
+        },
+        'select2': {
+            'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+        },
+    }
+
+    CACHE_MIDDLEWARE_ALIAS = 'default'
+    CACHE_MIDDLEWARE_SECONDS = 3600
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
