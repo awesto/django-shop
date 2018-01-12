@@ -138,7 +138,7 @@ class ShopProductGallery(WithSortableInlineElementsMixin, ShopPluginBase):
                 product_ids.append(inline.glossary['product']['pk'])
             except KeyError:
                 pass
-        queryset = ProductModel.objects.filter(pk__in=product_ids)
+        queryset = ProductModel.objects.filter(pk__in=product_ids, active=True)
         serializer_class = app_settings.PRODUCT_SUMMARY_SERIALIZER
         serialized = serializer_class(queryset, many=True, context={'request': context['request']})
         context['products'] = serialized.data
