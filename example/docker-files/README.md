@@ -7,20 +7,15 @@ Dockerfile to their needs. Replace ``demo-shop`` with whatever appropriate.
 Build the Docker image with:
 
 ```
-cd django-shop/example
-docker build -t awesto/django-shop-demo .
+cd django-shop
+docker-compose up -d --build
 ```
 
-Create and start the Docker container with:
+Point a browser onto http://<docker-machine-ip>:9009/
 
-```
-docker create --name demo-shop-i18n_polymorphic --env DJANGO_SHOP_TUTORIAL=i18n_polymorphic -p 9001:9001 awesto/django-shop-demo
-docker start demo-shop-i18n_polymorphic
-```
-
-In case you want to test one of the other examples, set the environment variable
-``DJANGO_SHOP_TUTORIAL`` to ``commodity``, ``i18n_commodity``, ``smartcard``, ``i18n_smartcard`` or
-``polymorphic`` respectively. To prevent confusion, also use another name for the container.
+In case you want to test one of the other examples, edit the file ``docker-compose.yml`` and locate
+the subsection ``environment`` in section ``django``. Set ``DJANGO_SHOP_TUTORIAL`` to ``commodity``,
+``i18n_commodity``, ``smartcard``, ``i18n_smartcard`` or ``polymorphic`` respectively.
 
 It may take a few minutes until the container is ready, because beforehand the demo shop must be
 initialized and the full-text search index must be build.
@@ -38,58 +33,30 @@ Point a browser onto http://192.168.99.100:9001/ or your alternative IP address.
 administration backend, change onto http://192.168.99.100:9001/admin and log in as *admin* using
 password *secret*.
 
-The container keeps all non-reproducible data in a separate volume named ``/web``, which can be
-mounted by external containers. To access this volume, start a throw away container with:
+The container keeps all non-reproducible data in a separate volume named ``shopmedia``, which can be
+mounted by external containers.
+
+
+## Running behind NGiNX
+
+By default, uWSGI is configured to listen on port 9009 for HTTP requests. This allows us to attach
+a browser directly onto the Docker machine's IP address. In a productive environment, we might want
+to use NGiNX as a proxy in front of our Django application server. This allows us to proxy services
+for multiple domains and to use https.
+
+For this setup, please use the Docker image ``jwilder/nginx-proxy:latest`` and refer to it in a
+separate ``docker-compose.yml`` file. Then add to the subsection ``environment`` of section
+``django`` these environment variables:
 
 ```
-docker run --rm -ti --volumes-from demo-shop-i18n_polymorphic django-shop-demo /bin/bash
-[root@97f8bf18bf5d example]# ll /web/logs
+  django:
+    ...
+    environment:
+      - DJANGO_SHOP_TUTORIAL=i18n_polymorphic
+      - VIRTUAL_HOST=myshop.example.com
+      - VIRTUAL_PROTO=uwsgi
+    ...
 ```
 
-In ``/web/logs`` you may check for information provided by the services running in container
-``demo-shop-i18n_polymorphic``. The logfile ``uwsgi.log`` contains startup logs from uWSGI, while
-``shop.log`` contains the logs from the Django application.
-
-After saving or touching the file ``/web/workdir/myshop.ini``, the Django application server
-restarts.
-
-If done, stop and remove the container:
-
-```
-docker stop demo-shop-i18n_polymorphic
-docker rm demo-shop-i18n_polymorphic
-```
-
-## Access the running container
-
-By invoking
-
-```
-docker exec -ti demo-shop-i18n_polymorphic /bin/bash
-```
-
-you can access the running container directly, just as if you would ssh into it.
-
-
-## Separation of code from data
-
-Docker makes it very easy to separate code from data by providing sharable volumes. Therefore
-whenever we have to rebuild a new version of the merchant's project, we create a separate Dockerfile
-used to build a new Docker image. This image then shall be built inside the merchant's docker
-folder.
-
-**Do not add ``VOLUME /web`` to this Docker file**
-
-```
-docker build -t new-shop-image .
-```
-
-If database migrations are required, run them from the host's command line:
-
-```
-docker run --volumes-from demo-shop-i18n_polymorphic new-shop-image manage migrate
-```
-
-This presumes that the above image is executed as user *django* in the folder containing the
-``manage.py`` command. Use ``USER`` and ``WORKDIR`` for this at the end of the merchant's
-Dockerfile.
+You should also remove the subsectiotion ``ports``, since we now do export this port externally.
+Instead add the container to the network, in which the NGiNX proxy is running.

@@ -1,0 +1,5 @@
+POSTGRES_DB=demoshop
+POSTGRES_USER=demoshop
+POSTGRES_PASSWORD=zz77xxvv
+POSTGRES_HOST=postgresdb
+REDIS_HOST=redishost
