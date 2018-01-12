@@ -216,7 +216,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
             filter_kwargs = {self.lookup_field: self.kwargs[self.lookup_url_kwarg]}
             if hasattr(self.product_model, 'translations'):
                 filter_kwargs.update(translations__language_code=get_language_from_request(self.request))
-            queryset = self.product_model.objects.filter(self.limit_choices_to, **filter_kwargs)
+            queryset = self.product_model.objects.filter(self.limit_choices_to, **filter_kwargs, active=True)
             self._product = get_object_or_404(queryset)
         return self._product
 
