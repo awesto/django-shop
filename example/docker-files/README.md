@@ -57,3 +57,6 @@ separate ``docker-compose.yml`` file. Then add to the subsection ``environment``
       - VIRTUAL_PROTO=uwsgi
     ...
 ```
+
+You should also remove the subsectiotion ``ports``, since we now do export this port externally.
+Instead add the container to the network, in which the NGiNX proxy is running.
