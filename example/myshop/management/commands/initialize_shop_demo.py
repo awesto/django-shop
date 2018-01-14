@@ -33,6 +33,8 @@ class Command(BaseCommand):
 
     def handle(self, verbosity, *args, **options):
         self.set_options(**options)
+        call_command('migrate')
+
         fixture = '{workdir}/{prefix}{tutorial}/fixtures/myshop.json'
         prefix = 'i18n_' if settings.USE_I18N else ''
         fixture = fixture.format(workdir=settings.WORK_DIR, prefix=prefix, tutorial=settings.SHOP_TUTORIAL)
@@ -58,6 +60,4 @@ class Command(BaseCommand):
             zip_ref.extractall(extract_to, pwd=self.pwd)
         finally:
             zip_ref.close()
-
-        call_command('migrate')
         call_command('loaddata', fixture)
