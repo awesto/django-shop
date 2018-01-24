@@ -55,6 +55,7 @@ setup(
         'django-admin-sortable2>=0.6.15',
         'django-formtools>=1.0',
         'djangocms-cascade>=0.14.1',
+        'drf-haystack',
         'bs4>=0.0.1',
     ],
     # Note: this requires setuptools >= 18.0.
