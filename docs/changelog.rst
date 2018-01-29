@@ -70,6 +70,12 @@ Changelog for django-SHOP
 * Remove ``angular-message`` from the list of npm dependencies.
 
 
+0.11.4
+======
+
+* Fix: Template context error while rendering Order List-View as Visitor.
+
+
 0.11.3
 ======
 
