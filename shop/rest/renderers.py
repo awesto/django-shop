@@ -16,7 +16,7 @@ class TemplateContextMixin(object):
     def get_template_context(self, data, renderer_context):
         response = renderer_context['response']
         if response.exception:
-            return {'status_code': response.status_code}
+            return dict(data, status_code=response.status_code)
         else:
             view = renderer_context['view']
             key = getattr(view, 'context_data_name', 'data')
@@ -81,7 +81,7 @@ class CMSPageRenderer(TemplateContextMixin, renderers.TemplateHTMLRenderer):
         if response.exception:
             template = self.get_exception_template(response)
             template_context = self.get_template_context(data, renderer_context)
-            return template.render(template_context)
+            return template.render(context=template_context, request=request)
 
         # set edit_mode, so that otherwise invisible placeholders can be edited inline
         edit_mode = getattr(request.current_page, 'publisher_is_draft', False)
