@@ -4,6 +4,13 @@
 Changelog for django-SHOP
 =========================
 
+0.11.4
+======
+
+* Fix: Template context error while rendering Order List-View as Visitor.
+* Upgrade external dependencies to their latest compatible versions.
+
+
 0.11.3
 ======
 
