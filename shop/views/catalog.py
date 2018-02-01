@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import os
 
 from django.db import models
+from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from django.utils.cache import add_never_cache_headers
 from django.utils.translation import get_language_from_request
@@ -13,6 +14,8 @@ from rest_framework import status
 from rest_framework import views
 from rest_framework.renderers import BrowsableAPIRenderer
 from rest_framework.response import Response
+
+from cms.views import details
 
 from shop.conf import app_settings
 from shop.models.product import ProductModel
@@ -191,6 +194,29 @@ class ProductRetrieveView(generics.RetrieveAPIView):
     product_model = ProductModel
     serializer_class = ProductSerializer
     limit_choices_to = models.Q()
+
+    def dispatch(self, request, *args, **kwargs):
+        """
+        In some Shop configurations, it is common to render the the catalog's list view right on
+        the main landing page. Therefore we have a combination of the ``ProductListView`` and the
+        ``ProductRetrieveView`` interfering with the CMS's root page, which means that we have
+        overlapping namespaces. For example, the URL ``/awesome-toy`` must be served by the
+        ``ProductRetrieveView``, but ``/cart`` is served by **django-CMS**.
+
+        In such a situation, the CMS is not able to intercept all requests intended for itself.
+        Instead this ``ProductRetrieveView`` would not find a product if we query for, say
+        ``/cart``, and hence would raise a Not Found exception. However, since we have overlapping
+        namespaces, this method first attempts to resolve by product, and if that fails, it
+        forwards the request to django-CMS.
+        """
+        try:
+            return super(ProductRetrieveView, self).dispatch(request, *args, **kwargs)
+        except Http404:
+            if request.current_page.is_root():
+                return details(request, kwargs.get('slug'))
+            raise
+        except:
+            raise
 
     def get_template_names(self):
         product = self.get_object()
