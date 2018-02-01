@@ -463,6 +463,10 @@ CMSPLUGIN_CASCADE = {
             ('shop/catalog/product-heading.html', _("Product Heading")),
             ('myshop/catalog/manufacturer-filter.html', _("Manufacturer Filter")),
         ],
+        'ShopAddToCartPlugin': [
+            (None, _("Default")),
+            ('myshop/catalog/commodity-add2cart.html', _("Add Commodity to Cart")),
+        ],
     },
     'plugins_with_sharables': {
         'BootstrapImagePlugin': ['image_shapes', 'image_width_responsive', 'image_width_fixed',
