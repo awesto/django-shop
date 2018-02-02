@@ -60,6 +60,8 @@ SITE_ID = 1
 # system time zone.
 TIME_ZONE = 'Europe/Vienna'
 
+USE_THOUSAND_SEPARATOR = True
+
 # Application definition
 
 # replace django.contrib.auth.models.User by implementation
