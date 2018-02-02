@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, override
 
 from cms.menu_bases import CMSAttachMenu
 from menus.base import NavigationNode
@@ -20,13 +20,16 @@ class CatalogMenu(CMSAttachMenu):
         except AttributeError:
             return []
         nodes = []
-        for id, productpage in enumerate(productpage_set.all(), 1):
-            node = NavigationNode(
-                title=productpage.product.product_name,
-                url=productpage.product.get_absolute_url(),
-                id=id,
-            )
-            nodes.append(node)
+        with override(request.LANGUAGE_CODE):
+            for id, productpage in enumerate(productpage_set.all(), 1):
+                node = NavigationNode(
+                    title=productpage.product.product_name,
+                    url=productpage.product.get_absolute_url(),
+                    id=id,
+                )
+                if hasattr(productpage.product, 'slug'):
+                    node.path = productpage.product.slug
+                nodes.append(node)
         return nodes
 
 menu_pool.register_menu(CatalogMenu)
