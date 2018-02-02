@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 import os
 
 from django.db import models
-from django.http.response import Http404
+from django.http.response import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.utils.cache import add_never_cache_headers
 from django.utils.translation import get_language_from_request
@@ -53,6 +53,9 @@ class ProductListView(generics.ListAPIView):
     :param limit_choices_to: Limit the queryset of product models to these choices.
 
     :param filter_class: A filter set which must be inherit from :class:`django_filters.FilterSet`.
+
+    :param redirect_to_lonely_product: If ``True``, redirect onto a lonely product.
+        Defaults to ``False``.
     """
 
     renderer_classes = (CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer)
@@ -60,8 +63,12 @@ class ProductListView(generics.ListAPIView):
     serializer_class = app_settings.PRODUCT_SUMMARY_SERIALIZER
     limit_choices_to = models.Q()
     filter_class = None
+    redirect_to_lonely_product = False
 
     def get(self, request, *args, **kwargs):
+        if self.redirect_to_lonely_product and self.get_queryset().count() == 1:
+            redirect_to = self.get_queryset().first().get_absolute_url()
+            return HttpResponseRedirect(redirect_to)
         # TODO: we must find a better way to invalidate the cache.
         # Simply adding a no-cache header eventually decreases the performance dramatically.
         response = self.list(request, *args, **kwargs)
