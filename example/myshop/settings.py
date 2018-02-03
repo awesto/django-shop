@@ -60,6 +60,8 @@ SITE_ID = 1
 # system time zone.
 TIME_ZONE = 'Europe/Vienna'
 
+USE_THOUSAND_SEPARATOR = True
+
 # Application definition
 
 # replace django.contrib.auth.models.User by implementation
@@ -462,6 +464,10 @@ CMSPLUGIN_CASCADE = {
         'CustomSnippetPlugin': [
             ('shop/catalog/product-heading.html', _("Product Heading")),
             ('myshop/catalog/manufacturer-filter.html', _("Manufacturer Filter")),
+        ],
+        'ShopAddToCartPlugin': [
+            (None, _("Default")),
+            ('myshop/catalog/commodity-add2cart.html', _("Add Commodity to Cart")),
         ],
     },
     'plugins_with_sharables': {

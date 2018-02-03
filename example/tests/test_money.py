@@ -76,6 +76,18 @@ class MoneyMakerTest(TestCase):
         EUR = MoneyMaker('EUR')
         value = EUR()
         self.assertEqual(text_type(value), "€ –")
+        value = EUR('999999.99')
+        self.assertEqual(text_type(value), "€ 999,999.99")
+        value = EUR('999999.995')  # check rounding
+        self.assertEqual(text_type(value), "€ 1,000,000.00")
+        value = EUR('-111111.114')
+        self.assertEqual(text_type(value), "-€ 111,111.11")
+        with self.settings(USE_THOUSAND_SEPARATOR=False):
+            self.assertEqual(text_type(value), "-€ 111111.11")
+        with self.settings(LANGUAGE_CODE='de'):
+            self.assertEqual(text_type(value), "-€ 111.111,11")
+            value.MONEY_FORMAT='{minus}{amount} {code}'
+            self.assertEqual(text_type(value), "-111.111,11 EUR")
 
     def test_reduce(self):
         Money = MoneyMaker('EUR')

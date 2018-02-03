@@ -19,7 +19,7 @@ except ImportError:
 
 
 class Command(BaseCommand):
-    version = 12
+    version = 13
     help = _("Initialize the workdir to run the demo of myshop.")
     download_url = 'http://downloads.django-shop.org/django-shop-workdir_{tutorial}-{version}.zip'
     pwd = b'z7xv'
@@ -60,3 +60,4 @@ class Command(BaseCommand):
 
         call_command('migrate')
         call_command('loaddata', fixture)
+        call_command('fix_filer_bug_965')

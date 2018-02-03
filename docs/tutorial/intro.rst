@@ -7,6 +7,9 @@ Tutorial
 This tutorial is aimed at people new to django SHOP but already familiar with Django. If you aren't
 yet, reading their excellent `Django Tutorial`_ is highly recommended.
 
+Since **django-SHOP** relies on many features offered by **django-CMS** and **Django REST Framework**,
+you should familiarize yourself with these apps.
+
 
 Introduction
 ============
@@ -28,7 +31,7 @@ If you have a Docker runtime on your host, an even quicker approach is to
 Prepare the Installation
 ========================
 
-To run the examples shown in this tutorial, you must install **django-shop** from GitHub, since
+To run the examples shown in this tutorial, you must install **django-SHOP** from GitHub, since
 the pip-installable from PyPI only contains the framework, but not the files required for the demos.
 Before proceeding, please make sure virtualenv_ is installed on your system, otherwise you would
 pollute your Python site-packages folder.

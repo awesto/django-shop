@@ -3,8 +3,11 @@ from __future__ import unicode_literals
 
 from decimal import Decimal, InvalidOperation
 
+from django.conf import settings
 from django.utils import six
 from django.utils.encoding import python_2_unicode_compatible
+from django.utils.formats import get_format
+from django.utils.translation import get_language
 
 from cms.utils.helpers import classproperty
 
@@ -19,18 +22,28 @@ class AbstractMoney(Decimal):
     def __new__(cls, value):
         raise TypeError("Can not instantiate {} as AbstractMoney.".format(value))
 
+    def _get_format_values(self):
+        return {
+            'code': self._currency_code,
+            'symbol': self._currency[2],
+            'currency': self._currency[3],
+            'minus': '',
+        }
+
     def __str__(self):
         """
         Renders the price localized and formatted in its current currency.
         """
-        vals = dict(code=self._currency_code, symbol=self._currency[2], currency=self._currency[3])
+        vals = self._get_format_values()
         if self.is_nan():
             return self.MONEY_FORMAT.format(amount='–', **vals)
         try:
             vals.update(amount=Decimal.__str__(self.quantize(self._cents)))
         except InvalidOperation:
             raise ValueError("Can not represent {} as Money type.".format(self.__repr__()))
-        return self.MONEY_FORMAT.format(**vals)
+        if six.PY2:
+            return u'{:f}'.format(self)
+        return '{:f}'.format(self)
 
     def __repr__(self):
         value = Decimal.__str__(self)
@@ -41,14 +54,49 @@ class AbstractMoney(Decimal):
         return _make_money, (self._currency_code, Decimal.__str__(self))
 
     def __format__(self, specifier, context=None, _localeconv=None):
+        vals = self._get_format_values()
         if self.is_nan():
-            amount = '–'
+            amount = '–'  # mdash
         elif specifier in ('', 'f',):
             amount = self.quantize(self._cents).__format__(specifier)
         else:
             amount = Decimal.__format__(self, specifier)
-        vals = dict(code=self._currency_code, symbol=self._currency[2],
-                    currency=self._currency[3], amount=amount)
+
+        if settings.USE_L10N:
+            lang, use_l10n = get_language(), True
+        else:
+            lang, use_l10n = None, False
+
+        # handle grouping
+        use_grouping = settings.USE_L10N and settings.USE_THOUSAND_SEPARATOR
+        decimal_sep = get_format('DECIMAL_SEPARATOR', lang, use_l10n=use_l10n)
+        grouping = get_format('NUMBER_GROUPING', lang, use_l10n=use_l10n)
+        thousand_sep = get_format('THOUSAND_SEPARATOR', lang, use_l10n=use_l10n)
+
+        # minus sign for negative amounts
+        if amount[0] == '-':
+            vals.update(minus='-')
+            amount = amount[1:]
+
+        # decimal part
+        if '.' in amount:
+            int_part, dec_part = amount.split('.')
+        else:
+            int_part, dec_part = amount, ''
+        if dec_part:
+            dec_part = decimal_sep + dec_part
+
+        # grouping
+        if use_grouping:
+            int_part_gd = ''
+            for cnt, digit in enumerate(int_part[::-1]):
+                if cnt and not cnt % grouping:
+                    int_part_gd += thousand_sep[::-1]
+                int_part_gd += digit
+            int_part = int_part_gd[::-1]
+
+        # recombine parts
+        vals.update(amount=int_part + dec_part)
         return self.MONEY_FORMAT.format(**vals)
 
     def __add__(self, other, context=None):
