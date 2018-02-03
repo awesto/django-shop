@@ -9,6 +9,13 @@ Changelog for django-SHOP
 
 * Fix: Template context error while rendering Order List-View as Visitor.
 * Upgrade external dependencies to their latest compatible versions.
+* Fix: Money formatter to allow the usage of the thousand separator.
+* Fix: It now is possible to use the ``ProductListView`` as the main CMS landing page.
+* Add option to Catalog List View: It now is possible to redirect automatically onto a lonely
+  product.
+* Add options to override the add-to-cart template when using the appropriate
+  CMS Cascade plugin.
+* Add option to add a list of products to the navigation node serving a catalog list page.
 
 
 0.11.3
