@@ -4,6 +4,8 @@ services:
   postgresdb:
     restart: always
     image: postgres
+    environment:
+      - POSTGRES_DB=myshop_$DJANGO_SHOP_TUTORIAL
     env_file:
       - example/docker-files/environ
     volumes:
@@ -18,6 +20,24 @@ services:
     networks:
       - shopnet
 
+  elasticsearch:
+    image: elasticsearch:1.7.5
+    container_name: elasticsearch
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - shopnet
+
   django:
     restart: always
     build:
@@ -25,18 +45,28 @@ services:
       dockerfile: example/docker-files/Dockerfile
     image: demoshop
     environment:
-      - DJANGO_SHOP_TUTORIAL=i18n_polymorphic
+      - DJANGO_SHOP_TUTORIAL
+      - POSTGRES_DB=myshop_$DJANGO_SHOP_TUTORIAL
+      - DJANGO_EMAIL_HOST
+      - DJANGO_EMAIL_PORT
+      - DJANGO_EMAIL_USER
+      - DJANGO_EMAIL_PASSWORD
+      - DJANGO_EMAIL_USE_TLS
+      - DJANGO_EMAIL_FROM
+      - DJANGO_EMAIL_REPLY_TO
     env_file:
       - example/docker-files/environ
     volumes:
-      - shopmedia:/web/workdir/media
+      - shopmedia:/web/workdir
     depends_on:
       - postgresdb
       - redishost
-    ports:
-      - '9009:9009'
+      - elasticsearch
     networks:
       - shopnet
+    command: uwsgi --ini uwsgi.ini
+    ports:
+      - 9009:9009
 
 networks:
   shopnet:
@@ -45,3 +75,4 @@ volumes:
   pgdata:
   redisdata:
   shopmedia:
+  esdata:

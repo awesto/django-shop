@@ -4,8 +4,8 @@
 Quickstart with Docker
 ======================
 
-To get a first impression of the **django-SHOP** demos, please use one of the prepared Docker
-images. If not already available on your workstation, first install the
+To get a first impression of the **django-SHOP** demos, please use the prepared Docker compose
+file. If not already available on your workstation, first install the
 `Docker runtime environment`_ and start the local Docker machine.
 
 
@@ -18,7 +18,9 @@ To run a fully configured **django-SHOP** container on your local machine:
 
 .. code-block:: bash
 
-	docker run --name demo-shop-i18n_polymorphic --env DJANGO_SHOP_TUTORIAL=i18n_polymorphic -p 9001:9001 awesto/django-shop-demo:latest
+	cd django-shop
+	export DJANGO_SHOP_TUTORIAL=i18n_polymorphic
+	docker-compose up --build
 
 This image is rather large (~2 GB), therefore it may take some time to download.
 

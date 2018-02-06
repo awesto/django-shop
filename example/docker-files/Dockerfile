@@ -4,6 +4,13 @@ FROM python:3.6
 LABEL Description="Run django-SHOP demo" Maintainer="Jacob Rief <jacob.rief@gmail.com>"
 RUN mkdir /web
 WORKDIR /web
+ARG DJANGO_STATIC_ROOT=/web/staticfiles
+ARG DJANGO_WORKDIR=/web/workdir
+
+# install packages outside of PyPI
+RUN apt-get upgrade -y
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
+RUN apt-get install -y nodejs optipng jpegoptim
 
 # copy project relevant files into container
 ADD shop /web/shop
@@ -15,34 +22,29 @@ COPY example/manage.py /web/manage.py
 COPY example/package.json /web/package.json
 COPY example/package-lock.json /web/package-lock.json
 COPY example/docker-files/uwsgi.ini /web/uwsgi.ini
-COPY example/requirements.txt /web/requirements/example.txt
+COPY example/requirements.txt /web/requirements/myshop.txt
 
 # install project specific requirements
-RUN pip install 'Django<2.0' uWSGI
-RUN pip install -r /web/requirements/example.txt
-
-# install packages outside of PyPI
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
-RUN apt-get install -y nodejs
+RUN pip install psycopg2 uWSGI
+RUN pip install -r /web/requirements/myshop.txt
 RUN npm install
+RUN useradd -M -d /web -s /bin/bash django
 
 # handle static files
-RUN mkdir /web/workdir
-RUN mkdir /web/workdir/media
-RUN mkdir /web/workdir/static
-ENV DJANGO_WORKDIR=/web/workdir
-ARG DJANGO_SHOP_TUTORIAL=commodity
-ENV DJANGO_SHOP_TUTORIAL ${DJANGO_SHOP_TUTORIAL}
-RUN ./manage.py compilescss
-RUN ./manage.py collectstatic --noinput --ignore='*.scss'
-RUN useradd -M -d /web -s /bin/bash django
-RUN chown -R django.django /web/workdir
+ENV DJANGO_STATIC_ROOT=$DJANGO_STATIC_ROOT
+ENV DJANGO_WORKDIR=$DJANGO_WORKDIR
+RUN mkdir -p $DJANGO_STATIC_ROOT/CACHE
+RUN DJANGO_SHOP_TUTORIAL=commodity ./manage.py compilescss
+RUN DJANGO_SHOP_TUTORIAL=commodity ./manage.py collectstatic --noinput --ignore='*.scss'
+RUN chown -R django.django $DJANGO_STATIC_ROOT/CACHE
+
+# handle media files in external volume
+RUN mkdir -p $DJANGO_WORKDIR
+RUN chown -R django.django $DJANGO_WORKDIR
 
 # handle django-SHOP docs
 #RUN git clone -b releases/0.13.x https://github.com/awesto/django-shop.git
 #RUN cd django-shop/docs && make fragments
 
 # expose service and volume to our internal Docker network
-VOLUME /web/workdir/media
-EXPOSE 9009
-CMD ["uwsgi", "--ini", "uwsgi.ini"]
+VOLUME $DJANGO_WORKDIR
