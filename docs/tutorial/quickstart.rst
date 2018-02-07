@@ -1,12 +1,12 @@
 .. _tutorial/quickstart:
 
-======================
-Quickstart with Docker
-======================
+=======================
+Quickstart using Docker
+=======================
 
 To get a first impression of the **django-SHOP** demos, please use the prepared Docker compose
-file. If not already available on your workstation, first install the
-`Docker runtime environment`_ and start the local Docker machine.
+file. If not already available on your workstation, first install the `Docker runtime environment`_
+and start the local Docker machine.
 
 
 .. _tutorial/prepared-docker-image:
@@ -14,35 +14,62 @@ file. If not already available on your workstation, first install the
 Start with a prepared Docker Image
 ==================================
 
-To run a fully configured **django-SHOP** container on your local machine:
+To run a set of configured **django-SHOP** containers on your local machine:
 
 .. code-block:: bash
 
-	cd django-shop
-	export DJANGO_SHOP_TUTORIAL=i18n_polymorphic
-	docker-compose up --build
+	$ git clone --depth 1 https://github.com/awesto/django-shop
+	$ cd django-shop
+	$ export DJANGO_SHOP_TUTORIAL=i18n_polymorphic
+	$ docker-compose up --build -d
 
-This image is rather large (~2 GB), therefore it may take some time to download.
+This will take a few minutes, so have a coffee. If everything is build, check if all containers are
+up and running:
 
-Locate the IP address of the running container using ``docker-machine ip default``. Then point
-a browser onto this address using port 9001, for instance http://192.168.99.100:9001/ (the IP
-address may vary depending on your Docker machine settings) or http://localhost:9001/ if running on
+.. code-block:: bash
+
+	$ docker ps
+	CONTAINER ID   IMAGE                 COMMAND                  CREATED          STATUS          PORTS                              NAMES
+	ddd453ae7eda   demoshop              "uwsgi --ini uwsgi..."   13 seconds ago   Up 12 seconds   0.0.0.0:9009->9009/tcp             djangoshop_wsgiapp_1
+	7a39223ccd25   demoshop              "su django -c /web..."   13 seconds ago   Up 12 seconds                                      djangoshop_worker_1
+	780c10e59831   elasticsearch:1.7.5   "/docker-entrypoin..."   15 seconds ago   Up 13 seconds   0.0.0.0:9200->9200/tcp, 9300/tcp   elasticsearch
+	649ea9042252   redis                 "docker-entrypoint..."   15 seconds ago   Up 14 seconds   6379/tcp                           djangoshop_redishost_1
+	7144f3e1a801   postgres              "docker-entrypoint..."   15 seconds ago   Up 14 seconds   5432/tcp                           djangoshop_postgresdb_1
+
+The container ``djangoshop_wsgiapp_1`` is the actual webservice. Thanks to uWSGI_ it listens
+for HTTP requests. This can be changed though, see below.
+
+The container ``djangoshop_worker_1`` is based on the same image as ``djangoshop_wsgiapp_1``, and
+its only purpose is to execute asynchronous tasks, such as delivering emails, indexing the search
+engine and removing obsolete rows from the database.
+
+The containers ``elasticsearch``, ``djangoshop_redishost_1`` and ``djangoshop_postgresdb_1`` are
+based on their standard images as found on the Docker Hub.
+
+First locate the IP address of your Docker machine using ``docker-machine ip default``. Then point
+a browser onto this address using port 9009, for instance http://192.168.99.100:9009/ (the IP
+address may vary depending on your Docker machine settings) or http://localhost:9009/ if running on
 Linux.
 
-After the container started, it may take a few minutes until the database is ready. The first time
-a page is loaded, this also takes additional time because all images must be thumbnailed. Therefore,
-if you stop the running container with
+After the containers started, it may take a few minutes until the database is ready. The first time
+a page is loaded, this also takes additional time because all images must be thumbnailed. The search
+index will be available only after a few minutes.
+
+Stop and remove all containers by invoking:
 
 .. code-block:: bash
 
-	docker stop demo-shop-i18n_polymorphic
+	$ docker-compose down
 
-instead of re-running the supplied Docker image, it is recommended to restart the just created
-container with:
+All changes are persisted inside their Docker volumes. List them using:
 
 .. code-block:: bash
 
-	$ docker start demo-shop-i18n_polymorphic
+	$ docker volume ls
+	local     djangoshop_esdata
+	local     djangoshop_pgdata
+	local     djangoshop_redisdata
+	local     djangoshop_shopmedia
 
 To access the administration backed, navigate to http://192.168.99.100:9001/admin/ and sign
 in as user "*admin*" with password "*secret*". If you navigate to any page of the shop, you may
@@ -55,32 +82,129 @@ Try out the other examples
 
 By changing the environment variable ``DJANGO_SHOP_TUTORIAL`` to ``commodity``, ``i18n_commodity``,
 ``smartcard``, ``i18n_smartcard``, ``polymorphic`` or ``i18n_polymorphic``, you can examine one of
-the other prepared examples. Afterwards re-create the container using the same Docker image:
+the other prepared examples. Afterwards re-create the container using the already built Docker images:
 
 .. code-block:: bash
 
-	docker run --name demo-shop-commodity --env DJANGO_SHOP_TUTORIAL=commodity -p 9001:9001 awesto/demo-shop:latest
+	$ export DJANGO_SHOP_TUTORIAL=commodity
+	$ docker-compose up -d
 
 
 Troubleshooting
 ---------------
 
-To access a running Docker container from outside, attach to it using:
+If something doesn't work as expected, first check the logs, for instance as:
 
 .. code-block:: bash
 
-	docker exec -ti demo-shop-i18n_polymorphic /bin/bash
+	$ docker container logs djangoshop_wsgiapp_1
+
+To access a running Docker container, attach to it using:
+
+.. code-block:: bash
+
+	$ docker exec -ti djangoshop_wsgiapp_1 /bin/bash
 	[root@example]# ps fax
 
-If you don't want to interfere with the running container, you may create a "throw-away" container
-and access files through the shared volume named ``/web``. Here you can read the logs and change
-some basic settings. If you modify the timestamp of ``/web/workdir/myshop.ini`` **uWSGI** restarts
-the Django server. To access this shared volume, start a throw away container with:
+If you don't have a running container, but want to examine the image's content, create a "throw-away"
+container and access files through the shared volumes:
 
 .. code-block:: bash
 
-	docker run --rm -ti --volumes-from demo-shop-commodity demo-shop /bin/bash
-	[root@example]# cd /web/logs
-	[root@example]# less shop.log
+	$ docker run --rm -ti --volume djangoshop_shopmedia:/web/workdir demoshop /bin/bash
+	[root@example]# ls -l /web/workdir
 
 .. _Docker runtime environment: https://docs.docker.com/windows/
+.. _uWSGI: https://uwsgi-docs.readthedocs.io/en/latest/
+
+
+Configure an outgoing SMTP server
+---------------------------------
+
+In order to deliver emails to a real address, we must configure an outgoing SMTP-relay.
+Please set these environment variables, or edit the file ``docker-compose.yml`` to configure the
+relay connection and its credentials:
+
+* DJANGO_EMAIL_HOST
+* DJANGO_EMAIL_PORT
+* DJANGO_EMAIL_USER
+* DJANGO_EMAIL_PASSWORD
+* DJANGO_EMAIL_USE_TLS
+* DJANGO_EMAIL_FROM
+* DJANGO_EMAIL_REPLY_TO
+
+
+Run django-SHOP behind NGiNX
+----------------------------
+
+In a production environment, usually you run these, and probably other containers behind a single
+NGiNX instance. To do so, run a separate composition of Docker containers using this configuration:
+
+.. code-block:: yaml
+	:caption: nginx-compose.yml
+
+	version: '2.0'
+
+	services:
+	  nginx-proxy:
+	    restart: always
+	    image: jwilder/nginx-proxy:latest
+	    ports:
+	      - '80:80'
+	      - '443:443'
+	    volumes:
+	      - '/var/run/docker.sock:/tmp/docker.sock:ro'
+	      - '/etc/nginx/vhost.d'
+	      - '/usr/share/nginx/html'
+	      - '/etc/nginx/certs'
+	    networks:
+	      - nginx-proxy
+
+	  letsencrypt-nginx-proxy-companion:
+	    image: jrcs/letsencrypt-nginx-proxy-companion
+	    volumes:
+	      - '/var/run/docker.sock:/var/run/docker.sock:ro'
+	    volumes_from:
+	      - 'nginx-proxy'
+
+	networks:
+	  nginx-proxy:
+	    external: true
+
+Now build and run the webserver.
+
+.. code-block:: bash
+
+	$ docker-compose -f nginx-compose.yml up --build -d
+
+Next edit ``docker-compose.yml``, locate the section ``wsgiapps`` and add 2 environment
+variables and an additional network configuration:
+
+.. code-block:: yaml
+	:caption: nginx-compose.yml
+
+	  wsgiapp:
+	    ...
+	    environment:
+	      ...
+	      - VIRTUAL_HOST=djangoshop
+	      - VIRTUAL_PROTO=uwsgi
+	    ...
+	    networks:
+	      ...
+	      - nginx-proxy
+	    expose:
+	      - 9009
+	  ...
+	  networks:
+	    ...
+	    - nginx-proxy:
+	      external: true
+
+Re-create and run the Docker containers using ``docker-compose up -d``.
+
+Edit ``/etc/hosts`` and let ``djangoshop`` point onto 192.168.100.99 (the IP
+address may vary depending on your Docker machine settings).
+
+Point a browser onto http://djangoshop/ . It now is possible to browse the container through
+NGiNX as proxy.
