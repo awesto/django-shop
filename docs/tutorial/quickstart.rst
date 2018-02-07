@@ -181,7 +181,7 @@ Next edit ``docker-compose.yml``, locate the section ``wsgiapps`` and add 2 envi
 variables and an additional network configuration:
 
 .. code-block:: yaml
-	:caption: nginx-compose.yml
+	:caption: docker-compose.yml
 
 	  wsgiapp:
 	    ...
