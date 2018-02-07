@@ -18,6 +18,7 @@ from rest_auth.views import LoginView as OriginalLoginView
 from shop.models.cart import CartModel
 from shop.models.customer import CustomerModel
 from shop.rest.auth import PasswordResetSerializer, PasswordResetConfirmSerializer
+from shop.signals import email_queued
 
 
 class AuthFormsView(GenericAPIView):
@@ -94,6 +95,10 @@ class PasswordResetView(GenericAPIView):
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         serializer.save()
+
+        # trigger async email queue
+        email_queued()
+
         # Return the success message with OK HTTP status
         msg = _("Instructions on how to reset the password have been sent to '{email}'.")
         return Response(
