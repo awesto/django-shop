@@ -36,7 +36,7 @@ services:
     networks:
       - shopnet
 
-  django:
+  wsgiapp:
     restart: always
     build:
       context: .
@@ -76,6 +76,8 @@ services:
     env_file:
       - example/docker-files/environ
     command: su django -c /web/worker.py
+    volumes:
+      - shopmedia:/web/workdir
     depends_on:
       - postgresdb
       - redishost
