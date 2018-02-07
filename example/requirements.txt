@@ -3,5 +3,6 @@
 django-redis-cache==1.7.1
 django-redis-sessions==0.6.1
 redis==2.10.6
+schedule==0.5.0
 stripe==1.37.0
 https://github.com/awesto/djangoshop-stripe/archive/releases/0.11.x.zip
