@@ -4,8 +4,8 @@ FROM python:3.6
 LABEL Description="Run django-SHOP demo" Maintainer="Jacob Rief <jacob.rief@gmail.com>"
 RUN mkdir /web
 WORKDIR /web
-ARG DJANGO_STATIC_ROOT=/web/staticfiles
 ARG DJANGO_WORKDIR=/web/workdir
+ARG DJANGO_STATIC_ROOT=$DJANGO_WORKDIR/static
 
 # install packages outside of PyPI
 RUN apt-get upgrade -y
