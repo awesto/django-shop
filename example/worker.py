@@ -20,7 +20,8 @@ if __name__ == '__main__':
     schedule.every().sunday.do(call_command, 'shopcustomers', delete_expired=True)
 
     if hasattr(settings, 'SESSION_REDIS'):
-        pool = redis.ConnectionPool(**settings.SESSION_REDIS)
+        redis_con = dict((key, settings.SESSION_REDIS[key]) for key in ['host', 'port', 'db', 'socket_timeout'])
+        pool = redis.ConnectionPool(**redis_con)
         r = redis.Redis(connection_pool=pool)
         pubsub = r.pubsub()
         pubsub.subscribe('django-SHOP')
