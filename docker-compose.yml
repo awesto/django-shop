@@ -4,8 +4,6 @@ services:
   postgresdb:
     restart: always
     image: postgres
-    environment:
-      - POSTGRES_DB=myshop_$DJANGO_SHOP_TUTORIAL
     env_file:
       - example/docker-files/environ
     volumes:
