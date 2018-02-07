@@ -1,10 +1,9 @@
 *
-!docker-files/
 !email_auth/
+!example/
 !shop/
 !requirements/
 !setup.py
-!package.json
 !README.md
 !LICENSE.txt
 !MANIFEST.in

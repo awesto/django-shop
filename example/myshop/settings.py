@@ -154,6 +154,17 @@ DATABASES = {
     }
 }
 
+if os.getenv('POSTGRES_DB') and os.getenv('POSTGRES_USER'):
+    # override database with
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('POSTGRES_DB'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': os.getenv('POSTGRES_HOST', 'localhost'),
+        'PORT': os.getenv('POSTGRES_PORT', 5432),
+    }
+
 # Internationalization
 # https://docs.djangoproject.com/en/stable/topics/i18n/
 
@@ -220,7 +231,7 @@ MEDIA_URL = '/media/'
 
 # Absolute path to the directory that holds static files.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = os.path.join(WORK_DIR, 'static')
+STATIC_ROOT = os.getenv('DJANGO_STATIC_ROOT', os.path.join(WORK_DIR, 'static'))
 
 # URL that handles the static files served from STATIC_ROOT.
 # Example: "http://media.lawrence.com/static/"
@@ -264,6 +275,33 @@ TEMPLATES = [{
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+REDIS_HOST = os.getenv('REDIS_HOST')
+
+if REDIS_HOST:
+    SESSION_ENGINE = 'redis_sessions.session'
+    SESSION_SAVE_EVERY_REQUEST = True
+
+    SESSION_REDIS = {
+        'host': REDIS_HOST,
+        'port': 6379,
+        'db': 0,
+        'prefix': 'session-{}'.format(SHOP_TUTORIAL),
+        'socket_timeout': 1
+    }
+
+    CACHES = {
+        'default': {
+            'BACKEND': 'redis_cache.RedisCache',
+            'LOCATION': 'redis://{}:6379/1'.format(REDIS_HOST),
+        },
+        'select2': {
+            'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+        },
+    }
+
+    CACHE_MIDDLEWARE_ALIAS = 'default'
+    CACHE_MIDDLEWARE_SECONDS = 3600
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
@@ -301,13 +339,13 @@ FIXTURE_DIRS = [os.path.join(WORK_DIR, SHOP_TUTORIAL, 'fixtures')]
 ############################################
 # settings for sending mail
 
-EMAIL_HOST = 'smtp.example.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'no-reply@example.com'
-EMAIL_HOST_PASSWORD = 'smtp-secret-password'
-EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'My Shop <no-reply@example.com>'
-EMAIL_REPLY_TO = 'info@example.com'
+EMAIL_HOST = os.getenv('DJANGO_EMAIL_HOST', 'localhost')
+EMAIL_PORT = os.getenv('DJANGO_EMAIL_PORT', 25)
+EMAIL_HOST_USER = os.getenv('DJANGO_EMAIL_USER', 'no-reply@localhost')
+EMAIL_HOST_PASSWORD = os.getenv('DJANGO_EMAIL_PASSWORD', 'smtp-secret')
+EMAIL_USE_TLS = bool(os.getenv('DJANGO_EMAIL_USE_TLS', '1'))
+DEFAULT_FROM_EMAIL = os.getenv('DJANGO_EMAIL_FROM', 'no-reply@localhost')
+EMAIL_REPLY_TO = os.getenv('DJANGO_EMAIL_REPLY_TO', 'info@localhost')
 EMAIL_BACKEND = 'post_office.EmailBackend'
 
 
@@ -545,17 +583,19 @@ SELECT2_JS = 'node_modules/select2/dist/js/select2.min.js'
 #############################################
 # settings for full index text search (Haystack)
 
+ELASTICSEARCH_HOST = os.getenv('ELASTICSEARCH_HOST', 'localhost')
+
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-        'URL': 'http://localhost:9200/',
+        'URL': 'http://{}:9200/'.format(ELASTICSEARCH_HOST),
         'INDEX_NAME': 'myshop-{}-en'.format(SHOP_TUTORIAL),
     },
 }
 if USE_I18N:
     HAYSTACK_CONNECTIONS['de'] = {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-        'URL': 'http://localhost:9200/',
+        'URL': 'http://{}:9200/'.format(ELASTICSEARCH_HOST),
         'INDEX_NAME': 'myshop-{}-de'.format(SHOP_TUTORIAL),
     }
 
