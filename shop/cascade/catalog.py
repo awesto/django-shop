@@ -63,6 +63,7 @@ class ShopAddToCartPlugin(ShopPluginBase):
 
     def get_render_template(self, context, instance, placeholder):
         return select_template([
+            instance.glossary.get('render_template') or None,
             '{}/catalog/product-add2cart.html'.format(app_settings.APP_LABEL),
             'shop/catalog/product-add2cart.html',
         ])

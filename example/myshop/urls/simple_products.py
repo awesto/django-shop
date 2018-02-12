@@ -15,6 +15,7 @@ from myshop.serializers import ProductSummarySerializer, ProductDetailSerializer
 urlpatterns = [
     url(r'^$', ProductListView.as_view(
         serializer_class=ProductSummarySerializer,
+        redirect_to_lonely_product=True,
     )),
     url(r'^(?P<slug>[\w-]+)/?$', ProductRetrieveView.as_view(
         serializer_class=ProductDetailSerializer

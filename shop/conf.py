@@ -51,10 +51,15 @@ class DefaultSettings(object):
         Possible placeholders are:
 
         * ``{symbol}``: This is replaced by €, $, £, etc.
-        * ``{currency}``: This is replaced by EUR, USD, GBP, etc.
+        * ``{currency}``: This is replaced by Euro, US Dollar, Pound Sterling, etc.
+        * ``{code}``: This is replaced by EUR, USD, GBP, etc.
         * ``{amount}``: The localized amount.
+        * ``{minus}``: Only for negative amounts, where to put the ``-`` sign.
+
+        For further information about formatting currency amounts, please refer to
+        https://docs.microsoft.com/en-us/globalization/locale/currency-formatting
         """
-        return self._setting('SHOP_MONEY_FORMAT', '{symbol} {amount}')
+        return self._setting('SHOP_MONEY_FORMAT', '{minus}{symbol} {amount}')
 
     @property
     def SHOP_DECIMAL_PLACES(self):

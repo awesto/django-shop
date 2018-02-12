@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
+from django.utils import six
 from rest_framework import serializers
 from drf_haystack.serializers import HaystackSerializer
 
@@ -23,4 +25,7 @@ class ProductSearchSerializer(HaystackSerializer):
         ``indexes.DecimalField`` and retrieve from the search index, because that's much faster.
         """
         if search_result.object:
-            return search_result.object.get_price(self.context['request'])
+            price = search_result.object.get_price(self.context['request'])
+            if six.PY2:
+                return u'{:f}'.format(price)
+            return '{:f}'.format(price)
