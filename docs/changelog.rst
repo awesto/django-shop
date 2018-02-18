@@ -4,10 +4,19 @@
 Changelog for django-SHOP
 =========================
 
+0.11.6
+======
+
+* Fix #708: Passing ``None`` when calling ``django.template.loader.select_template``
+  in ``shop/cascade/catalog.py``.
+
+
 0.11.5
 ======
+
 * Fix: Money formatter did not work for search results.
 * Image building uses docker-compose with official images instead of a crafted Dockerfile.
+
 
 0.11.4
 ======
