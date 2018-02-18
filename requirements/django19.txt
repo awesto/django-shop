@@ -1,4 +1,7 @@
 django<1.10
 django-select2<6.0
 django-angular<1.2
+<<<<<<< HEAD
 -r common.txt
+=======
+>>>>>>> 25762313120b1db8e3b9dbc62b39465b827d3c5d
