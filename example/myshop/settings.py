@@ -299,6 +299,10 @@ if REDIS_HOST:
             'BACKEND': 'redis_cache.RedisCache',
             'LOCATION': 'redis://{}:6379/1'.format(REDIS_HOST),
         },
+        'compressor': {
+            'BACKEND': 'redis_cache.RedisCache',
+            'LOCATION': 'redis://{}:6379/2'.format(REDIS_HOST),
+        },
         'select2': {
             'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
         },
@@ -584,6 +588,8 @@ CKEDITOR_SETTINGS_DESCRIPTION = {
 SELECT2_CSS = 'node_modules/select2/dist/css/select2.min.css'
 SELECT2_JS = 'node_modules/select2/dist/js/select2.min.js'
 
+
+COMPRESS_CACHE_BACKEND = 'compressor'
 
 #############################################
 # settings for full index text search (Haystack)

@@ -5,7 +5,7 @@ LABEL Description="Run django-SHOP demo" Maintainer="Jacob Rief <jacob.rief@gmai
 RUN mkdir /web
 WORKDIR /web
 ARG DJANGO_WORKDIR=/web/workdir
-ARG DJANGO_STATIC_ROOT=$DJANGO_WORKDIR/static
+ARG DJANGO_STATIC_ROOT=/web/staticfiles
 
 # install packages outside of PyPI
 RUN apt-get upgrade -y
