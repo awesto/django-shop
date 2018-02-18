@@ -47,7 +47,7 @@ class Command(BaseCommand):
         try:
             con = psycopg2.connect(dbname=dbname, host=host, user=user, password=password)
         except psycopg2.OperationalError:
-            con = psycopg2.connect(dbname='myshop', host=host, user=user, password=password)
+            con = psycopg2.connect(host=host, user=user, password=password)
             con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
             cur = con.cursor()
             cur.execute('CREATE DATABASE {};'.format(dbname))
