@@ -10,6 +10,7 @@ from django.utils.cache import add_never_cache_headers
 from django.utils.translation import get_language_from_request
 
 from rest_framework import generics
+from rest_framework import pagination
 from rest_framework import status
 from rest_framework import views
 from rest_framework.renderers import BrowsableAPIRenderer
@@ -253,6 +254,11 @@ class ProductRetrieveView(generics.RetrieveAPIView):
         return self._product
 
 
+class OnePageResultsSetPagination(pagination.PageNumberPagination):
+    def __init__(self):
+        self.page_size= ProductModel.objects.count()
+
+
 class ProductSelectView(generics.ListAPIView):
     """
     A simple list view, which is used only by the admin backend. It is required to fetch
@@ -260,12 +266,13 @@ class ProductSelectView(generics.ListAPIView):
     """
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
     serializer_class = app_settings.PRODUCT_SELECT_SERIALIZER
+    pagination_class = OnePageResultsSetPagination
 
     def get_queryset(self):
         term = self.request.GET.get('term', '')
         if len(term) >= 2:
-            return ProductModel.objects.select_lookup(term)[:10]
-        return ProductModel.objects.all()[:10]
+            return ProductModel.objects.select_lookup(term)
+        return ProductModel.objects.all()
 
 
 class AddFilterContextMixin(object):
