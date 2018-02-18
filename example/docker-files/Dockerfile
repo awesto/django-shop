@@ -25,7 +25,7 @@ COPY example/docker-files/uwsgi.ini /web/uwsgi.ini
 COPY example/requirements.txt /web/requirements/myshop.txt
 
 # install project specific requirements
-RUN pip install psycopg2-binary uWSGI 'Django<2.0' 'django-select2<6.1'
+RUN pip install psycopg2-binary uWSGI 'Django<2.0' 'django-select2<6.1' 'django-angular<2.1'
 RUN pip install -r /web/requirements/myshop.txt
 RUN npm install
 RUN useradd -M -d /web -s /bin/bash django

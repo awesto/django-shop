@@ -69,7 +69,14 @@ Changelog for django-SHOP
   depending on the selected method.
 * Remove ``angular-message`` from the list of npm dependencies.
 
+
+0.11.6
 ======
+
+* Fix #708: Passing ``None`` when calling ``django.template.loader.select_template``
+  in ``shop/cascade/catalog.py``.
+
+
 0.11.5
 ======
 
