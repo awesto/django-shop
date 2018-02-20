@@ -13,6 +13,8 @@ RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
 RUN apt-get install -y nodejs optipng jpegoptim
 
 # copy project relevant files into container
+ADD setup.py /web/setup.py
+ADD README.md /web/README.md
 ADD shop /web/shop
 ADD email_auth /web/email_auth
 ADD example/myshop /web/myshop
@@ -26,6 +28,7 @@ COPY example/requirements.txt /web/requirements/myshop.txt
 
 # install project specific requirements
 RUN pip install psycopg2-binary uWSGI 'Django<2.0' 'django-select2<6.1' 'django-angular<2.1'
+RUN pip install .
 RUN pip install -r /web/requirements/myshop.txt
 RUN npm install
 RUN useradd -M -d /web -s /bin/bash django
