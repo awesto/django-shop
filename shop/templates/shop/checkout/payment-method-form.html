@@ -12,7 +12,7 @@
 </form>
 	{% block payment-provider-form %}
 		{% if payment_modifiers.stripe_payment %}
-		<div ng-show="data.payment_method.payment_modifier==='stripe-payment'" ng-cloak>
+		<div ng-show="data.payment_method.payment_modifier==='stripe-payment'" class="animate-show" ng-cloak>
 			{# reverse dependency can never be reached, if djangoshop-stripe is not installed #}
 			{% include "shop/stripe-creditcard-form.html" %}
 		</div>
