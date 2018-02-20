@@ -49,7 +49,7 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValid
 
     def __init__(self, data=None, instance=None, *args, **kwargs):
         if data and data.get('preset_password', False):
-            pwd_length = max(self.base_fields['password1'].min_length, 8)
+            pwd_length = max(self.base_fields['password1'].min_length or 8, 8)
             password = get_user_model().objects.make_random_password(pwd_length)
             data['password1'] = data['password2'] = password
         super(RegisterUserForm, self).__init__(data=data, instance=instance, *args, **kwargs)
