@@ -32,7 +32,7 @@
     "autoprefixer": "^8.0.0",
     "bootstrap": "~3.3.7",
     "bootstrap-sass": "~3.3.7",
-    "font-awesome": "~4.6.3",
+    "font-awesome": "^4.7.0",
     "leaflet": "^1.1.0",
     "leaflet-easybutton": "^2.2.0",
     "picturefill": "~3.0.2",
