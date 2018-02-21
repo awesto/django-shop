@@ -4,6 +4,12 @@
 Changelog for django-SHOP
 =========================
 
+0.11.7
+======
+* Fix: Python3 can not handle ``None`` type in max() function.
+* Smoother animation when showing Payment form.
+
+
 0.11.6
 ======
 
