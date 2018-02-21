@@ -83,6 +83,22 @@ Some recipes on how to perform certain tasks in **django-SHOP**.
     howto/handling-discounts
     howto/handling-taxes
 
+
+Django/Python compatibility table
+=================================
+
+===========  ===  ===  ====  ====  ===  ===  ===  ===  ===
+django-SHOP  Django                     Python
+-----------  -------------------------  ------------------
+\            1.8  1.9  1.10  1.11  2.0  2.7  3.4  3.5  3.6
+===========  ===  ===  ====  ====  ===  ===  ===  ===  ===
+0.10.x        ✓    ✓    ⨯     ⨯     ⨯    ✓    ✓   ✓    ⨯
+0.11.x        ⨯    ✓    ✓     ⨯     ⨯    ✓    ✓   ✓    ✓
+0.12.x        ⨯    ⨯    ⨯     ✓     ⨯    ✓    ✓   ✓    ✓
+0.13.x        ⨯    ⨯    ⨯     ✓     ⨯    ✓    ✓   ✓    ✓
+===========  ===  ===  ====  ====  ===  ===  ===  ===  ===
+
+
 Development and Community
 =========================
 

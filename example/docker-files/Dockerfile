@@ -21,6 +21,7 @@ ADD example/myshop /web/myshop
 ADD requirements /web/requirements
 COPY example/wsgi.py /web/wsgi.py
 COPY example/manage.py /web/manage.py
+COPY example/worker.py /web/worker.py
 COPY example/package.json /web/package.json
 COPY example/package-lock.json /web/package-lock.json
 COPY example/docker-files/uwsgi.ini /web/uwsgi.ini
