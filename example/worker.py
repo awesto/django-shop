@@ -26,7 +26,7 @@ if __name__ == '__main__':
         pubsub = r.pubsub()
         pubsub.subscribe('django-SHOP')
     else:
-        pubsub = type('PubSub', (), {'get_message': lambda s: None})()
+        pubsub = type(str('PubSub'), (), {'get_message': lambda s: None})()
 
     while True:
         message = pubsub.get_message()
