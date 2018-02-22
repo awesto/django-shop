@@ -20,7 +20,7 @@ To run a set of configured **django-SHOP** containers on your local machine:
 
 	$ git clone --depth 1 https://github.com/awesto/django-shop
 	$ cd django-shop
-	$ export DJANGO_SHOP_TUTORIAL=i18n_polymorphic
+	$ export DJANGO_SHOP_TUTORIAL=commodity
 	$ docker-compose up --build -d
 
 This will take a few minutes, so have a coffee. If everything is build, check if all containers are
@@ -43,8 +43,15 @@ The container ``djangoshop_worker_1`` is based on the same image as ``djangoshop
 its only purpose is to execute asynchronous tasks, such as delivering emails, indexing the search
 engine and removing obsolete rows from the database.
 
-The containers ``elasticsearch``, ``djangoshop_redishost_1`` and ``djangoshop_postgresdb_1`` are
-based on their standard images as found on the Docker Hub.
+The remaining three containers are based on their standard images as found on the Docker Hub:
+
+* ``djangoshop_postgresdb_1`` provides the Postgres database.
+* ``djangoshop_redishost_1`` provides a shared memory datastore with integrated message queue.
+* ``elasticsearch`` provides fulltext index search engine.
+
+
+Browse the demo
+---------------
 
 First locate the IP address of your Docker machine using ``docker-machine ip default``. Then point
 a browser onto this address using port 9009, for instance http://192.168.99.100:9009/ (the IP
@@ -53,7 +60,12 @@ Linux.
 
 After the containers started, it may take a few minutes until the database is ready. The first time
 a page is loaded, this also takes additional time because all images must be thumbnailed. The search
-index will be available only after a few minutes.
+index will be available only after a few minutes. Note: Searching is not available for the simple
+demos ``commodity`` and ``i18n_commodity``.
+
+
+Stopping the containers
+-----------------------
 
 Stop and remove all containers by invoking:
 
@@ -86,7 +98,7 @@ the other prepared examples. Afterwards re-create the container using the alread
 
 .. code-block:: bash
 
-	$ export DJANGO_SHOP_TUTORIAL=commodity
+	$ export DJANGO_SHOP_TUTORIAL=i18n_commodity
 	$ docker-compose up -d
 
 
@@ -122,8 +134,8 @@ Configure an outgoing SMTP server
 ---------------------------------
 
 In order to deliver emails to a real address, we must configure an outgoing SMTP-relay.
-Please set these environment variables, or edit the file ``docker-compose.yml`` to configure the
-relay connection and its credentials:
+Please set these environment variables, or edit the file ``example/docker-files/email.environ`` and
+configure the relay connection and their credentials using:
 
 * DJANGO_EMAIL_HOST
 * DJANGO_EMAIL_PORT
@@ -134,77 +146,5 @@ relay connection and its credentials:
 * DJANGO_EMAIL_REPLY_TO
 
 
-Run django-SHOP behind NGiNX
-----------------------------
+Now proceed with the next section, by :ref:`tutorial/add-pages-cms`.
 
-In a production environment, usually you run these, and probably other containers behind a single
-NGiNX instance. To do so, run a separate composition of Docker containers using this configuration:
-
-.. code-block:: yaml
-	:caption: nginx-compose.yml
-
-	version: '2.0'
-
-	services:
-	  nginx-proxy:
-	    restart: always
-	    image: jwilder/nginx-proxy:latest
-	    ports:
-	      - '80:80'
-	      - '443:443'
-	    volumes:
-	      - '/var/run/docker.sock:/tmp/docker.sock:ro'
-	      - '/etc/nginx/vhost.d'
-	      - '/usr/share/nginx/html'
-	      - '/etc/nginx/certs'
-	    networks:
-	      - nginx-proxy
-
-	  letsencrypt-nginx-proxy-companion:
-	    image: jrcs/letsencrypt-nginx-proxy-companion
-	    volumes:
-	      - '/var/run/docker.sock:/var/run/docker.sock:ro'
-	    volumes_from:
-	      - 'nginx-proxy'
-
-	networks:
-	  nginx-proxy:
-	    external: true
-
-Now build and run the webserver.
-
-.. code-block:: bash
-
-	$ docker-compose -f nginx-compose.yml up --build -d
-
-Next edit ``docker-compose.yml``, locate the section ``wsgiapps`` and add 2 environment
-variables and an additional network configuration:
-
-.. code-block:: yaml
-	:caption: docker-compose.yml
-
-	  wsgiapp:
-	    ...
-	    environment:
-	      ...
-	      - VIRTUAL_HOST=djangoshop
-	      - VIRTUAL_PROTO=uwsgi
-	    ...
-	    networks:
-	      ...
-	      - nginx-proxy
-	    expose:
-	      - 9009
-	  ...
-	  networks:
-	    ...
-	    - nginx-proxy:
-	      external: true
-
-Re-create and run the Docker containers using ``docker-compose up -d``.
-
-Edit ``/etc/hosts`` and let ``djangoshop`` point onto 192.168.100.99 (the IP
-address may vary depending on your Docker machine settings).
-
-Point a browser onto http://djangoshop/ . It now is possible to browse the container through
-NGiNX as proxy.

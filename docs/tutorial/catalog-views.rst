@@ -176,7 +176,7 @@ The ``AddToCartSerializer``
 
 Rather than using the detail serializer, the business logic for adding a product to the cart has
 been moved into a specialized serializer. This is because **django-SHOP** can not presuppose that
-products are added to the cart only from within the detail view[#add2cart]_. We also need a way to
+products are added to the cart only from within the detail view [#add2cart]_. We also need a way to
 add more than one product variant to the cart from each products detail page.
 
 For this purpose **django-SHOP** is shipped with an ``AddToCartSerializer``. It can be overridden
