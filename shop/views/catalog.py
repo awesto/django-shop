@@ -30,7 +30,7 @@ class ProductListView(generics.ListAPIView):
     product_model = ProductModel
     serializer_class = None  # must be overridden by ProductListView.as_view
     filter_class = None  # may be overridden by ProductListView.as_view
-    limit_choices_to = Q()
+    limit_choices_to = Q(active=True)
 
     def get(self, request, *args, **kwargs):
         # TODO: we must find a better way to invalidate the cache.
