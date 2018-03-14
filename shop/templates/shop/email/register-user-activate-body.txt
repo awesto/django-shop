@@ -1,8 +1,8 @@
 {% load i18n %}{% autoescape off %}
-{% blocktrans %}You're receiving this email because you requested to reset the password for your
-account '{{ user }}' at {{ site_name }}.{% endblocktrans %}
+{% blocktrans %}You're receiving this email because you registered a new account
+for '{{ user }}' at {{ site_name }}.{% endblocktrans %}
 
-{% trans "Please go to the following webpage and choose a new password:" %}
+{% trans "Please go to the following webpage to activate your new account:" %}
 {{ protocol }}://{{ domain }}{% url 'password_reset_confirm' uidb64=uid token=token %}
 
 {% trans "Thanks for visiting our site!" %}
