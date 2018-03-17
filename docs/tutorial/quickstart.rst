@@ -23,7 +23,7 @@ To run a set of configured **django-SHOP** containers on your local machine:
 	$ export DJANGO_SHOP_TUTORIAL=commodity
 	$ docker-compose up --build -d
 
-This will take a few minutes, so have a coffee. If everything is build, check if all containers are
+This will take a few minutes, so have a coffee. If everything has been built, check if all containers are
 up and running:
 
 .. code-block:: bash
