@@ -39,3 +39,31 @@ table tr {
 		list-style: none;
 	}
 }
+
+shop-auth-form {
+	.ng-invalid.ng-touched {
+		border-color: #e9322d;
+	}
+}
+
+.shop-form-error {
+	position: absolute;
+	list-style: none;
+	top: 0;
+	right: 5px;
+	li {
+		color: #e9322d;
+		font-weight: bold;
+		white-space: nowrap;
+		padding-left: 8px;
+		padding-right: 4px;
+		border: 1px dotted #e9322d;
+		border-radius: 3px;
+		background: #f2dede;
+		opacity: 0.85;
+		&::before {
+			content: "\2716";
+			margin-right: 10px;
+		}
+	}
+}
