@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import os
 import redis
 import schedule
 import time
@@ -11,6 +12,7 @@ if __name__ == '__main__':
     from django.utils import timezone
 
     # initialize Django
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'myshop.settings')
     setup()
 
     # schedule jobs
