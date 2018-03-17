@@ -105,7 +105,7 @@ The Default Address Model
 The simplest way is to materialize the required address classes, is to use them from our default
 and convenience models: :class:`shop.models.defaults.address.ShippingAddress` and
 :class:`shop.models.defaults.address.BillingAddress`. Before using them, we check if they
-fulfill your requirements. Otherwise we create our own address models inheriting from
+fulfill our requirements. Otherwise we create our own address models inheriting from
 :class:`shop.models.address.BaseAddress`.
 
 

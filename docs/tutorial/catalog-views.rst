@@ -208,7 +208,7 @@ Connect the Serializers with the View classes
 
 Now that we declared the serializers for the product's list- and detail view, the final step is to
 access them through a CMS page. Remember, since we've chosen to use CMS pages as categories, we had
-to set a special **djangoCMS** apphook_:
+to set a special **django-CMS** apphook_:
 
 .. code-block:: python
     :caption: myshop/cms_apps.py

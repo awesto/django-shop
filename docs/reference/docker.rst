@@ -2,7 +2,7 @@
 Deployment using Docker
 =======================
 
-By using Docker_ in combination with docker-compose_, the deployment of a **django-SHOP**
+By using Docker_ in combination with docker-compose, the deployment of a **django-SHOP**
 installation becomes really simple. We make use of this in the demos, but these examples
 are intended to run on a local docker machine, hence there we use the internal web server
 provided by uWSGI_. In a productive environment, we usually use a web server to dispatch
@@ -417,7 +417,6 @@ invoking:
 	$ docker container logs my_shop_webapp_1
 
 .. _Docker: https://docs.docker.com/get-started/
-.. _docker-compose: https://docs.docker.com/compose/overview/
 .. _uWSGI: http://uwsgi.readthedocs.org/
 .. _Let's Encrypt: https://letsencrypt.org/
 .. _NGiNX: https://www.nginx.com/

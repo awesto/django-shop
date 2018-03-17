@@ -121,7 +121,7 @@ Model for a generic Commodity
 
 For demo purposes, this polymorphic example adds another kind of Product model, a generic Commodity.
 Here instead of adding every possible attribute of our product to the model, we try to remain as
-generic as possible, and instead use a ``PlaceholderField`` as provided by **djangoCMS**.
+generic as possible, and instead use a ``PlaceholderField`` as provided by **django-CMS**.
 
 .. code-block:: python
     :caption: myshop/models/commodity.py

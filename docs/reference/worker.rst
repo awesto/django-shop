@@ -4,9 +4,9 @@
 Working off Asynchronous Jobs
 =============================
 
-A merchant implementation running **django-SHOP**, usually runs a few asynchronous jobs, such as
+A merchant implementation serving **django-SHOP**, usually runs a few asynchronous jobs, such as
 cleaning stale entries, sending e-mail and building the search index. In Django, there are many
-ways to handle this, usually by integration `Celery into Django`_. However, a Celery setup is
+ways to handle this, usually by integrating `Celery into Django`_. However, a Celery setup is
 unnecessarily complicated and usually not required. Instead we can handle all of our asynchronous
 jobs using a short Python script, referred to as "The Worker" in the documentation. This
 stand-alone program runs in the same environment as our Django app.
