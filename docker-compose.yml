@@ -31,8 +31,6 @@ services:
         hard: -1
     volumes:
       - esdata:/usr/share/elasticsearch/data
-    ports:
-      - 9200:9200
     networks:
       - shopnet
 
@@ -49,13 +47,13 @@ services:
       - example/docker-files/databases.environ
     volumes:
       - shopmedia:/web/workdir
+    command: uwsgi --ini uwsgi.ini
     depends_on:
       - postgresdb
       - redishost
       - elasticsearch
     networks:
       - shopnet
-    command: uwsgi --ini uwsgi.ini
     ports:
       - 9009:9009
 
