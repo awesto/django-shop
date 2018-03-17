@@ -1,3 +1,5 @@
+.. _reference/docker:
+
 =======================
 Deployment using Docker
 =======================
