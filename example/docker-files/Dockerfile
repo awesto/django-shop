@@ -50,5 +50,5 @@ RUN chown -R django.django $DJANGO_WORKDIR
 #RUN git clone -b releases/0.13.x https://github.com/awesto/django-shop.git
 #RUN cd django-shop/docs && make fragments
 
-# expose service and volume to our internal Docker network
+# keep media files in external volume
 VOLUME $DJANGO_WORKDIR

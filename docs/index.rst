@@ -54,6 +54,7 @@ Reference to classes and concepts used in **django-SHOP**
     reference/filters
     reference/cascade-plugins
     reference/cart-checkout
+    reference/cart-icon
     reference/payment-providers
     reference/order
     reference/delivery
@@ -64,8 +65,9 @@ Reference to classes and concepts used in **django-SHOP**
     reference/configuration
     reference/shipping-providers
     reference/special-cms-pages
-    reference/cart-icon
     reference/settings
+    reference/worker
+    reference/docker
 
 
 How To's

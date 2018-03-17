@@ -7,7 +7,7 @@ installation becomes really simple. We make use of this in the demos, but these 
 are intended to run on a local docker machine, hence there we use the internal web server
 provided by uWSGI_. In a productive environment, we usually use a web server to dispatch
 HTTP requests onto a backend application server. This setup has been tested with NGiNX_,
-which allows us to dispatch multiple server names using the same IP address. Moreover it
+which allows us to dispatch multiple server names using the same IP address. Moreover, it
 also terminates all https connections.
 
 
@@ -16,7 +16,7 @@ Get started with the django-SHOP container composition
 
 Each instance of a **django-SHOP** installation consists of at least 3 Docker containers. Some of
 them, such as ``postgres``, ``redis`` and ``elasticsearch`` are build from the standard images as
-provided by Docker-Hub. The do not require customized Docker files.
+provided by Docker-Hub. They do not require customized Docker files.
 
 Only the one providing the merchant implementation must be built using a project specific
 ``Dockerfile``.
@@ -64,9 +64,9 @@ The latter is useful for testing the uWSGI application server, without having to
 frontend. For example, this setup is used by the tutorial.
 
 The directive ``exec-pre-app`` performs a database migration whenever a new version of the built
-containers is started. This means that we can only perform forward migrations, which is the usually
-case anyway. In the rare occasion we have to perform a backward migration, we have to do that
-manually by entering into the running container.
+containers is started. This means that we can only perform forward migrations, which is the usual
+case anyway. In the rare occasion, when we have to perform a backward migration, we have to do that
+manually by entering into the running container, using ``docker exec -ti containername /bin/bash``.
 
 The directives ``static-map`` point onto the folders containing the collected static- and
 media-files. These folders are referenced by the configuration directives ``STATIC_ROOT`` and
@@ -343,8 +343,8 @@ Check if everything is up and running:
 	nginxproxy_letsencrypt-nginx-proxy-companion_1   /bin/bash /app/entrypoint. ...   Up
 	nginxproxy_nginx-proxy_1                         /app/docker-entrypoint.sh  ...   Up      10.9.8.7:443->443/tcp, 10.9.8.7:80->80/tcp
 
-Point a browser onto the IP address of our docker-machine will raise a Gateway error. This is
-because our NGiNX yet does not know where to route incoming requests.
+Pointing a browser onto the IP address of our docker-machine will raise a Gateway error. This is
+intended behaviour, because our NGiNX yet does not know where to route incoming requests.
 
 
 Provide django-SHOP behind NGiNX
@@ -355,11 +355,13 @@ For this we have to edit the file ``docker-compose.yml`` from above.
 
 First locate the section ``wsgiapps``. There
 
-* Add the environment variables ``VIRTUAL_HOST``, ``VIRTUAL_PROTO``, ``LETSENCRYPT_HOST``
-  and ``LETSENCRYPT_EMAIL`` to the subsection ``environment`` as shown below.
-* Add network ``nginx-proxy`` to the networks configurations in subsection ``wsgiapp``
-  and globally, as shown below.
-* Remove the ``ports`` configuration from subsection ``wsgiapp``.
+* In section ``wsgiapp``, add the environment variables ``VIRTUAL_HOST``, ``VIRTUAL_PROTO``,
+  ``LETSENCRYPT_HOST`` and ``LETSENCRYPT_EMAIL`` to subsection ``environment``, as shown below.
+  They are used to configure the NGiNX-Proxy.
+* In section ``wsgiapp``, add ``nginx-proxy`` to subsection ``networks`` and to the global
+  section ``networks``, as shown below.
+* Since we don't need to access our WSGI application via an externally reachable port, we can
+  remove the ``ports`` configuration from section ``wsgiapp``.
 
 .. code-block:: yaml
 	:caption: docker-compose.yml
@@ -388,7 +390,7 @@ Re-create and run the Docker containers using:
 	$ docker-compose up --build -d
 
 The container ``wsgiapp`` then starts to communicate with the container ``nginx-proxy`` and
-reconfigures its virtual hosts settings without requiring any manual intervention. The same also
+reconfigures its virtual hosts settings without requiring any other intervention. The same also
 applies for the container ``letsencrypt-nginx-proxy-companion``, which then issues a certificate
 from the Let's Encrypt Certification Authority. This may take a few minutes.
 
@@ -414,6 +416,8 @@ invoking:
 
 	$ docker container logs my_shop_webapp_1
 
-
+.. _Docker: https://docs.docker.com/get-started/
+.. _docker-compose: https://docs.docker.com/compose/overview/
 .. _uWSGI: http://uwsgi.readthedocs.org/
 .. _Let's Encrypt: https://letsencrypt.org/
+.. _NGiNX: https://www.nginx.com/
