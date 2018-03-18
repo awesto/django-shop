@@ -7,53 +7,36 @@
 [![Twitter Follow](https://img.shields.io/twitter/follow/djangoSHOP.svg?style=social&label=djangoSHOP)](https://twitter.com/djangoSHOP)
 
 
-## Breaking News
-django-SHOP 0.12 is in review phase.
-Please check this [pull request](https://github.com/awesto/django-shop/pull/669/files).
-
-Before upgrading to this version please read carfully the Changelog, as some REST endpoints now
-behave in a more standarized manner.
-
-Please get in touch with us on Gitter, if you have problems to upgrade your projects. This will
-help us to adopt the migration path.
-
-
-## Running the demo projects
+## Run the demo projects using Docker
 
 To get a first impression on **django-SHOP**, try out one of the six fully working demo projects.
 
+```
+git clone --depth=1 https://github.com/awesto/django-shop.git
+cd django-shop
+export DJANGO_SHOP_TUTORIAL=commodity
+docker-compose up --build
+```
+
+Wait a few minutes until everything has been build and media files have been downloaded.
+In the meantime find the IP address of your Docker machine using ``docker-machine ip``.
+
+Point a browser onto http://<docker-machines-ip>:9009/
+
+Change DJANGO_SHOP_TUTORIAL to ``i18n_commodity``, ``smartcard``, ``i18n_smartcard``,
+``polymorphic`` or ``i18n_polymorphic`` and rebuild the container to run the other prepared
+demos.
 
 ### Run the demo in a local virtualenv
 
 Following the [introduction instructions](http://django-shop.readthedocs.io/en/latest/tutorial/intro.html)
 should create a running shop in minutes, prefilled with a dozen of products. You can even pay by credit
-card, if you apply for your own testing account at Stripe.
-
-
-### Run the demo using Docker
-
-A faster alternative to run one of the demos of **django-SHOP**, is to use a prepared Docker
-container available on the [Docker Hub](https://hub.docker.com/r/awesto/django-shop-demo/).
-If you have a running docker-machine, download and start the demo using:
-
-```
-docker run --name demo-shop-i18n_polymorphic --env DJANGO_SHOP_TUTORIAL=i18n_polymorphic -p 9001:9001 awesto/django-shop-demo:latest
-```
-
-Then point a browser on the IP address of your docker machine onto port 9001. If unsure invoke
-``docker-machine ip``. This for instance could be http://192.168.99.100:9001/ .
-To access the backend, sign in with username *admin* and password *secret*. The first invocation
-may take a few minutes, since additional assets have to be downloaded and the supplied images have
-to be thumbnailed.
+card.
 
 
 ## Current Status of Django-SHOP
 
-This version of django-SHOP is currently used to implement real e-commerce sites. If you want
-to get involved in the development, please have a look at our documentation in ``docs/contributing.rst``.
-
-
-**Django-SHOP** aims to be a the easy, fun and fast shop counterpart to **django-CMS**.
+**Django-SHOP** aims to be a the easy, fun and fast e-commerce counterpart to **django-CMS**.
 
 Specifically, we aim at providing a clean, modular and Pythonic/Djangonic implementation of an
 e-commerce framework, that a moderately experienced Django developer should be able to pick up
