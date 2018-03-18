@@ -37,10 +37,14 @@ class ShopCatalogPlugin(ShopPluginBase):
     )
 
     def get_render_template(self, context, instance, placeholder):
-        return select_template([
+        templates = []
+        if instance.glossary.get('render_template'):
+            templates.append(instance.glossary['render_template'])
+        templates.extend([
             '{}/catalog/product-list.html'.format(app_settings.APP_LABEL),
             'shop/catalog/product-list.html',
         ])
+        return select_template(templates)
 
     def render(self, context, instance, placeholder):
         context['infinite_scroll'] = bool(instance.glossary.get('infinite_scroll', True))
@@ -62,10 +66,14 @@ class ShopAddToCartPlugin(ShopPluginBase):
     cache = False
 
     def get_render_template(self, context, instance, placeholder):
-        return select_template([
+        templates = []
+        if instance.glossary.get('render_template'):
+            templates.append(instance.glossary['render_template'])
+        templates.extend([
             '{}/catalog/product-add2cart.html'.format(app_settings.APP_LABEL),
             'shop/catalog/product-add2cart.html',
         ])
+        return select_template(templates)
 
 plugin_pool.register_plugin(ShopAddToCartPlugin)
 
@@ -126,10 +134,14 @@ class ShopProductGallery(WithSortableInlineElementsMixin, ShopPluginBase):
         css = {'all': ('shop/css/admin/product-gallery.css',)}
 
     def get_render_template(self, context, instance, placeholder):
-        return select_template([
+        templates = []
+        if instance.glossary.get('render_template'):
+            templates.append(instance.glossary['render_template'])
+        templates.extend([
             '{}/catalog/product-gallery.html'.format(app_settings.APP_LABEL),
             'shop/catalog/product-gallery.html',
         ])
+        return select_template(templates)
 
     def render(self, context, instance, placeholder):
         product_ids = []

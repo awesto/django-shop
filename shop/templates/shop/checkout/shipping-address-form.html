@@ -36,7 +36,9 @@
 			</select>
 		</div>
 	{% endif %}
+	{% spaceless %}
 		{{ shipping_address_form.as_div }}
+	{% endspaceless %}
 	{% if shipping_address_form.multi_addr %}
 		<div class="form-group" ng-show="shipping_address.siblings_summary.length>1 || shipping_address.siblings_summary.length>0 && shipping_address.active_priority=='add'">
 			<button class="btn btn-danger btn-xs" ng-click="deleteSiblingAddress()">

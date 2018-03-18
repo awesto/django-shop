@@ -15,17 +15,17 @@ right on from the beginning of their session.
 
 But when running an e-commerce site, this use-pattern has serious drawbacks. Normally, a visitor
 starts to look for interesting products, hopefully adding a few of them to their cart. Then on the
-way to the checkout, they decide whether to create a user account, use an existing one or continue
+way to checkout, they decide whether to create a user account, use an existing one or continue
 as guest. Here's where things get complicated.
 
 First of all, for non-authenticated site visitors, the cart does not belong to anybody. But each
 cart must be associated with *its* current site visitor, hence the generic anonymous user object
 is not appropriate for this purpose. Unfortunately the Django framework does not offer an explicit
-but anonymous user object based on the assigned session-Id.
+but anonymous user object based on the assigned ``Session-Id``.
 
 Secondly, at the latest when the cart is converted into an order, but the visitor wants to continue
 as guest (thus remaining anonymous), that order object *must* refer to an user object in the
-database. These kind of users would be regarded as fakes: Unable to log in, reset their password,
+database. These kind of users would be regarded as *fakes*: Unable to log in, reset their password,
 etc. The only information which must be stored for such a faked user, is their email address
 otherwise they couldn't be informed, whenever the state of their order changes.
 

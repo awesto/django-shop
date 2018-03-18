@@ -27,13 +27,37 @@ coincidence is similar to the address model as shipped by default (see below).
 	from shop.models.address import BaseShippingAddress, ISO_3166_CODES
 
 	class ShippingAddress(BaseShippingAddress):
-	    name = models.CharField("Full name", max_length=1024)
-	    address1 = models.CharField("Address line 1", max_length=1024)
-	    address2 = models.CharField("Address line 2", max_length=1024)
-	    zip_code = models.CharField("ZIP / Postal code", max_length=12)
-	    city = models.CharField("City", max_length=1024)
-	    country = models.CharField("Country", max_length=3,
-	                               choices=ISO_3166_CODES)
+	    name = models.CharField(
+	        "Full name",
+	        max_length=1024,
+	    )
+
+	    address1 = models.CharField(
+	        "Address line 1",
+	        max_length=1024,
+	    )
+
+	    address2 = models.CharField(
+	        "Address line 2",
+	        max_length=1024,
+	    )
+
+	    zip_code = models.CharField(
+	        "ZIP / Postal code",
+	        max_length=12,
+	    )
+
+	    city = models.CharField(
+	        "City",
+	        max_length=1024,
+	    )
+
+	    country = models.CharField(
+	        "Country",
+	        max_length=3,
+	        choices=ISO_3166_CODES,
+	    )
+
 	    class Meta:
 	        verbose_name = "Shipping Address"
 	        verbose_name_plural = "Shipping Addresses"
@@ -49,8 +73,15 @@ class such as:
 	from shop.models.address import BaseBillingAddress
 
 	class AddressModelMixin(models.Model):
-	    name = models.CharField("Full name"), max_length=1024)
-	    address1 = models.CharField("Address line 1"), max_length=1024)
+	    name = models.CharField(
+	        "Full name",
+	        max_length=1024,
+	    )
+
+	    address1 = models.CharField(
+	        "Address line 1",
+	        max_length=1024,
+	    )
 	    # other fields
 
 	    class Meta:
@@ -58,7 +89,10 @@ class such as:
 
 
 	class BillingAddress(BaseBillingAddress, AddressModelMixin):
-	    tax_number = models.CharField("Tax number", max_length=50)
+	    tax_number = models.CharField(
+	        "Tax number",
+	        max_length=50,
+	    )
 
 	    class Meta:
 	        verbose_name = "Billing Address"
@@ -71,7 +105,7 @@ The Default Address Model
 The simplest way is to materialize the required address classes, is to use them from our default
 and convenience models: :class:`shop.models.defaults.address.ShippingAddress` and
 :class:`shop.models.defaults.address.BillingAddress`. Before using them, we check if they
-fulfill your requirements. Otherwise we create our own address models inheriting from
+fulfill our requirements. Otherwise we create our own address models inheriting from
 :class:`shop.models.address.BaseAddress`.
 
 
@@ -176,10 +210,10 @@ Address Form Styling
 
 One problem which remains with automatic form generation, is how to style the input fields.
 Therefore, **django-SHOP** wraps every input field into a ``<div>``-element using a CSS class named
-according to the field. This for instance is useful to shorten some input fields and/or place it
+according to the field. This for instance is useful to shorten some input fields and/or place them
 onto the same line.
 
-Say, any of our address forms contain the fields ``zip_code`` and ``location`` as shown in the
+Say, any of our address forms contain the fields ``zip_code`` and ``city`` as shown in the
 example above. Then they may be styled as
 
 .. code-block:: css
@@ -198,6 +232,10 @@ example above. Then they may be styled as
 
 so that the ZIP field is narrower and precedes the location field on the same line.
 
+.. note:: If you override the supplied address form templates, assure that the statement
+		``{{ ..._address_form.as_div }}`` is wrapped into a ``{% spaceless %}``-block. Otherwise
+		that CSS trick doesn't work properly.
+
 
 Arranging Address Forms
 =======================
@@ -205,7 +243,7 @@ Arranging Address Forms
 Typically, we ask the customer during the checkout process, for his shipping and/or billing
 addresses. This however is completely up to the merchant; from a technical point of view, the step
 when to ask the customer for his addresses is completely arbitrary and can be skipped at all
-for shops which exclusively ship only virtual goods.
+for shops which exclusively ship virtual goods.
 
 Good practice however is, to add the shipping and billing forms on the checkout process. Since we
 want to ensure that a customer must enter a valid address, we wrap the address forms into a

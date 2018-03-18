@@ -491,8 +491,6 @@ template named ``<myshop>/admin/orderitem-product-extra.html`` is used as fallba
 is provided, then the content of these extra fields is not rendered.
 
 
-
-
 Re-adding an Order to the Cart
 ==============================
 

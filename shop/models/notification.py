@@ -21,6 +21,7 @@ from filer.fields.file import FilerFileField
 from shop.conf import app_settings
 from shop.models.order import BaseOrder
 from shop.models.fields import ChoiceEnum, ChoiceEnumField
+from shop.signals import email_queued
 
 
 class Email(OriginalEmail):
@@ -194,3 +195,4 @@ def order_event_notification(sender, instance=None, target=None, **kwargs):
             attachments[notiatt.attachment.original_filename] = notiatt.attachment.file.file
         mail.send(recipient, template=template, context=context,
                   attachments=attachments, render_on_delivery=True)
+    email_queued()

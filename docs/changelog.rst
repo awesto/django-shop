@@ -70,6 +70,43 @@ Changelog for django-SHOP
 * Remove ``angular-message`` from the list of npm dependencies.
 
 
+0.11.7
+======
+
+* Fix: Python3 can not handle ``None`` type in max() function.
+* Smoother animation when showing Payment form.
+
+
+0.11.6
+======
+
+* Fix #708: Passing ``None`` when calling ``django.template.loader.select_template``
+  in ``shop/cascade/catalog.py``.
+
+
+0.11.5
+======
+
+* Fix: Money formatter did not work for search results.
+* Image building uses docker-compose with official images instead of a crafted Dockerfile.
+
+
+0.11.4
+======
+
+* Fix: Template context error while rendering Order List-View as Visitor.
+* Fix: Money formatter to allow the usage of the thousand separator.
+* Fix: It now is possible to use the ``ProductListView`` as the main CMS landing page.
+* Fix: Template exception if left- or right extension was missing on the ``OrderList``
+  and/or ``OrderDetail`` view.
+* Add option to Catalog List View: It now is possible to redirect automatically onto a lonely
+  product.
+* Add options to override the add-to-cart template when using the appropriate
+  CMS Cascade plugin.
+* Add option to add a list of products to the navigation node serving a catalog list page.
+* Upgrade external dependencies to their latest compatible versions.
+
+
 0.11.3
 ======
 
