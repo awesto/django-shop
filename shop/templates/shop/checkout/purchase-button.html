@@ -1,0 +1,10 @@
+{% extends "shop/checkout/proceed-button.html" %}
+{% load static sekizai_tags %}
+
+{% block extra-scripts %}
+	{{ block.super }}
+	{% addtoblock "js" %}<script src="{% static 'shop/js/purchase-button.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+	{% add_data "ng-requires" "django.shop.purchase-button" %}
+{% endblock %}
+
+{% block ng-click %}do(spinner()).then(prepare()).then(update()).then(purchaseNow('{% url 'shop:checkout-purchase' %}')).finally(restore()){% endblock %}

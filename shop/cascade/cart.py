@@ -75,9 +75,6 @@ class ShopCartPlugin(LeftRightExtensionMixin, TransparentWrapper, ShopPluginBase
                 # update context for static and summary cart rendering since items are rendered in HTML
                 cart_serializer = CartSerializer(cart, context=context, label='cart')
                 context['cart'] = cart_serializer.data
-                if render_type == 'summary':
-                    # for a cart summary we're only interested into the number of items
-                    context['cart']['items'] = len(context['cart']['items'])
         except (KeyError, CartModel.DoesNotExist):
             pass
         return self.super(ShopCartPlugin, self).render(context, instance, placeholder)

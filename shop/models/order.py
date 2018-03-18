@@ -316,6 +316,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         for order_item in self.items.all():
             extra = dict(order_item.extra)
             extra.pop('rows', None)
+            extra.update(product_code=order_item.product_code)
             cart_item = order_item.product.is_in_cart(cart, **extra)
             if cart_item:
                 cart_item.quantity = max(cart_item.quantity, order_item.quantity)

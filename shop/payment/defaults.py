@@ -25,7 +25,7 @@ class ForwardFundPayment(PaymentProvider):
             order.awaiting_payment()
         order.save()
         thank_you_url = OrderModel.objects.get_latest_url()
-        return '$window.location.href="{}";'.format(thank_you_url)
+        return 'window.location.href="{}";'.format(thank_you_url)
 
 
 class ManualPaymentWorkflowMixin(object):

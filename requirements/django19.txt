@@ -1,4 +1,0 @@
-django<1.10
-django-select2<6.0
-django-angular<1.2
--r common.txt

@@ -89,6 +89,18 @@ By using the configuration setting:
 we my specify our own money rendering format, where ``{symbol}`` is €, $, £, etc. and ``{currency}``
 is EUR, USD, GBP, etc.
 
+Unless amounts never reach a thousand, it is advised to activate a separator for better readability.
+
+.. code-block:: python
+
+	USE_THOUSAND_SEPARATOR = True
+
+Outside of the US, it generally is a good idea to activate localization for numeric types.
+
+.. code-block:: python
+
+	USE_L10N = True
+
 
 Cart Modifiers
 --------------
@@ -169,7 +181,7 @@ This is a configuration known to work. Special and optional apps are discussed b
 * ``polymorphic`` only required, if the site requires more than one type of product model.
   It presumes that django-polymorphic_ is installed.
 * ``djangocms_text_ckeditor`` optionally adds a WYSIWYG HTML editor which integrates well with
-  **djangoCMS**.
+  **django-CMS**.
 * ``django_select2`` optionally adds a select field to Django's admin, with integrated
   autocompletion. Very useful for addings links to products manually. It presumes that
   django-select2_ is installed.

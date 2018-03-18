@@ -165,12 +165,12 @@ The Client Side
 
 If your site uses the provided AngularJS directive ``<shop-list-products>``, we typically want to
 use that as well, when the customer applies a product filter. Therefore this directive listens on
-events named ``shopCatalogFilter`` and queries the backend with the given properties. This allows
+events named ``shop.catalog.filter`` and queries the backend with the given properties. This allows
 us to add a set of filter options to the product's list view, without having to care about how to
 fetch that filtered list from the server.
 
 Since we don't event want to care about controlling change events on the filtering ``<select>`` box,
-**django-SHOP** is shipped with a reusable directive named ``shopProductFilter``.
+**django-SHOP** is shipped with a reusable directive named ``shop.product.filter``.
 
 Sample HTML snippet:
 
@@ -188,7 +188,7 @@ or if your filter set forms uses more than one attribute:
 	  {{ filter.filter_set.form }}
 	</div>
 
-The Angular directive ``shopProductFilter`` is declared inside the shop's ``shop/js/filters.js``
+The Angular directive ``shop.product.filter`` is declared inside the shop's ``shop/js/filters.js``
 module, so make sure to include that file. Additionally, that module must be initialized while
 bootstrapping our Angular application:
 

@@ -1,21 +1,32 @@
-{% extends "shop/auth/login.html" %}
-{% load i18n static %}
+{% extends "./login.html" %}
+{% load i18n %}
 
-{% block form_footer %}
-<div class="form-group">
-	<button type="button" ng-click="submitForm('{% url "shop:login" %}')" class="btn btn-primary">{% trans "Login" %}</button>
-	<button type="button" ng-click="showResetForm=!showResetForm;" class="btn btn-link pull-right">{% trans "Password Forgotten?" %}</button>
+{% block form-content %}
+{{ block.super }}
+<div style="margin-top: -45px; margin-bottom: 60px;">
+	<a ng-click="showResetForm=!showResetForm;" class="btn btn-link pull-right">{% trans "Password Forgotten?" %}</a>
 </div>
 
-<div ng-show="showResetForm" ng-cloak>
-	<label class="control-label">{% trans "Your e-mail address" %}</label>
-	<div style="margin-bottom: 20px" class="input-group">
-		<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
-		<input type="text" class="form-control" name="email" ng-model="form_data.email" value="" placeholder="{% trans 'Email' %}" />
+<form name="reset_form" djng-endpoint="{% url "shop:password-reset" %}" ng-show="showResetForm" ng-cloak role="form" novalidate>
+	{% include "./form-messages.html" %}
+
+	<div class="form-group has-feedback" style="margin-bottom: 20px">
+		<label class="control-label">{% trans "Your e-mail address" %}</label>
+		<div class="input-group" ng-class="hasError('email')">
+			<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+			<input type="email" class="form-control" name="email" ng-model="form_data.email" placeholder="{% trans 'Email' %}" ng-required="true" />
+		</div>
+		<ul ng-show="reset_form.email.$dirty && reset_form.email.$touched" class="djng-field-errors" ng-cloak>
+			<li ng-show="reset_form.email.$error.required" class="invalid">{% trans "This field is required." %}</li>
+			<li ng-show="reset_form.email.$error.email" class="invalid">{% trans "Enter a valid email address." %}</li>
+			<li ng-show="reset_form.email.$valid" class="valid"></li>
+		</ul>
 	</div>
 
-	<div class="form-group" ng-hide="success_message">
-		<button type="button" ng-click="submitForm('{% url "shop:password-reset" %}', 5000)" class="btn btn-primary">{% trans "Reset Password" %}</button>
+	<div class="form-group">
+		<button type="button" ng-click="{% include "./proceed-with.html" with proceed_delay=2500 %}" ng-disabled="isDisabled()" class="btn btn-sm btn-warning">
+			{% trans "Reset Password" %}
+		</button>
 	</div>
-</div>
-{% endblock form_footer %}
+</form>
+{% endblock form-content %}

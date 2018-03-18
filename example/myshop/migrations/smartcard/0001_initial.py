@@ -24,10 +24,10 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('email_auth', '0003_django110'),
         ('cms', '0016_auto_20160608_1535'),
         ('filer', '0007_auto_20161016_1055'),
         ('contenttypes', '0002_remove_content_type_name'),
+        ('email_auth', '0004_auto_20170411_1733'),
     ]
 
     operations = [
@@ -55,7 +55,7 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
                 ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated at')),
                 ('extra', shop.models.fields.JSONField(verbose_name='Arbitrary information for this cart')),
-                ('billing_address', models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='+', to='myshop.BillingAddress')),
+                ('billing_address', models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.SET_DEFAULT, related_name='+', to='myshop.BillingAddress')),
             ],
         ),
         migrations.CreateModel(
@@ -233,7 +233,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='cart',
             name='shipping_address',
-            field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='+', to='myshop.ShippingAddress'),
+            field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.SET_DEFAULT, related_name='+', to='myshop.ShippingAddress'),
         ),
         migrations.AddField(
             model_name='billingaddress',

@@ -12,7 +12,7 @@
 {% page_url "shop-watch-list" as shop_watch_list_url %}{% if not shop_watch_list_url %}{% url "shop-watch-list" as shop_watch_list_url %}{% endif %}
 
 {% block shop-cart-table %}
-<table shop-cart class="table table-hover">
+<table shop-cart endpoint="{% url 'shop:cart-list' %}" class="table table-hover">
 	<!-- content is rendered via ng-template "shop/cart.html" -->
 </table>
 {% endblock shop-cart-table %}
@@ -71,7 +71,7 @@
 <script id="shop/cart-item.html" type="text/ng-template">
 {% block shop-cart-item %}
 	<td>
-		<input type="number" class="form-control" min="1" ng-model="cart_item.quantity" ng-model-options="{{ EDITCART_NG_MODEL_OPTIONS }}" ng-change="updateCartItem(cart_item)" />
+		<input type="number" class="form-control" ng-model="cart_item.quantity" ng-model-options="{{ EDITCART_NG_MODEL_OPTIONS }}" ng-change="updateCartItem(cart_item)" />
 	</td>
 	<td>
 		<div class="media" ng-bind-html="cart_item.summary.media"><!-- rendered by products/cart-`product`-media.html --></div>

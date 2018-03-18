@@ -21,6 +21,8 @@ class DialogFormMixin(NgModelFormMixin, NgFormValidationMixin):
 
     def __init__(self, *args, **kwargs):
         kwargs.pop('cart', None)  # cart object must be removed, otherwise underlying methods complain
+        auto_name = self.__class__.__name__.replace('Form', '').lower()
+        kwargs.setdefault('auto_id', '{}_%s'.format(auto_name))
         super(DialogFormMixin, self).__init__(*args, **kwargs)
 
     @classproperty
@@ -30,7 +32,9 @@ class DialogFormMixin(NgModelFormMixin, NgFormValidationMixin):
     def clean(self):
         cleaned_data = dict(super(DialogFormMixin, self).clean())
         cleaned_data.pop('plugin_id', None)
-        cleaned_data.pop('plugin_order')
+        if cleaned_data.pop('plugin_order', None) is None:
+            msg = "Field 'plugin_order' is a hidden but required field in each form inheriting from DialogFormMixin"
+            raise ValidationError(msg)
         return cleaned_data
 
     def as_text(self):
@@ -63,8 +67,8 @@ class DialogFormMixin(NgModelFormMixin, NgFormValidationMixin):
 
     def get_response_data(self):
         """
-        Hook to respond with an updated version of the form data. This response then is merged
-        into the scope by dialogs.js
+        Hook to respond with an updated version of the form data. This response then shall
+        override the forms content.
         """
 
 
@@ -72,15 +76,25 @@ class DialogForm(DialogFormMixin, Bootstrap3Form):
     """
     Base class for all dialog forms used with a DialogFormPlugin.
     """
-    plugin_id = fields.CharField(widget=widgets.HiddenInput, required=False)
-    plugin_order = fields.CharField(widget=widgets.HiddenInput)
+    plugin_id = fields.CharField(
+        widget=widgets.HiddenInput,
+        required=False,
+    )
+
+    plugin_order = fields.CharField(
+        widget=widgets.HiddenInput,
+    )
 
 
 class DialogModelForm(DialogFormMixin, Bootstrap3ModelForm):
     """
     Base class for all dialog model forms used with a DialogFormPlugin.
     """
-    plugin_id = fields.CharField(widget=widgets.HiddenInput, required=False)
+    plugin_id = fields.CharField(
+        widget=widgets.HiddenInput,
+        required=False,
+    )
+
     plugin_order = fields.CharField(widget=widgets.HiddenInput)
 
 

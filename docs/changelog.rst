@@ -4,8 +4,75 @@
 Changelog for django-SHOP
 =========================
 
+0.12
+====
+
+* Adopted for django-angular version 2.0, which breaks its API. Invalid forms rejected by the server
+  are send with a status code of 422 now. Check their changelog for details.
+* Adopted to AngularJS-1.6.6, which required to replace all ``.success()`` handlers against
+  a promise ``.then()``.
+* RESTifyed the communication with the server, by using HTTP methods ``PUT`` and ``DELETE`` where
+  appropriate.
+* Rename ``PayInAdvanceWorkflowMixin`` to ``ManualPaymentWorkflowMixin``, since its purpose is to
+  handle all incoming/outgoing payments manually.
+* Move ``LeftExtensionPlugin`` and ``RightExtensionPlugin`` into module ``shop/cascade/extensions``
+  and allow them to be used on the ``ShopOrderViewsPlugin`` as well.
+* Refactored ``ShopReorderButtonPligin`` and ``ShopOrderAddendumFormPlugin`` to use the new
+  ``djng-forms-set`` directive, as provided by **django-angular** version 2.0.
+* ``ShopOrderAddendumFormPlugin`` can optionally render historical annotations for the given order.
+* Added hook methods ``cancelable()`` and ``refund_payment()`` to ``BaseOrder`` to allow
+  a better order cancelling interface.
+* Paid but unshipped orders, now can be refunded. Possible be refactoring class
+  ``CancelOrderWorkflowMixin``, which handles payment refunds.
+* Add Order status to Order Detail View, so that the customer immediately sees what's going on.
+* Reject method POST on Order List View.
+* Fix: On re-add item to cart, use ``product_code`` to identify if that product already exists in cart.
+* Do not render buttons and links related to the watch-list, when it is not available.
+* Use Sekizai's templatetags ``{% add_data %}`` and ``{% with_data %}`` instead of Sekizai's
+  postprocessors ``djng.sekizai_processors.module_config`` and ``djng.sekizai_processors.module_list``,
+  which now are deprecated.
+* Remove HTTP-Header ``X-HTTP-Method-Override`` and use PUT and DELETE requests natively.
+* Remove django-angular dependency ``djng.url`` from project.
+* Endpoints in JavaScript are always referenced through HTML. This eliminates the need for
+  ``'djng.middleware.AngularUrlMiddleware'`` in ``MIDDLEWARE_CLASSES`` of your ``settings.py``.
+* Use Django's internal password validator configuration ``AUTH_PASSWORD_VALIDATORS`` in your
+  ``settings.py``.
+* Refactored all templates for authentication forms to simplify inheritance and to use the promise
+  chain (offered by django-angular 2.0). This allows to do fine-grained adoptions in the submit
+  buttons behaviour.
+* Decoupled all checkout forms. They don't require ``dialog.js``, ``forms-sets.js`` and ``auth.js``
+  anymore. Instead use the functionality provided by django-angular 2.0 form directives.
+* Use a REST endpoint to add, modify and delete multiple shipping and billing addresses. This
+  simplifies the address forms. Remove ``shipping-address.js`` and replace it against a more generic
+  ``address.js``.
+* Use an event broadcast ``shop.carticon.caption`` to inform the carticon about changes in the cart.
+* Add an overridable ``CartIconCaptionSerializer`` to specify what to render in the cart-icon.
+* Use event broadcasting to inform the checkout forms if configured in summary mode. This decouples
+  checkout form updates, from rendering their summary on another page or process step.
+* Add operator to test Money type against booleans.
+* Fix: Adopt polymorphic ModelAdmin-s to django-polymorphic>=1.0.
+* Add to ``ShopProceedButton``: Disable button if any form in this set is invalid.
+* Use vanilla Javascript in serverside JS-expressions.
+* Decoupled ``CheckoutViewSet`` from ``CartViewSet``, so that the checkout only handles forms
+  relevant to the checkout process.
+* Endpoint ``digest`` in ``CheckoutViewSet``, returns a full description of all forms, plus the
+  current cart's content. Fetching from there is emit a ``shop.checkout.digest`` event.
+* Added directives ``shop-payment-method`` and ``shop-shipping-method`` which update the cart and
+  emit a ``shop.checkout.digest`` event on change.
+* Fix: All form input field get their own unique HTML ``id``. Previously some ``id``'s were used
+  twice and caused collisions.
+* Fix: Do not rebuild list of cart items, on each change of quantity.
+* Separate ``CartController`` into itself and a ``CartItemControler``.
+* Consistent naming of emit and broadcast events.
+* Introduce ``CartSummarySerializer`` to retrieve a smaller checkout digest.
+* In Shipping- and Payment Method Form, optionally show additional charges below the radio fields,
+  depending on the selected method.
+* Remove ``angular-message`` from the list of npm dependencies.
+
+
 0.11.7
 ======
+
 * Fix: Python3 can not handle ``None`` type in max() function.
 * Smoother animation when showing Payment form.
 
@@ -52,14 +119,10 @@ Changelog for django-SHOP
 
 
 0.11.2
-======
+=======
 
 * Do not render buttons and links related to the watch-list, when it is not available.
 * Fix: Adopt polymorphic ModelAdmin-s to django-polymorphic>=1.0.
-* Use Sekizai's internal ``{% with_data ... %}`` to render Sekizai blocks ``ng-requires`` and
-  ``ng-config`` rather than using the deprecated postprocessors ``djng.sekizai_processors.module_list``
-  and ``djng.sekizai_processors.module_config``. Adopt your templates accordingly as explained
-  in :ref:`reference/client-framework`
 * Use Sekizai's internal templatetags ``{% with_data ... %}`` and ``{% with_data %}`` to render Sekizai
   blocks ``ng-requires`` and ``ng-config`` rather than using the deprecated postprocessors
   ``djng.sekizai_processors.module_list`` and ``djng.sekizai_processors.module_config``. Adopt your
@@ -210,7 +273,7 @@ Changelog for django-SHOP
 * Added method ``post_process_cart_item`` to the Cart Modifiers.
 * In ``CartItem`` the ``product_code`` is mandatory now. It moves from being optionally kept in dict
   ``CartItem.extra`` into the ``CartItem`` model itself. This simplifies a lot of boilerplate code,
-  otherwise required by the merchant implementation. Please read :ref:`upgrading-0.10` for details.
+  otherwise required by the merchant implementation. Please read :ref:`release-notes/0.10` for details.
 * In :class:`shop.models.product.BaseProduct` added a hook method ``get_product_variant(self, **kwargs)``
   which can be overridden by products with variations to return a product variant.
 
@@ -238,7 +301,7 @@ Changelog for django-SHOP
 * Minimum required version of djangocms-cascade is now 0.10.2.
 * Minimum required version of djangoshop-stripe is now 0.2.0.
 * Changed the default address models to be more generic. Please read the
-  :doc:`upgrade instructions <upgrading>` if you are upgrading from 0.9.0 or 0.9.1.
+  :ref:`release-notes/0.9` if you are upgrading from 0.9.0 or 0.9.1.
 * Fixed :py:meth:`shop.money.fields.decontruct` to avoid repetitive useless generation of migration
   files.
 * Using cached_property decoration for methods ``unit_price`` and ``line_total`` in

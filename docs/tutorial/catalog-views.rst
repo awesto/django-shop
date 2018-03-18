@@ -176,7 +176,7 @@ The ``AddToCartSerializer``
 
 Rather than using the detail serializer, the business logic for adding a product to the cart has
 been moved into a specialized serializer. This is because **django-SHOP** can not presuppose that
-products are added to the cart only from within the detail view[#add2cart]_. We also need a way to
+products are added to the cart only from within the detail view [#add2cart]_. We also need a way to
 add more than one product variant to the cart from each products detail page.
 
 For this purpose **django-SHOP** is shipped with an ``AddToCartSerializer``. It can be overridden
@@ -208,7 +208,7 @@ Connect the Serializers with the View classes
 
 Now that we declared the serializers for the product's list- and detail view, the final step is to
 access them through a CMS page. Remember, since we've chosen to use CMS pages as categories, we had
-to set a special **djangoCMS** apphook_:
+to set a special **django-CMS** apphook_:
 
 .. code-block:: python
     :caption: myshop/cms_apps.py

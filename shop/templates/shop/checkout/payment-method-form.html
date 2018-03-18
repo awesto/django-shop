@@ -1,18 +1,39 @@
 {% extends "shop/checkout/dialog-base.html" %}
-{% load i18n %}
+{% load i18n static sass_tags sekizai_tags %}
+
+{% block extra-styles %}
+	{{ block.super }}
+	{% addtoblock "css" %}<link href="{% sass_src 'shop/css/method-form.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+{% endblock %}
+
+{% block extra-scripts %}
+	{{ block.super }}
+	{% addtoblock "js" %}<script src="{% static 'shop/js/method-form.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+	{% add_data "ng-requires" "django.shop.method-form" %}
+{% endblock %}
 
 {% block dialog_form %}
-<form shop-dialog-form name="{{ payment_method_form.form_name }}" novalidate>
-	{% if payment_method_form.has_choices %}
+<form shop-method-form djng-endpoint="{% url 'shop:checkout-upload' %}" name="{{ payment_method_form.form_name }}" novalidate>
+{% if payment_method_form.has_choices %}
 	{{ payment_method_form.as_div }}
-	{% else %}
+	{% if show_additional_charge %}
+	<div class="additional-charge">
+		{% for choice, label in payment_method_form.payment_modifier.field.choices %}
+		<p ng-repeat="extra_row in cart.extra_rows|filter:{modifier:'{{ choice }}'}">{% trans "Additional charge" %}: {% verbatim %}{{ extra_row.amount }}{% endverbatim %}</p>
+		{% endfor %}
+		{% if payment_modifiers.initial_row %}
+		<p ng-if="!cart.extra_rows">{% trans "Additional charge" %}: {{ payment_modifiers.initial_row.amount }}</p>
+		{% endif %}
+	</div>
+	{% endif %}
+{% else %}
 	<input name="__force_invalidation__" style="display: none;" required />
 	<p class="bg-danger">{% trans "No payment method available" %}</p>
-	{% endif %}
+{% endif %}
 </form>
 	{% block payment-provider-form %}
 		{% if payment_modifiers.stripe_payment %}
-		<div ng-show="data.payment_method.payment_modifier==='stripe-payment'" class="animate-show" ng-cloak>
+		<div ng-show="payment_method.payment_modifier==='stripe-payment'" class="animate-show" ng-cloak>
 			{# reverse dependency can never be reached, if djangoshop-stripe is not installed #}
 			{% include "shop/stripe-creditcard-form.html" %}
 		</div>

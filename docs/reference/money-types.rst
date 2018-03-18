@@ -4,8 +4,8 @@
 Money Types
 ===========
 
-Until **django-SHOP** version 0.2, amounts relating to money were kept inside a ``Decimal`` type
-and stored in the database model using a ``DecimalField``. In shop installations with only one
+In earlier versions of **django-SHOP**, amounts relating to money were kept inside a ``Decimal``
+type and stored in the database model using a ``DecimalField``. In shop installations with only one
 available currency, this wasn't a major issue, because the currency symbol could be hard-coded
 anywhere on the site.
 
@@ -15,7 +15,7 @@ it is very common to make mistakes by mixing different currencies. It also is co
 incorrect conversions that generate wrong results. Python doesn't allow developers to associate a
 specific decimal value with a unit.
 
-Starting with version 0.9, **django-SHOP** now is shipped with a special factory class:
+Starting with version 0.9, **django-SHOP** is shipped with a special factory class:
 
 
 MoneyMaker
@@ -31,7 +31,7 @@ Not a Number
 ------------
 
 In special occurrences we'd rather want to specify "no amount" rather than an amount of 0.00 (zero).
-This can be useful for free samples, or when an item is currently not available. The Decimal type
+This can be useful for free samples, or when an item currently is not available. The Decimal type
 denotes a kind of special value a ``NaN`` – for "Not a Number". Our Money type also knows about
 this special value, and when rendered, ``€ –`` or ``$ –```` is printed out.
 
@@ -55,12 +55,12 @@ Create a Money type
 	>>> print(Money('1.55') + Money('8'))
 	€ 9.55
 
-	>>> print Money
+	>>> print(Money)
 	<class 'shop.money.money_maker.MoneyInEUR'>
 
 	>>> Yen = MoneyMaker('JPY')
 	>>> print(Yen('1234.5678'))
-	¥ 1235
+	¥ 1,235
 
 	>>> print(Money('100') + Yen('1000'))
 	ValueError: Can not add/substract money in different currencies.
@@ -74,8 +74,8 @@ using one of the official ISO-4217 currency codes.
 Alternatively, we can create our own Money type, for instance ``Yen``.
 
 
-Formating Money
----------------
+Formatting Money
+----------------
 
 When the amount of a money type is printed or forced to text using ``str(price)``, it is prefixed
 by the currency symbol. This is fine, when working with only a few currencies. However, some symbols
@@ -96,9 +96,7 @@ formatting string.
 Localizing Money
 ================
 
-Since the Money class doesn't know anything about our current locale setting, amounts always are
-printed unlocalized. To localize a Money type, use ``django.utils.numberformat.format(someamount)``.
-This function will return the amount, localized according to the current HTTP request.
+Depending on our current locale setting, amounts are printed using a localized format.
 
 
 Money Database Fields

@@ -1,5 +1,5 @@
 django-admin-sortable2==0.6.19
-django-allauth==0.23.0
+django-allauth==0.35.0
 django-appconf==1.0.2
 django-classy-tags==0.8.0
 django-cms==3.4.5
@@ -17,9 +17,9 @@ django-post-office==3.0.3
 django-redis-cache==1.7.1
 django-redis-sessions==0.6.1
 django-rest-auth==0.9.2
-django-sass-processor==0.5.5
+django-sass-processor==0.5.8
 django-sekizai==0.10.0
-django-treebeard==4.1.1
+django-treebeard==4.2.0
 djangocms-bootstrap3==0.3.1
 djangocms-cascade==0.15.5
 djangocms-text-ckeditor==3.4.0

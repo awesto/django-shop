@@ -19,11 +19,6 @@ djangoShopModule.directive('shopTimestamp', ['$filter', '$locale', function($fil
 djangoShopModule.provider('djangoShop', function() {
 	var self = this;
 
-	// use to prepolutate translation strings in the current locale
-	this.setTranslations = function(translations) {
-		self.translations = translations;
-	};
-
 	this.getLocationPath = function() {
 		return self.location.pathname;
 	};

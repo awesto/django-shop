@@ -4,16 +4,16 @@
 Cascade Plugins
 ===============
 
-**DjangoSHOP** extends the eco-system of **djangoCMS** plugins, djangocms-cascade_, by additional
-shop-specific plugins. This allows us to create a whole shopping site, which consists of many
-different elements, without having to craft templates by hand – with one exception: The product
-detail views.
+**Django-SHOP** extends the used eco-system arround **django-CMS** plugins, djangocms-cascade_,
+by additional shop-specific plugins. This allows us to create a whole shopping site, which consists
+of many different elements, without having to craft templates by hand – with one exception: The
+product detail views.
 
 Therefore all we have to focus on, is a default page template with one big placeholder. This
 placeholder then is subdivided into containers, rows, columns and other elements of the **Cascade**
 plugin collection.
 
-This however requires a completely different approach, from the designer point of view. The way web
+This however requires a completely different approach, from a designer's point of view. The way web
 design has been done a few years ago, starting with the screenshot of a finished page, must be
 rethought. This has been discussed in length by many web-designers, especially by Brad Frost in his
 excellent book on `Atomic Web Design`_. He propagates to reverse the design process and start with
@@ -23,7 +23,7 @@ themselves aggregate to Organisms.
 Some designers nowadays build those components directly in HTML and CSS or SASS, instead of drawing
 their screens using programs such as InDesign or PhotoShop (which by the way never was intended for
 this kind of work). It also exempts having the programmer to convert those screens into HTML and CSS
-– a time consuming and never satisfying job.
+– a time consuming and unsatisfying job.
 
 According to Frost, the next bigger component after the Organism is the template. This is where
 **djangocms-cascade** jumps in. Each of the Cascade plugins is shipped with its own default
@@ -88,7 +88,7 @@ A nice aspect of this approach is, that ...
   form validation controllers: That one in Javascript used on the client as well as the final one,
   validating the form on the server.
 * if our forms are made out of models, all of the above works as well.
-* we can arrange each of those form components using the **Structure** editor from **djangoCMS**
+* we can arrange each of those form components using the **Structure** editor from **django-CMS**
   toolbar. This is much faster, than by crafting templates manually.
 
 As we can see from this approach, **django-SHOP**  places great value on the principles of a

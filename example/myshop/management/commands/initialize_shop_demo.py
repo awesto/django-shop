@@ -47,16 +47,30 @@ class Command(BaseCommand):
         try:
             con = psycopg2.connect(dbname=dbname, host=host, user=user, password=password)
         except psycopg2.OperationalError:
-            con = psycopg2.connect(dbname='myshop', host=host, user=user, password=password)
+            con = psycopg2.connect(host=host, user=user, password=password)
             con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
             cur = con.cursor()
             cur.execute('CREATE DATABASE {};'.format(dbname))
         finally:
             con.close()
 
+    def clear_compressor_cache(self):
+        from django.core.cache import caches
+        from django.core.cache.backends.base import InvalidCacheBackendError
+        from compressor.conf import settings
+
+        cache_dir = os.path.join(settings.STATIC_ROOT, settings.COMPRESS_OUTPUT_DIR)
+        if settings.COMPRESS_ENABLED is False or os.listdir(cache_dir) != []:
+            return
+        try:
+            caches['compressor'].clear()
+        except InvalidCacheBackendError:
+            pass
+
     def handle(self, verbosity, *args, **options):
         self.set_options(**options)
         self.createdb_if_not_exists()
+        self.clear_compressor_cache()
         call_command('migrate')
 
         fixture = '{workdir}/{tutorial}/fixtures/myshop.json'.format(workdir=settings.WORK_DIR,

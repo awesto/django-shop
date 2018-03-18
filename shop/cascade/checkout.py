@@ -38,8 +38,11 @@ from .plugin_base import ShopPluginBase, ShopButtonPluginBase, DialogFormPluginB
 
 class ProceedButtonForm(TextLinkFormMixin, LinkForm):
     link_content = CharField(label=_("Button Content"))
-    LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")), ('RELOAD_PAGE', _("Reload Page")),
-        ('PURCHASE_NOW', _("Purchase Now")),)
+    LINK_TYPE_CHOICES = [
+        ('cmspage', _("CMS Page")),
+        ('RELOAD_PAGE', _("Reload Page")),
+        ('PURCHASE_NOW', _("Purchase Now")),
+    ]
 
 
 class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
@@ -49,10 +52,17 @@ class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
     name = _("Proceed Button")
     parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin', 'ValidateSetOfFormsPlugin')
     model_mixins = (LinkElementMixin,)
+    glossary_field_order = ['disable_invalid', 'button_type', 'button_size', 'button_options',
+                            'quick_float', 'icon_align', 'icon_font', 'symbol']
     form = ProceedButtonForm
-    glossary_field_order = ('button_type', 'button_size', 'button_options', 'quick_float',
-                            'icon_align', 'icon_font', 'symbol')
     ring_plugin = 'ProceedButtonPlugin'
+
+    disable_invalid = GlossaryField(
+        widgets.CheckboxInput(),
+        label=_("Disable if invalid"),
+        initial=True,
+        help_text=_("Disable button if any form in this set is invalid")
+    )
 
     class Media:
         css = {'all': ('cascade/css/admin/bootstrap.min.css',
@@ -61,21 +71,19 @@ class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
         js = ['shop/js/admin/proceedbuttonplugin.js']
 
     def get_render_template(self, context, instance, placeholder):
+        if instance.link == 'RELOAD_PAGE':
+            button_template = 'reload-button'
+        elif instance.link == 'PURCHASE_NOW':
+            button_template = 'purchase-button'
+        elif instance.link == 'DO_NOTHING':
+            button_template = 'noop-button'
+        else:
+            button_template = 'proceed-button'
         template_names = [
-            '{}/checkout/proceed-button.html'.format(app_settings.APP_LABEL),
-            'shop/checkout/proceed-button.html',
+            '{}/checkout/{}.html'.format(app_settings.APP_LABEL, button_template),
+            'shop/checkout/{}.html'.format(button_template),
         ]
         return select_template(template_names)
-
-    def render(self, context, instance, placeholder):
-        self.super(ShopProceedButton, self).render(context, instance, placeholder)
-        try:
-            cart = CartModel.objects.get_from_request(context['request'])
-            cart.update(context['request'])
-            context['cart'] = cart
-        except CartModel.DoesNotExist:
-            pass
-        return context
 
 plugin_pool.register_plugin(ShopProceedButton)
 
@@ -188,15 +196,7 @@ class CheckoutAddressPlugin(DialogFormPluginBase):
 
         address = self.get_address(form_data['cart'], instance)
         if instance.glossary.get('allow_multiple'):
-            AddressModel = self.get_form_class(instance).get_model()
-            addresses = AddressModel.objects.filter(customer=context['request'].customer).order_by('priority')
-            form_entities = []
-            for number, addr in enumerate(addresses, 1):
-                form_entities.append({
-                    'value': str(addr.priority),
-                    'label': "{}. {}".format(number, addr.as_text().strip().replace('\n', ' – '))
-                })
-            form_data.update(multi_addr=True, form_entities=form_entities)
+            form_data.update(multi_addr=True)
         else:
             form_data.update(multi_addr=False)
 
@@ -235,6 +235,13 @@ class PaymentMethodFormPlugin(DialogFormPluginBase):
     form_class = 'shop.forms.checkout.PaymentMethodForm'
     template_leaf_name = 'payment-method-{}.html'
 
+    show_additional_charge = GlossaryField(
+        widgets.CheckboxInput(),
+        label=_("Show additional charge"),
+        initial=True,
+        help_text=_("Add an extra line showing the additional charge depending on the chosen payment method."),
+    )
+
     def get_form_data(self, context, instance, placeholder):
         form_data = self.super(PaymentMethodFormPlugin, self).get_form_data(context, instance, placeholder)
         cart = form_data.get('cart')
@@ -246,6 +253,7 @@ class PaymentMethodFormPlugin(DialogFormPluginBase):
         self.super(PaymentMethodFormPlugin, self).render(context, instance, placeholder)
         for payment_modifier in cart_modifiers_pool.get_payment_modifiers():
             payment_modifier.update_render_context(context)
+        context['show_additional_charge'] = instance.glossary.get('show_additional_charge', False)
         return context
 
 if cart_modifiers_pool.get_payment_modifiers():
@@ -258,6 +266,13 @@ class ShippingMethodFormPlugin(DialogFormPluginBase):
     form_class = 'shop.forms.checkout.ShippingMethodForm'
     template_leaf_name = 'shipping-method-{}.html'
 
+    show_additional_charge = GlossaryField(
+        widgets.CheckboxInput(),
+        label=_("Show additional charge"),
+        initial=True,
+        help_text=_("Add an extra line showing the additional charge depending on the chosen shipping method."),
+    )
+
     def get_form_data(self, context, instance, placeholder):
         form_data = self.super(ShippingMethodFormPlugin, self).get_form_data(context, instance, placeholder)
         cart = form_data.get('cart')
@@ -269,6 +284,7 @@ class ShippingMethodFormPlugin(DialogFormPluginBase):
         self.super(ShippingMethodFormPlugin, self).render(context, instance, placeholder)
         for shipping_modifier in cart_modifiers_pool.get_shipping_modifiers():
             shipping_modifier.update_render_context(context)
+        context['show_additional_charge'] = instance.glossary.get('show_additional_charge', False)
         return context
 
 if cart_modifiers_pool.get_shipping_modifiers():
@@ -352,7 +368,8 @@ class AcceptConditionMixin(object):
         super(AcceptConditionMixin, self).render(context, instance, placeholder)
         accept_condition_form = context['accept_condition_form.plugin_{}'.format(instance.pk)]
         # transfer the stored HTML content into the widget's label
-        accept_condition_form['accept'].field.widget.choice_label = mark_safe(context['body'])
+        accept_condition_form['accept'].field.label = mark_safe(context['body'])
+        accept_condition_form['accept'].field.widget.choice_label = accept_condition_form['accept'].field.label  # Django < 1.11
         context['accept_condition_form'] = accept_condition_form
         return context
 
@@ -398,7 +415,7 @@ class ValidateSetOfFormsPlugin(TransparentContainer, ShopPluginBase):
     This plugin wraps arbitrary forms into the Angular directive shopFormsSet.
     This is required to validate all forms, so that a proceed button is disabled otherwise.
     """
-    name = _("Validate Set of Forms")
+    name = _("Manage Set of Forms")
     allow_children = True
     alien_child_classes = True
 

@@ -50,26 +50,28 @@ class AddressFormTest(APITestCase):
                 "use_primary_address": True,
             },
         }
-        response = self.client.post(url, payload, format='json')
-        self.assertEqual(response.status_code, 200)
+        response = self.client.put(url, payload, format='json')
+        self.assertEqual(response.status_code, 422)
         response = json.loads(response.content.decode('utf-8'))
-        self.assertFalse(response['data']['$valid'])
+        self.assertTrue('shipping_address_form' in response)
         self.assertDictEqual({'city': ["This field is required."]},
-                             response['errors']['shipping_address_form'])
-        self.assertDictEqual(response['errors']['billing_address_form'], {})
+                             response['shipping_address_form'])
+        self.assertTrue('billing_address_form' in response)
+        self.assertDictEqual(response['billing_address_form'], {})
 
         # Lauren adds the missing city and retries
-        payload['shipping_address'] = dict(response['data']['shipping_address'], city="Los Angeles")
-        response = self.client.post(url, payload, format='json')
+        payload['shipping_address'].update(city="Los Angeles")
+        response = self.client.put(url, payload, format='json')
         self.assertEqual(response.status_code, 200)
         response = json.loads(response.content.decode('utf-8'))
-        self.assertTrue(response['data']['$valid'])
-        self.assertDictEqual({}, response['errors']['shipping_address_form'])
-        self.assertDictEqual(response['errors']['billing_address_form'], {})
-        self.assertEqual(response['checkout_summary']['shipping_address_form'],
-                         "Lauren Callagar\n117, Lake St.\nCA 90066\nLos Angeles\nUnited States")
-        self.assertEqual(response['checkout_summary']['billing_address_form'],
-                         "Use shipping address for billing")
+        self.assertTrue('shipping_address_form' in response)
+        self.assertListEqual(
+            response['shipping_address_form']['siblings_summary'],
+            [{'value': '1', 'label': '1. Lauren Callagar – 117, Lake St. – CA 90066 Los Angeles – United States'}])
+
+        self.assertTrue('billing_address_form' in response)
+        self.assertTrue(response['billing_address_form']['use_primary_address'])
+        self.assertEqual(response['billing_address_form']['active_priority'], 'add')
 
         # check the database's content
         self.assertEqual(ShippingAddress.objects.filter(customer=self.customer).count(), 1)
@@ -80,10 +82,11 @@ class AddressFormTest(APITestCase):
         self.assertIsNone(self.cart.billing_address)
 
         # add the same address a second time and check that it's not duplicated
-        response = self.client.post(url, payload, format='json')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(ShippingAddress.objects.filter(customer=self.customer).count(), 1)
-        self.assertEqual(BillingAddress.objects.filter(customer=self.customer).count(), 0)
+        # edit_address_url = reverse('shop:edit-shipping-address', kwargs={'priority':'add'})
+        # response = self.client.put(url, payload, format='json')
+        # self.assertEqual(response.status_code, 200)
+        # self.assertEqual(ShippingAddress.objects.filter(customer=self.customer).count(), 1)
+        # self.assertEqual(BillingAddress.objects.filter(customer=self.customer).count(), 0)
 
     def test_add_second_shipping_address(self):
         first_address = {
@@ -102,76 +105,92 @@ class AddressFormTest(APITestCase):
         }
         url = reverse('shop:checkout-upload')
 
+        edit_address_url = reverse('shop:edit-shipping-address', kwargs={'priority':'add'})
+        response = self.client.get(edit_address_url)
+        self.assertEqual(response.status_code, 200)
+        response = json.loads(response.content.decode('utf-8'))
+        self.assertDictEqual(response['shipping_address_form'],
+                            {'city': None, 'name': None, 'address1': None, 'address2': None, 'country': None, 'zip_code': None})
+
         # Charles adds the first address
-        payload = {
-            'shipping_address': dict(first_address, plugin_order='1', active_priority='add'),
-            'billing_address': {
-                "plugin_order": "2",
-                "active_priority": "add",
-                "use_primary_address": True,
-            },
-        }
-        response = self.client.post(url, payload, format='json')
-        self.assertEqual(response.status_code, 200)
+        payload = {'shipping_address': dict(first_address, plugin_order='1', active_priority='add')}
+        payload['shipping_address'].pop('city')  # forgot to fill out city
+        response = self.client.put(edit_address_url, payload, format='json')
+        self.assertEqual(response.status_code, 422)
         response = json.loads(response.content.decode('utf-8'))
-        self.assertTrue(response['data']['$valid'])
-        self.assertDictEqual(response['errors']['shipping_address_form'], {})
-        self.assertDictEqual(response['errors']['billing_address_form'], {})
+        self.assertDictEqual(response.pop('shipping_address_form'), {'errors': {u'city': [u'This field is required.']}})
+
+        payload = {'shipping_address': dict(first_address, plugin_order='1', active_priority='add')}
+        response = self.client.put(edit_address_url, payload, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(ShippingAddress.objects.filter(customer=self.customer).count(), 0)
+
+        # associate that address with the current cart
+        url = reverse('shop:checkout-upload')
+        response = self.client.put(url, payload, format='json')
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(ShippingAddress.objects.filter(customer=self.customer).count(), 1)
-        self.assertEqual(BillingAddress.objects.filter(customer=self.customer).count(), 0)
 
-        # Charles add the second address
-        payload['shipping_address'] = dict(second_address, plugin_order='1', active_priority='new')
-        response = self.client.post(url, payload, format='json')
+        # Charles adds the second address
+        payload['shipping_address'] = dict(second_address, plugin_order='1', active_priority='add')
+        response = self.client.put(url, payload, format='json')
         self.assertEqual(response.status_code, 200)
         response = json.loads(response.content.decode('utf-8'))
-        self.assertDictContainsSubset({'active_priority': 'add'}, response['data']['shipping_address'])
-        self.assertEqual("Use shipping address for billing",
-                         response['checkout_summary']['billing_address_form'])
-        payload['shipping_address'] = dict(response['data']['shipping_address'], **second_address)
-        response = self.client.post(url, payload, format='json')
-        self.assertEqual(response.status_code, 200)
-        response = json.loads(response.content.decode('utf-8'))
-        self.assertTrue(response['data']['$valid'])
-        self.assertDictEqual(response['errors']['shipping_address_form'], {})
-        self.assertDictEqual(response['errors']['billing_address_form'], {})
-        self.assertEqual(response['checkout_summary']['shipping_address_form'],
-                         "Charles Smith\n1012, Madison Ave\nMD 21201\nBaltimore\nUnited States")
-        self.assertEqual(response['checkout_summary']['billing_address_form'],
-                         "Use shipping address for billing")
-
-        # check the database's content
+        siblings_summary = response['shipping_address_form'].pop('siblings_summary')
+        self.assertListEqual(siblings_summary, [
+            {"value":"1","label":"1. Charles Smith – 507, Dudley St. – PA 19148 Philadelphia – United States"},
+            {"value":"2","label":"2. Charles Smith – 1012, Madison Ave – MD 21201 Baltimore – United States"}
+        ])
+        self.assertEqual(response['shipping_address_form'].pop('active_priority'), '2')
+        self.assertEqual(response['shipping_address_form'].pop('plugin_order'), '1')
+        self.assertDictEqual(response['shipping_address_form'], second_address)
         self.assertEqual(ShippingAddress.objects.filter(customer=self.customer).count(), 2)
-        self.assertEqual(BillingAddress.objects.filter(customer=self.customer).count(), 0)
         self.cart.refresh_from_db()
         self.assertEqual(self.cart.shipping_address.as_text(),
                          "Charles Smith\n1012, Madison Ave\nMD 21201 Baltimore\nUnited States\n")
         self.assertIsNone(self.cart.billing_address)
 
-        print(self.cart.shipping_address_id)
+        # check that Charles selected the second address
+        self.assertEqual(str(self.cart.shipping_address.priority), siblings_summary[1]['value'])
+        empty_field = None if DJANGO_VERSION >= (1, 11) else ''
 
-        # Charles selects its first address in Philadelphia
-        payload['shipping_address'] = dict(response['data']['shipping_address'], active_priority='1')
-        response = self.client.post(url, payload, format='json')
+        # Charles selects his first address in Philadelphia
+        active_priority = siblings_summary[0]['value']
+        edit_address_url = reverse('shop:edit-shipping-address', kwargs={'priority': active_priority})
+        response = self.client.get(edit_address_url)
+        self.assertEqual(response.status_code, 200)
+        payload = {'shipping_address': json.loads(response.content.decode('utf-8')).get('shipping_address_form')}
+        payload['shipping_address'].update(plugin_order='1', active_priority=active_priority)
+        response = self.client.put(url, payload, format='json')
         self.assertEqual(response.status_code, 200)
         response = json.loads(response.content.decode('utf-8'))
-        self.assertTrue(response['data']['$valid'])
+        self.assertTrue('shipping_address_form' in response)
+        self.assertEqual(response['shipping_address_form'].pop('active_priority'), '1')
+        self.assertEqual(response['shipping_address_form'].pop('plugin_order'), '1')
+        siblings_summary = response['shipping_address_form'].pop('siblings_summary')
+        self.assertEqual(len(siblings_summary), 2)
+        self.assertEqual(response['shipping_address_form'].pop('address2'), empty_field)
+        self.assertDictEqual(response['shipping_address_form'], first_address)
+
+        # check that Charles selected the first address
         self.cart.refresh_from_db()
         self.assertEqual(self.cart.shipping_address.as_text(),
                          "Charles Smith\n507, Dudley St.\nPA 19148 Philadelphia\nUnited States\n")
 
-        # and removes the address in Philadelphia, leaving only Baltimore
-        payload['shipping_address'] = dict(response['data']['shipping_address'], remove_entity=True)
-        response = self.client.post(url, payload, format='json')
+        # now Charles removes his first address
+        response = self.client.delete(edit_address_url)
         self.assertEqual(response.status_code, 200)
         response = json.loads(response.content.decode('utf-8'))
-        self.assertTrue(response['data']['$valid'])
-        self.assertDictContainsSubset({'active_priority': '2', 'city': "Baltimore"},
-                                      response['data']['shipping_address'])
+        siblings_summary = response['shipping_address_form'].pop('siblings_summary')
+        self.assertListEqual(siblings_summary, [
+            {"value":"2","label":"1. Charles Smith – 1012, Madison Ave – MD 21201 Baltimore – United States"}
+        ])
+        self.assertEqual(response['shipping_address_form'].pop('active_priority'), '2')
+        self.assertFalse(response['shipping_address_form'].pop('use_primary_address'))
+        self.assertEqual(response['shipping_address_form'].pop('address2'), empty_field)
+        self.assertDictEqual(response['shipping_address_form'], second_address)
 
-        # check the database's content
-        self.assertEqual(ShippingAddress.objects.filter(customer=self.customer).count(), 1)
-        self.assertEqual(BillingAddress.objects.filter(customer=self.customer).count(), 0)
+        # check that Charles selected the second address
         self.cart.refresh_from_db()
-        self.assertEqual(self.cart.shipping_address.as_text(),
-                         "Charles Smith\n1012, Madison Ave\nMD 21201 Baltimore\nUnited States\n")
+        self.assertEqual(str(self.cart.shipping_address.priority), '2')
+        self.assertEqual(ShippingAddress.objects.filter(customer=self.customer).count(), 1)

@@ -1,0 +1,9 @@
+<div class="alert alert-success animate-show" ng-show="successMessageIsVisible()" ng-cloak>
+	<a class="close" ng-click="dismissSubmitMessage()">×</a>
+	<p ng-bind="getSubmitMessage()"></p>
+</div>
+
+<div class="alert alert-danger animate-show" ng-show="rejectMessageIsVisible()" ng-cloak>
+	<a class="close" ng-click="dismissSubmitMessage()">×</a>
+	<p ng-bind="getSubmitMessage()"></p>
+</div>

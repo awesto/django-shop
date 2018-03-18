@@ -60,8 +60,11 @@ plugin_pool.register_plugin(ShopOrderViewsPlugin)
 
 
 class OrderButtonForm(ShopOrderViewsForm):
-    button_content = fields.CharField(required=False, label=_("Button Content"),
-                                      widget=widgets.TextInput())
+    button_content = fields.CharField(
+        label=_("Button Content"),
+        required=False,
+        widget=widgets.TextInput(),
+    )
 
     def __init__(self, raw_data=None, *args, **kwargs):
         instance = kwargs.get('instance')
