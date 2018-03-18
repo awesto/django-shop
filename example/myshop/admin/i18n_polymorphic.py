@@ -116,5 +116,5 @@ class ProductAdmin(PolymorphicSortableAdminMixin, PolymorphicParentModelAdmin):
     list_max_show_all = 1000
 
     def get_price(self, obj):
-        return obj.get_real_instance().get_price(None)
+        return str(obj.get_real_instance().get_price(None))
     get_price.short_description = _("Price starting at")
