@@ -68,6 +68,8 @@ Changelog for django-SHOP
 * In Shipping- and Payment Method Form, optionally show additional charges below the radio fields,
   depending on the selected method.
 * Remove ``angular-message`` from the list of npm dependencies.
+* Fix: Products with ``active=False`` are exempted from the catalog list views and accessing them
+  raises a Not Found page.
 
 
 0.11.7
