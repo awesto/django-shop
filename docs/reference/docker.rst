@@ -4,7 +4,7 @@
 Deployment using Docker
 =======================
 
-By using Docker_ in combination with docker-compose, the deployment of a **django-SHOP**
+By using Docker_ in combination with Docker Compose, the deployment of a **django-SHOP**
 installation becomes really simple. We make use of this in the demos, but these examples
 are intended to run on a local docker machine, hence there we use the internal web server
 provided by uWSGI_. In a productive environment, we usually use a web server to dispatch
