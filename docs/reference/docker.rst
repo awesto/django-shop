@@ -324,7 +324,14 @@ file named ``nginx-compose.yml``.
 	  nginx-proxy:
 	    external: true
 
-To build and run the web server we invoke.
+If we build these containers the first time, we might have to create the network, since it is
+declared as external:
+
+.. code-block:: bash
+
+	$ docker network create nginx-proxy
+
+To build and run the web server plus Let's Encrypt companion, we invoke:
 
 .. code-block:: bash
 
@@ -353,9 +360,8 @@ Provide django-SHOP behind NGiNX
 --------------------------------
 
 Finally we want to run our **django-SHOP** instance behind the just configured NGiNX proxy.
-For this we have to edit the file ``docker-compose.yml`` from above.
-
-First locate the section ``wsgiapps``. There
+For this we have to edit the file ``docker-compose.yml`` from above. There we change to following
+lines:
 
 * In section ``wsgiapp``, add the environment variables ``VIRTUAL_HOST``, ``VIRTUAL_PROTO``,
   ``LETSENCRYPT_HOST`` and ``LETSENCRYPT_EMAIL`` to subsection ``environment``, as shown below.
