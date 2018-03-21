@@ -21,7 +21,7 @@ docker-compose up --build
 Wait a few minutes until everything has been build and media files have been downloaded.
 In the meantime find the IP address of your Docker machine using ``docker-machine ip``.
 
-Point a browser onto http://<docker-machines-ip>:9009/
+Point a browser onto http://*docker-machines-ip*:9009/
 
 Change DJANGO_SHOP_TUTORIAL to ``i18n_commodity``, ``smartcard``, ``i18n_smartcard``,
 ``polymorphic`` or ``i18n_polymorphic`` and rebuild the container to run the other prepared
