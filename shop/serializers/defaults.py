@@ -48,8 +48,8 @@ class AddToCartSerializer(serializers.Serializer):
     By default, this serializer is used by the view class :class:`shop.views.catalog.AddToCartView`,
     which handles the communication from the "Add to Cart" dialog box.
 
-    This serializer shall be replaced by an alternative implementation, if product variations are used
-    on the same catalog's detail view.
+    If a product has variations, which influence the fields in the "Add to Cart" dialog box, then
+    this serializer shall be overridden by a customized implementation,
     """
     quantity = serializers.IntegerField(default=1, min_value=1)
     unit_price = MoneyField(read_only=True)
