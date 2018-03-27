@@ -7,6 +7,8 @@ from django import forms
 from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib import admin
+from django.contrib.sites.models import Site
+
 from django.utils.translation import ugettext_lazy as _
 
 from adminsortable2.admin import SortableInlineAdminMixin
@@ -32,6 +34,13 @@ def _find_catalog_list_apphook():
     else:
         raise ImproperlyConfigured("You must register a CMS apphook of type `CatalogListCMSApp`.")
 
+class CategoryModelMultipleChoiceField(forms.ModelMultipleChoiceField):
+    def label_from_instance(self, obj):
+        if Site.objects.count() >=2 :
+            page_sitename=Site.objects.filter(djangocms_nodes=obj.node_id)[0].name
+            return '{} | {}'.format(obj, page_sitename)
+        else:
+            return obj
 
 class CMSPageAsCategoryMixin(object):
     """
