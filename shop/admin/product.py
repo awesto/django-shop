@@ -36,10 +36,10 @@ def _find_catalog_list_apphook():
 class CategoryModelMultipleChoiceField(forms.ModelMultipleChoiceField):
     def label_from_instance(self, obj):
         if Site.objects.count() >=2 :
-            page_sitename=Site.objects.filter(djangocms_nodes=obj.node_id)[0].name
-            return '{} | {}'.format(obj, page_sitename)
+            page_sitename=str(Site.objects.filter(djangocms_nodes=obj.node_id).first().name)
+            return '{} | {}'.format(str(obj), page_sitename)
         else:
-            return obj
+            return str(obj)
 
 class CMSPageAsCategoryMixin(object):
     """
