@@ -17,10 +17,10 @@ install:
   - cd example && npm install
 
 before_script:
-  - "if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then export PYVER=py27; fi"
-  - "if [[ $TRAVIS_PYTHON_VERSION == '3.4' ]]; then export PYVER=py34; fi"
-  - "if [[ $TRAVIS_PYTHON_VERSION == '3.5' ]]; then export PYVER=py35; fi"  
-  - "if [[ $TRAVIS_PYTHON_VERSION == '3.6' ]]; then export PYVER=py36; fi"
+  - "if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then export $TOX_ENV=py27; fi"
+  - "if [[ $TRAVIS_PYTHON_VERSION == '3.4' ]]; then export $TOX_ENV=py34; fi"
+  - "if [[ $TRAVIS_PYTHON_VERSION == '3.5' ]]; then export $TOX_ENV=py35; fi"  
+  - "if [[ $TRAVIS_PYTHON_VERSION == '3.6' ]]; then export $TOX_ENV=py36; fi"
 
 script:
 - tox -r -e "$TOX_ENV-$DJANGO-$CMS"
