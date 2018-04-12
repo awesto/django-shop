@@ -7,6 +7,7 @@ python:
   - 3.6
 
 env:
+  matrix:
   - DJANGO='django110' CMS='cms34'
   - DJANGO='django111' CMS='cms34'
   - DJANGO='django111' CMS='cms35'
