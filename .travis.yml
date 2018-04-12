@@ -18,7 +18,7 @@ install:
 
 script:  
   - "if [[ $TRAVIS_PYTHON_VERSION == '2.7' && $DJANGOVER && $CMS ]]; then export TOX_ENV=py27-$DJANGOVER; fi"
-  - "if [[ $TRAVIS_PYTHON_VERSION == '3.4' && $DJANGOVER && $CMS ]]]; then export TOX_ENV=py34-$DJANGOVER; fi"
-  - "if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $DJANGOVER && $CMS ]]]; then export TOX_ENV=py35-$DJANGOVER; fi"
-  - "if [[ $TRAVIS_PYTHON_VERSION == '3.6' && $DJANGOVER && $CMS ]]]; then export TOX_ENV=py36-$DJANGOVER; fi"
+  - "if [[ $TRAVIS_PYTHON_VERSION == '3.4' && $DJANGOVER && $CMS ]]; then export TOX_ENV=py34-$DJANGOVER; fi"
+  - "if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $DJANGOVER && $CMS ]]; then export TOX_ENV=py35-$DJANGOVER; fi"
+  - "if [[ $TRAVIS_PYTHON_VERSION == '3.6' && $DJANGOVER && $CMS ]]; then export TOX_ENV=py36-$DJANGOVER; fi"
   - tox -r -e "$TOX_ENV"
