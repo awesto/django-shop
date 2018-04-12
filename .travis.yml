@@ -24,4 +24,4 @@ before_script:
   - "if [[ $TRAVIS_PYTHON_VERSION == '3.6' ]]; then export TOX_ENV=py36; fi"
 
 script:
-- tox -r -e "$TOX_ENV-$DJANGO-$CMS"
+- "if [[ ! -z $DJANGO ]]; then tox -r -e "$TOX_ENV; else tox -r -e "$TOX_ENV-$DJANGO-$CMS"; fi"
