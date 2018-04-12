@@ -23,4 +23,4 @@ before_script:
   - "if [[ $TRAVIS_PYTHON_VERSION == '3.6' ]]; then export PYVER=py36; fi"
 
 script:
-- tox -r -e "$DJANGO-$CMS$TOX_ENV"
+- tox -r -e "$TOX_ENV-$DJANGO-$CMS"
