@@ -8,7 +8,7 @@ python:
 
 env:
   matrix:
-  - DJANGO='django110' CMS='cms34'
+  - DJANGO='django110' CMS='cms34' 
   - DJANGO='django111' CMS='cms34'
   - DJANGO='django111' CMS='cms35'
   - TOX_ENV=docs
@@ -24,4 +24,4 @@ before_script:
   - "if [[ $TRAVIS_PYTHON_VERSION == '3.6' ]]; then export TOX_ENV=py36; fi"
 
 script:
-- tox -r -e "$TOX_ENV$DJANGO$CMS"
+- tox -r -e "$TOX_ENV-$DJANGO-$CMS"
