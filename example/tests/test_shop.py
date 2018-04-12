@@ -39,6 +39,10 @@ class ShopTestCase(TestCase):
     def create_pages(self):
         self.home_page = create_page("HOME", 'myshop/pages/default.html', 'en', published=True,
                                      in_navigation=True)
+        if not self.home_page.is_home:
+            # >= Django CMS v3.5.x
+            self.home_page.set_as_homepage()
+        
         response = self.client.get(self.home_page.get_absolute_url())
         self.assertEqual(response.status_code, 200)
 
