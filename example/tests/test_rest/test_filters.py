@@ -13,7 +13,7 @@ from myshop.models.manufacturer import Manufacturer
 
 def create_page(name):
     page = cms.api.create_page(name, "INHERIT", "en")
-    #page.site_id = 1
+    page.site_id = 1
     page.save()
     page.publish("en")
     page = page.get_public_object()
