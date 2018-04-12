@@ -7,22 +7,18 @@ python:
   - 3.6
 
 env:
-  - DJANGO='django110' CMS='cms34'
-  - DJANGO='django111' CMS='cms34'
-  - DJANGO='django111' CMS='cms35'
+  - DJANGOVER='django110' CMS='cms34'
+  - DJANGOVER='django111' CMS='cms34'
+  - DJANGOVER='django110' CMS='cms35'
   - TOX_ENV=docs
 
 install:
   - pip install tox
   - cd example && npm install
 
-before_script:
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
-  - "if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then export TOX_ENV=py27; fi"
-  - "if [[ $TRAVIS_PYTHON_VERSION == '3.4' ]]; then export TOX_ENV=py34; fi"
-  - "if [[ $TRAVIS_PYTHON_VERSION == '3.5' ]]; then export TOX_ENV=py35; fi"  
-  - "if [[ $TRAVIS_PYTHON_VERSION == '3.6' ]]; then export TOX_ENV=py36; fi"
-
-script:
-  - tox -r -e "$TOX_ENV-$DJANGO-$CMS"
+script:  
+  - "if [[ $TRAVIS_PYTHON_VERSION == '2.7' && $DJANGOVER ]]; then export TOX_ENV=py27-$DJANGOVER; fi"
+  - "if [[ $TRAVIS_PYTHON_VERSION == '3.4' && $DJANGOVER ]]; then export TOX_ENV=py34-$DJANGOVER; fi"
+  - "if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $DJANGOVER ]]; then export TOX_ENV=py35-$DJANGOVER; fi"
+  - "if [[ $TRAVIS_PYTHON_VERSION == '3.6' && $DJANGOVER ]]; then export TOX_ENV=py36-$DJANGOVER; fi"
+  - tox -r -e "$TOX_ENV"
