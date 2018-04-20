@@ -3,6 +3,6 @@ django-select2<6.1
 django-angular<2.1
 django-haystack==2.8.1
 drf-haystack==1.8.1
-django-polymorphic=2.0.2
+django-polymorphic==2.0.2
 -r common.txt
 
