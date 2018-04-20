@@ -5,4 +5,3 @@ django-haystack==2.8.1
 drf-haystack==1.8.1
 django-polymorphic==2.0.2
 -r common.txt
-
