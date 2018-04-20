@@ -29,7 +29,7 @@ class RecursiveCMSPagesFilterBackendTest(TestCase):
         self.child = create_page("child")
         self.grandchild = create_page("grandchild")
         self.grandchild.move(target=self.child, pos="first-child")
-        self.child.move(target=self.root, pos="first-child")    
+        self.child.move(target=self.root, pos="first-child")
 
     def _create_product(self, slug):
         return Product.objects.create(product_name=slug, slug=slug, order=1, manufacturer=self.manufacturer)
