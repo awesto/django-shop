@@ -85,7 +85,7 @@ class StatusListFilter(admin.SimpleListFilter):
 
 
 class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
-    list_display = ('get_number', 'customer', 'status_name', 'total', 'created_at',)
+    list_display = ('get_number', 'customer', 'status_name', 'get_total', 'created_at',)
     list_filter = (StatusListFilter,)
     fsm_field = ('status',)
     date_hierarchy = 'created_at'
