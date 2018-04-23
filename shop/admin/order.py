@@ -10,7 +10,6 @@ from django.http import HttpResponse
 from django.template import RequestContext
 from django.template.loader import select_template
 from django.utils.html import format_html
-from django.utils.formats import number_format
 from django.utils.translation import pgettext_lazy
 
 from fsm_admin.mixins import FSMTransitionMixin
@@ -112,15 +111,15 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
     get_number.short_description = pgettext_lazy('admin', "Order number")
 
     def get_total(self, obj):
-        return number_format(obj.total)
+        return str(obj.total)
     get_total.short_description = pgettext_lazy('admin', "Total")
 
     def get_subtotal(self, obj):
-        return number_format(obj.subtotal)
+        return str(obj.subtotal)
     get_subtotal.short_description = pgettext_lazy('admin', "Subtotal")
 
     def get_outstanding_amount(self, obj):
-        return number_format(obj.outstanding_amount)
+        return str(obj.outstanding_amount)
     get_outstanding_amount.short_description = pgettext_lazy('admin', "Outstanding amount")
 
     def has_add_permission(self, request):
