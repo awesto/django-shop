@@ -4,7 +4,7 @@ django-appconf==1.0.2
 django-classy-tags==0.8.0
 #django-cms==3.4.5
 django-compressor==2.2
-django-filer==1.3.0
+django-filer==1.3.2
 django-filter==1.1.0
 django-fsm==2.6.0
 django-fsm-admin==1.2.4
