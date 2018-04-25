@@ -3,10 +3,14 @@ from __future__ import unicode_literals
 
 from functools import reduce
 import operator
+from distutils.version import LooseVersion
+
+from cms import __version__ as cms_version
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Q
 from rest_framework.filters import BaseFilterBackend
 
+CMS_LT_3_4 = LooseVersion(cms_version) < LooseVersion('3.5')
 
 class CMSPagesFilterBackend(BaseFilterBackend):
     """
@@ -36,6 +40,10 @@ class RecursiveCMSPagesFilterBackend(CMSPagesFilterBackend):
     """
 
     def _get_filtered_queryset(self, current_page, queryset, cms_pages_fields):
-        pages = current_page.get_descendants(include_self=True)
+        if CMS_LT_3_4:
+            pages = current_page.get_descendants(include_self=True)
+        else:
+            pages=list(current_page.get_descendant_pages().values_list('id', flat=True))
+            pages.insert(0, current_page.id)
         filter_by_cms_page = (Q((field + "__in", pages)) for field in self.cms_pages_fields)
         return queryset.filter(reduce(operator.or_, filter_by_cms_page)).distinct()

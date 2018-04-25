@@ -13,7 +13,7 @@ from myshop.models.manufacturer import Manufacturer
 
 def create_page(name):
     page = cms.api.create_page(name, "INHERIT", "en")
-    page.site_id = 1
+#    page.site_id = 1
     page.save()
     page.publish("en")
     page = page.get_public_object()
@@ -28,8 +28,8 @@ class RecursiveCMSPagesFilterBackendTest(TestCase):
         self.sibling = create_page("sibling")
         self.child = create_page("child")
         self.grandchild = create_page("grandchild")
-        self.grandchild.move(target=self.child, pos="first-child")
-        self.child.move(target=self.root, pos="first-child")
+        self.grandchild.node.move(target=self.child.node, pos="first-child")
+        self.child.node.move(target=self.root.node, pos="first-child")
 
     def _create_product(self, slug):
         return Product.objects.create(product_name=slug, slug=slug, order=1, manufacturer=self.manufacturer)
