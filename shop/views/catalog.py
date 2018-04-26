@@ -228,7 +228,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
                     return details(request, kwargs.get('slug'))
             else:
                 if request.current_page.node.is_root():
-                   return details(request, kwargs.get('slug'))
+                    return details(request, kwargs.get('slug'))
             raise
         except:
             raise
