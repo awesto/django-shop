@@ -28,6 +28,7 @@ from shop.rest.renderers import ShopTemplateHTMLRenderer, CMSPageRenderer
 from shop.serializers.bases import ProductSerializer
 from shop.serializers.defaults import AddToCartSerializer
 
+CMS_LT_3_4 = LooseVersion(cms_version) < LooseVersion('3.5')
 
 class ProductListView(generics.ListAPIView):
     """
