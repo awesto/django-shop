@@ -2,7 +2,9 @@
 from __future__ import unicode_literals
 
 import os
+from distutils.version import LooseVersion
 
+from cms import __version__ as cms_version
 from django.db import models
 from django.http.response import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
@@ -220,9 +222,13 @@ class ProductRetrieveView(generics.RetrieveAPIView):
         """
         try:
             return super(ProductRetrieveView, self).dispatch(request, *args, **kwargs)
-        except Http404:
-            if request.current_page.is_root():
-                return details(request, kwargs.get('slug'))
+        except Http404: 
+            if CMS_LT_3_4:
+                if request.current_page.is_root():
+                    return details(request, kwargs.get('slug'))
+            else:
+                if request.current_page.node.is_root():
+                   return details(request, kwargs.get('slug'))
             raise
         except:
             raise
