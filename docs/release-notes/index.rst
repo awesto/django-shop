@@ -1,11 +1,12 @@
 .. _release-notes:
 
-===================================
-Release notes & upgrade information
-===================================
+=============
+Release Notes
+=============
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 3
+    :reversed:
 
     0.9
     0.10

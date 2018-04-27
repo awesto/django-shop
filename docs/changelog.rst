@@ -4,6 +4,14 @@
 Changelog for django-SHOP
 =========================
 
+0.12.1
+======
+
+* Fix: #724: broken amount rendering when ``USE_TOUSAND_SEPARATOR`` is ``True``.
+* Adopt ``shoplinkplugin.js`` to use function ``initializeLinkTypes`` as required by
+  **djangocms-cascade** version 0.16.
+
+
 0.12
 ====
 
