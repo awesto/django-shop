@@ -68,6 +68,7 @@ system:
 	(shoptutorial)$ cd django-shop
 	(shoptutorial)$ pip install 'Django<2.0' 'django-select2<6.1' 'django-angular<2.1'
 	(shoptutorial)$ pip install -r requirements/common.txt
+	(shoptutorial)$ pip install -r requirements.txt
 	(shoptutorial)$ pip install --no-deps -e .
 	(shoptutorial)$ cd example
 	(shoptutorial)$ npm install
