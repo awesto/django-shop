@@ -11,6 +11,8 @@ from django.contrib.auth.middleware import AuthenticationMiddleware
 from django.test import TestCase, RequestFactory
 from cms.api import add_plugin, create_page
 
+from  cms.utils.apphook_reload import reload_urlconf
+
 from cmsplugin_cascade import app_settings
 from cmsplugin_cascade.bootstrap3.container import (BootstrapContainerPlugin, BootstrapRowPlugin,
                                                     BootstrapColumnPlugin)
@@ -105,6 +107,9 @@ class ShopTestCase(TestCase):
         )
         ProductPage.objects.create(page=self.shop_page, product=sdxc_pro_32gb)
         ProductPage.objects.create(page=self.smartcards_page, product=sdxc_pro_32gb)
+        
+        reload_urlconf(urlconf=settings.ROOT_URLCONF)
+        
 
     def create_administrator(self):
         self.administrator = get_user_model().objects.create_user('admin', 'admin@example.com', 'admin')
