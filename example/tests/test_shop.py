@@ -58,7 +58,8 @@ class ShopTestCase(TestCase):
         response = self.client.get(self.smartcards_page.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         
-        reload_urlconf(urlconf=settings.ROOT_URLCONF)
+        # neeeded for cms35
+        reload_urlconf(urlconf=settings.ROOT_URLCONF) 
         
 
     def create_products(self):
