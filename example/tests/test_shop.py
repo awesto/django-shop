@@ -57,6 +57,9 @@ class ShopTestCase(TestCase):
                                            published=True, in_navigation=True, apphook=CatalogListApp)
         response = self.client.get(self.smartcards_page.get_absolute_url())
         self.assertEqual(response.status_code, 200)
+        
+        reload_urlconf(urlconf=settings.ROOT_URLCONF)
+        
 
     def create_products(self):
         manufacturer = Manufacturer.objects.create(name="SanDisk")
@@ -107,8 +110,6 @@ class ShopTestCase(TestCase):
         )
         ProductPage.objects.create(page=self.shop_page, product=sdxc_pro_32gb)
         ProductPage.objects.create(page=self.smartcards_page, product=sdxc_pro_32gb)
-        
-        reload_urlconf(urlconf=settings.ROOT_URLCONF)
         
 
     def create_administrator(self):
