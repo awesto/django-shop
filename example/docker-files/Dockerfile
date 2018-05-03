@@ -29,7 +29,8 @@ COPY example/requirements.txt /web/requirements/myshop.txt
 
 # install project specific requirements
 RUN pip install --upgrade pip
-RUN pip install psycopg2-binary uWSGI 'Django<2.0' 'django-select2<6.1' 'django-angular<2.1'
+#RUN pip install psycopg2-binary uWSGI 'Django<2.0' 'django-select2<6.1' 'django-angular<2.1'
+RUN pip install psycopg2-binary uWSGI -r  /web/requirements/django111.txt
 RUN pip install .
 RUN pip install -r /web/requirements/myshop.txt
 RUN npm install
