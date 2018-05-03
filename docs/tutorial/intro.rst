@@ -70,6 +70,7 @@ system:
 	(shoptutorial)$ pip install -r requirements/django111.txt #or requirements/django110.txt
 	(shoptutorial)$ pip install --no-deps -e .
 	(shoptutorial)$ cd example
+	(shoptutorial)$ pip install -r requirements.txt
 	(shoptutorial)$ npm install
 
 These statements will setup an environment that runs one of the demo shops out of the box.
@@ -88,7 +89,6 @@ Finally we must create a database to run our example project:
 .. code-block:: shell
 
 	(shoptutorial)$ cd django-shop/example
-	(shoptutorial)$ pip install -r requirements.txt
 	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=commodity DJANGO_DEBUG=1
 	(shoptutorial)$ ./manage.py migrate
 	(shoptutorial)$ ./manage.py createsuperuser
@@ -129,7 +129,6 @@ repository, but downloaded separately from the Internet using these commands:
 .. code-block:: shell
 
 	(shoptutorial)$ cd django-shop/example
-	(shoptutorial)$ pip install -r requirements.txt
 	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=commodity DJANGO_DEBUG=1
 	(shoptutorial)$ ./manage.py initialize_shop_demo
 	(shoptutorial)$ ./manage.py runserver
