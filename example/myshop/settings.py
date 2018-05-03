@@ -120,7 +120,7 @@ INSTALLED_APPS = [
     'post_office',
     'haystack',
     'shop',
-    'shop_stripe',
+ #   'shop_stripe',
     'myshop',
 ]
 if SHOP_TUTORIAL in ['i18n_commodity', 'i18n_smartcard', 'i18n_polymorphic']:
