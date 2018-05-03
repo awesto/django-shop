@@ -110,7 +110,7 @@ class ShopTestCase(TestCase):
             order=3,
         )
         ProductPage.objects.create(page=self.shop_page, product=sdxc_pro_32gb)
-        ProductPage.objects.create(page=self.smartcards_page, product=sdxc_pro_32gb) 
+        ProductPage.objects.create(page=self.smartcards_page, product=sdxc_pro_32gb)
 
     def create_administrator(self):
         self.administrator = get_user_model().objects.create_user('admin', 'admin@example.com', 'admin')
