@@ -88,6 +88,7 @@ Finally we must create a database to run our example project:
 .. code-block:: shell
 
 	(shoptutorial)$ cd django-shop/example
+	(shoptutorial)$ pip install -r requirements.txt
 	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=commodity DJANGO_DEBUG=1
 	(shoptutorial)$ ./manage.py migrate
 	(shoptutorial)$ ./manage.py createsuperuser
@@ -128,6 +129,7 @@ repository, but downloaded separately from the Internet using these commands:
 .. code-block:: shell
 
 	(shoptutorial)$ cd django-shop/example
+	(shoptutorial)$ pip install -r requirements.txt
 	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=commodity DJANGO_DEBUG=1
 	(shoptutorial)$ ./manage.py initialize_shop_demo
 	(shoptutorial)$ ./manage.py runserver
