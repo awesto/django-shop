@@ -20,7 +20,7 @@ django-sekizai==0.10.0
 django-treebeard==4.2.0
 djangocms-bootstrap3==0.3.2
 djangocms-cascade==0.16
-djangocms-text-ckeditor==3.4.0
+djangocms-text-ckeditor==3.6.0
 djangorestframework==3.7.7
 django-formtools==2.1
 certifi==2017.11.5
