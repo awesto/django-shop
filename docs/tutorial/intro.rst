@@ -66,8 +66,8 @@ system:
 	(shoptutorial)$ pip install -U pip setuptools
 	(shoptutorial)$ git clone --depth 1 https://github.com/awesto/django-shop
 	(shoptutorial)$ cd django-shop
-	(shoptutorial)$ pip install -r requirements/django111.txt #or requirements/django110.txt
 	(shoptutorial)$ pip install 'django-cms>=3.4.5,<=3.5' #or 'django-cms>=3.5' for testing
+	(shoptutorial)$ pip install -r requirements/django111.txt #or requirements/django110.txt
 	(shoptutorial)$ pip install --no-deps -e .
 	(shoptutorial)$ cd example
 	(shoptutorial)$ npm install
@@ -88,6 +88,7 @@ Finally we must create a database to run our example project:
 .. code-block:: shell
 
 	(shoptutorial)$ cd django-shop/example
+	(shoptutorial)$ pip install -r requirements.txt
 	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=commodity DJANGO_DEBUG=1
 	(shoptutorial)$ ./manage.py migrate
 	(shoptutorial)$ ./manage.py createsuperuser
@@ -128,6 +129,7 @@ repository, but downloaded separately from the Internet using these commands:
 .. code-block:: shell
 
 	(shoptutorial)$ cd django-shop/example
+	(shoptutorial)$ pip install -r requirements.txt
 	(shoptutorial)$ export DJANGO_SHOP_TUTORIAL=commodity DJANGO_DEBUG=1
 	(shoptutorial)$ ./manage.py initialize_shop_demo
 	(shoptutorial)$ ./manage.py runserver

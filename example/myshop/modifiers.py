@@ -6,6 +6,8 @@ from shop.serializers.cart import ExtraCartRow
 from shop.modifiers.base import ShippingModifier
 from shop.money import Money
 from shop.shipping.defaults import DefaultShippingProvider
+from shop_stripe import modifiers
+
 
 class PostalShippingModifier(ShippingModifier):
     identifier = 'postal-shipping'
@@ -30,12 +32,6 @@ class CustomerPickupModifier(ShippingModifier):
     def get_choice(self):
         return (self.identifier, _("Customer pickups the goods"))
 
-try:
-    from shop_stripe import modifiers
-    
-    class StripePaymentModifier(modifiers.StripePaymentModifier):
-        commision_percentage = 3
-        
-except ImportError:
-    pass
 
+class StripePaymentModifier(modifiers.StripePaymentModifier):
+    commision_percentage = 3

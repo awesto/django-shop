@@ -7,11 +7,18 @@ try:
     from StringIO import StringIO
 except ImportError:
     from io import BytesIO as StringIO
+    
+from distutils.version import LooseVersion
+
+from cms import __version__ as cms_version
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.core.management import call_command
 from django.utils.translation import ugettext_lazy as _
 from django.utils.six.moves import input
+
+CMS_LT_3_4 = LooseVersion(cms_version) < LooseVersion('3.5')
+
 try:
     import czipfile as zipfile
 except ImportError:
@@ -21,7 +28,13 @@ except ImportError:
 class Command(BaseCommand):
     version = 13
     help = _("Initialize the workdir to run the demo of myshop.")
-    download_url = 'http://downloads.django-shop.org/django-shop-workdir_{tutorial}-{version}.zip'
+    if CMS_LT_3_4:
+        download_url = 'http://downloads.django-shop.org/django-shop-workdir_{tutorial}-{version}.zip'
+    else:
+        #download_url = 'http://downloads.django-shop.org/django-shop-workdir_cms35_{tutorial}-{version}.zip'
+        pass
+
+        
     pwd = b'z7xv'
 
     def add_arguments(self, parser):
@@ -68,35 +81,43 @@ class Command(BaseCommand):
             pass
 
     def handle(self, verbosity, *args, **options):
-        self.set_options(**options)
-        self.createdb_if_not_exists()
-        self.clear_compressor_cache()
-        call_command('migrate')
-
-        fixture = '{workdir}/{tutorial}/fixtures/myshop.json'.format(workdir=settings.WORK_DIR,
-                                                                     tutorial=settings.SHOP_TUTORIAL)
-
-        if self.interactive:
-            mesg = ("\nThis will overwrite your workdir and install a new database for the django-SHOP demo: {tutorial}\n"
-                    "Are you sure you want to do this?\n\n"
-                    "Type 'yes' to continue, or 'no' to cancel: ").format(tutorial=settings.SHOP_TUTORIAL)
-            if input(mesg) != 'yes':
-                raise CommandError("SHOP initialization cancelled.")
+        if not CMS_LT_3_4:
+                print("##########################################################################################")
+                print("The shop examples fixtures for django-cms>=3.5 is not available currently.")
+                print("If you want fixtures, install django-cms==3.4.6 and relaunch initialize_shop_demo.")
+                print("And after install django-cms>=3.5 then relaunch ./manage.py migrate .")
+                print("##########################################################################################")
         else:
-            if os.path.isfile(fixture):
-                self.stdout.write(self.style.WARNING("Can not override downloaded data in input-less mode."))
-                return
+            self.set_options(**options)
+            self.createdb_if_not_exists()
+            self.clear_compressor_cache()
+            call_command('migrate')
 
-        extract_to = os.path.join(settings.WORK_DIR, os.pardir)
-        msg = "Downloading workdir and extracting to {}. Please wait ..."
-        self.stdout.write(msg.format(extract_to))
-        download_url = self.download_url.format(tutorial=settings.SHOP_TUTORIAL, version=self.version)
-        response = requests.get(download_url, stream=True)
-        zip_ref = zipfile.ZipFile(StringIO(response.content))
-        try:
-            zip_ref.extractall(extract_to, pwd=self.pwd)
-        finally:
-            zip_ref.close()
+            fixture = '{workdir}/{tutorial}/fixtures/myshop.json'.format(workdir=settings.WORK_DIR,
+                                                                         tutorial=settings.SHOP_TUTORIAL)
 
-        call_command('loaddata', fixture)
-        call_command('fix_filer_bug_965')
+            if self.interactive:
+                mesg = ("\nThis will overwrite your workdir and install a new database for the django-SHOP demo: {tutorial}\n"
+                        "Are you sure you want to do this?\n\n"
+                        "Type 'yes' to continue, or 'no' to cancel: ").format(tutorial=settings.SHOP_TUTORIAL)
+                if input(mesg) != 'yes':
+                    raise CommandError("SHOP initialization cancelled.")
+            else:
+                if os.path.isfile(fixture):
+                    self.stdout.write(self.style.WARNING("Can not override downloaded data in input-less mode."))
+                    return
+
+            extract_to = os.path.join(settings.WORK_DIR, os.pardir)
+            msg = "Downloading workdir and extracting to {}. Please wait ..."
+            self.stdout.write(msg.format(extract_to))
+            download_url = self.download_url.format(tutorial=settings.SHOP_TUTORIAL, version=self.version)
+            response = requests.get(download_url, stream=True)
+            #
+            zip_ref = zipfile.ZipFile(StringIO(response.content))
+            try:
+                zip_ref.extractall(extract_to, pwd=self.pwd)
+            finally:
+                zip_ref.close()
+
+            call_command('loaddata', fixture)
+            call_command('fix_filer_bug_965')
