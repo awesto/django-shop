@@ -13,14 +13,14 @@ from cms.admin.placeholderadmin import PlaceholderAdminMixin, FrontendEditableAd
 from polymorphic.admin import (PolymorphicParentModelAdmin, PolymorphicChildModelAdmin,
                                PolymorphicChildModelFilter)
 
-from shop.admin.product import CMSPageAsCategoryMixin, ProductImageInline, CMSPageFilter
+from shop.admin.product import CMSPageAsCategoryMixin, ProductImageInline, InvalidateProductCacheMixin, CMSPageFilter
 
 from myshop.models import Product, Commodity, SmartCard, SmartPhoneVariant, SmartPhoneModel
 from myshop.models.polymorphic_.smartphone import OperatingSystem
 
 
 @admin.register(Commodity)
-class CommodityAdmin(SortableAdminMixin, FrontendEditableAdminMixin, PlaceholderAdminMixin,
+class CommodityAdmin(InvalidateProductCacheMixin, SortableAdminMixin, FrontendEditableAdminMixin, PlaceholderAdminMixin,
                      CMSPageAsCategoryMixin, admin.ModelAdmin):
     """
     Since our Commodity model inherits from polymorphic Product, we have to redefine its admin class.
@@ -33,7 +33,7 @@ class CommodityAdmin(SortableAdminMixin, FrontendEditableAdminMixin, Placeholder
 
 
 @admin.register(SmartCard)
-class SmartCardAdmin(SortableAdminMixin, FrontendEditableAdminMixin,
+class SmartCardAdmin(InvalidateProductCacheMixin, SortableAdminMixin, FrontendEditableAdminMixin,
                      CMSPageAsCategoryMixin, PlaceholderAdminMixin, PolymorphicChildModelAdmin):
     base_model = Product
     fields = ['product_name', 'slug', 'product_code', 'unit_price', 'active', 'caption',
@@ -51,7 +51,7 @@ class SmartPhoneInline(admin.TabularInline):
 
 
 @admin.register(SmartPhoneModel)
-class SmartPhoneAdmin(SortableAdminMixin, FrontendEditableAdminMixin, CMSPageAsCategoryMixin,
+class SmartPhoneAdmin(InvalidateProductCacheMixin, SortableAdminMixin, FrontendEditableAdminMixin, CMSPageAsCategoryMixin,
                       PlaceholderAdminMixin, PolymorphicChildModelAdmin):
     base_model = Product
     fields = ['product_name', 'slug', 'active', 'caption', 'description', 'manufacturer',
