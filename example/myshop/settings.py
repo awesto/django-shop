@@ -535,7 +535,7 @@ CMSPLUGIN_CASCADE = {
 }
 
 CKEDITOR_SETTINGS = {
-    'language': '{{ language }}',   
+    'language': '{{ language }}',
     'skin': 'moono-lisa',
     'toolbar': 'CMS',
     'toolbar_HTMLField': [
