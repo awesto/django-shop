@@ -6,7 +6,7 @@ Changelog for django-SHOP
 0.13
 ====
 
-* Drop support for Django-1.9, add support for Django-1.11.
+* Drop support for Django-1.9.
 * Add method ``get_weight()`` to product model, so that a cart modifier may sum up the product weights.
 * Configured Cart modifiers may be a list, rather than a single instance.
 * Refactor shipping and payment modifiers in ``shop/modifiers/defaults.py`` into their own files
@@ -40,8 +40,9 @@ Changelog for django-SHOP
 0.12
 ====
 
-* Adopted for django-angular version 2.0, which breaks its API. Invalid forms rejected by the server
-  are send with a status code of 422 now. Check their changelog for details.
+* Add support for Django-1.11.
+* Adopted for **django-angular** version 2.0, which breaks its API. Invalid forms rejected by the
+  server are send with a status code of 422 now. Check their changelog for details.
 * Adopted to AngularJS-1.6.6, which required to replace all ``.success()`` handlers against
   a promise ``.then()``.
 * RESTifyed the communication with the server, by using HTTP methods ``PUT`` and ``DELETE`` where
