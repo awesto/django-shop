@@ -217,7 +217,7 @@ class CMSPageReferenceMixin(object):
         if CMS_LT_3_4:
             cms_page = self.cms_pages.order_by('depth').on_site(Site.objects.get_current()).last()
         else:
-            cms_page = self.cms_pages.order_by('node__path').on_site(get_current_site).last()
+            cms_page = self.cms_pages.order_by('node__path').on_site(get_current_site()).last()
         if cms_page is None:
             return urljoin('/category-not-assigned/', self.slug)
         return urljoin(cms_page.get_absolute_url(), self.slug)
