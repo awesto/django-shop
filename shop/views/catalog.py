@@ -263,7 +263,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
             qs = qs.prefetch_related('translations').filter(translations__language_code=language)
         qs = qs.select_related('polymorphic_ctype')
         qs = CMSPagesFilterBackend().filter_queryset(self.request, qs, self)
-        previous_ = cur = next_ = None
+        previous_ = cur_ = next_ = None
         objects=qs
         nb = len(list(qs))
         for index, obj in enumerate(objects):
