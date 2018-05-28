@@ -13,6 +13,24 @@
 			{% endfor %}
 			</pre>
 		</div>
+		<div class="hidden-xs hidden-sm col-md-3  text-center">
+			<div class="row"  style="border: 1px solid;border-color: #d7d7d7;">
+				<div class="col-xs-6 ">
+				{% if  productprev %}
+					<p><a  class="fa fa-angle-left fa-2x fleche-size text-muted" style="text-decoration:none"  alt="{{ productprev }}" title="{{ productprev }}" href="{{ productprev.slug }}"></a></p>
+					<p><a  class="" style="text-decoration:none" alt="{{ productprev }}" title="{{ productprev }}" href="{{ productprev.slug }}">{% thumbnail productprev.images.first 100x100 crop as thumb %}<img src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}" alt="{{ productprev.product_name }}"></a></p>
+					<p>{{ productprev.product_name }}</p>
+				{% endif %}
+				</div>
+				<div class="col-xs-6 ">
+				{% if  productnext %}
+					<p><a  class="fa fa-angle-right fa-2x fleche-size text-muted" style="text-decoration:none"  alt="{{ productnext }}" title="{{ productnext}}" href="{{ productnext.slug }}"> </a></p>
+					<p><a  class="" style="text-decoration:none"  alt="{{ productnext }}" title="{{ productnext }}" href="{{ productnext.slug }}">{% thumbnail productnext.images.first 100x100 crop as thumb %}  <img src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}" alt="{{ productnext.product_name }}"></a></p>
+					<p>{{ productnext.product_name }}</p>
+				{% endif %}
+				</div>
+			</div>
+		</div>
 		<div class="col-xs-12 col-md-8">
 			{{ product.description|safe }}
 			<table class="table table-bordered">
@@ -34,6 +52,7 @@
 			<!-- include "Add to Cart" dialog box -->
 			{% include "shop/catalog/product-add2cart.html" %}
 		</div>
+
 	</div>
 </div>
 {% endblock main-content %}

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.contrib.sites.models import Site
+
 from datetime import datetime
 from functools import reduce
 import operator
@@ -198,7 +200,7 @@ class CMSPageReferenceMixin(object):
         """
         # sorting by highest level, so that the canonical URL
         # associates with the most generic category
-        cms_page = self.cms_pages.order_by('depth').last()
+        cms_page = self.cms_pages.order_by('depth').on_site(Site.objects.get_current()).last()
         if cms_page is None:
             return urljoin('/category-not-assigned/', self.slug)
         return urljoin(cms_page.get_absolute_url(), self.slug)

@@ -2,7 +2,7 @@
 {% load i18n djng_tags %}
 {% angularjs ng %}
 <figure>
-	<a href="{{ product.product_url }}">
+	<a href="{{ request.path }}{{ product.slug }}">
 		<h4>{{ product.product_name }}</h4>
 		<div{% if ng %} ng-bind-html="product.media"{% endif %}>{{ product.media }}</div>
 	</a>
