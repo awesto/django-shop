@@ -24,6 +24,11 @@ from shop import deferred
 
 CMS_LT_3_4 = LooseVersion(cms_version) < LooseVersion('3.5')
 
+if CMS_LT_3_4:
+    from django.contrib.sites.models import Site
+else:
+    #django-cms >= 3.5
+    from cms.utils import get_current_site
 
 class BaseProductManager(PolymorphicManager):
     """
@@ -210,9 +215,9 @@ class CMSPageReferenceMixin(object):
         # sorting by highest level, so that the canonical URL
         # associates with the most generic category
         if CMS_LT_3_4:
-            cms_page = self.cms_pages.order_by('depth').last()
+            cms_page = self.cms_pages.order_by('depth').on_site(Site.objects.get_current()).last()
         else:
-            cms_page = self.cms_pages.order_by('node__path').last()
+            cms_page = self.cms_pages.order_by('node__path').on_site(get_current_site).last()
         if cms_page is None:
             return urljoin('/category-not-assigned/', self.slug)
         return urljoin(cms_page.get_absolute_url(), self.slug)
