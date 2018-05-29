@@ -250,8 +250,8 @@ class ProductRetrieveView(generics.RetrieveAPIView):
             # add the product as Python object to the context
             #renderer_context['product'] = self.get_object()
             renderer_context['product'] = self.get_queryset()[1]
-            renderer_context['productnext'] = self.get_queryset()[2] if self.get_queryset()[2] is not None else None
-            renderer_context['productprev'] = self.get_queryset()[0] if self.get_queryset()[0] is not None else None
+            renderer_context['productnext'] = self.get_queryset()[2]
+            renderer_context['productprev'] = self.get_queryset()[0]
         return renderer_context
 
     def get_queryset(self, ):
