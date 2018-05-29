@@ -254,7 +254,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
             renderer_context['productprev'] = self.get_queryset()[0]
         return renderer_context
 
-    def get_queryset(self, ):
+    def get_queryset(self):
         assert self.lookup_url_kwarg in self.kwargs
         filter_kwargs = {self.lookup_field: self.kwargs[self.lookup_url_kwarg]}
         qs = self.product_model.objects.filter(self.limit_choices_to,  active=True)
