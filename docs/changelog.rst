@@ -4,6 +4,10 @@
 Changelog for django-SHOP
 =========================
 
+0.12.2
+======
+* Fix #729: Issue with Notification admin transition choices (RETURN_VALUE).
+
 0.12.1
 ======
 
