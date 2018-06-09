@@ -536,7 +536,7 @@ CMSPLUGIN_CASCADE = {
 
 CKEDITOR_SETTINGS = {
     'language': '{{ language }}',
-    'skin': 'moono',
+    'skin': 'moono-lisa',
     'toolbar': 'CMS',
     'toolbar_HTMLField': [
         ['Undo', 'Redo'],
@@ -556,7 +556,7 @@ CKEDITOR_SETTINGS = {
 
 CKEDITOR_SETTINGS_CAPTION = {
     'language': '{{ language }}',
-    'skin': 'moono',
+    'skin': 'moono-lisa',
     'height': 70,
     'toolbar_HTMLField': [
         ['Undo', 'Redo'],
@@ -568,7 +568,7 @@ CKEDITOR_SETTINGS_CAPTION = {
 
 CKEDITOR_SETTINGS_DESCRIPTION = {
     'language': '{{ language }}',
-    'skin': 'moono',
+    'skin': 'moono-lisa',
     'height': 250,
     'toolbar_HTMLField': [
         ['Undo', 'Redo'],
