@@ -14,14 +14,14 @@ from parler.admin import TranslatableAdmin
 from polymorphic.admin import (PolymorphicParentModelAdmin, PolymorphicChildModelAdmin,
                                PolymorphicChildModelFilter)
 
-from shop.admin.product import CMSPageAsCategoryMixin, ProductImageInline, CMSPageFilter
+from shop.admin.product import CMSPageAsCategoryMixin, ProductImageInline, InvalidateProductCacheMixin, CMSPageFilter
 
 from myshop.models import Product, Commodity, SmartCard, SmartPhoneVariant, SmartPhoneModel
 from myshop.models.i18n_polymorphic.smartphone import OperatingSystem
 
 
 @admin.register(Commodity)
-class CommodityAdmin(SortableAdminMixin, TranslatableAdmin, FrontendEditableAdminMixin,
+class CommodityAdmin(InvalidateProductCacheMixin, SortableAdminMixin, TranslatableAdmin, FrontendEditableAdminMixin,
                      PlaceholderAdminMixin, CMSPageAsCategoryMixin, admin.ModelAdmin):
     """
     Since our Commodity model inherits from polymorphic Product, we have to redefine its admin class.
@@ -44,7 +44,7 @@ class CommodityAdmin(SortableAdminMixin, TranslatableAdmin, FrontendEditableAdmi
 
 
 @admin.register(SmartCard)
-class SmartCardAdmin(SortableAdminMixin, TranslatableAdmin, FrontendEditableAdminMixin,
+class SmartCardAdmin(InvalidateProductCacheMixin, SortableAdminMixin, TranslatableAdmin, FrontendEditableAdminMixin,
                      CMSPageAsCategoryMixin, PlaceholderAdminMixin, PolymorphicChildModelAdmin):
     base_model = Product
     fieldsets = (
@@ -71,7 +71,7 @@ class SmartPhoneInline(admin.TabularInline):
 
 
 @admin.register(SmartPhoneModel)
-class SmartPhoneAdmin(SortableAdminMixin, TranslatableAdmin, FrontendEditableAdminMixin,
+class SmartPhoneAdmin(InvalidateProductCacheMixin, SortableAdminMixin, TranslatableAdmin, FrontendEditableAdminMixin,
                       CMSPageAsCategoryMixin, PlaceholderAdminMixin, PolymorphicChildModelAdmin):
     base_model = Product
     fieldsets = [
