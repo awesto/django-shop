@@ -33,7 +33,7 @@ class ShopOrderViewsForm(forms.ModelForm):
 class ShopOrderViewsPlugin(LeftRightExtensionMixin, TransparentWrapper, ShopPluginBase):
     name = _("Order Views")
     require_parent = True
-    parent_classes = ('BootstrapColumnPlugin',)
+    parent_classes = ('BootstrapColumnPlugin', "Bootstrap4ColumnPlugin")
     allow_children = True
     model_mixins = (ShopExtendableMixin,)
     form = ShopOrderViewsForm
