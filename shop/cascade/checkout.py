@@ -50,7 +50,7 @@ class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
     This button is used to proceed from one checkout step to the next one.
     """
     name = _("Proceed Button")
-    parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin', 'ValidateSetOfFormsPlugin')
+    parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin', 'ValidateSetOfFormsPlugin', "Bootstrap4ColumnPlugin")
     model_mixins = (LinkElementMixin,)
     glossary_field_order = ['disable_invalid', 'button_type', 'button_size', 'button_options',
                             'quick_float', 'icon_align', 'icon_font', 'symbol']
@@ -398,7 +398,7 @@ class RequiredFormFieldsPlugin(ShopPluginBase):
     """
     name = _("Required Form Fields")
     template_leaf_name = 'required-form-fields.html'
-    parent_classes = ('BootstrapColumnPlugin',)
+    parent_classes = ('BootstrapColumnPlugin', "Bootstrap4ColumnPlugin" )
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [

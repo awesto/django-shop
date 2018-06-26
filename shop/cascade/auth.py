@@ -44,7 +44,7 @@ class ShopAuthenticationPlugin(ShopLinkPluginBase):
     register-, and other forms. They can be added any placeholder using the Cascade framework.
     """
     name = _("Authentication")
-    parent_classes = ('BootstrapColumnPlugin',)
+    parent_classes = ('BootstrapColumnPlugin', "Bootstrap4ColumnPlugin")
     model_mixins = (ShopLinkElementMixin,)
     form = ShopAuthForm
     fields = ('form_type', ('link_type', 'cms_page'), 'glossary',)

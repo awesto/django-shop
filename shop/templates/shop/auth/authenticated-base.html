@@ -4,12 +4,12 @@
 {% add_data "ng-requires" "djng.forms" %}
 
 {% if customer.is_authenticated %}
-<div class="panel panel-info">
-	<div class="panel-heading">
-		<div class="panel-title">{% block form-title %}Panel Title{% endblock %}</div>
+<div class="card card border-primary mb-3">
+	<div class="card-header">
+		{% block form-title %}Panel Title{% endblock %}
 	</div>
 
-	<div class="panel-body">
+	<div class="card-body">
 	{% block form-content %}{% endblock %}
 	</div>
 </div>

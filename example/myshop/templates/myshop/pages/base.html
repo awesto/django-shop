@@ -30,7 +30,7 @@
 	{% block main-content %}
 		<div class="container">
 			<div class="row shop-starter-template">
-				<div class="col-xs-12">
+				<div class="col-12">
 					<h1>Base Template</h1>
 					<p class="lead">This document does not contain any content yet.</p>
 				</div>
@@ -45,6 +45,8 @@
 
 	{% render_block "js" postprocessor "shop.sekizai_processors.compress" %}
 	<script type="text/javascript">
+	//angular.module('myShop', ['ngAnimate', 'ngSanitize', 'ui.bootstrap']);
+	//angular.module('myShop', ['ngAnimate', 'ngSanitize', 'djng.forms', 'ui.bootstrap']);
 	angular.module('myShop', ['ngAnimate', 'ngSanitize', {% with_data "ng-requires" as ng_requires %}
 		{% for module in ng_requires %}'{{ module }}'{% if not forloop.last %}, {% endif %}{% endfor %}{% end_with_data %}
 	]).config(['$httpProvider', '$locationProvider', function($httpProvider, $locationProvider) {

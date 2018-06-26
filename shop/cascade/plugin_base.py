@@ -160,7 +160,7 @@ class DialogFormPluginBase(ShopPluginBase):
     """
     require_parent = True
     parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin', 'BootstrapPanelPlugin',
-        'SegmentPlugin', 'SimpleWrapperPlugin', 'ValidateSetOfFormsPlugin')
+                      'SegmentPlugin', 'SimpleWrapperPlugin', 'ValidateSetOfFormsPlugin', "Bootstrap4ColumnPlugin", 'BootstrapCardPlugin')
     RENDER_CHOICES = [('form', _("Form dialog")), ('summary', _("Static summary"))]
 
     render_type = GlossaryField(

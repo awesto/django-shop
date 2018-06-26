@@ -9,15 +9,15 @@
 
 <div class="container">
 	<div class="row product-detail">
-		<div class="col-xs-12 col-md-8">
+		<div class="col-12 col-md-8">
 			<h1>{% render_model product "product_name" %}</h1>
 			<bsp-scrollpanel>
 				<ul>{% for img in product.images.all %}
-					<li><img src="{{ img.url }}" alt="{{ product.product_name }}" /></li>
+					<li class="w-auto"><img class="img-fluid" src="{{ img.url }}" alt="{{ product.product_name }}" /></li>
 				{% endfor %}</ul>
 			</bsp-scrollpanel>
 		</div>
-		<div class="col-xs-12 col-md-8">
+		<div class="col-12 col-md-8">
 			{{ product.description|safe }}
 			<table class="table table-bordered">
 				<tbody class="table-striped">
@@ -67,11 +67,11 @@
 
 <script id="scrollpanel/bsp-scrollpanel.tmpl.html" type="text/ng-template">
 	<panel-control class="left ">
-		<span class="glyphicon glyphicon-chevron-left"></span>
+		<span class="fa fa-angle-left"></span>
 	</panel-control>
 	<ng-transclude></ng-transclude>
 	<panel-control class="right">
-		<span class="glyphicon glyphicon-chevron-right"></span>
+		<span class="fa fa-angle-right"></span>
 	</panel-control>
 </script>
 

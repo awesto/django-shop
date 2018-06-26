@@ -96,6 +96,7 @@ INSTALLED_APPS = [
     'djangocms_text_ckeditor',
     'django_select2',
     'cmsplugin_cascade',
+    'cmsplugin_bs4forcascade',
     'cmsplugin_cascade.clipboard',
     'cmsplugin_cascade.sharable',
     'cmsplugin_cascade.extra_fields',
@@ -177,29 +178,35 @@ if os.getenv('POSTGRES_DB') and os.getenv('POSTGRES_USER'):
 
 LANGUAGE_CODE = 'en'
 
-if SHOP_TUTORIAL in ['i18n_smartcard', 'i18n_commodity', 'i18n_polymorphic']:
+if 1==1:
+
+#if SHOP_TUTORIAL in ['i18n_smartcard', 'i18n_commodity', 'i18n_polymorphic']:
     USE_I18N = True
 
     LANGUAGES = (
+        ('fr', "French"),
+
         ('en', "English"),
         ('de', "Deutsch"),
+
     )
 
-    PARLER_DEFAULT_LANGUAGE = 'en'
+    PARLER_DEFAULT_LANGUAGE = 'fr'
 
     PARLER_LANGUAGES = {
         1: (
             {'code': 'de'},
             {'code': 'en'},
+            {'code': 'fr'},
         ),
         'default': {
-            'fallbacks': ['de', 'en'],
+            'fallbacks': ['de', 'en', 'fr'],
         },
     }
 
     CMS_LANGUAGES = {
         'default': {
-            'fallbacks': ['en', 'de'],
+            'fallbacks': ['en', 'de', 'fr'],
             'redirect_on_fallback': True,
             'public': True,
             'hide_untranslated': False,
@@ -211,6 +218,13 @@ if SHOP_TUTORIAL in ['i18n_smartcard', 'i18n_commodity', 'i18n_polymorphic']:
             'name': 'English',
             'redirect_on_fallback': True,
         }, {
+            'public': True,
+            'code': 'fr',
+            'hide_untranslated': False,
+            'name': 'french',
+            'redirect_on_fallback': True,
+        }, {
+ 
             'public': True,
             'code': 'de',
             'hide_untranslated': False,
@@ -455,14 +469,15 @@ CMS_CACHE_DURATIONS = {
 CMS_PERMISSION = False
 
 cascade_workarea_glossary = {
-    'breakpoints': ['xs', 'sm', 'md', 'lg'],
-    'container_max_widths': {'xs': 750, 'sm': 750, 'md': 970, 'lg': 1170},
+    'breakpoints': ['xs', 'sm', 'md', 'lg','xl'],
+    'container_max_widths': {'xs': 576,'sm': 767,'md': 991, 'lg': 1199, 'xl': 1980,},
     'fluid': False,
     'media_queries': {
-        'xs': ['(max-width: 768px)'],
-        'sm': ['(min-width: 768px)', '(max-width: 992px)'],
-        'md': ['(min-width: 992px)', '(max-width: 1200px)'],
-        'lg': ['(min-width: 1200px)'],
+        'xs': ['(max-width: 576px)'],
+        'sm': ['(min-width: 576px)', '(max-width: 767px)'],
+        'md': ['(min-width: 768px)', '(max-width: 991px)'],
+        'lg': ['(min-width: 992px)', '(max-width: 1199px)'],
+        'xl': ['(min-width: 1200px)'],
     },
 }
 
@@ -473,26 +488,26 @@ CMS_PLACEHOLDER_CONF = {
         'glossary': cascade_workarea_glossary,
     },
     'Commodity Details': {
-        'plugins': ['BootstrapContainerPlugin', 'BootstrapJumbotronPlugin'],
+        'plugins': ['Bootstrap4ContainerPlugin', 'BootstrapJumbotronPlugin'],
         'parent_classes': {
-            'BootstrapContainerPlugin': None,
+            'Bootstrap4ContainerPlugin': None,
             'BootstrapJumbotronPlugin': None,
         },
         'glossary': cascade_workarea_glossary,
     },
     'Main Content': {
-        'plugins': ['BootstrapContainerPlugin', 'BootstrapJumbotronPlugin'],
+        'plugins': ['Bootstrap4ContainerPlugin', 'BootstrapJumbotronPlugin'],
         'parent_classes': {
-            'BootstrapContainerPlugin': None,
+            'Bootstrap4ContainerPlugin': None,
             'BootstrapJumbotronPlugin': None,
             'TextLinkPlugin': ['TextPlugin', 'AcceptConditionPlugin'],
         },
         'glossary': cascade_workarea_glossary,
     },
     'Static Footer': {
-        'plugins': ['BootstrapContainerPlugin', ],
+        'plugins': ['Bootstrap4ContainerPlugin', ],
         'parent_classes': {
-            'BootstrapContainerPlugin': None,
+            'Bootstrap4ContainerPlugin': None,
         },
         'glossary': cascade_workarea_glossary,
     },
@@ -504,8 +519,9 @@ CMSPLUGIN_CASCADE_PLUGINS = [
     'cmsplugin_cascade.icon',
     'cmsplugin_cascade.leaflet',
     'cmsplugin_cascade.link',
-    'shop.cascade',
-    'cmsplugin_cascade.bootstrap3',
+    'cmsplugin_bs4forcascade.bootstrap4',
+        'shop.cascade',
+
 ]
 
 CMSPLUGIN_CASCADE = {
@@ -514,8 +530,8 @@ CMSPLUGIN_CASCADE = {
         'cmsplugin_cascade.link.plugin_base.LinkElementMixin',
         'shop.cascade.plugin_base.CatalogLinkForm',
     ],
-    'alien_plugins': ['TextPlugin', 'TextLinkPlugin', 'AcceptConditionPlugin'],
-    'bootstrap3': {
+    'alien_plugins': ['TextPlugin', 'TextLinkPlugin', 'AcceptConditionPlugin' ],
+    'bootstrap4': {
         'template_basedir': 'angular-ui',
     },
     'plugins_with_extra_render_templates': {
@@ -547,7 +563,7 @@ CMSPLUGIN_CASCADE = {
 
 CKEDITOR_SETTINGS = {
     'language': '{{ language }}',
-    'skin': 'moono',
+    'skin': 'moono-lisa',
     'toolbar': 'CMS',
     'toolbar_HTMLField': [
         ['Undo', 'Redo'],
@@ -567,7 +583,7 @@ CKEDITOR_SETTINGS = {
 
 CKEDITOR_SETTINGS_CAPTION = {
     'language': '{{ language }}',
-    'skin': 'moono',
+    'skin': 'moono-lisa',
     'height': 70,
     'toolbar_HTMLField': [
         ['Undo', 'Redo'],
@@ -579,7 +595,7 @@ CKEDITOR_SETTINGS_CAPTION = {
 
 CKEDITOR_SETTINGS_DESCRIPTION = {
     'language': '{{ language }}',
-    'skin': 'moono',
+    'skin': 'moono-lisa',
     'height': 250,
     'toolbar_HTMLField': [
         ['Undo', 'Redo'],
@@ -611,14 +627,14 @@ HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
         'URL': 'http://{}:9200/'.format(ELASTICSEARCH_HOST),
-        'INDEX_NAME': 'myshop-{}-en'.format(SHOP_TUTORIAL),
+        'INDEX_NAME': 'myshop2-{}-en'.format(SHOP_TUTORIAL),
     },
 }
 if USE_I18N:
     HAYSTACK_CONNECTIONS['de'] = {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
         'URL': 'http://{}:9200/'.format(ELASTICSEARCH_HOST),
-        'INDEX_NAME': 'myshop-{}-de'.format(SHOP_TUTORIAL),
+        'INDEX_NAME': 'myshop2-{}-de'.format(SHOP_TUTORIAL),
     }
 
 HAYSTACK_ROUTERS = [

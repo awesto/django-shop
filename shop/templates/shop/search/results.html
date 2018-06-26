@@ -19,9 +19,9 @@
 	{% block search-results-thead %}
 	<thead ng-if="search_data.count>0">
 		<tr>
-			<th class="col-xs-8 text-center">{% trans "{{ search_data.count }} matching products found" %}</th>
-			<th class="col-xs-2 text-right">{% trans "Base Price" %}</th>
-			<th class="col-xs-2">&nbsp;</th>
+			<th class="col-8 text-center">{% trans "{{ search_data.count }} matching products found" %}</th>
+			<th class="col-2 text-right">{% trans "Base Price" %}</th>
+			<th class="col-2">&nbsp;</th>
 		</tr>
 	</thead>
 	{% endblock search-results-thead %}
@@ -34,7 +34,7 @@
 				<strong ng-bind="result.price"></strong>
 			</td>
 			<td class="text-center">
-				<a class="btn btn-primary btn-sm" ng-href="{% verbatim %}{{ result.product_url }}{% endverbatim %}">{% trans "Details" %}&nbsp;<i class="glyphicon glyphicon-menu-right"></i></a>
+				<a class="btn btn-primary btn-sm" ng-href="{% verbatim %}{{ result.product_url }}{% endverbatim %}">{% trans "Details" %}&nbsp;<i class="pl-1 fa fa-angle-right fa-1x"></i></a>
 			</td>
 		</tr>
 	</tbody>

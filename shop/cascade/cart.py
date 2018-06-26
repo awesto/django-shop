@@ -20,7 +20,7 @@ from .plugin_base import ShopPluginBase
 class ShopCartPlugin(LeftRightExtensionMixin, TransparentWrapper, ShopPluginBase):
     name = _("Cart")
     require_parent = True
-    parent_classes = ('BootstrapColumnPlugin',)
+    parent_classes = ('BootstrapColumnPlugin', "Bootstrap4ColumnPlugin")
     cache = False
     allow_children = True
     model_mixins = (ShopExtendableMixin,)

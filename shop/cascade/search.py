@@ -27,7 +27,7 @@ class ShopSearchResultsForm(forms.ModelForm):
 class ShopSearchResultsPlugin(ShopPluginBase):
     name = _("Search Results")
     require_parent = True
-    parent_classes = ('BootstrapColumnPlugin',)
+    parent_classes = ('BootstrapColumnPlugin', 'Bootstrap4ColumnPlugin')
     form = ShopSearchResultsForm
     cache = False
 

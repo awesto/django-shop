@@ -21,8 +21,9 @@ django-sass-processor==0.6
 django-sekizai==0.10.0
 django-treebeard==4.2.0
 djangocms-bootstrap3==0.3.2
-djangocms-cascade==0.16
-djangocms-text-ckeditor==3.4.0
+djangocms-cascade==0.16.2
+https://github.com/haricot/djangocms-bs4forcascade/archive/master.zip
+djangocms-text-ckeditor==3.6.0
 djangorestframework==3.7.7
 django-formtools==2.1
 drf-haystack==1.6.1

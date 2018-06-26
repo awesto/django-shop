@@ -32,7 +32,7 @@ class ProcessBarForm(ManageChildrenFormMixin, ModelForm):
 class ProcessBarPlugin(TransparentWrapper, ShopPluginBase):
     name = _("Process Bar")
     form = ProcessBarForm
-    parent_classes = ('BootstrapColumnPlugin',)
+    parent_classes = ('BootstrapColumnPlugin', "Bootstrap4ColumnPlugin")
     direct_child_classes = ('ProcessStepPlugin',)
     require_parent = True
     allow_children = True

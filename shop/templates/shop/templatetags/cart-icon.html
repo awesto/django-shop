@@ -7,7 +7,7 @@
 {% page_url 'shop-cart' as shop_cart_url %}
 {% page_attribute 'menu_title' 'shop-cart' as tooltip %}
 
-<a{% if shop_cart_url %} href="{{ shop_cart_url }}" title="{{ tooltip }}"{% endif %}>
+<a class="nav-link link" {% if shop_cart_url %} href="{{ shop_cart_url }}" title="{{ tooltip }}"{% endif %}>
 {% block carticon %}
 	<i class="fa fa-shopping-cart fa-fw fa-lg" uib-tooltip="{{ tooltip }}"></i>
 	<shop-carticon-caption endpoint="{% url 'shop:cart-fetch-caption' %}"{% if cart %} initial-caption="{num_items: {{ cart.num_items|default:0 }} }"{% endif %}></shop-carticon-caption>

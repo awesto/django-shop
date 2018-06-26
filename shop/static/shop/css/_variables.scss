@@ -1,4 +1,8 @@
-@import "bootstrap-sass/assets/stylesheets/bootstrap/variables";
+@import "bootstrap/scss/_functions";
+@import "bootstrap/scss/_variables";
+@import "bootstrap/scss/mixins/_breakpoints";
+
+
 
 // configure the font include pathes
 $icon-font-path: unquote(get-setting(NODE_MODULES_URL) + "bootstrap-sass/assets/fonts/bootstrap/");

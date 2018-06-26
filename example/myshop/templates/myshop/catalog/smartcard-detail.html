@@ -4,12 +4,12 @@
 {% block main-content %}
 <div class="container">
 	<div class="row product-detail">
-		<div class="col-xs-12 col-md-8">
+		<div class="col-12 col-md-8">
 			<h1>{% render_model product "product_name" %}</h1>
-			<pre class="images">
+			<pre class="images border rounded bg-light p-5 d-flex justify-content-center">
 			{% for img in product.images.all %}
 				{% thumbnail img 250x250 crop as thumb %}
-				<img src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}" alt="{{ product.product_name }}">
+				<img class="rounded" src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}" alt="{{ product.product_name }}">
 			{% endfor %}
 			</pre>
 		</div>

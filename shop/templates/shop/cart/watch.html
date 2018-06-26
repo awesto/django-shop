@@ -4,7 +4,7 @@
 {% add_data "ng-requires" "django.shop.cart" %}
 
 {% block shop-watch-table %}
-<table shop-cart endpoint="{% url 'shop:watch-list' %}" class="table table-hover">
+<table shop-cart endpoint="{% url 'shop:watch-list' %}" class="table">
 	<!-- content is rendered via ng-template "shop/cart.html" -->
 </table>
 {% endblock shop-watch-table %}
@@ -12,10 +12,10 @@
 <script id="shop/cart.html" type="text/ng-template">
 {% block shop-watch-thead %}
 	<thead>
-		<tr>
-			<th class="col-xs-10 text-center">{% trans "Product" %}</th>
-			<th class="col-xs-1 text-right">{% trans "Unit Price" %}</th>
-			<th class="col-xs-1"></th>
+		<tr class="">
+			<th class="col w-75 text-center">{% trans "Product" %}</th>
+			<th class="col text-center">{% trans "Unit Price" %}</th>
+			<th class="col" ></th>
 		</tr>
 	</thead>
 {% endblock shop-watch-thead %}
@@ -33,6 +33,9 @@
 {% endblock %}
 </script>
 
+
+
+
 <script id="shop/cart-item.html" type="text/ng-template">
 {% block shop-watch-item %}
 	<td>
@@ -42,11 +45,11 @@
 		<strong ng-bind="cart_item.summary.price"></strong>
 	</td>
 	<td>
-		<button type="button" class="btn btn-xs btn-info btn-block" ng-click="addCartItem(cart_item)">
-			<span class="glyphicon glyphicon-ok-circle"></span>&nbsp;{% trans "Add to cart" %}
+		<button type="button" class="btn btn-sm btn-info btn-block" ng-click="addCartItem(cart_item)">
+			<span class="fa fa-check-circle"></span>&nbsp;{% trans "Add to cart" %}
 		</button>
-		<button type="button" class="btn btn-xs btn-danger btn-block" ng-click="deleteCartItem(cart_item)">
-			<span class="glyphicon glyphicon-remove-circle"></span>&nbsp;{% trans "Remove" %}
+		<button type="button" class="btn btn-sm btn-danger btn-block" ng-click="deleteCartItem(cart_item)">
+			<span class="fa fa-times-circle"></span>&nbsp;{% trans "Remove" %}
 		</button>
 	</td>
 {% endblock shop-watch-item %}
