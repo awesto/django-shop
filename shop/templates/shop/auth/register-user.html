@@ -10,7 +10,7 @@
 	<div class="form-group has-feedback" style="margin-bottom: 20px">
 		{{ register_user_form.email.label_tag }}
 		<div class="input-group" ng-class="hasError('email')">
-			<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+			<span class="input-group-append"><i class="input-group-text  fa fa-envelope-o "></i></span>
 			{{ register_user_form.email }}
 		</div>
 		<ul ng-show="register_user_form.email.$dirty && register_user_form.email.$touched" class="djng-field-errors" ng-cloak>
@@ -29,7 +29,7 @@
 		<div class="form-group has-feedback">
 			{{ register_user_form.password1.label_tag }}
 			<div class="input-group" ng-class="hasError('password1')">
-				<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+				<span class="input-group-append"><i class="input-group-text fa fa-key"></i></span>
 				{{ register_user_form.password1 }}
 			</div>
 			<ul ng-show="register_user_form.password1.$dirty && register_user_form.password1.$touched" class="djng-field-errors" ng-cloak>
@@ -43,7 +43,7 @@
 		<div class="form-group has-feedback">
 			{{ register_user_form.password2.label_tag }}
 			<div class="input-group" ng-class="hasError('password2')">
-				<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+				<span class="input-group-append"><i class="input-group-text fa fa-key"></i></span>
 				{{ register_user_form.password2 }}
 			</div>
 			<ul ng-show="register_user_form.password2.$dirty && register_user_form.password2.$touched" class="djng-field-errors" ng-cloak>
