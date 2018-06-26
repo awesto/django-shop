@@ -21,11 +21,11 @@
 {% block shop-cart-thead %}
 	<thead ng-if="cart.num_items>0">
 		<tr>
-			<th class="col-xs-2 col-md-1 text-center">{% trans "Quantity" %}</th>
-			<th class="col-xs-7 text-center">{% trans "Product" %}</th>
-			<th class="col-xs-1 text-right">{% trans "Unit Price" %}</th>
-			<th class="col-xs-1 col-md-2 text-right">{% trans "Total" %}</th>
-			<th class="col-xs-1"></th>
+			<th class="col-2 col-md-1 text-center">{% trans "Quantity" %}</th>
+			<th class="col-7 text-center">{% trans "Product" %}</th>
+			<th class="col-1 text-right">{% trans "Unit Price" %}</th>
+			<th class="col-1 col-md-2 text-right">{% trans "Total" %}</th>
+			<th class="col--1"></th>
 		</tr>
 	</thead>
 	<caption ng-if="cart.num_items==0">{% trans "There are no items in the cart" %}</caption>
@@ -85,12 +85,12 @@
 		<div ng-repeat="extra_row in cart_item.extra_rows" ng-bind="extra_row.amount"></div>
 	</td>
 	<td>
-		<button type="button" class="btn btn-xs btn-danger btn-block" ng-click="deleteCartItem(cart_item)">
-			<span class="glyphicon glyphicon-remove-circle"></span>&nbsp;{% trans "Remove" %}
+		<button type="button" class="btn btn-sm btn-danger btn-block" ng-click="deleteCartItem(cart_item)">
+			<span class="fa fa-times-circle"></span>&nbsp;{% trans "Remove" %}
 		</button>
 	{% if shop_watch_list_url %}
-		<button type="button" class="btn btn-xs btn-info btn-block" ng-click="watchCartItem(cart_item)">
-			<span class="glyphicon glyphicon-ok-circle"></span>&nbsp;{% trans "Watch Item" %}
+		<button type="button" class="btn btn-sm btn-info btn-block" ng-click="watchCartItem(cart_item)">
+			<span class="fa fa-check-circle"></span>&nbsp;{% trans "Watch Item" %}
 		</button>
 	{% endif %}
 	</td>
