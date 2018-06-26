@@ -26,7 +26,7 @@ else:
 class ShopCatalogPlugin(ShopPluginBase):
     name = _("Catalog List View")
     require_parent = True
-    parent_classes = ('BootstrapColumnPlugin', 'SimpleWrapperPlugin',)
+    parent_classes = ('BootstrapColumnPlugin', 'SimpleWrapperPlugin', 'Bootstrap4ColumnPlugin',)
     cache = False
 
     infinite_scroll = GlossaryField(
@@ -62,7 +62,7 @@ plugin_pool.register_plugin(ShopCatalogPlugin)
 class ShopAddToCartPlugin(ShopPluginBase):
     name = _("Add Product to Cart")
     require_parent = True
-    parent_classes = ('BootstrapColumnPlugin',)
+    parent_classes = ('BootstrapColumnPlugin', 'Bootstrap4ColumnPlugin' )
     cache = False
 
     def get_render_template(self, context, instance, placeholder):
@@ -125,7 +125,7 @@ class ProductGalleryInline(SortableInlineAdminMixin, StackedInline):
 class ShopProductGallery(WithSortableInlineElementsMixin, ShopPluginBase):
     name = _("Product Gallery")
     require_parent = True
-    parent_classes = ('BootstrapColumnPlugin',)
+    parent_classes = ('BootstrapColumnPlugin', 'Bootstrap4ColumnPlugin',)
     inlines = (ProductGalleryInline,)
     # until this bug https://github.com/applegrew/django-select2/issues/65 is fixed
     # we hide the a "add row" button and instead use `extra = 5` in ProductGalleryInline
