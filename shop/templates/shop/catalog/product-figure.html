@@ -1,7 +1,7 @@
 {# This template is shared between Django and AngularJS #}
 {% load i18n djng_tags %}
 {% angularjs ng %}
-<figure>
+<figure class="figure">
 	<a href="{{ product.product_url }}">
 		<h4>{{ product.product_name }}</h4>
 		<div{% if ng %} ng-bind-html="product.media"{% endif %}>{{ product.media }}</div>
