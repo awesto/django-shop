@@ -198,7 +198,8 @@ class CMSPageReferenceMixin(object):
         """
         # sorting by highest level, so that the canonical URL
         # associates with the most generic category
-        cms_page = self.cms_pages.order_by('depth').last()
+        cms_page= self.cms_pages.order_by('node__path').last()
+        #cms_page = self.cms_pages.order_by('depth').last()
         if cms_page is None:
             return urljoin('/category-not-assigned/', self.slug)
         return urljoin(cms_page.get_absolute_url(), self.slug)
