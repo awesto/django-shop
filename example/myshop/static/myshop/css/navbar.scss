@@ -1,40 +1,44 @@
 @import "variables";
 
-.navbar {
-	.navbar-extra-top {
-		min-height: $navbar-extra-top-height;
-		border-top: 1px solid transparent;
-		border-bottom: 1px solid $navbar-default-border;
-		background-image: linear-gradient(to bottom, #fff 0, $navbar-default-bg 100%);
-		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 5px rgba(0, 0, 0, 0.075);
-		.shop-brand {
-			text-align: center;
-		}
-		.brand-logo {
-			margin-top: 7px;
-		}
-	}
-	.expanded-nav {
-		@media (max-width: $grid-float-breakpoint) {
-			display: none;
-		}
-	}
-	.collapsed-nav {
-		@media (min-width: $grid-float-breakpoint) {
-			display: none;
-		}
-	}
-}
+
+
+@include media-breakpoint-up(md) {
+    .navbar-collapse {
+        min-height:3rem !important;
+     }
+
+     .shop-dropdown-forms  {
+width: 20em;
+left:-10em;
+     }
+
+body { padding-top:100px; };
+
+     .fixed-top-md-up{
+	 
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1030;
+
+     }
+    }
+
+
+
+
+
 
 .navbar-form {
 	&.shop-search-form {
 		input.form-control {
-			@media (min-width: $screen-lg-min) {
-				width: 40em;
-			}
-			@media (min-width: $screen-md-min) and (max-width: $screen-lg-min) {
-				width: 28em;
-			}
+//			@media (min-width: $screen-lg-min) {
+//				width: 40em;
+//			}
+//			@media (min-width: $screen-md-min) and (max-width: $screen-lg-min) {
+//				width: 28em;
+//			}
 		}
 		.input-group-addon {
 			cursor: pointer;
@@ -58,10 +62,10 @@
 }
 
 body {
-	@media (max-width: $screen-sm-min) {
-		padding-top: 290px;  // determined empirically
-	}
-	@media (min-width: $screen-sm-min) {
-		padding-top: $navbar-height + $navbar-extra-top-height + 3;
+        @include media-breakpoint-up(md) {
+//		padding-top: 290px;  // determined empirically
+        }
+        @include media-breakpoint-down(md) {
+//		padding-top: $navbar-height + $navbar-extra-top-height + 3;
 	}
 }
