@@ -19,6 +19,8 @@ from django.core.urlresolvers import reverse_lazy
 
 from cmsplugin_cascade.utils import format_lazy
 
+import six
+
 SHOP_APP_LABEL = 'myshop'
 BASE_DIR = os.path.dirname(__file__)
 
@@ -60,11 +62,20 @@ SITE_ID = 1
 # system time zone.
 TIME_ZONE = 'Europe/Vienna'
 
+USE_THOUSAND_SEPARATOR = True
+
 # Application definition
 
 # replace django.contrib.auth.models.User by implementation
 # allowing to login via email address
 AUTH_USER_MODEL = 'email_auth.User'
+
+AUTH_PASSWORD_VALIDATORS = [{
+    'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    'OPTIONS': {
+        'min_length': 6,
+    }
+}]
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
@@ -118,7 +129,6 @@ if SHOP_TUTORIAL in ['i18n_commodity', 'i18n_smartcard', 'i18n_polymorphic']:
     INSTALLED_APPS.append('parler')
 
 MIDDLEWARE_CLASSES = [
-    'djng.middleware.AngularUrlMiddleware',
     # 'django.middleware.cache.UpdateCacheMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -128,7 +138,6 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.gzip.GZipMiddleware',
-    'shop.middleware.MethodOverrideMiddleware',
     'cms.middleware.language.LanguageCookieMiddleware',
     'cms.middleware.user.CurrentUserMiddleware',
     'cms.middleware.page.CurrentPageMiddleware',
@@ -151,6 +160,17 @@ DATABASES = {
         'NAME': os.path.join(WORK_DIR, SHOP_TUTORIAL, 'db.sqlite3'),
     }
 }
+
+if os.getenv('POSTGRES_DB') and os.getenv('POSTGRES_USER'):
+    # override database with
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('POSTGRES_DB'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': os.getenv('POSTGRES_HOST', 'localhost'),
+        'PORT': os.getenv('POSTGRES_PORT', 5432),
+    }
 
 # Internationalization
 # https://docs.djangoproject.com/en/stable/topics/i18n/
@@ -218,7 +238,7 @@ MEDIA_URL = '/media/'
 
 # Absolute path to the directory that holds static files.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = os.path.join(WORK_DIR, 'static')
+STATIC_ROOT = os.getenv('DJANGO_STATIC_ROOT', os.path.join(WORK_DIR, 'static'))
 
 # URL that handles the static files served from STATIC_ROOT.
 # Example: "http://media.lawrence.com/static/"
@@ -262,6 +282,46 @@ TEMPLATES = [{
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+REDIS_HOST = os.getenv('REDIS_HOST')
+
+if REDIS_HOST:
+    SESSION_ENGINE = 'redis_sessions.session'
+    SESSION_SAVE_EVERY_REQUEST = True
+
+    SESSION_REDIS = {
+        'host': REDIS_HOST,
+        'port': 6379,
+        'db': 0,
+        'prefix': 'session-{}'.format(SHOP_TUTORIAL),
+        'socket_timeout': 1
+    }
+    if six.PY3:
+        # Use the latest protocol version (default)                                                                                                                                                           
+        PICKLE_V=-1
+    else:
+        #py2 compatibility                                                                                                                                                                                    
+        PICKLE_V=2
+
+    CACHES = {
+        'default': {
+            'BACKEND': 'redis_cache.RedisCache',
+            'LOCATION': 'redis://{}:6379/1'.format(REDIS_HOST),
+             "OPTIONS": {
+                 "PICKLE_VERSION": PICKLE_V,                                                                                                
+	         }
+        },
+        'compressor': {
+            'BACKEND': 'redis_cache.RedisCache',
+            'LOCATION': 'redis://{}:6379/2'.format(REDIS_HOST),
+        },
+        'select2': {
+            'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+        },
+    }
+
+    CACHE_MIDDLEWARE_ALIAS = 'default'
+    CACHE_MIDDLEWARE_SECONDS = 3600
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
@@ -299,13 +359,13 @@ FIXTURE_DIRS = [os.path.join(WORK_DIR, SHOP_TUTORIAL, 'fixtures')]
 ############################################
 # settings for sending mail
 
-EMAIL_HOST = 'smtp.example.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'no-reply@example.com'
-EMAIL_HOST_PASSWORD = 'smtp-secret-password'
-EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'My Shop <no-reply@example.com>'
-EMAIL_REPLY_TO = 'info@example.com'
+EMAIL_HOST = os.getenv('DJANGO_EMAIL_HOST', 'localhost')
+EMAIL_PORT = os.getenv('DJANGO_EMAIL_PORT', 25)
+EMAIL_HOST_USER = os.getenv('DJANGO_EMAIL_USER', 'no-reply@localhost')
+EMAIL_HOST_PASSWORD = os.getenv('DJANGO_EMAIL_PASSWORD', 'smtp-secret')
+EMAIL_USE_TLS = bool(os.getenv('DJANGO_EMAIL_USE_TLS', '1'))
+DEFAULT_FROM_EMAIL = os.getenv('DJANGO_EMAIL_FROM', 'no-reply@localhost')
+EMAIL_REPLY_TO = os.getenv('DJANGO_EMAIL_REPLY_TO', 'info@localhost')
 EMAIL_BACKEND = 'post_office.EmailBackend'
 
 
@@ -337,7 +397,7 @@ REST_FRAMEWORK = {
     # 'DEFAULT_AUTHENTICATION_CLASSES': (
     #   'rest_framework.authentication.TokenAuthentication',
     # ),
-    'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',),
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 12,
 }
@@ -463,6 +523,10 @@ CMSPLUGIN_CASCADE = {
             ('shop/catalog/product-heading.html', _("Product Heading")),
             ('myshop/catalog/manufacturer-filter.html', _("Manufacturer Filter")),
         ],
+        'ShopAddToCartPlugin': [
+            (None, _("Default")),
+            ('myshop/catalog/commodity-add2cart.html', _("Add Commodity to Cart")),
+        ],
     },
     'plugins_with_sharables': {
         'BootstrapImagePlugin': ['image_shapes', 'image_width_responsive', 'image_width_fixed',
@@ -536,20 +600,24 @@ SELECT2_CSS = 'node_modules/select2/dist/css/select2.min.css'
 SELECT2_JS = 'node_modules/select2/dist/js/select2.min.js'
 
 
+COMPRESS_CACHE_BACKEND = 'compressor'
+
 #############################################
 # settings for full index text search (Haystack)
+
+ELASTICSEARCH_HOST = os.getenv('ELASTICSEARCH_HOST', 'localhost')
 
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-        'URL': 'http://localhost:9200/',
+        'URL': 'http://{}:9200/'.format(ELASTICSEARCH_HOST),
         'INDEX_NAME': 'myshop-{}-en'.format(SHOP_TUTORIAL),
     },
 }
 if USE_I18N:
     HAYSTACK_CONNECTIONS['de'] = {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-        'URL': 'http://localhost:9200/',
+        'URL': 'http://{}:9200/'.format(ELASTICSEARCH_HOST),
         'INDEX_NAME': 'myshop-{}-de'.format(SHOP_TUTORIAL),
     }
 
@@ -574,16 +642,21 @@ SHOP_CART_MODIFIERS.extend([
     'shop.modifiers.defaults.PayInAdvanceModifier',
 ])
 
-if 'shop_stripe' in INSTALLED_APPS:
-    SHOP_CART_MODIFIERS.append('myshop.modifiers.StripePaymentModifier')
-
 SHOP_EDITCART_NG_MODEL_OPTIONS = "{updateOn: 'default blur', debounce: {'default': 2500, 'blur': 0}}"
 
 SHOP_ORDER_WORKFLOWS = [
-    'shop.payment.defaults.PayInAdvanceWorkflowMixin',
+    'shop.payment.defaults.ManualPaymentWorkflowMixin',
     'shop.payment.defaults.CancelOrderWorkflowMixin',
-    'shop_stripe.payment.OrderWorkflowMixin',
 ]
+
+if 'shop_stripe' in INSTALLED_APPS:
+    SHOP_CART_MODIFIERS.append('myshop.modifiers.StripePaymentModifier')
+    SHOP_ORDER_WORKFLOWS.append('shop_stripe.payment.OrderWorkflowMixin')
+
+if 'shop_sendcloud' in INSTALLED_APPS:
+    SHOP_CART_MODIFIERS.append('shop_sendcloud.modifiers.SendcloudShippingModifier')
+    SHOP_ORDER_WORKFLOWS.append('shop_sendcloud.shipping.OrderWorkflowMixin')
+
 if SHOP_TUTORIAL in ['i18n_polymorphic', 'polymorphic']:
     SHOP_ORDER_WORKFLOWS.append('shop.shipping.delivery.PartialDeliveryWorkflowMixin')
 else:

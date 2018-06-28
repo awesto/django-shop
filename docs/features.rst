@@ -57,7 +57,7 @@ their amount with the correct currency symbol. They also offer the special amoun
 Django-SHOP directly plugs into django-CMS
 ==========================================
 
-Product detail pages may use all templatetags from djangoCMS, such as the ``{% placeholder ... %}``,
+Product detail pages may use all templatetags from **django-CMS**, such as the ``{% placeholder ... %}``,
 the ``{% static_placeholder ... %}``, or other CMS tags.
 
 **Django-SHOP** does not presuppose categories to organize product list views. Instead django-CMS

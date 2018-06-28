@@ -8,7 +8,7 @@ The catalog presumably is that part, where customers of our e-commerce site spen
 Often it even makes sense, to start the :ref:`reference/catalog-list` on the main landing page.
 
 In this documentation we presume that categories of products are built up using specially tagged
-CMS pages in combination with a `djangoCMS apphook`_. This works perfectly well for most
+CMS pages in combination with a `django-CMS apphook`_. This works perfectly well for most
 implementation, but some sites may require categories implemented independently of the CMS.
 
 Using an external **django-SHOP** plugin for managing categories is a very conceivable solution,
@@ -41,7 +41,7 @@ But first we must :ref:`reference/create-CatalogListApp`.
 Create the ``CatalogListApp``
 -----------------------------
 
-To retrieve a list of product models, the Catalog List View requires a `djangoCMS apphook`_. This
+To retrieve a list of product models, the Catalog List View requires a `django-CMS apphook`_. This
 ``CatalogListApp`` must be added into a file named ``cms_apps.py`` and located in the root folder
 of the merchant's project:
 
@@ -168,11 +168,11 @@ Use CMS Placeholders on Detail View
 -----------------------------------
 
 If we require CMS functionality for each product's detail page, its quite simple to achieve. To the
-class implementing our product model, add a `djangoCMS Placeholder field`_ named ``placeholder``.
+class implementing our product model, add a `django-CMS Placeholder field`_ named ``placeholder``.
 Then add the templatetag ``{% render_placeholder product.placeholder %}`` to the template
 implementing the detail view of our product. This placeholder then shall be used to add arbitrary
 content to the product's detail page. This for instance can be an additional text paragraphs,
-some images, a carousel or whatever is available from the **djangoCMS** plugin system.
+some images, a carousel or whatever is available from the **django-CMS** plugin system.
 
 
 Route requests on Detail View
@@ -315,8 +315,8 @@ above.
 .. note:: Due to the way keys are handled in many caching systems, the ``InvalidateProductCacheMixin``
 	only makes sense if used in combination with the redis_cache_ backend.
 
-.. _djangoCMS apphook: http://docs.django-cms.org/en/stable/how_to/apphooks.html
-.. _djangoCMS Placeholder field: http://django-cms.readthedocs.org/en/stable/how_to/placeholders.html
+.. _django-CMS apphook: http://docs.django-cms.org/en/stable/how_to/apphooks.html
+.. _django-CMS Placeholder field: http://django-cms.readthedocs.org/en/stable/how_to/placeholders.html
 .. _serializer fields: http://www.django-rest-framework.org/api-guide/fields/
 .. _templatetags from the easythumbnail: https://easy-thumbnails.readthedocs.org/en/stable/usage/#templates
 .. _redis_cache: http://django-redis-cache.readthedocs.org/en/stable/

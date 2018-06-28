@@ -13,13 +13,14 @@ from cms.admin.placeholderadmin import PlaceholderAdminMixin, FrontendEditableAd
 from polymorphic.admin import (PolymorphicParentModelAdmin, PolymorphicChildModelAdmin,
                                PolymorphicChildModelFilter)
 
-from shop.admin.product import CMSPageAsCategoryMixin, ProductImageInline, CMSPageFilter
+from shop.admin.product import CMSPageAsCategoryMixin, ProductImageInline, InvalidateProductCacheMixin, CMSPageFilter
 
 from myshop.models import Product, Commodity, SmartCard, SmartPhoneVariant, SmartPhoneModel
 from myshop.models.polymorphic_.smartphone import OperatingSystem
 
 
-class CommodityAdmin(SortableAdminMixin, FrontendEditableAdminMixin, PlaceholderAdminMixin,
+@admin.register(Commodity)
+class CommodityAdmin(InvalidateProductCacheMixin, SortableAdminMixin, FrontendEditableAdminMixin, PlaceholderAdminMixin,
                      CMSPageAsCategoryMixin, admin.ModelAdmin):
     """
     Since our Commodity model inherits from polymorphic Product, we have to redefine its admin class.
@@ -31,7 +32,8 @@ class CommodityAdmin(SortableAdminMixin, FrontendEditableAdminMixin, Placeholder
     prepopulated_fields = {'slug': ['product_name']}
 
 
-class SmartCardAdmin(SortableAdminMixin, FrontendEditableAdminMixin,
+@admin.register(SmartCard)
+class SmartCardAdmin(InvalidateProductCacheMixin, SortableAdminMixin, FrontendEditableAdminMixin,
                      CMSPageAsCategoryMixin, PlaceholderAdminMixin, PolymorphicChildModelAdmin):
     base_model = Product
     fields = ['product_name', 'slug', 'product_code', 'unit_price', 'active', 'caption',
@@ -48,7 +50,8 @@ class SmartPhoneInline(admin.TabularInline):
     extra = 0
 
 
-class SmartPhoneAdmin(SortableAdminMixin, FrontendEditableAdminMixin, CMSPageAsCategoryMixin,
+@admin.register(SmartPhoneModel)
+class SmartPhoneAdmin(InvalidateProductCacheMixin, SortableAdminMixin, FrontendEditableAdminMixin, CMSPageAsCategoryMixin,
                       PlaceholderAdminMixin, PolymorphicChildModelAdmin):
     base_model = Product
     fields = ['product_name', 'slug', 'active', 'caption', 'description', 'manufacturer',
@@ -74,14 +77,14 @@ class SmartPhoneAdmin(SortableAdminMixin, FrontendEditableAdminMixin, CMSPageAsC
 @admin.register(Product)
 class ProductAdmin(PolymorphicSortableAdminMixin, PolymorphicParentModelAdmin):
     base_model = Product
-    child_models = ((SmartPhoneModel, SmartPhoneAdmin), (SmartCard, SmartCardAdmin), (Commodity, CommodityAdmin),)
-    list_display = ('product_name', 'get_price', 'product_type', 'active',)
-    list_display_links = ('product_name',)
-    search_fields = ('product_name',)
+    child_models = [SmartPhoneModel, SmartCard, Commodity]
+    list_display = ['product_name', 'get_price', 'product_type', 'active']
+    list_display_links = ['product_name']
+    search_fields = ['product_name']
     list_filter = (PolymorphicChildModelFilter, CMSPageFilter,)
     list_per_page = 250
     list_max_show_all = 1000
 
     def get_price(self, obj):
-        return obj.get_real_instance().get_price(None)
+        return str(obj.get_real_instance().get_price(None))
     get_price.short_description = _("Price starting at")

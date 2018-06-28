@@ -4,7 +4,7 @@
 {% add_data "ng-requires" "django.shop.cart" %}
 
 {% block shop-watch-table %}
-<table shop-cart watch="watch" class="table table-hover">
+<table shop-cart endpoint="{% url 'shop:watch-list' %}" class="table table-hover">
 	<!-- content is rendered via ng-template "shop/cart.html" -->
 </table>
 {% endblock shop-watch-table %}

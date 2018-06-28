@@ -51,10 +51,15 @@ class DefaultSettings(object):
         Possible placeholders are:
 
         * ``{symbol}``: This is replaced by €, $, £, etc.
-        * ``{currency}``: This is replaced by EUR, USD, GBP, etc.
+        * ``{currency}``: This is replaced by Euro, US Dollar, Pound Sterling, etc.
+        * ``{code}``: This is replaced by EUR, USD, GBP, etc.
         * ``{amount}``: The localized amount.
+        * ``{minus}``: Only for negative amounts, where to put the ``-`` sign.
+
+        For further information about formatting currency amounts, please refer to
+        https://docs.microsoft.com/en-us/globalization/locale/currency-formatting
         """
-        return self._setting('SHOP_MONEY_FORMAT', '{symbol} {amount}')
+        return self._setting('SHOP_MONEY_FORMAT', '{minus}{symbol} {amount}')
 
     @property
     def SHOP_DECIMAL_PLACES(self):
@@ -128,6 +133,22 @@ class DefaultSettings(object):
                           'shop.serializers.defaults.ProductSelectSerializer')
         ProductSelectSerializer = import_string(s)
         return ProductSelectSerializer
+
+    @property
+    def SHOP_CART_ICON_CAPTION_SERIALIZER(self):
+        """
+        This serializer is used to provide the data required to render the information nearby the
+        cart icon symbol. Since this icon normally is visible all the time, and hence updated quite
+        frequently, only add fields which are necessary.
+
+        Defaults to :class:`shop.serializers.cart.CartIconCaptionSerializer`.
+        """
+        from django.utils.module_loading import import_string
+
+        s = self._setting('SHOP_CART_ICON_CAPTION_SERIALIZER',
+                          'shop.serializers.cart.CartIconCaptionSerializer')
+        CartIconCaptionSerializer = import_string(s)
+        return CartIconCaptionSerializer
 
     @property
     def SHOP_ORDER_ITEM_SERIALIZER(self):

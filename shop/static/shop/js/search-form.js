@@ -32,7 +32,7 @@ djangoShopModule.directive('shopProductSearch', ['$location', '$timeout', 'djang
 				}
 				acPromise = $timeout(function() {
 					$scope.filters = {};  // remove content in filters
-					$scope.$emit('shopCatalogSearch', params);
+					$scope.$emit('shop.catalog.search', params);
 				}, 666);
 			};
 		}],

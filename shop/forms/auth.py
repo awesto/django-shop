@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.contrib.auth import get_user_model, authenticate, login
+from django.contrib.auth import get_user_model, authenticate, login, password_validation
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ValidationError
 from django.forms import widgets, ModelForm
-from django.template import Context
 from django.template.loader import select_template
+from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
 from djng.forms import fields, NgModelFormMixin, NgFormValidationMixin
@@ -22,26 +22,34 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValid
     scope_prefix = 'form_data'
     field_css_classes = 'input-group has-feedback'
 
-    email = fields.EmailField(label=_("Your e-mail address"))
+    email = fields.EmailField(
+        label=_("Your e-mail address"),
+        widget=widgets.EmailInput(attrs={'placeholder': _("E-mail address")})
+    )
 
     preset_password = fields.BooleanField(
         label=_("Preset password"),
         widget=widgets.CheckboxInput(),
         required=False,
-        help_text=_("Send a randomly generated password to your e-mail address."))
+        help_text=_("Send a randomly generated password to your e-mail address."),
+    )
+
+    error_messages = {
+        'password_mismatch': _("The two password fields didn't match."),
+    }
 
     password1 = fields.CharField(
-        label=_("Choose a password"),
-        widget=widgets.PasswordInput,
-        min_length=6,
-        help_text=_("Minimum length is 6 characters."),
+        label=_("New password"),
+        widget=widgets.PasswordInput(attrs={'placeholder': _("Password")}),
+        strip=False,
+        help_text=password_validation.password_validators_help_text_html(),
     )
 
     password2 = fields.CharField(
-        label=_("Repeat password"),
-        widget=widgets.PasswordInput,
-        min_length=6,
-        help_text=_("Confirm password."),
+        label=_("New password confirmation"),
+        strip=False,
+        widget=widgets.PasswordInput(attrs={'placeholder': _("Password")}),
+        help_text=format_html('<ul><li>{}</li></ul>', _("Confirm the password.")),
     )
 
     class Meta:
@@ -50,18 +58,22 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValid
 
     def __init__(self, data=None, instance=None, *args, **kwargs):
         if data and data.get('preset_password', False):
-            pwd_length = max(self.base_fields['password1'].min_length, 8)
+            pwd_length = max(self.base_fields['password1'].min_length or 8, 8)
             password = get_user_model().objects.make_random_password(pwd_length)
             data['password1'] = data['password2'] = password
         super(RegisterUserForm, self).__init__(data=data, instance=instance, *args, **kwargs)
 
     def clean(self):
         cleaned_data = super(RegisterUserForm, self).clean()
-        # check for matching passwords
-        if 'password1' not in self.errors and 'password2' not in self.errors:
-            if cleaned_data['password1'] != cleaned_data['password2']:
-                msg = _("Passwords do not match")
-                raise ValidationError(msg)
+        password1 = cleaned_data.get('password1')
+        password2 = cleaned_data.get('password2')
+        if password1 and password2:
+            if password1 != password2:
+                raise ValidationError(
+                    self.error_messages['password_mismatch'],
+                    code='password_mismatch',
+                )
+        password_validation.validate_password(password2)
         return cleaned_data
 
     def save(self, request=None, commit=True):
@@ -79,13 +91,13 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValid
 
     def _send_password(self, request, user, password):
         current_site = get_current_site(request)
-        context = Context({
+        context = {
             'site_name': current_site.name,
             'absolute_base_uri': request.build_absolute_uri('/'),
             'email': user.email,
             'password': password,
             'user': user,
-        })
+        }
         subject = select_template([
             '{}/email/register-user-subject.txt'.format(app_settings.APP_LABEL),
             'shop/email/register-user-subject.txt',

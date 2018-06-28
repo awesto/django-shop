@@ -18,12 +18,12 @@ djangoShopModule.directive('shopSearchResults', ['$http', function($http) {
 					return;
 				console.log('load more search results ...');
 				$scope.isLoading = true;
-				$http.get($scope.search_data.next).success(function(response) {
-					$scope.search_data.next = response.next;
-					$scope.search_data.count = response.count;
-					$scope.search_data.results = $scope.search_data.results.concat(response.results);
+				$http.get($scope.search_data.next).then(function(response) {
+					$scope.search_data.next = response.data.next;
+					$scope.search_data.count = response.data.count;
+					$scope.search_data.results = $scope.search_data.results.concat(response.data.results);
 					$scope.isLoading = false;
-				}).error(function() {
+				}).catch(function() {
 					$scope.search_data.next = null;
 					$scope.isLoading = false;
 				});

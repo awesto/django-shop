@@ -26,8 +26,8 @@ class PaymentProvider(object):
         Build a JavaScript expression which is evaluated by the success handler on the page
         submitting the purchase command. When redirecting to another page, use:
         ```
-        $window.location.href="URL-of-other-page";
+        window.location.href="URL-of-other-page";
         ```
         since this expression is evaluated inside an AngularJS directive.
         """
-        return '$window.alert("Please implement method `get_payment_request` in the Python class inheriting from `PaymentProvider`!");'
+        return 'alert("Please implement method `get_payment_request` in the Python class inheriting from `PaymentProvider`!");'

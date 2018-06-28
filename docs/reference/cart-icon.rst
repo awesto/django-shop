@@ -32,16 +32,16 @@ such as::
         <ng-pluralize count="caption.num_items" when="{'1': '{% trans "1 Item" context "cart icon" %}', 'other': '{% trans "{} Items" context "cart icon" %}'}"></ng-pluralize>
     </script>
 
-Whenever this AngularJS directive receives an event of type ``shopUpdateCarticonCaption``, then it
+Whenever this AngularJS directive receives an event of type ``shop.carticon.caption``, then it
 updates the cart icon's caption with the current state of the cart. The emitter of such an event
 typically is the cart editor or an add-to-cart directive. If this function has already computed
 the new caption data, it may send it to the cart item, such as:
 
 .. code-block:: javascript
 
-    $scope.$emit('shopUpdateCarticonCaption', caption_data);
+    $scope.$emit('shop.carticon.caption', caption_data);
 
-otherwise if it emits the signal without object, the AngularJS directive ``shopCarticonCaption``
+otherwise, if it emits the signal without object, the AngularJS directive ``shopCarticonCaption``
 will fetch the updated caption data from the server. The latter invokes an additional HTTP request
 but is useful, if the caption shall for instance contain the cart's total, since this has to be
 computed on the server anyway.

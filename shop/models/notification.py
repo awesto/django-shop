@@ -2,14 +2,14 @@
 from __future__ import unicode_literals
 
 from bs4 import BeautifulSoup
+
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
-from django.core.exceptions import ValidationError
 from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.db import models
 from django.db.models import Q
 from django.http.request import HttpRequest
-from django.template import Context, engines
+from django.template import engines
 from django.utils.six.moves.urllib.parse import urlparse
 from django.utils.translation import ugettext_lazy as _, override as translation_override, ugettext_noop
 
@@ -21,6 +21,7 @@ from filer.fields.file import FilerFileField
 from shop.conf import app_settings
 from shop.models.order import BaseOrder
 from shop.models.fields import ChoiceEnum, ChoiceEnumField
+from shop.signals import email_queued
 
 
 class Email(OriginalEmail):
@@ -34,11 +35,10 @@ class Email(OriginalEmail):
     def email_message(self, connection=None):
         if self.template is not None:
             render_language = self.context.get('render_language', settings.LANGUAGE_CODE)
-            context = Context(self.context)
             with translation_override(render_language):
-                subject = engines['django'].from_string(self.template.subject).render(context)
-                message = engines['django'].from_string(self.template.content).render(context)
-                html_message = engines['django'].from_string(self.template.html_content).render(context)
+                subject = engines['django'].from_string(self.template.subject).render(self.context)
+                message = engines['django'].from_string(self.template.content).render(self.context)
+                html_message = engines['django'].from_string(self.template.html_content).render(self.context)
         else:
             subject = self.subject
             message = self.message
@@ -195,3 +195,4 @@ def order_event_notification(sender, instance=None, target=None, **kwargs):
             attachments[notiatt.attachment.original_filename] = notiatt.attachment.file.file
         mail.send(recipient, template=template, context=context,
                   attachments=attachments, render_on_delivery=True)
+    email_queued()

@@ -5,24 +5,27 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db import transaction
 from django.utils.module_loading import import_string
 
+from rest_framework import status
 from rest_framework.decorators import list_route
-from rest_framework.exceptions import ValidationError
+from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
 
 from cms.plugin_pool import plugin_pool
 
 from shop.conf import app_settings
-from shop.serializers.cart import CheckoutSerializer
+from shop.models.cart import CartModel
+from shop.serializers.checkout import CheckoutSerializer
+from shop.serializers.cart import CartSummarySerializer
 from shop.modifiers.pool import cart_modifiers_pool
-from shop.views.cart import BaseViewSet
 
 
-class CheckoutViewSet(BaseViewSet):
+class CheckoutViewSet(GenericViewSet):
     """
     View for our REST endpoint to communicate with the various forms used during the checkout.
     """
     serializer_label = 'checkout'
     serializer_class = CheckoutSerializer
-    item_serializer_class = None
+    cart_serializer_class = CartSummarySerializer
 
     def __init__(self, **kwargs):
         super(CheckoutViewSet, self).__init__(**kwargs)
@@ -41,80 +44,86 @@ class CheckoutViewSet(BaseViewSet):
                     if hasattr(p, 'form_class'):
                         self.dialog_forms.add(import_string(p.form_class))
 
-    @list_route(methods=['post'], url_path='upload')
+    @list_route(methods=['put'], url_path='upload')
     def upload(self, request):
         """
-        All forms using the AngularJS directive `shop-dialog-form` have an implicit scope containing
-        an `upload()` function. This function then may be connected to any input element, say
-        `ng-change="upload()"`. If such an event triggers, the scope data is send to this `upload()`
-        method using an Ajax POST request. This `upload()` method then dispatches the form data
-        to all forms registered through a `DialogFormPluginBase`.
-        Afterwards the cart is updated, so that all cart modifiers run and adopt those changes.
+        Use this REST endpoint to upload the payload of all forms used to setup the checkout
+        dialogs. This method takes care to dispatch the uploaded payload to each corresponding
+        form.
         """
-        cart = self.get_queryset()
-        if cart is None:
-            raise ValidationError("Can not proceed to checkout without a cart")
-
         # sort posted form data by plugin order
+        cart = CartModel.objects.get_from_request(request)
         dialog_data = []
         for form_class in self.dialog_forms:
-            key = form_class.scope_prefix.split('.', 1)[1]
-            if key in request.data:
-                if 'plugin_order' in request.data[key]:
-                    dialog_data.append((form_class, request.data[key]))
+            if form_class.scope_prefix in request.data:
+                if 'plugin_order' in request.data[form_class.scope_prefix]:
+                    dialog_data.append((form_class, request.data[form_class.scope_prefix]))
                 else:
-                    for data in request.data[key].values():
+                    for data in request.data[form_class.scope_prefix].values():
                         dialog_data.append((form_class, data))
         dialog_data = sorted(dialog_data, key=lambda tpl: int(tpl[1]['plugin_order']))
 
         # save data, get text representation and collect potential errors
-        errors, checkout_summary, response_data = {}, {}, {'$valid': True}
+        errors, response_data, set_is_valid = {}, {}, True
         with transaction.atomic():
             for form_class, data in dialog_data:
                 form = form_class.form_factory(request, data, cart)
                 if form.is_valid():
                     # empty error dict forces revalidation by the client side validation
                     errors[form_class.form_name] = {}
-                    # keep a summary of of validated form content inside the client's $rootScope
-                    checkout_summary[form_class.form_name] = form.as_text()
                 else:
-                    errors[form_class.form_name] = dict(form.errors)
-                response_data['$valid'] = response_data['$valid'] and form.is_valid()
+                    errors[form_class.form_name] = form.errors
+                    set_is_valid = False
 
-                # by updating the response data, we can override the form's model $scope
+                # by updating the response data, we can override the form's content
                 update_data = form.get_response_data()
                 if isinstance(update_data, dict):
-                    key = form_class.scope_prefix.split('.', 1)[1]
-                    response_data[key] = update_data
-            cart.save()
+                    response_data[form_class.form_name] = update_data
+
+            # persist changes in cart
+            if set_is_valid:
+                cart.save()
 
         # add possible form errors for giving feedback to the customer
-        response = self.list(request)
-        response.data.update(errors=errors, checkout_summary=checkout_summary, data=response_data)
-        return response
+        if set_is_valid:
+            return Response(response_data)
+        else:
+            return Response(errors, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+
+    @list_route(methods=['get'], url_path='digest')
+    def digest(self, request):
+        """
+        Returns the summaries of the cart and various checkout forms to be rendered in non-editable fields.
+        """
+        cart = CartModel.objects.get_from_request(request)
+        cart.update(request)
+        context = self.get_serializer_context()
+        checkout_serializer = self.serializer_class(cart, context=context, label=self.serializer_label)
+        cart_serializer = self.cart_serializer_class(cart, context=context, label='cart')
+        response_data = {
+            'checkout_digest': checkout_serializer.data,
+            'cart_summary': cart_serializer.data,
+        }
+        return Response(data=response_data)
 
     @list_route(methods=['post'], url_path='purchase')
     def purchase(self, request):
         """
         This is the final step on converting a cart into an order object. It normally is used in
-        combination with the AngularJS directive `shop-dialog-proceed` used in combination with
-        `proceedWith("PURCHASE_NOW")`.
-        Use the plugin `shop.cascade.checkout.ProceedButtonPlugin` to render such a button into
-        any placeholder field.
+        combination with the plugin :class:`shop.cascade.checkout.ProceedButtonPlugin` to render
+        a button labeled "Purchase Now".
         """
-        cart = self.get_queryset()
-        if cart.pk is None:
-            raise ValidationError("Can not purchase without a cart")
+        cart = CartModel.objects.get_from_request(request)
         cart.update(request)
         cart.save()
 
-        response = self.list(request)
+        response_data = {}
         # Iterate over the registered modifiers, and search for the active payment service provider
         for modifier in cart_modifiers_pool.get_payment_modifiers():
             if modifier.is_active(cart):
                 payment_provider = getattr(modifier, 'payment_provider', None)
                 if payment_provider:
                     expression = payment_provider.get_payment_request(cart, request)
-                    response.data.update(expression=expression)
+                    response_data.update(expression=expression)
                 break
-        return response
+        return Response(data=response_data)

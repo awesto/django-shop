@@ -14,16 +14,16 @@ from djng.forms.fields import ChoiceField
 from shop.conf import app_settings
 from .plugin_base import ShopLinkPluginBase, ShopLinkElementMixin
 
-AUTH_FORM_TYPES = (
+AUTH_FORM_TYPES = [
     ('login', _("Login Form")),
-    ('login-reset', _("Login & Reset Form")),
+    ('login-reset', _("Login & Reset Form"), 'login'),
     ('logout', _("Logout Form")),
-    ('login-logout', _("Shared Login/Logout Form")),
+    ('login-logout', _("Shared Login/Logout Form"), 'login'),
     ('reset', _("Password Reset Form")),
     ('change', _("Change Password Form")),
     ('register-user', _("Register User"), 'shop.forms.auth.RegisterUserForm'),
     ('continue-as-guest', _("Continue as guest")),
-)
+]
 
 
 class ShopAuthForm(LinkForm):
@@ -75,12 +75,15 @@ class ShopAuthenticationPlugin(ShopLinkPluginBase):
             try:
                 FormClass = import_string(form_type[2])
             except (ImportError, IndexError):
-                form_name = form_type[0].replace('-', '_')
+                if len(form_type) > 2:
+                    form_name = form_type[2]
+                else:
+                    form_name = form_type[0].replace('-', '_')
                 context['form_name'] = '{0}_form'.format(form_name)
             else:
                 context['form_name'] = FormClass.form_name
                 context[FormClass.form_name] = FormClass()
-        context['action'] = instance.link
+        context['proceed_with'] = instance.link
         return self.super(ShopAuthenticationPlugin, self).render(context, instance, placeholder)
 
 plugin_pool.register_plugin(ShopAuthenticationPlugin)

@@ -12,22 +12,22 @@ djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$ui
 	};
 
 	this.loadContext = function() {
-		$http.get(updateUrl).success(function(context) {
-			prevContext = context;
-			$scope.context = angular.copy(context);
-		}).error(function(msg) {
-			console.error('Unable to get context: ' + msg);
+		$http.get(updateUrl).then(function(response) {
+			prevContext = response.data;
+			$scope.context = angular.copy(response.data);
+		}).catch(function(ressponse) {
+			console.error('Unable to get context: ' + ressponse.statusText);
 		});
 	};
 
 	$scope.updateContext = function() {
 		if (angular.equals($scope.context, prevContext))
 			return;
-		$http.post(updateUrl, $scope.context).success(function(context) {
-			prevContext = context;
-			$scope.context = angular.copy(context);
-		}).error(function(msg) {
-			console.error('Unable to update context: ' + msg);
+		$http.post(updateUrl, $scope.context).then(function(response) {
+			prevContext = response.data;
+			$scope.context = angular.copy(response.data);
+		}).catch(function(response) {
+			console.error('Unable to update context: ' + response.statusText);
 		});
 	};
 
@@ -58,9 +58,9 @@ djangoShopModule.controller('ModalInstanceCtrl',
 		if (isLoading)
 			return;
 		isLoading = true;
-		$http.post(modal_context.cart_url, $scope.context).success(function() {
+		$http.post(modal_context.cart_url, $scope.context).then(function() {
 			$uibModalInstance.close(next_url);
-		}).error(function() {
+		}).catch(function() {
 			// TODO: tell us something went wrong
 			$uibModalInstance.dismiss('cancel');
 		}).finally(function() {
@@ -92,38 +92,38 @@ djangoShopModule.directive('shopAddToCart', function() {
 });
 
 
-djangoShopModule.controller('CatalogListController', [
-    '$scope', '$http', 'djangoShop', function($scope, $http, djangoShop) {
-	var self = this;
+djangoShopModule.controller('CatalogListController', ['$log', '$scope', '$http', 'djangoShop',
+                                             function($log, $scope, $http, djangoShop) {
+	var self = this, isLoading = false, fetchURL = null;
 
 	this.loadProducts = function(config) {
-		if ($scope.isLoading || $scope.fetchURL === null)
+		if (isLoading || fetchURL === null)
 			return;
-		$scope.isLoading = true;
-		$http.get($scope.fetchURL, config).success(function(response) {
-			$scope.fetchURL = response.next;
-			$scope.catalog.count = response.count;
-			$scope.catalog.products = $scope.catalog.products.concat(response.results);
-			$scope.isLoading = false;
-		}).error(function() {
-			$scope.fetchURL = null;
-			$scope.isLoading = false;
+		isLoading = true;
+		$http.get(fetchURL, config).then(function(response) {
+			fetchURL = response.data.next;
+			$scope.catalog.count = response.data.count;
+			$scope.catalog.products = $scope.catalog.products.concat(response.data.results);
+			isLoading = false;
+		}).catch(function() {
+			fetchURL = null;
+			isLoading = false;
 		});
 	};
 
 	this.resetProductsList = function() {
-		$scope.fetchURL = djangoShop.getLocationPath();
+		fetchURL = djangoShop.getLocationPath();
 		$scope.catalog.products = [];
 	};
 
 	$scope.loadMore = function() {
 		var config = {params: djangoShop.paramsFromSearchQuery.apply(this, arguments)};
-		console.log('load more products ...');
+		$log.log('load more products ...');
 		self.loadProducts(config);
 	};
 
 	$scope.catalog = {};
-	$scope.isLoading = false;
+	isLoading = false;
 }]);
 
 
@@ -138,7 +138,7 @@ djangoShopModule.directive('shopCatalogList', ['$location', '$window', '$timeout
 		link: function(scope, element, attrs, controller) {
 			var infiniteScroll = scope.$eval(attrs.infiniteScroll);
 
-			scope.$root.$on('shopCatalogSearch', function(event, params) {
+			scope.$root.$on('shop.catalog.search', function(event, params) {
 				if (infiniteScroll) {
 					controller.resetProductsList();
 					controller.loadProducts({params: params});
@@ -147,7 +147,7 @@ djangoShopModule.directive('shopCatalogList', ['$location', '$window', '$timeout
 				}
 			});
 
-			scope.$root.$on('shopCatalogFilter', function(event, params) {
+			scope.$root.$on('shop.catalog.filter', function(event, params) {
 				if (infiniteScroll) {
 					controller.resetProductsList();
 					controller.loadProducts({params: params});
@@ -192,22 +192,22 @@ djangoShopModule.directive('shopSyncCatalogItem', function() {
 		restrict: 'A',
 		require: ['^shopSyncCatalog', 'shopSyncCatalogItem'],
 		scope: true,
-		controller: ['$scope', '$http', function($scope, $http) {
+		controller: ['$scope', '$http', '$rootScope', function($scope, $http, $rootScope) {
 			var self = this, prev_item = null, isLoading = false;
 
 			$scope.syncQuantity = function() {
 				if (isLoading || angular.equals($scope.catalog_item, prev_item))
 					return;
 				isLoading = true;
-				$http.post(self.parent.syncCatalogUrl, $scope.catalog_item).success(function(response) {
-					var cart = response.cart;
-					delete response.cart;
-					prev_item = response;
-					angular.extend($scope.catalog_item, response);
-					$scope.$emit('shopUpdateCarticonCaption', cart);
+				$http.post(self.parent.syncCatalogUrl, $scope.catalog_item).then(function(response) {
+					var cart = response.data.cart;
+					delete response.data.cart;
+					prev_item = response.data;
+					angular.extend($scope.catalog_item, response.data);
+					$rootScope.$broadcast('shop.carticon.caption');
 					isLoading = false;
-				}).error(function(msg) {
-					console.error('Unable to sync quantity: ' + msg);
+				}).catch(function(response) {
+					console.error('Unable to sync quantity: ' + response.statusText);
 					isLoading = false;
 				});
 			};

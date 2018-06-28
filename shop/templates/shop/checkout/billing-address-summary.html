@@ -1,6 +1,12 @@
+{% extends "shop/checkout/digest-base.html" %}
+
+{% block summary_tag %}
 <div class="form-group">
 	{% if headline_legend %}
 	<h4>{{ billing_address_form.legend }}</h4>
 	{% endif %}
-	<pre class="shop-checkout-summary" djng-bind-if="checkout_summary.billing_address_form">{{ billing_address_form.as_text }}</pre>
+	<shop-checkout-digest initial-tag="{billing_address_tag: '{{ billing_address_form.as_text }}'}">
+		<pre ng-bind="checkoutDigest.billing_address_tag" class="shop-checkout-summary"></pre>
+	</shop-checkout-digest>
 </div>
+{% endblock %}
