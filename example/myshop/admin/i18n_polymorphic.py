@@ -27,40 +27,40 @@ class CommodityAdmin(InvalidateProductCacheMixin, SortableAdminMixin, Translatab
     Since our Commodity model inherits from polymorphic Product, we have to redefine its admin class.
     """
     base_model = Product
-    fieldsets = (
+    fieldsets = [
         (None, {
-            'fields': ('product_name', 'slug', 'product_code', 'unit_price', 'active',),
+            'fields': ['product_name', 'slug', 'product_code', 'unit_price', 'active'],
         }),
         (_("Translatable Fields"), {
-            'fields': ('caption',)
+            'fields': ['caption'],
         }),
         (_("Properties"), {
-            'fields': ('manufacturer',)
+            'fields': ['manufacturer'],
         }),
-    )
-    filter_horizontal = ('cms_pages',)
-    inlines = (ProductImageInline,)
-    prepopulated_fields = {'slug': ('product_name',)}
+    ]
+    filter_horizontal = ['cms_pages']
+    inlines = [ProductImageInline]
+    prepopulated_fields = {'slug': ['product_name']}
 
 
 @admin.register(SmartCard)
 class SmartCardAdmin(InvalidateProductCacheMixin, SortableAdminMixin, TranslatableAdmin, FrontendEditableAdminMixin,
                      CMSPageAsCategoryMixin, PlaceholderAdminMixin, PolymorphicChildModelAdmin):
     base_model = Product
-    fieldsets = (
+    fieldsets = [
         (None, {
-            'fields': ('product_name', 'slug', 'product_code', 'unit_price', 'active',),
+            'fields': ['product_name', 'slug', 'product_code', 'unit_price', 'active'],
         }),
         (_("Translatable Fields"), {
-            'fields': ('caption', 'description',)
+            'fields': ['caption', 'description'],
         }),
         (_("Properties"), {
-            'fields': ('manufacturer', 'storage', 'card_type', 'speed',)
+            'fields': ['manufacturer', 'storage', 'card_type', 'speed'],
         }),
-    )
-    filter_horizontal = ('cms_pages',)
-    inlines = (ProductImageInline,)
-    prepopulated_fields = {'slug': ('product_name',)}
+    ]
+    filter_horizontal = ['cms_pages']
+    inlines = [ProductImageInline]
+    prepopulated_fields = {'slug': ['product_name']}
 
 admin.site.register(OperatingSystem, admin.ModelAdmin)
 
@@ -88,7 +88,7 @@ class SmartPhoneAdmin(InvalidateProductCacheMixin, SortableAdminMixin, Translata
         }),
     ]
     filter_horizontal = ['cms_pages']
-    inlines = (ProductImageInline, SmartPhoneInline,)
+    inlines = [ProductImageInline, SmartPhoneInline]
     prepopulated_fields = {'slug': ['product_name'],}
 
     def save_model(self, request, obj, form, change):

@@ -41,6 +41,7 @@ class CategoryModelMultipleChoiceField(forms.ModelMultipleChoiceField):
         else:
             return str(obj)
 
+
 class CMSPageAsCategoryMixin(object):
     """
     Add this mixin class to the ModelAdmin class for products wishing to be assigned to djangoCMS
@@ -99,6 +100,10 @@ class CMSPageAsCategoryMixin(object):
 
 
 class InvalidateProductCacheMixin(object):
+    """
+    If caching is enabled, add this class as the first mixin to Django's model admin for the
+    corresponding product.
+    """
     def __init__(self, *args, **kwargs):
         if not hasattr(cache, 'delete_pattern'):
             warnings.warn("\n"
