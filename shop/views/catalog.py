@@ -8,6 +8,7 @@ from django.http.response import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.utils.cache import add_never_cache_headers
 from django.utils.translation import get_language_from_request
+from distutils.version import LooseVersion
 
 from rest_framework import generics
 from rest_framework import pagination
@@ -16,6 +17,7 @@ from rest_framework import views
 from rest_framework.renderers import BrowsableAPIRenderer
 from rest_framework.response import Response
 
+from cms import __version__ as CMS_VERSION
 from cms.views import details
 
 from shop.conf import app_settings
@@ -175,7 +177,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
     This view is used to retrieve and render a certain product.
 
     Usage: Add it to the urlpatterns responsible for rendering the catalog's views. The
-    file containing this patterns can be referenced by the CMS apphook ``ProductsListApp``
+    file containing this patterns can be referenced by the CMS apphook ``CatalogListCMSApp``
     and used by the CMS pages responsible for rendering the catalog's list.
     ```
     urlpatterns = [
@@ -221,7 +223,11 @@ class ProductRetrieveView(generics.RetrieveAPIView):
         try:
             return super(ProductRetrieveView, self).dispatch(request, *args, **kwargs)
         except Http404:
-            if request.current_page.is_root():
+            if LooseVersion(CMS_VERSION) < LooseVersion('3.5'):
+                is_root = request.current_page.is_root()
+            else:
+                is_root = request.current_page.node.is_root()
+            if is_root:
                 return details(request, kwargs.get('slug'))
             raise
         except:
