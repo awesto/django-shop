@@ -27,8 +27,8 @@ class CommodityAdmin(SortableAdminMixin, FrontendEditableAdminMixin, Placeholder
     """
     base_model = Product
     fields = ['product_name', 'slug', 'product_code', 'unit_price', 'active', 'caption', 'manufacturer']
-    filter_horizontal = ('cms_pages',)
-    inlines = (ProductImageInline,)
+    filter_horizontal = ['cms_pages']
+    inlines = [ProductImageInline]
     prepopulated_fields = {'slug': ['product_name']}
 
 
@@ -39,7 +39,7 @@ class SmartCardAdmin(SortableAdminMixin, FrontendEditableAdminMixin,
     fields = ['product_name', 'slug', 'product_code', 'unit_price', 'active', 'caption',
               'description', 'manufacturer', 'storage', 'card_type', 'speed']
     filter_horizontal = ['cms_pages']
-    inlines = (ProductImageInline,)
+    inlines = [ProductImageInline]
     prepopulated_fields = {'slug': ['product_name']}
 
 admin.site.register(OperatingSystem, admin.ModelAdmin)
@@ -58,8 +58,8 @@ class SmartPhoneAdmin(SortableAdminMixin, FrontendEditableAdminMixin, CMSPageAsC
               'battery_type', 'battery_capacity', 'ram_storage', 'wifi_connectivity', 'bluetooth',
               'gps', 'operating_system', ('width', 'height', 'weight'), 'screen_size']
     filter_horizontal = ['cms_pages']
-    inlines = (ProductImageInline, SmartPhoneInline,)
-    prepopulated_fields = {'slug': ('product_name',)}
+    inlines = [ProductImageInline, SmartPhoneInline]
+    prepopulated_fields = {'slug': ['product_name']}
 
     def save_model(self, request, obj, form, change):
         if not change:
@@ -81,7 +81,7 @@ class ProductAdmin(PolymorphicSortableAdminMixin, PolymorphicParentModelAdmin):
     list_display = ['product_name', 'get_price', 'product_type', 'active']
     list_display_links = ['product_name']
     search_fields = ['product_name']
-    list_filter = (PolymorphicChildModelFilter, CMSPageFilter,)
+    list_filter = [PolymorphicChildModelFilter, CMSPageFilter]
     list_per_page = 250
     list_max_show_all = 1000
 

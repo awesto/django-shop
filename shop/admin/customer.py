@@ -15,10 +15,10 @@ from shop.models.customer import CustomerModel, CustomerState
 
 class CustomerInlineAdminBase(admin.StackedInline):
     model = CustomerModel
-    fieldsets = (
-        (None, {'fields': ('get_number',)}),
-    )
-    readonly_fields = ('get_number',)
+    fieldsets = [
+        (None, {'fields': ['get_number']}),
+    ]
+    readonly_fields = ['get_number']
 
     def get_extra(self, request, obj=None, **kwargs):
         return 0 if obj is None else 1
@@ -76,15 +76,15 @@ class CustomerAdminBase(UserAdmin):
     ```
     @admin.register(CustomerProxy)
     class CustomerAdmin(CustomerAdminBase):
-        inlines = (CustomerInlineAdminBase,)
+        inlines = [CustomerInlineAdminBase]
     ```
     """
     form = CustomerChangeForm
     add_form = CustomerCreationForm
-    list_display = ('get_username', 'last_name', 'first_name', 'recognized', 'last_access', 'is_unexpired')
-    segmentation_list_display = ('get_username',)
-    list_filter = UserAdmin.list_filter + (CustomerListFilter,)
-    readonly_fields = ('last_login', 'date_joined', 'last_access', 'recognized')
+    list_display = ['get_username', 'last_name', 'first_name', 'recognized', 'last_access', 'is_unexpired']
+    segmentation_list_display = ['get_username']
+    list_filter = list(UserAdmin.list_filter) + [CustomerListFilter]
+    readonly_fields = ['last_login', 'date_joined', 'last_access', 'recognized']
     ordering = ['id']
 
     #class Media:
@@ -93,8 +93,8 @@ class CustomerAdminBase(UserAdmin):
     def get_fieldsets(self, request, obj=None):
         fieldsets = list(super(CustomerAdminBase, self).get_fieldsets(request, obj=obj))
         if obj:
-            fieldsets[0][1]['fields'] = ('username', 'recognized', 'password',)
-            fieldsets[3][1]['fields'] = ('date_joined', 'last_login', 'last_access',)
+            fieldsets[0][1]['fields'] = ['username', 'recognized', 'password']
+            fieldsets[3][1]['fields'] = ['date_joined', 'last_login', 'last_access']
             if not obj.has_usable_password():
                 fieldsets.pop(2)
         return fieldsets
