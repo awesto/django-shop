@@ -2,8 +2,10 @@
 from __future__ import unicode_literals
 
 from datetime import datetime
+from distutils.version import LooseVersion
 from functools import reduce
 import operator
+from cms import __version__ as CMS_VERSION
 from django.db import models
 from django.utils import six
 from django.utils.encoding import force_text
@@ -198,7 +200,10 @@ class CMSPageReferenceMixin(object):
         """
         # sorting by highest level, so that the canonical URL
         # associates with the most generic category
-        cms_page = self.cms_pages.order_by('depth').last()
+        if LooseVersion(CMS_VERSION) < LooseVersion('3.5'):
+            cms_page = self.cms_pages.order_by('depth').last()
+        else:
+            cms_page = self.cms_pages.order_by('node__path').last()
         if cms_page is None:
             return urljoin('/category-not-assigned/', self.slug)
         return urljoin(cms_page.get_absolute_url(), self.slug)
