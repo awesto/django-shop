@@ -11,6 +11,7 @@
 	{% block shop-order-thead %}
 	<thead>
 		<tr>
+			<th class="text-center">{% trans "Number" %}</th>
 			<th class="text-center">{% trans "Order Date" %}</th>
 			<th class="text-center">{% trans "Sum" %}</th>
 			<th class="text-center">{% trans "Shipping Address" %}</th>
@@ -23,7 +24,8 @@
 	<tbody>
 		{% for order in data.results %}
 		<tr>
-			<td class="text-center text-nowrap"><a href="{{ order.url }}" shop-timestamp="{{ order.created_at }}" time-format="d. MMM yyyy"></a></td>
+			<td class="text-center"><a href="{{ order.url }}">{{ order.number }}</a></td>
+			<td class="text-center text-nowrap" shop-timestamp="{{ order.created_at }}" time-format="d. MMM yyyy"></td>
 			<td class="text-center text-nowrap">{{ order.total }}</td>
 			<td class="text-center">{{ order.shipping_address_text }}</td>
 			<td class="text-right">{{ order.status }}</td>
