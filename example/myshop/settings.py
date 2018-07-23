@@ -295,20 +295,14 @@ if REDIS_HOST:
         'prefix': 'session-{}'.format(SHOP_TUTORIAL),
         'socket_timeout': 1
     }
-    if six.PY3:
-        # Use the latest protocol version (default)                                                                                                                                                           
-        PICKLE_V=-1
-    else:
-        #py2 compatibility                                                                                                                                                                                    
-        PICKLE_V=2
 
     CACHES = {
         'default': {
             'BACKEND': 'redis_cache.RedisCache',
             'LOCATION': 'redis://{}:6379/1'.format(REDIS_HOST),
-             "OPTIONS": {
-                 "PICKLE_VERSION": PICKLE_V,                                                                                                
-	         }
+             'OPTIONS': {
+                 'PICKLE_VERSION': 2 if six.PY2 else -1,
+             }
         },
         'compressor': {
             'BACKEND': 'redis_cache.RedisCache',
