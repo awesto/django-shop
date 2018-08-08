@@ -7,6 +7,9 @@ Changelog for django-SHOP
 0.12.2
 ======
 * Fix #729: Issue with Notification admin transition choices (RETURN_VALUE).
+* Adopted templates to be used by **angular-ui-bootstrap** version 2.5.
+* Compatible with **django-CMS** version 3.5.
+
 
 0.12.1
 ======

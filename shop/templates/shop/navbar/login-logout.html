@@ -10,62 +10,66 @@
 {% page_url 'shop-password-reset' as password_reset_url %}
 {% page_url 'shop-register-customer' as register_customer_url %}
 
-<li class="dropdown {{ dropdown_extra_class }}" uib-dropdown{% if customer.is_anonymous %} auto-close="disabled{# retest with outsideClick #}"{% endif %}>
-	<a class="dropdown-toggle" uib-dropdown-toggle>
+<li uib-dropdown class="dropdown {{ dropdown_extra_class }}"{% if customer.is_anonymous %} auto-close="outsideClick"{% endif %}>
+	<a uib-dropdown-toggle class="dropdown-toggle" role="button" aria-haspopup="true">
 	{% if customer.is_authenticated %}
 		<i class="fa fa-user"></i>&nbsp;{{ customer.first_name|default:customer }}
 	{% else %}
 		<i class="fa fa-sign-in"></i>&nbsp;{% trans "Sign in" %}
 	{% endif %}<b class="caret"></b></a>
-	<ul class="dropdown-menu shop-dropdown-forms">
+	<ul uib-dropdown-menu class="dropdown-menu shop-dropdown-forms" role="menu">
 	{% if customer.is_authenticated %}
-		<li><form name="logout_form" djng-endpoint="{% url 'shop:logout' %}" role="form">
-			<button class="btn btn-primary btn-block" type="button" ng-click="do(create()).then(reloadPage())">
+		<li role="menuitem">
+			<form name="logout_form" djng-endpoint="{% url 'shop:logout' %}" role="form">
+				<button class="btn btn-primary btn-block" type="button" ng-click="do(create()).then(reloadPage())">
 				{% trans "Logout" %}
 				&emsp;<i class="glyphicon glyphicon glyphicon-log-out"></i>
-			</button>
-		</form></li>
+				</button>
+			</form>
+		</li>
 		{% if shop_order_url %}
-		<li><a href="{{ shop_order_url }}">{% page_attribute "menu_title" "shop-order" %}</a></li>
+		<li role="menuitem"><a href="{{ shop_order_url }}">{% page_attribute "menu_title" "shop-order" %}</a></li>
 		{% endif %}
 		{% if customer_details_url %}
-		<li><a href="{{ customer_details_url }}">{% page_attribute "menu_title" "shop-customer-details" %}</a></li>
+		<li role="menuitem"><a href="{{ customer_details_url }}">{% page_attribute "menu_title" "shop-customer-details" %}</a></li>
 		{% endif %}
 		{% if password_change_url %}
-		<li><a href="{{ password_change_url }}">{% page_attribute "menu_title" "shop-password-change" %}</a></li>
+		<li role="menuitem"><a href="{{ password_change_url }}">{% page_attribute "menu_title" "shop-password-change" %}</a></li>
 		{% endif %}
 	{% else %}
-		<li><form name="login_form" djng-endpoint="{% url 'shop:login' %}" accept-charset="UTF-8" role="form">
-			<div class="alert alert-danger" ng-show="rejectMessageIsVisible()" ng-cloak>
-				<a class="close" ng-click="dismissSubmitMessage()">×</a>
-				<p ng-bind="getSubmitMessage()"></p>
-			</div>
-			<div class="form-group form-group-sm">
-				<label class="control-label" for="username">{% trans 'E-Mail' %}</label>
-				<div class="input-group">
-					<div class="input-group-addon"><i class="fa fa-user"></i></div>
-					<input class="form-control input-sm" type="text" placeholder="{% trans 'E-Mail' %}" name="username" ng-model="form_data.username" ng-required="true">
+		<li role="dialog" aria-label="login">
+			<form name="login_form" djng-endpoint="{% url 'shop:login' %}" accept-charset="UTF-8" role="form">
+				<div class="alert alert-danger" ng-show="rejectMessageIsVisible()" ng-cloak>
+					<a class="close" ng-click="dismissSubmitMessage()">×</a>
+					<p ng-bind="getSubmitMessage()"></p>
 				</div>
-			</div>
-			<div class="form-group form-group-sm">
-				<label class="control-label" for="password">{% trans 'Password' %}</label>
-				<div class="input-group">
-					<div class="input-group-addon"><i class="fa fa-unlock-alt"></i></div>
-					<input class="form-control input-sm" type="password" placeholder="{% trans 'Password' %}" name="password" ng-model="form_data.password" ng-required="true">
+				<div class="form-group form-group-sm">
+					<label class="control-label" for="username">{% trans 'E-Mail' %}</label>
+					<div class="input-group">
+						<div class="input-group-addon"><i class="fa fa-user"></i></div>
+						<input class="form-control input-sm" type="text" placeholder="{% trans 'E-Mail' %}" name="username" ng-model="form_data.username" ng-required="true">
+					</div>
 				</div>
-			</div>
-			<button class="btn btn-primary btn-block" type="button" ng-click="do(disable()).then(create()).then(showOK()).then(delay(500)).then(reloadPage()).catch(showFail()).then(delay(500)).finally(restore())" ng-disabled="isDisabled()">
-				{% trans "Login" %}
-				&emsp;<i class="glyphicon glyphicon glyphicon-log-in"></i>
-			</button>
-		</form></li>
+				<div class="form-group form-group-sm">
+					<label class="control-label" for="password">{% trans 'Password' %}</label>
+					<div class="input-group">
+						<div class="input-group-addon"><i class="fa fa-unlock-alt"></i></div>
+						<input class="form-control input-sm" type="password" placeholder="{% trans 'Password' %}" name="password" ng-model="form_data.password" ng-required="true">
+					</div>
+				</div>
+				<button class="btn btn-primary btn-block" type="button" ng-click="do(disable()).then(create()).then(showOK()).then(delay(500)).then(reloadPage()).catch(showFail()).then(delay(500)).finally(restore())" ng-disabled="isDisabled()">
+					{% trans "Login" %}
+					&emsp;<i class="glyphicon glyphicon glyphicon-log-in"></i>
+				</button>
+			</form>
+		</li>
 		{% if password_reset_url or register_customer_url %}
-		<li role="separator" class="divider"></li>
+		<li class="divider" role="separator"></li>
 			{% if password_reset_url %}
-		<li><a href="{{ password_reset_url }}">{% trans "Password Forgotten?" %}</a></li>
+		<li role="menuitem"><a href="{{ password_reset_url }}">{% trans "Password Forgotten?" %}</a></li>
 			{% endif %}
 			{% if register_customer_url %}
-		<li><a href="{{ register_customer_url }}">{% trans "Register Yourself" %}</a></li>
+		<li role="menuitem"><a href="{{ register_customer_url }}">{% trans "Register Yourself" %}</a></li>
 			{% endif %}
 		{% endif %}
 	{% endif %}
