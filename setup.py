@@ -44,7 +44,7 @@ setup(
     install_requires=[
         'Django>=1.10,<2.0',
         'django-post-office>=3.0.0',
-        'django-filer>=1.2.8',
+        'django-filer>=1.3.2',
         'django-ipware>=1.1.1',
         'django-fsm>=2.4.0',
         'django-fsm-admin>=1.2.4',
@@ -54,7 +54,7 @@ setup(
         'django-rest-auth>=0.9.1',
         'django-admin-sortable2>=0.6.19',
         'django-formtools>=1.0',
-        'djangocms-cascade>=0.15.4',
+        'djangocms-cascade>=0.16.2',
         'bs4>=0.0.1',
     ],
     # Note: this requires setuptools >= 18.0.
