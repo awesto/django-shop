@@ -48,7 +48,7 @@ setup(
         'django-ipware>=1.1.1',
         'django-fsm>=2.4.0',
         'django-fsm-admin>=1.2.4',
-        'djangorestframework>=3.6.3',
+        'djangorestframework<3.8',
         'django-angular>=1.1.2',
         'Django-Select2>=5.8.9',
         'django-rest-auth>=0.9.1',
