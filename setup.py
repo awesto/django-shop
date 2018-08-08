@@ -49,7 +49,7 @@ setup(
         'django-fsm>=2.4.0',
         'django-fsm-admin>=1.2.4',
         'djangorestframework<3.8',
-        'django-angular>=1.1.2',
+        'django-angular>=2.0.3',
         'Django-Select2>=5.8.9',
         'django-rest-auth>=0.9.1',
         'django-admin-sortable2>=0.6.19',
