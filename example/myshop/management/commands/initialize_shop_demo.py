@@ -19,7 +19,7 @@ except ImportError:
 
 
 class Command(BaseCommand):
-    version = 13
+    version = 14
     help = _("Initialize the workdir to run the demo of myshop.")
     download_url = 'http://downloads.django-shop.org/django-shop-workdir_{tutorial}-{version}.zip'
     pwd = b'z7xv'
@@ -88,8 +88,8 @@ class Command(BaseCommand):
                 return
 
         extract_to = os.path.join(settings.WORK_DIR, os.pardir)
-        msg = "Downloading workdir and extracting to {}. Please wait ..."
-        self.stdout.write(msg.format(extract_to))
+        msg = "Downloading version {} and extracting to {}. Please wait ..."
+        self.stdout.write(msg.format(self.version, extract_to))
         download_url = self.download_url.format(tutorial=settings.SHOP_TUTORIAL, version=self.version)
         response = requests.get(download_url, stream=True)
         zip_ref = zipfile.ZipFile(StringIO(response.content))
