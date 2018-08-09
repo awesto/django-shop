@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import os
+from distutils.version import LooseVersion
 import requests
 try:
     from StringIO import StringIO
@@ -16,10 +17,11 @@ try:
     import czipfile as zipfile
 except ImportError:
     import zipfile
+from cms import __version__ as CMS_VERSION
 
 
 class Command(BaseCommand):
-    version = 14
+    version = 13 if LooseVersion(CMS_VERSION) < LooseVersion('3.5') else 14
     help = _("Initialize the workdir to run the demo of myshop.")
     download_url = 'http://downloads.django-shop.org/django-shop-workdir_{tutorial}-{version}.zip'
     pwd = b'z7xv'
