@@ -20,7 +20,7 @@ django-rest-auth==0.9.2
 django-sass-processor==0.6
 django-sekizai==0.10.0
 django-treebeard==4.2.0
-djangocms-bootstrap3==0.4
+djangocms-bootstrap3==0.4.2
 djangocms-cascade==0.16.2
 djangocms-text-ckeditor==3.4.0
 djangorestframework==3.7.7
