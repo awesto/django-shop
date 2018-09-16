@@ -9,11 +9,11 @@ from shop.admin.customer import CustomerProxy, CustomerInlineAdminBase, Customer
 
 
 class CustomerInlineAdmin(CustomerInlineAdminBase):
-    fieldsets = (
-        (None, {'fields': ('get_number', 'salutation')}),
-        (_("Addresses"), {'fields': ('get_shipping_addresses', 'get_billing_addresses')})
-    )
-    readonly_fields = ('get_number', 'get_shipping_addresses', 'get_billing_addresses')
+    fieldsets = [
+        (None, {'fields': ['get_number', 'salutation']}),
+        (_("Addresses"), {'fields': ['get_shipping_addresses', 'get_billing_addresses']})
+    ]
+    readonly_fields = ['get_number', 'get_shipping_addresses', 'get_billing_addresses']
 
     def get_number(self, customer):
         return customer.get_number() or '–'

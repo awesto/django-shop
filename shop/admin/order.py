@@ -24,8 +24,8 @@ from shop.serializers.order import OrderDetailSerializer
 class OrderPaymentInline(admin.TabularInline):
     model = OrderPayment
     extra = 0
-    fields = ('amount', 'transaction_id', 'payment_method', 'created_at',)
-    readonly_fields = ('created_at',)
+    fields = ['amount', 'transaction_id', 'payment_method', 'created_at']
+    readonly_fields = ['created_at']
 
     def get_formset(self, request, obj=None, **kwargs):
         """
@@ -43,10 +43,12 @@ class OrderPaymentInline(admin.TabularInline):
 class OrderItemInline(admin.StackedInline):
     model = OrderItemModel
     extra = 0
-    fields = (
-        ('product_code', 'unit_price', 'line_total',), ('quantity',), 'render_as_html_extra',
-    )
-    readonly_fields = ('product_code', 'quantity', 'unit_price', 'line_total', 'render_as_html_extra',)
+    fields = [
+        ('product_code', 'unit_price', 'line_total',),
+        ('quantity',),
+        'render_as_html_extra',
+    ]
+    readonly_fields = ['product_code', 'quantity', 'unit_price', 'line_total', 'render_as_html_extra']
     template = 'shop/admin/edit_inline/stacked-order.html'
 
     def has_add_permission(self, request, obj=None):
@@ -85,17 +87,19 @@ class StatusListFilter(admin.SimpleListFilter):
 
 
 class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
-    list_display = ('get_number', 'customer', 'status_name', 'get_total', 'created_at',)
-    list_filter = (StatusListFilter,)
-    fsm_field = ('status',)
+    list_display = ['get_number', 'customer', 'status_name', 'get_total', 'created_at']
+    list_filter = [StatusListFilter]
+    fsm_field = ['status']
     date_hierarchy = 'created_at'
-    inlines = (OrderItemInline, OrderPaymentInline,)
-    readonly_fields = ('get_number', 'status_name', 'get_total', 'get_subtotal',
+    inlines = [OrderItemInline, OrderPaymentInline]
+    readonly_fields = ['get_number', 'status_name', 'get_total', 'get_subtotal',
                        'get_customer_link', 'get_outstanding_amount', 'created_at', 'updated_at',
-                       'render_as_html_extra', 'stored_request',)
-    fields = ('get_number', 'status_name', ('created_at', 'updated_at'), 'get_customer_link',
-              ('get_subtotal', 'get_total', 'get_outstanding_amount',),
-              'render_as_html_extra', 'stored_request',)
+                       'render_as_html_extra', 'stored_request']
+    fields = ['get_number', 'status_name',
+              ('created_at', 'updated_at'),
+              'get_customer_link',
+              ('get_subtotal', 'get_total', 'get_outstanding_amount'),
+              'render_as_html_extra', 'stored_request']
     actions = None
     change_form_template = 'shop/admin/change_form.html'
 
