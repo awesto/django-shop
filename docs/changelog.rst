@@ -4,6 +4,16 @@
 Changelog for django-SHOP
 =========================
 
+WiP
+===
+* It now is possible to override the forms for selecting the payment-, shipping- and extra annotation using a
+  configuration directive.
+* Prepared for django-CMS version 3.5.
+* Upgrade to angular-ui-bootstrap version 2.5. This requires djangocms-cascade version 0.16.3 and a slight modification
+  of the navbar rendering.
+* Add Order number to Order List View.
+
+
 0.12.2
 ======
 * Fix #729: Issue with Notification admin transition choices (RETURN_VALUE).
