@@ -17,6 +17,9 @@ indent_size = 4
 indent_style = tab
 indent_size = 4
 
+[*.{rst}]
+line_length=119
+
 [*.{json,yml,css}]
 indent_style = space
 indent_size = 2
