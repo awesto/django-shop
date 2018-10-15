@@ -1,6 +1,6 @@
-{% load static sekizai_tags %}{% spaceless %}
+{% load static sass_tags sekizai_tags %}{% spaceless %}
 
-{% addtoblock "css" %}<link href="{% static 'djng/css/styles.css' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+{% addtoblock "css" %}<link href="{% sass_src 'shop/css/djng-forms.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 {% if stylesheet_url %}{% addtoblock "css" %}<link href="{{ stylesheet_url }}" rel="stylesheet" type="text/css" />{% endaddtoblock %}{% endif %}
 
 {% block extra-scripts %}

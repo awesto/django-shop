@@ -1,14 +1,16 @@
-{% load i18n static sekizai_tags %}
+{% load i18n sass_tags sekizai_tags %}
+
+{% addtoblock "css" %}<link href="{% sass_src 'shop/css/tables.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 
 <table class="table table-condensed">
 
 {% block shop-cart-thead %}
 	<thead>
 		<tr>
-			<th class="col-xs-1 text-center">{% trans "Quantity" %}</th>
-			<th class="col-xs-7 text-center">{% trans "Product" %}</th>
-			<th class="col-xs-2 text-right">{% trans "Unit Price" %}</th>
-			<th class="col-xs-2 text-right">{% trans "Total" %}</th>
+			<th class="text-center">{% trans "Quantity" %}</th>
+			<th class="w-50 text-center">{% trans "Product" %}</th>
+			<th class="text-right">{% trans "Unit Price" %}</th>
+			<th class="text-right">{% trans "Total" %}</th>
 		</tr>
 	</thead>
 {% endblock shop-cart-thead %}
@@ -38,10 +40,11 @@
 
 {% block shop-cart-tfoot %}
 	<tfoot>
-		<tr>
-			<td colspan="3" class="text-right"><strong>{% trans "Subtotal" %}</strong></td>
-			<td class="text-right">
-				<strong djng-bind-if="cart.subtotal">{{ cart.subtotal }}</strong>
+		<tr class="font-weight-bold">
+			<td colspan="2"></td>
+			<td class="text-right text-nowrap">{% trans "Subtotal" %}</td>
+			<td class="text-right text-nowrap" djng-bind-if="cart.subtotal">
+				{{ cart.subtotal }}
 			</td>
 		</tr>
 	{% for extra_row in cart.extra_rows %}
@@ -52,13 +55,13 @@
 		<tr ng-cloak ng-if="cart" ng-repeat="extra_row in cart.extra_rows">
 		{% include 'shop/cart/extra-row.html' with ng=1 %}
 		</tr>
-		<tr class="double-border">
+		<tr class="double-border lead font-weight-bold">
 			<td colspan="2" class="no-border"></td>
-			<td class="text-right">
-				<h4><strong>{% trans "Total" %}</strong></h4>
+			<td class="text-right text-nowrap">
+				{% trans "Total" %}
 			</td>
-			<td class="text-right">
-				<h4><strong djng-bind-if="cart.total">{{ cart.total }}</strong></h4>
+			<td class="text-right text-nowrap" djng-bind-if="cart.total">
+				{{ cart.total }}
 			</td>
 		</tr>
 	</tfoot>

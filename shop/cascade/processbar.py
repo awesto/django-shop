@@ -106,10 +106,10 @@ class ProcessNextStepPlugin(BootstrapButtonMixin, ShopPluginBase):
     name = _("Next Step Button")
     parent_classes = ('ProcessStepPlugin',)
     form = ProcessNextStepForm
-    fields = ('link_content', 'glossary')
+    fields = ['link_content', 'glossary']
     ring_plugin = 'ProcessNextStepPlugin'
-    glossary_field_order = ('button_type', 'button_size', 'button_options', 'quick_float',
-                            'icon_align', 'icon_font', 'symbol')
+    glossary_field_order = ['button_type', 'button_size', 'button_options', 'quick_float',
+                            'icon_align', 'icon_font', 'symbol']
 
     class Media:
         css = {'all': ('cascade/css/admin/bootstrap.min.css',

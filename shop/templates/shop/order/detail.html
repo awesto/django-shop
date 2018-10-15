@@ -2,24 +2,21 @@
 {% load i18n %}
 {% load render_plugin from cascade_tags %}
 
+{% block shop-order-title %}
+<h4>{% trans "Order" %} {{ data.number }}
+	<small>{% trans "from" context "order-detail" %} <span shop-timestamp="{{ data.created_at }}"></span></small>
+	<small class="badge badge-secondary pull-right">{% trans "Status" %}: {{ data.status }}</small>
+</h4>
+{% endblock %}
+
 {% block shop-order-table %}
-
-	{% block shop-order-caption %}
-	<caption>
-		<h4>{% trans "Order" %} {{ data.number }}
-			<small>{% trans "from" context "order-detail" %} <span shop-timestamp="{{ data.created_at }}"></span></small>
-			<span class="label label-default pull-right">{% trans "Status" %}: {{ data.status }}</span>
-		</h4>
-	</caption>
-	{% endblock %}
-
 	{% block shop-order-thead %}
 	<thead>
 		<tr>
 			<th class="text-center">{% trans "Quantity" %}</th>
-			<th class="text-center">{% trans "Product" %}</th>
-			<th class="text-right shop-order-price-col">{% trans "Unit Price" %}</th>
-			<th class="text-right shop-order-price-col">{% trans "Total" %}</th>
+			<th class="text-center w-50">{% trans "Product" %}</th>
+			<th class="text-right">{% trans "Unit Price" %}</th>
+			<th class="text-right">{% trans "Total" %}</th>
 		</tr>
 	</thead>
 	{% endblock shop-order-thead %}
@@ -30,8 +27,8 @@
 		<tr>
 			<td class="text-center">{{ item.quantity }}</td>
 			<td rowspan="2">{{ item.summary.media|safe }}</td>
-			<td class="text-right">{{ item.unit_price }}</td>
-			<td class="text-right">{{ item.line_total }}</td>
+			<td class="text-right text-nowrap">{{ item.unit_price }}</td>
+			<td class="text-right text-nowrap">{{ item.line_total }}</td>
 		</tr>
 		<tr class="no-border">
 			<td colspan="3">
@@ -63,14 +60,14 @@
 		</tr>
 		{% endfor %}
 		<tr class="double-border">
-			<td><h4>{% trans "Total" %}</h4></td>
-			<td class="text-right">
+			<td class=" text-nowrap"><h4>{% trans "Total" %}</h4></td>
+			<td class="text-right text-nowrap">
 				<h4>{{ data.total }}</h4>
 			</td>
 		</tr>
 		<tr>
-			<td><h5>{% trans "Thereof Paid" %}</h5></td>
-			<td class="text-right">
+			<td class="text-nowrap"><h5>{% trans "Thereof Paid" %}</h5></td>
+			<td class="text-right text-nowrap">
 				<h5>{{ data.amount_paid }}</h5>
 			</td>
 		</tr>

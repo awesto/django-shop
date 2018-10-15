@@ -1,7 +1,7 @@
 //@import "bootstrap/scss/variables";
 
 // configure the font include pathes
-$icon-font-path: unquote(get-setting(NODE_MODULES_URL) + "bootstrap-sass/assets/fonts/bootstrap/");
+// $icon-font-path: unquote(get-setting(NODE_MODULES_URL) + "bootstrap-sass/assets/fonts/bootstrap/");
 $fa-font-path: unquote(get-setting(NODE_MODULES_URL) + "font-awesome/fonts");
 
 $list-group-border: 1px solid red !default;

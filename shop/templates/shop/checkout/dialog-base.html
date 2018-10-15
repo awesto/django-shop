@@ -1,10 +1,13 @@
 {% load static sekizai_tags sass_tags %}{% spaceless %}
 
-{% block extra-styles %}{% endblock %}
+{% block extra-styles %}
+	{% addtoblock "css" %}<link href="{% sass_src 'shop/css/djng-forms.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+{% endblock %}
 
 {% block extra-scripts %}
 	{% addtoblock "js" %}<script src="{% static 'djng/js/django-angular.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 	{% add_data "ng-requires" "djng.forms" %}
+	{% addtoblock "ng-config" %}['djangoFormProvider', function(provider) { provider.setButtonClasses({showOK: 'fa fa-check', showFail: 'fa fa-times', spinner: 'fa fa-spinner fa-spin'}); }]{% endaddtoblock %}
 
 	{% addtoblock "js" %}<script src="{% static 'shop/js/utils.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% endblock %}

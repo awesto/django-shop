@@ -2,20 +2,19 @@
 {% load i18n cms_tags %}
 {% load render_plugin from cascade_tags %}
 
+{% block shop-order-title %}
+<h4>{% page_attribute "page_title" %}</h4>
+{% endblock %}
+
 {% block shop-order-table %}
-
-	{% block shop-order-caption %}
-	<caption><h4>{% page_attribute "page_title" %}</h4></caption>
-	{% endblock %}
-
 	{% block shop-order-thead %}
 	<thead>
 		<tr>
-			<th class="text-center">{% trans "Number" %}</th>
-			<th class="text-center">{% trans "Order Date" %}</th>
-			<th class="text-center">{% trans "Sum" %}</th>
-			<th class="text-center">{% trans "Shipping Address" %}</th>
-			<th class="text-right">{% trans "Status" %}</th>
+			<th class="text-center text-nowrap">{% trans "Number" %}</th>
+			<th class="text-center text-nowrap">{% trans "Order Date" %}</th>
+			<th class="text-center text-nowrap">{% trans "Sum" %}</th>
+			<th class="text-center text-nowrap">{% trans "Shipping Address" %}</th>
+			<th class="text-right text-nowrap">{% trans "Status" %}</th>
 		</tr>
 	</thead>
 	{% endblock shop-order-thead %}
@@ -24,7 +23,7 @@
 	<tbody>
 		{% for order in data.results %}
 		<tr>
-			<td class="text-center"><a href="{{ order.url }}">{{ order.number }}</a></td>
+			<td class="text-center text-nowrap"><a href="{{ order.url }}">{{ order.number }}</a></td>
 			<td class="text-center text-nowrap" shop-timestamp="{{ order.created_at }}" time-format="d. MMM yyyy"></td>
 			<td class="text-center text-nowrap">{{ order.total }}</td>
 			<td class="text-center">{{ order.shipping_address_text }}</td>
@@ -44,7 +43,7 @@
 		{% endif %}
 	{% endblock shop-order-tfoot %}
 
-	{% if instance.left_extension %}<!-- {# DON'T DELETE THIS LINE #}{% render_plugin instance.left_extension %} -->{% endif %}
-	{% if instance.right_extension %}<!-- {# DON'T DELETE THIS LINE #}{% render_plugin instance.right_extension %} -->{% endif %}
+	{% if instance.left_extension %}<!-- {#!!! DON'T DELETE THIS LINE !!!#}{% render_plugin instance.left_extension %} -->{% endif %}
+	{% if instance.right_extension %}<!-- {#!!! DON'T DELETE THIS LINE !!!#}{% render_plugin instance.right_extension %} -->{% endif %}
 
 {% endblock shop-order-table %}

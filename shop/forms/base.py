@@ -76,6 +76,8 @@ class DialogForm(DialogFormMixin, Bootstrap3Form):
     """
     Base class for all dialog forms used with a DialogFormPlugin.
     """
+    label_css_classes = 'control-label font-weight-bold'
+
     plugin_id = fields.CharField(
         widget=widgets.HiddenInput,
         required=False,

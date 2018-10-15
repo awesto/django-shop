@@ -1,7 +1,8 @@
-{% load i18n static cascade_tags sekizai_tags %}
+{% load i18n static cascade_tags sass_tags sekizai_tags %}
 {% load page_url from cms_tags %}
 {% load render_plugin from cascade_tags %}
 
+{% addtoblock "css" %}<link href="{% sass_src 'shop/css/tables.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 
 {% addtoblock "js" %}<script src="{% static 'djng/js/django-angular.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% add_data "ng-requires" "djng.forms" %}
@@ -21,11 +22,11 @@
 {% block shop-cart-thead %}
 	<thead ng-if="cart.num_items>0">
 		<tr>
-			<th class="col-xs-2 col-md-1 text-center">{% trans "Quantity" %}</th>
-			<th class="col-xs-7 text-center">{% trans "Product" %}</th>
-			<th class="col-xs-1 text-right">{% trans "Unit Price" %}</th>
-			<th class="col-xs-1 col-md-2 text-right">{% trans "Total" %}</th>
-			<th class="col-xs-1"></th>
+			<th class="text-center">{% trans "Quantity" %}</th>
+			<th class="w-50 text-center">{% trans "Product" %}</th>
+			<th class="text-right">{% trans "Unit Price" %}</th>
+			<th class="text-right">{% trans "Total" %}</th>
+			<th></th>
 		</tr>
 	</thead>
 	<caption ng-if="cart.num_items==0">{% trans "There are no items in the cart" %}</caption>
@@ -41,22 +42,22 @@
 
 {% block shop-cart-tfoot %}
 	<tfoot ng-show="cart.num_items>0">
-		<tr>
+		<tr class="font-weight-bold">
 			<td colspan="2" rowspan="99">
 				{% if instance.left_extension %}{% render_plugin instance.left_extension %}{% endif %}
 			</td>
-			<td class="text-right"><strong>{% trans "Subtotal" %}</strong></td>
-			<td class="text-right text-nowrap"><strong ng-bind="cart.subtotal"><!-- Subtotal --></strong></td>
+			<td class="text-right text-nowrap">{% trans "Subtotal" %}</td>
+			<td class="text-right text-nowrap" ng-bind="cart.subtotal"><!-- Subtotal --></td>
 			<td></td>
 		</tr>
 		<tr ng-repeat="extra_row in cart.extra_rows">
-			<td class="text-right text-nowrap"><span ng-bind="extra_row.label"></span></td>
-			<td class="text-right text-nowrap"><span ng-bind="extra_row.amount"></span></td>
+			<td class="text-right text-nowrap" ng-bind="extra_row.label"></td>
+			<td class="text-right text-nowrap" ng-bind="extra_row.amount"></td>
 			<td></td>
 		</tr>
-		<tr class="double-border">
-			<td class="text-right"><h4><strong>{% trans "Total" %}</strong></h4></td>
-			<td class="text-right text-nowrap"><h4><strong ng-bind="cart.total"><!-- Total --></strong></h4></td>
+		<tr class="double-border lead font-weight-bold">
+			<td class="text-right text-nowrap">{% trans "Total" %}</td>
+			<td class="text-right text-nowrap" ng-bind="cart.total"><!-- Total --></td>
 			<td></td>
 		</tr>
 		<tr class="no-border">
@@ -85,14 +86,16 @@
 		<div ng-repeat="extra_row in cart_item.extra_rows" ng-bind="extra_row.amount"></div>
 	</td>
 	<td>
-		<button type="button" class="btn btn-xs btn-danger btn-block" ng-click="deleteCartItem(cart_item)">
-			<span class="glyphicon glyphicon-remove-circle"></span>&nbsp;{% trans "Remove" %}
+	{% block shop-cart-item-controls %}
+		<button type="button" class="btn btn-sm btn-danger btn-block" ng-click="deleteCartItem(cart_item)">
+			<span class="fa fa-trash-o"></span>&nbsp;{% trans "Remove" %}
 		</button>
-	{% if shop_watch_list_url %}
-		<button type="button" class="btn btn-xs btn-info btn-block" ng-click="watchCartItem(cart_item)">
-			<span class="glyphicon glyphicon-ok-circle"></span>&nbsp;{% trans "Watch Item" %}
+		{% if shop_watch_list_url %}
+		<button type="button" class="btn btn-sm btn-info btn-block" ng-click="watchCartItem(cart_item)">
+			<span class="fa fa-heart-o"></span>&nbsp;{% trans "Watch Item" %}
 		</button>
-	{% endif %}
+		{% endif %}
+	{% endblock %}
 	</td>
 {% endblock shop-cart-item %}
 </script>

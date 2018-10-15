@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block dialog_form %}
-<form shop-method-form djng-endpoint="{% url 'shop:checkout-upload' %}" name="{{ shipping_method_form.form_name }}" novalidate>
+<form shop-method-form djng-endpoint="{% url 'shop:checkout-upload' %}" name="{{ shipping_method_form.form_name }}" class="mt-3" novalidate>
 {% if shipping_method_form.has_choices %}
 	{{ shipping_method_form.as_div }}
 	{% if show_additional_charge %}
