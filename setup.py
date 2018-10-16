@@ -34,7 +34,7 @@ setup(
     license='BSD License',
     platforms=['OS Independent'],
     classifiers=CLASSIFIERS,
-    packages=find_packages(exclude=['example', 'docs', 'testshop']),
+    packages=find_packages(exclude=['example', 'docs']),
     include_package_data=True,
     zip_safe=False,
     install_requires=[
