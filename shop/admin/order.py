@@ -181,11 +181,11 @@ class PrintOrderAdminMixin(object):
         context = {'request': request, 'render_label': 'print'}
         customer_serializer = app_settings.CUSTOMER_SERIALIZER(order.customer)
         order_serializer = OrderDetailSerializer(order, context=context)
-        content = template.render(RequestContext(request, {
+        content = template.render(context={
             'customer': customer_serializer.data,
             'data': order_serializer.data,
             'order': order,
-        }))
+        }, request=request)
         return HttpResponse(content)
 
     def render_confirmation(self, request, pk=None):
