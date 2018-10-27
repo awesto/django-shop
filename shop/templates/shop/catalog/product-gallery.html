@@ -1,10 +1,8 @@
 {% load i18n static sekizai_tags sass_tags %}
 
-{% addtoblock "css" %}<link href="{% sass_src 'node_modules/angular-bootstrap-plus/src/scrollpanel/scrollpanel.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+{% addtoblock "css" %}<link href="{% sass_src 'shop/css/product-gallery.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 {% addtoblock "js" %}<script src="{% static 'node_modules/angular-bootstrap-plus/src/scrollpanel/scrollpanel.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% add_data "ng-requires" "bs-plus.scrollpanel" %}
-
-{% addtoblock "css" %}<link href="{% sass_src 'shop/css/product-gallery.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 
 <bsp-scrollpanel>
 	<ul>{% for product in products %}

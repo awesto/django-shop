@@ -1,21 +1,54 @@
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+
 bsp-scrollpanel {
+	width: 100%;
+	display: block;
+	position: relative;
+	margin: $spacer 0;
+
 	ul {
-		margin: 0;
-		padding: 5px;
-		display: block;
-		overflow-x: hidden;
+		display: flex;
+		overflow: hidden;
 		list-style-type: none;
-		white-space: nowrap;
-		margin-left: 20px;
 		transition: margin-left 0.5s;
+		padding-inline-start: initial;
 
 		li {
-			display: inline-block;
-			margin: 0 5px 0 0;
-			width: 200px;
-			overflow: auto;
-			white-space: initial;
 			@import "product-figure";
+			&:not(:first-child) {
+				margin-left: $spacer / 2;
+			}
+		}
+	}
+
+	panel-control {
+		width: 5rem;
+		position: absolute;
+		display: flex;
+		top: 0;
+		bottom: 0;
+		cursor: pointer;
+		span {
+			margin: auto;
+		}
+		&.left {
+			left: 0;
+			&:hover {
+				background: linear-gradient(to right, dimgrey, transparent);
+			}
+			span {
+				margin-left: 1rem;
+			}
+		}
+		&.right {
+			right: 0;
+			&:hover {
+				background: linear-gradient(to left, dimgrey, transparent);
+			}
+			span {
+				margin-right: 1rem;
+			}
 		}
 	}
 }
