@@ -10,15 +10,13 @@
 {% block catalog-list %}
 	{% addtoblock "css" %}<link href="{% sass_src 'shop/css/product-list.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 
-	<shop-catalog-list infinite-scroll="{{ infinite_scroll|yesno:'true,false' }}">
-		<div ng-if="catalog.count===undefined">
-		{% for product in data.results %}
-			{% include "shop/catalog/product-list-item.html" with ng=0 %}
-		{% endfor %}
-		</div>
-		<div ng-cloak ng-if="catalog.count>=0">
-			{% include "shop/catalog/product-list-item.html" with ng=1 %}
-		</div>
+	<shop-catalog-list ng-if="catalog.count===undefined">
+	{% for product in data.results %}
+		{% include "shop/catalog/product-list-item.html" with ng=0 %}
+	{% endfor %}
+	</shop-catalog-list>
+	<shop-catalog-list infinite-scroll="{{ infinite_scroll|yesno:'true,false' }}" ng-cloak ng-if="catalog.count>=0">
+		{% include "shop/catalog/product-list-item.html" with ng=1 %}
 	</shop-catalog-list>
 {% endblock catalog-list %}
 
