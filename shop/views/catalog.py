@@ -2,13 +2,16 @@
 from __future__ import unicode_literals
 
 import os
+from distutils.version import LooseVersion
 
 from django.db import models
 from django.http.response import Http404, HttpResponseRedirect
+from django.http.request import QueryDict
 from django.shortcuts import get_object_or_404
 from django.utils.cache import add_never_cache_headers
+from django.utils.encoding import force_str
+from django.utils.six.moves.urllib import parse as urlparse
 from django.utils.translation import get_language_from_request
-from distutils.version import LooseVersion
 
 from rest_framework import generics
 from rest_framework import pagination
@@ -16,6 +19,7 @@ from rest_framework import status
 from rest_framework import views
 from rest_framework.renderers import BrowsableAPIRenderer
 from rest_framework.response import Response
+from rest_framework.utils.urls import replace_query_param
 
 from cms import __version__ as CMS_VERSION
 from cms.views import details
@@ -27,6 +31,56 @@ from shop.rest.money import JSONRenderer
 from shop.rest.renderers import ShopTemplateHTMLRenderer, CMSPageRenderer
 from shop.serializers.bases import ProductSerializer
 from shop.serializers.defaults import AddToCartSerializer
+
+
+class ProductListPagination(pagination.LimitOffsetPagination):
+    """
+    If the catalog's list is rendered with manual pagination, typically we want to render all rows
+    without "widow" items (widows are single items spawning a new row). By using a limit of 16
+    items per page, we can render 2 and 4 columns without problem, however whenever we need 3 or 5
+    columns, there is one widow item, which breaks the layout. To prevent this problem, configure
+    the ``ProductListView`` to use this pagination class. It behaves so that the last product items
+    of a page, reappear on the next page. The number of reappearing items is set to 3. It can be
+    modified by changing ``overlapping`` to a different value.
+
+    By virtue, the rendering view can not know the current media breakpoint, and hence the number
+    of columns. Therefore simply set ``display: none;`` on potential widow items using the media
+    breakpoints provided by CSS. Since the last product items overlap with the first ones on the
+    next page, no items are hidden. This allows us to switch between layouts with different number
+    of columns, keeping the last row of each page in balance.
+    """
+    template = 'shop/catalog/paginator.html'
+    default_limit = 16
+    overlapping = 3
+
+    def adjust_offset(self, url, page_offset):
+        if url is None:
+            return
+        (scheme, netloc, path, query, fragment) = urlparse.urlsplit(force_str(url))
+        query_dict = QueryDict(query)
+        try:
+            offset = pagination._positive_int(
+                query_dict[self.offset_query_param],
+            )
+        except (KeyError, ValueError):
+            pass
+        else:
+            if offset > page_offset:
+                url = replace_query_param(url, self.offset_query_param, max(0, offset - self.overlapping))
+            elif offset < page_offset:
+                url = replace_query_param(url, self.offset_query_param, offset + self.overlapping)
+        return url
+
+    def get_html_context(self):
+        context = super(ProductListPagination, self).get_html_context()
+        page_offset = self.get_offset(self.request)
+        context['previous_url'] = self.adjust_offset(context['previous_url'], page_offset)
+        context['next_url'] = self.adjust_offset(context['next_url'], page_offset)
+        for k, pl in enumerate(context['page_links']):
+            url = self.adjust_offset(pl.url, page_offset)
+            page_link = pagination.PageLink(url=url, number=pl.number, is_active=pl.is_active, is_break=pl.is_break)
+            context['page_links'][k] = page_link
+        return context
 
 
 class ProductListView(generics.ListAPIView):
@@ -57,6 +111,8 @@ class ProductListView(generics.ListAPIView):
 
     :param filter_class: A filter set which must be inherit from :class:`django_filters.FilterSet`.
 
+    :param pagination_class: A pagination class inheriting from :class:`rest_framework.pagination.BasePagination`.
+
     :param redirect_to_lonely_product: If ``True``, redirect onto a lonely product in the
         catalog. Defaults to ``False``.
     """
@@ -66,6 +122,7 @@ class ProductListView(generics.ListAPIView):
     serializer_class = app_settings.PRODUCT_SUMMARY_SERIALIZER
     limit_choices_to = models.Q()
     filter_class = None
+    pagination_class = ProductListPagination
     redirect_to_lonely_product = False
 
     def get(self, request, *args, **kwargs):
@@ -266,7 +323,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
 
 class OnePageResultsSetPagination(pagination.PageNumberPagination):
     def __init__(self):
-        self.page_size= ProductModel.objects.count()
+        self.page_size = ProductModel.objects.count()
 
 
 class ProductSelectView(generics.ListAPIView):

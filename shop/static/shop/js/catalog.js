@@ -94,20 +94,20 @@ djangoShopModule.directive('shopAddToCart', function() {
 
 djangoShopModule.controller('CatalogListController', ['$log', '$scope', '$http', 'djangoShop',
                                              function($log, $scope, $http, djangoShop) {
-	var self = this, isLoading = false, fetchURL = null;
+	var self = this, fetchURL = null;
 
 	this.loadProducts = function(config) {
-		if (isLoading || fetchURL === null)
+		if ($scope.isLoading || fetchURL === null)
 			return;
-		isLoading = true;
+		$scope.isLoading = true;
 		$http.get(fetchURL, config).then(function(response) {
 			fetchURL = response.data.next;
 			$scope.catalog.count = response.data.count;
 			$scope.catalog.products = $scope.catalog.products.concat(response.data.results);
-			isLoading = false;
 		}).catch(function() {
 			fetchURL = null;
-			isLoading = false;
+		}).finally(function() {
+			$scope.isLoading = false;
 		});
 	};
 
@@ -123,7 +123,7 @@ djangoShopModule.controller('CatalogListController', ['$log', '$scope', '$http',
 	};
 
 	$scope.catalog = {};
-	isLoading = false;
+	$scope.isLoading = false;
 }]);
 
 
@@ -133,7 +133,7 @@ djangoShopModule.controller('CatalogListController', ['$log', '$scope', '$http',
 // end of the listed items.
 djangoShopModule.directive('shopCatalogList', ['$location', '$window', '$timeout', function($location, $window, $timeout) {
 	return {
-		restrict: 'EAC',
+		restrict: 'EA',
 		controller: 'CatalogListController',
 		link: function(scope, element, attrs, controller) {
 			var infiniteScroll = scope.$eval(attrs.infiniteScroll);
