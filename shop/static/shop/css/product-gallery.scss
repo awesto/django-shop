@@ -6,15 +6,17 @@ bsp-scrollpanel {
 	display: block;
 	position: relative;
 	margin: $spacer 0;
+	overflow-x: hidden;
 
 	ul {
 		display: flex;
-		overflow: hidden;
+		flex-wrap: nowrap;
 		list-style-type: none;
 		transition: margin-left 0.5s;
 		padding-inline-start: initial;
 
 		li {
+			flex: 0 0 13rem;
 			@import "product-figure";
 			&:not(:first-child) {
 				margin-left: $spacer / 2;
