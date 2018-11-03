@@ -11,9 +11,9 @@
 	{% include "./form-messages.html" %}
 
 	<div class="form-group has-feedback" style="margin-bottom: 20px">
-		<label class="control-label">{% trans "Your e-mail address" %}</label>
+		<label for="email">{% trans "Your e-mail address" %}</label>
 		<div class="input-group" ng-class="hasError('email')">
-			<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+			<span class="input-group-prepend"><i class="input-group-text fa fa-envelope-o"></i></span>
 			<input type="email" class="form-control" name="email" ng-model="form_data.email" placeholder="{% trans 'Email' %}" ng-required="true" />
 		</div>
 		<ul ng-show="reset_form.email.$dirty && reset_form.email.$touched" class="djng-field-errors" ng-cloak>

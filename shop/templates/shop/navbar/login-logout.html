@@ -47,14 +47,14 @@
 					<p ng-bind="getSubmitMessage()"></p>
 				</div>
 				<div class="form-group">
-					<label class="control-label" for="username">{% trans 'E-Mail' %}</label>
+					<label for="username">{% trans 'E-Mail' %}</label>
 					<div class="input-group input-group-sm">
 						<div class="input-group-prepend"><i class="input-group-text fa fa-user"></i></div>
 						<input class="form-control input-sm" type="text" placeholder="{% trans 'E-Mail' %}" name="username" ng-model="form_data.username" ng-required="true">
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="control-label" for="password">{% trans 'Password' %}</label>
+					<label for="password">{% trans 'Password' %}</label>
 					<div class="input-group input-group-sm">
 						<div class="input-group-prepend"><i class="input-group-text fa fa-unlock-alt"></i></div>
 						<input class="form-control input-sm" type="password" placeholder="{% trans 'Password' %}" name="password" ng-model="form_data.password" ng-required="true">

@@ -10,53 +10,54 @@
 {% page_url "shop-watch-list" as shop_watch_list_url %}{% if not shop_watch_list_url %}{% url "shop-watch-list" as shop_watch_list_url %}{% endif %}
 
 {% block add-product-to-cart-panel %}{% with inline_styles=instance.inline_styles %}
-<div class="panel panel-default"{% if inline_styles %} style="{{ inline_styles }}"{% endif %}>
-	<div class="panel-heading">
-		<h3 class="panel-title">{% trans "Order Product" %}</h3>
+<div class="card"{% if inline_styles %} style="{{ inline_styles }}"{% endif %}>
+	<div class="card-header">
+	{% blocktrans %}Add {{ product_name }} to cart{% endblocktrans %}
 	</div>
+	<div class="card-body p-0">
 	{% block add-product-to-cart-table %}
-	<table shop-add-to-cart="{{ product.get_absolute_url }}/add-to-cart" class="table">
-		<thead>
-			<tr>
-				<th>{% trans "Quantity" %}</th>
-				<th>{% trans "Unit Price" %}</th>
-				<th>{% trans "Subtotal" %}</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td>
-					<div class="form-group">
-						<input class="form-control" type="number" min="1" ng-model="context.quantity" ng-model-options="{{ ADD2CART_NG_MODEL_OPTIONS }}" ng-change="updateContext()" />
-					</div>
-				</td>
-				<td ng-bind="context.unit_price"></td>
-				<td ng-bind="context.subtotal"></td>
-			</tr>
+		<table shop-add-to-cart="{{ product.get_absolute_url }}/add-to-cart" class="table">
+			<thead>
+				<tr>
+					<th>{% trans "Quantity" %}</th>
+					<th>{% trans "Unit Price" %}</th>
+					<th>{% trans "Subtotal" %}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<div class="form-group">
+							<input class="form-control" type="number" min="1" ng-model="context.quantity" ng-model-options="{{ ADD2CART_NG_MODEL_OPTIONS }}" ng-change="updateContext()" />
+						</div>
+					</td>
+					<td ng-bind="context.unit_price"></td>
+					<td ng-bind="context.subtotal"></td>
+				</tr>
 		{% if request.session.is_empty %}{% spaceless %}
-			<tr>
-				<td colspan="3">
+				<tr>
+					<td colspan="3">
 			{% block cookie-disclaimer %}{% blocktrans %}
-				By adding a product to the cart you are giving consent to cookies being used.<br>
-				For technical reasons cookies can not be disabled here.
+						By adding a product to the cart you are giving consent to cookies being used.
 			{% endblocktrans %}{% endblock %}
-				</td>
-			</tr>
+					</td>
+				</tr>
 			{% endspaceless %}{% endif %}
-			<tr>
-				<td></td>
-				<td class="vertical-align-middle">
+				<tr>
+					<td></td>
+					<td class="vertical-align-middle">
 				{% if shop_watch_list_url %}
-					<button class="btn btn-info btn-block btn-xs" ng-click="addToCart('{% url 'shop:watch-list' %}', {watch: true})">{% trans "Watch product" %}</button>
+						<button class="btn btn-info btn-block btn-xs" ng-click="addToCart('{% url 'shop:watch-list' %}', {watch: true})">{% trans "Watch product" %}</button>
 				{% endif %}
-				</td>
-				<td>
-					<button class="btn btn-primary btn-block" ng-click="addToCart('{% url 'shop:cart-list' %}')">{% trans "Add to cart" %}</button>
-				</td>
-			</tr>
-		</tbody>
-	</table>
+					</td>
+					<td>
+						<button class="btn btn-primary btn-block" ng-click="addToCart('{% url 'shop:cart-list' %}')">{% trans "Add to cart" %}</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	{% endblock add-product-to-cart-table %}
+	</div>
 </div>
 {% endwith %}{% endblock add-product-to-cart-panel %}
 

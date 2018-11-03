@@ -27,6 +27,7 @@ bsp-scrollpanel {
 	panel-control {
 		width: 5rem;
 		position: absolute;
+		margin-bottom: 1rem;
 		display: flex;
 		top: 0;
 		bottom: 0;
@@ -36,6 +37,8 @@ bsp-scrollpanel {
 		}
 		&.left {
 			left: 0;
+			border-top-left-radius: $border-radius-sm;
+			border-bottom-left-radius: $border-radius-sm;
 			&:hover {
 				background: linear-gradient(to right, dimgrey, transparent);
 			}
@@ -45,6 +48,8 @@ bsp-scrollpanel {
 		}
 		&.right {
 			right: 0;
+			border-top-right-radius: $border-radius-sm;
+			border-bottom-right-radius: $border-radius-sm;
 			&:hover {
 				background: linear-gradient(to left, dimgrey, transparent);
 			}

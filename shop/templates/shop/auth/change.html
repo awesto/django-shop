@@ -7,10 +7,10 @@
 <form name="{{ form_name }}" djng-endpoint="{% url 'shop:password-change' %}" role="form" novalidate>
 	{% include "./form-messages.html" %}
 
-	<div class="form-group has-feedback" style="margin-bottom: 25px;">
-		<label class="control-label">{% trans "New Password" %}</label>
+	<div class="form-group has-feedback">
+		<label for="new_password1">{% trans "New Password" %}</label>
 		<div class="input-group">
-			<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+			<div class="input-group-prepend"><i class="input-group-text fa fa-key"></i></div>
 			<input type="password" class="form-control" name="new_password1" ng-model="form_data.new_password1" placeholder="{% trans 'New Password' %}" ng-required="true">
 		</div>
 		<ul ng-show="change_form.new_password1.$error.rejected && change_form.new_password1.$pristine" class="shop-form-error" ng-cloak>
@@ -18,10 +18,10 @@
 		</ul>
 	</div>
 
-	<div class="form-group has-feedback" style="margin-bottom: 25px;">
-		<label class="control-label">{% trans "Confirm Password" %}</label>
+	<div class="form-group has-feedback">
+		<label for="new_password2">{% trans "Confirm Password" %}</label>
 		<div class="input-group">
-			<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+			<div class="input-group-prepend"><i class="input-group-text fa fa-key"></i></div>
 			<input type="password" class="form-control" name="new_password2" ng-model="form_data.new_password2" placeholder="{% trans 'Confirm Password' %}" ng-required="true">
 		</div>
 		<ul ng-show="change_form.new_password2.$error.rejected && change_form.new_password2.$pristine" class="shop-form-error" ng-cloak>

@@ -26,7 +26,7 @@
 	{% if billing_address_form.multi_addr %}
 		<input type="hidden" name="siblings_summary" ng-model="billing_address.siblings_summary" ng-init="billing_address.siblings_summary={{ billing_address_form.siblings_summary|rest_json|force_escape }};" />
 		<div class="form-group" ng-show="billing_address.siblings_summary.length>0">
-			<label for="billing_address_active_priority" class="control-label">{% trans "Choose a previously used billing address" %}</label>
+			<label for="billing_address_active_priority">{% trans "Choose a previously used billing address" %}</label>
 			<select id="billing_address_active_priority" class="form-control input-sm" name="active_priority" ng-change="switchSiblingAddress(billing_address.active_priority)" ng-model="billing_address.active_priority">
 				{% verbatim %}
 				<option ng-repeat="addr in billing_address.siblings_summary" value="{{ addr.value }}">{{ addr.label }}</option>

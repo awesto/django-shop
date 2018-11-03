@@ -1,4 +1,5 @@
-{% spaceless %}{% with delay=proceed_delay|default:500 %}
+{% load l10n %}
+{% spaceless %}{% with delay=proceed_delay|default:500 %}{% localize off %}
 {% if proceed_with == 'RELOAD_PAGE' %}
 	do(disable()).then(create()).then(showOK()).then(delay({{ delay }})).then(reloadPage()).catch(showFail()).then(delay({{ delay }})).finally(restore())
 {% elif proceed_with != 'DO_NOTHING' %}
@@ -6,4 +7,4 @@
 {% else %}
 	do(disable()).then(create()).then(showOK()).then(delay({{ delay }})).catch(showFail()).then(delay({{ delay }})).finally(restore())
 {% endif %}
-{% endwith %}{% endspaceless %}
+{% endlocalize %}{% endwith %}{% endspaceless %}
