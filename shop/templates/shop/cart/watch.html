@@ -13,9 +13,9 @@
 {% block shop-watch-thead %}
 	<thead>
 		<tr>
-			<th class="col-xs-10 text-center">{% trans "Product" %}</th>
-			<th class="col-xs-1 text-right">{% trans "Unit Price" %}</th>
-			<th class="col-xs-1"></th>
+			<th class="w-50 text-center">{% trans "Product" %}</th>
+			<th class="text-right">{% trans "Unit Price" %}</th>
+			<th></th>
 		</tr>
 	</thead>
 {% endblock shop-watch-thead %}
@@ -28,9 +28,7 @@
 	</tbody>
 {% endblock shop-watch-tbody %}
 
-{% block shop-watch-tfoot %}
-	<tfoot><tr><td colspan="3"></td></tr></tfoot>
-{% endblock %}
+{% block shop-watch-tfoot %}{% endblock %}
 </script>
 
 <script id="shop/cart-item.html" type="text/ng-template">
@@ -38,15 +36,15 @@
 	<td>
 		<div class="media" ng-bind-html="cart_item.summary.media"><!-- rendered by products/cart-`product`-media.html --></div>
 	</td>
-	<td class="text-center text-nowrap">
-		<strong ng-bind="cart_item.summary.price"></strong>
+	<td class="text-right text-nowrap">
+		<span ng-bind="cart_item.summary.price"></span>
 	</td>
 	<td>
-		<button type="button" class="btn btn-xs btn-info btn-block" ng-click="addCartItem(cart_item)">
-			<span class="glyphicon glyphicon-ok-circle"></span>&nbsp;{% trans "Add to cart" %}
+		<button type="button" class="btn btn-sm btn-secondary btn-block" ng-click="deleteCartItem(cart_item)">
+			<span class="fa fa-trash-o"></span>&nbsp;{% trans "Remove" %}
 		</button>
-		<button type="button" class="btn btn-xs btn-danger btn-block" ng-click="deleteCartItem(cart_item)">
-			<span class="glyphicon glyphicon-remove-circle"></span>&nbsp;{% trans "Remove" %}
+		<button type="button" class="btn btn-sm btn-info btn-block" ng-click="addCartItem(cart_item)">
+			<span class="fa fa-cart-arrow-down"></span>&nbsp;{% trans "Add to cart" %}
 		</button>
 	</td>
 {% endblock shop-watch-item %}
