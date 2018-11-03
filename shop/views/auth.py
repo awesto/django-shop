@@ -180,7 +180,7 @@ class PasswordResetConfirm(GenericAPIView):
         })
 
     def post(self, request, uidb64=None, token=None):
-        data = dict(request.data, uid=uidb64, token=token)
+        data = dict(request.data.get('form_data', {}), uid=uidb64, token=token)
         serializer = self.get_serializer(data=data)
         if not serializer.is_valid():
             return Response(
