@@ -107,7 +107,7 @@ class CartItemSerializer(BaseItemSerializer):
 class WatchItemSerializer(BaseItemSerializer):
     class Meta(BaseItemSerializer.Meta):
         list_serializer_class = WatchListSerializer
-        fields = ['product', 'url', 'summary', 'quantity', 'extra']
+        fields = ['product', 'product_code', 'url', 'summary', 'quantity', 'extra']
 
     def create(self, validated_data):
         cart = CartModel.objects.get_or_create_from_request(self.context['request'])

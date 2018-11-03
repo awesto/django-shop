@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import warnings
+
 from django.db.models.query import QuerySet
 from django.utils.cache import add_never_cache_headers
 
@@ -83,7 +85,7 @@ class CartViewSet(BaseViewSet):
 
     @list_route(methods=['get'])
     def update_caption(self, request):
-        # deprecated
+        warnings.warn("Method `CartViewSet.update_caption` is deprecated.")
         cart = self.get_queryset()
         if cart:
             cart.update(request)
