@@ -6,10 +6,9 @@ from django.forms.fields import CharField
 from django.forms import widgets
 from django.template import engines
 from django.template.loader import select_template
-from django.utils.html import strip_tags, format_html
+from django.utils.html import format_html
 from django.utils.module_loading import import_string
 from django.utils.safestring import mark_safe
-from django.utils.text import Truncator
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 try:
     from html.parser import HTMLParser  # py3
@@ -17,13 +16,10 @@ except ImportError:
     from HTMLParser import HTMLParser  # py2
 from cms.plugin_pool import plugin_pool
 
-from djangocms_text_ckeditor.widgets import TextEditorWidget
-from djangocms_text_ckeditor.utils import plugin_tags_to_user_html
 from djangocms_text_ckeditor.cms_plugins import TextPlugin
 
 from cmsplugin_cascade.fields import GlossaryField
 from cmsplugin_cascade.strides import strides_plugin_map, strides_element_map, TextStridePlugin, TextStrideElement
-from cmsplugin_cascade.link.cms_plugins import TextLinkPlugin
 from cmsplugin_cascade.link.forms import LinkForm, TextLinkFormMixin
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.plugin_base import TransparentContainer
@@ -49,10 +45,10 @@ class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
     This button is used to proceed from one checkout step to the next one.
     """
     name = _("Proceed Button")
-    parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin', 'ValidateSetOfFormsPlugin')
+    parent_classes = ['BootstrapColumnPlugin', 'ProcessStepPlugin', 'ValidateSetOfFormsPlugin']
     model_mixins = (LinkElementMixin,)
     glossary_field_order = ['disable_invalid', 'button_type', 'button_size', 'button_options',
-                            'quick_float', 'icon_align', 'icon_font', 'symbol']
+                            'quick_float', 'icon_align', 'symbol']
     form = ProceedButtonForm
     ring_plugin = 'ProceedButtonPlugin'
 
@@ -60,7 +56,7 @@ class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
         widgets.CheckboxInput(),
         label=_("Disable if invalid"),
         initial=True,
-        help_text=_("Disable button if any form in this set is invalid")
+        help_text=_("Disable button if any form in this set is invalid"),
     )
 
     class Media:
