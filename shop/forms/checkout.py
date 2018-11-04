@@ -297,8 +297,8 @@ class PaymentMethodForm(DialogForm):
         cart.update(request)
         payment_method_form = cls(data=data, cart=cart)
         if payment_method_form.is_valid():
-            cart.extra.update(payment_method_form.cleaned_data,
-                payment_extra_data=data.get('payment_data', {}))
+            payment_data = data.get('payment_data') or {}
+            cart.extra.update(payment_method_form.cleaned_data, payment_extra_data=payment_data)
         return payment_method_form
 
 

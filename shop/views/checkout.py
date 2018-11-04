@@ -7,6 +7,7 @@ from django.utils.module_loading import import_string
 
 from rest_framework import status
 from rest_framework.decorators import list_route
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -118,12 +119,16 @@ class CheckoutViewSet(GenericViewSet):
         cart.save()
 
         response_data = {}
-        # Iterate over the registered modifiers, and search for the active payment service provider
-        for modifier in cart_modifiers_pool.get_payment_modifiers():
-            if modifier.is_active(cart):
-                payment_provider = getattr(modifier, 'payment_provider', None)
-                if payment_provider:
-                    expression = payment_provider.get_payment_request(cart, request)
-                    response_data.update(expression=expression)
-                break
+        try:
+            # Iterate over the registered modifiers, and search for the active payment service provider
+            for modifier in cart_modifiers_pool.get_payment_modifiers():
+                if modifier.is_active(cart):
+                    payment_provider = getattr(modifier, 'payment_provider', None)
+                    if payment_provider:
+                        expression = payment_provider.get_payment_request(cart, request)
+                        response_data.update(expression=expression)
+                    break
+        except ValidationError as err:
+            response_data = {'purchasing_error_message': '. '.join(err.detail)}
+            return Response(data=response_data, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
         return Response(data=response_data)

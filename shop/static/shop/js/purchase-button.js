@@ -20,7 +20,9 @@ module.directive('button', ['$http', '$log', '$q', function($http, $log, $q) {
 						eval(response.data.expression);
 						deferred.resolve(response);
 					}).catch(function(response) {
-						$log.error(response.message);
+						if (response.status >= 400 && response.status <= 499) {
+							scope.purchasingErrorMessage = response.data.purchasing_error_message;
+						}
 						deferred.reject(response);
 					});
 					return deferred.promise;
