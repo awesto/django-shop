@@ -11,13 +11,14 @@
 
 <script id="shop/cart.html" type="text/ng-template">
 {% block shop-watch-thead %}
-	<thead>
+	<thead ng-if="cart.items.length>0">
 		<tr>
 			<th class="w-50 text-center">{% trans "Product" %}</th>
 			<th class="text-right">{% trans "Unit Price" %}</th>
 			<th></th>
 		</tr>
 	</thead>
+	<caption ng-if="cart.items.length===0">{% trans "You are perfectly happy!" %}</caption>
 {% endblock shop-watch-thead %}
 
 {% block shop-watch-tbody %}
