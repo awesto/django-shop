@@ -50,8 +50,8 @@ class AddToCartSerializer(serializers.Serializer):
 
     If a product has variations, which influence the fields in the "Add to Cart" dialog box, then
     this serializer shall be overridden by a customized implementation. Such a customized "*Add to
-    Cart*" serializer the has to be connected to the `AddToCartView`. This usually is achieved in
-    the projects `urls.py` by changing the catalog's routing to:
+    Cart*" serializer has to be connected to the ``AddToCartView``. This usually is achieved in
+    the projects ``urls.py`` by changing the catalog's routing to:
     ```
     urlpatterns = [
         ...
