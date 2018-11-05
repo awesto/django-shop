@@ -23,7 +23,7 @@ from cmsplugin_cascade.strides import strides_plugin_map, strides_element_map, T
 from cmsplugin_cascade.link.forms import LinkForm, TextLinkFormMixin
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.plugin_base import TransparentContainer
-from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
+from cmsplugin_cascade.bootstrap4.buttons import BootstrapButtonMixin
 
 from shop.conf import app_settings
 from shop.models.cart import CartModel
@@ -60,9 +60,7 @@ class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
     )
 
     class Media:
-        css = {'all': ('cascade/css/admin/bootstrap.min.css',
-                       'cascade/css/admin/bootstrap-theme.min.css',
-                       'cascade/css/admin/iconplugin.css',)}
+        css = {'all': ['cascade/css/admin/bootstrap4-buttons.css', 'cascade/css/admin/iconplugin.css']}
         js = ['shop/js/admin/proceedbuttonplugin.js']
 
     def get_render_template(self, context, instance, placeholder):

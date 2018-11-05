@@ -15,7 +15,7 @@ from cmsplugin_cascade.forms import ManageChildrenFormMixin
 from cmsplugin_cascade.fields import GlossaryField
 from cmsplugin_cascade.link.forms import TextLinkFormMixin
 from cmsplugin_cascade.widgets import NumberInputWidget
-from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
+from cmsplugin_cascade.bootstrap4.buttons import BootstrapButtonMixin
 from cmsplugin_cascade.plugin_base import TransparentWrapper, TransparentContainer
 
 from shop.conf import app_settings
@@ -112,9 +112,7 @@ class ProcessNextStepPlugin(BootstrapButtonMixin, ShopPluginBase):
                             'icon_align', 'icon_font', 'symbol']
 
     class Media:
-        css = {'all': ('cascade/css/admin/bootstrap.min.css',
-                       'cascade/css/admin/bootstrap-theme.min.css',
-                       'cascade/css/admin/iconplugin.css',)}
+        css = {'all': ['cascade/css/admin/bootstrap4-buttons.css', 'cascade/css/admin/iconplugin.css']}
         js = ['shop/js/admin/nextstepplugin.js']
 
     @classmethod
