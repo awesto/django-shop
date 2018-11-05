@@ -271,7 +271,7 @@ class DefaultSettings(object):
         checkout view. Override this map, if the Cascade plugins shall use a Form other than the
         ones provided.
         """
-        cascade_forms = {
+        default_cascade_forms = {
             'CustomerForm': 'shop.forms.checkout.CustomerForm',
             'GuestForm': 'shop.forms.checkout.GuestForm',
             'ShippingAddressForm': 'shop.forms.checkout.ShippingAddressForm',
@@ -281,8 +281,7 @@ class DefaultSettings(object):
             'ExtraAnnotationForm': 'shop.forms.checkout.ExtraAnnotationForm',
             'AcceptConditionForm': 'shop.forms.checkout.AcceptConditionForm',
         }
-        cascade_forms.update(self._setting('SHOP_CASCADE_FORMS', {}))
-        return cascade_forms
+        return self._setting('SHOP_CASCADE_FORMS', default_cascade_forms)
 
     def __getattr__(self, key):
         if not key.startswith('SHOP_'):

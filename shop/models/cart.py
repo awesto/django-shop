@@ -206,8 +206,8 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         """
         This should be called after a cart item changed quantity, has been added or removed.
 
-        It will loop on all line items in the cart, and call all the cart modifiers for each item.
-        After doing this, it will compute and update the order's total and subtotal fields, along
+        It will loop over all items in the cart, and call all the configured cart modifiers.
+        After this is done, it will compute and update the order's total and subtotal fields, along
         with any supplement added along the way by modifiers.
 
         Note that theses added fields are not stored - we actually want to

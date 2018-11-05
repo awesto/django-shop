@@ -4,8 +4,8 @@
 Changelog for django-SHOP
 =========================
 
-WiP
-===
+WiP (0.13)
+==========
 * It now is possible to override the forms for selecting the payment-, shipping- and extra annotation using a
   configuration directive.
 * Prepared for django-CMS version 3.5.
