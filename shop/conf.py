@@ -78,13 +78,13 @@ class DefaultSettings(object):
         Depending on the materialized customer model, use this directive to configure the
         customer serializer.
 
-        Defaults to :class:`shop.serializers.defaults.CustomerSerializer`.
+        Defaults to :class:`shop.serializers.defaults.customer.CustomerSerializer`.
         """
         from django.core.exceptions import ImproperlyConfigured
         from django.utils.module_loading import import_string
         from shop.serializers.bases import BaseCustomerSerializer
 
-        s = self._setting('SHOP_CUSTOMER_SERIALIZER', 'shop.serializers.defaults.CustomerSerializer')
+        s = self._setting('SHOP_CUSTOMER_SERIALIZER', 'shop.serializers.defaults.customer.CustomerSerializer')
         CustomerSerializer = import_string(s)
         if not issubclass(CustomerSerializer, BaseCustomerSerializer):
             raise ImproperlyConfigured(
@@ -98,25 +98,18 @@ class DefaultSettings(object):
         This serialized data then is used for Catalog List Views, Cart List Views and Order List
         Views.
 
-        Defaults to a minimalistic Product serializer.
+        Defaults to :class:`shop.serializers.defaults.product_summary.ProductSummarySerializer`.
         """
         from django.core.exceptions import ImproperlyConfigured
         from django.utils.module_loading import import_string
         from shop.serializers.bases import ProductSerializer
 
-        pss = self._setting('SHOP_PRODUCT_SUMMARY_SERIALIZER')
-        if pss:
-            ProductSummarySerializer = import_string(pss)
-            if not issubclass(ProductSummarySerializer, ProductSerializer):
-                raise ImproperlyConfigured(
-                    "Serializer class must inherit from 'ProductSerializer'.")
-        else:
-            class ProductSummarySerializer(ProductSerializer):
-                """
-                Fallback serializer for the summary of our Product model.
-                """
-                class Meta(ProductSerializer.Meta):
-                    fields = ['id', 'product_name', 'product_url', 'product_model', 'price']
+        s = self._setting('SHOP_PRODUCT_SUMMARY_SERIALIZER',
+                          'shop.serializers.defaults.product_summary.ProductSummarySerializer')
+        ProductSummarySerializer = import_string(s)
+        if not issubclass(ProductSummarySerializer, ProductSerializer):
+            msg = "class {} specified in SHOP_PRODUCT_SUMMARY_SERIALIZER must inherit from 'ProductSerializer'."
+            raise ImproperlyConfigured(msg.format(s))
         return ProductSummarySerializer
 
     @property
@@ -130,7 +123,7 @@ class DefaultSettings(object):
         from django.utils.module_loading import import_string
 
         s = self._setting('SHOP_PRODUCT_SELECT_SERIALIZER',
-                          'shop.serializers.defaults.ProductSelectSerializer')
+                          'shop.serializers.defaults.product_select.ProductSelectSerializer')
         ProductSelectSerializer = import_string(s)
         return ProductSelectSerializer
 
@@ -163,7 +156,7 @@ class DefaultSettings(object):
         from shop.serializers.bases import BaseOrderItemSerializer
 
         s = self._setting('SHOP_ORDER_ITEM_SERIALIZER',
-                          'shop.serializers.defaults.OrderItemSerializer')
+                          'shop.serializers.defaults.order_item.OrderItemSerializer')
         OrderItemSerializer = import_string(s)
         if not issubclass(OrderItemSerializer, BaseOrderItemSerializer):
             raise ImproperlyConfigured(
