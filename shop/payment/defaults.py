@@ -18,6 +18,7 @@ class ForwardFundPayment(PaymentProvider):
 
     def get_payment_request(self, cart, request):
         order = OrderModel.objects.create_from_cart(cart, request)
+        assert callable(getattr(order, 'awaiting_payment', None)), "Check SHOP_ORDER_WORKFLOWS settings."
         order.populate_from_cart(cart, request)
         if order.total == 0:
             order.no_payment_required()
