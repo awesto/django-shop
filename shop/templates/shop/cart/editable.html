@@ -74,8 +74,8 @@
 	<td>
 		<input type="number" class="form-control" ng-model="cart_item.quantity" ng-model-options="{{ EDITCART_NG_MODEL_OPTIONS }}" ng-change="updateCartItem(cart_item)" />
 	</td>
-	<td>
-		<div class="media" ng-bind-html="cart_item.summary.media"><!-- rendered by products/cart-`product`-media.html --></div>
+	<td ng-bind-html="cart_item.summary.media">
+		{# rendered by ProductSerializer using template "(myshop|shop)/products/cart-<product_model>-media.html" #}
 	</td>
 	<td class="text-right text-nowrap">
 		<span ng-bind="cart_item.unit_price"></span>

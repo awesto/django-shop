@@ -11,6 +11,7 @@ class ProductSummarySerializer(ProductSerializer):
     In case the Product model is polymorphic, this shall serialize the smallest common denominator
     of all product information.
     """
+    media = serializers.SerializerMethodField(method_name='render_html')
     caption = serializers.SerializerMethodField(help_text="Returns the content from caption field if available")
 
     class Meta(ProductSerializer.Meta):

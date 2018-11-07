@@ -1,0 +1,13 @@
+{# Fallback template if none is found in "myshop/products/order-<product_model>-media.html" #}
+{# It is used to render the figure in each line item when rendering the order detail view #}
+<div class="media">
+	<a href="{{ product.get_absolute_url }}">
+{% block sample-image %}
+		<img width="80" height="80" class="mr-3" src="data:image/svg+xml;utf8,{% include './sample-image.svg' %}" />
+{% endblock %}
+	</a>
+	<div class="media-body">
+		<h5 class="mt-0"><a href="{{ product.get_absolute_url }}">{{ product.product_name }}</a></h5>
+		{{ product.caption|truncatewords_html:30 }}
+	</div>
+</div>
