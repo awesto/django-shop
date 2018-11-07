@@ -40,22 +40,3 @@ class CustomerMiddleware(MiddlewareMixin):
         except (AttributeError, ValueError):
             pass
         return response
-
-
-class MethodOverrideMiddleware(MiddlewareMixin):
-    """
-    TODO: Remove this deprecated class.
-    This middleware is required to emulate methods PUT and DELETE using a HTTP method POST
-    as wrapper. Some misconfigured proxies do not pass these methods properly, hence this
-    workaround is required.
-    """
-    METHOD_OVERRIDE_HEADER = 'HTTP_X_HTTP_METHOD_OVERRIDE'
-
-    def process_view(self, request, callback, callback_args, callback_kwargs):
-        warnings.warn("MethodOverrideMiddleware is deprecated and will be removed.")
-
-        if request.method != 'POST':
-            return
-        if self.METHOD_OVERRIDE_HEADER not in request.META:
-            return
-        request.method = request.META[self.METHOD_OVERRIDE_HEADER]

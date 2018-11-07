@@ -41,8 +41,8 @@ class ShopCatalogPlugin(ShopPluginBase):
         if instance.glossary.get('render_template'):
             templates.append(instance.glossary['render_template'])
         templates.extend([
-            '{}/catalog/product-list.html'.format(app_settings.APP_LABEL),
-            'shop/catalog/product-list.html',
+            '{}/catalog/list.html'.format(app_settings.APP_LABEL),
+            'shop/catalog/list.html',
         ])
         return select_template(templates)
 

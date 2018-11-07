@@ -2,11 +2,11 @@
 from __future__ import unicode_literals
 from django.conf.urls import url
 from shop.forms.auth import RegisterUserForm, ContinueAsGuestForm
-from shop.views.auth import AuthFormsView, LoginView, LogoutView, PasswordChangeView, PasswordResetView
+from shop.views.auth import AuthFormsView, LoginView, LogoutView, PasswordChangeView, PasswordResetRequestView
 
 urlpatterns = [
-    url(r'^password/reset/?$', PasswordResetView.as_view(),
-        name='password-reset'),
+    url(r'^password/reset/?$', PasswordResetRequestView.as_view(),
+        name='password-reset-request'),
     url(r'^login/?$', LoginView.as_view(),
         name='login'),
     url(r'^register/?$', AuthFormsView.as_view(form_class=RegisterUserForm),

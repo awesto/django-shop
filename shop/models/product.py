@@ -77,10 +77,10 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
 
     Some attributes for this class are mandatory. They shall be implemented as property method.
     The following fields MUST be implemented by the inheriting class:
-    `product_name`: Return the pronounced name for this product in its localized language.
+    ``product_name``: Return the pronounced name for this product in its localized language.
 
-    Additionally the inheriting class MUST implement the following methods `get_absolute_url()`
-    and `get_price()`. See below for details.
+    Additionally the inheriting class MUST implement the following methods ``get_absolute_url()``
+    and ``get_price()``. See below for details.
 
     Unless each product variant offers it's own product code, it is strongly recommended to add
     a field ``product_code = models.CharField(_("Product code"), max_length=255, unique=True)``
@@ -165,19 +165,16 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         Checks if the current product is already in the given cart, and if so, returns the
         corresponding cart_item.
 
-        Args:
-            watched (bool): This is used to determine if this check shall only be performed
-                for the watch-list.
+        :param watched (bool): This is used to determine if this check shall only be performed
+            for the watch-list.
 
-            **kwargs: Optionally one may pass arbitrary information about the product being looked
-                 up. This can be used to determine if a product with variations shall be considered
-                 equal to the same cart item, resulting in an increase of it's quantity, or if it
-                 shall be considered as a separate cart item, resulting in the creation of a new
-                 item.
+        :param **kwargs: Optionally one may pass arbitrary information about the product being looked
+            up. This can be used to determine if a product with variations shall be considered
+            equal to the same cart item, resulting in an increase of it's quantity, or if it
+            shall be considered as a separate cart item, resulting in the creation of a new item.
 
-        Returns:
-            The cart_item containing the product considered as equal to the current one, or
-            ``None`` if it is not available.
+        :returns: The cart item (of type CartItem) containing the product considered as equal to the
+            current one, or ``None`` if no product matches in the cart.
         """
         from .cart import CartItemModel
         cart_item_qs = CartItemModel.objects.filter(cart=cart, product=self)
