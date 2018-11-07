@@ -55,7 +55,7 @@ class ProductSerializer(serializers.ModelSerializer):
     def get_availability(self, product):
         return product.get_availability(self.context['request'])
 
-    def render_html(self, product, postfix='media'):
+    def render_html(self, product, postfix):
         """
         Return a HTML snippet containing a rendered summary for the given product.
         This HTML snippet typically contains a ``<figure>`` element with a sample image
