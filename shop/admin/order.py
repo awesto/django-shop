@@ -98,7 +98,7 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
     fields = ['get_number', 'status_name',
               ('created_at', 'updated_at'),
               'get_customer_link',
-              ('get_subtotal', 'get_total', 'get_outstanding_amount'),
+              ('get_subtotal', 'get_total', 'get_outstanding_amount', 'is_fully_paid'),
               'render_as_html_extra', 'stored_request']
     actions = None
     change_form_template = 'shop/admin/change_form.html'
@@ -125,6 +125,11 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
     def get_outstanding_amount(self, obj):
         return str(obj.outstanding_amount)
     get_outstanding_amount.short_description = pgettext_lazy('admin', "Outstanding amount")
+
+    def is_fully_paid(self, obj):
+        return obj.is_fully_paid()
+    is_fully_paid.short_description = pgettext_lazy('admin', "Is fully paid")
+    is_fully_paid.boolean = True
 
     def has_add_permission(self, request):
         return False
