@@ -4,6 +4,7 @@
 {% block extra-styles %}
 	{{ block.super }}
 	{% addtoblock "css" %}<link href="{% sass_src 'shop/css/address.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+	{% addtoblock "css" %}<link href="{% sass_src 'shop/css/fix-checkbox-inline.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 {% endblock %}
 
 {% block extra-scripts %}

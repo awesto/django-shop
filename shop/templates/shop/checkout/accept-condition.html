@@ -1,3 +1,7 @@
+{% load i18n static sass_tags sekizai_tags shop_tags %}
+
+{% addtoblock "css" %}<link href="{% sass_src 'shop/css/fix-checkbox-inline.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+
 <form name="{{ accept_condition_form.form_name }}" novalidate>
 	<div class="djng-line-spreader">
 	{{ accept_condition_form.non_field_errors }}
