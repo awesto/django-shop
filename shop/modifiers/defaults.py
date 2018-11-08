@@ -35,8 +35,10 @@ class WeightedCartModifier(BaseCartModifier):
     If this modifier is used, the classes implementing the product shall override their
     method ``get_weight()``, which must return the weight in kg as Decimal type.
     """
+    initial_weight = Decimal(0.01)  # in kg
+
     def pre_process_cart(self, cart, request):
-        cart.weight = Decimal(0)
+        cart.weight = self.initial_weight
         return super(WeightedCartModifier, self).process_cart(cart, request)
 
     def pre_process_cart_item(self, cart, cart_item, request):
