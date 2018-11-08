@@ -94,7 +94,7 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
     inlines = [OrderItemInline]
     readonly_fields = ['get_number', 'status_name', 'get_total', 'get_subtotal',
                        'get_customer_link', 'get_outstanding_amount', 'created_at', 'updated_at',
-                       'render_as_html_extra', 'stored_request']
+                       'render_as_html_extra', 'stored_request', 'is_fully_paid']
     fields = ['get_number', 'status_name',
               ('created_at', 'updated_at'),
               'get_customer_link',
