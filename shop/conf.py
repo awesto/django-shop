@@ -303,6 +303,6 @@ class DefaultSettings(object):
     def __getattr__(self, key):
         if not key.startswith('SHOP_'):
             key = 'SHOP_' + key
-        return getattr(self, key)
+        return self.__getattribute__(key)
 
 app_settings = DefaultSettings()
