@@ -7,7 +7,6 @@ from django.core.urlresolvers import reverse
 from django.db.models import Sum
 from django.forms import models, widgets, ValidationError
 from django.http import HttpResponse
-from django.template import RequestContext
 from django.template.loader import select_template
 from django.utils import timezone
 from django.utils.html import format_html
