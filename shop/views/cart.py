@@ -54,7 +54,7 @@ class BaseViewSet(viewsets.ModelViewSet):
             'cart_item': item_serializer.data,
             'cart': cart_serializer.data,
         }
-        return Response(response_data)
+        return Response(data=response_data)
 
     def destroy(self, request, *args, **kwargs):
         """
@@ -68,7 +68,7 @@ class BaseViewSet(viewsets.ModelViewSet):
             'cart_item': None,
             'cart': cart_serializer.data,
         }
-        return Response(response_data, status=status.HTTP_204_NO_CONTENT)
+        return Response(data=response_data)
 
     def finalize_response(self, request, response, *args, **kwargs):
         """Set HTTP headers to not cache this view"""
