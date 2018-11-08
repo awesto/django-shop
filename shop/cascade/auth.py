@@ -16,7 +16,7 @@ from .plugin_base import ShopLinkPluginBase, ShopLinkElementMixin
 
 AUTH_FORM_TYPES = [
     ('login', _("Login Form")),
-    ('login-reset', _("Login & Reset Form"), 'login'),
+    ('login-reset-request', _("Login & Reset Request"), 'login'),
     ('logout', _("Logout Form")),
     ('login-logout', _("Shared Login/Logout Form"), 'login'),
     ('password-reset-request', _("Request Password Reset")),

@@ -1,8 +1,8 @@
 {% load i18n %}{% spaceless %}
 {# This template is shared between Django and AngularJS #}
 <figure class="figure">
-	<a href="{{ product.product_url }}">
-		<h5>{{ product.product_name }}</h5>
+	<a {% if ng %}ng-href="{% templatetag openvariable %}product.product_url{% templatetag closevariable %}"{% else %}href="{{ product.product_url }}"{% endif %}>
+		<h5{% if ng %} ng-bind="product.product_name"{% endif %}>{{ product.product_name }}</h5>
 		<div{% if ng %} ng-bind-html="product.media"{% endif %}>{{ product.media }}</div>
 	</a>
 	<figcaption class="figure-caption mt-2">
