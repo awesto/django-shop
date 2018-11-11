@@ -15,6 +15,7 @@ from shop.models.order import OrderModel
 
 class OrderPagination(LimitOffsetPagination):
     default_limit = 25
+    template = 'shop/templatetags/paginator.html'
 
 
 class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin,

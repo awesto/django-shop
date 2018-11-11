@@ -37,7 +37,9 @@
 		{% if paginator.display_page_controls %}
 	<tfoot>
 		<tr>
-			<td colspan="4" class="text-center">{{ paginator.to_html }}</td>
+			<td colspan="5" class="text-center" aria-label="{% trans 'Page navigation' %}">
+				<ul class="pagination justify-content-center">{{ paginator.to_html }}</ul>
+			</td>
 		</tr>
 	</tfoot>
 		{% endif %}

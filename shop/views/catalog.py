@@ -49,7 +49,7 @@ class ProductListPagination(pagination.LimitOffsetPagination):
     next page, no items are hidden. This allows us to switch between layouts with different number
     of columns, keeping the last row of each page in balance.
     """
-    template = 'shop/catalog/paginator.html'
+    template = 'shop/templatetags/paginator.html'
     default_limit = 16
     overlapping = 3
 
