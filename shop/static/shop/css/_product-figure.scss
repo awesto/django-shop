@@ -1,5 +1,5 @@
 
-figure {
+figure.figure {
 	border-width: $border-width;
 	border-color: $border-color;
 	border-style: solid;
@@ -7,7 +7,11 @@ figure {
 	padding: $spacer $spacer 0;
 	width: 100%;
 	height: 100%;
-	a:hover, a:active {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	a, a:hover, a:active {
+		color: $body-color;
 		text-decoration: none;
 	}
 }
