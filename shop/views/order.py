@@ -5,12 +5,16 @@ from django.views.decorators.cache import never_cache
 
 from rest_framework import generics, mixins
 from rest_framework.exceptions import NotFound, PermissionDenied, MethodNotAllowed
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.renderers import BrowsableAPIRenderer
-
 from shop.rest.money import JSONRenderer
 from shop.rest.renderers import CMSPageRenderer
 from shop.serializers.order import OrderListSerializer, OrderDetailSerializer
 from shop.models.order import OrderModel
+
+
+class OrderPagination(LimitOffsetPagination):
+    default_limit = 25
 
 
 class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
@@ -21,6 +25,7 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateM
     renderer_classes = (CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer)
     list_serializer_class = OrderListSerializer
     detail_serializer_class = OrderDetailSerializer
+    pagination_class = OrderPagination
     lookup_field = lookup_url_kwarg = 'slug'
     many = True
     is_last = False
