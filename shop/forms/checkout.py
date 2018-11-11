@@ -2,13 +2,15 @@
 from __future__ import unicode_literals
 
 from django.contrib.auth import get_user_model
-from django.forms import widgets
+from django.contrib.staticfiles.finders import find as find_static_file
+from django.forms import widgets, Media
 from django.forms.utils import ErrorDict
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
 
 from djng.forms import fields
 from djng.styling.bootstrap3.forms import Bootstrap3ModelForm
+from sass_processor.processor import sass_processor
 
 from shop.forms.widgets import CheckboxInput, RadioSelect, Select
 from shop.models.address import ShippingAddressModel, BillingAddressModel
@@ -106,6 +108,13 @@ class AddressForm(DialogModelForm):
             else:  # address_type == billing
                 initial['use_primary_address'] = cart.billing_address is None
         super(AddressForm, self).__init__(initial=initial, instance=instance, *args, **kwargs)
+
+    @property
+    def media(self):
+        scss_file = '{}/css/address.scss'.format(self.get_model()._meta.app_label)
+        if not find_static_file(scss_file):
+            scss_file = 'shop/css/address.scss'
+        return Media(css={'all': [sass_processor(scss_file)]})
 
     @classmethod
     def get_model(cls):
