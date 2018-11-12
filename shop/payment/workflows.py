@@ -106,7 +106,7 @@ class CancelOrderWorkflowMixin(object):
     }
 
     def cancelable(self):
-        return self.status in self.CANCELABLE_SOURCES
+        return super(CancelOrderWorkflowMixin, self).cancelable() or self.status in self.CANCELABLE_SOURCES
 
     @transition(field='status', target=RETURN_VALUE(*TRANSITION_TARGETS.keys()),
                 conditions=[cancelable], custom=dict(admin=True, button_name=_("Cancel Order")))
