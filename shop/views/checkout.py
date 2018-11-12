@@ -16,7 +16,7 @@ from cms.plugin_pool import plugin_pool
 from shop.conf import app_settings
 from shop.models.cart import CartModel
 from shop.serializers.checkout import CheckoutSerializer
-from shop.serializers.cart import CartSummarySerializer
+from shop.serializers.cart import CartSerializer
 from shop.modifiers.pool import cart_modifiers_pool
 
 
@@ -26,7 +26,7 @@ class CheckoutViewSet(GenericViewSet):
     """
     serializer_label = 'checkout'
     serializer_class = CheckoutSerializer
-    cart_serializer_class = CartSummarySerializer
+    cart_serializer_class = CartSerializer
 
     def __init__(self, **kwargs):
         super(CheckoutViewSet, self).__init__(**kwargs)

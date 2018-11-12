@@ -39,6 +39,18 @@ class BaseViewSet(viewsets.ModelViewSet):
             return self.serializer_class(*args, **kwargs)
         return self.item_serializer_class(*args, **kwargs)
 
+    def list(self, request, *args, **kwargs):
+        cart = self.get_queryset()
+        serializer = self.get_serializer(cart, many=True)
+        data = dict(serializer.data)
+        items = self.paginate_queryset(cart.items.all())
+        if items is None:
+            items = cart.items.all()
+        context = self.get_serializer_context()
+        serializer = self.item_serializer_class(items, context=context, label=self.serializer_label, many=True)
+        data['items'] = serializer.data
+        return Response(data)
+
     def update(self, request, *args, **kwargs):
         """
         Handle changing the amount of the cart item referred by its primary key.
