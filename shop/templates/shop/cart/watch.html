@@ -18,7 +18,6 @@
 			<th></th>
 		</tr>
 	</thead>
-	<caption ng-if="cart.items.length===0">{% trans "You are perfectly happy!" %}</caption>
 {% endblock shop-watch-thead %}
 
 {% block shop-watch-tbody %}
@@ -29,7 +28,17 @@
 	</tbody>
 {% endblock shop-watch-tbody %}
 
-{% block shop-watch-tfoot %}{% endblock %}
+{% block shop-watch-tfoot %}
+	<tfoot>
+		<tr>
+			<td colspan="3">
+				<div ng-if="cart.items.length===0" ng-cloak>
+					<div class="text-muted mb-3">{% trans "You are perfectly happy!" %}</div>
+				</div>
+			</td>
+		</tr>
+	</tfoot>
+{% endblock %}
 </script>
 
 <script id="shop/cart-item.html" type="text/ng-template">

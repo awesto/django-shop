@@ -29,7 +29,6 @@
 			<th></th>
 		</tr>
 	</thead>
-	<caption ng-if="cart.num_items==0">{% trans "There are no items in the cart" %}</caption>
 {% endblock shop-cart-thead %}
 
 {% block shop-cart-tbody %}
@@ -41,13 +40,16 @@
 {% endblock shop-cart-tbody %}
 
 {% block shop-cart-tfoot %}
-	<tfoot ng-show="cart.num_items>0">
-		<tr class="font-weight-bold">
+	<tfoot>
+		<tr>
 			<td colspan="2" rowspan="99">
+				<div ng-if="cart.items.length===0" class="text-muted mb-3" ng-cloak>
+					{% trans "There are no items in the cart" %}
+				</div>
 				{% if instance.left_extension %}{% render_plugin instance.left_extension %}{% endif %}
 			</td>
-			<td class="text-right text-nowrap">{% trans "Subtotal" %}</td>
-			<td class="text-right text-nowrap" ng-bind="cart.subtotal"><!-- Subtotal --></td>
+			<td class="text-right text-nowrap font-weight-bold">{% trans "Subtotal" %}</td>
+			<td class="text-right text-nowrap font-weight-bold" ng-bind="cart.subtotal"><!-- Subtotal --></td>
 			<td></td>
 		</tr>
 		<tr ng-repeat="extra_row in cart.extra_rows">
@@ -55,9 +57,9 @@
 			<td class="text-right text-nowrap" ng-bind="extra_row.amount"></td>
 			<td></td>
 		</tr>
-		<tr class="double-border lead font-weight-bold">
-			<td class="text-right text-nowrap">{% trans "Total" %}</td>
-			<td class="text-right text-nowrap" ng-bind="cart.total"><!-- Total --></td>
+		<tr class="double-border">
+			<td class="text-right text-nowrap lead font-weight-bold">{% trans "Total" %}</td>
+			<td class="text-right text-nowrap lead font-weight-bold" ng-bind="cart.total"><!-- Total --></td>
 			<td></td>
 		</tr>
 		<tr class="no-border">
