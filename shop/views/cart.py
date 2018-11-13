@@ -2,54 +2,44 @@
 from __future__ import unicode_literals
 
 import warnings
-
-from django.db.models.query import QuerySet
 from django.utils.cache import add_never_cache_headers
-
 from rest_framework import status, viewsets
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
-
 from shop.conf import app_settings
 from shop.models.cart import CartModel, CartItemModel
-from shop.serializers.cart import (BaseCartSerializer, CartSerializer, CartItemSerializer,
-                                   WatchSerializer, WatchItemSerializer)
+from shop.serializers.cart import CartSerializer, CartItemSerializer, WatchSerializer, WatchItemSerializer
 
 
 class BaseViewSet(viewsets.ModelViewSet):
+    pagination_class = None
+
     def get_queryset(self):
         try:
             cart = CartModel.objects.get_from_request(self.request)
             if self.kwargs.get(self.lookup_field):
                 # we're interest only into a certain cart item
                 return CartItemModel.objects.filter(cart=cart)
-            # otherwise the CartSerializer will show its detail view and list all its cart items
             return cart
         except CartModel.DoesNotExist:
             return CartModel()
 
-    def paginate_queryset(self, queryset):
-        if isinstance(queryset, QuerySet):
-            return super(BaseViewSet, self).paginate_queryset(queryset)
-
-    def get_serializer(self, *args, **kwargs):
-        kwargs.update(context=self.get_serializer_context(), label=self.serializer_label)
-        many = kwargs.pop('many', False)
-        if many or self.item_serializer_class is None:
-            return self.serializer_class(*args, **kwargs)
-        return self.item_serializer_class(*args, **kwargs)
-
     def list(self, request, *args, **kwargs):
         cart = self.get_queryset()
-        serializer = self.get_serializer(cart, many=True)
-        data = dict(serializer.data)
-        items = self.paginate_queryset(cart.items.all())
-        if items is None:
-            items = cart.items.all()
         context = self.get_serializer_context()
-        serializer = self.item_serializer_class(items, context=context, label=self.serializer_label, many=True)
-        data['items'] = serializer.data
-        return Response(data)
+        serializer = self.serializer_class(cart, context=context, label=self.serializer_label, with_items=True)
+        return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        """
+        Create a new item in the cart.
+        """
+        context = self.get_serializer_context()
+        item_serializer = self.item_serializer_class(context=context, data=request.data, label=self.serializer_label)
+        item_serializer.is_valid(raise_exception=True)
+        self.perform_create(item_serializer)
+        headers = self.get_success_headers(item_serializer.data)
+        return Response(item_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def update(self, request, *args, **kwargs):
         """
@@ -61,7 +51,7 @@ class BaseViewSet(viewsets.ModelViewSet):
                                                      label=self.serializer_label)
         item_serializer.is_valid(raise_exception=True)
         self.perform_update(item_serializer)
-        cart_serializer = BaseCartSerializer(cart_item.cart, context=context, label=self.serializer_label)
+        cart_serializer = CartSerializer(cart_item.cart, context=context, label='cart')
         response_data = {
             'cart_item': item_serializer.data,
             'cart': cart_serializer.data,
@@ -74,7 +64,7 @@ class BaseViewSet(viewsets.ModelViewSet):
         """
         cart_item = self.get_object()
         context = self.get_serializer_context()
-        cart_serializer = BaseCartSerializer(cart_item.cart, context=context, label=self.serializer_label)
+        cart_serializer = CartSerializer(cart_item.cart, context=context, label=self.serializer_label)
         self.perform_destroy(cart_item)
         response_data = {
             'cart_item': None,

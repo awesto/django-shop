@@ -71,8 +71,12 @@ class ShopCartPlugin(LeftRightExtensionMixin, TransparentWrapper, ShopPluginBase
             cart = CartModel.objects.get_from_request(context['request'])
             context['is_cart_filled'] = cart.items.exists()
             render_type = instance.glossary['render_type']
-            if render_type in ('static', 'summary',):
-                # update context for static and summary cart rendering since items are rendered in HTML
+            if render_type == 'static':
+                # update context for static cart with items to be endered as HTML
+                cart_serializer = CartSerializer(cart, context=context, label='cart', with_items=True)
+                context['cart'] = cart_serializer.data
+            elif render_type == 'summary':
+                # update context for cart summary to be endered as HTML
                 cart_serializer = CartSerializer(cart, context=context, label='cart')
                 context['cart'] = cart_serializer.data
         except (KeyError, CartModel.DoesNotExist):
