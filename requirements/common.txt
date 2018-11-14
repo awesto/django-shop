@@ -21,7 +21,7 @@ django-sass-processor==0.7.2
 django-sekizai==0.10.0
 django-treebeard==4.2.0
 djangocms-bootstrap==1.0
-djangocms-cascade==0.17
+djangocms-cascade==0.17.1
 djangocms-text-ckeditor==3.6.0
 djangorestframework==3.7.7
 django-formtools==2.1
