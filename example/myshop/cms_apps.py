@@ -7,7 +7,7 @@ from cms.apphook_pool import apphook_pool
 from cms.cms_menus import SoftRootCutter
 from menus.menu_pool import menu_pool
 
-from shop.cms_apphooks import CatalogListCMSApp, CatalogSearchCMSApp, OrderCMSApp
+from shop.cms_apphooks import CatalogListCMSApp, CatalogSearchCMSApp, OrderApp
 
 
 class CatalogListApp(CatalogListCMSApp):
@@ -37,7 +37,7 @@ class CatalogSearchApp(CatalogSearchCMSApp):
 apphook_pool.register(CatalogSearchApp)
 
 
-class OrderApp(OrderCMSApp):
+class OrderApp(OrderApp):
     pass
 
 apphook_pool.register(OrderApp)
