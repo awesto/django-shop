@@ -6,7 +6,7 @@ from cmsplugin_cascade.bootstrap4.mixins import BootstrapUtilities
 
 
 CASCADE_PLUGINS = getattr(settings, 'SHOP_CASCADE_PLUGINS',
-    ('auth', 'breadcrumb', 'catalog', 'cart', 'checkout', 'extensions', 'order', 'processbar', 'search',))
+    ('auth', 'breadcrumb', 'button', 'catalog', 'cart', 'checkout', 'extensions', 'order', 'processbar', 'search',))
 
 
 def set_defaults(config):
