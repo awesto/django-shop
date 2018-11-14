@@ -3,3 +3,4 @@ $fa-font-path: unquote(get-setting(NODE_MODULES_URL) + "font-awesome/fonts");
 
 // navbar
 $navbar-extra-top-height: 50px;
+@import "font-awesome/scss/font-awesome";
