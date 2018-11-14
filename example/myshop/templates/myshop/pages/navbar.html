@@ -1,22 +1,35 @@
-{% extends "bootstrap/includes/ng-nav-navbar.html" %}
+{% extends "bootstrap4/includes/ng-nav-navbar.html" %}
 {% load static i18n cms_tags menu_tags sekizai_tags sass_tags shop_tags %}
 
 {% page_url 'shop-watch-list' as shop_watch_list_url %}{% if not shop_watch_list_url %}{% url "shop-watch-list" as shop_watch_list_url %}{% endif %}
 
 {% block navbar %}
-	<div class="navbar-extra-top">
+<div class="row w-100 no-gutters">
+	<div class="col w-100 shadow-sm ">
 		<div class="container">
 			<div class="row">
-				<div class="col-xs-12 col-sm-3">
-					<a href="/">
-						<img class="brand-logo" src="{% static 'shop/django-shop-logo.svg' %}" alt="django-SHOP" height="40" />
+				<div class="col-12 col-md-3 align-self-center ">
+					<a class="navbar-brand" href="/">
+						<img alt="django-SHOP" height="40" src="{% static 'shop/django-shop-logo.svg' %}"/>
 					</a>
 				</div>
-				<div class="col-xs-12 col-sm-9">
-					<ul class="nav navbar-nav navbar-right">
-						<li><a href="tel:+12345678900"><i class="fa fa-phone"></i>&nbsp;+1-234-567-8900</a></li>
-						<li><a href="mailto:info@example.com"><i class="fa fa-envelope-o"></i>&nbsp;info@example.com</a></li>
-						{% with dropdown_extra_class="expanded-nav" %}
+				<div class="col-12 col-md-9 align-self-center">
+					<ul class="nav navbar-nav w-100 justify-content-end p-2 bd-highlight ">
+						<li class="nav-item">
+							<a class="nav-link" href="tel:+12345678900 pw-2">
+								<i class="fa fa-phone">
+								</i>
+								+1-234-567-8900
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="mailto:info@example.com">
+								<i class="fa fa-envelope-o">
+								</i>
+								info@example.com
+							</a>
+						</li>
+						{% with dropdown_extra_class="d-none d-md-block d-lg-block nav-link" %}
 						{% language_chooser "shop/navbar/language-chooser.html" %}
 						{% include "shop/navbar/login-logout.html" %}
 						{% endwith %}
@@ -25,16 +38,17 @@
 			</div>
 		</div>
 	</div>
-	{{ block.super }}
-	<div class="container">
-		<div class="form-group visible-xs">
-			{% include "shop/navbar/search-form.html" with search_form_classes="shop-search-form navbar-form" %}
-		</div>
+	<div class="w-100">
 	</div>
+	<div class="col w-100 border">
+		<div class="container menubar">
+			<div class="row">
+					{{ block.super }}
+			</div>
 
 	{% addtoblock "css" %}<link href="{% sass_src 'myshop/css/navbar.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 
-	{% addtoblock "js" %}<script src="{% static 'node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js' %}"></script>{% endaddtoblock %}
+	{% addtoblock "js" %}<script src="{% static 'node_modules/ui-bootstrap4/dist/ui-bootstrap-tpls.js' %}"></script>{% endaddtoblock %}
 	{% add_data "ng-requires" "ui.bootstrap" %}
 
 	{% addtoblock "js" %}<script src="{% static 'myshop/js/navbar.js' %}" type="text/javascript"></script>{% endaddtoblock %}
@@ -43,14 +57,19 @@
 {% endblock navbar %}
 
 {% block navbar-nav %}
-	{{ block.super }}
-	<ul class="nav navbar-nav navbar-right">
-		{% with dropdown_extra_class="collapsed-nav" %}
+{{ block.super }}
+	{% block navbar-brand %}{% endblock %}
+	<ul class="nav navbar-nav ml-auto">
+		{% include "shop/navbar/search-form.html" with search_form_classes="shop-search-form navbar-form navbar-right d-none d-md-block" %}
+		{% with dropdown_extra_class="nav-item d-block  d-md-none" dropdown_toggle_extra_class="nav-link link"%}
 		{% language_chooser "shop/navbar/language-chooser.html" %}
 		{% include "shop/navbar/login-logout.html" %}
 		{% endwith %}
 		{% include "shop/navbar/watch-icon.html" %}
-		<li>{% cart_icon %}</li>
+		<li class="nav-item"> {% cart_icon %}</li>
 	</ul>
-	{% include "shop/navbar/search-form.html" with search_form_classes="shop-search-form navbar-form navbar-right hidden-xs" %}
+	<div class="form-group  d-block pt-2 pb-2 d-md-none">
+		{% include "shop/navbar/search-form.html" with search_form_classes="shop-search-form navbar-form" %}
+	</div>
 {% endblock %}
+

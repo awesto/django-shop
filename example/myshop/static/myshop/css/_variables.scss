@@ -1,15 +1,19 @@
+@import "bootstrap/scss/_functions";
+@import "bootstrap/scss/_variables";
+@import "bootstrap/scss/mixins/_breakpoints.scss";
 @import "shop/css/variables";
 
 // footer
 $body-footer-height: 200px;
-$body-footer-color: $navbar-inverse-color;
-$body-footer-bg: $navbar-inverse-bg;
-$body-footer-border: $navbar-inverse-border;
+$body-footer-color: $yiq-text-light;
+$body-footer-bg: $dark;
+//$body-footer-border: $navbar-inverse-border;
 
-$body-footer-link-color: $navbar-inverse-link-color;
-$body-footer-link-hover-color: $navbar-inverse-link-hover-color;
-$body-footer-link-hover-bg: $navbar-inverse-link-hover-bg;
-$body-footer-link-active-color: $navbar-inverse-link-active-color;
-$body-footer-link-active-bg: $navbar-inverse-link-active-bg;
-$body-footer-link-disabled-color: $navbar-inverse-link-disabled-color;
-$body-footer-link-disabled-bg: $navbar-inverse-link-disabled-bg;
+$body-footer-link-color: $white;
+$body-footer-link-hover-color: darken($body-footer-link-color, 15%) !default;
+
+$body-footer-link-hover-bg: $blue;
+$body-footer-link-active-color: $cyan;
+$body-footer-link-active-bg: $dark;
+$body-footer-link-disabled-color: $nav-link-disabled-color;
+$body-footer-link-disabled-bg: $nav-tabs-link-active-bg;

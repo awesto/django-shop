@@ -21,12 +21,12 @@
 		<div ng-repeat="extra_row in cart_item.extra_rows" ng-bind="extra_row.amount"></div>
 	</td>
 	<td>
-		<button type="button" class="btn btn-xs btn-danger btn-block" ng-click="deleteCartItem(cart_item)">
-			<span class="glyphicon glyphicon-remove-circle"></span>&nbsp;{% trans "Remove" %}
+		<button type="button" class="btn btn-sm btn-danger btn-block" ng-click="deleteCartItem(cart_item)">
+			<span class="fa fa-times-circle"></span>&nbsp;{% trans "Remove" %}
 		</button>
 	{% if shop_watch_list_url %}
-		<button type="button" class="btn btn-xs btn-info btn-block" ng-click="watchCartItem(cart_item)">
-			<span class="glyphicon glyphicon-ok-circle"></span>&nbsp;{% trans "Watch Item" %}
+		<button type="button" class="btn btn-sm btn-info btn-block" ng-click="watchCartItem(cart_item)">
+			<span class="fa fa-check-circle"></span>&nbsp;{% trans "Watch Item" %}
 		</button>
 	{% endif %}
 	</td>
