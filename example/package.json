@@ -37,7 +37,6 @@
     "picturefill": "~3.0.2",
     "postcss": "^6.0.17",
     "postcss-cli": "^5.0.0",
-    "popper.js": "^1.12.9",
     "select2": "~4.0.3"
   }
 }
