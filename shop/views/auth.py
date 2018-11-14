@@ -163,6 +163,7 @@ class PasswordResetConfirmView(GenericAPIView):
     permission_classes = (AllowAny,)
     token_generator = default_token_generator
     form_name = 'password_reset_confirm_form'
+    template_name=None
 
     def get(self, request, uidb64=None, token=None):
         data = {'uid': uidb64, 'token': token}
