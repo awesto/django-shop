@@ -4,8 +4,10 @@
 {% addtoblock "js" %}<script src="{% static 'shop/js/carticon-caption.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% add_data "ng-requires" "django.shop.carticon_caption" %}
 
+{% if cart.num_items %}
 {% page_url 'shop-cart' as shop_cart_url %}
 {% page_attribute 'menu_title' 'shop-cart' as tooltip %}
+{% endif %}
 
 <a class="nav-link py-0 pl-lg-3 pr-0"{% if shop_cart_url %} href="{{ shop_cart_url }}" title="{{ tooltip }}"{% endif %}>
 {% block carticon %}
