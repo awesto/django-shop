@@ -176,7 +176,8 @@ class DeliveryOrderAdminMixin(object):
             url(r'^(?P<delivery_pk>\d+)/print_delivery_note/$',
                 self.admin_site.admin_view(self.render_delivery_note),
                 name='print_delivery_note'),
-        ] + super(DeliveryOrderAdminMixin, self).get_urls()
+        ]
+        my_urls.extend(super(DeliveryOrderAdminMixin, self).get_urls())
         return my_urls
 
     def render_delivery_note(self, request, delivery_pk=None):

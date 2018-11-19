@@ -189,7 +189,8 @@ class PrintOrderAdminMixin(object):
                 name='print_confirmation'),
             url(r'^(?P<pk>\d+)/print_invoice/$', self.admin_site.admin_view(self.render_invoice),
                 name='print_invoice'),
-        ] + super(PrintOrderAdminMixin, self).get_urls()
+        ]
+        my_urls.extend(super(PrintOrderAdminMixin, self).get_urls())
         return my_urls
 
     def _render_letter(self, request, pk, template):
