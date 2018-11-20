@@ -8,9 +8,12 @@ from cms.models.pagemodel import Page
 from rest_framework.serializers import CharField
 from rest_auth import serializers
 from shop.conf import app_settings
+from shop.forms.auth import PasswordResetRequestForm
 
 
 class PasswordResetRequestSerializer(serializers.PasswordResetSerializer):
+    password_reset_form_class = PasswordResetRequestForm
+
     def save(self):
         subject_template = select_template([
             '{}/email/password-reset-subject.txt'.format(app_settings.APP_LABEL),

@@ -2,16 +2,17 @@
 from __future__ import unicode_literals
 
 from django.contrib.auth import get_user_model, authenticate, login, password_validation
+from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ValidationError
 from django.forms import widgets, ModelForm
 from django.template.loader import select_template
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
-
 from djng.forms import fields, NgModelFormMixin, NgFormValidationMixin
 from djng.styling.bootstrap3.forms import Bootstrap3ModelForm
-
+from post_office import mail as post_office_mail
+from post_office.models import EmailTemplate
 from shop.conf import app_settings
 from shop.models.customer import CustomerModel
 from .base import UniqueEmailValidationMixin
@@ -130,3 +131,18 @@ class ContinueAsGuestForm(ModelForm):
             password = get_user_model().objects.make_random_password(length=30)
             self.instance.user.set_password(password)
         return super(ContinueAsGuestForm, self).save(commit)
+
+
+class PasswordResetRequestForm(PasswordResetForm):
+    def send_mail(self, subject_template_name, email_template_name,
+                  context, from_email, to_email, html_email_template_name=None):
+        try:
+            email_template = EmailTemplate.objects.get(name='password-reset-inform')
+        except EmailTemplate.DoesNotExist:
+            super(PasswordResetRequestForm, self).send_mail(subject_template_name, email_template_name, context,
+                                                            from_email, to_email, html_email_template_name=None)
+        else:
+            context['user'] = str(context['user'])
+            context['uid'] = context['uid'].decode('utf-8')
+            post_office_mail.send(to_email, template=email_template, context=context, render_on_delivery=True)
+
