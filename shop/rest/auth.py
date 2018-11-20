@@ -7,19 +7,18 @@ from django.utils.translation import get_language_from_request
 from cms.models.pagemodel import Page
 from rest_framework.serializers import CharField
 from rest_auth import serializers
-
 from shop.conf import app_settings
 
 
 class PasswordResetRequestSerializer(serializers.PasswordResetSerializer):
     def save(self):
         subject_template = select_template([
-            '{}/email/reset-password-subject.txt'.format(app_settings.APP_LABEL),
-            'shop/email/reset-password-subject.txt',
+            '{}/email/password-reset-subject.txt'.format(app_settings.APP_LABEL),
+            'shop/email/password-reset-subject.txt',
         ])
         body_template = select_template([
-            '{}/email/reset-password-body.txt'.format(app_settings.APP_LABEL),
-            'shop/email/reset-password-body.txt',
+            '{}/email/password-reset-body.txt'.format(app_settings.APP_LABEL),
+            'shop/email/password-reset-body.txt',
         ])
         try:
             page = Page.objects.select_related('node').get(reverse_id='password-reset-confirm', publisher_is_draft=False)
