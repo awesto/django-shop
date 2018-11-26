@@ -21,7 +21,8 @@ class PaymentModifier(BaseCartModifier):
         """
         Returns true if this payment modifier is active.
         """
-        return cart.extra.get('payment_modifier') == self.identifier
+        assert hasattr(self, 'payment_provider'), "A Payment Modifier requires a Payment Provider"
+        return cart.extra.get('payment_modifier') == self.payment_provider.namespace
 
     def is_disabled(self, cart):
         """
