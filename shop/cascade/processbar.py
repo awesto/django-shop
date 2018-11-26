@@ -108,8 +108,15 @@ class ProcessNextStepPlugin(BootstrapButtonMixin, ShopPluginBase):
     form = ProcessNextStepForm
     fields = ['link_content', 'glossary']
     ring_plugin = 'ProcessNextStepPlugin'
-    glossary_field_order = ['button_type', 'button_size', 'button_options', 'quick_float',
+    glossary_field_order = ['disable_invalid', 'button_type', 'button_size', 'button_options', 'quick_float',
                             'icon_align', 'icon_font', 'symbol']
+
+    disable_invalid = GlossaryField(
+        label=_("Disable if invalid"),
+        widget=widgets.CheckboxInput(),
+        initial='',
+        help_text=_("Disable button if any form in this set is invalid"),
+    )
 
     class Media:
         css = {'all': ['cascade/css/admin/bootstrap4-buttons.css', 'cascade/css/admin/iconplugin.css']}

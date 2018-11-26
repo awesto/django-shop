@@ -55,7 +55,7 @@ class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
     disable_invalid = GlossaryField(
         widgets.CheckboxInput(),
         label=_("Disable if invalid"),
-        initial=True,
+        initial='',
         help_text=_("Disable button if any form in this set is invalid"),
     )
 
