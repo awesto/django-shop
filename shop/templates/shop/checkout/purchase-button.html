@@ -10,8 +10,8 @@
 	<a class="close" ng-click="purchasingErrorMessage=null" uib-tooltip="{% trans 'Dismiss' %}">×</a>{% verbatim %}{{ purchasingErrorMessage }}{% endverbatim %}
 </div>
 
-<button ng-click="do(spinner()).then(prepare()).then(update()).then(purchaseNow('{% url 'shop:checkout-purchase' %}')).finally(restore())"{% if disable_invalid %} ng-disabled="isDisabled()"{% endif %}{% if instance_css_classes %} class="{{ instance_css_classes }}"{% endif %}{% if instance_inline_styles %} style="{{ instance_inline_styles }}"{% endif %}>
 {% with instance_css_classes=instance.css_classes instance_inline_styles=instance.inline_styles disable_invalid=instance.glossary.disable_invalid %}
+<button ng-click="do(spinner()).then(prepare()).then(update()).then(purchaseNow('{% url 'shop:checkout-purchase' %}')).catch(scrollToRejected()).finally(restore())"{% if disable_invalid %} ng-disabled="isDisabled()"{% endif %}{% if instance_css_classes %} class="{{ instance_css_classes }}"{% endif %}{% if instance_inline_styles %} style="{{ instance_inline_styles }}"{% endif %}>
 	{{ icon_left }}{{ instance.content }}{{ icon_right }}
 </button>
 {% endwith %}
