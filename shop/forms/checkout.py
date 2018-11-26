@@ -6,12 +6,8 @@ from django.contrib.staticfiles.finders import find as find_static_file
 from django.forms import widgets, Media
 from django.forms.utils import ErrorDict
 from django.utils.translation import ugettext_lazy as _
-from django.utils.functional import cached_property
-
 from djng.forms import fields
-from djng.styling.bootstrap3.forms import Bootstrap3ModelForm
 from sass_processor.processor import sass_processor
-
 from shop.forms.widgets import CheckboxInput, RadioSelect, Select
 from shop.models.address import ShippingAddressModel, BillingAddressModel
 from shop.models.customer import CustomerModel
@@ -37,6 +33,13 @@ class CustomerForm(DialogModelForm):
         assert instance is not None
         initial.update(dict((f, getattr(instance, f)) for f in self.Meta.custom_fields))
         super(CustomerForm, self).__init__(initial=initial, instance=instance, *args, **kwargs)
+
+    @property
+    def media(self):
+        scss_file = '{}/css/customer.scss'.format(CustomerModel._meta.app_label)
+        if not find_static_file(scss_file):
+            scss_file = 'shop/css/customer.scss'
+        return Media(css={'all': [sass_processor(scss_file)]})
 
     def save(self, commit=True):
         for f in self.Meta.custom_fields:
@@ -94,7 +97,7 @@ class AddressForm(DialogModelForm):
     plugin_fields = ['plugin_id', 'plugin_order', 'use_primary_address']
 
     class Meta:
-        exclude = ('customer', 'priority',)
+        exclude = ['customer', 'priority']
 
     def __init__(self, initial=None, instance=None, cart=None, *args, **kwargs):
         self.cart = cart
@@ -119,14 +122,6 @@ class AddressForm(DialogModelForm):
     @classmethod
     def get_model(cls):
         return cls.Meta.model
-
-    @cached_property
-    def field_css_classes(self):
-        css_classes = {'*': getattr(Bootstrap3ModelForm, 'field_css_classes')}
-        for name, field in self.fields.items():
-            if not field.widget.is_hidden:
-                css_classes[name] = ['has-feedback', 'form-group', 'shop-address-{}'.format(name)]
-        return css_classes
 
     @classmethod
     def form_factory(cls, request, data, cart):

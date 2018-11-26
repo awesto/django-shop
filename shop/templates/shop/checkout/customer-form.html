@@ -1,4 +1,11 @@
 {% extends "shop/checkout/dialog-base.html" %}
+{% load sekizai_tags %}
+
+{% block extra-styles %}
+	{{ block.super }}
+	{% for stylesheet in customer_form.media.render_css %}{% addtoblock "css" %}{{ stylesheet }}{% endaddtoblock %}{% endfor %}
+{% endblock %}
+
 {% block dialog_form %}
 <form name="{{ customer_form.form_name }}" novalidate>
 	<fieldset>
