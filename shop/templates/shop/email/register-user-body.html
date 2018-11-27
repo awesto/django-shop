@@ -5,7 +5,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Password Reset</title>
+	<title>{% trans 'Register User' %}</title>
 	<style type="text/css">
 	</style>
 </head>
@@ -20,12 +20,12 @@
 		</tr>
 		<tr>
 			<td align="left" valign="top">
-				<h3>Password Reset</h3>
-				<p>You're receiving this e-mail because you or someone else has requested a password reset
-					for your user account '{{ user }}' at {{ site_name }}. It can be safely ignored if you did not
-					request a password reset.</p>
-				<p>Please <a href="{{ protocol }}://{{ domain }}{{ password_reset_confirm_url }}{{ uid }}/{{ token }}">
-					reset your password here</a>.</p>
+				<h3>{% trans 'Register User' %}</h3>
+				<p>You're receiving this e-mail because you or someone else has requested an auto-generated password
+					for your newly created user account '{{ user }}' at {{ site_name }}. It can be safely ignored if
+					you did not create this account.</p>
+				<p>In the future, please use username {{ email }} with password {{ password }} to sign
+					into {{ absolute_base_uri }}.</p>
 				<p>Sincerely,<br/>{{ site_name }}</p>
 			</td>
 		</tr>
