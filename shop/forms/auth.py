@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.conf import settings
 from django.contrib.auth import get_user_model, authenticate, login, password_validation
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.sites.shortcuts import get_current_site
@@ -99,17 +100,24 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValid
             'password': password,
             'user': user,
         }
-        subject = select_template([
+        subject_template = select_template([
             '{}/email/register-user-subject.txt'.format(app_settings.APP_LABEL),
             'shop/email/register-user-subject.txt',
-        ]).render(context)
+        ])
         # Email subject *must not* contain newlines
-        subject = ''.join(subject.splitlines())
-        body = select_template([
+        subject = ''.join(subject_template.render(context).splitlines())
+        body_text_template = select_template([
             '{}/email/register-user-body.txt'.format(app_settings.APP_LABEL),
             'shop/email/register-user-body.txt',
-        ]).render(context)
-        user.email_user(subject, body)
+        ])
+        body_html_template = select_template([
+            '{}/email/register-user-body.html'.format(app_settings.APP_LABEL),
+            'shop/email/register-user-body.html',
+        ])
+        message = body_text_template.render(context)
+        html_message = body_html_template.render(context)
+        from_email = getattr(settings, 'DEFAULT_FROM_EMAIL'),
+        user.email_user(subject, message, from_email, html_message=html_message)
 
 
 class ContinueAsGuestForm(ModelForm):
