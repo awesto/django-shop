@@ -28,8 +28,10 @@ def shop_settings(request):
     """
     Add configuration settings to the context to customize the shop's settings in templates
     """
+    from rest_auth.app_settings import LoginSerializer
     return {
         'EDITCART_NG_MODEL_OPTIONS': app_settings.EDITCART_NG_MODEL_OPTIONS,
         'ADD2CART_NG_MODEL_OPTIONS': app_settings.ADD2CART_NG_MODEL_OPTIONS,
+        'ALLOW_SHORT_SESSIONS': 'stay_logged_in' in LoginSerializer().fields,
         'LINK_TO_EMPTY_CART': app_settings.LINK_TO_EMPTY_CART,
     }
