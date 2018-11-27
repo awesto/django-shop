@@ -56,8 +56,7 @@ class PayInAdvanceModifier(PaymentModifier):
     This modifiers has no influence on the cart final. It can be used,
     to enable the customer to pay the products on delivery.
     """
-    identifier = 'pay-in-advance'
     payment_provider = ForwardFundPayment()
 
     def get_choice(self):
-        return (self.identifier, _("Pay in advance"))
+        return (self.payment_provider.namespace, _("Pay in advance"))
