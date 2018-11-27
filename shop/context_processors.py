@@ -24,9 +24,9 @@ def customer(request):
     return context
 
 
-def ng_model_options(request):
+def shop_settings(request):
     """
-    Add ng-model-options to the context, since these settings must be configurable
+    Add configuration settings to the context to customize the shop's settings in templates
     """
     return {
         'EDITCART_NG_MODEL_OPTIONS': app_settings.EDITCART_NG_MODEL_OPTIONS,
