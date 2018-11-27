@@ -123,10 +123,8 @@ class CheckoutViewSet(GenericViewSet):
             # Iterate over the registered modifiers, and search for the active payment service provider
             for modifier in cart_modifiers_pool.get_payment_modifiers():
                 if modifier.is_active(cart):
-                    payment_provider = getattr(modifier, 'payment_provider', None)
-                    if payment_provider:
-                        expression = payment_provider.get_payment_request(cart, request)
-                        response_data.update(expression=expression)
+                    expression = modifier.payment_provider.get_payment_request(cart, request)
+                    response_data.update(expression=expression)
                     break
         except ValidationError as err:
             response_data = {'purchasing_error_message': '. '.join(err.detail)}

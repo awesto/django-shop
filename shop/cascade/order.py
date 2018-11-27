@@ -147,15 +147,15 @@ class ShopOrderAddendumFormPlugin(OrderButtonBase):
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
-            '{}/order/addenum-form.html'.format(app_settings.APP_LABEL),
-            'shop/order/addenum-form.html',
+            '{}/order/addendum-form.html'.format(app_settings.APP_LABEL),
+            'shop/order/addendum-form.html',
         ]
         return select_template(template_names)
 
     def render(self, context, instance, placeholder):
         context = super(ShopOrderAddendumFormPlugin, self).render(context, instance, placeholder)
         context.update({
-            'addenum_form': AddendumForm(),
+            'addendum_form': AddendumForm(),
             'show_history': instance.glossary.get('show_history', True),
         })
         return context

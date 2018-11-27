@@ -59,6 +59,14 @@
 						<input class="form-control input-sm" type="password" placeholder="{% trans 'Password' %}" name="password" ng-model="form_data.password" ng-required="true">
 					</div>
 				</div>
+		{% if ALLOW_SHORT_SESSIONS %}
+				<div class="form-group">
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" name="stay_logged_in" ng-model="form_data.stay_logged_in">
+						<label class="form-check-label" for="stay_logged_in">{% trans 'Stay logged in' %}</label>
+					</div>
+				</div>
+		{% endif %}
 				<button class="btn btn-primary btn-block" type="button" ng-click="do(disable()).then(create()).then(showOK()).then(delay(500)).then(reloadPage()).catch(showFail()).then(delay(500)).finally(restore())" ng-disabled="isDisabled()">
 					{% trans "Login" %}
 					&emsp;<i class="fa fa-sign-in"></i>

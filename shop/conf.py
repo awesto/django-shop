@@ -144,6 +144,14 @@ class DefaultSettings(object):
         return CartIconCaptionSerializer
 
     @property
+    def SHOP_LINK_TO_EMPTY_CART(self):
+        """
+        If ``True`` the link on the cart-icon pointing to the cart is enabled, even if there are no
+        items are in the cart.
+        """
+        return self._setting('SHOP_LINK_TO_EMPTY_CART', True)
+
+    @property
     def SHOP_ORDER_ITEM_SERIALIZER(self):
         """
         Depending on the materialized OrderItem model, use this directive to configure the
