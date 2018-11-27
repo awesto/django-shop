@@ -5,7 +5,7 @@
 {% addtoblock "js" %}<script src="{% static 'shop/js/carticon-caption.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% add_data "ng-requires" "django.shop.carticon_caption" %}
 
-{% if cart.num_items %}
+{% if LINK_TO_EMPTY_CART or cart.num_items %}
 {% page_url 'shop-cart' as shop_cart_url %}
 {% page_attribute 'menu_title' 'shop-cart' as tooltip %}
 {% endif %}
