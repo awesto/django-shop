@@ -77,10 +77,10 @@ class OrderDetailSerializer(OrderListSerializer):
         return order.amount_paid > 0
 
     def update(self, order, validated_data):
-        order.extra.setdefault('addenum', [])
+        order.extra.setdefault('addendum', [])
         if validated_data.get('annotation'):
             timestamp = timezone.now().isoformat()
-            order.extra['addenum'].append((timestamp, validated_data['annotation']))
+            order.extra['addendum'].append((timestamp, validated_data['annotation']))
             order.save()
         if validated_data['reorder'] is True:
             cart = CartModel.objects.get_from_request(self.context['request'])
