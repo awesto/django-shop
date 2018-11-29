@@ -21,7 +21,7 @@ class CartIncludeTaxModifier(BaseCartModifier):
         """
         Add a field on cart.extra_price_fields:
         """
-        amount = cart.subtotal * self.taxes
+        amount = cart.total * self.taxes
         instance = {
             'label': _("plus {}% VAT").format(app_settings.VALUE_ADDED_TAX),
             'amount': amount,
@@ -41,7 +41,7 @@ class CartExcludedTaxModifier(BaseCartModifier):
         """
         Add a field on cart.extra_price_fields:
         """
-        amount = cart.subtotal * self.taxes
+        amount = cart.total * self.taxes
         instance = {
             'label': _("{}% VAT incl.").format(app_settings.VALUE_ADDED_TAX),
             'amount': amount,
