@@ -7,7 +7,6 @@ from django.core.urlresolvers import reverse, NoReverseMatch
 from django.db.models.fields import Field, FieldDoesNotExist
 from django.forms import widgets
 from django.http import HttpResponse
-from django.template import RequestContext
 from django.template.loader import select_template
 from django.utils.html import format_html
 from django.utils.translation import pgettext_lazy
