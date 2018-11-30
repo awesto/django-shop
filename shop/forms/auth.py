@@ -5,15 +5,17 @@ from django.conf import settings
 from django.contrib.auth import get_user_model, authenticate, login, password_validation
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import EmailMultiAlternatives
 from django.core.exceptions import ValidationError
 from django.forms import widgets, ModelForm
-from django.template.loader import select_template
+from django.template.loader import get_template, select_template, render_to_string
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 from djng.forms import fields, NgModelFormMixin, NgFormValidationMixin
 from djng.styling.bootstrap3.forms import Bootstrap3ModelForm
 from post_office import mail as post_office_mail
 from post_office.models import EmailTemplate
+from html_email.template import render_to_string as render_to_string_with_images
 from shop.conf import app_settings
 from shop.models.customer import CustomerModel
 from .base import UniqueEmailValidationMixin
@@ -147,10 +149,20 @@ class PasswordResetRequestForm(PasswordResetForm):
         try:
             email_template = EmailTemplate.objects.get(name='password-reset-inform')
         except EmailTemplate.DoesNotExist:
-            super(PasswordResetRequestForm, self).send_mail(subject_template_name, email_template_name, context,
-                                                            from_email, to_email, html_email_template_name=None)
+            subject = render_to_string(subject_template_name, context)
+            # Email subject *must not* contain newlines
+            subject = ''.join(subject.splitlines())
+            body = render_to_string(email_template_name, context)
+
+            email_message = EmailMultiAlternatives(subject, body, from_email, [to_email])
+            if html_email_template_name:
+                template = get_template(html_email_template_name, using='html_email')
+                html = template.render(context)
+                email_message.attach_alternative(html, 'text/html')
+                email_message.mixed_subtype = 'related'
+                template.attach_images(email_message)
+            email_message.send()
         else:
             context['user'] = str(context['user'])
             context['uid'] = context['uid'].decode('utf-8')
             post_office_mail.send(to_email, template=email_template, context=context, render_on_delivery=True)
-
