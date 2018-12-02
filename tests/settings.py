@@ -73,6 +73,7 @@ MIDDLEWARE_CLASSES = (
 
 INSTALLED_APPS = [
     'django.contrib.auth',
+    'email_auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
@@ -95,11 +96,13 @@ INSTALLED_APPS = [
     'cmsplugin_cascade.icon',
     'cmsplugin_cascade.sharable',
     'cmsplugin_cascade.segmentation',
+    'post_office',
     'html_email',
+    'shop',
     'tests',
 ]
 
-USE_I18N = True
+USE_I18N = False
 
 USE_L10N = True
 
@@ -116,10 +119,14 @@ CMS_TEMPLATES = [
 ]
 
 CMSPLUGIN_CASCADE_PLUGINS = [
-    'cmsplugin_cascade.link',
     'cmsplugin_cascade.bootstrap4',
+    'cmsplugin_cascade.segmentation',
+    'cmsplugin_cascade.generic',
+    'cmsplugin_cascade.icon',
+    'cmsplugin_cascade.leaflet',
+    'cmsplugin_cascade.link',
+    # 'shop.cascade',
 ]
-
 
 CMS_PLACEHOLDER_CONF = {
     'Main Content': {
@@ -160,11 +167,9 @@ SILENCED_SYSTEM_CHECKS = ['2_0.W001']
 
 SHOP_APP_LABEL = 'testshop'
 
-EMAIL_HOST = os.getenv('DJANGO_EMAIL_HOST', 'localhost')
-EMAIL_PORT = os.getenv('DJANGO_EMAIL_PORT', 25)
-EMAIL_HOST_USER = os.getenv('DJANGO_EMAIL_USER', 'no-reply@localhost')
-EMAIL_HOST_PASSWORD = os.getenv('DJANGO_EMAIL_PASSWORD', 'smtp-secret')
-EMAIL_USE_TLS = bool(os.getenv('DJANGO_EMAIL_USE_TLS', '1'))
-DEFAULT_FROM_EMAIL = os.getenv('DJANGO_EMAIL_FROM', 'no-reply@localhost')
-EMAIL_REPLY_TO = os.getenv('DJANGO_EMAIL_REPLY_TO', 'info@localhost')
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+AUTH_USER_MODEL = 'email_auth.User'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]

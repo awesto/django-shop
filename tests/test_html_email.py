@@ -80,7 +80,7 @@ def test_mixed():
 
 def test_image():
     relfilename = 'static/django-shop-logo.png'
-    filename = os.path.join(os.path.dirname(os.path.dirname(__file__)), relfilename)
+    filename = os.path.join(os.path.dirname(__file__), relfilename)
     logo = ImageFile(open(filename, 'rb'), name=relfilename)
     template = get_template('image.html', using='html_email')
     body = template.render({'imgsrc': logo})
