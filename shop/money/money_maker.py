@@ -285,7 +285,7 @@ class MoneyMaker(type):
         else:
             currency_code = currency_code.upper()
         if currency_code not in CURRENCIES:
-            raise ValueError("'{}' is an unknown currency code. Please check shop/money/iso4217.py".format(currency_code))
+            raise TypeError("'{}' is an unknown currency code. Please check shop/money/iso4217.py".format(currency_code))
         name = str('MoneyIn' + currency_code)
         bases = (AbstractMoney,)
         try:
