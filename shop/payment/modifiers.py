@@ -4,13 +4,25 @@ from __future__ import unicode_literals
 from django.utils.translation import ugettext_lazy as _
 
 from shop.modifiers.base import BaseCartModifier
-from shop.payment.providers import ForwardFundPayment
+from shop.payment.providers import PaymentProvider, ForwardFundPayment
 
 
 class PaymentModifier(BaseCartModifier):
     """
     Base class for all payment modifiers.
     """
+    def __init__(self):
+        assert isinstance(getattr(self, 'payment_provider', None), PaymentProvider), \
+            "Each Payment modifier class requires a Payment Provider"
+        super(PaymentModifier, self).__init__()
+
+    @property
+    def identifier(self):
+        """
+        Default identifier for payment providers.
+        """
+        return self.payment_provider.namespace
+
     def get_choice(self):
         """
         Returns the tuple used by the payment forms dialog to display the choice.

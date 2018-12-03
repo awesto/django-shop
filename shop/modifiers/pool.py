@@ -22,6 +22,7 @@ class CartModifiersPool(object):
                     self._modifiers_list.extend([mc() for mc in modifiers_class()])
                 else:
                     self._modifiers_list.append(modifiers_class())
+            # TODO: check for unique identifiers
         return self._modifiers_list
 
     def get_shipping_modifiers(self):

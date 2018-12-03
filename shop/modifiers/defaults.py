@@ -14,6 +14,8 @@ class DefaultCartModifier(BaseCartModifier):
     Since this modifier sets the cart items line total, it must be listed as the first
     entry in `SHOP_CART_MODIFIERS`.
     """
+    identifier = 'default'
+
     def process_cart_item(self, cart_item, request):
         cart_item.unit_price = cart_item.product.get_price(request)
         cart_item.line_total = cart_item.unit_price * cart_item.quantity
@@ -35,6 +37,7 @@ class WeightedCartModifier(BaseCartModifier):
     If this modifier is used, the classes implementing the product shall override their
     method ``get_weight()``, which must return the weight in kg as Decimal type.
     """
+    identifier = 'weights'
     initial_weight = Decimal(0.01)  # in kg
 
     def pre_process_cart(self, cart, request):

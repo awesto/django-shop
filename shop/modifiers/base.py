@@ -29,12 +29,8 @@ class BaseCartModifier(object):
     Each method accepts the HTTP `request` object. It shall be used to let implementations
     determine their prices according to the session, and other request information.
     """
-
-    def __init__(self, identifier=None):
-        """
-        Initialize the modifier with a named identifier. Defaults to its classname.
-        """
-        self.identifier = identifier or getattr(self, 'identifier', self.__class__.__name__.lower())
+    def __init__(self):
+        assert hasattr(self, 'identifier'), "Each Cart modifier class requires a unique identifier"
 
     def arrange_watch_items(self, watch_items, request):
         """
