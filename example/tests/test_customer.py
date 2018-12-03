@@ -9,7 +9,7 @@ from django.db.models.fields import FieldDoesNotExist
 from django.test import TestCase, RequestFactory
 import mock
 from rest_framework.test import APIRequestFactory
-from shop.rest.auth import PasswordResetSerializer
+from shop.rest.auth import PasswordResetRequestSerializer
 from shop.models.defaults.customer import Customer
 from shop.middleware import CustomerMiddleware
 from shop.models.customer import VisitingCustomer, CustomerManager
@@ -229,7 +229,7 @@ class PasswordResetSerializerTest(TestCase):
     def test_save(self):
         data = {'email': 'test@example.org'}
         request = APIRequestFactory().post('/', data)
-        serializer = PasswordResetSerializer(data=data, context={
+        serializer = PasswordResetRequestSerializer(data=data, context={
             'request': request,
         })
         self.assertTrue(serializer.is_valid())
