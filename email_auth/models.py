@@ -26,7 +26,8 @@ class User(AbstractUser):
     """
     Alternative implementation of Django's User model allowing to authenticate against the email
     field in addition to the username field, which remains the primary unique identifier. The
-    email field is only used in addition. It must be unique only for users marked as active.
+    email field is only used in addition. For users marked as active, their email address must
+    be unique. Guests can reuse their email address as often they want.
     """
     objects = UserManager()
 
@@ -62,9 +63,10 @@ class User(AbstractUser):
     def validate_unique(self, exclude=None):
         """
         Since the email address is used as the primary identifier, we must ensure that it is
-        unique. However, this can not be done on the field declaration since is only applies to
-        active users. Inactive users can not login anyway, so we don't need a unique constraint
-        for them.
+        unique. However, since this constraint only applies to active users, it can't be done
+        through a field declaration via a database UNIQUE index.
+
+        Inactive users can't login anyway, so we don't need a unique constraint for them.
         """
         super(User, self).validate_unique(exclude)
         if self.email and get_user_model().objects.exclude(id=self.id).filter(is_active=True,
