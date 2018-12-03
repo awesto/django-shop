@@ -79,15 +79,15 @@ def test_mixed():
 
 
 def test_image():
-    relfilename = 'static/django-shop-logo.png'
+    relfilename = 'testshop/static/django-shop-logo.png'
     filename = os.path.join(os.path.dirname(__file__), relfilename)
     logo = ImageFile(open(filename, 'rb'), name=relfilename)
     template = get_template('image.html', using='html_email')
     body = template.render({'imgsrc': logo})
     assert body == """
 <h3>Testing image attachments</h3>
-<img src="cid:static/django-shop-logo.png" width="200" />
-"""
+<img src="cid:{}" width="200" />
+""".format(relfilename)
     subject = "[django-SHOP unit tests] attached image"
     msg = EmailMultiAlternatives(subject, body, to=['jacob.rief@gmail.com'])
     template.attach_images(msg)

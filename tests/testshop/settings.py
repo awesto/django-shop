@@ -24,7 +24,7 @@ MEDIA_URL = '/media/'
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
     'APP_DIRS': True,
-    'DIRS': ['tests/templates'],
+    'DIRS': [],
     'OPTIONS': {
         'context_processors': [
             'django.contrib.auth.context_processors.auth',
@@ -43,7 +43,7 @@ TEMPLATES = [{
 }, {
     'BACKEND': 'html_email.template.backends.html_email.EmailTemplates',
     'APP_DIRS': True,
-    'DIRS': ['tests/templates'],
+    'DIRS': [],
     'OPTIONS': {
         'context_processors': [
             'django.contrib.auth.context_processors.auth',
@@ -99,7 +99,7 @@ INSTALLED_APPS = [
     'post_office',
     'html_email',
     'shop',
-    'tests',
+    'testshop',
 ]
 
 USE_I18N = False
@@ -163,7 +163,7 @@ CKEDITOR_SETTINGS = {
     'stylesSet': format_lazy('default:{}', reverse_lazy('admin:cascade_texticon_wysiwig_config')),
 }
 
-SILENCED_SYSTEM_CHECKS = ['2_0.W001']
+SILENCED_SYSTEM_CHECKS = ['auth.W004']
 
 SHOP_APP_LABEL = 'testshop'
 

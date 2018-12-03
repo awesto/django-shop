@@ -16,8 +16,9 @@ from rest_framework import serializers
 from shop.money.money_maker import AbstractMoney, MoneyMaker, _make_money
 from shop.money.fields import MoneyField as MoneyDbField
 from shop.rest.money import MoneyField, JSONRenderer
-#from myshop.models.manufacturer import Manufacturer
-#from myshop.models import Commodity
+from tests.testshop.models import Commodity
+
+EUR = MoneyMaker('EUR')
 
 
 def test_is_abstract():
@@ -66,13 +67,11 @@ def test_wrong_currency_raises_assertion_error():
 
 def test_create_instance_from_decimal():
     value = Decimal('1.2')
-    EUR = MoneyMaker('EUR')
     assert issubclass(EUR, Decimal)
     assert isinstance(EUR(value), Decimal)
 
 
 def test_str_with_too_much_precision():
-    EUR = MoneyMaker('EUR')
     value = EUR(1)
     prec = getcontext().prec
     value._cents = Decimal("0." + ("0" * prec))
@@ -81,7 +80,6 @@ def test_str_with_too_much_precision():
 
 
 def test_thousand_separator(settings):
-    EUR = MoneyMaker('EUR')
     value = EUR()
     assert text_type(value) == "€ –"
     value = EUR('999999.99')
@@ -95,7 +93,6 @@ def test_thousand_separator(settings):
     assert text_type(value) == "€ 999999,99"
 
 def test_check_rounding():
-    EUR = MoneyMaker('EUR')
     value = EUR('999999.995')
     assert text_type(value) == "€ 1000000.00"
     value = EUR('-111111.114')
@@ -103,15 +100,13 @@ def test_check_rounding():
 
 
 def test_check_formatting_currency():
-    EUR = MoneyMaker('EUR')
     value = -EUR('111111.11')
     value.MONEY_FORMAT='{minus}{amount} {code}'
     assert text_type(value) == "-111111.11 EUR"
 
 
 def test_reduce():
-    Money = MoneyMaker('EUR')
-    value = Money()
+    value = EUR()
     func, args = value.__reduce__()
     assert func is _make_money
     assert args == ("EUR", "NaN")
@@ -120,7 +115,7 @@ def test_reduce():
 
 
 def test_format():
-    EUR, JPY = MoneyMaker('EUR'), MoneyMaker('JPY')
+    JPY = MoneyMaker('JPY')
     assert format(EUR()) == "€ –"
     assert format(JPY()) == "¥ –"
     assert format(EUR(1.1)) == "€ 1.10"
@@ -128,7 +123,6 @@ def test_format():
 
 
 def test_float_format():
-    EUR = MoneyMaker('EUR')
     d = Decimal(1.99)
     e = EUR(d)
     assert '{}'.format(e) == "€ 1.99"
@@ -234,46 +228,39 @@ def test_float():
 
 
 def test_currency():
-    Money = MoneyMaker('EUR')
-    assert Money.currency == 'EUR'
-    assert Money.subunits == 100
-    Money = MoneyMaker('JPY')
-    assert Money.currency == 'JPY'
-    assert Money.subunits == 1
+    assert EUR.currency == 'EUR'
+    assert EUR.subunits == 100
+    JPY = MoneyMaker('JPY')
+    assert JPY.currency == 'JPY'
+    assert JPY.subunits == 1
 
 
 def test_as_decimal():
-    Money = MoneyMaker()
-    money = Money('1.23')
+    amount = EUR('1.23')
     quantized_decimal = Decimal('1.23').quantize(Decimal('.01'))
-    assert money.as_decimal() == quantized_decimal
+    assert amount.as_decimal() == quantized_decimal
 
 
 def test_as_integer():
-    Money = MoneyMaker()
-    money = Money('1.23')
-    assert money.as_integer() == 123
+    assert EUR('1.23').as_integer() == 123
 
 
 def test_as_bool():
-    Money = MoneyMaker()
-    amount = Money('1.23')
+    amount = EUR('1.23')
     assert bool(amount) is True
-    amount = Money(0)
+    amount = EUR(0)
     assert bool(amount) is False
-    amount = Money()
+    amount = EUR()
     assert bool(amount) is False
 
 
 def test_pickle():
-    Money = MoneyMaker()
-    amount = Money('1.23')
+    amount = EUR('1.23')
     pickled = pickle.dumps(amount)
     assert pickle.loads(pickled) == amount
 
 
 def test_to_python():
-    EUR = MoneyMaker('EUR')
     f = MoneyDbField(currency='EUR', null=True)
     assert f.to_python(3) == EUR('3')
     assert f.to_python('3.14') == EUR('3.14')
@@ -283,7 +270,6 @@ def test_to_python():
 
 
 def test_default():
-    EUR = MoneyMaker('EUR')
     OneEuro = EUR(1)
     f = MoneyDbField(currency='EUR', null=True)
     assert f.get_default() is None
@@ -305,43 +291,29 @@ class MoneyTestSerializer(serializers.Serializer):
 
 
 def test_money_serializer():
-    EUR = MoneyMaker('EUR')
     instance = type(str('TestMoney'), (object,), {'amount': EUR('1.23')})
     serializer = MoneyTestSerializer(instance)
     assert {'amount': '€ 1.23'} == serializer.data
 
 
 def test_json_renderer():
-    EUR = MoneyMaker('EUR')
     renderer = JSONRenderer()
     data = {'amount': EUR('1.23')}
     rendered_json = renderer.render(data, 'application/json')
     assert {'amount': "€ 1.23"} == json.loads(rendered_json.decode('utf-8'))
 
 
-
-
-
-
-# @pytest.mark.django_db
-# def test_field_filter(commodity_factory):
-#     commodity = commodity_factory()
-#     amount = MoneyMaker('EUR')('12.34')
-
-
-#     def test_filter_with_strings(self):
-#         amount = MoneyMaker('EUR')('12.34')
-#         m1 = Manufacturer(name="Rosebutt")
-#         m1.save()
-#         bag = Commodity.objects.create(unit_price=amount, product_code='B', order=1, product_name="Bag",
-#                                        slug='bag', manufacturer=m1, caption="This is a bag")
-#         self.assertEqual(list(Commodity.objects.filter(unit_price='12.34')), [bag])
-#         self.assertEqual(list(Commodity.objects.filter(unit_price='12.35')), [])
-#         self.assertEqual(list(Commodity.objects.filter(unit_price__gt='12.33')), [bag])
-#         self.assertEqual(list(Commodity.objects.filter(unit_price__gt='12.34')), [])
-#         self.assertEqual(list(Commodity.objects.filter(unit_price__gte='12.34')), [bag])
-#         self.assertEqual(list(Commodity.objects.filter(unit_price__lt='12.35')), [bag])
-#         self.assertEqual(list(Commodity.objects.filter(unit_price__lt='12.34')), [])
-#         self.assertEqual(list(Commodity.objects.filter(unit_price__lte='12.34')), [bag])
-
-
+@pytest.mark.django_db
+def test_field_filter(commodity_factory):
+    commodity = commodity_factory(unit_price='12.34')
+    assert list(Commodity.objects.filter(unit_price='12.34')) == [commodity]
+    assert list(Commodity.objects.filter(unit_price=Decimal('12.34'))) == [commodity]
+    assert list(Commodity.objects.filter(unit_price=EUR('12.34'))) == [commodity]
+    assert list(Commodity.objects.filter(unit_price__gt='12.33')) == [commodity]
+    assert list(Commodity.objects.filter(unit_price__gt=EUR('12.33'))) == [commodity]
+    assert list(Commodity.objects.filter(unit_price__gt='12.34')) == []
+    assert list(Commodity.objects.filter(unit_price__gte='12.34')) == [commodity]
+    assert list(Commodity.objects.filter(unit_price__lt='12.35')) == [commodity]
+    assert list(Commodity.objects.filter(unit_price__lt=EUR('12.35'))) == [commodity]
+    assert list(Commodity.objects.filter(unit_price__lt='12.34')) == []
+    assert list(Commodity.objects.filter(unit_price__lte='12.34')) == [commodity]
