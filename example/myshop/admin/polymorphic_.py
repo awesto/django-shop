@@ -13,33 +13,33 @@ from cms.admin.placeholderadmin import PlaceholderAdminMixin, FrontendEditableAd
 from polymorphic.admin import (PolymorphicParentModelAdmin, PolymorphicChildModelAdmin,
                                PolymorphicChildModelFilter)
 
-from shop.admin.product import CMSPageAsCategoryMixin, ProductImageInline, CMSPageFilter
+from shop.admin.product import CMSPageAsCategoryMixin, ProductImageInline, InvalidateProductCacheMixin, CMSPageFilter
 
 from myshop.models import Product, Commodity, SmartCard, SmartPhoneVariant, SmartPhoneModel
 from myshop.models.polymorphic_.smartphone import OperatingSystem
 
 
 @admin.register(Commodity)
-class CommodityAdmin(SortableAdminMixin, FrontendEditableAdminMixin, PlaceholderAdminMixin,
+class CommodityAdmin(InvalidateProductCacheMixin, SortableAdminMixin, FrontendEditableAdminMixin, PlaceholderAdminMixin,
                      CMSPageAsCategoryMixin, admin.ModelAdmin):
     """
     Since our Commodity model inherits from polymorphic Product, we have to redefine its admin class.
     """
     base_model = Product
     fields = ['product_name', 'slug', 'product_code', 'unit_price', 'active', 'caption', 'manufacturer']
-    filter_horizontal = ('cms_pages',)
-    inlines = (ProductImageInline,)
+    filter_horizontal = ['cms_pages']
+    inlines = [ProductImageInline]
     prepopulated_fields = {'slug': ['product_name']}
 
 
 @admin.register(SmartCard)
-class SmartCardAdmin(SortableAdminMixin, FrontendEditableAdminMixin,
+class SmartCardAdmin(InvalidateProductCacheMixin, SortableAdminMixin, FrontendEditableAdminMixin,
                      CMSPageAsCategoryMixin, PlaceholderAdminMixin, PolymorphicChildModelAdmin):
     base_model = Product
     fields = ['product_name', 'slug', 'product_code', 'unit_price', 'active', 'caption',
               'description', 'manufacturer', 'storage', 'card_type', 'speed']
     filter_horizontal = ['cms_pages']
-    inlines = (ProductImageInline,)
+    inlines = [ProductImageInline]
     prepopulated_fields = {'slug': ['product_name']}
 
 admin.site.register(OperatingSystem, admin.ModelAdmin)
@@ -51,15 +51,15 @@ class SmartPhoneInline(admin.TabularInline):
 
 
 @admin.register(SmartPhoneModel)
-class SmartPhoneAdmin(SortableAdminMixin, FrontendEditableAdminMixin, CMSPageAsCategoryMixin,
+class SmartPhoneAdmin(InvalidateProductCacheMixin, SortableAdminMixin, FrontendEditableAdminMixin, CMSPageAsCategoryMixin,
                       PlaceholderAdminMixin, PolymorphicChildModelAdmin):
     base_model = Product
     fields = ['product_name', 'slug', 'active', 'caption', 'description', 'manufacturer',
               'battery_type', 'battery_capacity', 'ram_storage', 'wifi_connectivity', 'bluetooth',
               'gps', 'operating_system', ('width', 'height', 'weight'), 'screen_size']
     filter_horizontal = ['cms_pages']
-    inlines = (ProductImageInline, SmartPhoneInline,)
-    prepopulated_fields = {'slug': ('product_name',)}
+    inlines = [ProductImageInline, SmartPhoneInline]
+    prepopulated_fields = {'slug': ['product_name']}
 
     def save_model(self, request, obj, form, change):
         if not change:
@@ -81,7 +81,7 @@ class ProductAdmin(PolymorphicSortableAdminMixin, PolymorphicParentModelAdmin):
     list_display = ['product_name', 'get_price', 'product_type', 'active']
     list_display_links = ['product_name']
     search_fields = ['product_name']
-    list_filter = (PolymorphicChildModelFilter, CMSPageFilter,)
+    list_filter = [PolymorphicChildModelFilter, CMSPageFilter]
     list_per_page = 250
     list_max_show_all = 1000
 

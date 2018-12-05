@@ -16,16 +16,16 @@ if settings.USE_I18N:
     @admin.register(Commodity)
     class CommodityAdmin(SortableAdminMixin, TranslatableAdmin, FrontendEditableAdminMixin,
                          PlaceholderAdminMixin, CMSPageAsCategoryMixin, admin.ModelAdmin):
-        fieldsets = (
+        fieldsets = [
             (None, {
-                'fields': ('product_name', 'slug', 'caption',)
+                'fields': ['product_name', 'slug', 'caption']
             }),
             (_("Common Fields"), {
-                'fields': ('product_code', ('unit_price', 'active',), 'show_breadcrumb', 'sample_image'),
+                'fields': ['product_code', ('unit_price', 'active'), 'show_breadcrumb', 'sample_image'],
             }),
-        )
-        filter_horizontal = ('cms_pages',)
-        list_filter = (CMSPageFilter,)
+        ]
+        filter_horizontal = ['cms_pages']
+        list_filter = [CMSPageFilter]
 
         def get_prepopulated_fields(self, request, obj=None):
             return {
@@ -37,7 +37,7 @@ else:
     @admin.register(Commodity)
     class CommodityAdmin(SortableAdminMixin, FrontendEditableAdminMixin, PlaceholderAdminMixin,
                          CMSPageAsCategoryMixin, admin.ModelAdmin):
-        fields = ('product_name', 'slug',  'caption', 'product_code',
-                  ('unit_price', 'active',), 'show_breadcrumb', 'sample_image',)
-        filter_horizontal = ('cms_pages',)
-        prepopulated_fields = {'slug': ('product_name',)}
+        fields = ['product_name', 'slug',  'caption', 'product_code',
+                  ('unit_price', 'active'), 'show_breadcrumb', 'sample_image']
+        filter_horizontal = ['cms_pages']
+        prepopulated_fields = {'slug': ['product_name']}

@@ -5,9 +5,11 @@ from collections import OrderedDict
 
 from django.contrib import admin
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
 from django.forms import fields, models, widgets
+from django.utils import six
 from django.utils.translation import ugettext_lazy as _
+
+from django_fsm import RETURN_VALUE
 
 from shop.models.notification import Notify, Notification, NotificationAttachment
 from shop.models.order import OrderModel
@@ -44,9 +46,11 @@ class NotificationForm(models.ModelForm):
     def get_transition_choices(self):
         choices = OrderedDict()
         for transition in OrderModel.get_all_transitions():
-            if transition.target:
-                transition_name = OrderModel.get_transition_name(transition.target)
-                choices[transition.target] = transition_name
+            if isinstance(transition.target, six.string_types):
+                choices[transition.target] = OrderModel.get_transition_name(transition.target)
+            elif isinstance(transition.target, RETURN_VALUE):
+                for target in transition.target.allowed_states:
+                    choices[target] = OrderModel.get_transition_name(target)
         return choices.items()
 
     def get_recipient_choices(self):

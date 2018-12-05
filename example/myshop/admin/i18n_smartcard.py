@@ -12,18 +12,18 @@ from myshop.models import SmartCard
 @admin.register(SmartCard)
 class SmartCardAdmin(SortableAdminMixin, TranslatableAdmin,
                      CMSPageAsCategoryMixin, admin.ModelAdmin):
-    fieldsets = (
+    fieldsets = [
         (None, {
-            'fields': ('product_name', 'slug', 'product_code', 'unit_price', 'active',),
+            'fields': ['product_name', 'slug', 'product_code', 'unit_price', 'active'],
         }),
         (_("Translatable Fields"), {
-            'fields': ('caption', 'description',)
+            'fields': ['caption', 'description'],
         }),
         (_("Properties"), {
-            'fields': ('manufacturer', 'storage', 'card_type',)
+            'fields': ['manufacturer', 'storage', 'card_type'],
         }),
-    )
-    inlines = (ProductImageInline,)
-    prepopulated_fields = {'slug': ('product_name',)}
-    list_display = ('product_name', 'product_code', 'unit_price', 'active',)
-    search_fields = ('product_name',)
+    ]
+    inlines = [ProductImageInline]
+    prepopulated_fields = {'slug': ['product_name']}
+    list_display = ['product_name', 'product_code', 'unit_price', 'active']
+    search_fields = ['product_name']

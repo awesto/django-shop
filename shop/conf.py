@@ -264,6 +264,26 @@ class DefaultSettings(object):
         """
         return self._setting('SHOP_DIALOG_FORMS', [])
 
+    @property
+    def SHOP_CASCADE_FORMS(self):
+        """
+        Specify a map of Django Form classes to be used by the Cascade plugins used for the
+        checkout view. Override this map, if the Cascade plugins shall use a Form other than the
+        ones provided.
+        """
+        cascade_forms = {
+            'CustomerForm': 'shop.forms.checkout.CustomerForm',
+            'GuestForm': 'shop.forms.checkout.GuestForm',
+            'ShippingAddressForm': 'shop.forms.checkout.ShippingAddressForm',
+            'BillingAddressForm': 'shop.forms.checkout.BillingAddressForm',
+            'PaymentMethodForm': 'shop.forms.checkout.PaymentMethodForm',
+            'ShippingMethodForm': 'shop.forms.checkout.ShippingMethodForm',
+            'ExtraAnnotationForm': 'shop.forms.checkout.ExtraAnnotationForm',
+            'AcceptConditionForm': 'shop.forms.checkout.AcceptConditionForm',
+        }
+        cascade_forms.update(self._setting('SHOP_CASCADE_FORMS', {}))
+        return cascade_forms
+
     def __getattr__(self, key):
         if not key.startswith('SHOP_'):
             key = 'SHOP_' + key

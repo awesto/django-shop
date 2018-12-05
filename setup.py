@@ -4,14 +4,9 @@ from __future__ import unicode_literals
 
 from setuptools import setup, find_packages
 import shop
-try:
-    from pypandoc import convert
-except ImportError:
-    import io
 
-    def convert(filename, fmt):
-        with io.open(filename, encoding='utf-8') as fd:
-            return fd.read()
+with open('README.md', 'r') as fh:
+    long_description = fh.read()
 
 CLASSIFIERS = [
     'Environment :: Web Environment',
@@ -23,6 +18,8 @@ CLASSIFIERS = [
     'Programming Language :: Python :: 3.4',
     'Programming Language :: Python :: 3.5',
     'Programming Language :: Python :: 3.6',
+    'Framework :: Django :: 1.10',
+    'Framework :: Django :: 1.11',
     'Topic :: Software Development :: Libraries :: Application Frameworks',
     'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
 ]
@@ -33,7 +30,8 @@ setup(
     name="django-shop",
     version=shop.__version__,
     description="A RESTful e-commerce framework based on Django",
-    long_description=convert('README.md', 'rst'),
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     url='http://www.django-shop.org/',
     license='BSD License',
     platforms=['OS Independent'],
@@ -42,7 +40,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'Django>=1.9.12,<2.0',
+        'Django>=1.10,<2.0',
         'django-post-office>=3.0.0',
         'django-filer>=1.2.8',
         'django-ipware>=1.1.1',
