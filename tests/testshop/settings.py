@@ -1,10 +1,9 @@
 from __future__ import unicode_literals
 
-import os
 from django.core.urlresolvers import reverse_lazy
 from django.utils.text import format_lazy
 
-ROOT_URLCONF = 'tests.urls'
+ROOT_URLCONF = 'testshop.urls'
 
 SECRET_KEY = 'test'
 
@@ -61,6 +60,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'shop.middleware.CustomerMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -113,6 +113,8 @@ LANGUAGES = [
 ]
 
 LANGUAGE_CODE = 'en'
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 CMS_TEMPLATES = [
     ('testing.html', 'Default Page'),
