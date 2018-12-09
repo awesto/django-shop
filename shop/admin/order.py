@@ -184,7 +184,8 @@ class PrintOrderAdminMixin(object):
 
     def get_urls(self):
         my_urls = [
-            url(r'^(?P<pk>\d+)/print_confirmation/$', self.admin_site.admin_view(self.render_confirmation),
+            url(r'^(?P<pk>\d+)/print_confirmation/$',
+                self.admin_site.admin_view(self.render_confirmation),
                 name='print_confirmation'),
             url(r'^(?P<pk>\d+)/print_invoice/$', self.admin_site.admin_view(self.render_invoice),
                 name='print_invoice'),
