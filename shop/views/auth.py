@@ -32,7 +32,7 @@ class AuthFormsView(GenericAPIView):
     form_class = None
 
     def post(self, request, *args, **kwargs):
-        if request.customer.is_visitor():
+        if request.customer.is_visitor:
             customer = CustomerModel.objects.get_or_create_from_request(request)
         else:
             customer = request.customer
@@ -61,7 +61,7 @@ class LoginView(OriginalLoginView):
             anonymous_cart = CartModel.objects.get_from_request(self.request)
         except CartModel.DoesNotExist:
             anonymous_cart = None
-        if self.request.customer.user.is_anonymous() or self.request.customer.is_registered():
+        if self.request.customer.user.is_anonymous or self.request.customer.is_registered:
             previous_user = None
         else:
             previous_user = self.request.customer.user

@@ -111,7 +111,7 @@ class EmulateHttpRequest(HttpRequest):
         self.method = 'GET'
         self.LANGUAGE_CODE = self.COOKIES['django_language'] = stored_request.get('language')
         self.customer = customer
-        self.user = customer.is_anonymous() and AnonymousUser or customer.user
+        self.user = customer.is_anonymous and AnonymousUser or customer.user
         self.current_page = None
 
 

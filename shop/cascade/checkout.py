@@ -108,7 +108,7 @@ class CustomerFormPlugin(CustomerFormPluginBase):
     form_class = app_settings.SHOP_CASCADE_FORMS['CustomerForm']
 
     def render(self, context, instance, placeholder):
-        if not context['request'].customer.is_registered():
+        if not context['request'].customer.is_registered:
             context['error_message'] = _("Only registered customers can access this form.")
             return context
         return self.super(CustomerFormPlugin, self).render(context, instance, placeholder)
@@ -126,7 +126,7 @@ class GuestFormPlugin(CustomerFormPluginBase):
 
     def render(self, context, instance, placeholder):
         assert 'customer' in context, "Please add 'shop.context_processors.customer' to your TEMPLATES 'context_processor' settings."
-        if not context['customer'].is_guest():
+        if not context['customer'].is_guest:
             context['error_message'] = _("Only guest customers can access this form.")
             return context
         return self.super(GuestFormPlugin, self).render(context, instance, placeholder)

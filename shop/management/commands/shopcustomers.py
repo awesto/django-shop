@@ -20,13 +20,13 @@ class Command(BaseCommand):
                 data['active'] += 1
             if customer.user.is_staff:
                 data['staff'] += 1
-            if customer.is_registered():
+            if customer.is_registered:
                 data['registered'] += 1
-            elif customer.is_guest():
+            elif customer.is_guest:
                 data['guests'] += 1
-            elif customer.is_anonymous():
+            elif customer.is_anonymous:
                 data['anonymous'] += 1
-            if customer.is_expired():
+            if customer.is_expired:
                 data['expired'] += 1
                 if delete_expired:
                     customer.delete()

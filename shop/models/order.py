@@ -87,7 +87,7 @@ class OrderManager(models.Manager):
         Return a queryset containing the orders for the customer associated with the given
         request object.
         """
-        if request.customer.is_visitor():
+        if request.customer.is_visitor:
             detail = _("Only signed in customers can view their orders.")
             raise PermissionDenied(detail=detail)
         return self.get_queryset().filter(customer=request.customer).order_by('-updated_at', )

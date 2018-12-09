@@ -144,7 +144,7 @@ class CartManager(models.Manager):
         """
         Return the cart for current customer.
         """
-        if request.customer.is_visitor():
+        if request.customer.is_visitor:
             raise self.model.DoesNotExist("Cart for visiting customer does not exist.")
         if not hasattr(request, '_cached_cart') or request._cached_cart.customer.user_id != request.customer.user_id:
             request._cached_cart, created = self.get_or_create(customer=request.customer)
@@ -152,7 +152,7 @@ class CartManager(models.Manager):
 
     def get_or_create_from_request(self, request):
         has_cached_cart = hasattr(request, '_cached_cart')
-        if request.customer.is_visitor():
+        if request.customer.is_visitor:
             request.customer = CustomerModel.objects.get_or_create_from_request(request)
             has_cached_cart = False
         if not has_cached_cart or request._cached_cart.customer.user_id != request.customer.user_id:
