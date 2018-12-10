@@ -19,8 +19,8 @@ from rest_auth.views import LoginView as OriginalLoginView, PasswordChangeView a
 
 from shop.models.cart import CartModel
 from shop.models.customer import CustomerModel
-from shop.rest.auth import PasswordResetRequestSerializer, PasswordResetConfirmSerializer
 from shop.rest.renderers import CMSPageRenderer
+from shop.serializers.auth import PasswordResetRequestSerializer, PasswordResetConfirmSerializer
 from shop.signals import email_queued
 
 
@@ -66,7 +66,7 @@ class LoginView(OriginalLoginView):
         else:
             previous_user = self.request.customer.user
         super(LoginView, self).login()  # this rotates the session_key
-        if self.serializer.data.get('stay_logged_in') is False:
+        if not self.serializer.data.get('stay_logged_in'):
             self.request.session.set_expiry(0)  # log out when the browser is closed
         authenticated_cart = CartModel.objects.get_from_request(self.request)
         if anonymous_cart:
@@ -181,12 +181,18 @@ class PasswordResetConfirmView(GenericAPIView):
         })
 
     def post(self, request, uidb64=None, token=None):
-        data = dict(request.data.get('form_data', {}), uid=uidb64, token=token)
-        serializer = self.get_serializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            response_data = {self.form_name: {
-                'success_message': _("Password has been reset with the new password."),
-            }}
-            return Response(response_data)
-        return Response({self.form_name: serializer.errors}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+        try:
+            data = dict(request.data['form_data'], uid=uidb64, token=token)
+        except (KeyError, TypeError, ValueError):
+            errors = {'non_field_errors': [_("Invalid POST data.")]}
+        else:
+            serializer = self.get_serializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                response_data = {self.form_name: {
+                    'success_message': _("Password has been reset with the new password."),
+                }}
+                return Response(response_data)
+            else:
+                errors = serializer.errors
+        return Response({self.form_name: errors}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
