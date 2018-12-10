@@ -6,13 +6,9 @@ from decimal import Decimal
 import logging
 
 from django.core.exceptions import ImproperlyConfigured
-from django.core.urlresolvers import reverse
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
-try:
-    from django.urls import NoReverseMatch
-except ImportError:
-    from django.core.urlresolvers import NoReverseMatch
+from django.urls import NoReverseMatch, reverse
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy, get_language_from_request
@@ -108,7 +104,7 @@ class OrderManager(models.Manager):
             try:  # through hardcoded urlpatterns
                 self._summary_url = reverse('shop-order')
             except NoReverseMatch:
-                self._summary_url = 'cms-page_or_view_with_reverse_id=shop-order_does_not_exist/'
+                self._summary_url = '/cms-page_or_view_with__reverse_id=shop-order__does_not_exist/'
         return self._summary_url
 
     def get_latest_url(self):
@@ -122,7 +118,7 @@ class OrderManager(models.Manager):
             try:
                 return reverse('shop-order-last')
             except NoReverseMatch:
-                return '/cms-page_or_view_with_reverse_id=shop-order-last_does_not_exist/'
+                return '/cms-page_or_view_with__reverse_id=shop-order-last__does_not_exist/'
 
 
 class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
