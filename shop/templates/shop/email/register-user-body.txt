@@ -1,5 +1,4 @@
-{% load i18n %}{% autoescape off %}
-{% blocktrans %}You're receiving this e-mail because you or someone else has requested an auto-generated password
+{% load i18n %}{% autoescape off %}{% blocktrans %}You're receiving this e-mail because you or someone else has requested an auto-generated password
 for your newly created user account '{{ user }}' at {{ site_name }}. It can be safely ignored if you did not
 create this account.{% endblocktrans %}
 

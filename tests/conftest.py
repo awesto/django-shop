@@ -4,9 +4,9 @@ from pytest_factoryboy import register
 from importlib import import_module
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth.hashers import make_password
+from rest_framework.test import APIClient, APIRequestFactory
 from shop.models.defaults.customer import Customer
-from shop.models.customer import VisitingCustomer, CustomerManager
 from tests.testshop.models import Commodity
 
 
@@ -16,6 +16,18 @@ def session():
     session = engine.SessionStore()
     session.create()
     return session
+
+
+@pytest.fixture
+def api_client():
+    api_client = APIClient()
+    return api_client
+
+
+@pytest.fixture
+def api_rf():
+    api_rf = APIRequestFactory()
+    return api_rf
 
 
 @register
@@ -46,23 +58,26 @@ class CustomerFactory(factory.django.DjangoModelFactory):
     def create(cls, **kwargs):
         customer = super(CustomerFactory, cls).create(**kwargs)
         assert isinstance(customer, Customer)
+        assert isinstance(customer.user, get_user_model())
         assert customer.is_authenticated() is True
+        assert customer.is_registered() is True
         return customer
 
     user = factory.SubFactory(UserFactory)
 
 
-@pytest.fixture
-def visiting_customer():
-    customer = VisitingCustomer()
-    assert customer.is_registered() is False
-    assert isinstance(customer.user, AnonymousUser)
-    return customer
-
-
+# @pytest.fixture
+# def visiting_customer():
+#     customer = VisitingCustomer()
+#     assert customer.is_registered() is False
+#     assert isinstance(customer.user, AnonymousUser)
+#     return customer
+#
+#
 @pytest.fixture
 def registered_customer():
-    customer = CustomerFactory()
+    user = UserFactory(email='admin@example.com', password=make_password('secret'), is_active=True)
+    customer = CustomerFactory(user=user)
     assert customer.is_registered() is True
     assert isinstance(customer.user, get_user_model())
     return customer

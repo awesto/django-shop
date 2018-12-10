@@ -5,24 +5,8 @@ import pytest
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.backends.cache import SessionStore
-from shop.models.customer import VisitingCustomer, CustomerManager
-from tests.conftest import UserFactory, CustomerFactory
+from shop.models.customer import VisitingCustomer
 from tests.testshop.models import Customer
-from shop.views.catalog import ProductListView
-
-
-@pytest.mark.django_db
-def test_customer(customer_factory):
-    customer = customer_factory()
-    assert isinstance(customer, Customer)
-    assert isinstance(customer.user, get_user_model())
-
-
-@pytest.mark.django_db
-def test_details(client):
-    response = client.get('/')
-    # response = ProductListView.as_view()(request)
-    assert response.status_code == 200
 
 
 @pytest.mark.django_db
@@ -84,11 +68,11 @@ def test_unexpired_customer(rf, session):
 
 
 @pytest.mark.django_db
-def test_authenticated_purchasing_user(rf, session):
+def test_authenticated_purchasing_user(user_factory, rf, session):
     """
     Check that an authenticated Django user creates a recognized django-SHOP customer.
     """
-    user = UserFactory()
+    user = user_factory()
     with pytest.raises(Customer.DoesNotExist):
         Customer.objects.get(pk=user.pk)
     request = rf.get('/', follow=True)
@@ -105,11 +89,11 @@ def test_authenticated_purchasing_user(rf, session):
 
 
 @pytest.mark.django_db
-def test_authenticated_visiting_user(rf, session):
+def test_authenticated_visiting_user(user_factory, rf, session):
     """
     Check that an authenticated user creates a recognized customer visiting the site.
     """
-    user = UserFactory()
+    user = user_factory()
     with pytest.raises(Customer.DoesNotExist):
         Customer.objects.get(pk=user.pk)
     request = rf.get('/', follow=True)
@@ -123,12 +107,12 @@ def test_authenticated_visiting_user(rf, session):
 
 
 @pytest.mark.django_db
-def test_authenticated_visiting_customer(rf, session):
+def test_authenticated_visiting_customer(customer_factory, rf, session):
     """
     Check that an authenticated user creates a recognized customer visiting the site.
     """
     request = rf.get('/', follow=True)
-    request.user = CustomerFactory().user
+    request.user = customer_factory().user
     request.session = session
     customer = Customer.objects.get_from_request(request)
     assert isinstance(customer, Customer)
