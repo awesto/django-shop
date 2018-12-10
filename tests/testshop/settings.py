@@ -81,6 +81,9 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.staticfiles',
     'jsonfield',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_auth',
     'reversion',
     'filer',
     'easy_thumbnails',
@@ -175,3 +178,7 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
+
+REST_AUTH_SERIALIZERS = {
+    'LOGIN_SERIALIZER': 'shop.serializers.auth.LoginSerializer',
+}
