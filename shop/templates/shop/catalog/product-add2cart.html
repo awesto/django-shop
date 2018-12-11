@@ -14,49 +14,46 @@
 	<div class="card-header">
 	{% blocktrans %}Add {{ product_name }} to cart{% endblocktrans %}
 	</div>
-	<div class="card-body p-0">
-	{% block add-product-to-cart-table %}
-		<table shop-add-to-cart="{{ product.get_absolute_url }}/add-to-cart" class="table">
-			<thead>
-				<tr>
-					<th>{% trans "Quantity" %}</th>
-					<th>{% trans "Unit Price" %}</th>
-					<th>{% trans "Subtotal" %}</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>
-						<div class="form-group">
-							<input class="form-control" type="number" min="1" ng-model="context.quantity" ng-model-options="{{ ADD2CART_NG_MODEL_OPTIONS }}" ng-change="updateContext()" />
-						</div>
-					</td>
-					<td ng-bind="context.unit_price"></td>
-					<td ng-bind="context.subtotal"></td>
-				</tr>
-		{% if request.session.is_empty %}{% spaceless %}
-				<tr>
-					<td colspan="3">
-			{% block cookie-disclaimer %}{% blocktrans %}
-						By adding a product to the cart you are giving consent to cookies being used.
-			{% endblocktrans %}{% endblock %}
-					</td>
-				</tr>
-			{% endspaceless %}{% endif %}
-				<tr>
-					<td></td>
-					<td class="vertical-align-middle">
-				{% if shop_watch_list_url %}
-						<button class="btn btn-info btn-block btn-xs" ng-click="addToCart('{% url 'shop:watch-list' %}', {watch: true})">{% trans "Watch product" %}</button>
-				{% endif %}
-					</td>
-					<td>
-						<button class="btn btn-primary btn-block" ng-click="addToCart('{% url 'shop:cart-list' %}')">{% trans "Add to cart" %}</button>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	{% endblock add-product-to-cart-table %}
+
+	<div class="card-body pb-0" shop-add-to-cart="{{ product.get_absolute_url }}/add-to-cart">
+		<div class="d-flex justify-content-between">
+			<div class="d-flex flex-column w-25">
+				<div>{% trans "Quantity" %}</div>
+				<div class="form-group">
+					<input class="form-control" type="number" min="1" ng-model="context.quantity" ng-model-options="{{ ADD2CART_NG_MODEL_OPTIONS }}" ng-change="updateContext()" />
+				</div>
+			</div>
+			<div class="d-flex flex-column">
+				<div>{% trans "Unit Price" %}</div>
+				<div class="lead font-weight-bold">
+				{% verbatim %}{{ context.unit_price }}{% endverbatim %}
+				</div>
+			</div>
+			<div class="d-flex flex-column">
+				<div>{% trans "Subtotal" %}</div>
+				<div class="lead font-weight-bold">
+				{% verbatim %}{{ context.subtotal }}<sup>*</sup>{% endverbatim %}
+				</div>
+			</div>
+		</div>
+		<div class="text-muted mb-3">
+			<small><sup>*</sup>&nbsp;incl. VAT, plus shipping costs</small>
+		</div>
+	</div>
+	<div class="card-footer bg-white">
+		<div class="d-flex justify-content-end">
+		{% if request.session.is_empty %}
+			<small class="w-50 mr-auto text-muted">{% block cookie-disclaimer %}
+			{% blocktrans %}By adding a product to the cart you are giving consent to cookies being used.{% endblocktrans %}
+			{% endblock %}</small>
+		{% endif %}
+			<button class="mr-3 btn btn-secondary" ng-click="addToCart('{% url 'shop:watch-list' %}', {watch: true})">
+				{% trans "Watch product" %}
+			</button>
+			<button class="btn btn-primary" ng-disabled="context.stock_quantity==0" ng-click="addToCart('{% url 'shop:cart-list' %}')">
+				{% trans "Add to cart" %}
+			</button>
+		</div>
 	</div>
 </div>
 {% endwith %}{% endblock add-product-to-cart-panel %}
