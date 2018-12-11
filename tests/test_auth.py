@@ -124,7 +124,10 @@ def test_password_reset(settings, registered_customer, api_client, api_rf):
         }
     }
     body_begin = "You're receiving this email because you requested a password reset for your user\naccount 'admin@example.com' at example.com."
+<<<<<<< HEAD
     assert len(mail.outbox) == 1
+=======
+>>>>>>> 72dccfbe1e28605288027b2b15e917525f4c2e87
     assert mail.outbox[0].body.startswith(body_begin)
     matches = re.search(PasswordResetRequestSerializer.invalid_password_reset_confirm_url + r'([^/]+)/([0-9A-Za-z-]+)',
                         mail.outbox[0].body)
@@ -164,6 +167,7 @@ def test_password_reset_fail(api_rf):
     response = PasswordResetConfirmView.as_view()(request, uidb64='INV', token='alid')
     assert response.status_code == 422
     assert response.data == {'password_reset_confirm_form': {'uid': ['Invalid value']}}
+<<<<<<< HEAD
 
 
 @pytest.mark.django_db
@@ -239,3 +243,5 @@ def test_register_user_fail(registered_customer, api_client):
             '__all__': ["A customer with the e-mail address 'admin@example.com' already exists.\nIf you have used this address previously, try to reset the password."]
         }
     }
+=======
+>>>>>>> 72dccfbe1e28605288027b2b15e917525f4c2e87
