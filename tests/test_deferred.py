@@ -48,7 +48,7 @@ DeferredBaseUser = create_deferred_base_class('DeferredBaseUser')
 DeferredUser = create_deferred_class('DeferredUser', DeferredBaseUser)
 
 
-    RegularCustomer = create_regular_class('RegularCustomer', {
+RegularCustomer = create_regular_class('RegularCustomer', {
     'user': models.OneToOneField(RegularUser, on_delete=models.PROTECT),
     'advertised_by': models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL),
 })

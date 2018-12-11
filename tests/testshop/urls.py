@@ -7,4 +7,3 @@ urlpatterns = i18n_patterns(
     url(r'^', include('cms.urls')),
 )
 urlpatterns.append(url(r'^shop/', include('shop.urls', namespace='shop')))
-print(urlpatterns)
