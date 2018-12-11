@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import binascii
+from os import urandom
 from django.db import models
 from django.utils import timezone
+from django.utils.six.moves.urllib.parse import urljoin
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
-
 from shop.models import order
 
 
@@ -29,6 +31,14 @@ class Order(order.BaseOrder):
         blank=True,
         null=True,
         help_text=_("Billing address at the moment of purchase."),
+    )
+
+    token = models.CharField(
+        _("Token"),
+        max_length=40,
+        editable=False,
+        null=True,
+        help_text=_("Secret key to verify ownership on detail view without requiring authentication."),
     )
 
     class Meta:
@@ -60,6 +70,22 @@ class Order(order.BaseOrder):
     def resolve_number(cls, number):
         bits = number.split('-')
         return dict(number=''.join(bits))
+
+    def assign_secret(self):
+        self.token = binascii.hexlify(urandom(20)).decode()
+        return self.token
+
+    @property
+    def secret(self):
+        return self.token
+
+    def get_absolute_url(self):
+        url = super(Order, self).get_absolute_url()
+        if self.token:
+            if not url.endswith('/'):
+                url += '/'
+            url = urljoin(url, self.token)
+        return url
 
     def populate_from_cart(self, cart, request):
         self.shipping_address_text = cart.shipping_address.as_text() if cart.shipping_address else ''

@@ -60,9 +60,6 @@ class Command(BaseCommand):
                     if not order_pages.filter(reverse_id='shop-order').exists():
                         msg = "A CMS page implementing the Order Views must be referenced with ID: 'shop-order'."
                         complains.push(msg)
-                    if not order_pages.filter(reverse_id='shop-order-last').exists():
-                        msg = "A CMS page implementing the Thank You Order must be referenced with ID: 'shop-order-last'."
-                        complains.push(msg)
                 else:
                     complains.push(missing_page_msg.format(name))
 

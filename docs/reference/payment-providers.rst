@@ -101,8 +101,7 @@ urlpatterns, which then is used by the Django URL resolving engine.
 	        order.populate_from_cart(cart, request)
 	        order.add_paypal_payment(payment.to_dict())
 	        order.save()
-	        thank_you_url = OrderModel.objects.get_latest_url()
-	        return HttpResponseRedirect(thank_you_url)
+	        return HttpResponseRedirect(order.get_abolute_url())
 
 	    @classmethod
 	    def failure_view(cls, request):

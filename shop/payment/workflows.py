@@ -26,8 +26,7 @@ class ForwardFundPayment(PaymentProvider):
         else:
             order.awaiting_payment()
         order.save()
-        thank_you_url = OrderModel.objects.get_latest_url()
-        return 'window.location.href="{}";'.format(thank_you_url)
+        return 'window.location.href="{}";'.format(order.get_absolute_url())
 '''
 
 

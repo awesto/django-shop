@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from six import with_metaclass
 from decimal import Decimal
 import logging
+from six import with_metaclass
 
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models, transaction
@@ -13,7 +13,6 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy, get_language_from_request
 from django.utils.six.moves.urllib.parse import urljoin
-from rest_framework.exceptions import PermissionDenied
 
 from django_fsm import FSMField, transition
 from ipware.ip import get_ip
@@ -54,15 +53,21 @@ class OrderManager(models.Manager):
     def create_from_cart(self, cart, request):
         """
         This creates a new empty Order object with a valid order number. This order is not
-        populated with any cart items yet. This must be performed in the next step by calling
-        ``order.populate_from_cart(cart, request)``.
-        If this method is not invoked, the order object remains in state ``new``.
+        populated with any cart items yet. It must be performed in the next step by calling
+        ``order.populate_from_cart(cart, request)``, otherwise the order object remains in
+        state ``new``.
         """
         cart.update(request)
         cart.customer.get_or_assign_number()
-        order = self.model(customer=cart.customer, currency=cart.total.currency,
-                           _subtotal=Decimal(0), _total=Decimal(0), stored_request=self.stored_request(request))
+        order = self.model(
+            customer=cart.customer,
+            currency=cart.total.currency,
+            _subtotal=Decimal(0),
+            _total=Decimal(0),
+            stored_request=self.stored_request(request),
+        )
         order.get_or_assign_number()
+        order.assign_secret()
         order.save()
         return order
 
@@ -78,47 +83,23 @@ class OrderManager(models.Manager):
             'user_agent': request.META.get('HTTP_USER_AGENT'),
         }
 
-    def filter_from_request(self, request):
-        """
-        Return a queryset containing the orders for the customer associated with the given
-        request object.
-        """
-        if request.customer.is_visitor:
-            detail = _("Only signed in customers can view their orders.")
-            raise PermissionDenied(detail=detail)
-        return self.get_queryset().filter(customer=request.customer).order_by('-updated_at', )
-
     def get_summary_url(self):
         """
         Returns the URL of the page with the list view for all orders related to the current customer
         """
-        if hasattr(self, '_summary_url'):
-            return self._summary_url
-        try:  # via CMS pages
-            page = Page.objects.public().get(reverse_id='shop-order')
-        except Page.DoesNotExist:
-            page = Page.objects.public().filter(application_urls='OrderApp').first()
-        if page:
-            self._summary_url = page.get_absolute_url()
-        else:
-            try:  # through hardcoded urlpatterns
-                self._summary_url = reverse('shop-order')
-            except NoReverseMatch:
-                self._summary_url = '/cms-page_or_view_with__reverse_id=shop-order__does_not_exist/'
+        if not hasattr(self, '_summary_url'):
+            try:  # via CMS pages
+                page = Page.objects.public().get(reverse_id='shop-order')
+            except Page.DoesNotExist:
+                page = Page.objects.public().filter(application_urls='OrderApp').first()
+            if page:
+                self._summary_url = page.get_absolute_url()
+            else:
+                try:  # through hardcoded urlpatterns
+                    self._summary_url = reverse('shop-order')
+                except NoReverseMatch:
+                    self._summary_url = '/cms-page_or_view_with__reverse_id=shop-order__does_not_exist/'
         return self._summary_url
-
-    def get_latest_url(self):
-        """
-        Returns the URL of the page with the detail view for the latest order related to the
-        current customer. This normally is the thank-you view.
-        """
-        try:
-            return Page.objects.public().get(reverse_id='shop-order-last').get_absolute_url()
-        except Page.DoesNotExist:
-            try:
-                return reverse('shop-order-last')
-            except NoReverseMatch:
-                return '/cms-page_or_view_with__reverse_id=shop-order-last__does_not_exist/'
 
 
 class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
@@ -252,6 +233,17 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         A class inheriting from Order may transform this into a string which is better readable.
         """
         return str(self.pk)
+
+    def assign_secret(self):
+        """
+        Hook to assign a secret to authorize access on this Order object without authentication.
+        """
+
+    @property
+    def secret(self):
+        """
+        Hook to return a secret if available.
+        """
 
     @classmethod
     def resolve_number(cls, number):

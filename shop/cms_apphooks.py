@@ -29,13 +29,10 @@ class OrderApp(CMSApp):
         from django.conf.urls import url
         from shop.views.order import OrderView
 
-        if page and page.reverse_id == 'shop-order-last':
-            return [
-                url(r'^$', OrderView.as_view(many=False, is_last=True)),
-            ]
         return [
-            url(r'^$', OrderView.as_view()),
-            url(r'^(?P<slug>[\w-]+)/?$', OrderView.as_view(many=False)),
+            url(r'^$', OrderView.as_view()),  # requires authentication
+            url(r'^(?P<slug>[\w-]+)/?$', OrderView.as_view(many=False)),  # requires authentication
+            url(r'^(?P<slug>[\w-]+)/(?P<secret>[\w-]+)$', OrderView.as_view(many=False)),  # publicly accessible
         ]
 
 

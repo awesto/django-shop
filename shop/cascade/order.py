@@ -54,7 +54,10 @@ class ShopOrderViewsPlugin(LeftRightExtensionMixin, TransparentWrapper, ShopPlug
                 'shop/order/detail.html',
             ])
         # can happen, if this plugin is abused outside of an OrderView
-        return engines['django'].from_string('<div class="alert alert-danger">This {} plugin is used on a CMS page without an application of type "View Order".</div>'.format(self.name))
+        alert_msg = '''<div class="alert alert-danger">
+        This {} plugin is used on a CMS page without an application of type "View Order".
+        </div>'''
+        return engines['django'].from_string(alert_msg.format(self.name))
 
 plugin_pool.register_plugin(ShopOrderViewsPlugin)
 
