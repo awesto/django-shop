@@ -13,13 +13,8 @@
 {% page_url "shop-watch-list" as shop_watch_list_url %}{% if not shop_watch_list_url %}{% url "shop-watch-list" as shop_watch_list_url %}{% endif %}
 
 {% block shop-cart-table %}
-<table shop-cart endpoint="{% url 'shop:cart-list' %}" class="table table-hover">
-	<!-- content is rendered via ng-template "shop/cart.html" -->
-</table>
-{% endblock shop-cart-table %}
-
-<script id="shop/cart.html" type="text/ng-template">
-{% block shop-cart-thead %}
+<table shop-cart="{% url 'shop:cart-list' %}" class="table table-hover">
+	{% block shop-cart-thead %}
 	<thead ng-if="cart.num_items>0">
 		<tr>
 			<th class="text-center">{% trans "Quantity" %}</th>
@@ -29,17 +24,44 @@
 			<th></th>
 		</tr>
 	</thead>
-{% endblock shop-cart-thead %}
+	{% endblock shop-cart-thead %}
 
-{% block shop-cart-tbody %}
+	{% block shop-cart-tbody %}
 	<tbody>
 		<tr shop-cart-item ng-repeat="cart_item in cart.items">
-			<!-- content is rendered via ng-template "shop/cart-item.html" -->
+		{% block shop-cart-item %}
+			<td>
+				<input type="number" class="form-control" ng-model="cart_item.quantity" ng-model-options="{{ EDITCART_NG_MODEL_OPTIONS }}" ng-change="updateCartItem(cart_item)" />
+			</td>
+			<td ng-bind-html="cart_item.summary.media">
+				{# rendered by ProductSerializer using template "(myshop|shop)/products/cart-<product_model>-media.html" #}
+			</td>
+			<td class="text-right text-nowrap">
+				<span ng-bind="cart_item.unit_price"></span>
+				<div ng-repeat="extra_row in cart_item.extra_rows" ng-bind="extra_row.label"></div>
+			</td>
+			<td class="text-right text-nowrap">
+				<span ng-bind="cart_item.line_total"></span>
+				<div ng-repeat="extra_row in cart_item.extra_rows" ng-bind="extra_row.amount"></div>
+			</td>
+			<td>
+			{% block shop-cart-item-controls %}
+				<button type="button" class="btn btn-sm btn-secondary btn-block" ng-click="deleteCartItem(cart_item)">
+					<span class="fa fa-trash-o"></span>&nbsp;{% trans "Remove" %}
+				</button>
+				{% if shop_watch_list_url %}
+				<button type="button" class="btn btn-sm btn-info btn-block" ng-click="watchCartItem(cart_item)">
+					<span class="fa fa-heart-o"></span>&nbsp;{% trans "Watch Item" %}
+				</button>
+				{% endif %}
+			{% endblock %}
+			</td>
+		{% endblock shop-cart-item %}
 		</tr>
 	</tbody>
-{% endblock shop-cart-tbody %}
+	{% endblock shop-cart-tbody %}
 
-{% block shop-cart-tfoot %}
+	{% block shop-cart-tfoot %}
 	<tfoot>
 		<tr>
 			<td colspan="2" rowspan="99">
@@ -68,36 +90,6 @@
 			</td>
 		</tr>
 	</tfoot>
-{% endblock shop-cart-tfoot %}
-</script>
-
-<script id="shop/cart-item.html" type="text/ng-template">
-{% block shop-cart-item %}
-	<td>
-		<input type="number" class="form-control" ng-model="cart_item.quantity" ng-model-options="{{ EDITCART_NG_MODEL_OPTIONS }}" ng-change="updateCartItem(cart_item)" />
-	</td>
-	<td ng-bind-html="cart_item.summary.media">
-		{# rendered by ProductSerializer using template "(myshop|shop)/products/cart-<product_model>-media.html" #}
-	</td>
-	<td class="text-right text-nowrap">
-		<span ng-bind="cart_item.unit_price"></span>
-		<div ng-repeat="extra_row in cart_item.extra_rows" ng-bind="extra_row.label"></div>
-	</td>
-	<td class="text-right text-nowrap">
-		<span ng-bind="cart_item.line_total"></span>
-		<div ng-repeat="extra_row in cart_item.extra_rows" ng-bind="extra_row.amount"></div>
-	</td>
-	<td>
-	{% block shop-cart-item-controls %}
-		<button type="button" class="btn btn-sm btn-secondary btn-block" ng-click="deleteCartItem(cart_item)">
-			<span class="fa fa-trash-o"></span>&nbsp;{% trans "Remove" %}
-		</button>
-		{% if shop_watch_list_url %}
-		<button type="button" class="btn btn-sm btn-info btn-block" ng-click="watchCartItem(cart_item)">
-			<span class="fa fa-heart-o"></span>&nbsp;{% trans "Watch Item" %}
-		</button>
-		{% endif %}
-	{% endblock %}
-	</td>
-{% endblock shop-cart-item %}
-</script>
+	{% endblock shop-cart-tfoot %}
+</table>
+{% endblock shop-cart-table %}

@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import warnings
 from django.utils.cache import add_never_cache_headers
 from rest_framework import status, viewsets
-from rest_framework.decorators import list_route
+from rest_framework.decorators import action
 from rest_framework.response import Response
-from shop.conf import app_settings
 from shop.models.cart import CartModel, CartItemModel
-from shop.serializers.cart import CartSerializer, CartItemSerializer, WatchSerializer, WatchItemSerializer
+from shop.serializers.cart import CartSerializer, CartItemSerializer, WatchSerializer, WatchItemSerializer, CartItems
 
 
 class BaseViewSet(viewsets.ModelViewSet):
     pagination_class = None
+    with_items = CartItems.arranged
 
     def get_queryset(self):
         try:
@@ -27,7 +26,8 @@ class BaseViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         cart = self.get_queryset()
         context = self.get_serializer_context()
-        serializer = self.serializer_class(cart, context=context, label=self.serializer_label, with_items=True)
+        serializer = self.serializer_class(cart, context=context, label=self.serializer_label,
+                                           with_items=self.with_items)
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
@@ -83,26 +83,20 @@ class CartViewSet(BaseViewSet):
     serializer_label = 'cart'
     serializer_class = CartSerializer
     item_serializer_class = CartItemSerializer
-    caption_serializer_class = app_settings.SHOP_CART_ICON_CAPTION_SERIALIZER
 
-    @list_route(methods=['get'])
-    def update_caption(self, request):
-        warnings.warn("Method `CartViewSet.update_caption` is deprecated.")
+    @action(detail=True, methods=['get'])
+    def fetch(self, request):
         cart = self.get_queryset()
-        if cart:
-            cart.update(request)
-            caption = cart.get_caption_data()
-        else:
-            caption = CartModel.get_default_caption_data()
-        return Response(caption)
+        context = self.get_serializer_context()
+        serializer = self.serializer_class(cart, context=context, with_items=CartItems.without)
+        return Response(serializer.data)
 
-    @list_route(methods=['get'], url_path='fetch-caption')
-    def fetch_caption(self, request):
+    @action(detail=False, methods=['get'], url_path='fetch-dropdown')
+    def fetch_dropdown(self, request):
         cart = self.get_queryset()
-        if cart:
-            cart.update(request)
-        serializer = self.caption_serializer_class(instance=cart)
-        return Response(data=serializer.data)
+        context = self.get_serializer_context()
+        serializer = self.serializer_class(cart, context=context, label='dropdown', with_items=CartItems.unsorted)
+        return Response(serializer.data)
 
 
 class WatchViewSet(BaseViewSet):

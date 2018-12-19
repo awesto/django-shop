@@ -4,8 +4,8 @@ from __future__ import unicode_literals
 from rest_framework import serializers
 from shop.conf import app_settings
 from shop.models.cart import CartModel, CartItemModel
-from shop.money import Money
 from shop.rest.money import MoneyField
+from shop.models.fields import ChoiceEnum
 
 
 class ExtraCartRow(serializers.Serializer):
@@ -86,17 +86,10 @@ class WatchItemSerializer(BaseItemSerializer):
         return super(WatchItemSerializer, self).create(validated_data)
 
 
-class CartIconCaptionSerializer(serializers.ModelSerializer):
-    """
-    The default serializer used to render the information nearby the cart icon symbol, normally
-    located on the top right of e-commerce sites.
-    """
-    num_items = serializers.IntegerField(read_only=True, default=0)
-    total = MoneyField(default=Money())
-
-    class Meta:
-        model = CartModel
-        fields = ['num_items', 'total']
+class CartItems(ChoiceEnum):
+    without = False
+    unsorted = 1
+    arranged = 2
 
 
 class BaseCartSerializer(serializers.ModelSerializer):
@@ -125,11 +118,14 @@ class CartSerializer(BaseCartSerializer):
         fields = ['total_quantity', 'num_items'] + BaseCartSerializer.Meta.fields
 
     def __init__(self, *args, **kwargs):
-        self.with_items = kwargs.pop('with_items', False)
+        self.with_items = kwargs.pop('with_items', CartItems.without)
         super(CartSerializer, self).__init__(*args, **kwargs)
 
     def represent_items(self, cart):
-        items = CartItemModel.objects.filter_cart_items(cart, self.context['request'])
+        if self.with_items == CartItems.unsorted:
+            items = CartItemModel.objects.filter(cart=cart, quantity__gt=0).order_by('-id')
+        else:
+            items = CartItemModel.objects.filter_cart_items(cart, self.context['request'])
         serializer = CartItemSerializer(items, context=self.context, label=self.label, many=True)
         return serializer.data
 
@@ -141,10 +137,13 @@ class WatchSerializer(BaseCartSerializer):
         fields = ['num_items']
 
     def __init__(self, *args, **kwargs):
-        self.with_items = kwargs.pop('with_items', True)
+        self.with_items = kwargs.pop('with_items', CartItems.arranged)
         super(WatchSerializer, self).__init__(*args, **kwargs)
 
     def represent_items(self, cart):
-        items = CartItemModel.objects.filter_watch_items(cart, self.context['request'])
+        if self.with_items == CartItems.unsorted:
+            items = CartItemModel.objects.filter(cart=cart, quantity=0).order_by('-id')
+        else:
+            items = CartItemModel.objects.filter_watch_items(cart, self.context['request'])
         serializer = WatchItemSerializer(items, context=self.context, label=self.label, many=True)
         return serializer.data

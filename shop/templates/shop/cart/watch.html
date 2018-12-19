@@ -4,13 +4,8 @@
 {% add_data "ng-requires" "django.shop.cart" %}
 
 {% block shop-watch-table %}
-<table shop-cart endpoint="{% url 'shop:watch-list' %}" class="table table-hover">
-	<!-- content is rendered via ng-template "shop/cart.html" -->
-</table>
-{% endblock shop-watch-table %}
-
-<script id="shop/cart.html" type="text/ng-template">
-{% block shop-watch-thead %}
+<table shop-cart="{% url 'shop:watch-list' %}" class="table table-hover">
+	{% block shop-watch-thead %}
 	<thead ng-if="cart.items.length>0">
 		<tr>
 			<th class="w-50 text-center">{% trans "Product" %}</th>
@@ -18,17 +13,30 @@
 			<th></th>
 		</tr>
 	</thead>
-{% endblock shop-watch-thead %}
+	{% endblock shop-watch-thead %}
 
-{% block shop-watch-tbody %}
+	{% block shop-watch-tbody %}
 	<tbody>
 		<tr shop-cart-item ng-repeat="cart_item in cart.items" ng-init="cart_item.quantity=1">
-			<!-- content is rendered via ng-template "shop/cart-item.html" -->
+		{% block shop-watch-item %}
+			<td ng-bind-html="cart_item.summary.media">
+				{# rendered by ProductSerializer using template "(myshop|shop)/products/watch-<product_model>-media.html" #}
+			</td>
+			<td class="text-right text-nowrap" ng-bind="cart_item.summary.price"></td>
+			<td>
+				<button type="button" class="btn btn-sm btn-secondary btn-block" ng-click="deleteCartItem(cart_item)">
+					<span class="fa fa-trash-o"></span>&nbsp;{% trans "Remove" %}
+				</button>
+				<button type="button" class="btn btn-sm btn-info btn-block" ng-click="addCartItem(cart_item)">
+					<span class="fa fa-cart-arrow-down"></span>&nbsp;{% trans "Add to cart" %}
+				</button>
+			</td>
+		{% endblock shop-watch-item %}
 		</tr>
 	</tbody>
-{% endblock shop-watch-tbody %}
+	{% endblock shop-watch-tbody %}
 
-{% block shop-watch-tfoot %}
+	{% block shop-watch-tfoot %}
 	<tfoot>
 		<tr>
 			<td colspan="3">
@@ -38,22 +46,6 @@
 			</td>
 		</tr>
 	</tfoot>
-{% endblock %}
-</script>
-
-<script id="shop/cart-item.html" type="text/ng-template">
-{% block shop-watch-item %}
-	<td ng-bind-html="cart_item.summary.media">
-		{# rendered by ProductSerializer using template "(myshop|shop)/products/watch-<product_model>-media.html" #}
-	</td>
-	<td class="text-right text-nowrap" ng-bind="cart_item.summary.price"></td>
-	<td>
-		<button type="button" class="btn btn-sm btn-secondary btn-block" ng-click="deleteCartItem(cart_item)">
-			<span class="fa fa-trash-o"></span>&nbsp;{% trans "Remove" %}
-		</button>
-		<button type="button" class="btn btn-sm btn-info btn-block" ng-click="addCartItem(cart_item)">
-			<span class="fa fa-cart-arrow-down"></span>&nbsp;{% trans "Add to cart" %}
-		</button>
-	</td>
-{% endblock shop-watch-item %}
-</script>
+	{% endblock %}
+</table>
+{% endblock shop-watch-table %}

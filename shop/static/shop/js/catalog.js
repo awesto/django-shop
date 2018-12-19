@@ -192,7 +192,7 @@ djangoShopModule.directive('shopSyncCatalogItem', function() {
 		restrict: 'A',
 		require: ['^shopSyncCatalog', 'shopSyncCatalogItem'],
 		scope: true,
-		controller: ['$scope', '$http', '$rootScope', function($scope, $http, $rootScope) {
+		controller: ['$http', '$rootScope', '$scope', function($http, $rootScope, $scope) {
 			var self = this, prev_item = null, isLoading = false;
 
 			$scope.syncQuantity = function() {
@@ -204,7 +204,7 @@ djangoShopModule.directive('shopSyncCatalogItem', function() {
 					delete response.data.cart;
 					prev_item = response.data;
 					angular.extend($scope.catalog_item, response.data);
-					$rootScope.$broadcast('shop.carticon.caption');
+					$rootScope.$broadcast('shop.cart.change');
 					isLoading = false;
 				}).catch(function(response) {
 					console.error('Unable to sync quantity: ' + response.statusText);

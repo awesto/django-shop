@@ -8,8 +8,8 @@
 {% page_url 'password-reset-request' as password_reset_url %}
 {% page_url 'shop-register-customer' as register_customer_url %}
 
-<li uib-dropdown class="nav-item dropdown {{ dropdown_extra_class }}"{% if customer.is_anonymous %} auto-close="outsideClick"{% endif %}>
-	<a uib-dropdown-toggle class="nav-link py-0 pl-lg-3 dropdown-toggle" role="button" aria-haspopup="true">
+<li uib-dropdown class="nav-item ml-3 dropdown {{ dropdown_extra_class }}"{% if customer.is_anonymous %} auto-close="outsideClick"{% endif %}>
+	<a uib-dropdown-toggle class="nav-link py-0 dropdown-toggle" role="button" aria-haspopup="true">
 	{% if customer.is_authenticated %}
 		<i class="fa fa-user"></i>&nbsp;{{ customer.first_name|default:customer }}
 	{% else %}
