@@ -1,95 +1,132 @@
 (function(angular, undefined) {
 'use strict';
 
-var djangoShopModule = angular.module('django.shop.catalog', ['ui.bootstrap', 'django.shop.utils']);
+var djangoShopModule = angular.module('django.shop.catalog', ['ui.bootstrap', 'djng.forms', 'django.shop.utils']);
 
-djangoShopModule.controller('AddToCartCtrl', ['$scope', '$http', '$window', '$uibModal',
-                                      function($scope, $http, $window, $uibModal) {
-	var prevContext = null, updateUrl;
-
-	this.setUpdateUrl = function(update_url) {
-		updateUrl = update_url + $window.location.search;
-	};
-
-	this.loadContext = function() {
-		$http.get(updateUrl).then(function(response) {
-			prevContext = response.data;
-			$scope.context = angular.copy(response.data);
-		}).catch(function(ressponse) {
-			console.error('Unable to get context: ' + ressponse.statusText);
-		});
-	};
-
-	$scope.updateContext = function() {
-		if (angular.equals($scope.context, prevContext))
-			return;
-		$http.post(updateUrl, $scope.context).then(function(response) {
-			prevContext = response.data;
-			$scope.context = angular.copy(response.data);
-		}).catch(function(response) {
-			console.error('Unable to update context: ' + response.statusText);
-		});
-	};
-
-	$scope.addToCart = function(cart_url, extra_context) {
-		$uibModal.open({
-			templateUrl: 'AddToCartModalDialog.html',
-			controller: 'ModalInstanceCtrl',
-			resolve: {
-				modal_context: function() {
-					return {
-						cart_url: cart_url,
-						context: angular.extend(angular.isObject(extra_context) ? extra_context : {}, $scope.context)
-					};
-				}
-			}
-		}).result.then(function(next_url) {
-			$window.location.href = next_url;
-		});
-	};
-
-}]);
 
 djangoShopModule.controller('ModalInstanceCtrl',
-    ['$scope', '$http', '$uibModalInstance', 'modal_context',
-    function($scope, $http, $uibModalInstance, modal_context) {
-	var isLoading = false;
-	$scope.proceed = function(next_url) {
-		if (isLoading)
-			return;
-		isLoading = true;
-		$http.post(modal_context.cart_url, $scope.context).then(function() {
-			$uibModalInstance.close(next_url);
-		}).catch(function() {
-			// TODO: tell us something went wrong
-			$uibModalInstance.dismiss('cancel');
-		}).finally(function() {
-			isLoading = false;
-		});
+                            ['$scope', '$http', '$uibModalInstance',
+                            function($scope, $http, $uibModalInstance) {
+	$scope.proceed = function(url) {
+		$uibModalInstance.close({url: url});
 	};
 
-	$scope.cancel = function () {
+	$scope.cancel = function() {
 		$uibModalInstance.dismiss('cancel');
 	};
-
-	$scope.context = angular.copy(modal_context.context);
 }]);
 
 
 // Directive <ANY shop-add-to-cart="REST-API-endpoint">
-// handle dialog box on the product's detail page to add a product to the cart
-djangoShopModule.directive('shopAddToCart', function() {
+// handle dialog box on the product's detail page to add a product to the cart or watch-list
+djangoShopModule.directive('shopAddToCart', ['$http', '$log', function($http, $log) {
 	return {
-		restrict: 'A',
-		controller: 'AddToCartCtrl',
-		link: function(scope, element, attrs, AddToCartCtrl) {
+		controller: angular.noop,
+		restrict: 'EA',
+		require: 'shopAddToCart',
+		scope: true,
+		link: function(scope, element, attrs) {
 			if (!attrs.shopAddToCart)
 				throw new Error("Directive shop-add-to-cart must point onto an URL");
-			AddToCartCtrl.setUpdateUrl(attrs.shopAddToCart);
-			AddToCartCtrl.loadContext();
+
+			// load initial context
+			$http.get(attrs.shopAddToCart).then(function(response) {
+				scope.context = response.data;
+			}).catch(function(ressponse) {
+				$log.error('Unable to get context: ' + ressponse.statusText);
+			});
+
+			scope.updateContext = function() {
+				$http.post(attrs.shopAddToCart, scope.context).then(function(response) {
+					scope.context = response.data;
+				}).catch(function(response) {
+					$log.error('Unable to update context: ' + response.statusText);
+				});
+			};
 		}
 	};
-});
+}]);
+
+
+djangoShopModule.directive('button', ['$http', '$log', '$q', '$uibModal', '$window', 'djangoForm',
+                           function($http, $log, $q, $uibModal, $window, djangoForm) {
+	return {
+		restrict: 'E',
+		require: '^?shopAddToCart',
+		scope: true,
+		link: function (scope, element, attrs, controller) {
+			if (!controller)
+				return;
+
+			// prefix functions openModal/addToCart/redirectTo with: do(...).then(...)
+			// to create the initial promise
+			scope.do = function(resolve, reject) {
+				return $q.resolve().then(resolve, reject);
+			};
+
+			scope.openModal = function(modalTitle) {
+				return function() {
+					scope.context.modalTitle = modalTitle;
+					return $uibModal.open({
+						templateUrl: 'AddToCartModalDialog.html',
+						controller: 'ModalInstanceCtrl'
+					}).result;
+				};
+			};
+
+			scope.addToCart = function(endpoint) {
+				return function(context) {
+					var deferred = $q.defer();
+					$http.post(endpoint, scope.context).then(function(response) {
+						scope.context.is_in_cart = true;
+						deferred.resolve(context);
+					}).catch(function(response) {
+						$log.error('Unable to update context: ' + response.statusText);
+						deferred.reject();
+					});
+					return deferred.promise;
+				};
+			};
+
+			scope.redirectTo = function(url) {
+				return function(response) {
+					if (angular.isDefined(response.url)) {
+						$window.location.assign(response.url);
+					} else if (angular.isDefined(url)) {
+						$window.location.assign(url);
+					}
+				};
+			};
+
+			scope.showOK = function() {
+				return function(response) {
+					angular.forEach(element.find('i'), function(icon) {
+						icon = angular.element(icon);
+						if (!icon.data('remember-class')) {
+							icon.data('remember-class', icon.attr('class'));
+						}
+						icon.attr('class', djangoForm.buttonClasses.showOK);
+					});
+					return $q.resolve(response);
+				};
+			};
+
+			scope.restore = function() {
+				return function(response) {
+					scope.disabled = false;
+					angular.forEach(element.find('i'), function(icon) {
+						icon = angular.element(icon);
+						if (icon.data('remember-class')) {
+							icon.attr('class', icon.data('remember-class'));
+							icon.removeData('remember-class');
+						}
+					});
+					return $q.resolve(response);
+				};
+			};
+		}
+	};
+}]);
 
 
 djangoShopModule.controller('CatalogListController', ['$log', '$scope', '$http', 'djangoShop',
@@ -192,7 +229,7 @@ djangoShopModule.directive('shopSyncCatalogItem', function() {
 		restrict: 'A',
 		require: ['^shopSyncCatalog', 'shopSyncCatalogItem'],
 		scope: true,
-		controller: ['$http', '$rootScope', '$scope', function($http, $rootScope, $scope) {
+		controller: ['$http', '$log', '$rootScope', '$scope', function($http, $log, $rootScope, $scope) {
 			var self = this, prev_item = null, isLoading = false;
 
 			$scope.syncQuantity = function() {
@@ -207,7 +244,7 @@ djangoShopModule.directive('shopSyncCatalogItem', function() {
 					$rootScope.$broadcast('shop.cart.change');
 					isLoading = false;
 				}).catch(function(response) {
-					console.error('Unable to sync quantity: ' + response.statusText);
+					$log.error('Unable to sync quantity: ' + response.statusText);
 					isLoading = false;
 				});
 			};
