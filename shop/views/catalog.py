@@ -304,7 +304,10 @@ class ProductRetrieveView(generics.RetrieveAPIView):
         renderer_context = super(ProductRetrieveView, self).get_renderer_context()
         if renderer_context['request'].accepted_renderer.format == 'html':
             # add the product as Python object to the context
-            renderer_context['product'] = self.get_object()
+            renderer_context.update(
+                product=self.get_object(),
+                use_modal_dialog=True,
+            )
         return renderer_context
 
     def get_object(self):

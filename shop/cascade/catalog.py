@@ -65,6 +65,13 @@ class ShopAddToCartPlugin(ShopPluginBase):
     parent_classes = ('BootstrapColumnPlugin',)
     cache = False
 
+    use_modal_dialog = GlossaryField(
+        widgets.CheckboxInput(),
+        label=_("Use Modal Dialog"),
+        initial='on',
+        help_text=_("After adding product to cart, render a modal dialog"),
+    )
+
     def get_render_template(self, context, instance, placeholder):
         templates = []
         if instance.glossary.get('render_template'):
@@ -74,6 +81,11 @@ class ShopAddToCartPlugin(ShopPluginBase):
             'shop/catalog/product-add2cart.html',
         ])
         return select_template(templates)
+
+    def render(self, context, instance, placeholder):
+        context = super(ShopAddToCartPlugin, self).render(context, instance, placeholder)
+        context['use_modal_dialog'] = bool(instance.glossary.get('use_modal_dialog', True))
+        return context
 
 plugin_pool.register_plugin(ShopAddToCartPlugin)
 
