@@ -9,7 +9,7 @@
 {% endif %}
 {% url 'shop:cart-fetch-dropdown' as endpoint %}
 
-<li class="nav-item ml-3{% if has_dropdown %} dropdown{% endif %}"{% if has_dropdown %} uib-dropdown is-open="dropdownOpen" shop-dropdown-cart{% else %} uib-tooltip="{{ tooltip }}" tooltip-placement="left"{% endif %} shop-cart="{{ endpoint }}">
+<li class="nav-item ml-3{% if has_dropdown %} dropdown{% endif %}" {% if has_dropdown %}uib-dropdown is-open="dropdownOpen"{% else %}uib-tooltip="{{ tooltip }}" tooltip-placement="left"{% endif %} shop-dropdown-cart="{{ endpoint }}">
 	<a class="nav-link p-0"{% if shop_cart_url %} href="{{ shop_cart_url }}"{% endif %} title="{{ tooltip }}">
 	{% block carticon %}
 		<i class="fa fa-shopping-cart fa-fw mr-1"></i>
@@ -29,7 +29,9 @@
 				</div>
 			</div>
 			{% endverbatim %}
-			<div class="dropdown-item text-muted" ng-if="$index==3">{% trans "and {{ cart.num_items-3 }} more items." %}</div>
+			<div class="dropdown-item text-muted" ng-if="$index==3">
+				{% blocktrans with remaining='{{ cart.num_items-3 }}' %}and {{ remaining }} <a href="{{ shop_cart_url }}">more items</a>.{% endblocktrans %}
+			</div>
 		</div>
 		{% endblock dropdown-menu %}
 		<div class="dropdown-item d-flex lead">

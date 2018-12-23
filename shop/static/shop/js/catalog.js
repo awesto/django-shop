@@ -5,8 +5,8 @@ var djangoShopModule = angular.module('django.shop.catalog', ['ui.bootstrap', 'd
 
 
 djangoShopModule.controller('ModalInstanceCtrl',
-                            ['$scope', '$http', '$uibModalInstance',
-                            function($scope, $http, $uibModalInstance) {
+                            ['$scope', '$http', '$uibModalInstance', 'context',
+                            function($scope, $http, $uibModalInstance, context) {
 	$scope.proceed = function(url) {
 		$uibModalInstance.close({url: url});
 	};
@@ -14,6 +14,8 @@ djangoShopModule.controller('ModalInstanceCtrl',
 	$scope.cancel = function() {
 		$uibModalInstance.dismiss('cancel');
 	};
+
+	$scope.context = context;
 }]);
 
 
@@ -48,8 +50,9 @@ djangoShopModule.directive('shopAddToCart', ['$http', '$log', function($http, $l
 }]);
 
 
-djangoShopModule.directive('button', ['$http', '$log', '$q', '$uibModal', '$window', 'djangoForm',
-                           function($http, $log, $q, $uibModal, $window, djangoForm) {
+djangoShopModule.directive('button',
+                           ['$http', '$log', '$q', '$rootScope', '$uibModal', '$window', 'djangoForm',
+                           function($http, $log, $q, $rootScope, $uibModal, $window, djangoForm) {
 	return {
 		restrict: 'E',
 		require: '^?shopAddToCart',
@@ -69,7 +72,12 @@ djangoShopModule.directive('button', ['$http', '$log', '$q', '$uibModal', '$wind
 					scope.context.modalTitle = modalTitle;
 					return $uibModal.open({
 						templateUrl: 'AddToCartModalDialog.html',
-						controller: 'ModalInstanceCtrl'
+						controller: 'ModalInstanceCtrl',
+						resolve: {
+							context: function() {
+								return scope.context;
+							}
+						}
 					}).result;
 				};
 			};
@@ -88,6 +96,13 @@ djangoShopModule.directive('button', ['$http', '$log', '$q', '$uibModal', '$wind
 				};
 			};
 
+			scope.emit = function(event) {
+				return function(response) {
+					$rootScope.$emit(event);
+					return $q.resolve(response);
+				};
+			};
+
 			scope.redirectTo = function(url) {
 				return function(response) {
 					if (angular.isDefined(response.url)) {
@@ -95,33 +110,6 @@ djangoShopModule.directive('button', ['$http', '$log', '$q', '$uibModal', '$wind
 					} else if (angular.isDefined(url)) {
 						$window.location.assign(url);
 					}
-				};
-			};
-
-			scope.showOK = function() {
-				return function(response) {
-					angular.forEach(element.find('i'), function(icon) {
-						icon = angular.element(icon);
-						if (!icon.data('remember-class')) {
-							icon.data('remember-class', icon.attr('class'));
-						}
-						icon.attr('class', djangoForm.buttonClasses.showOK);
-					});
-					return $q.resolve(response);
-				};
-			};
-
-			scope.restore = function() {
-				return function(response) {
-					scope.disabled = false;
-					angular.forEach(element.find('i'), function(icon) {
-						icon = angular.element(icon);
-						if (icon.data('remember-class')) {
-							icon.attr('class', icon.data('remember-class'));
-							icon.removeData('remember-class');
-						}
-					});
-					return $q.resolve(response);
 				};
 			};
 		}
