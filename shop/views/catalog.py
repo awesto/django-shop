@@ -30,7 +30,7 @@ from shop.rest.filters import CMSPagesFilterBackend
 from shop.rest.money import JSONRenderer
 from shop.rest.renderers import ShopTemplateHTMLRenderer, CMSPageRenderer
 from shop.serializers.bases import ProductSerializer
-from shop.serializers.defaults import AddToCartSerializer
+from shop.serializers.defaults.catalog import AddToCartSerializer
 
 
 class ProductListPagination(pagination.LimitOffsetPagination):

@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from rest_framework.fields import empty
 
 from shop.serializers.bases import ProductSerializer
-from shop.serializers.defaults import AddToCartSerializer
+from shop.serializers.defaults.catalog import AddToCartSerializer
 
 from myshop.models import SmartCard, SmartPhoneModel
 
