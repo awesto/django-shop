@@ -47,7 +47,7 @@ class ShopLeftExtension(TransparentContainer, ShopPluginBase):
     require_parent = True
     parent_classes = ('ShopCartPlugin', 'ShopOrderViewsPlugin')
     allow_children = True
-    render_template = 'cascade/generic/naked.html'
+    render_template = 'cascade/generic/wrapper.html'
 
 plugin_pool.register_plugin(ShopLeftExtension)
 
@@ -57,6 +57,6 @@ class ShopRightExtension(TransparentContainer, ShopPluginBase):
     require_parent = True
     parent_classes = ('ShopCartPlugin', 'ShopOrderViewsPlugin')
     allow_children = True
-    render_template = 'cascade/generic/naked.html'
+    render_template = 'cascade/generic/wrapper.html'
 
 plugin_pool.register_plugin(ShopRightExtension)
