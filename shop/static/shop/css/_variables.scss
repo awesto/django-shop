@@ -1,5 +1,12 @@
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+
 // configure the font include pathes
 $fa-font-path: unquote(get-setting(NODE_MODULES_URL) + "font-awesome/fonts");
 
 // navbar
 $navbar-extra-top-height: 50px;
+
+// cart
+$cart-item-hover-bg: $gray-100 !important;
+$cart-border-color: $gray-500 !important;

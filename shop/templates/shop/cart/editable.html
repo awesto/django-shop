@@ -2,7 +2,7 @@
 {% load page_url from cms_tags %}
 {% load render_plugin from cascade_tags %}
 
-{% addtoblock "css" %}<link href="{% sass_src 'shop/css/tables.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+{% addtoblock "css" %}<link href="{% sass_src 'shop/css/cart.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 
 {% addtoblock "js" %}<script src="{% static 'djng/js/django-angular.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% add_data "ng-requires" "djng.forms" %}
@@ -12,84 +12,66 @@
 
 {% page_url "shop-watch-list" as shop_watch_list_url %}{% if not shop_watch_list_url %}{% url "shop-watch-list" as shop_watch_list_url %}{% endif %}
 
-{% block shop-cart-table %}
-<table shop-cart="{% url 'shop:cart-list' %}" class="table table-hover">
-	{% block shop-cart-thead %}
-	<thead ng-if="cart.num_items>0">
-		<tr>
-			<th class="text-center">{% trans "Quantity" %}</th>
-			<th class="w-50 text-center">{% trans "Product" %}</th>
-			<th class="text-right">{% trans "Unit Price" %}</th>
-			<th class="text-right">{% trans "Total" %}</th>
-			<th></th>
-		</tr>
-	</thead>
-	{% endblock shop-cart-thead %}
+<div shop-cart="{% url 'shop:cart-list' %}">
+	{% block shop-cart-head %}
+	<div class="row lead text-muted" ng-if="cart.num_items>0">
+		<div class="col-1 text-center">{% trans "Quantity" %}</div>
+		<div class="col-7 text-center">{% trans "Product" %}</div>
+		<div class="col-2 text-right">{% trans "Unit Price" %}</div>
+		<div class="col-2 text-right">{% trans "Total" %}</div>
+	</div>
+	<div class="row lead text-muted" ng-if="cart.num_items==0">
+		<div class="col">
+			{% trans "There are no items in the cart" %}
+		</div>
+	</div>
+	{% endblock shop-cart-head %}
 
-	{% block shop-cart-tbody %}
-	<tbody>
-		<tr shop-cart-item ng-repeat="cart_item in cart.items">
-		{% block shop-cart-item %}
-			<td>
-				<input type="number" class="form-control" ng-model="cart_item.quantity" ng-model-options="{{ EDITCART_NG_MODEL_OPTIONS }}" ng-change="updateCartItem(cart_item)" />
-			</td>
-			<td ng-bind-html="cart_item.summary.media">
-				{# rendered by ProductSerializer using template "(myshop|shop)/products/cart-<product_model>-media.html" #}
-			</td>
-			<td class="text-right text-nowrap">
-				<span ng-bind="cart_item.unit_price"></span>
-				<div ng-repeat="extra_row in cart_item.extra_rows" ng-bind="extra_row.label"></div>
-			</td>
-			<td class="text-right text-nowrap">
-				<span ng-bind="cart_item.line_total"></span>
-				<div ng-repeat="extra_row in cart_item.extra_rows" ng-bind="extra_row.amount"></div>
-			</td>
-			<td>
-			{% block shop-cart-item-controls %}
-				<button type="button" class="btn btn-sm btn-secondary btn-block" ng-click="deleteCartItem(cart_item)">
-					<span class="fa fa-trash-o"></span>&nbsp;{% trans "Remove" %}
-				</button>
-				{% if shop_watch_list_url %}
-				<button type="button" class="btn btn-sm btn-info btn-block" ng-click="watchCartItem(cart_item)">
-					<span class="fa fa-heart-o"></span>&nbsp;{% trans "Watch Item" %}
-				</button>
-				{% endif %}
-			{% endblock %}
-			</td>
-		{% endblock shop-cart-item %}
-		</tr>
-	</tbody>
-	{% endblock shop-cart-tbody %}
+	{% block shop-cart-body %}
+	<div class="row border-top py-3" shop-cart-item ng-repeat="cart_item in cart.items">
+		<div class="col-1">
+			<input type="number" class="form-control" ng-model="cart_item.quantity" ng-model-options="{{ EDITCART_NG_MODEL_OPTIONS }}" ng-change="updateCartItem(cart_item)" />
+		</div>
+		<div class="col-7" ng-bind-html="cart_item.summary.media">
+			{# rendered by ProductSerializer using template "(myshop|shop)/products/cart-{product_model}-media.html" #}
+		</div>
+		<div class="col-2 text-right">
+			<span ng-bind="cart_item.unit_price"></span>
+			<div ng-repeat="extra_row in cart_item.extra_rows" ng-bind="extra_row.label"></div>
+		</div>
+		<div class="col-2 text-right">
+			<span ng-bind="cart_item.line_total"></span>
+			<div ng-repeat="extra_row in cart_item.extra_rows" ng-bind="extra_row.amount"></div>
+		</div>
+	</div>
+	{% endblock shop-cart-body %}
 
-	{% block shop-cart-tfoot %}
-	<tfoot>
-		<tr>
-			<td colspan="2" rowspan="99">
-				<div ng-if="cart.items.length===0" class="text-muted mb-3" ng-cloak>
-					{% trans "There are no items in the cart" %}
+	{% block shop-cart-foot %}
+	<div class="row">
+		<div class="col-8">
+			{% if instance.left_extension %}{% render_plugin instance.left_extension %}{% endif %}
+		</div>
+		<div class="col-4 border-top">
+			<div class="row py-1">
+				<div class="col text-right text-nowrap font-weight-bold">
+					{% trans "Subtotal" %}
 				</div>
-				{% if instance.left_extension %}{% render_plugin instance.left_extension %}{% endif %}
-			</td>
-			<td class="text-right text-nowrap font-weight-bold">{% trans "Subtotal" %}</td>
-			<td class="text-right text-nowrap font-weight-bold" ng-bind="cart.subtotal"><!-- Subtotal --></td>
-			<td></td>
-		</tr>
-		<tr ng-repeat="extra_row in cart.extra_rows">
-			<td class="text-right text-nowrap" ng-bind="extra_row.label"></td>
-			<td class="text-right text-nowrap" ng-bind="extra_row.amount"></td>
-			<td></td>
-		</tr>
-		<tr class="double-border">
-			<td class="text-right text-nowrap lead font-weight-bold">{% trans "Total" %}</td>
-			<td class="text-right text-nowrap lead font-weight-bold" ng-bind="cart.total"><!-- Total --></td>
-			<td></td>
-		</tr>
-		<tr class="no-border">
-			<td colspan="3" rowspan="0">
-				{% if instance.right_extension %}{% render_plugin instance.right_extension %}{% endif %}
-			</td>
-		</tr>
-	</tfoot>
-	{% endblock shop-cart-tfoot %}
-</table>
-{% endblock shop-cart-table %}
+				<div class="col text-right text-nowrap font-weight-bold" ng-bind="cart.subtotal">
+					<!-- Subtotal -->
+				</div>
+			</div>
+			<div class="row py-1" ng-repeat="extra_row in cart.extra_rows">
+				<div class="col text-right text-nowrap" ng-bind="extra_row.label"></div>
+				<div class="col text-right text-nowrap" ng-bind="extra_row.amount"></div>
+			</div>
+			<div class="row py-1 cart-total">
+				<div class="col text-right text-nowrap lead font-weight-bold">{% trans "Total" %}</div>
+				<div class="col text-right text-nowrap lead font-weight-bold" ng-bind="cart.total">
+					<!-- Total -->
+				</div>
+			</div>
+			{% if instance.right_extension %}{% render_plugin instance.right_extension %}{% endif %}
+		</div>
+	</div>
+	{% endblock shop-cart-foot %}
+</div>

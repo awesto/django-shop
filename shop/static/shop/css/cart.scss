@@ -1,0 +1,15 @@
+@import "variables";
+
+*[shop-cart] {
+	*[shop-cart-item] {
+		border-color: $cart-border-color;
+		&:hover {
+			background-color: $cart-item-hover-bg;
+		}
+	}
+	.cart-total {
+		border-top-width: 3px;
+		border-top-style: double;
+		border-top-color: $cart-border-color;
+	}
+}
