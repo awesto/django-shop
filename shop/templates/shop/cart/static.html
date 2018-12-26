@@ -1,7 +1,81 @@
-{% load i18n sass_tags sekizai_tags %}
+{% load i18n cms_tags sass_tags sekizai_tags %}
 
-{% addtoblock "css" %}<link href="{% sass_src 'shop/css/tables.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+{% addtoblock "css" %}<link href="{% sass_src 'shop/css/cart.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 
+<div class="shop-cart">
+{% block shop-cart-head %}
+	<div class="row lead text-muted">
+	{% if cart.num_items > 0 %}
+		<div class="col-1 text-center">{% trans "Quantity" %}</div>
+		<div class="col-7 text-center">{% trans "Product" %}</div>
+		<div class="col-2 text-right">{% trans "Unit Price" %}</div>
+		<div class="col-2 text-right">{% trans "Total" %}</div>
+	{% else %}
+		<div class="col">
+			{% trans "There are no items in the cart" %}
+		</div>
+	{% endif %}
+	</div>
+{% endblock shop-cart-head %}
+
+{% block shop-cart-body %}
+	{% for cart_item in cart.items %}
+	<div class="shop-cart-item row border-top py-3">
+		<div class="col-1 text-center">{{ cart_item.quantity }}</div>
+		<div class="col-7 text-left">{{ cart_item.summary.media }}</div>
+		<div class="col-2 text-right">
+		{{ cart_item.unit_price }}
+		{% for extra_row in cart_item.extra_rows %}
+			<div>{{ extra_row.label }}</div>
+		{% endfor %}
+		</div>
+		<div class="col-2 text-right">
+		{{ cart_item.line_total }}
+		{% for extra_row in cart_item.extra_rows %}
+			<div>{{ extra_row.amount }}</div>
+		{% endfor %}
+		</div>
+	</div>
+	{% endfor %}
+{% endblock shop-cart-body %}
+
+{% block shop-cart-foot %}
+	<div class="row">
+		<div class="col-8">
+			{% if instance.left_extension %}{% render_plugin instance.left_extension %}{% endif %}
+		</div>
+		<div class="col-4 border-top">
+			<div class="row py-2">
+				<div class="col text-right text-nowrap font-weight-bold">
+					{% trans "Subtotal" %}
+				</div>
+				<div class="col text-right text-nowrap font-weight-bold" djng-bind-if="cart.subtotal">
+					{{ cart.subtotal }}
+				</div>
+			</div>
+	{% for extra_row in cart.extra_rows %}
+			<div class="row py-2" ng-if="!cart">
+				<div class="col text-right text-nowrap">{{ extra_row.label }}</div>
+				<div class="col text-right text-nowrap">{{ extra_row.amount }}</div>
+			</div>
+	{% endfor %}
+			<div class="row py-2" ng-cloak ng-if="cart" ng-repeat="extra_row in cart.extra_rows">
+				<div class="col text-right text-nowrap" ng-bind="extra_row.label"></div>
+				<div class="col text-right text-nowrap" ng-bind="extra_row.amount"></div>
+			</div>
+			<div class="row py-3 cart-total">
+				<div class="col text-right text-nowrap lead font-weight-bold">{% trans "Total" %}</div>
+				<div class="col text-right text-nowrap lead font-weight-bold" djng-bind-if="cart.total">
+					{{ cart.total }}
+				</div>
+			</div>
+			{% if instance.right_extension %}{% render_plugin instance.right_extension %}{% endif %}
+		</div>
+	</div>
+{% endblock shop-cart-foot %}
+</div>
+
+{% comment %}
 <table class="table table-condensed">
 
 {% block shop-cart-thead %}
@@ -70,3 +144,4 @@
 {% endblock shop-cart-tfoot %}
 
 </table>
+{% endcomment %}

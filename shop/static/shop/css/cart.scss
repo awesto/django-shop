@@ -1,7 +1,7 @@
 @import "variables";
 
-*[shop-cart] {
-	*[shop-cart-item] {
+.shop-cart {
+	.shop-cart-item {
 		border-color: $cart-border-color;
 		&:hover {
 			background-color: $cart-item-hover-bg;
