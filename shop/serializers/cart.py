@@ -123,7 +123,7 @@ class CartSerializer(BaseCartSerializer):
 
     def represent_items(self, cart):
         if self.with_items == CartItems.unsorted:
-            items = CartItemModel.objects.filter(cart=cart, quantity__gt=0).order_by('-id')
+            items = CartItemModel.objects.filter(cart=cart, quantity__gt=0).order_by('-updated_at')
         else:
             items = CartItemModel.objects.filter_cart_items(cart, self.context['request'])
         serializer = CartItemSerializer(items, context=self.context, label=self.label, many=True)
@@ -142,7 +142,7 @@ class WatchSerializer(BaseCartSerializer):
 
     def represent_items(self, cart):
         if self.with_items == CartItems.unsorted:
-            items = CartItemModel.objects.filter(cart=cart, quantity=0).order_by('-id')
+            items = CartItemModel.objects.filter(cart=cart, quantity=0).order_by('-updated_at')
         else:
             items = CartItemModel.objects.filter_watch_items(cart, self.context['request'])
         serializer = WatchItemSerializer(items, context=self.context, label=self.label, many=True)

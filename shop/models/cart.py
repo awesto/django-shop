@@ -50,7 +50,7 @@ class CartItemManager(models.Manager):
         Use this method to fetch items for shopping from the cart. It rearranges the result set
         according to the defined modifiers.
         """
-        cart_items = self.filter(cart=cart, quantity__gt=0).order_by('id')
+        cart_items = self.filter(cart=cart, quantity__gt=0).order_by('updated_at')
         for modifier in cart_modifiers_pool.get_all_modifiers():
             cart_items = modifier.arrange_cart_items(cart_items, request)
         return cart_items
@@ -84,6 +84,11 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         null=True,
         blank=True,
         help_text=_("Product code of added item."),
+    )
+
+    updated_at = models.DateTimeField(
+        _("Updated at"),
+        auto_now=True,
     )
 
     extra = JSONField(verbose_name=_("Arbitrary information for this cart item"))
