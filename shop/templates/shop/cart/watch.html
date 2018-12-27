@@ -20,7 +20,7 @@
 {% endblock shop-watch-head %}
 
 {% block shop-watch-body %}
-	<div class="shop-cart-item row border-top py-3" shop-cart-item ng-repeat="cart_item in cart.items" ng-init="cart_item.quantity=1">
+	<div class="shop-list-item row border-top py-3" shop-cart-item ng-repeat="cart_item in cart.items" ng-init="cart_item.quantity=1">
 		<div class="col-7" ng-bind-html="cart_item.summary.media">
 			{# rendered by ProductSerializer using template "(myshop|shop)/products/cart-{product_model}-media.html" #}
 		</div>
