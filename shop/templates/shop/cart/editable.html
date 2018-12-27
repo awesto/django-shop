@@ -2,7 +2,7 @@
 {% load page_url from cms_tags %}
 {% load render_plugin from cascade_tags %}
 
-{% addtoblock "css" %}<link href="{% sass_src 'shop/css/cart.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+{% addtoblock "css" %}<link href="{% sass_src 'shop/css/tables.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 
 {% addtoblock "js" %}<script src="{% static 'djng/js/django-angular.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% add_data "ng-requires" "djng.forms" %}
@@ -14,7 +14,7 @@
 
 <div class="shop-cart" shop-cart="{% url 'shop:cart-list' %}">
 {% block shop-cart-head %}
-	<div class="row lead text-muted" ng-if="cart.num_items>0">
+	<div class="row lead text-muted py-1" ng-if="cart.num_items>0">
 		<div class="col-1 text-center">{% trans "Quantity" %}</div>
 		<div class="col-5 text-center">{% trans "Product" %}</div>
 		<div class="col-2 text-right">{% trans "Unit Price" %}</div>
@@ -28,20 +28,22 @@
 {% endblock shop-cart-head %}
 
 {% block shop-cart-body %}
-	<div class="shop-cart-item row border-top py-3" shop-cart-item ng-repeat="cart_item in cart.items">
+	<div class="shop-list-item row border-top py-3" shop-cart-item ng-repeat="cart_item in cart.items">
 		<div class="col-1">
 			<input type="number" class="form-control" ng-model="cart_item.quantity" ng-model-options="{{ EDITCART_NG_MODEL_OPTIONS }}" ng-change="updateCartItem(cart_item)" />
 		</div>
 		<div class="col-5" ng-bind-html="cart_item.summary.media">
 			{# rendered by ProductSerializer using template "(myshop|shop)/products/cart-{product_model}-media.html" #}
 		</div>
-		<div class="col-2 text-right">
-			<span ng-bind="cart_item.unit_price"></span>
-			<div ng-repeat="extra_row in cart_item.extra_rows" ng-bind="extra_row.label"></div>
-		</div>
-		<div class="col-2 text-right">
-			<span ng-bind="cart_item.line_total"></span>
-			<div ng-repeat="extra_row in cart_item.extra_rows" ng-bind="extra_row.amount"></div>
+		<div class="col-4">
+			<div class="row">
+				<div class="col text-right text-nowrap" ng-bind="cart_item.unit_price"></div>
+				<div class="col text-right text-nowrap" ng-bind="cart_item.line_total"></div>
+			</div>
+			<div class="row" ng-repeat="extra_row in cart_item.extra_rows">
+				<div class="col text-right text-nowrap" ng-bind="extra_row.label"></div>
+				<div class="col text-right text-nowrap" ng-bind="extra_row.amount"></div>
+			</div>
 		</div>
 		<div class="col-2">
 	{% block shop-cart-item-controls %}
@@ -76,7 +78,7 @@
 				<div class="col text-right text-nowrap" ng-bind="extra_row.label"></div>
 				<div class="col text-right text-nowrap" ng-bind="extra_row.amount"></div>
 			</div>
-			<div class="row py-3 cart-total">
+			<div class="row py-3 shop-double-border">
 				<div class="col text-right text-nowrap lead font-weight-bold">{% trans "Total" %}</div>
 				<div class="col text-right text-nowrap lead font-weight-bold" ng-bind="cart.total">
 					<!-- Total -->

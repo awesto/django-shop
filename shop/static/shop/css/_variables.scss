@@ -8,5 +8,8 @@ $fa-font-path: unquote(get-setting(NODE_MODULES_URL) + "font-awesome/fonts");
 $navbar-extra-top-height: 50px;
 
 // cart
-$cart-item-hover-bg: $gray-100 !important;
-$cart-border-color: $gray-500 !important;
+$shop-item-hover-bg: $gray-100 !important;
+$shop-border-color: $gray-300 !important;
+
+// drop "Apple Color Emoji" from Bootstrap's native font stack, otherwise the OK and times icon are rendered in black.
+// $font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";

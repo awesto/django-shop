@@ -1,22 +1,14 @@
-// add useful styling for Bootstrap-4 table class
-.table {
-	tr {
-		&.no-border {
-			td, th {
-				border-top-style: hidden;
-			}
-		}
-		&.double-border {
-			border-top-style: double;
-		}
-		td.no-border, th.no-border {
-			border-top-style: hidden;
-		}
-		td.double-border, th.double-border {
-			border-top-style: double;
-		}
-		td.vertical-align-middle {
-			vertical-align: middle;
-		}
+@import "variables";
+
+.shop-list-item {
+	border-color: $shop-border-color;
+	&:hover {
+		background-color: $shop-item-hover-bg;
 	}
+}
+
+.shop-double-border {
+	border-top-width: 3px;
+	border-top-style: double;
+	border-top-color: $shop-border-color;
 }

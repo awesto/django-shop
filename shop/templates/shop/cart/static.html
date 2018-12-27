@@ -1,10 +1,10 @@
 {% load i18n cms_tags sass_tags sekizai_tags %}
 
-{% addtoblock "css" %}<link href="{% sass_src 'shop/css/cart.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+{% addtoblock "css" %}<link href="{% sass_src 'shop/css/tables.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 
 <div class="shop-cart">
 {% block shop-cart-head %}
-	<div class="row lead text-muted">
+	<div class="row lead text-muted py-1">
 	{% if cart.num_items > 0 %}
 		<div class="col-1 text-center">{% trans "Quantity" %}</div>
 		<div class="col-7 text-center">{% trans "Product" %}</div>
@@ -20,19 +20,19 @@
 
 {% block shop-cart-body %}
 	{% for cart_item in cart.items %}
-	<div class="shop-cart-item row border-top py-3">
+	<div class="shop-list-item row border-top py-3">
 		<div class="col-1 text-center">{{ cart_item.quantity }}</div>
 		<div class="col-7 text-left">{{ cart_item.summary.media }}</div>
-		<div class="col-2 text-right">
-		{{ cart_item.unit_price }}
+		<div class="col-4">
+			<div class="row">
+				<div class="col text-right text-nowrap">{{ cart_item.unit_price }}</div>
+				<div class="col text-right text-nowrap">{{ cart_item.line_total }}</div>
+			</div>
 		{% for extra_row in cart_item.extra_rows %}
-			<div>{{ extra_row.label }}</div>
-		{% endfor %}
-		</div>
-		<div class="col-2 text-right">
-		{{ cart_item.line_total }}
-		{% for extra_row in cart_item.extra_rows %}
-			<div>{{ extra_row.amount }}</div>
+			<div class="row">
+				<div class="col text-right text-nowrap">{{ extra_row.label }}</div>
+				<div class="col text-right text-nowrap">{{ extra_row.amount }}</div>
+			</div>
 		{% endfor %}
 		</div>
 	</div>
@@ -63,7 +63,7 @@
 				<div class="col text-right text-nowrap" ng-bind="extra_row.label"></div>
 				<div class="col text-right text-nowrap" ng-bind="extra_row.amount"></div>
 			</div>
-			<div class="row py-3 cart-total">
+			<div class="row py-3 shop-double-border">
 				<div class="col text-right text-nowrap lead font-weight-bold">{% trans "Total" %}</div>
 				<div class="col text-right text-nowrap lead font-weight-bold" djng-bind-if="cart.total">
 					{{ cart.total }}
