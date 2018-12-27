@@ -117,8 +117,8 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     def save(self, *args, **kwargs):
         super(BaseCartItem, self).save(*args, **kwargs)
+        self.cart.save(update_fields=['updated_at'])
         self._dirty = True
-        self.cart._dirty = True
 
     def update(self, request):
         """
