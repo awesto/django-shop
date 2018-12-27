@@ -17,7 +17,7 @@ from shop.models.order import OrderModel
 
 
 class OrderPagination(LimitOffsetPagination):
-    default_limit = 25
+    default_limit = 15
     template = 'shop/templatetags/paginator.html'
 
 
