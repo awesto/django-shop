@@ -255,6 +255,9 @@ class ProductRetrieveView(generics.RetrieveAPIView):
         by the catalog's product detail view.
 
     :param limit_choices_to: Limit the queryset of product models to these choices.
+
+    :param use_modal_dialog: If ``True``, render a modal dialog to confirm adding the
+           product to the cart, .
     """
 
     renderer_classes = (ShopTemplateHTMLRenderer, JSONRenderer, BrowsableAPIRenderer)
@@ -262,6 +265,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
     product_model = ProductModel
     serializer_class = ProductSerializer
     limit_choices_to = models.Q()
+    use_modal_dialog = True
 
     def dispatch(self, request, *args, **kwargs):
         """
@@ -306,7 +310,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
             # add the product as Python object to the context
             renderer_context.update(
                 product=self.get_object(),
-                use_modal_dialog=True,
+                use_modal_dialog=self.use_modal_dialog,
             )
         return renderer_context
 
