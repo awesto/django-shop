@@ -4,6 +4,7 @@
 
 {% if stylesheet_url %}{% addtoblock "css" %}<link href="{{ stylesheet_url }}" rel="stylesheet" type="text/css" />{% endaddtoblock %}{% endif %}
 
+{% with instance_css_classes=instance.css_classes instance_inline_styles=instance.inline_styles %}
 {% if many %}
 	<div class="alert alert-warning">
 	{% blocktrans %}
@@ -12,16 +13,15 @@
 	</div>
 {% elif data.cancelable %}
 	{% page_url "shop-cart" as shop_cart_url %}
-	{% with instance_css_classes=instance.css_classes instance_inline_styles=instance.inline_styles %}
 	<form name="cancel_order_form" djng-endpoint="{{ request.path_info }}">
 		<button ng-click="do(create({cancel: true})).then(showOK()).then(delay(333)).then(reloadPage())"{% if instance_css_classes %} class="{{ instance_css_classes }}"{% endif %}{% if instance_inline_styles %} style="{{ instance_inline_styles }}"{% endif %}>
 			{{ icon_left }}{{ button_label }}{{ icon_right }}
 		</button>
 	</form>
-	{% endwith %}
 {% else %}
-	<div class="card text-white bg-secondary">
-		<div class="card-body">{% trans "This Order can't be cancelled" %}</div>
+	<div class="{{ instance_css_classes }} disabled">
+		{% trans "This Order can't be cancelled" %}
 	</div>
 {% endif %}
+	{% endwith %}
 {% endspaceless %}
