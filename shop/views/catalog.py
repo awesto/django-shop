@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import os
+import warnings
 from distutils.version import LooseVersion
 
 from django.db import models
@@ -222,6 +223,7 @@ class AddToCartView(views.APIView):
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
+        warnings.warn("Deprecated endpoint")
         context = self.get_context(request, **kwargs)
         serializer = self.serializer_class(data=request.data, context=context)
         if serializer.is_valid():
@@ -256,8 +258,8 @@ class ProductRetrieveView(generics.RetrieveAPIView):
 
     :param limit_choices_to: Limit the queryset of product models to these choices.
 
-    :param use_modal_dialog: If ``True``, render a modal dialog to confirm adding the
-           product to the cart, .
+    :param use_modal_dialog: If ``True`` (default), render a modal dialog to confirm adding the
+        product to the cart.
     """
 
     renderer_classes = (ShopTemplateHTMLRenderer, JSONRenderer, BrowsableAPIRenderer)

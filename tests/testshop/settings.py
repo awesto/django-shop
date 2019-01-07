@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 from django.core.urlresolvers import reverse_lazy
 from django.utils.text import format_lazy
 
+DEBUG = True
+
 ROOT_URLCONF = 'testshop.urls'
 
 SECRET_KEY = 'test'
@@ -120,7 +122,7 @@ LANGUAGE_CODE = 'en'
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 CMS_TEMPLATES = [
-    ('testing.html', 'Default Page'),
+    ('page.html', "Default Page"),
 ]
 
 CMSPLUGIN_CASCADE_PLUGINS = [

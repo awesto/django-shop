@@ -430,7 +430,7 @@ def handle_customer_login(sender, **kwargs):
     Update request.customer to an authenticated Customer
     """
     try:
-        kwargs['request'].customer = kwargs['request'].user.customer
+        kwargs['request'].customer = kwargs['user'].customer
     except (AttributeError, ObjectDoesNotExist):
         kwargs['request'].customer = SimpleLazyObject(lambda: CustomerModel.objects.get_from_request(kwargs['request']))
 
