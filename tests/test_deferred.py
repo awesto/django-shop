@@ -278,7 +278,7 @@ class DeferredTestCase(TestCase):
         self._test_foreign_key(Order, DeferredCustomer, 'customer')
 
     def test_extend_deferred_base_model_allowed_only_once(self):
-        with self.assertRaisesRegexp(ImproperlyConfigured, "Both Model classes 'Product' and 'DeferredProduct' inherited from abstract base class DeferredBaseProduct"):
+        with self.assertRaisesRegex(ImproperlyConfigured, "Both Model classes 'Product' and 'DeferredProduct' inherited from abstract base class DeferredBaseProduct"):
             create_deferred_class('Product', DeferredBaseProduct)
 
     def test_non_abstract_deferred_base_model_allowed(self):
@@ -330,7 +330,7 @@ class DeferredTestCase(TestCase):
 
         create_deferred_class('PendingMappingOrder', PendingMappingBaseOrder)
 
-        with self.assertRaisesRegexp(ImproperlyConfigured, "Deferred foreign key 'PendingMappingOrder.customer' has not been mapped"):
+        with self.assertRaisesRegex(ImproperlyConfigured, "Deferred foreign key 'PendingMappingOrder.customer' has not been mapped"):
             deferred.ForeignKeyBuilder.check_for_pending_mappings()
 
 
@@ -388,5 +388,5 @@ class MaterializedModelTestCase(TestCase):
         Unmapped = create_deferred_base_class('Unmapped')
         UnmappedModel = deferred.MaterializedModel(Unmapped)
 
-        with self.assertRaisesRegexp(ImproperlyConfigured, 'No class implements abstract base model: `Unmapped`.'):
+        with self.assertRaisesRegex(ImproperlyConfigured, 'No class implements abstract base model: `Unmapped`.'):
             UnmappedModel._setup()
