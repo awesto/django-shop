@@ -52,10 +52,12 @@ class OrderManager(models.Manager):
 
     def create_from_cart(self, cart, request):
         """
-        This creates a new empty Order object with a valid order number. This order is not
-        populated with any cart items yet. It must be performed in the next step by calling
-        ``order.populate_from_cart(cart, request)``, otherwise the order object remains in
-        state ``new``.
+        This creates a new empty Order object with a valid order number (many payment service
+        providers require an order number, before the purchase is actually completed). Therefore
+        the order is not populated with any cart items yet; this must be performed in the next step
+        by calling ``order.populate_from_cart(cart, request)``, otherwise the order object remains
+        in state ``new``. The latter can happen, if a payment service provider did not acknowledge
+        a payment, hence the items remain in the cart.
         """
         cart.update(request)
         cart.customer.get_or_assign_number()

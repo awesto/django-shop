@@ -27,7 +27,7 @@ class OrderPermission(BasePermission):
     """
     def has_permission(self, request, view):
         if view.many and request.customer.is_visitor:
-            detail = _("Only signed in customers can view their orders.")
+            detail = _("Only signed in customers can view their list of orders.")
             raise PermissionDenied(detail=detail)
         return True
 
