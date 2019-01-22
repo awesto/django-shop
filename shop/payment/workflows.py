@@ -41,13 +41,12 @@ class ManualPaymentWorkflowMixin(object):
         'prepayment_deposited': _("Prepayment deposited"),
         'no_payment_required': _("No Payment Required"),
     }
+    _manual_payment_transitions = TRANSITION_TARGETS.keys()
 
     def __init__(self, *args, **kwargs):
         if not isinstance(self, BaseOrder):
             raise ImproperlyConfigured("class 'ManualPaymentWorkflowMixin' is not of type 'BaseOrder'")
-
-        CancelOrderWorkflowMixin.CANCELABLE_SOURCES.update(['awaiting_payment', 'prepayment_deposited',
-                                                            'no_payment_required'])
+        CancelOrderWorkflowMixin.CANCELABLE_SOURCES.update(self._manual_payment_transitions)
         super(ManualPaymentWorkflowMixin, self).__init__(*args, **kwargs)
 
     @transition(field='status', source=['created'], target='no_payment_required')
