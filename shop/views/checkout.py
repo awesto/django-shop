@@ -6,7 +6,7 @@ from django.db import transaction
 from django.utils.module_loading import import_string
 
 from rest_framework import status
-from rest_framework.decorators import list_route
+from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
@@ -45,7 +45,7 @@ class CheckoutViewSet(GenericViewSet):
                     if hasattr(p, 'form_class'):
                         self.dialog_forms.add(import_string(p.form_class))
 
-    @list_route(methods=['put'], url_path='upload')
+    @action(methods=['put'], detail=False, url_path='upload')
     def upload(self, request):
         """
         Use this REST endpoint to upload the payload of all forms used to setup the checkout
@@ -91,7 +91,7 @@ class CheckoutViewSet(GenericViewSet):
         else:
             return Response(errors, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
-    @list_route(methods=['get'], url_path='digest')
+    @action(methods=['get'], detail=False, url_path='digest')
     def digest(self, request):
         """
         Returns the summaries of the cart and various checkout forms to be rendered in non-editable fields.
@@ -107,7 +107,7 @@ class CheckoutViewSet(GenericViewSet):
         }
         return Response(data=response_data)
 
-    @list_route(methods=['post'], url_path='purchase')
+    @action(methods=['post'], detail=False, url_path='purchase')
     def purchase(self, request):
         """
         This is the final step on converting a cart into an order object. It normally is used in
