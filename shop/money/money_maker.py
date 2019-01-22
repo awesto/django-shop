@@ -173,19 +173,19 @@ class AbstractMoney(Decimal):
         other = self._assert_addable(other)
         if self.is_nan():
             return Decimal().__le__(other)
-            return self.as_decimal() <= other.as_decimal()
+        return self.as_decimal() <= other.as_decimal()
 
     def __gt__(self, other, context=None):
         other = self._assert_addable(other)
         if self.is_nan():
             return Decimal().__gt__(other)
-            return self.as_decimal() > other.as_decimal()
+        return self.as_decimal() > other.as_decimal()
 
     def __ge__(self, other, context=None):
         other = self._assert_addable(other)
         if self.is_nan():
             return Decimal().__ge__(other)
-            return self.as_decimal() >= other.as_decimal()
+        return self.as_decimal() >= other.as_decimal()
 
     def __deepcopy__(self, memo):
         return self.__class__(self._cents)
