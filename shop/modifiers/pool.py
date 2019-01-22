@@ -41,4 +41,25 @@ class CartModifiersPool(object):
 
         return [m for m in self.get_all_modifiers() if isinstance(m, PaymentModifier)]
 
+    def get_active_shipping_modifier(self, shipping_modifier):
+        """
+        Return the shipping modifier object for the given string.
+        """
+        from shop.shipping.modifiers import ShippingModifier
+
+        for modifier in self.get_all_modifiers():
+            if isinstance(modifier, ShippingModifier) and modifier.is_active(shipping_modifier):
+                return modifier
+
+
+    def get_active_payment_modifier(self, payment_modifier):
+        """
+        Return the payment modifier object for the given string.
+        """
+        from shop.payment.modifiers import PaymentModifier
+
+        for modifier in self.get_all_modifiers():
+            if isinstance(modifier, PaymentModifier) and modifier.is_active(payment_modifier):
+                return modifier
+
 cart_modifiers_pool = CartModifiersPool()

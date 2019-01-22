@@ -7,13 +7,37 @@
 {% add_data "ng-requires" "django.shop.utils" %}
 
 {% block shop-order-title %}
-<h4>{% trans "Order" %} {{ data.number }}
-	<small>{% trans "from" context "order-detail" %} <span shop-timestamp="{{ data.created_at }}"></span></small>
-	<small class="badge badge-primary pull-right">{% trans "Status" %}: {{ data.status }}</small>
-</h4>
+<h3>{% trans "Order" %} {{ data.number }}
+	<small class="ml-1">{% trans "from" context "order-detail" %} <span shop-timestamp="{{ data.created_at }}"></span></small>
+	<small class="badge badge-primary pull-right">{{ data.status }}</small>
+</h3>
+{% endblock %}
+
+{% block shop-order-delivery %}
+<div class="row my-3">
+	<div class="col">
+		<div class="card">
+			<h5 class="card-header">{% trans "Shipping Address" %}</h5>
+			<div class="card-body">
+				<pre class="card-text">{{ data.shipping_address_text }}</pre>
+			</div>
+			<div class="card-footer text-primary">{% trans "Shipping Method" %}: {{ data.active_shipping_method.label }}</div>
+		</div>
+	</div>
+	<div class="col">
+		<div class="card">
+			<h5 class="card-header">{% trans "Billing Address" %}</h5>
+			<div class="card-body">
+				<pre class="card-text">{{ data.billing_address_text }}</pre>
+			</div>
+			<div class="card-footer text-primary">{% trans "Payment Method" %}: {{ data.active_payment_method.label }}</div>
+		</div>
+	</div>
+</div>
 {% endblock %}
 
 {% block shop-order-head %}
+<h4>{% trans "Ordered Items" %}</h4>
 <div class="row lead text-muted py-1">
 	<div class="col-2 text-center">{% trans "Quantity" %}</div>
 	<div class="col-6 text-center">{% trans "Product" %}</div>
@@ -49,8 +73,8 @@
 </div>
 {% endfor %}{% endblock shop-order-body %}
 
-{% block shop-cart-foot %}
-<div class="row">
+{% block shop-order-foot %}
+<div class="row mb-3">
 	<div class="col-8">
 	{% if instance.left_extension %}{% render_plugin instance.left_extension %}{% endif %}
 	</div>
@@ -69,11 +93,11 @@
 			<div class="col text-right text-nowrap">{{ extra_row.amount }}</div>
 		</div>
 	{% endfor %}
-		<div class="row py-3 shop-double-border">
+		<div class="row py-2 shop-double-border">
 			<div class="col text-right text-nowrap lead font-weight-bold">{% trans "Total" %}</div>
 			<div class="col text-right text-nowrap lead font-weight-bold">{{ data.total }}</div>
 		</div>
 	{% if instance.right_extension %}{% render_plugin instance.right_extension %}{% endif %}
 	</div>
 </div>
-{% endblock shop-cart-foot %}
+{% endblock shop-order-foot %}
