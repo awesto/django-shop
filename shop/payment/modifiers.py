@@ -29,12 +29,12 @@ class PaymentModifier(BaseCartModifier):
         """
         raise NotImplemented("Must be implemented by the inheriting class")
 
-    def is_active(self, cart):
+    def is_active(self, payment_modifier):
         """
         Returns true if this payment modifier is active.
         """
         assert hasattr(self, 'payment_provider'), "A Payment Modifier requires a Payment Provider"
-        return cart.extra.get('payment_modifier') == self.payment_provider.namespace
+        return payment_modifier == self.payment_provider.namespace
 
     def is_disabled(self, cart):
         """
@@ -54,7 +54,7 @@ class PaymentModifier(BaseCartModifier):
             context['payment_modifiers'] = {}
         try:
             cart = CartModel.objects.get_from_request(context['request'])
-            if self.is_active(cart):
+            if self.is_active(cart.extra.get('payment_modifier')):
                 cart.update(context['request'])
                 data = cart.extra_rows[self.identifier].data
                 data.update(modifier=self.identifier)

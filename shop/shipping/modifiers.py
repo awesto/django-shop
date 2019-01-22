@@ -16,11 +16,11 @@ class ShippingModifier(BaseCartModifier):
         """
         raise NotImplemented("Must be implemented by the inheriting class")
 
-    def is_active(self, cart):
+    def is_active(self, shipping_modifier):
         """
         Returns true if this shipping modifier is active.
         """
-        return cart.extra.get('shipping_modifier') == self.identifier
+        return shipping_modifier == self.identifier
 
     def is_disabled(self, cart):
         """
@@ -40,7 +40,7 @@ class ShippingModifier(BaseCartModifier):
             context['shipping_modifiers'] = {}
         try:
             cart = CartModel.objects.get_from_request(context['request'])
-            if self.is_active(cart):
+            if self.is_active(cart.extra.get('shipping_modifier')):
                 cart.update(context['request'])
                 data = cart.extra_rows[self.identifier].data
                 data.update(modifier=self.identifier)

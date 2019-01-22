@@ -122,7 +122,7 @@ class CheckoutViewSet(GenericViewSet):
         try:
             # Iterate over the registered modifiers, and search for the active payment service provider
             for modifier in cart_modifiers_pool.get_payment_modifiers():
-                if modifier.is_active(cart):
+                if modifier.is_active(cart.extra.get('payment_modifier')):
                     expression = modifier.payment_provider.get_payment_request(cart, request)
                     response_data.update(expression=expression)
                     break
