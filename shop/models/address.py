@@ -70,7 +70,7 @@ class BaseBillingAddress(with_metaclass(deferred.ForeignKeyBuilder, BaseAddress)
 
 BillingAddressModel = deferred.MaterializedModel(BaseBillingAddress)
 
-ISO_3166_CODES = (
+ISO_3166_CODES = [
     ('AF', _("Afghanistan")),
     ('AX', _("Aland Islands")),
     ('AL', _("Albania")),
@@ -319,7 +319,7 @@ ISO_3166_CODES = (
     ('YE', _("Yemen")),
     ('ZM', _("Zambia")),
     ('ZW', _("Zimbabwe")),
-)
+]
 
 class CountryField(models.CharField):
     """
