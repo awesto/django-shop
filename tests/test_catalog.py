@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.contrib.auth.models import AnonymousUser
 from django.urls import reverse
-from shop.models.cart import CartModel
+from shop.models.cart import CartModel, CartItemModel
 from shop.models.customer import CustomerModel
 from shop.views.catalog import ProductListView, ProductRetrieveView, AddToCartView
 import pytest
@@ -50,11 +50,11 @@ def test_get_add_to_cart(commodity_factory, customer_factory, rf):
 
 
 @pytest.mark.django_db
-def test_merge_with_cart(registered_customer, api_client, rf, cart):
-    # check that the cart for the registered customer is empty
-    request = rf.get('/my-cart')
-    request.customer = registered_customer
-    assert CartModel.objects.get_from_request(request).num_items == 0
+def test_merge_with_cart(registered_customer, api_client, rf, empty_cart, commodity_factory):
+    # add an item to the cart while it belongs to an anonymous customer
+    assert empty_cart.num_items == 0
+    CartItemModel.objects.create(cart=empty_cart, quantity=2, product=commodity_factory())
+    assert empty_cart.num_items == 1
 
     # after logging in, the cart must be assigned to the registered customer
     login_url = reverse('shop:login')
@@ -65,6 +65,9 @@ def test_merge_with_cart(registered_customer, api_client, rf, cart):
         }
     }
     assert api_client.post(login_url, data=data, format='json').status_code == 200
+
+    request = rf.get('/my-cart')
+    request.customer = registered_customer
     cart = CartModel.objects.get_from_request(request)
     assert cart.num_items == 1
     items = cart.items.all()

@@ -1,4 +1,4 @@
-import factory
+import factory.fuzzy
 import pytest
 from pytest_factoryboy import register
 from importlib import import_module
@@ -7,10 +7,11 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AnonymousUser
-from django.urls import reverse
 from rest_framework.test import APIClient, APIRequestFactory
 from shop.models.cart import CartModel
+from shop.models.address import ISO_3166_CODES
 from shop.models.defaults.customer import Customer
+from shop.models.defaults.address import ShippingAddress, BillingAddress
 from shop.models.related import ProductPageModel
 from shop.money import Money
 from tests.testshop.models import Commodity
@@ -82,14 +83,30 @@ def registered_customer():
     return customer
 
 
+@pytest.fixture()
+def admin_user(db, django_user_model, django_username_field):
+    user = UserFactory(email='admin@example.com', password=make_password('secret'),
+                       is_active=True, is_staff=True, is_superuser=True)
+    return user
+
+
+@pytest.fixture()
+def admin_client(db, admin_user):
+    from django.test.client import Client
+
+    client = Client()
+    client.login(username=admin_user.username, password='secret')
+    return client
+
+
 @register
 class CommodityFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Commodity
 
-    product_code = factory.Sequence(lambda n: 'art-{}'.format(n))
-    unit_price = Money(1)
-    slug = factory.Sequence(lambda n: 'slug-{}'.format(n))
+    product_code = factory.Sequence(lambda n: 'article-{}'.format(n + 1))
+    unit_price = Money(factory.fuzzy.FuzzyDecimal(1, 100).fuzz())
+    slug = factory.fuzzy.FuzzyText(length=7)
 
     @classmethod
     def create(cls, **kwargs):
@@ -99,27 +116,32 @@ class CommodityFactory(factory.django.DjangoModelFactory):
         return product
 
 
-@pytest.fixture(name='cart')
-@pytest.mark.django_db
-def test_add_to_cart(commodity_factory, api_client, rf):
-    # add a product to the cart
-    product = commodity_factory()
-    data = {'quantity': 2, 'product': product.id}
-    response = api_client.post(reverse('shop:cart-list'), data)
-    assert response.status_code == 201
-    assert response.data['quantity'] == 2
-    assert response.data['unit_price'] == str(product.unit_price)
-    assert response.data['line_total'] == str(data['quantity'] * product.unit_price)
-
-    # verify that the product is in the cart
+@pytest.fixture
+def empty_cart(rf, api_client):
     request = rf.get('/my-cart')
     request.session = api_client.session
     request.user = AnonymousUser()
-    request.customer = Customer.objects.get_from_request(request)
+    request.customer = Customer.objects.get_or_create_from_request(request)
     cart = CartModel.objects.get_from_request(request)
     cart.update(request)
-    assert cart.num_items == 1
-    items = cart.items.all()
-    assert items[0].product == product
-    assert items[0].quantity == 2
+    assert cart.subtotal == Money(0)
     return cart
+
+
+@register
+class ShippingAddressFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ShippingAddress
+
+    priority = factory.Sequence(lambda n: n + 1)
+    name = factory.fuzzy.FuzzyText()
+    address1 = factory.fuzzy.FuzzyText()
+    zip_code = factory.fuzzy.FuzzyText()
+    city = factory.fuzzy.FuzzyText()
+    country = factory.fuzzy.FuzzyChoice(choices=dict(ISO_3166_CODES).keys())
+
+
+@register
+class BillingAddressFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = BillingAddress

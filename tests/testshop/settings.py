@@ -58,7 +58,7 @@ TEMPLATES = [{
     }
 }]
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE_CLASSES = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -71,7 +71,7 @@ MIDDLEWARE_CLASSES = (
     'cms.middleware.page.CurrentPageMiddleware',
     'cms.middleware.toolbar.ToolbarMiddleware',
     'cms.middleware.language.LanguageCookieMiddleware',
-)
+]
 
 INSTALLED_APPS = [
     'django.contrib.auth',
@@ -86,6 +86,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',
+    'django_fsm',
+    'fsm_admin',
     'reversion',
     'filer',
     'easy_thumbnails',
@@ -132,7 +134,7 @@ CMSPLUGIN_CASCADE_PLUGINS = [
     'cmsplugin_cascade.icon',
     'cmsplugin_cascade.leaflet',
     'cmsplugin_cascade.link',
-    # 'shop.cascade',
+    'shop.cascade',
 ]
 
 CMS_PLACEHOLDER_CONF = {
@@ -173,6 +175,17 @@ CKEDITOR_SETTINGS = {
 SILENCED_SYSTEM_CHECKS = ['auth.W004']
 
 SHOP_APP_LABEL = 'testshop'
+
+SHOP_CART_MODIFIERS = [
+    'shop.modifiers.defaults.DefaultCartModifier',
+    'shop.modifiers.taxes.CartIncludeTaxModifier',
+    'shop.payment.modifiers.PayInAdvanceModifier',
+]
+
+SHOP_ORDER_WORKFLOWS = [
+    'shop.payment.workflows.ManualPaymentWorkflowMixin',
+    'shop.payment.workflows.CancelOrderWorkflowMixin',
+]
 
 AUTH_USER_MODEL = 'email_auth.User'
 
