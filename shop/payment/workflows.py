@@ -40,6 +40,8 @@ class ManualPaymentWorkflowMixin(object):
         """
 
     def payment_deposited(self):
+        if hasattr(self, 'amount_paid'):
+            del self.amount_paid
         return self.amount_paid > 0
 
     @transition(field='status', source=['awaiting_payment'],
