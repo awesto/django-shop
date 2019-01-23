@@ -229,12 +229,10 @@ class AbstractMoney(Decimal):
         return 10**CURRENCIES[cls._currency_code][1]
 
     def _assert_addable(self, other):
-        if isinstance(other, (int, float)) and other == 0:
-            # so that we can add/substract zero to any currency
-            return self.__class__('0')
-        if self._currency_code != getattr(other, '_currency_code', None):
+        if hasattr(other, '_currency_code') and self._currency_code != other._currency_code:
             raise ValueError("Can not add/substract money in different currencies.")
-        if other.is_nan():
+        if not other:
+            # so that we can add/substract zero or None to any currency
             return self.__class__('0')
         return other
 
