@@ -27,8 +27,8 @@ class MoneyFieldWidget(forms.widgets.NumberInput):
             raise ValueError("MoneyFieldWidget must be instantiated with a currency_code.")
         super(MoneyFieldWidget, self).__init__(defaults)
 
-    def render(self, name, value, attrs=None):
-        input_field = super(MoneyFieldWidget, self).render(name, value, attrs)
+    def render(self, name, value, attrs=None, renderer=None):
+        input_field = super(MoneyFieldWidget, self).render(name, value, attrs, renderer)
         return format_html('{} <strong>{}</strong>', input_field, self.currency_code)
 
 
