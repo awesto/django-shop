@@ -38,7 +38,7 @@ class AbstractMoney(Decimal):
         if self.is_nan():
             return self.MONEY_FORMAT.format(amount='–', **vals)
         try:
-            vals.update(amount=Decimal.__str__(self.quantize(self._cents)))
+            vals.update(amount=Decimal.__str__(Decimal.quantize(self, self._cents)))
         except InvalidOperation:
             raise ValueError("Can not represent {} as Money type.".format(self.__repr__()))
         if six.PY2:
@@ -58,7 +58,7 @@ class AbstractMoney(Decimal):
         if self.is_nan():
             amount = '–'  # mdash
         elif specifier in ('', 'f',):
-            amount = self.quantize(self._cents).__format__(specifier)
+            amount = Decimal.quantize(self, self._cents).__format__(specifier)
         else:
             amount = Decimal.__format__(self, specifier)
 
@@ -161,31 +161,31 @@ class AbstractMoney(Decimal):
 
     def __eq__(self, other, context=None):
         other = self._assert_addable(other)
-        return self.as_decimal() == other.as_decimal()
+        return Decimal.__eq__(self.as_decimal(), other.as_decimal())
 
     def __lt__(self, other, context=None):
         other = self._assert_addable(other)
         if self.is_nan():
             return Decimal().__lt__(other)
-        return self.as_decimal() < other.as_decimal()
+        return Decimal.__lt__(self.as_decimal(), other.as_decimal())
 
     def __le__(self, other, context=None):
         other = self._assert_addable(other)
         if self.is_nan():
             return Decimal().__le__(other)
-        return self.as_decimal() <= other.as_decimal()
+        return Decimal.__le__(self.as_decimal(), other.as_decimal())
 
     def __gt__(self, other, context=None):
         other = self._assert_addable(other)
         if self.is_nan():
             return Decimal().__gt__(other)
-        return self.as_decimal() > other.as_decimal()
+        return Decimal.__gt__(self.as_decimal(), other.as_decimal())
 
     def __ge__(self, other, context=None):
         other = self._assert_addable(other)
         if self.is_nan():
             return Decimal().__ge__(other)
-        return self.as_decimal() >= other.as_decimal()
+        return Decimal.__ge__(self.as_decimal(), other.as_decimal())
 
     def __deepcopy__(self, memo):
         return self.__class__(self._cents)
@@ -229,11 +229,11 @@ class AbstractMoney(Decimal):
         return 10**CURRENCIES[cls._currency_code][1]
 
     def _assert_addable(self, other):
-        if hasattr(other, '_currency_code') and self._currency_code != other._currency_code:
-            raise ValueError("Can not add/substract money in different currencies.")
         if not other:
             # so that we can add/substract zero or None to any currency
             return self.__class__('0')
+        if self._currency_code != getattr(other, '_currency_code', None):
+            raise ValueError("Can not add/substract money in different currencies.")
         return other
 
     def _assert_multipliable(self, other):
