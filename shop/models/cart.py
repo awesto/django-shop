@@ -308,7 +308,7 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     @property
     def is_empty(self):
-        return self.total_quantity == 0
+        return self.num_items == 0 and self.total_quantity == 0
 
     def get_caption_data(self):
         warnings.warn("This method is deprecated")

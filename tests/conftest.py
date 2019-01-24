@@ -120,9 +120,7 @@ def empty_cart(rf, api_client):
     request.customer = Customer.objects.get_or_create_from_request(request)
     cart = CartModel.objects.get_from_request(request)
     cart.update(request)
-    cart.empty()
-    assert cart.is_empty()
-    assert str(cart) == "{}".format(cart.pk)
+    assert cart.is_empty
     assert cart.subtotal == Money(0)
     return cart
 
