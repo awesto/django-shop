@@ -71,8 +71,9 @@ class ForeignKeyBuilder(ModelBase):
     SHOP_APP_LABEL = 'myshop'
     so that the models are created inside your own shop instantiation.
     """
-    _materialized_models = {}
+    _model_allocation = {}
     _pending_mappings = []
+    _materialized_models = {}
 
     def __new__(cls, name, bases, attrs):
         class Meta:
@@ -98,14 +99,14 @@ class ForeignKeyBuilder(ModelBase):
                 basename = baseclass.__name__
 
                 if baseclass._meta.abstract:
-                    if basename in cls._materialized_models:
+                    if basename in cls._model_allocation:
                         raise ImproperlyConfigured(
                             "Both Model classes '%s' and '%s' inherited from abstract "
                             "base class %s, which is disallowed in this configuration."
-                            % (Model.__name__, cls._materialized_models[basename], basename)
+                            % (Model.__name__, cls._model_allocation[basename], basename)
                         )
 
-                    cls._materialized_models[basename] = Model.__name__
+                    cls._model_allocation[basename] = Model.__name__
                     # remember the materialized model mapping in the base class for further usage
                     baseclass._materialized_model = Model
                     cls.process_pending_mappings(Model, basename)
@@ -113,12 +114,13 @@ class ForeignKeyBuilder(ModelBase):
         else:
             # Non abstract model that uses this Metaclass
             basename = Model.__name__
-            cls._materialized_models[basename] = basename
+            cls._model_allocation[basename] = basename
             Model._materialized_model = Model
             cls.process_pending_mappings(Model, basename)
 
         cls.handle_deferred_foreign_fields(Model)
-        cls.perform_model_checks(Model)
+        cls.perform_meta_model_check(Model)
+        cls._materialized_models[name] = Model
         return Model
 
     @classmethod
@@ -139,10 +141,10 @@ class ForeignKeyBuilder(ModelBase):
             if member.abstract_model == 'self':
                 mapmodel = Model
             else:
-                mapmodel = cls._materialized_models.get(member.abstract_model)
+                mapmodel = cls._model_allocation.get(member.abstract_model)
 
             abstract_through_model = getattr(member, 'abstract_through_model', None)
-            mapmodel_through = cls._materialized_models.get(abstract_through_model)
+            mapmodel_through = cls._model_allocation.get(abstract_through_model)
 
             if mapmodel and (not abstract_through_model or mapmodel_through):
                 if mapmodel_through:
@@ -154,7 +156,7 @@ class ForeignKeyBuilder(ModelBase):
 
     @staticmethod
     def process_pending_mappings(Model, basename):
-        assert basename in ForeignKeyBuilder._materialized_models
+        assert basename in ForeignKeyBuilder._model_allocation
         assert Model._materialized_model
 
         """
@@ -162,9 +164,9 @@ class ForeignKeyBuilder(ModelBase):
         """
         for mapping in ForeignKeyBuilder._pending_mappings[:]:
             member = mapping[2]
-            mapmodel = ForeignKeyBuilder._materialized_models.get(member.abstract_model)
+            mapmodel = ForeignKeyBuilder._model_allocation.get(member.abstract_model)
             abstract_through_model = getattr(member, 'abstract_through_model', None)
-            mapmodel_through = ForeignKeyBuilder._materialized_models.get(abstract_through_model)
+            mapmodel_through = ForeignKeyBuilder._model_allocation.get(abstract_through_model)
 
             if member.abstract_model == basename or abstract_through_model == basename:
                 if member.abstract_model == basename and abstract_through_model and not mapmodel_through:
@@ -186,10 +188,16 @@ class ForeignKeyBuilder(ModelBase):
         return object.__getattribute__(self, key)
 
     @classmethod
-    def perform_model_checks(cls, Model):
+    def perform_meta_model_check(cls, Model):
         """
-        Hook for each class inheriting from ForeignKeyBuilder, to perform checks on the
-        implementation of the just created class type.
+        Hook for each meta class inheriting from ForeignKeyBuilder, to perform checks on the
+        implementation of the just created type.
+        """
+
+    @classmethod
+    def perform_model_check(cls):
+        """
+        Hook for each materialized class inheriting from ForeignKeyBuilder, to perform model checks.
         """
 
     @classmethod
@@ -199,9 +207,16 @@ class ForeignKeyBuilder(ModelBase):
             pm = cls._pending_mappings
             raise ImproperlyConfigured(msg.format(pm[0][0].__name__, pm[0][1]))
 
+    @classmethod
+    def perform_model_checks(cls):
+        for model in cls._materialized_models.values():
+            model.perform_model_check()
+
 
 class PolymorphicForeignKeyBuilder(ForeignKeyBuilder, PolymorphicModelBase):
-    pass
+    """
+    Base class for PolymorphicProductMetaclass
+    """
 
 
 class MaterializedModel(LazyObject):

@@ -101,14 +101,15 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         verbose_name_plural = _("Cart items")
 
     @classmethod
-    def perform_model_checks(cls):
-        try:
-            allowed_types = ('IntegerField', 'DecimalField', 'FloatField')
-            field = [f for f in cls._meta.fields if f.attname == 'quantity'][0]
-            if not field.get_internal_type() in allowed_types:
-                msg = "Field `{}.quantity` must be of one of the types: {}."
-                raise ImproperlyConfigured(msg.format(cls.__name__, allowed_types))
-        except IndexError:
+    def perform_model_check(cls):
+        allowed_types = ['IntegerField', 'DecimalField', 'FloatField']
+        for field in cls._meta.fields:
+            if field.attname == 'quantity':
+                if not field.get_internal_type() in allowed_types:
+                    msg = "Field `{}.quantity` must be of one of the types: {}."
+                    raise ImproperlyConfigured(msg.format(cls.__name__, allowed_types))
+                break
+        else:
             msg = "Class `{}` must implement a field named `quantity`."
             raise ImproperlyConfigured(msg.format(cls.__name__))
 

@@ -41,7 +41,7 @@ class BaseProductManager(PolymorphicManager):
 class PolymorphicProductMetaclass(deferred.PolymorphicForeignKeyBuilder):
 
     @classmethod
-    def perform_model_checks(cls, Model):
+    def perform_meta_model_check(cls, Model):
         """
         Perform some safety checks on the ProductModel being created.
         """

@@ -510,16 +510,22 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         return self.product_name
 
     @classmethod
-    def perform_model_checks(cls):
-        try:
-            cart_field = [f for f in CartItemModel._meta.fields if f.attname == 'quantity'][0]
-            order_field = [f for f in cls._meta.fields if f.attname == 'quantity'][0]
-            if order_field.get_internal_type() != cart_field.get_internal_type():
-                msg = "Field `{}.quantity` must be of one same type `{}.quantity`."
-                raise ImproperlyConfigured(msg.format(cls.__name__, CartItemModel.__name__))
-        except IndexError:
+    def perform_model_check(cls):
+        for cart_field in CartItemModel._meta.fields:
+            if cart_field.attname == 'quantity':
+                break
+        else:
             msg = "Class `{}` must implement a field named `quantity`."
-            raise ImproperlyConfigured(msg.format(cls.__name__))
+            raise ImproperlyConfigured(msg.format(CartItemModel.__name__))
+        for order_field in OrderItemModel._meta.fields:
+            if order_field.attname == 'quantity':
+                break
+        else:
+            msg = "Class `{}` must implement a field named `quantity`."
+            raise ImproperlyConfigured(msg.format(OrderItemModel.__name__))
+        if order_field.get_internal_type() != cart_field.get_internal_type():
+            msg = "Field `{}.quantity` must be of one same type `{}.quantity`."
+            raise ImproperlyConfigured(msg.format(CartItemModel.__name__, OrderItemModel.__name__))
 
     @property
     def unit_price(self):
