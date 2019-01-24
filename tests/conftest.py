@@ -43,10 +43,6 @@ class UserFactory(factory.django.DjangoModelFactory):
         model = get_user_model()
 
     @classmethod
-    def build(cls, **kwargs):
-        return super(UserFactory, cls).build(**kwargs)
-
-    @classmethod
     def create(cls, **kwargs):
         user = super(UserFactory, cls).create(**kwargs)
         assert isinstance(user, get_user_model())
@@ -124,6 +120,9 @@ def empty_cart(rf, api_client):
     request.customer = Customer.objects.get_or_create_from_request(request)
     cart = CartModel.objects.get_from_request(request)
     cart.update(request)
+    cart.empty()
+    assert cart.is_empty()
+    assert str(cart) == "{}".format(cart.pk)
     assert cart.subtotal == Money(0)
     return cart
 

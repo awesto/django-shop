@@ -51,12 +51,22 @@ def test_get_add_to_cart(commodity_factory, customer_factory, rf):
 
 @pytest.mark.django_db
 def test_merge_with_cart(registered_customer, api_client, rf, empty_cart, commodity_factory):
-    # add an item to the cart while it belongs to an anonymous customer
+    # add items to the cart while it belongs to an anonymous customer
     assert empty_cart.num_items == 0
-    CartItemModel.objects.create(cart=empty_cart, quantity=2, product=commodity_factory())
-    assert empty_cart.num_items == 1
+    product1 = commodity_factory()
+    CartItemModel.objects.create(cart=empty_cart, quantity=1, product=product1)
+    product2 = commodity_factory()
+    CartItemModel.objects.create(cart=empty_cart, quantity=2, product=product2)
+    assert empty_cart.num_items == 2
 
-    # after logging in, the cart must be assigned to the registered customer
+    # add other items to cart belonging to registered user
+    other_cart = CartModel.objects.create(customer=registered_customer)
+    CartItemModel.objects.create(cart=other_cart, quantity=2, product=product2)
+    product3 = commodity_factory()
+    CartItemModel.objects.create(cart=other_cart, quantity=3, product=product3)
+    assert other_cart.num_items == 2
+
+    # after logging in, both carts must be merged and assigned to the registered customer
     login_url = reverse('shop:login')
     data = {
         'form_data': {
@@ -69,9 +79,13 @@ def test_merge_with_cart(registered_customer, api_client, rf, empty_cart, commod
     request = rf.get('/my-cart')
     request.customer = registered_customer
     cart = CartModel.objects.get_from_request(request)
-    assert cart.num_items == 1
-    items = cart.items.all()
-    assert items[0].quantity == 2
+    assert cart.num_items == 3
+    item1 = cart.items.get(product=product1)
+    assert item1.quantity == 1
+    item2 = cart.items.get(product=product2)
+    assert item2.quantity == 4
+    item3 = cart.items.get(product=product3)
+    assert item3.quantity == 3
 
 
 @pytest.mark.django_db

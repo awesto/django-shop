@@ -1,7 +1,7 @@
 # -*- coding: utf-8
 from __future__ import unicode_literals
 
-from django.utils.module_loading import import_string
+import pytest
 from django.contrib.auth.models import AnonymousUser
 from shop.conf import app_settings
 from shop.models.cart import CartModel
@@ -9,8 +9,6 @@ from shop.models.defaults.customer import Customer
 from shop.modifiers.pool import CartModifiersPool
 from shop.views.cart import CartViewSet, WatchViewSet
 from rest_framework.reverse import reverse
-
-import pytest
 
 CartModifiersPool.USE_CACHE = False
 
