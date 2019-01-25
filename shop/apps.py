@@ -16,6 +16,8 @@ class ShopConfig(AppConfig):
         from shop.deferred import ForeignKeyBuilder
         from shop.rest.fields import JSONSerializerField
         from shop.models.notification import order_event_notification
+        from shop.patches import PageAttribute
+        from cms.templatetags import cms_tags
 
         post_transition.connect(order_event_notification)
 
@@ -25,3 +27,5 @@ class ShopConfig(AppConfig):
         # perform some sanity checks
         ForeignKeyBuilder.check_for_pending_mappings()
         ForeignKeyBuilder.perform_model_checks()
+
+        cms_tags.register.tags['page_attribute'] = PageAttribute
