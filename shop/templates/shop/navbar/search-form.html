@@ -1,6 +1,6 @@
 {% load i18n static cms_tags sekizai_tags %}{% spaceless %}
 
-{% page_url 'shop-search-product' as search_product_url %}
+{% page_url "shop-search-product" as search_product_url %}
 {% if search_product_url or search_autocomplete %}
 
 	{% addtoblock "js" %}<script src="{% static 'shop/js/utils.js' %}" type="text/javascript"></script>{% endaddtoblock %}

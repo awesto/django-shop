@@ -4,10 +4,10 @@
 {% add_data "ng-requires" "django.shop.cart" %}
 
 {% if LINK_TO_EMPTY_CART or cart.num_items %}
-	{% page_url 'shop-cart' as shop_cart_url %}
-	{% page_attribute 'menu_title' 'shop-cart' as tooltip %}
+	{% page_url "shop-cart" as shop_cart_url %}
+	{% page_attribute "menu_title" "shop-cart" as tooltip %}
 {% endif %}
-{% url 'shop:cart-fetch-dropdown' as endpoint %}
+{% url "shop:cart-fetch-dropdown" as endpoint %}
 
 <li class="nav-item ml-3{% if has_dropdown %} dropdown{% endif %}" {% if has_dropdown %}uib-dropdown is-open="dropdownOpen"{% else %}uib-tooltip="{{ tooltip }}" tooltip-placement="left"{% endif %} shop-dropdown-cart="{{ endpoint }}">
 	<a class="nav-link p-0"{% if shop_cart_url %} href="{{ shop_cart_url }}"{% endif %} title="{{ tooltip }}">

@@ -2,11 +2,14 @@
 
 {% include "shop/djng-form.html" %}
 
-{% page_url 'shop-order' as shop_order_url %}
-{% page_url 'shop-customer-details' as customer_details_url %}
-{% page_url 'shop-password-change' as password_change_url %}
-{% page_url 'password-reset-request' as password_reset_url %}
-{% page_url 'shop-register-customer' as register_customer_url %}
+{% page_url "shop-order" as shop_order_url %}
+{% page_attribute "menu_title" "shop-order" as shop_order_title %}
+{% page_url "shop-customer-details" as customer_details_url %}
+{% page_attribute "menu_title" "shop-customer-details" as customer_details_title %}
+{% page_url "shop-password-change" as password_change_url %}
+{% page_attribute "menu_title" "shop-password-change" as password_change_title %}
+{% page_url "password-reset-request" as password_reset_url %}
+{% page_url "shop-register-customer" as register_customer_url %}
 
 <li uib-dropdown class="nav-item ml-3 dropdown {{ dropdown_extra_class }}"{% if customer.is_anonymous %} auto-close="outsideClick"{% endif %}>
 	<a uib-dropdown-toggle class="nav-link py-0 dropdown-toggle" role="button" aria-haspopup="true">
@@ -29,13 +32,13 @@
 		{% if shop_order_url or customer_details_url or password_change_url %}
 		<div class="dropdown-divider" role="separator"></div>
 			{% if shop_order_url %}
-		<a class="dropdown-item" href="{{ shop_order_url }}">{% page_attribute "menu_title" "shop-order" %}</a>
+		<a class="dropdown-item" href="{{ shop_order_url }}">{{ shop_order_title }}</a>
 			{% endif %}
 			{% if customer_details_url %}
-		<a class="dropdown-item" href="{{ customer_details_url }}">{% page_attribute "menu_title" "shop-customer-details" %}</a>
+		<a class="dropdown-item" href="{{ customer_details_url }}">{{ customer_details_title }}</a>
 			{% endif %}
 			{% if password_change_url %}
-		<a class="dropdown-item" href="{{ password_change_url }}">{% page_attribute "menu_title" "shop-password-change" %}</a>
+		<a class="dropdown-item" href="{{ password_change_url }}">{{ password_change_title }}</a>
 			{% endif %}
 		{% endif %}
 	{% else %}

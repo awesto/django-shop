@@ -1,7 +1,7 @@
 {% load cms_tags i18n %}
 {% page_url "shop-watch-list" as shop_watch_list_url %}
 {% if shop_watch_list_url %}
-	{% page_attribute 'menu_title' 'shop-watch-list' as tooltip %}
+	{% page_attribute "menu_title" "shop-watch-list" as tooltip %}
 {% else %}
 	{% url "shop-watch-list" as shop_watch_list_url %}
 	{% trans "Watch List" as tooltip %}
