@@ -127,6 +127,12 @@ CMS_TEMPLATES = [
     ('page.html', "Default Page"),
 ]
 
+CMS_PLACEHOLDER_CONF = {
+    'Main Content': {
+        'plugins': ['BootstrapContainerPlugin'],
+    },
+}
+
 CMSPLUGIN_CASCADE_PLUGINS = [
     'cmsplugin_cascade.bootstrap4',
     'cmsplugin_cascade.segmentation',
@@ -137,10 +143,19 @@ CMSPLUGIN_CASCADE_PLUGINS = [
     'shop.cascade',
 ]
 
-CMS_PLACEHOLDER_CONF = {
-    'Main Content': {
-        'plugins': ['BootstrapContainerPlugin'],
+CMSPLUGIN_CASCADE = {
+    'link_plugin_classes': [
+        'shop.cascade.plugin_base.CatalogLinkPluginBase',
+        'cmsplugin_cascade.link.plugin_base.LinkElementMixin',
+        'shop.cascade.plugin_base.CatalogLinkForm',
+    ],
+    'alien_plugins': ['TextPlugin', 'TextLinkPlugin', 'AcceptConditionPlugin'],
+    'bootstrap4': {
+        'template_basedir': 'angular-ui',
     },
+    'segmentation_mixins': [
+        ('shop.cascade.segmentation.EmulateCustomerModelMixin', 'shop.cascade.segmentation.EmulateCustomerAdminMixin'),
+    ],
 }
 
 THUMBNAIL_PROCESSORS = (
