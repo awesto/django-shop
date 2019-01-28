@@ -12,11 +12,17 @@
 
 {% block shop-order-head %}
 <div class="row lead text-muted py-1">
+	{% if data.count > 0 %}
 	<div class="col-2 text-center text-nowrap">{% trans "Number" %}</div>
 	<div class="col-2 text-center text-nowrap">{% trans "Order Date" %}</div>
 	<div class="col-2 text-center text-nowrap">{% trans "Sum" %}</div>
 	<div class="col-4 text-left text-nowrap">{% trans "Shipping Address" %}</div>
 	<div class="col-2 text-right text-nowrap">{% trans "Status" %}</div>
+	{% else %}
+	<div class="col">
+		{% trans "You have never ordered anything from this site." %}
+	</div>
+	{% endif %}
 </div>
 {% endblock shop-order-head %}
 
