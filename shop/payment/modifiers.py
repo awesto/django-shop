@@ -31,16 +31,18 @@ class PaymentModifier(BaseCartModifier):
 
     def is_active(self, payment_modifier):
         """
-        Returns true if this payment modifier is active.
+        :returns: ``True`` if this payment modifier is active.
         """
         assert hasattr(self, 'payment_provider'), "A Payment Modifier requires a Payment Provider"
         return payment_modifier == self.payment_provider.namespace
 
     def is_disabled(self, cart):
         """
-        Returns True if this payment modifier is disabled for the current cart.
-        Shall be used to temporarily disable a payment method, if the cart does not
-        fulfill certain criteria, such as a minimum total.
+        Hook method to be overridden by the concrete payment modifier. Shall be used to
+        temporarily disable a payment method, in case the cart does not fulfill certain criteria,
+        for instance a too small total.
+
+        :returns: ``True`` if this payment modifier is disabled for the current cart.
         """
         return False
 

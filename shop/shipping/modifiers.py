@@ -18,15 +18,17 @@ class ShippingModifier(BaseCartModifier):
 
     def is_active(self, shipping_modifier):
         """
-        Returns true if this shipping modifier is active.
+        :returns: ``True`` if this shipping modifier is active.
         """
         return shipping_modifier == self.identifier
 
     def is_disabled(self, cart):
         """
-        Returns True if this shipping modifier is disabled for the current cart.
-        Shall be used to temporarily disable a shipping method, if the cart does not
-        fulfill certain criteria, such as an undeliverable destination address.
+        Hook method to be overridden by the concrete shipping modifier. Shall be used to
+        temporarily disable a shipping method, in case the cart does not fulfill certain criteria,
+        for instance an undeliverable destination address.
+
+        :returns: ``True`` if this shipping modifier is disabled for the current cart.
         """
         return False
 

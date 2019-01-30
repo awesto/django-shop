@@ -45,10 +45,11 @@ class ProductListPagination(pagination.LimitOffsetPagination):
     modified by changing ``overlapping`` to a different value.
 
     By virtue, the rendering view can not know the current media breakpoint, and hence the number
-    of columns. Therefore simply set ``display: none;`` on potential widow items using the media
-    breakpoints provided by CSS. Since the last product items overlap with the first ones on the
-    next page, no items are hidden. This allows us to switch between layouts with different number
-    of columns, keeping the last row of each page in balance.
+    of columns. Therefore simply hide (with ``display: none;``) potential widow items by using the
+    media breakpoints provided by CSS (see ``static/shop/css/prevent-widows.scss`` for details).
+    Since the last product items overlap with the first ones on the next page, no items are hidden.
+    This allows us to switch between layouts with different number of columns, keeping the last row
+    of each page in balance.
     """
     template = 'shop/templatetags/paginator.html'
     default_limit = 16

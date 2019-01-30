@@ -362,17 +362,16 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     @transition(field='status', source='*', target='payment_confirmed', conditions=[is_fully_paid])
     def acknowledge_payment(self, by=None):
         """
-        Change status to `payment_confirmed`. This status code is known globally and can be used
+        Change status to ``payment_confirmed``. This status code is known globally and can be used
         by all external plugins to check, if an Order object has been fully paid.
         """
         self.logger.info("Acknowledge payment by user %s", by)
 
     def cancelable(self):
         """
-        Returns True if the current Order is cancelable.
+        A hook method to be overridden by mixin classes managing Order cancellations.
 
-        This method is just a hook and must be overridden by a mixin class
-        managing Order cancellations.
+        :returns: ``True`` if the current Order is cancelable.
         """
         return False
 
@@ -389,17 +388,21 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     @classmethod
     def get_all_transitions(cls):
         """
-        Returns a generator over all transition objects for this Order model.
+        :returns: A generator over all transition objects for this Order model.
         """
         return cls.status.field.get_all_transitions(OrderModel)
 
     @classmethod
     def get_transition_name(cls, target):
-        """Return the human readable name for a given transition target"""
+        """
+        :returns: The verbose name for a given transition target.
+        """
         return cls._transition_targets.get(target, target)
 
     def status_name(self):
-        """Return the human readable name for the current transition state"""
+        """
+        :returns: The verbose name for the current transition state.
+        """
         return self._transition_targets.get(self.status, self.status)
 
     status_name.short_description = pgettext_lazy('order_models', "State")

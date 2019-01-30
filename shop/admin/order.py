@@ -10,9 +10,7 @@ from django.http import HttpResponse
 from django.template.loader import select_template
 from django.utils.html import format_html
 from django.utils.translation import pgettext_lazy
-
 from fsm_admin.mixins import FSMTransitionMixin
-
 from shop.conf import app_settings
 from shop.models.customer import CustomerModel
 from shop.models.order import OrderItemModel, OrderPayment
