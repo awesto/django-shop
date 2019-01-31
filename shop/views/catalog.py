@@ -53,7 +53,7 @@ class ProductListPagination(pagination.LimitOffsetPagination):
     """
     template = 'shop/templatetags/paginator.html'
     default_limit = 16
-    overlapping = 3
+    overlapping = 1
 
     def adjust_offset(self, url, page_offset):
         if url is None:
