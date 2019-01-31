@@ -90,15 +90,18 @@ class Command(BaseCommand):
         Entry point for subcommand ``./manage.py shop check-pages``.
         """
         from cms.models.pagemodel import Page
+        from cms.models.pluginmodel import CMSPlugin
+        from cms.utils.i18n import get_public_languages
 
         complains = []
         apphook = self.get_installed_apphook('CatalogListCMSApp')
         catalog_pages = Page.objects.public().filter(application_urls=apphook.__class__.__name__)
         if not catalog_pages.exists():
             if self.add_missing:
-                attribs = ("Catalog", '', apphook.__class__.__name__, 'ShopCatalogPlugin', {}),
-                page = self.create_and_fill_page(*attribs)
-                self.assign_all_products_to_page(page)
+                leaf_plugin = self.create_page_structure("Catalog", '', apphook.__class__.__name__)
+                self.add_plugin(leaf_plugin, 'ShopCatalogPlugin', {})
+                self.publish_in_all_languages(leaf_plugin.page)
+                self.assign_all_products_to_page(leaf_plugin.page)
             else:
                 msg = "There should be at least one published CMS page configured to use an Application inheriting from 'CatalogListCMSApp'."
                 complains.append(msg)
@@ -117,14 +120,33 @@ class Command(BaseCommand):
         ]
         for attribs in page_attributes:
             try:
-                self.check_page_content(*attribs)
+                self.check_page_content(*attribs[1:])
             except MissingPage as exc:
                 if self.add_missing:
-                    self.create_and_fill_page(*attribs)
+                    leaf_plugin = self.create_page_structure(*attribs[:3])
+                    self.add_plugin(leaf_plugin, *attribs[3:])
+                    self.publish_in_all_languages(leaf_plugin.page)
                 else:
                     complains.append(str(exc))
             except CommandError as exc:
                 complains.append(str(exc))
+
+        # the checkout page must be found through the purchase button
+        language = get_public_languages()[0]
+        for plugin in CMSPlugin.objects.filter(plugin_type='ShopProceedButton', language=language, placeholder__page__publisher_is_draft=False):
+            link = plugin.get_bound_plugin().glossary.get('link')
+            if isinstance(link, dict) and link.get('type') == 'PURCHASE_NOW':
+                break
+        else:
+            if self.add_missing:
+                column_plugin = self.create_page_structure("Checkout", '', None)
+                forms_plugin = self.add_plugin(column_plugin, 'ValidateSetOfFormsPlugin', {})
+                glossary = {'button_type': 'btn-success', 'link': {'type': 'PURCHASE_NOW'}, 'link_content': "Purchase Now"}
+                self.add_plugin(forms_plugin, 'ShopProceedButton', glossary)
+                self.publish_in_all_languages(forms_plugin.page)
+            else:
+                msg = "There should be at least one published CMS page containing a 'Proceed Button Plugin' for purchasing the cart content."
+                complains.append(msg)
 
         if len(complains) > 0:
             rows = [" {}. {}".format(id, msg) for id, msg in enumerate(complains, 1)]
@@ -144,7 +166,7 @@ class Command(BaseCommand):
             msg = "The project must register an AppHook inheriting from '{apphook_name}'"
             raise MissingAppHook(msg.format(apphook_name=base_apphook_name))
 
-    def check_page_content(self, title, reverse_id, base_apphook_name, plugin_type, subset):
+    def check_page_content(self, reverse_id, base_apphook_name, plugin_type, subset):
         from cms.apphook_pool import apphook_pool
         from cms.models.pagemodel import Page
         from cms.plugin_pool import plugin_pool
@@ -177,14 +199,14 @@ class Command(BaseCommand):
                 msg = "Plugin named '{plugin_name}' on page with URL '{url}' is misconfigured."
                 raise MissingPlugin(msg.format(url=page.get_absolute_url(), plugin_name=plugin_name))
 
-    def create_and_fill_page(self, title, reverse_id, base_apphook_name, plugin_type, subset):
-        from cms.api import create_page, add_plugin, copy_plugins_to_language, create_title
+    def create_page_structure(self, title, reverse_id, base_apphook_name):
+        from cms.api import create_page, add_plugin
         from cms.utils.i18n import get_public_languages
 
         template = settings.CMS_TEMPLATES[0][0]
         apphook = self.get_installed_apphook(base_apphook_name) if base_apphook_name else None
-        languages = get_public_languages()
-        page = create_page(title, template, languages[0], apphook,
+        language = get_public_languages()[0]
+        page = create_page(title, template, language, apphook,
                            created_by="manage.py shop check-pages",
                            reverse_id=reverse_id)
         placeholder = page.placeholders.get(slot='Main Content')
@@ -194,24 +216,33 @@ class Command(BaseCommand):
                 'fluid': None,
             }
         }
-        container = add_plugin(placeholder, 'BootstrapContainerPlugin', languages[0], **data)
-        row = add_plugin(placeholder, 'BootstrapRowPlugin', languages[0], target=container)
+        container = add_plugin(placeholder, 'BootstrapContainerPlugin', language, **data)
+        row = add_plugin(placeholder, 'BootstrapRowPlugin', language, target=container)
         data = {
             'glossary': {
                 'xs-column-width': 'col',
             }
         }
-        column = add_plugin(placeholder, 'BootstrapColumnPlugin', languages[0], target=row, **data)
+        return add_plugin(placeholder, 'BootstrapColumnPlugin', language, target=row, **data)
+
+    def add_plugin(self, leaf_plugin, plugin_type, subset):
+        from cms.api import add_plugin
+
         data = {
             'glossary': subset,
         }
-        add_plugin(placeholder, plugin_type, languages[0], target=column, **data)
-        page.publish(languages[0])
+        return add_plugin(leaf_plugin.placeholder, plugin_type, leaf_plugin.language, target=leaf_plugin, **data)
+
+    def publish_in_all_languages(self, page):
+        from cms.api import copy_plugins_to_language, create_title
+        from cms.utils.i18n import get_public_languages
+
+        languages = get_public_languages()
         for language in languages[1:]:
-            create_title(language, title, page, menu_title=None)
+            create_title(language, page.get_title(), page, menu_title=None)
             copy_plugins_to_language(page, languages[0], language)
+        for language in languages:
             page.publish(language)
-        return page
 
     def assign_all_products_to_page(self, page):
         from shop.models.product import ProductModel
