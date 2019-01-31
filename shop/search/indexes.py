@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 from django.conf import settings
-from django.template import Context
 from django.template.loader import select_template
 from django.utils import translation
 from django.utils.html import strip_spaces_between_tags
