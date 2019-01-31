@@ -29,11 +29,13 @@ class ShopCatalogPlugin(ShopPluginBase):
     parent_classes = ('BootstrapColumnPlugin', 'SimpleWrapperPlugin',)
     cache = False
 
-    infinite_scroll = GlossaryField(
-        widgets.CheckboxInput(),
-        label=_("Infinite Scroll"),
+    pagination = GlossaryField(
+        widgets.RadioSelect(choices=[
+            ('paginator', _("Use Paginator")), ('manual', _("Manual Infinite")), ('auto', _("Auto Infinite"))
+        ]),
+        label=_("Pagination"),
         initial=True,
-        help_text=_("Shall the product list view scroll infinitely?"),
+        help_text=_("Shall the product list view use a paginator or scroll infinitely?"),
     )
 
     def get_render_template(self, context, instance, placeholder):
@@ -47,14 +49,15 @@ class ShopCatalogPlugin(ShopPluginBase):
         return select_template(templates)
 
     def render(self, context, instance, placeholder):
-        context['infinite_scroll'] = bool(instance.glossary.get('infinite_scroll', True))
+        context['pagination'] = instance.glossary.get('pagination', 'paginator')
         return context
 
     @classmethod
     def get_identifier(cls, obj):
-        if obj.glossary.get('infinite_scroll', True):
-            return ugettext("Infinite Scroll")
-        return ugettext("Manual Pagination")
+        pagination = obj.glossary.get('pagination')
+        if pagination == 'paginator':
+            return ugettext("Manual Pagination")
+        return ugettext("Infinite Scroll")
 
 plugin_pool.register_plugin(ShopCatalogPlugin)
 

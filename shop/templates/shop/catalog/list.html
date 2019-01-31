@@ -7,7 +7,7 @@
 {% block catalog-list %}
 	{% addtoblock "css" %}<link href="{% sass_src 'shop/css/product-list.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 	{% with product_figure=product_figure|default:"shop/catalog/product-figure.html" %}
-<shop-catalog-list infinite-scroll="{{ infinite_scroll|yesno:'true,false' }}">
+<shop-catalog-list infinite-scroll="{% if pagination == 'paginator' %}false{% else %}true{% endif %}">
 	<div ng-if="catalog.count===undefined" class="shop-catalog-list">
 	{% for product in data.results %}
 		<div class="shop-list-item">{% include product_figure %}</div>

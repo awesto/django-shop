@@ -27,40 +27,38 @@ class ShopSearchResultsForm(forms.ModelForm):
 class ShopSearchResultsPlugin(ShopPluginBase):
     name = _("Search Results")
     require_parent = True
-    parent_classes = ('BootstrapColumnPlugin',)
+    parent_classes = ['BootstrapColumnPlugin']
     form = ShopSearchResultsForm
     cache = False
 
-    infinite_scroll = GlossaryField(
-        widgets.CheckboxInput(),
-        label=_("Infinite Scroll"),
+    pagination = GlossaryField(
+        widgets.RadioSelect(choices=[
+            ('paginator', _("Use Paginator")), ('manual', _("Manual Infinite")), ('auto', _("Auto Infinite"))
+        ]),
+        label=_("Pagination"),
         initial=True,
-        help_text=_("Shall the search results scroll infinitely?"),
+        help_text=_("Shall the list of search results use a paginator or scroll infinitely?"),
     )
 
     def get_render_template(self, context, instance, placeholder):
         if instance.placeholder.page.application_urls == 'CatalogSearchApp':
             return select_template([
-                    '{}/search/results.html'.format(app_settings.APP_LABEL),
-                    'shop/search/results.html',
+                '{}/search/results.html'.format(app_settings.APP_LABEL),
+                'shop/search/results.html',
             ])
         msg = '<pre class="bg-danger">This {} plugin is used on a CMS page without an application of type "Search".</pre>'
         return engines['django'].from_string(msg.format(self.name))
 
     def render(self, context, instance, placeholder):
         super(ShopSearchResultsPlugin, self).render(context, instance, placeholder)
-        context['infinite_scroll'] = bool(instance.glossary.get('infinite_scroll', True))
-        try:
-            if context['edit_mode']:
-                # prevent scrolling while editing
-                context['data']['next'] = None
-        finally:
-            return context
+        context['pagination'] = instance.glossary.get('pagination', 'paginator')
+        return context
 
     @classmethod
     def get_identifier(cls, obj):
-        if obj.glossary.get('infinite_scroll', True):
-            return ugettext("Infinite Scroll")
-        return ugettext("Manual Pagination")
+        pagination = obj.glossary.get('pagination')
+        if pagination == 'paginator':
+            return ugettext("Manual Pagination")
+        return ugettext("Infinite Scroll")
 
 plugin_pool.register_plugin(ShopSearchResultsPlugin)
