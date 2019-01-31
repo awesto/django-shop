@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from classytags.arguments import Argument
-from classytags.core import Options
-from classytags.helpers import AsTag
 from cms.plugin_rendering import ContentRenderer
 from cms.models.placeholdermodel import Placeholder
-#from cms.templatetags.cms_tags import RenderPlaceholder
+from cms.templatetags.cms_tags import RenderPlaceholder as DefaultRenderPlaceholder
 from django import template
 from django.contrib.auth.models import AnonymousUser
 from django.http.request import HttpRequest
@@ -31,20 +28,10 @@ class EmulateHttpRequest(HttpRequest):
         self.current_page = None
 
 
-class RenderPlaceholder(AsTag):
+class RenderPlaceholder(DefaultRenderPlaceholder):
     """
     Modified templatetag render_placeholder to be used for rendering the search index templates.
     """
-    name = 'render_placeholder'
-    options = Options(
-        Argument('placeholder'),
-        Argument('width', default=None, required=False),
-        'language',
-        Argument('language', default=None, required=False),
-        'as',
-        Argument('varname', required=False, resolve=False)
-    )
-
     def _get_value(self, context, editable=True, **kwargs):
         renderer = ContentRenderer(context['request'])
         placeholder = kwargs.get('placeholder')
@@ -62,16 +49,13 @@ class RenderPlaceholder(AsTag):
         )
         return strip_tags(content).replace('\n', '').replace('\t', '')
 
-    def get_value_for_context(self, context, **kwargs):
-        return self._get_value(context, editable=False, **kwargs)
-
     def get_value(self, context, **kwargs):
+        context.update(sekizai())
         try:
             language_code = context['object']._current_language
         except (KeyError, AttributeError):
             language_code = None
         context['request'] = EmulateHttpRequest(language_code)
-        context.update(sekizai())
         return self._get_value(context, **kwargs)
 
 register.tag('render_placeholder', RenderPlaceholder)
