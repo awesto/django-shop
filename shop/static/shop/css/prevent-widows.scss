@@ -4,12 +4,12 @@
 
 .shop-catalog-list {
 	@include media-breakpoint-only(md) {
-		.shop-list-item:nth-last-child(1) {
+		.shop-list-item:nth-child(n+15):nth-last-child(1) {
 			display: none;
 		}
 	}
 	@include media-breakpoint-only(xl) {
-		.shop-list-item:nth-last-child(1) {
+		.shop-list-item:nth-child(n+15):nth-last-child(1) {
 			display: none;
 		}
 	}
