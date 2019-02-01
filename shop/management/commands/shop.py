@@ -53,11 +53,16 @@ class Command(BaseCommand):
             self.customers()
         elif subcommand == 'check-pages':
             self.add_missing = options['add_missing']
-            self.check_pages()
+            self.stdout.write("The following CMS pages must be adjusted:")
+            for k, msg in enumerate(self.check_pages(), 1):
+                self.stdout.write(" {}. {}".format(k, msg))
+        elif subcommand == 'review-settings':
+            self.stdout.write("The following configuration settings must be fixed:")
+            for k, msg in enumerate(self.review_settings(), 1):
+                self.stdout.write(" {}. {}".format(k, msg))
         else:
-            msg = "Unknown sub-command for shop. Use one of: check-pages create-pages"
+            msg = "Unknown sub-command for shop. Use one of: customer check-pages review-settings"
             self.stderr.write(msg.format(subcommand))
-
 
     def customers(self):
         """
@@ -93,7 +98,6 @@ class Command(BaseCommand):
         from cms.models.pluginmodel import CMSPlugin
         from cms.utils.i18n import get_public_languages
 
-        complains = []
         apphook = self.get_installed_apphook('CatalogListCMSApp')
         catalog_pages = Page.objects.public().filter(application_urls=apphook.__class__.__name__)
         if not catalog_pages.exists():
@@ -102,9 +106,9 @@ class Command(BaseCommand):
                 self.add_plugin(leaf_plugin, 'ShopCatalogPlugin', {})
                 self.publish_in_all_languages(leaf_plugin.page)
                 self.assign_all_products_to_page(leaf_plugin.page)
+                yield "Created CMS page titled 'Catalog'"
             else:
-                msg = "There should be at least one published CMS page configured to use an Application inheriting from 'CatalogListCMSApp'."
-                complains.append(msg)
+                yield "There should be at least one published CMS page configured to use an Application inheriting from 'CatalogListCMSApp'."
 
         page_attributes = [
             ("Search", 'shop-search-product', 'CatalogSearchCMSApp', 'ShopSearchResultsPlugin', {}),
@@ -126,10 +130,11 @@ class Command(BaseCommand):
                     leaf_plugin = self.create_page_structure(*attribs[:3])
                     self.add_plugin(leaf_plugin, *attribs[3:])
                     self.publish_in_all_languages(leaf_plugin.page)
+                    yield "Created CMS page titled '{0}'".format(*attribs)
                 else:
-                    complains.append(str(exc))
+                    yield str(exc)
             except CommandError as exc:
-                complains.append(str(exc))
+                yield str(exc)
 
         # the checkout page must be found through the purchase button
         language = get_public_languages()[0]
@@ -144,15 +149,9 @@ class Command(BaseCommand):
                 glossary = {'button_type': 'btn-success', 'link': {'type': 'PURCHASE_NOW'}, 'link_content': "Purchase Now"}
                 self.add_plugin(forms_plugin, 'ShopProceedButton', glossary)
                 self.publish_in_all_languages(forms_plugin.page)
+                yield "Created CMS page titled 'Checkout'"
             else:
-                msg = "There should be at least one published CMS page containing a 'Proceed Button Plugin' for purchasing the cart content."
-                complains.append(msg)
-
-        if len(complains) > 0:
-            rows = [" {}. {}".format(id, msg) for id, msg in enumerate(complains, 1)]
-            rows.insert(0, "The following CMS pages must be fixed:")
-            msg = "\n".join(rows)
-            self.stdout.write(msg)
+                yield "There should be at least one published CMS page containing a 'Proceed Button Plugin' for purchasing the cart's content."
 
     def get_installed_apphook(self, base_apphook_name):
         from cms.apphook_pool import apphook_pool
@@ -210,28 +209,21 @@ class Command(BaseCommand):
                            created_by="manage.py shop check-pages",
                            reverse_id=reverse_id)
         placeholder = page.placeholders.get(slot='Main Content')
-        data = {
-            'glossary': {
-                'breakpoints': ['xs', 'sm', 'md', 'lg', 'xl'],
-                'fluid': None,
-            }
+        glossary = {
+            'breakpoints': ['xs', 'sm', 'md', 'lg', 'xl'],
+            'fluid': None,
         }
-        container = add_plugin(placeholder, 'BootstrapContainerPlugin', language, **data)
+        container = add_plugin(placeholder, 'BootstrapContainerPlugin', language, glossary=glossary)
         row = add_plugin(placeholder, 'BootstrapRowPlugin', language, target=container)
-        data = {
-            'glossary': {
-                'xs-column-width': 'col',
-            }
+        glossary = {
+            'xs-column-width': 'col',
         }
-        return add_plugin(placeholder, 'BootstrapColumnPlugin', language, target=row, **data)
+        return add_plugin(placeholder, 'BootstrapColumnPlugin', language, target=row, glossary=glossary)
 
-    def add_plugin(self, leaf_plugin, plugin_type, subset):
+    def add_plugin(self, leaf_plugin, plugin_type, glossary):
         from cms.api import add_plugin
 
-        data = {
-            'glossary': subset,
-        }
-        return add_plugin(leaf_plugin.placeholder, plugin_type, leaf_plugin.language, target=leaf_plugin, **data)
+        return add_plugin(leaf_plugin.placeholder, plugin_type, leaf_plugin.language, target=leaf_plugin, glossary=glossary)
 
     def publish_in_all_languages(self, page):
         from cms.api import copy_plugins_to_language, create_title
@@ -250,3 +242,54 @@ class Command(BaseCommand):
 
         for product in ProductModel.objects.all():
             ProductPageModel.objects.create(page=page, product=product)
+
+    def review_settings(self):
+        from django.conf import settings
+
+        if getattr(settings, 'AUTH_USER_MODEL', None) != 'email_auth.User':
+            yield "settings.AUTH_USER_MODEL should be 'email_auth.User'."
+
+        if 'sass_processor.finders.CssFinder' not in getattr(settings, 'STATICFILES_FINDERS', []):
+            yield "settings.STATICFILES_FINDERS should contain 'sass_processor.finders.CssFinder'."
+
+        if 'node_modules' not in dict(getattr(settings, 'STATICFILES_DIRS', [])).keys():
+            yield "settings.STATICFILES_DIRS should contain ('node_modules', '/…/node_modules')."
+
+        if '/node_modules/' not in getattr(settings, 'NODE_MODULES_URL', ''):
+            yield "settings.NODE_MODULES_URL should start with a URL pointing onto /…/node_modules/."
+
+        for template_engine in getattr(settings, 'TEMPLATES', []):
+            if template_engine['BACKEND'] != 'django.template.backends.django.DjangoTemplates':
+                continue
+            context_processors = template_engine['OPTIONS'].get('context_processors', [])
+            if 'shop.context_processors.customer' not in context_processors:
+                yield "'shop.context_processors.customer' is missing in 'context_processors' of the default Django Template engine."
+            if 'shop.context_processors.shop_settings' not in context_processors:
+                yield "'shop.context_processors.shop_settings' is missing in 'context_processors' of the default Django Template engine."
+
+        for dir in getattr(settings, 'SASS_PROCESSOR_INCLUDE_DIRS', []):
+            if '/node_modules' in dir:
+                break
+        else:
+            yield "settings.SASS_PROCESSOR_INCLUDE_DIRS should include the folder '…/node_modules'."
+
+        if getattr(settings, 'COERCE_DECIMAL_TO_STRING', None) is not True:
+            yield "settings.COERCE_DECIMAL_TO_STRING should be set to 'True'."
+
+        if getattr(settings, 'FSM_ADMIN_FORCE_PERMIT', None) is not True:
+            yield "settings.FSM_ADMIN_FORCE_PERMIT should be set to 'True'."
+
+        if getattr(settings, 'SERIALIZATION_MODULES', {}).get('json') != 'shop.money.serializers':
+            yield "settings.SERIALIZATION_MODULES['json'] should be set to 'shop.money.serializers'."
+
+        if 'shop.rest.money.JSONRenderer' not in getattr(settings, 'REST_FRAMEWORK', {}).get('DEFAULT_RENDERER_CLASSES', []):
+            yield "settings.REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] should contain class 'shop.rest.money.JSONRenderer'."
+
+        if 'django_filters.rest_framework.DjangoFilterBackend' not in getattr(settings, 'REST_FRAMEWORK', {}).get('DEFAULT_FILTER_BACKENDS', []):
+            yield "settings.REST_FRAMEWORK['DEFAULT_FILTER_BACKENDS'] should contain class 'django_filters.rest_framework.DjangoFilterBackend'."
+
+        if getattr(settings, 'REST_AUTH_SERIALIZERS', {}).get('LOGIN_SERIALIZER') != 'shop.serializers.auth.LoginSerializer':
+            yield "settings.REST_AUTH_SERIALIZERS['LOGIN_SERIALIZER'] should be set to 'shop.serializers.auth.LoginSerializer'."
+
+        if 'shop.cascade' not in getattr(settings, 'CMSPLUGIN_CASCADE_PLUGINS', []):
+            yield "settings.CMSPLUGIN_CASCADE_PLUGINS should contain entry 'shop.cascade'."
