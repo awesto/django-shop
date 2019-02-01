@@ -88,7 +88,6 @@ INSTALLED_APPS = [
     'rest_auth',
     'django_fsm',
     'fsm_admin',
-    'reversion',
     'filer',
     'easy_thumbnails',
     'treebeard',
