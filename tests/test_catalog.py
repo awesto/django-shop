@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.contrib.auth.models import AnonymousUser
 from django.urls import reverse
+from django.utils import six
 from shop.models.cart import CartModel, CartItemModel
 from shop.models.customer import CustomerModel
 from shop.views.catalog import ProductListView, ProductRetrieveView, AddToCartView
@@ -31,7 +32,7 @@ def test_catalog_detail(commodity_factory, customer_factory, rf):
     response = ProductRetrieveView.as_view()(request, slug=product.slug)
     response.render()
     assert response.data['product_code'] == product.product_code
-    assert response.data['price'] == str(product.unit_price)
+    assert response.data['price'] == six.text_type(product.unit_price)
     assert response.data['slug'] == product.slug
 
 
@@ -44,7 +45,7 @@ def test_get_add_to_cart(commodity_factory, customer_factory, rf):
     response = AddToCartView.as_view()(request, slug=product.slug)
     response.render()
     assert response.data['quantity'] == 1
-    assert response.data['unit_price'] == str(product.unit_price)
+    assert response.data['unit_price'] == six.text_type(product.unit_price)
     assert response.data['product_code'] == product.product_code
     assert response.data['is_in_cart'] is False
 

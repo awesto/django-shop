@@ -1,10 +1,11 @@
 import os
 import pytest
 from email.mime.image import MIMEImage
-from django.core.mail import EmailMultiAlternatives, get_connection
+from django.core.mail import EmailMultiAlternatives
 from django.core.mail.message import SafeMIMEMultipart, SafeMIMEText
 from django.core.files.images import ImageFile
 from django.template.loader import get_template
+from django.utils import six
 from html_email.template import render_to_string
 from html_email.template.backends.html_email import EmailTemplates
 
@@ -25,7 +26,7 @@ def test_html():
 <img src="cid:django-shop-logo.png" width="200" />
 """
     subject = "[django-SHOP unit tests] attached image"
-    msg = EmailMultiAlternatives(subject, body, to=['jacob.rief@gmail.com'])
+    msg = EmailMultiAlternatives(subject, body, to=['john@example.com'])
     template.attach_images(msg)
     msg.content_subtype = 'html'
     msg.mixed_subtype = 'related'
@@ -39,19 +40,19 @@ def test_html():
     part = next(parts)
     assert isinstance(part, MIMEImage)
     assert part.get_content_type() == 'image/png'
-    assert part.get_content_disposition() == 'inline'
-    assert part.get_filename() == 'django-shop-logo.png'
+    if six.PY2:
+        part['Content-Disposition'] == 'inline; filename="django-shop-logo.png"'
+    else:
+        assert part.get_content_disposition() == 'inline'
+        assert part.get_filename() == 'django-shop-logo.png'
     assert part['Content-ID'] == '<django-shop-logo.png>'
-
-    #connection = get_connection(backend='django.core.mail.backends.smtp.EmailBackend')
-    #connection.send_messages([msg])
 
 
 def test_mixed():
     body = "Testing mixed text and html attachments"
     html, attached_images = render_to_string('image.html', {'imgsrc': 'django-shop-logo.png'}, using='html_email')
     subject = "[django-SHOP unit tests] attached image"
-    msg = EmailMultiAlternatives(subject, body, to=['jacob.rief@gmail.com'])
+    msg = EmailMultiAlternatives(subject, body, to=['john@example.com'])
     msg.attach_alternative(html, 'text/html')
     for attachment in attached_images:
         msg.attach(attachment)
@@ -74,9 +75,6 @@ def test_mixed():
     assert isinstance(part, MIMEImage)
     assert part.get_content_type() == 'image/png'
 
-    #connection = get_connection(backend='django.core.mail.backends.smtp.EmailBackend')
-    #connection.send_messages([msg])
-
 
 def test_image():
     relfilename = 'testshop/static/django-shop-logo.png'
@@ -89,7 +87,7 @@ def test_image():
 <img src="cid:{}" width="200" />
 """.format(relfilename)
     subject = "[django-SHOP unit tests] attached image"
-    msg = EmailMultiAlternatives(subject, body, to=['jacob.rief@gmail.com'])
+    msg = EmailMultiAlternatives(subject, body, to=['john@example.com'])
     template.attach_images(msg)
     # this message can be send by email
     parts = msg.message().walk()
@@ -101,6 +99,9 @@ def test_image():
     part = next(parts)
     assert isinstance(part, MIMEImage)
     assert part.get_content_type() == 'image/png'
-    assert part.get_content_disposition() == 'inline'
-    assert part.get_filename() == relfilename
+    if six.PY2:
+        part['Content-Disposition'] == 'inline; filename="{}"'.format(relfilename)
+    else:
+        assert part.get_content_disposition() == 'inline'
+        assert part.get_filename() == relfilename
     assert part['Content-ID'] == '<{}>'.format(relfilename)
