@@ -9,7 +9,7 @@
 
 <form shop-product-search class="{{ search_form_classes }}" role="search" method="get"{% if search_product_url %} action="{{ search_product_url }}"{% endif %}>
 	{% if search_product_url %}
-	<div class="input-group">
+	<div class="input-group w-100">
 	{% endif %}
 		<input name="q" ng-model="searchQuery" {% if search_autocomplete %}ng-change="autocomplete()" {% endif %}type="search" class="form-control" placeholder="{% trans 'Search' %}" />
 	{% if search_product_url %}

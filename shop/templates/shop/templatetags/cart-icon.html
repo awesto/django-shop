@@ -9,8 +9,8 @@
 {% endif %}
 {% url "shop:cart-fetch-dropdown" as endpoint %}
 
-<li class="nav-item ml-3{% if has_dropdown %} dropdown{% endif %}" {% if has_dropdown %}uib-dropdown is-open="dropdownOpen"{% else %}uib-tooltip="{{ tooltip }}" tooltip-placement="left"{% endif %} shop-dropdown-cart="{{ endpoint }}">
-	<a class="nav-link p-0"{% if shop_cart_url %} href="{{ shop_cart_url }}"{% endif %} title="{{ tooltip }}">
+<li class="nav-item{% if has_dropdown %} dropdown{% endif %} {{ item_class }}" {% if has_dropdown %}uib-dropdown is-open="dropdownOpen"{% else %}uib-tooltip="{{ tooltip }}" tooltip-placement="left"{% endif %} shop-dropdown-cart="{{ endpoint }}">
+	<a class="nav-link"{% if shop_cart_url %} href="{{ shop_cart_url }}"{% endif %} title="{{ tooltip }}">
 	{% block carticon %}
 		<i class="fa fa-shopping-cart fa-fw mr-1"></i>
 		<ng-pluralize count="cart.num_items" when="{'1': '{% trans "1 Item" context "cart icon" %}', 'other': '{% trans "{} Items" context "cart icon" %}'}"></ng-pluralize>

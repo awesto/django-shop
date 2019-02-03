@@ -7,7 +7,7 @@
 	{% trans "Watch List" as tooltip %}
 {% endif %}
 {% if shop_watch_list_url %}
-<li class="nav-item ml-3">
-	<a class="nav-link py-0" href="{{ shop_watch_list_url }}" title="{{ tooltip }}"><i class="fa fa-heart" uib-tooltip="{{ tooltip }}" tooltip-placement="left"></i></a>
+<li class="nav-item {{ item_class }}">
+	<a class="nav-link" href="{{ shop_watch_list_url }}" title="{{ tooltip }}"><i class="fa fa-heart" uib-tooltip="{{ tooltip }}" tooltip-placement="left"></i></a>
 </li>
 {% endif %}
