@@ -5,7 +5,7 @@
 {% add_data "ng-requires" "django.shop.catalog" %}
 
 {% block catalog-list %}
-	{% addtoblock "css" %}<link href="{% sass_src 'shop/css/product-list.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+	{% addtoblock "css" %}<link href="{% sass_src 'shop/css/catalog-list.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 	{% with product_figure=product_figure|default:"shop/catalog/product-figure.html" %}
 <shop-catalog-list infinite-scroll="{% if pagination == 'paginator' %}false{% else %}true{% endif %}">
 	<div ng-if="catalog.count===undefined" class="shop-catalog-list">
