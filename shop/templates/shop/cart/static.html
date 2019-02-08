@@ -4,34 +4,35 @@
 
 <div class="shop-cart">
 {% block shop-cart-head %}
+	{% if cart.num_items == 0 %}
 	<div class="row lead text-muted py-1">
-	{% if cart.num_items > 0 %}
-		<div class="col-1 text-center">{% trans "Quantity" %}</div>
-		<div class="col-7 text-center">{% trans "Product" %}</div>
-		<div class="col-2 text-right">{% trans "Unit Price" %}</div>
-		<div class="col-2 text-right">{% trans "Total" %}</div>
-	{% else %}
 		<div class="col">
 			{% trans "There are no items in the cart" %}
 		</div>
-	{% endif %}
 	</div>
+	{% endif %}
 {% endblock shop-cart-head %}
 
 {% block shop-cart-body %}
 	{% for cart_item in cart.items %}
-	<div class="shop-list-item row border-top py-3">
-		<div class="col-1 text-center">{{ cart_item.quantity }}</div>
-		<div class="col-7 text-left">{{ cart_item.summary.media }}</div>
-		<div class="col-4">
-			<div class="row">
-				<div class="col text-right text-nowrap">{{ cart_item.unit_price }}</div>
-				<div class="col text-right text-nowrap">{{ cart_item.line_total }}</div>
+	<div class="shop-list-item row border-top py-2">
+		<div class="col-12 col-md-6">
+			<div class="row align-items-center flex-nowrap">
+				<div class="col-2 text-right">
+					{{ cart_item.quantity }}<span class="px-1">&times;</span>
+				</div>
+				<div class="col-10">{{ cart_item.summary.media }}</div>
+			</div>
+		</div>
+		<div class="col-12 col-md-6">
+			<div class="row text-nowrap flex-nowrap lead">
+				<div class="col-6 text-right">{{ cart_item.unit_price }}</div>
+				<div class="col-4 col-sm-6 text-right">{{ cart_item.line_total }}</div>
 			</div>
 		{% for extra_row in cart_item.extra_rows %}
-			<div class="row">
-				<div class="col text-right text-nowrap">{{ extra_row.label }}</div>
-				<div class="col text-right text-nowrap">{{ extra_row.amount }}</div>
+			<div class="row text-muted text-nowrap flex-nowrap">
+				<div class="col-6 text-right">{{ extra_row.label }}</div>
+				<div class="col-4 col-sm-6 text-right">{{ extra_row.amount }}</div>
 			</div>
 		{% endfor %}
 		</div>
@@ -41,31 +42,31 @@
 
 {% block shop-cart-foot %}
 	<div class="row">
-		<div class="col-8">
+		<div class="col-12 col-sm-6">
 			{% if instance.left_extension %}{% render_plugin instance.left_extension %}{% endif %}
 		</div>
-		<div class="col-4 border-top">
-			<div class="row py-2">
-				<div class="col text-right text-nowrap font-weight-bold">
+		<div class="col-12 col-md-6 border-top">
+			<div class="row py-2 lead">
+				<div class="col-6 text-right text-nowrap">
 					{% trans "Subtotal" %}
 				</div>
-				<div class="col text-right text-nowrap font-weight-bold" djng-bind-if="cart.subtotal">
+				<div class="col-4 col-sm-6 text-right text-nowrap" djng-bind-if="cart.subtotal">
 					{{ cart.subtotal }}
 				</div>
 			</div>
 	{% for extra_row in cart.extra_rows %}
 			<div class="row py-2" ng-if="!cart">
-				<div class="col text-right text-nowrap">{{ extra_row.label }}</div>
-				<div class="col text-right text-nowrap">{{ extra_row.amount }}</div>
+				<div class="col-6 text-right text-nowrap">{{ extra_row.label }}</div>
+				<div class="col-4 col-sm-6 text-right text-nowrap">{{ extra_row.amount }}</div>
 			</div>
 	{% endfor %}
 			<div class="row py-2" ng-cloak ng-if="cart" ng-repeat="extra_row in cart.extra_rows">
-				<div class="col text-right text-nowrap" ng-bind="extra_row.label"></div>
-				<div class="col text-right text-nowrap" ng-bind="extra_row.amount"></div>
+				<div class="col-6 text-right text-nowrap" ng-bind="extra_row.label"></div>
+				<div class="col-4 col-sm-6 text-right text-nowrap" ng-bind="extra_row.amount"></div>
 			</div>
-			<div class="row py-3 shop-double-border">
-				<div class="col text-right text-nowrap lead font-weight-bold">{% trans "Total" %}</div>
-				<div class="col text-right text-nowrap lead font-weight-bold" djng-bind-if="cart.total">
+			<div class="row py-2 shop-double-border lead font-weight-bold">
+				<div class="col-6 text-right text-nowrap">{% trans "Total" %}</div>
+				<div class="col-4 col-sm-6 text-right text-nowrap" djng-bind-if="cart.total">
 					{{ cart.total }}
 				</div>
 			</div>

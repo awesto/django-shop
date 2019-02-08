@@ -11,30 +11,38 @@
 {% endblock %}
 
 {% block shop-order-head %}
+	{% if data.count == 0 %}
 <div class="row lead text-muted py-1">
-	{% if data.count > 0 %}
-	<div class="col-2 text-center text-nowrap">{% trans "Number" %}</div>
-	<div class="col-2 text-center text-nowrap">{% trans "Order Date" %}</div>
-	<div class="col-2 text-center text-nowrap">{% trans "Sum" %}</div>
-	<div class="col-4 text-left text-nowrap">{% trans "Shipping Address" %}</div>
-	<div class="col-2 text-right text-nowrap">{% trans "Status" %}</div>
-	{% else %}
 	<div class="col">
 		{% trans "You have never ordered anything from this site." %}
 	</div>
-	{% endif %}
 </div>
+	{% endif %}
 {% endblock shop-order-head %}
 
-{% block shop-order-body %}{% for order in data.results %}
-<div class="row border-top py-3 shop-list-item">
-	<div class="col-2 text-center text-nowrap"><a href="{{ order.url }}">{{ order.number }}</a></div>
-	<div class="col-2 text-center text-nowrap" shop-timestamp="{{ order.created_at }}" time-format="d. MMM yyyy"></div>
-	<div class="col-2 text-center text-nowrap">{{ order.total }}</div>
-	<div class="col-4 text-left">{{ order.shipping_address_text }}</div>
-	<div class="col-2 text-right">{{ order.status }}</div>
+{% block shop-order-body %}
+	{% for order in data.results %}
+<div class="shop-list-item row border-top py-2">
+	<div class="col-12 col-lg-6">
+		<div class="row flex-nowrap lead">
+			<div class="col-8">
+				<a class="mr-lg-5 mr-3" href="{{ order.url }}">{{ order.number }}</a>
+				<small class="text-nowrap text-muted" shop-timestamp="{{ order.created_at }}" time-format="d. MMM yyyy"></small>
+			</div>
+			<div class="col-4 text-nowrap text-right">{{ order.total }}</div>
+		</div>
+	</div>
+	<div class="col-12 col-lg-6">
+		<div class="row flex-nowrap">
+			<div class="col-8">{{ order.shipping_address_text }}</div>
+			<div class="col-4 text-right">
+				<div class="badge badge-primary">{{ order.status }}</div>
+			</div>
+		</div>
+	</div>
 </div>
-{% endfor %}{% endblock shop-order-body %}
+	{% endfor %}
+{% endblock shop-order-body %}
 
 {% block shop-order-foot %}{% if paginator.display_page_controls %}
 <div class="row border-top py-3">

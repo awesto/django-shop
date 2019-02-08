@@ -41,8 +41,8 @@
 	{% endspaceless %}
 	{% if billing_address_form.multi_addr %}
 		<div class="form-group" ng-show="billing_address.siblings_summary.length>1 || billing_address.siblings_summary.length>0 && billing_address.active_priority=='add'">
-			<button class="btn btn-danger btn-xs" ng-click="deleteSiblingAddress()">
-				<span class="glyphicon glyphicon-remove-circle"></span>&nbsp;{% trans "Remove this address" %}
+			<button class="btn btn-danger btn-sm" ng-click="deleteSiblingAddress()">
+				<span class="fa fa-trash mr-2"></span>{% trans "Remove this address" %}
 			</button>
 		</div>
 	{% endif %}
