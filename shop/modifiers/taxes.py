@@ -49,3 +49,11 @@ class CartExcludedTaxModifier(BaseCartModifier):
             'amount': amount,
         }
         cart.extra_rows[self.identifier] = ExtraCartRow(instance)
+
+    def add_extra_cart_item_row(self, cart_item, request):
+        amount = cart_item.line_total * self.taxes
+        instance = {
+            'label': _("{}% VAT incl.").format(app_settings.VALUE_ADDED_TAX),
+            'amount': amount,
+        }
+        cart_item.extra_rows[self.identifier] = ExtraCartRow(instance)
