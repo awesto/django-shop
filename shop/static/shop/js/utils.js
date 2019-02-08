@@ -38,6 +38,9 @@ djangoShopModule.provider('djangoShop', function() {
 	};
 
 	this.$get = ['$rootScope', '$window', function($rootScope, $window) {
+		$rootScope.toggleNavCollapse = function() {
+			$rootScope.isNavCollapsed = !$rootScope.isNavCollapsed;
+		};
 		$rootScope.isNavCollapsed = true;
 		self.location = $window.location;
 		return self;
