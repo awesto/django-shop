@@ -18,8 +18,8 @@ class ShippingWorkflowMixinBase(object):
 
 class CommissionGoodsWorkflowMixin(ShippingWorkflowMixinBase):
     """
-    Add this class to `settings.SHOP_ORDER_WORKFLOWS` to mix it into your `OrderModel`.
-    It does not support partial delivery.
+    Add this class to ``settings.SHOP_ORDER_WORKFLOWS`` to mix it into our
+    :class:`shop.models.order.OrderModel`.
     It adds all the methods required for state transitions, while picking and packing
     the ordered goods for shipping.
     """
@@ -49,9 +49,11 @@ class CommissionGoodsWorkflowMixin(ShippingWorkflowMixinBase):
 
 class PartialDeliveryWorkflowMixin(ShippingWorkflowMixinBase):
     """
-    Add this class to `settings.SHOP_ORDER_WORKFLOWS` to mix it into the `OrderModel`.
-    This mixin supports partial delivery, hence the model `Delivery` and `DeliveryItem` must
-    be materialized.
+    Add this class to ``settings.SHOP_ORDER_WORKFLOWS`` to mix it into our
+    :class:`shop.models.order.OrderModel`.
+    This mixin supports partial delivery, hence check that the models
+    :class:`shop.models.delivery.DeliveryModel` and :class:`shop.models.delivery.DeliveryItemModel`
+    must be materialized.
     It adds all the methods required for state transitions, while picking, packing and shipping
     the ordered goods for delivery.
     """
