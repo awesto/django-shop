@@ -55,12 +55,12 @@
 	<div class="col-12 col-md-6">
 		<div class="row text-nowrap flex-nowrap lead">
 			<div class="col-6 text-right">{{ item.unit_price }}</div>
-			<div class="col-4 col-sm-6 text-right">{{ item.line_total }}</div>
+			<div class="col-4 col-md-6 text-right">{{ item.line_total }}</div>
 		</div>
 		{% for _, extra_row in item.extra.rows %}
 		<div class="row text-muted text-nowrap flex-nowrap">
 			<div class="col-6 text-right">{{ extra_row.label }}</div>
-			<div class="col-4 col-sm-6 text-right">{{ extra_row.amount }}</div>
+			<div class="col-4 col-md-6 text-right">{{ extra_row.amount }}</div>
 		</div>
 		{% endfor %}
 	</div>
@@ -72,22 +72,22 @@
 <div class="row mb-3">
 	<div class="col-12 col-md-6 border-top order-md-last">
 		<div class="row py-2 lead">
-			<div class="col text-right text-nowrap">
+			<div class="col-6 text-right text-nowrap">
 				{% trans "Subtotal" %}
 			</div>
-			<div class="col text-right text-nowrap">
+			<div class="col-4 col-md-6 text-right text-nowrap">
 				{{ data.subtotal }}
 			</div>
 		</div>
 	{% for key, extra_row in data.extra.rows %}
 		<div class="row py-2">
-			<div class="col text-right text-nowrap">{{ extra_row.label }}</div>
-			<div class="col text-right text-nowrap">{{ extra_row.amount }}</div>
+			<div class="col-6 text-right text-nowrap">{{ extra_row.label }}</div>
+			<div class="col-4 col-md-6 text-right text-nowrap">{{ extra_row.amount }}</div>
 		</div>
 	{% endfor %}
 		<div class="row py-2 shop-double-border lead font-weight-bold">
-			<div class="col text-right text-nowrap">{% trans "Total" %}</div>
-			<div class="col text-right text-nowrap">{{ data.total }}</div>
+			<div class="col-6 text-right text-nowrap">{% trans "Total" %}</div>
+			<div class="col-4 col-md-6 text-right text-nowrap">{{ data.total }}</div>
 		</div>
 	{% if instance.right_extension %}{% render_plugin instance.right_extension %}{% endif %}
 	</div>

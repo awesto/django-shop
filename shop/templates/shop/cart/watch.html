@@ -22,9 +22,9 @@
 		</div>
 		<div class="col-12 col-md-6">
 			<div class="row">
-				<div class="col lead text-nowrap text-right" ng-bind="cart_item.summary.price"></div>
+				<div class="col-6 lead text-nowrap text-right" ng-bind="cart_item.summary.price"></div>
 	{% block shop-watch-item-controls %}
-				<div class="col">
+				<div class="col-4 col-md-6">
 					<button type="button" class="ml-auto btn btn-sm btn-secondary btn-block shop-item-control" ng-click="deleteWatchItem(cart_item)">
 						<span class="fa fa-trash-o mr-2"></span>{% trans "Remove" %}
 					</button>
@@ -35,26 +35,6 @@
 	{% endblock %}
 			</div>
 		</div>
-
-{% comment %}
-		<div class="col-7" ng-bind-html="cart_item.summary.media">
-			{# rendered by ProductSerializer using template "(myshop|shop)/products/cart-{product_model}-media.html" #}
-		</div>
-		<div class="col-2 text-right">
-			<span ng-bind="cart_item.summary.price"></span>
-		</div>
-		<div class="col-3">
-	{% block shop-watch-item-controls %}
-			<button type="button" class="btn btn-sm btn-secondary btn-block" ng-click="deleteWatchItem(cart_item)">
-				<span class="fa fa-trash-o"></span>&nbsp;{% trans "Remove" %}
-			</button>
-			<button type="button" class="btn btn-sm btn-info btn-block" ng-click="addWatchItem(cart_item)">
-				<span class="fa fa-cart-arrow-down"></span>&nbsp;{% trans "Add to cart" %}
-			</button>
-	{% endblock %}
-		</div>
-{% endcomment %}
-
 	</div>
 {% endblock shop-watch-body %}
 </div>
