@@ -18,8 +18,9 @@ class ShippingWorkflowMixinBase(object):
 
 class CommissionGoodsWorkflowMixin(ShippingWorkflowMixinBase):
     """
-    Add this class to ``settings.SHOP_ORDER_WORKFLOWS`` to mix it into our
-    :class:`shop.models.order.OrderModel`.
+    Add this class to ``settings.SHOP_ORDER_WORKFLOWS`` to mix it into the merchants Order model.
+    It is mutual exclusive with :class:`shop.shipping.workflows.PartialDeliveryWorkflowMixin`.
+
     It adds all the methods required for state transitions, while picking and packing
     the ordered goods for shipping.
     """
@@ -49,13 +50,17 @@ class CommissionGoodsWorkflowMixin(ShippingWorkflowMixinBase):
 
 class PartialDeliveryWorkflowMixin(ShippingWorkflowMixinBase):
     """
-    Add this class to ``settings.SHOP_ORDER_WORKFLOWS`` to mix it into our
-    :class:`shop.models.order.OrderModel`.
-    This mixin supports partial delivery, hence check that the models
-    :class:`shop.models.delivery.DeliveryModel` and :class:`shop.models.delivery.DeliveryItemModel`
-    must be materialized.
-    It adds all the methods required for state transitions, while picking, packing and shipping
-    the ordered goods for delivery.
+    Add this class to ``settings.SHOP_ORDER_WORKFLOWS`` to mix it into the merchants Order model.
+    It is mutual exclusive with :class:`shop.shipping.workflows.CommissionGoodsWorkflowMixin`.
+
+    This mixin supports partial delivery, hence check that a materialized representation of the
+    models :class:`shop.models.delivery.DeliveryModel` and :class:`shop.models.delivery.DeliveryItemModel`
+    exists and is instantiated.
+
+    Importing the classes :class:`shop.models.defaults.delivery.DeliveryModel` and
+    :class:`shop.models.defaults.delivery_item.DeliveryItemModel` into the merchants
+    ``models.py``, usually is enough. This adds all the methods required for state transitions,
+    while picking, packing and shipping the ordered goods for delivery.
     """
     @cached_property
     def unfulfilled_items(self):
