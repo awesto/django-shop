@@ -8,4 +8,7 @@ from shop.models.delivery import BaseDeliveryItem
 
 class DeliveryItem(BaseDeliveryItem):
     """Default materialized model for ShippedItem"""
-    quantity = models.IntegerField(_("Delivered quantity"), default=0)
+    quantity = models.IntegerField(
+        _("Delivered quantity"),
+        default=0,
+    )
