@@ -228,16 +228,6 @@ class DefaultSettings(object):
         return self._setting('SHOP_GUEST_IS_ACTIVE_USER', False)
 
     @property
-    def SHOP_MANUAL_SHIPPING_ID(self):
-        """
-        If this directive is ``True``, the merchant is allowed to set the shipping ID manually, otherwise
-        this ID is set by the shipping provider.
-
-        The default is ``True``.
-        """
-        return self._setting('SHOP_MANUAL_SHIPPING_ID', True)
-
-    @property
     def SHOP_OVERRIDE_SHIPPING_METHOD(self):
         """
         If this directive is ``True``, the merchant is allowed to override the shipping method the

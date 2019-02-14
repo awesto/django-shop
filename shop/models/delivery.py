@@ -2,14 +2,13 @@
 from __future__ import unicode_literals
 
 from six import with_metaclass
-
 from django.db import models
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
-
 from shop import deferred
 from shop.models.order import BaseOrder, BaseOrderItem, OrderItemModel
+from shop.modifiers.pool import cart_modifiers_pool
 
 
 @python_2_unicode_compatible
@@ -31,24 +30,25 @@ class BaseDelivery(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         _("Fulfilled at"),
         null=True,
         blank=True,
+        help_text=_("Timestamp of delivery fulfillment"),
     )
 
     shipped_at = models.DateTimeField(
         _("Shipped at"),
         null=True,
         blank=True,
+        help_text=_("Timestamp of delivery shipment"),
     )
 
     shipping_method = models.CharField(
         _("Shipping method"),
         max_length=50,
-        help_text=_("The shipping backend used to deliver the items for this order"),
+        help_text=_("The shipping backend used to deliver items of this order"),
     )
 
     class Meta:
         abstract = True
-        verbose_name = _("Delivery")
-        verbose_name_plural = _("Deliveries")
+        unique_together = ['shipping_method', 'shipping_id']
 
     def __str__(self):
         return _("Delivery ID: {}").format(self.id)
@@ -61,6 +61,11 @@ class BaseDelivery(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         else:
              msg = "Class `{}` must implement a `BooleanField` named `canceled`, if used in combination with a Delivery model."
              raise ImproperlyConfigured(msg.format(OrderItemModel.__name__))
+
+    def clean(self):
+        if self.order._fsm_requested_transition == ('status', 'ship_goods') and not self.shipped_at:
+            shipping_modifier = cart_modifiers_pool.get_active_shipping_modifier(self.shipping_method)
+            shipping_modifier.ship_the_goods(self)
 
 DeliveryModel = deferred.MaterializedModel(BaseDelivery)
 

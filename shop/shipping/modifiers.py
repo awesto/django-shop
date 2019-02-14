@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-
 from shop.modifiers.base import BaseCartModifier
 
 
@@ -12,7 +12,8 @@ class ShippingModifier(BaseCartModifier):
     """
     def get_choice(self):
         """
-        Returns the tuple used by the shipping forms dialog to display the choice
+        :returns: A tuple consisting of 'value, label' used by the shipping form dialog to render
+        the available shipping choices.
         """
         raise NotImplemented("Must be implemented by the inheriting class")
 
@@ -50,6 +51,13 @@ class ShippingModifier(BaseCartModifier):
         except (KeyError, CartModel.DoesNotExist):
             pass
 
+    def ship_the_goods(self, delivery):
+        """
+        Hook to be overridden by the active shipping modifier. It should be used to perform the
+        shipping request.
+        """
+        raise NotImplementedError("Must be implemented by the inheriting class")
+
 
 class SelfCollectionModifier(ShippingModifier):
     """
@@ -59,4 +67,9 @@ class SelfCollectionModifier(ShippingModifier):
     identifier = 'self-collection'
 
     def get_choice(self):
-        return (self.identifier, _("Self collection"))
+        return (self.identifier, _("Self-collection"))
+
+    def ship_the_goods(self, delivery):
+        if not delivery.shipping_id:
+            delivery.shipping_id = str(delivery.id)
+        delivery.shipped_at = timezone.now()
