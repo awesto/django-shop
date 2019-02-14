@@ -56,7 +56,7 @@ class ShippingModifier(BaseCartModifier):
         Hook to be overridden by the active shipping modifier. It should be used to perform the
         shipping request.
         """
-        raise NotImplementedError("Must be implemented by the inheriting class")
+        delivery.shipped_at = timezone.now()
 
 
 class SelfCollectionModifier(ShippingModifier):
@@ -72,4 +72,4 @@ class SelfCollectionModifier(ShippingModifier):
     def ship_the_goods(self, delivery):
         if not delivery.shipping_id:
             delivery.shipping_id = str(delivery.id)
-        delivery.shipped_at = timezone.now()
+        super(SelfCollectionModifier, self).ship_the_goods(delivery)
