@@ -2,9 +2,7 @@
 from __future__ import unicode_literals
 
 from django.utils import timezone
-
 from rest_framework import serializers
-
 from shop.conf import app_settings
 from shop.models.cart import CartModel
 from shop.models.order import OrderModel

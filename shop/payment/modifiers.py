@@ -25,7 +25,8 @@ class PaymentModifier(BaseCartModifier):
 
     def get_choice(self):
         """
-        Returns the tuple used by the payment forms dialog to display the choice.
+        :returns: A tuple consisting of 'value, label' used by the payment form dialog to render
+        the available payment choices.
         """
         raise NotImplemented("Must be implemented by the inheriting class")
 

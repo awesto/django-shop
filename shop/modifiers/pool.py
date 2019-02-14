@@ -51,7 +51,6 @@ class CartModifiersPool(object):
             if isinstance(modifier, ShippingModifier) and modifier.is_active(shipping_modifier):
                 return modifier
 
-
     def get_active_payment_modifier(self, payment_modifier):
         """
         Return the payment modifier object for the given string.
