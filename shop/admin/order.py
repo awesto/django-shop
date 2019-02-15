@@ -21,8 +21,6 @@ from shop.serializers.order import OrderDetailSerializer
 class OrderPaymentInline(admin.TabularInline):
     model = OrderPayment
     extra = 0
-    fields = ['amount', 'transaction_id', 'payment_method', 'created_at']
-    readonly_fields = ['created_at']
 
     def get_formset(self, request, obj=None, **kwargs):
         """
@@ -33,8 +31,34 @@ class OrderPaymentInline(admin.TabularInline):
         formset = super(OrderPaymentInline, self).get_formset(request, obj, **kwargs)
         return formset
 
+    def has_add_permission(self, request, obj=None):
+        assert obj is not None
+        return obj.status in ['awaiting_payment', 'refund_payment']
+
     def has_delete_permission(self, request, obj=None):
         return False
+
+    def get_max_num(self, request, obj=None, **kwargs):
+        qs = self.model.objects.filter(order=obj)
+        if self.has_add_permission(request, obj):
+            return qs.count() + 1
+        return qs.count()
+
+    def get_fields(self, request, obj=None):
+        if self.has_add_permission(request, obj):
+            return ['amount', 'transaction_id', 'payment_method', 'created_at']
+        return ['get_amount', 'transaction_id', 'payment_method', 'created_at']
+
+    def get_readonly_fields(self, request, obj=None):
+        if self.has_add_permission(request, obj):
+            return ['created_at', 'get_amount']
+        # unless we expect a payment, set all fields as readonly
+        return self.get_fields(request, obj)
+
+    def get_amount(self, obj):
+        """Return amount using correct local format"""
+        return obj.amount
+    get_amount.short_description = pgettext_lazy('admin', "Amount Paid")
 
 
 class OrderItemInline(admin.StackedInline):

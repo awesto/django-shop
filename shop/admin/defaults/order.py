@@ -25,6 +25,5 @@ class OrderAdmin(BaseOrderAdmin):
 
     def get_inline_instances(self, request, obj=None):
         inline_instances = list(super(OrderAdmin, self).get_inline_instances(request, obj))
-        if obj and obj.status in ['awaiting_payment', 'refund_payment']:
-            inline_instances.append(OrderPaymentInline(self.model, self.admin_site))
+        inline_instances.append(OrderPaymentInline(self.model, self.admin_site))
         return inline_instances
