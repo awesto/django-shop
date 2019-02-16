@@ -1,6 +1,6 @@
 {% load i18n static sass_tags sekizai_tags shop_tags %}
 
-{% addtoblock "css" %}<link href="{% sass_src 'shop/css/tables.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+{% addtoblock "css" %}<link href="{% sass_src 'shop/css/list-items.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 
 {% if pagination != "paginator" %}
 	{% addtoblock "js" %}<script src="{% static 'node_modules/angular-inview/angular-inview.js' %}"></script>{% endaddtoblock %}

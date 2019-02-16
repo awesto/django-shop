@@ -1,7 +1,7 @@
 {% load i18n static cascade_tags sass_tags sekizai_tags %}
 {% load render_plugin from cascade_tags %}
 
-{% addtoblock "css" %}<link href="{% sass_src 'shop/css/tables.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+{% addtoblock "css" %}<link href="{% sass_src 'shop/css/list-items.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 
 {% addtoblock "js" %}<script src="{% static 'shop/js/utils.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% add_data "ng-requires" "django.shop.utils" %}
