@@ -1,5 +1,7 @@
 {% load static i18n cms_tags sekizai_tags %}
 
+{% addtoblock "css" %}<link href="{% sass_src 'shop/css/add-to-cart.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
+
 {% addtoblock "js" %}<script src="{% static 'node_modules/ui-bootstrap4/dist/ui-bootstrap-tpls.js' %}"></script>{% endaddtoblock %}
 {% add_data "ng-requires" "ui.bootstrap" %}
 
