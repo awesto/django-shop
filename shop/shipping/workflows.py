@@ -35,9 +35,9 @@ class SimpleShippingWorkflowMixin(object):
         return False
 
     @property
-    def associate_with_delivery_items(self):
+    def allow_partial_delivery(self):
         """
-        :returns: ``True`` if a ``DeliveryItem`` shall be created for each shipped order item..
+        :returns: ``True`` if partial item delivery is allowed.
         """
         return False
 
@@ -95,7 +95,7 @@ class CommissionGoodsWorkflowMixin(SimpleShippingWorkflowMixin):
 
     def update_or_create_delivery(self, orderitem_data):
         """
-        Update or create a Delivery object for all ordered items.
+        Update or create a Delivery object for all items of this Order object.
         """
         delivery, _ = DeliveryModel.objects.get_or_create(
             order=self,
@@ -104,7 +104,12 @@ class CommissionGoodsWorkflowMixin(SimpleShippingWorkflowMixin):
             shipping_method=self.extra.get('shipping_modifier'),
             defaults={'fulfilled_at': timezone.now()}
         )
-        return delivery
+        for item in self.items.all():
+            DeliveryItemModel.objects.create(
+                delivery=delivery,
+                item=item,
+                quantity=item.quantity,
+            )
 
 
 class PartialDeliveryWorkflowMixin(CommissionGoodsWorkflowMixin):
@@ -125,7 +130,7 @@ class PartialDeliveryWorkflowMixin(CommissionGoodsWorkflowMixin):
     while picking, packing and shipping the ordered goods for delivery.
     """
     @property
-    def associate_with_delivery_items(self):
+    def allow_partial_delivery(self):
         return True
 
     @cached_property
@@ -167,7 +172,13 @@ class PartialDeliveryWorkflowMixin(CommissionGoodsWorkflowMixin):
         """
         Update or create a Delivery object and associate with selected ordered items.
         """
-        delivery = super(PartialDeliveryWorkflowMixin, self).update_or_create_delivery(orderitem_data)
+        delivery, _ = DeliveryModel.objects.get_or_create(
+            order=self,
+            shipping_id__isnull=True,
+            shipped_at__isnull=True,
+            shipping_method=self.extra.get('shipping_modifier'),
+            defaults={'fulfilled_at': timezone.now()}
+        )
 
         # create a DeliveryItem object for each ordered item to be shipped with this delivery
         for data in orderitem_data:
@@ -177,10 +188,6 @@ class PartialDeliveryWorkflowMixin(CommissionGoodsWorkflowMixin):
                     item=data['id'],
                     quantity=data['deliver_quantity'],
                 )
-        if delivery.deliveryitem_set.exists():
-            # mark Delivery object as fulfilled
-            delivery.fulfilled_at = timezone.now()
-            delivery.save(update_fields=['fulfilled_at'])
-        else:
+        if not delivery.deliveryitem_set.exists():
             # since no OrderItem was added to this delivery, discard it
             delivery.delete()

@@ -142,7 +142,7 @@ class DeliveryInline(admin.TabularInline):
     def get_fields(self, request, obj=None):
         assert obj is not None  # an Order object is never added through the Django-Admin
         fields = list(super(DeliveryInline, self).get_fields(request, obj))
-        if not obj.associate_with_delivery_items:
+        if not obj.allow_partial_delivery:
             fields.remove('delivered_items')
         return fields
 
@@ -206,7 +206,7 @@ class DeliveryOrderAdminMixin(object):
         assert obj is not None  # an Order object is never added through the Django-Admin
         inline_instances = list(super(DeliveryOrderAdminMixin, self).get_inline_instances(request, obj))
         if obj.associate_with_delivery:
-            if obj.associate_with_delivery_items:
+            if obj.allow_partial_delivery:
                 # replace `OrderItemInline` by `OrderItemInlineDelivery` for that instance.
                 inline_instances = [
                     OrderItemInlineDelivery(self.model, self.admin_site) if isinstance(instance, OrderItemInline) else instance
