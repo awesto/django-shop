@@ -1,5 +1,5 @@
 {% extends "shop/print/base.html" %}
-{% load i18n %}
+{% load i18n static %}
 
 {% block email-thead %}
 	{{ block.super }}
@@ -7,6 +7,7 @@
 {% endblock %}
 
 {% block content %}
-	<h4>{% trans "Delivery Note" %}: {{ order.get_number }}</h4>
+	<address>{{ data.shipping_address_text }}</address>
+	<h5>{% trans "Delivery Note" %}: {{ delivery.get_number }}</h5>
 	{% include "shop/print/order.html" %}
 {% endblock %}
