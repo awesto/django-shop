@@ -67,6 +67,17 @@ class BaseDelivery(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
             shipping_modifier = cart_modifiers_pool.get_active_shipping_modifier(self.shipping_method)
             shipping_modifier.ship_the_goods(self)
 
+    def get_number(self):
+        """
+        Hook to get the delivery number.
+        A class inheriting from Order may transform this into a string which is better readable.
+        """
+        if self.order.allow_partial_delivery:
+            for part, delivery in enumerate(self.order.delivery_set.all(), 1):
+                if delivery.pk == self.pk:
+                    return "{} / {}".format(self.order.get_number(), part)
+        return self.order.get_number()
+
 DeliveryModel = deferred.MaterializedModel(BaseDelivery)
 
 
