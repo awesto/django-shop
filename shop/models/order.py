@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 from decimal import Decimal
 import logging
 from six import with_metaclass
-
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
@@ -13,11 +12,9 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy, get_language_from_request
 from django.utils.six.moves.urllib.parse import urljoin
-
 from django_fsm import FSMField, transition
 from ipware.ip import get_ip
 from cms.models import Page
-
 from shop.conf import app_settings
 from shop.models.cart import CartItemModel
 from shop.models.fields import JSONField
