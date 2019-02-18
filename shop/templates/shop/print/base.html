@@ -9,65 +9,62 @@
 	<link href="{% sass_src 'shop/css/list-items.scss' %}" rel="stylesheet" type="text/css" media="all" />
 	<style type="text/css">
 		.page { position: relative; background: white; page-break-after: always; }
-		.page .header { font-size: 18pt; padding: 7.5mm 20mm 0 25mm; border-bottom: 1mm solid #49b58c; }
-		.page .content { padding: 0 20mm 0 25mm; }
-		.page .content .column { padding-left: 15px; padding-right: 15px; }
-		.page .footer {  bottom: 0; left: 0; right: 0; padding: 2.5mm 20mm 0 25mm; border-top: 1px solid #49b58c; }
-		.page address { width: 80mm; height: 40mm; margin-bottom: 10mm; font-size: 15px; word-wrap: break-word; word-break: break-all; white-space: pre; }
+		.page header { margin: 0; font-size: 18pt; height: 25mm; padding: 7.5mm 20mm 0 25mm; border-bottom: 1mm solid #49b58c; top: 0; left: 0; right: 0; }
+		.page main { padding: 25mm 20mm 0 25mm; }
+		.page main .column { padding-left: 15px; padding-right: 15px; }
+		.page footer { margin: 0; bottom: 0; left: 0; right: 0; height: 15mm; padding: 2.5mm 20mm 0 25mm; border-top: 1px solid #49b58c; }
+		.page address { width: 80mm; height: 40mm; margin: 25mm 0 10mm; font-size: 15px; word-wrap: break-word; word-break: break-all; white-space: pre; border: 1px solid red; }
 		.page address small { text-decoration: underline; }
 		a[href]:hover { text-decoration: none; }
 		@media screen {
 			body { background-color: rgb(204, 204, 204); }
 			.page { margin: 5mm auto; box-shadow: 0 0 5mm rgba(0,0,0,0.5);  width: 210mm; height: 297mm; }
-			.page .footer { position: absolute; }
+			.page footer, .page header { position: absolute; }
 		}
 		@media print {
-			body { background-color: white; color: black; size: A4 portrait; }
+			@page { size: A4 portrait; }
+			body { background-color: white; color: black; }
 			.page { margin: 0; box-shadow: none; }
-			.page .footer { position: fixed; }
+			.page main { zoom: 125%; }
+			.page footer, .page header { position: fixed; }
 			a[href]::after { content: none !important; }
 		}
-		/* to remove header and footer when printing */
-		@page { margin: 0; size: A4 portrait; }
-		@page:left { margin: 0; }
-		@page:right { margin: 0; }
 	{% block styles %}
 		#page_template { width: 210mm; height: 297mm; display: none; }
-		#page_template .header { height: 25mm; }
-		#page_template .footer { height: 20mm; }
+		#page_template header { height: 25mm; }
+		#page_template footer { height: 15mm; }
 	{% endblock styles %}
 	</style>
 	<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'shop/js/admin/jquery.columnizer.js' %}"></script>
 	<script type="text/javascript">
 	$(function() {
-		var page_width = $('#page_template').width(), page_height = $('#page_template').height();
-		var header_height = $('#page_template .header').height(), footer_height = $('#page_template .footer').height();
-		var content_height = page_height - header_height - footer_height;
-		var pixel2mm_ratio = page_height / 297;
-		console.log("Pixel (h) to mm ratio: ", pixel2mm_ratio);
-		console.log("Pixel (w) to mm ratio: ", page_width / 210);
+		var page_height = $('#page_template').height();
+		var header_height = $('#page_template header').height();
+		var footer_height = $('#page_template footer').height();
+		var main_height = page_height - header_height - footer_height;
+		console.log("Main height: ", main_height);
 
 		function render_content() {
 			var $address;
 			if ($('#letter_content').contents().length > 0) {
 				$page = $('#page_template').clone().addClass('page').removeAttr('id');
 				// $page.css({width: page_width, height: page_height});
-				$page.find('.header').css('height', header_height);
+				//$page.find('header').css('height', header_height);
 				$address = $('#letter_content').find('address');
-				if ($address) {
-					// reposition the address at 45mm from the top edge of the page
-					$address.css('margin-top', pixel2mm_ratio * 45 - header_height);
+				if (0 && $address) {
+					// reposition the address at 50mm from the top edge of the page
+					$address.css('margin-top', pixel2mm_ratio * 50 - header_height);
 				}
-				//$page.find('.content').css('height', content_height);
-				$page.find('.footer').css('height', footer_height);
+				//$page.find('.content').css('height', main_height);
+				//$page.find('footer').css('height', footer_height);
 				$('body').append($page);
 				$('#letter_content').columnize({
 					columns: 1,
-					target: '.page:last .content',
+					target: '.page:last main',
 					overflow: {
-						height: content_height,
 						id: '#letter_content',
+						height: main_height,
 						doneFunc: render_content
 					}
 				});
@@ -82,13 +79,17 @@
 
 <body>
 	<div id="page_template">
-		<div class="header">
+		<header>
 	{% block header %}
 			<img src="{% static 'shop/django-shop-logo.svg' %}" class="shop-logo" alt="django-SHOP" height="45">
 	{% endblock %}
-		</div>
-		<div class="content"><!-- rendered by function render_content() --></div>
-		<div class="footer">{% block footer %}This is the footer{% endblock %}</div>
+		</header>
+		<main><!-- rendered by function render_content() --></main>
+		<footer>
+	{% block footer %}
+			<p>This is the footer</p>
+	{% endblock %}
+		</footer>
 	</div>
 
 	<div id="letter_content">
