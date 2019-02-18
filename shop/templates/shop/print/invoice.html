@@ -4,6 +4,7 @@
 {% block title %}{% trans "Invoice" %} {{ order.get_number }}{% endblock %}
 
 {% block content %}
-	<h4>{% trans "Invoice" %}: {{ order.get_number }}</h4>
-	{% include "shop/print/order.html" %}
+	<address>{{ data.billing_address_text }}</address>
+	<h5>{% trans "Invoice" %}: {{ order.get_number }}</h5>
+	{% include "shop/print/list-items.html" %}
 {% endblock %}

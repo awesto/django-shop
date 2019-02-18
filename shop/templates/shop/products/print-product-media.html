@@ -2,7 +2,7 @@
 {# It is used to render the figure in each line item when printing an order or delivery-note #}
 <div class="media">
 	<a href="{{ product.get_absolute_url }}">
-{% block sample-image %}
+{% block print-image %}
 		<img width="80" height="80" class="mr-3" src="data:image/svg+xml;utf8,{% include './sample-image.svg' %}" />
 {% endblock %}
 	</a>
