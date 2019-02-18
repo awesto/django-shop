@@ -163,7 +163,9 @@ class DeliveryInline(admin.TabularInline):
         if obj.fulfilled_at is None:
             return ''
         link = reverse('admin:print_delivery_note', args=(obj.id,)), _("Delivery Note")
-        return format_html('<a href="{0}" class="viewsitelink" target="_new">{1}</a>', *link)
+        return format_html(
+            '<span class="object-tools"><a href="{0}" class="viewsitelink" target="_new">{1}</a></span>',
+            *link)
     print_out.short_description = _("Print out")
 
     def fulfilled(self, obj):

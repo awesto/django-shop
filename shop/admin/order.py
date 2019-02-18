@@ -192,7 +192,7 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
 class PrintOrderAdminMixin(object):
     """
     A customized OrderAdmin class shall inherit from this mixin class, to add
-    methods for printing the delivery note and the invoice.
+    methods for printing the the invoice.
     """
     def get_fields(self, request, obj=None):
         fields = list(super(PrintOrderAdminMixin, self).get_fields(request, obj))
@@ -206,9 +206,6 @@ class PrintOrderAdminMixin(object):
 
     def get_urls(self):
         my_urls = [
-            url(r'^(?P<pk>\d+)/print_confirmation/$',
-                self.admin_site.admin_view(self.render_confirmation),
-                name='print_confirmation'),
             url(r'^(?P<pk>\d+)/print_invoice/$', self.admin_site.admin_view(self.render_invoice),
                 name='print_invoice'),
         ]
@@ -220,37 +217,25 @@ class PrintOrderAdminMixin(object):
         context = {'request': request, 'render_label': 'print'}
         customer_serializer = app_settings.CUSTOMER_SERIALIZER(order.customer)
         order_serializer = OrderDetailSerializer(order, context=context)
-        content = template.render(context={
+        return template.render(context={
             'customer': customer_serializer.data,
             'data': order_serializer.data,
             'order': order,
         }, request=request)
-        return HttpResponse(content)
-
-    def render_confirmation(self, request, pk=None):
-        template = select_template([
-            '{}/print/order-confirmation.html'.format(app_settings.APP_LABEL.lower()),
-            'shop/print/order-confirmation.html'
-        ])
-        return self._render_letter(request, pk, template)
 
     def render_invoice(self, request, pk=None):
         template = select_template([
             '{}/print/invoice.html'.format(app_settings.APP_LABEL.lower()),
             'shop/print/invoice.html'
         ])
-        return self._render_letter(request, pk, template)
+        content = self._render_letter(request, pk, template)
+        return HttpResponse(content)
 
     def print_out(self, obj):
-        if obj.status == 'pick_goods':
-            button = reverse('admin:print_confirmation', args=(obj.id,)), pgettext_lazy('admin', "Order Confirmation")
-        elif obj.status == 'pack_goods':
-            button = reverse('admin:print_invoice', args=(obj.id,)), pgettext_lazy('admin', "Invoice")
-        else:
-            button = None
-        if button:
+        if obj.status in ['ready_for_delivery']:
+            link = reverse('admin:print_invoice', args=(obj.id,)), pgettext_lazy('admin', "Invoice")
             return format_html(
                 '<span class="object-tools"><a href="{0}" class="viewsitelink" target="_new">{1}</a></span>',
-                *button)
+                *link)
         return ''
     print_out.short_description = pgettext_lazy('admin', "Print out")
