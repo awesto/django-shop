@@ -189,18 +189,18 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
         return ModelForm
 
 
-class PrintOrderAdminMixin(object):
+class PrintInvoiceAdminMixin(object):
     """
     A customized OrderAdmin class shall inherit from this mixin class, to add
     methods for printing the the invoice.
     """
     def get_fields(self, request, obj=None):
-        fields = list(super(PrintOrderAdminMixin, self).get_fields(request, obj))
+        fields = list(super(PrintInvoiceAdminMixin, self).get_fields(request, obj))
         fields.append('print_out')
         return fields
 
     def get_readonly_fields(self, request, obj=None):
-        readonly_fields = list(super(PrintOrderAdminMixin, self).get_readonly_fields(request, obj))
+        readonly_fields = list(super(PrintInvoiceAdminMixin, self).get_readonly_fields(request, obj))
         readonly_fields.append('print_out')
         return readonly_fields
 
@@ -209,10 +209,10 @@ class PrintOrderAdminMixin(object):
             url(r'^(?P<pk>\d+)/print_invoice/$', self.admin_site.admin_view(self.render_invoice),
                 name='print_invoice'),
         ]
-        my_urls.extend(super(PrintOrderAdminMixin, self).get_urls())
+        my_urls.extend(super(PrintInvoiceAdminMixin, self).get_urls())
         return my_urls
 
-    def _render_letter(self, request, pk, template):
+    def _render_content(self, request, pk, template):
         order = self.get_object(request, pk)
         context = {'request': request, 'render_label': 'print'}
         customer_serializer = app_settings.CUSTOMER_SERIALIZER(order.customer)
@@ -228,7 +228,7 @@ class PrintOrderAdminMixin(object):
             '{}/print/invoice.html'.format(app_settings.APP_LABEL.lower()),
             'shop/print/invoice.html'
         ])
-        content = self._render_letter(request, pk, template)
+        content = self._render_content(request, pk, template)
         return HttpResponse(content)
 
     def print_out(self, obj):
