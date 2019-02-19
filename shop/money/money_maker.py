@@ -87,7 +87,7 @@ class AbstractMoney(Decimal):
             dec_part = decimal_sep + dec_part
 
         # grouping
-        if use_grouping:
+        if use_grouping and grouping > 0:
             int_part_gd = ''
             for cnt, digit in enumerate(int_part[::-1]):
                 if cnt and not cnt % grouping:
