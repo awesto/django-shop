@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from cms.models.static_placeholder import StaticPlaceholder
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.module_loading import import_string
+from cmsplugin_cascade.models import CascadeClipboard
+from shop.management.utils import deserialize_to_placeholder
 
 
 class MissingPage(CommandError):
@@ -98,26 +101,59 @@ class Command(BaseCommand):
         from cms.models.pluginmodel import CMSPlugin
         from cms.utils.i18n import get_public_languages
 
+        default_language = get_public_languages()[0]
+
+        # check for a HOME page
+        homes_pages = Page.objects.public().filter(is_home=True)
+        if not homes_pages.exists():
+            if self.add_missing:
+                page = self.create_page("Home", '', None, in_navigation=True)
+                try:
+                    clipboard = CascadeClipboard.objects.get(identifier='home')
+                except CascadeClipboard.DoesNotExist:
+                    pass
+                else:
+                    self.deserialize_to_placeholder(page, clipboard.data)
+                try:
+                    clipboard = CascadeClipboard.objects.get(identifier='footer')
+                except CascadeClipboard.DoesNotExist:
+                    pass
+                else:
+                    static_placeholder = StaticPlaceholder.objects.create(code='Static Footer')
+                    deserialize_to_placeholder(static_placeholder.draft, clipboard.data, default_language)
+                page.set_as_homepage()
+                self.publish_in_all_languages(page)
+                yield "Created CMS home page."
+            else:
+                yield "There should be a published CMS home page."
+
+        # check for catalog pages
         apphook = self.get_installed_apphook('CatalogListCMSApp')
         catalog_pages = Page.objects.public().filter(application_urls=apphook.__class__.__name__)
         if not catalog_pages.exists():
             if self.add_missing:
-                leaf_plugin = self.create_page_structure("Catalog", '', apphook.__class__.__name__)
-                self.add_plugin(leaf_plugin, 'ShopCatalogPlugin', {})
-                self.publish_in_all_languages(leaf_plugin.page)
-                self.assign_all_products_to_page(leaf_plugin.page)
-                yield "Created CMS page titled 'Catalog'"
+                page = self.create_page("Catalog", '', 'CatalogListCMSApp', in_navigation=True)
+                try:
+                    clipboard = CascadeClipboard.objects.get(identifier='shop-list')
+                    self.deserialize_to_placeholder(page, clipboard.data)
+                except CascadeClipboard.DoesNotExist:
+                    leaf_plugin = self.create_page_structure(page)
+                    self.add_plugin(leaf_plugin, 'ShopCatalogPlugin', {})
+                self.publish_in_all_languages(page)
+                self.assign_all_products_to_page(page)
+                yield "Created CMS page titled 'Catalog'."
             else:
                 yield "There should be at least one published CMS page configured to use an Application inheriting from 'CatalogListCMSApp'."
 
         page_attributes = [
+            # Menu Title, Page ID, CMS-App-Hook or None, Main Plugin, Plugin Context,
             ("Search", 'shop-search-product', 'CatalogSearchCMSApp', 'ShopSearchResultsPlugin', {}),
             ("Cart", 'shop-cart', None, 'ShopCartPlugin', {'render_type': 'editable'}),
             ("Watch-List", 'shop-watch-list', None, 'ShopCartPlugin', {'render_type': 'watch'}),
             ("Your Orders", 'shop-order', 'OrderApp', 'ShopOrderViewsPlugin', {}),
             ("Login", 'shop-login', None, 'ShopAuthenticationPlugin', {'form_type': 'login'}),
             ("Register Customer", 'shop-register-customer', None, 'ShopAuthenticationPlugin', {'form_type': 'register-user'}),
-            ("Your Personal Details", 'shop-customer-details', None, 'CustomerFormPlugin', {}),
+            ("Personal Details", 'shop-customer-details', None, 'CustomerFormPlugin', {}),
             ("Change Password", 'shop-password-change', None, 'ShopAuthenticationPlugin', {'form_type': 'password-change'}),
             ("Request Password Reset", 'password-reset-request', None, 'ShopAuthenticationPlugin', {'form_type': 'password-reset-request'}),
             ("Confirm Password Reset", 'password-reset-confirm', 'PasswordResetApp', 'ShopAuthenticationPlugin', {'form_type': 'password-reset-confirm'}),
@@ -127,28 +163,37 @@ class Command(BaseCommand):
                 self.check_page_content(*attribs[1:])
             except MissingPage as exc:
                 if self.add_missing:
-                    leaf_plugin = self.create_page_structure(*attribs[:3])
-                    self.add_plugin(leaf_plugin, *attribs[3:])
-                    self.publish_in_all_languages(leaf_plugin.page)
-                    yield "Created CMS page titled '{0}'".format(*attribs)
+                    page = self.create_page(*attribs[:3])
+                    try:
+                        clipboard = CascadeClipboard.objects.get(identifier=page.get_slug(default_language))
+                        self.deserialize_to_placeholder(page, clipboard.data)
+                    except CascadeClipboard.DoesNotExist:
+                        leaf_plugin = self.create_page_structure(page)
+                        self.add_plugin(leaf_plugin, *attribs[3:])
+                    self.publish_in_all_languages(page)
+                    yield "Created CMS page titled '{0}'.".format(*attribs)
                 else:
                     yield str(exc)
             except CommandError as exc:
                 yield str(exc)
 
         # the checkout page must be found through the purchase button
-        language = get_public_languages()[0]
-        for plugin in CMSPlugin.objects.filter(plugin_type='ShopProceedButton', language=language, placeholder__page__publisher_is_draft=False):
+        for plugin in CMSPlugin.objects.filter(plugin_type='ShopProceedButton', language=default_language, placeholder__page__publisher_is_draft=False):
             link = plugin.get_bound_plugin().glossary.get('link')
             if isinstance(link, dict) and link.get('type') == 'PURCHASE_NOW':
                 break
         else:
             if self.add_missing:
-                column_plugin = self.create_page_structure("Checkout", '', None)
-                forms_plugin = self.add_plugin(column_plugin, 'ValidateSetOfFormsPlugin', {})
-                glossary = {'button_type': 'btn-success', 'link': {'type': 'PURCHASE_NOW'}, 'link_content': "Purchase Now"}
-                self.add_plugin(forms_plugin, 'ShopProceedButton', glossary)
-                self.publish_in_all_languages(forms_plugin.page)
+                page = self.create_page("Checkout", '', None)
+                try:
+                    clipboard = CascadeClipboard.objects.get(identifier='checkout')
+                    self.deserialize_to_placeholder(page, clipboard.data)
+                except CascadeClipboard.DoesNotExist:
+                    column_plugin = self.create_page_structure(page)
+                    forms_plugin = self.add_plugin(column_plugin, 'ValidateSetOfFormsPlugin', {})
+                    glossary = {'button_type': 'btn-success', 'link': {'type': 'PURCHASE_NOW'}, 'link_content': "Purchase Now"}
+                    self.add_plugin(forms_plugin, 'ShopProceedButton', glossary)
+                self.publish_in_all_languages(page)
                 yield "Created CMS page titled 'Checkout'"
             else:
                 yield "There should be at least one published CMS page containing a 'Proceed Button Plugin' for purchasing the cart's content."
@@ -177,9 +222,9 @@ class Command(BaseCommand):
 
         if base_apphook_name:
             apphook = self.get_installed_apphook(base_apphook_name)
-            if apphook_pool.get_apphook(page.application_urls) is not apphook:
+            if not page.application_urls or apphook_pool.get_apphook(page.application_urls) is not apphook:
                 msg = "Page on URL '{url}' must be configured to use Application inheriting from '{app_hook}'."
-                raise MissingAppHook(msg.format(url=page.get_absolute_url(), apphook_name=base_apphook_name))
+                raise MissingAppHook(msg.format(url=page.get_absolute_url(), app_hook=base_apphook_name))
 
         placeholder = page.placeholders.filter(slot='Main Content').first()
         if not placeholder:
@@ -198,17 +243,24 @@ class Command(BaseCommand):
                 msg = "Plugin named '{plugin_name}' on page with URL '{url}' is misconfigured."
                 raise MissingPlugin(msg.format(url=page.get_absolute_url(), plugin_name=plugin_name))
 
-    def create_page_structure(self, title, reverse_id, base_apphook_name):
-        from cms.api import create_page, add_plugin
+    def create_page(self, title, reverse_id, base_apphook_name, in_navigation=False):
+        from cms.api import create_page
         from cms.utils.i18n import get_public_languages
 
         template = settings.CMS_TEMPLATES[0][0]
         apphook = self.get_installed_apphook(base_apphook_name) if base_apphook_name else None
         language = get_public_languages()[0]
-        page = create_page(title, template, language, apphook,
+        return create_page(title, template, language, apphook=apphook,
                            created_by="manage.py shop check-pages",
+                           in_navigation=in_navigation,
                            reverse_id=reverse_id)
-        placeholder = page.placeholders.get(slot='Main Content')
+
+    def create_page_structure(self, page, slot='Main Content'):
+        from cms.api import add_plugin
+        from cms.utils.i18n import get_public_languages
+
+        placeholder = page.placeholders.get(slot=slot)
+        language = get_public_languages()[0]
         glossary = {
             'breakpoints': ['xs', 'sm', 'md', 'lg', 'xl'],
             'fluid': None,
@@ -293,3 +345,10 @@ class Command(BaseCommand):
 
         if 'shop.cascade' not in getattr(settings, 'CMSPLUGIN_CASCADE_PLUGINS', []):
             yield "settings.CMSPLUGIN_CASCADE_PLUGINS should contain entry 'shop.cascade'."
+
+    def deserialize_to_placeholder(self, page, data, slot='Main Content'):
+        from cms.utils.i18n import get_public_languages
+
+        language = get_public_languages()[0]
+        placeholder = page.placeholders.get(slot=slot)
+        deserialize_to_placeholder(placeholder, data, language)
