@@ -12,11 +12,9 @@ class ProductPage(BaseProductPage):
     """Materialize many-to-many relation with CMS pages"""
     class Meta(BaseProductPage.Meta):
         abstract = False
-        auto_created = True
 
 
 class ProductImage(BaseProductImage):
     """Materialize many-to-many relation with images"""
     class Meta(BaseProductImage.Meta):
         abstract = False
-        auto_created = True
