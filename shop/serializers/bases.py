@@ -9,9 +9,7 @@ from django.utils.html import strip_spaces_between_tags
 from django.utils import six
 from django.utils.safestring import mark_safe, SafeText
 from django.utils.translation import get_language_from_request
-
 from rest_framework import serializers
-
 from shop.conf import app_settings
 from shop.models.customer import CustomerModel
 from shop.models.product import ProductModel
