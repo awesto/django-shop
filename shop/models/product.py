@@ -11,7 +11,7 @@ from django.utils import six
 from django.utils.encoding import force_text
 from django.utils.six.moves.urllib.parse import urljoin
 from django.utils.translation import ugettext_lazy as _
-from polymorphic.manager import PolymorphicManager
+from polymorphic.managers import PolymorphicManager
 from polymorphic.models import PolymorphicModel
 from shop import deferred
 
