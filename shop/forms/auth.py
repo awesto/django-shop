@@ -15,7 +15,6 @@ from djng.forms import fields, NgModelFormMixin, NgFormValidationMixin
 from djng.styling.bootstrap3.forms import Bootstrap3ModelForm
 from post_office import mail as post_office_mail
 from post_office.models import EmailTemplate
-from html_email.template import render_to_string as render_to_string_with_images
 from shop.conf import app_settings
 from shop.models.customer import CustomerModel
 from .base import UniqueEmailValidationMixin
