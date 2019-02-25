@@ -75,7 +75,7 @@ class SimpleShippingWorkflowMixin(object):
 
 class CommissionGoodsWorkflowMixin(SimpleShippingWorkflowMixin):
     """
-    Workflow to commission all ordered items in one single Delivery.
+    Workflow to commission all ordered items in one common Delivery.
 
     Add this class to ``settings.SHOP_ORDER_WORKFLOWS`` to mix it into the merchants Order model.
     It is mutual exclusive with :class:`shop.shipping.workflows.SimpleShippingWorkflowMixin` or
