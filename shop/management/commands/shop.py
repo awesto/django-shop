@@ -128,6 +128,7 @@ class Command(BaseCommand):
                 pass
             else:
                 static_placeholder = StaticPlaceholder.objects.create(code='Static Footer')
+                deserialize_to_placeholder(static_placeholder.public, clipboard.data, default_language)
                 deserialize_to_placeholder(static_placeholder.draft, clipboard.data, default_language)
             page.set_as_homepage()
             self.publish_in_all_languages(page)
