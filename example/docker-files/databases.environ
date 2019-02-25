@@ -1,5 +1,0 @@
-POSTGRES_USER=myshop
-POSTGRES_PASSWORD=zz77xxvv
-POSTGRES_HOST=postgresdb
-REDIS_HOST=redishost
-ELASTICSEARCH_HOST=elasticsearch
