@@ -46,8 +46,10 @@ class ShopSearchResultsPlugin(ShopPluginBase):
                 '{}/search/results.html'.format(app_settings.APP_LABEL),
                 'shop/search/results.html',
             ])
-        msg = '<pre class="bg-danger">This {} plugin is used on a CMS page without an application of type "Search".</pre>'
-        return engines['django'].from_string(msg.format(self.name))
+        alert_msg = '''<div class="alert alert-danger">
+        This {} plugin is used on a CMS page without an application of type "Search".
+        </div>'''
+        return engines['django'].from_string(alert_msg.format(self.name))
 
     def render(self, context, instance, placeholder):
         super(ShopSearchResultsPlugin, self).render(context, instance, placeholder)
