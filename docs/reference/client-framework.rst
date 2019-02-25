@@ -44,7 +44,6 @@ as assets manager:
 
 	{% load static sekizai_tags %}
 
-	{% addtoblock "js" %}<script src="{% static 'node_modules/picturefill/dist/picturefill.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 	{% addtoblock "js" %}<script src="{% static 'node_modules/angular/angular.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 	{% addtoblock "js" %}<script src="{% static 'node_modules/angular-sanitize/angular-sanitize.min.js' %}"></script>{% endaddtoblock %}
 	{% addtoblock "js" %}<script src="{% static 'node_modules/angular-i18n/angular-locale_de.js' %}"></script>{% endaddtoblock %}
