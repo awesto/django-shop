@@ -47,7 +47,14 @@ class Command(BaseCommand):
             action='store_true',
             dest='add_missing',
             default=False,
-            help="Use in combination with 'check-pages': Add missing pages.",
+            help="Use in combination with 'check-pages' to add missing mandatory pages.",
+        )
+        parser.add_argument(
+            '--add-recommended',
+            action='store_true',
+            dest='add_recommended',
+            default=False,
+            help="Use in combination with 'check-pages' to add missing recommended pages.",
         )
 
     def handle(self, verbosity, subcommand, *args, **options):
@@ -55,9 +62,14 @@ class Command(BaseCommand):
             self.delete_expired = options['delete_expired']
             self.customers()
         elif subcommand == 'check-pages':
-            self.add_missing = options['add_missing']
             self.stdout.write("The following CMS pages must be adjusted:")
-            for k, msg in enumerate(self.check_pages(), 1):
+            self.add_recommended = options['add_recommended']
+            self.add_mandatory = options['add_missing'] or self.add_recommended
+            self.personal_pages = self.impersonal_pages = None
+            if self.add_recommended:
+                for k, msg in enumerate(self.create_recommended_pages(), 1):
+                    self.stdout.write(" {}. {}".format(k, msg))
+            for k, msg in enumerate(self.check_mandatory_pages(), 1):
                 self.stdout.write(" {}. {}".format(k, msg))
         elif subcommand == 'review-settings':
             self.stdout.write("The following configuration settings must be fixed:")
@@ -93,7 +105,59 @@ class Command(BaseCommand):
         msg = "Customers in this shop: total={total}, anonymous={anonymous}, expired={expired}, active={active}, guests={guests}, registered={registered}, staff={staff}."
         self.stdout.write(msg.format(**data))
 
-    def check_pages(self):
+    def create_recommended_pages(self):
+        from cms.models.pagemodel import Page
+        from cms.utils.i18n import get_public_languages
+
+        default_language = get_public_languages()[0]
+
+        # create the HOME page
+        if Page.objects.public().filter(is_home=True).exists():
+            yield "A home page exists already."
+        else:
+            page = self.create_page("Home", None, in_navigation=True)
+            try:
+                clipboard = CascadeClipboard.objects.get(identifier='home')
+            except CascadeClipboard.DoesNotExist:
+                pass
+            else:
+                self.deserialize_to_placeholder(page, clipboard.data)
+            try:
+                clipboard = CascadeClipboard.objects.get(identifier='footer')
+            except CascadeClipboard.DoesNotExist:
+                pass
+            else:
+                static_placeholder = StaticPlaceholder.objects.create(code='Static Footer')
+                deserialize_to_placeholder(static_placeholder.draft, clipboard.data, default_language)
+            page.set_as_homepage()
+            self.publish_in_all_languages(page)
+            yield "Created CMS home page."
+
+        parent_page = self.create_page("Legal", None, reverse_id='shop-legal-pages', soft_root=True)
+        self.publish_in_all_languages(parent_page)
+        yield "Created CMS page 'Legal'."
+
+        page = self.create_page("Imprint", None, parent_page=parent_page, in_navigation=True)
+        self.publish_in_all_languages(page)
+        yield "Created CMS page 'Imprint'."
+
+        page = self.create_page("Terms and Conditions", None, parent_page=parent_page, in_navigation=True)
+        self.publish_in_all_languages(page)
+        yield "Created CMS page 'Terms and Conditions'."
+
+        page = self.create_page("Privacy Protection", None, parent_page=parent_page, in_navigation=True)
+        self.publish_in_all_languages(page)
+        yield "Created CMS page 'Privacy Protection'."
+
+        self.personal_pages = self.create_page("Personal Pages", None, reverse_id='shop-personal-pages', soft_root=True)
+        self.publish_in_all_languages(self.personal_pages)
+        yield "Created CMS page 'Personal Pages'."
+
+        self.impersonal_pages = self.create_page("Join Us", None, reverse_id='shop-impersonal-pages', soft_root=True)
+        self.publish_in_all_languages(self.impersonal_pages)
+        yield "Created CMS page 'Join Us'."
+
+    def check_mandatory_pages(self):
         """
         Entry point for subcommand ``./manage.py shop check-pages``.
         """
@@ -101,38 +165,15 @@ class Command(BaseCommand):
         from cms.models.pluginmodel import CMSPlugin
         from cms.utils.i18n import get_public_languages
 
+        self._created_cms_pages = []
         default_language = get_public_languages()[0]
-
-        # check for a HOME page
-        homes_pages = Page.objects.public().filter(is_home=True)
-        if not homes_pages.exists():
-            if self.add_missing:
-                page = self.create_page("Home", '', None, in_navigation=True)
-                try:
-                    clipboard = CascadeClipboard.objects.get(identifier='home')
-                except CascadeClipboard.DoesNotExist:
-                    pass
-                else:
-                    self.deserialize_to_placeholder(page, clipboard.data)
-                try:
-                    clipboard = CascadeClipboard.objects.get(identifier='footer')
-                except CascadeClipboard.DoesNotExist:
-                    pass
-                else:
-                    static_placeholder = StaticPlaceholder.objects.create(code='Static Footer')
-                    deserialize_to_placeholder(static_placeholder.draft, clipboard.data, default_language)
-                page.set_as_homepage()
-                self.publish_in_all_languages(page)
-                yield "Created CMS home page."
-            else:
-                yield "There should be a published CMS home page."
 
         # check for catalog pages
         apphook = self.get_installed_apphook('CatalogListCMSApp')
         catalog_pages = Page.objects.public().filter(application_urls=apphook.__class__.__name__)
         if not catalog_pages.exists():
-            if self.add_missing:
-                page = self.create_page("Catalog", '', 'CatalogListCMSApp', in_navigation=True)
+            if self.add_mandatory:
+                page = self.create_page("Catalog", 'CatalogListCMSApp', in_navigation=True)
                 try:
                     clipboard = CascadeClipboard.objects.get(identifier='shop-list')
                     self.deserialize_to_placeholder(page, clipboard.data)
@@ -146,32 +187,33 @@ class Command(BaseCommand):
                 yield "There should be at least one published CMS page configured to use an Application inheriting from 'CatalogListCMSApp'."
 
         page_attributes = [
-            # Menu Title, Page ID, CMS-App-Hook or None, Main Plugin, Plugin Context,
-            ("Search", 'shop-search-product', 'CatalogSearchCMSApp', 'ShopSearchResultsPlugin', {}),
-            ("Cart", 'shop-cart', None, 'ShopCartPlugin', {'render_type': 'editable'}),
-            ("Watch-List", 'shop-watch-list', None, 'ShopCartPlugin', {'render_type': 'watch'}),
-            ("Your Orders", 'shop-order', 'OrderApp', 'ShopOrderViewsPlugin', {}),
-            ("Login", 'shop-login', None, 'ShopAuthenticationPlugin', {'form_type': 'login'}),
-            ("Register Customer", 'shop-register-customer', None, 'ShopAuthenticationPlugin', {'form_type': 'register-user'}),
-            ("Personal Details", 'shop-customer-details', None, 'CustomerFormPlugin', {}),
-            ("Change Password", 'shop-password-change', None, 'ShopAuthenticationPlugin', {'form_type': 'password-change'}),
-            ("Request Password Reset", 'password-reset-request', None, 'ShopAuthenticationPlugin', {'form_type': 'password-reset-request'}),
-            ("Confirm Password Reset", 'password-reset-confirm', 'PasswordResetApp', 'ShopAuthenticationPlugin', {'form_type': 'password-reset-confirm'}),
+            # Menu Title, CMS-App-Hook or None, kwargs, Main Plugin, Plugin Context,
+            (("Search", 'CatalogSearchCMSApp', {'reverse_id': 'shop-search-product'}), ('ShopSearchResultsPlugin', {})),
+            (("Cart", None, {'reverse_id': 'shop-cart'}), ('ShopCartPlugin', {'render_type': 'editable'})),
+            (("Watch-List", None, {'reverse_id': 'shop-watch-list'}), ('ShopCartPlugin', {'render_type': 'watch'})),
+            (("Your Orders", 'OrderApp', {'reverse_id': 'shop-order', 'parent_page': self.personal_pages, 'in_navigation': True}), ('ShopOrderViewsPlugin', {})),
+            (("Personal Details", None, {'reverse_id': 'shop-customer-details', 'parent_page': self.personal_pages, 'in_navigation': True}), ('CustomerFormPlugin', {})),
+            (("Change Password", None, {'reverse_id': 'shop-password-change', 'parent_page': self.personal_pages, 'in_navigation': True}), ('ShopAuthenticationPlugin', {'form_type': 'password-change'})),
+            (("Login", None, {'reverse_id': 'shop-login', 'parent_page': self.impersonal_pages, 'in_navigation': True}), ('ShopAuthenticationPlugin', {'form_type': 'login'})),
+            (("Register Customer", None, {'reverse_id': 'shop-register-customer', 'parent_page': self.impersonal_pages, 'in_navigation': True}), ('ShopAuthenticationPlugin', {'form_type': 'register-user'})),
+            (("Request Password Reset", None,  {'reverse_id': 'password-reset-request', 'parent_page': self.impersonal_pages, 'in_navigation': True}), ('ShopAuthenticationPlugin', {'form_type': 'password-reset-request'})),
+            (("Confirm Password Reset", 'PasswordResetApp',  {'reverse_id': 'password-reset-confirm'}), ('ShopAuthenticationPlugin', {'form_type': 'password-reset-confirm'})),
         ]
-        for attribs in page_attributes:
+        for page_attrs, content_attrs in page_attributes:
             try:
-                self.check_page_content(*attribs[1:])
+                page = self.check_page(*page_attrs[:2], **page_attrs[2])
+                self.check_page_content(page, *content_attrs)
             except MissingPage as exc:
-                if self.add_missing:
-                    page = self.create_page(*attribs[:3])
+                if self.add_mandatory:
+                    page = self.create_page(*page_attrs[:2], **page_attrs[2])
                     try:
                         clipboard = CascadeClipboard.objects.get(identifier=page.get_slug(default_language))
                         self.deserialize_to_placeholder(page, clipboard.data)
                     except CascadeClipboard.DoesNotExist:
                         leaf_plugin = self.create_page_structure(page)
-                        self.add_plugin(leaf_plugin, *attribs[3:])
+                        self.add_plugin(leaf_plugin, *content_attrs)
                     self.publish_in_all_languages(page)
-                    yield "Created CMS page titled '{0}'.".format(*attribs)
+                    yield "Created mandatory CMS page titled '{0}'.".format(page.get_title(default_language))
                 else:
                     yield str(exc)
             except CommandError as exc:
@@ -183,8 +225,8 @@ class Command(BaseCommand):
             if isinstance(link, dict) and link.get('type') == 'PURCHASE_NOW':
                 break
         else:
-            if self.add_missing:
-                page = self.create_page("Checkout", '', None)
+            if self.add_mandatory:
+                page = self.create_page("Checkout", None)
                 try:
                     clipboard = CascadeClipboard.objects.get(identifier='checkout')
                     self.deserialize_to_placeholder(page, clipboard.data)
@@ -210,10 +252,9 @@ class Command(BaseCommand):
             msg = "The project must register an AppHook inheriting from '{apphook_name}'"
             raise MissingAppHook(msg.format(apphook_name=base_apphook_name))
 
-    def check_page_content(self, reverse_id, base_apphook_name, plugin_type, subset):
-        from cms.apphook_pool import apphook_pool
+    def check_page(self, title, base_apphook_name, reverse_id=None, **kwargs):
         from cms.models.pagemodel import Page
-        from cms.plugin_pool import plugin_pool
+        from cms.apphook_pool import apphook_pool
 
         page = Page.objects.public().filter(reverse_id=reverse_id).first()
         if not page:
@@ -225,6 +266,11 @@ class Command(BaseCommand):
             if not page.application_urls or apphook_pool.get_apphook(page.application_urls) is not apphook:
                 msg = "Page on URL '{url}' must be configured to use Application inheriting from '{app_hook}'."
                 raise MissingAppHook(msg.format(url=page.get_absolute_url(), app_hook=base_apphook_name))
+
+        return page
+
+    def check_page_content(self, page, plugin_type, subset):
+        from cms.plugin_pool import plugin_pool
 
         placeholder = page.placeholders.filter(slot='Main Content').first()
         if not placeholder:
@@ -243,17 +289,23 @@ class Command(BaseCommand):
                 msg = "Plugin named '{plugin_name}' on page with URL '{url}' is misconfigured."
                 raise MissingPlugin(msg.format(url=page.get_absolute_url(), plugin_name=plugin_name))
 
-    def create_page(self, title, reverse_id, base_apphook_name, in_navigation=False):
+    def create_page(self, title, base_apphook_name, reverse_id=None, parent_page=None, in_navigation=False, soft_root=False):
         from cms.api import create_page
         from cms.utils.i18n import get_public_languages
+        from cmsplugin_cascade.models import CascadePage, IconFont
 
         template = settings.CMS_TEMPLATES[0][0]
         apphook = self.get_installed_apphook(base_apphook_name) if base_apphook_name else None
         language = get_public_languages()[0]
-        return create_page(title, template, language, apphook=apphook,
+        page = create_page(title, template, language, apphook=apphook,
                            created_by="manage.py shop check-pages",
                            in_navigation=in_navigation,
+                           soft_root=soft_root,
+                           parent=parent_page,
                            reverse_id=reverse_id)
+        icon_font = IconFont.objects.first()
+        CascadePage.objects.create(extended_object=page, icon_font=icon_font)
+        return page
 
     def create_page_structure(self, page, slot='Main Content'):
         from cms.api import add_plugin
@@ -274,8 +326,8 @@ class Command(BaseCommand):
 
     def add_plugin(self, leaf_plugin, plugin_type, glossary):
         from cms.api import add_plugin
-
-        return add_plugin(leaf_plugin.placeholder, plugin_type, leaf_plugin.language, target=leaf_plugin, glossary=glossary)
+        if plugin_type:
+            return add_plugin(leaf_plugin.placeholder, plugin_type, leaf_plugin.language, target=leaf_plugin, glossary=glossary)
 
     def publish_in_all_languages(self, page):
         from cms.api import copy_plugins_to_language, create_title
