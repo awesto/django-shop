@@ -132,31 +132,31 @@ class Command(BaseCommand):
                 deserialize_to_placeholder(static_placeholder.draft, clipboard.data, default_language)
             page.set_as_homepage()
             self.publish_in_all_languages(page)
-            yield "Created CMS home page."
+            yield "Created recommended CMS home page."
 
         parent_page = self.create_page("Legal", None, reverse_id='shop-legal-pages', soft_root=True)
         self.publish_in_all_languages(parent_page)
-        yield "Created CMS page 'Legal'."
+        yield "Created recommended CMS page 'Legal'."
 
         page = self.create_page("Imprint", None, parent_page=parent_page, in_navigation=True)
         self.publish_in_all_languages(page)
-        yield "Created CMS page 'Imprint'."
+        yield "Created recommended CMS page 'Imprint'."
 
         page = self.create_page("Terms and Conditions", None, parent_page=parent_page, in_navigation=True)
         self.publish_in_all_languages(page)
-        yield "Created CMS page 'Terms and Conditions'."
+        yield "Created recommended CMS page 'Terms and Conditions'."
 
         page = self.create_page("Privacy Protection", None, parent_page=parent_page, in_navigation=True)
         self.publish_in_all_languages(page)
-        yield "Created CMS page 'Privacy Protection'."
+        yield "Created recommended CMS page 'Privacy Protection'."
 
         self.personal_pages = self.create_page("Personal Pages", None, reverse_id='shop-personal-pages', soft_root=True)
         self.publish_in_all_languages(self.personal_pages)
-        yield "Created CMS page 'Personal Pages'."
+        yield "Created recommended CMS page 'Personal Pages'."
 
         self.impersonal_pages = self.create_page("Join Us", None, reverse_id='shop-impersonal-pages', soft_root=True)
         self.publish_in_all_languages(self.impersonal_pages)
-        yield "Created CMS page 'Join Us'."
+        yield "Created recommended CMS page 'Join Us'."
 
     def check_mandatory_pages(self):
         """
@@ -293,20 +293,21 @@ class Command(BaseCommand):
     def create_page(self, title, base_apphook_name, reverse_id=None, parent_page=None, in_navigation=False, soft_root=False):
         from cms.api import create_page
         from cms.utils.i18n import get_public_languages
-        from cmsplugin_cascade.models import CascadePage, IconFont
 
         template = settings.CMS_TEMPLATES[0][0]
         apphook = self.get_installed_apphook(base_apphook_name) if base_apphook_name else None
         language = get_public_languages()[0]
-        page = create_page(title, template, language, apphook=apphook,
-                           created_by="manage.py shop check-pages",
-                           in_navigation=in_navigation,
-                           soft_root=soft_root,
-                           parent=parent_page,
-                           reverse_id=reverse_id)
-        icon_font = IconFont.objects.first()
-        CascadePage.objects.create(extended_object=page, icon_font=icon_font)
-        return page
+        return create_page(
+            title,
+            template,
+            language,
+            apphook=apphook,
+            created_by="manage.py shop check-pages",
+            in_navigation=in_navigation,
+            soft_root=soft_root,
+            parent=parent_page,
+            reverse_id=reverse_id,
+        )
 
     def create_page_structure(self, page, slot='Main Content'):
         from cms.api import add_plugin
