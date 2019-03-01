@@ -1,3 +1,0 @@
--r test.txt
-enum34==1.1.6
-funcsigs==1.0.2
