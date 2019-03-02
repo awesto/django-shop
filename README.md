@@ -7,6 +7,10 @@
 [![Twitter Follow](https://img.shields.io/twitter/follow/djangoSHOP.svg?style=social&label=djangoSHOP)](https://twitter.com/djangoSHOP)
 
 
+**Release 1.0 will be ready soon!** If you want to get a first impression, vistit
+https://github.com/awesto/cookiecutter-django-shop and follow the instructions. In less than three
+minutes you will have a running instance of **django-SHOP**, preconfigured to your needs.
+
 ## Run the demo projects using Docker
 
 To get a first impression on **django-SHOP**, try out one of the six fully working demo projects.
