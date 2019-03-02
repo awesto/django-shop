@@ -45,7 +45,7 @@ class OrderItemForm(models.ModelForm):
         """
         Returns the quantity already delivered for this order item.
         """
-        aggr = instance.items.aggregate(delivered=Sum('quantity'))
+        aggr = instance.deliver_item.aggregate(delivered=Sum('quantity'))
         return aggr['delivered'] or 0
 
     def clean(self):
