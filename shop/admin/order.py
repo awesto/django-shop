@@ -32,7 +32,7 @@ class OrderPaymentInline(admin.TabularInline):
         return formset
 
     def has_add_permission(self, request, obj=None):
-        assert obj is not None
+        assert obj is not None, "An Order object can not be added through the Django-Admin"
         return obj.status in ['awaiting_payment', 'refund_payment']
 
     def has_delete_permission(self, request, obj=None):

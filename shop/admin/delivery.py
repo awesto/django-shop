@@ -145,7 +145,7 @@ class DeliveryInline(admin.TabularInline):
         return qs.count()
 
     def get_fields(self, request, obj=None):
-        assert obj is not None  # an Order object is never added through the Django-Admin
+        assert obj is not None, "An Order object can not be added through the Django-Admin"
         fields = list(super(DeliveryInline, self).get_fields(request, obj))
         if not obj.allow_partial_delivery:
             fields.remove('delivered_items')
@@ -217,7 +217,7 @@ class DeliveryOrderAdminMixin(object):
         return HttpResponse(content)
 
     def get_inline_instances(self, request, obj=None):
-        assert obj is not None  # an Order object is never added through the Django-Admin
+        assert obj is not None, "An Order object can not be added through the Django-Admin"
         inline_instances = list(super(DeliveryOrderAdminMixin, self).get_inline_instances(request, obj))
         if obj.associate_with_delivery:
             if obj.allow_partial_delivery:
