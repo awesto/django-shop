@@ -124,6 +124,11 @@ class DeliveryForm(models.ModelForm):
     def has_changed(self):
         return True
 
+    def clean_shipping_method(self):
+        if not self.cleaned_data['shipping_method']:
+            return self.instance.shipping_method
+        return self.cleaned_data['shipping_method']
+
 
 class DeliveryInline(admin.TabularInline):
     model = DeliveryModel
@@ -151,6 +156,13 @@ class DeliveryInline(admin.TabularInline):
         if not app_settings.SHOP_OVERRIDE_SHIPPING_METHOD or obj.status == 'ready_for_delivery':
             readonly_fields.append('shipping_method')
         return readonly_fields
+
+    def get_formset(self, request, obj=None, **kwargs):
+        formset = super(DeliveryInline, self).get_formset(request, obj, **kwargs)
+        if not app_settings.SHOP_OVERRIDE_SHIPPING_METHOD or obj.status == 'ready_for_delivery':
+            # make readonly field optional
+            formset.form.base_fields['shipping_method'].required = False
+        return formset
 
     def delivered_items(self, obj):
         aggr = obj.deliveryitem_set.aggregate(quantity=Sum('quantity'))
