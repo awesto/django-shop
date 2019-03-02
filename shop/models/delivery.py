@@ -95,6 +95,7 @@ class BaseDeliveryItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model))
 
     item = deferred.ForeignKey(
         BaseOrderItem,
+        related_name='deliver_item',
         verbose_name=_("Ordered item"),
     )
 
