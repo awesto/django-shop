@@ -215,6 +215,7 @@ class DeliveryOrderAdminMixin(object):
             'customer': customer_serializer.data,
             'order': order_serializer.data,
             'delivery': delivery_serializer.data,
+            'object': delivery,
         })
         return HttpResponse(content)
 

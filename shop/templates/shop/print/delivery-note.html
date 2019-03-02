@@ -1,11 +1,11 @@
 {% extends "shop/print/base.html" %}
-{% load i18n static %}
+{% load i18n static shop_tags %}
 
 {% block title %}{% trans "Delivery Note" %} {{ delivery.get_number }}{% endblock %}
 
 {% block content %}
 	<address>{{ order.shipping_address_text }}</address>
-	<h5>{% trans "Delivery Note" %}: {{ delivery.get_number }}</h5>
+	<h5>{% trans "Delivery Note" %}: {{ delivery.number }}</h5>
 	{% block print-delivery-body %}
 		{% for item in delivery.items %}
 	<div class="shop-list-item row border-top py-2 dontsplit">
@@ -33,8 +33,9 @@
 
 	{% block print-delivery-foot %}
 	<div class="row dontsplit">
-		<div class="col-12 mt-3">
-			<p>{% trans "Shipping Method" %}: {{ delivery.shipping_method }}</p>
+		<div class="col-12 pt-3 border-top">
+			<p>{% trans "Shipping Method" %}: <strong>{{ delivery.shipping_method.label }}</strong></p>
+			<p>{% trans "Shipped at" %}: <strong>{{ delivery.shipped_at|date }}</strong></p>
 		</div>
 	</div>
 	{% endblock print-delivery-foot %}

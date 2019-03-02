@@ -219,8 +219,8 @@ class PrintInvoiceAdminMixin(object):
         order_serializer = OrderDetailSerializer(order, context=context)
         return template.render(context={
             'customer': customer_serializer.data,
-            'data': order_serializer.data,
-            'order': order,
+            'order': order_serializer.data,
+            'object': order,
         }, request=request)
 
     def render_invoice(self, request, pk=None):

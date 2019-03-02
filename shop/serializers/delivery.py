@@ -25,6 +25,7 @@ class DeliverySerializer(serializers.ModelSerializer):
         read_only=True,
     )
 
+    number = serializers.CharField(source='get_number')
     shipping_method = serializers.SerializerMethodField()
 
     class Meta:
@@ -33,7 +34,9 @@ class DeliverySerializer(serializers.ModelSerializer):
 
     def get_shipping_method(self, instance):
         for shipping_modifier in cart_modifiers_pool.get_shipping_modifiers():
-            identifier, label = shipping_modifier.get_choice()
-            if identifier == shipping_modifier.identifier:
-                return label
-        return instance.shipping_method
+            value, label = shipping_modifier.get_choice()
+            if value == shipping_modifier.identifier:
+                break
+        else:
+            value, label = instance.shipping_method, instance.shipping_method
+        return {'value': value, 'label': label}
