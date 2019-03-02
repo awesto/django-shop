@@ -16,6 +16,7 @@ from shop.admin.order import OrderItemInline
 from shop.models.order import OrderItemModel
 from shop.models.delivery import DeliveryModel
 from shop.modifiers.pool import cart_modifiers_pool
+from shop.serializers.delivery import DeliverySerializer
 from shop.serializers.order import OrderDetailSerializer
 
 
@@ -209,10 +210,11 @@ class DeliveryOrderAdminMixin(object):
         context = {'request': request, 'render_label': 'print'}
         customer_serializer = app_settings.CUSTOMER_SERIALIZER(delivery.order.customer)
         order_serializer = OrderDetailSerializer(delivery.order, context=context)
+        delivery_serializer = DeliverySerializer(delivery, context=context)
         content = template.render({
             'customer': customer_serializer.data,
-            'data': order_serializer.data,
-            'delivery': delivery,
+            'order': order_serializer.data,
+            'delivery': delivery_serializer.data,
         })
         return HttpResponse(content)
 

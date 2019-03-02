@@ -4,7 +4,39 @@
 {% block title %}{% trans "Delivery Note" %} {{ delivery.get_number }}{% endblock %}
 
 {% block content %}
-	<address>{{ data.shipping_address_text }}</address>
+	<address>{{ order.shipping_address_text }}</address>
 	<h5>{% trans "Delivery Note" %}: {{ delivery.get_number }}</h5>
-	{% include "shop/print/list-items.html" %}
-{% endblock %}
+	{% block print-delivery-body %}
+		{% for item in delivery.items %}
+	<div class="shop-list-item row border-top py-2 dontsplit">
+		<div class="col-1 align-items-center d-flex">
+			<div>{{ item.quantity }}<span class="px-1">&times;</span></div>
+		</div>
+		<div class="col-5">
+			{{ item.summary.media }}
+		</div>
+		<div class="col-6">
+			<div class="row text-nowrap flex-nowrap lead text-right">
+				<div class="col-6">{{ item.unit_price }}</div>
+				<div class="col-6">{{ item.line_total }}</div>
+			</div>
+			{% for _, extra_row in item.extra.rows %}
+			<div class="row text-muted text-nowrap flex-nowrap text-right">
+				<div class="col-6">{{ extra_row.label }}</div>
+				<div class="col-6">{{ extra_row.amount }}</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+		{% endfor %}
+	{% endblock print-delivery-body %}
+
+	{% block print-delivery-foot %}
+	<div class="row dontsplit">
+		<div class="col-12 mt-3">
+			<p>{% trans "Shipping Method" %}: {{ delivery.shipping_method }}</p>
+		</div>
+	</div>
+	{% endblock print-delivery-foot %}
+
+{% endblock content %}
