@@ -89,6 +89,7 @@ class BaseDeliveryItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model))
     delivery = deferred.ForeignKey(
         BaseDelivery,
         verbose_name=_("Delivery"),
+        related_name='items',
         help_text=_("Refer to the shipping provider used to ship this item"),
     )
 

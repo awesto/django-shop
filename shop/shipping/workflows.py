@@ -188,6 +188,6 @@ class PartialDeliveryWorkflowMixin(CommissionGoodsWorkflowMixin):
                     item=data['id'],
                     quantity=data['deliver_quantity'],
                 )
-        if not delivery.deliveryitem_set.exists():
+        if not delivery.items.exists():
             # since no OrderItem was added to this delivery, discard it
             delivery.delete()

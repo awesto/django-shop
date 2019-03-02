@@ -44,7 +44,7 @@ class OrderItemForm(models.ModelForm):
         """
         Returns the quantity already delivered for this order item.
         """
-        aggr = instance.deliveryitem_set.aggregate(delivered=Sum('quantity'))
+        aggr = instance.items.aggregate(delivered=Sum('quantity'))
         return aggr['delivered'] or 0
 
     def clean(self):
@@ -165,9 +165,9 @@ class DeliveryInline(admin.TabularInline):
         return formset
 
     def delivered_items(self, obj):
-        aggr = obj.deliveryitem_set.aggregate(quantity=Sum('quantity'))
+        aggr = obj.items.aggregate(quantity=Sum('quantity'))
         aggr['quantity'] = aggr['quantity'] or 0
-        aggr.update(items=obj.deliveryitem_set.count())
+        aggr.update(items=obj.items.count())
         return '{quantity}/{items}'.format(**aggr)
     delivered_items.short_description = _("Quantity/Items")
 
