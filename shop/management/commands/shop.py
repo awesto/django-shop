@@ -199,6 +199,7 @@ class Command(BaseCommand):
             (("Register Customer", None, {'reverse_id': 'shop-register-customer', 'parent_page': self.impersonal_pages, 'in_navigation': True}), ('ShopAuthenticationPlugin', {'form_type': 'register-user'})),
             (("Request Password Reset", None,  {'reverse_id': 'password-reset-request', 'parent_page': self.impersonal_pages, 'in_navigation': True}), ('ShopAuthenticationPlugin', {'form_type': 'password-reset-request'})),
             (("Confirm Password Reset", 'PasswordResetApp',  {'reverse_id': 'password-reset-confirm'}), ('ShopAuthenticationPlugin', {'form_type': 'password-reset-confirm'})),
+            (("Payment Canceled", None, {'reverse_id': 'shop-cancel-payment'}), ('HeadingPlugin', {'tag_type': "h2", 'content': "Your payment has been canceled"})),
         ]
         for page_attrs, content_attrs in page_attributes:
             try:
