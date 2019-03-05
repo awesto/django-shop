@@ -36,11 +36,11 @@ class CartIcon(Node):
         try:
             cart = CartModel.objects.get_from_request(context['request'])
             serializer = CartSerializer(instance=cart, context=context, label='dropdown', with_items=self.with_items)
-            cart_as_json = mark_safe(force_text(JSONRenderer().render(serializer.data)))
+            cart_data = JSONRenderer().render(serializer.data)
         except CartModel.DoesNotExist:
-            cart_as_json = 'null'
+            cart_data = {'total_quantity': 0, 'num_items': 0}
         context.update({
-            'cart_as_json': cart_as_json,
+            'cart_as_json': mark_safe(force_text(cart_data)),
             'has_dropdown': self.with_items != CartItems.without,
         })
         return self.get_template().render(context)

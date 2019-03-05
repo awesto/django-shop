@@ -169,7 +169,7 @@ djangoShopModule.directive('shopDropdownCart', ['$rootScope', '$timeout', functi
 
 			try {
 				// try with pre-rendered cart content
-				scope.cart = JSON.parse(document.getElementById(attrs.shopCart).text);
+				scope.cart = JSON.parse(document.getElementById(attrs.shopDropdownCart).text);
 			} catch (e) {
 				// otherwise load cart content from endpoint
 				controller.loadCart();
