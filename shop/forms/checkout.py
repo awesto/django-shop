@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 from django.contrib.auth import get_user_model
-from django.contrib.staticfiles.finders import find as find_static_file
 from django.forms import widgets, Media
 from django.forms.utils import ErrorDict
 from django.utils.translation import ugettext_lazy as _
@@ -36,10 +35,7 @@ class CustomerForm(DialogModelForm):
 
     @property
     def media(self):
-        scss_file = '{}/css/customer.scss'.format(CustomerModel._meta.app_label)
-        if not find_static_file(scss_file):
-            scss_file = 'shop/css/customer.scss'
-        return Media(css={'all': [sass_processor(scss_file)]})
+        return Media(css={'all': [sass_processor('shop/css/customer.scss')]})
 
     def save(self, commit=True):
         for f in self.Meta.custom_fields:
@@ -114,10 +110,7 @@ class AddressForm(DialogModelForm):
 
     @property
     def media(self):
-        scss_file = '{}/css/address.scss'.format(self.get_model()._meta.app_label)
-        if not find_static_file(scss_file):
-            scss_file = 'shop/css/address.scss'
-        return Media(css={'all': [sass_processor(scss_file)]})
+        return Media(css={'all': [sass_processor('shop/css/address.scss')]})
 
     @classmethod
     def get_model(cls):
