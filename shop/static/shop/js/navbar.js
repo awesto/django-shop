@@ -11,7 +11,7 @@ module.directive('nav', ['$document', '$window', function($document, $window) {
 		restrict: 'E',
 		link: function(scope, element, attrs) {
 			var prevScrollY = $window.scrollY;
-			var threshold = Number(attrs['scrollThreshold']) || 50;
+			var threshold = Number(attrs['scrollThreshold']) || 32;
 
 			function scrollHandler(evt) {
 				if ($window.scrollY < threshold) {
