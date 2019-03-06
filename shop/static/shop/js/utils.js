@@ -16,6 +16,7 @@ djangoShopModule.directive('shopTimestamp', ['$filter', '$locale', function($fil
 	};
 }]);
 
+
 djangoShopModule.provider('djangoShop', function() {
 	var self = this;
 
@@ -37,14 +38,11 @@ djangoShopModule.provider('djangoShop', function() {
 		return params;
 	};
 
-	this.$get = ['$rootScope', '$window', function($rootScope, $window) {
-		$rootScope.toggleNavCollapse = function() {
-			$rootScope.isNavCollapsed = !$rootScope.isNavCollapsed;
-		};
-		$rootScope.isNavCollapsed = true;
+	this.$get = ['$window', function($window) {
 		self.location = $window.location;
 		return self;
 	}];
+
 });
 
 

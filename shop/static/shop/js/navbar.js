@@ -1,7 +1,7 @@
 (function(angular, undefined) {
 'use strict';
 
-var module = angular.module('django.shop.navbar', []);
+var module = angular.module('django.shop.navbar', ['django.cms.bootstrap']);
 
 // Directive <nav ...> watching for scroll events. In case the user scrolled below a certain
 // threshold, two CSS classes are added to this element: Either "scrolled scrolled-down", when
