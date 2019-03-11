@@ -28,6 +28,7 @@
 		</div>
 		<div class="col-12 col-md-6">
 			<div class="row align-items-center">
+	{% block shop-cart-item-input %}
 				<div class="col">
 					<div class="form-inline text-nowrap flex-nowrap justify-content-end mb-1 lead">
 						<div ng-bind="cart_item.unit_price"></div>
@@ -40,6 +41,7 @@
 						<div class="col text-right" ng-bind="extra_row.amount"></div>
 					</div>
 				</div>
+	{% endblock %}
 	{% block shop-cart-item-controls %}
 				<div class="col">
 					<div class="row">
