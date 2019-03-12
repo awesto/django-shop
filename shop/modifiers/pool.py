@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.core.exceptions import ImproperlyConfigured
 from shop.conf import app_settings
 
 
@@ -22,7 +23,15 @@ class CartModifiersPool(object):
                     self._modifiers_list.extend([mc() for mc in modifiers_class()])
                 else:
                     self._modifiers_list.append(modifiers_class())
-            # TODO: check for unique identifiers
+            # check for uniqueness of the modifier's `identifier` attribute
+            ModifierException = ImproperlyConfigured("Each modifier requires a unique attribute 'identifier'.")
+            try:
+                identifiers = [m.identifier for m in self._modifiers_list]
+            except AttributeError:
+                raise ModifierException
+            for i in identifiers:
+                if identifiers.count(i) > 1:
+                    raise ModifierException
         return self._modifiers_list
 
     def get_shipping_modifiers(self):
