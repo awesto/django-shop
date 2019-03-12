@@ -28,7 +28,7 @@ class PaymentModifier(BaseCartModifier):
         :returns: A tuple consisting of 'value, label' used by the payment form dialog to render
         the available payment choices.
         """
-        raise NotImplemented("Must be implemented by the inheriting class")
+        raise NotImplemented("{} must implement method `get_choice()`.".format(self.__class__))
 
     def is_active(self, payment_modifier):
         """

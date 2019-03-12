@@ -15,7 +15,7 @@ class ShippingModifier(BaseCartModifier):
         :returns: A tuple consisting of 'value, label' used by the shipping form dialog to render
         the available shipping choices.
         """
-        raise NotImplemented("Must be implemented by the inheriting class")
+        raise NotImplemented("{} must implement method `get_choice()`.".format(self.__class__))
 
     def is_active(self, shipping_modifier):
         """
