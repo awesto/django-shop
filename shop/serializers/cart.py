@@ -109,6 +109,9 @@ class BaseCartSerializer(serializers.ModelSerializer):
             representation.update(items=items)
         return representation
 
+    def represent_items(self, cart):
+        raise NotImplementedError("{} must implement method `represent_items()`.".format(self.__class__))
+
 
 class CartSerializer(BaseCartSerializer):
     total_quantity = serializers.IntegerField()
