@@ -221,6 +221,8 @@ class DeliveryOrderAdminMixin(object):
 
     def get_inline_instances(self, request, obj=None):
         assert obj is not None, "An Order object can not be added through the Django-Admin"
+        assert hasattr(obj, 'associate_with_delivery'), "Add 'shop.shipping.workflows.SimpleShippingWorkflowMixin' " \
+            "(or a class inheriting from thereof) to SHOP_ORDER_WORKFLOWS."
         inline_instances = list(super(DeliveryOrderAdminMixin, self).get_inline_instances(request, obj))
         if obj.associate_with_delivery:
             if obj.allow_partial_delivery:
