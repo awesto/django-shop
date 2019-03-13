@@ -4,15 +4,44 @@
 Changelog for django-SHOP
 =========================
 
-WiP (0.13)
-==========
+1.0.0 (work in progres)
+=======================
+
+* Replace various files containing Python requirements against ``Pipfile`` to be used by pipenv_.
+* Migrated all default templates to use Bootstrap-4 and replace all tables using the HTML tag ``<table>`` against
+  flex elements.
+* Switch to py.test_ in favor of Django test-cases.
 * It now is possible to override the forms for selecting the payment-, shipping- and extra annotation using a
   configuration directive.
-* Prepared for django-CMS version 3.5.
-* Upgrade to angular-ui-bootstrap version 2.5. This requires djangocms-cascade version 0.16.3 and a slight modification
+* Adopted to django-CMS version 3.5.
+* Fix all compatibility issues with Django-1.11.
+* Fix all compatibility issues with Django REST framework 3.8.
+* Upgrade to angular-ui-bootstrap version 2.5. This requires djangocms-cascade version 0.17.x and a slight modification
   of the navbar rendering.
 * Add Order number to Order List View.
+* It is possible to access the Order Detail View anonymously by using a secret in the URL.
+* Remove directory ``example`` in favor of the new project cookiecutter-django-shop_.
+* Customized Template Engine which keeps track on referenced images and stores then as attachments to be used in
+  multipart email messages. This requires a patched version of django-post_office_.
+* Add ``relatated_name`` to fields ``delivery`` and ``item`` to the model ``Delivery``. Check your reverse relations.
+* Added an apphook ``PasswordResetApp``, so that all pages, even those to reset the password, can now be handled by a
+  page by the CMS.
+* Pagination of catalog list view can distinguish between *auto-infinte*, *manual-infinte* and *pagination*.
+* Pagination of catalog list view prevents widow items.
+* Cart widget displays a short summary of products after adding a product, or mouse-over event.
+* AddToCart now optionally renders a modal dialog after adding the product.
+* All forms in the checkout process can be overridden using a settings variable.
+* Buttons are configurable to be disabled, if wrapping form is invalid.
+* Unified all management commands into ``shop`` with different subcommands.
+* Refactored payment- and shipping-modifiers into their own submodules, so that they stay side-by-side with their
+  order workflow mixins.
+* All payment- and shipping-modifiers support an instantiation either as list. This is required in some cases, where one
+  payment- or shipping-service-provider offers different payment- or shipping methods.
 
+.. _pipenv: https://pipenv.readthedocs.io/en/latest/
+.. _py.test: https://docs.pytest.org/en/latest/
+.. _cookiecutter-django-shop: https://github.com/awesto/cookiecutter-django-shop
+.. _django-post_office: https://github.com/jrief/django-post_office/tree/attachments-allowing-MIMEBase
 
 0.12.2
 ======
