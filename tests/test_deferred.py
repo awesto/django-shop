@@ -350,11 +350,11 @@ class MaterializedModelTestCase(TestCase):
         self.assertTrue(isinstance(order, DeferredOrder))
 
     def test_repr(self):
-        self.assertEqual(repr(self.OrderModel), "<MaterializedModel: <class 'tests.test_deferred.DeferredBaseOrder'>>")
+        self.assertEqual(repr(self.OrderModel), "<MaterializedModel: <class 'test_deferred.DeferredBaseOrder'>>")
 
         self.OrderModel._setup()
 
-        self.assertEqual(repr(self.OrderModel), "<MaterializedModel: <class 'tests.test_deferred.DeferredOrder'>>")
+        self.assertEqual(repr(self.OrderModel), "<MaterializedModel: <class 'test_deferred.DeferredOrder'>>")
 
     def test_copy_uninitialized(self):
         OrderModelDeepCopy = copy.copy(self.OrderModel)
