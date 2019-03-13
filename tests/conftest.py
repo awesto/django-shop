@@ -17,7 +17,7 @@ from shop.models.defaults.customer import Customer
 from shop.models.defaults.address import ShippingAddress, BillingAddress
 from shop.models.related import ProductPageModel
 from shop.money import Money
-from tests.testshop.models import Commodity
+from testshop.models import Commodity
 
 
 @pytest.fixture

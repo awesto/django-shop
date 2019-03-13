@@ -16,7 +16,7 @@ from rest_framework import serializers
 from shop.money.money_maker import AbstractMoney, MoneyMaker, _make_money
 from shop.money.fields import MoneyField as MoneyDbField
 from shop.rest.money import MoneyField, JSONRenderer
-from tests.testshop.models import Commodity
+from testshop.models import Commodity
 
 EUR = MoneyMaker('EUR')
 
