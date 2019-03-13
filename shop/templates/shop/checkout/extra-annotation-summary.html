@@ -1,11 +1,6 @@
 {% extends "shop/checkout/digest-base.html" %}
 {% load sass_tags sekizai_tags %}
 
-{% block extra-styles %}
-	{{ block.super }}
-	{% addtoblock "css" %}<link href="{% sass_src 'shop/css/extra-annotation-form.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
-{% endblock %}
-
 {% block summary_tag %}
 <div class="form-group">
 	{% if headline_legend %}
