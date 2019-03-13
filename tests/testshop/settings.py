@@ -194,11 +194,13 @@ SHOP_CART_MODIFIERS = [
     'shop.modifiers.defaults.DefaultCartModifier',
     'shop.modifiers.taxes.CartIncludeTaxModifier',
     'shop.payment.modifiers.PayInAdvanceModifier',
+    'shop.shipping.modifiers.SelfCollectionModifier',
 ]
 
 SHOP_ORDER_WORKFLOWS = [
     'shop.payment.workflows.ManualPaymentWorkflowMixin',
     'shop.payment.workflows.CancelOrderWorkflowMixin',
+    'shop.shipping.workflows.PartialDeliveryWorkflowMixin',
 ]
 
 AUTH_USER_MODEL = 'email_auth.User'

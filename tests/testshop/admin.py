@@ -3,10 +3,11 @@ from __future__ import unicode_literals
 
 from django.contrib import admin
 from shop.admin.defaults.order import OrderAdmin
-from shop.models.defaults.order import Order
+from shop.admin.delivery import DeliveryOrderAdminMixin
 from shop.admin.order import PrintInvoiceAdminMixin
+from shop.models.defaults.order import Order
 
 
 @admin.register(Order)
-class OrderAdmin(PrintInvoiceAdminMixin, OrderAdmin):
-    pass
+class OrderAdmin(PrintInvoiceAdminMixin, DeliveryOrderAdminMixin, OrderAdmin):
+        pass
