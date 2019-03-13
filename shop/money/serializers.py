@@ -7,7 +7,7 @@ from __future__ import unicode_literals
 import json
 from django.core.serializers.json import DjangoJSONEncoder, Serializer as DjangoSerializer
 from django.core.serializers.json import Deserializer
-from .money_maker import AbstractMoney
+from shop.money.money_maker import AbstractMoney
 
 
 __all__ = ['JSONEncoder', 'Serializer', 'Deserializer']

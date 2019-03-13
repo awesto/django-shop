@@ -7,11 +7,11 @@ from django.forms.utils import ErrorDict
 from django.utils.translation import ugettext_lazy as _
 from djng.forms import fields
 from sass_processor.processor import sass_processor
+from shop.forms.base import DialogForm, DialogModelForm, UniqueEmailValidationMixin
 from shop.forms.widgets import CheckboxInput, RadioSelect, Select
 from shop.models.address import ShippingAddressModel, BillingAddressModel
 from shop.models.customer import CustomerModel
 from shop.modifiers.pool import cart_modifiers_pool
-from .base import DialogForm, DialogModelForm, UniqueEmailValidationMixin
 
 
 class CustomerForm(DialogModelForm):

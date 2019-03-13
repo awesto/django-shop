@@ -16,8 +16,8 @@ from djng.styling.bootstrap3.forms import Bootstrap3ModelForm
 from post_office import mail as post_office_mail
 from post_office.models import EmailTemplate
 from shop.conf import app_settings
+from shop.forms.base import UniqueEmailValidationMixin
 from shop.models.customer import CustomerModel
-from .base import UniqueEmailValidationMixin
 
 
 class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValidationMixin, Bootstrap3ModelForm):

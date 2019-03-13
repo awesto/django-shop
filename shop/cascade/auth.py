@@ -5,14 +5,11 @@ from django.template.loader import select_template
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 from django.utils.module_loading import import_string
-
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.link.forms import LinkForm
-
 from djng.forms.fields import ChoiceField
-
+from shop.cascade.plugin_base import ShopLinkPluginBase, ShopLinkElementMixin
 from shop.conf import app_settings
-from .plugin_base import ShopLinkPluginBase, ShopLinkElementMixin
 
 AUTH_FORM_TYPES = [
     ('login', _("Login Form")),

@@ -20,7 +20,7 @@ from shop.models.cart import CartItemModel
 from shop.models.fields import JSONField
 from shop.money.fields import MoneyField, MoneyMaker
 from shop import deferred
-from .product import BaseProduct
+from shop.models.product import BaseProduct
 
 
 class OrderQuerySet(models.QuerySet):

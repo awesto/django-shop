@@ -2,9 +2,8 @@
 from __future__ import unicode_literals
 
 from decimal import Decimal
-
 from shop.money import AbstractMoney, Money
-from .base import BaseCartModifier
+from shop.modifiers.base import BaseCartModifier
 
 
 class DefaultCartModifier(BaseCartModifier):

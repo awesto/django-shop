@@ -5,16 +5,14 @@ from django.forms import widgets
 from django.template.loader import select_template, get_template
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import mark_safe
-
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.fields import GlossaryField
 from cmsplugin_cascade.plugin_base import TransparentWrapper
-
+from shop.cascade.extensions import ShopExtendableMixin, LeftRightExtensionMixin
+from shop.cascade.plugin_base import ShopPluginBase
 from shop.conf import app_settings
 from shop.models.cart import CartModel
 from shop.serializers.cart import CartSerializer
-from .extensions import ShopExtendableMixin, LeftRightExtensionMixin
-from .plugin_base import ShopPluginBase
 
 
 class ShopCartPlugin(LeftRightExtensionMixin, TransparentWrapper, ShopPluginBase):

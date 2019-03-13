@@ -176,7 +176,7 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         :returns: The cart item (of type CartItem) containing the product considered as equal to the
             current one, or ``None`` if no product matches in the cart.
         """
-        from .cart import CartItemModel
+        from shop.models.cart import CartItemModel
         cart_item_qs = CartItemModel.objects.filter(cart=cart, product=self)
         return cart_item_qs.first()
 

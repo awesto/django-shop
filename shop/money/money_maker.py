@@ -2,17 +2,14 @@
 from __future__ import unicode_literals
 
 from decimal import Decimal, InvalidOperation
-
 from django.conf import settings
 from django.utils import six
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.formats import get_format
 from django.utils.translation import get_language
-
 from cms.utils.helpers import classproperty
-
 from shop.conf import app_settings
-from .iso4217 import CURRENCIES
+from shop.money.iso4217 import CURRENCIES
 
 
 @python_2_unicode_compatible

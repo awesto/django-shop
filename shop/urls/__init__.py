@@ -2,10 +2,9 @@
 from __future__ import unicode_literals
 
 from django.conf.urls import include, url
-
-from . import rest_api
-from . import auth
-from . import payment
+from shop.urls import rest_api
+from shop.urls import auth
+from shop.urls import payment
 
 
 urlpatterns = [

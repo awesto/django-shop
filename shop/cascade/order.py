@@ -7,18 +7,15 @@ from django.core.exceptions import ValidationError
 from django.template import engines
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
-
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.bootstrap4.buttons import BootstrapButtonMixin
 from cmsplugin_cascade.fields import GlossaryField
 from cmsplugin_cascade.plugin_base import TransparentWrapper
-
 from djng.forms import fields, NgModelFormMixin
 from djng.styling.bootstrap3.forms import Bootstrap3Form
-
+from shop.cascade.extensions import ShopExtendableMixin, LeftRightExtensionMixin
+from shop.cascade.plugin_base import ShopPluginBase
 from shop.conf import app_settings
-from .extensions import ShopExtendableMixin, LeftRightExtensionMixin
-from .plugin_base import ShopPluginBase
 
 
 class ShopOrderViewsForm(forms.ModelForm):

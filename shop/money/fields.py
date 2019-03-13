@@ -2,16 +2,14 @@
 from __future__ import unicode_literals
 
 from decimal import Decimal
-
 from django.core.exceptions import ValidationError
 from django import forms
 from django.db import models
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
-
 from shop.conf import app_settings
-from .money_maker import MoneyMaker, AbstractMoney
-from .iso4217 import CURRENCIES
+from shop.money.iso4217 import CURRENCIES
+from shop.money.money_maker import MoneyMaker, AbstractMoney
 
 
 class MoneyFieldWidget(forms.widgets.NumberInput):

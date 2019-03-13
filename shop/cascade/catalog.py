@@ -6,16 +6,14 @@ from django.forms import widgets
 from django.forms.models import ModelForm
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _, ugettext
-
 from cms.plugin_pool import plugin_pool
 from cms.utils.compat.dj import is_installed
 from cmsplugin_cascade.mixins import WithSortableInlineElementsMixin
 from cmsplugin_cascade.models import SortableInlineCascadeElement
 from cmsplugin_cascade.fields import GlossaryField
-
+from shop.cascade.plugin_base import ShopPluginBase, ProductSelectField
 from shop.conf import app_settings
 from shop.models.product import ProductModel
-from .plugin_base import ShopPluginBase, ProductSelectField
 
 if is_installed('adminsortable2'):
     from adminsortable2.admin import SortableInlineAdminMixin
