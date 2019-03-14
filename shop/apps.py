@@ -19,6 +19,7 @@ class ShopConfig(AppConfig):
         from shop.patches import PageAttribute
         from cms.templatetags import cms_tags
 
+        # on each state transition of an Order object, handle registered notifications
         post_transition.connect(order_event_notification)
 
         # add JSONField to the map of customized serializers

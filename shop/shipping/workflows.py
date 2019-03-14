@@ -24,6 +24,7 @@ class SimpleShippingWorkflowMixin(object):
     TRANSITION_TARGETS = {
         'pick_goods': _("Picking goods"),
         'pack_goods': _("Packing goods"),
+        'ship_goods': _("Prepare for shipping"),
         'ready_for_delivery': _("Ready for delivery"),
     }
 
@@ -52,7 +53,7 @@ class SimpleShippingWorkflowMixin(object):
         """Change status to 'pack_goods'."""
 
     @transition(field='status', source='pack_goods', target='ship_goods',
-                custom=dict(admin=True, button_name=_("Ship the goods")))
+                custom=dict(admin=True, button_name=_("Prepare for shipping")))
     def ship_goods(self, by=None):
         """
         Ship the goods. This method implicitly invokes
