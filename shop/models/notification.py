@@ -128,11 +128,11 @@ def order_event_notification(sender, instance=None, target=None, **kwargs):
         # emulate a request object which behaves similar to that one, when the customer submitted its order
         emulated_request = EmulateHttpRequest(instance.customer, instance.stored_request)
         customer_serializer = app_settings.CUSTOMER_SERIALIZER(instance.customer)
-        order_serializer = OrderDetailSerializer(instance, context={'request': emulated_request})
+        order_serializer = OrderDetailSerializer(instance, context={'request': emulated_request, 'render_label': 'email'})
         language = instance.stored_request.get('language')
         context = {
             'customer': customer_serializer.data,
-            'data': order_serializer.data,
+            'order': order_serializer.data,
             'ABSOLUTE_BASE_URI': emulated_request.build_absolute_uri().rstrip('/'),
             'render_language': language,
         }

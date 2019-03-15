@@ -37,6 +37,8 @@ Changelog for django-SHOP
   order workflow mixins.
 * All payment- and shipping-modifiers support an instantiation either as list. This is required in some cases, where one
   payment- or shipping-service-provider offers different payment- or shipping methods.
+* Changed all relative import against absolute ones.
+* In context for email template rendering, renamed ``data`` to a more meaningful name such as ``order``.
 
 .. _pipenv: https://pipenv.readthedocs.io/en/latest/
 .. _py.test: https://docs.pytest.org/en/latest/
