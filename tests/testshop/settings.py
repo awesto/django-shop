@@ -103,7 +103,6 @@ INSTALLED_APPS = [
     'cmsplugin_cascade.sharable',
     'cmsplugin_cascade.segmentation',
     'post_office',
-    'html_email',
     'shop',
     'testshop',
 ]
