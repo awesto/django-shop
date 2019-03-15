@@ -23,7 +23,7 @@
 			<td rowspan="2" style="text-align: left; vertical-align: middle; border: 1px solid #ddd; border-bottom-width: 3px; padding: 10px 15px;">
 				<img src="{% image_src item.summary.media %}">
 			</td>
-			<td>{{ item.summary.caption }}</td>
+			<td>{{ item.summary.caption|safe }}</td>
 			<td style="text-align: left; vertical-align: middle; border: 1px solid #ddd; padding: 10px 15px;">{{ item.line_total }}</td>
 		</tr>
 		<tr>
