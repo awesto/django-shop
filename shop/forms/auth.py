@@ -158,8 +158,7 @@ class PasswordResetRequestForm(PasswordResetForm):
                 template = get_template(html_email_template_name, using='html_email')
                 html = template.render(context)
                 email_message.attach_alternative(html, 'text/html')
-                email_message.mixed_subtype = 'related'
-                template.attach_images(email_message)
+                template.attach_related(email_message)
             email_message.send()
         else:
             context['user'] = str(context['user'])
