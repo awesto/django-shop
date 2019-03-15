@@ -48,7 +48,7 @@ django-treebeard==4.3
 django==1.11.20
 djangocms-admin-style==1.3.0
 djangocms-bootstrap==1.0.2
-djangocms-cascade==0.17.9
+djangocms-cascade==0.17.10
 djangocms-text-ckeditor==3.7.0
 djangorestframework==3.8.2
 drf-haystack==1.8.4
@@ -58,7 +58,7 @@ html5lib==1.0.1
 https://github.com/awesto/django-shop/archive/releases/1.0.x.zip
 https://github.com/awesto/djangoshop-stripe/archive/releases/1.0.x.zip
 https://github.com/jrief/django-parler-rest/archive/deserialize-TranslatedField.zip
-https://github.com/jrief/django-post_office/archive/attachments-allowing-MIMEBase.zip
+https://github.com/jrief/django-post_office/archive/template-engine-for-inlined-images.zip
 idna==2.8
 jsonfield==2.0.2
 libsass==0.17.0
