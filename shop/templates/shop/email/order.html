@@ -1,60 +1,74 @@
 {# include this template to list all items of the given order #}
 {% load i18n html_email %}{% spaceless %}
 
-<table cellspacing="0" cellpadding="12" border="1" style="width: 100%; border: 1px solid #ddd;">
-{% block email-order-thead %}
-	<caption style="font-weight: bold; font-size: 130%; padding: 20px 0 10px; text-align: center; border: 2px solid #ddd;">
+<table style="width: 100%; background-color: #fff; border-collapse: collapse; margin-bottom: 20px;">
+{% block email-order-head %}
+	<caption style="font-weight: bold; font-size: 130%; padding: 20px 0 10px; text-align: center;">
 		{% block email-order-caption %}{% trans "Summary of Your Order" %} {{ order.number }}{% endblock %}
 	</caption>
 	<thead>
 		<tr>
-			<th scope="col" style="text-align: left; border: 1px solid #ddd; border-bottom-width: 3px; padding: 12px;">{% trans "Quantity" %}</th>
-			<th scope="col" colspan="2" style="text-align: left; border: 1px solid #ddd; border-bottom-width: 3px; padding: 12px;">{% trans "Product" %}</th>
-			<th scope="col" style="text-align: left; border: 1px solid #ddd; border-bottom-width: 3px; padding: 12px;">{% trans "Price" %}</th>
+			<th scope="col" style="text-align: center; padding: 10px; border-bottom: 2px solid #eee;">{% trans "Quantity" %}</th>
+			<th scope="col" colspan="2" style="text-align: center; padding: 10px; border-bottom: 2px solid #eee;">{% trans "Product" %}</th>
+			<th scope="col" style="text-align: center; padding: 10px; border-bottom: 2px solid #eee;">{% trans "Price" %}</th>
 		</tr>
 	</thead>
-{% endblock email-order-thead %}
+{% endblock email-order-head %}
 
-{% block email-order-tbody %}
+{% block email-order-body %}
 	<tbody>
 	{% for item in order.items %}
 		<tr>
-			<td style="text-align: left; vertical-align: middle; border: 1px solid #ddd; padding: 10px 15px;">{{ item.quantity }}</td>
-			<td rowspan="2" style="text-align: left; vertical-align: middle; border: 1px solid #ddd; border-bottom-width: 3px; padding: 10px 15px;">
+			<td rowspan="2" style="text-align: center; vertical-align: middle; padding: 10px; border-bottom: 2px solid #eee;">
+				{{ item.quantity }} &times;
+			</td>
+			<td rowspan="2" style="text-align: center; vertical-align: middle; padding: 10px; border-bottom: 2px solid #eee;">
 				<img src="{% image_src item.summary.media %}">
 			</td>
-			<td>{{ item.summary.caption|safe }}</td>
-			<td style="text-align: left; vertical-align: middle; border: 1px solid #ddd; padding: 10px 15px;">{{ item.line_total }}</td>
+			<td>
+				<span style="font-size: 120%; font-weight: bold;">{{ item.summary.product_name }}</span>
+				{{ item.summary.caption|safe }}
+			</td>
+			<td style="font-size: 120%; text-align: right; vertical-align: middle; padding: 10px 15px; white-space: nowrap;">
+				{{ item.line_total }}
+			</td>
 		</tr>
 		<tr>
-			<td colspan="3" style="border: 1px solid #ddd; border-bottom-width: 3px;" border="1">
-				{{ item.summary.body|safe }}
-				{% for modifier, extra_row in item.extra.rows %}
-				<p>{{ extra_row.label }}: {{ extra_row.amount }}</p>
+			<td style="text-align: right; padding-right: 15px; border-bottom: 2px solid #eee;">
+				{% for _, extra_row in item.extra.rows %}
+				{{ extra_row.label }}
+				{% endfor %}
+			</td>
+			<td style="text-align: right; padding-right: 15px; white-space: nowrap; border-bottom: 2px solid #eee;">
+				{% for _, extra_row in item.extra.rows %}
+				{{ extra_row.amount }}
 				{% endfor %}
 			</td>
 		</tr>
 	{% endfor %}
 	</tbody>
-{% endblock email-order-tbody %}
+{% endblock email-order-body %}
 
-{% block email-order-tfoot %}
+{% block email-order-foot %}
 	<tfoot>
 		<tr>
-			<th scope="row" colspan="2" style="text-align: left; border: 1px solid #ddd; padding: 12px;">{% trans "Subtotal" %}:</th>
-			<td style="text-align: left; border: 1px solid #ddd; padding: 12px;"><span>{{ order.subtotal }}</span></td>
+			<td colspan="2"></td>
+			<td style="font-size: 120%; text-align: right; padding: 10px 15px; border-bottom: 2px solid #eee;">{% trans "Subtotal" %}:</td>
+			<td style="font-size: 120%; text-align: right; padding: 10px 15px; white-space: nowrap; border-bottom: 2px solid #eee;">{{ order.subtotal }}</td>
 		</tr>
-		{% for key, extra_row in order.extra.rows %}
+		{% for _, extra_row in order.extra.rows %}
 		<tr>
-			<th scope="row" colspan="2" style="text-align: left; border: 1px solid #ddd; padding: 12px;">{{ extra_row.label }}:</th>
-			<td style="text-align: left; border: 1px solid #ddd; padding: 12px;">{{ extra_row.amount }}</td>
+			<td colspan="2"></td>
+			<td style="font-size: 120%; text-align: right; padding: 10px 15px; border-bottom: 2px solid #eee;">{{ extra_row.label }}:</td>
+			<td style="font-size: 120%; text-align: right; padding: 10px 15px; white-space: nowrap; border-bottom: 2px solid #eee;">{{ extra_row.amount }}</td>
 		</tr>
 		{% endfor %}
 		<tr>
-			<th scope="row" colspan="2" style="text-align: left; border: 1px solid #ddd; border-bottom-width: 3px; padding: 12px;">{% trans "Total" %}:</th>
-			<td style="text-align: left; border: 1px solid #ddd; border-bottom-width: 3px; padding: 12px;"><strong>{{ order.total }}</strong></td>
+			<td colspan="2"></td>
+			<td style="font-size: 120%; text-align: right; padding: 10px 15px; font-weight: bold">{% trans "Total" %}:</td>
+			<td style="font-size: 120%; text-align: right; padding: 10px 15px; white-space: nowrap; font-weight: bold;">{{ order.total }}</td>
 		</tr>
 	</tfoot>
-{% endblock email-order-tfoot %}
+{% endblock email-order-foot %}
 </table>
 {% endspaceless %}
