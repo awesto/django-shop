@@ -113,10 +113,12 @@ class EmulateHttpRequest(HttpRequest):
 
 
 def order_event_notification(sender, instance=None, target=None, **kwargs):
+    from shop.serializers.delivery import DeliverySerializer
     from shop.serializers.order import OrderDetailSerializer
 
     if not isinstance(instance, BaseOrder):
         return
+    emails_in_queue = False
     for notification in Notification.objects.filter(transition_target=target):
         recipient = notification.get_recipient(instance)
         if recipient is None:
@@ -125,7 +127,8 @@ def order_event_notification(sender, instance=None, target=None, **kwargs):
         # emulate a request object which behaves similar to that one, when the customer submitted its order
         emulated_request = EmulateHttpRequest(instance.customer, instance.stored_request)
         customer_serializer = app_settings.CUSTOMER_SERIALIZER(instance.customer)
-        order_serializer = OrderDetailSerializer(instance, context={'request': emulated_request, 'render_label': 'email'})
+        render_context = {'request': emulated_request, 'render_label': 'email'}
+        order_serializer = OrderDetailSerializer(instance, context=render_context)
         language = instance.stored_request.get('language')
         context = {
             'customer': customer_serializer.data,
@@ -133,6 +136,11 @@ def order_event_notification(sender, instance=None, target=None, **kwargs):
             'ABSOLUTE_BASE_URI': emulated_request.build_absolute_uri().rstrip('/'),
             'render_language': language,
         }
+        try:
+            latest_delivery = instance.delivery_set.latest()
+            context['latest_delivery'] = DeliverySerializer(latest_delivery, context=render_context).data
+        except (AttributeError, models.ObjectDoesNotExist):
+            pass
         try:
             template = notification.mail_template.translated_templates.get(language=language)
         except EmailTemplate.DoesNotExist:
@@ -142,4 +150,6 @@ def order_event_notification(sender, instance=None, target=None, **kwargs):
             attachments[notiatt.attachment.original_filename] = notiatt.attachment.file.file
         mail.send(recipient, template=template, context=context,
                   attachments=attachments, render_on_delivery=True)
-    email_queued()
+        emails_in_queue = True
+    if emails_in_queue:
+        email_queued()

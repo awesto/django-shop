@@ -49,6 +49,7 @@ class BaseDelivery(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     class Meta:
         abstract = True
         unique_together = ['shipping_method', 'shipping_id']
+        get_latest_by = 'shipped_at'
 
     def __str__(self):
         return _("Delivery ID: {}").format(self.id)
