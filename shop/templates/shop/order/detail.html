@@ -8,7 +8,7 @@
 
 {% block shop-order-title %}
 <div class="d-flex align-items-center flex-wrap">
-	<h3 class="text-nowrap">{% trans "Order" %} {{ data.number }}</h3>
+	<h4 class="text-nowrap">{% trans "Order" %} {{ data.number }}</h4>
 	<div class="text-nowrap ml-3">{% trans "from" context "order-detail" %} <span shop-timestamp="{{ data.created_at }}"></span></div>
 	<div class="ml-auto lead badge badge-primary">{{ data.status }}</div>
 </div>
@@ -16,7 +16,7 @@
 
 {% block shop-order-delivery %}
 <div class="row mb-3">
-	<div class="col my-2">
+	<div class="col-12 col-lg-6 my-2">
 		<div class="card">
 			<h5 class="card-header">{% trans "Shipping Address" %}</h5>
 			<div class="card-body">
@@ -25,7 +25,7 @@
 			<div class="card-footer text-primary">{% trans "Shipping Method" %}: {{ data.active_shipping_method.label }}</div>
 		</div>
 	</div>
-	<div class="col my-2">
+	<div class="col-12 col-lg-6 my-2">
 		<div class="card">
 			<h5 class="card-header">{% trans "Billing Address" %}</h5>
 			<div class="card-body">
