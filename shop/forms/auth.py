@@ -18,6 +18,7 @@ from post_office.models import EmailTemplate
 from shop.conf import app_settings
 from shop.forms.base import UniqueEmailValidationMixin
 from shop.models.customer import CustomerModel
+from shop.signals import email_queued
 
 
 class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValidationMixin, Bootstrap3ModelForm):
@@ -114,11 +115,12 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValid
         body_html_template = select_template([
             '{}/email/register-user-body.html'.format(app_settings.APP_LABEL),
             'shop/email/register-user-body.html',
-        ])
+        ], using='html_email')
         message = body_text_template.render(context)
         html_message = body_html_template.render(context)
-        from_email = getattr(settings, 'DEFAULT_FROM_EMAIL'),
-        user.email_user(subject, message, from_email, html_message=html_message)
+        from_email = getattr(settings, 'DEFAULT_FROM_EMAIL')
+        user.email_user(subject, message, from_email=from_email, html_message=html_message)
+        email_queued()
 
 
 class ContinueAsGuestForm(ModelForm):
@@ -164,3 +166,4 @@ class PasswordResetRequestForm(PasswordResetForm):
             context['user'] = str(context['user'])
             context['uid'] = context['uid'].decode('utf-8')
             post_office_mail.send(to_email, template=email_template, context=context, render_on_delivery=True)
+        email_queued()

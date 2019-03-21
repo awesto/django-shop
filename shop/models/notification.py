@@ -8,12 +8,9 @@ from django.db.models import Q
 from django.http.request import HttpRequest
 from django.utils.six.moves.urllib.parse import urlparse
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
-
 from post_office import mail
 from post_office.models import EmailTemplate
-
 from filer.fields.file import FilerFileField
-
 from shop.conf import app_settings
 from shop.models.order import BaseOrder
 from shop.models.fields import ChoiceEnum, ChoiceEnumField
