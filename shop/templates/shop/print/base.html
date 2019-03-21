@@ -77,15 +77,11 @@
 
 <div id="page_template">
 	<header>
-{% block header %}
-		<img src="{% static 'shop/django-shop-logo.svg' %}" class="shop-logo" alt="django-SHOP" height="45">
-{% endblock %}
+	{% block header %}<p>This is the header</p>{% endblock %}
 	</header>
 	<main><!-- rendered by function render_content() --></main>
 	<footer>
-	{% block footer %}
-		<p>This is the footer</p>
-	{% endblock %}
+	{% block footer %}<p>This is the footer</p>{% endblock %}
 	</footer>
 </div>
 
