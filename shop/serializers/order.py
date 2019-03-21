@@ -100,5 +100,5 @@ class OrderDetailSerializer(OrderListSerializer):
             order.readd_to_cart(cart)
         if validated_data['cancel'] is True and order.cancelable():
             order.cancel_order()
-            order.save()
+            order.save(with_notification=True)
         return order

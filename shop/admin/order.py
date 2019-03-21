@@ -16,6 +16,7 @@ from shop.models.customer import CustomerModel
 from shop.models.order import OrderItemModel, OrderPayment
 from shop.modifiers.pool import cart_modifiers_pool
 from shop.serializers.order import OrderDetailSerializer
+from shop.transition import transition_change_notification
 
 
 class OrderPaymentInline(admin.TabularInline):
@@ -187,6 +188,15 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
             # store the requested transition inside the instance, so that the model's `clean()` method can access it
             obj._fsm_requested_transition = self._get_requested_transition(request)
         return ModelForm
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        assert object_id, "An Order object can not be added through the Django-Admin"
+        current_status = self.get_object(request, object_id).status
+        response = super(BaseOrderAdmin, self).change_view(request, object_id, form_url, extra_context)
+        order = self.get_object(request, object_id)
+        if current_status != order.status:
+            transition_change_notification(order)
+        return response
 
 
 class PrintInvoiceAdminMixin(object):

@@ -56,5 +56,5 @@ class ForwardFundPayment(PaymentProvider):
             order.no_payment_required()
         else:
             order.awaiting_payment()
-        order.save()
+        order.save(with_notification=True)
         return 'window.location.href="{}";'.format(order.get_absolute_url())

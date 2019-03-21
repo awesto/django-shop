@@ -100,7 +100,7 @@ urlpatterns, which then is used by the Django URL resolving engine.
 	        order = OrderModel.objects.create_from_cart(cart, request)
 	        order.populate_from_cart(cart, request)
 	        order.add_paypal_payment(payment.to_dict())
-	        order.save()
+	        order.save(with_notification=True)
 	        return HttpResponseRedirect(order.get_abolute_url())
 
 	    @classmethod

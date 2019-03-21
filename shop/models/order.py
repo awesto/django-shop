@@ -323,10 +323,13 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
                                           quantity=order_item.quantity, extra=extra)
             cart_item.save()
 
-    def save(self, **kwargs):
+    def save(self, with_notification=False, **kwargs):
         """
-        The status of an Order object may change, if auto transistions are specified.
+        :param with_notification: If ``True``, all notifications for the state of this Order object
+        are executed.
         """
+        from shop.transition import transition_change_notification
+
         auto_transition = self._auto_transitions.get(self.status)
         if callable(auto_transition):
             auto_transition(self)
@@ -335,6 +338,8 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         self._subtotal = BaseOrder.round_amount(self._subtotal)
         self._total = BaseOrder.round_amount(self._total)
         super(BaseOrder, self).save(**kwargs)
+        if with_notification:
+            transition_change_notification(self)
 
     @cached_property
     def amount_paid(self):
