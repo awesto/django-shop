@@ -56,7 +56,6 @@ drf-haystack==1.8.4
 easy-thumbnails==2.6
 elasticsearch==1.7.0
 html5lib==1.0.1
-https://github.com/awesto/djangoshop-stripe/archive/releases/1.0.x.zip
 https://github.com/jrief/django-parler-rest/archive/deserialize-TranslatedField.zip
 https://github.com/jrief/django-post_office/archive/inlined-images-template-engine.zip
 idna==2.8
