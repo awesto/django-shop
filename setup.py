@@ -41,7 +41,7 @@ setup(
     zip_safe=False,
     install_requires=[
         'Django>=1.11,<2.0',
-        'django-post_office==3.2.0.dev',
+        'django-post_office==3.2.0.dev @ https://github.com/jrief/django-post_office/archive/inlined-images-template-engine.zip#egg=django-post_office-3.2.0.dev',
         'django-filer>=1.3.2',
         'django-ipware>=1.1.1',
         'django-fsm>=2.4.0',
@@ -53,9 +53,6 @@ setup(
         'django-admin-sortable2>=0.6.19',
         'django-formtools>=1.0',
         'djangocms-cascade>=0.17.10',
-    ],
-    dependency_links=[
-        'https://github.com/jrief/django-post_office/archive/inlined-images-template-engine.zip#egg=django-post_office-3.2.0.dev',
     ],
     # Note: this requires setuptools >= 18.0.
     extras_require={
