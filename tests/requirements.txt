@@ -30,6 +30,7 @@ django-appconf==1.0.3
 django-classy-tags==0.8.0
 django-cms==3.5.3
 django-filer==1.4.4
+django-filter==2.1.0
 django-formtools==2.1
 django-fsm-admin==1.2.4
 django-fsm==2.6.0
@@ -57,10 +58,10 @@ elasticsearch==1.7.0
 html5lib==1.0.1
 https://github.com/awesto/djangoshop-stripe/archive/releases/1.0.x.zip
 https://github.com/jrief/django-parler-rest/archive/deserialize-TranslatedField.zip
-https://github.com/jrief/django-post_office/archive/template-engine-for-inlined-images.zip
+https://github.com/jrief/django-post_office/archive/inlined-images-template-engine.zip
 idna==2.8
 jsonfield==2.0.2
-libsass==0.17.0
+libsass==0.18.0
 oauthlib==3.0.1
 phonenumbers==8.10.7
 pillow==5.4.1
