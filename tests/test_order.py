@@ -3,19 +3,22 @@ from __future__ import unicode_literals
 
 import pytest
 from bs4 import BeautifulSoup
+from django.core.mail import EmailMessage
 from django.urls import reverse
 from django.utils.dateparse import parse_datetime
 from django.utils.timezone import datetime
+from post_office.models import Email
 from shop.models.cart import CartItemModel
 from shop.models.order import OrderModel, OrderItemModel
 from shop.models.delivery import DeliveryModel, DeliveryItemModel
+from shop.models.notification import Notify
 from shop.views.checkout import CheckoutViewSet
 from shop.views.order import OrderView
 
 
 @pytest.fixture(name='order')
 @pytest.mark.django_db
-def test_purchase(api_rf, empty_cart, commodity_factory):
+def test_purchase(api_rf, empty_cart, commodity_factory, notification_factory):
     # fill the cart
     product = commodity_factory()
     CartItemModel.objects.create(cart=empty_cart, product=product, product_code=product.product_code, quantity=1)
@@ -32,6 +35,13 @@ def test_purchase(api_rf, empty_cart, commodity_factory):
             'plugin_order': 2,
         }
     }
+
+    # add notification on an order awaiting payment
+    notification_factory(
+        transition_target='awaiting_payment',
+        notify=Notify.CUSTOMER,
+        recipient=empty_cart.customer.user,
+    )
 
     # select the payment method
     request = api_rf.put('/shop/api/checkout/upload', data=data, format='json')
@@ -57,6 +67,15 @@ def test_purchase(api_rf, empty_cart, commodity_factory):
     assert order.extra['payment_modifier'] == 'forward-fund-payment'
     assert order.extra['shipping_modifier'] == 'self-collection'
     assert empty_cart.items.count() == 0
+
+    # check that a confirmation email has been queued
+    email = Email.objects.first()
+    assert email is not None
+    message = email.email_message()
+    assert isinstance(message, EmailMessage)
+    assert product.product_name in message.body
+    assert "Subtotal: {}".format(order.subtotal) in message.body
+    assert "Total: {}".format(order.total) in message.body
     return order
 
 

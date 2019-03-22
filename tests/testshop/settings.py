@@ -212,3 +212,7 @@ AUTHENTICATION_BACKENDS = [
 REST_AUTH_SERIALIZERS = {
     'LOGIN_SERIALIZER': 'shop.serializers.auth.LoginSerializer',
 }
+
+POST_OFFICE = {
+    'TEMPLATE_ENGINE': 'html_email',
+}

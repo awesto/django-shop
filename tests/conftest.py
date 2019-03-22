@@ -10,11 +10,13 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AnonymousUser
+from post_office.models import EmailTemplate
 from rest_framework.test import APIClient, APIRequestFactory
 from shop.models.cart import CartModel
 from shop.models.address import ISO_3166_CODES
 from shop.models.defaults.customer import Customer
 from shop.models.defaults.address import ShippingAddress, BillingAddress
+from shop.models.notification import Notification
 from shop.models.related import ProductPageModel
 from shop.money import Money
 from testshop.models import Commodity
@@ -103,6 +105,7 @@ class CommodityFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Commodity
 
+    product_name = factory.fuzzy.FuzzyText(prefix='Product-')
     product_code = factory.Sequence(lambda n: 'article-{}'.format(n + 1))
     unit_price = Money(factory.fuzzy.FuzzyDecimal(1, 100).fuzz())
     slug = factory.fuzzy.FuzzyText(length=7)
@@ -121,6 +124,8 @@ def empty_cart(rf, api_client):
     request.session = api_client.session
     request.user = AnonymousUser()
     request.customer = Customer.objects.get_or_create_from_request(request)
+    request.customer.email = 'joe@example.com'
+    request.customer.save()
     cart = CartModel.objects.get_from_request(request)
     cart.update(request)
     assert cart.is_empty
@@ -145,3 +150,20 @@ class ShippingAddressFactory(factory.django.DjangoModelFactory):
 class BillingAddressFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = BillingAddress
+
+
+@register
+class EmailTemplateFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = EmailTemplate
+
+    subject = 'Order {{ order.number }}'
+    content = '{% extends "shop/email/order-detail.txt" %}'
+
+
+@register
+class NotificationFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Notification
+
+    mail_template = factory.SubFactory(EmailTemplateFactory)
