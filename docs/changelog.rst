@@ -33,12 +33,22 @@ Changelog for django-SHOP
 * All forms in the checkout process can be overridden using a settings variable.
 * Buttons are configurable to be disabled, if wrapping form is invalid.
 * Unified all management commands into ``shop`` with different subcommands.
+* Add management command to check for various CMS pages and verify their settings.
 * Refactored payment- and shipping-modifiers into their own submodules, so that they stay side-by-side with their
   order workflow mixins.
-* All payment- and shipping-modifiers support an instantiation either as list. This is required in some cases, where one
-  payment- or shipping-service-provider offers different payment- or shipping methods.
+* All payment- and shipping-modifiers support an instantiation either as list or as instance. This allows to implement
+  payment- or shipping-service-provider offering different payment- or shipping methods themselves.
 * Changed all relative import against absolute ones.
 * In context for email template rendering, renamed ``data`` to a more meaningful name such as ``order``.
+* Add support for inlined images when sending HTML emails.
+* Replace FSM signal ``post_transition`` against a function ``transition_change_notification`` which either is invoked
+  by ``OrderAdmin.save_model()`` or while processing an Order through the frontend by the customer.
+* In Order event notification, add data about each delivery to the serialized Order data.
+* Upgrade to djangocms-bootstrap version 1.0.2.
+* Fix: Do not always refetch cart data from server.
+* Improve style of rendering for invoice and delivery notes in the Order backend.
+* Use specific naming for relatation of model ``DeliveryItem`` to models ``OrderItem`` and ``Delivery``.
+* Add reusable scroll-spy for AngularJS directive ``navbar``.
 
 .. _pipenv: https://pipenv.readthedocs.io/en/latest/
 .. _py.test: https://docs.pytest.org/en/latest/
