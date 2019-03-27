@@ -100,7 +100,7 @@ class Command(BaseCommand):
                 data['anonymous'] += 1
             if customer.is_expired:
                 data['expired'] += 1
-                if self.delete_expired:
+                if self.delete_expired and customer.orders.count() == 0:
                     customer.delete()
         msg = "Customers in this shop: total={total}, anonymous={anonymous}, expired={expired}, active={active}, guests={guests}, registered={registered}, staff={staff}."
         self.stdout.write(msg.format(**data))

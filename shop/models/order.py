@@ -160,6 +160,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         'BaseCustomer',
         verbose_name=_("Customer"),
         related_name='orders',
+        on_delete=models.PROTECT,
     )
 
     status = FSMField(
