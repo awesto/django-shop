@@ -74,7 +74,9 @@ class LoginView(OriginalLoginView):
             # which previously might have been created under his account.
             authenticated_cart.merge_with(anonymous_cart)
         if previous_user and previous_user.is_active is False and previous_user != self.request.user:
-            previous_user.delete()  # keep the database clean and remove this anonymous entity
+            # keep the database clean and remove this anonymous entity
+            if previous_user.customer.orders.count() == 0:
+                previous_user.delete()
 
     def post(self, request, *args, **kwargs):
         self.request = request
