@@ -115,7 +115,8 @@ class Command(BaseCommand):
         if Page.objects.public().filter(is_home=True).exists():
             yield "A home page exists already."
         else:
-            page = self.create_page("Home", None, in_navigation=True)
+            page, created = self.get_or_create_page("Home", None, in_navigation=True)
+            assert created is False
             try:
                 clipboard = CascadeClipboard.objects.get(identifier='home')
             except CascadeClipboard.DoesNotExist:
@@ -134,29 +135,47 @@ class Command(BaseCommand):
             self.publish_in_all_languages(page)
             yield "Created recommended CMS home page."
 
-        parent_page = self.create_page("Legal", None, reverse_id='shop-legal-pages', soft_root=True)
-        self.publish_in_all_languages(parent_page)
-        yield "Created recommended CMS page 'Legal'."
+        parent_page, created = self.get_or_create_page("Legal", None, reverse_id='shop-legal-pages', soft_root=True)
+        if created:
+            self.publish_in_all_languages(parent_page)
+            yield "Created recommended CMS page 'Legal'."
+        else:
+            yield "Recommended CMS page 'Legal' exists already."
 
-        page = self.create_page("Imprint", None, parent_page=parent_page, in_navigation=True)
-        self.publish_in_all_languages(page)
-        yield "Created recommended CMS page 'Imprint'."
+        page, created = self.get_or_create_page("Imprint", None, parent_page=parent_page, in_navigation=True)
+        if created:
+            self.publish_in_all_languages(page)
+            yield "Created recommended CMS page 'Imprint'."
+        else:
+            yield "Recommended CMS page 'Imprint' exists already."
 
-        page = self.create_page("Terms and Conditions", None, parent_page=parent_page, in_navigation=True)
-        self.publish_in_all_languages(page)
-        yield "Created recommended CMS page 'Terms and Conditions'."
+        page, created = self.get_or_create_page("Terms and Conditions", None, parent_page=parent_page, in_navigation=True)
+        if created:
+            self.publish_in_all_languages(page)
+            yield "Created recommended CMS page 'Terms and Conditions'."
+        else:
+            yield "Recommended CMS page 'Terms and Conditions' exists already."
 
-        page = self.create_page("Privacy Protection", None, parent_page=parent_page, in_navigation=True)
-        self.publish_in_all_languages(page)
-        yield "Created recommended CMS page 'Privacy Protection'."
+        page, created = self.get_or_create_page("Privacy Protection", None, parent_page=parent_page, in_navigation=True)
+        if created:
+            self.publish_in_all_languages(page)
+            yield "Created recommended CMS page 'Privacy Protection'."
+        else:
+            yield "Recommended CMS page 'Privacy Protection' exists already."
 
-        self.personal_pages = self.create_page("Personal Pages", None, reverse_id='shop-personal-pages', soft_root=True)
-        self.publish_in_all_languages(self.personal_pages)
-        yield "Created recommended CMS page 'Personal Pages'."
+        self.personal_pages, created = self.get_or_create_page("Personal Pages", None, reverse_id='shop-personal-pages', soft_root=True)
+        if created:
+            self.publish_in_all_languages(self.personal_pages)
+            yield "Created recommended CMS page 'Personal Pages'."
+        else:
+            yield "Recommended CMS page 'Personal Pages' exists already."
 
-        self.impersonal_pages = self.create_page("Join Us", None, reverse_id='shop-impersonal-pages', soft_root=True)
-        self.publish_in_all_languages(self.impersonal_pages)
-        yield "Created recommended CMS page 'Join Us'."
+        self.impersonal_pages, created = self.get_or_create_page("Join Us", None, reverse_id='shop-impersonal-pages', soft_root=True)
+        if created:
+            self.publish_in_all_languages(self.impersonal_pages)
+            yield "Created recommended CMS page 'Join Us'."
+        else:
+            yield "Recommended CMS page 'Join Us' exists already."
 
     def check_mandatory_pages(self):
         """
@@ -174,16 +193,19 @@ class Command(BaseCommand):
         catalog_pages = Page.objects.public().filter(application_urls=apphook.__class__.__name__)
         if not catalog_pages.exists():
             if self.add_mandatory:
-                page = self.create_page("Catalog", 'CatalogListCMSApp', in_navigation=True)
-                try:
-                    clipboard = CascadeClipboard.objects.get(identifier='shop-list')
-                    self.deserialize_to_placeholder(page, clipboard.data)
-                except CascadeClipboard.DoesNotExist:
-                    leaf_plugin = self.create_page_structure(page)
-                    self.add_plugin(leaf_plugin, 'ShopCatalogPlugin', {})
-                self.publish_in_all_languages(page)
-                self.assign_all_products_to_page(page)
-                yield "Created CMS page titled 'Catalog'."
+                page, created = self.get_or_create_page("Catalog", 'CatalogListCMSApp', in_navigation=True)
+                if created:
+                    try:
+                        clipboard = CascadeClipboard.objects.get(identifier='shop-list')
+                        self.deserialize_to_placeholder(page, clipboard.data)
+                    except CascadeClipboard.DoesNotExist:
+                        leaf_plugin = self.create_page_structure(page)
+                        self.add_plugin(leaf_plugin, 'ShopCatalogPlugin', {})
+                    self.publish_in_all_languages(page)
+                    self.assign_all_products_to_page(page)
+                    yield "Created CMS page titled 'Catalog'."
+                else:
+                    yield "CMS page 'Catalog' exists already."
             else:
                 yield "There should be at least one published CMS page configured to use an Application inheriting from 'CatalogListCMSApp'."
 
@@ -207,15 +229,18 @@ class Command(BaseCommand):
                 self.check_page_content(page, *content_attrs)
             except MissingPage as exc:
                 if self.add_mandatory:
-                    page = self.create_page(*page_attrs[:2], **page_attrs[2])
-                    try:
-                        clipboard = CascadeClipboard.objects.get(identifier=page.get_slug(default_language))
-                        self.deserialize_to_placeholder(page, clipboard.data)
-                    except CascadeClipboard.DoesNotExist:
-                        leaf_plugin = self.create_page_structure(page)
-                        self.add_plugin(leaf_plugin, *content_attrs)
-                    self.publish_in_all_languages(page)
-                    yield "Created mandatory CMS page titled '{0}'.".format(page.get_title(default_language))
+                    page, created = self.get_or_create_page(*page_attrs[:2], **page_attrs[2])
+                    if created:
+                        try:
+                            clipboard = CascadeClipboard.objects.get(identifier=page.get_slug(default_language))
+                            self.deserialize_to_placeholder(page, clipboard.data)
+                        except CascadeClipboard.DoesNotExist:
+                            leaf_plugin = self.create_page_structure(page)
+                            self.add_plugin(leaf_plugin, *content_attrs)
+                        self.publish_in_all_languages(page)
+                        yield "Created mandatory CMS page titled '{0}'.".format(page.get_title(default_language))
+                    else:
+                        yield "Mandatory CMS page '{0}' exists already.".format(page.get_title(default_language))
                 else:
                     yield str(exc)
             except CommandError as exc:
@@ -228,17 +253,20 @@ class Command(BaseCommand):
                 break
         else:
             if self.add_mandatory:
-                page = self.create_page("Checkout", None)
-                try:
-                    clipboard = CascadeClipboard.objects.get(identifier='checkout')
-                    self.deserialize_to_placeholder(page, clipboard.data)
-                except CascadeClipboard.DoesNotExist:
-                    column_plugin = self.create_page_structure(page)
-                    forms_plugin = self.add_plugin(column_plugin, 'ValidateSetOfFormsPlugin', {})
-                    glossary = {'button_type': 'btn-success', 'link': {'type': 'PURCHASE_NOW'}, 'link_content': "Purchase Now"}
-                    self.add_plugin(forms_plugin, 'ShopProceedButton', glossary)
-                self.publish_in_all_languages(page)
-                yield "Created CMS page titled 'Checkout'"
+                page, created = self.get_or_create_page("Checkout", None)
+                if created:
+                    try:
+                        clipboard = CascadeClipboard.objects.get(identifier='checkout')
+                        self.deserialize_to_placeholder(page, clipboard.data)
+                    except CascadeClipboard.DoesNotExist:
+                        column_plugin = self.create_page_structure(page)
+                        forms_plugin = self.add_plugin(column_plugin, 'ValidateSetOfFormsPlugin', {})
+                        glossary = {'button_type': 'btn-success', 'link': {'type': 'PURCHASE_NOW'}, 'link_content': "Purchase Now"}
+                        self.add_plugin(forms_plugin, 'ShopProceedButton', glossary)
+                    self.publish_in_all_languages(page)
+                    yield "Created CMS page titled 'Checkout'"
+                else:
+                    yield "CMS page titled 'Checkout' exists already."
             else:
                 yield "There should be at least one published CMS page containing a 'Proceed Button Plugin' for purchasing the cart's content."
 
@@ -291,24 +319,37 @@ class Command(BaseCommand):
                 msg = "Plugin named '{plugin_name}' on page with URL '{url}' is misconfigured."
                 raise MissingPlugin(msg.format(url=page.get_absolute_url(), plugin_name=plugin_name))
 
-    def create_page(self, title, base_apphook_name, reverse_id=None, parent_page=None, in_navigation=False, soft_root=False):
+    def get_or_create_page(self, title, base_apphook_name, reverse_id=None, parent_page=None, in_navigation=False, soft_root=False):
         from cms.api import create_page
+        from cms.models.pagemodel import Page
         from cms.utils.i18n import get_public_languages
 
         template = settings.CMS_TEMPLATES[0][0]
         apphook = self.get_installed_apphook(base_apphook_name) if base_apphook_name else None
         language = get_public_languages()[0]
-        return create_page(
-            title,
-            template,
-            language,
-            apphook=apphook,
-            created_by="manage.py shop check-pages",
-            in_navigation=in_navigation,
-            soft_root=soft_root,
-            parent=parent_page,
-            reverse_id=reverse_id,
-        )
+        try:
+            parent_node = parent_page.node if parent_page else None
+            page = Page.objects.drafts().get(
+                reverse_id=reverse_id,
+                node__parent=parent_node,
+                title_set__title=title,
+                title_set__language=language,
+            )
+            created = False
+        except Page.DoesNotExist:
+            page = create_page(
+                title,
+                template,
+                language,
+                apphook=apphook,
+                created_by="manage.py shop check-pages",
+                in_navigation=in_navigation,
+                soft_root=soft_root,
+                parent=parent_page,
+                reverse_id=reverse_id,
+            )
+            created = True
+        return page, created
 
     def create_page_structure(self, page, slot='Main Content'):
         from cms.api import add_plugin
