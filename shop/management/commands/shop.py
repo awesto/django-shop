@@ -116,7 +116,7 @@ class Command(BaseCommand):
             yield "A home page exists already."
         else:
             page, created = self.get_or_create_page("Home", None, in_navigation=True)
-            assert created is False
+            assert created is True
             try:
                 clipboard = CascadeClipboard.objects.get(identifier='home')
             except CascadeClipboard.DoesNotExist:
