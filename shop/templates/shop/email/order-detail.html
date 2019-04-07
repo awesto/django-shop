@@ -1,5 +1,5 @@
 {# include this template to list all items of the given order #}
-{% load i18n html_email %}{% spaceless %}
+{% load i18n post_office %}{% spaceless %}
 
 <table style="width: 100%; background-color: #fff; border-collapse: collapse; margin-bottom: 20px;">
 {% block email-order-head %}
@@ -25,7 +25,7 @@
 				{{ item.quantity }} &times;
 			</td>
 			<td rowspan="2" style="text-align: center; vertical-align: middle; padding: 10px; border-bottom: 2px solid #eee;">
-				<img src="{% image_src item.summary.media %}">
+				<img src="{% inline_image item.summary.media %}">
 			</td>
 			<td>
 				<span style="font-size: 120%; font-weight: bold;">{{ item.summary.product_name }}</span>

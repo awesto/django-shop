@@ -42,7 +42,7 @@ TEMPLATES = [{
         ]
     }
 }, {
-    'BACKEND': 'post_office.template.backends.html_email.EmailTemplates',
+    'BACKEND': 'post_office.template.backends.post_office.PostOfficeTemplates',
     'APP_DIRS': True,
     'DIRS': [],
     'OPTIONS': {
@@ -214,5 +214,5 @@ REST_AUTH_SERIALIZERS = {
 }
 
 POST_OFFICE = {
-    'TEMPLATE_ENGINE': 'html_email',
+    'TEMPLATE_ENGINE': 'post_office',
 }

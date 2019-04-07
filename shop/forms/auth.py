@@ -115,7 +115,7 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValid
         body_html_template = select_template([
             '{}/email/register-user-body.html'.format(app_settings.APP_LABEL),
             'shop/email/register-user-body.html',
-        ], using='html_email')
+        ], using='post_office')
         message = body_text_template.render(context)
         html_message = body_html_template.render(context)
         from_email = getattr(settings, 'DEFAULT_FROM_EMAIL')
@@ -157,7 +157,7 @@ class PasswordResetRequestForm(PasswordResetForm):
 
             email_message = EmailMultiAlternatives(subject, body, from_email, [to_email])
             if html_email_template_name:
-                template = get_template(html_email_template_name, using='html_email')
+                template = get_template(html_email_template_name, using='post_office')
                 html = template.render(context)
                 email_message.attach_alternative(html, 'text/html')
                 template.attach_related(email_message)
