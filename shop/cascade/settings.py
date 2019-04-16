@@ -15,10 +15,28 @@ def set_defaults(config):
     config.setdefault('plugins_with_extra_mixins', {})
     config.setdefault('plugins_with_extra_render_templates', {})
     config['plugins_with_extra_mixins'].setdefault('ShopReorderButtonPlugin', BootstrapUtilities(
-        BootstrapUtilities.margins,
+        BootstrapUtilities.margins, BootstrapUtilities.floats,
     ))
     config['plugins_with_extra_mixins'].setdefault('ShopCancelOrderButtonPlugin', BootstrapUtilities(
+        BootstrapUtilities.margins, BootstrapUtilities.floats,
+    ))
+    config['plugins_with_extra_mixins'].setdefault('ProcessNextStepPlugin', BootstrapUtilities(
+        BootstrapUtilities.margins, BootstrapUtilities.floats,
+    ))
+    config['plugins_with_extra_mixins'].setdefault('ShopProceedButton', BootstrapUtilities(
+        BootstrapUtilities.margins, BootstrapUtilities.floats,
+    ))
+    config['plugins_with_extra_mixins'].setdefault('ShopLeftExtension', BootstrapUtilities(
+        BootstrapUtilities.paddings,
+    ))
+    config['plugins_with_extra_mixins'].setdefault('ShopRightExtension', BootstrapUtilities(
+        BootstrapUtilities.paddings,
+    ))
+    config['plugins_with_extra_mixins'].setdefault('ShopAddToCartPlugin', BootstrapUtilities(
         BootstrapUtilities.margins,
+    ))
+    config['plugins_with_extra_mixins'].setdefault('BootstrapButtonPlugin', BootstrapUtilities(
+        BootstrapUtilities.floats,
     ))
     config['plugins_with_extra_render_templates'].setdefault('BootstrapButtonPlugin', [
         ('shop/button.html', _("Responsive Feedback")),

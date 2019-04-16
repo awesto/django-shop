@@ -13,7 +13,8 @@
 		<label>{% trans "Previous annotations" %}</label>
 		<dl class="dl-horizontal">
 		{% for timestamp, annotation in data.extra.addendum %}
-			<dt shop-timestamp="{{ timestamp }}" time-format="d. MMM yyyy, HH:mm"></dt><dd>{{ annotation }}</dd>
+			<dt shop-timestamp="{{ timestamp }}" time-format="d. MMM yyyy, HH:mm"></dt>
+			<dd class="font-italic">{{ annotation }}</dd>
 		{% endfor %}
 		</dl>
 	{% endif %}

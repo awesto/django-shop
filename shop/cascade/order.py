@@ -130,7 +130,7 @@ plugin_pool.register_plugin(ShopCancelOrderButtonPlugin)
 
 class AddendumForm(NgModelFormMixin, Bootstrap3Form):
     annotation = fields.CharField(
-        label=_("Supplementary annotation for this Order"),
+        label="",
         widget=widgets.Textarea(attrs={'rows': 2}),
     )
 
