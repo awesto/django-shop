@@ -201,6 +201,7 @@ class Command(BaseCommand):
                     except CascadeClipboard.DoesNotExist:
                         leaf_plugin = self.create_page_structure(page)
                         self.add_plugin(leaf_plugin, 'ShopCatalogPlugin', {})
+                    self.create_breadcrumb(page, {'render_type': 'catalog'})
                     self.publish_in_all_languages(page)
                     self.assign_all_products_to_page(page)
                     yield "Created CMS page titled 'Catalog'."
@@ -211,19 +212,19 @@ class Command(BaseCommand):
 
         page_attributes = [
             # Menu Title, CMS-App-Hook or None, kwargs, Main Plugin, Plugin Context,
-            (("Search", 'CatalogSearchCMSApp', {'reverse_id': 'shop-search-product'}), ('ShopSearchResultsPlugin', {})),
-            (("Cart", None, {'reverse_id': 'shop-cart'}), ('ShopCartPlugin', {'render_type': 'editable'})),
-            (("Watch-List", None, {'reverse_id': 'shop-watch-list'}), ('ShopCartPlugin', {'render_type': 'watch'})),
-            (("Your Orders", 'OrderApp', {'reverse_id': 'shop-order', 'parent_page': self.personal_pages, 'in_navigation': True}), ('ShopOrderViewsPlugin', {})),
-            (("Personal Details", None, {'reverse_id': 'shop-customer-details', 'parent_page': self.personal_pages, 'in_navigation': True}), ('CustomerFormPlugin', {})),
-            (("Change Password", None, {'reverse_id': 'shop-password-change', 'parent_page': self.personal_pages, 'in_navigation': True}), ('ShopAuthenticationPlugin', {'form_type': 'password-change'})),
-            (("Login", None, {'reverse_id': 'shop-login', 'parent_page': self.impersonal_pages, 'in_navigation': True}), ('ShopAuthenticationPlugin', {'form_type': 'login'})),
-            (("Register Customer", None, {'reverse_id': 'shop-register-customer', 'parent_page': self.impersonal_pages, 'in_navigation': True}), ('ShopAuthenticationPlugin', {'form_type': 'register-user'})),
-            (("Request Password Reset", None,  {'reverse_id': 'password-reset-request', 'parent_page': self.impersonal_pages, 'in_navigation': True}), ('ShopAuthenticationPlugin', {'form_type': 'password-reset-request'})),
-            (("Confirm Password Reset", 'PasswordResetApp',  {'reverse_id': 'password-reset-confirm'}), ('ShopAuthenticationPlugin', {'form_type': 'password-reset-confirm'})),
-            (("Payment Canceled", None, {'reverse_id': 'shop-cancel-payment'}), ('HeadingPlugin', {'tag_type': "h2", 'content': "Your payment has been canceled"})),
+            (("Search", 'CatalogSearchCMSApp', {'reverse_id': 'shop-search-product'}), ('ShopSearchResultsPlugin', {}), {'render_type': 'catalog'}),
+            (("Cart", None, {'reverse_id': 'shop-cart'}), ('ShopCartPlugin', {'render_type': 'editable'}), {'render_type': 'soft-root'}),
+            (("Watch-List", None, {'reverse_id': 'shop-watch-list'}), ('ShopCartPlugin', {'render_type': 'watch'}), {'render_type': 'soft-root'}),
+            (("Your Orders", 'OrderApp', {'reverse_id': 'shop-order', 'parent_page': self.personal_pages, 'in_navigation': True}), ('ShopOrderViewsPlugin', {}), None),
+            (("Personal Details", None, {'reverse_id': 'shop-customer-details', 'parent_page': self.personal_pages, 'in_navigation': True}), ('CustomerFormPlugin', {}), None),
+            (("Change Password", None, {'reverse_id': 'shop-password-change', 'parent_page': self.personal_pages, 'in_navigation': True}), ('ShopAuthenticationPlugin', {'form_type': 'password-change'}), None),
+            (("Login", None, {'reverse_id': 'shop-login', 'parent_page': self.impersonal_pages, 'in_navigation': True}), ('ShopAuthenticationPlugin', {'form_type': 'login'}), None),
+            (("Register Customer", None, {'reverse_id': 'shop-register-customer', 'parent_page': self.impersonal_pages, 'in_navigation': True}), ('ShopAuthenticationPlugin', {'form_type': 'register-user'}), None),
+            (("Request Password Reset", None,  {'reverse_id': 'password-reset-request', 'parent_page': self.impersonal_pages, 'in_navigation': True}), ('ShopAuthenticationPlugin', {'form_type': 'password-reset-request'}), None),
+            (("Confirm Password Reset", 'PasswordResetApp',  {'reverse_id': 'password-reset-confirm'}), ('ShopAuthenticationPlugin', {'form_type': 'password-reset-confirm'}), None),
+            (("Payment Canceled", None, {'reverse_id': 'shop-cancel-payment'}), ('HeadingPlugin', {'tag_type': "h2", 'content': "Your payment has been canceled"}), None),
         ]
-        for page_attrs, content_attrs in page_attributes:
+        for page_attrs, content_attrs, breadcrumb_glossary in page_attributes:
             try:
                 page = self.check_page(*page_attrs[:2], **page_attrs[2])
                 self.check_page_content(page, *content_attrs)
@@ -237,6 +238,8 @@ class Command(BaseCommand):
                         except CascadeClipboard.DoesNotExist:
                             leaf_plugin = self.create_page_structure(page)
                             self.add_plugin(leaf_plugin, *content_attrs)
+                        if breadcrumb_glossary:
+                            self.create_breadcrumb(page, breadcrumb_glossary)
                         self.publish_in_all_languages(page)
                         yield "Created mandatory CMS page titled '{0}'.".format(page.get_title(default_language))
                     else:
@@ -367,6 +370,14 @@ class Command(BaseCommand):
             'xs-column-width': 'col',
         }
         return add_plugin(placeholder, 'BootstrapColumnPlugin', language, target=row, glossary=glossary)
+
+    def create_breadcrumb(self, page, glossary, slot='Breadcrumb'):
+        from cms.api import add_plugin
+        from cms.utils.i18n import get_public_languages
+
+        placeholder = page.placeholders.get(slot=slot)
+        language = get_public_languages()[0]
+        return add_plugin(placeholder, 'BreadcrumbPlugin', language, glossary=glossary)
 
     def add_plugin(self, leaf_plugin, plugin_type, glossary):
         from cms.api import add_plugin
