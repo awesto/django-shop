@@ -1,8 +1,8 @@
 .. _tutorial/intro:
 
-========
-Tutorial
-========
+====================
+Django-SHOP Tutorial
+====================
 
 This tutorial is aimed at people new to django SHOP but already familiar with Django. If you aren't
 yet, reading their excellent `Django Tutorial`_ is highly recommended.

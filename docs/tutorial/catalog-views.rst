@@ -247,13 +247,13 @@ named ``product``, it contains the serialized representation to render the corre
 .. _apphook: http://docs.django-cms.org/en/latest/how_to/apphooks.html
 
 
-Next Chapter
-============
+Next Chapters
+=============
 
 One of the unique features of **django-SHOP**, is the possibility to choose and/or override its
 product models. Depending on the kind of product model selected through the cookiecutter template,
-proceed with one of the following chapters from this tutorial:
+proceed with one of the following chapters from one of these tutorials:
 
-:ref:`tutorial/product-model-commodity`
-:ref:`tutorial/smartcard-product`
-:ref:`tutorial/polymorphic-product`
+* :ref:`tutorial/product-model-commodity`
+* :ref:`tutorial/product-model-smartcard`
+* :ref:`tutorial/product-model-polymorphic`

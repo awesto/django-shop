@@ -4,7 +4,7 @@
 The Commodity Product Model
 ===========================
 
-The demo provided by cookiecutter-django-shop_ using the product model "commodity", shows how to
+The demo provided by `cookiecutter-django-shop`_ using the product model "commodity", shows how to
 setup a shop, with a single generic product, named **Commodity**. The product model
 :class:`shop.models.defauls.commodity.Commodity` is part of the **django-SHOP** framework. It is
 intended for shops where the merchant does not want to create a customized product model, but
@@ -38,6 +38,10 @@ Using the **Commodity** product model only makes sense, if the merchant does not
 product properties and normally is only suitable for shops with up to a dozen articles. Otherwise,
 creating a reusable HTML template is probably less effort, than filling the placeholder for each
 product's detail page individually.
+
+.. _cookiecutter-django-shop: https://github.com/awesto/cookiecutter-django-shop
+.. _djangocms-cascade: https://djangocms-cascade.readthedocs.io/en/latest/
+.. _slug: https://docs.djangoproject.com/en/stable/ref/models/fields/#slugfield
 
 
 The Base Template
@@ -92,6 +96,7 @@ internationalized version.
 
 All other product properties, such as unit price and product code are shared across all languages.
 
+.. _django-parler: https://django-parler.readthedocs.io/en/latest/
 
 .. _tutorial/commodity-add-to-cart:
 
@@ -111,9 +116,4 @@ customer can select different properties, such as size, color, etc.
 Next Chapter
 ============
 
-In the next chapter of this tutorial, we will see how to organize the :ref:`tutorial/catalog-views`
-
-.. _cookiecutter-django-shop: https://github.com/awesto/cookiecutter-django-shop
-.. _django-parler: https://django-parler.readthedocs.io/en/latest/
-.. _djangocms-cascade: https://djangocms-cascade.readthedocs.io/en/latest/
-.. _slug: https://docs.djangoproject.com/en/stable/ref/models/fields/#slugfield
+In the next chapter of this tutorial, we will see how to organize the :ref:`tutorial/cart-checkout`

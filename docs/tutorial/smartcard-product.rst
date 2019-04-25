@@ -16,7 +16,7 @@ implementation as found in our example.
 Creating a customized product model, requires only a few lines of declarative Python code. Here is a
 simplified example:
 
-.. code-block::
+.. code-block:: python
 
 	from django.db import models
 	from shop.models.product import BaseProduct, BaseProductManager, CMSPageReferenceMixin
@@ -146,10 +146,10 @@ product class. Only the relevant changes to our model class are shown here:
 
 .. code-block:: python
 
-	…
+	...
 	from parler.managers import TranslatableManager, TranslatableQuerySet
 	from polymorphic.query import PolymorphicQuerySet
-	…
+	...
 
 	class ProductQuerySet(TranslatableQuerySet, PolymorphicQuerySet):
 	    pass
@@ -162,10 +162,10 @@ product class. Only the relevant changes to our model class are shown here:
 	        return qs.prefetch_related('translations')
 
 	class SmartCard(CMSPageReferenceMixin, TranslatableModelMixin, BaseProduct):
-	    …
+	    ...
 	    caption = TranslatedField()
 	    description = TranslatedField()
-	    …
+	    ...
 
 	class SmartCardTranslation(TranslatedFieldsModel):
 	    master = models.ForeignKey(
@@ -240,10 +240,16 @@ translatable:
 .. code-block:: python
 
 	from parler.admin import TranslatableAdmin
-	…
+	...
 	class SmartCardAdmin(InvalidateProductCacheMixin, SortableAdminMixin, TranslatableAdmin, CMSPageAsCategoryMixin, admin.ModelAdmin):
-		…
+		...
 
 For detail, please refer to the documentation provided by django-parler_.
 
 .. _django-parler: https://django-parler.readthedocs.io/en/latest/
+
+
+Next Chapter
+============
+
+In the next chapter of this tutorial, we will see how to organize the :ref:`tutorial/cart-checkout`

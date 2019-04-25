@@ -1,3 +1,5 @@
+.. _tutorial/product-model-polymorphic:
+
 =============================
 The Polymorphic Product Model
 =============================
@@ -28,3 +30,9 @@ The Internationalized Polymorphic Product Model
 The ``i18n_polymorphic`` demo is a variation of the above example, with a few attributes translated
 into multiple languages, namely ``caption`` and ``description``. This sample implementation does not
 use translated slugs, although it would be possible.
+
+
+Next Chapter
+============
+
+In the next chapter of this tutorial, we will see how to organize the :ref:`tutorial/cart-checkout`
