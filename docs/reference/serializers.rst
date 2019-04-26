@@ -54,6 +54,90 @@ URL as http://localhost:8000/de/shop/?format=api . This renders the list of prod
 .. |rest-catalog-list| image:: /_static/rest-catalog-list.png
 
 
+Overriding the default Product Summary Serializer
+.................................................
+
+
+.. code-block:: python
+	:caption: myshop/serializers.py
+	:linenos:
+
+	from shop.serializers.bases import ProductSerializer
+	from myshop.models.product import MyProduct
+
+	class ProductSummarySerializer(ProductSerializer):
+	    class Meta:
+	        model = MyProduct
+	        fields = ['id', 'product_name', 'product_url',
+	                  'product_type', 'product_model', 'price']
+
+All these fields can be extracted directly from the product model with the exception of the sample
+image. This is because we yet do not know the final dimensions of the image inside its HTML element
+such as ``<img src="...">``, and we certainly want to resize it using easy-thumbnails_ with Pillow_
+before it is delivered. An easy way to solve this problem is to use the ``SerializerMethodField``.
+Simply extend the above class to:
+
+.. code-block:: python
+	:linenos:
+
+	from rest_framework.serializers import SerializerMethodField
+
+	class ProductSummarySerializer(ProductSerializer):
+	    media = SerializerMethodField()
+
+	    def get_media(self, product):
+	        return self.render_html(product, 'media')
+
+As you might expect, ``render_html`` assigns a HTML snippet to the field ``media`` in the serialized
+representation of our product. This method uses a template to render the HTML. The name of this
+template is constructed using the following rules:
+
+#. Look for a folder named according to the project's name, ie. ``settings.SHOP_APP_LABEL`` in lower
+   case. If no such folder can be found, then use the folder named ``shop``.
+#. Search for a subfolder named ``products``.
+#. Search for a template named "*label*-*product_type*-*postfix*.html". These three subfieds are
+   determined using the following rule:
+   - *label*: the component of the shop, for instance ``catalog``, ``cart``, ``order``.
+   - *product_type*: the class name in lower case of the product's Django model, for instance
+     ``smartcard``, ``smartphone`` or if no such template can be found, just  ``product``.
+   - *postfix*: This is an arbitrary name passed in by the rendering function. As in the example
+     above, this is the string ``media``.
+
+.. note:: It might seem "un-restful" to render HTML snippets by a REST serializer and deliver them
+    via JSON to the client. However, we somehow must re-size the images assigned to our product to
+    fit into the layout of our list view. The easiest way to do this in a configurable manner is
+    to use the easythumbnails_ library and its templatetag ``{% thumbnail product.sample_image ... %}``.
+
+The template to render the media snippet could look like:
+
+.. code-block:: django
+	:caption: myshop/products/catalog-smartcard-media.html
+
+	{% load i18n thumbnail djng_tags %}
+	{% thumbnail product.sample_image 100x100 crop as thumb %}
+	<img src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}">
+
+The template of the products list view then may contain a list iteration such as:
+
+.. code-block:: django
+	:emphasize-lines: 5
+
+	{% for product in data.results %}
+	  <div class="shop-list-item">
+	    <a href="{{ product.product_url }}">
+	      <h4>{{ product.product_name }}</h4>
+	        {{ product.media }}
+	        <strong>{% trans "Price" %}: {{ product.price }}</strong>
+	    </a>
+	  </div>
+	{% endfor %}
+
+The tag ``{{ product.media }}`` inserts the HTML snippet as prepared by the serializer from above.
+A serializer may add more than one ``SerializerMethodField``. This can be useful, if the list view
+shall render different product types using different snippet templates.
+
+
+
 Catalog Detail View
 -------------------
 

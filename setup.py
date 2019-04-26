@@ -41,7 +41,7 @@ setup(
     zip_safe=False,
     install_requires=[
         'Django>=1.11,<2.0',
-        'django-post_office @ https://github.com/jrief/django-post_office/archive/inlined-images-template-engine.zip#egg=django-post_office-3.2.0.dev',
+        'django-post_office @ https://github.com/ui/django-post_office/archive/master.zip#egg=django-post_office-3.2.0.dev',
         'django-filer>=1.3.2',
         'django-ipware>=1.1.1',
         'django-fsm>=2.4.0',

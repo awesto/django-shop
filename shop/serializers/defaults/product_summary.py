@@ -8,7 +8,7 @@ from shop.serializers.bases import ProductSerializer
 class ProductSummarySerializer(ProductSerializer):
     """
     Default serializer to create a summary from our Product model. This summary then is used to
-    render various list views, such as the catalog- and the cart-, and the list of ordered items.
+    render various list views, such as the catalog-, the cart-, and the list of ordered items.
     In case the Product model is polymorphic, this shall serialize the smallest common denominator
     of all product information.
     """

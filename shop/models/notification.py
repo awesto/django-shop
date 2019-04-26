@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.conf import settings
 from django.db import models
 from django.db.models import Q
-from django.utils.translation import ugettext_lazy as _, ugettext_noop
+from django.utils.translation import ugettext_lazy as _
 from post_office.models import EmailTemplate
 from filer.fields.file import FilerFileField
 from shop.conf import app_settings
@@ -12,14 +12,10 @@ from shop.models.fields import ChoiceEnum, ChoiceEnumField
 
 
 class Notify(ChoiceEnum):
-    RECIPIENT = 0
-    ugettext_noop("Notify.RECIPIENT")
-    VENDOR = 1
-    ugettext_noop("Notify.VENDOR")
-    CUSTOMER = 2
-    ugettext_noop("Notify.CUSTOMER")
-    NOBODY = 9
-    ugettext_noop("Notify.NOBODY")
+    RECIPIENT = 0, _("Recipient")
+    VENDOR = 1, _("Vendor")
+    CUSTOMER = 2, _("Customer")
+    NOBODY = 9, _("Nobody")
 
 
 class Notification(models.Model):

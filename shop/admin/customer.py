@@ -60,7 +60,7 @@ class CustomerListFilter(admin.SimpleListFilter):
     parameter_name = 'custate'
 
     def lookups(self, request, model_admin):
-        return CustomerState.choices()
+        return CustomerState.choices
 
     def queryset(self, request, queryset):
         try:

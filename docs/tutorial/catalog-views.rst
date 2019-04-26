@@ -4,33 +4,116 @@
 Catalog Views
 =============
 
-Now that we know how to create product models and how to administer them, lets have a look on how
-to route them to our views.
+In **django-SHOP**, every URL, which points to a page visible by the customer, is managed by the
+CMS. This means that we are completely free, in how we organize the structure of our page-tree.
+There are however a few things to consider, when building a working e-commerce site.
+
+The catalog page(s) is where we present the products, we want to sell. In a shop, we can add as
+many catalog pages to the CMS, but there should be at least one, even if the shop only sells
+one product exclusively.
 
 When editing the CMS page used for the products list view, open **Advanced Settings** and choose
 **Products List** from the select box labeled **Application**.
 
 Then choose a template with at least one placeholder_. Click onto **View on site** to change into
-front-end editing mode. Locate the main placeholder and add a **Row** followed by a **Column**
-plugin from the section **Bootstrap**. Below that column add a **Catalog List Views** plugin from
-section **Shop**. Then publish the page, it should not display any products yet.
+front-end editing mode. Locate the main placeholder of the template, and from section **Bootstrap**,
+add a **Container**-plugin, followed by a **Row**-, followed by a **Column**-plugin. Below that
+column add a **Catalog List Views**-plugin from section **Shop**. Then publish the page, it should
+not display any products yet.
 
-.. _apphook: http://docs.django-cms.org/en/latest/how_to/apphooks.html
+**Django-SHOP** does not distinguish between categories and a catalog pages. If our shop needs a
+hierarchy of different categories, we organize them using many catalog pages nested into each other.
+Each product can be assigned to as many catalog pages as we want.
+
 .. _placeholder: http://django-cms.readthedocs.org/en/latest/introduction/templates_placeholders.html#placeholders
 
 
-Add products to the category
-----------------------------
+Assign products to their category
+=================================
 
-Open the detail view of a product in Django's administration backend. Locate the many-to-many
-select box labeled **Categories > Cms pages**. Select the pages where each product shall appear
-on.
+In Django's administration backend, find the list view for products. Depending on the name of a
+given product type, this can be **Home › My Shop › Commodities**, **Home › My Shop › Products**, or
+similar. Choose an item of that list to open the product's detail editor. Locate the many-to-many
+select box labeled **Categories > Cms pages**. Select one or more CMS pages where the given product
+shall appear on.
 
-On reloading the list view, the assigned products now shall be visible. Assure that they have been
-set to be active, otherwise they won't show up.
+On reloading the catalog page, the assigned products shall now be visible in their list view.
+Assure that they have been set to be active, otherwise they won't show up.
 
-If you nest categories, products assigned to children will be also be visible on their parents
+If we nest categories, products assigned to children will be also be visible on their parents
 pages.
+
+
+Configure Pagination
+--------------------
+
+The serializer used to create the list of products for the catalog's view, usually only renders a
+subset, adding links pointing to other URLs for fetching neighboring subsets of that list. We also
+name this "pagination". The component rendering the catalog's list view offers three different types
+of pagination:
+
+* Adding a paginator, where the customer can choose the neighboring page manually.
+* Adding a simple paginator button, where by clicking one can extend the existing list of products.
+* An automatic paginator, which triggers the extension of catalog's list, whenever the customer
+  scrolls to the end of the page. We name this infinite scroll.
+
+.. note:: If manual pagination is selected, **django-SHOP** tries to prevent widows – these are
+	single items spawning over the last row. Say that the grid of the list can show 5✕3 items,
+	then the 16nth item is hidden. If however we want to render 4✕4 items, then it is visible.
+	A side-effect of this feature is, that the 16nth item is rendered again on the following page.
+
+
+.. _tutorial/product-detail-view:
+
+Product Detail Views
+====================
+
+In **django-SHOP's** frontend, each product can be rendered using their own detail view. However, we
+neither have to, nor can't create a CMS page for each product. This is, because we have to store the
+properties of a product, such as a unit price, product code, availability, etc. inside a Django
+model. It furthermore would be tedious to create one CMS page per product, to render its detail
+view. Therefore, products have to be assigned to their categories, rather than being children of
+thereof.
+
+This approach allows us to use CMS pages tagged as *Catalog List*, as product categories.
+Furthermore, we can assign a product to more than one such category.
+
+As with regular Django views, the product detail view is rendered by adding the product to the
+context, and using a Django template to render HTML. If the product has custom properties, they
+shall be referred by that template.
+
+In the merchant implementation, each product type can provide their own template referring exactly
+the properties of that model. On rendering, **django-SHOP** converts the classname of a product to
+lowercase. Say, we want to render the detail view of an instance of our class ``SmartCard``. Then
+we look for a template named
+
+#. ``myshop/catalog/smartcard-detail.html``
+#. if not found, then ``myshop/catalog/product-detail.html``
+#. if not found, then ``shop/catalog/product-detail.html``
+
+Inside this template we refer the properties as usual, for instance
+
+.. code-block:: django
+
+	<ul class="list-group">
+	  <li class="list-group-item">
+	    <div class="w-50">Product Code:</div>
+	    <strong>{{ product.product_code }}</strong>
+	  </li>
+	  <li …
+	</ul>
+
+**Django-CMS** offers a useful templatetag to access the product backend editor, while navigating
+on the product's detail view. The following HTML snippet renders the product title
+
+.. code-block:: django
+
+	{% load cms_tags %}
+	<h1>{% render_model product "product_name" %}</h1>
+
+with the possibility, that authenticated staff users may double click onto the title. In case the
+CMS is in edit mode, the product's backend editor pops up and, allowing front-end editong by its
+users.
 
 
 Product Model Serializers
@@ -45,156 +128,78 @@ or native shopping applications for your mobile devices. This btw. is one of the
 when working with RESTful_ API's and thanks to the djangorestframework_ we don't even have to
 write any Django Views anymore.
 
-For instance, try to open the list- or the detail view of any of the products available in the
-shop. Then in the browsers URL input field append ``?format=api`` or ``?format=json`` to the URL.
-This will render the pure product information, but without embedding it into HTML.
-
-The REST API view is very handy while developing. If you want to hide this on your production
-system , then in your settingy.py remove ``'rest_framework.renderers.BrowsableAPIRenderer'`` from
-``REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES']``.
-
-In the shop's catalog, we need some functionality to render a list view for all products and
-we need a detail view to render each product type. The **django-SHOP** framework supplies two
-such serializers:
-
-
-Serialize for the Products List View
-------------------------------------
-
-For each product we want to display in a list view, we need a serializer which converts the content
-of the most important fields of a product. Normally these are the Id, the name and price, the URL
-onto the detail view, a short description and a sample image.
-
-The **django-SHOP** framework does not know which of those fields have to be serialized, therefore
-it requires some help from the programmer:
-
-.. code-block:: python
-    :caption: myshop/product_serializers.py
-    :linenos:
-
-    from shop.serializers.bases import BaseProductSummarySerializer
-    from myshop.models.polymorphic.product import Product
-
-    class ProductSummarySerializer(BaseProductSummarySerializer):
-        class Meta:
-            model = Product
-            fields = ('id', 'product_name', 'product_url',
-                'product_type', 'product_model', 'price')
-
-All these fields can be extracted directly from the product model with the exception of the sample
-image. This is because we yet do not know the final dimensions of the image inside its HTML element
-such as ``<img src="...">``, and we certainly want to resize it using PIL/Pillow before it is
-delivered. An easy way to solve this problem is to use the ``SerializerMethodField``. Simply extend
-the above class to:
-
-.. code-block:: python
-    :linenos:
-
-    from rest_framework.serializers import SerializerMethodField
-
-    class ProductSummarySerializer(BaseProductSummarySerializer):
-        media = SerializerMethodField()
-
-        def get_media(self, product):
-            return self.render_html(product, 'media')
-
-As you might expect, ``render_html`` assigns a HTML snippet to the field ``media`` in the serialized
-representation of our product. This method uses a template to render the HTML. The name of this
-template is constructed using the following rules:
-
-* Look for a folder named according to the project's name, ie. ``settings.SHOP_APP_LABEL`` in lower
-  case. If no such folder can be found, then use the folder named ``shop``.
-* Search for a subfolder named ``products``.
-* Search for a template named “*label*-*product_type*-*postfix*.html”. These three subfieds are
-  determined using the following rule:
-  * *label*: the component of the shop, for instance ``catalog``, ``cart``, ``order``.
-  * *product_type*: the class name in lower case of the product's Django model, for instance
-  ``smartcard``, ``smartphone`` or if no such template can be found, just  ``product``.
-  * *postfix*: This is an arbitrary name passed in by the rendering function. As in the example
-  above, this is the string ``media``.
-
-.. note:: It might seem “un-restful” to render HTML snippets by a REST serializer and deliver them
-    via JSON to the client. However, we somehow must re-size the images assigned to our product to
-    fit into the layout of our list view. The easiest way to do this in a configurable manner is
-    to use the easythumbnails_ library and its templatetag ``{% thumbnail product.sample_image ... %}``.
-
-The template to render the media snippet could look like:
-
-.. code-block:: django
-    :caption: myshop/products/catalog-smartcard-media.html
-
-    {% load i18n thumbnail djng_tags %}
-    {% thumbnail product.sample_image 100x100 crop as thumb %}
-    <img src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}">
-
-The template of the products list view then may contain a list iteration such as:
-
-.. code-block:: django
-    :emphasize-lines: 5
-
-    {% for product in data.results %}
-      <div class="shop-list-item">
-        <a href="{{ product.product_url }}">
-          <h4>{{ product.product_name }}</h4>
-            {{ product.media }}
-            <strong>{% trans "Price" %}: {{ product.price }}</strong>
-        </a>
-      </div>
-    {% endfor %}
-
-The tag ``{{ product.media }}`` inserts the HTML snippet as prepared by the serializer from above.
-A serializer may add more than one ``SerializerMethodField``. This can be useful, if the list view
-shall render different product types using different snippet templates.
-
-
-Serialize for the Product's Detail View
----------------------------------------
-
-The serializer for the Product's Detail View is very similar to its List View serializer. In the
-example as shown below, we even reverse the field listing by explicitly excluding the fields we're
-not interested in, rather than naming the fields we want to include. This for the product's detail
-view makes sense, since we want to expose every possible detail.
-
-.. code-block:: python
-	:linenos:
-
-	from shop.serializers.bases import BaseProductDetailSerializer
-
-	class ProductDetailSerializer(BaseProductDetailSerializer):
-	    class Meta:
-	        model = Product
-	        exclude = ('active',)
-
+Let's recap the shop's catalog list view. There we need some functionality to render a list of all
+products and we need a detail view to render each product type. The **django-SHOP** framework
+supplies two such serializers:
 
 .. _RESTful: https://en.wikipedia.org/wiki/Representational_state_transfer
 .. _djangorestframework: http://www.django-rest-framework.org/
-.. _easythumbnails: http://easy-thumbnails.readthedocs.org/
+
+
+Serialize the Products for the List View
+----------------------------------------
+
+For each product we want to display in a list view, we need a serializer which converts the content
+of the most important fields of a product. Normally these are the Id, the product name, the URL
+(onto the detail view), the product type, the price, a caption (short description) and some media
+field to render a sample image.
+
+For this purpose, the **django-SHOP** framework provides a default serializer,
+:class:`shop.serializers.default.product_summary.ProductSummarySerializer`, which handles the most
+common use cases. If required, it can be replaced by a customized implementation. Such a serializer
+can be configured using a settings variable.
+
+During development, it can be useful to examine what data this serializer delivers. In
+**django-SHOP** the easiest way to achieve this, is to append ``?format=api`` to the URL on the
+catalog's list view. This will show the context data to render the catalog, but without embedding
+it into HTML.
+
+
+Serializer for the Product's Detail View
+----------------------------------------
+
+The serializer for the Product's Detail View is very similar to its counterpart, the just described
+``ProductSummarySerializer``. By default, the **django-SHOP** framework uses the serializer
+:class:`shop.serializers.bases.ProductSerializer`. This serializer converts all properties of the
+product model into a serialized representation. Of course, this serializer can also be replaced by
+a custom implementation. Such a serializer can be configured by adopting the Detail View class, and
+is explained in the programmers reference.
+
+During development, it can be useful to examine what data this serializer delivers. The easiest way
+to achieve this, is to append ``?format=api`` to the URL on the product's detail view. This will
+show the context data to render the product detail view, but without embedding it into HTML.
 
 
 The ``AddToCartSerializer``
 ---------------------------
 
 Rather than using the detail serializer, the business logic for adding a product to the cart has
-been moved into a specialized serializer. This is because **django-SHOP** can not presuppose that
-products are added to the cart only from within the detail view [#add2cart]_. We also need a way to
-add more than one product variant to the cart from each products detail page.
+been moved into a specialized serializer. This is because in **django-SHOP** products can either
+be added to the cart from within the detail view [#add2cart]_, or from their catalog list view.
+We also need a way to add more than one product variant to the cart from each products detail page.
 
 For this purpose **django-SHOP** is shipped with an ``AddToCartSerializer``. It can be overridden
-for special product requirements, but for a standard application it just should work out of the box.
+for special product requirements, but for a standard applications, the default implementation
+should just work out of the box.
 
-Assure that the context for rendering a product contains the key ``product`` referring to the
-product object. The ``ProductDetailSerializer`` does this by default. Then add
+During development, it can be useful to examine what data this serializer delivers. The easiest way
+to achieve this, is to append ``/add-to-cart?format=api`` to the URL on the product's detail view.
+This will show the interface with which the add-to-cart form communicates.
+
+Ensure that the context for rendering a product contains the key ``product`` referring to the
+product object – this is the default behavior. Then add
 
 .. code-block:: django
 
-    {% include "shop/catalog/product-add2cart.html" %}
+	{% include "shop/catalog/product-add2cart.html" %}
 
 to an appropriate location in the template which renders the product detail view.
 
 The now included add-to-cart template contains a form with some input fields and a few AngularJS
 directives, which communicate with the endpoint connected to the ``AddToCartSerializer``. It
-updates the subtotal whenever the customer changes the quantity and displays a nice popup window,
-whenever an item is added to the cart. Of course, that template can be extended with arbitrary HTML.
+updates the subtotal whenever the customer changes the quantity and optionally displays a nice
+popup window, whenever an item is added to the cart. Of course, that template can be extended with
+arbitrary HTML.
 
 These Angular JS directives require some JavaScript code which is located in the file
 ``shop/js/catalog.js``; it is referenced automatically when using the above template include
@@ -203,50 +208,52 @@ statement.
 .. [#add2cart] Specially in business-to-business sites, this usually is done in the list views.
 
 
-Connect the Serializers with the View classes
-=============================================
+Understanding the Routing
+=========================
 
-Now that we declared the serializers for the product's list- and detail view, the final step is to
-access them through a CMS page. Remember, since we've chosen to use CMS pages as categories, we had
-to set a special **django-CMS** apphook_:
+Behind the scenes, **django-CMS** allows us to attach Django Views to any existing CMS page using
+a so called apphook_. This means, that accessing a CMS page or any child ot it, can implicitely
+invoke a Django View. To achieve this, in the CMS page's *Advanced Settings*, that *apphook* must
+be selected from the drop-down menu named "Application".
 
-.. code-block:: python
-    :caption: myshop/cms_apps.py
-    :name:
-    :linenos:
-
-    from cms.app_base import CMSApp
-    from cms.apphook_pool import apphook_pool
-
-    class ProductsListApp(CMSApp):
-        name = _("Products List")
-        urls = ['myshop.urls.products']
-
-    apphook_pool.register(ProductsListApp)
-
-This apphook points onto a list of boilerplate code containing these urlpattern:
+In our implementation, such an *apphook* can be implemented as:
 
 .. code-block:: python
-    :caption: myshop/urls/products.py
-    :linenos:
 
-    from django.conf.urls import url
-    from rest_framework.settings import api_settings
-    from shop.rest.filters import CMSPagesFilterBackend
-    from shop.rest.serializers import AddToCartSerializer
-    from shop.views.catalog import (CMSPageProductListView,
-        ProductRetrieveView, AddToCartView)
+	from django.conf.urls import url
+	from shop.views.catalog import AddToCartView, ProductListView, ProductRetrieveView
+	from shop.cms_apphooks import CatalogListCMSApp
 
-    urlpatterns = [
-        url(r'^$', CMSPageProductListView.as_view(
-            serializer_class=ProductSummarySerializer,
-        )),
-        url(r'^(?P<slug>[\w-]+)$', ProductRetrieveView.as_view(
-            serializer_class=ProductDetailSerializer
-        )),
-        url(r'^(?P<slug>[\w-]+)/add-to-cart', AddToCartView.as_view()),
-    ]
+	class CatalogListApp(CatalogListCMSApp):
+	    def get_urls(self, page=None, language=None, **kwargs):
+	        return [
+	            url(r'^$', ProductListView.as_view()),
+	            url(r'^(?P<slug>[\w-]+)/?$', ProductRetrieveView.as_view()),
+	            url(r'^(?P<slug>[\w-]+)/add-to-cart', AddToCartView.as_view()),
+	        ]
 
-These URL patterns connect the product serializers with the catalog views in order to assign them
-an endpoint. Additional note: The filter class ``CMSPagesFilterBackend`` is used to restrict
-products to specific CMS pages, hence it can be regarded as the product categoriser.
+	apphook_pool.register(CatalogListApp)
+
+All what this apphook does, is to set special routes to either, the catalog's list view, here
+:class:`shop.views.catalog.ProductListView`, or to the product's detail view, here
+:class:`shop.views.catalog.ProductRetrieveView`, or to the add-to-cart view, here
+:class:`shop.views.catalog.AddToCartView`.
+
+Such an apphook allows us to extend an existing CMS page with classic Django Views routed onto
+sub-URLs of our page. Here we create additional routes, on top of the existing CMS page. These
+three views also serve another purpose: They enrich the rendering context by a Python dictionary
+named ``product``, it contains the serialized representation to render the corresponding templates.
+
+.. _apphook: http://docs.django-cms.org/en/latest/how_to/apphooks.html
+
+
+Next Chapters
+=============
+
+One of the unique features of **django-SHOP**, is the possibility to choose and/or override its
+product models. Depending on the kind of product model selected through the cookiecutter template,
+proceed with one of the following chapters from one of these tutorials:
+
+* :ref:`tutorial/product-model-commodity`
+* :ref:`tutorial/product-model-smartcard`
+* :ref:`tutorial/product-model-polymorphic`

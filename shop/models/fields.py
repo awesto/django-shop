@@ -3,11 +3,10 @@ from __future__ import unicode_literals
 
 import enum
 import six
-
 from django.conf import settings
 from django.db import models
 from django.utils.six import python_2_unicode_compatible, string_types
-from django.utils.translation import ugettext_lazy as _, ugettext
+from django.utils.translation import ugettext_lazy as _
 
 
 postgresql_engine_names = [
@@ -41,26 +40,65 @@ class ChoiceEnumMeta(enum.EnumMeta):
                 pass  # let the super method complain
         return super(ChoiceEnumMeta, cls).__call__(value, *args, **kwargs)
 
+    def __new__(metacls, classname, bases, classdict):
+        labels = {}
+        if six.PY2:
+            member_names = [k for k in classdict.keys() if k not in ['__module__', '__str__', '__doc__']]
+        else:
+            member_names = classdict._member_names
+        for key in member_names:
+            source_value = classdict[key]
+            if isinstance(source_value, (list, tuple)):
+                try:
+                    val, labels[key] = source_value
+                except ValueError:
+                    raise ValueError("Invalid ChoiceEnum member '{}'".format(key))
+            else:
+                val = source_value
+                labels[key] = key.replace("_", " ").title()
+            # Use dict.__setitem__() to suppress defenses against
+            # double assignment in enum's classdict
+            dict.__setitem__(classdict, key, val)
+        cls = super(ChoiceEnumMeta, metacls).__new__(metacls, classname, bases, classdict)
+        for key, label in labels.items():
+            getattr(cls, key).label = label
+        return cls
 
-@python_2_unicode_compatible
-class ChoiceEnum(six.with_metaclass(ChoiceEnumMeta, enum.Enum)):
-    """
-    Utility class to handle choices in Django model fields
-    """
-    def __str__(self):
-        return ugettext('.'.join((self.__class__.__name__, self.name)))
+    @property
+    def choices(cls):
+        if not hasattr(cls, '_choices'):
+            cls._choices = [(k.value, k.label) for k in cls]
+        return cls._choices
 
-    @classmethod
+    @property
     def default(cls):
         try:
             return next(iter(cls))
         except StopIteration:
             return None
 
-    @classmethod
-    def choices(cls):
-        choices = [(c.value, str(c)) for c in cls]
-        return choices
+
+@python_2_unicode_compatible
+class ChoiceEnum(six.with_metaclass(ChoiceEnumMeta, enum.Enum)):
+    """
+    Utility class to handle choices in Django model and/or form fields.
+    Usage:
+
+    class Color(ChoiceEnum):
+        WHITE = 0, "White"
+        RED = 1, "Red"
+        GREEN = 2, "Green"
+        BLUE = 3, "Blue"
+
+    green = Color.GREEN
+
+    color = forms.ChoiceField(
+        choices=Color.choices,
+        default=Color.default,
+    )
+    """
+    def __str__(self):
+        return self.label
 
 
 class ChoiceEnumField(models.PositiveSmallIntegerField):
@@ -70,15 +108,15 @@ class ChoiceEnumField(models.PositiveSmallIntegerField):
         self.enum_type = kwargs.pop('enum_type', ChoiceEnum)  # fallback is required form migrations
         if not issubclass(self.enum_type, ChoiceEnum):
             raise ValueError("enum_type must be a subclass of `ChoiceEnum`.")
-        kwargs.update(choices=self.enum_type.choices())
-        kwargs.setdefault('default', self.enum_type.default())
+        kwargs.update(choices=self.enum_type.choices)
+        kwargs.setdefault('default', self.enum_type.default)
         super(ChoiceEnumField, self).__init__(*args, **kwargs)
 
     def deconstruct(self):
         name, path, args, kwargs = super(ChoiceEnumField, self).deconstruct()
         if 'choices' in kwargs:
             del kwargs['choices']
-        if kwargs['default'] is self.enum_type.default():
+        if kwargs['default'] is self.enum_type.default:
             del kwargs['default']
         elif isinstance(kwargs['default'], self.enum_type):
             kwargs['default'] = kwargs['default'].value

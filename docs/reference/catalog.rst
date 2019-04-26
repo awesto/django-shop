@@ -320,3 +320,58 @@ above.
 .. _serializer fields: http://www.django-rest-framework.org/api-guide/fields/
 .. _templatetags from the easythumbnail: https://easy-thumbnails.readthedocs.org/en/stable/usage/#templates
 .. _redis_cache: http://django-redis-cache.readthedocs.org/en/stable/
+
+
+DEPRECATED DOCS
+===============
+
+
+Connect the Serializers with the View classes
+=============================================
+
+Now that we declared the serializers for the product's list- and detail view, the final step is to
+access them through a CMS page. Remember, since we've chosen to use CMS pages as categories, we had
+to set a special **django-CMS** apphook_:
+
+.. code-block:: python
+    :caption: myshop/cms_apps.py
+    :name:
+    :linenos:
+
+    from cms.app_base import CMSApp
+    from cms.apphook_pool import apphook_pool
+
+    class ProductsListApp(CMSApp):
+        name = _("Products List")
+        urls = ['myshop.urls.products']
+
+    apphook_pool.register(ProductsListApp)
+
+This apphook points onto a list of boilerplate code containing these urlpattern:
+
+.. code-block:: python
+    :caption: myshop/urls/products.py
+    :linenos:
+
+    from django.conf.urls import url
+    from rest_framework.settings import api_settings
+    from shop.rest.filters import CMSPagesFilterBackend
+    from shop.rest.serializers import AddToCartSerializer
+    from shop.views.catalog import (CMSPageProductListView,
+        ProductRetrieveView, AddToCartView)
+
+    urlpatterns = [
+        url(r'^$', CMSPageProductListView.as_view(
+            serializer_class=ProductSummarySerializer,
+        )),
+        url(r'^(?P<slug>[\w-]+)$', ProductRetrieveView.as_view(
+            serializer_class=ProductDetailSerializer
+        )),
+        url(r'^(?P<slug>[\w-]+)/add-to-cart', AddToCartView.as_view()),
+    ]
+
+These URL patterns connect the product serializers with the catalog views in order to assign them
+an endpoint. Additional note: The filter class ``CMSPagesFilterBackend`` is used to restrict
+products to specific CMS pages, hence it can be regarded as the product categoriser.
+
+.. _apphook: http://docs.django-cms.org/en/latest/introduction/05-apphooks.html
