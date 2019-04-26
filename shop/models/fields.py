@@ -42,7 +42,11 @@ class ChoiceEnumMeta(enum.EnumMeta):
 
     def __new__(metacls, classname, bases, classdict):
         labels = {}
-        for key in classdict._member_names:
+        if six.PY2:
+            member_names = [k for k in classdict.keys() if k not in ['__module__', '__str__', '__doc__']]
+        else:
+            member_names = classdict._member_names
+        for key in member_names:
             source_value = classdict[key]
             if isinstance(source_value, (list, tuple)):
                 try:
