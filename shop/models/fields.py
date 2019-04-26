@@ -66,9 +66,7 @@ class ChoiceEnumMeta(enum.EnumMeta):
 
     @property
     def choices(cls):
-        if not hasattr(cls, '_choices'):
-            cls._choices = [(k.value, k.label) for k in cls]
-        return cls._choices
+        return [(k.value, k.label) for k in cls]
 
     @property
     def default(cls):

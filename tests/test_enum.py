@@ -11,6 +11,11 @@ class MyChoices(ChoiceEnum):
     B = 1, "My choice B"
 
 
+class MyColor(ChoiceEnum):
+    RED = '#ff0000', "Pure red"
+    BLUE = '#0000ff', "Pure blue"
+
+
 class MyModel(models.Model):
     f = ChoiceEnumField(enum_type=MyChoices)
 
@@ -19,7 +24,7 @@ class MyModel(models.Model):
         managed = False
 
 
-def test_enum():
+def test_int_enum():
     choice_a = MyChoices.A
     assert isinstance(choice_a, MyChoices)
     assert MyChoices.B.name == 'B'
@@ -29,6 +34,17 @@ def test_enum():
     assert str(choice_b) == "My choice B"
     assert MyChoices.default == MyChoices.A
     assert MyChoices.choices == [(0, "My choice A"), (1, "My choice B")]
+
+
+def test_str_enum():
+    red = MyColor.RED
+    assert isinstance(red, MyColor)
+    assert MyColor.BLUE.name == 'BLUE'
+    assert MyColor.BLUE.value == '#0000ff'
+    assert MyColor.BLUE.label == "Pure blue"
+    assert MyColor.BLUE == MyColor('#0000ff')
+    assert str(MyColor.BLUE) == "Pure blue"
+    assert MyColor.choices == [('#ff0000', "Pure red"), ('#0000ff', "Pure blue")]
 
 
 def test_to_python():
