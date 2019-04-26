@@ -17,7 +17,7 @@ from django.utils import timezone
 from django.utils.deprecation import CallableBool, CallableFalse, CallableTrue
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import SimpleLazyObject
-from django.utils.translation import ugettext_lazy as _, ugettext_noop
+from django.utils.translation import ugettext_lazy as _
 from django.utils.six import with_metaclass
 
 from shop import deferred
@@ -29,12 +29,9 @@ SessionStore = import_module(settings.SESSION_ENGINE).SessionStore()
 
 
 class CustomerState(ChoiceEnum):
-    UNRECOGNIZED = 0
-    ugettext_noop("CustomerState.UNRECOGNIZED")
-    GUEST = 1
-    ugettext_noop("CustomerState.GUEST")
-    REGISTERED = 2
-    ugettext_noop("CustomerState.REGISTERED")
+    UNRECOGNIZED = 0, _("Unrecognized")
+    GUEST = 1, _("Guest")
+    REGISTERED = 2, ("Registered")
 
 
 class CustomerQuerySet(models.QuerySet):

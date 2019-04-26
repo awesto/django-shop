@@ -7,8 +7,8 @@ from shop.models.fields import ChoiceEnum, ChoiceEnumField
 
 
 class MyChoices(ChoiceEnum):
-    A = 0
-    B = 1
+    A = 0, "My choice A"
+    B = 1, "My choice B"
 
 
 class MyModel(models.Model):
@@ -24,10 +24,11 @@ def test_enum():
     assert isinstance(choice_a, MyChoices)
     assert MyChoices.B.name == 'B'
     assert MyChoices.B.value == 1
+    assert MyChoices.B.label == "My choice B"
     choice_b = MyChoices('B')
-    assert str(choice_b) == 'MyChoices.B'
-    assert MyChoices.default() == MyChoices.A
-    assert MyChoices.choices() == [(0, 'MyChoices.A'), (1, 'MyChoices.B')]
+    assert str(choice_b) == "My choice B"
+    assert MyChoices.default == MyChoices.A
+    assert MyChoices.choices == [(0, "My choice A"), (1, "My choice B")]
 
 
 def test_to_python():
