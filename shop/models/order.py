@@ -509,8 +509,8 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     class Meta:
         abstract = True
-        verbose_name = _("Order item")
-        verbose_name_plural = _("Order items")
+        verbose_name = pgettext_lazy('order_models', "Ordered Item")
+        verbose_name_plural = pgettext_lazy('order_models', "Ordered Items")
 
     def __str__(self):
         return self.product_name
