@@ -273,7 +273,8 @@ class Command(BaseCommand):
             else:
                 yield "There should be at least one published CMS page containing a 'Proceed Button Plugin' for purchasing the cart's content."
 
-    def get_installed_apphook(self, base_apphook_name):
+    @classmethod
+    def get_installed_apphook(cls, base_apphook_name):
         from cms.apphook_pool import apphook_pool
         base_apphook = import_string('shop.cms_apphooks.' + base_apphook_name)
 
@@ -384,7 +385,8 @@ class Command(BaseCommand):
         if plugin_type:
             return add_plugin(leaf_plugin.placeholder, plugin_type, leaf_plugin.language, target=leaf_plugin, glossary=glossary)
 
-    def publish_in_all_languages(self, page):
+    @classmethod
+    def publish_in_all_languages(cls, page):
         from cms.api import copy_plugins_to_language, create_title
         from cms.utils.i18n import get_public_languages
 
