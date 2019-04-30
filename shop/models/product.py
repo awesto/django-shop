@@ -53,17 +53,6 @@ class PolymorphicProductMetaclass(deferred.PolymorphicForeignKeyBuilder):
             msg = "Class `{}` must provide a tuple of `lookup_fields` so that we can easily lookup for Products"
             raise NotImplementedError(msg.format(Model.__name__))
 
-        try:
-            # properties and translated fields are available through the class
-            Model.product_name
-        except AttributeError:
-            try:
-                # model fields are only available through a class instance
-                Model().product_name
-            except AttributeError:
-                msg = "Class `{}` must provide a model field implementing `product_name`"
-                raise NotImplementedError(msg.format(Model.__name__))
-
         if not callable(getattr(Model, 'get_price', None)):
             msg = "Class `{}` must provide a method implementing `get_price(request)`"
             raise NotImplementedError(msg.format(cls.__name__))
@@ -186,6 +175,14 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         estimate the shipping costs. The merchants product model shall override this method.
         """
         return 0
+
+    @classmethod
+    def perform_model_check(cls):
+        try:
+            cls.product_name
+        except AttributeError:
+            msg = "Class `{}` must provide a model field implementing `product_name`"
+            raise NotImplementedError(msg.format(cls.__name__))
 
 ProductModel = deferred.MaterializedModel(BaseProduct)
 
