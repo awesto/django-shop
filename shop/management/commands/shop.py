@@ -34,7 +34,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument(
             'subcommand',
-            help="./manage.py shop [customers|check-pages]",
+            help="./manage.py shop [customers|check-pages|review-settings]",
         )
         parser.add_argument(
             '--delete-expired',
@@ -58,7 +58,23 @@ class Command(BaseCommand):
         )
 
     def handle(self, verbosity, subcommand, *args, **options):
-        if subcommand == 'customers':
+        if subcommand == 'help':
+            self.stdout.write("""
+Usage:
+
+./manage.py shop customers
+    Show how many customers are registered, guests, anonymous or expired.            
+    Use option --delete-expired to delete all customers with an expired session.            
+
+./manage.py shop check-pages
+    Iterate over all pages in the CMS and check, if they are properly configured.
+    Use option --add-missing to add all missing mandatory pages for this shop.
+    Use option --add-recommended to also add missing but recommended pages for this shop.
+
+./manage.py shop review-settings
+    Review all shop related settings and complain about missing- or mis-configurations.
+""")
+        elif subcommand == 'customers':
             self.delete_expired = options['delete_expired']
             self.customers()
         elif subcommand == 'check-pages':
@@ -410,6 +426,10 @@ class Command(BaseCommand):
         if getattr(settings, 'AUTH_USER_MODEL', None) != 'email_auth.User':
             yield "settings.AUTH_USER_MODEL should be 'email_auth.User'."
 
+        AUTHENTICATION_BACKENDS = getattr(settings, 'AUTHENTICATION_BACKENDS', [])
+        if 'allauth.account.auth_backends.AuthenticationBackend' not in AUTHENTICATION_BACKENDS:
+            yield "settings.AUTHENTICATION_BACKENDS should contain 'allauth.account.auth_backends.AuthenticationBackend'."
+
         if 'sass_processor.finders.CssFinder' not in getattr(settings, 'STATICFILES_FINDERS', []):
             yield "settings.STATICFILES_FINDERS should contain 'sass_processor.finders.CssFinder'."
 
@@ -427,6 +447,14 @@ class Command(BaseCommand):
                 yield "'shop.context_processors.customer' is missing in 'context_processors' of the default Django Template engine."
             if 'shop.context_processors.shop_settings' not in context_processors:
                 yield "'shop.context_processors.shop_settings' is missing in 'context_processors' of the default Django Template engine."
+        for template_engine in getattr(settings, 'TEMPLATES', []):
+            if template_engine['BACKEND'] == 'post_office.template.backends.post_office.PostOfficeTemplates':
+                break
+        else:
+            yield "In settings.TEMPLATES, the backend for 'post_office.template.backends.post_office.PostOfficeTemplates' is missing."
+
+        if getattr(settings, 'POST_OFFICE', {}).get('TEMPLATE_ENGINE') != 'post_office':
+            yield "settings.POST_OFFICE should contain {'TEMPLATE_ENGINE': 'post_office'}."
 
         for dir in getattr(settings, 'SASS_PROCESSOR_INCLUDE_DIRS', []):
             if '/node_modules' in dir:
@@ -443,10 +471,11 @@ class Command(BaseCommand):
         if getattr(settings, 'SERIALIZATION_MODULES', {}).get('json') != 'shop.money.serializers':
             yield "settings.SERIALIZATION_MODULES['json'] should be set to 'shop.money.serializers'."
 
-        if 'shop.rest.money.JSONRenderer' not in getattr(settings, 'REST_FRAMEWORK', {}).get('DEFAULT_RENDERER_CLASSES', []):
+        REST_FRAMEWORK = getattr(settings, 'REST_FRAMEWORK', {})
+        if 'shop.rest.money.JSONRenderer' not in REST_FRAMEWORK.get('DEFAULT_RENDERER_CLASSES', []):
             yield "settings.REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] should contain class 'shop.rest.money.JSONRenderer'."
 
-        if 'django_filters.rest_framework.DjangoFilterBackend' not in getattr(settings, 'REST_FRAMEWORK', {}).get('DEFAULT_FILTER_BACKENDS', []):
+        if 'django_filters.rest_framework.DjangoFilterBackend' not in REST_FRAMEWORK.get('DEFAULT_FILTER_BACKENDS', []):
             yield "settings.REST_FRAMEWORK['DEFAULT_FILTER_BACKENDS'] should contain class 'django_filters.rest_framework.DjangoFilterBackend'."
 
         if getattr(settings, 'REST_AUTH_SERIALIZERS', {}).get('LOGIN_SERIALIZER') != 'shop.serializers.auth.LoginSerializer':
@@ -454,6 +483,22 @@ class Command(BaseCommand):
 
         if 'shop.cascade' not in getattr(settings, 'CMSPLUGIN_CASCADE_PLUGINS', []):
             yield "settings.CMSPLUGIN_CASCADE_PLUGINS should contain entry 'shop.cascade'."
+
+        CMSPLUGIN_CASCADE = getattr(settings, 'CMSPLUGIN_CASCADE', {})
+        if CMSPLUGIN_CASCADE.get('link_plugin_classes') != [
+            'shop.cascade.plugin_base.CatalogLinkPluginBase',
+            'cmsplugin_cascade.link.plugin_base.LinkElementMixin',
+            'shop.cascade.plugin_base.CatalogLinkForm']:
+            yield "settings.CMSPLUGIN_CASCADE['link_plugin_classes'] should contain special classes able to link onto products."
+        if CMSPLUGIN_CASCADE.get('bootstrap4', {}).get('template_basedir') != 'angular-ui':
+            yield "settings.CMSPLUGIN_CASCADE['bootstrap4']['template_basedir'] should be 'angular-ui'."
+        if CMSPLUGIN_CASCADE.get('segmentation_mixins') != [
+            ('shop.cascade.segmentation.EmulateCustomerModelMixin',
+             'shop.cascade.segmentation.EmulateCustomerAdminMixin')]:
+            yield "settings.CMSPLUGIN_CASCADE['segmentation_mixins'] should contain a special version handling the Customer model."
+
+        if not isinstance(getattr(settings, 'SHOP_CART_MODIFIERS', None), (list, tuple)):
+            yield "settings.SHOP_CART_MODIFIERS should contain a list with cart modifiers."
 
     def deserialize_to_placeholder(self, page, data, slot='Main Content'):
         from cms.utils.i18n import get_public_languages
