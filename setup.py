@@ -41,18 +41,18 @@ setup(
     zip_safe=False,
     install_requires=[
         'Django>=1.11,<2.0',
-        'django-post_office @ https://github.com/ui/django-post_office/archive/master.zip#egg=django-post_office-3.2.0.dev',
-        'django-filer>=1.3.2',
+        'django-post_office>=3.2.0',
+        'django-filer>=1.4',
         'django-ipware>=1.1.1',
         'django-fsm>=2.4.0',
         'django-fsm-admin>=1.2.4',
         'djangorestframework>3.8,<3.9',
         'django-angular>=2.2',
-        'Django-Select2>=5.8.9',
+        'Django-Select2<7',
         'django-rest-auth>=0.9.1',
         'django-admin-sortable2>=0.6.19',
         'django-formtools>=1.0',
-        'djangocms-cascade>=0.17.10',
+        'djangocms-cascade>=0.18.2',
     ],
     # Note: this requires setuptools >= 18.0.
     extras_require={
