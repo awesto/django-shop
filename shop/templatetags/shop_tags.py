@@ -3,45 +3,66 @@ from __future__ import unicode_literals
 
 from collections import OrderedDict
 from datetime import datetime
-
 from django import template
 from django.conf import settings
+from django.template import Node, TemplateSyntaxError
 from django.template.loader import select_template
 from django.utils import formats
 from django.utils.html import force_text
 from django.utils.safestring import mark_safe
 from django.utils.dateformat import format, time_format
-
-from classytags.helpers import InclusionTag
-
 from shop.conf import app_settings
 from shop.models.cart import CartModel
+from shop.serializers.cart import CartSerializer, CartItems
 from shop.rest.money import JSONRenderer
 
 register = template.Library()
 
 
-class CartIcon(InclusionTag):
+class CartIcon(Node):
     """
     Inclusion tag for displaying cart summary.
     """
-    def get_template(self, context, **kwargs):
-        template = select_template([
+    def __init__(self, with_items):
+        self.with_items = with_items
+
+    def get_template(self):
+        return select_template([
             '{}/templatetags/cart-icon.html'.format(app_settings.APP_LABEL),
             'shop/templatetags/cart-icon.html',
-        ])
-        return template.template.name
+        ]).template
 
-    def get_context(self, context):
-        request = context['request']
+    def render(self, context):
         try:
-            cart = CartModel.objects.get_from_request(request)
-            cart.update(request)
-            context['cart'] = cart
+            cart = CartModel.objects.get_from_request(context['request'])
+            serializer = CartSerializer(instance=cart, context=context, label='dropdown', with_items=self.with_items)
+            cart_data = JSONRenderer().render(serializer.data)
         except CartModel.DoesNotExist:
-            pass
-        return context
-register.tag(CartIcon)
+            cart_data = {'total_quantity': 0, 'num_items': 0}
+        context.update({
+            'cart_as_json': mark_safe(force_text(cart_data)),
+            'has_dropdown': self.with_items != CartItems.without,
+        })
+        return self.get_template().render(context)
+
+
+@register.tag
+def cart_icon(parser, token):
+    def raise_syntax_error():
+        choices = '|'.join([item.name for item in CartItems])
+        raise TemplateSyntaxError("Template tag '{}' takes one optional argument: {}".format(bits[0], choices))
+
+    bits = token.split_contents()
+    if len(bits) > 2:
+        raise_syntax_error()
+    if len(bits) == 2:
+        try:
+            with_items = CartItems(bits[1])
+        except ValueError:
+            raise_syntax_error()
+    else:
+        with_items = CartItems.without
+    return CartIcon(with_items)
 
 
 def from_iso8601(value):

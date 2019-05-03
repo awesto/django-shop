@@ -13,18 +13,18 @@
 {% endblock %}
 
 {% block dialog_form %}
-<form shop-method-form djng-endpoint="{% url 'shop:checkout-upload' %}" name="{{ shipping_method_form.form_name }}" novalidate>
+<form shop-method-form djng-endpoint="{% url 'shop:checkout-upload' %}" name="{{ shipping_method_form.form_name }}" class="mt-3" novalidate>
 {% if shipping_method_form.has_choices %}
 	{{ shipping_method_form.as_div }}
 	{% if show_additional_charge %}
-	<div class="additional-charge">
+	<ul class="additional-charge">
 		{% for choice, label in shipping_method_form.shipping_modifier.field.choices %}
-		<p ng-repeat="extra_row in cart.extra_rows|filter:{modifier:'{{ choice }}'}">{% trans "Additional charge" %}: {% verbatim %}{{ extra_row.amount }}{% endverbatim %}</p>
+		<li ng-repeat="extra_row in cart.extra_rows|filter:{modifier:'{{ choice }}'}">{% trans "Additional charge" %}: {% verbatim %}{{ extra_row.amount }}{% endverbatim %}</li>
 		{% endfor %}
 		{% if shipping_modifiers.initial_row %}
-		<p ng-if="!cart.extra_rows">{% trans "Additional charge" %}: {{ shipping_modifiers.initial_row.amount }}</p>
+		<li ng-if="!cart.extra_rows">{% trans "Additional charge" %}: {{ shipping_modifiers.initial_row.amount }}</li>
 		{% endif %}
-	</div>
+	</ul>
 	{% endif %}
 {% else %}
 	<input name="__force_invalidation__" style="display: none;" required />

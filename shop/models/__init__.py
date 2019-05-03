@@ -1,2 +1,2 @@
 # -*- coding: utf-8 -*-
-from .notification import Notification, NotificationAttachment
+from shop.models.notification import Notification, NotificationAttachment

@@ -21,7 +21,7 @@ class CatalogSearchCMSApp(CMSApp):
         raise ImproperlyConfigured("`CatalogSearchCMSApp` must implement method `get_urls`.")
 
 
-class OrderCMSApp(CMSApp):
+class OrderApp(CMSApp):
     name = _("View Orders")
     cache_placeholders = False
 
@@ -29,11 +29,22 @@ class OrderCMSApp(CMSApp):
         from django.conf.urls import url
         from shop.views.order import OrderView
 
-        if page and page.reverse_id == 'shop-order-last':
-            return [
-                url(r'^$', OrderView.as_view(many=False, is_last=True)),
-            ]
         return [
-            url(r'^$', OrderView.as_view()),
-            url(r'^(?P<slug>[\w-]+)/?$', OrderView.as_view(many=False)),
+            url(r'^$', OrderView.as_view()),  # requires authentication
+            url(r'^(?P<slug>[\w-]+)/?$', OrderView.as_view(many=False)),  # requires authentication
+            url(r'^(?P<slug>[\w-]+)/(?P<secret>[\w-]+)$', OrderView.as_view(many=False)),  # publicly accessible
+        ]
+
+
+class PasswordResetApp(CMSApp):
+    name = _("Password Reset Confirm")
+
+    def get_urls(self, page=None, language=None, **kwargs):
+        from django.conf.urls import url
+        from shop.views.auth import PasswordResetConfirmView
+
+        return [
+            url(r'^(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/?$',
+                PasswordResetConfirmView.as_view(),
+            )
         ]

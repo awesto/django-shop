@@ -5,19 +5,18 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.core.urlresolvers import reverse
 from django.db.models import Sum
-from django.forms import models, widgets, ValidationError
+from django.forms import models, ValidationError
 from django.http import HttpResponse
-from django.template import RequestContext
 from django.template.loader import select_template
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
-
 from shop.conf import app_settings
 from shop.admin.order import OrderItemInline
 from shop.models.order import OrderItemModel
-from shop.models.delivery import DeliveryModel, DeliveryItemModel
+from shop.models.delivery import DeliveryModel
 from shop.modifiers.pool import cart_modifiers_pool
+from shop.serializers.delivery import DeliverySerializer
 from shop.serializers.order import OrderDetailSerializer
 
 
@@ -46,7 +45,7 @@ class OrderItemForm(models.ModelForm):
         """
         Returns the quantity already delivered for this order item.
         """
-        aggr = instance.deliveryitem_set.aggregate(delivered=Sum('quantity'))
+        aggr = instance.deliver_item.aggregate(delivered=Sum('quantity'))
         return aggr['delivered'] or 0
 
     def clean(self):
@@ -108,34 +107,68 @@ class OrderItemInlineDelivery(OrderItemInline):
     show_ready.short_description = _("Ready for delivery")
 
 
+def get_shipping_choices():
+    choices = [sm.get_choice() for sm in cart_modifiers_pool.get_shipping_modifiers()]
+    return choices
+
+
+class DeliveryForm(models.ModelForm):
+    shipping_method = models.ChoiceField(
+        label=_("Shipping by"),
+        choices=get_shipping_choices,
+    )
+
+    class Meta:
+        model = DeliveryModel
+        exclude = []
+
+    def has_changed(self):
+        return True
+
+    def clean_shipping_method(self):
+        if not self.cleaned_data['shipping_method']:
+            return self.instance.shipping_method
+        return self.cleaned_data['shipping_method']
+
+
 class DeliveryInline(admin.TabularInline):
     model = DeliveryModel
+    form = DeliveryForm
     extra = 0
-    fields = ('shipping_id', 'shipping_method', 'delivered_items', 'print_out', 'fulfilled',)
-    readonly_fields = ('delivered_items', 'print_out', 'fulfilled',)
-
-    def get_formset(self, request, obj=None, **kwargs):
-        """
-        Convert the field `shipping_method` into a select box with all possible shipping methods.
-        """
-        choices = [sm.get_choice() for sm in cart_modifiers_pool.get_shipping_modifiers()]
-        kwargs.update(widgets={'shipping_method': widgets.Select(choices=choices)})
-        formset = super(DeliveryInline, self).get_formset(request, obj, **kwargs)
-        return formset
-
-    def get_max_num(self, request, obj=None, **kwargs):
-        qs = self.model.objects.filter(order=obj)
-        if obj.status != 'pick_goods' or qs.filter(fulfilled_at__isnull=True) or obj.unfulfilled_items == 0:
-            return qs.count()
-        return qs.count() + 1
+    fields = ['shipping_id', 'shipping_method', 'delivered_items', 'print_out', 'fulfilled_at', 'shipped_at']
+    readonly_fields = ['delivered_items', 'print_out', 'fulfilled_at', 'shipped_at']
 
     def has_delete_permission(self, request, obj=None):
         return False
 
+    def get_max_num(self, request, obj=None, **kwargs):
+        qs = self.model.objects.filter(order=obj)
+        return qs.count()
+
+    def get_fields(self, request, obj=None):
+        assert obj is not None, "An Order object can not be added through the Django-Admin"
+        fields = list(super(DeliveryInline, self).get_fields(request, obj))
+        if not obj.allow_partial_delivery:
+            fields.remove('delivered_items')
+        return fields
+
+    def get_readonly_fields(self, request, obj=None):
+        readonly_fields = list(super(DeliveryInline, self).get_readonly_fields(request, obj))
+        if not app_settings.SHOP_OVERRIDE_SHIPPING_METHOD or obj.status == 'ready_for_delivery':
+            readonly_fields.append('shipping_method')
+        return readonly_fields
+
+    def get_formset(self, request, obj=None, **kwargs):
+        formset = super(DeliveryInline, self).get_formset(request, obj, **kwargs)
+        if not app_settings.SHOP_OVERRIDE_SHIPPING_METHOD or obj.status == 'ready_for_delivery':
+            # make readonly field optional
+            formset.form.base_fields['shipping_method'].required = False
+        return formset
+
     def delivered_items(self, obj):
-        aggr = obj.deliveryitem_set.aggregate(quantity=Sum('quantity'))
+        aggr = obj.items.aggregate(quantity=Sum('quantity'))
         aggr['quantity'] = aggr['quantity'] or 0
-        aggr.update(items=obj.deliveryitem_set.count())
+        aggr.update(items=obj.items.count())
         return '{quantity}/{items}'.format(**aggr)
     delivered_items.short_description = _("Quantity/Items")
 
@@ -143,7 +176,9 @@ class DeliveryInline(admin.TabularInline):
         if obj.fulfilled_at is None:
             return ''
         link = reverse('admin:print_delivery_note', args=(obj.id,)), _("Delivery Note")
-        return format_html('<a href="{0}" class="viewsitelink" target="_new">{1}</a>', *link)
+        return format_html(
+            '<span class="object-tools"><a href="{0}" class="viewsitelink" target="_new">{1}</a></span>',
+            *link)
     print_out.short_description = _("Print out")
 
     def fulfilled(self, obj):
@@ -162,7 +197,8 @@ class DeliveryOrderAdminMixin(object):
             url(r'^(?P<delivery_pk>\d+)/print_delivery_note/$',
                 self.admin_site.admin_view(self.render_delivery_note),
                 name='print_delivery_note'),
-        ] + super(DeliveryOrderAdminMixin, self).get_urls()
+        ]
+        my_urls.extend(super(DeliveryOrderAdminMixin, self).get_urls())
         return my_urls
 
     def render_delivery_note(self, request, delivery_pk=None):
@@ -174,51 +210,32 @@ class DeliveryOrderAdminMixin(object):
         context = {'request': request, 'render_label': 'print'}
         customer_serializer = app_settings.CUSTOMER_SERIALIZER(delivery.order.customer)
         order_serializer = OrderDetailSerializer(delivery.order, context=context)
+        delivery_serializer = DeliverySerializer(delivery, context=context)
         content = template.render({
             'customer': customer_serializer.data,
-            'data': order_serializer.data,
-            'delivery': delivery,
+            'order': order_serializer.data,
+            'delivery': delivery_serializer.data,
+            'object': delivery,
         })
         return HttpResponse(content)
 
     def get_inline_instances(self, request, obj=None):
-        inline_instances = [
-            OrderItemInlineDelivery(self.model, self.admin_site) if isinstance(instance, OrderItemInline) else instance
-            for instance in super(DeliveryOrderAdminMixin, self).get_inline_instances(request, obj)
-        ]
-        if obj.status in ('pick_goods', 'pack_goods',):
+        assert obj is not None, "An Order object can not be added through the Django-Admin"
+        assert hasattr(obj, 'associate_with_delivery'), "Add 'shop.shipping.workflows.SimpleShippingWorkflowMixin' " \
+            "(or a class inheriting from thereof) to SHOP_ORDER_WORKFLOWS."
+        inline_instances = list(super(DeliveryOrderAdminMixin, self).get_inline_instances(request, obj))
+        if obj.associate_with_delivery:
+            if obj.allow_partial_delivery:
+                # replace `OrderItemInline` by `OrderItemInlineDelivery` for that instance.
+                inline_instances = [
+                    OrderItemInlineDelivery(self.model, self.admin_site) if isinstance(instance, OrderItemInline) else instance
+                    for instance in inline_instances
+                ]
             inline_instances.append(DeliveryInline(self.model, self.admin_site))
         return inline_instances
 
     def save_related(self, request, form, formsets, change):
         super(DeliveryOrderAdminMixin, self).save_related(request, form, formsets, change)
-        if hasattr(form.instance, '_transition_to_pack_goods') or (
-                form.instance.status == 'pick_goods' and 'status' not in form.changed_data):
-            # merchant clicked on button: "Pack the Goods", "Save and continue" or "Save"
-            self._mark_items_for_delivery(formsets)
-
-    def _mark_items_for_delivery(self, formsets):
-        # create a DeliveryItem for each OrderItem marked to be shipped with this Delivery object
-        orderitem_formset = [fs for fs in formsets if issubclass(fs.model, OrderItemModel)]
-        delivery_formset = [fs for fs in formsets if issubclass(fs.model, DeliveryModel)]
-        if orderitem_formset and delivery_formset:
-            orderitem_formset = orderitem_formset[0]
-            delivery_formset = delivery_formset[0]
-            if delivery_formset.new_objects:
-                delivery = delivery_formset.new_objects[0]
-            else:
-                delivery = delivery_formset.queryset.filter(fulfilled_at__isnull=True).last()
-            if delivery:
-                count_items = 0
-                for data in orderitem_formset.cleaned_data:
-                    if data['deliver_quantity'] > 0 and not data['canceled']:
-                        DeliveryItemModel.objects.create(delivery=delivery, item=data['id'],
-                                                         quantity=data['deliver_quantity'])
-                        count_items += 1
-                if count_items > 0:
-                    # mark Delivery object as fulfilled
-                    delivery.fulfilled_at = timezone.now()
-                    delivery.save()
-                else:
-                    # since no OrderItem was added to this delivery, discard it
-                    delivery.delete()
+        if form.instance.status == 'pack_goods' and 'status' in form.changed_data:
+            orderitem_formset = [fs for fs in formsets if issubclass(fs.model, OrderItemModel)][0]
+            form.instance.update_or_create_delivery(orderitem_formset.cleaned_data)

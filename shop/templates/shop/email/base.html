@@ -2,23 +2,23 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<meta name="viewport" content="width=device-width"/>
+		<meta name="viewport" content="width=device-width" />
 	</head>
-	<body style="background-color: #eee; font-family: Helvetica,Roboto,Arial,sans-serif;">
+	<body style="background-color: #eee; font-family: Helvetica,Roboto,Arial,sans-serif; font-size: 14px;">
 		<center>
-			<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" style="color: #000; background-color: #ddd;">
+			<table>
 				<thead>
 					<tr>
-						<td align="center" valign="top">
-							<table border="0" cellpadding="0" cellspacing="0" width="600" style="width: 600px; vertical-align: middle; padding: 15px 25px;">
+						<td style="padding: 0;">
+							<table style="width: 600px; vertical-align: middle; padding: 10px 15px;">
 								<tr>
 									<td>
 										{% block email-logo %}{% endblock %}
-										<h1 style="font-size: 24px; font-weight: bold; margin: 5px; text-align: center;">{% block email-title %}{% endblock %}</h1>
+										<h2 style="margin: 5px; text-align: center;">{% block email-title %}{% endblock %}</h2>
 									</td>
 								</tr>
 								<tr>
-									<td style="font-size: 14px; font-weight: normal;">{% block email-thead %}{% endblock %}</td>
+									<td>{% block email-head %}{% endblock %}</td>
 								</tr>
 							</table>
 						</td>
@@ -27,10 +27,10 @@
 
 				<tbody>
 					<tr>
-						<td align="center" valign="top" style="padding: 0;">
-							<table border="0" cellpadding="0" cellspacing="0" width="600" style="background-color: #fff; width: 600px;">
+						<td style="padding: 0;">
+							<table style="width: 600px;">
 								<tr>
-									<td>{% block email-tbody %}{% endblock %}</td>
+									<td>{% block email-body %}{% endblock %}</td>
 								</tr>
 							</table>
 						</td>
@@ -39,10 +39,10 @@
 
 				<tfoot>
 					<tr>
-						<td align="center" valign="top">
-							<table border="0" cellpadding="0" cellspacing="0" width="600" style="width: 600px; min-height: 50px; vertical-align: middle; padding: 15px 25px;">
+						<td>
+							<table style="width: 600px; min-height: 50px; vertical-align: middle; padding: 15px 25px;">
 								<tr>
-									<td>{% block email-tfoot %}{% endblock %}</td>
+									<td>{% block email-foot %}{% endblock %}</td>
 								</tr>
 							</table>
 						</td>

@@ -2,12 +2,11 @@
 from __future__ import unicode_literals
 
 from django.utils import timezone
-
 from rest_framework import serializers
-
 from shop.conf import app_settings
 from shop.models.cart import CartModel
 from shop.models.order import OrderModel
+from shop.modifiers.pool import cart_modifiers_pool
 from shop.rest.money import MoneyField
 
 
@@ -68,6 +67,10 @@ class OrderDetailSerializer(OrderListSerializer):
         default=False,
     )
 
+    active_payment_method = serializers.SerializerMethodField()
+
+    active_shipping_method = serializers.SerializerMethodField()
+
     class Meta:
         model = OrderModel
         exclude = ['id', 'customer', 'stored_request', '_subtotal', '_total']
@@ -76,16 +79,26 @@ class OrderDetailSerializer(OrderListSerializer):
     def get_partially_paid(self, order):
         return order.amount_paid > 0
 
+    def get_active_payment_method(self, order):
+        modifier = cart_modifiers_pool.get_active_payment_modifier(order.extra.get('payment_modifier'))
+        value, label = modifier.get_choice() if modifier else (None, "")
+        return {'value': value, 'label': label}
+
+    def get_active_shipping_method(self, order):
+        modifier = cart_modifiers_pool.get_active_shipping_modifier(order.extra.get('shipping_modifier'))
+        value, label = modifier.get_choice() if modifier else (None, "")
+        return {'value': value, 'label': label}
+
     def update(self, order, validated_data):
-        order.extra.setdefault('addenum', [])
+        order.extra.setdefault('addendum', [])
         if validated_data.get('annotation'):
             timestamp = timezone.now().isoformat()
-            order.extra['addenum'].append((timestamp, validated_data['annotation']))
+            order.extra['addendum'].append((timestamp, validated_data['annotation']))
             order.save()
         if validated_data['reorder'] is True:
             cart = CartModel.objects.get_from_request(self.context['request'])
             order.readd_to_cart(cart)
         if validated_data['cancel'] is True and order.cancelable():
             order.cancel_order()
-            order.save()
+            order.save(with_notification=True)
         return order

@@ -1,39 +1,31 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.forms.fields import CharField
 from django.forms import widgets
 from django.template import engines
 from django.template.loader import select_template
-from django.utils.html import strip_tags, format_html
+from django.utils.html import format_html
 from django.utils.module_loading import import_string
 from django.utils.safestring import mark_safe
-from django.utils.text import Truncator
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 try:
     from html.parser import HTMLParser  # py3
 except ImportError:
     from HTMLParser import HTMLParser  # py2
 from cms.plugin_pool import plugin_pool
-
-from djangocms_text_ckeditor.widgets import TextEditorWidget
-from djangocms_text_ckeditor.utils import plugin_tags_to_user_html
 from djangocms_text_ckeditor.cms_plugins import TextPlugin
-
 from cmsplugin_cascade.fields import GlossaryField
 from cmsplugin_cascade.strides import strides_plugin_map, strides_element_map, TextStridePlugin, TextStrideElement
-from cmsplugin_cascade.link.cms_plugins import TextLinkPlugin
 from cmsplugin_cascade.link.forms import LinkForm, TextLinkFormMixin
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.plugin_base import TransparentContainer
-from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
-
+from cmsplugin_cascade.bootstrap4.buttons import BootstrapButtonMixin
+from shop.cascade.plugin_base import ShopPluginBase, ShopButtonPluginBase, DialogFormPluginBase
 from shop.conf import app_settings
-from shop.forms.checkout import AcceptConditionForm
 from shop.models.cart import CartModel
 from shop.modifiers.pool import cart_modifiers_pool
-from .plugin_base import ShopPluginBase, ShopButtonPluginBase, DialogFormPluginBase
 
 
 class ProceedButtonForm(TextLinkFormMixin, LinkForm):
@@ -50,24 +42,22 @@ class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
     This button is used to proceed from one checkout step to the next one.
     """
     name = _("Proceed Button")
-    parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin', 'ValidateSetOfFormsPlugin')
+    parent_classes = ['BootstrapColumnPlugin', 'ProcessStepPlugin', 'ValidateSetOfFormsPlugin']
     model_mixins = (LinkElementMixin,)
     glossary_field_order = ['disable_invalid', 'button_type', 'button_size', 'button_options',
-                            'quick_float', 'icon_align', 'icon_font', 'symbol']
+                            'quick_float', 'icon_align', 'symbol']
     form = ProceedButtonForm
     ring_plugin = 'ProceedButtonPlugin'
 
     disable_invalid = GlossaryField(
         widgets.CheckboxInput(),
         label=_("Disable if invalid"),
-        initial=True,
-        help_text=_("Disable button if any form in this set is invalid")
+        initial='',
+        help_text=_("Disable button if any form in this set is invalid"),
     )
 
     class Media:
-        css = {'all': ('cascade/css/admin/bootstrap.min.css',
-                       'cascade/css/admin/bootstrap-theme.min.css',
-                       'cascade/css/admin/iconplugin.css',)}
+        css = {'all': ['cascade/css/admin/bootstrap4-buttons.css', 'cascade/css/admin/iconplugin.css']}
         js = ['shop/js/admin/proceedbuttonplugin.js']
 
     def get_render_template(self, context, instance, placeholder):
@@ -112,10 +102,10 @@ class CustomerFormPlugin(CustomerFormPluginBase):
     if customer declared himself as registered.
     """
     name = _("Customer Form")
-    form_class = 'shop.forms.checkout.CustomerForm'
+    form_class = app_settings.SHOP_CASCADE_FORMS['CustomerForm']
 
     def render(self, context, instance, placeholder):
-        if not context['request'].customer.is_registered():
+        if not context['request'].customer.is_registered:
             context['error_message'] = _("Only registered customers can access this form.")
             return context
         return self.super(CustomerFormPlugin, self).render(context, instance, placeholder)
@@ -129,10 +119,11 @@ class GuestFormPlugin(CustomerFormPluginBase):
     himself as guest.
     """
     name = _("Guest Form")
-    form_class = 'shop.forms.checkout.GuestForm'
+    form_class = app_settings.SHOP_CASCADE_FORMS['GuestForm']
 
     def render(self, context, instance, placeholder):
-        if not context['customer'].is_guest():
+        assert 'customer' in context, "Please add 'shop.context_processors.customer' to your TEMPLATES 'context_processor' settings."
+        if not context['customer'].is_guest:
             context['error_message'] = _("Only guest customers can access this form.")
             return context
         return self.super(GuestFormPlugin, self).render(context, instance, placeholder)
@@ -143,7 +134,7 @@ DialogFormPluginBase.register_plugin(GuestFormPlugin)
 class CheckoutAddressPlugin(DialogFormPluginBase):
     name = _("Checkout Address Form")
     glossary_field_order = ['address_form', 'render_type', 'allow_multiple', 'allow_use_primary', 'headline_legend']
-    form_classes = ['shop.forms.checkout.ShippingAddressForm', 'shop.forms.checkout.BillingAddressForm']
+    form_classes = [app_settings.SHOP_CASCADE_FORMS['ShippingAddressForm'], app_settings.SHOP_CASCADE_FORMS['BillingAddressForm']]
     ADDRESS_CHOICES = [('shipping', _("Shipping")), ('billing', _("Billing"))]
 
     address_form = GlossaryField(
@@ -232,7 +223,7 @@ DialogFormPluginBase.register_plugin(CheckoutAddressPlugin)
 
 class PaymentMethodFormPlugin(DialogFormPluginBase):
     name = _("Payment Method Form")
-    form_class = 'shop.forms.checkout.PaymentMethodForm'
+    form_class = app_settings.SHOP_CASCADE_FORMS['PaymentMethodForm']
     template_leaf_name = 'payment-method-{}.html'
 
     show_additional_charge = GlossaryField(
@@ -263,7 +254,7 @@ if cart_modifiers_pool.get_payment_modifiers():
 
 class ShippingMethodFormPlugin(DialogFormPluginBase):
     name = _("Shipping Method Form")
-    form_class = 'shop.forms.checkout.ShippingMethodForm'
+    form_class = app_settings.SHOP_CASCADE_FORMS['ShippingMethodForm']
     template_leaf_name = 'shipping-method-{}.html'
 
     show_additional_charge = GlossaryField(
@@ -294,7 +285,7 @@ if cart_modifiers_pool.get_shipping_modifiers():
 
 class ExtraAnnotationFormPlugin(DialogFormPluginBase):
     name = _("Extra Annotation Form")
-    form_class = 'shop.forms.checkout.ExtraAnnotationForm'
+    form_class = app_settings.SHOP_CASCADE_FORMS['ExtraAnnotationForm']
     template_leaf_name = 'extra-annotation-{}.html'
 
     def get_form_data(self, context, instance, placeholder):
@@ -307,49 +298,8 @@ class ExtraAnnotationFormPlugin(DialogFormPluginBase):
 DialogFormPluginBase.register_plugin(ExtraAnnotationFormPlugin)
 
 
-class AcceptConditionFormPlugin(DialogFormPluginBase):
-    """
-    Deprecated. Use AcceptConditionPlugin instead.
-    """
-    name = _("Accept Condition (deprecated)")
-    form_class = 'shop.forms.checkout.AcceptConditionForm'
-    template_leaf_name = 'accept-condition.html'
-    html_parser = HTMLParser()
-    change_form_template = 'cascade/admin/text_plugin_change_form.html'
-
-    @classmethod
-    def get_identifier(cls, instance):
-        html_content = cls.html_parser.unescape(instance.glossary.get('html_content', ''))
-        html_content = strip_tags(html_content)
-        html_content = Truncator(html_content).words(3, truncate=' ...')
-        return mark_safe(html_content)
-
-    def get_form(self, request, obj=None, **kwargs):
-        if obj:
-            html_content = self.html_parser.unescape(obj.glossary.get('html_content', ''))
-            obj.glossary.update(html_content=html_content)
-            text_editor_widget = TextEditorWidget(installed_plugins=[TextLinkPlugin], pk=obj.pk,
-                                           placeholder=obj.placeholder, plugin_language=obj.language)
-            kwargs['glossary_fields'] = (
-                GlossaryField(text_editor_widget, label=_("HTML content"), name='html_content'),
-            )
-        return super(AcceptConditionFormPlugin, self).get_form(request, obj, **kwargs)
-
-    def render(self, context, instance, placeholder):
-        self.super(AcceptConditionFormPlugin, self).render(context, instance, placeholder)
-        accept_condition_form = context['accept_condition_form.plugin_{}'.format(instance.id)]
-        html_content = self.html_parser.unescape(instance.glossary.get('html_content', ''))
-        html_content = plugin_tags_to_user_html(html_content, context)
-        # transfer the stored HTML content into the widget's label
-        accept_condition_form['accept'].field.widget.choice_label = mark_safe(html_content)
-        context['accept_condition_form'] = accept_condition_form
-        return context
-
-# DialogFormPluginBase.register_plugin(AcceptConditionFormPlugin)
-
 class AcceptConditionMixin(object):
     render_template = 'shop/checkout/accept-condition.html'
-    FormClass = AcceptConditionForm
 
     def render(self, context, instance, placeholder):
         """
@@ -362,8 +312,13 @@ class AcceptConditionMixin(object):
         except CartModel.DoesNotExist:
             cart = None
         request._plugin_order = getattr(request, '_plugin_order', 0) + 1
+        try:
+            FormClass = import_string(app_settings.SHOP_CASCADE_FORMS['AcceptConditionForm'])
+        except ImportError:
+            msg = "Can not import Form class. Please check your settings directive SHOP_CASCADE_FORMS['AcceptConditionForm']."
+            raise ImproperlyConfigured(msg)
         form_data = {'cart': cart, 'initial': dict(plugin_id=instance.pk, plugin_order=request._plugin_order)}
-        bound_form = self.FormClass(**form_data)
+        bound_form = FormClass(**form_data)
         context[bound_form.form_name] = bound_form
         super(AcceptConditionMixin, self).render(context, instance, placeholder)
         accept_condition_form = context['accept_condition_form.plugin_{}'.format(instance.pk)]

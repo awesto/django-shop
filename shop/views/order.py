@@ -1,16 +1,43 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.utils import timezone
 from django.views.decorators.cache import never_cache
-
+from django.utils.translation import ugettext_lazy as _
 from rest_framework import generics, mixins
-from rest_framework.exceptions import NotFound, PermissionDenied, MethodNotAllowed
+from rest_framework.exceptions import NotFound, MethodNotAllowed
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.renderers import BrowsableAPIRenderer
-
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.permissions import BasePermission
 from shop.rest.money import JSONRenderer
 from shop.rest.renderers import CMSPageRenderer
 from shop.serializers.order import OrderListSerializer, OrderDetailSerializer
 from shop.models.order import OrderModel
+
+
+class OrderPagination(LimitOffsetPagination):
+    default_limit = 15
+    template = 'shop/templatetags/paginator.html'
+
+
+class OrderPermission(BasePermission):
+    """
+    Allow access to a given Order if the user is entitled to.
+    """
+    def has_permission(self, request, view):
+        if view.many and request.customer.is_visitor:
+            detail = _("Only signed in customers can view their list of orders.")
+            raise PermissionDenied(detail=detail)
+        return True
+
+    def has_object_permission(self, request, view, order):
+        if request.user.is_authenticated:
+            return order.customer.pk == request.user.pk
+        if order.secret and order.secret == view.kwargs.get('secret'):
+            return True
+        detail = _("This order does not belong to you.")
+        raise PermissionDenied(detail=detail)
 
 
 class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
@@ -18,15 +45,20 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateM
     """
     Base View class to render the fulfilled orders for the current user.
     """
-    renderer_classes = (CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer)
+    renderer_classes = [CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer]
     list_serializer_class = OrderListSerializer
     detail_serializer_class = OrderDetailSerializer
+    pagination_class = OrderPagination
+    permission_classes = [OrderPermission]
     lookup_field = lookup_url_kwarg = 'slug'
     many = True
-    is_last = False
+    last_order_lapse = timezone.timedelta(minutes=15)
 
     def get_queryset(self):
-        return OrderModel.objects.filter_from_request(self.request)
+        queryset = OrderModel.objects.all()
+        if not self.request.customer.is_visitor:
+            queryset = queryset.filter(customer=self.request.customer).order_by('-updated_at')
+        return queryset
 
     def get_serializer_class(self):
         if self.many:
@@ -36,19 +68,25 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateM
     def get_renderer_context(self):
         renderer_context = super(OrderView, self).get_renderer_context()
         if self.request.accepted_renderer.format == 'html':
-            renderer_context.update(many=self.many, is_last=self.is_last)
-            if self.many is False and self.is_last is False:
+            renderer_context.update(many=self.many)
+            if not self.many:
                 # add an extra ance to the breadcrumb to show the order number
-                try:
-                    renderer_context['extra_ance'] = self.get_object().get_number()
-                except (AttributeError, PermissionDenied):
-                    pass
+                renderer_context.update(
+                    is_last_order = self.is_last(),
+                    extra_ance=self.get_object().get_number(),
+                )
         return renderer_context
 
-    def get_object(self):
-        if self.lookup_url_kwarg not in self.kwargs:
-            return self.get_queryset().first()
-        return super(OrderView, self).get_object()
+    def is_last(self):
+        """
+        Returns ``True`` if the given order is considered as the last order for its customer.
+        This information may be used to distinguish between a "thank you" and a normal detail view.
+        """
+        assert self.many is False, "This method can be called for detail views only"
+        lapse = timezone.now() - self.last_order_lapse
+        current_order = self.get_object()
+        last_order = self.get_queryset().first()
+        return current_order.id == last_order.id and current_order.created_at > lapse
 
     @property
     def allowed_methods(self):

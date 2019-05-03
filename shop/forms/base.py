@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.forms import widgets
 from django.utils.encoding import force_text
+from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
@@ -21,8 +22,8 @@ class DialogFormMixin(NgModelFormMixin, NgFormValidationMixin):
 
     def __init__(self, *args, **kwargs):
         kwargs.pop('cart', None)  # cart object must be removed, otherwise underlying methods complain
-        auto_name = self.__class__.__name__.replace('Form', '').lower()
-        kwargs.setdefault('auto_id', '{}_%s'.format(auto_name))
+        auto_name = self.form_name  ## .replace('_form', '')
+        kwargs.setdefault('auto_id', '{}-%s'.format(auto_name))
         super(DialogFormMixin, self).__init__(*args, **kwargs)
 
     @classproperty
@@ -42,28 +43,31 @@ class DialogFormMixin(NgModelFormMixin, NgFormValidationMixin):
         Dialog Forms rendered as summary just display their values instead of input fields.
         This is useful to render a summary of a previously filled out form.
         """
-        output = []
-        for name in self.fields.keys():
-            bound_field = self[name]
-            value = bound_field.value()
-            if bound_field.is_hidden:
-                continue
-            if isinstance(value, (list, tuple)):
-                line = []
-                cast_to = type(tuple(bound_field.field.choices)[0][0])
-                for v in value:
+        try:
+            return mark_safe(self.instance.as_text())
+        except (AttributeError, TypeError):
+            output = []
+            for name in self.fields.keys():
+                bound_field = self[name]
+                value = bound_field.value()
+                if bound_field.is_hidden:
+                    continue
+                if isinstance(value, (list, tuple)):
+                    line = []
+                    cast_to = type(tuple(bound_field.field.choices)[0][0])
+                    for v in value:
+                        try:
+                            line.append(dict(bound_field.field.choices)[cast_to(v)])
+                        except (AttributeError, KeyError):
+                            pass
+                    output.append(force_text(', '.join(line)))
+                elif value:
                     try:
-                        line.append(dict(bound_field.field.choices)[cast_to(v)])
+                        value = dict(bound_field.field.choices)[value]
                     except (AttributeError, KeyError):
                         pass
-                output.append(force_text(', '.join(line)))
-            elif value:
-                try:
-                    value = dict(bound_field.field.choices)[value]
-                except (AttributeError, KeyError):
-                    pass
-                output.append(force_text(value))
-        return mark_safe('\n'.join(output))
+                    output.append(force_text(value))
+            return mark_safe('\n'.join(output))
 
     def get_response_data(self):
         """
@@ -76,6 +80,8 @@ class DialogForm(DialogFormMixin, Bootstrap3Form):
     """
     Base class for all dialog forms used with a DialogFormPlugin.
     """
+    label_css_classes = 'control-label font-weight-bold'
+
     plugin_id = fields.CharField(
         widget=widgets.HiddenInput,
         required=False,
@@ -96,6 +102,15 @@ class DialogModelForm(DialogFormMixin, Bootstrap3ModelForm):
     )
 
     plugin_order = fields.CharField(widget=widgets.HiddenInput)
+
+    @cached_property
+    def field_css_classes(self):
+        css_classes = {'*': getattr(Bootstrap3ModelForm, 'field_css_classes')}
+        for name, field in self.fields.items():
+            if not field.widget.is_hidden:
+                css_classes[name] = [css_classes['*']]
+                css_classes[name].append('{}-{}'.format(self.scope_prefix, name))
+        return css_classes
 
 
 class UniqueEmailValidationMixin(object):

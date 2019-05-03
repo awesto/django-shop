@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from shop.admin.order import BaseOrderAdmin
+from shop.admin.order import BaseOrderAdmin, OrderPaymentInline
 
 
 class OrderAdmin(BaseOrderAdmin):
@@ -22,3 +22,8 @@ class OrderAdmin(BaseOrderAdmin):
         search_fields = list(super(OrderAdmin, self).get_search_fields(request))
         search_fields.extend(['number', 'shipping_address_text', 'billing_address_text'])
         return search_fields
+
+    def get_inline_instances(self, request, obj=None):
+        inline_instances = list(super(OrderAdmin, self).get_inline_instances(request, obj))
+        inline_instances.append(OrderPaymentInline(self.model, self.admin_site))
+        return inline_instances

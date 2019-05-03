@@ -24,16 +24,15 @@ This tutorial shows how to setup a working e-commerce site with **django-SHOP** 
 dependencies. The code required to setup this demo can be found in the example/myshop folder.
 
 .. toctree::
-    :maxdepth: 1
-    :numbered:
+	:maxdepth: 1
+	:numbered:
 
-    tutorial/intro
-    tutorial/quickstart
-    tutorial/simple-product
-    tutorial/multilingual-product
-    tutorial/polymorphic-product
-    tutorial/catalog-views
-    tutorial/cart-checkout
+	tutorial/intro
+	tutorial/catalog-views
+	tutorial/commodity-product
+	tutorial/smartcard-product
+	tutorial/polymorphic-product
+	tutorial/cart-checkout
 
 
 Reference

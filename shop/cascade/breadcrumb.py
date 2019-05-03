@@ -7,13 +7,11 @@ from django.template import engines, TemplateDoesNotExist
 from django.template.loader import select_template
 from django.utils.html import mark_safe
 from django.utils.translation import ugettext_lazy as _
-
 from cms.apphook_pool import apphook_pool
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.fields import GlossaryField
-
 from shop.conf import app_settings
-from .plugin_base import ShopPluginBase
+from shop.cascade.plugin_base import ShopPluginBase
 
 
 class BreadcrumbPlugin(ShopPluginBase):

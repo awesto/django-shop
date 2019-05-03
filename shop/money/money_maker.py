@@ -2,17 +2,14 @@
 from __future__ import unicode_literals
 
 from decimal import Decimal, InvalidOperation
-
 from django.conf import settings
 from django.utils import six
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.formats import get_format
 from django.utils.translation import get_language
-
 from cms.utils.helpers import classproperty
-
 from shop.conf import app_settings
-from .iso4217 import CURRENCIES
+from shop.money.iso4217 import CURRENCIES
 
 
 @python_2_unicode_compatible
@@ -38,7 +35,7 @@ class AbstractMoney(Decimal):
         if self.is_nan():
             return self.MONEY_FORMAT.format(amount='–', **vals)
         try:
-            vals.update(amount=Decimal.__str__(self.quantize(self._cents)))
+            vals.update(amount=Decimal.__str__(Decimal.quantize(self, self._cents)))
         except InvalidOperation:
             raise ValueError("Can not represent {} as Money type.".format(self.__repr__()))
         if six.PY2:
@@ -58,7 +55,7 @@ class AbstractMoney(Decimal):
         if self.is_nan():
             amount = '–'  # mdash
         elif specifier in ('', 'f',):
-            amount = self.quantize(self._cents).__format__(specifier)
+            amount = Decimal.quantize(self, self._cents).__format__(specifier)
         else:
             amount = Decimal.__format__(self, specifier)
 
@@ -87,7 +84,7 @@ class AbstractMoney(Decimal):
             dec_part = decimal_sep + dec_part
 
         # grouping
-        if use_grouping:
+        if use_grouping and grouping > 0:
             int_part_gd = ''
             for cnt, digit in enumerate(int_part[::-1]):
                 if cnt and not cnt % grouping:
@@ -160,35 +157,32 @@ class AbstractMoney(Decimal):
         return float(s)
 
     def __eq__(self, other, context=None):
-        if self.is_nan() and (other == 0 or other.is_nan()):
-            return True
-        if isinstance(other, AbstractMoney):
-            other = self._assert_addable(other)
-        return Decimal.__eq__(self, other)
+        other = self._assert_addable(other)
+        return Decimal.__eq__(self.as_decimal(), other.as_decimal())
 
     def __lt__(self, other, context=None):
         other = self._assert_addable(other)
         if self.is_nan():
             return Decimal().__lt__(other)
-        return Decimal.__lt__(self, other)
+        return Decimal.__lt__(self.as_decimal(), other.as_decimal())
 
     def __le__(self, other, context=None):
         other = self._assert_addable(other)
         if self.is_nan():
             return Decimal().__le__(other)
-        return Decimal.__le__(self, other)
+        return Decimal.__le__(self.as_decimal(), other.as_decimal())
 
     def __gt__(self, other, context=None):
         other = self._assert_addable(other)
         if self.is_nan():
             return Decimal().__gt__(other)
-        return Decimal.__gt__(self, other)
+        return Decimal.__gt__(self.as_decimal(), other.as_decimal())
 
     def __ge__(self, other, context=None):
         other = self._assert_addable(other)
         if self.is_nan():
             return Decimal().__ge__(other)
-        return Decimal.__ge__(self, other)
+        return Decimal.__ge__(self.as_decimal(), other.as_decimal())
 
     def __deepcopy__(self, memo):
         return self.__class__(self._cents)
@@ -232,13 +226,11 @@ class AbstractMoney(Decimal):
         return 10**CURRENCIES[cls._currency_code][1]
 
     def _assert_addable(self, other):
-        if isinstance(other, (int, float)) and other == 0:
-            # so that we can add/substract zero to any currency
+        if not other:
+            # so that we can add/substract zero or None to any currency
             return self.__class__('0')
         if self._currency_code != getattr(other, '_currency_code', None):
             raise ValueError("Can not add/substract money in different currencies.")
-        if other.is_nan():
-            return self.__class__('0')
         return other
 
     def _assert_multipliable(self, other):
@@ -285,7 +277,7 @@ class MoneyMaker(type):
         else:
             currency_code = currency_code.upper()
         if currency_code not in CURRENCIES:
-            raise ValueError("'{}' is an unknown currency code. Please check shop/money/iso4217.py".format(currency_code))
+            raise TypeError("'{}' is an unknown currency code. Please check shop/money/iso4217.py".format(currency_code))
         name = str('MoneyIn' + currency_code)
         bases = (AbstractMoney,)
         try:

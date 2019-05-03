@@ -1,18 +1,17 @@
-{% load i18n static sekizai_tags %}
+{% load i18n %}
 
-{% addtoblock "js" %}<script src="{% static 'djng/js/django-angular.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-{% add_data "ng-requires" "djng.forms" %}
+{% include "shop/djng-form.html" %}
 
 {% if customer.is_anonymous %}
-<div class="panel panel-info">
-	<div class="panel-heading">
-		<div class="panel-title">{% block form-title %}Panel Title{% endblock %}</div>
+<div class="card">
+	<div class="card-header">
+	{% block form-title %}Panel Title{% endblock %}
 	</div>
 
-	<div class="panel-body">
+	<div class="card-body">
 	{% block form-content %}{% endblock %}
 	</div>
 </div>
 {% else %}
-<div class="bg-warning">{% trans "This page shall only be reachable by anonymous users" %}</div>
+<div class="alert alert-danger" role="alert">{% trans "This form shall only be reachable by anonymous users" %}</div>
 {% endif %}

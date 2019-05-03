@@ -7,18 +7,15 @@ from django.core.exceptions import ValidationError
 from django.template import engines
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
-
 from cms.plugin_pool import plugin_pool
-from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
+from cmsplugin_cascade.bootstrap4.buttons import BootstrapButtonMixin
 from cmsplugin_cascade.fields import GlossaryField
 from cmsplugin_cascade.plugin_base import TransparentWrapper
-
 from djng.forms import fields, NgModelFormMixin
 from djng.styling.bootstrap3.forms import Bootstrap3Form
-
+from shop.cascade.extensions import ShopExtendableMixin, LeftRightExtensionMixin
+from shop.cascade.plugin_base import ShopPluginBase
 from shop.conf import app_settings
-from .extensions import ShopExtendableMixin, LeftRightExtensionMixin
-from .plugin_base import ShopPluginBase
 
 
 class ShopOrderViewsForm(forms.ModelForm):
@@ -33,7 +30,7 @@ class ShopOrderViewsForm(forms.ModelForm):
 class ShopOrderViewsPlugin(LeftRightExtensionMixin, TransparentWrapper, ShopPluginBase):
     name = _("Order Views")
     require_parent = True
-    parent_classes = ('BootstrapColumnPlugin',)
+    parent_classes = ['BootstrapColumnPlugin']
     allow_children = True
     model_mixins = (ShopExtendableMixin,)
     form = ShopOrderViewsForm
@@ -54,7 +51,10 @@ class ShopOrderViewsPlugin(LeftRightExtensionMixin, TransparentWrapper, ShopPlug
                 'shop/order/detail.html',
             ])
         # can happen, if this plugin is abused outside of an OrderView
-        return engines['django'].from_string('<pre class="bg-danger">This {} plugin is used on a CMS page without an application of type "View Order".</pre>'.format(self.name))
+        alert_msg = '''<div class="alert alert-danger">
+        This {} plugin is used on a CMS page without an application of type "View Order".
+        </div>'''
+        return engines['django'].from_string(alert_msg.format(self.name))
 
 plugin_pool.register_plugin(ShopOrderViewsPlugin)
 
@@ -81,14 +81,14 @@ class OrderButtonForm(ShopOrderViewsForm):
 
 
 class OrderButtonBase(BootstrapButtonMixin, ShopPluginBase):
-    parent_classes = ['ShopOrderViewsPlugin']
+    parent_classes = ['BootstrapColumnPlugin']
     form = OrderButtonForm
     fields = ['button_content', 'glossary']
     glossary_field_order = ['button_type', 'button_size', 'button_options', 'quick_float',
                             'icon_align', 'icon_font', 'symbol']
 
     class Media:
-        css = {'all': ('cascade/css/admin/bootstrap.min.css', 'cascade/css/admin/bootstrap-theme.min.css',)}
+        css = {'all': ['cascade/css/admin/bootstrap4-buttons.css', 'cascade/css/admin/iconplugin.css']}
 
     @classmethod
     def get_identifier(cls, instance):
@@ -130,7 +130,7 @@ plugin_pool.register_plugin(ShopCancelOrderButtonPlugin)
 
 class AddendumForm(NgModelFormMixin, Bootstrap3Form):
     annotation = fields.CharField(
-        label=_("Supplementary annotation for this Order"),
+        label="",
         widget=widgets.Textarea(attrs={'rows': 2}),
     )
 
@@ -147,15 +147,15 @@ class ShopOrderAddendumFormPlugin(OrderButtonBase):
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
-            '{}/order/addenum-form.html'.format(app_settings.APP_LABEL),
-            'shop/order/addenum-form.html',
+            '{}/order/addendum-form.html'.format(app_settings.APP_LABEL),
+            'shop/order/addendum-form.html',
         ]
         return select_template(template_names)
 
     def render(self, context, instance, placeholder):
         context = super(ShopOrderAddendumFormPlugin, self).render(context, instance, placeholder)
         context.update({
-            'addenum_form': AddendumForm(),
+            'addendum_form': AddendumForm(),
             'show_history': instance.glossary.get('show_history', True),
         })
         return context

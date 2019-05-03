@@ -4,8 +4,7 @@ from __future__ import unicode_literals
 from django.utils.translation import ugettext_lazy as _
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.plugin_base import TransparentContainer
-
-from .plugin_base import ShopPluginBase
+from shop.cascade.plugin_base import ShopPluginBase
 
 
 class ShopExtendableMixin(object):
@@ -47,7 +46,7 @@ class ShopLeftExtension(TransparentContainer, ShopPluginBase):
     require_parent = True
     parent_classes = ('ShopCartPlugin', 'ShopOrderViewsPlugin')
     allow_children = True
-    render_template = 'cascade/generic/naked.html'
+    render_template = 'cascade/generic/wrapper.html'
 
 plugin_pool.register_plugin(ShopLeftExtension)
 
@@ -57,6 +56,6 @@ class ShopRightExtension(TransparentContainer, ShopPluginBase):
     require_parent = True
     parent_classes = ('ShopCartPlugin', 'ShopOrderViewsPlugin')
     allow_children = True
-    render_template = 'cascade/generic/naked.html'
+    render_template = 'cascade/generic/wrapper.html'
 
 plugin_pool.register_plugin(ShopRightExtension)

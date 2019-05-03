@@ -1,0 +1,4 @@
+{% load thumbnail %}
+{% thumbnail product.sample_image 244x244 crop as thumb %}
+{% thumbnail product.sample_image 488x488 crop as thumb2 %}
+<img class="img-fluid" src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}" srcset="{{ thumb.url }} 1x, {{ thumb2.url }} 2x" />

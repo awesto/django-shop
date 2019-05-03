@@ -50,7 +50,7 @@ class CartItemManager(models.Manager):
         Use this method to fetch items for shopping from the cart. It rearranges the result set
         according to the defined modifiers.
         """
-        cart_items = self.filter(cart=cart, quantity__gt=0).order_by('id')
+        cart_items = self.filter(cart=cart, quantity__gt=0).order_by('updated_at')
         for modifier in cart_modifiers_pool.get_all_modifiers():
             cart_items = modifier.arrange_cart_items(cart_items, request)
         return cart_items
@@ -86,6 +86,11 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         help_text=_("Product code of added item."),
     )
 
+    updated_at = models.DateTimeField(
+        _("Updated at"),
+        auto_now=True,
+    )
+
     extra = JSONField(verbose_name=_("Arbitrary information for this cart item"))
 
     objects = CartItemManager()
@@ -96,14 +101,15 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         verbose_name_plural = _("Cart items")
 
     @classmethod
-    def perform_model_checks(cls):
-        try:
-            allowed_types = ('IntegerField', 'DecimalField', 'FloatField')
-            field = [f for f in cls._meta.fields if f.attname == 'quantity'][0]
-            if not field.get_internal_type() in allowed_types:
-                msg = "Field `{}.quantity` must be of one of the types: {}."
-                raise ImproperlyConfigured(msg.format(cls.__name__, allowed_types))
-        except IndexError:
+    def perform_model_check(cls):
+        allowed_types = ['IntegerField', 'DecimalField', 'FloatField']
+        for field in cls._meta.fields:
+            if field.attname == 'quantity':
+                if not field.get_internal_type() in allowed_types:
+                    msg = "Field `{}.quantity` must be of one of the types: {}."
+                    raise ImproperlyConfigured(msg.format(cls.__name__, allowed_types))
+                break
+        else:
             msg = "Class `{}` must implement a field named `quantity`."
             raise ImproperlyConfigured(msg.format(cls.__name__))
 
@@ -117,8 +123,8 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     def save(self, *args, **kwargs):
         super(BaseCartItem, self).save(*args, **kwargs)
+        self.cart.save(update_fields=['updated_at'])
         self._dirty = True
-        self.cart._dirty = True
 
     def update(self, request):
         """
@@ -144,7 +150,7 @@ class CartManager(models.Manager):
         """
         Return the cart for current customer.
         """
-        if request.customer.is_visitor():
+        if request.customer.is_visitor:
             raise self.model.DoesNotExist("Cart for visiting customer does not exist.")
         if not hasattr(request, '_cached_cart') or request._cached_cart.customer.user_id != request.customer.user_id:
             request._cached_cart, created = self.get_or_create(customer=request.customer)
@@ -152,7 +158,7 @@ class CartManager(models.Manager):
 
     def get_or_create_from_request(self, request):
         has_cached_cart = hasattr(request, '_cached_cart')
-        if request.customer.is_visitor():
+        if request.customer.is_visitor:
             request.customer = CustomerModel.objects.get_or_create_from_request(request)
             has_cached_cart = False
         if not has_cached_cart or request._cached_cart.customer.user_id != request.customer.user_id:
@@ -206,8 +212,8 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         """
         This should be called after a cart item changed quantity, has been added or removed.
 
-        It will loop on all line items in the cart, and call all the cart modifiers for each item.
-        After doing this, it will compute and update the order's total and subtotal fields, along
+        It will loop over all items in the cart, and call all the configured cart modifiers.
+        After this is done, it will compute and update the order's total and subtotal fields, along
         with any supplement added along the way by modifiers.
 
         Note that theses added fields are not stored - we actually want to
@@ -281,7 +287,7 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         other_cart.delete()
 
     def __str__(self):
-        return "{}".format(self.pk) if self.pk else '(unsaved)'
+        return "{}".format(self.pk) if self.pk else "(unsaved)"
 
     @property
     def num_items(self):
@@ -302,7 +308,7 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     @property
     def is_empty(self):
-        return self.total_quantity == 0
+        return self.num_items == 0 and self.total_quantity == 0
 
     def get_caption_data(self):
         warnings.warn("This method is deprecated")

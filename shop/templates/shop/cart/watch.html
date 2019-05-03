@@ -1,53 +1,40 @@
-{% load i18n static sekizai_tags %}
+{% load i18n static sass_tags sekizai_tags %}
+
+{% addtoblock "css" %}<link href="{% sass_src 'shop/css/list-items.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 
 {% addtoblock "js" %}<script src="{% static 'shop/js/cart.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 {% add_data "ng-requires" "django.shop.cart" %}
 
-{% block shop-watch-table %}
-<table shop-cart endpoint="{% url 'shop:watch-list' %}" class="table table-hover">
-	<!-- content is rendered via ng-template "shop/cart.html" -->
-</table>
-{% endblock shop-watch-table %}
 
-<script id="shop/cart.html" type="text/ng-template">
-{% block shop-watch-thead %}
-	<thead>
-		<tr>
-			<th class="col-xs-10 text-center">{% trans "Product" %}</th>
-			<th class="col-xs-1 text-right">{% trans "Unit Price" %}</th>
-			<th class="col-xs-1"></th>
-		</tr>
-	</thead>
-{% endblock shop-watch-thead %}
+<div class="shop-cart" shop-cart="{% url 'shop:watch-list' %}">
+{% block shop-watch-head %}
+	<div class="row lead text-muted" ng-if="cart.items.length==0">
+		<div class="col">
+			{% trans "You are perfectly happy!" %}
+		</div>
+	</div>
+{% endblock shop-watch-head %}
 
-{% block shop-watch-tbody %}
-	<tbody>
-		<tr shop-cart-item ng-repeat="cart_item in cart.items" ng-init="cart_item.quantity=1">
-			<!-- content is rendered via ng-template "shop/cart-item.html" -->
-		</tr>
-	</tbody>
-{% endblock shop-watch-tbody %}
-
-{% block shop-watch-tfoot %}
-	<tfoot><tr><td colspan="3"></td></tr></tfoot>
-{% endblock %}
-</script>
-
-<script id="shop/cart-item.html" type="text/ng-template">
-{% block shop-watch-item %}
-	<td>
-		<div class="media" ng-bind-html="cart_item.summary.media"><!-- rendered by products/cart-`product`-media.html --></div>
-	</td>
-	<td class="text-center text-nowrap">
-		<strong ng-bind="cart_item.summary.price"></strong>
-	</td>
-	<td>
-		<button type="button" class="btn btn-xs btn-info btn-block" ng-click="addCartItem(cart_item)">
-			<span class="glyphicon glyphicon-ok-circle"></span>&nbsp;{% trans "Add to cart" %}
-		</button>
-		<button type="button" class="btn btn-xs btn-danger btn-block" ng-click="deleteCartItem(cart_item)">
-			<span class="glyphicon glyphicon-remove-circle"></span>&nbsp;{% trans "Remove" %}
-		</button>
-	</td>
-{% endblock shop-watch-item %}
-</script>
+{% block shop-watch-body %}
+	<div class="shop-list-item row border-top py-2" shop-cart-item ng-repeat="cart_item in cart.items" ng-init="cart_item.quantity=1">
+		<div class="col-12 col-md-6" ng-bind-html="cart_item.summary.media">
+			{# rendered by ProductSerializer using template "(myshop|shop)/products/cart-{product_model}-media.html" #}
+		</div>
+		<div class="col-12 col-md-6">
+			<div class="row">
+				<div class="col-6 lead text-nowrap text-right" ng-bind="cart_item.summary.price"></div>
+	{% block shop-watch-item-controls %}
+				<div class="col-4 col-md-6">
+					<button type="button" class="ml-auto btn btn-sm btn-secondary btn-block shop-item-control" ng-click="deleteWatchItem(cart_item)">
+						<span class="fa fa-trash-o mr-2"></span>{% trans "Remove" %}
+					</button>
+					<button type="button" class="ml-auto btn btn-sm btn-info btn-block shop-item-control" ng-click="addWatchItem(cart_item)">
+						<span class="fa fa-cart-arrow-down mr-2"></span>{% trans "Add to cart" %}
+					</button>
+				</div>
+	{% endblock %}
+			</div>
+		</div>
+	</div>
+{% endblock shop-watch-body %}
+</div>

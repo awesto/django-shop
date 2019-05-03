@@ -2,8 +2,9 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
-
+from shop.conf import app_settings
 from shop.models.customer import BaseCustomer
 
 
@@ -38,3 +39,11 @@ class Customer(BaseCustomer):
             self.number = (aggr['number__max'] or 0) + 1
             self.save()
         return self.get_number()
+
+    def as_text(self):
+        template_names = [
+            '{}/customer.txt'.format(app_settings.APP_LABEL),
+            'shop/customer.txt',
+        ]
+        template = select_template(template_names)
+        return template.render({'customer': self})

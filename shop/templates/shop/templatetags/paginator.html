@@ -1,0 +1,46 @@
+{% load i18n %}
+{% if previous_url %}
+<li class="page-item">
+	<a href="{{ previous_url }}" class="page-link" aria-label="Previous">
+		<span aria-hidden="true">&laquo;</span>
+	</a>
+</li>
+{% else %}
+<li class="page-item disabled">
+	<a href="#" class="page-link" aria-label="Previous">
+		<span aria-hidden="true">&laquo;</span>
+	</a>
+</li>
+{% endif %}
+
+{% for page_link in page_links %}
+	{% if page_link.is_break %}
+<li class="page-item disabled">
+	<a href="#" class="page-link"><span aria-hidden="true">&hellip;</span></a>
+</li>
+	{% else %}
+		{% if page_link.is_active %}
+<li class="page-item active">
+	<a href="{{ page_link.url }}" class="page-link">{{ page_link.number }}</a>
+</li>
+		{% else %}
+<li class="page-item">
+	<a href="{{ page_link.url }}" class="page-link">{{ page_link.number }}</a>
+</li>
+		{% endif %}
+	{% endif %}
+{% endfor %}
+
+{% if next_url %}
+<li class="page-item">
+	<a href="{{ next_url }}" class="page-link" aria-label="Next">
+		<span aria-hidden="true">&raquo;</span>
+	</a>
+</li>
+{% else %}
+<li class="page-item disabled">
+	<a href="#" class="page-link" aria-label="Next">
+		<span aria-hidden="true">&raquo;</span>
+	</a>
+</li>
+{% endif %}

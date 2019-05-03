@@ -1,20 +1,24 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.conf import settings
 from django.contrib.auth import get_user_model, authenticate, login, password_validation
+from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import EmailMultiAlternatives
 from django.core.exceptions import ValidationError
 from django.forms import widgets, ModelForm
-from django.template.loader import select_template
+from django.template.loader import get_template, select_template, render_to_string
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
-
 from djng.forms import fields, NgModelFormMixin, NgFormValidationMixin
 from djng.styling.bootstrap3.forms import Bootstrap3ModelForm
-
+from post_office import mail as post_office_mail
+from post_office.models import EmailTemplate
 from shop.conf import app_settings
+from shop.forms.base import UniqueEmailValidationMixin
 from shop.models.customer import CustomerModel
-from .base import UniqueEmailValidationMixin
+from shop.signals import email_queued
 
 
 class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValidationMixin, Bootstrap3ModelForm):
@@ -29,7 +33,7 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValid
 
     preset_password = fields.BooleanField(
         label=_("Preset password"),
-        widget=widgets.CheckboxInput(),
+        widget=widgets.CheckboxInput(attrs={'class': 'form-check-input'}),
         required=False,
         help_text=_("Send a randomly generated password to your e-mail address."),
     )
@@ -98,17 +102,25 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValid
             'password': password,
             'user': user,
         }
-        subject = select_template([
+        subject_template = select_template([
             '{}/email/register-user-subject.txt'.format(app_settings.APP_LABEL),
             'shop/email/register-user-subject.txt',
-        ]).render(context)
+        ])
         # Email subject *must not* contain newlines
-        subject = ''.join(subject.splitlines())
-        body = select_template([
+        subject = ''.join(subject_template.render(context).splitlines())
+        body_text_template = select_template([
             '{}/email/register-user-body.txt'.format(app_settings.APP_LABEL),
             'shop/email/register-user-body.txt',
-        ]).render(context)
-        user.email_user(subject, body)
+        ])
+        body_html_template = select_template([
+            '{}/email/register-user-body.html'.format(app_settings.APP_LABEL),
+            'shop/email/register-user-body.html',
+        ], using='post_office')
+        message = body_text_template.render(context)
+        html_message = body_html_template.render(context)
+        from_email = getattr(settings, 'DEFAULT_FROM_EMAIL')
+        user.email_user(subject, message, from_email=from_email, html_message=html_message)
+        email_queued()
 
 
 class ContinueAsGuestForm(ModelForm):
@@ -130,3 +142,28 @@ class ContinueAsGuestForm(ModelForm):
             password = get_user_model().objects.make_random_password(length=30)
             self.instance.user.set_password(password)
         return super(ContinueAsGuestForm, self).save(commit)
+
+
+class PasswordResetRequestForm(PasswordResetForm):
+    def send_mail(self, subject_template_name, email_template_name,
+                  context, from_email, to_email, html_email_template_name=None):
+        try:
+            email_template = EmailTemplate.objects.get(name='password-reset-inform')
+        except EmailTemplate.DoesNotExist:
+            subject = render_to_string(subject_template_name, context)
+            # Email subject *must not* contain newlines
+            subject = ''.join(subject.splitlines())
+            body = render_to_string(email_template_name, context)
+
+            email_message = EmailMultiAlternatives(subject, body, from_email, [to_email])
+            if html_email_template_name:
+                template = get_template(html_email_template_name, using='post_office')
+                html = template.render(context)
+                email_message.attach_alternative(html, 'text/html')
+                template.attach_related(email_message)
+            email_message.send()
+        else:
+            context['user'] = str(context['user'])
+            context['uid'] = context['uid'].decode('utf-8')
+            post_office_mail.send(to_email, template=email_template, context=context, render_on_delivery=True)
+        email_queued()

@@ -34,3 +34,12 @@ Unless all these directives are replaced by another JavaScript framework, such a
 Vue.js, Angular2/4, Aurelia, etc., one can setup **django-SHOP** without any JavaScript at all.
 Then however, a lot of functionality is lost and the user experience will be modest.
 
+
+CMS pages as categories
+-----------------------
+
+**My products have a many-to-many relation with the CMS PageModel. However, in the admin for the
+product, the multi-select widget dos not show any pages.**
+
+In the product's admin view, only CMS pages which in their advanced settings are marked as
+``CatalogList``, are eligible to be connected with a product.

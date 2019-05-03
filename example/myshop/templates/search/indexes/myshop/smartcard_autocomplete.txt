@@ -1,3 +1,0 @@
-{{ object.product_name }}
-{{ object.product_code }}
-{# could be added as well {{ object.caption|striptags }}  #}

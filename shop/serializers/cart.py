@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import models
-
 from rest_framework import serializers
-
 from shop.conf import app_settings
-from shop.models.cart import CartModel, CartItemModel, BaseCartItem
-from shop.money import Money
+from shop.models.cart import CartModel, CartItemModel
 from shop.rest.money import MoneyField
+from shop.models.fields import ChoiceEnum
 
 
 class ExtraCartRow(serializers.Serializer):
@@ -35,29 +32,14 @@ class ExtraCartRowList(serializers.Serializer):
         return [dict(ecr.data, modifier=modifier) for modifier, ecr in obj.items()]
 
 
-class CartListSerializer(serializers.ListSerializer):
-    """
-    This serializes a list of cart items, whose quantity is non-zero.
-    """
-    def get_attribute(self, instance):
-        manager = super(CartListSerializer, self).get_attribute(instance)
-        assert isinstance(manager, models.Manager) and issubclass(manager.model, BaseCartItem)
-        return manager.filter_cart_items(instance, self.context['request'])
+class BaseItemSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(lookup_field='pk', view_name='shop:cart-detail')
+    unit_price = MoneyField()
+    line_total = MoneyField()
+    summary = serializers.SerializerMethodField(
+        help_text="Sub-serializer for fields to be shown in the product's summary.")
+    extra_rows = ExtraCartRowList(read_only=True)
 
-
-class WatchListSerializer(serializers.ListSerializer):
-    """
-    This serializes a list of cart items, whose quantity is zero. An item in the cart with quantity
-    zero is considered as being watched. Thus we can reuse the cart as watch-list without having
-    to implement another model.
-    """
-    def get_attribute(self, instance):
-        manager = super(WatchListSerializer, self).get_attribute(instance)
-        assert isinstance(manager, models.Manager) and issubclass(manager.model, BaseCartItem)
-        return manager.filter_watch_items(instance, self.context['request'])
-
-
-class ItemModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = CartItemModel
 
@@ -69,17 +51,8 @@ class ItemModelSerializer(serializers.ModelSerializer):
 
     def to_representation(self, cart_item):
         cart_item.update(self.context['request'])
-        representation = super(ItemModelSerializer, self).to_representation(cart_item)
+        representation = super(BaseItemSerializer, self).to_representation(cart_item)
         return representation
-
-
-class BaseItemSerializer(ItemModelSerializer):
-    url = serializers.HyperlinkedIdentityField(lookup_field='pk', view_name='shop:cart-detail')
-    unit_price = MoneyField()
-    line_total = MoneyField()
-    summary = serializers.SerializerMethodField(
-        help_text="Sub-serializer for fields to be shown in the product's summary.")
-    extra_rows = ExtraCartRowList(read_only=True)
 
     def validate_product(self, product):
         if not product.active:
@@ -96,7 +69,6 @@ class BaseItemSerializer(ItemModelSerializer):
 
 class CartItemSerializer(BaseItemSerializer):
     class Meta(BaseItemSerializer.Meta):
-        list_serializer_class = CartListSerializer
         exclude = ['cart', 'id']
 
     def create(self, validated_data):
@@ -106,8 +78,7 @@ class CartItemSerializer(BaseItemSerializer):
 
 class WatchItemSerializer(BaseItemSerializer):
     class Meta(BaseItemSerializer.Meta):
-        list_serializer_class = WatchListSerializer
-        fields = ['product', 'url', 'summary', 'quantity', 'extra']
+        fields = ['product', 'product_code', 'url', 'summary', 'quantity', 'extra']
 
     def create(self, validated_data):
         cart = CartModel.objects.get_or_create_from_request(self.context['request'])
@@ -115,17 +86,10 @@ class WatchItemSerializer(BaseItemSerializer):
         return super(WatchItemSerializer, self).create(validated_data)
 
 
-class CartIconCaptionSerializer(serializers.ModelSerializer):
-    """
-    The default serializer used to render the information nearby the cart icon symbol, normally
-    located on the top right of e-commerce sites.
-    """
-    num_items = serializers.IntegerField(read_only=True, default=0)
-    total = MoneyField(default=Money())
-
-    class Meta:
-        model = CartModel
-        fields = ['num_items', 'total']
+class CartItems(ChoiceEnum):
+    without = False
+    unsorted = 1
+    arranged = 2
 
 
 class BaseCartSerializer(serializers.ModelSerializer):
@@ -140,31 +104,49 @@ class BaseCartSerializer(serializers.ModelSerializer):
     def to_representation(self, cart):
         cart.update(self.context['request'])
         representation = super(BaseCartSerializer, self).to_representation(cart)
+        if self.with_items:
+            items = self.represent_items(cart)
+            representation.update(items=items)
         return representation
 
+    def represent_items(self, cart):
+        raise NotImplementedError("{} must implement method `represent_items()`.".format(self.__class__))
 
-class CartSummarySerializer(BaseCartSerializer):
+
+class CartSerializer(BaseCartSerializer):
     total_quantity = serializers.IntegerField()
     num_items = serializers.IntegerField()
 
     class Meta(BaseCartSerializer.Meta):
         fields = ['total_quantity', 'num_items'] + BaseCartSerializer.Meta.fields
 
+    def __init__(self, *args, **kwargs):
+        self.with_items = kwargs.pop('with_items', CartItems.without)
+        super(CartSerializer, self).__init__(*args, **kwargs)
 
-class CartSerializer(CartSummarySerializer):
-    items = CartItemSerializer(many=True, read_only=True)
-
-    class Meta(BaseCartSerializer.Meta):
-        fields = ['items'] + CartSummarySerializer.Meta.fields
+    def represent_items(self, cart):
+        if self.with_items == CartItems.unsorted:
+            items = CartItemModel.objects.filter(cart=cart, quantity__gt=0).order_by('-updated_at')
+        else:
+            items = CartItemModel.objects.filter_cart_items(cart, self.context['request'])
+        serializer = CartItemSerializer(items, context=self.context, label=self.label, many=True)
+        return serializer.data
 
 
 class WatchSerializer(BaseCartSerializer):
-    items = WatchItemSerializer(many=True, read_only=True)
     num_items = serializers.IntegerField()
 
     class Meta(BaseCartSerializer.Meta):
-        fields = ['items', 'num_items']
+        fields = ['num_items']
 
-    def to_representation(self, cart):
-        # grandparent super
-        return super(BaseCartSerializer, self).to_representation(cart)
+    def __init__(self, *args, **kwargs):
+        self.with_items = kwargs.pop('with_items', CartItems.arranged)
+        super(WatchSerializer, self).__init__(*args, **kwargs)
+
+    def represent_items(self, cart):
+        if self.with_items == CartItems.unsorted:
+            items = CartItemModel.objects.filter(cart=cart, quantity=0).order_by('-updated_at')
+        else:
+            items = CartItemModel.objects.filter_watch_items(cart, self.context['request'])
+        serializer = WatchItemSerializer(items, context=self.context, label=self.label, many=True)
+        return serializer.data

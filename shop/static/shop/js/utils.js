@@ -16,6 +16,7 @@ djangoShopModule.directive('shopTimestamp', ['$filter', '$locale', function($fil
 	};
 }]);
 
+
 djangoShopModule.provider('djangoShop', function() {
 	var self = this;
 
@@ -41,6 +42,7 @@ djangoShopModule.provider('djangoShop', function() {
 		self.location = $window.location;
 		return self;
 	}];
+
 });
 
 

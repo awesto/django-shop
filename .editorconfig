@@ -2,20 +2,28 @@ root = true
 
 [*]
 end_of_line = lf
+insert_final_newline = false
+trim_trailing_whitespace = false
+
+# Set default charset
+[*.{js,py,rst,json,yml,html,txt,scss}]
+charset = utf-8
+
+[*.{js,py,rst,yml,html,scss}]
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-# Set default charset
-[*.{js,py,rst,json,yml,html,txt}]
-charset = utf-8
-
 [*.{py}]
+line_length=119
 indent_style = space
 indent_size = 4
 
 [*.{html,js,rst,scss}]
 indent_style = tab
 indent_size = 4
+
+[*.{rst}]
+line_length=100
 
 [*.{json,yml,css}]
 indent_style = space

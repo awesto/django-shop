@@ -1,6 +1,6 @@
-{% load i18n %}{% autoescape off %}
-{% blocktrans %}You are receiving this email because you asked for a auto-generated password for your
-user account at {{ site_name }}.{% endblocktrans %}
+{% load i18n %}{% autoescape off %}{% blocktrans %}You're receiving this e-mail because you or someone else has requested an auto-generated password
+for your newly created user account '{{ user }}' at {{ site_name }}. It can be safely ignored if you did not
+create this account.{% endblocktrans %}
 
 {% blocktrans %}In the future, please use username {{ email }} with password {{ password }} to sign
 into {{ absolute_base_uri }}.{% endblocktrans %}

@@ -2,22 +2,18 @@ language: python
 
 python:
   - 2.7
-  - 3.4
   - 3.5
   - 3.6
 
 env:
   - DJANGOVER=django110
   - DJANGOVER=django111
-  - TOX_ENV=docs
 
 install:
   - pip install tox
-  - cd example && npm install
 
 script:
   - "if [[ $TRAVIS_PYTHON_VERSION == '2.7' && $DJANGOVER ]]; then export TOX_ENV=py27-$DJANGOVER; fi"
-  - "if [[ $TRAVIS_PYTHON_VERSION == '3.4' && $DJANGOVER ]]; then export TOX_ENV=py34-$DJANGOVER; fi"
   - "if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $DJANGOVER ]]; then export TOX_ENV=py35-$DJANGOVER; fi"
   - "if [[ $TRAVIS_PYTHON_VERSION == '3.6' && $DJANGOVER ]]; then export TOX_ENV=py36-$DJANGOVER; fi"
-  - tox -r -e "$TOX_ENV"
+  - tox --recreate -e "$TOX_ENV"

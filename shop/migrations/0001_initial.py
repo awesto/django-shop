@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=50, verbose_name='Name')),
                 ('transition_target', models.CharField(max_length=50, verbose_name='Event')),
                 ('mail_to', models.PositiveIntegerField(default=None, null=True, verbose_name='Mail to', blank=True)),
-                ('mail_template', models.ForeignKey(verbose_name='Template', to='post_office.EmailTemplate')),
+                ('mail_template', models.ForeignKey(verbose_name='Template', to='post_office.EmailTemplate', on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name': 'Notification',
@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('attachment', filer.fields.file.FilerFileField(related_name='email_attachment', blank=True, to='filer.File', null=True)),
-                ('notification', models.ForeignKey(to='shop.Notification')),
+                ('notification', models.ForeignKey(to='shop.Notification', on_delete=models.CASCADE)),
             ],
             options={
             },

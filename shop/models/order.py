@@ -1,33 +1,26 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from six import with_metaclass
 from decimal import Decimal
-
+import logging
+from six import with_metaclass
 from django.core.exceptions import ImproperlyConfigured
-from django.core.urlresolvers import reverse
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
-try:
-    from django.urls import NoReverseMatch
-except ImportError:
-    from django.core.urlresolvers import NoReverseMatch
+from django.urls import NoReverseMatch, reverse
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy, get_language_from_request
 from django.utils.six.moves.urllib.parse import urljoin
-from rest_framework.exceptions import PermissionDenied
-
 from django_fsm import FSMField, transition
 from ipware.ip import get_ip
 from cms.models import Page
-
 from shop.conf import app_settings
 from shop.models.cart import CartItemModel
 from shop.models.fields import JSONField
 from shop.money.fields import MoneyField, MoneyMaker
 from shop import deferred
-from .product import BaseProduct
+from shop.models.product import BaseProduct
 
 
 class OrderQuerySet(models.QuerySet):
@@ -56,16 +49,24 @@ class OrderManager(models.Manager):
 
     def create_from_cart(self, cart, request):
         """
-        This creates a new empty Order object with a valid order number. This order is not
-        populated with any cart items yet. This must be performed in the next step by calling
-        ``order.populate_from_cart(cart, request)``.
-        If this method is not invoked, the order object remains in state ``new``.
+        This creates a new empty Order object with a valid order number (many payment service
+        providers require an order number, before the purchase is actually completed). Therefore
+        the order is not populated with any cart items yet; this must be performed in the next step
+        by calling ``order.populate_from_cart(cart, request)``, otherwise the order object remains
+        in state ``new``. The latter can happen, if a payment service provider did not acknowledge
+        a payment, hence the items remain in the cart.
         """
         cart.update(request)
         cart.customer.get_or_assign_number()
-        order = self.model(customer=cart.customer, currency=cart.total.currency,
-                           _subtotal=Decimal(0), _total=Decimal(0), stored_request=self.stored_request(request))
+        order = self.model(
+            customer=cart.customer,
+            currency=cart.total.currency,
+            _subtotal=Decimal(0),
+            _total=Decimal(0),
+            stored_request=self.stored_request(request),
+        )
         order.get_or_assign_number()
+        order.assign_secret()
         order.save()
         return order
 
@@ -81,52 +82,28 @@ class OrderManager(models.Manager):
             'user_agent': request.META.get('HTTP_USER_AGENT'),
         }
 
-    def filter_from_request(self, request):
-        """
-        Return a queryset containing the orders for the customer associated with the given
-        request object.
-        """
-        if request.customer.is_visitor():
-            detail = _("Only signed in customers can view their orders")
-            raise PermissionDenied(detail=detail)
-        return self.get_queryset().filter(customer=request.customer).order_by('-updated_at', )
-
     def get_summary_url(self):
         """
         Returns the URL of the page with the list view for all orders related to the current customer
         """
-        if hasattr(self, '_summary_url'):
-            return self._summary_url
-        try:  # via CMS pages
-            page = Page.objects.public().get(reverse_id='shop-order')
-        except Page.DoesNotExist:
-            page = Page.objects.public().filter(application_urls='OrderApp').first()
-        if page:
-            self._summary_url = page.get_absolute_url()
-        else:
-            try:  # through hardcoded urlpatterns
-                self._summary_url = reverse('shop-order')
-            except NoReverseMatch:
-                self._summary_url = 'cms-page_or_view_with_reverse_id=shop-order_does_not_exist/'
+        if not hasattr(self, '_summary_url'):
+            try:  # via CMS pages
+                page = Page.objects.public().get(reverse_id='shop-order')
+            except Page.DoesNotExist:
+                page = Page.objects.public().filter(application_urls='OrderApp').first()
+            if page:
+                self._summary_url = page.get_absolute_url()
+            else:
+                try:  # through hardcoded urlpatterns
+                    self._summary_url = reverse('shop-order')
+                except NoReverseMatch:
+                    self._summary_url = '/cms-page_or_view_with__reverse_id=shop-order__does_not_exist/'
         return self._summary_url
-
-    def get_latest_url(self):
-        """
-        Returns the URL of the page with the detail view for the latest order related to the
-        current customer. This normally is the thank-you view.
-        """
-        try:
-            return Page.objects.public().get(reverse_id='shop-order-last').get_absolute_url()
-        except Page.DoesNotExist:
-            try:
-                return reverse('shop-order-last')
-            except NoReverseMatch:
-                return '/cms-page_or_view_with_reverse_id=shop-order-last_does_not_exist/'
 
 
 class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
     """
-    Add configured Workflow mixin classes to `OrderModel` and `OrderPayment` to customize
+    Add configured Workflow mixin classes to ``OrderModel`` and ``OrderPayment`` to customize
     all kinds of state transitions in a pluggable manner.
     """
 
@@ -137,7 +114,10 @@ class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
             attrs.update(_transition_targets={}, _auto_transitions={})
             for b in reversed(bases):
                 TRANSITION_TARGETS = getattr(b, 'TRANSITION_TARGETS', {})
-                delattr(b, 'TRANSITION_TARGETS')
+                try:
+                    delattr(b, 'TRANSITION_TARGETS')
+                except AttributeError:
+                    pass
                 if set(TRANSITION_TARGETS.keys()).intersection(attrs['_transition_targets']):
                     msg = "Mixin class {} already contains a transition named '{}'"
                     raise ImproperlyConfigured(msg.format(b.__name__, ', '.join(TRANSITION_TARGETS.keys())))
@@ -180,6 +160,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         'BaseCustomer',
         verbose_name=_("Customer"),
         related_name='orders',
+        on_delete=models.PROTECT,
     )
 
     status = FSMField(
@@ -228,6 +209,10 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     class Meta:
         abstract = True
 
+    def __init__(self, *args, **kwargs):
+        super(BaseOrder, self).__init__(*args, **kwargs)
+        self.logger = logging.getLogger('shop.order')
+
     def __str__(self):
         return self.get_number()
 
@@ -248,6 +233,17 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         A class inheriting from Order may transform this into a string which is better readable.
         """
         return str(self.pk)
+
+    def assign_secret(self):
+        """
+        Hook to assign a secret to authorize access on this Order object without authentication.
+        """
+
+    @property
+    def secret(self):
+        """
+        Hook to return a secret if available.
+        """
 
     @classmethod
     def resolve_number(cls, number):
@@ -293,6 +289,8 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         Override this method, in case a customized cart has some fields which have to be transfered
         to the cart.
         """
+        assert hasattr(cart, 'subtotal') and hasattr(cart, 'total'), \
+            "Did you forget to invoke 'cart.update(request)' before populating from cart?"
         for cart_item in cart.items.all():
             cart_item.update(request)
             order_item = OrderItemModel(order=self)
@@ -326,10 +324,13 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
                                           quantity=order_item.quantity, extra=extra)
             cart_item.save()
 
-    def save(self, **kwargs):
+    def save(self, with_notification=False, **kwargs):
         """
-        The status of an Order object may change, if auto transistions are specified.
+        :param with_notification: If ``True``, all notifications for the state of this Order object
+        are executed.
         """
+        from shop.transition import transition_change_notification
+
         auto_transition = self._auto_transitions.get(self.status)
         if callable(auto_transition):
             auto_transition(self)
@@ -338,6 +339,8 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         self._subtotal = BaseOrder.round_amount(self._subtotal)
         self._total = BaseOrder.round_amount(self._total)
         super(BaseOrder, self).save(**kwargs)
+        if with_notification:
+            transition_change_notification(self)
 
     @cached_property
     def amount_paid(self):
@@ -362,16 +365,16 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
     @transition(field='status', source='*', target='payment_confirmed', conditions=[is_fully_paid])
     def acknowledge_payment(self, by=None):
         """
-        Change status to `payment_confirmed`. This status code is known globally and can be used
+        Change status to ``payment_confirmed``. This status code is known globally and can be used
         by all external plugins to check, if an Order object has been fully paid.
         """
+        self.logger.info("Acknowledge payment by user %s", by)
 
     def cancelable(self):
         """
-        Returns True if the current Order is cancelable.
+        A hook method to be overridden by mixin classes managing Order cancellations.
 
-        This method is just a hook and must be overridden by a mixin class
-        managing Order cancellations.
+        :returns: ``True`` if the current Order is cancelable.
         """
         return False
 
@@ -380,20 +383,29 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         Hook to handle payment refunds.
         """
 
+    def withdraw_from_delivery(self):
+        """
+        Hook to withdraw shipping order.
+        """
+
     @classmethod
     def get_all_transitions(cls):
         """
-        Returns a generator over all transition objects for this Order model.
+        :returns: A generator over all transition objects for this Order model.
         """
         return cls.status.field.get_all_transitions(OrderModel)
 
     @classmethod
     def get_transition_name(cls, target):
-        """Return the human readable name for a given transition target"""
+        """
+        :returns: The verbose name for a given transition target.
+        """
         return cls._transition_targets.get(target, target)
 
     def status_name(self):
-        """Return the human readable name for the current transition state"""
+        """
+        :returns: The verbose name for the current transition state.
+        """
         return self._transition_targets.get(self.status, self.status)
 
     status_name.short_description = pgettext_lazy('order_models', "State")
@@ -497,23 +509,29 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     class Meta:
         abstract = True
-        verbose_name = _("Order item")
-        verbose_name_plural = _("Order items")
+        verbose_name = pgettext_lazy('order_models', "Ordered Item")
+        verbose_name_plural = pgettext_lazy('order_models', "Ordered Items")
 
     def __str__(self):
         return self.product_name
 
     @classmethod
-    def perform_model_checks(cls):
-        try:
-            cart_field = [f for f in CartItemModel._meta.fields if f.attname == 'quantity'][0]
-            order_field = [f for f in cls._meta.fields if f.attname == 'quantity'][0]
-            if order_field.get_internal_type() != cart_field.get_internal_type():
-                msg = "Field `{}.quantity` must be of one same type `{}.quantity`."
-                raise ImproperlyConfigured(msg.format(cls.__name__, CartItemModel.__name__))
-        except IndexError:
+    def perform_model_check(cls):
+        for cart_field in CartItemModel._meta.fields:
+            if cart_field.attname == 'quantity':
+                break
+        else:
             msg = "Class `{}` must implement a field named `quantity`."
-            raise ImproperlyConfigured(msg.format(cls.__name__))
+            raise ImproperlyConfigured(msg.format(CartItemModel.__name__))
+        for order_field in OrderItemModel._meta.fields:
+            if order_field.attname == 'quantity':
+                break
+        else:
+            msg = "Class `{}` must implement a field named `quantity`."
+            raise ImproperlyConfigured(msg.format(OrderItemModel.__name__))
+        if order_field.get_internal_type() != cart_field.get_internal_type():
+            msg = "Field `{}.quantity` must be of one same type `{}.quantity`."
+            raise ImproperlyConfigured(msg.format(CartItemModel.__name__, OrderItemModel.__name__))
 
     @property
     def unit_price(self):

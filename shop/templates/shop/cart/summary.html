@@ -1,17 +1,26 @@
 {% load i18n static sekizai_tags %}
 
-<div class="panel panel-default">
-	<ul class="list-group">
-		<li class="list-group-item">{% trans "Number of items" %}:<div class="pull-right half-width"><strong djng-bind-if="cart.num_items">{{ cart.num_items }}</strong></div></li>
-		<li class="list-group-item">{% trans "Subtotal" %}:<div class="pull-right half-width"><strong djng-bind-if="cart.subtotal">{{ cart.subtotal }}</strong></div></li>
-	{% for extra_row in cart.extra_rows %}
-		<li class="list-group-item" ng-if="!cart">
-		{% include 'shop/cart/extra-listitem.html' with ng=0 %}
-		</li>
-	{% endfor %}
-		<li class="list-group-item" ng-cloak ng-if="cart" ng-repeat="extra_row in cart.extra_rows">
-		{% include 'shop/cart/extra-listitem.html' with ng=1 %}
-		</li>
-	</ul>
-	<div class="panel-footer">{% trans "Total" %}:<div class="half-width pull-right"><strong djng-bind-if="cart.total">{{ cart.total }}</strong></div></div>
-</div>
+<ul class="list-group">
+	<li class="list-group-item">
+		<span class="pull-left">{% trans "Number of items" %}:</span>
+		<span class="pull-right font-weight-bold" djng-bind-if="cart.num_items">{{ cart.num_items }}</span>
+	</li>
+	<li class="list-group-item">
+		<span class="pull-left">{% trans "Subtotal" %}:</span>
+		<span class="pull-right font-weight-bold" djng-bind-if="cart.subtotal">{{ cart.subtotal }}</span>
+	</li>
+{% for extra_row in cart.extra_rows %}
+	<li class="list-group-item" ng-if="!cart">
+		<span class="pull-left">{{ extra_row.label }}:</span>
+		<span class="pull-right font-weight-bold">{{ extra_row.amount }}</span>
+	</li>
+{% endfor %}
+	<li class="list-group-item" ng-cloak ng-if="cart" ng-repeat="extra_row in cart.extra_rows">
+		<span class="pull-left" ng-bind="extra_row.label">:</span>
+		<span class="pull-right font-weight-bold" ng-bind="extra_row.amount"></span>
+	</li>
+	<li class="list-group-item list-group-item-secondary lead font-weight-bold">
+		<span class="pull-left">{% trans "Total" %}:</span>
+		<span class="pull-right" djng-bind-if="cart.total">{{ cart.total }}</span>
+	</li>
+</ul>

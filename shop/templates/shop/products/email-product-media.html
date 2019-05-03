@@ -1,0 +1,12 @@
+{% comment %}
+Fallback template if none is found in "myshop/products/email-<product_model>-media.html"
+Since we don't know how each product references its sample images (or if there aren't any),
+this template returns an empty string. A template in the merchant implementation knowing which
+sample image to render, shall only return the path to the thumbnailed image. This is because
+images in email must be added as inlines to the email body.
+Usually it is enough create a file 'myshop/products/email-product-media.html' containing this
+statement:
+
+	{% extends "shop/products/sample-image.path" %}
+
+{% endcomment %}

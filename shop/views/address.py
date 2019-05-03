@@ -77,7 +77,9 @@ class AddressEditView(GenericAPIView):
             cart.save()
 
         # repopulate the form with address fields from the last remaining address
-        form = self.form_class(instance=instance, cart=cart)
-        initial_data = dict((k, v) for k, v in form.get_initial_data().items() if k in self.visible_fields)
-        initial_data.update(active_priority=str(instance.priority), siblings_summary=form.siblings_summary)
-        return Response({self.form_class.form_name: initial_data})
+        if instance:
+            form = self.form_class(instance=instance, cart=cart)
+            initial_data = dict((k, v) for k, v in form.get_initial_data().items() if k in self.visible_fields)
+            initial_data.update(active_priority=str(instance.priority), siblings_summary=form.siblings_summary)
+            return Response({self.form_class.form_name: initial_data})
+        return Response(status=status.HTTP_410_GONE)

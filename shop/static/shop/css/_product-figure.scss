@@ -1,18 +1,17 @@
-@import "variables";
 
-figure {
-	border: 1px solid $list-group-border;
-	border-radius: $border-radius-base;
-	padding: 10px;
-	a:hover, a:active {
+figure.figure {
+	border-width: $border-width;
+	border-color: $border-color;
+	border-style: solid;
+	border-radius: $border-radius;
+	padding: $spacer $spacer 0;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	a, a:hover, a:active {
+		color: $body-color;
 		text-decoration: none;
 	}
-	h4 {
-		min-height: 38px;
-	}
-	figcaption {
-		margin-top: 5px;
-		min-height: 50px;
-	}
-	min-height: 340px;
 }

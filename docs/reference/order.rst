@@ -111,7 +111,7 @@ key which is not suitable for all e-commerce sites.
 Method ``get_or_assign_number()``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Is used to assign a new number to an Order objects, if none has been assigned yet, otherwise it
+Is used to assign a new number to an Order object, if none has been assigned yet, otherwise it
 returns the assigned one.
 
 
@@ -444,11 +444,11 @@ implemented as:
 
 	from django.contrib import admin
 	from shop.models.order import OrderModel
-	from shop.admin.order import (PrintOrderAdminMixin,
+	from shop.admin.order import (PrintInvoiceAdminMixin,
 	    BaseOrderAdmin, OrderPaymentInline, OrderItemInline)
 
 	@admin.register(OrderModel)
-	class OrderAdmin(PrintOrderAdminMixin, BaseOrderAdmin):
+	class OrderAdmin(PrintInvoiceAdminMixin, BaseOrderAdmin):
 	    fields = BaseOrderAdmin.fields + (
 	        ('shipping_address_text', 'billing_address_text',),)
 	    inlines = (OrderItemInline, OrderPaymentInline,)
@@ -456,13 +456,9 @@ implemented as:
 The fields ``shipping_address_text`` and ``billing_address_text`` are not part of the abstract model
 class ``BaseOrder`` and therefore must be referenced separately.
 
-Another useful mixin class to be added to this admin backend is ``PrintOrderAdminMixin``. Whenever
-the status of an order is set to "*Pick the Goods*" a button labeled "*Print Delivery Note*" is
-added to the order admin form. Clicking on that button displays one ore more pages optimized for
-printing.
-
-On the other hand, when the status of an order is set to "*Pack the Goods*" a button labeled
-"*Print Invoice*" is added to the order admin form.
+Another useful mixin class to be added to this admin backend is ``PrintInvoiceAdminMixin``. Whenever
+the status of an order shows it has been paid, a button labeled "*Print Invoice*" is added to the
+order admin form. Clicking on that button displays one ore more pages optimized for printing.
 
 The template for the invoice and delivery note can easily be adopted to the corporate design using
 plain HTML and CSS.

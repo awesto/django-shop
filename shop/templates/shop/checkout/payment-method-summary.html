@@ -3,7 +3,7 @@
 {% block summary_tag %}
 <div class="form-group">
 	{% if headline_legend %}
-	<h4>{{ payment_method_form.payment_modifier.label }}</h4>
+	<h5>{{ payment_method_form.payment_modifier.label }}</h5>
 	{% endif %}
 	<shop-checkout-digest initial-tag="{payment_method_tag: '{{ payment_method_form.as_text }}'}">
 		<pre ng-bind="checkoutDigest.payment_method_tag" class="shop-checkout-summary"></pre>

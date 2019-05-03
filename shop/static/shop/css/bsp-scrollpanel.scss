@@ -1,0 +1,25 @@
+bsp-scrollpanel.shop-product-detail {
+	background: #fff;
+	box-shadow: 0 0 5px rgba(0, 0, 0, .10);
+	border: 1px solid #efefef;
+	margin-bottom: 15px;
+	white-space: nowrap;
+	ul {
+		margin: 0;
+		padding: 5px;
+		display: block;
+		list-style-type: none;
+		white-space: nowrap;
+		transition: margin-left 0.5s;
+
+		li {
+			display: inline-block;
+			margin: 0 5px 0 0;
+			overflow: auto;
+			white-space: initial;
+			img {
+				height: 300px;
+			}
+		}
+	}
+}

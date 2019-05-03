@@ -7,44 +7,103 @@
 [![Twitter Follow](https://img.shields.io/twitter/follow/djangoSHOP.svg?style=social&label=djangoSHOP)](https://twitter.com/djangoSHOP)
 
 
-**Release 1.0 will be ready soon!** If you want to get a first impression, vistit
-https://github.com/awesto/cookiecutter-django-shop and follow the instructions. In less than three
-minutes you will have a running instance of **django-SHOP**, preconfigured to your needs.
+**Release 1.0 has been released!**
 
-## Run the demo projects using Docker
-
-To get a first impression on **django-SHOP**, try out one of the six fully working demo projects.
-
-```
-git clone --depth=1 https://github.com/awesto/django-shop.git
-cd django-shop
-export DJANGO_SHOP_TUTORIAL=commodity
-docker-compose up --build
-```
-
-Wait a few minutes until everything has been build and media files have been downloaded.
-In the meantime find the IP address of your Docker machine using ``docker-machine ip``.
-
-Point a browser onto http://*docker-machines-ip*:9009/
-
-Change DJANGO_SHOP_TUTORIAL to ``i18n_commodity``, ``smartcard``, ``i18n_smartcard``,
-``polymorphic`` or ``i18n_polymorphic`` and rebuild the container to run the other prepared
-demos.
-
-### Run the demo in a local virtualenv
-
-Following the [introduction instructions](http://django-shop.readthedocs.io/en/latest/tutorial/intro.html)
-should create a running shop in minutes, prefilled with a dozen of products. You can even pay by credit
-card.
+**Django-SHOP** aims to be a the easy, fun and fast e-commerce counterpart to
+[django-CMS](https://www.django-cms.org/).
 
 
-## Current Status of Django-SHOP
+## Build the database model out of the product's properties – not vice versa
 
-**Django-SHOP** aims to be a the easy, fun and fast e-commerce counterpart to **django-CMS**.
+Most e-commerce systems are shipped with a predefined database model for products. But products can
+vary a lot, and it simply is impossible to create a model which fits for all of them. This is
+esspecially true for products with a hierarchy of variants. In many popular e-commerce platforms,
+you either have far too many attributes per product, and/or the really required attributes are
+missing.
 
-Specifically, we aim at providing a clean, modular and Pythonic/Djangonic implementation of an
-e-commerce framework, that a moderately experienced Django developer should be able to pick up
-and run easily.
+In **django-SHOP** implementations, the product models reflect their pysical properties making it
+possible to create complete and deep hierarchies of variations, but without having to fiddle with
+unneeded properties.
+
+
+## Don't build pages using hard-coded templates – compose them
+
+With the advent of frameworks, such as Angular, React, Vue and Aurelia, building web-applications
+shifted from a page-centric to a component-based approach.
+
+In **django-SHOP**, you are in full control over the page's layout, since all components are
+encapsulated and independent from each other. This means that instead of adopting the Catalog, Cart,
+Checkout and Order pages, use the **django-CMS** plugin system to compose everything required for
+those pages.
+
+
+## All Views are either HTML or RESTful services
+
+Browser based navigation is important, but nowadays it's only one of many channels, clients
+communicate with a web-server. Consider Single Page Applications or other native clients, where we
+use RESTful APIs instead of pure HTTP.
+
+This strongly reduces the payload having to be transferred. It furthermore gives the client a
+smoother user experience, since only the content has to be updated, rather than having to do full
+page reloads.
+
+
+## Programmable cart modifiers
+
+During checkout, taxes have to be applied or attributed. Depending on the shipping destination, the
+product group and other factors, this computation can either be simple or quite demanding.
+**Django-SHOP** offers a pluggable interface, to create modifiers which calculate the cart's totals,
+taxes and other costs.
+
+This same interface can be extended to compute the weight and shipping costs. It also can be used
+for subtracting discounts or to add additional charges. 
+
+
+## Programmable workflow for fulfilment and delivery
+
+Fulfilling and shipping orders, probably is that part in e-commerce, which requires the most
+individual adaption. **Django-SHOP** offers a programmable interface for orders, by using a finite
+state machine to adopt the workflow. Each order may have several states, but only those actions
+may be performed, for which state transitions are explicitly possible.
+
+
+## It's modular
 
 Whenever possible, extra features shall be added to third party libraries. This implies that
 **django-SHOP** aims to provide an API, which allows merchants to add every feature they desire.
+
+Currently there are third party libraries for several Payment Service Providers, such as
+[PayPal](https://developer.paypal.com/docs/api/overview/), [Stripe](https://stripe.com/docs/api),
+[BS-PayOne](https://www.bspayone.com/DE/en) and [Viveum](https://www.viveum.com/?lang=en).
+An open interface allows you to add any other provider.
+
+Shipping Service Providers may be added as third party library as well. With
+[SendCloud](https://docs.sendcloud.sc/), ship your orders using one or more parcel services
+available for your region.
+
+
+## Start by building your own demo
+
+Instead of providing an accessible online demo, **django-SHOP** can be set up in less than three
+minutes, and preconfigured to your needs. Having access to the product models, you can immediate
+start to play arround, rename them, and modify them to reflect the properties of your products.
+This is the easiest way to get a shop up and running out of the box, with the flexibility of a
+web-site which could have been built from scratch by yourself.
+
+If you want to start with a fresh demo, please use the prepared
+[Cookiecutter template for django-SHOP](https://github.com/awesto/cookiecutter-django-shop)
+and follow the instructions. 
+
+
+## Audience of django-SHOP users
+
+Specifically, we aim at providing a clean, modular and Pythonic/Djangonic implementation of an
+e-commerce framework, that a moderately experienced Django developer should be able to pick up
+and run easily. Pure Django models are used to describe each product type, and so the Django admin
+shall be used to build a minimalistic editor for each of them.
+
+
+## Consultancy
+
+We provide full consultancy support and are available for building complete e-commerce systems based
+on **django-SHOP**. Please contact office@awesto.com for further questions.

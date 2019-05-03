@@ -15,7 +15,7 @@ from cmsplugin_cascade.forms import ManageChildrenFormMixin
 from cmsplugin_cascade.fields import GlossaryField
 from cmsplugin_cascade.link.forms import TextLinkFormMixin
 from cmsplugin_cascade.widgets import NumberInputWidget
-from cmsplugin_cascade.bootstrap3.buttons import BootstrapButtonMixin
+from cmsplugin_cascade.bootstrap4.buttons import BootstrapButtonMixin
 from cmsplugin_cascade.plugin_base import TransparentWrapper, TransparentContainer
 
 from shop.conf import app_settings
@@ -106,15 +106,20 @@ class ProcessNextStepPlugin(BootstrapButtonMixin, ShopPluginBase):
     name = _("Next Step Button")
     parent_classes = ('ProcessStepPlugin',)
     form = ProcessNextStepForm
-    fields = ('link_content', 'glossary')
+    fields = ['link_content', 'glossary']
     ring_plugin = 'ProcessNextStepPlugin'
-    glossary_field_order = ('button_type', 'button_size', 'button_options', 'quick_float',
-                            'icon_align', 'icon_font', 'symbol')
+    glossary_field_order = ['disable_invalid', 'button_type', 'button_size', 'button_options', 'quick_float',
+                            'icon_align', 'icon_font', 'symbol']
+
+    disable_invalid = GlossaryField(
+        label=_("Disable if invalid"),
+        widget=widgets.CheckboxInput(),
+        initial='',
+        help_text=_("Disable button if any form in this set is invalid"),
+    )
 
     class Media:
-        css = {'all': ('cascade/css/admin/bootstrap.min.css',
-                       'cascade/css/admin/bootstrap-theme.min.css',
-                       'cascade/css/admin/iconplugin.css',)}
+        css = {'all': ['cascade/css/admin/bootstrap4-buttons.css', 'cascade/css/admin/iconplugin.css']}
         js = ['shop/js/admin/nextstepplugin.js']
 
     @classmethod

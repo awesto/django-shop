@@ -1,2 +1,2 @@
 # -*- coding: utf-8 -*-
-from . import notification
+from shop.admin import notification

@@ -23,15 +23,14 @@ djangoShopModule.directive('shopProductSearch', ['$location', '$timeout', 'djang
 					params = {
 						q: $scope.searchQuery
 					};
+					$scope.filters = {};  // remove content in filters
 					$location.search(params);
 				}
 				// delay the execution of reloading products
 				if (acPromise) {
 					$timeout.cancel(acPromise);
-					acPromise = null;
 				}
 				acPromise = $timeout(function() {
-					$scope.filters = {};  // remove content in filters
 					$scope.$emit('shop.catalog.search', params);
 				}, 666);
 			};

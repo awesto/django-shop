@@ -4,7 +4,12 @@
 var module = angular.module('django.shop.purchase-button', ['djng.forms']);
 
 
-module.directive('button', ['$http', '$log', '$q', function($http, $log, $q) {
+// This special directive is used to initiate the purchasing operation from the client.
+// First, the client calls the purchase-URL from the shop, from there it receives a JavaScript
+// snippet, containing instructions on what to do next. Typically this is another http request onto
+// the PSP's endpoint. Sometimes it is a redirect onto another page, hence the `$window` parameter
+// has to be injected as well, even though unused.
+module.directive('button', ['$http', '$log', '$q', '$window', function($http, $log, $q, $window) {
 	return {
 		restrict: 'E',
 		require: '^?djngFormsSet',
@@ -20,7 +25,9 @@ module.directive('button', ['$http', '$log', '$q', function($http, $log, $q) {
 						eval(response.data.expression);
 						deferred.resolve(response);
 					}).catch(function(response) {
-						$log.error(response.message);
+						if (response.status >= 400 && response.status <= 499) {
+							scope.purchasingErrorMessage = response.data.purchasing_error_message;
+						}
 						deferred.reject(response);
 					});
 					return deferred.promise;

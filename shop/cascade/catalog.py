@@ -6,16 +6,14 @@ from django.forms import widgets
 from django.forms.models import ModelForm
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _, ugettext
-
 from cms.plugin_pool import plugin_pool
 from cms.utils.compat.dj import is_installed
 from cmsplugin_cascade.mixins import WithSortableInlineElementsMixin
 from cmsplugin_cascade.models import SortableInlineCascadeElement
 from cmsplugin_cascade.fields import GlossaryField
-
+from shop.cascade.plugin_base import ShopPluginBase, ProductSelectField
 from shop.conf import app_settings
 from shop.models.product import ProductModel
-from .plugin_base import ShopPluginBase, ProductSelectField
 
 if is_installed('adminsortable2'):
     from adminsortable2.admin import SortableInlineAdminMixin
@@ -29,11 +27,13 @@ class ShopCatalogPlugin(ShopPluginBase):
     parent_classes = ('BootstrapColumnPlugin', 'SimpleWrapperPlugin',)
     cache = False
 
-    infinite_scroll = GlossaryField(
-        widgets.CheckboxInput(),
-        label=_("Infinite Scroll"),
+    pagination = GlossaryField(
+        widgets.RadioSelect(choices=[
+            ('paginator', _("Use Paginator")), ('manual', _("Manual Infinite")), ('auto', _("Auto Infinite"))
+        ]),
+        label=_("Pagination"),
         initial=True,
-        help_text=_("Shall the product list view scroll infinitely?"),
+        help_text=_("Shall the product list view use a paginator or scroll infinitely?"),
     )
 
     def get_render_template(self, context, instance, placeholder):
@@ -41,20 +41,21 @@ class ShopCatalogPlugin(ShopPluginBase):
         if instance.glossary.get('render_template'):
             templates.append(instance.glossary['render_template'])
         templates.extend([
-            '{}/catalog/product-list.html'.format(app_settings.APP_LABEL),
-            'shop/catalog/product-list.html',
+            '{}/catalog/list.html'.format(app_settings.APP_LABEL),
+            'shop/catalog/list.html',
         ])
         return select_template(templates)
 
     def render(self, context, instance, placeholder):
-        context['infinite_scroll'] = bool(instance.glossary.get('infinite_scroll', True))
+        context['pagination'] = instance.glossary.get('pagination', 'paginator')
         return context
 
     @classmethod
     def get_identifier(cls, obj):
-        if obj.glossary.get('infinite_scroll', True):
-            return ugettext("Infinite Scroll")
-        return ugettext("Manual Pagination")
+        pagination = obj.glossary.get('pagination')
+        if pagination == 'paginator':
+            return ugettext("Manual Pagination")
+        return ugettext("Infinite Scroll")
 
 plugin_pool.register_plugin(ShopCatalogPlugin)
 
@@ -64,6 +65,13 @@ class ShopAddToCartPlugin(ShopPluginBase):
     require_parent = True
     parent_classes = ('BootstrapColumnPlugin',)
     cache = False
+
+    use_modal_dialog = GlossaryField(
+        widgets.CheckboxInput(),
+        label=_("Use Modal Dialog"),
+        initial='on',
+        help_text=_("After adding product to cart, render a modal dialog"),
+    )
 
     def get_render_template(self, context, instance, placeholder):
         templates = []
@@ -75,12 +83,20 @@ class ShopAddToCartPlugin(ShopPluginBase):
         ])
         return select_template(templates)
 
+    def render(self, context, instance, placeholder):
+        context = super(ShopAddToCartPlugin, self).render(context, instance, placeholder)
+        context['use_modal_dialog'] = bool(instance.glossary.get('use_modal_dialog', True))
+        return context
+
 plugin_pool.register_plugin(ShopAddToCartPlugin)
 
 
 class ProductGalleryForm(ModelForm):
-    product = ProductSelectField(required=False, label=_("Related Product"),
-        help_text=_("Choose related product"))
+    product = ProductSelectField(
+        required=False,
+        label=_("Related Product"),
+        help_text=_("Choose related product"),
+    )
 
     class Meta:
         exclude = ('glossary',)
@@ -153,7 +169,8 @@ class ShopProductGallery(WithSortableInlineElementsMixin, ShopPluginBase):
         queryset = ProductModel.objects.filter(pk__in=product_ids, active=True)
         serializer_class = app_settings.PRODUCT_SUMMARY_SERIALIZER
         serialized = serializer_class(queryset, many=True, context={'request': context['request']})
-        context['products'] = serialized.data
+        # sort the products according to the order provided by `sortinline_elements`.
+        context['products'] = [product for id in product_ids for product in serialized.data if product['id'] == id]
         return context
 
 plugin_pool.register_plugin(ShopProductGallery)

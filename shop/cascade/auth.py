@@ -5,29 +5,31 @@ from django.template.loader import select_template
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 from django.utils.module_loading import import_string
-
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.link.forms import LinkForm
-
 from djng.forms.fields import ChoiceField
-
+from shop.cascade.plugin_base import ShopLinkPluginBase, ShopLinkElementMixin
 from shop.conf import app_settings
-from .plugin_base import ShopLinkPluginBase, ShopLinkElementMixin
 
 AUTH_FORM_TYPES = [
     ('login', _("Login Form")),
-    ('login-reset', _("Login & Reset Form"), 'login'),
+    ('login-reset-request', _("Login & Reset Request"), 'login'),
     ('logout', _("Logout Form")),
     ('login-logout', _("Shared Login/Logout Form"), 'login'),
-    ('reset', _("Password Reset Form")),
-    ('change', _("Change Password Form")),
+    ('password-reset-request', _("Request Password Reset")),
+    ('password-reset-confirm', _("Confirm Password Reset")),
+    ('password-change', _("Change Password Form")),
     ('register-user', _("Register User"), 'shop.forms.auth.RegisterUserForm'),
     ('continue-as-guest', _("Continue as guest")),
 ]
 
 
 class ShopAuthForm(LinkForm):
-    LINK_TYPE_CHOICES = (('cmspage', _("CMS Page")), ('RELOAD_PAGE', _("Reload Page")), ('DO_NOTHING', _("Do Nothing")))
+    LINK_TYPE_CHOICES = [
+        ('cmspage', _("CMS Page")),
+        ('RELOAD_PAGE', _("Reload Page")),
+        ('DO_NOTHING', _("Do Nothing")),
+    ]
     form_type = ChoiceField(label=_("Rendered Form"), choices=(ft[:2] for ft in AUTH_FORM_TYPES),
         help_text=_("Select the appropriate form for various authentication purposes."))
 
@@ -43,7 +45,7 @@ class ShopAuthenticationPlugin(ShopLinkPluginBase):
     A placeholder plugin which provides various authentication forms, such as login-, logout-,
     register-, and other forms. They can be added any placeholder using the Cascade framework.
     """
-    name = _("Authentication")
+    name = _("Authentication Forms")
     parent_classes = ('BootstrapColumnPlugin',)
     model_mixins = (ShopLinkElementMixin,)
     form = ShopAuthForm
@@ -61,6 +63,7 @@ class ShopAuthenticationPlugin(ShopLinkPluginBase):
         template_names = [
             '{}/auth/{}.html'.format(app_settings.APP_LABEL, form_type),
             'shop/auth/{}.html'.format(form_type),
+            'shop/auth/form-not-found.html',
         ]
         return select_template(template_names)
 
@@ -70,15 +73,17 @@ class ShopAuthenticationPlugin(ShopLinkPluginBase):
         """
         form_type = instance.glossary.get('form_type')
         if form_type:
-            # prevent a malicious database entry to import an ineligible file
-            form_type = AUTH_FORM_TYPES[[ft[0] for ft in AUTH_FORM_TYPES].index(form_type)]
             try:
+                # prevent a malicious database entry to import an ineligible file
+                form_type = AUTH_FORM_TYPES[[ft[0] for ft in AUTH_FORM_TYPES].index(form_type)]
                 FormClass = import_string(form_type[2])
-            except (ImportError, IndexError):
-                if len(form_type) > 2:
-                    form_name = form_type[2]
-                else:
-                    form_name = form_type[0].replace('-', '_')
+            except ValueError:
+                context['form_name'] = 'not_found_form'
+            except IndexError:
+                form_name = form_type[0].replace('-', '_')
+                context['form_name'] = '{0}_form'.format(form_name)
+            except ImportError:
+                form_name = form_type[2]
                 context['form_name'] = '{0}_form'.format(form_name)
             else:
                 context['form_name'] = FormClass.form_name

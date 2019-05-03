@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import warnings
-
+from django.utils.deprecation import MiddlewareMixin
 from django.utils.functional import SimpleLazyObject
 from django.utils import timezone
 
@@ -15,7 +14,7 @@ def get_customer(request, force=False):
     return request._cached_customer
 
 
-class CustomerMiddleware(object):
+class CustomerMiddleware(MiddlewareMixin):
     """
     Similar to Django's AuthenticationMiddleware, which adds the user object to the request,
     this middleware adds the customer object to the request.
@@ -39,22 +38,3 @@ class CustomerMiddleware(object):
         except (AttributeError, ValueError):
             pass
         return response
-
-
-class MethodOverrideMiddleware(object):
-    """
-    TODO: Remove this deprecated class.
-    This middleware is required to emulate methods PUT and DELETE using a HTTP method POST
-    as wrapper. Some misconfigured proxies do not pass these methods properly, hence this
-    workaround is required.
-    """
-    METHOD_OVERRIDE_HEADER = 'HTTP_X_HTTP_METHOD_OVERRIDE'
-
-    def process_view(self, request, callback, callback_args, callback_kwargs):
-        warnings.warn("MethodOverrideMiddleware is deprecated and will be removed.")
-
-        if request.method != 'POST':
-            return
-        if self.METHOD_OVERRIDE_HEADER not in request.META:
-            return
-        request.method = request.META[self.METHOD_OVERRIDE_HEADER]

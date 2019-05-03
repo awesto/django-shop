@@ -5,20 +5,18 @@ from django.forms import widgets
 from django.template.loader import select_template, get_template
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import mark_safe
-
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.fields import GlossaryField
 from cmsplugin_cascade.plugin_base import TransparentWrapper
-
+from shop.cascade.extensions import ShopExtendableMixin, LeftRightExtensionMixin
+from shop.cascade.plugin_base import ShopPluginBase
 from shop.conf import app_settings
 from shop.models.cart import CartModel
 from shop.serializers.cart import CartSerializer
-from .extensions import ShopExtendableMixin, LeftRightExtensionMixin
-from .plugin_base import ShopPluginBase
 
 
 class ShopCartPlugin(LeftRightExtensionMixin, TransparentWrapper, ShopPluginBase):
-    name = _("Cart")
+    name = _("Shopping Cart")
     require_parent = True
     parent_classes = ('BootstrapColumnPlugin',)
     cache = False
@@ -71,8 +69,12 @@ class ShopCartPlugin(LeftRightExtensionMixin, TransparentWrapper, ShopPluginBase
             cart = CartModel.objects.get_from_request(context['request'])
             context['is_cart_filled'] = cart.items.exists()
             render_type = instance.glossary['render_type']
-            if render_type in ('static', 'summary',):
-                # update context for static and summary cart rendering since items are rendered in HTML
+            if render_type == 'static':
+                # update context for static cart with items to be endered as HTML
+                cart_serializer = CartSerializer(cart, context=context, label='cart', with_items=True)
+                context['cart'] = cart_serializer.data
+            elif render_type == 'summary':
+                # update context for cart summary to be endered as HTML
                 cart_serializer = CartSerializer(cart, context=context, label='cart')
                 context['cart'] = cart_serializer.data
         except (KeyError, CartModel.DoesNotExist):

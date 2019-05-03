@@ -1,48 +1,56 @@
-{% extends "shop/order/base.html" %}
-{% load i18n cms_tags %}
+{% load i18n static cms_tags sass_tags sekizai_tags %}
 {% load render_plugin from cascade_tags %}
 
-{% block shop-order-table %}
+{% addtoblock "css" %}<link href="{% sass_src 'shop/css/list-items.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
 
-	{% block shop-order-caption %}
-	<caption><h4>{% page_attribute "page_title" %}</h4></caption>
-	{% endblock %}
+{% addtoblock "js" %}<script src="{% static 'shop/js/utils.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+{% add_data "ng-requires" "django.shop.utils" %}
 
-	{% block shop-order-thead %}
-	<thead>
-		<tr>
-			<th class="text-center">{% trans "Order Date" %}</th>
-			<th class="text-center">{% trans "Sum" %}</th>
-			<th class="text-center">{% trans "Shipping Address" %}</th>
-			<th class="text-right">{% trans "Status" %}</th>
-		</tr>
-	</thead>
-	{% endblock shop-order-thead %}
+{% block shop-order-title %}
+<h4>{% page_attribute "page_title" %}</h4>
+{% endblock %}
 
-	{% block shop-order-tbody %}
-	<tbody>
-		{% for order in data.results %}
-		<tr>
-			<td class="text-center text-nowrap"><a href="{{ order.url }}" shop-timestamp="{{ order.created_at }}" time-format="d. MMM yyyy"></a></td>
-			<td class="text-center text-nowrap">{{ order.total }}</td>
-			<td class="text-center">{{ order.shipping_address_text }}</td>
-			<td class="text-right">{{ order.status }}</td>
-		</tr>
-		{% endfor %}
-	</tbody>
-	{% endblock shop-order-tbody %}
+{% block shop-order-head %}
+	{% if data.count == 0 %}
+<div class="row lead text-muted py-1">
+	<div class="col">
+		{% trans "You have never ordered anything from this site." %}
+	</div>
+</div>
+	{% endif %}
+{% endblock shop-order-head %}
 
-	{% block shop-order-tfoot %}
-		{% if paginator.display_page_controls %}
-	<tfoot>
-		<tr>
-			<td colspan="4" class="text-center">{{ paginator.to_html }}</td>
-		</tr>
-	</tfoot>
-		{% endif %}
-	{% endblock shop-order-tfoot %}
+{% block shop-order-body %}
+	{% for order in data.results %}
+<div class="shop-list-item row border-top py-2">
+	<div class="col-12 col-lg-6">
+		<div class="row flex-nowrap lead">
+			<div class="col-8">
+				<a class="mr-lg-5 mr-3" href="{{ order.url }}">{{ order.number }}</a>
+				<small class="text-nowrap text-muted" shop-timestamp="{{ order.created_at }}" time-format="d. MMM yyyy"></small>
+			</div>
+			<div class="col-4 text-nowrap text-right">{{ order.total }}</div>
+		</div>
+	</div>
+	<div class="col-12 col-lg-6">
+		<div class="row flex-nowrap">
+			<div class="col-8">{{ order.shipping_address_text }}</div>
+			<div class="col-4 text-right">
+				<div class="badge badge-primary">{{ order.status }}</div>
+			</div>
+		</div>
+	</div>
+</div>
+	{% endfor %}
+{% endblock shop-order-body %}
 
-	{% if instance.left_extension %}<!-- {# DON'T DELETE THIS LINE #}{% render_plugin instance.left_extension %} -->{% endif %}
-	{% if instance.right_extension %}<!-- {# DON'T DELETE THIS LINE #}{% render_plugin instance.right_extension %} -->{% endif %}
+{% block shop-order-foot %}{% if paginator.display_page_controls %}
+<div class="row border-top py-3">
+	<div class="col text-center" aria-label="{% trans 'Page navigation' %}">
+		<ul class="pagination justify-content-center">{{ paginator.to_html }}</ul>
+	</div>
+</div>
+{% endif %}{% endblock shop-order-foot %}
 
-{% endblock shop-order-table %}
+{% if instance.left_extension %}<!-- {#!!! DON'T DELETE THIS LINE !!!#}{% render_plugin instance.left_extension %} -->{% endif %}
+{% if instance.right_extension %}<!-- {#!!! DON'T DELETE THIS LINE !!!#}{% render_plugin instance.right_extension %} -->{% endif %}
