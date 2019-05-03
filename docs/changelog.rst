@@ -4,50 +4,57 @@
 Changelog for django-SHOP
 =========================
 
-1.0.0 (work in progres)
-=======================
+1.0
+===
 
 * Replace various files containing Python requirements against ``Pipfile`` to be used by pipenv_.
-* Migrated all default templates to use Bootstrap-4 and replace all tables using the HTML tag ``<table>`` against
-  flex elements.
+* Migrated all default templates to use Bootstrap-4 and replace all tables using the HTML tag
+  ``<table>`` against flex elements.
 * Switch to py.test_ in favor of Django test-cases.
-* It now is possible to override the forms for selecting the payment-, shipping- and extra annotation using a
-  configuration directive.
+* It now is possible to override the forms for selecting the payment-, shipping- and extra
+  annotation using a configuration directive.
 * Adopted to django-CMS version 3.5.
 * Fix all compatibility issues with Django-1.11.
 * Fix all compatibility issues with Django REST framework 3.8.
-* Upgrade to angular-ui-bootstrap version 2.5. This requires djangocms-cascade version 0.17.x and a slight modification
-  of the navbar rendering.
+* Upgrade to angular-ui-bootstrap version 2.5. This requires djangocms-cascade version 0.17.x and a
+  slight modification of the navbar rendering.
 * Add Order number to Order List View.
 * It is possible to access the Order Detail View anonymously by using a secret in the URL.
 * Remove directory ``example`` in favor of the new project cookiecutter-django-shop_.
-* Customized Template Engine which keeps track on referenced images and stores then as attachments to be used in
-  multipart email messages. This requires a patched version of django-post_office_.
-* Add ``relatated_name`` to fields ``delivery`` and ``item`` to the model ``Delivery``. Check your reverse relations.
-* Added an apphook ``PasswordResetApp``, so that all pages, even those to reset the password, can now be handled by a
-  page by the CMS.
-* Pagination of catalog list view can distinguish between *auto-infinte*, *manual-infinte* and *pagination*.
+* Customized Template Engine which keeps track on referenced images and stores then as attachments
+  to be used in multipart email messages. This requires a patched version of django-post_office_.
+* Add ``relatated_name`` to fields ``delivery`` and ``item`` to the model ``Delivery``. Check your
+  reverse relations.
+* Added an apphook ``PasswordResetApp``, so that all pages, even those to reset the password, can
+  now be handled by a page by the CMS.
+* Pagination of catalog list view can distinguish between *auto-infinte*, *manual-infinte* and
+  *pagination*.
 * Pagination of catalog list view prevents widow items.
 * Cart widget displays a short summary of products after adding a product, or mouse-over event.
 * AddToCart now optionally renders a modal dialog after adding the product.
 * All forms in the checkout process can be overridden using a settings variable.
 * Buttons are configurable to be disabled, if wrapping form is invalid.
 * Unified all management commands into ``shop`` with different subcommands.
-* Add management command to check for various CMS pages and verify their settings.
-* Refactored payment- and shipping-modifiers into their own submodules, so that they stay side-by-side with their
-  order workflow mixins.
-* All payment- and shipping-modifiers support an instantiation either as list or as instance. This allows to implement
-  payment- or shipping-service-provider offering different payment- or shipping methods themselves.
+* Add management command ``shop check-pages`` to verify mandatory and recommended CMS pages.
+* Add management command ``shop review-settings`` to verify the configuration settings.
+* Refactored payment- and shipping-modifiers into their own submodules, so that they stay
+  side-by-side with their order workflow mixins.
+* All payment- and shipping-modifiers support an instantiation either as list or as instance. This
+  allows to implement payment- or shipping-service-provider offering different payment- or shipping
+  methods themselves.
 * Changed all relative import against absolute ones.
-* In context for email template rendering, renamed ``data`` to a more meaningful name such as ``order``.
+* In context for email template rendering, renamed ``data`` to a more meaningful name such as
+  ``order``.
 * Add support for inlined images when sending HTML emails.
-* Replace FSM signal ``post_transition`` against a function ``transition_change_notification`` which either is invoked
-  by ``OrderAdmin.save_model()`` or while processing an Order through the frontend by the customer.
+* Replace FSM signal ``post_transition`` against a function ``transition_change_notification`` which
+  either is invoked by ``OrderAdmin.save_model()`` or while processing an Order through the frontend
+  by the customer.
 * In Order event notification, add data about each delivery to the serialized Order data.
 * Upgrade to djangocms-bootstrap version 1.0.2.
 * Fix: Do not always refetch cart data from server.
 * Improve style of rendering for invoice and delivery notes in the Order backend.
-* Use specific naming for relatation of model ``DeliveryItem`` to models ``OrderItem`` and ``Delivery``.
+* Use specific naming for relatation of model ``DeliveryItem`` to models ``OrderItem`` and
+  ``Delivery``.
 * Add reusable scroll-spy for AngularJS directive ``navbar``.
 
 .. _pipenv: https://pipenv.readthedocs.io/en/latest/
