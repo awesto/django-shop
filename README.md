@@ -23,7 +23,10 @@ missing.
 
 In **django-SHOP** implementations, the product models reflect their pysical properties making it
 possible to create complete and deep hierarchies of variations, but without having to fiddle with
-unneeded properties.
+unneeded properties. It furthermore avoids the need for an
+[Entity Attribute Value Model](https://en.wikipedia.org/wiki/Entity–attribute–value_model), which
+is considered a database anti-pattern, because it produces far too many table joins, when filtering
+by property.
 
 
 ## Don't build pages using hard-coded templates – compose them
