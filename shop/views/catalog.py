@@ -111,7 +111,7 @@ class ProductListView(generics.ListAPIView):
 
     :param limit_choices_to: Limit the queryset of product models to these choices.
 
-    :param filter_class: A filter set which must be inherit from :class:`django_filters.FilterSet`.
+    :param filter_class: A filter set which must inherit from :class:`django_filters.FilterSet`.
 
     :param pagination_class: A pagination class inheriting from :class:`rest_framework.pagination.BasePagination`.
 

@@ -9,18 +9,15 @@ from django.core.exceptions import ImproperlyConfigured
 from django.contrib import admin
 from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
-
 from adminsortable2.admin import SortableInlineAdminMixin
-
 from cms.models import Page
-
 from shop.models.related import ProductPageModel, ProductImageModel
 
 
 class ProductImageInline(SortableInlineAdminMixin, admin.StackedInline):
     model = ProductImageModel
     extra = 1
-    ordering = ('order',)
+    ordering = ['order']
 
 
 def _find_catalog_list_apphook():

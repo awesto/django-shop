@@ -45,7 +45,7 @@ Therefore the base class to model a product is a stub which contains only these 
 
 The timestamps for ``created_at`` and ``updated_at``; these are self-explanatory.
 
-A boolean field ``active``, used to signalize the products availability.
+A boolean field ``active``, used to signalize the product's availability.
 
 The attentive reader may wonder, why there not even fields for the most basic requirements of each
 sellable article, there is no product name, no price field and no product code.
