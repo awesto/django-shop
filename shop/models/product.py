@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from datetime import datetime
 from distutils.version import LooseVersion
 from functools import reduce
 import operator
@@ -10,6 +9,7 @@ from django.db import models
 from django.utils import six
 from django.utils.encoding import force_text
 from django.utils.six.moves.urllib.parse import urljoin
+from django.utils.timezone import datetime
 from django.utils.translation import ugettext_lazy as _
 from polymorphic.managers import PolymorphicManager
 from polymorphic.models import PolymorphicModel
