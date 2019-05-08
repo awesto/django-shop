@@ -14,6 +14,7 @@ from django.utils.translation import ugettext_lazy as _
 from polymorphic.managers import PolymorphicManager
 from polymorphic.models import PolymorphicModel
 from shop import deferred
+from shop.conf import app_settings
 
 
 class BaseProductManager(PolymorphicManager):
@@ -132,22 +133,27 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         """
         Hook for returning the variant of a product using parameters passed in by **kwargs.
         If the product has no variants, then return the product itself.
+
+        :param **kwargs: A dictionary describing the product's variations.
         """
         return self
 
     def get_availability(self, request):
         """
-        Hook for checking the availability of a product. It returns a list of tuples with this
-        notation:
-        - Number of items available for this product until the specified period expires.
-          If this value is ``True``, then infinitely many items are available.
-        - Until which timestamp, in UTC, the specified number of items are available.
-        This function can return more than one tuple. If the list is empty, then the product is
-        considered as not available.
-        Use the `request` object to vary the availability according to the logged in user,
-        its country code or language.
+        Hook for checking the availability of a product.
+
+        :param request:
+            Optionally used to vary the availability according to the logged in user,
+            its country code or language.
+
+        :returns:
+            A list of tuples with this notation:
+            - Number of items available for this product until the specified period expires.
+            - Until which timestamp, in UTC, the specified number of items are available.
+            If more than one tuple is returned, the availability changes in future.
+            If the list is empty, then the product is considered as not available.
         """
-        return [(True, datetime.max)]  # Infinite number of products available until eternity
+        return [(app_settings.MAX_PURCHASE_QUANTITY, datetime.max)]
 
     def is_in_cart(self, cart, watched=False, **kwargs):
         """

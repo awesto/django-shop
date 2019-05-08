@@ -128,6 +128,13 @@ class DefaultSettings(object):
         return ProductSelectSerializer
 
     @property
+    def SHOP_MAX_PURCHASE_QUANTITY(self):
+        """
+        The maximum number of purchasable items per product.
+        """
+        return self._setting('SHOP_MAX_PURCHASE_QUANTITY', 99)
+
+    @property
     def SHOP_LINK_TO_EMPTY_CART(self):
         """
         If ``True`` the link on the cart-icon pointing to the cart is enabled, even if there are no

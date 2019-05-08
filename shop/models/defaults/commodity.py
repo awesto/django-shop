@@ -6,8 +6,10 @@ which can be used on a generic CMS page to describe anything.
 from __future__ import unicode_literals
 
 from django.conf import settings
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
+from django.utils.timezone import datetime
 from django.utils.translation import ugettext_lazy as _
 from cms.models.fields import PlaceholderField
 from filer.fields import image
@@ -93,6 +95,13 @@ if settings.USE_I18N:
         )
 
         placeholder = PlaceholderField("Commodity Details")
+
+        quantity = models.PositiveIntegerField(
+            _("Quantity"),
+            default=0,
+            validators=[MinValueValidator(0)],
+            help_text=_("Available quantity in stock")
+        )
 
         # translatable fields for the catalog's list- and detail views
         product_name = TranslatedField()

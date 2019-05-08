@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.utils.timezone import datetime
 from rest_framework import serializers
 from rest_framework.fields import empty
 from shop.models.cart import CartModel
@@ -33,6 +34,7 @@ class AddToCartSerializer(serializers.Serializer):
     product_code = serializers.CharField(read_only=True, help_text="Exact product code of the cart item")
     extra = serializers.DictField(read_only=True, default={})
     is_in_cart = serializers.BooleanField(read_only=True, default=False)
+    availability = serializers.SerializerMethodField()
 
     def __init__(self, instance=None, data=empty, **kwargs):
         context = kwargs.get('context', {})
@@ -48,6 +50,13 @@ class AddToCartSerializer(serializers.Serializer):
         else:
             super(AddToCartSerializer, self).__init__(instance, data, **kwargs)
 
+    def validate_quantity(self, quantity):
+        availability = self.get_availability(self.instance)
+        if quantity > availability['quantity']:
+            msg = "Purchasing {quantity} items is not allowed."
+            raise serializers.ValidationError(msg.format(quantity))
+        return quantity
+
     def get_instance(self, context, data, extra_args):
         """
         Method to store the ordered products in the cart item instance.
@@ -55,15 +64,29 @@ class AddToCartSerializer(serializers.Serializer):
         variation rather than being part of the product itself.
         """
         product = context['product']
+        request = context['request']
         try:
-            cart = CartModel.objects.get_from_request(context['request'])
+            cart = CartModel.objects.get_from_request(request)
         except CartModel.DoesNotExist:
             cart = None
         extra = data.get('extra', {}) if data is not empty else {}
         return {
             'product': product.id,
             'product_code': product.product_code,
-            'unit_price': product.get_price(context['request']),
+            'unit_price': product.get_price(request),
             'is_in_cart': bool(product.is_in_cart(cart)),
             'extra': extra,
+            'availability': product.get_availability(request),
         }
+
+    def get_availability(self, instance):
+        """
+        Returns a triple containing the available quantity, the earliest and latest point in time,
+        during which the current product is available.
+        """
+        earliest = datetime.min
+        for quantity, latest in instance['availability']:
+            if quantity > 0 and latest > datetime.now():
+                return dict(earliest=earliest, latest=latest, quantity=quantity)
+            earliest = latest
+        return dict(earliest=datetime.min, latest=datetime.max, quantity=quantity)
