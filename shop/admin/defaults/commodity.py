@@ -29,7 +29,7 @@ if settings.USE_I18N:
 
         def get_prepopulated_fields(self, request, obj=None):
             return {
-                'slug': ('product_name',)
+                'slug': ['product_name'],
             }
 
 else:
