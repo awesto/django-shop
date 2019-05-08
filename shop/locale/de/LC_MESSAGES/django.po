@@ -2044,10 +2044,8 @@ msgid "The shipping backend used to deliver items of this order"
 msgstr "Gewählter Lieferant, um Positionen dieser Bestellung zu versenden"
 
 #: models/delivery.py:55
-#, fuzzy
-#| msgid "Delivery"
 msgid "Delivery ID: {}"
-msgstr "Lieferung"
+msgstr "Liefer-ID: {}"
 
 #: models/delivery.py:94
 msgid "Refer to the shipping provider used to ship this item"
