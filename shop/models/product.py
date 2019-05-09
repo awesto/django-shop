@@ -15,6 +15,7 @@ from polymorphic.managers import PolymorphicManager
 from polymorphic.models import PolymorphicModel
 from shop import deferred
 from shop.conf import app_settings
+from shop.models.availability import Availability
 
 
 class BaseProductManager(PolymorphicManager):
@@ -145,15 +146,8 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         :param request:
             Optionally used to vary the availability according to the logged in user,
             its country code or language.
-
-        :returns:
-            A list of tuples with this notation:
-            - Number of items available for this product until the specified period expires.
-            - Until which timestamp, in UTC, the specified number of items are available.
-            If more than one tuple is returned, the availability changes in future.
-            If the list is empty, then the product is considered as not available.
         """
-        return [(app_settings.MAX_PURCHASE_QUANTITY, datetime.max)]
+        return Availability()
 
     def is_in_cart(self, cart, watched=False, **kwargs):
         """

@@ -9,19 +9,19 @@ from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
-from django.utils.timezone import datetime
 from django.utils.translation import ugettext_lazy as _
 from cms.models.fields import PlaceholderField
 from filer.fields import image
 from djangocms_text_ckeditor.fields import HTMLField
 from polymorphic.query import PolymorphicQuerySet
 from shop.conf import app_settings
+from shop.models.availability import AvailableProductMixin
 from shop.models.product import BaseProduct, BaseProductManager, CMSPageReferenceMixin
 from shop.models.defaults.mapping import ProductPage
 from shop.money.fields import MoneyField
 
 
-class CommodityMixin(object):
+class CommodityMixin(AvailableProductMixin):
     """
     Common methods used by both default Commodity models.
     """
@@ -30,9 +30,6 @@ class CommodityMixin(object):
 
     def get_price(self, request):
         return self.unit_price
-
-    def get_availability(self, request):
-        return [(self.quantity, datetime.max)]
 
 
 if settings.USE_I18N:
