@@ -21,12 +21,15 @@
 	{% block add-product-to-cart-body %}
 	<div class="card-body pb-0">
 		<div class="d-flex justify-content-between">
+		{% block available-quantity-in-stock %}
 			<div class="d-flex flex-column">
 				<span class="label">{% trans "In Stock" %}</span>
 				<div class="lead mt-1" ng-cloak>
 				{% verbatim %}{{ context.availability.quantity }}{% endverbatim %}
 				</div>
 			</div>
+		{% endblock %}
+		{% block change-purchasing-quantity %}
 			<div class="d-flex flex-column w-25">
 				<label for="quantity">{% trans "Quantity" %}</label>
 				<div class="form-group" ng-if="context.availability.quantity" ng-cloak>
@@ -36,18 +39,23 @@
 					{% trans "Currently not available" %}
 				</div>
 			</div>
+		{% endblock %}
+		{% block product-unit-price %}
 			<div class="d-flex flex-column">
 				<span class="label">{% trans "Unit Price" %}</span>
 				<div class="lead mt-1" ng-cloak>
 				{% verbatim %}{{ context.unit_price }}{% endverbatim %}
 				</div>
 			</div>
+		{% endblock %}
+		{% block purchase-item-subtotal %}
 			<div class="d-flex flex-column">
 				<span class="label">{% trans "Subtotal" %}</span>
 				<div class="lead mt-1 font-weight-bold" ng-cloak>
 				{% verbatim %}{{ context.subtotal }}<sup>*</sup>{% endverbatim %}
 				</div>
 			</div>
+		{% endblock %}
 		</div>
 		<div class="text-muted text-right mb-3">
 			<small><sup>*</sup>&nbsp;incl. VAT, plus shipping costs</small>

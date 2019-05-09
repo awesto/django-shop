@@ -1,0 +1,23 @@
+{% extends "shop/catalog/product-add2cart.html" %}
+{% load i18n %}
+
+{% block available-quantity-in-stock %}
+<div class="d-flex flex-column">
+	<span class="label">{% trans "In Stock" %}</span>
+	<div class="lead mt-1" ng-cloak>
+	{% verbatim %}{{ context.availability.quantity }}{% endverbatim %}
+	</div>
+</div>
+{% endblock %}
+
+{% block change-purchasing-quantity %}
+<div class="d-flex flex-column w-25">
+	<label for="quantity">{% trans "Quantity" %}</label>
+	<div class="form-group" ng-if="context.availability.quantity" ng-cloak>
+		<input class="form-control" name="quantity" type="number" min="1" max="{% verbatim %}{{ context.availability.quantity }}{% endverbatim %}" ng-model="context.quantity" ng-model-options="{{ ADD2CART_NG_MODEL_OPTIONS }}" ng-change="updateContext()" />
+	</div>
+	<div class="lead mt-1" ng-if="!context.availability.quantity" ng-cloak>
+		{% trans "Currently not available" %}
+	</div>
+</div>
+{% endblock %}
