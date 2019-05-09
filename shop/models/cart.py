@@ -103,10 +103,10 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         allowed_types = ['IntegerField', 'DecimalField', 'FloatField']
         for field in cls._meta.fields:
             if field.attname == 'quantity':
-                if not field.get_internal_type() in allowed_types:
-                    msg = "Field `{}.quantity` must be of one of the types: {}."
-                    raise ImproperlyConfigured(msg.format(cls.__name__, allowed_types))
-                break
+                if field.get_internal_type() in allowed_types:
+                    break
+                msg = "Field `{}.quantity` must be of one of the types: {}."
+                raise ImproperlyConfigured(msg.format(cls.__name__, allowed_types))
         else:
             msg = "Class `{}` must implement a field named `quantity`."
             raise ImproperlyConfigured(msg.format(cls.__name__))
