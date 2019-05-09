@@ -40,15 +40,19 @@ class AddToCartSerializer(serializers.Serializer):
         context = kwargs.get('context', {})
         if 'product' in context:
             instance = self.get_instance(context, data, kwargs)
-            if data == empty:
-                quantity = self.fields['quantity'].default
-            else:
+            if data is not empty and 'quantity' in data:
                 quantity = self.fields['quantity'].to_internal_value(data['quantity'])
+            else:
+                quantity = self.fields['quantity'].default
             instance.setdefault('quantity', quantity)
-            instance.setdefault('subtotal', instance['quantity'] * instance['unit_price'])
             super(AddToCartSerializer, self).__init__(instance, data, context=context)
         else:
             super(AddToCartSerializer, self).__init__(instance, data, **kwargs)
+
+    def to_representation(self, instance):
+        data = super(AddToCartSerializer, self).to_representation(instance)
+        data['subtotal'] = MoneyField().to_representation(data['quantity'] * instance['unit_price'])
+        return data
 
     def validate_quantity(self, quantity):
         availability = self.get_availability(self.instance)
