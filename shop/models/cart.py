@@ -4,11 +4,9 @@ from __future__ import unicode_literals
 from six import with_metaclass
 import warnings
 from collections import OrderedDict
-
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import ugettext_lazy as _
-
 from shop import deferred
 from shop.models.fields import JSONField
 from shop.models.customer import CustomerModel

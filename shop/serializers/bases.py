@@ -25,6 +25,13 @@ class BaseCustomerSerializer(serializers.ModelSerializer):
         fields = ['number', 'first_name', 'last_name', 'email']
 
 
+class AvailabilitySerializer(serializers.Serializer):
+    earliest = serializers.DateTimeField()
+    latest = serializers.DateTimeField()
+    quantity = serializers.ReadOnlyField()
+    delayed = serializers.BooleanField()
+
+
 class ProductSerializer(serializers.ModelSerializer):
     """
     Common serializer for our product model.
