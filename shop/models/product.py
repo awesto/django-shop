@@ -64,6 +64,10 @@ class AvailableProductMixin(object):
             raise ImproperlyConfigured(msg.format(product_model=self.__class__.__name__))
         return Availability(quantity=self.quantity)
 
+    def deduct_quantity(self, quantity, **extra):
+        self.quantity -= quantity
+        self.save(update_fields=['quantity'])
+
 
 class ReserveProductMixin(AvailableProductMixin):
     """
@@ -245,6 +249,11 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         from shop.models.cart import CartItemModel
         cart_item_qs = CartItemModel.objects.filter(cart=cart, product=self)
         return cart_item_qs.first()
+
+    def deduct_quantity(self, quantity):
+        """
+        Hook to deduct the quantity of the current product in stock.
+        """
 
     def get_weight(self):
         """
