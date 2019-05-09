@@ -82,5 +82,5 @@ class AddToCartSerializer(serializers.Serializer):
             'unit_price': product.get_price(request),
             'is_in_cart': bool(product.is_in_cart(cart)),
             'extra': extra,
-            'availability': product.get_availability(request),
+            'availability': product.get_availability(request, **extra),
         }

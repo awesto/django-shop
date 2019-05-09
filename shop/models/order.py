@@ -545,11 +545,12 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         """
         From a given cart item, populate the current order item.
         If the operation was successful, the given item shall be removed from the cart.
-        If a CartItem.DoesNotExist exception is raised, discard the order item.
+        If an exception of type :class:`CartItem.DoesNotExist` is raised, discard the order item.
         """
         if cart_item.quantity == 0:
             raise CartItemModel.DoesNotExist("Cart Item is on the Wish List")
         self.product = cart_item.product
+        self.product.deduct_quantity(cart_item.quantity, **cart_item.extra)
         # for historical integrity, store the product's name and price at the moment of purchase
         self.product_name = cart_item.product.product_name
         self.product_code = cart_item.product_code

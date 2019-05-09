@@ -80,7 +80,7 @@ class CartItemSerializer(BaseItemSerializer):
 
         # limit the number of items to the inventory
         request = self.context['request']
-        availability = instance.product.get_availability(request)
+        availability = instance.product.get_availability(request, **instance.extra)
         if instance.quantity > availability.quantity:
             instance.quantity = availability.quantity
             instance.save()

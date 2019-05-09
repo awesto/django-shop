@@ -51,7 +51,7 @@ class AvailableProductMixin(object):
 
     The product class must implement a field named ``quantity`` accepting numerical values.
     """
-    def get_availability(self, request):
+    def get_availability(self, request, **extra):
         """
         Returns the current available quantity for this product.
 
@@ -74,7 +74,7 @@ class ReserveProductMixin(AvailableProductMixin):
 
     The product class must implement a field named ``quantity`` accepting numerical values.
     """
-    def get_availability(self, request):
+    def get_availability(self, request, **extra):
         """
         Returns the current available quantity for this product.
 
@@ -212,13 +212,17 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         """
         return self
 
-    def get_availability(self, request):
+    def get_availability(self, request, **extra):
         """
         Hook for checking the availability of a product.
 
         :param request:
             Optionally used to vary the availability according to the logged in user,
             its country code or language.
+
+        :param **extra:
+            Extra arguments passed to the underlying method. Useful for products with
+            variations.
         """
         return Availability()
 
