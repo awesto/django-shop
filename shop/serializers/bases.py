@@ -29,7 +29,8 @@ class AvailabilitySerializer(serializers.Serializer):
     earliest = serializers.DateTimeField()
     latest = serializers.DateTimeField()
     quantity = serializers.ReadOnlyField()
-    delayed = serializers.BooleanField()
+    sell_short = serializers.BooleanField()
+    limited_offer = serializers.BooleanField()
 
 
 class ProductSerializer(serializers.ModelSerializer):

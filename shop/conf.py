@@ -134,20 +134,37 @@ class DefaultSettings(object):
         return self._setting('SHOP_MAX_PURCHASE_QUANTITY', 99)
 
     @property
-    def SHOP_AVAILABILITY_DELAY(self):
+    def SHOP_SELL_SHORT_PERIOD(self):
         """
-        The time period (in seconds) in which a product is considered available, although it
-        currently is not in stock, but scheduled to be added to the inventory.
+        The time period (in seconds or timedelta) from the current timestamp, in which a product
+        is considered available, although it currently is not in stock, but scheduled to be added
+        to the inventory.
         """
         from datetime import timedelta
         from django.core.exceptions import ImproperlyConfigured
 
-        upcoming_availability = self._setting('SHOP_AVAILABILITY_DELAY', 7 * 24 * 3600)
-        if isinstance(upcoming_availability, int):
-            upcoming_availability = timedelta(seconds=upcoming_availability)
-        elif not isinstance(upcoming_availability, timedelta):
-            raise ImproperlyConfigured("'SHOP_AVAILABILITY_DELAY' contains an invalid property.")
-        return upcoming_availability
+        period = self._setting('SHOP_SELL_SHORT_PERIOD', 7 * 24 * 3600)
+        if isinstance(period, int):
+            period = timedelta(seconds=period)
+        elif not isinstance(period, timedelta):
+            raise ImproperlyConfigured("'SHOP_SELL_SHORT_PERIOD' contains an invalid property.")
+        return period
+
+    @property
+    def SHOP_LIMITED_OFFER_PERIOD(self):
+        """
+        The time period (in seconds or timedelta) from the current timestamp, in which a product
+        is marked as limited time offer.
+        """
+        from datetime import timedelta
+        from django.core.exceptions import ImproperlyConfigured
+
+        period = self._setting('SHOP_LIMITED_OFFER_PERIOD', 7 * 24 * 3600)
+        if isinstance(period, int):
+            period = timedelta(seconds=period)
+        elif not isinstance(period, timedelta):
+            raise ImproperlyConfigured("'SHOP_LIMITED_OFFER_PERIOD' contains an invalid property.")
+        return period
 
     @property
     def SHOP_LINK_TO_EMPTY_CART(self):

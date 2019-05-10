@@ -17,13 +17,16 @@
 		<input class="form-control" name="quantity" type="number" min="1" max="{% verbatim %}{{ context.availability.quantity }}{% endverbatim %}" ng-model="context.quantity" ng-model-options="{{ ADD2CART_NG_MODEL_OPTIONS }}" ng-change="updateContext()" />
 	</div>
 	<div class="lead mt-1" ng-hide="context.availability.quantity">
-		{% trans "Currently not available" %}
+		{% trans "Currently not available." %}
 	</div>
 </div>
 {% endblock %}
 
-{% block available-starting-from %}
-<div class="text-muted text-left" ng-show="context.availability.delayed">
-	<small>{% trans "Available starting from {{ context.availability.earliest|date:'d. MMM.' }}" %}</small>
+{% block limited-availability %}
+<div class="text-muted text-left pr-2" ng-show="context.availability.sell_short">
+	<small>{% trans "Available from {{ context.availability.earliest|date:'d. MMM.' }} onwards." %}</small>
+</div>
+<div class="text-muted text-left pr-2" ng-show="context.availability.limited_offer">
+	<small>{% trans "Available no later than {{ context.availability.latest|date:'d. MMM. H:mm' }}." %}</small>
 </div>
 {% endblock %}

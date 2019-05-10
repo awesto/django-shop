@@ -11,9 +11,9 @@ from django.db import models
 from django.db.models.aggregates import Sum
 from django.db.models.functions import Coalesce
 from django.utils import six
+from django.utils import timezone
 from django.utils.encoding import force_text
 from django.utils.six.moves.urllib.parse import urljoin
-from django.utils.timezone import datetime
 from django.utils.translation import ugettext_lazy as _
 from polymorphic.managers import PolymorphicManager
 from polymorphic.models import PolymorphicModel
@@ -30,15 +30,16 @@ class Availability(object):
         :param earliest: Point in time from when this product will be available.
         :param latest: Point in time until this product will be available.
         :param quantity: Number of available items.
-        :param delayed: Mark a product as purchasable with delay.
+        :param sell_short: Sell the product, even though it's not in stock. It
+            will be shipped at the ``earliest`` point in time.
+        :param limited_offer: Sell the product until the ``latest`` point in time.
         """
-        self.earliest = kwargs.get('earliest', datetime.min)
-        self.latest = kwargs.get('latest', datetime.max)
+        self.earliest = kwargs.get('earliest', timezone.datetime.min)
+        self.latest = kwargs.get('latest', timezone.datetime.max)
         quantity = kwargs.get('quantity', app_settings.MAX_PURCHASE_QUANTITY)
         self.quantity = min(quantity, app_settings.MAX_PURCHASE_QUANTITY)
-        now = datetime.now()
-        self.delayed = kwargs.get('delayed', self.quantity > 0 and
-            now < self.earliest and now + app_settings.SHOP_AVAILABILITY_DELAY >= self.earliest)
+        self.sell_short = bool(kwargs.get('sell_short', False))
+        self.limited_offer = bool(kwargs.get('limited_offer', False))
 
 
 class AvailableProductMixin(object):
