@@ -48,7 +48,7 @@ django-treebeard==4.3
 django==1.11.20
 djangocms-admin-style==1.3.0
 djangocms-bootstrap==1.0.2
-djangocms-cascade==0.18
+djangocms-cascade==0.18.2
 djangocms-text-ckeditor==3.7.0
 djangorestframework==3.8.2
 drf-haystack==1.8.4

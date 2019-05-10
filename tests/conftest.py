@@ -109,6 +109,7 @@ class CommodityFactory(factory.django.DjangoModelFactory):
     product_code = factory.Sequence(lambda n: 'article-{}'.format(n + 1))
     unit_price = Money(factory.fuzzy.FuzzyDecimal(1, 100).fuzz())
     slug = factory.fuzzy.FuzzyText(length=7)
+    order = factory.Sequence(lambda n: n)
     quantity = 5
 
     @classmethod
