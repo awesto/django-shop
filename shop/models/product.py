@@ -56,15 +56,16 @@ class AvailableProductMixin(object):
         Returns the current available quantity for this product.
 
         If other customers have pending carts containing this same product, the quantity
-        is not not adjusted. This may result in someone adding a product to the cart, but
-        unable to purchase, because in the meantime, it might has been bought by someone else.
+        is not not adjusted. This may result in a situation, where someone adds a product
+        to the cart, but then is unable to purchase, because someone else bought it in the
+        meantime.
         """
         if not isinstance(getattr(self, 'quantity', None), (int, float, Decimal)):
             msg = "Product model class {product_model} must contain a numeric model field named `quantity`"
             raise ImproperlyConfigured(msg.format(product_model=self.__class__.__name__))
         return Availability(quantity=self.quantity)
 
-    def deduct_quantity(self, quantity, **extra):
+    def deduct_from_stock(self, quantity, **extra):
         self.quantity -= quantity
         self.save(update_fields=['quantity'])
 
@@ -250,9 +251,11 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         cart_item_qs = CartItemModel.objects.filter(cart=cart, product=self)
         return cart_item_qs.first()
 
-    def deduct_quantity(self, quantity):
+    def deduct_from_stock(self, quantity):
         """
-        Hook to deduct the quantity of the current product in stock.
+        Hook to deduct a number of items of the current product from the stock's inventory.
+
+        :param quantity: Number of items to deduct.
         """
 
     def get_weight(self):
