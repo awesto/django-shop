@@ -24,7 +24,7 @@
 
 {% block limited-availability %}
 <div class="text-muted text-left pr-2" ng-show="context.availability.sell_short">
-	<small>{% trans "Available from {{ context.availability.earliest|date:'d. MMM.' }} onwards." %}</small>
+	<small>{% trans "Deliverable from {{ context.availability.earliest|date:'d. MMM.' }} onwards." %}</small>
 </div>
 <div class="text-muted text-left pr-2" ng-show="context.availability.limited_offer">
 	<small>{% trans "Available no later than {{ context.availability.latest|date:'d. MMM. H:mm' }}." %}</small>
