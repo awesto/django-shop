@@ -24,9 +24,6 @@ class CommodityMixin(AvailableProductMixin):
     """
     Common methods used by both default Commodity models.
     """
-    def __str__(self):
-        return self.product_code
-
     def get_price(self, request):
         return self.unit_price
 
@@ -114,6 +111,9 @@ if settings.USE_I18N:
             ordering = ['order']
             verbose_name = _("Commodity")
             verbose_name_plural = _("Commodities")
+
+        def __str__(self):
+            return self.product_code
 
 
     class CommodityTranslation(TranslatedFieldsModel):
@@ -221,3 +221,6 @@ else:
             ordering = ('order',)
             verbose_name = _("Commodity")
             verbose_name_plural = _("Commodities")
+
+        def __str__(self):
+            return self.product_code
