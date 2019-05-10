@@ -217,7 +217,7 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         """
         return self
 
-    def get_availability(self, request, **extra):
+    def get_availability(self, request, **kwargs):
         """
         Hook for checking the availability of a product.
 
@@ -225,7 +225,7 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
             Optionally used to vary the availability according to the logged in user,
             its country code or language.
 
-        :param **extra:
+        :param **kwargs:
             Extra arguments passed to the underlying method. Useful for products with
             variations.
         """
@@ -251,11 +251,15 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         cart_item_qs = CartItemModel.objects.filter(cart=cart, product=self)
         return cart_item_qs.first()
 
-    def deduct_from_stock(self, quantity):
+    def deduct_from_stock(self, quantity, **kwargs):
         """
         Hook to deduct a number of items of the current product from the stock's inventory.
 
         :param quantity: Number of items to deduct.
+
+        :param **kwargs:
+            Extra arguments passed to the underlying method. Useful for products with
+            variations.
         """
 
     def get_weight(self):
