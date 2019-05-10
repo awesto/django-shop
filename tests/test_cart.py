@@ -24,7 +24,7 @@ def test_add_to_cart(commodity_factory, api_client, rf):
     assert response.status_code == 201
     assert response.data['quantity'] == 2
     assert response.data['unit_price'] == six.text_type(product.unit_price)
-    assert response.data['line_total'] == six.text_type(data['quantity'] * product.unit_price)
+    assert response.data['line_total'] == six.text_type(2 * product.unit_price)
 
     # verify that the product is in the cart
     request = rf.get('/my-cart')
@@ -37,7 +37,7 @@ def test_add_to_cart(commodity_factory, api_client, rf):
     items = filled_cart.items.all()
     assert items[0].product == product
     assert items[0].quantity == 2
-    assert filled_cart.subtotal == product.unit_price * data['quantity']
+    assert filled_cart.subtotal == 2 * product.unit_price
     return filled_cart
 
 
@@ -72,6 +72,18 @@ def test_change_quantity(api_rf, filled_cart):
     filled_cart.refresh_from_db()
     assert filled_cart.num_items == 1
     assert filled_cart.items.all()[0].quantity == 3
+
+
+@pytest.mark.django_db
+def test_too_greedy(commodity_factory, api_client):
+    # add a product to the cart
+    product = commodity_factory()
+    data = {'quantity': 10, 'product': product.id}
+    response = api_client.post(reverse('shop:cart-list'), data)
+    assert response.status_code == 201
+    assert response.data['quantity'] == 5
+    assert response.data['unit_price'] == six.text_type(product.unit_price)
+    assert response.data['line_total'] == six.text_type(5 * product.unit_price)
 
 
 @pytest.mark.django_db
