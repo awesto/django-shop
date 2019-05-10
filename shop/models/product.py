@@ -45,12 +45,18 @@ class AvailableProductMixin(object):
     """
     Add this mixin class to the product models declaration, wanting to keep track on the
     current amount of products in stock. In comparison to
-    :class:`shop.models.mixins.ProductReserveMixin`, this mixin does not reserve items in pending
-    carts, causing the possibility of overselling. It thus is suited for products kept in the cart
+    :class:`shop.models.product.ReserveProductMixin`, this mixin does not reserve items in pending
+    carts, with the risk for overselling. It thus is suited for products kept in the cart
     for a long period.
 
     The product class must implement a field named ``quantity`` accepting numerical values.
     """
+    def __init__(self, *args, **kwargs):
+        if not isinstance(getattr(self, 'quantity', None), (int, float, Decimal)):
+            msg = "Product model class {product_model} must contain a numeric model field named `quantity`"
+            raise ImproperlyConfigured(msg.format(product_model=self.__class__.__name__))
+        super(AvailableProductMixin, self).__init__(*args, **kwargs)
+
     def get_availability(self, request, **extra):
         """
         Returns the current available quantity for this product.
@@ -60,9 +66,6 @@ class AvailableProductMixin(object):
         to the cart, but then is unable to purchase, because someone else bought it in the
         meantime.
         """
-        if not isinstance(getattr(self, 'quantity', None), (int, float, Decimal)):
-            msg = "Product model class {product_model} must contain a numeric model field named `quantity`"
-            raise ImproperlyConfigured(msg.format(product_model=self.__class__.__name__))
         return Availability(quantity=self.quantity)
 
     def deduct_from_stock(self, quantity, **extra):
@@ -73,9 +76,12 @@ class AvailableProductMixin(object):
 class ReserveProductMixin(AvailableProductMixin):
     """
     Add this mixin class to the product models declaration, wanting to keep track on the
-    current amount of products in stock substracting the reserved items for this product in pending
-    carts. Use this mixin for products kept for a short period until checking out the cart, for
-    instance for ticket sales.
+    current amount of products in stock.  In comparison to
+    :class:`shop.models.product.AvailableProductMixin`, this mixin reserves items in pending
+    carts, without the no risk for overselling. On the other hand, the shop may run out of sellable
+    items, if customers keep products in the cart for a long period, without proceeding to checkout.
+    Use this mixin for products kept for a short period until checking out the cart, for
+    instance for ticket sales. Ensure that pending carts are flushed regularly.
 
     The product class must implement a field named ``quantity`` accepting numerical values.
     """
