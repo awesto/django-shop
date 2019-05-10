@@ -194,6 +194,13 @@ else:
 
         placeholder = PlaceholderField("Commodity Details")
 
+        quantity = models.PositiveIntegerField(
+            _("Quantity"),
+            default=0,
+            validators=[MinValueValidator(0)],
+            help_text=_("Available quantity in stock")
+        )
+
         # common fields for the catalog's list- and detail views
         slug = models.SlugField(verbose_name=_("Slug"))
 
