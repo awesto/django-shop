@@ -52,12 +52,6 @@ class AvailableProductMixin(object):
 
     The product class must implement a field named ``quantity`` accepting numerical values.
     """
-    def __init__(self, *args, **kwargs):
-        if not isinstance(getattr(self, 'quantity', None), (int, float, Decimal)):
-            msg = "Product model class {product_model} must contain a numeric model field named `quantity`"
-            raise ImproperlyConfigured(msg.format(product_model=self.__class__.__name__))
-        super(AvailableProductMixin, self).__init__(*args, **kwargs)
-
     def get_availability(self, request, **extra):
         """
         Returns the current available quantity for this product.
@@ -67,6 +61,9 @@ class AvailableProductMixin(object):
         to the cart, but then is unable to purchase, because someone else bought it in the
         meantime.
         """
+        if not isinstance(getattr(self, 'quantity', None), (int, float, Decimal)):
+            msg = "Product model class {product_model} must contain a numeric model field named `quantity`"
+            raise ImproperlyConfigured(msg.format(product_model=self.__class__.__name__))
         return Availability(quantity=self.quantity)
 
     def deduct_from_stock(self, quantity, **extra):
