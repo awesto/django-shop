@@ -21,22 +21,12 @@
 	{% block add-product-to-cart-body %}
 	<div class="card-body pb-0">
 		<div class="d-flex justify-content-between">
-		{% block available-quantity-in-stock %}
-			<div class="d-flex flex-column">
-				<span class="label">{% trans "In Stock" %}</span>
-				<div class="lead mt-1" ng-cloak>
-				{% verbatim %}{{ context.availability.quantity }}{% endverbatim %}
-				</div>
-			</div>
-		{% endblock %}
+		{% block available-quantity-in-stock %}{% endblock %}
 		{% block change-purchasing-quantity %}
 			<div class="d-flex flex-column w-25">
 				<label for="quantity">{% trans "Quantity" %}</label>
-				<div class="form-group" ng-if="context.availability.quantity" ng-cloak>
-					<input class="form-control" name="quantity" type="number" min="1" max="{% verbatim %}{{ context.availability.quantity }}{% endverbatim %}" ng-model="context.quantity" ng-model-options="{{ ADD2CART_NG_MODEL_OPTIONS }}" ng-change="updateContext()" />
-				</div>
-				<div class="lead mt-1" ng-if="!context.availability.quantity" ng-cloak>
-					{% trans "Currently not available" %}
+				<div class="form-group">
+					<input class="form-control" name="quantity" type="number" min="1" ng-model="context.quantity" ng-model-options="{{ ADD2CART_NG_MODEL_OPTIONS }}" ng-change="updateContext()" />
 				</div>
 			</div>
 		{% endblock %}
@@ -57,8 +47,13 @@
 			</div>
 		{% endblock %}
 		</div>
-		<div class="text-muted text-right mb-3">
-			<small><sup>*</sup>&nbsp;incl. VAT, plus shipping costs</small>
+		<div class="d-flex justify-content-between">
+		{% block available-starting-from %}{% endblock %}
+		{% block unmentioned-costs %}
+			<div class="flex-grow-1 text-muted text-right mb-3">
+				<small><sup>*</sup>&nbsp;{% trans "incl. VAT, plus shipping costs" %}</small>
+			</div>
+		{% endblock %}
 		</div>
 	</div>
 	{% endblock add-product-to-cart-body %}

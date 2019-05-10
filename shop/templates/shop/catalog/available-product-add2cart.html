@@ -13,11 +13,17 @@
 {% block change-purchasing-quantity %}
 <div class="d-flex flex-column w-25">
 	<label for="quantity">{% trans "Quantity" %}</label>
-	<div class="form-group" ng-if="context.availability.quantity" ng-cloak>
+	<div class="form-group" ng-show="context.availability.quantity">
 		<input class="form-control" name="quantity" type="number" min="1" max="{% verbatim %}{{ context.availability.quantity }}{% endverbatim %}" ng-model="context.quantity" ng-model-options="{{ ADD2CART_NG_MODEL_OPTIONS }}" ng-change="updateContext()" />
 	</div>
-	<div class="lead mt-1" ng-if="!context.availability.quantity" ng-cloak>
+	<div class="lead mt-1" ng-hide="context.availability.quantity">
 		{% trans "Currently not available" %}
 	</div>
+</div>
+{% endblock %}
+
+{% block available-starting-from %}
+<div class="text-muted text-left" ng-show="context.availability.delayed">
+	<small>{% trans "Available starting from {{ context.availability.earliest|date:'d. MMM.' }}" %}</small>
 </div>
 {% endblock %}
