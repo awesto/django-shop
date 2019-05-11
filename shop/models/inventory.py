@@ -55,7 +55,7 @@ class AvailableProductMixin(object):
         return Availability(quantity=0)
 
     def deduct_from_stock(self, quantity, **extra):
-        self.quantity -= quantity
+        raise NotImplemented("Still to do")
         self.save(update_fields=['quantity'])
 
 
