@@ -20,6 +20,10 @@ from shop import deferred
 from shop.conf import app_settings
 
 
+class NotAvailable(Exception):
+    pass
+
+
 class Availability(object):
     """
     Contains the currently available quantity for a given product and period.
@@ -84,18 +88,7 @@ class AvailableProductMixin(object):
         return errors
 
 
-class ReserveProductMixin(AvailableProductMixin):
-    """
-    Add this mixin class to the product models declaration, wanting to keep track on the
-    current amount of products in stock.  In comparison to
-    :class:`shop.models.product.AvailableProductMixin`, this mixin reserves items in pending
-    carts, without the no risk for overselling. On the other hand, the shop may run out of sellable
-    items, if customers keep products in the cart for a long period, without proceeding to checkout.
-    Use this mixin for products kept for a short period until checking out the cart, for
-    instance for ticket sales. Ensure that pending carts are flushed regularly.
-
-    The product class must implement a field named ``quantity`` accepting numerical values.
-    """
+class _ReserveProductMixin(object):
     def get_availability(self, request, **extra):
         """
         Returns the current available quantity for this product.
@@ -111,6 +104,20 @@ class ReserveProductMixin(AvailableProductMixin):
         cart_items = CartItemModel.objects.filter(product=self).values('quantity')
         availability.quantity -= cart_items.aggregate(sum=Coalesce(Sum('quantity'), 0))['sum']
         return availability
+
+
+class ReserveProductMixin(_ReserveProductMixin, AvailableProductMixin):
+    """
+    Add this mixin class to the product models declaration, wanting to keep track on the
+    current amount of products in stock. In comparison to
+    :class:`shop.models.product.AvailableProductMixin`, this mixin reserves items in pending
+    carts, without the risk for overselling. On the other hand, the shop may run out of sellable
+    items, if customers keep products in the cart for a long period, without proceeding to checkout.
+    Use this mixin for products kept for a short period until checking out the cart, for
+    instance for ticket sales. Ensure that pending carts are flushed regularly.
+
+    The product class must implement a field named ``quantity`` accepting numerical values.
+    """
 
 
 class BaseProductManager(PolymorphicManager):
