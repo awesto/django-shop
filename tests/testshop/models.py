@@ -11,7 +11,7 @@ from shop.models.defaults.delivery import Delivery
 from shop.models.defaults.delivery_item import DeliveryItem
 from shop.models.defaults.address import BillingAddress, ShippingAddress
 from shop.models.defaults.customer import Customer
-from shop.models.inventory import BaseInventory
+from shop.models.inventory import BaseInventory, AvailableProductMixin
 
 __all__ = ['Commodity', 'Cart', 'CartItem', 'Order', 'OrderItem', 'Delivery', 'DeliveryItem',
            'BillingAddress', 'ShippingAddress', 'Customer']
@@ -22,9 +22,13 @@ class OrderItem(BaseOrderItem):
     canceled = models.BooleanField(default=False)
 
 
-class CommodityInventory(BaseInventory):
+class MyProduct(AvailableProductMixin, Commodity):
+    pass
+
+
+class MyProductInventory(BaseInventory):
     product = models.ForeignKey(
-        Commodity,
+        MyProduct,
         related_name='inventory_set',
     )
 
