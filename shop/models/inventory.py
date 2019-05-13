@@ -98,13 +98,13 @@ class BaseInventory(models.Model):
     """
     earliest = models.DateTimeField(
         _("Available after"),
-        default=timezone.datetime.min,
+        default=timezone.datetime.min.replace(tzinfo=timezone.get_current_timezone()),
         db_index=True,
     )
 
     latest = models.DateTimeField(
         _("Available before"),
-        default=timezone.datetime.max,
+        default=timezone.datetime.max.replace(tzinfo=timezone.get_current_timezone()),
         db_index=True,
     )
 
