@@ -6,6 +6,7 @@ from distutils.version import LooseVersion
 from functools import reduce
 import operator
 from cms import __version__ as CMS_VERSION
+from django.core import checks
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.db.models.aggregates import Sum
@@ -40,6 +41,7 @@ class Availability(object):
         self.quantity = min(quantity, app_settings.MAX_PURCHASE_QUANTITY)
         self.sell_short = bool(kwargs.get('sell_short', False))
         self.limited_offer = bool(kwargs.get('limited_offer', False))
+        self.inventory = bool(kwargs.get('inventory', None))
 
 
 class AvailableProductMixin(object):
@@ -61,14 +63,27 @@ class AvailableProductMixin(object):
         to the cart, but then is unable to purchase, because someone else bought it in the
         meantime.
         """
-        if not isinstance(getattr(self, 'quantity', None), (int, float, Decimal)):
-            msg = "Product model class {product_model} must contain a numeric model field named `quantity`"
-            raise ImproperlyConfigured(msg.format(product_model=self.__class__.__name__))
         return Availability(quantity=self.quantity)
 
     def deduct_from_stock(self, quantity, **extra):
         self.quantity -= quantity
         self.save(update_fields=['quantity'])
+
+    @classmethod
+    def check(cls, **kwargs):
+        errors = super(AvailableProductMixin, cls).check(**kwargs)
+        allowed_types = ['IntegerField', 'SmallIntegerField', 'PositiveIntegerField',
+                         'PositiveSmallIntegerField', 'DecimalField', 'FloatField']
+        for field in cls._meta.fields:
+            if field.attname == 'quantity':
+                if field.get_internal_type() not in allowed_types:
+                    msg = "Class `{}.quantity` must be of one of the types: {}."
+                    errors.append(checks.Error(msg.format(cls.__name__, allowed_types)))
+                break
+        else:
+            msg = "Class `{}` must implement a field named `quantity`."
+            errors.append(checks.Error(msg.format(cls.__name__)))
+        return errors
 
 
 class ReserveProductMixin(AvailableProductMixin):
@@ -232,6 +247,8 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         :param **kwargs:
             Extra arguments passed to the underlying method. Useful for products with
             variations.
+
+        :return: An object of type :class:`shop.models.product.Availability`.
         """
         return Availability()
 

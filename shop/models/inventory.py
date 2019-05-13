@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.core import checks
 from django.db import models
 from django.db.models.aggregates import Sum
 from django.db.models.functions import Coalesce
@@ -20,12 +21,6 @@ class AvailableProductMixin(object):
 
     The product class must implement a field named ``quantity`` accepting numerical values.
     """
-    def __init__(self, *args, **kwargs):
-        # if not isinstance(getattr(self, 'quantity', None), (int, float, Decimal)):
-        #     msg = "Product model class {product_model} must contain a numeric model field named `quantity`"
-        #     raise ImproperlyConfigured(msg.format(product_model=self.__class__.__name__))
-        super(AvailableProductMixin, self).__init__(*args, **kwargs)
-
     def get_availability(self, request, **extra):
         """
         Returns the current available quantity for this product.
@@ -34,14 +29,18 @@ class AvailableProductMixin(object):
         is not not adjusted. This may result in a situation, where someone adds a product
         to the cart, but then is unable to purchase, because someone else bought it in the
         meantime.
+        is not adjusted. This may result in a situation, where someone adds a product to the cart,
+        but then is unable to purchase, because someone else bought it in the meantime.
         """
         def create_availability(**kwargs):
             quantity = inventory_set.aggregate(sum=Sum('quantity'))['sum']
-            earliest = inventory_set.order_by('earliest').first().earliest
+            inventory = inventory_set.order_by('earliest').first()
+            earliest = inventory.earliest
             latest = inventory_set.order_by('latest').last().latest
             if latest < now + app_settings.SHOP_LIMITED_OFFER_PERIOD:
                 kwargs['limited_offer'] = True
-            return Availability(quantity=quantity, earliest=earliest, latest=latest, **kwargs)
+            return Availability(quantity=quantity, earliest=earliest, latest=latest,
+                                inventory=inventory, **kwargs)
 
         now = timezone.now()
         inventory_set = self.inventory_set.filter(earliest__lt=now, latest__gt=now, quantity__gt=0)
@@ -55,8 +54,9 @@ class AvailableProductMixin(object):
         return Availability(quantity=0)
 
     def deduct_from_stock(self, quantity, **extra):
-        raise NotImplemented("Still to do")
-        self.save(update_fields=['quantity'])
+        availability = self.get_availability(**extra)
+        availability.inventory.quantity -= quantity
+        availability.inventory.save(update_fields=['quantity'])
 
 
 class ReserveProductMixin(AvailableProductMixin):
@@ -112,3 +112,31 @@ class BaseInventory(models.Model):
         abstract = True
         verbose_name = _("Product Inventory")
         verbose_name_plural = _("Product Inventories")
+
+    @classmethod
+    def check(cls, **kwargs):
+        errors = super(BaseInventory, cls).check(**kwargs)
+        allowed_types = ['IntegerField', 'SmallIntegerField', 'PositiveIntegerField',
+                         'PositiveSmallIntegerField', 'DecimalField', 'FloatField']
+        for field in cls._meta.fields:
+            if field.attname == 'quantity':
+                if field.get_internal_type() in allowed_types:
+                    break
+                msg = "Field `{}.quantity` must be of one of the types: {}."
+                errors.append(checks.Error(msg.format(cls.__name__, allowed_types)))
+        else:
+            msg = "Class `{}` must implement a field named `quantity`."
+            errors.append(checks.Error(msg.format(cls.__name__)))
+        for field in cls._meta.fields:
+            if field.attname == 'product_id':
+                if field.get_internal_type() == 'ForeignKey':
+                    if field.related_query_name() != 'inventory_set':
+                        msg = "Class `{}.product` must have a related_name 'inventory_set'."
+                        errors.append(checks.Error(msg.format(cls.__name__)))
+                    break
+                msg = "Class `{}.product` must be a foreign key pointing onto a Product model or variation of thereof."
+                errors.append(checks.Error(msg.format(cls.__name__)))
+        else:
+            msg = "Class `{}` must implement a foreign key pointing onto a Product model or variation of thereof."
+            errors.append(checks.Error(msg.format(cls.__name__)))
+        return errors
