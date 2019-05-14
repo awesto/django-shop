@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.core.exceptions import ImproperlyConfigured
 from shop.models.order import OrderModel
+from shop.exceptions import ProductNotAvailable
 
 
 class PaymentProvider(object):
@@ -51,7 +52,11 @@ class ForwardFundPayment(PaymentProvider):
 
     def get_payment_request(self, cart, request):
         order = OrderModel.objects.create_from_cart(cart, request)
-        order.populate_from_cart(cart, request)
+        try:
+            order.populate_from_cart(cart, request)
+        except ProductNotAvailable as exc:
+            # TODO: redirect onto cart telling that the desired product has gone
+            return 'alert("{}");'.format(str(exc))
         if order.total == 0:
             order.no_payment_required()
         else:

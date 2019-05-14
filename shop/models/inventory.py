@@ -7,7 +7,8 @@ from django.db.models.aggregates import Sum
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from shop.conf import app_settings
-from shop.models.product import Availability, NotAvailable, _ReserveProductMixin
+from shop.models.product import Availability, _ReserveProductMixin
+from shop.exceptions import ProductNotAvailable
 
 
 class AvailableProductMixin(object):
@@ -64,8 +65,7 @@ class AvailableProductMixin(object):
             if quantity == 0:
                 break
         else:
-            msg = "Product {} not available anymore"
-            raise NotAvailable(msg.format(self.product_code))
+            raise ProductNotAvailable(self)
 
 
 class ReserveProductMixin(_ReserveProductMixin, AvailableProductMixin):

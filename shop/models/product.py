@@ -18,10 +18,7 @@ from polymorphic.managers import PolymorphicManager
 from polymorphic.models import PolymorphicModel
 from shop import deferred
 from shop.conf import app_settings
-
-
-class NotAvailable(Exception):
-    pass
+from shop.exceptions import ProductNotAvailable
 
 
 class Availability(object):
@@ -68,6 +65,8 @@ class AvailableProductMixin(object):
         return Availability(quantity=self.quantity)
 
     def deduct_from_stock(self, quantity, **extra):
+        if quantity > self.quantity:
+            raise ProductNotAvailable(self)
         self.quantity -= quantity
         self.save(update_fields=['quantity'])
 
