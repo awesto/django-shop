@@ -152,3 +152,10 @@ It is important to note, that when reserving products, it easily is possible to 
 of products, because customers just add them to their cart, without actually buying them. This may
 result in a decrease of overall sales. Hence use this option only, if pending carts are flushed on a
 regular basis.
+
+
+Prevent Overselling
+===================
+
+in **django-SHOP**, purchasing the cart's content is performed as one transaction. This means
+that either the cart is converted into an order as a whole, or left

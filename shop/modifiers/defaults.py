@@ -46,3 +46,19 @@ class WeightedCartModifier(BaseCartModifier):
     def pre_process_cart_item(self, cart, cart_item, request):
         cart.weight += Decimal(cart_item.product.get_weight() * cart_item.quantity)
         return super(WeightedCartModifier, self).process_cart_item(cart_item, request)
+
+
+class AvailabilityCartModifier(BaseCartModifier):
+    """
+    This modifier adjusts the the quantity for cart items, if stock management is enabled.
+    It checks that the quantity of a cart item never exceeds the current available number
+    of items in stock.
+    """
+    identifier = 'availability'
+
+    def pre_process_cart_item(self, cart, cart_item, request):
+        availability = cart_item.product.get_availability(request, **cart_item.extra)
+        if cart_item.quantity > availability.quantity:
+            cart_item.quantity = availability.quantity
+            cart_item.save(update_fields=['quantity'])
+        return super(AvailabilityCartModifier, self).pre_process_cart_item(cart, cart_item, request)
