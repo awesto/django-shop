@@ -37,8 +37,8 @@ class Availability(object):
             will be shipped at the ``earliest`` point in time.
         :param limited_offer: Sell the product until the ``latest`` point in time.
         """
-        self.earliest = kwargs.get('earliest', timezone.datetime.min)
-        self.latest = kwargs.get('latest', timezone.datetime.max)
+        self.earliest = kwargs.get('earliest', timezone.datetime.min.replace(tzinfo=timezone.get_current_timezone()))
+        self.latest = kwargs.get('latest', timezone.datetime.max.replace(tzinfo=timezone.get_current_timezone()))
         quantity = kwargs.get('quantity', app_settings.MAX_PURCHASE_QUANTITY)
         self.quantity = min(quantity, app_settings.MAX_PURCHASE_QUANTITY)
         self.sell_short = bool(kwargs.get('sell_short', False))
