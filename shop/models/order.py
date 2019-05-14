@@ -525,15 +525,15 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         else:
             msg = "Class `{}` must implement a field named `quantity`."
             errors.append(checks.Error(msg.format(CartItemModel.__name__)))
-        for order_field in OrderItemModel._meta.fields:
-            if order_field.attname == 'quantity':
+        for field in cls._meta.fields:
+            if field.attname == 'quantity':
+                if field.get_internal_type() != cart_field.get_internal_type():
+                    msg = "Field `{}.quantity` must be of same type as `{}.quantity`."
+                    errors.append(checks.Error(msg.format(cls.__name__, CartItemModel.__name__)))
                 break
         else:
             msg = "Class `{}` must implement a field named `quantity`."
-            errors.append(checks.Error(msg.format(OrderItemModel.__name__)))
-        if order_field.get_internal_type() != cart_field.get_internal_type():
-            msg = "Field `{}.quantity` must be of one same type `{}.quantity`."
-            errors.append(checks.Error(msg.format(CartItemModel.__name__, OrderItemModel.__name__)))
+            errors.append(checks.Error(msg.format(cls.__name__)))
         return errors
 
     @property

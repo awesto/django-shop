@@ -107,15 +107,21 @@ class BaseInventory(models.Model):
 
     @classmethod
     def check(cls, **kwargs):
+        from shop.models.cart import CartItemModel
+
         errors = super(BaseInventory, cls).check(**kwargs)
-        allowed_types = ['IntegerField', 'SmallIntegerField', 'PositiveIntegerField',
-                         'PositiveSmallIntegerField', 'DecimalField', 'FloatField']
+        for cart_field in CartItemModel._meta.fields:
+            if cart_field.attname == 'quantity':
+                break
+        else:
+            msg = "Class `{}` must implement a field named `quantity`."
+            errors.append(checks.Error(msg.format(CartItemModel.__name__)))
         for field in cls._meta.fields:
             if field.attname == 'quantity':
-                if field.get_internal_type() in allowed_types:
-                    break
-                msg = "Field `{}.quantity` must be of one of the types: {}."
-                errors.append(checks.Error(msg.format(cls.__name__, allowed_types)))
+                if field.get_internal_type() != cart_field.get_internal_type():
+                    msg = "Field `{}.quantity` must be of same type as `{}.quantity`."
+                    errors.append(checks.Error(msg.format(cls.__name__, CartItemModel.__name__)))
+                break
         else:
             msg = "Class `{}` must implement a field named `quantity`."
             errors.append(checks.Error(msg.format(cls.__name__)))
