@@ -91,7 +91,7 @@
 	{% endblock add-to-cart-modal-header %}
 
 	{% block add-to-cart-modal-body %}
-	<div class="modal-body">
+	<div class="modal-body" ng-cloak>
 		{% verbatim %}{{ context.quantity|number }} &times; {% endverbatim %}{{ product.product_name }}
 		{% trans "for {{ context.unit_price }} per piece: {{ context.subtotal }}" %}
 	</div>
