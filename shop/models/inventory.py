@@ -67,6 +67,20 @@ class AvailableProductMixin(object):
         else:
             raise ProductNotAvailable(self)
 
+    @classmethod
+    def check(cls, **kwargs):
+        errors = super(AvailableProductMixin, cls).check(**kwargs)
+        for rel in cls._meta.related_objects:
+            if rel.name == 'inventory_set':
+                if rel.get_internal_type() != 'ForeignKey':
+                    msg = "Field `product` in class inheriting from `BaseInventory` is not a valid foreign key pointing onto {}."
+                    errors.append(checks.Error(msg.format(cls.__name__)))
+                break
+        else:
+            msg = "A model inheriting from `BaseInventory` must implement a foreign key `product` pointing onto {}."
+            errors.append(checks.Error(msg.format(cls.__name__)))
+        return errors
+
 
 class ReserveProductMixin(BaseReserveProductMixin, AvailableProductMixin):
     """
