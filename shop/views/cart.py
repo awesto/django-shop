@@ -47,8 +47,12 @@ class BaseViewSet(viewsets.ModelViewSet):
         """
         cart_item = self.get_object()
         context = self.get_serializer_context()
-        item_serializer = self.item_serializer_class(cart_item, context=context, data=request.data,
-                                                     label=self.serializer_label)
+        item_serializer = self.item_serializer_class(
+            cart_item,
+            context=context,
+            data=request.data,
+            label=self.serializer_label,
+        )
         item_serializer.is_valid(raise_exception=True)
         self.perform_update(item_serializer)
         cart_serializer = CartSerializer(cart_item.cart, context=context, label='cart')
