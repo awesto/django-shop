@@ -7,7 +7,7 @@ from django.db.models.aggregates import Sum
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from shop.conf import app_settings
-from shop.models.product import Availability, _ReserveProductMixin
+from shop.models.product import Availability, BaseReserveProductMixin
 from shop.exceptions import ProductNotAvailable
 
 
@@ -68,12 +68,12 @@ class AvailableProductMixin(object):
             raise ProductNotAvailable(self)
 
 
-class ReserveProductMixin(_ReserveProductMixin, AvailableProductMixin):
+class ReserveProductMixin(BaseReserveProductMixin, AvailableProductMixin):
     """
     Add this mixin class to the product models declaration, wanting to keep track on the
     current amount of products in stock.  In comparison to
     :class:`shop.models.product.AvailableProductMixin`, this mixin reserves items in pending
-    carts, without the no risk for overselling. On the other hand, the shop may run out of sellable
+    carts, without the risk for overselling. On the other hand, the shop may run out of sellable
     items, if customers keep products in the cart for a long period, without proceeding to checkout.
     Use this mixin for products kept for a short period until checking out the cart, for
     instance for ticket sales. Ensure that pending carts are flushed regularly.

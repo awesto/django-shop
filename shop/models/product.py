@@ -93,7 +93,7 @@ class AvailableProductMixin(object):
         return errors
 
 
-class _ReserveProductMixin(object):
+class BaseReserveProductMixin(object):
     def get_availability(self, request, **extra):
         """
         Returns the current available quantity for this product.
@@ -105,13 +105,13 @@ class _ReserveProductMixin(object):
         """
         from shop.models.cart import CartItemModel
 
-        availability = super(ReserveProductMixin, self).get_availability(request)
+        availability = super(BaseReserveProductMixin, self).get_availability(request)
         cart_items = CartItemModel.objects.filter(product=self).values('quantity')
         availability.quantity -= cart_items.aggregate(sum=Coalesce(Sum('quantity'), 0))['sum']
         return availability
 
 
-class ReserveProductMixin(_ReserveProductMixin, AvailableProductMixin):
+class ReserveProductMixin(BaseReserveProductMixin, AvailableProductMixin):
     """
     Add this mixin class to the product models declaration, wanting to keep track on the
     current amount of products in stock. In comparison to
