@@ -4,6 +4,13 @@
 Changelog for django-SHOP
 =========================
 
+1.0.1
+=====
+
+* Fix error in admin interface for ``Notification``detail view.
+* Refactor all internal model checks to use classmethod ``check()`` provided by Django.
+
+
 1.0
 ===
 
