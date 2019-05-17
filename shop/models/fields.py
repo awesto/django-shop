@@ -6,6 +6,7 @@ import six
 from django.conf import settings
 from django.db import models
 from django.utils.six import python_2_unicode_compatible, string_types
+from django.utils.text import force_text
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -96,7 +97,7 @@ class ChoiceEnum(six.with_metaclass(ChoiceEnumMeta, enum.Enum)):
     )
     """
     def __str__(self):
-        return self.label
+        return force_text(self.label)
 
 
 class ChoiceEnumField(models.PositiveSmallIntegerField):
