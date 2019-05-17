@@ -4,9 +4,8 @@ from __future__ import unicode_literals
 from six import with_metaclass
 import warnings
 from collections import OrderedDict
-
+from django.core import checks
 from django.db import models
-from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import ugettext_lazy as _
 
 from shop import deferred
@@ -101,17 +100,20 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         verbose_name_plural = _("Cart items")
 
     @classmethod
-    def perform_model_check(cls):
-        allowed_types = ['IntegerField', 'DecimalField', 'FloatField']
+    def check(cls, **kwargs):
+        errors = super(BaseCartItem, cls).check(**kwargs)
+        allowed_types = ['IntegerField', 'SmallIntegerField', 'PositiveIntegerField',
+                         'PositiveSmallIntegerField', 'DecimalField', 'FloatField']
         for field in cls._meta.fields:
             if field.attname == 'quantity':
-                if not field.get_internal_type() in allowed_types:
-                    msg = "Field `{}.quantity` must be of one of the types: {}."
-                    raise ImproperlyConfigured(msg.format(cls.__name__, allowed_types))
+                if field.get_internal_type() not in allowed_types:
+                    msg = "Class `{}.quantity` must be of one of the types: {}."
+                    errors.append(checks.Error(msg.format(cls.__name__, allowed_types)))
                 break
         else:
             msg = "Class `{}` must implement a field named `quantity`."
-            raise ImproperlyConfigured(msg.format(cls.__name__))
+            errors.append(checks.Error(msg.format(cls.__name__)))
+        return errors
 
     def __init__(self, *args, **kwargs):
         # reduce the given fields to what the model actually can consume
