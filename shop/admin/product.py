@@ -33,6 +33,7 @@ def _find_catalog_list_apphook():
     else:
         raise ImproperlyConfigured("You must register a CMS apphook of type `CatalogListCMSApp`.")
 
+
 class CategoryModelMultipleChoiceField(forms.ModelMultipleChoiceField):
     def label_from_instance(self, obj):
         if Site.objects.count() >=2 :
@@ -126,6 +127,18 @@ class InvalidateProductCacheMixin(object):
             cache.delete_pattern('product:{}|*'.format(product.id))
         except AttributeError:
             pass
+
+
+class UnitPriceMixin(object):
+    def get_list_display(self, request):
+        list_display = super(UnitPriceMixin, self).get_list_display(request)
+        if 'get_unit_price' not in list_display:
+            list_display.append('get_unit_price')
+        return list_display
+
+    def get_unit_price(self, obj):
+        return str(obj.unit_price)
+    get_unit_price.short_description = _("Unit Price")
 
 
 class CMSPageFilter(admin.SimpleListFilter):
