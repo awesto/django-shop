@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 import os
-import warnings
 from distutils.version import LooseVersion
 
 from django.db import models
