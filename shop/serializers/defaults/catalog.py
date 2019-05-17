@@ -52,16 +52,16 @@ class AddToCartSerializer(serializers.Serializer):
 
     def to_representation(self, instance):
         data = super(AddToCartSerializer, self).to_representation(instance)
+        data['quantity'] = self.validated_data['quantity']
         data['subtotal'] = MoneyField().to_representation(data['quantity'] * instance['unit_price'])
         return data
 
     def validate_quantity(self, quantity):
+        """
+        Restrict the quantity allowed putting into the cart to the available quantity in stock.
+        """
         availability = self.instance['availability']
-        if quantity > availability.quantity:
-            quantity = availability.quantity
-            if isinstance(self.instance, dict):
-                self.instance['quantity'] = quantity
-        return quantity
+        return min(quantity, availability.quantity)
 
     def get_instance(self, context, data, extra_args):
         """
