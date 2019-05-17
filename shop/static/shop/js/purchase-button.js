@@ -9,7 +9,7 @@ var module = angular.module('django.shop.purchase-button', ['djng.forms']);
 // snippet, containing instructions on what to do next. Typically this is another http request onto
 // the PSP's endpoint. Sometimes it is a redirect onto another page, hence the `$window` parameter
 // has to be injected as well, even though unused.
-module.directive('button', ['$http', '$log', '$q', '$window', function($http, $log, $q, $window) {
+module.directive('button', ['$http', '$log', '$q', '$rootScope', '$window', function($http, $log, $q, $rootScope, $window) {
 	return {
 		restrict: 'E',
 		require: '^?djngFormsSet',
@@ -29,6 +29,8 @@ module.directive('button', ['$http', '$log', '$q', '$window', function($http, $l
 							scope.purchasingErrorMessage = response.data.purchasing_error_message;
 						}
 						deferred.reject(response);
+					}).finally(function() {
+						$rootScope.$broadcast('shop.messages.fetch');
 					});
 					return deferred.promise;
 				}

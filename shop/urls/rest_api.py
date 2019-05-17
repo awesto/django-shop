@@ -2,9 +2,11 @@
 from __future__ import unicode_literals
 
 from django.conf.urls import url, include
+from django.http import JsonResponse
 from rest_framework import routers
 
 from shop.forms.checkout import ShippingAddressForm, BillingAddressForm
+from shop.messages import get_messages_as_json
 from shop.views.address import AddressEditView
 from shop.views.cart import CartViewSet, WatchViewSet
 from shop.views.checkout import CheckoutViewSet
@@ -15,10 +17,19 @@ router.register(r'cart', CartViewSet, base_name='cart')
 router.register(r'watch', WatchViewSet, base_name='watch')
 router.register(r'checkout', CheckoutViewSet, base_name='checkout')
 
+
+def fetch_messages(request):
+    data = get_messages_as_json(request)
+    return JsonResponse({'django_messages': data})
+
+
 urlpatterns = [
     url(r'^select_product/?$',
         ProductSelectView.as_view(),
         name='select-product'),
+    url(r'^fetch_messages/?$',
+        fetch_messages,
+        name='fetch-messages'),
     url(r'^shipping_address/(?P<priority>({{\s*\w+\s*}}|\d+|add))$',
         AddressEditView.as_view(form_class=ShippingAddressForm),
         name='edit-shipping-address'),
