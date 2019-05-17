@@ -17,6 +17,6 @@ Release logic:
 11. git commit -m 'Start with <version>'
 12. git push
 """
-__version__ = '1.0.1'
+__version__ = '1.1.dev'
 
 default_app_config = 'shop.apps.ShopConfig'
