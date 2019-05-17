@@ -26,8 +26,9 @@ class BaseCartModifier(object):
     4.  `post_process_cart`: all totals are up-to-date, the cart is ready to be displayed. Any
     change you make here must be consistent!
 
-    Each method accepts the HTTP `request` object. It shall be used to let implementations
-    determine their prices according to the session, and other request information.
+    Each method accepts the HTTP ``request`` object. It shall be used to let implementations
+    determine their prices, availability, taxes, discounts, etc. according to the identified
+    customer, the originating country, and other request information.
     """
     def __init__(self):
         assert hasattr(self, 'identifier'), "Each Cart modifier class requires a unique identifier"
@@ -48,18 +49,32 @@ class BaseCartModifier(object):
         """
         return cart_items
 
-    def pre_process_cart(self, cart, request):
+    def pre_process_cart(self, cart, request, raise_exception=False):
         """
         This method will be called before the Cart starts being processed.
         It shall be used to populate the cart with initial values, but not to compute
         the cart's totals.
+
+        :param cart: The cart object.
+
+        :param request: The request object.
+
+        :param raise_exception: If ``True``, raise an exception if cart can not be fulfilled.
         """
 
-    def pre_process_cart_item(self, cart, item, request):
+    def pre_process_cart_item(self, cart, item, request, raise_exception=False):
         """
         This method will be called for each item before the Cart starts being processed.
         It shall be used to populate the cart item with initial values, but not to compute
         the item's linetotal.
+
+        :param cart: The cart object.
+
+        :param item: The cart item object.
+
+        :param request: The request object.
+
+        :param raise_exception: If ``True``, raise an exception if cart can not be fulfilled.
         """
 
     def process_cart_item(self, cart_item, request):

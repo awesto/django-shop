@@ -4,16 +4,16 @@ from __future__ import unicode_literals
 from django.core.exceptions import ImproperlyConfigured
 from django.db import transaction
 from django.utils.module_loading import import_string
-
+from django.utils.translation import ugettext_lazy as _
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
-
 from cms.plugin_pool import plugin_pool
-
+from shop import messages
 from shop.conf import app_settings
+from shop.exceptions import ProductNotAvailable
 from shop.models.cart import CartModel
 from shop.serializers.checkout import CheckoutSerializer
 from shop.serializers.cart import CartSerializer
@@ -115,7 +115,18 @@ class CheckoutViewSet(GenericViewSet):
         a button labeled "Purchase Now".
         """
         cart = CartModel.objects.get_from_request(request)
-        cart.update(request)
+        try:
+            cart.update(request, raise_exception=True)
+        except ProductNotAvailable as exc:
+            message = _("The product '{product_name}' ({product_code}) suddenly became unavailable, "\
+                        "presumably because someone else purchased it faster.\n"\
+                        "Please recheck the cart or add an alternative product and proceed with the checkout.").\
+                       format(product_name=exc.product.product_name, product_code=exc.product.product_code)
+            messages.error(request, message, title=_("Product Disappeared"), delay=10)
+            message = _("The product '{product_name}' ({product_code}) suddenly became unavailable.").\
+                       format(product_name=exc.product.product_name, product_code=exc.product.product_code)
+            response_data = {'purchasing_error_message': message}
+            return Response(data=response_data, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
         cart.save()
 
         response_data = {}
@@ -127,6 +138,8 @@ class CheckoutViewSet(GenericViewSet):
                     response_data.update(expression=expression)
                     break
         except ValidationError as err:
+            message = _("Please select a valid payment method.")
+            messages.warning(request, message, title=_("Choose Payment Method"), delay=5)
             response_data = {'purchasing_error_message': '. '.join(err.detail)}
             return Response(data=response_data, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
         return Response(data=response_data)

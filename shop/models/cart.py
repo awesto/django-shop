@@ -134,6 +134,7 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         """
         if not self._dirty:
             return
+        self.refresh_from_db()
         self.extra_rows = OrderedDict()  # reset the dictionary
         for modifier in cart_modifiers_pool.get_all_modifiers():
             modifier.process_cart_item(self, request)
@@ -209,7 +210,7 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
             super(BaseCart, self).save(force_update=force_update, *args, **kwargs)
         self._dirty = True
 
-    def update(self, request):
+    def update(self, request, raise_exception=False):
         """
         This should be called after a cart item changed quantity, has been added or removed.
 
@@ -233,9 +234,9 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         # This calls all the pre_process_cart methods and the pre_process_cart_item for each item,
         # before processing the cart. This allows to prepare and collect data on the cart.
         for modifier in cart_modifiers_pool.get_all_modifiers():
-            modifier.pre_process_cart(self, request)
+            modifier.pre_process_cart(self, request, raise_exception)
             for item in items:
-                modifier.pre_process_cart_item(self, item, request)
+                modifier.pre_process_cart_item(self, item, request, raise_exception)
 
         self.extra_rows = OrderedDict()  # reset the dictionary
         self.subtotal = 0  # reset the subtotal

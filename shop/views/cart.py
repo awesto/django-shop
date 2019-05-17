@@ -57,8 +57,8 @@ class BaseViewSet(viewsets.ModelViewSet):
         self.perform_update(item_serializer)
         cart_serializer = CartSerializer(cart_item.cart, context=context, label='cart')
         response_data = {
-            'cart_item': item_serializer.data,
             'cart': cart_serializer.data,
+            'cart_item': item_serializer.data,
         }
         return Response(data=response_data)
 
