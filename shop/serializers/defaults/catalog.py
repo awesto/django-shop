@@ -52,7 +52,10 @@ class AddToCartSerializer(serializers.Serializer):
 
     def to_representation(self, instance):
         data = super(AddToCartSerializer, self).to_representation(instance)
-        data['quantity'] = self.validated_data['quantity']
+        try:
+            data['quantity'] = self._validated_data['quantity']
+        except AttributeError:
+            data['quantity'] = self.validate_quantity(data['quantity'])
         data['subtotal'] = MoneyField().to_representation(data['quantity'] * instance['unit_price'])
         return data
 
