@@ -75,17 +75,6 @@ class CartItemSerializer(BaseItemSerializer):
         validated_data['cart'] = CartModel.objects.get_or_create_from_request(self.context['request'])
         return super(CartItemSerializer, self).create(validated_data)
 
-    def save(self, **kwargs):
-        instance = super(CartItemSerializer, self).save(**kwargs)
-
-        # limit the number of items to the inventory
-        request = self.context['request']
-        availability = instance.product.get_availability(request, **instance.extra)
-        if instance.quantity > availability.quantity:
-            instance.quantity = availability.quantity
-            instance.save()
-        return instance
-
 
 class WatchItemSerializer(BaseItemSerializer):
     class Meta(BaseItemSerializer.Meta):
