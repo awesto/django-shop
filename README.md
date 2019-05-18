@@ -7,10 +7,13 @@
 [![Twitter Follow](https://img.shields.io/twitter/follow/djangoSHOP.svg?style=social&label=djangoSHOP)](https://twitter.com/djangoSHOP)
 
 
-**Release 1.0 has been released!**
-
 **Django-SHOP** aims to be a the easy, fun and fast e-commerce counterpart to
 [django-CMS](https://www.django-cms.org/).
+
+
+## Release 1.1 is about to be released soon!
+
+See below on how to install it using the Cookiecutter template.
 
 
 ## Build the database model out of the product's properties – not vice versa
@@ -96,6 +99,9 @@ web-site which could have been built from scratch by yourself.
 If you want to start with a fresh demo, please use the prepared
 [Cookiecutter template for django-SHOP](https://github.com/awesto/cookiecutter-django-shop)
 and follow the instructions. 
+
+To get a first impression of the upcoming release, please use this
+[Cookiecutter template for django-SHOP version 1.1](https://github.com/awesto/cookiecutter-django-shop/tree/releases/1.1)
 
 
 ## Audience of django-SHOP users
