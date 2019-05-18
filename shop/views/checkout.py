@@ -119,8 +119,8 @@ class CheckoutViewSet(GenericViewSet):
             cart.update(request, raise_exception=True)
         except ProductNotAvailable as exc:
             message = _("The product '{product_name}' ({product_code}) suddenly became unavailable, "\
-                        "presumably because someone else purchased it faster.\n"\
-                        "Please recheck the cart or add an alternative product and proceed with the checkout.").\
+                        "presumably because someone else has been faster purchasing it.\n Please "\
+                        "recheck the cart or add an alternative product and proceed with the checkout.").\
                        format(product_name=exc.product.product_name, product_code=exc.product.product_code)
             messages.error(request, message, title=_("Product Disappeared"), delay=10)
             message = _("The product '{product_name}' ({product_code}) suddenly became unavailable.").\
