@@ -13,7 +13,7 @@ from cmsplugin_cascade.models import SortableInlineCascadeElement
 from cmsplugin_cascade.fields import GlossaryField
 from shop.cascade.plugin_base import ShopPluginBase, ProductSelectField
 from shop.conf import app_settings
-from shop.models.product import ProductModel, AvailableProductMixin
+from shop.models.product import ProductModel
 
 if is_installed('adminsortable2'):
     from adminsortable2.admin import SortableInlineAdminMixin
@@ -77,7 +77,7 @@ class ShopAddToCartPlugin(ShopPluginBase):
         templates = []
         if instance.glossary.get('render_template'):
             templates.append(instance.glossary['render_template'])
-        if isinstance(context['product'], AvailableProductMixin):
+        if context['product'].managed_availability():
             template_prefix = 'available-'
         else:
             template_prefix = ''

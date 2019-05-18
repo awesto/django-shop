@@ -82,6 +82,9 @@ class AvailableProductMixin(object):
         self.quantity -= quantity
         self.save(update_fields=['quantity'])
 
+    def managed_availability(self):
+        return True
+
     @classmethod
     def check(cls, **kwargs):
         from shop.models.cart import CartItemModel
@@ -273,6 +276,12 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         :return: An object of type :class:`shop.models.product.Availability`.
         """
         return Availability()
+
+    def managed_availability(self):
+        """
+        :return True: If this product has its quantity managed by some inventory functionality.
+        """
+        return False
 
     def is_in_cart(self, cart, watched=False, **kwargs):
         """

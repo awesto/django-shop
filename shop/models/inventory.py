@@ -67,6 +67,9 @@ class AvailableProductMixin(object):
         else:
             raise ProductNotAvailable(self)
 
+    def managed_availability(self):
+        return True
+
     @classmethod
     def check(cls, **kwargs):
         errors = super(AvailableProductMixin, cls).check(**kwargs)
