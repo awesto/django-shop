@@ -85,47 +85,4 @@ djangoShopModule.directive('shopToastMessages', ['$rootScope', 'djangoMessages',
 }]);
 
 
-/*
-djangoShopModule.directive('toast', ['$timeout', function($timeout) {
-	return {
-		restrict: 'C',
-		scope: true,
-		link: function(scope, element, attrs) {
-			$timeout(function() {
-				element.addClass('show');
-			}, 500);
-			scope.close = function() {
-				element.removeClass('show');
-				$timeout(function() {
-					element.addClass('hide');
-				}, 500);
-			};
-			scope.alertLevel = function(levelTag) {
-				switch (levelTag) {
-					case 'debug': return 'bg-secondary text-white';
-					case 'info': return 'bg-info text-white';
-					case 'success': return 'bg-success text-white';
-					case 'warning': return 'bg-warning text-dark';
-					case 'error': return 'bg-danger text-white';
-					default: return 'text-dark';
-				}
-			};
-			scope.alertIcon = function(levelTag) {
-				switch (levelTag) {
-					case 'debug': return 'fa-bug';
-					case 'info': return 'fa-info-circle';
-					case 'success': return 'fa-check-circle';
-					case 'warning': return 'fa-exclamation-circle';
-					case 'error': return 'fa-exclamation-triangle';
-					default: return 'fa-circle-o';
-				}
-			};
-			if (parseInt(attrs.delay)) {
-				$timeout(scope.close, attrs.delay);
-			}
-		}
-	};
-}]);
-*/
-
 })(window.angular);

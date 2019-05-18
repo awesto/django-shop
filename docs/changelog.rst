@@ -4,6 +4,25 @@
 Changelog for django-SHOP
 =========================
 
+1.1
+===
+
+* Add wrapper around Django's messages framework so that messages can be displayed asynchronously
+  using a new AngularJS directive ``<toast-messages>``.
+* Add endpoint ``fetch_messages`` to fetch JSON description for toast-messages.
+* Add stock managment offering a simple addon to products, or alternatively an inventory management
+  class, allowing to sell short and limiting to special periods.
+* Refactored views for adding product to cart and changing quantity in cart so that the purchasing
+  quantity can not exceed the quantity in stock.
+* The default commodity product now keeps track of the quantity in stock.
+* Changed the signature of the methods :method:`shop.modifiers.base.CartModifierBase.pre_process_cart`
+  and :method:`shop.modifiers.base.CartModifierBase.pre_process_cart_item` to take an extra boolean
+  parameter.
+* Remove sub-serializer ``availability`` from product, because now it is handled internally by the
+  class :class:`shop.serializers.defaults.catalog.AddToCartSerializer`.
+* For products with managed availability, show the remaining number in stock.
+
+
 1.0.1
 =====
 
