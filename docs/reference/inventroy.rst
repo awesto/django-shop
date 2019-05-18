@@ -6,13 +6,16 @@ Stock Management
 
 Products in **django-SHOP**, by default do not keep track on their quantity in stock. This is
 because the product model shall be as lean as possible, and properties shall only be added, if they
-are required. Arbitrarily reproducible products, simply don't need to keep track their quantity in
-stock.
+are required.
+
+There are many shops which simply don't need to keep track their quantity in stock. Either because
+the products they sell are arbitrarily reproducible, or because they share their stock with an
+offline store and hence the availability is managed through other means, typically an ERP.
 
 However, for concrete products, keeping track of their limited number of pieces in stock, is
 mandatory. For this purpose **django-SHOP** offers two mutual exclusive product extensions. Without
-configured stock management, products are considered as available for eternity and in an infinite
-number of pieces.
+configured stock management, products tagged as "available" are considered as available until
+eternity and as unlimited in quantity.
 
 
 Product with Quantity
@@ -21,7 +24,8 @@ Product with Quantity
 A simple approach to keep track on the product's quantity in stock, is to store this information
 side by side with the product model. This shall be done by adding a model field ``quantity``, using
 an ``IntegerField``, ``PositiveIntegerField``, ``SmallIntegerField``, ``PositiveSmallIntegerField``,
-``FloatField`` or a ``DecimalField``.
+``FloatField`` or a ``DecimalField``. The field type shall be the same as that used by the
+``quantity``-field in :class:`shop.models.cart.CartItemModel`.
 
 In addition to the field storing the quantity in stock, add the mixin class
 :class:`shop.models.product.AvailableProductMixin` to the product model declaration. Example:
@@ -42,8 +46,8 @@ In addition to the field storing the quantity in stock, add the mixin class
 
 	    objects = BaseProductManager()
 
-The latter mixin class overrides overrides the two methods ``get_availability`` and
-``deduct_from_stock`` taking into account that now the number of products in stock is limited.
+The latter mixin class overrides the two methods ``get_availability()`` and ``deduct_from_stock()``
+taking into account that now the number of products in stock is limited.
 
 
 Product with Inventory
@@ -52,9 +56,9 @@ Product with Inventory
 Sometimes it is not enough to just know the current number of items of a certain product. Consider
 the use case, where a product is short in supply but the next incoming delivery is already
 scheduled. In this situation a merchant might want to inform its customers, that the wanted product
-is deliverable soon. Therefore, instead of adding a simple field storing the current quantity, we
-add a relation for each delivered charge. This model then holds a timestamp, when the next incoming
-delivery is expected. Example:
+isn't deliverable now but soon. Therefore, instead of adding a simple field storing the current
+quantity, we add a relation for each delivered charge. This model then holds a timestamp, when the
+next incoming delivery is expected. Example:
 
 .. code-block:: python
 	:filename: models.py
@@ -95,11 +99,16 @@ while creating our admin backend. Example:
 	class MyProductAdmin(admin.ModelAdmin)
 	    inlines = [MyInventoryAdmin]
 
-This allows the merchant to schedule incoming deliveries. If the timestamp for arrival is in between
-a short period of time, **django-SHOP** sells short. Selling short means to sell something which you
-actually don't own right now, but will own in the future. The period of time for selling short, can
-be configured using the settings directive ``SHOP_SELL_SHORT_PERIOD``, using seconds or a Python
-``timedelta`` object.
+This allows the merchant to schedule incoming deliveries.
+
+
+Selling Short
+-------------
+
+If the timestamp for arrival is in between a short period of time, **django-SHOP** can *sell short*.
+Selling short means to sell something which you actually don't own right now, but will own in the
+future. The period of time for selling short, can be configured using the settings directive
+``SHOP_SELL_SHORT_PERIOD``, using seconds or a Python ``timedelta`` object.
 
 
 Time Limited Offer
@@ -107,9 +116,8 @@ Time Limited Offer
 
 An other possibility when using the Inventory relation, is to limit an offer for a determined
 period of time. This is when the merchant sets the field named ``latest`` to a time stamp in the
-near future. If this time stamp is in between the the period configured using the settings
-directive ``SHOP_LIMITED_OFFER_PERIOD``, then the customer is notified that this offer is limited
-in time.
+near future. If this time stamp is in between the period configured using the settings directive
+``SHOP_LIMITED_OFFER_PERIOD``, then the customer is notified that this offer is limited in time.
 
 
 Reserving Products in Cart
@@ -158,4 +166,12 @@ Prevent Overselling
 ===================
 
 in **django-SHOP**, purchasing the cart's content is performed as one transaction. This means
-that either the cart is converted into an order as a whole, or left
+that either the cart is converted into an order as a whole, or left as it was before the customer
+clicked the **Purchase Now**-button.
+
+Now consider the following race-condition: Two customers add the same product to their carts. The
+quantity of this product is limited in stock. As soon as one customer purchased this item, it is
+not available anymore for the other customer. In such a situation the whole purchasing operation
+is canceled for the second customer, so that he can look for an alternative product. If his
+purchasing operation is canceled, an informative message is displayed, saying that the product
+unexpectedly became unavailable.
