@@ -11,7 +11,7 @@
 [django-CMS](https://www.django-cms.org/).
 
 
-## Release 1.1 is about to be released soon!
+## Version 1.1 has been released!
 
 See below on how to install it using the Cookiecutter template.
 
@@ -99,9 +99,6 @@ web-site which could have been built from scratch by yourself.
 If you want to start with a fresh demo, please use the prepared
 [Cookiecutter template for django-SHOP](https://github.com/awesto/cookiecutter-django-shop)
 and follow the instructions. 
-
-To get a first impression of the upcoming release, please use this
-[Cookiecutter template for django-SHOP version 1.1](https://github.com/awesto/cookiecutter-django-shop/tree/releases/1.1)
 
 
 ## Audience of django-SHOP users
