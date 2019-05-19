@@ -60,8 +60,8 @@ class WeightedCartModifier(BaseCartModifier):
 
     def pre_process_cart(self, cart, request, raise_exception=False):
         cart.weight = self.initial_weight
-        return super(WeightedCartModifier, self).process_cart(cart, request, raise_exception)
+        return super(WeightedCartModifier, self).pre_process_cart(cart, request, raise_exception)
 
     def pre_process_cart_item(self, cart, cart_item, request, raise_exception=False):
         cart.weight += Decimal(cart_item.product.get_weight() * cart_item.quantity)
-        return super(WeightedCartModifier, self).process_cart_item(cart_item, request, raise_exception)
+        return super(WeightedCartModifier, self).pre_process_cart_item(cart_item, request, raise_exception)
