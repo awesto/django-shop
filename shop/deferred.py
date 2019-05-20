@@ -195,22 +195,11 @@ class ForeignKeyBuilder(ModelBase):
         """
 
     @classmethod
-    def perform_model_check(cls):
-        """
-        Hook for each materialized class inheriting from ForeignKeyBuilder, to perform model checks.
-        """
-
-    @classmethod
     def check_for_pending_mappings(cls):
         if cls._pending_mappings:
             msg = "Deferred foreign key '{0}.{1}' has not been mapped"
             pm = cls._pending_mappings
             raise ImproperlyConfigured(msg.format(pm[0][0].__name__, pm[0][1]))
-
-    @classmethod
-    def perform_model_checks(cls):
-        for model in cls._materialized_models.values():
-            model.perform_model_check()
 
 
 class PolymorphicForeignKeyBuilder(ForeignKeyBuilder, PolymorphicModelBase):

@@ -6,6 +6,7 @@ from distutils.version import LooseVersion
 from functools import reduce
 import operator
 from cms import __version__ as CMS_VERSION
+from django.core import checks
 from django.db import models
 from django.utils import six
 from django.utils.encoding import force_text
@@ -177,12 +178,14 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         return 0
 
     @classmethod
-    def perform_model_check(cls):
+    def check(cls, **kwargs):
+        errors = super(BaseProduct, cls).check(**kwargs)
         try:
             cls.product_name
         except AttributeError:
             msg = "Class `{}` must provide a model field implementing `product_name`"
-            raise NotImplementedError(msg.format(cls.__name__))
+            errors.append(checks.Error(msg.format(cls.__name__)))
+        return errors
 
 ProductModel = deferred.MaterializedModel(BaseProduct)
 

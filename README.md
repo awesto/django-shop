@@ -6,11 +6,13 @@
 [![Software license](https://img.shields.io/pypi/l/django-shop.svg)](https://pypi.python.org/pypi/django-shop)
 [![Twitter Follow](https://img.shields.io/twitter/follow/djangoSHOP.svg?style=social&label=djangoSHOP)](https://twitter.com/djangoSHOP)
 
-
-**Release 1.0 has been released!**
-
 **Django-SHOP** aims to be a the easy, fun and fast e-commerce counterpart to
 [django-CMS](https://www.django-cms.org/).
+
+
+## Version 1.1 is about to be released soon!
+
+See below on how to install it using the Cookiecutter template.
 
 
 ## Build the database model out of the product's properties – not vice versa
@@ -23,7 +25,10 @@ missing.
 
 In **django-SHOP** implementations, the product models reflect their pysical properties making it
 possible to create complete and deep hierarchies of variations, but without having to fiddle with
-unneeded properties.
+unneeded properties. It furthermore avoids the need for an
+[Entity Attribute Value Model](https://en.wikipedia.org/wiki/Entity–attribute–value_model), which
+is considered a database anti-pattern, because it produces far too many table joins, when filtering
+by property.
 
 
 ## Don't build pages using hard-coded templates – compose them
@@ -93,6 +98,9 @@ web-site which could have been built from scratch by yourself.
 If you want to start with a fresh demo, please use the prepared
 [Cookiecutter template for django-SHOP](https://github.com/awesto/cookiecutter-django-shop)
 and follow the instructions. 
+
+To get a first impression of the upcoming release 1.1, please use this
+[Cookiecutter template for django-SHOP version 1.1](https://github.com/awesto/cookiecutter-django-shop/tree/releases/1.1)
 
 
 ## Audience of django-SHOP users

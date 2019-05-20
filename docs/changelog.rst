@@ -4,6 +4,22 @@
 Changelog for django-SHOP
 =========================
 
+1.0.2
+=====
+* Revert the change of the ``quantity`` field to use a ``PositiveIntegerField`` in the default
+  implementations of ``CartItem`` and ``OrderItem`` models. This caused #766.
+  This change was scheduled for version 1.1 but unfortunately slipped into version 1.0.1.
+
+
+1.0.1
+=====
+
+* Fix error in admin interface for ``Notification``detail view.
+* Refactor all internal model checks to use classmethod ``check()`` provided by Django.
+* Changed the field type of ``quantity`` in :class:`shop.models.defaults.cart_item.CartItem` and
+  :class:`shop.models.defaults.order_item.OrderItem` from ``IntegerField`` to ``PositiveIntegerField``.
+
+
 1.0
 ===
 
