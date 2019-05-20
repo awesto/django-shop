@@ -16,6 +16,8 @@ Changelog for django-SHOP
 
 * Fix error in admin interface for ``Notification``detail view.
 * Refactor all internal model checks to use classmethod ``check()`` provided by Django.
+* Changed the field type of ``quantity`` in :class:`shop.models.defaults.cart_item.CartItem` and
+  :class:`shop.models.defaults.order_item.OrderItem` from ``IntegerField`` to ``PositiveIntegerField``.
 
 
 1.0
