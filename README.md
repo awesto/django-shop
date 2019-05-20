@@ -6,7 +6,6 @@
 [![Software license](https://img.shields.io/pypi/l/django-shop.svg)](https://pypi.python.org/pypi/django-shop)
 [![Twitter Follow](https://img.shields.io/twitter/follow/djangoSHOP.svg?style=social&label=djangoSHOP)](https://twitter.com/djangoSHOP)
 
-
 **Django-SHOP** aims to be a the easy, fun and fast e-commerce counterpart to
 [django-CMS](https://www.django-cms.org/).
 
@@ -99,6 +98,9 @@ web-site which could have been built from scratch by yourself.
 If you want to start with a fresh demo, please use the prepared
 [Cookiecutter template for django-SHOP](https://github.com/awesto/cookiecutter-django-shop)
 and follow the instructions. 
+
+To get a first impression of the upcoming release 1.1, please use this
+[Cookiecutter template for django-SHOP version 1.1](https://github.com/awesto/cookiecutter-django-shop/tree/releases/1.1)
 
 
 ## Audience of django-SHOP users

@@ -21,6 +21,16 @@ Changelog for django-SHOP
 * Remove sub-serializer ``availability`` from product, because now it is handled internally by the
   class :class:`shop.serializers.defaults.catalog.AddToCartSerializer`.
 * For products with managed availability, show the remaining number in stock.
+* Changed the field type of ``quantity`` in :class:`shop.models.defaults.cart_item.CartItem` and
+  :class:`shop.models.defaults.order_item.OrderItem` from ``IntegerField`` to ``PositiveIntegerField``.
+  (Ann.: This change, by accident slipped into version 1.0.1 and was reverted in 1.0.2).
+
+
+1.0.2
+=====
+* Revert the change of the ``quantity`` field to use a ``PositiveIntegerField`` in the default
+  implementations of ``CartItem`` and ``OrderItem`` models. This caused #766.
+  This change was scheduled for version 1.1 but unfortunately slipped into version 1.0.1.
 
 
 1.0.1
