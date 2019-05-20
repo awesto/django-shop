@@ -4,6 +4,13 @@
 Changelog for django-SHOP
 =========================
 
+1.0.2
+=====
+* Revert the change of the ``quantity`` field to use a ``PositiveIntegerField`` in the default
+  implementations of ``CartItem`` and ``OrderItem`` models. This caused #766.
+  This change was scheduled for version 1.1 but unfortunately slipped into version 1.0.1.
+
+
 1.0.1
 =====
 
