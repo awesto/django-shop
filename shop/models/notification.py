@@ -73,7 +73,7 @@ class Notification(models.Model):
 
 
 class NotificationAttachment(models.Model):
-    notification = models.ForeignKey(Notification)
+    notification = models.ForeignKey(Notification, on_delete=models.CASCADE,)
     attachment = FilerFileField(null=True, blank=True, related_name='email_attachment', on_delete=models.CASCADE,)
 
     class Meta:
