@@ -16,7 +16,6 @@ import six
 def create_regular_class(name, fields={}, meta={}):
     meta.setdefault('app_label', 'foo')
     Meta = type(str('Meta'), (), meta)
-    field = {'on_delete', models.CASCADE}
     return type(str(name), (models.Model,), dict(Meta=Meta, __module__=__name__, **fields))
 
 
