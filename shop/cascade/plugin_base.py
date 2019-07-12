@@ -27,7 +27,8 @@ from shop.conf import app_settings
 from shop.forms.base import DialogFormMixin
 from shop.models.cart import CartModel
 from shop.models.product import ProductModel
-
+from entangled.forms import EntangledModelFormMixin
+from django.forms.fields import CharField, BooleanField, Field
 
 class ShopPluginBase(CascadePluginBase):
     module = "Shop"
@@ -103,7 +104,7 @@ class ProductSelectField(ChoiceField):
             pass
 
 
-class CatalogLinkForm(LinkForm):
+class CatalogLinkForm(EntangledModelFormMixin):
     """
     Alternative implementation of `cmsplugin_cascade.TextLinkForm`, which allows to link onto
     the Product model, using its method ``get_absolute_url``.
@@ -154,6 +155,32 @@ class CatalogLinkPluginBase(LinkPluginBase):
     class Media:
         js = ['shop/js/admin/shoplinkplugin.js']
 
+class DialogFormMixin(EntangledModelFormMixin):
+    """
+    Base class for all plugins adding a dialog form to a placeholder field.
+    """
+    require_parent = True
+    parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin', 'BootstrapPanelPlugin',
+        'SegmentPlugin', 'SimpleWrapperPlugin', 'ValidateSetOfFormsPlugin')
+    RENDER_CHOICES = [('form', _("Form dialog")), ('summary', _("Static summary"))]
+
+
+    render_type = ChoiceField(
+        label=_("Render as"),
+        choices=RENDER_CHOICES,
+        widget=widgets.RadioSelect,
+        initial='form',
+        help_text=_("A dialog can also be rendered as a box containing a read-only summary."),
+    )
+
+    headline_legend = BooleanField(
+        required=False,
+        label=_("Headline Legend"),
+        initial=True,
+        help_text=_("Render a legend inside the dialog's headline."),
+    )
+
+
 
 class DialogFormPluginBase(ShopPluginBase):
     """
@@ -164,19 +191,7 @@ class DialogFormPluginBase(ShopPluginBase):
         'SegmentPlugin', 'SimpleWrapperPlugin', 'ValidateSetOfFormsPlugin')
     RENDER_CHOICES = [('form', _("Form dialog")), ('summary', _("Static summary"))]
 
-    render_type = GlossaryField(
-        widgets.RadioSelect(choices=RENDER_CHOICES),
-        label=_("Render as"),
-        initial='form',
-        help_text=_("A dialog can also be rendered as a box containing a read-only summary."),
-    )
-
-    headline_legend = GlossaryField(
-        widgets.CheckboxInput(),
-        label=_("Headline Legend"),
-        initial=True,
-        help_text=_("Render a legend inside the dialog's headline."),
-    )
+    form = DialogFormMixin
 
     @classmethod
     def register_plugin(cls, plugin):

@@ -27,7 +27,7 @@ class AddressManager(models.Manager):
 
 
 class BaseAddress(models.Model):
-    customer = deferred.ForeignKey('BaseCustomer')
+    customer = deferred.ForeignKey('BaseCustomer',on_delete=models.CASCADE)
 
     priority = models.SmallIntegerField(
         default=0,
