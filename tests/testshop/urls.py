@@ -6,6 +6,6 @@ urlpatterns = [
     path('shop/', include('shop.urls', namespace='shop')),
 ]
 urlpatterns.extend(i18n_patterns(
-    path('admin/', include(admin.site.urls)),
+    path('admin/', admin.site.urls),
     path('', include('cms.urls')),
 ))
