@@ -19,7 +19,7 @@ if 'cmsplugin_cascade' not in settings.INSTALLED_APPS:
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.fields import GlossaryField
 from cmsplugin_cascade.plugin_base import CascadePluginBase
-from cmsplugin_cascade.link.forms import LinkForm
+#from cmsplugin_cascade.link.forms import LinkForm
 from cmsplugin_cascade.link.plugin_base import LinkPluginBase, LinkElementMixin
 from django_select2.forms import HeavySelect2Widget
 
