@@ -14,7 +14,7 @@ from django.db import models, DEFAULT_DB_ALIAS
 from django.db.models.fields import FieldDoesNotExist
 from django.dispatch import receiver
 from django.utils import timezone
-from django.utils.deprecation import CallableBool, CallableFalse, CallableTrue
+#from django.utils.deprecation import CallableBool, CallableFalse, CallableTrue
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import SimpleLazyObject
 from django.utils.translation import ugettext_lazy as _
