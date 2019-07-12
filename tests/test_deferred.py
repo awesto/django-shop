@@ -39,7 +39,7 @@ def create_deferred_base_class(name, fields={}, meta={}, polymorphic=False):
 
 def create_deferred_class(name, base, fields={}, meta={}, mixins=()):
     meta.setdefault('app_label', 'bar')
-    meta.setdefault('on_delete', "models.CASCADE)
+    meta.setdefault('on_delete', models.CASCADE)
     Meta = type(str('Meta'), (), meta)
     return type(str(name), mixins + (base,), dict(Meta=Meta, __module__=__name__, **fields))
 
