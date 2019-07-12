@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 
 import json
 from django.contrib import messages as django_messages
-from django.utils.text import force_text
+from django.utils.encoding import force_text
 
 
 def add_message(request, level, message, title=None, delay=None):
