@@ -53,8 +53,9 @@ setup(
         'django-admin-sortable2>=0.6.19',
         'django-formtools>=1.0',
        # 'djangocms-cascade>=0.18.2',
-        'djangocms-cascade @ git+ssh://git@github.com/jrief/djangocms-cascade.git@releases/1.0.x#egg=djangocms-cascade',
+       # 'djangocms-cascade @ git+ssh://git@github.com/jrief/djangocms-cascade.git@releases/1.0.x#egg=djangocms-cascade',
     ],
+    dependency_links=['github.com/jrief/djangocms-cascade/releases/1.0.x#egg=djangocms-cascade']
     # Note: this requires setuptools >= 18.0.
     extras_require={
         ':python_version<"3.4"': ['enum34'],
