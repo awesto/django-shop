@@ -13,7 +13,7 @@ from django.template.loader import select_template
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.forms import ManageChildrenFormMixin
 from cmsplugin_cascade.fields import GlossaryField
-from cmsplugin_cascade.link.forms import TextLinkFormMixin
+from cmsplugin_cascade.link.forms import LinkForm
 from cmsplugin_cascade.widgets import NumberInputWidget
 from cmsplugin_cascade.bootstrap4.buttons import BootstrapButtonMixin
 from cmsplugin_cascade.plugin_base import TransparentWrapper, TransparentContainer
@@ -91,7 +91,7 @@ class ProcessStepPlugin(TransparentContainer, ShopPluginBase):
 plugin_pool.register_plugin(ProcessStepPlugin)
 
 
-class ProcessNextStepForm(TextLinkFormMixin, ModelForm):
+class ProcessNextStepForm(LinkForm, ModelForm):
     link_content = CharField(required=False, label=_("Button Content"), widget=widgets.TextInput())
 
     def __init__(self, raw_data=None, *args, **kwargs):
