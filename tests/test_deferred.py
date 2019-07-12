@@ -29,7 +29,6 @@ def create_deferred_base_class(name, fields={}, meta={}, polymorphic=False):
 
     meta.setdefault('app_label', 'foo')
     meta.setdefault('abstract', True)
-    meta.setdefault('on_delete', models.CASCADE)
     Meta = type(str('Meta'), (), meta)
     return type(
         str(name),
