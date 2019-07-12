@@ -7,7 +7,7 @@ python:
 
 env:
 #  - DJANGOVER=django110
-  - DJANGOVER=django111
+#  - DJANGOVER=django111
   - DJANGOVER=django21
 
 install:
