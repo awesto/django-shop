@@ -269,11 +269,11 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     @property
     def is_anonymous(self):
-        return CallableBool(self.recognized in (CustomerState.UNRECOGNIZED, CustomerState.GUEST))
+        return callable(self.recognized in (CustomerState.UNRECOGNIZED, CustomerState.GUEST), True)
 
     @property
     def is_authenticated(self):
-        return CallableBool(self.recognized is CustomerState.REGISTERED)
+        return callable(self.recognized is CustomerState.REGISTERED, True)
 
     @property
     def is_recognized(self):
@@ -282,7 +282,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         Unrecognized customers have accessed the shop, but did not register
         an account nor declared themselves as guests.
         """
-        return CallableBool(self.recognized is not CustomerState.UNRECOGNIZED)
+        return callable(self.recognized is not CustomerState.UNRECOGNIZED, True)
 
     @property
     def is_guest(self):
@@ -290,7 +290,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         Return true if the customer isn't associated with valid User account, but declared
         himself as a guest, leaving their email address.
         """
-        return CallableBool(self.recognized is CustomerState.GUEST)
+        return callable(self.recognized is CustomerState.GUEST, True)
 
     def recognize_as_guest(self, request=None, commit=True):
         """
@@ -307,7 +307,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         """
         Return true if the customer has registered himself.
         """
-        return CallableBool(self.recognized is CustomerState.REGISTERED)
+        return callable(self.recognized is CustomerState.REGISTERED, True)
 
     def recognize_as_registered(self, request=None, commit=True):
         """
@@ -324,7 +324,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         """
         Always False for instantiated Customer objects.
         """
-        return CallableFalse
+        return callable( self.value, False)
 
     @property
     def is_expired(self):
@@ -397,27 +397,27 @@ class VisitingCustomer(object):
 
     @property
     def is_anonymous(self):
-        return CallableTrue
+        return callable( self.value, True)
 
     @property
     def is_authenticated(self):
-        return CallableFalse
+        return callable( self.value, False)
 
     @property
     def is_recognized(self):
-        return CallableFalse
-
+        return callable( self.value, False)
+        
     @property
     def is_guest(self):
-        return CallableFalse
+        return callable( self.value, False)
 
     @property
     def is_registered(self):
-        return CallableFalse
+        return callable( self.value, False)
 
     @property
     def is_visitor(self):
-        return CallableTrue
+        return callable( self.value, True)
 
     def save(self, **kwargs):
         pass
