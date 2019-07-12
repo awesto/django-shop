@@ -155,21 +155,18 @@ else:
         product_name = models.CharField(
             max_length=255,
             verbose_name=_("Product Name"),
-            on_delete=models.CASCADE,
         )
 
         product_code = models.CharField(
             _("Product code"),
             max_length=255,
             unique=True,
-            on_delete=models.CASCADE,
         )
 
         unit_price = MoneyField(
             _("Unit price"),
             decimal_places=3,
             help_text=_("Net price for this product"),
-            on_delete=models.CASCADE,
         )
 
         # controlling the catalog
