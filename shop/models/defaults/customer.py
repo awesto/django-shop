@@ -16,7 +16,6 @@ class Customer(BaseCustomer):
     :class:`shop.serializers.defaults.customer.CustomerSerializer`.
     """
     SALUTATION = [('mrs', _("Mrs.")), ('mr', _("Mr.")), ('na', _("(n/a)"))]
-
     number = models.PositiveIntegerField(
         _("Customer Number"),
         null=True,
