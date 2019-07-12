@@ -6,7 +6,7 @@ import pytz
 import re
 from datetime import timedelta
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core import mail
 from django.utils.timezone import datetime
 from shop.serializers.auth import PasswordResetRequestSerializer
