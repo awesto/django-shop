@@ -422,6 +422,7 @@ class OrderPayment(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     order = deferred.ForeignKey(
         BaseOrder,
         verbose_name=_("Order"),
+        on_delete=models.CASCADE,
     )
 
     amount = MoneyField(
