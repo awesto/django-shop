@@ -30,6 +30,7 @@ class MyProductInventory(BaseInventory):
     product = models.ForeignKey(
         MyProduct,
         related_name='inventory_set',
+        on_delete=models.CASCADE
     )
 
     quantity = models.PositiveIntegerField(default=0)
