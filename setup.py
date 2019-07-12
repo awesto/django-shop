@@ -60,8 +60,6 @@ setup(
     dependency_links=['github.com/haricot/djangocms-cascade/patch-33#egg=djangocms-cascade-releases/1.0-patch-33',
         'https://github.com/haricot/djangocms-bootstrap3/patch-9/#egg=djangocms-cascade-patch-9'
     ],
-    
-https://github.com/haricot/djangocms-cascade/blob/patch-33/cmsplugin_cascade/leaflet/settings.py
     # Note: this requires setuptools >= 18.0.
     extras_require={
         ':python_version<"3.4"': ['enum34'],
