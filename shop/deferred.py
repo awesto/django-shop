@@ -149,7 +149,7 @@ class ForeignKeyBuilder(ModelBase):
             if mapmodel and (not abstract_through_model or mapmodel_through):
                 if mapmodel_through:
                     member.options['through'] = mapmodel_through
-                field = member.MaterializedField(mapmodel, **member.options, on_delete=models.CASCADE)
+                field = member.MaterializedField(mapmodel, **member.options,)
                 field.contribute_to_class(Model, attrname)
             else:
                 ForeignKeyBuilder._pending_mappings.append((Model, attrname, member,))
@@ -177,7 +177,7 @@ class ForeignKeyBuilder(ModelBase):
                 if mapmodel_through:
                     member.options['through'] = mapmodel_through
 
-                field = member.MaterializedField(mapmodel, **member.options, on_delete=models.CASCADE)
+                field = member.MaterializedField(mapmodel, **member.options
                 field.contribute_to_class(mapping[0], mapping[1])
                 ForeignKeyBuilder._pending_mappings.remove(mapping)
 
