@@ -177,7 +177,7 @@ class ForeignKeyBuilder(ModelBase):
                 if mapmodel_through:
                     member.options['through'] = mapmodel_through
 
-                field = member.MaterializedField(mapmodel, **member.options
+                field = member.MaterializedField(mapmodel, **member.options)
                 field.contribute_to_class(mapping[0], mapping[1])
                 ForeignKeyBuilder._pending_mappings.remove(mapping)
 
