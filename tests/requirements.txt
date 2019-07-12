@@ -30,7 +30,7 @@ django-angular
 django-appconf
 django-classy-tags
 django-cms
-django-filee
+django-filer
 django-formtools
 django-fsm-admin
 django-fsm
