@@ -186,6 +186,7 @@ else:
             blank=True,
             null=True,
             help_text=_("Sample image used in the catalog's list view."),
+            on_delete=models.CASCADE
         )
 
         show_breadcrumb = models.BooleanField(
