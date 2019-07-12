@@ -26,7 +26,7 @@ def create_deferred_base_class(name, fields={}, meta={}, polymorphic=False):
     if polymorphic:
         metaclass = deferred.PolymorphicForeignKeyBuilder
         model_class = PolymorphicModel
-
+    
     meta.setdefault('app_label', 'foo')
     meta.setdefault('abstract', True)
     Meta = type(str('Meta'), (), meta)
@@ -39,9 +39,8 @@ def create_deferred_base_class(name, fields={}, meta={}, polymorphic=False):
 
 def create_deferred_class(name, base, fields={}, meta={}, mixins=()):
     meta.setdefault('app_label', 'bar')
-    meta.setdefault('on_delete', models.CASCADE)
     Meta = type(str('Meta'), (), meta)
-    return type(str(name), mixins + (base,), dict(Meta=Meta, __module__=__name__, **fields))
+    return type(str(name), mixins + (base, on_delete=models.CASCADE), dict(Meta=Meta, __module__=__name__, **fields))
 
 
 RegularUser = create_regular_class('RegularUser')
