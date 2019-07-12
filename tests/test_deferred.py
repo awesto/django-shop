@@ -15,6 +15,7 @@ import six
 
 def create_regular_class(name, fields={}, meta={}):
     meta.setdefault('app_label', 'foo')
+    meta.setdefault('on_delete', models.CASCADE)
     Meta = type(str('Meta'), (), meta)
     return type(str(name), (models.Model,), dict(Meta=Meta, __module__=__name__, **fields))
 
@@ -40,7 +41,7 @@ def create_deferred_base_class(name, fields={}, meta={}, polymorphic=False):
 def create_deferred_class(name, base, fields={}, meta={}, mixins=()):
     meta.setdefault('app_label', 'bar')
     Meta = type(str('Meta'), (), meta)
-    return type(str(name), mixins + (base), dict(Meta=Meta, __module__=__name__, **fields, on_delete=models.CASCADE))
+    return type(str(name), mixins + (base), dict(Meta=Meta, __module__=__name__, **fields,))
 
 
 RegularUser = create_regular_class('RegularUser')
