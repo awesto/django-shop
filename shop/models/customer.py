@@ -200,7 +200,6 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         _("Recognized as"),
         enum_type=CustomerState,
         help_text=_("Designates the state the customer is recognized as."),
-        on_delete=models.CASCADE,
     )
 
     last_access = models.DateTimeField(
