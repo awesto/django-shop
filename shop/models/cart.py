@@ -177,6 +177,7 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         'BaseCustomer',
         verbose_name=_("Customer"),
         related_name='cart',
+        on_delete=models.CASCADE,
     )
 
     created_at = models.DateTimeField(
