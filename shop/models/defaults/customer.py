@@ -27,7 +27,6 @@ class Customer(BaseCustomer):
         _("Salutation"),
         max_length=5,
         choices=SALUTATION,
-        on_delete=models.CASCADE,
     )
 
     def get_number(self):
