@@ -111,6 +111,8 @@ class ForeignKeyBuilder(ModelBase):
                     baseclass._materialized_model = Model
                     print(Model)
                     print(Model.__dict__)
+                    print(Model._meta)
+                    print(Model._meta.__dict__)
                     print(dir(Model))
                     print(basename)
                     cls.process_pending_mappings(Model, basename)
