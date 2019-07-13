@@ -122,6 +122,12 @@ class ForeignKeyBuilder(ModelBase):
             basename = Model.__name__
             cls._model_allocation[basename] = basename
             Model._materialized_model = Model
+            print(Model)
+            print(Model.__dict__)
+            print(Model._meta)
+            print(Model._meta.__dict__)
+            print(dir(Model))
+            print(basename)
             cls.process_pending_mappings(Model, basename)
 
         cls.handle_deferred_foreign_fields(Model)
