@@ -21,6 +21,7 @@ class Customer(BaseCustomer):
         null=True,
         default=None,
         unique=True,
+        on_delete=models.CASCADE,
     )
 
     salutation = models.CharField(
