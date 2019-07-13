@@ -67,6 +67,7 @@ class BaseBillingAddress(with_metaclass(deferred.ForeignKeyBuilder, BaseAddress)
 
     class Meta:
         abstract = True
+        app_label = 'shop'
 
 BillingAddressModel = deferred.MaterializedModel(BaseBillingAddress)
 

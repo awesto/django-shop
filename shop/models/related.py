@@ -19,7 +19,7 @@ class BaseProductPage(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     This in practice is the category.
     """
     page = models.ForeignKey(Page,on_delete=models.CASCADE,)
-    product = deferred.ForeignKey(BaseProduct,on_delete=models.CASCADE,),
+    product = deferred.ForeignKey(BaseProduct,on_delete=models.CASCADE),
 
     class Meta:
         abstract = True
