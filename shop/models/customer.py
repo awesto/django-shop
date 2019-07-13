@@ -193,12 +193,14 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         primary_key=True,
+        on_delete=models.CASCADE,
     )
 
     recognized = ChoiceEnumField(
         _("Recognized as"),
         enum_type=CustomerState,
         help_text=_("Designates the state the customer is recognized as."),
+        on_delete=models.CASCADE,
     )
 
     last_access = models.DateTimeField(
