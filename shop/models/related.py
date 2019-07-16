@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.utils.six import with_metaclass
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
 from filer.fields import image
 

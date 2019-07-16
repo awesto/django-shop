@@ -5,7 +5,7 @@ from django.contrib.admin import StackedInline
 from django.forms import widgets
 from django.forms.models import ModelForm
 from django.template.loader import select_template
-from django.utils.translation import ugettext_lazy as _, ugettext
+from django.utils.translation import ugettext as _, ugettext
 from cms.plugin_pool import plugin_pool
 from cms.utils.compat.dj import is_installed
 from cmsplugin_cascade.mixins import WithSortableInlineElementsMixin

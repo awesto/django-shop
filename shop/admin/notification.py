@@ -7,7 +7,7 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.forms import fields, models, widgets
 from django.utils import six
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
 from django_fsm import RETURN_VALUE
 

@@ -6,7 +6,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.utils.encoding import force_text
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
 from rest_framework import status
 from rest_framework.views import APIView

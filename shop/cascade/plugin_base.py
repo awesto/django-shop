@@ -9,7 +9,7 @@ from django.template import TemplateDoesNotExist
 from django.template.loader import select_template
 from django.utils.html import format_html
 from django.utils.module_loading import import_string
-from django.utils.translation import ugettext_lazy as _, pgettext_lazy
+from django.utils.translation import ugettext as _, pgettext
 from django.utils.safestring import mark_safe
 from django.utils.encoding import python_2_unicode_compatible
 

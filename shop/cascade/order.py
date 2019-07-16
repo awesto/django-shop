@@ -6,7 +6,7 @@ from django.forms import widgets
 from django.core.exceptions import ValidationError
 from django.template import engines
 from django.template.loader import select_template
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.bootstrap4.buttons import BootstrapButtonMixin
 from cmsplugin_cascade.fields import GlossaryField
