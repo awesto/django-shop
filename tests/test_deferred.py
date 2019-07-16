@@ -43,11 +43,6 @@ def create_deferred_base_class(name, fields={}, meta={}, polymorphic=False):
 def create_deferred_class(name, base, fields={}, meta={}, mixins=()):
     meta.setdefault('app_label', 'bar')
     Meta = type(str('Meta'), (), meta)
-    print(fields)
-    print(base)
-    print(mixins)
-    print(name)
-    
     return type(str(name), mixins + (base,), dict(Meta=Meta, __module__=__name__, **fields))
 
 
