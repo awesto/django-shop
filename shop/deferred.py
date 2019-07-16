@@ -109,12 +109,6 @@ class ForeignKeyBuilder(ModelBase):
                     cls._model_allocation[basename] = Model.__name__
                     # remember the materialized model mapping in the base class for further usage
                     baseclass._materialized_model = Model
-                    print(Model)
-                    print(Model.__dict__)
-                    print(Model._meta)
-                    print(Model._meta.__dict__)
-                    print(dir(Model))
-                    print(basename)
                     cls.process_pending_mappings(Model, basename)
 
         else:
@@ -122,12 +116,6 @@ class ForeignKeyBuilder(ModelBase):
             basename = Model.__name__
             cls._model_allocation[basename] = basename
             Model._materialized_model = Model
-            print(Model)
-            print(Model.__dict__)
-            print(Model._meta)
-            print(Model._meta.__dict__)
-            print(dir(Model))
-            print(basename)
             cls.process_pending_mappings(Model, basename)
 
         cls.handle_deferred_foreign_fields(Model)
@@ -161,8 +149,6 @@ class ForeignKeyBuilder(ModelBase):
             if mapmodel and (not abstract_through_model or mapmodel_through):
                 if mapmodel_through:
                     member.options['through'] = mapmodel_through
-                    print(member.__dict__)
-                    print(mapmodel)
                 field = member.MaterializedField(mapmodel, **member.options,)
                 field.contribute_to_class(Model, attrname)
             else:
