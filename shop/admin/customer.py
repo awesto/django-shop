@@ -31,7 +31,7 @@ class CustomerInlineAdminBase(admin.StackedInline):
 
     def get_number(self, customer):
         return customer.get_number()
-    get_number.short_description = pgettext_lazy('customer', "Number")
+    get_number.short_description = pgettext('customer', "Number")
 
 
 class CustomerCreationForm(UserCreationForm):
