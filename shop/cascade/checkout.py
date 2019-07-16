@@ -203,7 +203,7 @@ class CheckoutAddressPlugin(DialogFormPluginBase):
         identifier = super(CheckoutAddressPlugin, cls).get_identifier(instance)
         address_form = instance.glossary.get('address_form')
         address_form = dict(cls.ADDRESS_CHOICES).get(address_form, '')
-        return format_html(pgettext_lazy('get_identifier', "for {} {}"), address_form, identifier)
+        return format_html(pgettext('get_identifier', "for {} {}"), address_form, identifier)
 
     def get_render_template(self, context, instance, placeholder):
         addr_form = instance.glossary.get('address_form')

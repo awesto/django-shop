@@ -41,7 +41,7 @@ class ProcessBarPlugin(TransparentWrapper, ShopPluginBase):
     def get_identifier(cls, instance):
         identifier = super(ProcessBarPlugin, cls).get_identifier(instance)
         num_cols = instance.get_children().count()
-        content = ungettext_lazy('with {} page', 'with {} pages', num_cols).format(num_cols)
+        content = ungettext('with {} page', 'with {} pages', num_cols).format(num_cols)
         return format_html('{0}{1}', identifier, content)
 
     def get_render_template(self, context, instance, placeholder):

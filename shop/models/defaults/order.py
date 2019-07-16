@@ -6,7 +6,7 @@ from os import urandom
 from django.db import models
 from django.utils import timezone
 from django.utils.six.moves.urllib.parse import urljoin
-from django.utils.translation import ugettext as _, pgettext_lazy
+from django.utils.translation import ugettext as _, pgettext
 from shop.models import order
 
 
@@ -42,8 +42,8 @@ class Order(order.BaseOrder):
     )
 
     class Meta:
-        verbose_name = pgettext_lazy('order_models', "Order")
-        verbose_name_plural = pgettext_lazy('order_models', "Orders")
+        verbose_name = pgettext('order_models', "Order")
+        verbose_name_plural = pgettext('order_models', "Orders")
 
     def get_or_assign_number(self):
         """

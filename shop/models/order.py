@@ -11,7 +11,7 @@ from django.db.models.aggregates import Sum
 from django.urls import NoReverseMatch, reverse
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
-from django.utils.translation import ugettext as _, pgettext_lazy, get_language_from_request
+from django.utils.translation import ugettext as _, pgettext, get_language_from_request
 from django.utils.six.moves.urllib.parse import urljoin
 from django_fsm import FSMField, transition
 from ipware.ip import get_ip
@@ -409,7 +409,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         """
         return self._transition_targets.get(self.status, self.status)
 
-    status_name.short_description = pgettext_lazy('order_models', "State")
+    status_name.short_description = pgettext('order_models', "State")
 
 OrderModel = deferred.MaterializedModel(BaseOrder)
 
@@ -448,8 +448,8 @@ class OrderPayment(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     )
 
     class Meta:
-        verbose_name = pgettext_lazy('order_models', "Order payment")
-        verbose_name_plural = pgettext_lazy('order_models', "Order payments")
+        verbose_name = pgettext('order_models', "Order payment")
+        verbose_name_plural = pgettext('order_models', "Order payments")
 
     def __str__(self):
         return _("Payment ID: {}").format(self.id)
@@ -512,8 +512,8 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     class Meta:
         abstract = True
-        verbose_name = pgettext_lazy('order_models', "Ordered Item")
-        verbose_name_plural = pgettext_lazy('order_models', "Ordered Items")
+        verbose_name = pgettext('order_models', "Ordered Item")
+        verbose_name_plural = pgettext('order_models', "Ordered Items")
 
     def __str__(self):
         return self.product_name
