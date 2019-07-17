@@ -268,11 +268,11 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     @property
     def is_anonymous(self):
-        return callable(self.recognized in (CustomerState.UNRECOGNIZED, CustomerState.GUEST))
+        return callable(self.recognized in (CustomerState.UNRECOGNIZED, CustomerState.GUEST), True)
 
     @property
     def is_authenticated(self):
-        return callable(self.recognized is CustomerState.REGISTERED)
+        return callable(self.recognized is CustomerState.REGISTERED, True)
 
     @property
     def is_recognized(self):
@@ -281,7 +281,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         Unrecognized customers have accessed the shop, but did not register
         an account nor declared themselves as guests.
         """
-        return callable(self.recognized is not CustomerState.UNRECOGNIZED)
+        return callable(self.recognized is not CustomerState.UNRECOGNIZED, True)
 
     @property
     def is_guest(self):
@@ -289,7 +289,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         Return true if the customer isn't associated with valid User account, but declared
         himself as a guest, leaving their email address.
         """
-        return callable(self.recognized is CustomerState.GUEST)
+        return callable(self.recognized is CustomerState.GUEST, True)
 
     def recognize_as_guest(self, request=None, commit=True):
         """
@@ -306,7 +306,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         """
         Return true if the customer has registered himself.
         """
-        return callable(self.recognized is CustomerState.REGISTERED)
+        return callable(self.recognized is CustomerState.REGISTERED, True)
 
     def recognize_as_registered(self, request=None, commit=True):
         """
@@ -323,7 +323,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         """
         Always False for instantiated Customer objects.
         """
-        return False
+        return callable( self.value, False)
 
     @property
     def is_expired(self):
@@ -341,7 +341,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
                 msg = "Unable to decode username '{}' as session key"
                 warnings.warn(msg.format(self.user.username))
                 is_expired = True
-        return Bool(is_expired)
+        return CallableBool(is_expired)
 
     def get_or_assign_number(self):
         """
