@@ -396,27 +396,27 @@ class VisitingCustomer(object):
 
     @property
     def is_anonymous(self):
-        return callable( self.value, True)
+        return True
 
     @property
     def is_authenticated(self):
-        return callable( self.value, False)
+        return False
 
     @property
     def is_recognized(self):
-        return callable( self.value, False)
+        return  False
         
     @property
     def is_guest(self):
-        return callable( self.value, False)
+        return False
 
     @property
     def is_registered(self):
-        return callable( self.value, False)
+        return False
 
     @property
     def is_visitor(self):
-        return callable( self.value, True)
+        return True
 
     def save(self, **kwargs):
         pass
