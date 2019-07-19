@@ -22,13 +22,13 @@ class Migration(migrations.Migration):
         operations.append(
             migrations.AlterField(
                 model_name='user',
-                name='last_name',
+                name='username',
                 field=models.CharField(
                     error_messages={'unique': 'A user with that username already exists.'},
                     help_text='Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.',
                     max_length=150,
                     unique=True,
                     validators=[validators.UnicodeUsernameValidator() if six.PY3 else validators.ASCIIUsernameValidator()],
-                    verbose_name='last_name'),
+                    verbose_name='username'),
             )
         )
