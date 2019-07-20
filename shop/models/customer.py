@@ -268,12 +268,12 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     @property
     def is_anonymous(self):
-        return callable(self.recognized in (CustomerState.UNRECOGNIZED, CustomerState.GUEST))
+        return self.recognized in (CustomerState.UNRECOGNIZED, CustomerState.GUEST) 
 
     @property
     def is_authenticated(self):
-        return callable(self.recognized is CustomerState.REGISTERED)
-
+        return self.recognized is CustomerState.REGISTERED  
+                        
     @property
     def is_recognized(self):
         """
@@ -281,7 +281,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         Unrecognized customers have accessed the shop, but did not register
         an account nor declared themselves as guests.
         """
-        return callable(self.recognized is not CustomerState.UNRECOGNIZED)
+        return self.recognized is not CustomerState.UNRECOGNIZED
 
     @property
     def is_guest(self):
@@ -289,7 +289,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         Return true if the customer isn't associated with valid User account, but declared
         himself as a guest, leaving their email address.
         """
-        return callable(self.recognized is CustomerState.GUEST)
+        return self.recognized is CustomerState.GUEST
 
     def recognize_as_guest(self, request=None, commit=True):
         """
