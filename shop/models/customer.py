@@ -185,7 +185,6 @@ class CustomerManager(models.Manager):
 class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     Base class for shop customers.
-
     Customer is a profile model that extends
     the django User model if a customer is authenticated. On checkout, a User
     object is created for anonymous customers also (with unusable password).
@@ -268,12 +267,12 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     @property
     def is_anonymous(self):
-        return self.recognized in (CustomerState.UNRECOGNIZED, CustomerState.GUEST) 
+        return callable(self.recognized in (CustomerState.UNRECOGNIZED, CustomerState.GUEST))
 
     @property
     def is_authenticated(self):
-        return self.recognized is CustomerState.REGISTERED  
-                        
+        return callable(self.recognized is CustomerState.REGISTERED)
+
     @property
     def is_recognized(self):
         """
@@ -281,7 +280,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         Unrecognized customers have accessed the shop, but did not register
         an account nor declared themselves as guests.
         """
-        return self.recognized is not CustomerState.UNRECOGNIZED
+        return callable(self.recognized is not CustomerState.UNRECOGNIZED)
 
     @property
     def is_guest(self):
@@ -289,7 +288,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         Return true if the customer isn't associated with valid User account, but declared
         himself as a guest, leaving their email address.
         """
-        return self.recognized is CustomerState.GUEST
+        return callable(self.recognized is CustomerState.GUEST)
 
     def recognize_as_guest(self, request=None, commit=True):
         """
@@ -439,4 +438,4 @@ def handle_customer_logout(sender, **kwargs):
     Update request.customer to a visiting Customer
     """
     # defer assignment to anonymous customer, since the session_key is not yet rotated
-    kwargs['request'].customer = SimpleLazyObject(lambda: CustomerModel.objects.get_from_request(kwargs['request']))
+kwargs['request'].customer = SimpleLazyObject(lambda: CustomerModel.objects.get_from_request(kwargs['request']))
