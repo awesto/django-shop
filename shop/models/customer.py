@@ -438,4 +438,4 @@ def handle_customer_logout(sender, **kwargs):
     Update request.customer to a visiting Customer
     """
     # defer assignment to anonymous customer, since the session_key is not yet rotated
-kwargs['request'].customer = SimpleLazyObject(lambda: CustomerModel.objects.get_from_request(kwargs['request']))
+    kwargs['request'].customer = SimpleLazyObject(lambda: CustomerModel.objects.get_from_request(kwargs['request']))
