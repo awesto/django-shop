@@ -10,6 +10,7 @@ from cmsplugin_cascade.link.forms import LinkForm
 from djng.forms.fields import ChoiceField
 from shop.cascade.plugin_base import ShopLinkPluginBase, ShopLinkElementMixin
 from shop.conf import app_settings
+from entangled.forms import EntangledModelFormMixin
 
 AUTH_FORM_TYPES = [
     ('login', _("Login Form")),
@@ -24,7 +25,8 @@ AUTH_FORM_TYPES = [
 ]
 
 
-class ShopAuthForm(LinkForm):
+
+class ShopAuthForm(EntangledModelFormMixin):
     LINK_TYPE_CHOICES = [
         ('cmspage', _("CMS Page")),
         ('RELOAD_PAGE', _("Reload Page")),
@@ -33,11 +35,9 @@ class ShopAuthForm(LinkForm):
     form_type = ChoiceField(label=_("Rendered Form"), choices=(ft[:2] for ft in AUTH_FORM_TYPES),
         help_text=_("Select the appropriate form for various authentication purposes."))
 
-    def clean(self):
-        cleaned_data = super(ShopAuthForm, self).clean()
-        if self.is_valid():
-            cleaned_data['glossary'].update(form_type=cleaned_data['form_type'])
-        return cleaned_data
+    class Meta:
+        entangled_fields = {'glossary': ['form_type']}
+
 
 
 class ShopAuthenticationPlugin(ShopLinkPluginBase):
@@ -49,7 +49,6 @@ class ShopAuthenticationPlugin(ShopLinkPluginBase):
     parent_classes = ('BootstrapColumnPlugin',)
     model_mixins = (ShopLinkElementMixin,)
     form = ShopAuthForm
-    fields = ('form_type', ('link_type', 'cms_page'), 'glossary',)
     cache = False
 
     @classmethod
