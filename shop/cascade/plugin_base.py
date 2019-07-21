@@ -80,7 +80,7 @@ class ShopButtonPluginBase(ShopLinkPluginBase):
 
 
 class ProductSelect2Widget(HeavySelect2Widget):
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None,renderer=None ):
         try:
             result = app_settings.PRODUCT_SELECT_SERIALIZER(ProductModel.objects.get(pk=value))
         except (ProductModel.DoesNotExist, ValueError):
