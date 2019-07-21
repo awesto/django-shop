@@ -128,7 +128,7 @@ class CustomerAdminBase(UserAdmin):
 
     def is_unexpired(self, user):
         if hasattr(user, 'customer'):
-            return not user.customer.is_expired()
+            return not user.customer.is_expired
         return True
     is_unexpired.short_description = _("Unexpired")
     is_unexpired.boolean = True
