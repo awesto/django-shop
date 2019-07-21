@@ -1,280 +1,92 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.conf import settings
-from django.apps import apps
-from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
-from django.forms import ChoiceField, widgets
-from django.template import TemplateDoesNotExist
 from django.template.loader import select_template
 from django.utils.html import format_html
+from django.utils.translation import ugettext as _
 from django.utils.module_loading import import_string
-from django.utils.translation import ugettext as _, pgettext
-from django.utils.safestring import mark_safe
-from django.utils.encoding import python_2_unicode_compatible
-
-if 'cmsplugin_cascade' not in settings.INSTALLED_APPS:
-    raise ImproperlyConfigured("Please add 'cmsplugin_cascade' to your INSTALLED_APPS")
-
 from cms.plugin_pool import plugin_pool
-from cmsplugin_cascade.fields import GlossaryField
-from cmsplugin_cascade.plugin_base import CascadePluginBase
-#from cmsplugin_cascade.link.forms import LinkForm
-from cmsplugin_cascade.link.plugin_base import LinkPluginBase, LinkElementMixin
-from django_select2.forms import HeavySelect2Widget
-
+from cmsplugin_cascade.link.forms import LinkForm
+from djng.forms.fields import ChoiceField
+from shop.cascade.plugin_base import ShopLinkPluginBase, ShopLinkElementMixin
 from shop.conf import app_settings
-from shop.forms.base import DialogFormMixin
-from shop.models.cart import CartModel
-from shop.models.product import ProductModel
 from entangled.forms import EntangledModelFormMixin
-from django.forms.fields import CharField, BooleanField, Field
 
-class ShopPluginBase(CascadePluginBase):
-    module = "Shop"
-    require_parent = False
-    allow_children = False
-
-
-@python_2_unicode_compatible
-class ShopLinkElementMixin(LinkElementMixin):
-    def __str__(self):
-        return self.plugin_class.get_identifier(self)
-
-
-class ShopLinkPluginBase(ShopPluginBase):
-    """
-    Base plugin for arbitrary buttons used during various checkout pages.
-    """
-    allow_children = False
-    parent_classes = []
-    require_parent = False
-    ring_plugin = 'ShopLinkPlugin'
-
-    class Media:
-        js = ['cascade/js/admin/linkplugin.js', 'shop/js/admin/shoplinkplugin.js']
-
-    @classmethod
-    def get_link(cls, obj):
-        link = obj.glossary.get('link', {})
-        if link.get('type') == 'cmspage':
-            if obj.link_model:
-                return obj.link_model.get_absolute_url()
-        else:
-            # use the link type as special action keyword
-            return link.get('type')
+AUTH_FORM_TYPES = [
+    ('login', _("Login Form")),
+    ('login-reset-request', _("Login & Reset Request"), 'login'),
+    ('logout', _("Logout Form")),
+    ('login-logout', _("Shared Login/Logout Form"), 'login'),
+    ('password-reset-request', _("Request Password Reset")),
+    ('password-reset-confirm', _("Confirm Password Reset")),
+    ('password-change', _("Change Password Form")),
+    ('register-user', _("Register User"), 'shop.forms.auth.RegisterUserForm'),
+    ('continue-as-guest', _("Continue as guest")),
+]
 
 
-class ShopButtonPluginBase(ShopLinkPluginBase):
-    """
-    Base plugin for arbitrary buttons used during various checkout pages.
-    """
-    fields = ('link_content', ('link_type', 'cms_page', 'section',), 'glossary',)
-
-    class Media:
-        css = {'all': ('cascade/css/admin/bootstrap.min.css', 'cascade/css/admin/bootstrap-theme.min.css',)}
-
-    @classmethod
-    def get_identifier(cls, instance):
-        return mark_safe(instance.glossary.get('link_content', ''))
-
-
-class ProductSelect2Widget(HeavySelect2Widget):
-    def render(self, name, value, attrs=None, renderer=None, ):
-        try:
-            result = app_settings.PRODUCT_SELECT_SERIALIZER(ProductModel.objects.get(pk=value))
-        except (ProductModel.DoesNotExist, ValueError):
-            pass
-        else:
-            self.choices.append((value, result.data['text']),)
-        html = super(ProductSelect2Widget, self).render(name, value, attrs=attrs)
-        return html
-
-
-class ProductSelectField(ChoiceField):
-    def __init__(self, *args, **kwargs):
-        kwargs.setdefault('widget', ProductSelect2Widget(data_view='shop:select-product'))
-        super(ProductSelectField, self).__init__(*args, **kwargs)
-
-    def clean(self, value):
-        "Since the ProductSelectField does not specify choices by itself, accept any returned value"
-        try:
-            return int(value)
-        except (TypeError, ValueError):
-            pass
-
-
-class CatalogLinkForm(EntangledModelFormMixin):
-    """
-    Alternative implementation of `cmsplugin_cascade.TextLinkForm`, which allows to link onto
-    the Product model, using its method ``get_absolute_url``.
-
-    Note: In this form class the field ``product`` is missing. It is added later, when the shop's
-    Product knows about its materialized model.
-    """
+class ShopAuthForm(EntangledModelFormMixin):
     LINK_TYPE_CHOICES = [
         ('cmspage', _("CMS Page")),
-        ('product', _("Product")),
-        ('download', _("Download File")),
-        ('exturl', _("External URL")),
-        ('email', _("Mail To")),
+        ('RELOAD_PAGE', _("Reload Page")),
+        ('DO_NOTHING', _("Do Nothing")),
     ]
-
-    product = ProductSelectField(
-        label='',
-        required=False,
-        help_text=_("An internal link onto a product from the shop"),
-    )
-    
-    class Meta:
-        entangled_fields = {'glossary': ['product',]}
-
-
-    def clean_product(self):
-        if self.cleaned_data.get('link_type') == 'product':
-            app_label = ProductModel._meta.app_label
-            self.cleaned_data['link_data'] = {
-                'type': 'product',
-                'model': '{0}.{1}'.format(app_label, ProductModel.__name__),
-                'pk': self.cleaned_data['product'],
-            }
-
-    def set_initial_product(self, initial):
-        try:
-            # check if that product still exists, otherwise return nothing
-            Model = apps.get_model(*initial['link']['model'].split('.'))
-            initial['product'] = Model.objects.get(pk=initial['link']['pk']).pk
-        except (KeyError, ValueError, ObjectDoesNotExist):
-            pass
-
-
-class CatalogLinkPluginBase(LinkPluginBase):
-    """
-    Alternative implementation to ``cmsplugin_cascade.link.DefaultLinkPluginBase`` which adds
-    another link type, namely "Product", to set links onto arbitrary products of this shop.
-    """
-    #model_mixins = (LinkElementMixin,)
-    
-    
-   # form = CatalogLinkForm
-
-  #  link_required = False
-    #fields = (['link_type', 'cms_page', 'section', 'download_file', 'product', 'ext_url', 'mail_to'], 'glossary',)
-    ring_plugin = 'ShopLinkPlugin'
-
-    class Media:
-        js = ['shop/js/admin/shoplinkplugin.js']
-        
-
- 
-
-class DialogFormMixin(EntangledModelFormMixin):
-    """
-    Base class for all plugins adding a dialog form to a placeholder field.
-    """
-    require_parent = True
-    parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin', 'BootstrapPanelPlugin',
-        'SegmentPlugin', 'SimpleWrapperPlugin', 'ValidateSetOfFormsPlugin')
-    RENDER_CHOICES = [('form', _("Form dialog")), ('summary', _("Static summary"))]
-
-
-    render_type = ChoiceField(
-        label=_("Render as"),
-        choices=RENDER_CHOICES,
-        widget=widgets.RadioSelect,
-        initial='form',
-        help_text=_("A dialog can also be rendered as a box containing a read-only summary."),
-    )
-
-    headline_legend = BooleanField(
-        required=False,
-        label=_("Headline Legend"),
-        initial=True,
-        help_text=_("Render a legend inside the dialog's headline."),
-    )
+    form_type = ChoiceField(label=_("Rendered Form"), choices=(ft[:2] for ft in AUTH_FORM_TYPES),
+        help_text=_("Select the appropriate form for various authentication purposes."))
 
     class Meta:
-        entangled_fields = {'glossary': ['render_type', 'headline_legend']}
+        entangled_fields = {'glossary': ['form_type']}
 
 
-class DialogFormPluginBase(ShopPluginBase):
+
+class ShopAuthenticationPlugin(ShopLinkPluginBase):
     """
-    Base class for all plugins adding a dialog form to a placeholder field.
+    A placeholder plugin which provides various authentication forms, such as login-, logout-,
+    register-, and other forms. They can be added any placeholder using the Cascade framework.
     """
-    require_parent = True
-    parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin', 'BootstrapPanelPlugin',
-        'SegmentPlugin', 'SimpleWrapperPlugin', 'ValidateSetOfFormsPlugin')
-    RENDER_CHOICES = [('form', _("Form dialog")), ('summary', _("Static summary"))]
-
-    form = DialogFormMixin
-
-    @classmethod
-    def register_plugin(cls, plugin):
-        """
-        Register plugins derived from this class with this function instead of
-        `plugin_pool.register_plugin`, so that dialog plugins without a corresponding
-        form class are not registered.
-        """
-        if not issubclass(plugin, cls):
-            msg = "Can not register plugin class `{}`, since is does not inherit from `{}`."
-            raise ImproperlyConfigured(msg.format(plugin.__name__, cls.__name__))
-        plugin_pool.register_plugin(plugin)
-
-    def get_form_class(self, instance):
-        try:
-            return import_string(self.form_class)
-        except AttributeError:
-            msg = "Can not register plugin class '{}', since it neither defines 'form_class' " \
-                  "nor overrides 'get_form_class()'."
-            raise ImproperlyConfigured(msg.format(self.__name__))
+    name = _("Authentication Forms")
+    parent_classes = ('BootstrapColumnPlugin',)
+    model_mixins = (ShopLinkElementMixin,)
+    form = ShopAuthForm
+    cache = False
 
     @classmethod
     def get_identifier(cls, instance):
-        render_type = instance.glossary.get('render_type')
-        render_type = dict(cls.RENDER_CHOICES).get(render_type, '')
-        return format_html(pgettext('get_identifier', "as {}"), render_type)
-
-    def get_form_data(self, context, instance, placeholder):
-        """
-        Returns data to initialize the corresponding dialog form.
-        This method must return a dictionary containing
-         * either `instance` - a Python object to initialize the form class for this plugin,
-         * or `initial` - a dictionary containing initial form data, or if both are set, values
-           from `initial` override those of `instance`.
-        """
-        if issubclass(self.get_form_class(instance), DialogFormMixin):
-            try:
-                cart = CartModel.objects.get_from_request(context['request'])
-                cart.update(context['request'])
-            except CartModel.DoesNotExist:
-                cart = None
-            return {'cart': cart}
-        return {}
+        identifier = super(ShopAuthenticationPlugin, cls).get_identifier(instance)
+        content = dict(ft[:2] for ft in AUTH_FORM_TYPES).get(instance.glossary.get('form_type'), _("unknown"))
+        return format_html('{0}{1}', identifier, content)
 
     def get_render_template(self, context, instance, placeholder):
-        render_type = instance.glossary.get('render_type')
-        if render_type not in ('form', 'summary',):
-            render_type = 'form'
-        try:
-            template_names = [
-                '{0}/checkout/{1}'.format(app_settings.APP_LABEL, self.template_leaf_name).format(render_type),
-                'shop/checkout/{}'.format(self.template_leaf_name).format(render_type),
-            ]
-            return select_template(template_names)
-        except (AttributeError, TemplateDoesNotExist):
-            return self.render_template
+        form_type = instance.glossary.get('form_type')
+        template_names = [
+            '{}/auth/{}.html'.format(app_settings.APP_LABEL, form_type),
+            'shop/auth/{}.html'.format(form_type),
+            'shop/auth/form-not-found.html',
+        ]
+        return select_template(template_names)
 
     def render(self, context, instance, placeholder):
         """
         Return the context to render a DialogFormPlugin
         """
-        request = context['request']
-        form_data = self.get_form_data(context, instance, placeholder)
-        request._plugin_order = getattr(request, '_plugin_order', 0) + 1
-        if not isinstance(form_data.get('initial'), dict):
-            form_data['initial'] = {}
-        form_data['initial'].update(plugin_id=instance.pk, plugin_order=request._plugin_order)
-        bound_form = self.get_form_class(instance)(**form_data)
-        context[bound_form.form_name] = bound_form
-        context['headline_legend'] = bool(instance.glossary.get('headline_legend', True))
-        return self.super(DialogFormPluginBase, self).render(context, instance, placeholder)
+        form_type = instance.glossary.get('form_type')
+        if form_type:
+            try:
+                # prevent a malicious database entry to import an ineligible file
+                form_type = AUTH_FORM_TYPES[[ft[0] for ft in AUTH_FORM_TYPES].index(form_type)]
+                FormClass = import_string(form_type[2])
+            except ValueError:
+                context['form_name'] = 'not_found_form'
+            except IndexError:
+                form_name = form_type[0].replace('-', '_')
+                context['form_name'] = '{0}_form'.format(form_name)
+            except ImportError:
+                form_name = form_type[2]
+                context['form_name'] = '{0}_form'.format(form_name)
+            else:
+                context['form_name'] = FormClass.form_name
+                context[FormClass.form_name] = FormClass()
+        context['proceed_with'] = instance.link
+        return self.super(ShopAuthenticationPlugin, self).render(context, instance, placeholder)
+
+plugin_pool.register_plugin(ShopAuthenticationPlugin)
