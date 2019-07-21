@@ -267,11 +267,11 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     @property
     def is_anonymous(self):
-        return callable(self.recognized in (CustomerState.UNRECOGNIZED, CustomerState.GUEST))
+        return  self.recognized in (CustomerState.UNRECOGNIZED, CustomerState.GUEST)
 
     @property
     def is_authenticated(self):
-        return callable(self.recognized is CustomerState.REGISTERED)
+        return self.recognized is CustomerState.REGISTERED
 
     @property
     def is_recognized(self):
@@ -305,7 +305,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         """
         Return true if the customer has registered himself.
         """
-        return callable(self.recognized is CustomerState.REGISTERED)
+        return self.recognized is CustomerState.REGISTERED
 
     def recognize_as_registered(self, request=None, commit=True):
         """
