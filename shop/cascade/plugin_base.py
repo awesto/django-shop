@@ -80,7 +80,7 @@ class ShopButtonPluginBase(ShopLinkPluginBase):
 
 
 class ProductSelect2Widget(HeavySelect2Widget):
-    def render(self, name, value, attrs=None,renderer=None ):
+    def render(self, name, value, attrs=None, renderer=None, ):
         try:
             result = app_settings.PRODUCT_SELECT_SERIALIZER(ProductModel.objects.get(pk=value))
         except (ProductModel.DoesNotExist, ValueError):
@@ -125,6 +125,10 @@ class CatalogLinkForm(EntangledModelFormMixin):
         required=False,
         help_text=_("An internal link onto a product from the shop"),
     )
+    
+    class Meta:
+        entangled_fields = {'glossary': ['product',]}
+
 
     def clean_product(self):
         if self.cleaned_data.get('link_type') == 'product':
@@ -149,11 +153,20 @@ class CatalogLinkPluginBase(LinkPluginBase):
     Alternative implementation to ``cmsplugin_cascade.link.DefaultLinkPluginBase`` which adds
     another link type, namely "Product", to set links onto arbitrary products of this shop.
     """
-    fields = (['link_type', 'cms_page', 'section', 'download_file', 'product', 'ext_url', 'mail_to'], 'glossary',)
+    #model_mixins = (LinkElementMixin,)
+    
+    
+   # form = CatalogLinkForm
+
+  #  link_required = False
+    #fields = (['link_type', 'cms_page', 'section', 'download_file', 'product', 'ext_url', 'mail_to'], 'glossary',)
     ring_plugin = 'ShopLinkPlugin'
 
     class Media:
         js = ['shop/js/admin/shoplinkplugin.js']
+        
+
+ 
 
 class DialogFormMixin(EntangledModelFormMixin):
     """
@@ -180,6 +193,8 @@ class DialogFormMixin(EntangledModelFormMixin):
         help_text=_("Render a legend inside the dialog's headline."),
     )
 
+    class Meta:
+        entangled_fields = {'glossary': ['render_type', 'headline_legend']}
 
 
 class DialogFormPluginBase(ShopPluginBase):
