@@ -177,7 +177,7 @@ else:
 
         cms_pages = models.ManyToManyField(
             'cms.Page',
-            through=ProductPage
+            through=ProductPage,
             help_text=_("Choose list view this product shall appear on."),
         )
 
