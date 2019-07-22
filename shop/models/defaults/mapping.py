@@ -10,13 +10,9 @@ from shop.models.related import BaseProductPage, BaseProductImage
 
 
 class ProductPage(BaseProductPage):
-    """Materialize many-to-many relation with CMS pages"""
-    def named_model_key(self):
-        product = models.ForeignKey(
-                to=self,
-                on_delete=models.CASCADE,
-            )
-
+    """Materialize many-to-many relation with CMS pages""
+    class Meta(BaseProductPage.Meta):
+        abstract = False
 
 class ProductImage(BaseProductImage):
     """Materialize many-to-many relation with images"""
