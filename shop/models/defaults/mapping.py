@@ -10,7 +10,7 @@ from shop.models.related import BaseProductPage, BaseProductImage
 
 
 class ProductPage(BaseProductPage):
-    """Materialize many-to-many relation with CMS pages""
+    """Materialize many-to-many relation with CMS pages"""
     class Meta(BaseProductPage.Meta):
         abstract = False
 
