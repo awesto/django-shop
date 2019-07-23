@@ -70,7 +70,7 @@ if settings.USE_I18N:
 
         cms_pages = models.ManyToManyField(
             'cms.Page',
-            through=ProductPage('Commodity),
+            through=ProductPage('Commodity'),
             help_text=_("Choose list view this product shall appear on."),
         )
 
@@ -177,7 +177,7 @@ else:
 
         cms_pages = models.ManyToManyField(
             'cms.Page',
-            through=ProductPage('Commodity),
+            through=ProductPage('Commodity'),
             help_text=_("Choose list view this product shall appear on."),
         )
 
