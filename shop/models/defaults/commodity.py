@@ -18,7 +18,12 @@ from shop.conf import app_settings
 from shop.models.product import BaseProduct, BaseProductManager, CMSPageReferenceMixin, AvailableProductMixin
 from shop.models.defaults.mapping import ProductPage
 from shop.money.fields import MoneyField
+from shop.models.related import BaseProductPage
 
+class ProductPage(BaseProductPage,):
+    product=models.ForeignKey('Commodity', on_delete=models.CASCADE)
+    class Meta(BaseProductPage.Meta):
+        abstract = False
 
 class CommodityMixin(AvailableProductMixin):
     """
