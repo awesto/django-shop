@@ -6,18 +6,7 @@ outside django-SHOP. Therefore these mapping tables must be materialized by the 
 implementation.
 """
 from django.db import models
-from shop.models.related import BaseProductPage, BaseProductImage
-
-
-class ProductPage(BaseProductPage):
-    """Materialize many-to-many relation with CMS pages"""
-    def __new__(self, *args):
-        super().__new__(self)
-        
-    product=models.ForeignKey('self', on_delete=models.CASCADE)
-    
-    class Meta(BaseProductPage.Meta):
-        abstract = False
+from shop.models.related import BaseProductImage
 
 class ProductImage(BaseProductImage):
     """Materialize many-to-many relation with images"""
