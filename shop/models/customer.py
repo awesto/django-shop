@@ -280,7 +280,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         Unrecognized customers have accessed the shop, but did not register
         an account nor declared themselves as guests.
         """
-        return callable(self.recognized is not CustomerState.UNRECOGNIZED)
+        return self.recognized is not CustomerState.UNRECOGNIZED
 
     @property
     def is_guest(self):
