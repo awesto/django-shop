@@ -22,11 +22,11 @@ def test_visiting_customer(rf, session):
     assert isinstance(customer, VisitingCustomer)
     assert str(customer) == 'Visitor'
     assert customer.is_anonymous is True
-    assert customer.is_authenticated() is False
-    assert customer.is_recognized() is False
-    assert customer.is_guest() is False
-    assert customer.is_registered() is False
-    assert customer.is_visitor() is True
+    assert customer.is_authenticated is False
+    assert customer.is_recognized is False
+    assert customer.is_guest is False
+    assert customer.is_registered is False
+    assert customer.is_visitor is True
 
 
 @pytest.mark.django_db
