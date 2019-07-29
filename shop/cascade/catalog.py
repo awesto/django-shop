@@ -20,21 +20,22 @@ if is_installed('adminsortable2'):
 else:
     SortableInlineAdminMixin = type(str('SortableInlineAdminMixin'), (object,), {})
 
+class ShopCatalogFrom(EntangledModelFormMixin):
+    pagination = ChoiceField(
+        label=_("Pagination"),
+        choices=[('paginator', _("Use Paginator")), ('manual', _("Manual Infinite")), ('auto', _("Auto Infinite"))],
+        help_text=_("Shall the product list view use a paginator or scroll infinitely?"),
+    )
+
+    class Meta:
+        entangled_fields = {'glossary': ['pagination']}
 
 class ShopCatalogPlugin(ShopPluginBase):
     name = _("Catalog List View")
     require_parent = True
     parent_classes = ('BootstrapColumnPlugin', 'SimpleWrapperPlugin',)
     cache = False
-
-    pagination = GlossaryField(
-        widgets.RadioSelect(choices=[
-            ('paginator', _("Use Paginator")), ('manual', _("Manual Infinite")), ('auto', _("Auto Infinite"))
-        ]),
-        label=_("Pagination"),
-        initial=True,
-        help_text=_("Shall the product list view use a paginator or scroll infinitely?"),
-    )
+    form = ShopCatalogFrom
 
     def get_render_template(self, context, instance, placeholder):
         templates = []
