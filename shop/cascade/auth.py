@@ -40,6 +40,8 @@ class ShopAuthForm(LinkForm):
     def clean(self):
         cleaned_data = super(ShopAuthForm, self).clean()
         if self.is_valid():
+            if cleaned_data['glossary'] is None:
+                cleaned_data['glossary']={}
             cleaned_data['glossary'].update(form_type=cleaned_data['form_type'])
         return cleaned_data
 
