@@ -19,7 +19,7 @@ if 'cmsplugin_cascade' not in settings.INSTALLED_APPS:
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.fields import GlossaryField
 from cmsplugin_cascade.plugin_base import CascadePluginBase
-#from cmsplugin_cascade.link.forms import LinkForm
+from cmsplugin_cascade.link.forms import LinkForm
 from cmsplugin_cascade.link.plugin_base import LinkPluginBase, LinkElementMixin
 from django_select2.forms import HeavySelect2Widget
 
@@ -104,11 +104,10 @@ class ProductSelectField(ChoiceField):
             pass
 
 
-class CatalogLinkForm(EntangledModelFormMixin):
+class CatalogLinkForm(LinkForm):
     """
     Alternative implementation of `cmsplugin_cascade.TextLinkForm`, which allows to link onto
     the Product model, using its method ``get_absolute_url``.
-
     Note: In this form class the field ``product`` is missing. It is added later, when the shop's
     Product knows about its materialized model.
     """
@@ -125,10 +124,6 @@ class CatalogLinkForm(EntangledModelFormMixin):
         required=False,
         help_text=_("An internal link onto a product from the shop"),
     )
-    
-    class Meta:
-        entangled_fields = {'glossary': ['product',]}
-
 
     def clean_product(self):
         if self.cleaned_data.get('link_type') == 'product':
@@ -153,13 +148,8 @@ class CatalogLinkPluginBase(LinkPluginBase):
     Alternative implementation to ``cmsplugin_cascade.link.DefaultLinkPluginBase`` which adds
     another link type, namely "Product", to set links onto arbitrary products of this shop.
     """
-    model_mixins = (LinkElementMixin,)
-    
-    
-    form = CatalogLinkForm
 
-  #  link_required = False
-    #fields = (['link_type', 'cms_page', 'section', 'download_file', 'product', 'ext_url', 'mail_to'], 'glossary',)
+    fields = (['link_type', 'cms_page', 'section', 'download_file', 'product', 'ext_url', 'mail_to'], 'glossary',)
     ring_plugin = 'ShopLinkPlugin'
 
     class Media:
