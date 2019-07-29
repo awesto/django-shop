@@ -281,9 +281,9 @@ def test_default():
 
 def test_format():
     f = MoneyDbField(max_digits=5, decimal_places=3)
-    assert f._format(f.to_python(2)) == '2.000'
-    assert f._format(f.to_python('2.34567')) == '2.346'
-    assert f._format(None) is None
+    assert f.to_python(2) == '2.000'
+    assert f.to_python('2.34567') == '2.346'
+    assert f.to_python(None) is None
 
 
 class MoneyTestSerializer(serializers.Serializer):
