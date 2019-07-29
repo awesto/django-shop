@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.contrib.admin import StackedInline
 from django.forms import widgets
-from django.forms.fields import ChoiceField
+from django.forms.fields import ChoiceField, BooleanField
 from django.forms.models import ModelForm
 from django.template.loader import select_template
 from django.utils.translation import ugettext as _, ugettext
@@ -63,18 +63,29 @@ class ShopCatalogPlugin(ShopPluginBase):
 plugin_pool.register_plugin(ShopCatalogPlugin)
 
 
+class ShopAddToCartForm(EntangledModelFormMixin):
+    pagination = ChoiceField(
+        label=_("Pagination"),
+        choices=[('paginator', _("Use Paginator")), ('manual', _("Manual Infinite")), ('auto', _("Auto Infinite"))],
+        help_text=_("Shall the product list view use a paginator or scroll infinitely?"),
+    )
+
+    use_modal_dialog = BooleanField(
+        label=_("Use Modal Dialog"),
+        initial=True,
+        help_text=_("After adding product to cart, render a modal dialog"),
+    )
+
+    class Meta:
+        entangled_fields = {'glossary': ['use_modal_dialog']}
+
 class ShopAddToCartPlugin(ShopPluginBase):
     name = _("Add Product to Cart")
     require_parent = True
     parent_classes = ('BootstrapColumnPlugin',)
     cache = False
+    form=ShopAddToCartForm
 
-    use_modal_dialog = GlossaryField(
-        widgets.CheckboxInput(),
-        label=_("Use Modal Dialog"),
-        initial='on',
-        help_text=_("After adding product to cart, render a modal dialog"),
-    )
 
     def get_render_template(self, context, instance, placeholder):
         templates = []
