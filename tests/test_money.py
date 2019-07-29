@@ -17,6 +17,8 @@ from shop.money.money_maker import AbstractMoney, MoneyMaker, _make_money
 from shop.money.fields import MoneyField as MoneyDbField
 from shop.rest.money import MoneyField, JSONRenderer
 from testshop.models import Commodity
+from django.db.backends.utils import format_number
+
 
 EUR = MoneyMaker('EUR')
 
@@ -281,9 +283,9 @@ def test_default():
 
 def test_format():
     f = MoneyDbField(max_digits=5, decimal_places=3)
-    assert f.to_python(2) == '2.000'
-    assert f.to_python('2.34567') == '2.346'
-    assert f.to_python(None) is None
+    assert format_number(f.to_python(2)) == '2.000'
+    assert format_number(f.to_python('2.34567')) == '2.346'
+    assert format_number(None) is None
 
 
 class MoneyTestSerializer(serializers.Serializer):
