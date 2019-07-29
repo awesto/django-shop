@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.contrib.admin import StackedInline
 from django.forms import widgets
+from django.forms.fields import ChoiceField
 from django.forms.models import ModelForm
 from django.template.loader import select_template
 from django.utils.translation import ugettext as _, ugettext
