@@ -72,7 +72,8 @@ class ShopLinkPluginBase(ShopPluginBase):
     def get_link(cls, obj):
         link = obj.glossary.get('link', {})
         if link.get('type') == 'cmspage':
-            if obj.link_model:
+            # if not link required in some plugins with initialize_shop_demo in exemple
+            if hasattr(obj,'link_model'):
                 return obj.link_model.get_absolute_url()
         else:
             # use the link type as special action keyword
