@@ -8,7 +8,7 @@ from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib import admin
 from django.contrib.sites.models import Site
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from adminsortable2.admin import SortableInlineAdminMixin
 

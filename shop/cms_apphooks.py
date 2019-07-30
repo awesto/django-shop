@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.core.exceptions import ImproperlyConfigured
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from cms.app_base import CMSApp
 

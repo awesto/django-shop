@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.forms import widgets
 from django.forms.fields import CharField
 from django.forms.models import ModelForm
-from django.utils.translation import ungettext, ugettext as _
+from django.utils.translation import ungettext_lazy, ugettext_lazy as _
 from django.utils.text import Truncator
 from django.utils.html import format_html
 from django.forms.fields import IntegerField
@@ -41,7 +41,7 @@ class ProcessBarPlugin(TransparentWrapper, ShopPluginBase):
     def get_identifier(cls, instance):
         identifier = super(ProcessBarPlugin, cls).get_identifier(instance)
         num_cols = instance.get_children().count()
-        content = ungettext('with {} page', 'with {} pages', num_cols).format(num_cols)
+        content = ungettext_lazy('with {} page', 'with {} pages', num_cols).format(num_cols)
         return format_html('{0}{1}', identifier, content)
 
     def get_render_template(self, context, instance, placeholder):

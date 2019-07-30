@@ -7,7 +7,7 @@ from django.conf import settings
 from django.db import models
 from django.utils.six import python_2_unicode_compatible, string_types
 from django.utils.encoding import force_text
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 
 postgresql_engine_names = [

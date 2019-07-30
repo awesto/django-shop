@@ -9,7 +9,7 @@ from django.template import TemplateDoesNotExist
 from django.template.loader import select_template
 from django.utils.html import format_html
 from django.utils.module_loading import import_string
-from django.utils.translation import ugettext as _, pgettext
+from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from django.utils.safestring import mark_safe
 from django.utils.encoding import python_2_unicode_compatible
 
@@ -248,7 +248,7 @@ class DialogFormPluginBase(ShopPluginBase):
     def get_identifier(cls, instance):
         render_type = instance.glossary.get('render_type')
         render_type = dict(cls.RENDER_CHOICES).get(render_type, '')
-        return format_html(pgettext('get_identifier', "as {}"), render_type)
+        return format_html(pgettext_lazy('get_identifier', "as {}"), render_type)
 
     def get_form_data(self, context, instance, placeholder):
         """

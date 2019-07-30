@@ -9,7 +9,7 @@ from django.template.loader import select_template
 from django.utils.html import format_html
 from django.utils.module_loading import import_string
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext as _, pgettext
+from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 try:
     from html.parser import HTMLParser  # py3
 except ImportError:
@@ -203,7 +203,7 @@ class CheckoutAddressPlugin(DialogFormPluginBase):
         identifier = super(CheckoutAddressPlugin, cls).get_identifier(instance)
         address_form = instance.glossary.get('address_form')
         address_form = dict(cls.ADDRESS_CHOICES).get(address_form, '')
-        return format_html(pgettext('get_identifier', "for {} {}"), address_form, identifier)
+        return format_html(pgettext_lazy('get_identifier', "for {} {}"), address_form, identifier)
 
     def get_render_template(self, context, instance, placeholder):
         addr_form = instance.glossary.get('address_form')

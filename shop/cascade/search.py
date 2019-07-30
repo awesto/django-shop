@@ -6,7 +6,7 @@ from django import forms
 from django.forms import widgets
 from django.template import engines
 from django.template.loader import select_template
-from django.utils.translation import ugettext as _, ugettext
+from django.utils.translation import ugettext_lazy as _, ugettext
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.fields import GlossaryField
 from shop.cascade.plugin_base import ShopPluginBase

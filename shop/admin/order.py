@@ -9,7 +9,7 @@ from django.forms import widgets
 from django.http import HttpResponse
 from django.template.loader import select_template
 from django.utils.html import format_html
-from django.utils.translation import pgettext
+from django.utils.translation import pgettext_lazy
 from fsm_admin.mixins import FSMTransitionMixin
 from shop.conf import app_settings
 from shop.models.customer import CustomerModel
@@ -59,7 +59,7 @@ class OrderPaymentInline(admin.TabularInline):
     def get_amount(self, obj):
         """Return amount using correct local format"""
         return obj.amount
-    get_amount.short_description = pgettext('admin', "Amount Paid")
+    get_amount.short_description = pgettext_lazy('admin', "Amount Paid")
 
 
 class OrderItemInline(admin.StackedInline):
@@ -89,11 +89,11 @@ class OrderItemInline(admin.StackedInline):
             'shop/admin/orderitem-product-extra.html',
         ])
         return item_extra_template.render(obj.extra)
-    render_as_html_extra.short_description = pgettext('admin', "Extra data")
+    render_as_html_extra.short_description = pgettext_lazy('admin', "Extra data")
 
 
 class StatusListFilter(admin.SimpleListFilter):
-    title = pgettext('admin', "Status")
+    title = pgettext_lazy('admin', "Status")
     parameter_name = 'status'
 
     def lookups(self, request, model_admin):
@@ -134,23 +134,23 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
 
     def get_number(self, obj):
         return obj.get_number()
-    get_number.short_description = pgettext('admin', "Order number")
+    get_number.short_description = pgettext_lazy('admin', "Order number")
 
     def get_total(self, obj):
         return str(obj.total)
-    get_total.short_description = pgettext('admin', "Total")
+    get_total.short_description = pgettext_lazy('admin', "Total")
 
     def get_subtotal(self, obj):
         return str(obj.subtotal)
-    get_subtotal.short_description = pgettext('admin', "Subtotal")
+    get_subtotal.short_description = pgettext_lazy('admin', "Subtotal")
 
     def get_outstanding_amount(self, obj):
         return str(obj.outstanding_amount)
-    get_outstanding_amount.short_description = pgettext('admin', "Outstanding amount")
+    get_outstanding_amount.short_description = pgettext_lazy('admin', "Outstanding amount")
 
     def is_fully_paid(self, obj):
         return obj.is_fully_paid()
-    is_fully_paid.short_description = pgettext('admin', "Is fully paid")
+    is_fully_paid.short_description = pgettext_lazy('admin', "Is fully paid")
     is_fully_paid.boolean = True
 
     def has_add_permission(self, request):
@@ -161,7 +161,7 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
 
     def render_as_html_extra(self, obj):
         return self.extra_template.render(obj.extra)
-    render_as_html_extra.short_description = pgettext('admin', "Extra data")
+    render_as_html_extra.short_description = pgettext_lazy('admin', "Extra data")
 
     def get_customer_link(self, obj):
         try:
@@ -169,7 +169,7 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
             return format_html('<a href="{0}" target="_new">{1}</a>', url, obj.customer.get_username())
         except NoReverseMatch:
             return format_html('<strong>{0}</strong>', obj.customer.get_username())
-    get_customer_link.short_description = pgettext('admin', "Customer")
+    get_customer_link.short_description = pgettext_lazy('admin', "Customer")
 
     def get_search_fields(self, request):
         search_fields = list(super(BaseOrderAdmin, self).get_search_fields(request))
@@ -243,9 +243,9 @@ class PrintInvoiceAdminMixin(object):
 
     def print_out(self, obj):
         if obj.status in ['ready_for_delivery']:
-            link = reverse('admin:print_invoice', args=(obj.id,)), pgettext('admin', "Invoice")
+            link = reverse('admin:print_invoice', args=(obj.id,)), pgettext_lazy('admin', "Invoice")
             return format_html(
                 '<span class="object-tools"><a href="{0}" class="viewsitelink" target="_new">{1}</a></span>',
                 *link)
         return ''
-    print_out.short_description = pgettext('admin', "Print out")
+    print_out.short_description = pgettext_lazy('admin', "Print out")

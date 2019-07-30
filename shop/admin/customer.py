@@ -8,7 +8,7 @@ from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib import admin
 from django.utils.encoding import force_str
 from django.utils.timezone import localtime
-from django.utils.translation import pgettext, ugettext as _
+from django.utils.translation import pgettext_lazy, ugettext_lazy as _
 
 from shop.models.customer import CustomerModel, CustomerState
 
@@ -31,7 +31,7 @@ class CustomerInlineAdminBase(admin.StackedInline):
 
     def get_number(self, customer):
         return customer.get_number()
-    get_number.short_description = pgettext('customer', "Number")
+    get_number.short_description = pgettext_lazy('customer', "Number")
 
 
 class CustomerCreationForm(UserCreationForm):

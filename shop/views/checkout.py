@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.core.exceptions import ImproperlyConfigured
 from django.db import transaction
 from django.utils.module_loading import import_string
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
