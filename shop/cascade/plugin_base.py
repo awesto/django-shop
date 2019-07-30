@@ -30,6 +30,20 @@ from shop.models.product import ProductModel
 from entangled.forms import EntangledModelFormMixin
 from django.forms.fields import CharField, BooleanField, Field
 
+
+
+class HeavySelectWidget(HeavySelect2Widget):
+    @property
+    def media(self):
+        parent_media = super(HeavySelectWidget, self).media
+       # parent_media._js.insert(0 ,'admin/js/vendor/jquery/jquery.js')
+        parent_media._js.insert(0 ,'admin/js/jquery.init.js')
+ 
+        # prepend JS snippet to re-add 'jQuery' to the global namespace
+        parent_media._js.insert(0, 'cascade/js/admin/jquery.restore.js')
+        return parent_media
+
+
 class ShopPluginBase(CascadePluginBase):
     module = "Shop"
     require_parent = False
@@ -108,6 +122,7 @@ class CatalogLinkForm(LinkForm):
     """
     Alternative implementation of `cmsplugin_cascade.TextLinkForm`, which allows to link onto
     the Product model, using its method ``get_absolute_url``.
+
     Note: In this form class the field ``product`` is missing. It is added later, when the shop's
     Product knows about its materialized model.
     """
@@ -148,8 +163,13 @@ class CatalogLinkPluginBase(LinkPluginBase):
     Alternative implementation to ``cmsplugin_cascade.link.DefaultLinkPluginBase`` which adds
     another link type, namely "Product", to set links onto arbitrary products of this shop.
     """
+    model_mixins = (LinkElementMixin,)
+    
+    
+    form = CatalogLinkForm
 
-    fields = (['link_type', 'cms_page', 'section', 'download_file', 'product', 'ext_url', 'mail_to'], 'glossary',)
+  #  link_required = False
+    #fields = (['link_type', 'cms_page', 'section', 'download_file', 'product', 'ext_url', 'mail_to'], 'glossary',)
     ring_plugin = 'ShopLinkPlugin'
 
     class Media:
