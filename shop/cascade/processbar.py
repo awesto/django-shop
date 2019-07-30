@@ -20,13 +20,16 @@ from cmsplugin_cascade.plugin_base import TransparentWrapper, TransparentContain
 
 from shop.conf import app_settings
 from shop.cascade.plugin_base import ShopPluginBase
+from entangled.forms import EntangledModelFormMixin
 
-
-class ProcessBarForm(ManageChildrenFormMixin, ModelForm):
+class ProcessBarForm(ManageChildrenFormMixin, EntangledModelFormMixin):
     num_children = IntegerField(min_value=1, initial=1,
         widget=NumberInputWidget(attrs={'size': '3', 'style': 'width: 5em;'}),
         label=_("Steps"),
         help_text=_("Number of steps for this proceed bar."))
+
+    class Meta:
+        entangled_fields = {'glossary': ['num_children']}
 
 
 class ProcessBarPlugin(TransparentWrapper, ShopPluginBase):
@@ -59,7 +62,7 @@ class ProcessBarPlugin(TransparentWrapper, ShopPluginBase):
         return context
 
     def save_model(self, request, obj, form, change):
-        wanted_children = int(form.cleaned_data.get('num_children'))
+        wanted_children = int(form.cleaned_data.get('glossary')['num_children'])
         super(ProcessBarPlugin, self).save_model(request, obj, form, change)
         self.extend_children(obj, wanted_children, ProcessStepPlugin)
 
