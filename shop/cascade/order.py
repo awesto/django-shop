@@ -16,9 +16,9 @@ from djng.styling.bootstrap3.forms import Bootstrap3Form
 from shop.cascade.extensions import ShopExtendableMixin, LeftRightExtensionMixin
 from shop.cascade.plugin_base import ShopPluginBase
 from shop.conf import app_settings
+from entangled.forms import EntangledModelFormMixin
 
-
-class ShopOrderViewsForm(forms.ModelForm):
+class ShopOrderViewsForm(EntangledModelFormMixin):
     def clean(self):
         cleaned_data = super(ShopOrderViewsForm, self).clean()
         if self.instance.page and self.instance.page.application_urls != 'OrderApp':
