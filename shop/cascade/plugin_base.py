@@ -36,7 +36,7 @@ class HeavySelectWidget(HeavySelect2Widget):
     @property
     def media(self):
         parent_media = super(HeavySelectWidget, self).media
-       # parent_media._js.insert(0 ,'admin/js/vendor/jquery/jquery.js')
+        parent_media._js.insert(0 ,'admin/js/vendor/jquery/jquery.js')
         parent_media._js.insert(0 ,'admin/js/jquery.init.js')
  
         # prepend JS snippet to re-add 'jQuery' to the global namespace
@@ -118,7 +118,7 @@ class ProductSelectField(ChoiceField):
             pass
 
 
-class CatalogLinkForm(LinkForm, EntangledModelFormMixin):
+class CatalogLinkForm(LinkForm):
     """
     Alternative implementation of `cmsplugin_cascade.TextLinkForm`, which allows to link onto
     the Product model, using its method ``get_absolute_url``.
@@ -140,8 +140,8 @@ class CatalogLinkForm(LinkForm, EntangledModelFormMixin):
         help_text=_("An internal link onto a product from the shop"),
     )
     
-    class Meta:
-        entangled_fields = {'glossary': ['product',]}
+#    class Meta:
+#        entangled_fields = {'glossary': ['product',]}
 
 
     def clean_product(self):
