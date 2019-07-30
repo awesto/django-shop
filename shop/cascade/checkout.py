@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
-from django.forms.fields import CharField
+from django.forms.fields import CharField, ChoiceField, BooleanField
 from django.forms import widgets
 from django.template import engines
 from django.template.loader import select_template
@@ -22,11 +22,11 @@ from cmsplugin_cascade.link.forms import LinkForm
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.plugin_base import TransparentContainer
 from cmsplugin_cascade.bootstrap4.buttons import BootstrapButtonMixin
-from shop.cascade.plugin_base import ShopPluginBase, ShopButtonPluginBase, DialogFormPluginBase
+from shop.cascade.plugin_base import ShopPluginBase, ShopButtonPluginBase, DialogFormPluginBase, DialogFormMixin
 from shop.conf import app_settings
 from shop.models.cart import CartModel
 from shop.modifiers.pool import cart_modifiers_pool
-
+from entangled.forms import EntangledModelFormMixin
 
 class ProceedButtonForm( LinkForm):
     link_content = CharField(label=_("Button Content"))
@@ -131,31 +131,61 @@ class GuestFormPlugin(CustomerFormPluginBase):
 DialogFormPluginBase.register_plugin(GuestFormPlugin)
 
 
-class CheckoutAddressPlugin(DialogFormPluginBase):
-    name = _("Checkout Address Form")
-    glossary_field_order = ['address_form', 'render_type', 'allow_multiple', 'allow_use_primary', 'headline_legend']
-    form_classes = [app_settings.SHOP_CASCADE_FORMS['ShippingAddressForm'], app_settings.SHOP_CASCADE_FORMS['BillingAddressForm']]
+class CheckoutAddressFormMixin(DialogFormMixin):
     ADDRESS_CHOICES = [('shipping', _("Shipping")), ('billing', _("Billing"))]
 
-    address_form = GlossaryField(
-        widgets.RadioSelect(choices=ADDRESS_CHOICES),
+    address_form = ChoiceField(
         label=_("Address Form"),
-        initial=ADDRESS_CHOICES[0][0]
+        choices=ADDRESS_CHOICES,
+        widget=widgets.RadioSelect,
+        initial=ADDRESS_CHOICES[0][0],
     )
 
-    allow_multiple = GlossaryField(
-        widgets.CheckboxInput(),
+    allow_multiple = BooleanField(
+        required=False,
         label=_("Multiple Addresses"),
-        initial=False,
+        initial=True,
         help_text=_("Allow the customer to add and edit multiple addresses."),
     )
 
-    allow_use_primary = GlossaryField(
-        widgets.CheckboxInput(),
+    allow_use_primary = BooleanField(
+        required=False,
         label=_("Use primary address"),
-        initial=False,
+        initial=True,
         help_text=_("Allow the customer to use the primary address, if this is the secondary form."),
     )
+
+    class Meta:
+        entangled_fields = {'glossary': ['address_form', 'render_type', 'allow_multiple', 'allow_use_primary', 'headline_legend']}
+
+class CheckoutAddressPlugin(DialogFormPluginBase):
+    name = _("Checkout Address Form")
+    form_classes = [app_settings.SHOP_CASCADE_FORMS['ShippingAddressForm'], app_settings.SHOP_CASCADE_FORMS['BillingAddressForm']]
+    ADDRESS_CHOICES = [('shipping', _("Shipping")), ('billing', _("Billing"))]
+
+    address_form = ChoiceField(
+        label=_("Address Form"),
+        choices=ADDRESS_CHOICES,
+        widget=widgets.RadioSelect,
+        initial=ADDRESS_CHOICES[0][0],
+    )
+
+    allow_multiple = BooleanField(
+        required=False,
+        label=_("Multiple Addresses"),
+        initial=True,
+        help_text=_("Allow the customer to add and edit multiple addresses."),
+    )
+
+    allow_use_primary = BooleanField(
+        required=False,
+        label=_("Use primary address"),
+        initial=True,
+        help_text=_("Allow the customer to use the primary address, if this is the secondary form."),
+    )
+
+    class Meta:
+        entangled_fields = {'glossary': ['address_form', 'render_type', 'allow_multiple', 'allow_use_primary', 'headline_legend']}
 
     def get_form_class(self, instance):
         if instance.glossary.get('address_form') == 'shipping':
@@ -202,7 +232,7 @@ class CheckoutAddressPlugin(DialogFormPluginBase):
     def get_identifier(cls, instance):
         identifier = super(CheckoutAddressPlugin, cls).get_identifier(instance)
         address_form = instance.glossary.get('address_form')
-        address_form = dict(cls.ADDRESS_CHOICES).get(address_form, '')
+        address_form = dict(CheckoutAddressFormMixin.ADDRESS_CHOICES).get(address_form, '')
         return format_html(pgettext_lazy('get_identifier', "for {} {}"), address_form, identifier)
 
     def get_render_template(self, context, instance, placeholder):
@@ -306,6 +336,7 @@ class AcceptConditionMixin(object):
         Return the context to render a checkbox used to accept the terms and conditions
         """
         request = context['request']
+        CartModel.objects.get_from_request(request)
         try:
             cart = CartModel.objects.get_from_request(request)
             cart.update(request)
