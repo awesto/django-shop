@@ -118,7 +118,7 @@ class ProductSelectField(ChoiceField):
             pass
 
 
-class CatalogLinkForm(LinkForm):
+class CatalogLinkForm(LinkForm, EntangledModelFormMixin):
     """
     Alternative implementation of `cmsplugin_cascade.TextLinkForm`, which allows to link onto
     the Product model, using its method ``get_absolute_url``.
