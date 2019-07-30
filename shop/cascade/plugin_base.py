@@ -139,6 +139,10 @@ class CatalogLinkForm(LinkForm, EntangledModelFormMixin):
         required=False,
         help_text=_("An internal link onto a product from the shop"),
     )
+    
+    class Meta:
+        entangled_fields = {'glossary': ['product',]}
+
 
     def clean_product(self):
         if self.cleaned_data.get('link_type') == 'product':
