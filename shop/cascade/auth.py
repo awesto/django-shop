@@ -28,7 +28,7 @@ AUTH_FORM_TYPES = [
 
 
 
-class ShopAuthForm(LinkForm):
+class ShopAuthForm(LinkForm,EntangledModelFormMixin):
     LINK_TYPE_CHOICES = [
         ('cmspage', _("CMS Page")),
         ('RELOAD_PAGE', _("Reload Page")),
@@ -37,6 +37,9 @@ class ShopAuthForm(LinkForm):
     form_type = ChoiceField(label=_("Rendered Form"), choices=(ft[:2] for ft in AUTH_FORM_TYPES),
         help_text=_("Select the appropriate form for various authentication purposes."))
 
+    class Meta:
+        entangled_fields = {'glossary': ['form_type']}
+    
     def clean(self):
         cleaned_data = super(ShopAuthForm, self).clean()
         if self.is_valid():
