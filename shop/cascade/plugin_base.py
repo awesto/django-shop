@@ -143,6 +143,8 @@ class CatalogLinkForm(LinkForm, EntangledModelFormMixin):
     class Meta:
         entangled_fields = {'glossary': ['product',]}
 
+    class Media:
+        js = ( 'admin/js/vendor/jquery/jquery.js','admin/js/jquery.init.js')
 
     def clean_product(self):
         if self.cleaned_data.get('link_type') == 'product':
