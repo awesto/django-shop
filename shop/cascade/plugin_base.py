@@ -256,14 +256,13 @@ class DialogFormPluginBase(ShopPluginBase):
          * or `initial` - a dictionary containing initial form data, or if both are set, values
            from `initial` override those of `instance`.
         """
-        # if issubclass(self.get_form_class(instance), DialogFormMixin):
-        #    print(CartModel.objects.get_from_request(context['request']))
-        try:
-            cart = CartModel.objects.get_from_request(context['request'])
-            cart.update(context['request'])
-        except CartModel.DoesNotExist:
-            cart = None
-        return {'cart': cart}
+        if issubclass(self.get_form_class(instance), DialogFormMixin):
+            try:
+                cart = CartModel.objects.get_from_request(context['request'])
+                cart.update(context['request'])
+            except CartModel.DoesNotExist:
+                cart = None
+            return {'cart': cart}
         return {}
 
     def get_render_template(self, context, instance, placeholder):
