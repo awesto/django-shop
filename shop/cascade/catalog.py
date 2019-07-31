@@ -64,12 +64,6 @@ plugin_pool.register_plugin(ShopCatalogPlugin)
 
 
 class ShopAddToCartForm(EntangledModelFormMixin):
-    pagination = ChoiceField(
-        label=_("Pagination"),
-        choices=[('paginator', _("Use Paginator")), ('manual', _("Manual Infinite")), ('auto', _("Auto Infinite"))],
-        help_text=_("Shall the product list view use a paginator or scroll infinitely?"),
-    )
-
     use_modal_dialog = BooleanField(
         label=_("Use Modal Dialog"),
         initial=True,
