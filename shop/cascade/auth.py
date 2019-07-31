@@ -27,8 +27,7 @@ AUTH_FORM_TYPES = [
 ]
 
 
-
-class ShopAuthForm(LinkForm,EntangledModelFormMixin):
+class ShopAuthForm(LinkForm):
     LINK_TYPE_CHOICES = [
         ('cmspage', _("CMS Page")),
         ('RELOAD_PAGE', _("Reload Page")),
@@ -39,7 +38,7 @@ class ShopAuthForm(LinkForm,EntangledModelFormMixin):
 
     class Meta:
         entangled_fields = {'glossary': ['form_type']}
-    
+
     def clean(self):
         cleaned_data = super(ShopAuthForm, self).clean()
         if self.is_valid():
@@ -47,7 +46,6 @@ class ShopAuthForm(LinkForm,EntangledModelFormMixin):
                 cleaned_data['glossary']={}
             cleaned_data['glossary'].update(form_type=cleaned_data['form_type'])
         return cleaned_data
-
 
 
 class ShopAuthenticationPlugin(ShopLinkPluginBase):
