@@ -12,7 +12,7 @@ from shop.cascade.plugin_base import ShopLinkPluginBase, ShopLinkElementMixin
 from shop.conf import app_settings
 from entangled.forms import EntangledModelFormMixin
 from cmsplugin_cascade.link.forms import LinkForm
-
+from shop.conf import app_settings
 
 AUTH_FORM_TYPES = [
     ('login', _("Login Form")),
@@ -22,7 +22,7 @@ AUTH_FORM_TYPES = [
     ('password-reset-request', _("Request Password Reset")),
     ('password-reset-confirm', _("Confirm Password Reset")),
     ('password-change', _("Change Password Form")),
-    ('register-user', _("Register User"), 'shop.forms.auth.RegisterUserForm'),
+    ('register-user', _("Register User"), app_settings.SHOP_CASCADE_FORMS['RegisterUserForm']),
     ('continue-as-guest', _("Continue as guest")),
 ]
 
