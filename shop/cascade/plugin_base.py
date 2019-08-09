@@ -28,6 +28,7 @@ from shop.forms.base import DialogFormMixin
 from shop.models.cart import CartModel
 from shop.models.product import ProductModel
 from entangled.forms import EntangledModelFormMixin
+from entangled.forms import get_related_object
 from django.forms.fields import CharField, BooleanField, Field
 
 
@@ -57,14 +58,28 @@ class ShopLinkPluginBase(ShopPluginBase):
 
     @classmethod
     def get_link(cls, obj):
-        link = obj.glossary.get('link', {})
-        if link.get('type') == 'cmspage':
-            # if not link required in some plugins with initialize_shop_demo in exemple
-            if hasattr(obj,'link_model'):
-                return obj.link_model.get_absolute_url()
-        else:
-            # use the link type as special action keyword
-            return link.get('type')
+        linktype = obj.glossary.get('link_type')
+        if linktype == 'exturl':
+            return '{ext_url}'.format(**obj.glossary)
+        if linktype == 'email':
+            return 'mailto:{mail_to}'.format(**obj.glossary)
+
+        # otherwise resolve by model
+        if linktype == 'cmspage':
+            relobj = get_related_object(obj.glossary, 'cms_page')
+            if relobj:
+                href = relobj.get_absolute_url()
+                try:
+                    element_ids = relobj.cascadepage.glossary['element_ids']
+                    section = obj.glossary['section']
+                    href = '{}#{}'.format(href, element_ids[section])
+                except (KeyError, ObjectDoesNotExist):
+                    pass
+                return href
+        elif linktype == 'download':
+            relobj = get_related_object(obj.glossary, 'download_file')
+            if isinstance(relobj, FilerFileModel):
+                return relobj.url
 
 
 class ShopButtonPluginBase(ShopLinkPluginBase):
