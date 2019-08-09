@@ -26,15 +26,21 @@ from shop.cascade.plugin_base import ShopPluginBase, ShopButtonPluginBase, Dialo
 from shop.conf import app_settings
 from shop.models.cart import CartModel
 from shop.modifiers.pool import cart_modifiers_pool
-from entangled.forms import EntangledModelFormMixin
+from cmsplugin_cascade.bootstrap4.buttons import ButtonFormMixin
+from entangled.forms import EntangledModelFormMixin, get_related_object
 
-class ProceedButtonForm( LinkForm):
-    link_content = CharField(label=_("Button Content"))
+
+class ProceedButtonForm(LinkForm, ButtonFormMixin):
     LINK_TYPE_CHOICES = [
         ('cmspage', _("CMS Page")),
         ('RELOAD_PAGE', _("Reload Page")),
         ('PURCHASE_NOW', _("Purchase Now")),
     ]
+
+    disable_invalid = CharField(label=_("Proceed Button"),  help_text=_("Disable button if any form in this set is invalid"),)
+
+    class Meta:
+        entangled_fields = {'glossary': ['disable_invalid','link_content',  'button_type', 'button_size', 'button_options', ]}
 
 
 class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
@@ -49,12 +55,6 @@ class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
     form = ProceedButtonForm
     ring_plugin = 'ProceedButtonPlugin'
 
-    disable_invalid = GlossaryField(
-        widgets.CheckboxInput(),
-        label=_("Disable if invalid"),
-        initial='',
-        help_text=_("Disable button if any form in this set is invalid"),
-    )
 
     class Media:
         css = {'all': ['cascade/css/admin/bootstrap4-buttons.css', 'cascade/css/admin/iconplugin.css']}
@@ -212,20 +212,21 @@ class CheckoutAddressPlugin(DialogFormPluginBase):
 
     def get_form_data(self, context, instance, placeholder):
         form_data = self.super(CheckoutAddressPlugin, self).get_form_data(context, instance, placeholder)
-        if form_data['cart'] is None:
-            raise PermissionDenied("Can not proceed to checkout without cart")
+        if hasattr(form_data, 'cart'):
+            if form_data['cart'] is None:
+                raise PermissionDenied("Can not proceed to checkout without cart")
 
-        address = self.get_address(form_data['cart'], instance)
-        if instance.glossary.get('allow_multiple'):
-            form_data.update(multi_addr=True)
-        else:
-            form_data.update(multi_addr=False)
+            address = self.get_address(form_data['cart'], instance)
+            if instance.glossary.get('allow_multiple'):
+                form_data.update(multi_addr=True)
+            else:
+                form_data.update(multi_addr=False)
 
-        form_data.update(
-            instance=address,
-            initial={'active_priority': address.priority if address else 'add'},
-            allow_use_primary=instance.glossary.get('allow_use_primary', False)
-        )
+            form_data.update(
+                instance=address,
+                initial={'active_priority': address.priority if address else 'add'},
+                allow_use_primary=instance.glossary.get('allow_use_primary', False)
+            )
         return form_data
 
     @classmethod
@@ -336,7 +337,7 @@ class AcceptConditionMixin(object):
         Return the context to render a checkbox used to accept the terms and conditions
         """
         request = context['request']
-        CartModel.objects.get_from_request(request)
+        CartModel.objects.get_or_create_from_request(request)
         try:
             cart = CartModel.objects.get_from_request(request)
             cart.update(request)
