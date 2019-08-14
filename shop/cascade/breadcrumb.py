@@ -2,36 +2,45 @@
 from __future__ import unicode_literals
 
 from django.core.exceptions import ImproperlyConfigured
-from django.forms import widgets
+from django.forms import fields, widgets
 from django.template import engines, TemplateDoesNotExist
 from django.template.loader import select_template
 from django.utils.html import mark_safe
 from django.utils.translation import ugettext_lazy as _
+from entangled.forms import EntangledModelFormMixin
 from cms.apphook_pool import apphook_pool
 from cms.plugin_pool import plugin_pool
-from cmsplugin_cascade.fields import GlossaryField
 from shop.conf import app_settings
 from shop.cascade.plugin_base import ShopPluginBase
 
 
-class BreadcrumbPlugin(ShopPluginBase):
-    name = _("Breadcrumb")
-    CHOICES = (('default', _("Default Breadcrumb")), ('soft-root', _("“Soft-Root” Breadcrumb")),
-               ('catalog', _("With Catalog Count")), ('empty', _("Hidden Breadcrumb")),)
-    parent_classes = ()
-    allow_children = None
+class BreadcrumbPluginForm(EntangledModelFormMixin):
+    CHOICES = [
+        ('default', _("Default Breadcrumb")),
+        ('soft-root', _("“Soft-Root” Breadcrumb")),
+        ('catalog', _("With Catalog Count")),
+        ('empty', _("Hidden Breadcrumb")),
+    ]
 
-    render_type = GlossaryField(
-        widgets.RadioSelect(choices=CHOICES),
+    render_type = fields.ChoiceField(
+        choices=CHOICES,
+        widget=widgets.RadioSelect,
         label=_("Render as"),
         initial='default',
         help_text=_("Render an alternative Breadcrumb"),
     )
 
+
+class BreadcrumbPlugin(ShopPluginBase):
+    name = _("Breadcrumb")
+    parent_classes = []
+    allow_children = None
+    form = BreadcrumbPluginForm
+
     @classmethod
     def get_identifier(cls, instance):
         render_type = instance.glossary.get('render_type')
-        return mark_safe(dict(cls.CHOICES).get(render_type, ''))
+        return mark_safe(dict(cls.form.CHOICES).get(render_type, ''))
 
     def get_render_template(self, context, instance, placeholder):
         render_type = instance.glossary.get('render_type')

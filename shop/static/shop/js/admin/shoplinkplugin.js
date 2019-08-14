@@ -7,11 +7,11 @@ django.jQuery(function($) {
 			this.$super();
 
 			// be more intuitive, reorganize layout by moving 'Link Target'
-			$('.glossary-widget .glossary_target').before($('.form-row.field-link_type'));
+			$('.form-row.field-link_target').before($('.form-row.field-product'));
 		},
 		initializeLinkTypes: function() {
 			this.$super();
-			this.linkTypes['product'] = new this.LinkType('.form-row .field-box.field-product', true);
+			this.linkTypes['product'] = new this.LinkType('.form-row.field-product', true);
 		}
 	});
 });

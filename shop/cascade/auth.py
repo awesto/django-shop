@@ -6,9 +6,9 @@ from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 from django.utils.module_loading import import_string
 from cms.plugin_pool import plugin_pool
+from cmsplugin_cascade.link.cms_plugins import LinkElementMixin, LinkPluginBase
 from cmsplugin_cascade.link.forms import LinkForm
 from djng.forms.fields import ChoiceField
-from shop.cascade.plugin_base import ShopLinkPluginBase, ShopLinkElementMixin
 from shop.conf import app_settings
 
 AUTH_FORM_TYPES = [
@@ -40,16 +40,16 @@ class ShopAuthForm(LinkForm):
         return cleaned_data
 
 
-class ShopAuthenticationPlugin(ShopLinkPluginBase):
+class ShopAuthenticationPlugin(LinkPluginBase):
     """
     A placeholder plugin which provides various authentication forms, such as login-, logout-,
     register-, and other forms. They can be added any placeholder using the Cascade framework.
     """
     name = _("Authentication Forms")
+    module = "Shop"
     parent_classes = ('BootstrapColumnPlugin',)
-    model_mixins = (ShopLinkElementMixin,)
+    model_mixins = (LinkElementMixin,)
     form = ShopAuthForm
-    fields = ('form_type', ('link_type', 'cms_page'), 'glossary',)
     cache = False
 
     @classmethod

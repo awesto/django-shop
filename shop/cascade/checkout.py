@@ -1,67 +1,68 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
-from django.forms.fields import CharField
-from django.forms import widgets
+from django.forms import fields, widgets
 from django.template import engines
 from django.template.loader import select_template
 from django.utils.html import format_html
 from django.utils.module_loading import import_string
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
-try:
-    from html.parser import HTMLParser  # py3
-except ImportError:
-    from HTMLParser import HTMLParser  # py2
 from cms.plugin_pool import plugin_pool
 from djangocms_text_ckeditor.cms_plugins import TextPlugin
-from cmsplugin_cascade.fields import GlossaryField
+from cmsplugin_cascade.bootstrap4.buttons import ButtonFormMixin
 from cmsplugin_cascade.strides import strides_plugin_map, strides_element_map, TextStridePlugin, TextStrideElement
-from cmsplugin_cascade.link.forms import LinkForm, TextLinkFormMixin
+from cmsplugin_cascade.icon.forms import IconFormMixin
+from cmsplugin_cascade.link.config import LinkPluginBase, LinkFormMixin
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.plugin_base import TransparentContainer
 from cmsplugin_cascade.bootstrap4.buttons import BootstrapButtonMixin
-from shop.cascade.plugin_base import ShopPluginBase, ShopButtonPluginBase, DialogFormPluginBase
+from shop.cascade.plugin_base import ShopPluginBase, DialogFormPluginBase, DialogPluginBaseForm
 from shop.conf import app_settings
 from shop.models.cart import CartModel
 from shop.modifiers.pool import cart_modifiers_pool
 
 
-class ProceedButtonForm(TextLinkFormMixin, LinkForm):
-    link_content = CharField(label=_("Button Content"))
+class ProceedButtonFormMixin(LinkFormMixin, IconFormMixin, ButtonFormMixin):
+    require_icon = False
+
     LINK_TYPE_CHOICES = [
         ('cmspage', _("CMS Page")),
+        ('NEXT_STEP', _("Next Step")),
         ('RELOAD_PAGE', _("Reload Page")),
         ('PURCHASE_NOW', _("Purchase Now")),
+        ('DO_NOTHING', _("Do nothing")),
     ]
 
+    disable_invalid = fields.BooleanField(
+        label=_("Disable if invalid"),
+        required=False,
+        help_text=_("Disable button if any form in this set is invalid."),
+    )
 
-class ShopProceedButton(BootstrapButtonMixin, ShopButtonPluginBase):
+    class Meta:
+        entangled_fields = {'glossary': ['disable_invalid']}
+
+
+class ShopProceedButton(BootstrapButtonMixin, LinkPluginBase):
     """
     This button is used to proceed from one checkout step to the next one.
     """
     name = _("Proceed Button")
     parent_classes = ['BootstrapColumnPlugin', 'ProcessStepPlugin', 'ValidateSetOfFormsPlugin']
+    form = ProceedButtonFormMixin
     model_mixins = (LinkElementMixin,)
-    glossary_field_order = ['disable_invalid', 'button_type', 'button_size', 'button_options',
-                            'quick_float', 'icon_align', 'symbol']
-    form = ProceedButtonForm
     ring_plugin = 'ProceedButtonPlugin'
 
-    disable_invalid = GlossaryField(
-        widgets.CheckboxInput(),
-        label=_("Disable if invalid"),
-        initial='',
-        help_text=_("Disable button if any form in this set is invalid"),
-    )
-
     class Media:
-        css = {'all': ['cascade/css/admin/bootstrap4-buttons.css', 'cascade/css/admin/iconplugin.css']}
         js = ['shop/js/admin/proceedbuttonplugin.js']
 
+    @classmethod
+    def get_identifier(cls, instance):
+        return mark_safe(instance.glossary.get('link_content', ''))
+
     def get_render_template(self, context, instance, placeholder):
-        if instance.link == 'RELOAD_PAGE':
+        if instance.link == 'NEXT_STEP':
+            button_template = 'next-step'
+        elif instance.link == 'RELOAD_PAGE':
             button_template = 'reload-button'
         elif instance.link == 'PURCHASE_NOW':
             button_template = 'purchase-button'
@@ -131,31 +132,42 @@ class GuestFormPlugin(CustomerFormPluginBase):
 DialogFormPluginBase.register_plugin(GuestFormPlugin)
 
 
-class CheckoutAddressPlugin(DialogFormPluginBase):
-    name = _("Checkout Address Form")
-    glossary_field_order = ['address_form', 'render_type', 'allow_multiple', 'allow_use_primary', 'headline_legend']
-    form_classes = [app_settings.SHOP_CASCADE_FORMS['ShippingAddressForm'], app_settings.SHOP_CASCADE_FORMS['BillingAddressForm']]
-    ADDRESS_CHOICES = [('shipping', _("Shipping")), ('billing', _("Billing"))]
+class CheckoutAddressPluginForm(DialogPluginBaseForm):
+    ADDRESS_CHOICES = [
+        ('shipping', _("Shipping")),
+        ('billing', _("Billing")),
+    ]
 
-    address_form = GlossaryField(
-        widgets.RadioSelect(choices=ADDRESS_CHOICES),
+    address_form = fields.ChoiceField(
+        ADDRESS_CHOICES,
+        widget=widgets.RadioSelect,
         label=_("Address Form"),
         initial=ADDRESS_CHOICES[0][0]
     )
 
-    allow_multiple = GlossaryField(
-        widgets.CheckboxInput(),
+    allow_multiple = fields.BooleanField(
         label=_("Multiple Addresses"),
         initial=False,
+        required=False,
         help_text=_("Allow the customer to add and edit multiple addresses."),
     )
 
-    allow_use_primary = GlossaryField(
-        widgets.CheckboxInput(),
+    allow_use_primary = fields.BooleanField(
         label=_("Use primary address"),
         initial=False,
+        required=False,
         help_text=_("Allow the customer to use the primary address, if this is the secondary form."),
     )
+
+    class Meta:
+        entangled_fields = {'glossary': ['address_form', 'allow_multiple', 'allow_use_primary']}
+
+
+class CheckoutAddressPlugin(DialogFormPluginBase):
+    name = _("Checkout Address Form")
+    form = CheckoutAddressPluginForm
+    # glossary_field_order = ['address_form', 'render_type', 'allow_multiple', 'allow_use_primary', 'headline_legend']
+    form_classes = [app_settings.SHOP_CASCADE_FORMS['ShippingAddressForm'], app_settings.SHOP_CASCADE_FORMS['BillingAddressForm']]
 
     def get_form_class(self, instance):
         if instance.glossary.get('address_form') == 'shipping':
@@ -182,7 +194,7 @@ class CheckoutAddressPlugin(DialogFormPluginBase):
 
     def get_form_data(self, context, instance, placeholder):
         form_data = self.super(CheckoutAddressPlugin, self).get_form_data(context, instance, placeholder)
-        if form_data['cart'] is None:
+        if form_data.get('cart') is None:
             raise PermissionDenied("Can not proceed to checkout without cart")
 
         address = self.get_address(form_data['cart'], instance)
@@ -202,7 +214,7 @@ class CheckoutAddressPlugin(DialogFormPluginBase):
     def get_identifier(cls, instance):
         identifier = super(CheckoutAddressPlugin, cls).get_identifier(instance)
         address_form = instance.glossary.get('address_form')
-        address_form = dict(cls.ADDRESS_CHOICES).get(address_form, '')
+        address_form = dict(cls.form.ADDRESS_CHOICES).get(address_form, '')
         return format_html(pgettext_lazy('get_identifier', "for {} {}"), address_form, identifier)
 
     def get_render_template(self, context, instance, placeholder):
@@ -221,17 +233,23 @@ class CheckoutAddressPlugin(DialogFormPluginBase):
 DialogFormPluginBase.register_plugin(CheckoutAddressPlugin)
 
 
-class PaymentMethodFormPlugin(DialogFormPluginBase):
-    name = _("Payment Method Form")
-    form_class = app_settings.SHOP_CASCADE_FORMS['PaymentMethodForm']
-    template_leaf_name = 'payment-method-{}.html'
-
-    show_additional_charge = GlossaryField(
-        widgets.CheckboxInput(),
+class MethodPluginForm(DialogPluginBaseForm):
+    show_additional_charge = fields.BooleanField(
         label=_("Show additional charge"),
         initial=True,
-        help_text=_("Add an extra line showing the additional charge depending on the chosen payment method."),
+        required=False,
+        help_text=_("Add an extra line showing the additional charge depending on the chosen payment/shipping method."),
     )
+
+    class Meta:
+        entangled_fields = {'glossary': ['show_additional_charge']}
+
+
+class PaymentMethodFormPlugin(DialogFormPluginBase):
+    name = _("Payment Method Form")
+    form = MethodPluginForm
+    form_class = app_settings.SHOP_CASCADE_FORMS['PaymentMethodForm']
+    template_leaf_name = 'payment-method-{}.html'
 
     def get_form_data(self, context, instance, placeholder):
         form_data = self.super(PaymentMethodFormPlugin, self).get_form_data(context, instance, placeholder)
@@ -254,15 +272,9 @@ if cart_modifiers_pool.get_payment_modifiers():
 
 class ShippingMethodFormPlugin(DialogFormPluginBase):
     name = _("Shipping Method Form")
+    form = MethodPluginForm
     form_class = app_settings.SHOP_CASCADE_FORMS['ShippingMethodForm']
     template_leaf_name = 'shipping-method-{}.html'
-
-    show_additional_charge = GlossaryField(
-        widgets.CheckboxInput(),
-        label=_("Show additional charge"),
-        initial=True,
-        help_text=_("Add an extra line showing the additional charge depending on the chosen shipping method."),
-    )
 
     def get_form_data(self, context, instance, placeholder):
         form_data = self.super(ShippingMethodFormPlugin, self).get_form_data(context, instance, placeholder)

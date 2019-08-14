@@ -2,14 +2,14 @@
 from __future__ import unicode_literals
 
 from django import forms
-from django.forms import widgets
+from django.forms import fields, widgets
 from django.core.exceptions import ValidationError
 from django.template import engines
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
+from entangled.forms import EntangledModelFormMixin
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.bootstrap4.buttons import BootstrapButtonMixin
-from cmsplugin_cascade.fields import GlossaryField
 from cmsplugin_cascade.plugin_base import TransparentWrapper
 from djng.forms import fields, NgModelFormMixin
 from djng.styling.bootstrap3.forms import Bootstrap3Form
@@ -20,7 +20,7 @@ from shop.conf import app_settings
 
 class ShopOrderViewsForm(forms.ModelForm):
     def clean(self):
-        cleaned_data = super(ShopOrderViewsForm, self).clean()
+        cleaned_data = super().clean()
         if self.instance.page and self.instance.page.application_urls != 'OrderApp':
             msg = "This plugin only makes sense if used on a CMS page with an application of type 'OrderApp'."
             raise ValidationError(msg)
@@ -135,15 +135,21 @@ class AddendumForm(NgModelFormMixin, Bootstrap3Form):
     )
 
 
-class ShopOrderAddendumFormPlugin(OrderButtonBase):
-    name = _("Order Addendum Form")
-
-    show_history = GlossaryField(
-         widgets.CheckboxInput(),
+class ShopOrderAddendumFormMixin(EntangledModelFormMixin):
+    show_history = fields.BooleanField(
          label=_("Show History"),
          initial=True,
-         help_text=_("Show historical annotations.")
+         required=False,
+         help_text=_("Show historical annotations."),
     )
+
+    class Meta:
+        entangled_fields = {'glossary': ['show_history']}
+
+
+class ShopOrderAddendumFormPlugin(OrderButtonBase):
+    name = _("Order Addendum Form")
+    form = ShopOrderAddendumFormMixin
 
     def get_render_template(self, context, instance, placeholder):
         template_names = [
