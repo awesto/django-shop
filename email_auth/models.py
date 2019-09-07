@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 """
 Alternative implementation of Django's authentication User model, which allows to authenticate
 against the email field in addition to the username fields.

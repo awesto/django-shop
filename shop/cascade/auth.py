@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.template.loader import select_template
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 from django.utils.module_loading import import_string
+from entangled.forms import EntangledModelFormMixin
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.link.cms_plugins import LinkElementMixin, LinkPluginBase
 from cmsplugin_cascade.link.forms import LinkForm
@@ -24,20 +22,23 @@ AUTH_FORM_TYPES = [
 ]
 
 
-class ShopAuthForm(LinkForm):
+class ShopAuthFormMixin(EntangledModelFormMixin):
+    form_type = ChoiceField(
+        label=_("Rendered Form"),
+        choices=[ft[:2] for ft in AUTH_FORM_TYPES],
+        help_text=_("Select the appropriate form for various authentication purposes."),
+    )
+
+    class Meta:
+        entangled_fields = {'glossary': ['form_type']}
+
+
+class ShopAuthForm(LinkForm, ShopAuthFormMixin):
     LINK_TYPE_CHOICES = [
-        ('cmspage', _("CMS Page")),
         ('RELOAD_PAGE', _("Reload Page")),
+        ('cmspage', _("CMS Page")),
         ('DO_NOTHING', _("Do Nothing")),
     ]
-    form_type = ChoiceField(label=_("Rendered Form"), choices=(ft[:2] for ft in AUTH_FORM_TYPES),
-        help_text=_("Select the appropriate form for various authentication purposes."))
-
-    def clean(self):
-        cleaned_data = super(ShopAuthForm, self).clean()
-        if self.is_valid():
-            cleaned_data['glossary'].update(form_type=cleaned_data['form_type'])
-        return cleaned_data
 
 
 class ShopAuthenticationPlugin(LinkPluginBase):
@@ -47,7 +48,7 @@ class ShopAuthenticationPlugin(LinkPluginBase):
     """
     name = _("Authentication Forms")
     module = "Shop"
-    parent_classes = ('BootstrapColumnPlugin',)
+    parent_classes = ['BootstrapColumnPlugin']
     model_mixins = (LinkElementMixin,)
     form = ShopAuthForm
     cache = False

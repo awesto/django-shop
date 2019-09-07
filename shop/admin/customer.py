@@ -142,7 +142,7 @@ class CustomerAdminBase(UserAdmin):
 class CustomerProxy(get_user_model()):
     """
     With this neat proxy model, we are able to place the Customer Model Admin into
-    the section “MyShop” instead of section email_auth.
+    the section "MyAwesomeShop" instead of section "email_auth".
     """
     class Meta:
         proxy = True

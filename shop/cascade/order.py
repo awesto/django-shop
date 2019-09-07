@@ -1,15 +1,12 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
-from django import forms
-from django.forms import fields, widgets
+from django.forms import widgets
 from django.core.exceptions import ValidationError
 from django.template import engines
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
 from entangled.forms import EntangledModelFormMixin
 from cms.plugin_pool import plugin_pool
-from cmsplugin_cascade.bootstrap4.buttons import BootstrapButtonMixin
+from cmsplugin_cascade.bootstrap4.buttons import BootstrapButtonMixin, ButtonFormMixin
+from cmsplugin_cascade.icon.forms import IconFormMixin
 from cmsplugin_cascade.plugin_base import TransparentWrapper
 from djng.forms import fields, NgModelFormMixin
 from djng.styling.bootstrap3.forms import Bootstrap3Form
@@ -18,7 +15,7 @@ from shop.cascade.plugin_base import ShopPluginBase
 from shop.conf import app_settings
 
 
-class ShopOrderViewsForm(forms.ModelForm):
+class ShopOrderViewsFormMixin(EntangledModelFormMixin):
     def clean(self):
         cleaned_data = super().clean()
         if self.instance.page and self.instance.page.application_urls != 'OrderApp':
@@ -33,7 +30,7 @@ class ShopOrderViewsPlugin(LeftRightExtensionMixin, TransparentWrapper, ShopPlug
     parent_classes = ['BootstrapColumnPlugin']
     allow_children = True
     model_mixins = (ShopExtendableMixin,)
-    form = ShopOrderViewsForm
+    form = ShopOrderViewsFormMixin
     cache = False
 
     def get_render_template(self, context, instance, placeholder):
@@ -59,47 +56,17 @@ class ShopOrderViewsPlugin(LeftRightExtensionMixin, TransparentWrapper, ShopPlug
 plugin_pool.register_plugin(ShopOrderViewsPlugin)
 
 
-class OrderButtonForm(ShopOrderViewsForm):
-    button_content = fields.CharField(
-        label=_("Button Content"),
-        required=False,
-        widget=widgets.TextInput(),
-    )
-
-    def __init__(self, raw_data=None, *args, **kwargs):
-        instance = kwargs.get('instance')
-        if instance:
-            initial = {'button_content': instance.glossary.get('button_content') }
-            kwargs.update(initial=initial)
-        super(OrderButtonForm, self).__init__(raw_data, *args, **kwargs)
-
-    def clean(self):
-        cleaned_data = super(OrderButtonForm, self).clean()
-        if self.is_valid():
-            cleaned_data['glossary']['button_content'] = cleaned_data['button_content']
-        return cleaned_data
+class OrderButtonForm(ShopOrderViewsFormMixin, IconFormMixin, ButtonFormMixin):
+    require_icon = False
 
 
 class OrderButtonBase(BootstrapButtonMixin, ShopPluginBase):
     parent_classes = ['BootstrapColumnPlugin']
     form = OrderButtonForm
-    fields = ['button_content', 'glossary']
-    glossary_field_order = ['button_type', 'button_size', 'button_options', 'quick_float',
-                            'icon_align', 'icon_font', 'symbol']
-
-    class Media:
-        css = {'all': ['cascade/css/admin/bootstrap4-buttons.css', 'cascade/css/admin/iconplugin.css']}
 
     @classmethod
     def get_identifier(cls, instance):
         return instance.glossary.get('button_content', '')
-
-    def render(self, context, instance, placeholder):
-        context = super(OrderButtonBase, self).render(context, instance, placeholder)
-        context.update({
-            'button_label': instance.glossary.get('button_content', '')
-        })
-        return context
 
 
 class ShopReorderButtonPlugin(OrderButtonBase):
