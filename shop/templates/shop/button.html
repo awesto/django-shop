@@ -6,5 +6,5 @@
 {% add_data "ng-requires" "djng.forms" %}
 
 {% with instance_link=instance.link|default:"#" download=instance.download_name instance_css_classes=instance.css_classes instance_inline_styles=instance.inline_styles %}
-<a href="{{ instance_link }}" {{ instance.html_tag_attributes }}{% if instance_css_classes %} class="{{ instance_css_classes }}"{% endif %}{% if download %} download="{{ download }}"{% endif %}{% if instance_inline_styles %} style="{{ instance_inline_styles }}"{% endif %}>{{ icon_left }}{{ instance.content }}{{ icon_right }}</a>
+<a href="{{ instance_link }}" {{ instance.html_tag_attributes }} aria-pressed="false"{% if instance_css_classes %} class="{{ instance_css_classes }}"{% endif %}{% if download %} download="{{ download }}"{% endif %}{% if instance_inline_styles %} style="{{ instance_inline_styles }}"{% endif %}>{{ icon_left }}{{ instance.content }}{{ icon_right }}</a>
 {% endwith %}{% endspaceless %}
