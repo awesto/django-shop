@@ -1,4 +1,5 @@
 from shop.conf import app_settings
+from shop.models.customer import CustomerModel, VisitingCustomer
 
 
 def customer(request):
@@ -8,10 +9,15 @@ def customer(request):
     msg = "The request object does not contain a customer. Edit your MIDDLEWARE_CLASSES setting to insert 'shop.middlerware.CustomerMiddleware'."
     assert hasattr(request, 'customer'), msg
 
-    context = {
-        'customer': request.customer,
-    }
-    return context
+    customer = request.customer
+    if request.user.is_staff:
+        try:
+            customer = CustomerModel.objects.get(pk=request.session['emulate_user_id'])
+        except CustomerModel.DoesNotExist:
+            customer = VisitingCustomer()
+        except KeyError:
+            pass
+    return {'customer': customer}
 
 
 def shop_settings(request):
