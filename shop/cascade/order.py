@@ -102,7 +102,7 @@ class AddendumForm(NgModelFormMixin, Bootstrap3Form):
     )
 
 
-class ShopOrderAddendumFormMixin(EntangledModelFormMixin):
+class ShopOrderAddendumFormMixin(OrderButtonForm):
     show_history = fields.BooleanField(
          label=_("Show History"),
          initial=True,
@@ -126,7 +126,7 @@ class ShopOrderAddendumFormPlugin(OrderButtonBase):
         return select_template(template_names)
 
     def render(self, context, instance, placeholder):
-        context = super(ShopOrderAddendumFormPlugin, self).render(context, instance, placeholder)
+        context = self.super(ShopOrderAddendumFormPlugin, self).render(context, instance, placeholder)
         context.update({
             'addendum_form': AddendumForm(),
             'show_history': instance.glossary.get('show_history', True),
