@@ -16,10 +16,9 @@ from shop.cascade.plugin_base import ShopPluginBase
 
 class BreadcrumbPluginForm(EntangledModelFormMixin):
     CHOICES = [
-        ('default', _("Default Breadcrumb")),
-        ('soft-root', _("“Soft-Root” Breadcrumb")),
+        ('default', _("Default")),
+        ('soft-root', _("With “Soft-Root”")),
         ('catalog', _("With Catalog Count")),
-        ('empty', _("Hidden Breadcrumb")),
     ]
 
     render_type = fields.ChoiceField(
@@ -29,6 +28,9 @@ class BreadcrumbPluginForm(EntangledModelFormMixin):
         initial='default',
         help_text=_("Render an alternative Breadcrumb"),
     )
+
+    class Meta:
+        entangled_fields = {'glossary': ['render_type']}
 
 
 class BreadcrumbPlugin(ShopPluginBase):
