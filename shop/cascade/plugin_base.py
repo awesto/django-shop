@@ -15,7 +15,7 @@ if 'cmsplugin_cascade' not in settings.INSTALLED_APPS:
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.plugin_base import CascadePluginBase
 from cmsplugin_cascade.link.forms import LinkForm, HeavySelectWidget
-from cmsplugin_cascade.link.plugin_base import LinkPluginBase, LinkElementMixin
+from cmsplugin_cascade.link.plugin_base import LinkPluginBase
 from shop.conf import app_settings
 from shop.forms.base import DialogFormMixin
 from shop.models.cart import CartModel
