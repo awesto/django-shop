@@ -1,7 +1,11 @@
 from __future__ import unicode_literals
-
-from django.urls import reverse_lazy
+from django import VERSION as DJANGO_VERSION
+if DJANGO_VERSION < (2, 0):
+    from django.core.urlresolvers import reverse_lazy
+else:
+    from django.urls import reverse_lazy
 from django.utils.text import format_lazy
+
 
 DEBUG = True
 
@@ -21,7 +25,6 @@ DATABASES = {
 STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
-
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -59,7 +62,25 @@ TEMPLATES = [{
     }
 }]
 
-MIDDLEWARE = [
+
+if DJANGO_VERSION < (2, 0):
+     MIDDLEWARE_CLASSE = [
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'shop.middleware.CustomerMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'cms.middleware.user.CurrentUserMiddleware',
+    'cms.middleware.page.CurrentPageMiddleware',
+    'cms.middleware.utils.ApphookReloadMiddleware',
+    'cms.middleware.toolbar.ToolbarMiddleware',
+    'cms.middleware.language.LanguageCookieMiddleware',
+     ]
+else:
+    MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -71,10 +92,9 @@ MIDDLEWARE = [
     'cms.middleware.language.LanguageCookieMiddleware',
     'cms.middleware.user.CurrentUserMiddleware',
     'cms.middleware.page.CurrentPageMiddleware',
-    'cms.middleware.utils.ApphookReloadMiddleware',
     'cms.middleware.toolbar.ToolbarMiddleware',
     'cms.middleware.language.LanguageCookieMiddleware',
-]
+    ]
 
 INSTALLED_APPS = [
     'django.contrib.auth',
