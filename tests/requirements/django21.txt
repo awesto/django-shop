@@ -49,10 +49,12 @@ django-treebeard
 django
 djangocms-admin-style
 #djangocms-bootstrap
-https://github.com/haricot/djangocms-bootstrap3/archive/patch-9.zip
-https://github.com/haricot/djangocms-cascade/archive/patch-33.zip
-#https://github.com/jrief/djangocms-cascade/archive/releases/1.0.x.zip
 #djangocms-cascade
+https://github.com/haricot/djangocms-bootstrap3/archive/wip_django2.zip
+#https://github.com/jrief/djangocms-bootstrap/archive/releases/1.1.zip
+https://github.com/jrief/djangocms-cascade/archive/releases/1.0.x.zip
+djangocms-text-ckeditor
+djangorestframework
 djangocms-text-ckeditor
 djangorestframework
 drf-haystack
