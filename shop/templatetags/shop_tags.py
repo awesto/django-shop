@@ -19,7 +19,6 @@ from shop.rest.money import JSONRenderer
 register = template.Library()
 
 
-
 class CartIcon(Node):
     """
     Inclusion tag for displaying cart summary.

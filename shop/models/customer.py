@@ -185,6 +185,7 @@ class CustomerManager(models.Manager):
 class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     Base class for shop customers.
+
     Customer is a profile model that extends
     the django User model if a customer is authenticated. On checkout, a User
     object is created for anonymous customers also (with unusable password).
@@ -267,7 +268,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     @property
     def is_anonymous(self):
-        return  self.recognized in (CustomerState.UNRECOGNIZED, CustomerState.GUEST)
+        return self.recognized in (CustomerState.UNRECOGNIZED, CustomerState.GUEST)
 
     @property
     def is_authenticated(self):
@@ -404,7 +405,7 @@ class VisitingCustomer(object):
     @property
     def is_recognized(self):
         return  False
-        
+
     @property
     def is_guest(self):
         return False

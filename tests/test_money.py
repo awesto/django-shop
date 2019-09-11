@@ -19,7 +19,6 @@ from shop.rest.money import MoneyField, JSONRenderer
 from testshop.models import Commodity
 from django.db.backends.utils import format_number
 
-
 EUR = MoneyMaker('EUR')
 
 
