@@ -1,7 +1,7 @@
 from django import VERSION as DJANGO_VERSION
 if DJANGO_VERSION < (2, 0):
-   from django.conf.urls import url, include
-esle:
+    from django.conf.urls import url, include
+else:
     from django.urls import include, path, re_path
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
