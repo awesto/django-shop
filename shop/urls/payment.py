@@ -12,7 +12,7 @@ for modifier in cart_modifiers_pool.get_payment_modifiers():
         namespace = modifier.payment_provider.namespace
         regexp = r'^{}/'.format(namespace)
         urls = modifier.payment_provider.get_urls()
-        provider_url = url(regexp, include(urls, namespace=namespace))
+        provider_url = url(regexp, include((urls, 'url_payment'), namespace=namespace))
         if provider_url.describe() not in [u.describe() for u in urlpatterns]:
             urlpatterns.append(provider_url)
     except AttributeError as err:
