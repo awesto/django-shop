@@ -9,7 +9,7 @@ from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from cms.models.fields import PlaceholderField
 from filer.fields import image
 from djangocms_text_ckeditor.fields import HTMLField
