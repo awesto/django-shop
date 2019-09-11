@@ -14,7 +14,7 @@ if DJANGO_VERSION < (2, 0):
         url(r'^admin/', include(admin.site.urls)),
         url(r'^', include('cms.urls')),
     ))
-esle:
+else:
     urlpatterns = [
         path('shop/', include(('shop.urls', 'shop_urls' ), namespace='shop')),
     ]
