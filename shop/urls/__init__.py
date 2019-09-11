@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.urls import include, path, re_path
+from django.conf.urls import include, url
 from shop.urls import rest_api
 from shop.urls import auth
 from shop.urls import payment
@@ -10,8 +10,7 @@ app_name = 'shop'
 
 
 urlpatterns = [
-    path('api/', include(rest_api)),
-    path('auth/', include(auth)),
-    path('payment/', include(payment)),
-
+    url(r'api/', include(rest_api)),
+    url(r'auth/', include(auth)),
+    url(r('payment/', include(payment)),
 ]
