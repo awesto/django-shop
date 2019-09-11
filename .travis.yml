@@ -5,7 +5,6 @@ python:
   - 3.6
 
 env:
-
   - DJANGOVER=django111 
   - DJANGOVER=django21
 
