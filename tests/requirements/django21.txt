@@ -48,6 +48,7 @@ django-select2
 django-treebeard
 django
 djangocms-admin-style
+django-entangled
 #djangocms-bootstrap
 #djangocms-cascade
 https://github.com/haricot/djangocms-bootstrap3/archive/wip_django2.zip
