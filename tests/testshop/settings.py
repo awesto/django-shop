@@ -6,7 +6,6 @@ else:
     from django.urls import reverse_lazy
 from django.utils.text import format_lazy
 
-
 DEBUG = True
 
 ROOT_URLCONF = 'testshop.urls'
