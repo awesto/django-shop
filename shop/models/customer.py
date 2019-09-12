@@ -14,7 +14,8 @@ from django.db import models, DEFAULT_DB_ALIAS
 from django.db.models.fields import FieldDoesNotExist
 from django.dispatch import receiver
 from django.utils import timezone
-if DJANGO_VERSION < (2, 0):
+DJANGO111 = True if DJANGO_VERSION < (2, 0) else False
+if DJANGO111:
     from django.utils.deprecation import CallableBool, CallableFalse, CallableTrue
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import SimpleLazyObject
@@ -269,14 +270,14 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     @property
     def is_anonymous(self):
-        if DJANGO_VERSION < (2, 0):
+        if DJANGO111:
             return CallableBool(self.recognized in (CustomerState.UNRECOGNIZED, CustomerState.GUEST))
         else:
             return self.recognized in (CustomerState.UNRECOGNIZED, CustomerState.GUEST)
 
     @property
     def is_authenticated(self):
-        if DJANGO_VERSION < (2, 0):
+        if DJANGO111:
             CallableBool(self.recognized is CustomerState.REGISTERED)
         else:
             return self.recognized is CustomerState.REGISTERED
