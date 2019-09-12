@@ -10,6 +10,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AnonymousUser
+from django import VERSION as DJANGO_VERSION
 from post_office.models import EmailTemplate
 from rest_framework.test import APIClient, APIRequestFactory
 from shop.models.cart import CartModel
@@ -51,7 +52,10 @@ class UserFactory(factory.django.DjangoModelFactory):
     def create(cls, **kwargs):
         user = super(UserFactory, cls).create(**kwargs)
         assert isinstance(user, get_user_model())
-        assert user.is_authenticated is True
+        if DJANGO_VERSION < (2, 0):
+            assert user.is_authenticated() is True
+        else: 
+            assert user.is_authenticated is True          
         return user
 
     username = factory.Sequence(lambda n: 'uid-{}'.format(n))
@@ -68,8 +72,12 @@ class CustomerFactory(factory.django.DjangoModelFactory):
         customer = super(CustomerFactory, cls).create(**kwargs)
         assert isinstance(customer, Customer)
         assert isinstance(customer.user, get_user_model())
-        assert customer.is_authenticated is True
-        assert customer.is_registered is True
+        if DJANGO_VERSION < (2, 0):
+            assert customer.is_authenticated() is True
+            assert customer.is_registered() is True
+        else:
+            assert customer.is_authenticated is True
+            assert customer.is_registered is True
         return customer
 
     user = factory.SubFactory(UserFactory)
@@ -79,7 +87,10 @@ class CustomerFactory(factory.django.DjangoModelFactory):
 def registered_customer():
     user = UserFactory(email='admin@example.com', password=make_password('secret'), is_active=True)
     customer = CustomerFactory(user=user)
-    assert customer.is_registered is True
+    if DJANGO_VERSION < (2, 0):
+        assert customer.is_registered() is True
+    else:
+        assert customer.is_registered is True
     assert isinstance(customer.user, get_user_model())
     return customer
 
