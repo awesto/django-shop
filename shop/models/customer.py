@@ -279,7 +279,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     @property
     def is_authenticated(self):
         if DJANGO111:
-            CallableBool(self.recognized is CustomerState.REGISTERED)
+            return CallableBool(self.recognized is CustomerState.REGISTERED)
         else:
             return self.recognized is CustomerState.REGISTERED
 
