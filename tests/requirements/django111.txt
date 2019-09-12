@@ -39,13 +39,13 @@ django-js-asset==1.2.2
 django-mptt==0.9.1
 django-parler==1.9.2
 django-phonenumber-field==2.2.0
-django-polymorphic==1.3.1
+django-polymorphic
 django-rest-auth==0.9.3
 django-sass-processor==0.7.2
 django-sekizai==0.10.0
 django-select2==6.3.1
 django-treebeard==4.3
-django==1.11.20
+django==1.11.24
 djangocms-admin-style==1.3.0
 #djangocms-bootstrap==1.0.2
 #djangocms-cascade==0.18.2
