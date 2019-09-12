@@ -72,14 +72,13 @@ class CustomerFactory(factory.django.DjangoModelFactory):
         customer = super(CustomerFactory, cls).create(**kwargs)
         assert isinstance(customer, Customer)
         assert isinstance(customer.user, get_user_model())
-        """
+
         if DJANGO_VERSION < (2, 0):
             assert customer.is_authenticated() is True
             assert customer.is_registered() is True
         else:
-        """
-        assert customer.is_authenticated is True
-        assert customer.is_registered is True
+            assert customer.is_authenticated is True
+            assert customer.is_registered is True
         return customer
 
     user = factory.SubFactory(UserFactory)
