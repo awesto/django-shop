@@ -52,7 +52,7 @@ djangocms-admin-style==1.3.0
 https://github.com/jrief/djangocms-bootstrap/archive/releases/1.1.zip
 https://github.com/jrief/djangocms-cascade/archive/releases/1.0.x.zip
 djangocms-text-ckeditor==3.7.0
-djangorestframework==3.8.2
+djangorestframework==3.9.4
 drf-haystack==1.8.4
 easy-thumbnails==2.6
 elasticsearch==1.7.0
