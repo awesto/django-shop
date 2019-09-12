@@ -14,6 +14,7 @@ from django.db import models, DEFAULT_DB_ALIAS
 from django.db.models.fields import FieldDoesNotExist
 from django.dispatch import receiver
 from django.utils import timezone
+from django import VERSION as DJANGO_VERSION
 DJANGO111 = True if DJANGO_VERSION < (2, 0) else False
 if DJANGO111:
     from django.utils.deprecation import CallableBool, CallableFalse, CallableTrue
