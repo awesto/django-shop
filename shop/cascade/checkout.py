@@ -337,7 +337,6 @@ class AcceptConditionMixin(object):
         Return the context to render a checkbox used to accept the terms and conditions
         """
         request = context['request']
-        CartModel.objects.get_or_create_from_request(request)
         try:
             cart = CartModel.objects.get_from_request(request)
             cart.update(request)
