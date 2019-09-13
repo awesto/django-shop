@@ -2,16 +2,16 @@
 from django import VERSION as DJANGO_VERSION
 
 DJANGO111 = True if DJANGO_VERSION < (2, 0) else False
-if DJANGO111:
-    from django.db import migrations, models
+
+from django.db import migrations, models
 
 
-    class Migration(migrations.Migration):
+class Migration(migrations.Migration):
 
-        dependencies = [
-            ('email_auth', '0004_auto_20170411_1733'),
-        ]
-
+    dependencies = [
+        ('email_auth', '0004_auto_20170411_1733'),
+    ]
+    if not DJANGO111:
         operations = [
             migrations.AlterField(
                 model_name='user',
