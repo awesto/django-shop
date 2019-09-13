@@ -9,9 +9,11 @@ from django.contrib import admin
 from django.utils.encoding import force_str
 from django.utils.timezone import localtime
 from django.utils.translation import pgettext_lazy, ugettext_lazy as _
+from django import VERSION as DJANGO_VERSION
 
 from shop.models.customer import CustomerModel, CustomerState
 
+DJANGO111 = True if DJANGO_VERSION < (2, 0) else False
 
 class CustomerInlineAdminBase(admin.StackedInline):
     model = CustomerModel
@@ -128,7 +130,10 @@ class CustomerAdminBase(UserAdmin):
 
     def is_unexpired(self, user):
         if hasattr(user, 'customer'):
-            return not user.customer.is_expired
+            if DJANGO111:
+                return not user.customer.is_expired()
+            else:
+                return not user.customer.is_expired
         return True
     is_unexpired.short_description = _("Unexpired")
     is_unexpired.boolean = True
