@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.forms import widgets
-from django.forms.fields import CharField
+from django.forms.fields import CharField, BooleanField
 from django.forms.models import ModelForm
 from django.utils.translation import ungettext_lazy, ugettext_lazy as _
 from django.utils.text import Truncator
@@ -14,8 +14,9 @@ from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.forms import ManageChildrenFormMixin
 from cmsplugin_cascade.fields import GlossaryField
 from cmsplugin_cascade.link.forms import LinkForm
+from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.widgets import NumberInputWidget
-from cmsplugin_cascade.bootstrap4.buttons import BootstrapButtonMixin
+from cmsplugin_cascade.bootstrap4.buttons import BootstrapButtonMixin, ButtonFormMixin, BootstrapButtonFormMixin
 from cmsplugin_cascade.plugin_base import TransparentWrapper, TransparentContainer
 
 from shop.conf import app_settings
@@ -94,8 +95,8 @@ class ProcessStepPlugin(TransparentContainer, ShopPluginBase):
 plugin_pool.register_plugin(ProcessStepPlugin)
 
 
-class ProcessNextStepForm(LinkForm, ModelForm):
-    link_content = CharField(required=False, label=_("Button Content"), widget=widgets.TextInput())
+class ProcessNextStepForm(LinkForm, ButtonFormMixin):
+    disable_invalid = CharField(label=_("Proceed Button"),  help_text=_("Disable button if any form in this set is invalid"),)
 
     def __init__(self, raw_data=None, *args, **kwargs):
         instance = kwargs.get('instance')
@@ -104,22 +105,17 @@ class ProcessNextStepForm(LinkForm, ModelForm):
         kwargs.update(initial=initial)
         super(ProcessNextStepForm, self).__init__(raw_data, *args, **kwargs)
 
+    class Meta:
+        entangled_fields = {'glossary': ['disable_invalid','link_content',  'button_type', 'button_size', 'button_options',
+                            'icon_align',]}
+
 
 class ProcessNextStepPlugin(BootstrapButtonMixin, ShopPluginBase):
     name = _("Next Step Button")
     parent_classes = ('ProcessStepPlugin',)
-    form = ProcessNextStepForm
-    fields = ['link_content', 'glossary']
     ring_plugin = 'ProcessNextStepPlugin'
-    glossary_field_order = ['disable_invalid', 'button_type', 'button_size', 'button_options', 'quick_float',
-                            'icon_align', 'icon_font', 'symbol']
-
-    disable_invalid = GlossaryField(
-        label=_("Disable if invalid"),
-        widget=widgets.CheckboxInput(),
-        initial='',
-        help_text=_("Disable button if any form in this set is invalid"),
-    )
+    model_mixins = (LinkElementMixin,)
+    form = ProcessNextStepForm
 
     class Media:
         css = {'all': ['cascade/css/admin/bootstrap4-buttons.css', 'cascade/css/admin/iconplugin.css']}
