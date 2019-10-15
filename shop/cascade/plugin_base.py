@@ -102,7 +102,7 @@ class DialogPluginBaseForm(EntangledModelFormMixin):
     ]
 
     render_type = fields.ChoiceField(
-        RENDER_CHOICES,
+        choices=RENDER_CHOICES,
         widget=widgets.RadioSelect,
         label=_("Render as"),
         initial='form',

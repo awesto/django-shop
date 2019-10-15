@@ -139,7 +139,7 @@ class CheckoutAddressPluginForm(DialogPluginBaseForm):
     ]
 
     address_form = fields.ChoiceField(
-        ADDRESS_CHOICES,
+        choices=ADDRESS_CHOICES,
         widget=widgets.RadioSelect,
         label=_("Address Form"),
         initial=ADDRESS_CHOICES[0][0]
