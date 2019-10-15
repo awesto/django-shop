@@ -31,7 +31,10 @@ class CustomerInlineAdmin(CustomerInlineAdminBase):
 
 @admin.register(CustomerProxy)
 class CustomerAdmin(CustomerAdminBase):
-    inlines = (CustomerInlineAdmin,)
+    class Media:
+        css = {'all': ['shop/css/admin/customer.css']}
+
+    inlines = [CustomerInlineAdmin]
 
     def get_list_display(self, request):
         list_display = list(super(CustomerAdmin, self).get_list_display(request))
