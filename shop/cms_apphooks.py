@@ -30,9 +30,9 @@ class OrderApp(CMSApp):
         from shop.views.order import OrderView
 
         return [
+            url(r'^(?P<slug>[\w-]+)/(?P<secret>[\w-]+)', OrderView.as_view(many=False)),  # publicly accessible
+            url(r'^(?P<slug>[\w-]+)', OrderView.as_view(many=False)),  # requires authentication
             url(r'^$', OrderView.as_view()),  # requires authentication
-            url(r'^(?P<slug>[\w-]+)/?$', OrderView.as_view(many=False)),  # requires authentication
-            url(r'^(?P<slug>[\w-]+)/(?P<secret>[\w-]+)$', OrderView.as_view(many=False)),  # publicly accessible
         ]
 
 
@@ -44,7 +44,7 @@ class PasswordResetApp(CMSApp):
         from shop.views.auth import PasswordResetConfirmView
 
         return [
-            url(r'^(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/?$',
+            url(r'^(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})',
                 PasswordResetConfirmView.as_view(),
             )
         ]
