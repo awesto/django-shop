@@ -192,6 +192,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
         primary_key=True,
     )
 

@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
             name='NotificationAttachment',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('attachment', filer.fields.file.FilerFileField(related_name='email_attachment', blank=True, to='filer.File', null=True)),
+                ('attachment', filer.fields.file.FilerFileField(on_delete=models.CASCADE, related_name='email_attachment', blank=True, to='filer.File', null=True)),
                 ('notification', models.ForeignKey(to='shop.Notification', on_delete=models.CASCADE)),
             ],
             options={

@@ -159,9 +159,9 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
 
     customer = deferred.ForeignKey(
         'BaseCustomer',
+        on_delete=models.PROTECT,
         verbose_name=_("Customer"),
         related_name='orders',
-        on_delete=models.PROTECT,
     )
 
     status = FSMField(
@@ -421,6 +421,7 @@ class OrderPayment(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     order = deferred.ForeignKey(
         BaseOrder,
+        on_delete=models.CASCADE,
         verbose_name=_("Order"),
     )
 
@@ -461,6 +462,7 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     order = deferred.ForeignKey(
         BaseOrder,
+        on_delete=models.CASCADE,
         related_name='items',
         verbose_name=_("Order"),
     )
@@ -483,10 +485,10 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     product = deferred.ForeignKey(
         BaseProduct,
-        null=True,
-        blank=True,
         on_delete=models.SET_NULL,
         verbose_name=_("Product"),
+        null=True,
+        blank=True,
     )
 
     _unit_price = models.DecimalField(

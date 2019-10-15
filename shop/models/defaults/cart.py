@@ -14,16 +14,16 @@ class Cart(BaseCart):
     """
     shipping_address = deferred.ForeignKey(
         BaseShippingAddress,
+        on_delete=SET_DEFAULT,
         null=True,
         default=None,
         related_name='+',
-        on_delete=SET_DEFAULT,
     )
 
     billing_address = deferred.ForeignKey(
         BaseBillingAddress,
+        on_delete=SET_DEFAULT,
         null=True,
         default=None,
         related_name='+',
-        on_delete=SET_DEFAULT,
     )

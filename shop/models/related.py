@@ -18,8 +18,15 @@ class BaseProductPage(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     ManyToMany relation from the polymorphic Product to the CMS Page.
     This in practice is the category.
     """
-    page = models.ForeignKey(Page)
-    product = deferred.ForeignKey(BaseProduct)
+    page = models.ForeignKey(
+        Page,
+        on_delete=models.CASCADE,
+    )
+
+    product = deferred.ForeignKey(
+        BaseProduct,
+        on_delete=models.CASCADE,
+    )
 
     class Meta:
         abstract = True
@@ -34,9 +41,14 @@ class BaseProductImage(with_metaclass(deferred.ForeignKeyBuilder, models.Model))
     """
     ManyToMany relation from the polymorphic Product to a set of images.
     """
-    image = image.FilerImageField()
-    product = deferred.ForeignKey(BaseProduct)
-    order = models.SmallIntegerField(default=0, blank=False, null=False)
+    image = image.FilerImageField(on_delete=models.CASCADE)
+
+    product = deferred.ForeignKey(
+        BaseProduct,
+        on_delete=models.CASCADE,
+    )
+
+    order = models.SmallIntegerField(default=0)
 
     class Meta:
         abstract = True
