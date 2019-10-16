@@ -465,7 +465,6 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         on_delete=models.CASCADE,
         related_name='items',
         verbose_name=_("Order"),
-        on_delete=models.CASCADE,
     )
 
     product_name = models.CharField(
