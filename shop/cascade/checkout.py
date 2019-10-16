@@ -16,6 +16,8 @@ from cmsplugin_cascade.strides import strides_plugin_map, strides_element_map, T
 
 from cmsplugin_cascade.link.forms import LinkForm
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
+from cmsplugin_cascade.link.config import LinkPluginBase, LinkFormMixin
+
 from cmsplugin_cascade.plugin_base import TransparentContainer
 from cmsplugin_cascade.bootstrap4.buttons import BootstrapButtonMixin
 from shop.cascade.plugin_base import ShopPluginBase, ShopButtonPluginBase, DialogFormPluginBase
