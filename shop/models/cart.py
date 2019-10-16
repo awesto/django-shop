@@ -73,7 +73,6 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         'BaseCart',
         on_delete=models.CASCADE,
         related_name='items',
-        on_delete=models.CASCADE,
     )
 
     product = deferred.ForeignKey(
