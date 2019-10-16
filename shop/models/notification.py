@@ -50,7 +50,6 @@ class Notification(models.Model):
         on_delete=models.CASCADE,
         verbose_name=_("Template"),
         limit_choices_to=Q(language__isnull=True) | Q(language=''),
-        on_delete=models.CASCADE,
     )
 
     class Meta:
