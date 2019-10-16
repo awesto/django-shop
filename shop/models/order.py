@@ -423,7 +423,6 @@ class OrderPayment(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         BaseOrder,
         on_delete=models.CASCADE,
         verbose_name=_("Order"),
-        on_delete=models.CASCADE,
     )
 
     amount = MoneyField(
