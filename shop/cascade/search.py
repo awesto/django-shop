@@ -1,21 +1,28 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.core.exceptions import ValidationError
-from django import forms
-from django.forms import widgets
+from django.forms import fields
 from django.template import engines
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _, ugettext
+from entangled.forms import EntangledModelFormMixin
 from cms.plugin_pool import plugin_pool
-from cmsplugin_cascade.fields import GlossaryField
 from shop.cascade.plugin_base import ShopPluginBase
 from shop.conf import app_settings
 
 
-class ShopSearchResultsForm(forms.ModelForm):
+class ShopSearchResultsFormMixin(EntangledModelFormMixin):
+    CHOICES = [
+        ('paginator', _("Use Paginator")),
+        ('manual', _("Manual Infinite")),
+        ('auto', _("Auto Infinite")),
+    ]
+
+    pagination = fields.ChoiceField(
+        label=_("Pagination"),
+        help_text=_("Shall the list of search results use a paginator or scroll infinitely?"),
+    )
+
     def clean(self):
-        cleaned_data = super(ShopSearchResultsForm, self).clean()
+        cleaned_data = super().clean()
         page = self.instance.placeholder.page if self.instance.placeholder_id else None
         if page and page.application_urls != 'CatalogSearchApp':
             raise ValidationError("This plugin can only be used on a CMS page with an application of type 'Search'.")
@@ -26,17 +33,8 @@ class ShopSearchResultsPlugin(ShopPluginBase):
     name = _("Search Results")
     require_parent = True
     parent_classes = ['BootstrapColumnPlugin']
-    form = ShopSearchResultsForm
+    form = ShopSearchResultsFormMixin
     cache = False
-
-    pagination = GlossaryField(
-        widgets.RadioSelect(choices=[
-            ('paginator', _("Use Paginator")), ('manual', _("Manual Infinite")), ('auto', _("Auto Infinite"))
-        ]),
-        label=_("Pagination"),
-        initial=True,
-        help_text=_("Shall the list of search results use a paginator or scroll infinitely?"),
-    )
 
     def get_render_template(self, context, instance, placeholder):
         if instance.placeholder.page.application_urls == 'CatalogSearchApp':

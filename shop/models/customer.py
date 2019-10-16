@@ -14,10 +14,12 @@ from django.db import models, DEFAULT_DB_ALIAS
 from django.db.models.fields import FieldDoesNotExist
 from django.dispatch import receiver
 from django.utils import timezone
+
 from django import VERSION as DJANGO_VERSION
 DJANGO111 = True if DJANGO_VERSION < (2, 0) else False
 if DJANGO111:
     from django.utils.deprecation import CallableBool, CallableFalse, CallableTrue
+
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import SimpleLazyObject
 from django.utils.translation import ugettext_lazy as _
@@ -195,6 +197,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
         primary_key=True,
         on_delete=models.CASCADE,
     )
@@ -271,6 +274,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     @property
     def is_anonymous(self):
+
         if DJANGO111:
             return CallableBool(self.recognized in (CustomerState.UNRECOGNIZED, CustomerState.GUEST))
         else:
@@ -282,6 +286,11 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
             return CallableBool(self.recognized is CustomerState.REGISTERED)
         else:
             return self.recognized is CustomerState.REGISTERED
+        return self.recognized in (CustomerState.UNRECOGNIZED, CustomerState.GUEST)
+
+    @property
+    def is_authenticated(self):
+        return self.recognized is CustomerState.REGISTERED
 
     @property
     def is_recognized(self):
@@ -290,10 +299,13 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         Unrecognized customers have accessed the shop, but did not register
         an account nor declared themselves as guests.
         """
+
         if DJANGO111:
             return CallableBool(self.recognized is not CustomerState.UNRECOGNIZED)
         else:
             return self.recognized is not CustomerState.UNRECOGNIZED
+
+        return self.recognized is not CustomerState.UNRECOGNIZED
 
     @property
     def is_guest(self):
@@ -301,10 +313,14 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         Return true if the customer isn't associated with valid User account, but declared
         himself as a guest, leaving their email address.
         """
+
         if DJANGO111:
             return CallableBool(self.recognized is CustomerState.GUEST)
         else:
             return callable(self.recognized is CustomerState.GUEST)
+
+        return self.recognized is CustomerState.GUEST
+
 
     def recognize_as_guest(self, request=None, commit=True):
         """
@@ -321,10 +337,12 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         """
         Return true if the customer has registered himself.
         """
+
         if DJANGO111:
             return CallableBool(self.recognized is CustomerState.REGISTERED)
         else:
             return self.recognized is CustomerState.REGISTERED
+
 
     def recognize_as_registered(self, request=None, commit=True):
         """
@@ -341,9 +359,11 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         """
         Always False for instantiated Customer objects.
         """
+
         if DJANGO111:
             return CallableFalse
-        return False
+        else:
+           return False
 
     @property
     def is_expired(self):
@@ -361,10 +381,12 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
                 msg = "Unable to decode username '{}' as session key"
                 warnings.warn(msg.format(self.user.username))
                 is_expired = True
+
         if DJANGO111:
             return CallableBool(is_expired)
         else:
             return is_expired
+
 
     def get_or_assign_number(self):
         """

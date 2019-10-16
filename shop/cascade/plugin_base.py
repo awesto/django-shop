@@ -1,28 +1,21 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.conf import settings
 from django.apps import apps
-from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
-from django.forms import ChoiceField, widgets
+from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist, ValidationError
+from django.forms import fields, widgets, ModelChoiceField
 from django.template import TemplateDoesNotExist
 from django.template.loader import select_template
 from django.utils.html import format_html
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
-from django.utils.safestring import mark_safe
-from django.utils.encoding import python_2_unicode_compatible
+from entangled.forms import EntangledModelFormMixin, get_related_object
 
 if 'cmsplugin_cascade' not in settings.INSTALLED_APPS:
     raise ImproperlyConfigured("Please add 'cmsplugin_cascade' to your INSTALLED_APPS")
 
 from cms.plugin_pool import plugin_pool
-from cmsplugin_cascade.fields import GlossaryField
 from cmsplugin_cascade.plugin_base import CascadePluginBase
-from cmsplugin_cascade.link.forms import LinkForm
-from cmsplugin_cascade.link.plugin_base import LinkPluginBase, LinkElementMixin
-from django_select2.forms import HeavySelect2Widget
-
+from cmsplugin_cascade.link.forms import LinkForm, HeavySelectWidget
+from cmsplugin_cascade.link.plugin_base import LinkPluginBase
 from shop.conf import app_settings
 from shop.forms.base import DialogFormMixin
 from shop.models.cart import CartModel
@@ -38,7 +31,6 @@ class ShopPluginBase(CascadePluginBase):
     allow_children = False
 
 
-@python_2_unicode_compatible
 class ShopLinkElementMixin(LinkElementMixin):
     def __str__(self):
         return self.plugin_class.get_identifier(self)
@@ -108,22 +100,17 @@ class ProductSelect2Widget(HeavySelect2Widget):
         return html
 
 
-class ProductSelectField(ChoiceField):
-    def __init__(self, *args, **kwargs):
-        kwargs.setdefault('widget', ProductSelect2Widget(data_view='shop:select-product'))
-        super(ProductSelectField, self).__init__(*args, **kwargs)
 
-    def clean(self, value):
-        "Since the ProductSelectField does not specify choices by itself, accept any returned value"
-        try:
-            return int(value)
-        except (TypeError, ValueError):
-            pass
+class ProductSelectField(ModelChoiceField):
+    widget = HeavySelectWidget(data_view='shop:select-product')
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('queryset', ProductModel.objects.all())
+        super().__init__(*args, **kwargs)
 
 
 class CatalogLinkForm(LinkForm):
     """
-    Alternative implementation of `cmsplugin_cascade.TextLinkForm`, which allows to link onto
+    Alternative implementation of `cmsplugin_cascade.link.forms.LinkForm`, which allows to link onto
     the Product model, using its method ``get_absolute_url``.
 
     Note: In this form class the field ``product`` is missing. It is added later, when the shop's
@@ -138,13 +125,13 @@ class CatalogLinkForm(LinkForm):
     ]
 
     product = ProductSelectField(
-        label='',
+        label=_("Product"),
         required=False,
-        help_text=_("An internal link onto a product from the shop"),
+        help_text=_("An internal link onto a product from the catalog"),
     )
 
     class Meta:
-        entangled_fields = {'glossary': ['product',]}
+        entangled_fields = {'glossary': ['product']}
 
     def clean_product(self):
         if self.cleaned_data.get('link_type') == 'product':
@@ -155,13 +142,18 @@ class CatalogLinkForm(LinkForm):
                 'pk': self.cleaned_data['product'],
             }
 
-    def set_initial_product(self, initial):
-        try:
-            # check if that product still exists, otherwise return nothing
-            Model = apps.get_model(*initial['link']['model'].split('.'))
-            initial['product'] = Model.objects.get(pk=initial['link']['pk']).pk
-        except (KeyError, ValueError, ObjectDoesNotExist):
-            pass
+
+    def clean(self):
+        cleaned_data = super().clean()
+        link_type = cleaned_data.get('link_type')
+        error = None
+        if link_type == 'product':
+            if cleaned_data['product'] is None:
+                error = ValidationError(_("Product to link to is missing."))
+                self.add_error('product', error)
+        if error:
+            raise error
+        return cleaned_data
 
 
 class CatalogLinkPluginBase(LinkPluginBase):
@@ -169,6 +161,7 @@ class CatalogLinkPluginBase(LinkPluginBase):
     Alternative implementation to ``cmsplugin_cascade.link.DefaultLinkPluginBase`` which adds
     another link type, namely "Product", to set links onto arbitrary products of this shop.
     """
+
     LINK_TYPE_CHOICES = [
         ('cmspage', _("CMS Page")),
         ('product', _("Product")),
@@ -209,17 +202,28 @@ class CatalogLinkPluginBase(LinkPluginBase):
     class Media:
         js = ['shop/js/admin/shoplinkplugin.js']
 
+    @classmethod
+    def get_link(cls, obj):
+        link_type = obj.glossary.get('link_type')
+        if link_type == 'product':
+            relobj = get_related_object(obj.glossary, 'product')
+            if relobj:
+                return relobj.get_absolute_url()
+        else:
+            return super().get_link(obj) or link_type
 
-class DialogFormPluginBase(ShopPluginBase):
-    """
-    Base class for all plugins adding a dialog form to a placeholder field.
-    """
-    require_parent = True
-    parent_classes = ('BootstrapColumnPlugin', 'ProcessStepPlugin', 'BootstrapPanelPlugin',
-        'SegmentPlugin', 'SimpleWrapperPlugin', 'ValidateSetOfFormsPlugin')
-    RENDER_CHOICES = [('form', _("Form dialog")), ('summary', _("Static summary"))]
 
-    render_type = ChoiceField(
+
+class DialogPluginBaseForm(EntangledModelFormMixin):
+    RENDER_CHOICES = [
+        ('form', _("Form dialog")),
+        ('summary', _("Static summary")),
+    ]
+
+    render_type = fields.ChoiceField(
+        choices=RENDER_CHOICES,
+        widget=widgets.RadioSelect,
+
         label=_("Render as"),
         choices=RENDER_CHOICES,
         widget=widgets.RadioSelect,
@@ -227,15 +231,27 @@ class DialogFormPluginBase(ShopPluginBase):
         help_text=_("A dialog can also be rendered as a box containing a read-only summary."),
     )
 
-    headline_legend = BooleanField(
-        required=False,
+
+    headline_legend = fields.BooleanField(
         label=_("Headline Legend"),
         initial=True,
+        required=False,
         help_text=_("Render a legend inside the dialog's headline."),
     )
 
     class Meta:
         entangled_fields = {'glossary': ['render_type', 'headline_legend']}
+
+
+class DialogFormPluginBase(ShopPluginBase):
+    """
+    Base class for all plugins adding a dialog form to a placeholder field.
+    """
+    require_parent = True
+    parent_classes = ['BootstrapColumnPlugin', 'ProcessStepPlugin', 'BootstrapPanelPlugin',
+        'SegmentPlugin', 'SimpleWrapperPlugin', 'ValidateSetOfFormsPlugin']
+    form = DialogPluginBaseForm
+
 
     @classmethod
     def register_plugin(cls, plugin):
@@ -260,7 +276,7 @@ class DialogFormPluginBase(ShopPluginBase):
     @classmethod
     def get_identifier(cls, instance):
         render_type = instance.glossary.get('render_type')
-        render_type = dict(cls.RENDER_CHOICES).get(render_type, '')
+        render_type = dict(cls.form.RENDER_CHOICES).get(render_type, '')
         return format_html(pgettext_lazy('get_identifier', "as {}"), render_type)
 
     def get_form_data(self, context, instance, placeholder):

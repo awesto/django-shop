@@ -23,7 +23,7 @@ else:
 
 class JSONField(_JSONField):
     def __init__(self, *args, **kwargs):
-        kwargs.update({'default': {}})
+        kwargs.update({'default': dict})
         super(JSONField, self).__init__(*args, **kwargs)
 
     def deconstruct(self):

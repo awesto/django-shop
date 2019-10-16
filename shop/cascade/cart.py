@@ -1,12 +1,10 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
-from django.forms import widgets
+from django.forms import fields, widgets
+from django.template import engines, TemplateDoesNotExist
 from django.template.loader import select_template, get_template
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import mark_safe
+from entangled.forms import EntangledModelFormMixin
 from cms.plugin_pool import plugin_pool
-from cmsplugin_cascade.fields import GlossaryField
 from cmsplugin_cascade.plugin_base import TransparentWrapper
 from shop.cascade.extensions import ShopExtendableMixin, LeftRightExtensionMixin
 from shop.cascade.plugin_base import ShopPluginBase
@@ -15,54 +13,52 @@ from shop.models.cart import CartModel
 from shop.serializers.cart import CartSerializer
 
 
-class ShopCartPlugin(LeftRightExtensionMixin, TransparentWrapper, ShopPluginBase):
-    name = _("Shopping Cart")
-    require_parent = True
-    parent_classes = ('BootstrapColumnPlugin',)
-    cache = False
-    allow_children = True
-    model_mixins = (ShopExtendableMixin,)
-    CHOICES = [('editable', _("Editable Cart")), ('static', _("Static Cart")),
-               ('summary', _("Cart Summary")), ('watch', _("Watch List"))]
+class ShopCartPluginForm(EntangledModelFormMixin):
+    CHOICES = [
+        ('editable', _("Editable Cart")),
+        ('static', _("Static Cart")),
+        ('summary', _("Cart Summary")),
+        ('watch', _("Watch List")),
+    ]
 
-    render_type = GlossaryField(
-        widgets.RadioSelect(choices=CHOICES),
+    render_type = fields.ChoiceField(
+        choices=CHOICES,
+        widget=widgets.RadioSelect,
         label=_("Render as"),
         initial='editable',
         help_text=_("Shall the cart be editable or a static summary?"),
     )
 
+    class Meta:
+        entangled_fields = {'glossary': ['render_type']}
+
+
+class ShopCartPlugin(LeftRightExtensionMixin, TransparentWrapper, ShopPluginBase):
+    name = _("Shopping Cart")
+    require_parent = True
+    parent_classes = ['BootstrapColumnPlugin']
+    cache = False
+    allow_children = True
+    form = ShopCartPluginForm
+    model_mixins = (ShopExtendableMixin,)
+
     @classmethod
     def get_identifier(cls, instance):
         render_type = instance.glossary.get('render_type')
-        return mark_safe(dict(cls.CHOICES).get(render_type, ''))
+        return mark_safe(dict(cls.form.CHOICES).get(render_type, ''))
 
     def get_render_template(self, context, instance, placeholder):
         render_template = instance.glossary.get('render_template')
         if render_template:
             return get_template(render_template)
         render_type = instance.glossary.get('render_type')
-        if render_type == 'static':
-            template_names = [
-                '{}/cart/static.html'.format(app_settings.APP_LABEL),
-                'shop/cart/static.html',
-            ]
-        elif render_type == 'summary':
-            template_names = [
-                '{}/cart/summary.html'.format(app_settings.APP_LABEL),
-                'shop/cart/summary.html',
-            ]
-        elif render_type == 'watch':
-            template_names = [
-                '{}/cart/watch.html'.format(app_settings.APP_LABEL),
-                'shop/cart/watch.html',
-            ]
-        else:
-            template_names = [
-                '{}/cart/editable.html'.format(app_settings.APP_LABEL),
-                'shop/cart/editable.html',
-            ]
-        return select_template(template_names)
+        try:
+            return select_template([
+                '{}/cart/{}.html'.format(app_settings.APP_LABEL, render_type),
+                'shop/cart/{}.html'.format(render_type),
+            ])
+        except TemplateDoesNotExist:
+            return get_template('shop/cart/editable.html')
 
     def render(self, context, instance, placeholder):
         try:

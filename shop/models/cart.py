@@ -71,11 +71,15 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     cart = deferred.ForeignKey(
         'BaseCart',
+        on_delete=models.CASCADE,
         related_name='items',
         on_delete=models.CASCADE,
     )
 
-    product = deferred.ForeignKey(BaseProduct, on_delete=models.CASCADE)
+    product = deferred.ForeignKey(
+        BaseProduct,
+        on_delete=models.CASCADE,
+    )
 
     product_code = models.CharField(
         _("Product code"),
@@ -175,9 +179,11 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     customer = deferred.OneToOneField(
         'BaseCustomer',
-        verbose_name=_("Customer"),
-        related_name='cart',
         on_delete=models.CASCADE,
+        related_name='cart',
+
+        on_delete=models.CASCADE,
+        verbose_name=_("Customer"),
     )
 
     created_at = models.DateTimeField(

@@ -18,11 +18,11 @@
 		{% endfor %}
 		</dl>
 	{% endif %}
-	{% with instance_css_classes=instance.css_classes instance_inline_styles=instance.inline_styles %}
+	{% with button_content=instance.glossary.link_content instance_css_classes=instance.css_classes instance_inline_styles=instance.inline_styles %}
 	<form name="{{ addendum_form.form_name }}" djng-endpoint="{{ request.path_info }}" novalidate>
 		{{ addendum_form.as_div }}
 		<button ng-click="do(create()).then(showOK()).then(delay(333)).then(reloadPage()).finally(restore())" ng-disabled="isDisabled()"{% if instance_css_classes %} class="{{ instance_css_classes }}"{% endif %}{% if instance_inline_styles %} style="{{ instance_inline_styles }}"{% endif %}>
-			{{ icon_left }}{{ button_label }}{{ icon_right }}
+			{{ icon_left }}{{ button_content }}{{ icon_right }}
 		</button>
 	</form>
 	{% endwith %}
