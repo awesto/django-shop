@@ -20,7 +20,7 @@ from cmsplugin_cascade.link.config import LinkPluginBase, LinkFormMixin
 from cmsplugin_cascade.icon.forms import IconFormMixin
 from cmsplugin_cascade.plugin_base import TransparentContainer
 from cmsplugin_cascade.bootstrap4.buttons import BootstrapButtonMixin
-from shop.cascade.plugin_base import ShopPluginBase, ShopButtonPluginBase, DialogFormPluginBase, DialogFormMixin
+from shop.cascade.plugin_base import ShopPluginBase, ShopButtonPluginBase, DialogFormPluginBase, DialogFormMixin,  DialogPluginBaseForm
 
 from shop.conf import app_settings
 from shop.models.cart import CartModel
