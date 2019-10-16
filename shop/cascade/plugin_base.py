@@ -87,20 +87,7 @@ class ShopButtonPluginBase(ShopLinkPluginBase):
     def get_identifier(cls, instance):
         return mark_safe(instance.glossary.get('link_content', ''))
 
-
-class ProductSelect2Widget(HeavySelect2Widget):
-    def render(self, name, value, attrs=None, renderer=None, ):
-        try:
-            result = app_settings.PRODUCT_SELECT_SERIALIZER(ProductModel.objects.get(pk=value))
-        except (ProductModel.DoesNotExist, ValueError):
-            pass
-        else:
-            self.choices.append((value, result.data['text']),)
-        html = super(ProductSelect2Widget, self).render(name, value, attrs=attrs)
-        return html
-
-
-
+    
 class ProductSelectField(ModelChoiceField):
     widget = HeavySelectWidget(data_view='shop:select-product')
     def __init__(self, *args, **kwargs):
