@@ -43,7 +43,6 @@ class Notification(models.Model):
         verbose_name=_("Recipient"),
         null=True,
         limit_choices_to={'is_staff': True},
-        on_delete=models.CASCADE,
     )
 
     mail_template = models.ForeignKey(
