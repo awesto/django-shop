@@ -99,7 +99,6 @@ class BaseDeliveryItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model))
         on_delete=models.CASCADE,
         related_name='items',
         help_text=_("Refer to the shipping provider used to ship this item"),
-        on_delete=models.CASCADE
     )
 
     item = deferred.ForeignKey(
