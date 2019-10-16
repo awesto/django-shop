@@ -106,7 +106,6 @@ class BaseDeliveryItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model))
         on_delete=models.CASCADE,
         related_name='deliver_item',
         verbose_name=_("Ordered item"),
-        on_delete=models.CASCADE
     )
 
     class Meta:
