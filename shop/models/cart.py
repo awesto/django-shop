@@ -180,8 +180,6 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         'BaseCustomer',
         on_delete=models.CASCADE,
         related_name='cart',
-
-        on_delete=models.CASCADE,
         verbose_name=_("Customer"),
     )
 
