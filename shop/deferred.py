@@ -20,7 +20,7 @@ class DeferredRelatedField(object):
         if  on_delete :        
             self.options = dict(on_delete=on_delete, **kwargs)
         else:
-            self.options = dict(**kwargs)
+            self.options = dict(on_delete='' , **kwargs)
 
 
 class OneToOneField(DeferredRelatedField):
