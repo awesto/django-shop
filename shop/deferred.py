@@ -11,7 +11,7 @@ from shop.conf import app_settings
 
 
 class DeferredRelatedField(object):
-    def __init__(self, to, on_delete, **kwargs):
+    def __init__(self, to, on_delete=models.CASCADE, **kwargs):
         try:
             self.abstract_model = to._meta.object_name
         except AttributeError:
