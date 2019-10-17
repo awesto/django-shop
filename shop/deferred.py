@@ -17,10 +17,8 @@ class DeferredRelatedField(object):
         except AttributeError:
             assert isinstance(to, six.string_types), "%s(%r) is invalid. First parameter must be either a model or a model name" % (self.__class__.__name__, to)
             self.abstract_model = to
-        if  on_delete :        
-            self.options = dict(on_delete=on_delete, **kwargs)
-        else:
-            self.options = dict(on_delete='' , **kwargs)
+            
+        self.options = dict(on_delete=on_delete, **kwargs)
 
 
 class OneToOneField(DeferredRelatedField):
@@ -47,7 +45,7 @@ class ManyToManyField(DeferredRelatedField):
     MaterializedField = models.ManyToManyField
 
     def __init__(self, to, **kwargs):
-        super(ManyToManyField, self).__init__(to, **kwargs)
+        super(ManyToManyField, self).__init__(to, on_delete=None,**kwargs)
 
         through = kwargs.get('through')
 
