@@ -11,12 +11,13 @@ from shop.conf import app_settings
 
 
 class DeferredRelatedField(object):
-    def __init__(self, to, on_delete=models.CASCADE, **kwargs):
+    def __init__(self, to, on_delete, **kwargs):
         try:
             self.abstract_model = to._meta.object_name
         except AttributeError:
             assert isinstance(to, six.string_types), "%s(%r) is invalid. First parameter must be either a model or a model name" % (self.__class__.__name__, to)
             self.abstract_model = to
+
         self.options = dict(on_delete=on_delete, **kwargs)
 
 
@@ -44,6 +45,9 @@ class ManyToManyField(DeferredRelatedField):
     MaterializedField = models.ManyToManyField
 
     def __init__(self, to, **kwargs):
+        if 'on_delete' in kwargs:
+            delattr(obj, 'on_delete')
+        
         super(ManyToManyField, self).__init__(to, **kwargs)
 
         through = kwargs.get('through')
