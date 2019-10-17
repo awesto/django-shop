@@ -83,7 +83,7 @@ DeferredBaseOrder = create_deferred_base_class('DeferredBaseOrder', {
     'items_simple_fulfill_by_product': deferred.ManyToManyField('DeferredBaseProductAfterOrder', on_delete=models.CASCADE),
     'items_through_fulfill_by_order_item': deferred.ManyToManyField('DeferredBaseProductAfterOrder', through='DeferredBaseOrderItemAfterOrderAndProduct',on_delete=models.CASCADE),
     'items_through_fulfill_by_order': deferred.ManyToManyField(DeferredBaseProduct, through=DeferredBaseOrderItemBeforeOrder,on_delete=models.CASCADE),
-    'items_through_fulfill_by_product': deferred.ManyToManyField('DeferredBaseProductAfterOrder', through='DeferredBaseOrderItemBeforeProduct', on_delete=models.CASCADE),
+    'items_through_fulfill_by_product': deferred.ManyToManyField('DeferredBaseProductAfterOrder', through='DeferredBaseOrderItemBeforeProduct'),
 })
 DeferredOrder = create_deferred_class('DeferredOrder', DeferredBaseOrder)
 
