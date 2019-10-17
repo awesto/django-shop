@@ -74,8 +74,8 @@ DeferredOrderItemBeforeOrder = create_deferred_class('DeferredOrderItemBeforeOrd
 
 RegularOrder = create_regular_class('RegularOrder', {
     'customer': models.ForeignKey(RegularCustomer, on_delete=models.PROTECT),
-    'items_simple': models.ManyToManyField(RegularProduct, on_delete=models.CASCADE),
-    'items_through_fulfill_by_order_item': models.ManyToManyField('RegularProductAfterOrder', through='RegularOrderItemAfterOrderAndProduct',on_delete=models.CASCADE),
+    'items_simple': models.ManyToManyField(RegularProduct),
+    'items_through_fulfill_by_order_item': models.ManyToManyField('RegularProductAfterOrder', through='RegularOrderItemAfterOrderAndProduct'),
 })
 DeferredBaseOrder = create_deferred_base_class('DeferredBaseOrder', {
     'customer': deferred.ForeignKey(DeferredBaseCustomer, on_delete=models.PROTECT),
