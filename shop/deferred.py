@@ -45,7 +45,7 @@ class ManyToManyField(DeferredRelatedField):
     MaterializedField = models.ManyToManyField
 
     def __init__(self, to, **kwargs):
-        super(ManyToManyField, self).__init__(to, on_delete=None,**kwargs)
+        super(ManyToManyField, self).__init__(to, on_delete='',**kwargs)
 
         through = kwargs.get('through')
 
