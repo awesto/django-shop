@@ -17,8 +17,6 @@ class DeferredRelatedField(object):
         except AttributeError:
             assert isinstance(to, six.string_types), "%s(%r) is invalid. First parameter must be either a model or a model name" % (self.__class__.__name__, to)
             self.abstract_model = to
-            
-        self.options = dict(on_delete=on_delete, **kwargs)
 
 
 class OneToOneField(DeferredRelatedField):
@@ -27,7 +25,9 @@ class OneToOneField(DeferredRelatedField):
     ``OneToOneField`` whenever a real model class is derived from a given abstract class.
     """
     MaterializedField = models.OneToOneField
-
+    
+    def __init__(self, to, on_delete, **kwargs):
+        self.options = dict(**kwargs)
 
 class ForeignKey(DeferredRelatedField):
     """
@@ -35,8 +35,10 @@ class ForeignKey(DeferredRelatedField):
     ``ForeignKey`` whenever a real model class is derived from a given abstract class.
     """
     MaterializedField = models.ForeignKey
-
-
+    
+    def __init__(self, to, on_delete, **kwargs):
+        self.options = dict(on_delete=on_delete, **kwargs)
+        
 class ManyToManyField(DeferredRelatedField):
     """
     Use this class to specify many-to-many keys in abstract classes. They will be converted into a
@@ -46,8 +48,7 @@ class ManyToManyField(DeferredRelatedField):
 
     def __init__(self, to, **kwargs):
         super(ManyToManyField, self).__init__(to,**kwargs)
-        if 'on_delete' in kwargs:
-            delattr(kwargs, 'on_delete')
+
         through = kwargs.get('through')
 
         if through is None:
@@ -60,6 +61,7 @@ class ManyToManyField(DeferredRelatedField):
                     'Through parameter must be either a model or a model name'
                     % (self.__class__.__name__, through))
                 self.abstract_through_model = through
+        self.options = dict(**kwargs)
 
 
 class ForeignKeyBuilder(ModelBase):
