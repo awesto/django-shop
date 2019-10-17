@@ -75,15 +75,15 @@ DeferredOrderItemBeforeOrder = create_deferred_class('DeferredOrderItemBeforeOrd
 RegularOrder = create_regular_class('RegularOrder', {
     'customer': models.ForeignKey(RegularCustomer, on_delete=models.PROTECT),
     'items_simple': models.ManyToManyField(RegularProduct, on_delete=models.CASCADE),
-    'items_through_fulfill_by_order_item': models.ManyToManyField('RegularProductAfterOrder', through='RegularOrderItemAfterOrderAndProduct'),
+    'items_through_fulfill_by_order_item': models.ManyToManyField('RegularProductAfterOrder', through='RegularOrderItemAfterOrderAndProduct',on_delete=models.CASCADE),
 })
 DeferredBaseOrder = create_deferred_base_class('DeferredBaseOrder', {
     'customer': deferred.ForeignKey(DeferredBaseCustomer, on_delete=models.PROTECT),
-    'items_simple': deferred.ManyToManyField(DeferredBaseProduct),
-    'items_simple_fulfill_by_product': deferred.ManyToManyField('DeferredBaseProductAfterOrder'),
-    'items_through_fulfill_by_order_item': deferred.ManyToManyField('DeferredBaseProductAfterOrder', through='DeferredBaseOrderItemAfterOrderAndProduct'),
-    'items_through_fulfill_by_order': deferred.ManyToManyField(DeferredBaseProduct, through=DeferredBaseOrderItemBeforeOrder),
-    'items_through_fulfill_by_product': deferred.ManyToManyField('DeferredBaseProductAfterOrder', through='DeferredBaseOrderItemBeforeProduct'),
+    'items_simple': deferred.ManyToManyField(DeferredBaseProduct,on_delete=models.CASCADE),
+    'items_simple_fulfill_by_product': deferred.ManyToManyField('DeferredBaseProductAfterOrder', on_delete=models.CASCADE),
+    'items_through_fulfill_by_order_item': deferred.ManyToManyField('DeferredBaseProductAfterOrder', through='DeferredBaseOrderItemAfterOrderAndProduct', on_delete=models.CASCADE),
+    'items_through_fulfill_by_order': deferred.ManyToManyField(DeferredBaseProduct, through=DeferredBaseOrderItemBeforeOrder, on_delete=models.CASCADE),
+    'items_through_fulfill_by_product': deferred.ManyToManyField('DeferredBaseProductAfterOrder', through='DeferredBaseOrderItemBeforeProduct', on_delete=models.CASCADE),
 })
 DeferredOrder = create_deferred_class('DeferredOrder', DeferredBaseOrder)
 
