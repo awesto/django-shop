@@ -74,7 +74,7 @@ class CustomerFactory(factory.django.DjangoModelFactory):
         assert isinstance(customer.user, get_user_model())
 
         if DJANGO_VERSION < (2, 0):
-            assert customer.is_authenticated() is True
+            assert customer.is_authenticated is True
             assert customer.is_registered() is True
         else:
             assert customer.is_authenticated is True
