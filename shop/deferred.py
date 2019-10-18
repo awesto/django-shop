@@ -37,7 +37,7 @@ class ForeignKey(DeferredRelatedField):
     MaterializedField = models.ForeignKey
     
     def __init__(self, to, on_delete, **kwargs):
-        super(ForeignKey, self).__init__(to,on_delete,**kwargs)
+        super(ForeignKey, self).__init__(to, **kwargs)
         try:
             self.abstract_model = to._meta.object_name
         except AttributeError:
