@@ -149,6 +149,8 @@ class ForeignKeyBuilder(ModelBase):
             if mapmodel and (not abstract_through_model or mapmodel_through):
                 if mapmodel_through:
                     member.options['through'] = mapmodel_through
+                member.options
+                delattr(member.options,'on_delete')
                 field = member.MaterializedField(mapmodel, **member.options)
                 field.contribute_to_class(Model, attrname)
             else:
