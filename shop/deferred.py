@@ -26,7 +26,7 @@ class OneToOneField(DeferredRelatedField):
     """
     MaterializedField = models.OneToOneField
     
-    def __init__(self, to, on_delete, **kwargs):
+    def __init__(self, to,  **kwargs):
         self.options = dict(**kwargs)
 
 class ForeignKey(DeferredRelatedField):
