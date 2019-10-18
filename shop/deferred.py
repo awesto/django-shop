@@ -17,10 +17,7 @@ class DeferredRelatedField(object):
         except AttributeError:
             assert isinstance(to, six.string_types), "%s(%r) is invalid. First parameter must be either a model or a model name" % (self.__class__.__name__, to)
             self.abstract_model = to
-        if 'on_delete' in kwargs:
-            self.options = dict(on_delete=kwargs['on_delete'], **kwargs)
-        else:
-            self.options = dict(**kwargs)
+            self.options = kwargs
 
 class OneToOneField(DeferredRelatedField):
     """
