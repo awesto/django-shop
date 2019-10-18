@@ -4,7 +4,8 @@ from __future__ import unicode_literals
 
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
-from django.db.models.base import ModelBase
+from django.db.models.base import ModelB
+from django import VERSION as DJANGO_VERSION
 from django.test import TestCase
 from polymorphic.models import PolymorphicModel, PolymorphicModelBase
 from shop import deferred
@@ -173,9 +174,15 @@ class DeferredTestCase(TestCase):
         self.assert_same_model(items_field.related_model, product_class)
 
         m2m_field_name = items_field.m2m_field_name()
-        m2m_field = items_field.remote_field.through._meta.get_field(m2m_field_name)
+
+        if DJANGO_VERSION < (2, 0):
+            m2m_field = items_field.rel.through._meta.get_field(m2m_field_name)
+            m2m_reverse_field = items_field.rel.through._meta.get_field(m2m_reverse_field_name)
+        else:    
+            m2m_field = items_field.remote_field.through._meta.get_field(m2m_field_name)
+            m2m_reverse_field = items_field.remote_field.through._meta.get_field(m2m_reverse_field_name)
+            
         m2m_reverse_field_name = items_field.m2m_reverse_field_name()
-        m2m_reverse_field = items_field.remote_field.through._meta.get_field(m2m_reverse_field_name)
 
         self.assert_same_model(m2m_field.related_model, order_class)
         self.assert_same_model(m2m_reverse_field.related_model, product_class)
