@@ -21,7 +21,6 @@ class OneToOneField(DeferredRelatedField):
     MaterializedField = models.OneToOneField
     
     def __init__(self, to,  **kwargs):
-        super(OneToOneField, self).__init__(to, **kwargs)
         try:
             self.abstract_model = to._meta.object_name
         except AttributeError:
