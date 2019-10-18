@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
-from django.db.models.base import ModelB
+from django.db.models.base import ModelBase
 from django import VERSION as DJANGO_VERSION
 from django.test import TestCase
 from polymorphic.models import PolymorphicModel, PolymorphicModelBase
