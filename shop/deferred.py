@@ -51,8 +51,6 @@ class ManyToManyField(DeferredRelatedField):
     MaterializedField = models.ManyToManyField
 
     def __init__(self, to, **kwargs):
-        super(ManyToManyField, self).__init__(to,**kwargs)
-
         through = kwargs.get('through')
 
         if through is None:
