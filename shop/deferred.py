@@ -20,7 +20,7 @@ class DeferredRelatedField(object):
         if 'on_delete' in kwargs:
             self.options = dict(on_delete=on_delete, **kwargs)
         else:
-            self.options = dict(on_delete='',**kwargs)
+            self.options = dict(**kwargs)
 
 class OneToOneField(DeferredRelatedField):
     """
@@ -151,9 +151,7 @@ class ForeignKeyBuilder(ModelBase):
             if mapmodel and (not abstract_through_model or mapmodel_through):
                 if mapmodel_through:
                     member.options['through'] = mapmodel_through
-                if hasattr(member.options , 'on_delete'):
-                    delattr(member.options,'on_delete')
-                field = member.MaterializedField(mapmodel, on_delete=models.CASCADE, **member.options)
+                field = member.MaterializedField(mapmodel, **member.options)
                 field.contribute_to_class(Model, attrname)
             else:
                 ForeignKeyBuilder._pending_mappings.append((Model, attrname, member,))
