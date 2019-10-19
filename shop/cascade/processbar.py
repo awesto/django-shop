@@ -1,5 +1,3 @@
-from django.forms import widgets
-from django.forms.fields import CharField, BooleanField
 from django.forms.models import ModelForm
 from django.forms import fields, widgets
 from django.utils.translation import ungettext_lazy, ugettext_lazy as _
@@ -10,7 +8,6 @@ from django.template.loader import select_template
 from entangled.forms import EntangledModelFormMixin
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.forms import ManageChildrenFormMixin
-from cmsplugin_cascade.fields import GlossaryField
 from cmsplugin_cascade.link.forms import LinkForm
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.bootstrap4.buttons import BootstrapButtonMixin, ButtonFormMixin, BootstrapButtonFormMixin
@@ -103,7 +100,7 @@ class ProcessStepPlugin(TransparentContainer, ShopPluginBase):
 plugin_pool.register_plugin(ProcessStepPlugin)
 
 class ProcessNextStepForm(LinkForm, ButtonFormMixin):
-    disable_invalid = CharField(label=_("Proceed Button"),  help_text=_("Disable button if any form in this set is invalid"),)
+    disable_invalid = fields.CharField(label=_("Proceed Button"),  help_text=_("Disable button if any form in this set is invalid"),)
 
     def __init__(self, raw_data=None, *args, **kwargs):
         instance = kwargs.get('instance')
