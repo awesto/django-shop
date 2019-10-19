@@ -9,6 +9,7 @@ from django.contrib import admin
 from django.utils.encoding import force_str
 from django.utils.timezone import localtime
 from django.utils.translation import pgettext_lazy, ugettext_lazy as _
+
 from shop.models.customer import CustomerModel, CustomerState
 
 
