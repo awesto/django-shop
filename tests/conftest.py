@@ -51,7 +51,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     def create(cls, **kwargs):
         user = super(UserFactory, cls).create(**kwargs)
         assert isinstance(user, get_user_model())
-        assert user.is_authenticated is True          
+        assert user.is_authenticated is True
         return user
 
     username = factory.Sequence(lambda n: 'uid-{}'.format(n))
