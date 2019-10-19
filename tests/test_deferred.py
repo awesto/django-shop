@@ -5,7 +5,6 @@ from __future__ import unicode_literals
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.db.models.base import ModelBase
-from django import VERSION as DJANGO_VERSION
 from django.test import TestCase
 from polymorphic.models import PolymorphicModel, PolymorphicModelBase
 from shop import deferred
@@ -81,8 +80,8 @@ RegularOrder = create_regular_class('RegularOrder', {
 DeferredBaseOrder = create_deferred_base_class('DeferredBaseOrder', {
     'customer': deferred.ForeignKey(DeferredBaseCustomer, on_delete=models.PROTECT),
     'items_simple': deferred.ManyToManyField(DeferredBaseProduct),
-    'items_simple_fulfill_by_product': deferred.ManyToManyField('DeferredBaseProductAfterOrder',),
-    'items_through_fulfill_by_order_item': deferred.ManyToManyField('DeferredBaseProductAfterOrder', through='DeferredBaseOrderItemAfterOrderAndProduct',),
+    'items_simple_fulfill_by_product': deferred.ManyToManyField('DeferredBaseProductAfterOrder'),
+    'items_through_fulfill_by_order_item': deferred.ManyToManyField('DeferredBaseProductAfterOrder', through='DeferredBaseOrderItemAfterOrderAndProduct'),
     'items_through_fulfill_by_order': deferred.ManyToManyField(DeferredBaseProduct, through=DeferredBaseOrderItemBeforeOrder),
     'items_through_fulfill_by_product': deferred.ManyToManyField('DeferredBaseProductAfterOrder', through='DeferredBaseOrderItemBeforeProduct'),
 })
