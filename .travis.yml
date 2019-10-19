@@ -7,13 +7,23 @@ python:
 env:
   - DJANGOVER=django21
   - DJANGOVER=django22
-  
+    matrix:
+  - DJANGO='django21' CMS='cms36' 
+  - DJANGO='django22' CMS='cms36'
+  - DJANGO='django21' CMS='cms37'
+  - DJANGO='django22' CMS='cms37'
+
+
 install:
   - pip install tox
 
-script:
-  - "if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $DJANGOVER ]]; then export TOX_ENV=py35-$DJANGOVER; fi"
-  - "if [[ $TRAVIS_PYTHON_VERSION == '3.6' && $DJANGOVER ]]; then export TOX_ENV=py36-$DJANGOVER; fi"
-  - tox --recreate -e "$TOX_ENV"
 
+before_script:
+  - "if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $DJANGO ]]; then export TOX_ENV=py35; fi"  
+  - "if [[ $TRAVIS_PYTHON_VERSION == '3.6' && $DJANGO ]]; then export TOX_ENV=py36; fi"
+
+
+script:
+  - "if [[ -z $DJANGO ]]; then tox -r -e $TOX_ENV; else tox -r -e $TOX_ENV-$DJANGO-$CMS; fi"
+  
 cache: pip
