@@ -8,7 +8,6 @@ from cms.plugin_pool import plugin_pool
 from cms.utils.compat.dj import is_installed
 from cmsplugin_cascade.mixins import WithSortableInlineElementsMixin
 from cmsplugin_cascade.models import SortableInlineCascadeElement
-
 from shop.cascade.plugin_base import ShopPluginBase, ProductSelectField
 from shop.conf import app_settings
 from shop.models.product import ProductModel
@@ -90,7 +89,7 @@ class ShopAddToCartPluginForm(EntangledModelFormMixin):
     class Meta:
         entangled_fields = {'glossary': ['use_modal_dialog']}
 
-        
+
 class ShopAddToCartPlugin(ShopPluginBase):
     name = _("Add Product to Cart")
     require_parent = True
