@@ -1,8 +1,6 @@
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
- 
 from django.forms.fields import CharField, ChoiceField, BooleanField
 from django.forms import fields, widgets
- 
 from django.template import engines
 from django.template.loader import select_template
 from django.utils.html import format_html
@@ -13,7 +11,6 @@ from cms.plugin_pool import plugin_pool
 from djangocms_text_ckeditor.cms_plugins import TextPlugin
 from cmsplugin_cascade.bootstrap4.buttons import ButtonFormMixin
 from cmsplugin_cascade.strides import strides_plugin_map, strides_element_map, TextStridePlugin, TextStrideElement
-
 from cmsplugin_cascade.link.forms import LinkForm
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
 from cmsplugin_cascade.link.config import LinkPluginBase, LinkFormMixin
@@ -29,9 +26,9 @@ from cmsplugin_cascade.bootstrap4.buttons import ButtonFormMixin
 from entangled.forms import EntangledModelFormMixin, get_related_object
 
 
-
 class ProceedButtonFormMixin(LinkFormMixin, IconFormMixin, ButtonFormMixin):
     require_icon = False
+    
     LINK_TYPE_CHOICES = [
         ('cmspage', _("CMS Page")),
         ('NEXT_STEP', _("Next Step")),
