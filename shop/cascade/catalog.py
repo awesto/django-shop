@@ -1,6 +1,4 @@
 from django.contrib.admin import StackedInline
- 
-from django.forms.fields import ChoiceField, BooleanField
 from django.forms import fields, widgets
 from django.forms.models import ModelForm
 from django.template.loader import select_template
@@ -10,9 +8,6 @@ from cms.plugin_pool import plugin_pool
 from cms.utils.compat.dj import is_installed
 from cmsplugin_cascade.mixins import WithSortableInlineElementsMixin
 from cmsplugin_cascade.models import SortableInlineCascadeElement
-
-from cmsplugin_cascade.fields import GlossaryField
-from entangled.forms import EntangledModelFormMixin
 
 from shop.cascade.plugin_base import ShopPluginBase, ProductSelectField
 from shop.conf import app_settings
