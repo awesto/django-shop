@@ -1,9 +1,7 @@
 from django.forms import widgets
 from django.forms.fields import CharField, BooleanField
 from django.forms.models import ModelForm
-
 from django.forms import fields, widgets
-
 from django.utils.translation import ungettext_lazy, ugettext_lazy as _
 from django.utils.text import Truncator
 from django.utils.html import format_html
@@ -12,15 +10,11 @@ from django.template.loader import select_template
 from entangled.forms import EntangledModelFormMixin
 from cms.plugin_pool import plugin_pool
 from cmsplugin_cascade.forms import ManageChildrenFormMixin
-
 from cmsplugin_cascade.fields import GlossaryField
 from cmsplugin_cascade.link.forms import LinkForm
 from cmsplugin_cascade.link.plugin_base import LinkElementMixin
-from cmsplugin_cascade.widgets import NumberInputWidget
 from cmsplugin_cascade.bootstrap4.buttons import BootstrapButtonMixin, ButtonFormMixin, BootstrapButtonFormMixin
-
 from cmsplugin_cascade.widgets import NumberInputWidget
-
 from cmsplugin_cascade.plugin_base import TransparentWrapper, TransparentContainer
 from shop.conf import app_settings
 from shop.cascade.plugin_base import ShopPluginBase
@@ -31,7 +25,6 @@ class ProcessBarFormMixin(ManageChildrenFormMixin, EntangledModelFormMixin):
     num_children = IntegerField(
         min_value=1,
         initial=1,
-
         widget=NumberInputWidget(attrs={'size': '3', 'style': 'width: 5em;'}),
         label=_("Steps"),
         help_text=_("Number of steps for this proceed bar."))
