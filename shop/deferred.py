@@ -34,8 +34,8 @@ class ForeignKey(DeferredRelatedField):
     ``ForeignKey`` whenever a real model class is derived from a given abstract class.
     """
     MaterializedField = models.ForeignKey
-    
-        
+
+
 class ManyToManyField(DeferredRelatedField):
     """
     Use this class to specify many-to-many keys in abstract classes. They will be converted into a
