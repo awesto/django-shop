@@ -171,7 +171,6 @@ class DeferredTestCase(TestCase):
         self.assertTrue(items_field.is_relation)
         self.assertTrue(items_field.many_to_many)
         self.assert_same_model(items_field.related_model, product_class)
-  
         m2m_field_name = items_field.m2m_field_name()
         m2m_field = items_field.remote_field.through._meta.get_field(m2m_field_name)
         m2m_reverse_field_name = items_field.m2m_reverse_field_name()
