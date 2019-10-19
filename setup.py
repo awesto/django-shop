@@ -55,7 +55,6 @@ setup(
         'django-formtools>=1.0',
        'djangocms-cascade>=1.1',
     ],
-   # dependency_links=['github.com/jrief/djangocms-cascade/releases/1.0.x#egg=djangocms-cascade'],
     # Note: this requires setuptools >= 18.0.
     extras_require={
         ':python_version<"3.4"': ['enum34'],
