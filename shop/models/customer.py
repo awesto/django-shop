@@ -14,7 +14,6 @@ from django.db import models, DEFAULT_DB_ALIAS
 from django.db.models.fields import FieldDoesNotExist
 from django.dispatch import receiver
 from django.utils import timezone
-
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import SimpleLazyObject
 from django.utils.translation import ugettext_lazy as _
@@ -273,10 +272,6 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     @property
     def is_authenticated(self):
         return self.recognized in (CustomerState.UNRECOGNIZED, CustomerState.GUEST)
-
-    @property
-    def is_authenticated(self):
-        return self.recognized is CustomerState.REGISTERED
 
     @property
     def is_recognized(self):
