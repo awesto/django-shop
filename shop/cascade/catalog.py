@@ -18,7 +18,7 @@ else:
     SortableInlineAdminMixin = type('SortableInlineAdminMixin', (object,), {})
 
 class ShopCatalogFrom(EntangledModelFormMixin):
-    pagination = ChoiceField(
+    pagination = fields.ChoiceField(
         label=_("Pagination"),
         choices=[('paginator', _("Use Paginator")), ('manual', _("Manual Infinite")), ('auto', _("Auto Infinite"))],
         help_text=_("Shall the product list view use a paginator or scroll infinitely?"),
