@@ -19,6 +19,7 @@ class DeferredRelatedField(object):
             self.abstract_model = to
         self.options = kwargs
 
+
 class OneToOneField(DeferredRelatedField):
     """
     Use this class to specify a one-to-one key in abstract classes. It will be converted into a real
@@ -175,6 +176,7 @@ class ForeignKeyBuilder(ModelBase):
 
                 if mapmodel_through:
                     member.options['through'] = mapmodel_through
+
                 field = member.MaterializedField(mapmodel, **member.options)
                 field.contribute_to_class(mapping[0], mapping[1])
                 ForeignKeyBuilder._pending_mappings.remove(mapping)
