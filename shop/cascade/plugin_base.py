@@ -90,6 +90,7 @@ class ShopButtonPluginBase(ShopLinkPluginBase):
     
 class ProductSelectField(ModelChoiceField):
     widget = HeavySelectWidget(data_view='shop:select-product')
+    
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('queryset', ProductModel.objects.all())
         super().__init__(*args, **kwargs)
@@ -200,7 +201,6 @@ class CatalogLinkPluginBase(LinkPluginBase):
             return super().get_link(obj) or link_type
 
 
-
 class DialogPluginBaseForm(EntangledModelFormMixin):
     RENDER_CHOICES = [
         ('form', _("Form dialog")),
@@ -214,7 +214,6 @@ class DialogPluginBaseForm(EntangledModelFormMixin):
         initial='form',
         help_text=_("A dialog can also be rendered as a box containing a read-only summary."),
     )
-
 
     headline_legend = fields.BooleanField(
         label=_("Headline Legend"),
@@ -235,7 +234,6 @@ class DialogFormPluginBase(ShopPluginBase):
     parent_classes = ['BootstrapColumnPlugin', 'ProcessStepPlugin', 'BootstrapPanelPlugin',
         'SegmentPlugin', 'SimpleWrapperPlugin', 'ValidateSetOfFormsPlugin']
     form = DialogPluginBaseForm
-
 
     @classmethod
     def register_plugin(cls, plugin):
