@@ -49,10 +49,8 @@ django-treebeard
 django
 djangocms-admin-style
 django-entangled
-#djangocms-bootstrap
-#djangocms-cascade
-https://github.com/jrief/djangocms-bootstrap/archive/releases/1.1.zip
-https://github.com/jrief/djangocms-cascade/archive/releases/1.0.x.zip
+djangocms-bootstrap
+djangocms-cascade
 djangocms-text-ckeditor
 djangorestframework
 djangocms-text-ckeditor
