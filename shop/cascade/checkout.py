@@ -28,7 +28,7 @@ from entangled.forms import EntangledModelFormMixin, get_related_object
 
 class ProceedButtonFormMixin(LinkFormMixin, IconFormMixin, ButtonFormMixin):
     require_icon = False
-    
+
     LINK_TYPE_CHOICES = [
         ('cmspage', _("CMS Page")),
         ('NEXT_STEP', _("Next Step")),
@@ -144,9 +144,9 @@ class CheckoutAddressPluginForm(DialogPluginBaseForm):
     ]
 
     address_form = fields.ChoiceField(
-        label=_("Address Form"),
         choices=ADDRESS_CHOICES,
         widget=widgets.RadioSelect,
+        label=_("Address Form"),
         initial=ADDRESS_CHOICES[0][0],
     )
 
