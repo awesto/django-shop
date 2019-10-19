@@ -5,13 +5,11 @@ python:
   - 3.6
 
 env:
-  - DJANGOVER=django21
-  - DJANGOVER=django22
-    matrix:
-  - DJANGO='django21' CMS='cms36' 
-  - DJANGO='django22' CMS='cms36'
-  - DJANGO='django21' CMS='cms37'
-  - DJANGO='django22' CMS='cms37'
+  matrix:
+    - DJANGO='django21' CMS='cms36' 
+    - DJANGO='django22' CMS='cms36'
+    - DJANGO='django21' CMS='cms37'
+    - DJANGO='django22' CMS='cms37'
 
 
 install:
