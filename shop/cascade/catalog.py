@@ -43,7 +43,6 @@ class ShopCatalogPluginForm(EntangledModelFormMixin):
         initial='paginator',
         help_text=_("Shall the product list view use a paginator or scroll infinitely?"),
     )
- 
 
     class Meta:
         entangled_fields = {'glossary': ['pagination']}
@@ -91,6 +90,7 @@ class ShopAddToCartPluginForm(EntangledModelFormMixin):
     class Meta:
         entangled_fields = {'glossary': ['use_modal_dialog']}
 
+        
 class ShopAddToCartPlugin(ShopPluginBase):
     name = _("Add Product to Cart")
     require_parent = True
