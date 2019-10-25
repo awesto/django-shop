@@ -155,7 +155,7 @@ While rendering HTML pages, this extra context then can be used to render variou
 elements, such as a ``<select>``-box. Since our ``ProductFilter`` can be rendered as form fields,
 we just have to use this Django template:
 
-..code-block:: django
+.. code-block:: django
 
 	{{ filter.filter_set.form }}
 
