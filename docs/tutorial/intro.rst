@@ -74,13 +74,13 @@ applications:
 
 Install some additional Python applications, globally or for the current user:
 
-.. code-block::
+.. code-block:: shell
 
 	pip install --user pipenv cookiecutter autopep8
 
 Then change into a directory, usually used for your projects and invoke:
 
-.. code-block::
+.. code-block:: shell
 
 	cookiecutter https://github.com/awesto/cookiecutter-django-shop
 
@@ -89,7 +89,7 @@ You will be asked a few question. If unsure, just use the defaults. This creates
 project into your *merchant implementation*. For simplicity, in this tutorial, it is refered as
 ``my-shop``. Change into this directory and install the missing dependencies:
 
-.. code-block::
+.. code-block:: shell
 
 	cd my-shop
 	pipenv install --sequential
@@ -99,13 +99,13 @@ This demo shop must initialize its database and be filled with content for demon
 Each of these steps can be performed individually, but for simplicity we use a Django managment
 command which wraps all these command into a single one:
 
-.. code-block::
+.. code-block:: shell
 
 	pipenv run ./manage.py initialize_shop_demo
 
 Finally we start the project, using Django's built-in development server:
 
-.. code-block::
+.. code-block:: shell
 
 	export DJANGO_DEBUG=1
 	pipenv run ./manage.py runserver
