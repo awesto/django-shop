@@ -193,6 +193,7 @@ SHOP_CART_MODIFIERS = [
     'shop.modifiers.defaults.DefaultCartModifier',
     'shop.modifiers.taxes.CartIncludeTaxModifier',
     'shop.payment.modifiers.PayInAdvanceModifier',
+    'testshop.modifiers.ComplexPayInAdvanceModifier',
     'shop.shipping.modifiers.SelfCollectionModifier',
 ]
 
