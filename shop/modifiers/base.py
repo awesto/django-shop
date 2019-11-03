@@ -6,7 +6,8 @@ class BaseCartModifier(object):
     """
     Cart Modifiers are the cart's counterpart to backends.
 
-    It allows to implement taxes and rebates / bulk prices in an elegant and reusable manner:
+    They allow to implement taxes, rebates, bulk prices, shipping- and payment costs in an elegant
+    and reusable manner:
     Every time the cart is refreshed (via it's update() method), the cart will call all subclasses
     of this modifier class registered with their full path in `settings.SHOP_CART_MODIFIERS`.
 
