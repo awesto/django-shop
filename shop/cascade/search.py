@@ -1,5 +1,5 @@
 from django.core.exceptions import ValidationError
-from django.forms import fields
+from django.forms import fields, widgets
 from django.template import engines
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _, ugettext
@@ -18,8 +18,13 @@ class ShopSearchResultsFormMixin(EntangledModelFormMixin):
 
     pagination = fields.ChoiceField(
         label=_("Pagination"),
+        choices=CHOICES,
+        widget=widgets.RadioSelect,
         help_text=_("Shall the list of search results use a paginator or scroll infinitely?"),
     )
+
+    class Meta:
+        entangled_fields = {'glossary': ['pagination']}
 
     def clean(self):
         cleaned_data = super().clean()
@@ -37,18 +42,18 @@ class ShopSearchResultsPlugin(ShopPluginBase):
     cache = False
 
     def get_render_template(self, context, instance, placeholder):
-        if instance.placeholder.page.application_urls == 'CatalogSearchApp':
-            return select_template([
-                '{}/search/results.html'.format(app_settings.APP_LABEL),
-                'shop/search/results.html',
-            ])
-        alert_msg = '''<div class="alert alert-danger">
-        This {} plugin is used on a CMS page without an application of type "Search".
-        </div>'''
-        return engines['django'].from_string(alert_msg.format(self.name))
+        if instance.placeholder.page.application_urls != 'CatalogSearchApp':
+            alert_msg = '''<div class="alert alert-danger">
+            This {} plugin is used on a CMS page without an application of type "Search".
+            </div>'''
+            return engines['django'].from_string(alert_msg.format(self.name))
+        return select_template([
+            '{}/search/results.html'.format(app_settings.APP_LABEL),
+            'shop/search/results.html',
+        ])
 
     def render(self, context, instance, placeholder):
-        super(ShopSearchResultsPlugin, self).render(context, instance, placeholder)
+        self.super(ShopSearchResultsPlugin, self).render(context, instance, placeholder)
         context['pagination'] = instance.glossary.get('pagination', 'paginator')
         return context
 
