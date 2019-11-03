@@ -82,7 +82,7 @@ class CatalogLinkPluginBase(LinkPluginBase):
     ring_plugin = 'ShopLinkPlugin'
 
     class Media:
-        js = ['shop/js/admin/shoplinkplugin.js']
+        js = ['admin/js/jquery.init.js', 'shop/js/admin/shoplinkplugin.js']
 
     @classmethod
     def get_link(cls, obj):
