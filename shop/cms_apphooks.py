@@ -32,7 +32,7 @@ class OrderApp(CMSApp):
         return [
             url(r'^(?P<slug>[\w-]+)/(?P<secret>[\w-]+)', OrderView.as_view(many=False)),  # publicly accessible
             url(r'^(?P<slug>[\w-]+)', OrderView.as_view(many=False)),  # requires authentication
-            url(r'^$', OrderView.as_view()),  # requires authentication
+            url(r'^', OrderView.as_view()),  # requires authentication
         ]
 
 
