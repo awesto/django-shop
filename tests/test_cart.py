@@ -10,6 +10,7 @@ from shop.models.cart import CartModel
 from shop.models.defaults.customer import Customer
 from shop.modifiers.pool import CartModifiersPool
 from shop.views.cart import CartViewSet, WatchViewSet
+from shop.modifiers.pool import cart_modifiers_pool
 from rest_framework.reverse import reverse
 
 CartModifiersPool.USE_CACHE = False
@@ -140,3 +141,11 @@ def test_include_tax_modifier(api_rf, filled_cart):
     assert response.data['subtotal'] == six.text_type(filled_cart.subtotal)
     tax_rate = 1 + app_settings.SHOP_VALUE_ADDED_TAX / 100
     assert response.data['total'] == six.text_type(filled_cart.subtotal * tax_rate)
+
+
+@pytest.mark.django_db
+def test_payment_modifiers_with_same_processors(api_rf, filled_cart):
+    for modifier_to_test in cart_modifiers_pool.get_payment_modifiers():
+        for modifier_for_id in cart_modifiers_pool.get_payment_modifiers():
+            if modifier_to_test.is_active(modifier_for_id.identifier):
+                assert modifier_for_id.identifier == modifier_to_test.identifier

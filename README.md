@@ -9,6 +9,7 @@
 **Django-SHOP** aims to be a the easy, fun and fast e-commerce counterpart to
 [django-CMS](https://www.django-cms.org/).
 
+Here you can find the [full documentation for django-SHOP](https://django-shop.readthedocs.io/en/latest/).
 
 ## Version 1.1 has been released!
 
@@ -115,3 +116,10 @@ shall be used to build a minimalistic editor for each of them.
 
 We provide full consultancy support and are available for building complete e-commerce systems based
 on **django-SHOP**. Please contact office@awesto.com for further questions.
+
+
+## Documentation
+
+Read the full documentation on Read-the-docs:
+
+[https://django-shop.readthedocs.io/en/latest/](https://django-shop.readthedocs.io/en/latest/)
