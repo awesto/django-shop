@@ -40,7 +40,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'Django>=1.11,<2.0',
+        'Django>=1.11,<3.0',
         'django-post_office>=3.2.0',
         'django-filer>=1.4',
         'django-ipware>=1.1.1',

@@ -9,7 +9,17 @@ from shop.payment.providers import PaymentProvider, ForwardFundPayment
 
 class PaymentModifier(BaseCartModifier):
     """
-    Base class for all payment modifiers.
+    Base class for all payment modifiers. The purpose of a payment modifier is to calculate the payment surcharge and/or
+    prevent its usage, in case the choosen payment method is not available for the given customer. The merchant may
+    either append a single payment modifier to the list of ``SHOP_CART_MODIFIERS``, or create a sublist of payment
+    modifier and append this sublist to ``SHOP_CART_MODIFIERS``. The latter is useful to instantiate the same payment
+    modifier multiple times for different payment service providers using the same interface.
+
+    The merchant must specify at least one payment modifier. If there is more than one, the merchant shall offer a
+    select option during checkout. In django-SHOP, one can use the plugin **Payment Method Form** to render such a
+    select option.
+
+    Each payment modifier can add a surcharge on the current cart.
     """
     def __init__(self):
         assert isinstance(getattr(self, 'payment_provider', None), PaymentProvider), \
