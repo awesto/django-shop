@@ -64,7 +64,7 @@ djangoShopModule.directive('shopCartItem', function() {
 			}
 
 			function refreshCart(cart) {
-				angular.extend($scope.cart.extra_rows, cart.extra_rows);
+				$scope.cart.extra_rows = cart.extra_rows;
 				$scope.cart.total_quantity = cart.total_quantity;
 				$scope.cart.num_items = cart.num_items;
 				$scope.cart.subtotal = cart.subtotal;
