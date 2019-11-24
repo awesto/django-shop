@@ -3,11 +3,11 @@ from __future__ import unicode_literals
 
 from django.conf.urls import url
 from django.contrib import admin
-from django.core.urlresolvers import reverse
 from django.db.models import Sum
 from django.forms import models, ValidationError
 from django.http import HttpResponse
 from django.template.loader import select_template
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
