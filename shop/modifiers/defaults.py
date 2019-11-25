@@ -22,7 +22,9 @@ class DefaultCartModifier(BaseCartModifier):
         """
         Limit the ordered quantity in the cart to the availability in the inventory.
         """
-        availability = cart_item.product.get_availability(request, **cart_item.extra)
+        kwargs = {'product_code': cart_item.product_code}
+        kwargs.update(cart_item.extra)
+        availability = cart_item.product.get_availability(request, **kwargs)
         if cart_item.quantity > availability.quantity:
             if raise_exception:
                 raise ProductNotAvailable(cart_item.product)
