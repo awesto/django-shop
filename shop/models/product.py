@@ -65,7 +65,7 @@ class AvailableProductMixin(object):
 
     The product class must implement a field named ``quantity`` accepting numerical values.
     """
-    def get_availability(self, request, **extra):
+    def get_availability(self, request, **kwargs):
         """
         Returns the current available quantity for this product.
 
@@ -109,7 +109,7 @@ class AvailableProductMixin(object):
 
 
 class BaseReserveProductMixin(object):
-    def get_availability(self, request, **extra):
+    def get_availability(self, request, **kwargs):
         """
         Returns the current available quantity for this product.
 
@@ -120,7 +120,7 @@ class BaseReserveProductMixin(object):
         """
         from shop.models.cart import CartItemModel
 
-        availability = super(BaseReserveProductMixin, self).get_availability(request)
+        availability = super(BaseReserveProductMixin, self).get_availability(request, **kwargs)
         cart_items = CartItemModel.objects.filter(product=self).values('quantity')
         availability.quantity -= cart_items.aggregate(sum=Coalesce(Sum('quantity'), 0))['sum']
         return availability

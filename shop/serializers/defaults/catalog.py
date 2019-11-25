@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.utils.timezone import datetime
 from rest_framework import serializers
 from rest_framework.fields import empty
 from shop.models.cart import CartModel

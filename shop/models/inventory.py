@@ -21,7 +21,7 @@ class AvailableProductMixin(object):
 
     The product class must implement a field named ``quantity`` accepting numerical values.
     """
-    def get_availability(self, request, **extra):
+    def get_availability(self, request, **kwargs):
         """
         Returns the current available quantity for this product.
 

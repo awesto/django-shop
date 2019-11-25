@@ -45,7 +45,7 @@ class BaseItemSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         assert 'cart' in validated_data
-        cart_item = CartItemModel.objects.get_or_create(**validated_data)[0]
+        cart_item, _ = CartItemModel.objects.get_or_create(**validated_data)
         cart_item.save()
         return cart_item
 
