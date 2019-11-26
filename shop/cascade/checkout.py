@@ -53,7 +53,7 @@ class ShopProceedButton(BootstrapButtonMixin, LinkPluginBase):
     ring_plugin = 'ProceedButtonPlugin'
 
     class Media:
-        js = ['shop/js/admin/proceedbuttonplugin.js']
+        js = ['admin/js/jquery.init.js', 'shop/js/admin/proceedbuttonplugin.js']
 
     @classmethod
     def get_identifier(cls, instance):
@@ -61,7 +61,7 @@ class ShopProceedButton(BootstrapButtonMixin, LinkPluginBase):
 
     def get_render_template(self, context, instance, placeholder):
         if instance.link == 'NEXT_STEP':
-            button_template = 'next-step'
+            button_template = 'next-step-button'
         elif instance.link == 'RELOAD_PAGE':
             button_template = 'reload-button'
         elif instance.link == 'PURCHASE_NOW':
