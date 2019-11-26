@@ -76,7 +76,7 @@ class AvailableProductMixin(object):
         """
         return Availability(quantity=self.quantity)
 
-    def deduct_from_stock(self, quantity, **extra):
+    def deduct_from_stock(self, quantity, **kwargs):
         if quantity > self.quantity:
             raise ProductNotAvailable(self)
         self.quantity -= quantity

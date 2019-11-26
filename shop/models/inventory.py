@@ -52,7 +52,7 @@ class AvailableProductMixin(object):
             return create_availability(sell_short=True)
         return Availability(quantity=0)
 
-    def deduct_from_stock(self, quantity, **extra):
+    def deduct_from_stock(self, quantity, **kwargs):
         """
         Deduce requested quantity from all available inventories.
         """
