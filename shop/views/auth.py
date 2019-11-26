@@ -10,11 +10,12 @@ from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ErrorDetail, ValidationError
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from rest_framework.response import Response
+from rest_framework.settings import api_settings
 from rest_auth.views import LoginView as OriginalLoginView, PasswordChangeView as OriginalPasswordChangeView
 
 from shop.models.cart import CartModel
@@ -80,13 +81,16 @@ class LoginView(OriginalLoginView):
 
     def post(self, request, *args, **kwargs):
         self.request = request
-        form_data = request.data.get('form_data', {})
-        self.serializer = self.get_serializer(data=form_data)
-        if self.serializer.is_valid():
-            self.login()
-            return self.get_response()
-
-        exc = ValidationError({self.form_name: self.serializer.errors})
+        if request.user.is_anonymous:
+            form_data = request.data.get('form_data', {})
+            self.serializer = self.get_serializer(data=form_data)
+            if self.serializer.is_valid():
+                self.login()
+                return self.get_response()
+            exc = ValidationError({self.form_name: self.serializer.errors})
+        else:
+            message = ErrorDetail("Please log out before signing in again.")
+            exc = ValidationError({self.form_name: {api_settings.NON_FIELD_ERRORS_KEY: [message]}})
         response = self.handle_exception(exc)
         self.response = self.finalize_response(request, response, *args, **kwargs)
         return self.response
