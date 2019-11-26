@@ -78,6 +78,8 @@ if settings.USE_I18N:
             verbose_name=_("Sample Image"),
             blank=True,
             null=True,
+            default=None,
+            on_delete=models.SET_DEFAULT,
             help_text=_("Sample image used in the catalog's list view."),
         )
 
@@ -120,6 +122,7 @@ if settings.USE_I18N:
         master = models.ForeignKey(
             Commodity,
             related_name='translations',
+            on_delete=models.CASCADE,
             null=True,
         )
 
@@ -183,6 +186,8 @@ else:
             verbose_name=_("Sample Image"),
             blank=True,
             null=True,
+            default=None,
+            on_delete=models.SET_DEFAULT,
             help_text=_("Sample image used in the catalog's list view."),
         )
 
