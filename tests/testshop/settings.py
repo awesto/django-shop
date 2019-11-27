@@ -1,6 +1,4 @@
-from __future__ import unicode_literals
-
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 from django.utils.text import format_lazy
 
 DEBUG = True

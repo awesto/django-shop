@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from datetime import timedelta
 from django.utils import timezone
 from shop.conf import app_settings

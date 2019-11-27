@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 import factory.fuzzy
 import pytest
 from pytest_factoryboy import register

@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.db import models
 from shop.models.defaults.commodity import Commodity
 from shop.models.defaults.cart import Cart
@@ -29,6 +26,7 @@ class MyProduct(AvailableProductMixin, Commodity):
 class MyProductInventory(BaseInventory):
     product = models.ForeignKey(
         MyProduct,
+        on_delete=models.CASCADE,
         related_name='inventory_set',
     )
 

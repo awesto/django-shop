@@ -1,6 +1,3 @@
-# -*- coding: utf-8
-from __future__ import unicode_literals
-
 import pytest
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
