@@ -146,7 +146,6 @@ CMSPLUGIN_CASCADE_PLUGINS = [
 CMSPLUGIN_CASCADE = {
     'link_plugin_classes': [
         'shop.cascade.plugin_base.CatalogLinkPluginBase',
-        'cmsplugin_cascade.link.plugin_base.LinkElementMixin',
         'shop.cascade.plugin_base.CatalogLinkForm',
     ],
     'alien_plugins': ['TextPlugin', 'TextLinkPlugin', 'AcceptConditionPlugin'],
