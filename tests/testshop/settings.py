@@ -94,6 +94,7 @@ INSTALLED_APPS = [
     'cms',
     'adminsortable2',
     'djangocms_text_ckeditor',
+    'django_select2',
     'cmsplugin_cascade',
     'cmsplugin_cascade.clipboard',
     'cmsplugin_cascade.extra_fields',
