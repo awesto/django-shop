@@ -48,7 +48,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     def create(cls, **kwargs):
         user = super(UserFactory, cls).create(**kwargs)
         assert isinstance(user, get_user_model())
-        assert user.is_authenticated() is True
+        assert user.is_authenticated is True
         return user
 
     username = factory.Sequence(lambda n: 'uid-{}'.format(n))
@@ -65,8 +65,8 @@ class CustomerFactory(factory.django.DjangoModelFactory):
         customer = super(CustomerFactory, cls).create(**kwargs)
         assert isinstance(customer, Customer)
         assert isinstance(customer.user, get_user_model())
-        assert customer.is_authenticated() is True
-        assert customer.is_registered() is True
+        assert customer.is_authenticated is True
+        assert customer.is_registered is True
         return customer
 
     user = factory.SubFactory(UserFactory)
@@ -76,7 +76,7 @@ class CustomerFactory(factory.django.DjangoModelFactory):
 def registered_customer():
     user = UserFactory(email='admin@example.com', password=make_password('secret'), is_active=True)
     customer = CustomerFactory(user=user)
-    assert customer.is_registered() is True
+    assert customer.is_registered is True
     assert isinstance(customer.user, get_user_model())
     return customer
 
