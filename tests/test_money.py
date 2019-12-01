@@ -7,11 +7,9 @@ except ImportError:
     import pickle
 import json
 
-from django.core.exceptions import ValidationError
 from django.utils.six import text_type
 from rest_framework import serializers
 from shop.money.money_maker import AbstractMoney, MoneyMaker, _make_money
-from shop.money.fields import MoneyField as MoneyDbField
 from shop.rest.money import MoneyField, JSONRenderer
 from testshop.models import Commodity
 
@@ -255,32 +253,6 @@ def test_pickle():
     amount = EUR('1.23')
     pickled = pickle.dumps(amount)
     assert pickle.loads(pickled) == amount
-
-
-def test_to_python():
-    f = MoneyDbField(currency='EUR', null=True)
-    assert f.to_python(3) == EUR('3')
-    assert f.to_python('3.14') == EUR('3.14')
-    assert f.to_python(None) == EUR()
-    with pytest.raises(ValidationError):
-        f.to_python('abc')
-
-
-def test_default():
-    OneEuro = EUR(1)
-    f = MoneyDbField(currency='EUR', null=True)
-    assert f.get_default() is None
-    f = MoneyDbField(currency='EUR', null=True, default=EUR())
-    assert f.get_default() == EUR()
-    f = MoneyDbField(currency='EUR', null=False, default=OneEuro)
-    assert f.get_default() == OneEuro
-
-
-def test_format():
-    f = MoneyDbField(max_digits=5, decimal_places=3)
-    assert f._format(f.to_python(2)) == '2.000'
-    assert f._format(f.to_python('2.34567')) == '2.346'
-    assert f._format(None) is None
 
 
 class MoneyTestSerializer(serializers.Serializer):
