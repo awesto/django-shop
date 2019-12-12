@@ -21,7 +21,7 @@ babel==2.6.0
 certifi==2019.3.9
 chardet==3.0.4
 defusedxml==0.5.0
-django-admin-sortable2==0.7.4
+django-admin-sortable2==0.7.5
 django-allauth==0.40.0
 django-angular==2.2.4
 django-appconf==1.0.3
@@ -38,9 +38,9 @@ django-mptt==0.10.0
 django-parler==1.9.2
 https://github.com/jrief/django-parler-rest/archive/deserialize-TranslatedField.zip
 django-phonenumber-field==2.2.0
-django-polymorphic==1.3.1
+django-polymorphic==2.0.3
 django-rest-auth==0.9.3
-django-sass-processor==0.7.4
+django-sass-processor==0.7.5
 django-sekizai==0.10.0
 django-select2==6.3.1
 django-treebeard==4.3
