@@ -33,9 +33,9 @@ def test_get_prep_value():
 
 def test_from_db_value():
     f = MoneyField(currency='EUR', null=True)
-    assert f.from_db_value(Decimal('3'), None, None, None) == EUR('3')
-    assert f.from_db_value(3.45, None, None, None) == '3.45'
-    assert f.from_db_value(None, None, None, None) is None
+    assert f.from_db_value(Decimal('3'), None, None) == EUR('3')
+    assert f.from_db_value(3.45, None, None) == EUR('3.45')
+    assert f.from_db_value(None, None, None) is None
 
 
 def test_get_default():

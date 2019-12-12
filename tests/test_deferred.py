@@ -169,9 +169,9 @@ class DeferredTestCase(TestCase):
         self.assert_same_model(items_field.related_model, product_class)
 
         m2m_field_name = items_field.m2m_field_name()
-        m2m_field = items_field.rel.through._meta.get_field(m2m_field_name)
+        m2m_field = items_field.remote_field.through._meta.get_field(m2m_field_name)
         m2m_reverse_field_name = items_field.m2m_reverse_field_name()
-        m2m_reverse_field = items_field.rel.through._meta.get_field(m2m_reverse_field_name)
+        m2m_reverse_field = items_field.remote_field.through._meta.get_field(m2m_reverse_field_name)
 
         self.assert_same_model(m2m_field.related_model, order_class)
         self.assert_same_model(m2m_reverse_field.related_model, product_class)
@@ -203,12 +203,12 @@ class DeferredTestCase(TestCase):
         self.assertTrue(items_field.is_relation)
         self.assertTrue(items_field.many_to_many)
         self.assert_same_model(items_field.related_model, product_class)
-        self.assert_same_model(items_field.rel.through, order_item_class)
+        self.assert_same_model(items_field.remote_field.through, order_item_class)
 
         m2m_field_name = items_field.m2m_field_name()
-        m2m_field = items_field.rel.through._meta.get_field(m2m_field_name)
+        m2m_field = items_field.remote_field.through._meta.get_field(m2m_field_name)
         m2m_reverse_field_name = items_field.m2m_reverse_field_name()
-        m2m_reverse_field = items_field.rel.through._meta.get_field(m2m_reverse_field_name)
+        m2m_reverse_field = items_field.remote_field.through._meta.get_field(m2m_reverse_field_name)
 
         self.assert_same_model(m2m_field.related_model, order_class)
         self.assert_same_model(m2m_reverse_field.related_model, product_class)
