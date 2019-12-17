@@ -287,7 +287,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         For each cart item a corresponding order item is created populating its fields and removing
         that cart item.
 
-        Override this method, in case a customized cart has some fields which have to be transfered
+        Override this method, in case a customized cart has some fields which have to be transferred
         to the cart.
         """
         assert hasattr(cart, 'subtotal') and hasattr(cart, 'total'), \
