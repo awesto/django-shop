@@ -9,9 +9,9 @@ lxml==4.3.2
 more-itertools==6.0.0; python_version > '2.7'
 pluggy==0.9.0
 py==1.8.0
-pytest-django==3.4.8
-pytest-factoryboy==2.0.2
-pytest==4.3.1
+pytest-django==3.7.0
+pytest-factoryboy==2.0.3
+pytest==5.3.1
 python-dateutil==2.8.0
 soupsieve==1.8
 text-unidecode==1.2
