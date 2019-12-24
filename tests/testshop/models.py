@@ -15,7 +15,7 @@ __all__ = ['Commodity', 'Cart', 'CartItem', 'Order', 'OrderItem', 'Delivery', 'D
 
 
 class OrderItem(BaseOrderItem):
-    quantity = models.IntegerField()
+    quantity = models.PositiveIntegerField()
     canceled = models.BooleanField(default=False)
 
 
