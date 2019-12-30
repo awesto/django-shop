@@ -51,6 +51,7 @@ lxml==4.3.2
 more-itertools==6.0.0; python_version > '2.7'
 oauthlib==3.0.1
 packaging==19.2
+pathlib2==2.3.5; python_version > '2.7'
 phonenumbers==8.10.7
 Pillow==5.4.1
 pluggy==0.13.1
