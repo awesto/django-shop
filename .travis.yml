@@ -12,4 +12,4 @@ install:
   - pip freeze
 
 script:
-  - export DJANGO_DEBUG=1 cd tests && py.test
+  - export DJANGO_DEBUG=1; cd tests && py.test
