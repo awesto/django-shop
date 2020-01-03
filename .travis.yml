@@ -9,7 +9,7 @@ install:
   - pip install 'Django<3.0'
   - pip install --no-deps -r tests/requirements.txt
   - pip install --no-deps -e .
-  - pip uninstall nose numpy virtualenv virtualenv-clone pipenv
+  - pip uninstall -y nose numpy virtualenv virtualenv-clone pipenv
   - pip freeze
 
 script:
