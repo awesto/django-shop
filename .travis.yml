@@ -8,6 +8,7 @@ python:
 install:
   - pip install 'Django<3.0'
   - pip install --no-deps -r tests/requirements.txt
+  - pip install -e .
 
 script:
   - cd tests && py.test
