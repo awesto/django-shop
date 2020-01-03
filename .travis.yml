@@ -3,12 +3,13 @@ dist: xenial
 language: python
 
 python:
-  - 3.7
+  - 3.6
 
 install:
   - pip install 'Django<3.0'
   - pip install --no-deps -r tests/requirements.txt
   - pip install -e .
+  - pip freeze
 
 script:
-  - cd tests && py.test
+  - export DJANGO_DEBUG=1 cd tests && py.test
