@@ -5,6 +5,10 @@
 version: 2
 jobs:
   build:
+    branches:
+      only:
+        - releases/1.1
+
     docker:
       - image: circleci/python:3.6.1
 
