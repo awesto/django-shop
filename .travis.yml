@@ -13,4 +13,4 @@ install:
   - pip freeze
 
 script:
-  - cd tests && py.test
+  - cd tests; python manage.py makemigrations testshop; py.test
