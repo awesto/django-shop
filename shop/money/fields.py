@@ -99,7 +99,7 @@ class MoneyField(models.DecimalField):
         value = super(models.DecimalField, self).get_prep_value(value)
         return super(MoneyField, self).to_python(value)
 
-    def from_db_value(self, value, expression, connection):
+    def from_db_value(self, value, expression, connection, context=None):
         if value is None:
             return
         if isinstance(value, float):

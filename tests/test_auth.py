@@ -2,6 +2,7 @@ import pytest
 import pytz
 import re
 from datetime import timedelta
+from django import VERSION as DJANGO_VERSION
 from django.conf import settings
 from django.urls import reverse
 from django.core import mail
@@ -57,7 +58,11 @@ def test_login_presistent(registered_customer, api_client):
     shall_expire = datetime.now(tz=tz_gmt).replace(microsecond=0) + timedelta(seconds=settings.SESSION_COOKIE_AGE)
     assert response.status_code == 200
     session_cookie = response.cookies.get('sessionid')
-    expires = datetime.strptime(session_cookie['expires'], '%a, %d %b %Y %H:%M:%S GMT').replace(tzinfo=tz_gmt)
+    if DJANGO_VERSION < (2,):
+        expires = datetime.strptime(session_cookie['expires'], '%a, %d-%b-%Y %H:%M:%S GMT')
+    else:
+        expires = datetime.strptime(session_cookie['expires'], '%a, %d %b %Y %H:%M:%S GMT')
+    expires = expires.replace(tzinfo=tz_gmt)
     assert abs(expires - shall_expire) < timedelta(seconds=5)
     assert session_cookie['max-age'] == settings.SESSION_COOKIE_AGE
 
