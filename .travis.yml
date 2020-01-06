@@ -3,14 +3,18 @@ dist: xenial
 language: python
 
 python:
+  - 3.5
   - 3.6
+  - 3.7
+
+env:
+  - DJANGOVER=django22
 
 install:
-  - pip install 'Django<3.0'
-  - pip install --no-deps -r tests/requirements.txt
-  - pip install --no-deps -e .
-  - pip uninstall -y nose numpy virtualenv virtualenv-clone pipenv
-  - pip freeze
+  - pip install tox
 
 script:
-  - cd tests; python manage.py makemigrations testshop; py.test
+  - "if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $DJANGOVER ]]; then export TOX_ENV=py35-$DJANGOVER; fi"
+  - "if [[ $TRAVIS_PYTHON_VERSION == '3.6' && $DJANGOVER ]]; then export TOX_ENV=py36-$DJANGOVER; fi"
+  - "if [[ $TRAVIS_PYTHON_VERSION == '3.7' && $DJANGOVER ]]; then export TOX_ENV=py37-$DJANGOVER; fi"
+  - tox -r -e "$TOX_ENV"
