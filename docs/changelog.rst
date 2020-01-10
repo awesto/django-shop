@@ -7,6 +7,7 @@ Changelog for django-SHOP
 1.1
 ===
 
+* Add support for Django-2.2, 2.1. Drop support for Django<1.11.
 * Add wrapper around Django's messages framework so that messages can be displayed asynchronously
   using a new AngularJS directive ``<toast-messages>``.
 * Add endpoint ``fetch_messages`` to fetch JSON description for toast-messages.
