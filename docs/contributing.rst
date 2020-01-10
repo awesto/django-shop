@@ -51,12 +51,12 @@ We highly suggest you run the tests suite in a clean environment, using a tool s
 
 .. code-block:: shell
 
-	pip install -r requirements/test_py3.txt
+	pip install -r tests/requirements.txt
 
 That's it! Now, you should be able to run the tests::
 
 	export DJANGO_SHOP_TUTORIAL=polymorphic
-	py.test example
+	py.test tests
 
 We use `tox <http://codespeak.net/tox/>`_ as a CI tool. To run the full CI test suite and get a
 coverage report, all you have to do is this:
@@ -73,22 +73,23 @@ name. Here are two examples:
 
 .. code-block:: shell
 
-	py.test testshop/test_money.py
-	py.test testshop/test_money.py -k test_pickle
+	py.test tests/test_money.py
+	py.test tests/test_money.py -k test_pickle
 
 Measuring which lines of code have been "seen" be the test runner is an important task while
 testing. Do this by creating a coverage report, for example with:
 
 .. code-block:: shell
 
-	coverage run $(which py.test) testshop
+	pip install coverage
+	coverage run $(which py.test) tests
 	coverage report
 
-or if you to test only a specific class
+or if you to test only a specific class (assuming you have already ran tox once):
 
 .. code-block:: shell
 
-	coverage run .tox/py27-django19/bin/py.test testshop/test_money.py
+	coverage run .tox/py27-django19/bin/py.test tests/test_money.py
 	coverage report -m shop/money/*.py
 
 .. note::

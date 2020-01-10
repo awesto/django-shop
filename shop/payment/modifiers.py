@@ -35,7 +35,7 @@ class PaymentModifier(BaseCartModifier):
         :returns: ``True`` if this payment modifier is active.
         """
         assert hasattr(self, 'payment_provider'), "A Payment Modifier requires a Payment Provider"
-        return payment_modifier == self.payment_provider.namespace
+        return payment_modifier == self.identifier
 
     def is_disabled(self, cart):
         """
