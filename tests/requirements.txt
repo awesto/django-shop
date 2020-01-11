@@ -34,7 +34,7 @@ djangocms-admin-style==1.3.0
 djangocms-bootstrap==1.1.2
 djangocms-cascade==1.1.9
 djangocms-text-ckeditor==3.8.0
-djangorestframework==3.8.2
+djangorestframework==3.11.0
 drf-haystack==1.8.4
 easy-thumbnails==2.6
 elasticsearch==1.7.0
