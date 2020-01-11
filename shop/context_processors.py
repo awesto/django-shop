@@ -15,7 +15,7 @@ def customer(request):
             customer = CustomerModel.objects.get(pk=request.session['emulate_user_id'])
         except CustomerModel.DoesNotExist:
             customer = VisitingCustomer()
-        except KeyError:
+        except (AttributeError, KeyError):
             pass
     return {'customer': customer}
 
