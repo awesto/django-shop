@@ -4,6 +4,13 @@
 Changelog for django-SHOP
 =========================
 
+1.1.1
+=====
+* Fix: Rendering text for full text index raised an exception.
+* Upgrade calls to djangorestframework API to support version 3.9 and later.
+* Fix: Generating email during purchansing operation raised an exception.
+
+
 1.1
 ===
 
