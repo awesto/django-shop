@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 """
 See PEP 386 (http://www.python.org/dev/peps/pep-0386/)
 
@@ -17,6 +15,6 @@ Release logic:
 11. git commit -m 'Start with <version>'
 12. git push
 """
-__version__ = '1.1.1'
+__version__ = '1.2.dev'
 
 default_app_config = 'shop.apps.ShopConfig'

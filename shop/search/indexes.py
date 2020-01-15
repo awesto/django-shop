@@ -1,13 +1,17 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.conf import settings
 from django.template.loader import select_template
 from django.utils import translation
 from django.utils.html import strip_spaces_between_tags
 from django.utils.safestring import mark_safe
 from haystack import indexes
+
+from elasticsearch_dsl import analyzer
+from django_elasticsearch_dsl import Document, Index, fields
+from django_elasticsearch_dsl.fields import TextField
+from django_elasticsearch_dsl.registries import registry
+
 from shop.models.product import ProductModel
+from myshop.models import Product, SmartCard
 
 
 class ProductIndex(indexes.SearchIndex):
@@ -62,3 +66,46 @@ class ProductIndex(indexes.SearchIndex):
         else:
             self.language = settings.LANGUAGE_CODE
         return self.get_model().objects.indexable()
+
+
+html_strip = analyzer(
+    'html_strip',
+    tokenizer="standard",
+    filter=["standard", "lowercase", "stop", "snowball"],
+    char_filter=["html_strip"]
+)
+
+
+products = Index('products')
+products.settings(
+    number_of_shards=1,
+    number_of_replicas=0
+)
+
+@registry.register_document
+@products.document
+class ProductDocument(Document):
+    # product_name = fields.TextField(
+    #     analyzer=html_strip,
+    #     fields={
+    #         'raw': fields.TextField(analyzer='keyword'),
+    #     }
+    # )
+
+    # product_url = indexes.CharField(stored=True, indexed=False, model_attr='get_absolute_url')
+
+    # description = fields.TextField(
+    #     analyzer=html_strip,
+    #     fields={
+    #         'raw': fields.TextField(analyzer='keyword'),
+    #     }
+    # )
+    # class Index:
+    #     # Name of the Elasticsearch index
+    #     name = 'product'
+    #     # See Elasticsearch Indices API reference for available settings
+    #     settings = {'number_of_shards': 1, 'number_of_replicas': 0}
+
+    class Django:
+        model = ProductModel
+        fields = ['product_name']
