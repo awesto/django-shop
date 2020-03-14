@@ -273,6 +273,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
     serializer_class = ProductSerializer
     limit_choices_to = models.Q()
     use_modal_dialog = True
+    prev_cur_next_products = False
 
     def dispatch(self, request, *args, **kwargs):
         """
