@@ -1,0 +1,56 @@
+{% extends "shop/catalog/product-detail.html" %}
+{% load i18n cms_tags thumbnail %}
+
+{% block main-content %}
+{% thumbnail product.images.first 250x250 crop as thumb %}
+<div class="container">
+	<div class="row">
+		<div  class="col-1 col-sm-2 text-center " style="padding-top:20%;">
+		{% if  productprev %}
+			<a  id="productprev" class=" text-muted"  alt="Previous" title="{{ productprev }}" href="{{ productprev.slug }}">
+				{% thumbnail productprev.images.first 100x100 crop as thumb_prev %}
+				<img class="d-none d-lg-block mx-auto" style="opacity: 0.9;" src="{{ thumb_prev.url }}" width="{{ thumb_prev.width }}" height="{{ thumb_prev.height }}" alt="{{ productprev.product_name }}">
+				<p id="productprev" class="fa fa-angle-left fa-2x fleche-size text-muted" style="text-decoration: none;" alt="Previous" title="{{ productprev }}" href="{{ productprev.slug }}"></p>
+				<div class="d-none d-lg-block">{{ productprev.product_name }}</div>
+			</a>
+		{% endif %}
+		</div>
+		<div class="col col-md-8">
+			<h1>{% render_model product "product_name" %}</h1>
+			<div class="media mb-3 flex-column flex-md-row">
+				<img class="mr-3 mb-3" src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}" alt="{{ product.product_name }}">
+				<div class="media-body">
+					{{ product.description|safe }}
+				</div>
+			</div>
+			<h4>{% trans "Details" %}</h4>
+			<ul class="list-group mb-3">
+				<li class="list-group-item d-flex">
+					<div class="w-50">{% trans "Card Type" %}:</div>
+					<strong>{{ product.get_card_type_display }}</strong>
+				</li>
+				<li class="list-group-item d-flex">
+					<div class="w-50">{% trans "Storage capacity" %}:</div>
+					<strong>{{ product.storage }} GB</strong>
+				</li>
+				<li class="list-group-item d-flex">
+					<div class="w-50">{% trans "Manufacturer" %}:</div>
+					<strong>{{ product.manufacturer }}</strong>
+				</li>
+			</ul>
+			<!-- include "Add to Cart" dialog box -->
+			{% include "shop/catalog/available-product-add2cart.html" with card_css_classes="mb-3" %}
+		</div>
+		{% if productnext %}
+		<div class="col-1 col-sm-2 text-center" style="padding-top:20%;">
+			<a id="productnext" class="text-muted"  alt="Next" title="{{ productnext}}" href="{{ productnext.slug }}">
+				{% thumbnail productnext.images.first 100x100 crop as thumb_next %}
+				<img class="d-none d-lg-block mx-auto" style="opacity: 0.9;" src="{{ thumb_next.url }}" width="{{ thumb_next.width }}" height="{{ thumb_next.height }}" alt="{{ productnext.product_name }}">
+				<p id="productnext" class="fa fa-angle-right fa-2x fleche-size text-muted" style="text-decoration: none;" alt="Next" title="{{ productnext}}" href="{{ productnext.slug }}"></p>
+				<div class="d-none d-lg-block">{{ productnext.product_name }}</div>
+			</a>
+		{% endif %}
+		</div>
+	</div>
+</div>
+{% endblock main-content %}
