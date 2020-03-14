@@ -32,6 +32,17 @@ def test_catalog_detail(commodity_factory, customer_factory, rf):
     assert response.data['price'] == six.text_type(product.unit_price)
     assert response.data['slug'] == product.slug
 
+@pytest.mark.django_db
+def test_catalog_detail_ext(commodity_factory, customer_factory, rf):
+    product = commodity_factory()
+    request = rf.get('/catalog/{}'.format(product.slug))
+    request.current_page = product.cms_pages.first()
+    request.customer = customer_factory()
+    response = ProductRetrieveView.as_view(prev_cur_next_products=True)(request, slug=product.slug)
+    response.render()
+    assert response.data['product_code'] == product.product_code
+    assert response.data['price'] == six.text_type(product.unit_price)
+    assert response.data['slug'] == product.slug
 
 @pytest.mark.django_db
 def test_get_add_to_cart(commodity_factory, customer_factory, rf):
