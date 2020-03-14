@@ -259,6 +259,12 @@ class ProductRetrieveView(generics.RetrieveAPIView):
 
     :param use_modal_dialog: If ``True`` (default), render a modal dialog to confirm adding the
         product to the cart.
+
+    :param prev_cur_next_products: If ``True`` productprev, productnext are added in context template 
+        for lists related category products, used with 
+        ``ProductRetrieveView.as_view(prev_cur_next_products=True)``
+        In template, {{ product.get_absolute_URL}} is replace with {{ request.pathinfo }}{{ product.slug }}
+        
     """
 
     renderer_classes = (ShopTemplateHTMLRenderer, JSONRenderer, BrowsableAPIRenderer)
@@ -295,26 +301,43 @@ class ProductRetrieveView(generics.RetrieveAPIView):
         except:
             raise
 
-    def get_template_names(self):
+    def format_templates_path(self, string):
         product = self.get_object()
         app_label = product._meta.app_label.lower()
-        basename = '{}-detail.html'.format(product.__class__.__name__.lower())
-        return [
-            os.path.join(app_label, 'catalog', basename),
-            os.path.join(app_label, 'catalog/product-detail.html'),
-            'shop/catalog/product-detail.html',
+        basename = '{}-{}.html'.format(product.__class__.__name__.lower(), string)
+        return  [
+        os.path.join(app_label, 'catalog', basename),
+        os.path.join(app_label, 'catalog/product-{}.html').format(string),
+        'shop/catalog/product-{}.html'.format(string),
         ]
+
+    def get_template_names(self):
+        if hasattr(self, 'prev_cur_next_products'):
+            templates_path = self.format_templates_path('detail-ext')
+        else:
+            templates_path = self.format_templates_path('detail')
+        return templates_path
 
     def get_renderer_context(self):
         renderer_context = super(ProductRetrieveView, self).get_renderer_context()
         if renderer_context['request'].accepted_renderer.format == 'html':
             # add the product as Python object to the context
-            product = self.get_object()
-            renderer_context.update(
-                app_label=product._meta.app_label.lower(),
-                product=product,
-                use_modal_dialog=self.use_modal_dialog,
-            )
+            if hasattr(self, 'prev_cur_next_products'):
+                product__prev,  product ,product__next = self.get_objects_prev_cur_next()
+                renderer_context.update(
+                    app_label=product._meta.app_label.lower(),
+                    product=product,
+                    use_modal_dialog=self.use_modal_dialog,
+                    productprev=product__prev,
+                    productnext=product__next,
+                )
+            else:
+                product = self.get_object()
+                renderer_context.update(
+                    app_label=product._meta.app_label.lower(),
+                    product=product,
+                    use_modal_dialog=self.use_modal_dialog,
+                )
         return renderer_context
 
     def get_object(self):
@@ -329,6 +352,36 @@ class ProductRetrieveView(generics.RetrieveAPIView):
             queryset = self.product_model.objects.filter(self.limit_choices_to, **filter_kwargs)
             self._product = get_object_or_404(queryset)
         return self._product
+
+    def get_objects_prev_cur_next(self):
+        if not hasattr(self, '_product') or not hasattr(self, '_product__prev') or not hasattr(self, '_product__next'):
+            assert self.lookup_url_kwarg in self.kwargs
+            filter_kwargs = {
+                'active': True,
+                self.lookup_field: self.kwargs[self.lookup_url_kwarg],
+            }
+            if hasattr(self.product_model, 'translations'):
+                filter_kwargs.update(translations__language_code=get_language_from_request(self.request))
+            filter_slug = filter_kwargs['slug']
+            filter_kwargs.pop('slug')
+            queryset = self.product_model.objects.filter(self.limit_choices_to, **filter_kwargs)
+            qs = queryset.select_related('polymorphic_ctype')
+            qs = CMSPagesFilterBackend().filter_queryset(self.request, qs, self)
+            self._product__prev, self._product, self._product__next = self.prev_cur_next_category(qs ,filter_slug)
+        return  self._product__prev, self._product, self._product__next
+
+
+    def prev_cur_next_category(self, objects, product_slug):
+        prev = cur = next = None
+        nb = len(list(objects))
+        for index, obj in enumerate(objects ):
+            if obj.slug == product_slug:
+                cur = objects[index]
+                if index > 0:
+                    prev = objects[index-1]
+                if index < (nb - 1):
+                    next = objects[index+1]
+        return prev, cur, next
 
 
 class OnePageResultsSetPagination(pagination.PageNumberPagination):
