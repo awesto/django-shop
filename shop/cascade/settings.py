@@ -36,13 +36,21 @@ def set_defaults(config):
     config['plugins_with_extra_mixins'].setdefault('BootstrapButtonPlugin', BootstrapUtilities(
         BootstrapUtilities.floats,
     ))
+
     config['plugins_with_extra_mixins'].setdefault('ShopNavbarSearchForm', BootstrapUtilities(
         BootstrapUtilities.margins,
     ))
+    ShopNavbarCart
     config['plugins_with_extra_fields'].setdefault('ShopNavbarSearchForm', PluginExtraFieldsConfig(
         css_classes={
             'multiple': True,
             'class_names': ['shop-search-form'],
+        },
+    ))
+    config['plugins_with_extra_mixins'].setdefault('ShopNavbarCart', PluginExtraFieldsConfig(
+        css_classes={
+            'multiple': True,
+            'class_names': ['shop-secondary-menu'],
         },
     ))
     config['plugins_with_extra_fields'].setdefault('BootstrapNavBrandPlugin', PluginExtraFieldsConfig(
