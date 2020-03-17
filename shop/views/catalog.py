@@ -313,7 +313,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
         ]
 
     def get_template_names(self):
-        if hasattr(self, 'prev_cur_next_products'):
+        if hasattr(self, 'prev_cur_next_products') and self.prev_cur_next_products:
             templates_path = self.format_templates_path('detail-ext')
         else:
             templates_path = self.format_templates_path('detail')
@@ -323,7 +323,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
         renderer_context = super(ProductRetrieveView, self).get_renderer_context()
         if renderer_context['request'].accepted_renderer.format == 'html':
             # add the product as Python object to the context
-            if hasattr(self, 'prev_cur_next_products'):
+            if hasattr(self, 'prev_cur_next_products') and self.prev_cur_next_products:
                 product__prev,  product ,product__next = self.get_objects_prev_cur_next()
                 renderer_context.update(
                     app_label=product._meta.app_label.lower(),
