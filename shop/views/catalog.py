@@ -323,6 +323,8 @@ class ProductRetrieveView(generics.RetrieveAPIView):
         renderer_context = super(ProductRetrieveView, self).get_renderer_context()
         if renderer_context['request'].accepted_renderer.format == 'html':
             # add the product as Python object to the context
+            if not hasattr(product ,'_meta'):
+                product._meta = product.variants.first()._meta
             if hasattr(self, 'prev_cur_next_products') and self.prev_cur_next_products:
                 product__prev,  product ,product__next = self.get_objects_prev_cur_next()
                 renderer_context.update(
