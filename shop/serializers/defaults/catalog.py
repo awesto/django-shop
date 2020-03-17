@@ -78,11 +78,12 @@ class AddToCartSerializer(serializers.Serializer):
         except CartModel.DoesNotExist:
             cart = None
         extra = data.get('extra', {}) if data is not empty else {}
+        product_code = product.product_code if hasattr(product, 'product_code') else product.variants.first().product_code
         return {
             'product': product.id,
-            'product_code': product.product_code,
+            'product_code':product_code,
             'unit_price': product.get_price(request),
             'is_in_cart': bool(product.is_in_cart(cart)),
             'extra': extra,
-            'availability': product.get_availability(request, **extra),
+            'availability': product.get_availability(request, product_code=product_code, **extra) ,
         }
