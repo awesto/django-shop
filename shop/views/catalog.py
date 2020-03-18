@@ -368,8 +368,8 @@ class ProductRetrieveView(generics.RetrieveAPIView):
             filter_slug = filter_kwargs['slug']
             filter_kwargs.pop('slug')
             queryset = self.product_model.objects.filter(self.limit_choices_to, **filter_kwargs)
-            qs = queryset.select_related('polymorphic_ctype')
-            qs = CMSPagesFilterBackend().filter_queryset(self.request, qs, self)
+            #qs = queryset.select_related('polymorphic_ctype')
+            qs = CMSPagesFilterBackend().filter_queryset(self.request, queryset, self)
             self._product__prev, self._product, self._product__next = self.prev_cur_next_category(qs ,filter_slug)
         return  self._product__prev, self._product, self._product__next
 
