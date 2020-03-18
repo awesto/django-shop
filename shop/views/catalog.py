@@ -325,7 +325,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
             # add the product as Python object to the context
             if hasattr(self, 'prev_cur_next_products') and self.prev_cur_next_products:
                 product__prev,  product ,product__next = self.get_objects_prev_cur_next()
-                if not hasattr(product ,'_meta'):
+                if product and not hasattr(product ,'_meta'):
                     product._meta = product.variants.first()._meta
                 renderer_context.update(
                     app_label=product._meta.app_label.lower(),
