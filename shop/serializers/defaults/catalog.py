@@ -39,6 +39,8 @@ class AddToCartSerializer(serializers.Serializer):
     def __init__(self, instance=None, data=empty, **kwargs):
         context = kwargs.get('context', {})
         if 'product' in context:
+            if not hasattr( context['product'], 'product_code'):
+                context['product'].product_code = context['product'].variants.first().product_code
             instance = self.get_instance(context, data, kwargs)
             if data is not empty and 'quantity' in data:
                 quantity = self.fields['quantity'].to_internal_value(data['quantity'])
