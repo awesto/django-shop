@@ -1,0 +1,39 @@
+{% extends app_label|add:"/pages/default.html" %}
+{% load cms_tags sekizai_tags sass_tags %}
+
+{% block title %}{{ product.product_name }}{% endblock %}
+
+{% block breadcrumb %}{% with extra_ance=product.product_name %}
+	{% include "shop/breadcrumb/default.html" %}
+{% endwith %}{% endblock %}
+
+{% block main-content %}
+<div class="container">
+	<div class="row">
+		<div  class="col-1 col-sm-2 text-center " style="padding-top:20%;">
+		{% if  product_prev %}
+			<a  id="product_prev" class=" text-muted"  alt="Previous" title="{{ product_prev }}" href="{{ product_prev.slug }}">
+			<p id="product_prev" class="fa fa-angle-left fa-2x fleche-size text-muted" style="text-decoration: none;" alt="Previous" title="{{ product_prev }}" href="{{ product_prev.slug }}"></p>
+			<div class="d-none d-lg-block">{{ product_prev.product_name }}</div>
+			</a>
+		{% endif %}
+		</div>
+		<div class="col">
+			<h1>{% render_model product "product_name" %}</h1>
+			{# the first `render_placeholder` is only required for editing the page #}
+			{% render_placeholder product.placeholder %}{% render_placeholder product.placeholder as product_details %}
+			{% if not product_details %}
+			<p class="lead">Edit this page, then switch into <em>Structure</em> mode and add plugins to placeholder <code> {{ product.placeholder.slot }} </code>.</p>
+			{% endif %}
+		</div>
+		<div  class="col-1 col-sm-2 text-center " style="padding-top:20%;">
+		{% if  product_next %}
+			<a  id="product_next" class=" text-muted"  alt="Next" title="{{ product_next }}" href="{{ product_next.slug }}">
+			<p id="product_next" class="fa fa-angle-right fa-2x fleche-size text-muted" style="text-decoration: none;" alt="Next" title="{{ product_next }}" href="{{ product_next.slug }}"></p>
+			<div class="d-none d-lg-block">{{ product_next.product_name }}</div>
+			</a>
+		{% endif %}
+		</div>
+	</div>
+</div>
+{% endblock main-content %}

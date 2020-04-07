@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+    # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 import os
@@ -259,6 +259,8 @@ class ProductRetrieveView(generics.RetrieveAPIView):
 
     :param use_modal_dialog: If ``True`` (default), render a modal dialog to confirm adding the
         product to the cart.
+
+    :param single_product: If ``False`` (no default), product_prev, product_next are added to the context.
     """
 
     renderer_classes = (ShopTemplateHTMLRenderer, JSONRenderer, BrowsableAPIRenderer)
@@ -267,6 +269,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
     serializer_class = ProductSerializer
     limit_choices_to = models.Q()
     use_modal_dialog = True
+    single_product = False
 
     def dispatch(self, request, *args, **kwargs):
         """
@@ -295,41 +298,81 @@ class ProductRetrieveView(generics.RetrieveAPIView):
         except:
             raise
 
-    def get_template_names(self):
+    def format_templates_path(self, string):
         product = self.get_object()
         app_label = product._meta.app_label.lower()
-        basename = '{}-detail.html'.format(product.__class__.__name__.lower())
-        return [
-            os.path.join(app_label, 'catalog', basename),
-            os.path.join(app_label, 'catalog/product-detail.html'),
-            'shop/catalog/product-detail.html',
+        basename = '{}-{}.html'.format(product.__class__.__name__.lower(), string)
+        return  [
+        os.path.join(app_label, 'catalog', basename),
+        os.path.join(app_label, 'catalog/product-{}.html').format(string),
+        'shop/catalog/product-{}.html'.format(string),
         ]
+
+    def get_template_names(self):
+        if self.single_product:
+            templates_path = self.format_templates_path('detail')
+        else:
+            templates_path = self.format_templates_path('detail-ext')
+        return templates_path
 
     def get_renderer_context(self):
         renderer_context = super(ProductRetrieveView, self).get_renderer_context()
         if renderer_context['request'].accepted_renderer.format == 'html':
             # add the product as Python object to the context
-            product = self.get_object()
-            renderer_context.update(
-                app_label=product._meta.app_label.lower(),
-                product=product,
-                use_modal_dialog=self.use_modal_dialog,
-            )
+            if self.single_product:
+                product = self.get_object()
+                renderer_context.update(
+                    app_label=product._meta.app_label.lower(),
+                    product=product,
+                    use_modal_dialog=self.use_modal_dialog,
+                )
+            else:
+                product = self.get_object()
+                renderer_context.update(
+                    app_label=product._meta.app_label.lower(),
+                    product_prev=self.product_prev,
+                    product=product,
+                    product_next=self.product_next,
+                    use_modal_dialog=self.use_modal_dialog,
+                )
         return renderer_context
 
     def get_object(self):
         if not hasattr(self, '_product'):
             assert self.lookup_url_kwarg in self.kwargs
-            filter_kwargs = {
-                'active': True,
-                self.lookup_field: self.kwargs[self.lookup_url_kwarg],
-            }
-            if hasattr(self.product_model, 'translations'):
-                filter_kwargs.update(translations__language_code=get_language_from_request(self.request))
-            queryset = self.product_model.objects.filter(self.limit_choices_to, **filter_kwargs)
-            self._product = get_object_or_404(queryset)
+            if self.single_product:
+                filter_kwargs = {
+                    'active': True,
+                    self.lookup_field: self.kwargs[self.lookup_url_kwarg],
+                }
+                if hasattr(self.product_model, 'translations'):
+                    filter_kwargs.update(translations__language_code=get_language_from_request(self.request))
+                queryset = self.product_model.objects.filter(self.limit_choices_to, **filter_kwargs)
+                self._product = get_object_or_404(queryset)
+            else:
+                filter_kwargs = {
+                    'active': True,
+                }
+                slug = self.kwargs[self.lookup_url_kwarg]
+                if hasattr(self.product_model, 'translations'):
+                    filter_kwargs.update(translations__language_code=get_language_from_request(self.request))
+                queryset = self.product_model.objects.filter(self.limit_choices_to, **filter_kwargs)
+                queryset = CMSPagesFilterBackend().filter_queryset(self.request, queryset, self)
+                self.product_prev , self.product_cur, self.product_next = self.prev_cur_next_products(queryset, slug)
+                self._product = get_object_or_404(ProductModel, id=self.product_cur.id)
         return self._product
 
+    def prev_cur_next_products(self, objects, slug):
+        prev = cur = next = None
+        nb = len(list(objects))
+        for index, obj in enumerate(objects):
+            if obj.slug == slug:
+                cur = objects[index]
+                if index > 0:
+                    prev = objects[index-1]
+                if index < (nb - 1):
+                    next = objects[index+1]
+        return prev, cur, next
 
 class OnePageResultsSetPagination(pagination.PageNumberPagination):
     def __init__(self):
