@@ -260,7 +260,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
     :param use_modal_dialog: If ``True`` (default), render a modal dialog to confirm adding the
         product to the cart.
 
-    :param single_product: If ``False`` (no default), product_prev, product_next are added to the context.
+    :param one_product: If ``False`` (no default), product_prev, product_next are added to the context.
     """
 
     renderer_classes = (ShopTemplateHTMLRenderer, JSONRenderer, BrowsableAPIRenderer)
@@ -269,7 +269,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
     serializer_class = ProductSerializer
     limit_choices_to = models.Q()
     use_modal_dialog = True
-    single_product = False
+    one_product = False
 
     def dispatch(self, request, *args, **kwargs):
         """
@@ -309,7 +309,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
         ]
 
     def get_template_names(self):
-        if self.single_product:
+        if self.one_product:
             templates_path = self.format_templates_path('detail')
         else:
             templates_path = self.format_templates_path('detail-ext')
@@ -319,7 +319,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
         renderer_context = super(ProductRetrieveView, self).get_renderer_context()
         if renderer_context['request'].accepted_renderer.format == 'html':
             # add the product as Python object to the context
-            if self.single_product:
+            if self.one_product:
                 product = self.get_object()
                 renderer_context.update(
                     app_label=product._meta.app_label.lower(),
@@ -340,7 +340,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
     def get_object(self):
         if not hasattr(self, '_product'):
             assert self.lookup_url_kwarg in self.kwargs
-            if self.single_product:
+            if self.one_product:
                 filter_kwargs = {
                     'active': True,
                     self.lookup_field: self.kwargs[self.lookup_url_kwarg],
