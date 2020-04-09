@@ -54,7 +54,7 @@ class ProductSerializer(serializers.ModelSerializer):
             self.prev, self.next = self.get_object_with_direct_siblings( product, kwargs['context']['request'])
             self.request = kwargs['context']['request']
             self.fields['direct_siblings'] = serializers.SerializerMethodField('serializer_direct_siblings')
-        self.Meta.direct_siblings =  self.prev, self.next
+            self.Meta.direct_siblings =  self.prev, self.next
 
     def serializer_direct_siblings(self, product, previous=None, next=None):
         if self.prev:
