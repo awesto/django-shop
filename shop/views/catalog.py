@@ -260,7 +260,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
     :param use_modal_dialog: If ``True`` (default), render a modal dialog to confirm adding the
         product to the cart.
 
-    :param one_product: If ``False`` (no default), product_prev, product_next are added to the context.
+    :param with_direct_siblings: If ``True`` (no default), product_prev, product_next are added to the context.
     """
 
     renderer_classes = (ShopTemplateHTMLRenderer, JSONRenderer, BrowsableAPIRenderer)
@@ -269,7 +269,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
     serializer_class = ProductSerializer
     limit_choices_to = models.Q()
     use_modal_dialog = True
-    one_product = False
+    with_direct_siblings = False
 
     def dispatch(self, request, *args, **kwargs):
         """
@@ -285,6 +285,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
         namespaces, this method first attempts to resolve by product, and if that fails, it
         forwards the request to django-CMS.
         """
+        kwargs['with_direct_siblings'] = self.with_direct_siblings
         try:
             return super(ProductRetrieveView, self).dispatch(request, *args, **kwargs)
         except Http404:
@@ -293,33 +294,26 @@ class ProductRetrieveView(generics.RetrieveAPIView):
             else:
                 is_root = request.current_page.node.is_root()
             if is_root:
-                return details(request, kwargs.get('slug'))
+                return details(request, kwargs.get('slug'), with_direct_siblings=self.with_direct_siblings )
             raise
         except:
             raise
 
-    def format_templates_path(self, string):
+    def get_template_names(self):
         product = self.get_object()
         app_label = product._meta.app_label.lower()
-        basename = '{}-{}.html'.format(product.__class__.__name__.lower(), string)
-        return  [
-        os.path.join(app_label, 'catalog', basename),
-        os.path.join(app_label, 'catalog/product-{}.html').format(string),
-        'shop/catalog/product-{}.html'.format(string),
+        basename = '{}-detail.html'.format(product.__class__.__name__.lower())
+        return [
+            os.path.join(app_label, 'catalog', basename),
+            os.path.join(app_label, 'catalog/product-detail.html'),
+            'shop/catalog/product-detail.html',
         ]
-
-    def get_template_names(self):
-        if self.one_product:
-            templates_path = self.format_templates_path('detail')
-        else:
-            templates_path = self.format_templates_path('detail-ext')
-        return templates_path
 
     def get_renderer_context(self):
         renderer_context = super(ProductRetrieveView, self).get_renderer_context()
         if renderer_context['request'].accepted_renderer.format == 'html':
             # add the product as Python object to the context
-            if self.one_product:
+            if not self.with_direct_siblings:
                 product = self.get_object()
                 renderer_context.update(
                     app_label=product._meta.app_label.lower(),
@@ -328,6 +322,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
                 )
             else:
                 product = self.get_object()
+                self.product_prev,self.product_next = self.serializer_class.Meta.direct_siblings
                 renderer_context.update(
                     app_label=product._meta.app_label.lower(),
                     product_prev=self.product_prev,
@@ -340,39 +335,16 @@ class ProductRetrieveView(generics.RetrieveAPIView):
     def get_object(self):
         if not hasattr(self, '_product'):
             assert self.lookup_url_kwarg in self.kwargs
-            if self.one_product:
-                filter_kwargs = {
-                    'active': True,
-                    self.lookup_field: self.kwargs[self.lookup_url_kwarg],
-                }
-                if hasattr(self.product_model, 'translations'):
-                    filter_kwargs.update(translations__language_code=get_language_from_request(self.request))
-                queryset = self.product_model.objects.filter(self.limit_choices_to, **filter_kwargs)
-                self._product = get_object_or_404(queryset)
-            else:
-                filter_kwargs = {
-                    'active': True,
-                }
-                slug = self.kwargs[self.lookup_url_kwarg]
-                if hasattr(self.product_model, 'translations'):
-                    filter_kwargs.update(translations__language_code=get_language_from_request(self.request))
-                queryset = self.product_model.objects.filter(self.limit_choices_to, **filter_kwargs)
-                queryset = CMSPagesFilterBackend().filter_queryset(self.request, queryset, self)
-                self.product_prev , self.product_cur, self.product_next = self.prev_cur_next_products(queryset, slug)
-                self._product = get_object_or_404(ProductModel, id=self.product_cur.id)
+            filter_kwargs = {
+                'active': True,
+                self.lookup_field: self.kwargs[self.lookup_url_kwarg],
+            }
+            if hasattr(self.product_model, 'translations'):
+                filter_kwargs.update(translations__language_code=get_language_from_request(self.request))
+            queryset = self.product_model.objects.filter(self.limit_choices_to, **filter_kwargs)
+            self._product = get_object_or_404(queryset)
         return self._product
 
-    def prev_cur_next_products(self, objects, slug):
-        prev = cur = next = None
-        nb = len(list(objects))
-        for index, obj in enumerate(objects):
-            if obj.slug == slug:
-                cur = objects[index]
-                if index > 0:
-                    prev = objects[index-1]
-                if index < (nb - 1):
-                    next = objects[index+1]
-        return prev, cur, next
 
 class OnePageResultsSetPagination(pagination.PageNumberPagination):
     def __init__(self):
