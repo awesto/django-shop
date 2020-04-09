@@ -48,10 +48,10 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def __init__(self, product, *args, **kwargs):
-        self.prev , self.next = self.get_object_with_direct_siblings( product, kwargs['context']['request'] )
         kwargs.setdefault('label', 'catalog')
         super(ProductSerializer, self).__init__(product, *args, **kwargs)
-        if 'with_direct_siblings' in kwargs['context']['view'].kwargs and kwargs['context']['view'].kwargs['with_direct_siblings']: 
+        if 'with_direct_siblings' in kwargs['context']['view'].kwargs and kwargs['context']['view'].kwargs['with_direct_siblings']:
+            self.prev, self.next = self.get_object_with_direct_siblings( product, kwargs['context']['request'])
             self.request = kwargs['context']['request']
             self.fields['direct_siblings'] = serializers.SerializerMethodField('serializer_direct_siblings')
         self.Meta.direct_siblings =  self.prev, self.next
