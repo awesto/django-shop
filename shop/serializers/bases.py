@@ -15,7 +15,7 @@ from shop.models.customer import CustomerModel
 from shop.models.product import ProductModel
 from shop.models.order import OrderItemModel
 from shop.rest.money import MoneyField
-
+from shop.rest.filters import CMSPagesFilterBackend
 
 class BaseCustomerSerializer(serializers.ModelSerializer):
     number = serializers.CharField(source='get_number')
@@ -44,11 +44,59 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductModel
+        direct_siblings = None
         fields = '__all__'
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, product, *args, **kwargs):
         kwargs.setdefault('label', 'catalog')
-        super(ProductSerializer, self).__init__(*args, **kwargs)
+        super(ProductSerializer, self).__init__(product, *args, **kwargs)
+        if 'view' in kwargs['context'] and 'with_direct_siblings' in kwargs['context'][
+                'view'].kwargs and kwargs['context']['view'].kwargs['with_direct_siblings']:
+            self.prev, self.next = self.get_object_with_direct_siblings(
+                product, kwargs['context']['request'])
+            self.request = kwargs['context']['request']
+            self.fields['direct_siblings'] = serializers.SerializerMethodField(
+                'serializer_direct_siblings')
+            self.Meta.direct_siblings = self.prev, self.next
+
+    def serializer_direct_siblings(self, product, previous=None, next=None):
+        if self.prev:
+            previous = {
+                "product_name": self.prev.product_name,
+                "slug": self.prev.slug,
+                "img_name": self.prev.images.first().original_filename,
+                "img_url": self.prev.images.first().url}
+        if self.next:
+            next = {
+                "product_name": self.next.product_name,
+                "slug": self.next.slug,
+                "img_name": self.next.images.first().original_filename,
+                "img_url": self.next.images.first().url}
+        return previous, next
+
+    def get_object_with_direct_siblings(self, product, request=None):
+        if not request:
+            request = self.request
+
+        if not hasattr(self, '_product_direct_siblings'):
+            previous = next = None
+            filter_siblings = {
+                'active': True,
+            }
+            if hasattr(ProductModel, 'translations'):
+                filter_siblings.update(
+                    translations__language_code=get_language_from_request(request))
+            queryset = ProductModel.objects.filter(**filter_siblings)
+            queryset = CMSPagesFilterBackend().filter_queryset(request, queryset, self)
+            nb = queryset.count()
+            for index, obj in enumerate(queryset):
+                if obj.slug == product.slug:
+                    if index > 0:
+                        previous = queryset[index - 1]
+                    if index < (nb - 1):
+                        next = queryset[index + 1]
+            self._product_direct_siblings = previous, next
+        return self._product_direct_siblings
 
     def get_price(self, product):
         price = product.get_price(self.context['request'])

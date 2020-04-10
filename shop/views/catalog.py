@@ -259,6 +259,8 @@ class ProductRetrieveView(generics.RetrieveAPIView):
 
     :param use_modal_dialog: If ``True`` (default), render a modal dialog to confirm adding the
         product to the cart.
+
+    :param with_direct_siblings: If ``True`` (no default), product_prev, product_next are added to the context.
     """
 
     renderer_classes = (ShopTemplateHTMLRenderer, JSONRenderer, BrowsableAPIRenderer)
@@ -267,6 +269,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
     serializer_class = ProductSerializer
     limit_choices_to = models.Q()
     use_modal_dialog = True
+    with_direct_siblings = False
 
     def dispatch(self, request, *args, **kwargs):
         """
@@ -282,6 +285,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
         namespaces, this method first attempts to resolve by product, and if that fails, it
         forwards the request to django-CMS.
         """
+        kwargs['with_direct_siblings'] = self.with_direct_siblings
         try:
             return super(ProductRetrieveView, self).dispatch(request, *args, **kwargs)
         except Http404:
@@ -290,7 +294,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
             else:
                 is_root = request.current_page.node.is_root()
             if is_root:
-                return details(request, kwargs.get('slug'))
+                return details(request, kwargs.get('slug'), with_direct_siblings=self.with_direct_siblings )
             raise
         except:
             raise
@@ -309,12 +313,23 @@ class ProductRetrieveView(generics.RetrieveAPIView):
         renderer_context = super(ProductRetrieveView, self).get_renderer_context()
         if renderer_context['request'].accepted_renderer.format == 'html':
             # add the product as Python object to the context
-            product = self.get_object()
-            renderer_context.update(
-                app_label=product._meta.app_label.lower(),
-                product=product,
-                use_modal_dialog=self.use_modal_dialog,
-            )
+            if not self.with_direct_siblings:
+                product = self.get_object()
+                renderer_context.update(
+                    app_label=product._meta.app_label.lower(),
+                    product=product,
+                    use_modal_dialog=self.use_modal_dialog,
+                )
+            else:
+                product = self.get_object()
+                self.product_prev,self.product_next = self.serializer_class.Meta.direct_siblings
+                renderer_context.update(
+                    app_label=product._meta.app_label.lower(),
+                    product_prev=self.product_prev,
+                    product=product,
+                    product_next=self.product_next,
+                    use_modal_dialog=self.use_modal_dialog,
+                )
         return renderer_context
 
     def get_object(self):
