@@ -20,7 +20,7 @@ from shop.models.related import ProductPageModel, ProductImageModel
 class ProductImageInline(SortableInlineAdminMixin, admin.StackedInline):
     model = ProductImageModel
     extra = 1
-    ordering = ('order',)
+    ordering = ['order']
 
 
 def _find_catalog_list_apphook():
