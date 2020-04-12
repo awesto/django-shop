@@ -4,6 +4,13 @@
 Changelog for django-SHOP
 =========================
 
+1.1.2
+=====
+* Fix #802: ``CartItemSerializer`` raised an exception if field ``CartItem.extra`` was handled by
+  Django's internal Postgres ``JSONField``.
+* Fix: In Django>2, rendering of OrderItem in Inline Admin did not work anymore.
+
+
 1.1.1
 =====
 * Fix: Rendering text for full text index raised an exception.
