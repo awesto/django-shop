@@ -80,6 +80,8 @@ class CMSPageCatalogWrapper(object):
 
     :param filter_class: A filter set which must inherit from :class:`django_filters.FilterSet`.
 
+    :param pagination_class: A pagination class inheriting from :class:`rest_framework.pagination.BasePagination`.
+
     :param search_serializer_class: The serializer class used to process the queryset returned
         by Haystack, while performing an autocomplete lookup.
 
@@ -96,6 +98,7 @@ class CMSPageCatalogWrapper(object):
     limit_choices_to = models.Q()
     search_serializer_class = None  # must be overridden by CMSPageCatalogWrapper.as_view()
     model_serializer_class = app_settings.PRODUCT_SUMMARY_SERIALIZER  # may be overridden by CMSPageCatalogWrapper.as_view()
+    pagination_class = ProductListPagination
     filter_class = None  # may be overridden by CMSPageCatalogWrapper.as_view()
     filter_backends = [CMSPagesFilterBackend] + list(api_settings.DEFAULT_FILTER_BACKENDS)
     cms_pages_fields = ['cms_pages']
@@ -116,7 +119,8 @@ class CMSPageCatalogWrapper(object):
 
         bases = (AddFilterContextMixin, AddSearchContextMixin, CMSPageSearchMixin, SearchView)
         attrs = dict(renderer_classes=self.renderer_classes, product_model=self.product_model,
-                     limit_choices_to=self.limit_choices_to, filter_class=self.filter_class)
+                     limit_choices_to=self.limit_choices_to, filter_class=self.filter_class,
+                     pagination_class=self.pagination_class)
         self.search_view = type(str('CatalogSearchView'), bases, attrs).as_view(
             serializer_class=self.search_serializer_class,
         )

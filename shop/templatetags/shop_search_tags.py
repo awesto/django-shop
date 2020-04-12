@@ -51,8 +51,9 @@ class RenderPlaceholder(DefaultRenderPlaceholder):
 
     def get_value(self, context, **kwargs):
         context.update(sekizai())
+        context['product'] = context['object']
         try:
-            language_code = context['object']._current_language
+            language_code = context['product']._current_language
         except (KeyError, AttributeError):
             language_code = None
         context['request'] = EmulateHttpRequest(language_code)
