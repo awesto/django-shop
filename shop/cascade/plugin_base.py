@@ -93,7 +93,10 @@ class CatalogLinkPluginBase(LinkPluginBase):
             if relobj:
                 return relobj.get_absolute_url()
         else:
-            return super().get_link(obj) or link_type
+            if not 'stride' in str(type(obj)) :
+                return super().get_link(obj) or link_type
+            else:
+                return cls.super(CatalogLinkPluginBase, cls).get_link(obj) or link_type 
 
 
 class DialogPluginBaseForm(EntangledModelFormMixin):
