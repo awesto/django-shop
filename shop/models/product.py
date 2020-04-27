@@ -195,7 +195,7 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
     Additionally the inheriting class MUST implement the following methods ``get_absolute_url()``
     and ``get_price()``. See below for details.
 
-    Unless each product variant offers it's own product code, it is strongly recommended to add
+    Unless each product variant offers its own product code, it is strongly recommended to add
     a field ``product_code = models.CharField(_("Product code"), max_length=255, unique=True)``
     to the class implementing the product.
     """
@@ -261,6 +261,13 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         """
         return self
 
+    def get_product_variants(self):
+        """
+        Hook for returning a queryset of variants for the given product.
+        If the product has no variants, then the queryset contains just that product.
+        """
+        return self._meta.model.objects.filter(pk=self.pk)
+
     def get_availability(self, request, **kwargs):
         """
         Hook for checking the availability of a product.
@@ -323,6 +330,10 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
 
     @classmethod
     def check(cls, **kwargs):
+        """
+        Internal method to check consistency of Product model declaration on bootstrapping
+        application.
+        """
         errors = super(BaseProduct, cls).check(**kwargs)
         try:
             cls.product_name
