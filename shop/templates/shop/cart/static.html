@@ -7,7 +7,7 @@
 	{% if cart.num_items == 0 %}
 	<div class="row lead text-muted py-1">
 		<div class="col">
-			{% trans "There are no items in the cart" %}
+			{% trans "There are no items in the cart." context "cart" %}
 		</div>
 	</div>
 	{% endif %}
@@ -48,7 +48,7 @@
 		<div class="col-12 col-md-6 border-top">
 			<div class="row py-2 lead">
 				<div class="col-6 text-right text-nowrap">
-					{% trans "Subtotal" %}
+					{% trans "Subtotal" context "cart" %}
 				</div>
 				<div class="col-4 col-md-6 text-right text-nowrap" djng-bind-if="cart.subtotal">
 					{{ cart.subtotal }}
@@ -65,7 +65,7 @@
 				<div class="col-4 col-md-6 text-right text-nowrap" ng-bind="extra_row.amount"></div>
 			</div>
 			<div class="row py-2 shop-double-border lead font-weight-bold">
-				<div class="col-6 text-right text-nowrap">{% trans "Total" %}</div>
+				<div class="col-6 text-right text-nowrap">{% trans "Total" context "cart" %}</div>
 				<div class="col-4 col-md-6 text-right text-nowrap" djng-bind-if="cart.total">
 					{{ cart.total }}
 				</div>

@@ -10,7 +10,7 @@
 {% block shop-watch-head %}
 	<div class="row lead text-muted" ng-if="cart.items.length==0">
 		<div class="col">
-			{% trans "You are perfectly happy!" %}
+			{% trans "You are perfectly happy!" context "cart" %}
 		</div>
 	</div>
 {% endblock shop-watch-head %}
@@ -26,10 +26,10 @@
 	{% block shop-watch-item-controls %}
 				<div class="col-4 col-md-6">
 					<button type="button" class="ml-auto btn btn-sm btn-secondary btn-block shop-item-control" ng-click="deleteWatchItem(cart_item)">
-						<span class="fa fa-trash-o mr-2"></span>{% trans "Remove" %}
+						<span class="fa fa-trash-o mr-2"></span>{% trans "Remove" context "cart" %}
 					</button>
 					<button type="button" class="ml-auto btn btn-sm btn-info btn-block shop-item-control" ng-click="addWatchItem(cart_item)">
-						<span class="fa fa-cart-arrow-down mr-2"></span>{% trans "Add to cart" %}
+						<span class="fa fa-cart-arrow-down mr-2"></span>{% trans "Add to cart" context "cart" %}
 					</button>
 				</div>
 	{% endblock %}
