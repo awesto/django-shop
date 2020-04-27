@@ -2,50 +2,53 @@
 from __future__ import unicode_literals
 
 from django.template.loader import select_template
-from django.utils.html import strip_tags
 
 from django_elasticsearch_dsl import fields, Document
+from elasticsearch_dsl import analyzer
 
 from shop.models.product import ProductModel
 
 
-# products = Index('products')
-# products.settings(
-#     number_of_shards=1,
-#     number_of_replicas=0
-# )
+html_strip = analyzer(
+    'html_strip',
+    tokenizer='standard',
+    filter=['lowercase', 'stop', 'snowball'],
+    char_filter=['html_strip'],
+)
 
 
-# @products.document
 class ProductDocument(Document):
-    product_codes = fields.KeywordField(
+    product_code = fields.KeywordField(
         multi=True,
+        boost=5,
     )
 
-    product_type = fields.TextField(
-        attr='product_type',
+    product_name = fields.TextField(
+        boost=3,
     )
 
-    body = fields.TextField()
+    product_type = fields.TextField()
+
+    body = fields.TextField(
+        analyzer=html_strip,
+    )
 
     class Django:
         model = ProductModel
-        fields = ['id', 'product_name']
+        fields = ['id']
 
-    def prepare(self, instance):
-        data = super().prepare(instance)
-        return data
+    def __str__(self):
+        return "{} {}: {}".format(self.product_type, self.id, self.product_name)
 
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(active=True)
 
-    def prepare_product_codes(self, instance):
+    def prepare_product_code(self, instance):
+        has_valid_product_code = lambda obj: isinstance(getattr(obj, 'product_code', None), str)
         variants = instance.get_product_variants()
-        product_codes = [
-            v.product_code for v in variants if isinstance(getattr(v, 'product_code', None), str)
-        ]
-        if isinstance(getattr(instance, 'product_code', None), str):
+        product_codes = [v.product_code for v in variants if has_valid_product_code(v)]
+        if has_valid_product_code(instance):
             product_codes.append(instance.product_code)
         return product_codes
 
@@ -54,6 +57,7 @@ class ProductDocument(Document):
         Create a textual representation of the product's instance to be used by Elasticsearch for
         creating a full text search index.
         """
+        print(f"------------ {instance.id}: {instance.product_model}")
         app_label = instance._meta.app_label.lower()
         params = [
             (app_label, instance.product_model),
@@ -62,6 +66,5 @@ class ProductDocument(Document):
         ]
         template = select_template(['{0}/search/indexes/{1}.txt'.format(*p) for p in params])
         body = template.render({'product': instance})
-        print("------------")
-        print(strip_tags(body))
-        return strip_tags(body)
+        print(body)
+        return body

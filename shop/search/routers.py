@@ -5,6 +5,8 @@ from django.utils.translation import get_language
 from haystack import routers
 from haystack.constants import DEFAULT_ALIAS
 
+raise NotImplementedError("Deprecated")
+
 
 class LanguageRouter(routers.BaseRouter):
     def for_read(self, **hints):

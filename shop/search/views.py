@@ -3,32 +3,49 @@ from __future__ import unicode_literals
 
 from django.db import models
 
+from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import ListModelMixin
 from rest_framework.renderers import BrowsableAPIRenderer
 from rest_framework.settings import api_settings
-from drf_haystack.generics import HaystackGenericAPIView
 
 from shop.conf import app_settings
 from shop.models.product import ProductModel
 from shop.rest.filters import CMSPagesFilterBackend
 from shop.rest.renderers import CMSPageRenderer
 from shop.rest.money import JSONRenderer
+from shop.search.documents import ProductDocument
 from shop.views.catalog import ProductListView, ProductListPagination, AddFilterContextMixin
 
 
-class SearchView(ListModelMixin, HaystackGenericAPIView):
-    """
-    A generic view to be used for rendering the result list while searching.
-    """
-    renderer_classes = [CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer]
-    pagination_class = ProductListPagination
-    serializer_class = None  # to be set by SearchView.as_view(serializer_class=...)
+raise NotImplementedError("Deprecated")
 
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
 
-    def get_template_names(self):
-        return [self.request.current_page.get_template()]
+class ProductSearchView(AddFilterContextMixin, ProductListView):
+    """
+    This special ProductListView is used to restrict the list of products when using the search field.
+    """
+    filter_backends = [CMSPagesFilterBackend] + list(api_settings.DEFAULT_FILTER_BACKENDS)
+    search_fields = ['product_name', 'product_code']
+
+    def get_renderer_context(self):
+        renderer_context = super(ProductSearchView, self).get_renderer_context()
+        if renderer_context['request'].accepted_renderer.format == 'html':
+            renderer_context['search_autocomplete'] = True
+        return renderer_context
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            search = ProductDocument.search().source(excludes=['body'])
+            search = search.query('multi_match', query=query, fields=self.search_fields, type='bool_prefix')
+            queryset = search.to_queryset()
+        else:
+            queryset = super().get_queryset()
+        return queryset
+
+    def get_serializer(self, *args, **kwargs):
+        kwargs.setdefault('label', 'search')
+        return super().get_serializer(*args, **kwargs)
 
 
 class CMSPageSearchMixin(object):
@@ -39,7 +56,7 @@ class CMSPageSearchMixin(object):
         current_page = self.request.current_page
         if current_page.publisher_is_draft:
             current_page = current_page.publisher_public
-        queryset = super(SearchView, self).get_queryset(index_models)
+        queryset = super(CMSPageSearchMixin, self).get_queryset()
         return queryset.filter(categories=current_page.pk)
 
 
@@ -117,7 +134,7 @@ class CMSPageCatalogWrapper(object):
 
         self = cls(**initkwargs)
 
-        bases = (AddFilterContextMixin, AddSearchContextMixin, CMSPageSearchMixin, SearchView)
+        bases = (AddFilterContextMixin, AddSearchContextMixin, CMSPageSearchMixin, ProductSearchView)
         attrs = dict(renderer_classes=self.renderer_classes, product_model=self.product_model,
                      limit_choices_to=self.limit_choices_to, filter_class=self.filter_class,
                      pagination_class=self.pagination_class)
