@@ -2,8 +2,9 @@
 from __future__ import unicode_literals
 
 from django.template.loader import select_template
+from django.utils import translation
 
-from django_elasticsearch_dsl import fields, Document
+from django_elasticsearch_dsl import fields, Document, Index
 from elasticsearch_dsl import analyzer
 
 from shop.models.product import ProductModel
@@ -17,7 +18,7 @@ html_strip = analyzer(
 )
 
 
-class ProductDocument(Document):
+class _ProductDocument(Document):
     product_code = fields.KeywordField(
         multi=True,
         boost=5,
@@ -57,7 +58,6 @@ class ProductDocument(Document):
         Create a textual representation of the product's instance to be used by Elasticsearch for
         creating a full text search index.
         """
-        print(f"------------ {instance.id}: {instance.product_model}")
         app_label = instance._meta.app_label.lower()
         params = [
             (app_label, instance.product_model),
@@ -66,5 +66,26 @@ class ProductDocument(Document):
         ]
         template = select_template(['{0}/search/indexes/{1}.txt'.format(*p) for p in params])
         body = template.render({'product': instance})
-        print(body)
         return body
+
+    def update(self, thing, refresh=None, action='index', parallel=False, **kwargs):
+        with translation.override(self._language):
+            super().update(thing, refresh=None, action='index', parallel=False, **kwargs)
+
+
+class ProductDocument:
+    def __new__(cls, language=None, settings=None, analyzer=None):
+        if language:
+            index_name = 'products-{}'.format(language.lower())
+            doc_name = 'ProductDocument{}'.format(language.title())
+        else:
+            index_name = 'products'
+            doc_name = 'ProductDocument'
+        products_index = Index(index_name)
+        if settings:
+            products_index.settings(**settings)
+        if analyzer:
+            products_index.analyzer(analyzer)
+        doc_class = type(doc_name, (_ProductDocument,), {'_language': language})
+        products_index.document(doc_class)
+        return doc_class

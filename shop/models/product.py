@@ -5,6 +5,7 @@ from distutils.version import LooseVersion
 from functools import reduce
 import operator
 from cms import __version__ as CMS_VERSION
+
 from django.core import checks
 from django.db import models
 from django.db.models.aggregates import Sum
