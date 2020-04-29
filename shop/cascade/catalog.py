@@ -1,13 +1,15 @@
 from django.contrib.admin import StackedInline
 from django.forms import fields, widgets
-from django.forms.models import ModelForm
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _, ugettext
-from entangled.forms import EntangledModelFormMixin
+
+from entangled.forms import EntangledModelFormMixin, EntangledModelForm
+
 from cms.plugin_pool import plugin_pool
 from cms.utils.compat.dj import is_installed
 from cmsplugin_cascade.mixins import WithSortableInlineElementsMixin
 from cmsplugin_cascade.models import SortableInlineCascadeElement
+
 from shop.cascade.plugin_base import ShopPluginBase, ProductSelectField
 from shop.conf import app_settings
 from shop.models.product import ProductModel
@@ -109,7 +111,12 @@ class ShopAddToCartPlugin(ShopPluginBase):
 plugin_pool.register_plugin(ShopAddToCartPlugin)
 
 
-class ProductGalleryForm(ModelForm):
+class ProductGalleryForm(EntangledModelForm):
+    order = fields.IntegerField(
+        widget=widgets.HiddenInput,
+        initial=0,
+    )
+
     product = ProductSelectField(
         required=False,
         label=_("Related Product"),
@@ -117,38 +124,12 @@ class ProductGalleryForm(ModelForm):
     )
 
     class Meta:
-        exclude = ['glossary']
-
-    def __init__(self, *args, **kwargs):
-        try:
-            initial = dict(kwargs['instance'].glossary)
-        except (KeyError, AttributeError):
-            initial = {}
-        initial.update(kwargs.pop('initial', {}))
-        try:
-            self.base_fields['product'].initial = initial['product']['pk']
-        except KeyError:
-            self.base_fields['product'].initial = None
-        if not is_installed('adminsortable2'):
-            self.base_fields['order'].widget = widgets.HiddenInput()
-            self.base_fields['order'].initial = 0
-        super(ProductGalleryForm, self).__init__(*args, **kwargs)
-
-    def clean(self):
-        cleaned_data = super(ProductGalleryForm, self).clean()
-        if self.is_valid():
-            product_pk = self.cleaned_data.pop('product', None)
-            if product_pk:
-                product_data = {'pk': product_pk}
-                self.instance.glossary.update(product=product_data)
-            else:
-                self.instance.glossary.pop('image', None)
-        return cleaned_data
+        entangled_fields = {'glossary': ['product']}
+        untangled_fields = ['order']
 
 
 class ProductGalleryInline(SortableInlineAdminMixin, StackedInline):
     model = SortableInlineCascadeElement
-    raw_id_fields = ['product']
     form = ProductGalleryForm
     extra = 5
     ordering = ['order']
