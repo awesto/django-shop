@@ -6,18 +6,22 @@ Full Text Search
 
 How should a customer find the product he desires in a more or less unstructured collection of
 countless products? Hierarchical navigation often doesn't work and takes too much time. Thanks to
-the way we use the Internet today, most site visitors expect one central search field in, or nearby
-the main navigation bar of a site.
+the way we use the Internet today, most site visitors expect one central search field inside, or
+nearby the main navigation bar of a site.
 
 
 Search Engine API
 =================
 
-In Django the most popular API for full-text search is Haystack_. While other indexing backends,
-such as Solr and Whoosh might work as well, the best results have been achieved with Elasticsearch_.
-Therefore this documentation focuses exclusively on Elasticsearch. And since in **django-SHOP** every
-programming interface uses REST, search is no exception here. Fortunately there is a project named
-drf-haystack_, which "restifies" our search results, if we use a special serializer class.
+While it is possible to adopt other search backends to **django-SHOP** with little effort, this
+documentation focuses exclusively on Elasticsearch_.
+
+Until version 1.1, **django-SHOP** used Haystack_. Haystack is a great third party app for Django
+and easy to adapt for full-text search. Unfortunately, Haystack was never adopted to versions
+of Elasticsearch beyond 1.7. Also, it didn't allow complicated queries and the configuration is
+minimal and highly restricted. Therefore, **django-SHOP** version 1.2 has been refactored to use
+elasticsearch-dsl_ together with django-elasticsearch-dsl_. It now supports up to the most recent
+versions of Elasticsearch, which currently are 7.5.
 
 In this document we assume that the merchant only wants to index his products, but not any arbitrary
 content, such as for example the terms and condition, as found outside **django-SHOP**, but inside
@@ -27,8 +31,8 @@ content, such as for example the terms and condition, as found outside **django-
 Configuration
 -------------
 
-Install the Elasticsearch binary. Currently Haystack only supports versions smaller than 2. Then
-start the service in daemon mode:
+Download and install the latest version of the Elasticsearch binary. During development, all tests
+have been performed with version 7.5. After unzipping the file, start Elasticsearch in daemon mode:
 
 .. code-block:: shell
 
@@ -41,42 +45,50 @@ should return something similar to this:
 
 	$ curl http://localhost:9200/
 	{
-	  "status" : 200,
 	  "name" : "Ape-X",
 	  "cluster_name" : "elasticsearch",
+	  "cluster_uuid" : "P9HVZRPbUXjTEDO9iZHGDk",
 	  "version" : {
 	    ...
 	  },
 	}
 
-In ``settings.py``, check that ``'haystack'`` has been added to ``INSTALLED_APPS`` and connects
-the application server with the Elasticsearch database:
+Install ``elasticsearch-dsl`` and ``django-elasticsearch-dsl`` using the ``pip`` command or another
+tool of your choice.
+
+In ``settings.py``, check that ``'django_elasticsearch_dsl'`` has been added to ``INSTALLED_APPS``.
+Configure the connection to the Elasticsearch database:
 
 .. code-block:: python
 
-	HAYSTACK_CONNECTIONS = {
+	ELASTICSEARCH_DSL = {
 	    'default': {
-	        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-	        'URL': 'http://localhost:9200/',
-	        'INDEX_NAME': 'myshop-default',
+	        'hosts': 'localhost:9200',
 	    },
 	}
-
-In case we need indices for different natural languages on our site, we shall add the non-default
-languages to this Python dictionary using a different ``INDEX_NAME`` for each of them.
-
-Finally configure the site, so that search queries are routed to the correct index using the
-currently active natural language:
-
-.. code-block:: python
-
-	HAYSTACK_ROUTERS = ('shop.search.routers.LanguageRouter',)
 
 
 Indexing the Products
 =====================
 
-Before we start to search for something, we first must populate its indices. In Haystack one can
+Before we start to search for products on our site, we first must populate the so called reverse
+index in the database. But even before that, we must know which fields contain information which
+shall create search results. Therefore it is quite important to spot the fields of the product
+models, which contain the information customers might search for.
+
+**Django-SHOP** comes with a preconfigured, but minimal set of fields, whose values are used to
+populate the reverse index. These are the fields ``product_name`` and the ``product_code`` from
+our base product model :class:`shop.models.product.ProductModel`. Since the product model is
+intended to be extended by the merchant implementation, so are the fields of the reverse index.
+This means, that model fields containing information used to search for, shall also be reflected
+into the reverse index.
+
+
+
+
+
+
+In Haystack one can
 create more than one kind of index for each item being added to the search database.
 
 Each product type requires its individual indexing class. Note that Haystack does some
@@ -392,8 +404,8 @@ bootstrapping our Angular application:
 
 .. _Haystack: http://haystacksearch.org/
 .. _Elasticsearch: https://www.elastic.co/
-.. _drf-haystack: https://pypi.python.org/pypi/drf-haystack
-.. _Haystack for Django REST Framework: https://drf-haystack.readthedocs.org/en/latest/
+.. _elasticsearch-dsl: https://elasticsearch-dsl.readthedocs.io/en/latest/
+.. _django-elasticsearch-dsl: https://django-elasticsearch-dsl.readthedocs.io/en/latest/
 .. _normalized: https://www.elastic.co/guide/en/elasticsearch/guide/current/token-normalization.html
 .. _index fields: http://django-haystack.readthedocs.org/en/latest/searchfield_api.html
 .. _autocompletion: http://django-haystack.readthedocs.org/en/latest/autocomplete.html?highlight=autocompletion
