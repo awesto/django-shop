@@ -4,6 +4,11 @@
 Changelog for django-SHOP
 =========================
 
+1.1.4
+=====
+* Fix rendering bug in Product Gallery plugin.
+
+
 1.1.3
 =====
 * Add South African Rand to currencies.
