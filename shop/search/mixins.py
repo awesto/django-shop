@@ -16,7 +16,8 @@ class SearchViewMixin:
 
 class ProductSearchViewMixin(SearchViewMixin):
     """
-    Mixin class to be added to the ProductListView so that autocompletion works.
+    Mixin class to be added to the ProductListView to restrict that list to entities matching
+    the query string.
     """
     search_fields = ['product_name', 'product_code']
 
