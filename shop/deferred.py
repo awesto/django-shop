@@ -3,7 +3,6 @@ import copy
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models.base import ModelBase
 from django.db import models
-from django.utils import six
 from django.utils.functional import LazyObject, empty
 from polymorphic.models import PolymorphicModelBase
 
@@ -15,7 +14,7 @@ class DeferredRelatedField(object):
         try:
             self.abstract_model = to._meta.object_name
         except AttributeError:
-            assert isinstance(to, six.string_types), "%s(%r) is invalid. First parameter must be either a model or a model name" % (self.__class__.__name__, to)
+            assert isinstance(to, str), "%s(%r) is invalid. First parameter must be either a model or a model name" % (self.__class__.__name__, to)
             self.abstract_model = to
         self.options = dict(**kwargs)
 
@@ -60,7 +59,7 @@ class ManyToManyField(DeferredRelatedField):
             try:
                 self.abstract_through_model = through._meta.object_name
             except AttributeError:
-                assert isinstance(through, six.string_types), ('%s(%r) is invalid. '
+                assert isinstance(through, str), ('%s(%r) is invalid. '
                     'Through parameter must be either a model or a model name'
                     % (self.__class__.__name__, through))
                 self.abstract_through_model = through

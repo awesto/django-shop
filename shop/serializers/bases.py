@@ -3,10 +3,10 @@ from django.core.cache import cache
 from django.template import TemplateDoesNotExist
 from django.template.loader import select_template
 from django.utils.html import strip_spaces_between_tags
-from django.utils import six
 from django.utils.safestring import mark_safe, SafeText
 from django.utils.translation import get_language_from_request
 from rest_framework import serializers
+
 from shop.conf import app_settings
 from shop.models.customer import CustomerModel
 from shop.models.product import ProductModel
@@ -50,8 +50,6 @@ class ProductSerializer(serializers.ModelSerializer):
     def get_price(self, product):
         price = product.get_price(self.context['request'])
         # TODO: check if this can be simplified using str(product.get_price(...))
-        if six.PY2:
-            return u'{:f}'.format(price)
         return '{:f}'.format(price)
 
     def render_html(self, product, postfix):

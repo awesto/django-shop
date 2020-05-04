@@ -5,7 +5,6 @@ from django import template
 from django.contrib.auth.models import AnonymousUser
 from django.http.request import HttpRequest
 from django.utils.html import strip_tags
-from django.utils.six import string_types
 from sekizai.context_processors import sekizai
 
 register = template.Library()
@@ -34,7 +33,7 @@ class RenderPlaceholder(DefaultRenderPlaceholder):
         placeholder = kwargs.get('placeholder')
         if not placeholder:
             return ''
-        if isinstance(placeholder, string_types):
+        if isinstance(placeholder, str):
             placeholder = Placeholder.objects.get(slot=placeholder)
         content = renderer.render_placeholder(
             placeholder=placeholder,

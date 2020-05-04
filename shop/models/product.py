@@ -8,7 +8,6 @@ from django.core import cache, checks
 from django.db import models
 from django.db.models.aggregates import Sum
 from django.db.models.functions import Coalesce
-from django.utils import six
 from django.utils import timezone
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _

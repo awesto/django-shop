@@ -1,5 +1,4 @@
 import enum
-import six
 from django.conf import settings
 from django.db import models
 from django.utils.encoding import force_text
@@ -30,7 +29,7 @@ class JSONField(_JSONField):
 
 class ChoiceEnumMeta(enum.EnumMeta):
     def __call__(cls, value, *args, **kwargs):
-        if isinstance(value, string_types):
+        if isinstance(value, str):
             try:
                 value = cls.__members__[value]
             except KeyError:
@@ -39,11 +38,7 @@ class ChoiceEnumMeta(enum.EnumMeta):
 
     def __new__(metacls, classname, bases, classdict):
         labels = {}
-        if six.PY2:
-            member_names = [k for k in classdict.keys() if k not in ['__module__', '__str__', '__doc__']]
-        else:
-            member_names = classdict._member_names
-        for key in member_names:
+        for key in classdict._member_names:
             source_value = classdict[key]
             if isinstance(source_value, (list, tuple)):
                 try:
