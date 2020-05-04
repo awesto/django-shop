@@ -1,9 +1,6 @@
-from distutils.version import LooseVersion
 from functools import reduce
 import operator
 from urllib.parse import urljoin
-
-from cms import __version__ as CMS_VERSION
 
 from django.apps import apps
 from django.conf import settings
@@ -272,7 +269,7 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
     def get_product_variants(self):
         """
         Hook for returning a queryset of variants for the given product.
-        If the product has no variants, then the queryset contains just that product.
+        If the product has no variants, then the queryset contains just itself.
         """
         return self._meta.model.objects.filter(pk=self.pk)
 
@@ -352,7 +349,7 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
 
     def update_search_index(self):
         """
-        Update the document model inside the Elasticsearch index after changing relevant parts
+        Update the Document inside the Elasticsearch index after changing relevant parts
         of the product.
         """
         documents = elasticsearch_registry.get_documents([ProductModel])
@@ -393,10 +390,7 @@ class CMSPageReferenceMixin(object):
         """
         # sorting by highest level, so that the canonical URL
         # associates with the most generic category
-        if LooseVersion(CMS_VERSION) < LooseVersion('3.5'):
-            cms_page = self.cms_pages.order_by('depth').last()
-        else:
-            cms_page = self.cms_pages.order_by('node__path').last()
+        cms_page = self.cms_pages.order_by('node__path').last()
         if cms_page is None:
             return urljoin('/category-not-assigned/', self.slug)
         return urljoin(cms_page.get_absolute_url(), self.slug)
