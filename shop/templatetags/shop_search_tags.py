@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from cms.plugin_rendering import ContentRenderer
 from cms.models.placeholdermodel import Placeholder
 from cms.templatetags.cms_tags import RenderPlaceholder as DefaultRenderPlaceholder

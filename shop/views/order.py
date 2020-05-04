@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.utils import timezone
 from django.views.decorators.cache import never_cache
 from django.utils.translation import ugettext_lazy as _

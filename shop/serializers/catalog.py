@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from cms.utils import get_current_site
 from cms.utils.page import get_page_from_path
 from django.urls import reverse

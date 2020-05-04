@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
-
 class ProductNotAvailable(Exception):
     """
     The product being purchased isn't available anymore.

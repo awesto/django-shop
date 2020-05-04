@@ -1,13 +1,6 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 import warnings
 
-from django import VERSION as DJANGO_VERSION
-if DJANGO_VERSION < (2, 0):
-    from django.conf.urls import include, url
-else:    
-    from django.urls import include, path
+from django.urls import include, path
     
 from shop.modifiers.pool import cart_modifiers_pool
 

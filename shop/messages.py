@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 A wrapper around Django's messages framework for easier integration with Javascript based messages.
 """
-from __future__ import unicode_literals
 
 import json
 from django.contrib import messages as django_messages

@@ -53,8 +53,6 @@ merchant implementation. Such a migration file must contain a datamigration, for
 
 .. code-block:: python
 
-	from __future__ import unicode_literals
-
 	from django.db import migrations, models
 
 	def forwards(apps, schema_editor):

@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from formtools.wizard.views import normalize_name
 
 from django.contrib.auth import get_user_model

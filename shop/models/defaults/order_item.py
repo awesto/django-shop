@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.db.models import PositiveIntegerField
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from shop.models import order

@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from six import with_metaclass
 import warnings
 from collections import OrderedDict

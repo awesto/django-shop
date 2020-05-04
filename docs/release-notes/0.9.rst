@@ -20,9 +20,6 @@ Next, edit the migration file to look like this:
 
 .. code-block:: python
 
-    # -*- coding: utf-8 -*-
-    from __future__ import unicode_literals
-
     from django.db import models, migrations
 
 
