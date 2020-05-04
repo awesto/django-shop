@@ -7,6 +7,7 @@ from django.utils import translation
 from django_elasticsearch_dsl import fields, Document, Index
 
 from shop.models.product import ProductModel
+from shop.search.analyzers import body_analyzers
 
 
 class _ProductDocument(Document):
@@ -71,18 +72,19 @@ class ProductDocument:
     """
     Factory for building an elasticsearch-dsl Document class. This class
     """
-    def __new__(cls, language=None, settings=None, analyzer=None):
+    def __new__(cls, language=None, settings=None):
         if language:
             index_name = 'products-{}'.format(language.lower())
             doc_name = 'ProductDocument{}'.format(language.title())
+            analyzer = body_analyzers.get(language, body_analyzers['default'])
         else:
             index_name = 'products'
             doc_name = 'ProductDocument'
+            analyzer = body_analyzers['default']
         products_index = Index(index_name)
         if settings:
             products_index.settings(**settings)
-        kwargs = {'analyzer': analyzer} if analyzer else {}
-        attrs = {'_language': language, 'body': fields.TextField(**kwargs)}
+        attrs = {'_language': language, 'body': fields.TextField(analyzer=analyzer)}
         doc_class = type(doc_name, (_ProductDocument,), attrs)
         products_index.document(doc_class)
         return doc_class
