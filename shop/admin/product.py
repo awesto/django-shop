@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import warnings
-
 from django import forms
-from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib import admin
 from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
+
+try:
+    from django_elasticsearch_dsl.registries import registry as elasticsearch_registry
+except ImportError:
+    elasticsearch_registry = type('DocumentRegistry', (), {'get_documents': lambda *args: []})()
 
 from adminsortable2.admin import SortableInlineAdminMixin
 
@@ -100,33 +102,26 @@ class CMSPageAsCategoryMixin(object):
         return super(CMSPageAsCategoryMixin, self).save_related(request, form, formsets, change)
 
 
-class InvalidateProductCacheMixin(object):
+class SearchProductIndexMixin:
     """
-    If caching is enabled, add this class as the first mixin to Django's model admin for the
-    corresponding product.
+    If Elasticsearch is used to create a full text search index, add this mixin class to Django's
+    ``ModelAdmin`` backend for the corresponding product model.
     """
-    def __init__(self, *args, **kwargs):
-        if not hasattr(cache, 'delete_pattern'):
-            warnings.warn("\n"
-                "Your caching backend does not support deletion by key patterns.\n"
-                "Please use 'django-redis-cache', or wait until the product's HTML\n"
-                "snippet cache expires by itself.")
-        super(InvalidateProductCacheMixin, self).__init__(*args, **kwargs)
+    def save_model(self, request, product, form, change):
+        super().save_model(request, product, form, change)
+        if change:
+            product.update_search_index()
 
+
+class InvalidateProductCacheMixin:
+    """
+    If Redis caching is used to create a HTML snippets for product representation, add this mixin
+    class to Django's ``ModelAdmin`` backend for the corresponding product model.
+    """
     def save_model(self, request, product, form, change):
         if change:
-            self.invalidate_cache(product)
-        super(InvalidateProductCacheMixin, self).save_model(request, product, form, change)
-
-    def invalidate_cache(self, product):
-        """
-        The method ``ProductCommonSerializer.render_html`` caches the rendered HTML snippets.
-        Invalidate them after changing something in the product.
-        """
-        try:
-            cache.delete_pattern('product:{}|*'.format(product.id))
-        except AttributeError:
-            pass
+            product.invalidate_cache()
+        return super().save_model(request, product, form, change)
 
 
 class UnitPriceMixin(object):

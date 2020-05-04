@@ -6,8 +6,9 @@ from functools import reduce
 import operator
 from cms import __version__ as CMS_VERSION
 
+from django.apps import apps
 from django.conf import settings
-from django.core import checks
+from django.core import cache, checks
 from django.db import models
 from django.db.models.aggregates import Sum
 from django.db.models.functions import Coalesce
@@ -351,11 +352,11 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
             errors.append(checks.Error(msg.format(cls.__name__)))
         return errors
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        self.update_search_index()
-
     def update_search_index(self):
+        """
+        Update the document model inside the Elasticsearch index after changing relevant parts
+        of the product.
+        """
         documents = elasticsearch_registry.get_documents([ProductModel])
         if settings.USE_I18N:
             for language, _ in settings.LANGUAGES:
@@ -367,6 +368,15 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         else:
             document = next(doc for doc in documents)
             document().update(self)
+
+    def invalidate_cache(self):
+        """
+        Method ``ProductCommonSerializer.render_html()`` caches the rendered HTML snippets.
+        Invalidate this HTML snippet after changing relevant parts of the product.
+        """
+        shop_app = apps.get_app_config('shop')
+        if shop_app.cache_supporting_wildcard:
+            cache.delete_pattern('product:{}|*'.format(self.id))
 
 ProductModel = deferred.MaterializedModel(BaseProduct)
 
