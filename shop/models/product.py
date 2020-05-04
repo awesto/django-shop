@@ -187,7 +187,7 @@ class PolymorphicProductMetaclass(deferred.PolymorphicForeignKeyBuilder):
             raise NotImplementedError(msg.format(cls.__name__))
 
 
-class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicModel)):
+class BaseProduct(PolymorphicModel, metaclass=PolymorphicProductMetaclass):
     """
     An abstract basic product model for the shop. It is intended to be overridden by one or
     more polymorphic models, adding all the fields and relations, required to describe this

@@ -1,8 +1,6 @@
 """
 Holds all the information relevant to the client (addresses for instance)
 """
-from six import with_metaclass
-
 from django.db import models
 from django.template.loader import select_template
 from django.utils.translation import ugettext_lazy as _
@@ -54,7 +52,7 @@ class BaseAddress(models.Model):
         return template.render({'address': self})
 
 
-class BaseShippingAddress(with_metaclass(deferred.ForeignKeyBuilder, BaseAddress)):
+class BaseShippingAddress(BaseAddress, metaclass=deferred.ForeignKeyBuilder):
     address_type = 'shipping'
 
     class Meta:
@@ -63,7 +61,7 @@ class BaseShippingAddress(with_metaclass(deferred.ForeignKeyBuilder, BaseAddress
 ShippingAddressModel = deferred.MaterializedModel(BaseShippingAddress)
 
 
-class BaseBillingAddress(with_metaclass(deferred.ForeignKeyBuilder, BaseAddress)):
+class BaseBillingAddress(BaseAddress, metaclass=deferred.ForeignKeyBuilder):
     address_type = 'billing'
 
     class Meta:

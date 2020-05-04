@@ -75,7 +75,7 @@ class ChoiceEnumMeta(enum.EnumMeta):
 
 
 @python_2_unicode_compatible
-class ChoiceEnum(six.with_metaclass(ChoiceEnumMeta, enum.Enum)):
+class ChoiceEnum(enum.Enum, metaclass=ChoiceEnumMeta):
     """
     Utility class to handle choices in Django model and/or form fields.
     Usage:

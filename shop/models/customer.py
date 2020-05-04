@@ -14,7 +14,6 @@ from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import SimpleLazyObject
 from django.utils.translation import ugettext_lazy as _
-from django.utils.six import with_metaclass
 
 from shop import deferred
 from shop.models.fields import JSONField
@@ -178,7 +177,7 @@ class CustomerManager(models.Manager):
 
 
 @python_2_unicode_compatible
-class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
+class BaseCustomer(models.Model, metaclass=deferred.ForeignKeyBuilder):
     """
     Base class for shop customers.
 

@@ -1,9 +1,10 @@
-from six import with_metaclass
 import warnings
 from collections import OrderedDict
+
 from django.core import checks
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+
 from shop import deferred
 from shop.models.fields import JSONField
 from shop.models.customer import CustomerModel
@@ -61,7 +62,7 @@ class CartItemManager(models.Manager):
         return watch_items
 
 
-class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
+class BaseCartItem(models.Model, metaclass=deferred.ForeignKeyBuilder):
     """
     This is a holder for the quantity of items in the cart and, obviously, a
     pointer to the actual Product being purchased
@@ -169,7 +170,7 @@ class CartManager(models.Manager):
         return request._cached_cart
 
 
-class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
+class BaseCart(models.Model, metaclass=deferred.ForeignKeyBuilder):
     """
     The fundamental part of a shopping cart.
     """
