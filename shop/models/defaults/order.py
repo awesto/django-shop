@@ -3,9 +3,10 @@ from __future__ import unicode_literals
 
 import binascii
 from os import urandom
+from urllib.parse import urljoin
+
 from django.db import models
 from django.utils import timezone
-from django.utils.six.moves.urllib.parse import urljoin
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from shop.models import order
 

@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 from distutils.version import LooseVersion
 from functools import reduce
 import operator
+from urllib.parse import urljoin
+
 from cms import __version__ as CMS_VERSION
 
 from django.apps import apps
@@ -15,7 +17,6 @@ from django.db.models.functions import Coalesce
 from django.utils import six
 from django.utils import timezone
 from django.utils.encoding import force_text
-from django.utils.six.moves.urllib.parse import urljoin
 from django.utils.translation import ugettext_lazy as _
 
 try:
