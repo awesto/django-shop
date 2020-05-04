@@ -71,11 +71,11 @@ class ProductDocument:
     """
     def __new__(cls, language=None, settings=None):
         if language:
-            index_name = 'products-{}'.format(language.lower())
+            index_name = '{0}.products-{1}'.format(app_settings.SHOP_APP_LABEL, language.lower())
             doc_name = 'ProductDocument{}'.format(language.title())
             analyzer = body_analyzers.get(language, body_analyzers['default'])
         else:
-            index_name = 'products'
+            index_name = '{}.products'.format(app_settings.SHOP_APP_LABEL)
             doc_name = 'ProductDocument'
             analyzer = body_analyzers['default']
         products_index = Index(index_name)
