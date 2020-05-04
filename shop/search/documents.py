@@ -59,20 +59,20 @@ class _ProductDocument(Document):
         body = template.render({'product': instance})
         return body
 
-    def update(self, product, refresh=None, action='index', parallel=False, **kwargs):
-        if product.active:
-            if self._language:
-                with translation.override(self._language):
-                    super().update(product, refresh=None, action='index', parallel=False, **kwargs)
-            else:
-                super().update(product, refresh=None, action='index', parallel=False, **kwargs)
-        else:
+    def update(self, thing, refresh=None, action='index', parallel=False, **kwargs):
+        if isinstance(thing, ProductModel._materialized_model) and thing.active is False:
             try:
-                doc = self.get(id=product.id)
+                doc = self.get(id=thing.id)
             except NotFoundError:
                 pass
             else:
                 doc.delete()
+        else:
+            if self._language:
+                with translation.override(self._language):
+                    super().update(thing, refresh=None, action='index', parallel=False, **kwargs)
+            else:
+                super().update(thing, refresh=None, action='index', parallel=False, **kwargs)
 
 
 class ProductDocument:
