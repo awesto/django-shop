@@ -6,6 +6,7 @@ from functools import reduce
 import operator
 from cms import __version__ as CMS_VERSION
 
+from django.conf import settings
 from django.core import checks
 from django.db import models
 from django.db.models.aggregates import Sum
@@ -15,8 +16,15 @@ from django.utils import timezone
 from django.utils.encoding import force_text
 from django.utils.six.moves.urllib.parse import urljoin
 from django.utils.translation import ugettext_lazy as _
+
+try:
+    from django_elasticsearch_dsl.registries import registry as elasticsearch_registry
+except ImportError:
+    elasticsearch_registry = type('DocumentRegistry', (), {'get_documents': lambda *args: []})()
+
 from polymorphic.managers import PolymorphicManager
 from polymorphic.models import PolymorphicModel
+
 from shop import deferred
 from shop.conf import app_settings
 from shop.exceptions import ProductNotAvailable
@@ -342,6 +350,23 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
             msg = "Class `{}` must provide a model field implementing `product_name`"
             errors.append(checks.Error(msg.format(cls.__name__)))
         return errors
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.update_search_index()
+
+    def update_search_index(self):
+        documents = elasticsearch_registry.get_documents([ProductModel])
+        if settings.USE_I18N:
+            for language, _ in settings.LANGUAGES:
+                try:
+                    document = next(doc for doc in documents if doc._language == language)
+                except StopIteration:
+                    document = next(doc for doc in documents if doc._language is None)
+                document().update(self)
+        else:
+            document = next(doc for doc in documents)
+            document().update(self)
 
 ProductModel = deferred.MaterializedModel(BaseProduct)
 
