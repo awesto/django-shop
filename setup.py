@@ -39,7 +39,6 @@ setup(
     zip_safe=False,
     install_requires=[
         'Django>=1.11,<3.0',
-        'django-post_office',
         'django-filer',
         'django-ipware',
         'django-fsm',
@@ -53,6 +52,7 @@ setup(
         'django-formtools',
         'django_polymorphic',
         'django-post_office',
+        'django-cms>=3.7',
         'djangocms-cascade',
     ],
 )
