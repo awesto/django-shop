@@ -2,7 +2,9 @@ from django.template.loader import select_template
 from django.utils import translation
 
 from django_elasticsearch_dsl import fields, Document, Index
+from elasticsearch.exceptions import NotFoundError
 
+from shop.conf import app_settings
 from shop.models.product import ProductModel
 from shop.search.analyzers import body_analyzers
 
@@ -22,7 +24,7 @@ class _ProductDocument(Document):
     class Django:
         model = ProductModel
         fields = ['id']
-        ignore_signals = True  # performed by ProductModel.save()
+        ignore_signals = True  # performed by ProductModel.update_search_index()
 
     def __str__(self):
         return "{} {}: {}".format(self.product_type, self.id, self.product_name)
@@ -57,12 +59,20 @@ class _ProductDocument(Document):
         body = template.render({'product': instance})
         return body
 
-    def update(self, thing, refresh=None, action='index', parallel=False, **kwargs):
-        if self._language:
-            with translation.override(self._language):
-                super().update(thing, refresh=None, action='index', parallel=False, **kwargs)
+    def update(self, product, refresh=None, action='index', parallel=False, **kwargs):
+        if product.active:
+            if self._language:
+                with translation.override(self._language):
+                    super().update(product, refresh=None, action='index', parallel=False, **kwargs)
+            else:
+                super().update(product, refresh=None, action='index', parallel=False, **kwargs)
         else:
-            super().update(thing, refresh=None, action='index', parallel=False, **kwargs)
+            try:
+                doc = self.get(id=product.id)
+            except NotFoundError:
+                pass
+            else:
+                doc.delete()
 
 
 class ProductDocument:

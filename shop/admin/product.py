@@ -109,6 +109,11 @@ class SearchProductIndexMixin:
         if change:
             product.update_search_index()
 
+    def delete_model(self, request, product):
+        product.active = False
+        product.update_search_index()
+        super().delete_model(request, product)
+
 
 class InvalidateProductCacheMixin:
     """
@@ -119,6 +124,10 @@ class InvalidateProductCacheMixin:
         if change:
             product.invalidate_cache()
         return super().save_model(request, product, form, change)
+
+    def delete_model(self, request, product):
+        product.invalidate_cache()
+        super().delete_model(request, product)
 
 
 class UnitPriceMixin:
