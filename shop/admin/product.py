@@ -124,11 +124,10 @@ class InvalidateProductCacheMixin:
         return super().save_model(request, product, form, change)
 
 
-class UnitPriceMixin(object):
+class UnitPriceMixin:
     def get_list_display(self, request):
-        list_display = super(UnitPriceMixin, self).get_list_display(request)
-        if 'get_unit_price' not in list_display:
-            list_display.append('get_unit_price')
+        list_display = list(super().get_list_display(request))
+        list_display.append('get_unit_price')
         return list_display
 
     def get_unit_price(self, obj):
