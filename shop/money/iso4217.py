@@ -34,5 +34,6 @@ CURRENCIES = {
     'UAH': ('980', 2, '₴', _("Ukrainian Hryvnia")),
     'USD': ('840', 2, '$', _("US Dollar")),
     'SEK': ('752', 2, 'kr', _("Swedish Kronor")),
+    'ZAR': ('710', 2, 'R', _("South African Rand")),
     # feel free to add more currencies, alphabetically ordered
 }
