@@ -2,7 +2,6 @@ import enum
 import six
 from django.conf import settings
 from django.db import models
-from django.utils.six import python_2_unicode_compatible, string_types
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 
@@ -74,7 +73,6 @@ class ChoiceEnumMeta(enum.EnumMeta):
             return None
 
 
-@python_2_unicode_compatible
 class ChoiceEnum(enum.Enum, metaclass=ChoiceEnumMeta):
     """
     Utility class to handle choices in Django model and/or form fields.

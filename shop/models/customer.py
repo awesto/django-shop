@@ -11,7 +11,6 @@ from django.db import models, DEFAULT_DB_ALIAS
 from django.db.models.fields import FieldDoesNotExist
 from django.dispatch import receiver
 from django.utils import timezone
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import SimpleLazyObject
 from django.utils.translation import ugettext_lazy as _
 
@@ -176,7 +175,6 @@ class CustomerManager(models.Manager):
         return customer
 
 
-@python_2_unicode_compatible
 class BaseCustomer(models.Model, metaclass=deferred.ForeignKeyBuilder):
     """
     Base class for shop customers.

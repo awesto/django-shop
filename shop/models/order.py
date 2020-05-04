@@ -7,7 +7,6 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
 from django.urls import NoReverseMatch, reverse
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy, get_language_from_request
 
@@ -136,7 +135,6 @@ class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
         return result
 
 
-@python_2_unicode_compatible
 class BaseOrder(models.Model, metaclass=WorkflowMixinMetaclass):
     """
     An Order is the "in process" counterpart of the shopping cart, which freezes the state of the
@@ -412,7 +410,6 @@ class BaseOrder(models.Model, metaclass=WorkflowMixinMetaclass):
 OrderModel = deferred.MaterializedModel(BaseOrder)
 
 
-@python_2_unicode_compatible
 class OrderPayment(models.Model, metaclass=deferred.ForeignKeyBuilder):
     """
     A model to hold received payments for a given order.
@@ -453,7 +450,6 @@ class OrderPayment(models.Model, metaclass=deferred.ForeignKeyBuilder):
         return _("Payment ID: {}").format(self.id)
 
 
-@python_2_unicode_compatible
 class BaseOrderItem(models.Model, metaclass=deferred.ForeignKeyBuilder):
     """
     An item for an order.

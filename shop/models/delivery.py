@@ -1,6 +1,5 @@
 from django.core import checks
 from django.db import models
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 
 from shop import deferred
@@ -8,7 +7,6 @@ from shop.models.order import BaseOrder, BaseOrderItem, OrderItemModel
 from shop.modifiers.pool import cart_modifiers_pool
 
 
-@python_2_unicode_compatible
 class BaseDelivery(models.Model, metaclass=deferred.ForeignKeyBuilder):
     """
     Shipping provider to keep track on each delivery.
