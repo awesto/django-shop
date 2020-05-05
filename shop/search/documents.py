@@ -80,15 +80,16 @@ class ProductDocument:
     Factory for building an elasticsearch-dsl Document class. This class
     """
     def __new__(cls, language=None, settings=None):
+        index_name_parts = [app_settings.SHOP_APP_LABEL]
         if language:
-            index_name = '{0}.products-{1}'.format(app_settings.SHOP_APP_LABEL, language.lower())
+            index_name_parts.append(language.lower())
             doc_name = 'ProductDocument{}'.format(language.title())
             analyzer = body_analyzers.get(language, body_analyzers['default'])
         else:
-            index_name = '{}.products'.format(app_settings.SHOP_APP_LABEL)
             doc_name = 'ProductDocument'
             analyzer = body_analyzers['default']
-        products_index = Index(index_name)
+        index_name_parts.append('products')
+        products_index = Index('.'.join(index_name_parts))
         if settings:
             products_index.settings(**settings)
         attrs = {'_language': language, 'body': fields.TextField(analyzer=analyzer)}
