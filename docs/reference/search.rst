@@ -21,7 +21,7 @@ and easy to adapt for full-text search. Unfortunately, Haystack was never adopte
 of Elasticsearch beyond 1.7. Also, it didn't allow complicated queries and the configuration is
 minimal and highly restricted. Therefore, **django-SHOP** version 1.2 has been refactored to use
 elasticsearch-dsl_ together with django-elasticsearch-dsl_. It now supports up to the most recent
-versions of Elasticsearch, which currently are 7.5.
+version of Elasticsearch, which currently is 7.6.
 
 In this document we assume that the merchant only wants to index his products, but not any arbitrary
 content, such as for example the terms and condition, as found outside **django-SHOP**, but inside
@@ -71,143 +71,137 @@ Configure the connection to the Elasticsearch database:
 Indexing the Products
 =====================
 
-Before we start to search for products on our site, we first must populate the so called reverse
-index in the database. But even before that, we must know which fields contain information which
-shall create search results. Therefore it is quite important to spot the fields of the product
-models, which contain the information customers might search for.
+Before adding search support for products on our site, we must consider which fields of our product
+model contain relevant information to be searched for. The philosophy of **django-SHOP** is to not
+impose any predefined fields for this purpose, but rather let the merchants decide what they need.
+Therefore it is quite important to spot the fields in the product models, which contain the relevant
+information customers might search for.
 
-**Django-SHOP** comes with a preconfigured, but minimal set of fields, whose values are used to
-populate the reverse index. These are the fields ``product_name`` and the ``product_code`` from
-our base product model :class:`shop.models.product.ProductModel`. Since the product model is
-intended to be extended by the merchant implementation, so are the fields of the reverse index.
-This means, that model fields containing information used to search for, shall also be reflected
-into the reverse index.
-
-
-
+Elasticsearch uses the term ``Document`` to describe a searchable entity. In **django-SHOP**, we
+can define one or more product models, each declaring their own fields. Since in our shop we want
+to search over all products, regardless of their specific model definition, we need a mapping from
+those fields onto the representation used to create the reverse index. For this purpose,
+**django-SHOP** is shipped with a generic document class named ``ProductDocument``. It contains
+three index fields: ``product_name``, ``product_code`` and ``body``.
 
 
+Product Name
+------------
 
-In Haystack one can
-create more than one kind of index for each item being added to the search database.
-
-Each product type requires its individual indexing class. Note that Haystack does some
-autodiscovery, therefore this class must be added to a file named ``search_indexex.py``. For our
-product model ``SmartCard``, this indexing class then may look like:
-
-.. code-block:: python
-	:caption: myshop/search_indexes.py
-	:name: smartcard-search-indexes
-
-	from shop.search.indexes import ProductIndex
-	from haystack import indexes
-
-	class SmartCardIndex(ProductIndex, indexes.Indexable):
-	    catalog_media = indexes.CharField(stored=True,
-	        indexed=False, null=True)
-	    search_media = indexes.CharField(stored=True,
-	        indexed=False, null=True)
-
-	    def get_model(self):
-	        return SmartCard
-
-	    # more methods ...
-
-While building the index, Haystack performs some preparatory steps:
+The product's name often is declared as a ``CharField`` in our product's model. Depending on the
+nature of the product, it could also be declared for different languages. Using django-parler's
+``TranslatableField``, the product name then is stored in a Django model related to the product
+model. We also want to ensure, that this name is indexed only for a specific language. This
+information is stored inside the ``Document`` field ``product_name``.
 
 
-Populate the reverse index database
------------------------------------
+Product Code
+------------
 
-The base class for our search index declares two fields for holding the reverse indexes and a few
-additional fields to store information about the indexed product entity:
+The product's code remains the same for all languages. However, in case a product is offerend in
+different variants, each of them may declare their own code. This means, that the same product can
+be found through one or more product codes. Moreover, since product code are unique identifiers,
+we usually do not want to apply stemming, they are stored as a list of keywords inside an
+Elasticsearch ``Document`` entity.
 
-.. code-block:: python
-	:caption: shop/indexes.py
 
-	class ProductIndex(indexes.SearchIndex):
-	    text = indexes.CharField(document=True,
-	        indexed=True, use_template=True)
-	    autocomplete = indexes.EdgeNgramField(indexed=True,
-	        use_template=True)
+Body Field
+----------
 
-	    product_name = indexes.CharField(stored=True,
-	        indexed=False, model_attr='product_name')
-	    product_url = indexes.CharField(stored=True,
-	        indexed=False, model_attr='get_absolute_url')
+Depending on our product's model declaration, we can have many additional fields containing
+information, which may be relevant to be searched for. Therefore the merchant must declare a Django
+template for each product type. This template then is used to render the content of those fields as
+plain text. This text is never seen by the customer, but rather used to feed our full text search
+engine when building the reverse index. First Elasticsearch strips all HTML tags from that text.
+In the second step, this text is tokenized and stemmed by Elasticsearch analyzers. In
+**django-SHOP** we can specify one analyzer for each language.
 
-The first two `index fields`_ require a template which renders plain text, which is used to build a
-reverse index in the search database. The ``indexes.CharField`` is used for a classic reverse text
-index, whereas the ``indexes.EdgeNgramField`` is used for autocompletion_.
 
-Each of these index fields require their own template. They *must* be named according to the
-following rules:
+Example
+.......
 
-.. code-block:: guess
-
-	search/indexes/myshop/<product-type>_text.txt
-
-and
-
-.. code-block:: guess
-
-	search/indexes/myshop/<product-type>_autocomplete.txt
-
-and be located inside the project's template folder. The ``<product-type>`` is the classname in
-lowercase  of the given product model. Create two individual templates for each product type, one
-for text search and one for autocompletion.
-
-An example:
-
-.. code-block:: django
-	:caption: search/indexes/smartcard_text.txt
-
-	{{ object.product_name }}
-	{{ object.product_code }}
-	{{ object.manufacturer }}
-	{{ object.description|striptags }}
-	{% for page in object.cms_pages.all %}
-	{{ page.get_title }}{% endfor %}
-
-The last two fields are used to store information about the product's content, side by side with the
-indexed entities. That's a huge performance booster, since this information otherwise would have to
-be fetched from the relational database, item by item, and then being rendered while preparing the
-search query result.
-
-We can also add fields to our index class, which stores pre-rendered HTML. In the above example,
-this is done by the fields ``catalog_media`` and ``search_media``. Since we do not provide
-a model attribute, we must provide two methods, which creates this content:
+Say, we have a product using this simplified model representation:
 
 .. code-block:: python
-	:caption: myshop/search_indexes.py
-	:name: searchindex-media
 
-	class SmartCardIndex(ProductIndex, indexes.Indexable):
-	    # other fields and methods ...
+	from django.db import models
+	from shop.models.product import BaseProduct
 
-	    def prepare_catalog_media(self, product):
-	        return self.render_html('catalog', product, 'media')
+	class Author(models.Model):
+	    name = models.CharField(
+	        _("Author Name"),
+	        max_length=255,
+	    )
 
-	    def prepare_search_media(self, product):
-	        return self.render_html('search', product, 'media')
+	class Editor(models.Model):
+	    name = models.CharField(
+	        _("Editor"),
+	        max_length=255,
+	    )
 
-These methods themselves invoke ``render_html`` which takes the product and renders it using
-a templates named ``catalog-product-media.html`` or ``search-product-media.html`` respectively.
-These templates are looked for in the folder ``myshop/products`` or, if not found there in the
-folder ``shop/products``. The HTML snippets for catalog-media are used for autocompletion search,
-whereas search-media is used for normal a normal full-text search invocation.
+	class Book(BaseProduct):
+	    product_name = models.CharField(
+	        _("Book Title"),
+	        max_length=255,
+	    )
+
+	    product_code = models.CharField(
+	        _("Product code"),
+	        max_length=255,
+	    )
+
+	    caption = HTMLField(
+	        help_text=_("Short description"),
+	    )
+
+	    authors = models.ManyToManyField(Author)
+
+	    editor = models.ForeignKey(
+	        Editor,
+	        on_delete=models.CASCADE,
+	    )
+
+By default, **django-SHOP** only indexes the fields ``product_name`` and ``product_code``. However,
+we also want all other fields beeing indexed. If the merchant's project is named
+``awesome_bookstore``, then inside the project's template folder, we must create a file named
+``awesome_bookstore/search/indexes/book.txt``. This template file then shall contain:
+
+.. code-block:: text
+	:caption: awesome_bookstore/search/indexes/book.txt
+
+	{{ product.caption }}
+	{% for author in product.authors.all %}
+	{{ author.name }}{% endfor %}
+	{{ product.editor.name }}
+
+When building the index, this template is rendered for each product in our bookstore. The rendered
+content then cleaned up, tokenized, stemmed, filtered and used to build the reverse index for the
+Elasticsearch database. The reverse index then is stored in the ``body`` field inside the
+:class:`shop.search.documents.ProductDocument`.
+
+If the above template file can not be found, **django-SHOP** falls back onto
+``awesome_bookstore/search/indexes/product.txt``. If that template file is missing too, then
+the file ``shop/search/indexes/product.txt`` is used. Note that the template file always is in
+lowercase.
 
 
-Building the Index
-------------------
+Populate the Database
+---------------------
 
 To build the index in Elasticsearch, invoke:
 
 .. code-block:: shell
 
-	./manage.py rebuild_index --noinput
+	./manage.py search_index --rebuild
 
 Depending on the number of products in the database, this may take some time.
+
+
+
+
+Building the Index
+------------------
+
 
 
 Search Serializers
@@ -407,6 +401,4 @@ bootstrapping our Angular application:
 .. _elasticsearch-dsl: https://elasticsearch-dsl.readthedocs.io/en/latest/
 .. _django-elasticsearch-dsl: https://django-elasticsearch-dsl.readthedocs.io/en/latest/
 .. _normalized: https://www.elastic.co/guide/en/elasticsearch/guide/current/token-normalization.html
-.. _index fields: http://django-haystack.readthedocs.org/en/latest/searchfield_api.html
-.. _autocompletion: http://django-haystack.readthedocs.org/en/latest/autocomplete.html?highlight=autocompletion
 .. _djangoCMS apphook: http://docs.django-cms.org/en/stable/how_to/apphooks.html
