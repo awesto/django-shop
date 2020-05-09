@@ -44,7 +44,7 @@ class ShopSearchResultsPlugin(ShopPluginBase):
     def get_render_template(self, context, instance, placeholder):
         if instance.placeholder.page.application_urls != 'CatalogSearchApp':
             alert_msg = '''<div class="alert alert-danger">
-            This {} plugin is used on a CMS page without an application of type "Search".
+            Plugin "{}" is used on a CMS page without an application of type "Catalog Search".
             </div>'''
             return engines['django'].from_string(alert_msg.format(self.name))
         return select_template([
