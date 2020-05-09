@@ -111,7 +111,7 @@ class ChoiceEnumField(models.PositiveSmallIntegerField):
             kwargs['default'] = kwargs['default'].value
         return name, path, args, kwargs
 
-    def from_db_value(self, value, expression, connection, context=None):
+    def from_db_value(self, value, expression, connection):
         try:
             return self.enum_type(value)
         except ValueError:
