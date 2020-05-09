@@ -88,9 +88,9 @@ class ProductListView(generics.ListAPIView):
     responsible for rendering the catalog's list view.
     ```
     urlpatterns = [
-        url(r'^$', ProductListView.as_view()),
-        url(r'^(?P<slug>[\w-]+)/?$', ProductRetrieveView.as_view(**params)),  # see below
         ...
+        url(r'^(?P<slug>[\w-]+)/?$', ProductRetrieveView.as_view(**params)),  # see below
+        url(r'^$', ProductListView.as_view()),
     ]
     ```
 
@@ -233,9 +233,9 @@ class ProductRetrieveView(generics.RetrieveAPIView):
     and used by the CMS pages responsible for rendering the catalog's list.
     ```
     urlpatterns = [
-        url(r'^$', ProductListView.as_view()),  # see above
-        url(r'^(?P<slug>[\w-]+)/?$', ProductRetrieveView.as_view()),
         ...
+        url(r'^(?P<slug>[\w-]+)', ProductRetrieveView.as_view()),
+        url(r'^', ProductListView.as_view()),  # see above
     ]
     ```
     You may add these attributes to the ``as_view()`` method:
