@@ -8,9 +8,9 @@
 
 <div class="shop-cart" shop-cart="{% url 'shop:watch-list' %}">
 {% block shop-watch-head %}
-	<div class="row lead text-muted" ng-if="cart.items.length==0">
+	<div class="row" ng-if="cart.items.length==0">
 		<div class="col">
-			{% trans "You are perfectly happy!" context "cart" %}
+			<p class="lead text-muted">{% trans "You are perfectly happy!" context "cart" %}</p>
 		</div>
 	</div>
 {% endblock shop-watch-head %}

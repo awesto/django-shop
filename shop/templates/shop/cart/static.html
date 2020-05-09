@@ -5,9 +5,9 @@
 <div class="shop-cart">
 {% block shop-cart-head %}
 	{% if cart.num_items == 0 %}
-	<div class="row lead text-muted py-1">
+	<div class="row">
 		<div class="col">
-			{% trans "There are no items in the cart." context "cart" %}
+			<p class="lead text-muted">{% trans "There are no items in the cart." context "cart" %}</p>
 		</div>
 	</div>
 	{% endif %}

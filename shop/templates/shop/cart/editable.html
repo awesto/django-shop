@@ -14,9 +14,9 @@
 
 <div class="shop-cart" shop-cart="{% url 'shop:cart-list' %}">
 {% block shop-cart-head %}
-	<div class="row lead text-muted" ng-if="cart.num_items==0">
+	<div class="row" ng-if="cart.num_items==0">
 		<div class="col">
-			{% trans "There are no items in the cart." context "cart" %}
+			<p class="lead text-muted">{% trans "There are no items in the cart." context "cart" %}</p>
 		</div>
 	</div>
 {% endblock shop-cart-head %}
