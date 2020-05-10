@@ -288,7 +288,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
     def get_template_names(self):
         product = self.get_object()
         app_label = product._meta.app_label.lower()
-        basename = '{}-detail.html'.format(product.__class__.__name__.lower())
+        basename = '{}-detail.html'.format(product._meta.model_name)
         return [
             os.path.join(app_label, 'catalog', basename),
             os.path.join(app_label, 'catalog/product-detail.html'),
