@@ -11,7 +11,7 @@ django-cms==3.7.2
 django-entangled==0.3
 django-filer==1.7.1
 django-formtools==2.1
-django-fsm==2.6.1
+django-fsm==2.7.0
 django-fsm-admin==1.2.4
 django-ipware==2.1.0
 django-mptt==0.11.0
