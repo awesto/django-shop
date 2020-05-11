@@ -10,6 +10,7 @@ python:
 env:
   - DJANGOVER=django21
   - DJANGOVER=django22
+  - DJANGOVER=django30
 
 install:
   - pip install tox
