@@ -1,7 +1,6 @@
 import pytest
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.messages.storage import default_storage
-from django.utils import six
 from shop.conf import app_settings
 from shop.models.cart import CartModel
 from shop.models.defaults.customer import Customer
@@ -22,8 +21,8 @@ def test_add_to_cart(commodity_factory, api_client, rf):
     response = api_client.post(reverse('shop:cart-list'), data)
     assert response.status_code == 201
     assert response.data['quantity'] == 2
-    assert response.data['unit_price'] == six.text_type(product.unit_price)
-    assert response.data['line_total'] == six.text_type(2 * product.unit_price)
+    assert response.data['unit_price'] == str(product.unit_price)
+    assert response.data['line_total'] == str(2 * product.unit_price)
 
     # verify that the product is in the cart
     request = rf.get('/my-cart')
@@ -48,8 +47,8 @@ def test_list_cart(api_rf, filled_cart):
     assert response.status_code == 200
     assert response.data['num_items'] == 1
     assert response.data['total_quantity'] == 2
-    assert response.data['subtotal'] == six.text_type(filled_cart.subtotal)
-    assert response.data['total'] == six.text_type(filled_cart.total)
+    assert response.data['subtotal'] == str(filled_cart.subtotal)
+    assert response.data['total'] == str(filled_cart.total)
 
 
 @pytest.mark.django_db
@@ -135,9 +134,9 @@ def test_include_tax_modifier(api_rf, filled_cart):
 
     response = CartViewSet.as_view({'get': 'list'})(request)
     assert response.status_code == 200
-    assert response.data['subtotal'] == six.text_type(filled_cart.subtotal)
+    assert response.data['subtotal'] == str(filled_cart.subtotal)
     tax_rate = 1 + app_settings.SHOP_VALUE_ADDED_TAX / 100
-    assert response.data['total'] == six.text_type(filled_cart.subtotal * tax_rate)
+    assert response.data['total'] == str(filled_cart.subtotal * tax_rate)
 
 
 @pytest.mark.django_db
