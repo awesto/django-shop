@@ -32,6 +32,7 @@ djangocms-text-ckeditor==3.8.0
 djangorestframework==3.11.0
 easy-thumbnails==2.6
 factory-boy==2.11.1
+importlib-metadata==1.6.0
 jsonfield==3.1.0
 libsass==0.20.0
 lxml==4.5.0
