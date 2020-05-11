@@ -36,6 +36,9 @@ importlib-metadata==1.6.0
 jsonfield==3.1.0
 libsass==0.20.0
 lxml==4.5.0
+packaging==20.3
+pathlib2==2.3.5
+phonenumbers==8.12.3
 pillow==7.0.0
 pluggy==0.13.1
 py==1.8.0
