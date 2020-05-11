@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib import admin
 from django.contrib.sites.models import Site
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 try:
     from django_elasticsearch_dsl.registries import registry as elasticsearch_registry

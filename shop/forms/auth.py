@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 from django.forms import widgets, ModelForm
 from django.template.loader import get_template, select_template, render_to_string
 from django.utils.html import format_html
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from djng.forms import fields, NgModelFormMixin, NgFormValidationMixin
 from djng.styling.bootstrap3.forms import Bootstrap3ModelForm
 from post_office import mail as post_office_mail

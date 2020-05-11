@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.forms import widgets, Media
 from django.forms.utils import ErrorDict
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from djng.forms import fields
 from sass_processor.processor import sass_processor
 from shop.forms.base import DialogForm, DialogModelForm, UniqueEmailValidationMixin

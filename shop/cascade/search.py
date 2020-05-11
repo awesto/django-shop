@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from django.forms import fields, widgets
 from django.template import engines
 from django.template.loader import select_template
-from django.utils.translation import ugettext_lazy as _, ugettext
+from django.utils.translation import gettext_lazy as _, gettext
 from entangled.forms import EntangledModelFormMixin
 from cms.plugin_pool import plugin_pool
 from shop.cascade.plugin_base import ShopPluginBase
@@ -61,7 +61,7 @@ class ShopSearchResultsPlugin(ShopPluginBase):
     def get_identifier(cls, obj):
         pagination = obj.glossary.get('pagination')
         if pagination == 'paginator':
-            return ugettext("Manual Pagination")
-        return ugettext("Infinite Scroll")
+            return gettext("Manual Pagination")
+        return gettext("Infinite Scroll")
 
 plugin_pool.register_plugin(ShopSearchResultsPlugin)

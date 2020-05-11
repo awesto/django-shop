@@ -1,7 +1,7 @@
 from django.contrib.admin import StackedInline
 from django.forms import fields, widgets
 from django.template.loader import select_template
-from django.utils.translation import ugettext_lazy as _, ugettext
+from django.utils.translation import gettext_lazy as _, gettext
 
 from entangled.forms import EntangledModelFormMixin, EntangledModelForm
 
@@ -64,8 +64,8 @@ class ShopCatalogPlugin(ShopPluginBase):
     def get_identifier(cls, obj):
         pagination = obj.glossary.get('pagination')
         if pagination == 'paginator':
-            return ugettext("Manual Pagination")
-        return ugettext("Infinite Scroll")
+            return gettext("Manual Pagination")
+        return gettext("Infinite Scroll")
 
 plugin_pool.register_plugin(ShopCatalogPlugin)
 

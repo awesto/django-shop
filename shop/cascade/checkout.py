@@ -5,7 +5,7 @@ from django.template.loader import select_template
 from django.utils.html import format_html
 from django.utils.module_loading import import_string
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext_lazy as _, pgettext_lazy
+from django.utils.translation import gettext_lazy as _, pgettext_lazy
 from cms.plugin_pool import plugin_pool
 from djangocms_text_ckeditor.cms_plugins import TextPlugin
 from cmsplugin_cascade.bootstrap4.buttons import ButtonFormMixin

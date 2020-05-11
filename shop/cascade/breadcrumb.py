@@ -3,7 +3,7 @@ from django.forms import fields, widgets
 from django.template import engines, TemplateDoesNotExist
 from django.template.loader import select_template
 from django.utils.html import mark_safe
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from entangled.forms import EntangledModelFormMixin
 from cms.apphook_pool import apphook_pool
 from cms.plugin_pool import plugin_pool

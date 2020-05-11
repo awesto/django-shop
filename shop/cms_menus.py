@@ -1,4 +1,4 @@
-from django.utils.translation import ugettext_lazy as _, override
+from django.utils.translation import gettext_lazy as _, override
 
 from cms.menu_bases import CMSAttachMenu
 from menus.base import NavigationNode

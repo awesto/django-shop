@@ -8,7 +8,7 @@ from django.db import models, transaction
 from django.db.models.aggregates import Sum
 from django.urls import NoReverseMatch, reverse
 from django.utils.functional import cached_property
-from django.utils.translation import ugettext_lazy as _, pgettext_lazy, get_language_from_request
+from django.utils.translation import gettext_lazy as _, pgettext_lazy, get_language_from_request
 
 from django_fsm import FSMField, transition
 from ipware.ip import get_ip

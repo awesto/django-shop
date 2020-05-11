@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db.models import Max
 from django.forms import models, fields, widgets
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from cms.wizards.forms import BaseFormMixin
 from djangocms_text_ckeditor.fields import HTMLFormField
 from shop.models.related import ProductPageModel

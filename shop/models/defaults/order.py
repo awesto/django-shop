@@ -4,7 +4,7 @@ from urllib.parse import urljoin
 
 from django.db import models
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _, pgettext_lazy
+from django.utils.translation import gettext_lazy as _, pgettext_lazy
 from shop.models import order
 
 

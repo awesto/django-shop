@@ -1,6 +1,6 @@
 from django.template.loader import select_template
 from django.utils.html import format_html
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.utils.module_loading import import_string
 from entangled.forms import EntangledModelFormMixin
 from cms.plugin_pool import plugin_pool

@@ -2,8 +2,8 @@ from django.contrib.auth import logout, get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import NON_FIELD_ERRORS
-from django.utils.encoding import force_text
-from django.utils.translation import ugettext_lazy as _
+from django.utils.encoding import force_str
+from django.utils.translation import gettext_lazy as _
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -179,7 +179,7 @@ class PasswordResetConfirmView(GenericAPIView):
             return Response({'validlink': False})
         return Response({
             'validlink': True,
-            'user_name': force_text(serializer.user),
+            'user_name': force_str(serializer.user),
             'form_name': 'password_reset_form',
         })
 

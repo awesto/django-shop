@@ -1,5 +1,5 @@
 from django.forms import fields, widgets
-from django.utils.translation import ungettext_lazy, ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.utils.text import Truncator
 from django.utils.html import format_html
 from django.forms.fields import IntegerField

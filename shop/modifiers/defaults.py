@@ -1,5 +1,5 @@
 from decimal import Decimal
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from shop import messages
 from shop.exceptions import ProductNotAvailable
 from shop.money import AbstractMoney, Money

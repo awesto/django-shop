@@ -3,7 +3,7 @@ from collections import OrderedDict
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.forms import fields, models, widgets
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from django_fsm import RETURN_VALUE
 
