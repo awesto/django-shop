@@ -40,8 +40,8 @@ Changelog for django-SHOP
 * Refactored views for adding product to cart and changing quantity in cart so that the purchasing
   quantity can not exceed the quantity in stock.
 * The default commodity product now keeps track of the quantity in stock.
-* Changed the signature of the methods :method:`shop.modifiers.base.CartModifierBase.pre_process_cart`
-  and :method:`shop.modifiers.base.CartModifierBase.pre_process_cart_item` to take an extra boolean
+* Changed the signature of the methods :meth:`shop.modifiers.base.CartModifierBase.pre_process_cart`
+  and :meth:`shop.modifiers.base.CartModifierBase.pre_process_cart_item` to take an extra boolean
   parameter.
 * Remove sub-serializer ``availability`` from product, because now it is handled internally by the
   class :class:`shop.serializers.defaults.catalog.AddToCartSerializer`.
@@ -61,7 +61,7 @@ Changelog for django-SHOP
 1.0.1
 =====
 
-* Fix error in admin interface for ``Notification``detail view.
+* Fix error in admin interface for ``Notification`` detail view.
 * Refactor all internal model checks to use classmethod ``check()`` provided by Django.
 
 

@@ -200,6 +200,8 @@ To test if that serializer works properly, we can examine the raw content of the
 appending ``?format=api`` to the URL of our catalog view. This then renders a human readable
 representation of the context as JSON.
 
+.. _thumb: https://easy-thumbnails.readthedocs.io/en/latest/usage/#thumbnail-tag
+
 
 Customizing the Product Summary Serializer
 ..........................................
@@ -264,6 +266,7 @@ bigger effort, rather than creating a specific template for each product type.
 
 When rendering a product's detail page, the ``ProductRetrieveView`` looks for a template suitable
 for the given product type, following these rules:
+
 * look for a template named :samp:`{app_label}>/catalog/{product-model-name}-detail.html` [4]_ [5]_,
   otherwise
 * look for a template named :samp:`{app_label}/catalog/product-detail.html` [4]_, otherwise
