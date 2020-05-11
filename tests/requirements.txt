@@ -34,6 +34,7 @@ easy-thumbnails==2.6
 factory-boy==2.11.1
 Faker==4.0.3
 importlib-metadata==1.6.0
+inflection==0.4.0
 jsonfield==3.1.0
 libsass==0.20.0
 lxml==4.5.0
