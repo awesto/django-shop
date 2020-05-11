@@ -52,4 +52,5 @@ sqlparse==0.3.0
 stripe==1.53.0
 text-unidecode==1.2
 tox==3.7.0
-urllib3==1.25.7
+urllib3==1.25.9
+zipp==3.1.0
