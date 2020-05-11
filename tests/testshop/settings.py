@@ -116,6 +116,10 @@ USE_TZ = True
 
 TIME_ZONE = 'UTC'
 
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+SILENCED_SYSTEM_CHECKS = ['auth.W004']
+
 LANGUAGES = [
     ('en', 'English'),
 ]
@@ -186,8 +190,6 @@ CKEDITOR_SETTINGS = {
     ],
     'stylesSet': format_lazy('default:{}', reverse_lazy('admin:cascade_texteditor_config')),
 }
-
-SILENCED_SYSTEM_CHECKS = ['auth.W004']
 
 SHOP_APP_LABEL = 'testshop'
 
