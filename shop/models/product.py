@@ -9,7 +9,7 @@ from django.db import models
 from django.db.models.aggregates import Sum
 from django.db.models.functions import Coalesce
 from django.utils import timezone
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.utils.translation import gettext_lazy as _
 
 try:
@@ -228,7 +228,7 @@ class BaseProduct(PolymorphicModel, metaclass=PolymorphicProductMetaclass):
         """
         Returns the polymorphic type of the product.
         """
-        return force_text(self.polymorphic_ctype)
+        return force_str(self.polymorphic_ctype)
     product_type.short_description = _("Product type")
 
     @property

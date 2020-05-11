@@ -3,7 +3,7 @@ from formtools.wizard.views import normalize_name
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.forms import widgets
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
@@ -57,13 +57,13 @@ class DialogFormMixin(NgModelFormMixin, NgFormValidationMixin):
                             line.append(dict(bound_field.field.choices)[cast_to(v)])
                         except (AttributeError, KeyError):
                             pass
-                    output.append(force_text(', '.join(line)))
+                    output.append(force_str(', '.join(line)))
                 elif value:
                     try:
                         value = dict(bound_field.field.choices)[value]
                     except (AttributeError, KeyError):
                         pass
-                    output.append(force_text(value))
+                    output.append(force_str(value))
             return mark_safe('\n'.join(output))
 
     def get_response_data(self):
