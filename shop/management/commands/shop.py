@@ -225,7 +225,7 @@ Usage:
 
         page_attributes = [
             # Menu Title, CMS-App-Hook or None, kwargs, Main Plugin, Plugin Context,
-            (("Search", 'CatalogSearchCMSApp', {'reverse_id': 'shop-search-product'}),
+            (("Search", 'CatalogSearchApp', {'reverse_id': 'shop-search-product'}),
              ('ShopSearchResultsPlugin', {}), {'render_type': 'catalog'}),
             (("Cart", None, {'reverse_id': 'shop-cart'}),
              ('ShopCartPlugin', {'render_type': 'editable'}), {'render_type': 'soft-root'}),
