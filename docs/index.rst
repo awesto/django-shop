@@ -11,12 +11,6 @@ Django-SHOP documentation
     features
 
 
-Upgrading
-=========
-If you are upgrading from an earlier version, please be sure to read the
-:ref:`release-notes`.
-
-
 Tutorial
 ========
 
@@ -92,12 +86,15 @@ Django/Python compatibility table
 ===========  ===  ===  ====  ====  ===  ===  ===  ===  ===
 django-SHOP  Django                     Python
 -----------  -------------------------  ------------------
-\            1.8  1.9  1.10  1.11  2.0  2.7  3.4  3.5  3.6
-===========  ===  ===  ====  ====  ===  ===  ===  ===  ===
-0.10.x        ✓    ✓    ⨯     ⨯     ⨯    ✓    ✓   ✓    ⨯
-0.11.x        ⨯    ✓    ✓     ⨯     ⨯    ✓    ✓   ✓    ✓
-0.12.x        ⨯    ⨯    ⨯     ✓     ⨯    ✓    ✓   ✓    ✓
-0.13.x        ⨯    ⨯    ⨯     ✓     ⨯    ✓    ✓   ✓    ✓
+\            1.8  1.9  1.10  1.11  2.0  2.7  3.4  3.5  3.6  3.7  3.8
+===========  ===  ===  ====  ====  ===  ===  ===  ===  ===  ===  ===
+0.10.x        ✓    ✓    ⨯     ⨯     ⨯    ✓    ✓    ✓    ⨯
+0.11.x        ⨯    ✓    ✓     ⨯     ⨯    ✓    ✓    ✓    ✓
+0.12.x        ⨯    ⨯    ⨯     ✓     ⨯    ✓    ✓    ✓    ✓
+0.13.x        ⨯    ⨯    ⨯     ✓     ⨯    ✓    ✓    ✓    ✓
+1.0.x         ⨯    ⨯    ⨯     ✓     ⨯    ✓    ✓    ✓    ✓
+1.1.x         ⨯    ⨯    ⨯     ✓     ⨯    ✓    ✓    ✓    ✓
+1.2.x         ⨯    ⨯    ⨯     ✓     ⨯    ⨯    ⨯    ✓    ✓
 ===========  ===  ===  ====  ====  ===  ===  ===  ===  ===
 
 
@@ -108,7 +105,6 @@ Development and Community
     :maxdepth: 1
 
     changelog
-    release-notes/index
     faq
     contributing
     authors
