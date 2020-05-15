@@ -310,7 +310,7 @@ class ExtraAnnotationFormPlugin(DialogFormPluginBase):
 DialogFormPluginBase.register_plugin(ExtraAnnotationFormPlugin)
 
 
-class AcceptConditionMixin(object):
+class AcceptConditionMixin:
     render_template = 'shop/checkout/accept-condition.html'
 
     def render(self, context, instance, placeholder):

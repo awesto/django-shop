@@ -6,7 +6,7 @@ from django_fsm import transition
 from shop.models.delivery import DeliveryModel, DeliveryItemModel
 
 
-class SimpleShippingWorkflowMixin(object):
+class SimpleShippingWorkflowMixin:
     """
     Workflow for simply marking the state of an Order while picking, packing and shipping items.
     It does not create a Delivery object.

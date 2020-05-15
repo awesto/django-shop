@@ -25,7 +25,7 @@ from shop.conf import app_settings
 from shop.exceptions import ProductNotAvailable
 
 
-class Availability(object):
+class Availability:
     """
     Contains the currently available quantity for a given product and period.
     """
@@ -59,7 +59,7 @@ class Availability(object):
         self.inventory = bool(kwargs.get('inventory', None))
 
 
-class AvailableProductMixin(object):
+class AvailableProductMixin:
     """
     Add this mixin class to the product models declaration, wanting to keep track on the
     current amount of products in stock. In comparison to
@@ -112,7 +112,7 @@ class AvailableProductMixin(object):
         return errors
 
 
-class BaseReserveProductMixin(object):
+class BaseReserveProductMixin:
     def get_availability(self, request, **kwargs):
         """
         Returns the current available quantity for this product.
@@ -375,7 +375,7 @@ class BaseProduct(PolymorphicModel, metaclass=PolymorphicProductMetaclass):
 ProductModel = deferred.MaterializedModel(BaseProduct)
 
 
-class CMSPageReferenceMixin(object):
+class CMSPageReferenceMixin:
     """
     Products which refer to CMS pages in order to emulate categories, normally need a method for
     being accessed directly through a canonical URL. Add this mixin class for adding a

@@ -198,7 +198,7 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
         return response
 
 
-class PrintInvoiceAdminMixin(object):
+class PrintInvoiceAdminMixin:
     """
     A customized OrderAdmin class shall inherit from this mixin class, to add
     methods for printing the the invoice.

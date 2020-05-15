@@ -2,7 +2,7 @@ from django.core.exceptions import ImproperlyConfigured
 from shop.models.order import OrderModel
 
 
-class PaymentProvider(object):
+class PaymentProvider:
     """
     Base class for all Payment Service Providers.
     """

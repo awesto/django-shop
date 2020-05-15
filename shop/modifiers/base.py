@@ -1,4 +1,4 @@
-class BaseCartModifier(object):
+class BaseCartModifier:
     """
     Cart Modifiers are the cart's counterpart to backends.
 

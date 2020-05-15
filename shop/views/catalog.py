@@ -342,7 +342,7 @@ class ProductSelectView(generics.ListAPIView):
         return ProductModel.objects.all()
 
 
-class AddFilterContextMixin(object):
+class AddFilterContextMixin:
     """
     A mixin to enrich the render context by ``filter`` containing information
     on how to render the filter set, supplied by attribute ``filter_class``.

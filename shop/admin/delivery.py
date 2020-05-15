@@ -185,7 +185,7 @@ class DeliveryInline(admin.TabularInline):
     fulfilled.short_description = _("Fulfilled at")
 
 
-class DeliveryOrderAdminMixin(object):
+class DeliveryOrderAdminMixin:
     """
     Add this mixin to the class defining the OrderAdmin
     """

@@ -5,7 +5,7 @@ from shop.models.cart import CartModel
 from shop.serializers.cart import CartSerializer
 
 
-class TemplateContextMixin(object):
+class TemplateContextMixin:
     """
     Alternative implementation which does not pollute the template context with
     the serialized data on the root scope.

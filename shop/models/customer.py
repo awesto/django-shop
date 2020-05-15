@@ -369,7 +369,7 @@ class BaseCustomer(models.Model, metaclass=deferred.ForeignKeyBuilder):
 CustomerModel = deferred.MaterializedModel(BaseCustomer)
 
 
-class VisitingCustomer(object):
+class VisitingCustomer:
     """
     This dummy object is used for customers which just visit the site. Whenever a VisitingCustomer
     adds something to the cart, this object is replaced against a real Customer object.

@@ -2,7 +2,7 @@ from django.core.exceptions import ImproperlyConfigured
 from shop.conf import app_settings
 
 
-class CartModifiersPool(object):
+class CartModifiersPool:
 
     USE_CACHE = True
 

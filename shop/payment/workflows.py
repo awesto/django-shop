@@ -5,7 +5,7 @@ from django_fsm import transition, RETURN_VALUE
 from shop.models.order import BaseOrder
 
 
-class ManualPaymentWorkflowMixin(object):
+class ManualPaymentWorkflowMixin:
     """
     Add this class to `settings.SHOP_ORDER_WORKFLOWS` to mix it into your `OrderModel`.
     It adds all the methods required for state transitions, when used with the
@@ -69,7 +69,7 @@ class ManualPaymentWorkflowMixin(object):
         return 'refund_payment' if self.amount_paid else 'order_canceled'
 
 
-class CancelOrderWorkflowMixin(object):
+class CancelOrderWorkflowMixin:
     """
     Add this class to `settings.SHOP_ORDER_WORKFLOWS` to mix it into your `OrderModel`.
     It adds all the methods required for state transitions, to cancel an order.

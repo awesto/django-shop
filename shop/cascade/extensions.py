@@ -4,7 +4,7 @@ from cmsplugin_cascade.plugin_base import TransparentContainer
 from shop.cascade.plugin_base import ShopPluginBase
 
 
-class ShopExtendableMixin(object):
+class ShopExtendableMixin:
     """
     Add this mixin class to the list of ``model_mixins``, in the plugin class wishing to use extensions.
     """
@@ -25,7 +25,7 @@ class ShopExtendableMixin(object):
             return result[0]
 
 
-class LeftRightExtensionMixin(object):
+class LeftRightExtensionMixin:
     """
     Plugin classes wishing to use extensions shall inherit from this class.
     """

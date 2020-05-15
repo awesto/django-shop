@@ -8,7 +8,7 @@ from shop.models.product import Availability, BaseReserveProductMixin
 from shop.exceptions import ProductNotAvailable
 
 
-class AvailableProductMixin(object):
+class AvailableProductMixin:
     """
     Add this mixin class to the product models declaration, wanting to keep track on the
     current amount of products in stock. In comparison to

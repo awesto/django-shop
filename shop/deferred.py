@@ -9,7 +9,7 @@ from polymorphic.models import PolymorphicModelBase
 from shop.conf import app_settings
 
 
-class DeferredRelatedField(object):
+class DeferredRelatedField:
     def __init__(self, to, **kwargs):
         try:
             self.abstract_model = to._meta.object_name

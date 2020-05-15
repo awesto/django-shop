@@ -1,4 +1,4 @@
-class DefaultSettings(object):
+class DefaultSettings:
     def _setting(self, name, default=None):
         from django.conf import settings
         return getattr(settings, name, default)

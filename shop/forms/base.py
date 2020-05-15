@@ -110,7 +110,7 @@ class DialogModelForm(DialogFormMixin, Bootstrap3ModelForm):
         return css_classes
 
 
-class UniqueEmailValidationMixin(object):
+class UniqueEmailValidationMixin:
     """
     A mixin added to forms which have to validate for the uniqueness of email addresses.
     """

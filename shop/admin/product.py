@@ -42,7 +42,7 @@ class CategoryModelMultipleChoiceField(forms.ModelMultipleChoiceField):
             return str(obj)
 
 
-class CMSPageAsCategoryMixin(object):
+class CMSPageAsCategoryMixin:
     """
     Add this mixin class to the ModelAdmin class for products wishing to be assigned to djangoCMS
     pages when used as categories.
