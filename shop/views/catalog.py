@@ -68,7 +68,7 @@ class ProductListPagination(pagination.LimitOffsetPagination):
         return url
 
     def get_html_context(self):
-        context = super(ProductListPagination, self).get_html_context()
+        context = super().get_html_context()
         page_offset = self.get_offset(self.request)
         context['previous_url'] = self.adjust_offset(context['previous_url'], page_offset)
         context['next_url'] = self.adjust_offset(context['next_url'], page_offset)
@@ -277,7 +277,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
         forwards the request to django-CMS.
         """
         try:
-            return super(ProductRetrieveView, self).dispatch(request, *args, **kwargs)
+            return super().dispatch(request, *args, **kwargs)
         except Http404:
             if request.current_page.node.is_root():
                 return details(request, kwargs.get('slug'))
@@ -296,7 +296,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
         ]
 
     def get_renderer_context(self):
-        renderer_context = super(ProductRetrieveView, self).get_renderer_context()
+        renderer_context = super().get_renderer_context()
         if renderer_context['request'].accepted_renderer.format == 'html':
             # add the product as Python object to the context
             product = self.get_object()
@@ -348,7 +348,7 @@ class AddFilterContextMixin:
     on how to render the filter set, supplied by attribute ``filter_class``.
     """
     def get_renderer_context(self):
-        renderer_context = super(AddFilterContextMixin, self).get_renderer_context()
+        renderer_context = super().get_renderer_context()
         if self.filter_class and renderer_context['request'].accepted_renderer.format == 'html':
             # restrict filter set to products associated to this CMS page only
             queryset = self.product_model.objects.filter(self.limit_choices_to)

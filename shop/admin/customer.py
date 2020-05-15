@@ -46,7 +46,7 @@ class CustomerChangeForm(UserChangeForm):
         initial = kwargs.get('initial', {})
         instance = kwargs.get('instance')
         initial['email'] = instance.email or ''
-        super(CustomerChangeForm, self).__init__(initial=initial, *args, **kwargs)
+        super().__init__(initial=initial, *args, **kwargs)
 
     def clean_email(self):
         return self.cleaned_data.get('email').strip()
@@ -88,7 +88,7 @@ class CustomerAdminBase(UserAdmin):
         js = ['shop/js/admin/customer.js']
 
     def get_fieldsets(self, request, obj=None):
-        fieldsets = list(super(CustomerAdminBase, self).get_fieldsets(request, obj=obj))
+        fieldsets = list(super().get_fieldsets(request, obj=obj))
         if obj:
             fieldsets[0][1]['fields'] = ['username', 'recognized', 'password']
             fieldsets[3][1]['fields'] = ['date_joined', 'last_login', 'last_access']
@@ -133,7 +133,7 @@ class CustomerAdminBase(UserAdmin):
     def save_related(self, request, form, formsets, change):
         if hasattr(form.instance, 'customer') and (form.instance.is_staff or form.instance.is_superuser):
             form.instance.customer.recognized = CustomerState.REGISTERED
-        super(CustomerAdminBase, self).save_related(request, form, formsets, change)
+        super().save_related(request, form, formsets, change)
 
 
 class CustomerProxy(get_user_model()):

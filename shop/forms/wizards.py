@@ -22,7 +22,7 @@ class CommodityWizardForm(BaseFormMixin, models.ModelForm):
     @property
     def media(self):
         minimized = '' if settings.DEBUG else '.min'
-        media = super(CommodityWizardForm, self).media
+        media = super().media
         css = {'all': ['admin/css/base.css', 'admin/css/forms.css']}
         media.add_css(css)
         media._js = [
@@ -46,6 +46,6 @@ class CommodityWizardForm(BaseFormMixin, models.ModelForm):
         self.instance.slug = self.cleaned_data['slug']
         max_order = Commodity.objects.aggregate(max=Max('order'))['max']
         self.instance.order = max_order + 1 if max_order else 1
-        commodity = super(CommodityWizardForm, self).save(commit)
+        commodity = super().save(commit)
         ProductPageModel.objects.create(product=commodity, page=self.page.get_public_object())
         return commodity

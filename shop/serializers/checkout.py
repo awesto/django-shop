@@ -11,7 +11,7 @@ class SerializeFormAsTextField(serializers.SerializerMethodField):
         except ImportError:
             msg = "Can not import Form class. Please check your settings directive SHOP_CASCADE_FORMS['{}']."
             raise ImproperlyConfigured(msg.format(form_class_name))
-        super(SerializeFormAsTextField, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def to_representation(self, value):
         method = getattr(self.parent, self.method_name)

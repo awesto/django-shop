@@ -48,19 +48,19 @@ class CMSPageAsCategoryMixin:
     pages when used as categories.
     """
     def __init__(self, *args, **kwargs):
-        super(CMSPageAsCategoryMixin, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if not hasattr(self.model, 'cms_pages'):
             raise ImproperlyConfigured("Product model requires a field named `cms_pages`")
 
     def get_fieldsets(self, request, obj=None):
-        fieldsets = list(super(CMSPageAsCategoryMixin, self).get_fieldsets(request, obj=obj))
+        fieldsets = list(super().get_fieldsets(request, obj=obj))
         fieldsets.append((_("Categories"), {'fields': ('cms_pages',)}),)
         return fieldsets
 
     def get_fields(self, request, obj=None):
         # In ``get_fieldsets()``, ``cms_pages`` is added, so remove it from ``fields`` to
         # avoid showing it twice.
-        fields = list(super(CMSPageAsCategoryMixin, self).get_fields(request, obj))
+        fields = list(super().get_fields(request, obj))
         try:
             fields.remove('cms_pages')
         except ValueError:
@@ -79,7 +79,7 @@ class CMSPageAsCategoryMixin:
             required = not db_field.blank
             field = CategoryModelMultipleChoiceField(queryset=queryset, widget=widget, required=required)
             return field
-        return super(CMSPageAsCategoryMixin, self).formfield_for_manytomany(db_field, request, **kwargs)
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
 
     def save_related(self, request, form, formsets, change):
         old_cms_pages = form.instance.cms_pages.all()
@@ -96,7 +96,7 @@ class CMSPageAsCategoryMixin:
             if page not in old_cms_pages:
                 ProductPageModel.objects.create(product=form.instance, page=page)
 
-        return super(CMSPageAsCategoryMixin, self).save_related(request, form, formsets, change)
+        return super().save_related(request, form, formsets, change)
 
 
 class SearchProductIndexMixin:

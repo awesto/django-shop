@@ -80,4 +80,4 @@ class SelfCollectionModifier(ShippingModifier):
     def ship_the_goods(self, delivery):
         if not delivery.shipping_id:
             delivery.shipping_id = str(delivery.id)
-        super(SelfCollectionModifier, self).ship_the_goods(delivery)
+        super().ship_the_goods(delivery)

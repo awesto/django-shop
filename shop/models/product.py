@@ -93,7 +93,7 @@ class AvailableProductMixin:
     def check(cls, **kwargs):
         from shop.models.cart import CartItemModel
 
-        errors = super(AvailableProductMixin, cls).check(**kwargs)
+        errors = super().check(**kwargs)
         for cart_field in CartItemModel._meta.fields:
             if cart_field.attname == 'quantity':
                 break
@@ -124,7 +124,7 @@ class BaseReserveProductMixin:
         """
         from shop.models.cart import CartItemModel
 
-        availability = super(BaseReserveProductMixin, self).get_availability(request, **kwargs)
+        availability = super().get_availability(request, **kwargs)
         cart_items = CartItemModel.objects.filter(product=self).values('quantity')
         availability.quantity -= cart_items.aggregate(sum=Coalesce(Sum('quantity'), 0))['sum']
         return availability
@@ -338,7 +338,7 @@ class BaseProduct(PolymorphicModel, metaclass=PolymorphicProductMetaclass):
         Internal method to check consistency of Product model declaration on bootstrapping
         application.
         """
-        errors = super(BaseProduct, cls).check(**kwargs)
+        errors = super().check(**kwargs)
         try:
             cls.product_name
         except AttributeError:

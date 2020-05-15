@@ -56,6 +56,6 @@ class BreadcrumbPlugin(ShopPluginBase):
             app = apphook_pool.get_apphook(instance.page.application_urls)
             return app.cache_placeholders
         except (AttributeError, ImproperlyConfigured):
-            return super(BreadcrumbPlugin, self).get_use_cache(context, instance, placeholder)
+            return super().get_use_cache(context, instance, placeholder)
 
 plugin_pool.register_plugin(BreadcrumbPlugin)

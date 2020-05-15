@@ -12,7 +12,7 @@ class DeliveryItemSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = app_settings.ORDER_ITEM_SERIALIZER(instance.item, context=self.context).data
         data['ordered_quantity'] = data.pop('quantity', None)
-        data.update(super(DeliveryItemSerializer, self).to_representation(instance))
+        data.update(super().to_representation(instance))
         return data
 
 

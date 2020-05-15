@@ -10,7 +10,7 @@ class JSONEncoder(encoders.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, AbstractMoney):
             return '{:f}'.format(obj)
-        return super(JSONEncoder, self).default(obj)
+        return super().default(obj)
 
 
 class JSONRenderer(renderers.JSONRenderer):
@@ -22,7 +22,7 @@ class MoneyField(serializers.Field):
 
     def __init__(self, *args, **kwargs):
         kwargs.update(read_only=True)
-        super(MoneyField, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def to_representation(self, obj):
         return '{:f}'.format(obj)

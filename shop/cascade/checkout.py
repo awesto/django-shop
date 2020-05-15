@@ -212,7 +212,7 @@ class CheckoutAddressPlugin(DialogFormPluginBase):
 
     @classmethod
     def get_identifier(cls, instance):
-        identifier = super(CheckoutAddressPlugin, cls).get_identifier(instance)
+        identifier = super().get_identifier(instance)
         address_form = instance.glossary.get('address_form')
         address_form = dict(cls.form.ADDRESS_CHOICES).get(address_form, '')
         return format_html(pgettext_lazy('get_identifier', "for {} {}"), address_form, identifier)
@@ -332,7 +332,7 @@ class AcceptConditionMixin:
         form_data = {'cart': cart, 'initial': dict(plugin_id=instance.pk, plugin_order=request._plugin_order)}
         bound_form = FormClass(**form_data)
         context[bound_form.form_name] = bound_form
-        super(AcceptConditionMixin, self).render(context, instance, placeholder)
+        super().render(context, instance, placeholder)
         accept_condition_form = context['accept_condition_form.plugin_{}'.format(instance.pk)]
         # transfer the stored HTML content into the widget's label
         accept_condition_form['accept'].field.label = mark_safe(context['body'])

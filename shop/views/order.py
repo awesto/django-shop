@@ -63,7 +63,7 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateM
         return self.detail_serializer_class
 
     def get_renderer_context(self):
-        renderer_context = super(OrderView, self).get_renderer_context()
+        renderer_context = super().get_renderer_context()
         if self.request.accepted_renderer.format == 'html':
             renderer_context.update(many=self.many)
             if not self.many:
@@ -107,12 +107,12 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateM
 
     def list(self, request, *args, **kwargs):
         try:
-            return super(OrderView, self).list(request, *args, **kwargs)
+            return super().list(request, *args, **kwargs)
         except OrderModel.DoesNotExist:
             raise NotFound("No orders have been found for the current user.")
 
     def retrieve(self, request, *args, **kwargs):
         try:
-            return super(OrderView, self).retrieve(request, *args, **kwargs)
+            return super().retrieve(request, *args, **kwargs)
         except OrderModel.DoesNotExist:
             raise NotFound("No order has been found for the current user.")

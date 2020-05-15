@@ -69,7 +69,7 @@ class AvailableProductMixin:
 
     @classmethod
     def check(cls, **kwargs):
-        errors = super(AvailableProductMixin, cls).check(**kwargs)
+        errors = super().check(**kwargs)
         for rel in cls._meta.related_objects:
             if rel.name == 'inventory_set':
                 if rel.get_internal_type() != 'ForeignKey':
@@ -123,7 +123,7 @@ class BaseInventory(models.Model):
     def check(cls, **kwargs):
         from shop.models.cart import CartItemModel
 
-        errors = super(BaseInventory, cls).check(**kwargs)
+        errors = super().check(**kwargs)
         for cart_field in CartItemModel._meta.fields:
             if cart_field.attname == 'quantity':
                 break

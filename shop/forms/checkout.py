@@ -28,7 +28,7 @@ class CustomerForm(DialogModelForm):
         initial = dict(initial) if initial else {}
         assert instance is not None
         initial.update(dict((f, getattr(instance, f)) for f in self.Meta.custom_fields))
-        super(CustomerForm, self).__init__(initial=initial, instance=instance, *args, **kwargs)
+        super().__init__(initial=initial, instance=instance, *args, **kwargs)
 
     @property
     def media(self):
@@ -37,7 +37,7 @@ class CustomerForm(DialogModelForm):
     def save(self, commit=True):
         for f in self.Meta.custom_fields:
             setattr(self.instance, f, self.cleaned_data[f])
-        return super(CustomerForm, self).save(commit)
+        return super().save(commit)
 
     @classmethod
     def form_factory(cls, request, data, cart):
@@ -62,7 +62,7 @@ class GuestForm(UniqueEmailValidationMixin, DialogModelForm):
     def __init__(self, initial=None, instance=None, *args, **kwargs):
         if isinstance(instance, CustomerModel):
             instance = instance.user
-        super(GuestForm, self).__init__(initial=initial, instance=instance, *args, **kwargs)
+        super().__init__(initial=initial, instance=instance, *args, **kwargs)
 
     @classmethod
     def form_factory(cls, request, data, cart):
@@ -103,7 +103,7 @@ class AddressForm(DialogModelForm):
                 initial['use_primary_address'] = cart.shipping_address is None
             else:  # address_type == billing
                 initial['use_primary_address'] = cart.billing_address is None
-        super(AddressForm, self).__init__(initial=initial, instance=instance, *args, **kwargs)
+        super().__init__(initial=initial, instance=instance, *args, **kwargs)
 
     @property
     def media(self):
@@ -195,14 +195,14 @@ class AddressForm(DialogModelForm):
                 })
 
     def full_clean(self):
-        super(AddressForm, self).full_clean()
+        super().full_clean()
         if self.is_bound and self['use_primary_address'].value():
             # reset errors, since then the form is always regarded as valid
             self._errors = ErrorDict()
 
     def save(self, commit=True):
         if not self['use_primary_address'].value():
-            return super(AddressForm, self).save(commit)
+            return super().save(commit)
 
     def get_response_data(self):
         return dict(self.data, siblings_summary=self.siblings_summary)
@@ -211,13 +211,13 @@ class AddressForm(DialogModelForm):
         # Intentionally rendered without field `use_primary_address`, this must be added
         # on top of the form template manually
         self.fields.pop('use_primary_address', None)
-        return super(AddressForm, self).as_div()
+        return super().as_div()
 
     def as_text(self):
         bound_field = self['use_primary_address']
         if bound_field.value():
             return bound_field.field.widget.choice_label
-        return super(AddressForm, self).as_text()
+        return super().as_text()
 
 
 class ShippingAddressForm(AddressForm):
@@ -231,7 +231,7 @@ class ShippingAddressForm(AddressForm):
         }
 
     def __init__(self, *args, **kwargs):
-        super(ShippingAddressForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields['use_primary_address'].label = _("Use billing address for shipping")
         self.fields['use_primary_address'].widget.choice_label = self.fields['use_primary_address'].label  # Django < 1.11
 
@@ -251,7 +251,7 @@ class BillingAddressForm(AddressForm):
         model = BillingAddressModel
 
     def __init__(self, *args, **kwargs):
-        super(BillingAddressForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields['use_primary_address'].label = _("Use shipping address for billing")
         self.fields['use_primary_address'].widget.choice_label = self.fields['use_primary_address'].label  # Django < 1.11
 
@@ -281,7 +281,7 @@ class PaymentMethodForm(DialogForm):
                 kwargs['initial']['payment_modifier'] = choices[0][0]
             except KeyError:
                 pass
-        super(PaymentMethodForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def has_choices(self):
         return len(self.base_fields['payment_modifier'].choices) > 0
@@ -314,7 +314,7 @@ class ShippingMethodForm(DialogForm):
                 kwargs['initial']['shipping_modifier'] = choices[0][0]
             except KeyError:
                 pass
-        super(ShippingMethodForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def has_choices(self):
         return len(self.base_fields['shipping_modifier'].choices) > 0
@@ -357,8 +357,7 @@ class AcceptConditionForm(DialogForm):
         plugin_id = data and data.get('plugin_id') or initial and initial.get('plugin_id') or 'none'
         scope_prefix = '{0}.plugin_{1}'.format(self.scope_prefix, plugin_id)
         self.form_name = '{0}.plugin_{1}'.format(self.form_name, plugin_id)
-        super(AcceptConditionForm, self).__init__(data=data, initial=initial,
-                                                  scope_prefix=scope_prefix, *args, **kwargs)
+        super().__init__(data=data, initial=initial, scope_prefix=scope_prefix, *args, **kwargs)
 
     @classmethod
     def form_factory(cls, request, data, cart):

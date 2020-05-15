@@ -104,7 +104,7 @@ class ShopAddToCartPlugin(ShopPluginBase):
         return select_template(templates)
 
     def render(self, context, instance, placeholder):
-        context = super(ShopAddToCartPlugin, self).render(context, instance, placeholder)
+        context = super().render(context, instance, placeholder)
         context['use_modal_dialog'] = bool(instance.glossary.get('use_modal_dialog', True))
         return context
 

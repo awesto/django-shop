@@ -17,7 +17,7 @@ class JSONEncoder(DjangoJSONEncoder):
     def default(self, obj):
         if isinstance(obj, AbstractMoney):
             return float(obj)
-        return super(JSONEncoder, self).default(obj)
+        return super().default(obj)
 
 
 class Serializer(DjangoSerializer):

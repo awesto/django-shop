@@ -34,7 +34,7 @@ class CustomerAdmin(CustomerAdminBase):
     inlines = [CustomerInlineAdmin]
 
     def get_list_display(self, request):
-        list_display = list(super(CustomerAdmin, self).get_list_display(request))
+        list_display = list(super().get_list_display(request))
         list_display.insert(1, 'salutation')
         return list_display
 

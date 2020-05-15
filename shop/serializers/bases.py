@@ -45,7 +45,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('label', 'catalog')
-        super(ProductSerializer, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def get_price(self, product):
         price = product.get_price(self.context['request'])

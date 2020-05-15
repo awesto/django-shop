@@ -44,7 +44,7 @@ class ForwardFundPayment(PaymentProvider):
                 getattr(OrderModel, 'awaiting_payment', None)))):
             msg = "Missing methods in Order model. Add 'shop.payment.workflows.ManualPaymentWorkflowMixin' to SHOP_ORDER_WORKFLOWS."
             raise ImproperlyConfigured(msg)
-        super(ForwardFundPayment, self).__init__()
+        super().__init__()
 
     def get_payment_request(self, cart, request):
         order = OrderModel.objects.create_from_cart(cart, request)

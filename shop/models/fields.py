@@ -19,10 +19,10 @@ else:
 class JSONField(_JSONField):
     def __init__(self, *args, **kwargs):
         kwargs.update({'default': dict})
-        super(JSONField, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def deconstruct(self):
-        name, path, args, kwargs = super(JSONField, self).deconstruct()
+        name, path, args, kwargs = super().deconstruct()
         del kwargs['default']
         return name, path, args, kwargs
 
@@ -34,7 +34,7 @@ class ChoiceEnumMeta(enum.EnumMeta):
                 value = cls.__members__[value]
             except KeyError:
                 pass  # let the super method complain
-        return super(ChoiceEnumMeta, cls).__call__(value, *args, **kwargs)
+        return super().__call__(value, *args, **kwargs)
 
     def __new__(metacls, classname, bases, classdict):
         labels = {}
@@ -51,7 +51,7 @@ class ChoiceEnumMeta(enum.EnumMeta):
             # Use dict.__setitem__() to suppress defenses against
             # double assignment in enum's classdict
             dict.__setitem__(classdict, key, val)
-        cls = super(ChoiceEnumMeta, metacls).__new__(metacls, classname, bases, classdict)
+        cls = super().__new__(metacls, classname, bases, classdict)
         for key, label in labels.items():
             getattr(cls, key).label = label
         return cls
@@ -99,10 +99,10 @@ class ChoiceEnumField(models.PositiveSmallIntegerField):
             raise ValueError("enum_type must be a subclass of `ChoiceEnum`.")
         kwargs.update(choices=self.enum_type.choices)
         kwargs.setdefault('default', self.enum_type.default)
-        super(ChoiceEnumField, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def deconstruct(self):
-        name, path, args, kwargs = super(ChoiceEnumField, self).deconstruct()
+        name, path, args, kwargs = super().deconstruct()
         if 'choices' in kwargs:
             del kwargs['choices']
         if kwargs['default'] is self.enum_type.default:

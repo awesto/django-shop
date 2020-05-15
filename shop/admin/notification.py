@@ -35,7 +35,7 @@ class NotificationForm(models.ModelForm):
             else:
                 initial['notify_recipient'] = kwargs['instance'].notify.name
             kwargs.update(initial=initial)
-        super(NotificationForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields['transition_target'].widget.choices = self.get_transition_choices()
         self.fields['notify_recipient'].choices = self.get_recipient_choices()
 
@@ -61,7 +61,7 @@ class NotificationForm(models.ModelForm):
         return choices
 
     def save(self, commit=True):
-        obj = super(NotificationForm, self).save(commit=commit)
+        obj = super().save(commit=commit)
         try:
             obj.recipient = get_user_model().objects.get(pk=self.cleaned_data['notify_recipient'])
             obj.notify = Notify.RECIPIENT

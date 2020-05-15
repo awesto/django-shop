@@ -21,7 +21,7 @@ class PaymentModifier(BaseCartModifier):
     def __init__(self):
         assert isinstance(getattr(self, 'payment_provider', None), PaymentProvider), \
             "Each Payment modifier class requires a Payment Provider"
-        super(PaymentModifier, self).__init__()
+        super().__init__()
 
     @property
     def identifier(self):

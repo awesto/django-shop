@@ -54,7 +54,7 @@ class BaseDelivery(models.Model, metaclass=deferred.ForeignKeyBuilder):
 
     @classmethod
     def check(cls, **kwargs):
-        errors = super(BaseDelivery, cls).check(**kwargs)
+        errors = super().check(**kwargs)
         for field in OrderItemModel._meta.fields:
             if field.attname == 'canceled' and field.get_internal_type() == 'BooleanField':
                 break
@@ -109,7 +109,7 @@ class BaseDeliveryItem(models.Model, metaclass=deferred.ForeignKeyBuilder):
 
     @classmethod
     def check(cls, **kwargs):
-        errors = super(BaseDeliveryItem, cls).check(**kwargs)
+        errors = super().check(**kwargs)
         for order_field in OrderItemModel._meta.fields:
             if order_field.attname == 'quantity':
                 break

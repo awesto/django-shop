@@ -57,7 +57,7 @@ class CustomerQuerySet(models.QuerySet):
                     raise fdne
                 except Exception as othex:
                     raise othex
-        result = super(CustomerQuerySet, self)._filter_or_exclude(negate, *args, **lookup_kwargs)
+        result = super()._filter_or_exclude(negate, *args, **lookup_kwargs)
         return result
 
 
@@ -115,7 +115,7 @@ class CustomerManager(models.Manager):
     def create(self, *args, **kwargs):
         if 'user' in kwargs and kwargs['user'].is_authenticated:
             kwargs.setdefault('recognized', CustomerState.REGISTERED)
-        customer = super(CustomerManager, self).create(*args, **kwargs)
+        customer = super().create(*args, **kwargs)
         return customer
 
     def _get_visiting_user(self, session_key):
@@ -356,12 +356,12 @@ class BaseCustomer(models.Model, metaclass=deferred.ForeignKeyBuilder):
     def save(self, **kwargs):
         if 'update_fields' not in kwargs:
             self.user.save(using=kwargs.get('using', DEFAULT_DB_ALIAS))
-        super(BaseCustomer, self).save(**kwargs)
+        super().save(**kwargs)
 
     def delete(self, *args, **kwargs):
         if self.user.is_active and self.recognized is CustomerState.UNRECOGNIZED:
             # invalid state of customer, keep the referred User
-            super(BaseCustomer, self).delete(*args, **kwargs)
+            super().delete(*args, **kwargs)
         else:
             # also delete self through cascading
             self.user.delete(*args, **kwargs)

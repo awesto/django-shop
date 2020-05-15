@@ -63,7 +63,7 @@ class LoginView(OriginalLoginView):
             previous_user = None
         else:
             previous_user = self.request.customer.user
-        super(LoginView, self).login()  # this rotates the session_key
+        super().login()  # this rotates the session_key
         if not self.serializer.data.get('stay_logged_in'):
             self.request.session.set_expiry(0)  # log out when the browser is closed
         authenticated_cart = CartModel.objects.get_from_request(self.request)

@@ -42,12 +42,12 @@ class AddToCartSerializer(serializers.Serializer):
             else:
                 quantity = self.fields['quantity'].default
             instance.setdefault('quantity', quantity)
-            super(AddToCartSerializer, self).__init__(instance, data, context=context)
+            super().__init__(instance, data, context=context)
         else:
-            super(AddToCartSerializer, self).__init__(instance, data, **kwargs)
+            super().__init__(instance, data, **kwargs)
 
     def to_representation(self, instance):
-        data = super(AddToCartSerializer, self).to_representation(instance)
+        data = super().to_representation(instance)
         try:
             data['quantity'] = self._validated_data['quantity']
         except AttributeError:

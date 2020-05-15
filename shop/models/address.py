@@ -330,10 +330,10 @@ class CountryField(models.CharField):
             'choices': ISO_3166_CODES,
         }
         defaults.update(kwargs)
-        super(CountryField, self).__init__(*args, **defaults)
+        super().__init__(*args, **defaults)
 
     def deconstruct(self):
-        name, path, args, kwargs = super(CountryField, self).deconstruct()
+        name, path, args, kwargs = super().deconstruct()
         if kwargs['max_length'] == 3:
             kwargs.pop('max_length')
         if kwargs['choices'] == ISO_3166_CODES:

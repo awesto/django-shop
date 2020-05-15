@@ -78,7 +78,7 @@ class Order(order.BaseOrder):
         return self.token
 
     def get_absolute_url(self):
-        url = super(Order, self).get_absolute_url()
+        url = super().get_absolute_url()
         if self.token:
             if not url.endswith('/'):
                 url += '/'
@@ -94,4 +94,4 @@ class Order(order.BaseOrder):
             self.shipping_address_text = self.billing_address_text
         if not self.billing_address_text:
             self.billing_address_text = self.shipping_address_text
-        super(Order, self).populate_from_cart(cart, request)
+        super().populate_from_cart(cart, request)

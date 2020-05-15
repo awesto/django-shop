@@ -62,10 +62,10 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValid
             pwd_length = max(self.base_fields['password1'].min_length or 8, 8)
             password = get_user_model().objects.make_random_password(pwd_length)
             data['password1'] = data['password2'] = password
-        super(RegisterUserForm, self).__init__(data=data, instance=instance, *args, **kwargs)
+        super().__init__(data=data, instance=instance, *args, **kwargs)
 
     def clean(self):
-        cleaned_data = super(RegisterUserForm, self).clean()
+        cleaned_data = super().clean()
         password1 = cleaned_data.get('password1')
         password2 = cleaned_data.get('password2')
         if password1 and password2:
@@ -82,7 +82,7 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValid
         self.instance.user.email = self.cleaned_data['email']
         self.instance.user.set_password(self.cleaned_data['password1'])
         self.instance.recognize_as_registered(request, commit=False)
-        customer = super(RegisterUserForm, self).save(commit)
+        customer = super().save(commit)
         password = self.cleaned_data['password1']
         if self.cleaned_data['preset_password']:
             self._send_password(request, customer.user, password)
@@ -138,7 +138,7 @@ class ContinueAsGuestForm(ModelForm):
             # set a usable password, otherwise the user later can not reset its password
             password = get_user_model().objects.make_random_password(length=30)
             self.instance.user.set_password(password)
-        return super(ContinueAsGuestForm, self).save(commit)
+        return super().save(commit)
 
 
 class PasswordResetRequestForm(PasswordResetForm):

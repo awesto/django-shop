@@ -72,7 +72,7 @@ class ValueRelatedField(serializers.RelatedField):
     def __init__(self, *args, **kwargs):
         self.model = kwargs.pop('model')
         self.related_field_name = kwargs.pop('field_name', 'name')
-        super(ValueRelatedField, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def get_queryset(self):
         return self.model.objects.all()

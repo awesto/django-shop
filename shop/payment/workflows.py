@@ -22,7 +22,7 @@ class ManualPaymentWorkflowMixin:
         if not isinstance(self, BaseOrder):
             raise ImproperlyConfigured("class 'ManualPaymentWorkflowMixin' is not of type 'BaseOrder'")
         CancelOrderWorkflowMixin.CANCELABLE_SOURCES.update(self._manual_payment_transitions)
-        super(ManualPaymentWorkflowMixin, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @transition(field='status', source=['created'], target='no_payment_required')
     def no_payment_required(self):
@@ -81,7 +81,7 @@ class CancelOrderWorkflowMixin:
     }
 
     def cancelable(self):
-        return super(CancelOrderWorkflowMixin, self).cancelable() or self.status in self.CANCELABLE_SOURCES
+        return super().cancelable() or self.status in self.CANCELABLE_SOURCES
 
     @transition(field='status', target=RETURN_VALUE(*TRANSITION_TARGETS.keys()),
                 conditions=[cancelable], custom=dict(admin=True, button_name=_("Cancel Order")))

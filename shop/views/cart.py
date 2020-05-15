@@ -77,7 +77,7 @@ class BaseViewSet(viewsets.ModelViewSet):
         """Set HTTP headers to not cache this view"""
         if self.action != 'render_product_summary':
             add_never_cache_headers(response)
-        return super(BaseViewSet, self).finalize_response(request, response, *args, **kwargs)
+        return super().finalize_response(request, response, *args, **kwargs)
 
 
 class CartViewSet(BaseViewSet):

@@ -15,7 +15,7 @@ class EmulateHttpRequest(HttpRequest):
     Use this class to emulate a HttpRequest object.
     """
     def __init__(self, language_code=None):
-        super(EmulateHttpRequest, self).__init__()
+        super().__init__()
         self.environ = {}
         self.method = 'GET'
         if language_code:

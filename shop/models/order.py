@@ -39,7 +39,7 @@ class OrderQuerySet(models.QuerySet):
                 lookup_kwargs.update({key + lookup_type: lookup})
             else:
                 lookup_kwargs.update({key: lookup})
-        return super(OrderQuerySet, self)._filter_or_exclude(negate, *args, **lookup_kwargs)
+        return super()._filter_or_exclude(negate, *args, **lookup_kwargs)
 
 
 class OrderManager(models.Manager):
@@ -121,7 +121,7 @@ class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
                     raise ImproperlyConfigured(msg.format(b.__name__, ', '.join(TRANSITION_TARGETS.keys())))
                 attrs['_transition_targets'].update(TRANSITION_TARGETS)
                 attrs['_auto_transitions'].update(cls.add_to_auto_transitions(b))
-        Model = super(WorkflowMixinMetaclass, cls).__new__(cls, name, bases, attrs)
+        Model = super().__new__(cls, name, bases, attrs)
         return Model
 
     @classmethod
@@ -207,7 +207,7 @@ class BaseOrder(models.Model, metaclass=WorkflowMixinMetaclass):
         abstract = True
 
     def __init__(self, *args, **kwargs):
-        super(BaseOrder, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.logger = logging.getLogger('shop.order')
 
     def __str__(self):
@@ -335,7 +335,7 @@ class BaseOrder(models.Model, metaclass=WorkflowMixinMetaclass):
         # round the total to the given decimal_places
         self._subtotal = BaseOrder.round_amount(self._subtotal)
         self._total = BaseOrder.round_amount(self._total)
-        super(BaseOrder, self).save(**kwargs)
+        super().save(**kwargs)
         if with_notification:
             transition_change_notification(self)
 
@@ -514,7 +514,7 @@ class BaseOrderItem(models.Model, metaclass=deferred.ForeignKeyBuilder):
 
     @classmethod
     def check(cls, **kwargs):
-        errors = super(BaseOrderItem, cls).check(**kwargs)
+        errors = super().check(**kwargs)
         for cart_field in CartItemModel._meta.fields:
             if cart_field.attname == 'quantity':
                 break
@@ -568,6 +568,6 @@ class BaseOrderItem(models.Model, metaclass=deferred.ForeignKeyBuilder):
         """
         self._unit_price = BaseOrder.round_amount(self._unit_price)
         self._line_total = BaseOrder.round_amount(self._line_total)
-        super(BaseOrderItem, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
 OrderItemModel = deferred.MaterializedModel(BaseOrderItem)

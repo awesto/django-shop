@@ -5,4 +5,4 @@ class ProductNotAvailable(Exception):
     def __init__(self, product):
         self.product = product
         msg = "Product {} isn't available anymore."
-        super(ProductNotAvailable, self).__init__(msg.format(product.product_code))
+        super().__init__(msg.format(product.product_code))

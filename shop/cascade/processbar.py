@@ -35,7 +35,7 @@ class ProcessBarPlugin(TransparentWrapper, ShopPluginBase):
 
     @classmethod
     def get_identifier(cls, instance):
-        identifier = super(ProcessBarPlugin, cls).get_identifier(instance)
+        identifier = super().get_identifier(instance)
         num_cols = instance.get_children().count()
         content = ngettext_lazy('with {} page', 'with {} pages', num_cols).format(num_cols)
         return format_html('{0}{1}', identifier, content)
@@ -56,7 +56,7 @@ class ProcessBarPlugin(TransparentWrapper, ShopPluginBase):
 
     def save_model(self, request, obj, form, change):
         wanted_children = int(form.cleaned_data.get('num_children'))
-        super(ProcessBarPlugin, self).save_model(request, obj, form, change)
+        super().save_model(request, obj, form, change)
         self.extend_children(obj, wanted_children, ProcessStepPlugin)
 
 plugin_pool.register_plugin(ProcessBarPlugin)

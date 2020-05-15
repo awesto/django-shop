@@ -21,14 +21,14 @@ class DialogFormMixin(NgModelFormMixin, NgFormValidationMixin):
         kwargs.pop('cart', None)  # cart object must be removed, otherwise underlying methods complain
         auto_name = self.form_name  ## .replace('_form', '')
         kwargs.setdefault('auto_id', '{}-%s'.format(auto_name))
-        super(DialogFormMixin, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @classproperty
     def form_name(cls):
         return normalize_name(cls.__name__)
 
     def clean(self):
-        cleaned_data = dict(super(DialogFormMixin, self).clean())
+        cleaned_data = dict(super().clean())
         cleaned_data.pop('plugin_id', None)
         if cleaned_data.pop('plugin_order', None) is None:
             msg = "Field 'plugin_order' is a hidden but required field in each form inheriting from DialogFormMixin"
