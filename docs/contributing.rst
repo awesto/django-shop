@@ -130,6 +130,6 @@ Before adding a new feature, please write a specification using the style for
 `Django Enhancement Proposals`_.
 
 More information about how to send a Pull Request can be found on GitHub:
-http://help.github.com/send-pull-requests/
+https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request
 
 .. _Django Enhancement Proposals: https://github.com/django/deps/blob/master/final/0001-dep-process.rst

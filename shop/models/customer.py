@@ -187,6 +187,7 @@ class BaseCustomer(models.Model, metaclass=deferred.ForeignKeyBuilder):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         primary_key=True,
+        related_name='customer',
     )
 
     recognized = ChoiceEnumField(
