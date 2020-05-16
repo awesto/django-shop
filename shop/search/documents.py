@@ -25,6 +25,7 @@ class _ProductDocument(Document):
         model = ProductModel
         fields = ['id']
         ignore_signals = True  # performed by ProductModel.update_search_index()
+        queryset_pagination = 499  # let DRF do the pagination
 
     def __str__(self):
         return "{} {}: {}".format(self.product_type, self.id, self.product_name)
