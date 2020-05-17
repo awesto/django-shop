@@ -24,17 +24,17 @@ elasticsearch-dsl_ together with django-elasticsearch-dsl_. It now supports up t
 version of Elasticsearch, which currently is 7.6.
 
 In this document we assume that the merchant only wants to index his products, but not any arbitrary
-content, such as for example the terms and condition, as found outside **django-SHOP**, but inside
-**django-CMS**. The latter would however be perfectly feasible.
+content, such as for example the "Terms and Conditions" page, as found outside **django-SHOP**, but
+usually inside **django-CMS**. Indexing CMS pages using Elasticsearch would be perfectly feasible,
+but is not the topic of this documentation.
 
 
 Configuration
 -------------
 
 Download and install the latest version of the Elasticsearch binary. During development, all tests
-have been performed with version 7.5. After unzipping the file, start Elasticsearch in daemon mode:
-
-:samp:`  ./path/to/elasticsearch-{version}/bin/elasticsearch -d  `
+have been performed with version 7.5. After unzipping the file, start Elasticsearch in daemon mode
+by invoking :samp:`./path/to/elasticsearch-{version}/bin/elasticsearch -d`.
 
 Check if the server answers on HTTP requests. Pointing a browser on
 `http://localhost:9200/ <http://localhost:9200/>`_ should return something similar to this:
@@ -47,8 +47,8 @@ Check if the server answers on HTTP requests. Pointing a browser on
 	  "cluster_name" : "elasticsearch",
 	  "cluster_uuid" : "P9HVZRPbUXjTEDO9iZHGDk",
 	  "version" : {
-	    ...
-	  },
+	    …
+	  }
 	}
 
 Install ``elasticsearch-dsl`` and ``django-elasticsearch-dsl`` using

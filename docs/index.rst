@@ -83,7 +83,7 @@ Some recipes on how to perform certain tasks in **django-SHOP**.
 Django compatibility table
 ==========================
 
-===========  ===  ===  ====  ====  ===  ===  ===  ===  ===
+===========  ===  ===  ====  ====  ===  ===  ===  ===
 django-SHOP  Django
 -----------  ----------------------------------------
 \            1.8  1.9  1.10  1.11  2.0  2.1  2.2  3.0
