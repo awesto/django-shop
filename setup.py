@@ -9,7 +9,7 @@ REQUIREMENTS = [
     'Django>=2.1,<3.1',
     'django-filer>=1.7',
     'django-ipware',
-    'django-fsm',
+    'django-fsm>=2.7',
     'django-fsm-admin',
     'djangorestframework>=3.9,<4',
     'django-rest-auth',
