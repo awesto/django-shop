@@ -171,7 +171,7 @@ For this purpose, we have to declare a product summary serializer using the conf
 product must offer, it's up to the merchant to declare this product summary serializer as well.
 A typical implementation might look like:
 
-.. code-block::
+.. code-block:: python
 
 	class ProductSummarySerializer(ProductSerializer):
 	    media = serializers.SerializerMethodField(

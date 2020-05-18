@@ -34,12 +34,14 @@ Configuration
 
 Download and install the latest version of the Elasticsearch binary. During development, all tests
 have been performed with version 7.5. After unzipping the file, start Elasticsearch in daemon mode
-by invoking :samp:`./path/to/elasticsearch-{version}/bin/elasticsearch -d`.
+by invoking:
+
+:samp:`./path/to/elasticsearch-{version}/bin/elasticsearch -d`.
 
 Check if the server answers on HTTP requests. Pointing a browser on
 `http://localhost:9200/ <http://localhost:9200/>`_ should return something similar to this:
 
-.. code-block::
+.. code-block:: bash
 
 	$ curl http://localhost:9200/
 	{
@@ -57,7 +59,7 @@ Install ``elasticsearch-dsl`` and ``django-elasticsearch-dsl`` using
 
     pipenv install django-elasticsearch-dsl
 
-In ``settings.py``, check that ``'django_elasticsearch_dsl'`` has been added to ``INSTALLED_APPS``.
+In ``settings.py``, add ``'django_elasticsearch_dsl'`` to the list of ``INSTALLED_APPS``.
 Configure the connection to the Elasticsearch database:
 
 .. code-block:: python
