@@ -4,6 +4,11 @@
 Changelog for django-SHOP
 =========================
 
+1.2.1
+=====
+* In management command, make mandatory CMS page for rendering search results, recommended only.
+
+
 1.2
 ===
 * Add support for Django-3.0.
