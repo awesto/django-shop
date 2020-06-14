@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 # Dictionary of currency representations:
 # key: official ISO 4217 code
@@ -19,6 +17,7 @@ CURRENCIES = {
     'CZK': ('203', 2, 'Kč', _("Czech Koruna")),
     'EUR': ('978', 2, '€', _("Euro")),
     'GBP': ('826', 2, '£', _("Pound Sterling")),
+    'HKD': ('344', 2, 'HK$', _("Hong Kong Dollar")),
     'HRK': ('191', 2, 'kn', _("Croatian kuna")),
     'HUF': ('348', 0, 'Ft', _("Hungarian Forint")),
     'ILS': ('376', 2, '₪', _("Israeli Sheqel")),
@@ -33,5 +32,6 @@ CURRENCIES = {
     'UAH': ('980', 2, '₴', _("Ukrainian Hryvnia")),
     'USD': ('840', 2, '$', _("US Dollar")),
     'SEK': ('752', 2, 'kr', _("Swedish Kronor")),
+    'ZAR': ('710', 2, 'R', _("South African Rand")),
     # feel free to add more currencies, alphabetically ordered
 }

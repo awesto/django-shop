@@ -1,10 +1,7 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.conf import settings
 from django.db import models
 from django.db.models import Q
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from post_office.models import EmailTemplate
 from filer.fields.file import FilerFileField
 from shop.conf import app_settings
@@ -39,6 +36,7 @@ class Notification(models.Model):
 
     recipient = models.ForeignKey(
         settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
         verbose_name=_("Recipient"),
         null=True,
         limit_choices_to={'is_staff': True},
@@ -46,6 +44,7 @@ class Notification(models.Model):
 
     mail_template = models.ForeignKey(
         EmailTemplate,
+        on_delete=models.CASCADE,
         verbose_name=_("Template"),
         limit_choices_to=Q(language__isnull=True) | Q(language=''),
     )
@@ -71,8 +70,17 @@ class Notification(models.Model):
 
 
 class NotificationAttachment(models.Model):
-    notification = models.ForeignKey(Notification)
-    attachment = FilerFileField(null=True, blank=True, related_name='email_attachment')
+    notification = models.ForeignKey(
+        Notification,
+        on_delete=models.CASCADE,
+    )
+
+    attachment = FilerFileField(
+        on_delete=models.SET_NULL,
+        related_name='email_attachment',
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         app_label = 'shop'

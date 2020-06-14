@@ -19,16 +19,16 @@
 	{% if show_additional_charge %}
 	<ul class="additional-charge">
 		{% for choice, label in shipping_method_form.shipping_modifier.field.choices %}
-		<li ng-repeat="extra_row in cart.extra_rows|filter:{modifier:'{{ choice }}'}">{% trans "Additional charge" %}: {% verbatim %}{{ extra_row.amount }}{% endverbatim %}</li>
+		<li ng-repeat="extra_row in cart.extra_rows|filter:{modifier:'{{ choice }}'}">{% trans "Additional charge: {{ extra_row.amount }}" context "checkout" %}</li>
 		{% endfor %}
 		{% if shipping_modifiers.initial_row %}
-		<li ng-if="!cart.extra_rows">{% trans "Additional charge" %}: {{ shipping_modifiers.initial_row.amount }}</li>
+		<li ng-if="!cart.extra_rows">{% blocktrans with amount=shipping_modifiers.initial_row.amount context "checkout" %}Additional charge: {{ amount }}{% endblocktrans %}</li>
 		{% endif %}
 	</ul>
 	{% endif %}
 {% else %}
 	<input name="__force_invalidation__" style="display: none;" required />
-	<p class="bg-danger">{% trans "No shipping method available" %}</p>
+	<p class="bg-danger">{% trans "No shipping method available" context "checkout" %}</p>
 {% endif %}
 </form>
 	{% block shipping-provider-form %}{% endblock %}

@@ -23,7 +23,7 @@
 	{% if customer.is_authenticated %}
 		<div class="px-3 py-0" role="dialog" aria-label="logout">
 			<form name="logout_form" djng-endpoint="{% url 'shop:logout' %}" role="form">
-				<button class="btn btn-primary btn-block" type="button" ng-click="do(create()).then(reloadPage())">
+				<button class="btn btn-primary btn-block btn-sm" type="button" ng-click="do(create()).then(reloadPage())">
 				{% trans "Logout" %}
 				&emsp;<i class="fa fa-sign-out"></i>
 				</button>
@@ -70,7 +70,7 @@
 					</div>
 				</div>
 		{% endif %}
-				<button class="btn btn-primary btn-block" type="button" ng-click="do(disable()).then(create()).then(showOK()).then(delay(500)).then(reloadPage()).catch(showFail()).then(delay(500)).finally(restore())" ng-disabled="isDisabled()">
+				<button class="btn btn-primary btn-block btn-sm" type="button" ng-click="do(disable()).then(create()).then(showOK()).then(delay(500)).then(reloadPage()).catch(showFail()).then(delay(500)).finally(restore())" ng-disabled="isDisabled()">
 					{% trans "Login" %}
 					&emsp;<i class="fa fa-sign-in"></i>
 				</button>

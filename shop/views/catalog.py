@@ -1,9 +1,5 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 import os
-import warnings
-from distutils.version import LooseVersion
+from urllib.parse import urlsplit
 
 from django.db import models
 from django.http.response import Http404, HttpResponseRedirect
@@ -11,7 +7,6 @@ from django.http.request import QueryDict
 from django.shortcuts import get_object_or_404
 from django.utils.cache import add_never_cache_headers
 from django.utils.encoding import force_str
-from django.utils.six.moves.urllib import parse as urlparse
 from django.utils.translation import get_language_from_request
 
 from rest_framework import generics
@@ -22,7 +17,6 @@ from rest_framework.renderers import BrowsableAPIRenderer
 from rest_framework.response import Response
 from rest_framework.utils.urls import replace_query_param
 
-from cms import __version__ as CMS_VERSION
 from cms.views import details
 
 from shop.conf import app_settings
@@ -58,7 +52,7 @@ class ProductListPagination(pagination.LimitOffsetPagination):
     def adjust_offset(self, url, page_offset):
         if url is None:
             return
-        (scheme, netloc, path, query, fragment) = urlparse.urlsplit(force_str(url))
+        (scheme, netloc, path, query, fragment) = urlsplit(force_str(url))
         query_dict = QueryDict(query)
         try:
             offset = pagination._positive_int(
@@ -74,7 +68,7 @@ class ProductListPagination(pagination.LimitOffsetPagination):
         return url
 
     def get_html_context(self):
-        context = super(ProductListPagination, self).get_html_context()
+        context = super().get_html_context()
         page_offset = self.get_offset(self.request)
         context['previous_url'] = self.adjust_offset(context['previous_url'], page_offset)
         context['next_url'] = self.adjust_offset(context['next_url'], page_offset)
@@ -94,13 +88,13 @@ class ProductListView(generics.ListAPIView):
     responsible for rendering the catalog's list view.
     ```
     urlpatterns = [
-        url(r'^$', ProductListView.as_view()),
-        url(r'^(?P<slug>[\w-]+)/?$', ProductRetrieveView.as_view()),  # see below
         ...
+        url(r'^(?P<slug>[\w-]+)/?$', ProductRetrieveView.as_view(**params)),  # see below
+        url(r'^$', ProductListView.as_view()),
     ]
     ```
 
-    You may add these attributes to the ``as_view()`` method:
+    These attributes can be added to the ``as_view(**params)`` method:
 
     :param renderer_classes: A list or tuple of REST renderer classes.
 
@@ -118,7 +112,6 @@ class ProductListView(generics.ListAPIView):
     :param redirect_to_lonely_product: If ``True``, redirect onto a lonely product in the
         catalog. Defaults to ``False``.
     """
-
     renderer_classes = (CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer)
     product_model = ProductModel
     serializer_class = app_settings.PRODUCT_SUMMARY_SERIALIZER
@@ -224,7 +217,6 @@ class AddToCartView(views.APIView):
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
-        warnings.warn("Deprecated endpoint")
         context = self.get_context(request, **kwargs)
         serializer = self.serializer_class(data=request.data, context=context)
         if serializer.is_valid():
@@ -241,9 +233,9 @@ class ProductRetrieveView(generics.RetrieveAPIView):
     and used by the CMS pages responsible for rendering the catalog's list.
     ```
     urlpatterns = [
-        url(r'^$', ProductListView.as_view()),  # see above
-        url(r'^(?P<slug>[\w-]+)/?$', ProductRetrieveView.as_view()),
         ...
+        url(r'^(?P<slug>[\w-]+)', ProductRetrieveView.as_view()),
+        url(r'^', ProductListView.as_view()),  # see above
     ]
     ```
     You may add these attributes to the ``as_view()`` method:
@@ -285,13 +277,9 @@ class ProductRetrieveView(generics.RetrieveAPIView):
         forwards the request to django-CMS.
         """
         try:
-            return super(ProductRetrieveView, self).dispatch(request, *args, **kwargs)
+            return super().dispatch(request, *args, **kwargs)
         except Http404:
-            if LooseVersion(CMS_VERSION) < LooseVersion('3.5'):
-                is_root = request.current_page.is_root()
-            else:
-                is_root = request.current_page.node.is_root()
-            if is_root:
+            if request.current_page.node.is_root():
                 return details(request, kwargs.get('slug'))
             raise
         except:
@@ -300,7 +288,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
     def get_template_names(self):
         product = self.get_object()
         app_label = product._meta.app_label.lower()
-        basename = '{}-detail.html'.format(product.__class__.__name__.lower())
+        basename = '{}-detail.html'.format(product._meta.model_name)
         return [
             os.path.join(app_label, 'catalog', basename),
             os.path.join(app_label, 'catalog/product-detail.html'),
@@ -308,7 +296,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
         ]
 
     def get_renderer_context(self):
-        renderer_context = super(ProductRetrieveView, self).get_renderer_context()
+        renderer_context = super().get_renderer_context()
         if renderer_context['request'].accepted_renderer.format == 'html':
             # add the product as Python object to the context
             product = self.get_object()
@@ -354,13 +342,13 @@ class ProductSelectView(generics.ListAPIView):
         return ProductModel.objects.all()
 
 
-class AddFilterContextMixin(object):
+class AddFilterContextMixin:
     """
     A mixin to enrich the render context by ``filter`` containing information
     on how to render the filter set, supplied by attribute ``filter_class``.
     """
     def get_renderer_context(self):
-        renderer_context = super(AddFilterContextMixin, self).get_renderer_context()
+        renderer_context = super().get_renderer_context()
         if self.filter_class and renderer_context['request'].accepted_renderer.format == 'html':
             # restrict filter set to products associated to this CMS page only
             queryset = self.product_model.objects.filter(self.limit_choices_to)

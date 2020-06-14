@@ -14,9 +14,9 @@
 
 <div class="shop-cart" shop-cart="{% url 'shop:cart-list' %}">
 {% block shop-cart-head %}
-	<div class="row lead text-muted" ng-if="cart.num_items==0">
+	<div class="row" ng-if="cart.num_items==0">
 		<div class="col">
-			{% trans "There are no items in the cart." %}
+			<p class="lead text-muted">{% trans "There are no items in the cart." context "cart" %}</p>
 		</div>
 	</div>
 {% endblock shop-cart-head %}
@@ -33,7 +33,7 @@
 					<div class="form-inline text-nowrap flex-nowrap justify-content-end mb-1 lead">
 						<div ng-bind="cart_item.unit_price"></div>
 						<div class="px-1">&times;</div>
-						<input type="number" class="form-control" ng-model="cart_item.quantity" ng-model-options="{{ EDITCART_NG_MODEL_OPTIONS }}" ng-change="updateCartItem(cart_item)" />
+						<input type="number" class="form-control" ng-model="cart_item.quantity" min="1" ng-model-options="{{ EDITCART_NG_MODEL_OPTIONS }}" ng-change="updateCartItem(cart_item)" />
 						<div ng-bind="cart_item.line_total"></div>
 					</div>
 					<div class="row text-muted text-nowrap mb-1" ng-repeat="extra_row in cart_item.extra_rows">
@@ -47,13 +47,13 @@
 					<div class="row">
 						<div class="col mb-2">
 							<button type="button" class="ml-auto btn btn-sm btn-secondary btn-block shop-item-control" ng-click="deleteCartItem(cart_item)">
-								<span class="fa fa-trash-o mr-2"></span>{% trans "Remove" %}
+								<span class="fa fa-trash-o mr-2"></span>{% trans "Remove" context "cart" %}
 							</button>
 						</div>
 		{% if shop_watch_list_url %}
 						<div class="col mb-2">
 							<button type="button" class="ml-auto btn btn-sm btn-info btn-block shop-item-control" ng-click="watchCartItem(cart_item)">
-								<span class="fa fa-heart-o mr-2"></span>{% trans "Watch Item" %}
+								<span class="fa fa-heart-o mr-2"></span>{% trans "Watch Item" context "cart" %}
 							</button>
 						</div>
 		{% endif %}
@@ -70,7 +70,7 @@
 		<div class="col-12 col-md-6 order-md-last border-top">
 			<div class="row py-2 lead">
 				<div class="col text-right text-nowrap">
-					{% trans "Subtotal" %}
+					{% trans "Subtotal" context "cart" %}
 				</div>
 				<div class="col text-right text-nowrap" ng-bind="cart.subtotal">
 					<!-- Subtotal -->
@@ -81,7 +81,7 @@
 				<div class="col text-right text-nowrap" ng-bind="extra_row.amount"></div>
 			</div>
 			<div class="row py-2 shop-double-border lead font-weight-bold">
-				<div class="col text-right text-nowrap">{% trans "Total" %}</div>
+				<div class="col text-right text-nowrap">{% trans "Total" context "cart" %}</div>
 				<div class="col text-right text-nowrap" ng-bind="cart.total">
 					<!-- Total -->
 				</div>

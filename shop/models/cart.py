@@ -1,12 +1,9 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
-from six import with_metaclass
 import warnings
 from collections import OrderedDict
+
 from django.core import checks
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from shop import deferred
 from shop.models.fields import JSONField
@@ -65,17 +62,21 @@ class CartItemManager(models.Manager):
         return watch_items
 
 
-class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
+class BaseCartItem(models.Model, metaclass=deferred.ForeignKeyBuilder):
     """
     This is a holder for the quantity of items in the cart and, obviously, a
     pointer to the actual Product being purchased
     """
     cart = deferred.ForeignKey(
         'BaseCart',
+        on_delete=models.CASCADE,
         related_name='items',
     )
 
-    product = deferred.ForeignKey(BaseProduct)
+    product = deferred.ForeignKey(
+        BaseProduct,
+        on_delete=models.CASCADE,
+    )
 
     product_code = models.CharField(
         _("Product code"),
@@ -101,7 +102,7 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     @classmethod
     def check(cls, **kwargs):
-        errors = super(BaseCartItem, cls).check(**kwargs)
+        errors = super().check(**kwargs)
         allowed_types = ['IntegerField', 'SmallIntegerField', 'PositiveIntegerField',
                          'PositiveSmallIntegerField', 'DecimalField', 'FloatField']
         for field in cls._meta.fields:
@@ -119,12 +120,12 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         # reduce the given fields to what the model actually can consume
         all_field_names = [field.name for field in self._meta.get_fields(include_parents=True)]
         model_kwargs = {k: v for k, v in kwargs.items() if k in all_field_names}
-        super(BaseCartItem, self).__init__(*args, **model_kwargs)
+        super().__init__(*args, **model_kwargs)
         self.extra_rows = OrderedDict()
         self._dirty = True
 
     def save(self, *args, **kwargs):
-        super(BaseCartItem, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
         self.cart.save(update_fields=['updated_at'])
         self._dirty = True
 
@@ -135,6 +136,7 @@ class BaseCartItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         """
         if not self._dirty:
             return
+        self.refresh_from_db()
         self.extra_rows = OrderedDict()  # reset the dictionary
         for modifier in cart_modifiers_pool.get_all_modifiers():
             modifier.process_cart_item(self, request)
@@ -168,14 +170,15 @@ class CartManager(models.Manager):
         return request._cached_cart
 
 
-class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
+class BaseCart(models.Model, metaclass=deferred.ForeignKeyBuilder):
     """
     The fundamental part of a shopping cart.
     """
     customer = deferred.OneToOneField(
         'BaseCustomer',
-        verbose_name=_("Customer"),
+        on_delete=models.CASCADE,
         related_name='cart',
+        verbose_name=_("Customer"),
     )
 
     created_at = models.DateTimeField(
@@ -199,7 +202,7 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         verbose_name_plural = _("Shopping Carts")
 
     def __init__(self, *args, **kwargs):
-        super(BaseCart, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         # That will hold things like tax totals or total discount
         self.extra_rows = OrderedDict()
         self._cached_cart_items = None
@@ -207,10 +210,10 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     def save(self, force_update=False, *args, **kwargs):
         if self.pk or force_update is False:
-            super(BaseCart, self).save(force_update=force_update, *args, **kwargs)
+            super().save(force_update=force_update, *args, **kwargs)
         self._dirty = True
 
-    def update(self, request):
+    def update(self, request, raise_exception=False):
         """
         This should be called after a cart item changed quantity, has been added or removed.
 
@@ -234,9 +237,9 @@ class BaseCart(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         # This calls all the pre_process_cart methods and the pre_process_cart_item for each item,
         # before processing the cart. This allows to prepare and collect data on the cart.
         for modifier in cart_modifiers_pool.get_all_modifiers():
-            modifier.pre_process_cart(self, request)
+            modifier.pre_process_cart(self, request, raise_exception)
             for item in items:
-                modifier.pre_process_cart_item(self, item, request)
+                modifier.pre_process_cart_item(self, item, request, raise_exception)
 
         self.extra_rows = OrderedDict()  # reset the dictionary
         self.subtotal = 0  # reset the subtotal

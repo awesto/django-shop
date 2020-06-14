@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import unicode_literals
-
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.db.models.base import ModelBase
@@ -10,7 +6,7 @@ from polymorphic.models import PolymorphicModel, PolymorphicModelBase
 from shop import deferred
 
 import copy
-import six
+from types import new_class
 
 
 def create_regular_class(name, fields={}, meta={}):
@@ -30,11 +26,8 @@ def create_deferred_base_class(name, fields={}, meta={}, polymorphic=False):
     meta.setdefault('app_label', 'foo')
     meta.setdefault('abstract', True)
     Meta = type(str('Meta'), (), meta)
-    return type(
-        str(name),
-        (six.with_metaclass(metaclass, model_class),),
-        dict(Meta=Meta, __module__=__name__, **fields),
-    )
+    cls_dict = dict(Meta=Meta, __metaclass__=metaclass, __module__=__name__, **fields)
+    return new_class(name, (model_class,), {'metaclass': metaclass}, lambda attrs: attrs.update(cls_dict))
 
 
 def create_deferred_class(name, base, fields={}, meta={}, mixins=()):
@@ -134,7 +127,7 @@ DeferredPolymorphicProduct = create_deferred_class('DeferredPolymorphicProduct',
 class DeferredTestCase(TestCase):
 
     def assert_same_model(self, to, model):
-        if isinstance(to, six.string_types):
+        if isinstance(to, str):
             self.assertEqual(to, model.__name__)
         else:
             self.assertIs(to, model)
@@ -173,9 +166,9 @@ class DeferredTestCase(TestCase):
         self.assert_same_model(items_field.related_model, product_class)
 
         m2m_field_name = items_field.m2m_field_name()
-        m2m_field = items_field.rel.through._meta.get_field(m2m_field_name)
+        m2m_field = items_field.remote_field.through._meta.get_field(m2m_field_name)
         m2m_reverse_field_name = items_field.m2m_reverse_field_name()
-        m2m_reverse_field = items_field.rel.through._meta.get_field(m2m_reverse_field_name)
+        m2m_reverse_field = items_field.remote_field.through._meta.get_field(m2m_reverse_field_name)
 
         self.assert_same_model(m2m_field.related_model, order_class)
         self.assert_same_model(m2m_reverse_field.related_model, product_class)
@@ -207,12 +200,12 @@ class DeferredTestCase(TestCase):
         self.assertTrue(items_field.is_relation)
         self.assertTrue(items_field.many_to_many)
         self.assert_same_model(items_field.related_model, product_class)
-        self.assert_same_model(items_field.rel.through, order_item_class)
+        self.assert_same_model(items_field.remote_field.through, order_item_class)
 
         m2m_field_name = items_field.m2m_field_name()
-        m2m_field = items_field.rel.through._meta.get_field(m2m_field_name)
+        m2m_field = items_field.remote_field.through._meta.get_field(m2m_field_name)
         m2m_reverse_field_name = items_field.m2m_reverse_field_name()
-        m2m_reverse_field = items_field.rel.through._meta.get_field(m2m_reverse_field_name)
+        m2m_reverse_field = items_field.remote_field.through._meta.get_field(m2m_reverse_field_name)
 
         self.assert_same_model(m2m_field.related_model, order_class)
         self.assert_same_model(m2m_reverse_field.related_model, product_class)

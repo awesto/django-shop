@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from collections import OrderedDict
 from rest_framework import serializers
 
@@ -20,6 +17,9 @@ class JSONSerializerField(serializers.Field):
     """
     Serializer field which transparently bypasses its object instead of serializing/deserializing.
     """
+    def __init__(self, encoder=None, **kwargs):
+        super().__init__(**kwargs)
+
     def to_representation(self, obj):
         return obj
 

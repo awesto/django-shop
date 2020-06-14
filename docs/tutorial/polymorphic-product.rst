@@ -8,6 +8,7 @@ The demo provided by cookiecutter-django-shop_ using the product model "polymorp
 setup a shop, with different product types. This is where polymorphism_ enters the scene. In our
 example we use a combination from the simpler demos "commodity" and "smartcard".
 
+.. _cookiecutter-django-shop: https://github.com/awesto/cookiecutter-django-shop
 .. _polymorphism: https://en.wikipedia.org/wiki/Polymorphism_(computer_science)
 
 Since in this example, we have to specialize our product out of a common base, the properties for

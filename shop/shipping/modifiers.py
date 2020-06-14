@@ -1,14 +1,22 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from shop.modifiers.base import BaseCartModifier
 
 
 class ShippingModifier(BaseCartModifier):
     """
-    Base class for all shipping modifiers.
+    Base class for all shipping modifiers. The purpose of a shipping modifier is to calculate the shipping costs and/or
+    prevent its usage, in case products in the cart can not be shipped to the desired destination. The merchant may
+    either append a single shipping modifier to the list of ``SHOP_CART_MODIFIERS``, or create a sublist of shipping
+    modifier and append this sublist to ``SHOP_CART_MODIFIERS``. The latter is useful to instantiate the same shipping
+    modifier multiple times for different shipping carriers using the same interface.
+
+    The merchant must specify at least one shipping modifier. If there is more than one, the merchant shall offer a
+    select option during checkout. In django-SHOP, one can use the plugin **Shipping Method Form** to render such a
+    select option.
+
+    Each shipping modifier can add a surcharge on the current cart. If weight affects the shipping price, it shall be
+    summed up inside the method `add_extra_cart_row` and used to lookup the shipping costs.
     """
     def get_choice(self):
         """
@@ -19,7 +27,7 @@ class ShippingModifier(BaseCartModifier):
 
     def is_active(self, shipping_modifier):
         """
-        :returns: ``True`` if this shipping modifier is active.
+        :returns: ``True`` if this shipping modifier is the actively selected one.
         """
         return shipping_modifier == self.identifier
 
@@ -72,4 +80,4 @@ class SelfCollectionModifier(ShippingModifier):
     def ship_the_goods(self, delivery):
         if not delivery.shipping_id:
             delivery.shipping_id = str(delivery.id)
-        super(SelfCollectionModifier, self).ship_the_goods(delivery)
+        super().ship_the_goods(delivery)

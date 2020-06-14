@@ -1,16 +1,15 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.conf.urls import url
 from django.contrib import admin
-from django.core.urlresolvers import reverse, NoReverseMatch
 from django.db.models.fields import Field, FieldDoesNotExist
 from django.forms import widgets
 from django.http import HttpResponse
 from django.template.loader import select_template
+from django.urls import reverse, NoReverseMatch
 from django.utils.html import format_html
 from django.utils.translation import pgettext_lazy
+
 from fsm_admin.mixins import FSMTransitionMixin
+
 from shop.conf import app_settings
 from shop.models.customer import CustomerModel
 from shop.models.order import OrderItemModel, OrderPayment
@@ -29,7 +28,7 @@ class OrderPaymentInline(admin.TabularInline):
         """
         choices = [pm.get_choice() for pm in cart_modifiers_pool.get_payment_modifiers()]
         kwargs.update(widgets={'payment_method': widgets.Select(choices=choices)})
-        formset = super(OrderPaymentInline, self).get_formset(request, obj, **kwargs)
+        formset = super().get_formset(request, obj, **kwargs)
         return formset
 
     def has_add_permission(self, request, obj=None):
@@ -126,7 +125,7 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
     change_form_template = 'shop/admin/change_form.html'
 
     def __init__(self, *args, **kwargs):
-        super(BaseOrderAdmin, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.extra_template = select_template([
             '{}/admin/order-extra.html'.format(app_settings.APP_LABEL),
             'shop/admin/order-extra.html',
@@ -172,7 +171,7 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
     get_customer_link.short_description = pgettext_lazy('admin', "Customer")
 
     def get_search_fields(self, request):
-        search_fields = list(super(BaseOrderAdmin, self).get_search_fields(request))
+        search_fields = list(super().get_search_fields(request))
         search_fields.extend(['customer__user__email', 'customer__user__last_name'])
         try:
             # if CustomerModel contains a number field, let search for it
@@ -183,7 +182,7 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
         return search_fields
 
     def get_form(self, request, obj=None, **kwargs):
-        ModelForm = super(BaseOrderAdmin, self).get_form(request, obj, **kwargs)
+        ModelForm = super().get_form(request, obj, **kwargs)
         if obj:
             # store the requested transition inside the instance, so that the model's `clean()` method can access it
             obj._fsm_requested_transition = self._get_requested_transition(request)
@@ -192,25 +191,25 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
     def change_view(self, request, object_id, form_url='', extra_context=None):
         assert object_id, "An Order object can not be added through the Django-Admin"
         current_status = self.get_object(request, object_id).status
-        response = super(BaseOrderAdmin, self).change_view(request, object_id, form_url, extra_context)
+        response = super().change_view(request, object_id, form_url, extra_context)
         order = self.get_object(request, object_id)
         if current_status != order.status:
             transition_change_notification(order)
         return response
 
 
-class PrintInvoiceAdminMixin(object):
+class PrintInvoiceAdminMixin:
     """
     A customized OrderAdmin class shall inherit from this mixin class, to add
     methods for printing the the invoice.
     """
     def get_fields(self, request, obj=None):
-        fields = list(super(PrintInvoiceAdminMixin, self).get_fields(request, obj))
+        fields = list(super().get_fields(request, obj))
         fields.append('print_out')
         return fields
 
     def get_readonly_fields(self, request, obj=None):
-        readonly_fields = list(super(PrintInvoiceAdminMixin, self).get_readonly_fields(request, obj))
+        readonly_fields = list(super().get_readonly_fields(request, obj))
         readonly_fields.append('print_out')
         return readonly_fields
 
@@ -219,7 +218,7 @@ class PrintInvoiceAdminMixin(object):
             url(r'^(?P<pk>\d+)/print_invoice/$', self.admin_site.admin_view(self.render_invoice),
                 name='print_invoice'),
         ]
-        my_urls.extend(super(PrintInvoiceAdminMixin, self).get_urls())
+        my_urls.extend(super().get_urls())
         return my_urls
 
     def _render_content(self, request, pk, template):

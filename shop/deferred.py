@@ -3,21 +3,20 @@ import copy
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models.base import ModelBase
 from django.db import models
-from django.utils import six
 from django.utils.functional import LazyObject, empty
 from polymorphic.models import PolymorphicModelBase
 
 from shop.conf import app_settings
 
 
-class DeferredRelatedField(object):
+class DeferredRelatedField:
     def __init__(self, to, **kwargs):
         try:
             self.abstract_model = to._meta.object_name
         except AttributeError:
-            assert isinstance(to, six.string_types), "%s(%r) is invalid. First parameter must be either a model or a model name" % (self.__class__.__name__, to)
+            assert isinstance(to, str), "%s(%r) is invalid. First parameter must be either a model or a model name" % (self.__class__.__name__, to)
             self.abstract_model = to
-        self.options = kwargs
+        self.options = dict(**kwargs)
 
 
 class OneToOneField(DeferredRelatedField):
@@ -27,6 +26,9 @@ class OneToOneField(DeferredRelatedField):
     """
     MaterializedField = models.OneToOneField
 
+    def __init__(self, to, on_delete, **kwargs):
+        super().__init__(to, on_delete=on_delete, **kwargs)
+
 
 class ForeignKey(DeferredRelatedField):
     """
@@ -34,6 +36,9 @@ class ForeignKey(DeferredRelatedField):
     ``ForeignKey`` whenever a real model class is derived from a given abstract class.
     """
     MaterializedField = models.ForeignKey
+
+    def __init__(self, to, on_delete, **kwargs):
+        super().__init__(to, on_delete=on_delete, **kwargs)
 
 
 class ManyToManyField(DeferredRelatedField):
@@ -44,7 +49,7 @@ class ManyToManyField(DeferredRelatedField):
     MaterializedField = models.ManyToManyField
 
     def __init__(self, to, **kwargs):
-        super(ManyToManyField, self).__init__(to, **kwargs)
+        super().__init__(to, **kwargs)
 
         through = kwargs.get('through')
 
@@ -54,7 +59,7 @@ class ManyToManyField(DeferredRelatedField):
             try:
                 self.abstract_through_model = through._meta.object_name
             except AttributeError:
-                assert isinstance(through, six.string_types), ('%s(%r) is invalid. '
+                assert isinstance(through, str), ('%s(%r) is invalid. '
                     'Through parameter must be either a model or a model name'
                     % (self.__class__.__name__, through))
                 self.abstract_through_model = through
@@ -64,12 +69,11 @@ class ForeignKeyBuilder(ModelBase):
     """
     In Django we can not point a ``OneToOneField``, ``ForeignKey`` or ``ManyToManyField`` onto
     an abstract Model class. In Django-SHOP this limitation is circumvented by creating deferred
-    foreign keys, which are mapped to their correct model's counterpart during the model materialization
-    step.
+    foreign keys, which are mapped to their correct model's counterpart during the model
+    materialization step.
 
     If the main application stores its models in its own directory, add to settings.py:
-    SHOP_APP_LABEL = 'myshop'
-    so that the models are created inside your own shop instantiation.
+    SHOP_APP_LABEL = 'myshop', so that the models are created inside your own shop instantiation.
     """
     _model_allocation = {}
     _pending_mappings = []
@@ -84,7 +88,7 @@ class ForeignKeyBuilder(ModelBase):
         if not hasattr(attrs['Meta'], 'app_label') and not getattr(attrs['Meta'], 'abstract', False):
             attrs['Meta'].app_label = Meta.app_label
 
-        Model = super(ForeignKeyBuilder, cls).__new__(cls, name, bases, attrs)
+        Model = super().__new__(cls, name, bases, attrs)
 
         if Model._meta.abstract:
             return Model
@@ -215,7 +219,7 @@ class MaterializedModel(LazyObject):
     """
     def __init__(self, base_model):
         self.__dict__['_base_model'] = base_model
-        super(MaterializedModel, self).__init__()
+        super().__init__()
 
     def _setup(self):
         self._wrapped = getattr(self._base_model, '_materialized_model')

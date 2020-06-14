@@ -1,16 +1,15 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.contrib.admin import StackedInline
-from django.forms import widgets
-from django.forms.models import ModelForm
+from django.forms import fields, widgets
 from django.template.loader import select_template
-from django.utils.translation import ugettext_lazy as _, ugettext
+from django.utils.translation import gettext_lazy as _, gettext
+
+from entangled.forms import EntangledModelFormMixin, EntangledModelForm
+
 from cms.plugin_pool import plugin_pool
 from cms.utils.compat.dj import is_installed
 from cmsplugin_cascade.mixins import WithSortableInlineElementsMixin
 from cmsplugin_cascade.models import SortableInlineCascadeElement
-from cmsplugin_cascade.fields import GlossaryField
+
 from shop.cascade.plugin_base import ShopPluginBase, ProductSelectField
 from shop.conf import app_settings
 from shop.models.product import ProductModel
@@ -18,23 +17,34 @@ from shop.models.product import ProductModel
 if is_installed('adminsortable2'):
     from adminsortable2.admin import SortableInlineAdminMixin
 else:
-    SortableInlineAdminMixin = type(str('SortableInlineAdminMixin'), (object,), {})
+    SortableInlineAdminMixin = type('SortableInlineAdminMixin', (object,), {})
+
+
+class ShopCatalogPluginForm(EntangledModelFormMixin):
+    CHOICES = [
+        ('paginator', _("Use Paginator")),
+        ('manual', _("Manual Infinite")),
+        ('auto', _("Auto Infinite")),
+    ]
+
+    pagination = fields.ChoiceField(
+        choices=CHOICES,
+        widget=widgets.RadioSelect,
+        label=_("Pagination"),
+        initial='paginator',
+        help_text=_("Shall the product list view use a paginator or scroll infinitely?"),
+    )
+
+    class Meta:
+        entangled_fields = {'glossary': ['pagination']}
 
 
 class ShopCatalogPlugin(ShopPluginBase):
     name = _("Catalog List View")
     require_parent = True
-    parent_classes = ('BootstrapColumnPlugin', 'SimpleWrapperPlugin',)
+    form = ShopCatalogPluginForm
+    parent_classes = ['BootstrapColumnPlugin', 'SimpleWrapperPlugin']
     cache = False
-
-    pagination = GlossaryField(
-        widgets.RadioSelect(choices=[
-            ('paginator', _("Use Paginator")), ('manual', _("Manual Infinite")), ('auto', _("Auto Infinite"))
-        ]),
-        label=_("Pagination"),
-        initial=True,
-        help_text=_("Shall the product list view use a paginator or scroll infinitely?"),
-    )
 
     def get_render_template(self, context, instance, placeholder):
         templates = []
@@ -54,44 +64,59 @@ class ShopCatalogPlugin(ShopPluginBase):
     def get_identifier(cls, obj):
         pagination = obj.glossary.get('pagination')
         if pagination == 'paginator':
-            return ugettext("Manual Pagination")
-        return ugettext("Infinite Scroll")
+            return gettext("Manual Pagination")
+        return gettext("Infinite Scroll")
 
 plugin_pool.register_plugin(ShopCatalogPlugin)
+
+
+class ShopAddToCartPluginForm(EntangledModelFormMixin):
+    use_modal_dialog = fields.BooleanField(
+        label=_("Use Modal Dialog"),
+        initial=True,
+        required=False,
+        help_text=_("After adding product to cart, render a modal dialog"),
+    )
+
+    class Meta:
+        entangled_fields = {'glossary': ['use_modal_dialog']}
 
 
 class ShopAddToCartPlugin(ShopPluginBase):
     name = _("Add Product to Cart")
     require_parent = True
-    parent_classes = ('BootstrapColumnPlugin',)
+    form = ShopAddToCartPluginForm
+    parent_classes = ['BootstrapColumnPlugin']
     cache = False
-
-    use_modal_dialog = GlossaryField(
-        widgets.CheckboxInput(),
-        label=_("Use Modal Dialog"),
-        initial='on',
-        help_text=_("After adding product to cart, render a modal dialog"),
-    )
 
     def get_render_template(self, context, instance, placeholder):
         templates = []
         if instance.glossary.get('render_template'):
             templates.append(instance.glossary['render_template'])
+        if context['product'].managed_availability():
+            template_prefix = 'available-'
+        else:
+            template_prefix = ''
         templates.extend([
-            '{}/catalog/product-add2cart.html'.format(app_settings.APP_LABEL),
-            'shop/catalog/product-add2cart.html',
+            '{}/catalog/{}product-add2cart.html'.format(app_settings.APP_LABEL, template_prefix),
+            'shop/catalog/{}product-add2cart.html'.format(template_prefix),
         ])
         return select_template(templates)
 
     def render(self, context, instance, placeholder):
-        context = super(ShopAddToCartPlugin, self).render(context, instance, placeholder)
+        context = super().render(context, instance, placeholder)
         context['use_modal_dialog'] = bool(instance.glossary.get('use_modal_dialog', True))
         return context
 
 plugin_pool.register_plugin(ShopAddToCartPlugin)
 
 
-class ProductGalleryForm(ModelForm):
+class ProductGalleryForm(EntangledModelForm):
+    order = fields.IntegerField(
+        widget=widgets.HiddenInput,
+        initial=0,
+    )
+
     product = ProductSelectField(
         required=False,
         label=_("Related Product"),
@@ -99,41 +124,15 @@ class ProductGalleryForm(ModelForm):
     )
 
     class Meta:
-        exclude = ('glossary',)
-
-    def __init__(self, *args, **kwargs):
-        try:
-            initial = dict(kwargs['instance'].glossary)
-        except (KeyError, AttributeError):
-            initial = {}
-        initial.update(kwargs.pop('initial', {}))
-        try:
-            self.base_fields['product'].initial = initial['product']['pk']
-        except KeyError:
-            self.base_fields['product'].initial = None
-        if not is_installed('adminsortable2'):
-            self.base_fields['order'].widget = widgets.HiddenInput()
-            self.base_fields['order'].initial = 0
-        super(ProductGalleryForm, self).__init__(*args, **kwargs)
-
-    def clean(self):
-        cleaned_data = super(ProductGalleryForm, self).clean()
-        if self.is_valid():
-            product_pk = self.cleaned_data.pop('product', None)
-            if product_pk:
-                product_data = {'pk': product_pk}
-                self.instance.glossary.update(product=product_data)
-            else:
-                self.instance.glossary.pop('image', None)
-        return cleaned_data
+        entangled_fields = {'glossary': ['product']}
+        untangled_fields = ['order']
 
 
 class ProductGalleryInline(SortableInlineAdminMixin, StackedInline):
     model = SortableInlineCascadeElement
-    raw_id_fields = ('product',)
     form = ProductGalleryForm
     extra = 5
-    ordering = ('order',)
+    ordering = ['order']
     verbose_name = _("Product")
     verbose_name_plural = _("Product Gallery")
 

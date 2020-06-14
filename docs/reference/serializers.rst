@@ -97,16 +97,18 @@ template is constructed using the following rules:
 #. Search for a subfolder named ``products``.
 #. Search for a template named "*label*-*product_type*-*postfix*.html". These three subfieds are
    determined using the following rule:
+
    - *label*: the component of the shop, for instance ``catalog``, ``cart``, ``order``.
    - *product_type*: the class name in lower case of the product's Django model, for instance
      ``smartcard``, ``smartphone`` or if no such template can be found, just  ``product``.
    - *postfix*: This is an arbitrary name passed in by the rendering function. As in the example
      above, this is the string ``media``.
 
-.. note:: It might seem "un-restful" to render HTML snippets by a REST serializer and deliver them
-    via JSON to the client. However, we somehow must re-size the images assigned to our product to
-    fit into the layout of our list view. The easiest way to do this in a configurable manner is
-    to use the easythumbnails_ library and its templatetag ``{% thumbnail product.sample_image ... %}``.
+.. note:: It might seem *un*-RESTful to render HTML snippets by a serializer and deliver them via
+	JSON to the client. However, we somehow must re-size the images assigned to our product to
+	fit into the layout of our list view. The easiest way to do this in a configurable manner is
+	to use the easy-thumbnails_ library and its templatetag
+	``{% thumbnail product.sample_image ... %}``.
 
 The template to render the media snippet could look like:
 
@@ -160,7 +162,7 @@ of the shop framework, but must be created and added to the project as the
 
 
 Catalog List View
-~~~~~~~~~~~~~~~~~
+.................
 
 The urlpattern matching the regular expression ``^$`` routes onto the catalog list view class
 :class:`shop.views.catalog.CMSPageProductListView` passing in a special serializer class, for
@@ -182,7 +184,7 @@ for restricting selected products on the current catalog list view.
 
 
 Catalog Detail View
-~~~~~~~~~~~~~~~~~~~
+...................
 
 The urlpattern matching the regular expression ``^(?P<slug>[\w-]+)$`` routes onto the class
 :class:`shop.views.catalog.ProductRetrieveView` passing in a special serializer class,
@@ -198,7 +200,7 @@ given ``serializer_class`` it can accept these fields:
 
 
 Add Product to Cart
-~~~~~~~~~~~~~~~~~~~
+...................
 
 The product detail view requires another serializer, the so called ``AddToCartSerializer``. This
 serializer is responsible for controlling the number of items being added to the cart and gives
@@ -293,3 +295,5 @@ business logic from the underlying request-response-cycle.
 
 .. _directives: https://docs.angularjs.org/guide/directive
 .. _apphook: http://django-cms.readthedocs.org/en/stable/introduction/apphooks.html
+.. _easy-thumbnails: https://easy-thumbnails.readthedocs.io/en/stable/
+.. _Pillow: https://pillow.readthedocs.io/en/stable/

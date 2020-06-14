@@ -1,8 +1,5 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from shop.conf import app_settings
-from shop.models.customer import CustomerModel
+from shop.models.customer import CustomerModel, VisitingCustomer
 
 
 def customer(request):
@@ -12,16 +9,15 @@ def customer(request):
     msg = "The request object does not contain a customer. Edit your MIDDLEWARE_CLASSES setting to insert 'shop.middlerware.CustomerMiddleware'."
     assert hasattr(request, 'customer'), msg
 
-    context = {
-        'customer': request.customer,
-        'site_header': app_settings.APP_LABEL.capitalize(),
-    }
+    customer = request.customer
     if request.user.is_staff:
         try:
-            context.update(customer=CustomerModel.objects.get(pk=request.session['emulate_user_id']))
-        except (CustomerModel.DoesNotExist, KeyError, AttributeError):
+            customer = CustomerModel.objects.get(pk=request.session['emulate_user_id'])
+        except CustomerModel.DoesNotExist:
+            customer = VisitingCustomer()
+        except (AttributeError, KeyError):
             pass
-    return context
+    return {'customer': customer}
 
 
 def shop_settings(request):
@@ -30,6 +26,7 @@ def shop_settings(request):
     """
     from rest_auth.app_settings import LoginSerializer
     return {
+        'site_header': app_settings.APP_LABEL.capitalize(),
         'EDITCART_NG_MODEL_OPTIONS': app_settings.EDITCART_NG_MODEL_OPTIONS,
         'ADD2CART_NG_MODEL_OPTIONS': app_settings.ADD2CART_NG_MODEL_OPTIONS,
         'ALLOW_SHORT_SESSIONS': 'stay_logged_in' in LoginSerializer().fields,

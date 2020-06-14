@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.utils.cache import add_never_cache_headers
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -47,14 +44,18 @@ class BaseViewSet(viewsets.ModelViewSet):
         """
         cart_item = self.get_object()
         context = self.get_serializer_context()
-        item_serializer = self.item_serializer_class(cart_item, context=context, data=request.data,
-                                                     label=self.serializer_label)
+        item_serializer = self.item_serializer_class(
+            cart_item,
+            context=context,
+            data=request.data,
+            label=self.serializer_label,
+        )
         item_serializer.is_valid(raise_exception=True)
         self.perform_update(item_serializer)
         cart_serializer = CartSerializer(cart_item.cart, context=context, label='cart')
         response_data = {
-            'cart_item': item_serializer.data,
             'cart': cart_serializer.data,
+            'cart_item': item_serializer.data,
         }
         return Response(data=response_data)
 
@@ -76,7 +77,7 @@ class BaseViewSet(viewsets.ModelViewSet):
         """Set HTTP headers to not cache this view"""
         if self.action != 'render_product_summary':
             add_never_cache_headers(response)
-        return super(BaseViewSet, self).finalize_response(request, response, *args, **kwargs)
+        return super().finalize_response(request, response, *args, **kwargs)
 
 
 class CartViewSet(BaseViewSet):

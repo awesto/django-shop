@@ -1,12 +1,28 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from setuptools import setup, find_packages
 import shop
 
 with open('README.md', 'r') as fh:
     long_description = fh.read()
+
+REQUIREMENTS = [
+    'Django>=2.1,<3.1',
+    'django-filer>=1.7',
+    'django-ipware',
+    'django-fsm>=2.7',
+    'django-fsm-admin',
+    'djangorestframework>=3.9,<4',
+    'django-rest-auth',
+    'django-angular',
+    'Django-Select2',
+    'django-rest-auth',
+    'django-admin-sortable2',
+    'django-formtools',
+    'django_polymorphic',
+    'django-post_office',
+    'django-cms>=3.7',
+    'djangocms-cascade>=1.3',
+]
 
 CLASSIFIERS = [
     'Environment :: Web Environment',
@@ -14,12 +30,14 @@ CLASSIFIERS = [
     'Intended Audience :: Developers',
     'License :: OSI Approved :: BSD License',
     'Operating System :: OS Independent',
-    'Programming Language :: Python :: 2.7',
-    'Programming Language :: Python :: 3.4',
-    'Programming Language :: Python :: 3.5',
+    'Programming Language :: Python',
     'Programming Language :: Python :: 3.6',
-    'Framework :: Django :: 1.10',
-    'Framework :: Django :: 1.11',
+    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
+    'Framework :: Django',
+    'Framework :: Django :: 2.1',
+    'Framework :: Django :: 2.2',
+    'Framework :: Django :: 3.0',
     'Topic :: Software Development :: Libraries :: Application Frameworks',
     'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
 ]
@@ -39,23 +57,5 @@ setup(
     packages=find_packages(exclude=['tests', 'docs']),
     include_package_data=True,
     zip_safe=False,
-    install_requires=[
-        'Django>=1.11,<2.0',
-        'django-post_office>=3.2.0',
-        'django-filer>=1.4',
-        'django-ipware>=1.1.1',
-        'django-fsm>=2.4.0',
-        'django-fsm-admin>=1.2.4',
-        'djangorestframework>3.8,<3.9',
-        'django-angular>=2.2',
-        'Django-Select2<7',
-        'django-rest-auth>=0.9.1',
-        'django-admin-sortable2>=0.6.19',
-        'django-formtools>=1.0',
-        'djangocms-cascade>=0.18.2',
-    ],
-    # Note: this requires setuptools >= 18.0.
-    extras_require={
-        ':python_version<"3.4"': ['enum34'],
-    },
+    install_requires=REQUIREMENTS,
 )

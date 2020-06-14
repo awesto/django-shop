@@ -1,11 +1,8 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.core.exceptions import ImproperlyConfigured
 from shop.models.order import OrderModel
 
 
-class PaymentProvider(object):
+class PaymentProvider:
     """
     Base class for all Payment Service Providers.
     """
@@ -43,11 +40,11 @@ class ForwardFundPayment(PaymentProvider):
     namespace = 'forward-fund-payment'
 
     def __init__(self):
-        if (not callable(getattr(OrderModel, 'no_payment_required', None)) or
-            not callable(getattr(OrderModel, 'awaiting_payment', None))):
+        if (not (callable(getattr(OrderModel, 'no_payment_required', None)) and callable(
+                getattr(OrderModel, 'awaiting_payment', None)))):
             msg = "Missing methods in Order model. Add 'shop.payment.workflows.ManualPaymentWorkflowMixin' to SHOP_ORDER_WORKFLOWS."
             raise ImproperlyConfigured(msg)
-        super(ForwardFundPayment, self).__init__()
+        super().__init__()
 
     def get_payment_request(self, cart, request):
         order = OrderModel.objects.create_from_cart(cart, request)

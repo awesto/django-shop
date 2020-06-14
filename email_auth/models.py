@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 """
 Alternative implementation of Django's authentication User model, which allows to authenticate
 against the email field in addition to the username fields.
@@ -9,7 +7,6 @@ settings.py, otherwise the default Django or another customized implementation w
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser, UserManager as BaseUserManager
 from django.core.exceptions import ValidationError
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -21,7 +18,6 @@ class UserManager(BaseUserManager):
             return self.get(is_active=True, email=username)
 
 
-@python_2_unicode_compatible
 class User(AbstractUser):
     """
     Alternative implementation of Django's User model allowing to authenticate against the email

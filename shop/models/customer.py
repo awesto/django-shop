@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 import string
 from importlib import import_module
 import warnings
@@ -14,11 +11,8 @@ from django.db import models, DEFAULT_DB_ALIAS
 from django.db.models.fields import FieldDoesNotExist
 from django.dispatch import receiver
 from django.utils import timezone
-from django.utils.deprecation import CallableBool, CallableFalse, CallableTrue
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import SimpleLazyObject
-from django.utils.translation import ugettext_lazy as _
-from django.utils.six import with_metaclass
+from django.utils.translation import gettext_lazy as _
 
 from shop import deferred
 from shop.models.fields import JSONField
@@ -63,7 +57,7 @@ class CustomerQuerySet(models.QuerySet):
                     raise fdne
                 except Exception as othex:
                     raise othex
-        result = super(CustomerQuerySet, self)._filter_or_exclude(negate, *args, **lookup_kwargs)
+        result = super()._filter_or_exclude(negate, *args, **lookup_kwargs)
         return result
 
 
@@ -121,7 +115,7 @@ class CustomerManager(models.Manager):
     def create(self, *args, **kwargs):
         if 'user' in kwargs and kwargs['user'].is_authenticated:
             kwargs.setdefault('recognized', CustomerState.REGISTERED)
-        customer = super(CustomerManager, self).create(*args, **kwargs)
+        customer = super().create(*args, **kwargs)
         return customer
 
     def _get_visiting_user(self, session_key):
@@ -181,8 +175,7 @@ class CustomerManager(models.Manager):
         return customer
 
 
-@python_2_unicode_compatible
-class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
+class BaseCustomer(models.Model, metaclass=deferred.ForeignKeyBuilder):
     """
     Base class for shop customers.
 
@@ -192,7 +185,9 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     """
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
         primary_key=True,
+        related_name='customer',
     )
 
     recognized = ChoiceEnumField(
@@ -267,11 +262,11 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     @property
     def is_anonymous(self):
-        return CallableBool(self.recognized in (CustomerState.UNRECOGNIZED, CustomerState.GUEST))
+        return self.recognized in (CustomerState.UNRECOGNIZED, CustomerState.GUEST)
 
     @property
     def is_authenticated(self):
-        return CallableBool(self.recognized is CustomerState.REGISTERED)
+        return self.recognized is CustomerState.REGISTERED
 
     @property
     def is_recognized(self):
@@ -280,7 +275,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         Unrecognized customers have accessed the shop, but did not register
         an account nor declared themselves as guests.
         """
-        return CallableBool(self.recognized is not CustomerState.UNRECOGNIZED)
+        return self.recognized is not CustomerState.UNRECOGNIZED
 
     @property
     def is_guest(self):
@@ -288,7 +283,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         Return true if the customer isn't associated with valid User account, but declared
         himself as a guest, leaving their email address.
         """
-        return CallableBool(self.recognized is CustomerState.GUEST)
+        return self.recognized is CustomerState.GUEST
 
     def recognize_as_guest(self, request=None, commit=True):
         """
@@ -305,7 +300,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         """
         Return true if the customer has registered himself.
         """
-        return CallableBool(self.recognized is CustomerState.REGISTERED)
+        return self.recognized is CustomerState.REGISTERED
 
     def recognize_as_registered(self, request=None, commit=True):
         """
@@ -322,7 +317,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         """
         Always False for instantiated Customer objects.
         """
-        return CallableFalse
+        return False
 
     @property
     def is_expired(self):
@@ -340,7 +335,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
                 msg = "Unable to decode username '{}' as session key"
                 warnings.warn(msg.format(self.user.username))
                 is_expired = True
-        return CallableBool(is_expired)
+        return is_expired
 
     def get_or_assign_number(self):
         """
@@ -362,12 +357,12 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
     def save(self, **kwargs):
         if 'update_fields' not in kwargs:
             self.user.save(using=kwargs.get('using', DEFAULT_DB_ALIAS))
-        super(BaseCustomer, self).save(**kwargs)
+        super().save(**kwargs)
 
     def delete(self, *args, **kwargs):
         if self.user.is_active and self.recognized is CustomerState.UNRECOGNIZED:
             # invalid state of customer, keep the referred User
-            super(BaseCustomer, self).delete(*args, **kwargs)
+            super().delete(*args, **kwargs)
         else:
             # also delete self through cascading
             self.user.delete(*args, **kwargs)
@@ -375,7 +370,7 @@ class BaseCustomer(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 CustomerModel = deferred.MaterializedModel(BaseCustomer)
 
 
-class VisitingCustomer(object):
+class VisitingCustomer:
     """
     This dummy object is used for customers which just visit the site. Whenever a VisitingCustomer
     adds something to the cart, this object is replaced against a real Customer object.
@@ -395,27 +390,27 @@ class VisitingCustomer(object):
 
     @property
     def is_anonymous(self):
-        return CallableTrue
+        return True
 
     @property
     def is_authenticated(self):
-        return CallableFalse
+        return False
 
     @property
     def is_recognized(self):
-        return CallableFalse
+        return False
 
     @property
     def is_guest(self):
-        return CallableFalse
+        return False
 
     @property
     def is_registered(self):
-        return CallableFalse
+        return False
 
     @property
     def is_visitor(self):
-        return CallableTrue
+        return True
 
     def save(self, **kwargs):
         pass

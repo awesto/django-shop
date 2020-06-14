@@ -58,6 +58,7 @@ djangoShopModule.directive('shopCartItem', function() {
 					data: cartItem
 				}).then(function(response) {
 					$rootScope.$broadcast('shop.cart.change', response.data.cart);
+					$rootScope.$broadcast('shop.messages.fetch');
 					deferred.resolve(response);
 				});
 				return deferred.promise;

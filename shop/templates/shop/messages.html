@@ -1,0 +1,25 @@
+{% load i18n static sekizai_tags %}{% spaceless %}
+
+{% addtoblock "js" %}<script src="{% static 'shop/js/messages.js' %}" type="text/javascript"></script>{% endaddtoblock %}
+{% add_data "ng-requires" "django.shop.messages" %}
+{% addtoblock "ng-config" %}['djangoMessagesProvider',function(p){p.setEndpoint("{% url 'shop:fetch-messages' %}");}]{% endaddtoblock %}
+
+<shop-toast-messages class="position-fixed w-100 d-flex mt-2"></shop-toast-messages>
+
+{% verbatim %}
+<script id="shop/toast-messages.html" type="text/ng-template">
+<div class="mx-auto d-flex flex-column">
+	<div ng-repeat="message in djangoMessages" class="toast fade" ng-class="appear(message)" role="alert" aria-live="assertive" aria-atomic="true" delay="{{ message.delay }}">
+		<div class="toast-header" ng-class="alertLevel(message)">
+			<i class="fa mr-2" ng-class="alertIcon(message)" aria-hidden="true"></i>
+			<strong class="mr-auto">{{ message.heading }}</strong>
+			<button type="button" class="ml-2 mb-1 close" ng-click="close(message)" aria-label="{% trans 'Close' %}">
+				<span aria-hidden="true" ng-click="">&times;</span>
+			</button>
+		</div>
+		<div class="toast-body">{{ message.body }}</div>
+	</div>
+</div>
+</script>
+{% endverbatim %}
+{% endspaceless %}

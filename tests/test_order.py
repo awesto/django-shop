@@ -1,6 +1,3 @@
-# -*- coding: utf-8
-from __future__ import unicode_literals
-
 import pytest
 from bs4 import BeautifulSoup
 from django.core.mail import EmailMessage

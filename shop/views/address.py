@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.db import transaction
 
 from rest_framework import status
@@ -23,7 +20,7 @@ class AddressEditView(GenericAPIView):
     form_class = None  # must be overridde
 
     def __init__(self, **kwargs):
-        super(AddressEditView, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.visible_fields = [f.name for f in self.form_class().visible_fields()]
 
     def get(self, request, priority=None, *args, **kwargs):

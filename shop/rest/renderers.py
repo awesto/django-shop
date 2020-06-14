@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from rest_framework import renderers
 from rest_framework.exceptions import APIException
 
@@ -8,7 +5,7 @@ from shop.models.cart import CartModel
 from shop.serializers.cart import CartSerializer
 
 
-class TemplateContextMixin(object):
+class TemplateContextMixin:
     """
     Alternative implementation which does not pollute the template context with
     the serialized data on the root scope.

@@ -1,15 +1,12 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.core import exceptions
 from django.core.cache import cache
 from django.template import TemplateDoesNotExist
 from django.template.loader import select_template
 from django.utils.html import strip_spaces_between_tags
-from django.utils import six
 from django.utils.safestring import mark_safe, SafeText
 from django.utils.translation import get_language_from_request
 from rest_framework import serializers
+
 from shop.conf import app_settings
 from shop.models.customer import CustomerModel
 from shop.models.product import ProductModel
@@ -25,12 +22,19 @@ class BaseCustomerSerializer(serializers.ModelSerializer):
         fields = ['number', 'first_name', 'last_name', 'email']
 
 
+class AvailabilitySerializer(serializers.Serializer):
+    earliest = serializers.DateTimeField()
+    latest = serializers.DateTimeField()
+    quantity = serializers.ReadOnlyField()
+    sell_short = serializers.BooleanField()
+    limited_offer = serializers.BooleanField()
+
+
 class ProductSerializer(serializers.ModelSerializer):
     """
     Common serializer for our product model.
     """
     price = serializers.SerializerMethodField()
-    availability = serializers.SerializerMethodField()
     product_type = serializers.CharField(read_only=True)
     product_model = serializers.CharField(read_only=True)
     product_url = serializers.URLField(source='get_absolute_url', read_only=True)
@@ -41,17 +45,11 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('label', 'catalog')
-        super(ProductSerializer, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def get_price(self, product):
         price = product.get_price(self.context['request'])
-        # TODO: check if this can be simplified using str(product.get_price(...))
-        if six.PY2:
-            return u'{:f}'.format(price)
         return '{:f}'.format(price)
-
-    def get_availability(self, product):
-        return product.get_availability(self.context['request'])
 
     def render_html(self, product, postfix):
         """

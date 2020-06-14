@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+from urllib.parse import urlparse
 
 from django.contrib.auth.models import AnonymousUser
 from django.db import models
 from django.http.request import HttpRequest
-from django.utils.six.moves.urllib.parse import urlparse
 from post_office import mail
 from post_office.models import EmailTemplate
 from shop.conf import app_settings
@@ -21,7 +19,7 @@ class EmulateHttpRequest(HttpRequest):
     asynchronously, for instance when an email must be generated out of an Order object.
     """
     def __init__(self, customer, stored_request):
-        super(EmulateHttpRequest, self).__init__()
+        super().__init__()
         parsedurl = urlparse(stored_request.get('absolute_base_uri'))
         self.path = self.path_info = parsedurl.path
         self.environ = {}

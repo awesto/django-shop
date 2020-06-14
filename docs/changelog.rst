@@ -4,6 +4,66 @@
 Changelog for django-SHOP
 =========================
 
+1.2.1
+=====
+* In management command, make mandatory CMS page for rendering search results, recommended only.
+
+
+1.2
+===
+* Add support for Django-3.0.
+* For full-text searching, replace Haystack against elasticsearch-dsl.
+* Drop support for Python 2.7 and 3.4.
+* Drop support for Django-1.11 and 2.0.
+
+
+1.1.4
+=====
+* Fix rendering bug in Product Gallery plugin.
+
+
+1.1.3
+=====
+* Add South African Rand to currencies.
+
+
+1.1.2
+=====
+* Fix #802: ``CartItemSerializer`` raised an exception if field ``CartItem.extra`` was handled by
+  Django's internal Postgres ``JSONField``.
+* Fix: In Django>2, rendering of OrderItem in Inline Admin did not work anymore.
+
+
+1.1.1
+=====
+* Fix: Rendering text for full text index raised an exception.
+* Upgrade calls to djangorestframework API to support version 3.9 and later.
+* Fix: Generating email during purchansing operation raised an exception.
+
+
+1.1
+===
+
+* Add support for Django-2.2, 2.1. Drop support for Django<1.11.
+* Add wrapper around Django's messages framework so that messages can be displayed asynchronously
+  using a new AngularJS directive ``<toast-messages>``.
+* Add endpoint ``fetch_messages`` to fetch JSON description for toast-messages.
+* Add stock managment offering a simple addon to products, or alternatively an inventory management
+  class, allowing to sell short and limiting to special periods.
+* Refactored views for adding product to cart and changing quantity in cart so that the purchasing
+  quantity can not exceed the quantity in stock.
+* The default commodity product now keeps track of the quantity in stock.
+* Changed the signature of the methods :meth:`shop.modifiers.base.CartModifierBase.pre_process_cart`
+  and :meth:`shop.modifiers.base.CartModifierBase.pre_process_cart_item` to take an extra boolean
+  parameter.
+* Remove sub-serializer ``availability`` from product, because now it is handled internally by the
+  class :class:`shop.serializers.defaults.catalog.AddToCartSerializer`.
+* For products with managed availability, show the remaining number in stock.
+* Changed the field type of ``quantity`` in :class:`shop.models.defaults.cart_item.CartItem` and
+  :class:`shop.models.defaults.order_item.OrderItem` from ``IntegerField`` to ``PositiveIntegerField``.
+  (Ann.: This change, by accident slipped into version 1.0.1 and was reverted in 1.0.2).
+
+
 1.0.2
 =====
 * Revert the change of the ``quantity`` field to use a ``PositiveIntegerField`` in the default
@@ -14,10 +74,8 @@ Changelog for django-SHOP
 1.0.1
 =====
 
-* Fix error in admin interface for ``Notification``detail view.
+* Fix error in admin interface for ``Notification`` detail view.
 * Refactor all internal model checks to use classmethod ``check()`` provided by Django.
-* Changed the field type of ``quantity`` in :class:`shop.models.defaults.cart_item.CartItem` and
-  :class:`shop.models.defaults.order_item.OrderItem` from ``IntegerField`` to ``PositiveIntegerField``.
 
 
 1.0
@@ -398,7 +456,7 @@ Changelog for django-SHOP
 * Added method ``post_process_cart_item`` to the Cart Modifiers.
 * In ``CartItem`` the ``product_code`` is mandatory now. It moves from being optionally kept in dict
   ``CartItem.extra`` into the ``CartItem`` model itself. This simplifies a lot of boilerplate code,
-  otherwise required by the merchant implementation. Please read :ref:`release-notes/0.10` for details.
+  otherwise required by the merchant implementation.
 * In :class:`shop.models.product.BaseProduct` added a hook method ``get_product_variant(self, **kwargs)``
   which can be overridden by products with variations to return a product variant.
 
@@ -425,8 +483,7 @@ Changelog for django-SHOP
 * Minimum required version of django-filer is now 1.2.5.
 * Minimum required version of djangocms-cascade is now 0.10.2.
 * Minimum required version of djangoshop-stripe is now 0.2.0.
-* Changed the default address models to be more generic. Please read the
-  :ref:`release-notes/0.9` if you are upgrading from 0.9.0 or 0.9.1.
+* Changed the default address models to be more generic.
 * Fixed :py:meth:`shop.money.fields.decontruct` to avoid repetitive useless generation of migration
   files.
 * Using cached_property decoration for methods ``unit_price`` and ``line_total`` in
