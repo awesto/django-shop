@@ -17,7 +17,7 @@ AUTH_FORM_TYPES = [
     ('password-reset-request', _("Request Password Reset")),
     ('password-reset-confirm', _("Confirm Password Reset")),
     ('password-change', _("Change Password Form")),
-    ('register-user', _("Register User"), 'shop.forms.auth.RegisterUserForm'),
+    ('register-user', _("Register User"), app_settings.SHOP_CASCADE_FORMS['RegisterUserForm']),
     ('continue-as-guest', _("Continue as guest")),
 ]
 

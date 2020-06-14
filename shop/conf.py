@@ -313,6 +313,7 @@ class DefaultSettings:
             'ShippingMethodForm': 'shop.forms.checkout.ShippingMethodForm',
             'ExtraAnnotationForm': 'shop.forms.checkout.ExtraAnnotationForm',
             'AcceptConditionForm': 'shop.forms.checkout.AcceptConditionForm',
+            'RegisterUserForm': 'shop.forms.auth.RegisterUserForm',
         }
         cascade_forms.update(self._setting('SHOP_CASCADE_FORMS', {}))
         return cascade_forms
