@@ -7,11 +7,9 @@ except ImportError:
     import pickle
 import json
 
-from django.utils.six import text_type
 from rest_framework import serializers
 from shop.money.money_maker import AbstractMoney, MoneyMaker, _make_money
 from shop.rest.money import MoneyField, JSONRenderer
-from testshop.models import Commodity
 
 EUR = MoneyMaker('EUR')
 
@@ -76,28 +74,28 @@ def test_str_with_too_much_precision():
 
 def test_thousand_separator(settings):
     value = EUR()
-    assert text_type(value) == "€ –"
+    assert str(value) == "€ –"
     value = EUR('999999.99')
     settings.USE_THOUSAND_SEPARATOR = False
-    assert text_type(value) == "€ 999999.99"
+    assert str(value) == "€ 999999.99"
     settings.USE_THOUSAND_SEPARATOR = True
-    assert text_type(value) == "€ 999,999.99"
+    assert str(value) == "€ 999,999.99"
     settings.LANGUAGE_CODE = 'de'
-    assert text_type(value) == "€ 999.999,99"
+    assert str(value) == "€ 999.999,99"
     settings.USE_THOUSAND_SEPARATOR = False
-    assert text_type(value) == "€ 999999,99"
+    assert str(value) == "€ 999999,99"
 
 def test_check_rounding():
     value = EUR('999999.995')
-    assert text_type(value) == "€ 1000000.00"
+    assert str(value) == "€ 1000000.00"
     value = EUR('-111111.114')
-    assert text_type(value) == "-€ 111111.11"
+    assert str(value) == "-€ 111111.11"
 
 
 def test_check_formatting_currency():
     value = -EUR('111111.11')
     value.MONEY_FORMAT='{minus}{amount} {code}'
-    assert text_type(value) == "-111111.11 EUR"
+    assert str(value) == "-111111.11 EUR"
 
 
 def test_reduce():
@@ -270,19 +268,3 @@ def test_json_renderer():
     data = {'amount': EUR('1.23')}
     rendered_json = renderer.render(data, 'application/json')
     assert {'amount': "€ 1.23"} == json.loads(rendered_json.decode('utf-8'))
-
-
-@pytest.mark.django_db
-def test_field_filter(commodity_factory):
-    commodity = commodity_factory(unit_price='12.34')
-    assert list(Commodity.objects.filter(unit_price='12.34')) == [commodity]
-    assert list(Commodity.objects.filter(unit_price=Decimal('12.34'))) == [commodity]
-    assert list(Commodity.objects.filter(unit_price=EUR('12.34'))) == [commodity]
-    assert list(Commodity.objects.filter(unit_price__gt='12.33')) == [commodity]
-    assert list(Commodity.objects.filter(unit_price__gt=EUR('12.33'))) == [commodity]
-    assert list(Commodity.objects.filter(unit_price__gt='12.34')) == []
-    assert list(Commodity.objects.filter(unit_price__gte='12.34')) == [commodity]
-    assert list(Commodity.objects.filter(unit_price__lt='12.35')) == [commodity]
-    assert list(Commodity.objects.filter(unit_price__lt=EUR('12.35'))) == [commodity]
-    assert list(Commodity.objects.filter(unit_price__lt='12.34')) == []
-    assert list(Commodity.objects.filter(unit_price__lte='12.34')) == [commodity]

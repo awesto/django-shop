@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.conf.urls import include, url
 from shop.urls import rest_api
 from shop.urls import auth

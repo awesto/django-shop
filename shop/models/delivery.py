@@ -1,18 +1,13 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
-from six import with_metaclass
 from django.core import checks
 from django.db import models
-from django.utils.encoding import python_2_unicode_compatible
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
+
 from shop import deferred
 from shop.models.order import BaseOrder, BaseOrderItem, OrderItemModel
 from shop.modifiers.pool import cart_modifiers_pool
 
 
-@python_2_unicode_compatible
-class BaseDelivery(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
+class BaseDelivery(models.Model, metaclass=deferred.ForeignKeyBuilder):
     """
     Shipping provider to keep track on each delivery.
     """
@@ -59,7 +54,7 @@ class BaseDelivery(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     @classmethod
     def check(cls, **kwargs):
-        errors = super(BaseDelivery, cls).check(**kwargs)
+        errors = super().check(**kwargs)
         for field in OrderItemModel._meta.fields:
             if field.attname == 'canceled' and field.get_internal_type() == 'BooleanField':
                 break
@@ -87,7 +82,7 @@ class BaseDelivery(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 DeliveryModel = deferred.MaterializedModel(BaseDelivery)
 
 
-class BaseDeliveryItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
+class BaseDeliveryItem(models.Model, metaclass=deferred.ForeignKeyBuilder):
     """
     Abstract base class to keep track on the delivered quantity for each ordered item. Since the
     quantity can be any numerical value, it has to be defined by the class implementing this model.
@@ -114,7 +109,7 @@ class BaseDeliveryItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model))
 
     @classmethod
     def check(cls, **kwargs):
-        errors = super(BaseDeliveryItem, cls).check(**kwargs)
+        errors = super().check(**kwargs)
         for order_field in OrderItemModel._meta.fields:
             if order_field.attname == 'quantity':
                 break

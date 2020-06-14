@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from rest_framework import serializers
 from rest_framework.fields import empty
 from shop.models.cart import CartModel
@@ -45,12 +42,12 @@ class AddToCartSerializer(serializers.Serializer):
             else:
                 quantity = self.fields['quantity'].default
             instance.setdefault('quantity', quantity)
-            super(AddToCartSerializer, self).__init__(instance, data, context=context)
+            super().__init__(instance, data, context=context)
         else:
-            super(AddToCartSerializer, self).__init__(instance, data, **kwargs)
+            super().__init__(instance, data, **kwargs)
 
     def to_representation(self, instance):
-        data = super(AddToCartSerializer, self).to_representation(instance)
+        data = super().to_representation(instance)
         try:
             data['quantity'] = self._validated_data['quantity']
         except AttributeError:

@@ -1,9 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 Override django.core.serializers.json.Serializer which renders our MoneyType as float.
 """
-from __future__ import unicode_literals
-
 import json
 from django.core.serializers.json import DjangoJSONEncoder, Serializer as DjangoSerializer
 from django.core.serializers.json import Deserializer
@@ -20,7 +17,7 @@ class JSONEncoder(DjangoJSONEncoder):
     def default(self, obj):
         if isinstance(obj, AbstractMoney):
             return float(obj)
-        return super(JSONEncoder, self).default(obj)
+        return super().default(obj)
 
 
 class Serializer(DjangoSerializer):

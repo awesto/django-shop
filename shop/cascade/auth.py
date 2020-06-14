@@ -1,6 +1,6 @@
 from django.template.loader import select_template
 from django.utils.html import format_html
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.utils.module_loading import import_string
 from entangled.forms import EntangledModelFormMixin
 from cms.plugin_pool import plugin_pool
@@ -55,7 +55,7 @@ class ShopAuthenticationPlugin(LinkPluginBase):
 
     @classmethod
     def get_identifier(cls, instance):
-        identifier = super(ShopAuthenticationPlugin, cls).get_identifier(instance)
+        identifier = super().get_identifier(instance)
         content = dict(ft[:2] for ft in AUTH_FORM_TYPES).get(instance.glossary.get('form_type'), _("unknown"))
         return format_html('{0}{1}', identifier, content)
 

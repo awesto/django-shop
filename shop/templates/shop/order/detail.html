@@ -8,8 +8,8 @@
 
 {% block shop-order-title %}
 <div class="d-flex align-items-center flex-wrap">
-	<h4 class="text-nowrap">{% trans "Order" %} {{ data.number }}</h4>
-	<div class="text-nowrap ml-3">{% trans "from" context "order-detail" %} <span shop-timestamp="{{ data.created_at }}"></span></div>
+	<h4 class="text-nowrap">{% blocktrans with number=data.number context "order" %}Order {{ number }}{% endblocktrans %}</h4>
+	<div class="text-nowrap ml-3">{% trans "from" context "order" %} <span shop-timestamp="{{ data.created_at }}"></span></div>
 	<div class="ml-auto lead badge badge-primary">{{ data.status }}</div>
 </div>
 {% endblock %}
@@ -18,27 +18,27 @@
 <div class="row mb-3">
 	<div class="col-12 col-lg-6 my-2">
 		<div class="card">
-			<h5 class="card-header">{% trans "Shipping Address" %}</h5>
+			<h5 class="card-header">{% trans "Shipping Address" context "order" %}</h5>
 			<div class="card-body">
 				<pre class="card-text">{{ data.shipping_address_text }}</pre>
 			</div>
-			<div class="card-footer text-primary">{% trans "Shipping Method" %}: {{ data.active_shipping_method.label }}</div>
+			<div class="card-footer text-primary">{% blocktrans with label=data.active_shipping_method.label context "order" %}Shipping Method: {{ label }}{% endblocktrans %}</div>
 		</div>
 	</div>
 	<div class="col-12 col-lg-6 my-2">
 		<div class="card">
-			<h5 class="card-header">{% trans "Billing Address" %}</h5>
+			<h5 class="card-header">{% trans "Billing Address" context "order" %}</h5>
 			<div class="card-body">
 				<pre class="card-text">{{ data.billing_address_text }}</pre>
 			</div>
-			<div class="card-footer text-primary">{% trans "Payment Method" %}: {{ data.active_payment_method.label }}</div>
+			<div class="card-footer text-primary">{% blocktrans with label=data.active_payment_method.label context "order" %}Payment Method: {{ label }}{% endblocktrans %}</div>
 		</div>
 	</div>
 </div>
 {% endblock %}
 
 {% block shop-order-head %}
-<h4>{% trans "Ordered Items" %}</h4>
+<h4>{% trans "Ordered Items" context "order" %}</h4>
 {% endblock shop-order-head %}
 
 {% block shop-order-body %}
@@ -73,7 +73,7 @@
 	<div class="col-12 col-md-6 border-top order-md-last">
 		<div class="row py-2 lead">
 			<div class="col-6 text-right text-nowrap">
-				{% trans "Subtotal" %}
+				{% trans "Subtotal" context "order" %}
 			</div>
 			<div class="col-4 col-md-6 text-right text-nowrap">
 				{{ data.subtotal }}
@@ -86,7 +86,7 @@
 		</div>
 	{% endfor %}
 		<div class="row py-2 shop-double-border lead font-weight-bold">
-			<div class="col-6 text-right text-nowrap">{% trans "Total" %}</div>
+			<div class="col-6 text-right text-nowrap">{% trans "Total" context "order" %}</div>
 			<div class="col-4 col-md-6 text-right text-nowrap">{{ data.total }}</div>
 		</div>
 	{% if instance.right_extension %}{% render_plugin instance.right_extension %}{% endif %}

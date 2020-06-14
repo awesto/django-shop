@@ -1,6 +1,5 @@
 from django.contrib.auth.models import AnonymousUser
 from django.urls import reverse
-from django.utils import six
 from shop.models.cart import CartModel, CartItemModel
 from shop.models.customer import CustomerModel
 from shop.views.catalog import ProductListView, ProductRetrieveView, AddToCartView
@@ -29,7 +28,7 @@ def test_catalog_detail(commodity_factory, customer_factory, rf):
     response = ProductRetrieveView.as_view()(request, slug=product.slug)
     response.render()
     assert response.data['product_code'] == product.product_code
-    assert response.data['price'] == six.text_type(product.unit_price)
+    assert response.data['price'] == str(product.unit_price)
     assert response.data['slug'] == product.slug
 
 
@@ -42,7 +41,7 @@ def test_get_add_to_cart(commodity_factory, customer_factory, rf):
     response = AddToCartView.as_view()(request, slug=product.slug)
     response.render()
     assert response.data['quantity'] == 1
-    assert response.data['unit_price'] == six.text_type(product.unit_price)
+    assert response.data['unit_price'] == str(product.unit_price)
     assert response.data['product_code'] == product.product_code
     assert response.data['is_in_cart'] is False
 
@@ -60,8 +59,8 @@ def test_too_greedy(commodity_factory, customer_factory, rf):
     response = AddToCartView.as_view()(request, slug=product.slug)
     assert response.status_code == 202
     assert response.data['quantity'] == 5  # not 10, as requested
-    assert response.data['unit_price'] == six.text_type(product.unit_price)
-    assert response.data['subtotal'] == six.text_type(5 * product.unit_price)
+    assert response.data['unit_price'] == str(product.unit_price)
+    assert response.data['subtotal'] == str(5 * product.unit_price)
 
 
 @pytest.mark.django_db

@@ -144,15 +144,15 @@ Therefore we would model our smart-phones using a database model similar to the 
 
 Lets go into the details of these classes. The model fields are self-explanatory. Something to note
 here is, that each product requires a field ``product_name``. This alternatively can also be
-implemented as a translatable field using **django-parler**.
+implemented as a translatable field using django-parler_, see below.
 
 Another mandatory attribute for each product is the ``ProductManager`` class. It must inherit
-from ``BaseProductManager``, and adds some methods to generate some special querysets.
+from ``BaseProductManager``, and adds some methods to generate special querysets.
 
-Finally, the attribute ``lookup_fields`` contains a list or tuple of  `lookup fields`_. These are
+Finally, the attribute ``lookup_fields`` contains a list or tuple of `lookup fields`_. These are
 required by the administration backend, and used when the site editor has to search for certain
 products. Since the framework does not impose which fields are used to distinguish between products,
-we must give some hints.
+we must give a hint here.
 
 Each product also requires a method implemented as ``get_price(request)``. This must return the
 unit price using one of the available :ref:`reference/money-types`.

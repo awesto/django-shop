@@ -31,7 +31,7 @@ In addition to the field storing the quantity in stock, add the mixin class
 :class:`shop.models.product.AvailableProductMixin` to the product model declaration. Example:
 
 .. code-block:: python
-	:filename: models.py
+	:caption: models.py
 
 	from django.db import models
 	from shop.models.product import BaseProduct, BaseProductManager, AvailableProductMixin
@@ -61,7 +61,7 @@ quantity, we add a relation for each delivered charge. This model then holds a t
 next incoming delivery is expected. Example:
 
 .. code-block:: python
-	:filename: models.py
+	:caption: models.py
 
 	from django.db import models
 	from shop.models.product import BaseProduct, BaseProductManager
@@ -87,7 +87,7 @@ Since we have a relation from the inventory to our product model, we must use an
 while creating our admin backend. Example:
 
 .. code-block:: python
-	:filename: admin.py
+	:caption: admin.py
 
 	from django.contrib import admin
 	from myshop.models import MyProduct, Inventory
@@ -137,7 +137,7 @@ Independently of the chosen approach, replace ``AvailableProductMixin`` with ``R
 in the product's model declaration. Example for the simple approach:
 
 .. code-block:: python
-	:filename: models.py
+	:caption: models.py
 
 	from shop.models.product import BaseProduct, ReserveProductMixin
 
@@ -148,7 +148,7 @@ Example using the related inventory model. Here we use the class ``ReserveProduc
 the inventory module:
 
 .. code-block:: python
-	:filename: models.py
+	:caption: models.py
 
 	from shop.models.product import BaseProduct
 	from shop.models.inventory import ReserveProductMixin

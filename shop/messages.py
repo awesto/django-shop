@@ -1,19 +1,17 @@
-# -*- coding: utf-8 -*-
 """
 A wrapper around Django's messages framework for easier integration with Javascript based messages.
 """
-from __future__ import unicode_literals
 
 import json
 from django.contrib import messages as django_messages
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 
 
 def add_message(request, level, message, title=None, delay=None):
     if title is None:
         title = django_messages.DEFAULT_TAGS[level].capitalize()
-    extra_tags = {'title': force_text(title), 'delay': delay}
-    django_messages.add_message(request, level, force_text(message), extra_tags=json.dumps(extra_tags))
+    extra_tags = {'title': force_str(title), 'delay': delay}
+    django_messages.add_message(request, level, force_str(message), extra_tags=json.dumps(extra_tags))
 
 
 def success(request, message, title=None, delay=0):

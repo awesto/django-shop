@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.utils.cache import add_never_cache_headers
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -80,7 +77,7 @@ class BaseViewSet(viewsets.ModelViewSet):
         """Set HTTP headers to not cache this view"""
         if self.action != 'render_product_summary':
             add_never_cache_headers(response)
-        return super(BaseViewSet, self).finalize_response(request, response, *args, **kwargs)
+        return super().finalize_response(request, response, *args, **kwargs)
 
 
 class CartViewSet(BaseViewSet):

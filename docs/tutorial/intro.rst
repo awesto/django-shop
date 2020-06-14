@@ -4,7 +4,7 @@
 Django-SHOP Tutorial
 ====================
 
-This tutorial is aimed at people new to django SHOP but already familiar with Django. If you aren't
+This tutorial is aimed at people new to django-SHOP but already familiar with Django. If you aren't
 yet, reading their excellent `Django Tutorial`_ is highly recommended.
 
 Since **django-SHOP** relies on many features offered by `django-CMS`_ and `Django REST Framework`_,
@@ -26,7 +26,7 @@ such as:
 
 * The main configuration file, ``settings.py``.
 * The URL-routing entry point, usually ``urls.py``.
-* Optionally, but highly reccomended: Django models to describe the products sold by the merchant.
+* Optionally, but highly recommended: Django models to describe the products sold by the merchant.
 * If required, extended models for the Cart and Order.
 * An administration interface to manage entities from all those models.
 * Special Cart modifiers to calculate discounts or additional costs.
@@ -57,7 +57,7 @@ questions, asked by the cookiecutter wizard, consider to:
   :ref:`tutorial/product-model-i18n_smartcard`
 * use *polymorphic*, if you have many product types, with different properties for each type. Here
   we have to define a smallest common denominator for all products, and further create a product
-  model for each distinc product type. :ref:`tutorial/product-model-polymorphic` and
+  model for each distinct product type. :ref:`tutorial/product-model-polymorphic` and
   :ref:`tutorial/product-model-i18n_polymorphic`
 
 
@@ -85,8 +85,8 @@ Then change into a directory, usually used for your projects and invoke:
 	cookiecutter https://github.com/awesto/cookiecutter-django-shop
 
 You will be asked a few question. If unsure, just use the defaults. This creates a directory named
-``my-shop``, or whatever you have choosen. This generated directory is the base for adopting this
-project into your *merchant implementation*. For simplicity, in this tutorial, it is refered as
+``my-shop``, or whatever you have chosen. This generated directory is the base for adopting this
+project into your *merchant implementation*. For simplicity, in this tutorial, it is referred as
 ``my-shop``. Change into this directory and install the missing dependencies:
 
 .. code-block:: shell
@@ -96,7 +96,7 @@ project into your *merchant implementation*. For simplicity, in this tutorial, i
 	npm install
 
 This demo shop must initialize its database and be filled with content for demonstration purpose.
-Each of these steps can be performed individually, but for simplicity we use a Django managment
+Each of these steps can be performed individually, but for simplicity we use a Django management
 command which wraps all these command into a single one:
 
 .. code-block:: shell
@@ -122,7 +122,7 @@ backend at http://localhost:8000/admin/ , log in using username *admin* with pas
 Overview
 ========
 
-What you see here is a content managment system consisting of many pages. By accessing the Django
+What you see here is a content management system consisting of many pages. By accessing the Django
 administration backend at **Home › django CMS › Pages**, one gets an overview of the page-tree
 structure. One thing which immediately stands out is, that all pages required to build the shop,
 are actually pages, served by **django-CMS**. This means that the complete sitemap (URL structure)
@@ -155,7 +155,7 @@ locate the field **Template** and choose the default.
 Change into **Structure** mode and locate the placeholder named **Main Content**, add a
 **Container**-plugin, followed by a **Row**-, followed by one or more **Column**-plugins. Choose
 the appropriate width for each column, so that for any given breakpoint, the widths units sum up
-to 12. Below that column, add whatever is approriate for that page. This is how in **django-CMS**
+to 12. Below that column, add whatever is appropriate for that page. This is how in **django-CMS**
 we add components to our page placeholders.
 
 The default template provided with the demo contains other placeholders. One shall be used to

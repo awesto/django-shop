@@ -66,7 +66,7 @@ must contain the templatetag
 
 	{% load cms_tags %}
 	…
-''	{% render_placeholder product.placeholder %}
+	{% render_placeholder product.placeholder %}
 
 Here the placeholder is a special field :class:`cms.models.fields.PlaceholderField` in our Django
 model ``Commodity``. It is the equivalent to the placeholder otherwise used in regular

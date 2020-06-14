@@ -33,12 +33,13 @@ shop site.
 Therefore other PSPs allow to create form elements in HTML, whose content is send to their site
 during the purchase task. This can be done using a POST submission, followed by a redirection back
 to the client. Other providers use Javascript for submission and return a payment token to the
-customer, who himself forwards that token to the shopping site.
+customer, which itself forwards that token to the shopping site.
 
-All in all, there are so many different ways to pay, that it is quite tricky to find a generic
-solution compatible for all of them.
+All in all, there are so many different ways to do online payment, that it is quite tricky to find
+a generic solution compatible for all of them.
 
-Here **django-SHOP** uses some Javascript during the purchase operation. Lets explain how:
+In **django-SHOP**, we can add some Javascript specific to the PSP's needs, which is used during the
+purchase operation. Let's explain how it works:
 
 
 .. _reference/the-purchasing-operation:
@@ -57,16 +58,16 @@ It may look similar to this::
 Whenever the customer clicks onto that button, the function ``proceedWith('PURCHASE_NOW')`` is
 invoked in the scope of the AngularJS controller, belonging to the given directive.
 
-This function first uploads the current checkout forms to the server. There they are validated, and
-if everything is OK, an updated checkout context is send back to the client. See
-:class:`shop.views.checkout.CheckoutViewSet.upload()` for details.
+This function first uploads the current checkout forms to the server. There the form is validated,
+and if everything is OK, an updated checkout context is send back to the client. For implementation
+details, have a look at the endpoint at :meth:`shop.views.checkout.CheckoutViewSet.upload()`.
 
 Next, the success handler of the previous submission looks at the given action. In ``proceedWith``,
 we used the magic keyword ``PURCHASE_NOW``, which starts a second submission to the server,
-requesting to begin with the purchase operation (See :class:`shop.views.checkout.CheckoutViewSet.purchase()`
-for details.). This method determines he payment provider previously chosen by the customer. It
-then invokes the method ``get_payment_request()`` of that provider, which returns a Javascript
-expression.
+requesting to begin with the purchase operation (see
+:meth:`shop.views.checkout.CheckoutViewSet.purchase()` for details.). This method determines the
+payment provider previously chosen by the customer. It then invokes the method
+``get_payment_request()`` of that provider, which returns a Javascript expression.
 
 On the client, this returned Javascript expression is passed to the `eval()`_ function and executed;
 it then normally starts to submit the payment request, sending all credit card data to the given
@@ -74,10 +75,13 @@ PSP.
 
 While processing the payment, PSPs usually need to communicate with the shop framework, in order to
 inform us about success or failure of the payment. To communicate with us, they may need a few
-endpoints. Each Payment provider may override the method ``get_urls()`` returning a list of
-urlpatterns, which then is used by the Django URL resolving engine.
+endpoints. Each class inheriting from :class:`shop.shop.payment.providers.PaymentProvider` may
+override the method ``get_urls()`` returning a list of urlpatterns, which then is used by the
+Django URL resolving engine.
 
 .. code-block:: python
+
+	from shop.payment.providers import PaymentProvider
 
 	class MyPSP(PaymentProvider):
 	    namespace = 'my-psp-payment'

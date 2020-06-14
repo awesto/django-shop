@@ -11,12 +11,6 @@ Django-SHOP documentation
     features
 
 
-Upgrading
-=========
-If you are upgrading from an earlier version, please be sure to read the
-:ref:`release-notes`.
-
-
 Tutorial
 ========
 
@@ -48,7 +42,7 @@ Reference to classes and concepts used in **django-SHOP**
     reference/deferred-models
     reference/money-types
     reference/product-models
-    reference/stock-management
+    reference/inventory
     reference/catalog
     reference/search
     reference/filters
@@ -86,19 +80,22 @@ Some recipes on how to perform certain tasks in **django-SHOP**.
     howto/handling-taxes
 
 
-Django/Python compatibility table
-=================================
+Django compatibility table
+==========================
 
-===========  ===  ===  ====  ====  ===  ===  ===  ===  ===
-django-SHOP  Django                     Python
------------  -------------------------  ------------------
-\            1.8  1.9  1.10  1.11  2.0  2.7  3.4  3.5  3.6
-===========  ===  ===  ====  ====  ===  ===  ===  ===  ===
-0.10.x        ✓    ✓    ⨯     ⨯     ⨯    ✓    ✓   ✓    ⨯
-0.11.x        ⨯    ✓    ✓     ⨯     ⨯    ✓    ✓   ✓    ✓
-0.12.x        ⨯    ⨯    ⨯     ✓     ⨯    ✓    ✓   ✓    ✓
-0.13.x        ⨯    ⨯    ⨯     ✓     ⨯    ✓    ✓   ✓    ✓
-===========  ===  ===  ====  ====  ===  ===  ===  ===  ===
+===========  ===  ===  ====  ====  ===  ===  ===  ===
+django-SHOP  Django
+-----------  ----------------------------------------
+\            1.8  1.9  1.10  1.11  2.0  2.1  2.2  3.0
+===========  ===  ===  ====  ====  ===  ===  ===  ===
+0.10.x        ✓    ✓    ⨯     ⨯     ⨯    ⨯    ⨯    ⨯
+0.11.x        ⨯    ✓    ✓     ⨯     ⨯    ⨯    ⨯    ⨯
+0.12.x        ⨯    ⨯    ⨯     ✓     ⨯    ⨯    ⨯    ⨯
+0.13.x        ⨯    ⨯    ⨯     ✓     ⨯    ⨯    ⨯    ⨯
+1.0.x         ⨯    ⨯    ⨯     ✓     ⨯    ⨯    ⨯    ⨯
+1.1.x         ⨯    ⨯    ⨯     ✓     ✓    ✓    ✓    ⨯
+1.2.x         ⨯    ⨯    ⨯     ⨯     ⨯    ✓    ✓    ✓
+===========  ===  ===  ====  ====  ===  ===  ===  ===
 
 
 Development and Community
@@ -108,7 +105,6 @@ Development and Community
     :maxdepth: 1
 
     changelog
-    release-notes/index
     faq
     contributing
     authors
