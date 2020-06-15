@@ -15,21 +15,22 @@ class LoginSerializer(DefaultLoginSerializer):
 
 
 class PasswordResetRequestSerializer(serializers.PasswordResetSerializer):
+    template_prefix = 'password-reset'
     password_reset_form_class = PasswordResetRequestForm
     invalid_password_reset_confirm_url = '/cms-page_or_view_with__reverse_id=password-reset-confirm__does-not-exist/'
 
     def save(self):
         subject_template = select_template([
-            '{}/email/password-reset-subject.txt'.format(app_settings.APP_LABEL),
-            'shop/email/password-reset-subject.txt',
+            '{}/email/{}-subject.txt'.format(app_settings.APP_LABEL, self.template_prefix),
+            'shop/email/{}-subject.txt'.format(self.template_prefix),
         ])
         body_text_template = select_template([
-            '{}/email/password-reset-body.txt'.format(app_settings.APP_LABEL),
-            'shop/email/password-reset-body.txt',
+            '{}/email/{}-body.txt'.format(app_settings.APP_LABEL, self.template_prefix),
+            'shop/email/{}-body.txt'.format(self.template_prefix),
         ])
         body_html_template = select_template([
-            '{}/email/password-reset-body.html'.format(app_settings.APP_LABEL),
-            'shop/email/password-reset-body.html',
+            '{}/email/{}-body.html'.format(app_settings.APP_LABEL, self.template_prefix),
+            'shop/email/{}-body.html'.format(self.template_prefix),
         ])
         try:
             page = Page.objects.select_related('node').get(reverse_id='password-reset-confirm', publisher_is_draft=False)
@@ -51,6 +52,10 @@ class PasswordResetRequestSerializer(serializers.PasswordResetSerializer):
             'extra_email_context': {'password_reset_confirm_url': password_reset_confirm_url}
         }
         self.reset_form.save(**opts)
+
+
+class RegisterUserActivateSerializer(PasswordResetRequestSerializer):
+    template_prefix = 'register-user-activate'
 
 
 class PasswordResetConfirmSerializer(serializers.PasswordResetConfirmSerializer):

@@ -15,6 +15,7 @@ from post_office.models import EmailTemplate
 from shop.conf import app_settings
 from shop.forms.base import UniqueEmailValidationMixin
 from shop.models.customer import CustomerModel
+from shop.serializers.auth import RegisterUserActivateSerializer
 from shop.signals import email_queued
 
 
@@ -118,6 +119,38 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValid
         from_email = getattr(settings, 'DEFAULT_FROM_EMAIL')
         user.email_user(subject, message, from_email=from_email, html_message=html_message)
         email_queued()
+
+
+class RegisterUserActivateForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValidationMixin, Bootstrap3ModelForm):
+    form_name = 'register_user_form'
+    scope_prefix = 'form_data'
+    field_css_classes = 'input-group has-feedback'
+
+    email = fields.EmailField(
+        label=_("Your e-mail address"),
+        widget=widgets.EmailInput(attrs={'placeholder': _("E-mail address")})
+    )
+
+    class Meta:
+        model = CustomerModel
+        fields = ['email']
+
+    def save(self, request=None, commit=True):
+        self.instance.user.is_active = True
+        self.instance.user.email = self.cleaned_data['email']
+        password = get_user_model().objects.make_random_password(20)
+        self.instance.user.set_password(password)
+        self.instance.user.save()
+        self.instance.recognize_as_guest(request, commit=False)
+
+        serializer = RegisterUserActivateSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            msg = _("A link to activate this account has been sent to '{email}'.")
+            self.data.update(success=msg.format(**self.cleaned_data))
+            serializer.save()
+
+        customer = super().save(commit)
+        return customer
 
 
 class ContinueAsGuestForm(ModelForm):
