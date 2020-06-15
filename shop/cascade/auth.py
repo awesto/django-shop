@@ -44,7 +44,7 @@ class ShopAuthForm(LinkForm, ShopAuthFormMixin):
 class ShopAuthenticationPlugin(LinkPluginBase):
     """
     A placeholder plugin which provides various authentication forms, such as login-, logout-,
-    register-, and other forms. They can be added any placeholder using the Cascade framework.
+    register-, and other forms. They can be added any to placeholder using the Cascade framework.
     """
     name = _("Authentication Forms")
     module = "Shop"
