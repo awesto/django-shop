@@ -5,50 +5,48 @@
 		<meta name="viewport" content="width=device-width" />
 	</head>
 	<body style="background-color: #eee; font-family: Helvetica,Roboto,Arial,sans-serif; font-size: 14px;">
-		<center>
-			<table>
-				<thead>
-					<tr>
-						<td style="padding: 0;">
-							<table style="width: 600px; vertical-align: middle; padding: 10px 15px;">
-								<tr>
-									<td>
-										{% block email-logo %}{% endblock %}
-										<h2 style="margin: 5px; text-align: center;">{% block email-title %}{% endblock %}</h2>
-									</td>
-								</tr>
-								<tr>
-									<td>{% block email-head %}{% endblock %}</td>
-								</tr>
-							</table>
-						</td>
-					</tr>
-				</thead>
+		<table style="margin: 0 auto;">
+			<thead>
+				<tr>
+					<td style="padding: 0;">
+						<table style="width: 600px; vertical-align: middle; padding: 10px 15px;">
+							<tr>
+								<td>
+									{% block email-logo %}{% endblock %}
+									<h2 style="margin: 5px; text-align: center;">{% block email-title %}{% endblock %}</h2>
+								</td>
+							</tr>
+							<tr>
+								<td>{% block email-head %}{% endblock %}</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</thead>
 
-				<tbody>
-					<tr>
-						<td style="padding: 0;">
-							<table style="width: 600px;">
-								<tr>
-									<td>{% block email-body %}{% endblock %}</td>
-								</tr>
-							</table>
-						</td>
-					</tr>
-				</tbody>
+			<tbody>
+				<tr>
+					<td style="padding: 0;">
+						<table style="width: 600px;">
+							<tr>
+								<td>{% block email-body %}{% endblock %}</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</tbody>
 
-				<tfoot>
-					<tr>
-						<td>
-							<table style="width: 600px; min-height: 50px; vertical-align: middle; padding: 15px 25px;">
-								<tr>
-									<td>{% block email-foot %}{% endblock %}</td>
-								</tr>
-							</table>
-						</td>
-					</tr>
-				</tfoot>
-			</table>
-		</center>
+			<tfoot>
+				<tr>
+					<td>
+						<table style="width: 600px; min-height: 50px; vertical-align: middle; padding: 15px 25px;">
+							<tr>
+								<td>{% block email-foot %}{% endblock %}</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
 	</body>
 </html>
