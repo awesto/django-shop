@@ -6,9 +6,10 @@ Changelog for django-SHOP
 
 1.2.2
 =====
-* Fixes: Shipping costs disappear now, after a threshold for the subtotal has been reached.
-* In template for rendering emails, replace deprecated HTML tag ``<center>`` against style attribute.
-* Add Bolivian Boliviano to currencies.
+* Fix #786: Make shipping costs disappear, if cart modifiers doesn't apply them anymore.
+* Remove deprecated HTML tag ``<center>`` from email template used to render the order.
+* Add Bolivian Boliviano to the list of currencies.
+* Fix #819: Accessing customerproxy addresses in admin raises Type error.
 
 
 1.2.1
