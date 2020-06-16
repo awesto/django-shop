@@ -4,10 +4,16 @@
 Changelog for django-SHOP
 =========================
 
+1.2.2
+=====
+* Fixes: Shipping costs disappear now, after a threshold for the subtotal has been reached.
+* In template for rendering emails, replace deprecated HTML tag ``<center>`` against style attribute.
+* Add Bolivian Boliviano to currencies.
+
+
 1.2.1
 =====
 * In management command, make mandatory CMS page for rendering search results, recommended only.
-
 
 1.2
 ===
@@ -15,7 +21,6 @@ Changelog for django-SHOP
 * For full-text searching, replace Haystack against elasticsearch-dsl.
 * Drop support for Python 2.7 and 3.4.
 * Drop support for Django-1.11 and 2.0.
-
 
 1.1.4
 =====
