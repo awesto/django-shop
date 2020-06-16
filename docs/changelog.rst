@@ -4,6 +4,14 @@
 Changelog for django-SHOP
 =========================
 
+1.2.2
+=====
+* Fix #786: Make shipping costs disappear, if cart modifiers doesn't apply them anymore.
+* Remove deprecated HTML tag ``<center>`` from email template used to render the order.
+* Add Bolivian Boliviano to the list of currencies.
+* Fix #819: Accessing customerproxy addresses in admin raises Type error.
+
+
 1.2.1
 =====
 * In management command, make mandatory CMS page for rendering search results, recommended only.
