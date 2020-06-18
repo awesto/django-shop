@@ -10,7 +10,7 @@ from django.db.models.aggregates import Sum
 from django.db.models.functions import Coalesce
 from django.utils import timezone
 from django.utils.encoding import force_str
-from django.utils.translation import gettext_lazy as _, override
+from django.utils.translation import gettext_lazy as _
 
 # try:
 #     from django_elasticsearch_dsl.registries import registry as elasticsearch_registry
@@ -346,7 +346,7 @@ class BaseProduct(PolymorphicModel, metaclass=PolymorphicProductMetaclass):
             errors.append(checks.Error(msg.format(cls.__name__)))
         return errors
 
-    def to_dict(self, language=None):
+    def to_dict(self):
         """
          Hook to serialize this Product as Python dict so that it can be saved in Elasticsearch.
 
@@ -354,16 +354,10 @@ class BaseProduct(PolymorphicModel, metaclass=PolymorphicProductMetaclass):
 
         :returns Serialized representation of this product instance.
         """
-        if language:
-            with override(language):
-                product_name = self.product_name
-        else:
-            product_name = self.product_name
         return {
-            'meta': {'id': self.id, 'language': language},
             'url': self.get_absolute_url(),
             'type': self.product_type(),
-            'product_name': product_name,
+            'product_name': self.product_name,
             'product_codes': [variant.product_code for variant in self.get_product_variants()]
         }
 

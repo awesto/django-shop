@@ -5,7 +5,7 @@ from elasticsearch_dsl.field import Text, Keyword
 class BaseProduct(Document):
     url = Keyword(required=True)
 
-    lang = Keyword(
+    language = Keyword(
         required=False,
     )
 
