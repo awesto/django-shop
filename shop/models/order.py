@@ -76,7 +76,7 @@ class OrderManager(models.Manager):
         return {
             'language': get_language_from_request(request),
             'absolute_base_uri': request.build_absolute_uri('/'),
-            'remote_ip': get_client_ip(request),
+            'remote_ip': get_client_ip(request)[0],
             'user_agent': request.META.get('HTTP_USER_AGENT'),
         }
 
