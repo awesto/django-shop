@@ -11,7 +11,7 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _, pgettext_lazy, get_language_from_request
 
 from django_fsm import FSMField, transition
-from ipware.ip import get_ip
+from ipware.ip import get_client_ip
 from cms.models import Page
 from shop.conf import app_settings
 from shop.models.cart import CartItemModel
@@ -76,7 +76,7 @@ class OrderManager(models.Manager):
         return {
             'language': get_language_from_request(request),
             'absolute_base_uri': request.build_absolute_uri('/'),
-            'remote_ip': get_ip(request),
+            'remote_ip': get_client_ip(request)[0],
             'user_agent': request.META.get('HTTP_USER_AGENT'),
         }
 
