@@ -4,6 +4,11 @@
 Changelog for django-SHOP
 =========================
 
+1.2.3
+=====
+* Fix API change in library ``ipware`` version 3: Replace ``get_ip`` against ``get_client_ip``.
+
+
 1.2.2
 =====
 * Fix #786: Make shipping costs disappear, if cart modifiers doesn't apply them anymore.
