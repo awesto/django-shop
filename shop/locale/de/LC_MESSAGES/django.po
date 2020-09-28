@@ -219,7 +219,7 @@ msgstr "CMS Seiten"
 
 #: admin/product.py:141
 msgid "Unit Price"
-msgstr "Einheitspreis"
+msgstr "Einzelpreis"
 
 #: admin/product.py:145 models/related.py:34
 msgid "Category"
@@ -301,7 +301,7 @@ msgstr "Standard"
 
 #: cascade/breadcrumb.py:20
 msgid "With “Soft-Root”"
-msgstr ""
+msgstr "Mit “Soft-Root”"
 
 #: cascade/breadcrumb.py:21
 msgid "With Catalog Count"
@@ -425,7 +425,7 @@ msgstr "Deaktivieren, falls ungültig"
 
 #: cascade/checkout.py:38
 msgid "Disable button if any form in this set is invalid."
-msgstr ""
+msgstr "Deaktiviere Button wenn eine Form darin ungültig ist."
 
 #: cascade/checkout.py:49
 msgid "Proceed Button"
@@ -481,13 +481,15 @@ msgstr ""
 
 #: cascade/checkout.py:238
 msgid "Show additional charge"
-msgstr ""
+msgstr "Zusätzliche Kosten anzeigen"
 
 #: cascade/checkout.py:241
 msgid ""
 "Add an extra line showing the additional charge depending on the chosen "
 "payment/shipping method."
 msgstr ""
+"Zeile hinzufügen, in welcher die zusätzlichen Kosten enthalten sind, "
+"abhängig von der gewählten Zahlungs- /Versandmethode."
 
 #: cascade/checkout.py:249
 msgid "Payment Method Form"
@@ -517,11 +519,11 @@ msgstr "Validiere Formulargruppe"
 
 #: cascade/extensions.py:45
 msgid "Left Extension"
-msgstr ""
+msgstr "Erweiterung links"
 
 #: cascade/extensions.py:55
 msgid "Right Extension"
-msgstr ""
+msgstr "Erweiterung rechts"
 
 #: cascade/order.py:28
 msgid "Order Views"
@@ -549,7 +551,7 @@ msgstr "Formular für Anmerkungen"
 
 #: cascade/plugin_base.py:51
 msgid "Download File"
-msgstr ""
+msgstr "Datei herunterladen"
 
 #: cascade/plugin_base.py:52
 msgid "External URL"
@@ -557,7 +559,7 @@ msgstr "Externe URL"
 
 #: cascade/plugin_base.py:53
 msgid "Mail To"
-msgstr ""
+msgstr "E-Mail an"
 
 #: cascade/plugin_base.py:59
 #, fuzzy
@@ -567,7 +569,7 @@ msgstr "Ein interner Link auf ein Produkt dieses Shops"
 
 #: cascade/plugin_base.py:71
 msgid "Product to link to is missing."
-msgstr ""
+msgstr "Produkt für Verknüpfung fehlt"
 
 #: cascade/plugin_base.py:101
 msgid "Form dialog"
@@ -575,19 +577,19 @@ msgstr "Formulardialog"
 
 #: cascade/plugin_base.py:102
 msgid "Static summary"
-msgstr ""
+msgstr "Statische Zusammenfassung"
 
 #: cascade/plugin_base.py:110
 msgid "A dialog can also be rendered as a box containing a read-only summary."
-msgstr ""
+msgstr "Ein Dialogfeld kann auch als Feld mit einer schreibgeschützten Zusammenfassung gerendert werden."
 
 #: cascade/plugin_base.py:114
 msgid "Headline Legend"
-msgstr ""
+msgstr "Überschriftenlegende"
 
 #: cascade/plugin_base.py:117
 msgid "Render a legend inside the dialog's headline."
-msgstr ""
+msgstr "Rendern Sie eine Legende in der Überschrift des Dialogfelds."
 
 #: cascade/plugin_base.py:157
 msgctxt "get_identifier"
@@ -596,15 +598,15 @@ msgstr ""
 
 #: cascade/processbar.py:21
 msgid "Steps"
-msgstr ""
+msgstr "Schritte"
 
 #: cascade/processbar.py:22
 msgid "Number of steps for this proceed bar."
-msgstr ""
+msgstr "Anzahl der Schritte für diese Fortschrittsleiste."
 
 #: cascade/processbar.py:29
 msgid "Process Bar"
-msgstr ""
+msgstr "Prozessleiste"
 
 #: cascade/processbar.py:40
 msgid "with {} page"
@@ -614,15 +616,15 @@ msgstr[1] ""
 
 #: cascade/processbar.py:68
 msgid "Step Title"
-msgstr ""
+msgstr "Schritt-Titel"
 
 #: cascade/processbar.py:77
 msgid "Process Step"
-msgstr ""
+msgstr "Prozess Schritt"
 
 #: cascade/search.py:23
 msgid "Shall the list of search results use a paginator or scroll infinitely?"
-msgstr ""
+msgstr "Soll die Liste der Suchergebnisse einen Paginator verwenden oder unendlich scrollen?"
 
 #: cascade/search.py:38
 msgid "Search Results"
@@ -634,7 +636,7 @@ msgstr ""
 
 #: cms_apphooks.py:11
 msgid "Catalog List"
-msgstr ""
+msgstr "Katalogliste"
 
 #: cms_apphooks.py:18
 #, fuzzy
@@ -654,7 +656,7 @@ msgstr "Formular Passwort Rücksetzen"
 
 #: cms_menus.py:12
 msgid "Catalog Menu"
-msgstr ""
+msgstr "Katalogmenü"
 
 #: forms/auth.py:30 templates/shop/auth/login.html:11
 #: templates/shop/auth/password-reset-request-fields.html:5
@@ -795,7 +797,7 @@ msgstr "Bildunterschrift"
 
 #: models/address.py:38
 msgid "Priority for using this address"
-msgstr ""
+msgstr "Priorisiere diese Adresse"
 
 #: models/address.py:77
 msgid "Afghanistan"
@@ -1896,19 +1898,19 @@ msgstr "Sortiere nach"
 
 #: models/defaults/commodity.py:74 models/defaults/commodity.py:182
 msgid "Choose list view this product shall appear on."
-msgstr ""
+msgstr "Wählen Sie die Listenansicht, in der dieses Produkt angezeigt werden soll."
 
 #: models/defaults/commodity.py:78 models/defaults/commodity.py:186
 msgid "Sample Image"
-msgstr ""
+msgstr "Beispielbild"
 
 #: models/defaults/commodity.py:83 models/defaults/commodity.py:191
 msgid "Sample image used in the catalog's list view."
-msgstr ""
+msgstr "Beispielbild, das in der Listenansicht des Katalogs verwendet wird."
 
 #: models/defaults/commodity.py:87 models/defaults/commodity.py:195
 msgid "Show Breadcrumb"
-msgstr ""
+msgstr "Zeige Breadcrumb"
 
 #: models/defaults/commodity.py:89 models/defaults/commodity.py:197
 msgid "Shall the detail page show the product's breadcrumb."
@@ -1921,7 +1923,7 @@ msgstr "Menge"
 
 #: models/defaults/commodity.py:98 models/defaults/commodity.py:206
 msgid "Available quantity in stock"
-msgstr ""
+msgstr "Verfügbare Menge auf Lager"
 
 #: models/defaults/commodity.py:114 models/defaults/commodity.py:227
 msgid "Commodity"
@@ -2015,7 +2017,7 @@ msgstr "Die Referenz des Transaktionsprozessors"
 
 #: models/delivery.py:36
 msgid "Timestamp of delivery fulfillment"
-msgstr ""
+msgstr "Zeitstempel der Liefererfüllung"
 
 #: models/delivery.py:40 templates/shop/print/delivery-note.html:38
 msgid "Shipped at"
@@ -2023,7 +2025,7 @@ msgstr "Versendet mittels"
 
 #: models/delivery.py:43
 msgid "Timestamp of delivery shipment"
-msgstr ""
+msgstr "Zeitstempel der Lieferung"
 
 #: models/delivery.py:47
 msgid "Shipping method"
@@ -2043,7 +2045,7 @@ msgstr "Lieferung"
 
 #: models/delivery.py:100
 msgid "Refer to the shipping provider used to ship this item"
-msgstr ""
+msgstr "Wenden Sie sich an den Versandanbieter, der für den Versand dieses Artikels verwendet wurde"
 
 #: models/delivery.py:107
 msgid "Ordered item"
@@ -2063,11 +2065,11 @@ msgstr "Kundesstatus"
 
 #: models/inventory.py:109
 msgid "Available after"
-msgstr ""
+msgstr "Verfügbar nach"
 
 #: models/inventory.py:115
 msgid "Available before"
-msgstr ""
+msgstr "Verfügbar bis"
 
 #: models/inventory.py:122
 #, fuzzy
@@ -2083,7 +2085,7 @@ msgstr "Produktbilder"
 
 #: models/notification.py:16
 msgid "Vendor"
-msgstr ""
+msgstr "Hersteller"
 
 #: models/notification.py:18
 msgid "Nobody"
@@ -2095,7 +2097,7 @@ msgstr "Name"
 
 #: models/notification.py:36
 msgid "Whom to notify"
-msgstr ""
+msgstr "Wen zu benachrichtigen"
 
 #: models/notification.py:51
 msgid "Template"
@@ -2152,11 +2154,11 @@ msgstr "Extra Felder"
 
 #: models/order.py:201
 msgid "Arbitrary information for this order object on the moment of purchase."
-msgstr ""
+msgstr "Beliebige Informationen für dieses Bestellobjekt zum Zeitpunkt des Kaufs."
 
 #: models/order.py:205
 msgid "Parts of the Request objects on the moment of purchase."
-msgstr ""
+msgstr "Teile der Anfrage-Objekte zum Zeitpunkt des Kaufs."
 
 #: models/order.py:412
 msgctxt "order_models"
@@ -2267,10 +2269,8 @@ msgid ""
 msgstr ""
 
 #: modifiers/defaults.py:36
-#, fuzzy
-#| msgid "Quantity"
 msgid "Verify Quantity"
-msgstr "Menge"
+msgstr "Verifiziere Menge"
 
 #: modifiers/taxes.py:26
 msgid "plus {}% VAT"
@@ -2627,38 +2627,28 @@ msgid "There are no items in the cart."
 msgstr "Ohne Artikel im Warenkorb kann der Einkauf nicht fortgesetzt werden."
 
 #: templates/shop/cart/editable.html:50 templates/shop/cart/watch.html:29
-#, fuzzy
-#| msgid "Remove"
 msgctxt "cart"
 msgid "Remove"
 msgstr "Entfernen"
 
 #: templates/shop/cart/editable.html:56
-#, fuzzy
-#| msgid "Watch Item"
 msgctxt "cart"
 msgid "Watch Item"
-msgstr "Artikel beobachten"
+msgstr "Beobachten"
 
 #: templates/shop/cart/editable.html:73 templates/shop/cart/static.html:51
 #: templates/shop/cart/summary.html:9
-#, fuzzy
-#| msgid "Subtotal"
 msgctxt "cart"
 msgid "Subtotal"
 msgstr "Zwischen&shy;summe"
 
 #: templates/shop/cart/editable.html:84 templates/shop/cart/static.html:68
 #: templates/shop/cart/summary.html:23
-#, fuzzy
-#| msgid "Total"
 msgctxt "cart"
 msgid "Total"
 msgstr "Gesamtsumme"
 
 #: templates/shop/cart/summary.html:5
-#, fuzzy
-#| msgid "Number of items"
 msgctxt "cart"
 msgid "Number of items"
 msgstr "Anzahl der Artikel"
@@ -2666,7 +2656,7 @@ msgstr "Anzahl der Artikel"
 #: templates/shop/cart/watch.html:13
 msgctxt "cart"
 msgid "You are perfectly happy!"
-msgstr ""
+msgstr "Du bist absolut glücklich!"
 
 #: templates/shop/cart/watch.html:32
 #, fuzzy
@@ -2678,12 +2668,10 @@ msgstr "In den Warenkorb"
 #: templates/shop/catalog/available-product-add2cart.html:6
 msgctxt "catalog"
 msgid "Available"
-msgstr ""
+msgstr "Verfügbar"
 
 #: templates/shop/catalog/available-product-add2cart.html:15
 #: templates/shop/catalog/product-add2cart.html:27
-#, fuzzy
-#| msgid "Quantity"
 msgctxt "catalog"
 msgid "Quantity"
 msgstr "Menge"
@@ -2691,7 +2679,7 @@ msgstr "Menge"
 #: templates/shop/catalog/available-product-add2cart.html:20
 msgctxt "catalog"
 msgid "Currently not available."
-msgstr ""
+msgstr "Aktuell nicht verfügbar"
 
 #: templates/shop/catalog/available-product-add2cart.html:27
 msgctxt "catalog"
@@ -2743,15 +2731,11 @@ msgid "Add %(product_name)s to cart"
 msgstr "In den Warenkorb"
 
 #: templates/shop/catalog/product-add2cart.html:35
-#, fuzzy
-#| msgid "Unit Price"
 msgctxt "catalog"
 msgid "Unit Price"
-msgstr "Einheitspreis"
+msgstr "Einzelpreis"
 
 #: templates/shop/catalog/product-add2cart.html:43
-#, fuzzy
-#| msgid "Subtotal"
 msgctxt "catalog"
 msgid "Subtotal"
 msgstr "Zwischen&shy;summe"
@@ -2759,22 +2743,18 @@ msgstr "Zwischen&shy;summe"
 #: templates/shop/catalog/product-add2cart.html:54
 msgctxt "catalog"
 msgid "incl. VAT, plus shipping costs."
-msgstr ""
+msgstr "inkl. MwSt, zzgl. Lieferkosten"
 
 #: templates/shop/catalog/product-add2cart.html:65
-#, fuzzy
-#| msgid "Watch product"
 msgctxt "catalog"
 msgid "Watch product"
-msgstr "Beobachte Produkt"
+msgstr "Beobachten"
 
 #: templates/shop/catalog/product-add2cart.html:68
 msgid "The product has been successfully placed in the shopping cart:"
 msgstr "Das Produkt wurde in den Warenkorb gelegt:"
 
 #: templates/shop/catalog/product-add2cart.html:70
-#, fuzzy
-#| msgid "Add to cart"
 msgctxt "catalog"
 msgid "Add to cart"
 msgstr "In den Warenkorb"
@@ -2783,11 +2763,9 @@ msgstr "In den Warenkorb"
 msgctxt "catalog"
 msgid ""
 "By adding a product to the cart you are giving consent to cookies being used."
-msgstr ""
+msgstr "Wenn Sie ein Produkt in den Warenkorb legen, stimmen Sie der Verwendung von Cookies zu."
 
 #: templates/shop/catalog/product-add2cart.html:96
-#, fuzzy
-#| msgid "for {{ context.unit_price }} per piece: {{ context.subtotal }}"
 msgctxt "catalog"
 msgid "for {{ context.unit_price }} per piece: {{ context.subtotal }}"
 msgstr "für {{ context.unit_price }} pro Stück: {{ context.subtotal }}"
@@ -2828,16 +2806,12 @@ msgid "Choose a previously used billing address"
 msgstr "Wähle eine bereits vorhandene Adresse"
 
 #: templates/shop/checkout/billing-address-form.html:35
-#, fuzzy
-#| msgid "Add a new billing address"
 msgctxt "checkout"
 msgid "Add a new billing address"
 msgstr "Neue Rechnungsadresse hinzufügen"
 
 #: templates/shop/checkout/billing-address-form.html:45
 #: templates/shop/checkout/shipping-address-form.html:46
-#, fuzzy
-#| msgid "Remove this address"
 msgctxt "checkout"
 msgid "Remove this address"
 msgstr "Diese Adresse entfernen"
@@ -2865,7 +2839,7 @@ msgstr "Zahlungsmethode"
 #: templates/shop/checkout/purchase-button.html:10
 msgctxt "checkout"
 msgid "Dismiss"
-msgstr ""
+msgstr "Abweisen"
 
 #: templates/shop/checkout/required-form-fields.html:1
 #, fuzzy
@@ -2918,7 +2892,7 @@ msgstr ""
 #: templates/shop/email/order-detail.txt:8
 #, python-format
 msgid "Subtotal: %(subtotal)s"
-msgstr ""
+msgstr "Zwischen&shy;summe: %(subtotal)s"
 
 #: templates/shop/email/order-detail.txt:10
 #, python-format
@@ -3080,22 +3054,18 @@ msgid "Ordered Items"
 msgstr "Bestellte Ware"
 
 #: templates/shop/order/detail.html:76
-#, fuzzy
-#| msgid "Subtotal"
 msgctxt "order-detail"
 msgid "Subtotal"
 msgstr "Zwischen&shy;summe"
 
 #: templates/shop/order/detail.html:89
-#, fuzzy
-#| msgid "Total"
 msgctxt "order-detail"
 msgid "Total"
 msgstr "Gesamtsumme"
 
 #: templates/shop/order/list.html:17
 msgid "You have never ordered anything from this site."
-msgstr ""
+msgstr "Sie haben noch nie etwas von dieser Seite bestellt."
 
 #: templates/shop/order/list.html:49
 #, fuzzy
@@ -3134,7 +3104,7 @@ msgstr "Details"
 
 #: templates/shop/search/results.html:42
 msgid "Page navigation"
-msgstr ""
+msgstr "Seitennavigation"
 
 #: templates/shop/search/results.html:49
 #, fuzzy
@@ -3186,7 +3156,7 @@ msgstr "Anleitung zum Zurücksetzen des Passwortes wurde an '{email}' gesendet."
 
 #: views/auth.py:193
 msgid "Invalid POST data."
-msgstr ""
+msgstr "Ungültige POST-Daten."
 
 #: views/auth.py:199
 msgid "Password has been reset with the new password."
@@ -3215,7 +3185,7 @@ msgstr ""
 
 #: views/checkout.py:141
 msgid "Please select a valid payment method."
-msgstr ""
+msgstr "Bitte wählen Sie eine gültige Zahlungsmethode."
 
 #: views/checkout.py:142
 #, fuzzy
@@ -3231,7 +3201,7 @@ msgstr "Nur angemeldete Kunden können ihre Bestellungen einsehen."
 
 #: views/order.py:39
 msgid "This order does not belong to you."
-msgstr ""
+msgstr "Diese Bestellung gehört Ihnen nicht."
 
 #~ msgid "Button Content"
 #~ msgstr "Button Inhalt"
