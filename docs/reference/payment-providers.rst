@@ -49,9 +49,9 @@ The Purchasing Operation
 
 During checkout, the clients final step is to click onto a button labeled something like "Buy Now".
 This button belongs to an AngularJS controller, provided by the directive ``shop-dialog-proceed``.
-It may look similar to this::
+It may look similar to this:
 
-.. code-block:: html
+.. code-block:: html+django
 
 	<button shop-dialog-proceed ng-click="proceedWith('PURCHASE_NOW')" class="btn btn-success">Buy Now</button>
 
