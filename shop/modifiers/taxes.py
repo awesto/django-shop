@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+from django.utils.translation import gettext_lazy as _
 
-from django.utils.translation import ugettext_lazy as _
 from shop.conf import app_settings
 from shop.serializers.cart import ExtraCartRow
 from shop.modifiers.base import BaseCartModifier

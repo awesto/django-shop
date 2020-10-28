@@ -15,7 +15,7 @@ it is very common to make mistakes by mixing different currencies. It also is co
 incorrect conversions that generate wrong results. Python doesn't allow developers to associate a
 specific decimal value with a unit.
 
-Starting with version 0.9, **django-SHOP** is shipped with a special factory class:
+Starting with version 0.9, **django-SHOP** ships with a special factory class:
 
 
 MoneyMaker
@@ -32,8 +32,8 @@ Not a Number
 
 In special occurrences we'd rather want to specify "no amount" rather than an amount of 0.00 (zero).
 This can be useful for free samples, or when an item currently is not available. The Decimal type
-denotes a kind of special value a ``NaN`` – for "Not a Number". Our Money type also knows about
-this special value, and when rendered, ``€ –`` or ``$ –```` is printed out.
+denotes a kind of special value a ``NaN`` – for "Not a Number". Our Money type therefore inherits
+this special value, but renders it for instance as ``€ –`` or ``$ –``.
 
 Declaring a Money object without a value, say ``m = Money()`` creates such a special value. The big
 difference as for the ``Decimal`` type is that when adding or subtracting a ``NaN`` to a valid

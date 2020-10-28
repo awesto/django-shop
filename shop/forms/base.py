@@ -1,15 +1,12 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from formtools.wizard.views import normalize_name
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.forms import widgets
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from cms.utils.helpers import classproperty
 
@@ -24,14 +21,14 @@ class DialogFormMixin(NgModelFormMixin, NgFormValidationMixin):
         kwargs.pop('cart', None)  # cart object must be removed, otherwise underlying methods complain
         auto_name = self.form_name  ## .replace('_form', '')
         kwargs.setdefault('auto_id', '{}-%s'.format(auto_name))
-        super(DialogFormMixin, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @classproperty
     def form_name(cls):
         return normalize_name(cls.__name__)
 
     def clean(self):
-        cleaned_data = dict(super(DialogFormMixin, self).clean())
+        cleaned_data = dict(super().clean())
         cleaned_data.pop('plugin_id', None)
         if cleaned_data.pop('plugin_order', None) is None:
             msg = "Field 'plugin_order' is a hidden but required field in each form inheriting from DialogFormMixin"
@@ -60,13 +57,13 @@ class DialogFormMixin(NgModelFormMixin, NgFormValidationMixin):
                             line.append(dict(bound_field.field.choices)[cast_to(v)])
                         except (AttributeError, KeyError):
                             pass
-                    output.append(force_text(', '.join(line)))
+                    output.append(force_str(', '.join(line)))
                 elif value:
                     try:
                         value = dict(bound_field.field.choices)[value]
                     except (AttributeError, KeyError):
                         pass
-                    output.append(force_text(value))
+                    output.append(force_str(value))
             return mark_safe('\n'.join(output))
 
     def get_response_data(self):
@@ -113,7 +110,7 @@ class DialogModelForm(DialogFormMixin, Bootstrap3ModelForm):
         return css_classes
 
 
-class UniqueEmailValidationMixin(object):
+class UniqueEmailValidationMixin:
     """
     A mixin added to forms which have to validate for the uniqueness of email addresses.
     """

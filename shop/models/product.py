@@ -1,27 +1,31 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
-from distutils.version import LooseVersion
 from functools import reduce
 import operator
-from cms import __version__ as CMS_VERSION
-from django.core import checks
+from urllib.parse import urljoin
+
+from django.apps import apps
+from django.conf import settings
+from django.core import cache, checks
 from django.db import models
 from django.db.models.aggregates import Sum
 from django.db.models.functions import Coalesce
-from django.utils import six
 from django.utils import timezone
-from django.utils.encoding import force_text
-from django.utils.six.moves.urllib.parse import urljoin
-from django.utils.translation import ugettext_lazy as _
+from django.utils.encoding import force_str
+from django.utils.translation import gettext_lazy as _
+
+try:
+    from django_elasticsearch_dsl.registries import registry as elasticsearch_registry
+except ImportError:
+    elasticsearch_registry = type('DocumentRegistry', (), {'get_documents': lambda *args: []})()
+
 from polymorphic.managers import PolymorphicManager
 from polymorphic.models import PolymorphicModel
+
 from shop import deferred
 from shop.conf import app_settings
 from shop.exceptions import ProductNotAvailable
 
 
-class Availability(object):
+class Availability:
     """
     Contains the currently available quantity for a given product and period.
     """
@@ -55,7 +59,7 @@ class Availability(object):
         self.inventory = bool(kwargs.get('inventory', None))
 
 
-class AvailableProductMixin(object):
+class AvailableProductMixin:
     """
     Add this mixin class to the product models declaration, wanting to keep track on the
     current amount of products in stock. In comparison to
@@ -89,7 +93,7 @@ class AvailableProductMixin(object):
     def check(cls, **kwargs):
         from shop.models.cart import CartItemModel
 
-        errors = super(AvailableProductMixin, cls).check(**kwargs)
+        errors = super().check(**kwargs)
         for cart_field in CartItemModel._meta.fields:
             if cart_field.attname == 'quantity':
                 break
@@ -108,7 +112,7 @@ class AvailableProductMixin(object):
         return errors
 
 
-class BaseReserveProductMixin(object):
+class BaseReserveProductMixin:
     def get_availability(self, request, **kwargs):
         """
         Returns the current available quantity for this product.
@@ -120,7 +124,7 @@ class BaseReserveProductMixin(object):
         """
         from shop.models.cart import CartItemModel
 
-        availability = super(BaseReserveProductMixin, self).get_availability(request, **kwargs)
+        availability = super().get_availability(request, **kwargs)
         cart_items = CartItemModel.objects.filter(product=self).values('quantity')
         availability.quantity -= cart_items.aggregate(sum=Coalesce(Sum('quantity'), 0))['sum']
         return availability
@@ -182,7 +186,7 @@ class PolymorphicProductMetaclass(deferred.PolymorphicForeignKeyBuilder):
             raise NotImplementedError(msg.format(cls.__name__))
 
 
-class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicModel)):
+class BaseProduct(PolymorphicModel, metaclass=PolymorphicProductMetaclass):
     """
     An abstract basic product model for the shop. It is intended to be overridden by one or
     more polymorphic models, adding all the fields and relations, required to describe this
@@ -195,7 +199,7 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
     Additionally the inheriting class MUST implement the following methods ``get_absolute_url()``
     and ``get_price()``. See below for details.
 
-    Unless each product variant offers it's own product code, it is strongly recommended to add
+    Unless each product variant offers its own product code, it is strongly recommended to add
     a field ``product_code = models.CharField(_("Product code"), max_length=255, unique=True)``
     to the class implementing the product.
     """
@@ -224,7 +228,7 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         """
         Returns the polymorphic type of the product.
         """
-        return force_text(self.polymorphic_ctype)
+        return force_str(self.polymorphic_ctype)
     product_type.short_description = _("Product type")
 
     @property
@@ -260,6 +264,13 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
         :param **kwargs: A dictionary describing the product's variations.
         """
         return self
+
+    def get_product_variants(self):
+        """
+        Hook for returning a queryset of variants for the given product.
+        If the product has no variants, then the queryset contains just itself.
+        """
+        return self._meta.model.objects.filter(pk=self.pk)
 
     def get_availability(self, request, **kwargs):
         """
@@ -323,7 +334,11 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
 
     @classmethod
     def check(cls, **kwargs):
-        errors = super(BaseProduct, cls).check(**kwargs)
+        """
+        Internal method to check consistency of Product model declaration on bootstrapping
+        application.
+        """
+        errors = super().check(**kwargs)
         try:
             cls.product_name
         except AttributeError:
@@ -331,10 +346,36 @@ class BaseProduct(six.with_metaclass(PolymorphicProductMetaclass, PolymorphicMod
             errors.append(checks.Error(msg.format(cls.__name__)))
         return errors
 
+    def update_search_index(self):
+        """
+        Update the Document inside the Elasticsearch index after changing relevant parts
+        of the product.
+        """
+        documents = elasticsearch_registry.get_documents([ProductModel])
+        if settings.USE_I18N:
+            for language, _ in settings.LANGUAGES:
+                try:
+                    document = next(doc for doc in documents if doc._language == language)
+                except StopIteration:
+                    document = next(doc for doc in documents if doc._language is None)
+                document().update(self)
+        else:
+            document = next(doc for doc in documents)
+            document().update(self)
+
+    def invalidate_cache(self):
+        """
+        Method ``ProductCommonSerializer.render_html()`` caches the rendered HTML snippets.
+        Invalidate this HTML snippet after changing relevant parts of the product.
+        """
+        shop_app = apps.get_app_config('shop')
+        if shop_app.cache_supporting_wildcard:
+            cache.delete_pattern('product:{}|*'.format(self.id))
+
 ProductModel = deferred.MaterializedModel(BaseProduct)
 
 
-class CMSPageReferenceMixin(object):
+class CMSPageReferenceMixin:
     """
     Products which refer to CMS pages in order to emulate categories, normally need a method for
     being accessed directly through a canonical URL. Add this mixin class for adding a
@@ -348,10 +389,7 @@ class CMSPageReferenceMixin(object):
         """
         # sorting by highest level, so that the canonical URL
         # associates with the most generic category
-        if LooseVersion(CMS_VERSION) < LooseVersion('3.5'):
-            cms_page = self.cms_pages.order_by('depth').last()
-        else:
-            cms_page = self.cms_pages.order_by('node__path').last()
+        cms_page = self.cms_pages.order_by('node__path').last()
         if cms_page is None:
             return urljoin('/category-not-assigned/', self.slug)
         return urljoin(cms_page.get_absolute_url(), self.slug)

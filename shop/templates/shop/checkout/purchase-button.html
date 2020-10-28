@@ -7,7 +7,7 @@
 {% add_data "ng-requires" "django.shop.purchase-button" %}
 
 <div class="alert alert-danger" ng-show="purchasingErrorMessage" role="alert" ng-cloak>
-	<a class="close" ng-click="purchasingErrorMessage=null" uib-tooltip="{% trans 'Dismiss' %}">×</a>{% verbatim %}{{ purchasingErrorMessage }}{% endverbatim %}
+	<a class="close" ng-click="purchasingErrorMessage=null" uib-tooltip="{% trans "Dismiss" context "checkout" %}">×</a>{% verbatim %}{{ purchasingErrorMessage }}{% endverbatim %}
 </div>
 
 {% with instance_css_classes=instance.css_classes instance_inline_styles=instance.inline_styles disable_invalid=instance.glossary.disable_invalid %}

@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from rest_framework import serializers
 from shop.conf import app_settings
 from shop.models.cart import CartModel, CartItemModel
@@ -51,7 +48,7 @@ class BaseItemSerializer(serializers.ModelSerializer):
 
     def to_representation(self, cart_item):
         cart_item.update(self.context['request'])
-        representation = super(BaseItemSerializer, self).to_representation(cart_item)
+        representation = super().to_representation(cart_item)
         return representation
 
     def validate_product(self, product):
@@ -73,7 +70,7 @@ class CartItemSerializer(BaseItemSerializer):
 
     def create(self, validated_data):
         validated_data['cart'] = CartModel.objects.get_or_create_from_request(self.context['request'])
-        return super(CartItemSerializer, self).create(validated_data)
+        return super().create(validated_data)
 
 
 class WatchItemSerializer(BaseItemSerializer):
@@ -83,7 +80,7 @@ class WatchItemSerializer(BaseItemSerializer):
     def create(self, validated_data):
         cart = CartModel.objects.get_or_create_from_request(self.context['request'])
         validated_data.update(cart=cart, quantity=0)
-        return super(WatchItemSerializer, self).create(validated_data)
+        return super().create(validated_data)
 
 
 class CartItems(ChoiceEnum):
@@ -103,7 +100,7 @@ class BaseCartSerializer(serializers.ModelSerializer):
 
     def to_representation(self, cart):
         cart.update(self.context['request'])
-        representation = super(BaseCartSerializer, self).to_representation(cart)
+        representation = super().to_representation(cart)
         if self.with_items:
             items = self.represent_items(cart)
             representation.update(items=items)
@@ -122,7 +119,7 @@ class CartSerializer(BaseCartSerializer):
 
     def __init__(self, *args, **kwargs):
         self.with_items = kwargs.pop('with_items', CartItems.without)
-        super(CartSerializer, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def represent_items(self, cart):
         if self.with_items == CartItems.unsorted:
@@ -141,7 +138,7 @@ class WatchSerializer(BaseCartSerializer):
 
     def __init__(self, *args, **kwargs):
         self.with_items = kwargs.pop('with_items', CartItems.arranged)
-        super(WatchSerializer, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def represent_items(self, cart):
         if self.with_items == CartItems.unsorted:

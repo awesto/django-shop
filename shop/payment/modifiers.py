@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from shop.modifiers.base import BaseCartModifier
 from shop.payment.providers import PaymentProvider, ForwardFundPayment
@@ -24,7 +21,7 @@ class PaymentModifier(BaseCartModifier):
     def __init__(self):
         assert isinstance(getattr(self, 'payment_provider', None), PaymentProvider), \
             "Each Payment modifier class requires a Payment Provider"
-        super(PaymentModifier, self).__init__()
+        super().__init__()
 
     @property
     def identifier(self):

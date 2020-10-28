@@ -5,7 +5,7 @@ from django.template.loader import select_template
 from django.utils.html import format_html
 from django.utils.module_loading import import_string
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext_lazy as _, pgettext_lazy
+from django.utils.translation import gettext_lazy as _, pgettext_lazy
 from cms.plugin_pool import plugin_pool
 from djangocms_text_ckeditor.cms_plugins import TextPlugin
 from cmsplugin_cascade.bootstrap4.buttons import ButtonFormMixin
@@ -212,7 +212,7 @@ class CheckoutAddressPlugin(DialogFormPluginBase):
 
     @classmethod
     def get_identifier(cls, instance):
-        identifier = super(CheckoutAddressPlugin, cls).get_identifier(instance)
+        identifier = super().get_identifier(instance)
         address_form = instance.glossary.get('address_form')
         address_form = dict(cls.form.ADDRESS_CHOICES).get(address_form, '')
         return format_html(pgettext_lazy('get_identifier', "for {} {}"), address_form, identifier)
@@ -310,7 +310,7 @@ class ExtraAnnotationFormPlugin(DialogFormPluginBase):
 DialogFormPluginBase.register_plugin(ExtraAnnotationFormPlugin)
 
 
-class AcceptConditionMixin(object):
+class AcceptConditionMixin:
     render_template = 'shop/checkout/accept-condition.html'
 
     def render(self, context, instance, placeholder):
@@ -332,7 +332,7 @@ class AcceptConditionMixin(object):
         form_data = {'cart': cart, 'initial': dict(plugin_id=instance.pk, plugin_order=request._plugin_order)}
         bound_form = FormClass(**form_data)
         context[bound_form.form_name] = bound_form
-        super(AcceptConditionMixin, self).render(context, instance, placeholder)
+        super().render(context, instance, placeholder)
         accept_condition_form = context['accept_condition_form.plugin_{}'.format(instance.pk)]
         # transfer the stored HTML content into the widget's label
         accept_condition_form['accept'].field.label = mark_safe(context['body'])

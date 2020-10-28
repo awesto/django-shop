@@ -1,10 +1,7 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.core.exceptions import ImproperlyConfigured
 from django.db import transaction
 from django.utils.module_loading import import_string
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -29,7 +26,7 @@ class CheckoutViewSet(GenericViewSet):
     cart_serializer_class = CartSerializer
 
     def __init__(self, **kwargs):
-        super(CheckoutViewSet, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.dialog_forms = set([import_string(fc) for fc in app_settings.SHOP_DIALOG_FORMS])
         try:
             from shop.cascade.plugin_base import DialogFormPluginBase

@@ -2,11 +2,11 @@
 
 <ul class="list-group">
 	<li class="list-group-item">
-		<span class="pull-left">{% trans "Number of items" %}:</span>
+		<span class="pull-left">{% trans "Number of items" context "cart" %}:</span>
 		<span class="pull-right font-weight-bold" djng-bind-if="cart.num_items">{{ cart.num_items }}</span>
 	</li>
 	<li class="list-group-item">
-		<span class="pull-left">{% trans "Subtotal" %}:</span>
+		<span class="pull-left">{% trans "Subtotal" context "cart" %}:</span>
 		<span class="pull-right font-weight-bold" djng-bind-if="cart.subtotal">{{ cart.subtotal }}</span>
 	</li>
 {% for extra_row in cart.extra_rows %}
@@ -20,7 +20,7 @@
 		<span class="pull-right font-weight-bold" ng-bind="extra_row.amount"></span>
 	</li>
 	<li class="list-group-item list-group-item-secondary lead font-weight-bold">
-		<span class="pull-left">{% trans "Total" %}:</span>
+		<span class="pull-left">{% trans "Total" context "cart" %}:</span>
 		<span class="pull-right" djng-bind-if="cart.total">{{ cart.total }}</span>
 	</li>
 </ul>

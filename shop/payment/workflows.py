@@ -1,13 +1,11 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.core.exceptions import ImproperlyConfigured
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django_fsm import transition, RETURN_VALUE
+
 from shop.models.order import BaseOrder
 
 
-class ManualPaymentWorkflowMixin(object):
+class ManualPaymentWorkflowMixin:
     """
     Add this class to `settings.SHOP_ORDER_WORKFLOWS` to mix it into your `OrderModel`.
     It adds all the methods required for state transitions, when used with the
@@ -24,7 +22,7 @@ class ManualPaymentWorkflowMixin(object):
         if not isinstance(self, BaseOrder):
             raise ImproperlyConfigured("class 'ManualPaymentWorkflowMixin' is not of type 'BaseOrder'")
         CancelOrderWorkflowMixin.CANCELABLE_SOURCES.update(self._manual_payment_transitions)
-        super(ManualPaymentWorkflowMixin, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @transition(field='status', source=['created'], target='no_payment_required')
     def no_payment_required(self):
@@ -71,7 +69,7 @@ class ManualPaymentWorkflowMixin(object):
         return 'refund_payment' if self.amount_paid else 'order_canceled'
 
 
-class CancelOrderWorkflowMixin(object):
+class CancelOrderWorkflowMixin:
     """
     Add this class to `settings.SHOP_ORDER_WORKFLOWS` to mix it into your `OrderModel`.
     It adds all the methods required for state transitions, to cancel an order.
@@ -83,7 +81,7 @@ class CancelOrderWorkflowMixin(object):
     }
 
     def cancelable(self):
-        return super(CancelOrderWorkflowMixin, self).cancelable() or self.status in self.CANCELABLE_SOURCES
+        return super().cancelable() or self.status in self.CANCELABLE_SOURCES
 
     @transition(field='status', target=RETURN_VALUE(*TRANSITION_TARGETS.keys()),
                 conditions=[cancelable], custom=dict(admin=True, button_name=_("Cancel Order")))

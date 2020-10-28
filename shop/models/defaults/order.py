@@ -1,12 +1,10 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 import binascii
 from os import urandom
+from urllib.parse import urljoin
+
 from django.db import models
 from django.utils import timezone
-from django.utils.six.moves.urllib.parse import urljoin
-from django.utils.translation import ugettext_lazy as _, pgettext_lazy
+from django.utils.translation import gettext_lazy as _, pgettext_lazy
 from shop.models import order
 
 
@@ -80,7 +78,7 @@ class Order(order.BaseOrder):
         return self.token
 
     def get_absolute_url(self):
-        url = super(Order, self).get_absolute_url()
+        url = super().get_absolute_url()
         if self.token:
             if not url.endswith('/'):
                 url += '/'
@@ -96,4 +94,4 @@ class Order(order.BaseOrder):
             self.shipping_address_text = self.billing_address_text
         if not self.billing_address_text:
             self.billing_address_text = self.shipping_address_text
-        super(Order, self).populate_from_cart(cart, request)
+        super().populate_from_cart(cart, request)

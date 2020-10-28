@@ -6,7 +6,7 @@ from django.template import TemplateDoesNotExist
 from django.template.loader import select_template
 from django.utils.html import format_html
 from django.utils.module_loading import import_string
-from django.utils.translation import ugettext_lazy as _, pgettext_lazy
+from django.utils.translation import gettext_lazy as _, pgettext_lazy
 from entangled.forms import EntangledModelFormMixin, get_related_object
 
 if 'cmsplugin_cascade' not in settings.INSTALLED_APPS:

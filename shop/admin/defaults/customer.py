@@ -1,9 +1,6 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.contrib import admin
 from django.utils.html import format_html_join
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from shop.admin.customer import CustomerProxy, CustomerInlineAdminBase, CustomerAdminBase
 
 
@@ -37,7 +34,7 @@ class CustomerAdmin(CustomerAdminBase):
     inlines = [CustomerInlineAdmin]
 
     def get_list_display(self, request):
-        list_display = list(super(CustomerAdmin, self).get_list_display(request))
+        list_display = list(super().get_list_display(request))
         list_display.insert(1, 'salutation')
         return list_display
 

@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from cms.models.static_placeholder import StaticPlaceholder
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
@@ -193,6 +190,25 @@ Usage:
         else:
             yield "Recommended CMS page 'Join Us' exists already."
 
+        try:
+            apphook = self.get_installed_apphook('CatalogSearchApp')
+        except MissingAppHook:
+            yield "Unable to create recommended CMS page 'Search', because django-elasticsearch-dsl is not installed."
+        else:
+            page, created = self.get_or_create_page("Search", apphook=apphook, reverse_id='shop-search-product')
+            if created:
+                try:
+                    clipboard = CascadeClipboard.objects.get(identifier=page.get_slug(default_language))
+                except CascadeClipboard.DoesNotExist:
+                    pass
+                else:
+                    self.deserialize_to_placeholder(page, clipboard.data)
+                self.create_breadcrumb(page, {'render_type': 'catalog'})
+                self.publish_in_all_languages(page)
+                yield "Created recommended CMS page 'Search'."
+            else:
+                yield "Recommended CMS page 'Search' exists already."
+
     def check_mandatory_pages(self):
         """
         Entry point for subcommand ``./manage.py shop check-pages``.
@@ -209,7 +225,7 @@ Usage:
         catalog_pages = Page.objects.public().filter(application_urls=apphook.__class__.__name__)
         if not catalog_pages.exists():
             if self.add_mandatory:
-                page, created = self.get_or_create_page("Catalog", 'CatalogListCMSApp', in_navigation=True)
+                page, created = self.get_or_create_page("Catalog", apphook, in_navigation=True)
                 if created:
                     try:
                         clipboard = CascadeClipboard.objects.get(identifier='shop-list')
@@ -226,38 +242,56 @@ Usage:
             else:
                 yield "There should be at least one published CMS page configured to use an Application inheriting from 'CatalogListCMSApp'."
 
-        page_attributes = [
+        page_scaffold = [
             # Menu Title, CMS-App-Hook or None, kwargs, Main Plugin, Plugin Context,
-            (("Search", 'CatalogSearchCMSApp', {'reverse_id': 'shop-search-product'}),
-             ('ShopSearchResultsPlugin', {}), {'render_type': 'catalog'}),
-            (("Cart", None, {'reverse_id': 'shop-cart'}),
-             ('ShopCartPlugin', {'render_type': 'editable'}), {'render_type': 'soft-root'}),
-            (("Watch-List", None, {'reverse_id': 'shop-watch-list'}),
-             ('ShopCartPlugin', {'render_type': 'watch'}), {'render_type': 'soft-root'}),
-            (("Your Orders", 'OrderApp', {'reverse_id': 'shop-order', 'parent_page': self.personal_pages, 'in_navigation': True}),
-             ('ShopOrderViewsPlugin', {}), {'render_type': 'default'}),
-            (("Personal Details", None, {'reverse_id': 'shop-customer-details', 'parent_page': self.personal_pages, 'in_navigation': True}),
-             ('CustomerFormPlugin', {}), {'render_type': 'default'}),
-            (("Change Password", None, {'reverse_id': 'shop-password-change', 'parent_page': self.personal_pages, 'in_navigation': True}),
-             ('ShopAuthenticationPlugin', {'form_type': 'password-change'}), {'render_type': 'default'}),
-            (("Login", None, {'reverse_id': 'shop-login', 'parent_page': self.impersonal_pages, 'in_navigation': True}),
-             ('ShopAuthenticationPlugin', {'form_type': 'login'}), {'render_type': 'default'}),
-            (("Register Customer", None, {'reverse_id': 'shop-register-customer', 'parent_page': self.impersonal_pages, 'in_navigation': True}),
-             ('ShopAuthenticationPlugin', {'form_type': 'register-user'}), {'render_type': 'default'}),
-            (("Request Password Reset", None,  {'reverse_id': 'password-reset-request', 'parent_page': self.impersonal_pages, 'in_navigation': True}),
-             ('ShopAuthenticationPlugin', {'form_type': 'password-reset-request'}), {'render_type': 'default'}),
-            (("Confirm Password Reset", 'PasswordResetApp',  {'reverse_id': 'password-reset-confirm'}),
-             ('ShopAuthenticationPlugin', {'form_type': 'password-reset-confirm'}), {'render_type': 'default'}),
-            (("Payment Canceled", None, {'reverse_id': 'shop-cancel-payment'}),
-             ('HeadingPlugin', {'tag_type': "h2", 'content': "Your payment has been canceled"}), {'render_type': 'default'}),
+            ("Cart",
+             {'reverse_id': 'shop-cart'},
+             ('ShopCartPlugin', {'render_type': 'editable'}),
+             {'render_type': 'soft-root'}),
+            ("Watch-List",
+             {'reverse_id': 'shop-watch-list'},
+             ('ShopCartPlugin', {'render_type': 'watch'}),
+             {'render_type': 'soft-root'}),
+            ("Your Orders",
+             {'apphook': self.get_installed_apphook('OrderApp'), 'reverse_id': 'shop-order', 'parent_page': self.personal_pages, 'in_navigation': True},
+             ('ShopOrderViewsPlugin', {}),
+             {'render_type': 'default'}),
+            ("Personal Details",
+             {'reverse_id': 'shop-customer-details', 'parent_page': self.personal_pages, 'in_navigation': True},
+             ('CustomerFormPlugin', {}),
+             {'render_type': 'default'}),
+            ("Change Password",
+             {'reverse_id': 'shop-password-change', 'parent_page': self.personal_pages, 'in_navigation': True},
+             ('ShopAuthenticationPlugin', {'form_type': 'password-change'}),
+             {'render_type': 'default'}),
+            ("Login",
+             {'reverse_id': 'shop-login', 'parent_page': self.impersonal_pages, 'in_navigation': True},
+             ('ShopAuthenticationPlugin', {'form_type': 'login'}),
+             {'render_type': 'default'}),
+            ("Register Customer",
+             {'reverse_id': 'shop-register-customer', 'parent_page': self.impersonal_pages, 'in_navigation': True},
+             ('ShopAuthenticationPlugin', {'form_type': 'register-user'}),
+             {'render_type': 'default'}),
+            ("Request Password Reset",
+             {'reverse_id': 'password-reset-request', 'parent_page': self.impersonal_pages, 'in_navigation': True},
+             ('ShopAuthenticationPlugin', {'form_type': 'password-reset-request'}),
+             {'render_type': 'default'}),
+            ("Confirm Password Reset",
+             {'apphook': self.get_installed_apphook('PasswordResetApp'), 'reverse_id': 'password-reset-confirm'},
+             ('ShopAuthenticationPlugin', {'form_type': 'password-reset-confirm'}),
+             {'render_type': 'default'}),
+            ("Payment Canceled",
+             {'reverse_id': 'shop-cancel-payment'},
+             ('HeadingPlugin', {'tag_type': "h2", 'content': "Your payment has been canceled"}),
+             {'render_type': 'default'}),
         ]
-        for page_attrs, content_attrs, breadcrumb_glossary in page_attributes:
+        for page_title, page_attrs, content_attrs, breadcrumb_glossary in page_scaffold:
             try:
-                page = self.check_page(*page_attrs[:2], **page_attrs[2])
+                page = self.check_page(page_title, **page_attrs)
                 self.check_page_content(page, *content_attrs)
             except MissingPage as exc:
                 if self.add_mandatory:
-                    page, created = self.get_or_create_page(*page_attrs[:2], **page_attrs[2])
+                    page, created = self.get_or_create_page(page_title, **page_attrs)
                     if created:
                         try:
                             clipboard = CascadeClipboard.objects.get(identifier=page.get_slug(default_language))
@@ -313,7 +347,7 @@ Usage:
             msg = "The project must register an AppHook inheriting from '{apphook_name}'"
             raise MissingAppHook(msg.format(apphook_name=base_apphook_name))
 
-    def check_page(self, title, base_apphook_name, reverse_id=None, **kwargs):
+    def check_page(self, title, apphook=None, reverse_id=None, **kwargs):
         from cms.models.pagemodel import Page
         from cms.apphook_pool import apphook_pool
 
@@ -322,11 +356,10 @@ Usage:
             msg = "There should be a published CMS page with a reference ID: '{reverse_id}'."
             raise MissingPage(msg.format(reverse_id=reverse_id))
 
-        if base_apphook_name:
-            apphook = self.get_installed_apphook(base_apphook_name)
+        if apphook:
             if not page.application_urls or apphook_pool.get_apphook(page.application_urls) is not apphook:
-                msg = "Page on URL '{url}' must be configured to use Application inheriting from '{app_hook}'."
-                raise MissingAppHook(msg.format(url=page.get_absolute_url(), app_hook=base_apphook_name))
+                msg = "Page on URL '{url}' must be configured to use CMSApp inheriting from '{apphook}'."
+                raise MissingAppHook(msg.format(url=page.get_absolute_url(), apphook=apphook.__class__))
 
         return page
 
@@ -350,13 +383,12 @@ Usage:
                 msg = "Plugin named '{plugin_name}' on page with URL '{url}' is misconfigured."
                 raise MissingPlugin(msg.format(url=page.get_absolute_url(), plugin_name=plugin_name))
 
-    def get_or_create_page(self, title, base_apphook_name, reverse_id=None, parent_page=None, in_navigation=False, soft_root=False):
+    def get_or_create_page(self, title, apphook=None, reverse_id=None, parent_page=None, in_navigation=False, soft_root=False):
         from cms.api import create_page
         from cms.models.pagemodel import Page
         from cms.utils.i18n import get_public_languages
 
         template = settings.CMS_TEMPLATES[0][0]
-        apphook = self.get_installed_apphook(base_apphook_name) if base_apphook_name else None
         language = get_public_languages()[0]
         try:
             parent_node = parent_page.node if parent_page else None

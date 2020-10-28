@@ -20,7 +20,7 @@
 	</form>
 {% else %}
 	<div class="{{ instance_css_classes }} disabled">
-		{% trans "This Order can't be cancelled" %}
+		{% trans "This Order can't be cancelled" context "order" %}
 	</div>
 {% endif %}
 	{% endwith %}

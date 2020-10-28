@@ -1,8 +1,4 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
-
-class DefaultSettings(object):
+class DefaultSettings:
     def _setting(self, name, default=None):
         from django.conf import settings
         return getattr(settings, name, default)
@@ -317,6 +313,7 @@ class DefaultSettings(object):
             'ShippingMethodForm': 'shop.forms.checkout.ShippingMethodForm',
             'ExtraAnnotationForm': 'shop.forms.checkout.ExtraAnnotationForm',
             'AcceptConditionForm': 'shop.forms.checkout.AcceptConditionForm',
+            'RegisterUserForm': 'shop.forms.auth.RegisterUserForm',
         }
         cascade_forms.update(self._setting('SHOP_CASCADE_FORMS', {}))
         return cascade_forms

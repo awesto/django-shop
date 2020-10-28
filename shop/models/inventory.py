@@ -1,17 +1,14 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.core import checks
 from django.db import models
 from django.db.models.aggregates import Sum
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from shop.conf import app_settings
 from shop.models.product import Availability, BaseReserveProductMixin
 from shop.exceptions import ProductNotAvailable
 
 
-class AvailableProductMixin(object):
+class AvailableProductMixin:
     """
     Add this mixin class to the product models declaration, wanting to keep track on the
     current amount of products in stock. In comparison to
@@ -72,7 +69,7 @@ class AvailableProductMixin(object):
 
     @classmethod
     def check(cls, **kwargs):
-        errors = super(AvailableProductMixin, cls).check(**kwargs)
+        errors = super().check(**kwargs)
         for rel in cls._meta.related_objects:
             if rel.name == 'inventory_set':
                 if rel.get_internal_type() != 'ForeignKey':
@@ -126,7 +123,7 @@ class BaseInventory(models.Model):
     def check(cls, **kwargs):
         from shop.models.cart import CartItemModel
 
-        errors = super(BaseInventory, cls).check(**kwargs)
+        errors = super().check(**kwargs)
         for cart_field in CartItemModel._meta.fields:
             if cart_field.attname == 'quantity':
                 break

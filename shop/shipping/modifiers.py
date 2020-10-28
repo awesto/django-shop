@@ -1,8 +1,5 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from shop.modifiers.base import BaseCartModifier
 
 
@@ -83,4 +80,4 @@ class SelfCollectionModifier(ShippingModifier):
     def ship_the_goods(self, delivery):
         if not delivery.shipping_id:
             delivery.shipping_id = str(delivery.id)
-        super(SelfCollectionModifier, self).ship_the_goods(delivery)
+        super().ship_the_goods(delivery)

@@ -1,20 +1,17 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from decimal import Decimal
 import logging
-from six import with_metaclass
+from urllib.parse import urljoin
+
 from django.core import checks
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
 from django.urls import NoReverseMatch, reverse
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
-from django.utils.translation import ugettext_lazy as _, pgettext_lazy, get_language_from_request
-from django.utils.six.moves.urllib.parse import urljoin
+from django.utils.translation import gettext_lazy as _, pgettext_lazy, get_language_from_request
+
 from django_fsm import FSMField, transition
-from ipware.ip import get_ip
+from ipware.ip import get_client_ip
 from cms.models import Page
 from shop.conf import app_settings
 from shop.models.cart import CartItemModel
@@ -42,7 +39,7 @@ class OrderQuerySet(models.QuerySet):
                 lookup_kwargs.update({key + lookup_type: lookup})
             else:
                 lookup_kwargs.update({key: lookup})
-        return super(OrderQuerySet, self)._filter_or_exclude(negate, *args, **lookup_kwargs)
+        return super()._filter_or_exclude(negate, *args, **lookup_kwargs)
 
 
 class OrderManager(models.Manager):
@@ -79,7 +76,7 @@ class OrderManager(models.Manager):
         return {
             'language': get_language_from_request(request),
             'absolute_base_uri': request.build_absolute_uri('/'),
-            'remote_ip': get_ip(request),
+            'remote_ip': get_client_ip(request)[0],
             'user_agent': request.META.get('HTTP_USER_AGENT'),
         }
 
@@ -124,7 +121,7 @@ class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
                     raise ImproperlyConfigured(msg.format(b.__name__, ', '.join(TRANSITION_TARGETS.keys())))
                 attrs['_transition_targets'].update(TRANSITION_TARGETS)
                 attrs['_auto_transitions'].update(cls.add_to_auto_transitions(b))
-        Model = super(WorkflowMixinMetaclass, cls).__new__(cls, name, bases, attrs)
+        Model = super().__new__(cls, name, bases, attrs)
         return Model
 
     @classmethod
@@ -138,8 +135,7 @@ class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):
         return result
 
 
-@python_2_unicode_compatible
-class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
+class BaseOrder(models.Model, metaclass=WorkflowMixinMetaclass):
     """
     An Order is the "in process" counterpart of the shopping cart, which freezes the state of the
     cart on the moment of purchase. It also holds stuff like the shipping and billing addresses,
@@ -211,7 +207,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         abstract = True
 
     def __init__(self, *args, **kwargs):
-        super(BaseOrder, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.logger = logging.getLogger('shop.order')
 
     def __str__(self):
@@ -339,7 +335,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
         # round the total to the given decimal_places
         self._subtotal = BaseOrder.round_amount(self._subtotal)
         self._total = BaseOrder.round_amount(self._total)
-        super(BaseOrder, self).save(**kwargs)
+        super().save(**kwargs)
         if with_notification:
             transition_change_notification(self)
 
@@ -414,8 +410,7 @@ class BaseOrder(with_metaclass(WorkflowMixinMetaclass, models.Model)):
 OrderModel = deferred.MaterializedModel(BaseOrder)
 
 
-@python_2_unicode_compatible
-class OrderPayment(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
+class OrderPayment(models.Model, metaclass=deferred.ForeignKeyBuilder):
     """
     A model to hold received payments for a given order.
     """
@@ -455,8 +450,7 @@ class OrderPayment(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         return _("Payment ID: {}").format(self.id)
 
 
-@python_2_unicode_compatible
-class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
+class BaseOrderItem(models.Model, metaclass=deferred.ForeignKeyBuilder):
     """
     An item for an order.
     """
@@ -520,7 +514,7 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
 
     @classmethod
     def check(cls, **kwargs):
-        errors = super(BaseOrderItem, cls).check(**kwargs)
+        errors = super().check(**kwargs)
         for cart_field in CartItemModel._meta.fields:
             if cart_field.attname == 'quantity':
                 break
@@ -574,6 +568,6 @@ class BaseOrderItem(with_metaclass(deferred.ForeignKeyBuilder, models.Model)):
         """
         self._unit_price = BaseOrder.round_amount(self._unit_price)
         self._line_total = BaseOrder.round_amount(self._line_total)
-        super(BaseOrderItem, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
 OrderItemModel = deferred.MaterializedModel(BaseOrderItem)

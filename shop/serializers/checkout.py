@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.module_loading import import_string
 from rest_framework import serializers
@@ -14,7 +11,7 @@ class SerializeFormAsTextField(serializers.SerializerMethodField):
         except ImportError:
             msg = "Can not import Form class. Please check your settings directive SHOP_CASCADE_FORMS['{}']."
             raise ImproperlyConfigured(msg.format(form_class_name))
-        super(SerializeFormAsTextField, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def to_representation(self, value):
         method = getattr(self.parent, self.method_name)

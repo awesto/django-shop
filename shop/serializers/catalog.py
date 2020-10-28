@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from cms.utils import get_current_site
 from cms.utils.page import get_page_from_path
 from django.urls import reverse
@@ -75,7 +72,7 @@ class ValueRelatedField(serializers.RelatedField):
     def __init__(self, *args, **kwargs):
         self.model = kwargs.pop('model')
         self.related_field_name = kwargs.pop('field_name', 'name')
-        super(ValueRelatedField, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def get_queryset(self):
         return self.model.objects.all()
