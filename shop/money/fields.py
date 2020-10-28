@@ -1,12 +1,11 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from decimal import Decimal
+
 from django.core.exceptions import ValidationError
 from django import forms
 from django.db import models
 from django.utils.html import format_html
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
+
 from shop.conf import app_settings
 from shop.money.iso4217 import CURRENCIES
 from shop.money.money_maker import MoneyMaker, AbstractMoney
@@ -23,10 +22,10 @@ class MoneyFieldWidget(forms.widgets.NumberInput):
             defaults.update(attrs)
         except (KeyError, TypeError):
             raise ValueError("MoneyFieldWidget must be instantiated with a currency_code.")
-        super(MoneyFieldWidget, self).__init__(defaults)
+        super().__init__(defaults)
 
     def render(self, name, value, attrs=None, renderer=None):
-        input_field = super(MoneyFieldWidget, self).render(name, value, attrs, renderer)
+        input_field = super().render(name, value, attrs, renderer)
         return format_html('{} <strong>{}</strong>', input_field, self.currency_code)
 
 
@@ -43,7 +42,7 @@ class MoneyFormField(forms.DecimalField):
         self.Money = money_class
         if 'widget' not in kwargs:
             kwargs['widget'] = MoneyFieldWidget(attrs={'currency_code': money_class.currency})
-        super(MoneyFormField, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def prepare_value(self, value):
         if isinstance(value, AbstractMoney):
@@ -51,13 +50,13 @@ class MoneyFormField(forms.DecimalField):
         return value
 
     def to_python(self, value):
-        value = super(MoneyFormField, self).to_python(value)
+        value = super().to_python(value)
         return self.Money(value)
 
     def validate(self, value):
         if value.currency != self.Money.currency:
             raise ValidationError("Can not convert different Money types.")
-        super(MoneyFormField, self).validate(Decimal(value))
+        super().validate(Decimal(value))
         return value
 
 
@@ -76,7 +75,7 @@ class MoneyField(models.DecimalField):
             'decimal_places': CURRENCIES[self.currency_code][1],
         }
         defaults.update(kwargs)
-        super(MoneyField, self).__init__(*args, **defaults)
+        super().__init__(*args, **defaults)
 
     def deconstruct(self):
         name, path, args, kwargs = super(MoneyField, self).deconstruct()
@@ -91,15 +90,15 @@ class MoneyField(models.DecimalField):
             return value
         if value is None:
             return self.Money('NaN')
-        value = super(MoneyField, self).to_python(value)
+        value = super().to_python(value)
         return self.Money(value)
 
     def get_prep_value(self, value):
         # force to type Decimal by using grandparent super
         value = super(models.DecimalField, self).get_prep_value(value)
-        return super(MoneyField, self).to_python(value)
+        return super().to_python(value)
 
-    def from_db_value(self, value, expression, connection, context=None):
+    def from_db_value(self, value, expression, connection):
         if value is None:
             return
         if isinstance(value, float):
@@ -109,7 +108,7 @@ class MoneyField(models.DecimalField):
     def get_db_prep_save(self, value, connection):
         if isinstance(value, Decimal) and value.is_nan():
             return None
-        return super(MoneyField, self).get_db_prep_save(value, connection)
+        return super().get_db_prep_save(value, connection)
 
     def get_prep_lookup(self, lookup_type, value):
         if isinstance(value, AbstractMoney):
@@ -117,7 +116,7 @@ class MoneyField(models.DecimalField):
                 msg = "This field stores money in {}, but the lookup amount is in {}"
                 raise ValueError(msg.format(value.get_currency(), self.Money.get_currency()))
             value = value.as_decimal()
-        result = super(MoneyField, self).get_prep_lookup(lookup_type, value)
+        result = super().get_prep_lookup(lookup_type, value)
         return result
 
     def value_to_string(self, obj):
@@ -130,5 +129,5 @@ class MoneyField(models.DecimalField):
         widget = MoneyFieldWidget(attrs={'currency_code': self.Money.currency})
         defaults = {'form_class': MoneyFormField, 'widget': widget, 'money_class': self.Money}
         defaults.update(**kwargs)
-        formfield = super(MoneyField, self).formfield(**defaults)
+        formfield = super().formfield(**defaults)
         return formfield

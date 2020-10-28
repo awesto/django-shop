@@ -1,13 +1,10 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from collections import OrderedDict
 from django import template
 from django.conf import settings
 from django.template import Node, TemplateSyntaxError
 from django.template.loader import select_template
 from django.utils import formats
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.utils.safestring import mark_safe
 from django.utils.dateformat import format, time_format
 from django.utils.timezone import datetime
@@ -40,7 +37,7 @@ class CartIcon(Node):
         except CartModel.DoesNotExist:
             cart_data = {'total_quantity': 0, 'num_items': 0}
         context.update({
-            'cart_as_json': mark_safe(force_text(cart_data)),
+            'cart_as_json': mark_safe(force_str(cart_data)),
             'has_dropdown': self.with_items != CartItems.without,
         })
         return self.get_template().render(context)
@@ -126,4 +123,4 @@ def rest_json(value, arg=None):
     else:
         msg = "Given value must be of type dict, OrderedDict, list or tuple but it is {}."
         raise ValueError(msg.format(value.__class__.__name__))
-    return mark_safe(force_text(data))
+    return mark_safe(force_str(data))

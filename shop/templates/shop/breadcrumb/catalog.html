@@ -9,7 +9,7 @@
 		<ol class="breadcrumb">
 			{% show_breadcrumb 0 "bootstrap4/menu/breadcrumb.html" %}
 			<li class="ml-auto d-none d-sm-inline-block">
-				{% trans "Found Products" %}: <span class="badge badge-primary" djng-bind-if="catalog.count">{{ paginator.count }}</span>
+				{% trans "Found Products" context "breadcrumb" %}: <span class="badge badge-primary" djng-bind-if="catalog.count">{{ paginator.count }}</span>
 			</li>
 		</ol>
 	</nav>

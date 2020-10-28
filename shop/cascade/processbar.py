@@ -1,5 +1,5 @@
 from django.forms import fields, widgets
-from django.utils.translation import ungettext_lazy, ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _, ngettext_lazy
 from django.utils.text import Truncator
 from django.utils.html import format_html
 from django.forms.fields import IntegerField
@@ -35,9 +35,9 @@ class ProcessBarPlugin(TransparentWrapper, ShopPluginBase):
 
     @classmethod
     def get_identifier(cls, instance):
-        identifier = super(ProcessBarPlugin, cls).get_identifier(instance)
+        identifier = super().get_identifier(instance)
         num_cols = instance.get_children().count()
-        content = ungettext_lazy('with {} page', 'with {} pages', num_cols).format(num_cols)
+        content = ngettext_lazy('with {} page', 'with {} pages', num_cols).format(num_cols)
         return format_html('{0}{1}', identifier, content)
 
     def get_render_template(self, context, instance, placeholder):
@@ -56,7 +56,7 @@ class ProcessBarPlugin(TransparentWrapper, ShopPluginBase):
 
     def save_model(self, request, obj, form, change):
         wanted_children = int(form.cleaned_data.get('num_children'))
-        super(ProcessBarPlugin, self).save_model(request, obj, form, change)
+        super().save_model(request, obj, form, change)
         self.extend_children(obj, wanted_children, ProcessStepPlugin)
 
 plugin_pool.register_plugin(ProcessBarPlugin)

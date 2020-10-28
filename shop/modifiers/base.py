@@ -1,8 +1,4 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
-
-class BaseCartModifier(object):
+class BaseCartModifier:
     """
     Cart Modifiers are the cart's counterpart to backends.
 

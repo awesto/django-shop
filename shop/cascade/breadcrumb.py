@@ -1,12 +1,9 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.core.exceptions import ImproperlyConfigured
 from django.forms import fields, widgets
 from django.template import engines, TemplateDoesNotExist
 from django.template.loader import select_template
 from django.utils.html import mark_safe
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from entangled.forms import EntangledModelFormMixin
 from cms.apphook_pool import apphook_pool
 from cms.plugin_pool import plugin_pool
@@ -59,6 +56,6 @@ class BreadcrumbPlugin(ShopPluginBase):
             app = apphook_pool.get_apphook(instance.page.application_urls)
             return app.cache_placeholders
         except (AttributeError, ImproperlyConfigured):
-            return super(BreadcrumbPlugin, self).get_use_cache(context, instance, placeholder)
+            return super().get_use_cache(context, instance, placeholder)
 
 plugin_pool.register_plugin(BreadcrumbPlugin)

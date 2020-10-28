@@ -10,7 +10,7 @@
 	{% endblocktrans %}</p>
 {% else %}
 	{% if show_history and data.extra.addendum %}
-		<label>{% trans "Previous annotations" %}</label>
+		<label>{% trans "Previous annotations" context "order" %}</label>
 		<dl class="dl-horizontal">
 		{% for timestamp, annotation in data.extra.addendum %}
 			<dt shop-timestamp="{{ timestamp }}" time-format="d. MMM yyyy, HH:mm"></dt>

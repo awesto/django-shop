@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 # Dictionary of currency representations:
 # key: official ISO 4217 code
@@ -12,6 +10,7 @@ CURRENCIES = {
     'AED': ('784', 2, 'د.إ', _('United Arab Emirates dirham')),
     'AUD': ('036', 2, '$', _("Australian Dollar")),
     'BHD': ('048', 3, '.د.ب', _('Bahraini dinar')),
+    'BOB': ('068', 2, 'Bs', _('Boliviano')),
     'BRL': ('986', 2, 'R$', _("Brazilian Real")),
     'CAD': ('124', 2, 'C$', _("Canadian Dollar")),
     'CHF': ('756', 2, 'SFr․', _("Swiss Franc")),  # Unicode 8228 as dot to prevent formatting issues

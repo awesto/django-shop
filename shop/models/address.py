@@ -1,13 +1,9 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 """
 Holds all the information relevant to the client (addresses for instance)
 """
-from six import with_metaclass
-
 from django.db import models
 from django.template.loader import select_template
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from shop import deferred
 from shop.conf import app_settings
@@ -56,7 +52,7 @@ class BaseAddress(models.Model):
         return template.render({'address': self})
 
 
-class BaseShippingAddress(with_metaclass(deferred.ForeignKeyBuilder, BaseAddress)):
+class BaseShippingAddress(BaseAddress, metaclass=deferred.ForeignKeyBuilder):
     address_type = 'shipping'
 
     class Meta:
@@ -65,7 +61,7 @@ class BaseShippingAddress(with_metaclass(deferred.ForeignKeyBuilder, BaseAddress
 ShippingAddressModel = deferred.MaterializedModel(BaseShippingAddress)
 
 
-class BaseBillingAddress(with_metaclass(deferred.ForeignKeyBuilder, BaseAddress)):
+class BaseBillingAddress(BaseAddress, metaclass=deferred.ForeignKeyBuilder):
     address_type = 'billing'
 
     class Meta:
@@ -334,10 +330,10 @@ class CountryField(models.CharField):
             'choices': ISO_3166_CODES,
         }
         defaults.update(kwargs)
-        super(CountryField, self).__init__(*args, **defaults)
+        super().__init__(*args, **defaults)
 
     def deconstruct(self):
-        name, path, args, kwargs = super(CountryField, self).deconstruct()
+        name, path, args, kwargs = super().deconstruct()
         if kwargs['max_length'] == 3:
             kwargs.pop('max_length')
         if kwargs['choices'] == ISO_3166_CODES:

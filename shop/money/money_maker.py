@@ -1,10 +1,5 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from decimal import Decimal, InvalidOperation
 from django.conf import settings
-from django.utils import six
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.formats import get_format
 from django.utils.translation import get_language
 from cms.utils.helpers import classproperty
@@ -12,7 +7,6 @@ from shop.conf import app_settings
 from shop.money.iso4217 import CURRENCIES
 
 
-@python_2_unicode_compatible
 class AbstractMoney(Decimal):
     MONEY_FORMAT = app_settings.MONEY_FORMAT
 
@@ -38,8 +32,6 @@ class AbstractMoney(Decimal):
             vals.update(amount=Decimal.__str__(Decimal.quantize(self, self._cents)))
         except InvalidOperation:
             raise ValueError("Can not represent {} as Money type.".format(self.__repr__()))
-        if six.PY2:
-            return u'{:f}'.format(self)
         return '{:f}'.format(self)
 
     def __repr__(self):
@@ -187,13 +179,8 @@ class AbstractMoney(Decimal):
     def __deepcopy__(self, memo):
         return self.__class__(self._cents)
 
-    if six.PY2:
-        def __nonzero__(self):
-            return Decimal.__nonzero__(self) and not self.is_nan()
-
-    if six.PY3:
-        def __bool__(self):
-            return Decimal.__bool__(self) and not self.is_nan()
+    def __bool__(self):
+        return Decimal.__bool__(self) and not self.is_nan()
 
     @classproperty
     def currency(cls):

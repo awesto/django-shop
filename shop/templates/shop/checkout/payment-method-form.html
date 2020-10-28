@@ -19,16 +19,16 @@
 	{% if show_additional_charge %}
 	<ul class="additional-charge">
 		{% for choice, label in payment_method_form.payment_modifier.field.choices %}
-		<li ng-repeat="extra_row in cart.extra_rows|filter:{modifier:'{{ choice }}'}">{% trans "Additional charge" %}: {% verbatim %}{{ extra_row.amount }}{% endverbatim %}</li>
+		<li ng-repeat="extra_row in cart.extra_rows|filter:{modifier:'{{ choice }}'}">{% trans "Additional charge: {{ extra_row.amount }}" context "checkout" %}</li>
 		{% endfor %}
 		{% if payment_modifiers.initial_row %}
-		<li ng-if="!cart.extra_rows">{% trans "Additional charge" %}: {{ payment_modifiers.initial_row.amount }}</li>
+		<li ng-if="!cart.extra_rows">{% blocktrans with amount=payment_modifiers.initial_row.amount context "checkout" %}Additional charge: {{ amount }}{% endblocktrans %}</li>
 		{% endif %}
 	</ul>
 	{% endif %}
 {% else %}
 	<input name="__force_invalidation__" style="display: none;" required />
-	<p class="bg-danger">{% trans "No payment method available" %}</p>
+	<p class="bg-danger">{% trans "No payment method available" context "checkout" %}</p>
 {% endif %}
 </form>
 	{% block payment-provider-form %}

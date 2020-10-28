@@ -1,15 +1,12 @@
-# -*- coding: utf-8 -*-
 """
 In django-SHOP, a Commodity product-model is considered a very basic product without any attributes,
 which can be used on a generic CMS page to describe anything.
 """
-from __future__ import unicode_literals
 
 from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.utils.encoding import python_2_unicode_compatible
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from cms.models.fields import PlaceholderField
 from filer.fields import image
 from djangocms_text_ckeditor.fields import HTMLField
@@ -43,7 +40,6 @@ if settings.USE_I18N:
         queryset_class = ProductQuerySet
 
 
-    @python_2_unicode_compatible
     class Commodity(CMSPageReferenceMixin, TranslatableModelMixin, CommodityMixin, BaseProduct):
         """
         Generic Product Commodity to be used whenever the merchant does not require product specific
@@ -146,7 +142,6 @@ if settings.USE_I18N:
 
 else:
 
-    @python_2_unicode_compatible
     class Commodity(CMSPageReferenceMixin, CommodityMixin, BaseProduct):
         """
         Generic Product Commodity to be used whenever the merchant does not require product specific

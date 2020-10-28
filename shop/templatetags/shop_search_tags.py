@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from cms.plugin_rendering import ContentRenderer
 from cms.models.placeholdermodel import Placeholder
 from cms.templatetags.cms_tags import RenderPlaceholder as DefaultRenderPlaceholder
@@ -8,7 +5,6 @@ from django import template
 from django.contrib.auth.models import AnonymousUser
 from django.http.request import HttpRequest
 from django.utils.html import strip_tags
-from django.utils.six import string_types
 from sekizai.context_processors import sekizai
 
 register = template.Library()
@@ -19,7 +15,7 @@ class EmulateHttpRequest(HttpRequest):
     Use this class to emulate a HttpRequest object.
     """
     def __init__(self, language_code=None):
-        super(EmulateHttpRequest, self).__init__()
+        super().__init__()
         self.environ = {}
         self.method = 'GET'
         if language_code:
@@ -37,7 +33,7 @@ class RenderPlaceholder(DefaultRenderPlaceholder):
         placeholder = kwargs.get('placeholder')
         if not placeholder:
             return ''
-        if isinstance(placeholder, string_types):
+        if isinstance(placeholder, str):
             placeholder = Placeholder.objects.get(slot=placeholder)
         content = renderer.render_placeholder(
             placeholder=placeholder,
@@ -51,7 +47,6 @@ class RenderPlaceholder(DefaultRenderPlaceholder):
 
     def get_value(self, context, **kwargs):
         context.update(sekizai())
-        context['product'] = context['object']
         try:
             language_code = context['product']._current_language
         except (KeyError, AttributeError):

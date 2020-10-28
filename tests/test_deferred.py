@@ -6,7 +6,7 @@ from polymorphic.models import PolymorphicModel, PolymorphicModelBase
 from shop import deferred
 
 import copy
-import six
+from types import new_class
 
 
 def create_regular_class(name, fields={}, meta={}):
@@ -26,11 +26,8 @@ def create_deferred_base_class(name, fields={}, meta={}, polymorphic=False):
     meta.setdefault('app_label', 'foo')
     meta.setdefault('abstract', True)
     Meta = type(str('Meta'), (), meta)
-    return type(
-        str(name),
-        (six.with_metaclass(metaclass, model_class),),
-        dict(Meta=Meta, __module__=__name__, **fields),
-    )
+    cls_dict = dict(Meta=Meta, __metaclass__=metaclass, __module__=__name__, **fields)
+    return new_class(name, (model_class,), {'metaclass': metaclass}, lambda attrs: attrs.update(cls_dict))
 
 
 def create_deferred_class(name, base, fields={}, meta={}, mixins=()):
@@ -130,7 +127,7 @@ DeferredPolymorphicProduct = create_deferred_class('DeferredPolymorphicProduct',
 class DeferredTestCase(TestCase):
 
     def assert_same_model(self, to, model):
-        if isinstance(to, six.string_types):
+        if isinstance(to, str):
             self.assertEqual(to, model.__name__)
         else:
             self.assertIs(to, model)
