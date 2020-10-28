@@ -12,12 +12,6 @@
 
 Here you can find the [full documentation for django-SHOP](https://django-shop.readthedocs.io/en/latest/).
 
-## Version 1.1 has been released!
-
-See below on how to install it using the Cookiecutter template. It now supports up to django-CMS 3.7
-and Django-2.2.
-
-
 ## Build the database model out of the product's properties – not vice versa
 
 Most e-commerce systems are shipped with a predefined database model for products. But products can
