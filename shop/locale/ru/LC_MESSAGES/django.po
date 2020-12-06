@@ -2647,9 +2647,10 @@ msgid "No products found"
 msgstr "Товары не найдены"
 
 #: templates/shop/catalog/product-add2cart.html:18
+#, python-format
 msgctxt "catalog"
 msgid "Add %(product_name)s to cart"
-msgstr "Добавить продукты в корзину"
+msgstr "Добавить %(product_name)s в корзину"
 
 #: templates/shop/catalog/product-add2cart.html:35
 msgctxt "catalog"
@@ -2781,8 +2782,9 @@ msgstr "Ваши данные"
 
 #: templates/shop/email/order-detail.html:8
 #: templates/shop/email/order-detail.txt:1
+#, python-format
 msgid "Summary of Your Order %(order_number)s"
-msgstr "Всего ваших заказов: %(order_number)"
+msgstr "Всего ваших заказов: %(order_number)s"
 
 #: templates/shop/email/order-detail.html:15
 msgid "Price"
@@ -2791,17 +2793,17 @@ msgstr "Цена"
 #: templates/shop/email/order-detail.txt:5
 #, python-format
 msgid "Line Total: %(line_total)s"
-msgstr "Всего позиций: %(line_total)"
+msgstr "Всего позиций: %(line_total)s"
 
 #: templates/shop/email/order-detail.txt:8
 #, python-format
 msgid "Subtotal: %(subtotal)s"
-msgstr "Подитог: %(subtotal)"
+msgstr "Подитог: %(subtotal)s"
 
 #: templates/shop/email/order-detail.txt:10
 #, python-format
 msgid "Total: %(total)s"
-msgstr "Итого: %(total)"
+msgstr "Итого: %(total)s"
 
 #: templates/shop/email/password-reset-body.txt:2
 #, python-format
@@ -2835,6 +2837,7 @@ msgid "Password reset on %(site_name)s"
 msgstr "Восстановление пароля на сайте %(site_name)s"
 
 #: templates/shop/email/register-user-body.txt:1
+#, python-format
 msgid ""
 "You're receiving this e-mail because you or someone else has requested an "
 "auto-generated password\n"
@@ -2907,9 +2910,10 @@ msgid "This Order can't be cancelled"
 msgstr "Этот заказ не может быть отменён"
 
 #: templates/shop/order/detail.html:11
+#, python-format
 msgctxt "order"
 msgid "Order %(number)s"
-msgstr "Заказ %(number)"
+msgstr "Заказ %(number)s"
 
 #: templates/shop/order/detail.html:12
 msgctxt "order"
@@ -2922,9 +2926,10 @@ msgid "Shipping Address"
 msgstr "Адрес доставки"
 
 #: templates/shop/order/detail.html:25
+#, python-format
 msgctxt "order"
 msgid "Shipping Method: %(label)s"
-msgstr "Метод доставки: %(label)"
+msgstr "Метод доставки: %(label)s"
 
 #: templates/shop/order/detail.html:30
 msgctxt "order"
@@ -2932,9 +2937,10 @@ msgid "Billing Address"
 msgstr "Адрес плательщика"
 
 #: templates/shop/order/detail.html:34
+#, python-format
 msgctxt "order"
 msgid "Payment Method: %(label)s"
-msgstr "Метод оплаты: %(label)"
+msgstr "Метод оплаты: %(label)s"
 
 #: templates/shop/order/detail.html:41
 msgctxt "order"
@@ -3004,7 +3010,7 @@ msgstr "{} товаров"
 #: templates/shop/templatetags/cart-icon.html:33
 #, python-format
 msgid "and %(remaining)s <a href=\"%(shop_cart_url)s\">more items</a>."
-msgstr "и %(remaining) <a href=\"%(shop_cart_url)s\">больше позиций</a>."
+msgstr "и %(remaining)s <a href=\"%(shop_cart_url)s\">больше позиций</a>."
 
 #: views/auth.py:42
 msgid "Successfully registered yourself."
