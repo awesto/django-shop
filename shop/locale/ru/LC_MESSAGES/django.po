@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-shop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-06 21:04+0300\n"
+"POT-Creation-Date: 2020-12-06 20:22+0300\n"
 "PO-Revision-Date: 2011-07-13 16:16+0000\n"
 "Last-Translator: chrisglass <tribaal@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,7 +34,7 @@ msgstr "Имя пользователя"
 
 #: admin/customer.py:106
 msgid "Administrator"
-msgstr ""
+msgstr "Администратор"
 
 #: admin/customer.py:108
 msgid "Staff"
@@ -74,10 +74,8 @@ msgid "Common Fields"
 msgstr "Общие поля"
 
 #: admin/defaults/customer.py:10
-#, fuzzy
-#| msgid "Address"
 msgid "Addresses"
-msgstr "Адрес"
+msgstr "Адреса"
 
 #: admin/defaults/customer.py:16 models/defaults/customer.py:18
 msgid "Customer Number"
@@ -89,8 +87,6 @@ msgid "Shipping"
 msgstr "Доставка"
 
 #: admin/defaults/customer.py:26 cascade/checkout.py:138
-#, fuzzy
-#| msgid "Billing Address"
 msgid "Billing"
 msgstr "Адрес плательщика"
 
@@ -123,8 +119,6 @@ msgid "Ready for delivery"
 msgstr "Готово к доставке"
 
 #: admin/delivery.py:114
-#, fuzzy
-#| msgid "Shipping"
 msgid "Shipping by"
 msgstr "Доставка"
 
@@ -151,7 +145,7 @@ msgstr "Выполненные в"
 
 #: admin/notification.py:20 models/notification.py:12 models/notification.py:40
 msgid "Recipient"
-msgstr ""
+msgstr "Получатель"
 
 #: admin/notification.py:83 models/notification.py:29
 msgid "Event"
@@ -163,11 +157,9 @@ msgstr "Вложения"
 
 #: admin/notification.py:94
 msgid "Mail Recipient"
-msgstr ""
+msgstr "Получатель почты"
 
 #: admin/order.py:61
-#, fuzzy
-#| msgid "Amount paid"
 msgctxt "admin"
 msgid "Amount Paid"
 msgstr "Сумма"
@@ -205,7 +197,7 @@ msgstr "Осталось оплатить"
 #: admin/order.py:152
 msgctxt "admin"
 msgid "Is fully paid"
-msgstr ""
+msgstr "Полностью оплачен"
 
 #: admin/order.py:171
 msgctxt "admin"
@@ -247,8 +239,6 @@ msgid "Login Form"
 msgstr "Вход"
 
 #: cascade/auth.py:14
-#, fuzzy
-#| msgid "Login & Reset Form"
 msgid "Login & Reset Request"
 msgstr "Вход и восстановление пароля"
 
@@ -261,14 +251,10 @@ msgid "Shared Login/Logout Form"
 msgstr "Вход/Выход"
 
 #: cascade/auth.py:17
-#, fuzzy
-#| msgid "Reset Password"
 msgid "Request Password Reset"
 msgstr "Восстановить пароль"
 
 #: cascade/auth.py:18
-#, fuzzy
-#| msgid "Confirm Password"
 msgid "Confirm Password Reset"
 msgstr "Подтвердите пароль"
 
@@ -305,10 +291,8 @@ msgid "Do Nothing"
 msgstr "Ничего не делать"
 
 #: cascade/auth.py:49
-#, fuzzy
-#| msgid "Authentication"
 msgid "Authentication Forms"
-msgstr "Аутентификация"
+msgstr "Формы аутентификации"
 
 #: cascade/auth.py:59
 msgid "unknown"
@@ -316,11 +300,9 @@ msgstr "неизвестный"
 
 #: cascade/breadcrumb.py:16 cascade/settings.py:37
 msgid "Default"
-msgstr ""
+msgstr "По-умолчанию"
 
 #: cascade/breadcrumb.py:17
-#, fuzzy
-#| msgid "“Soft-Root” Breadcrumb"
 msgid "With “Soft-Root”"
 msgstr "“Soft-Root” навигационная цепочка"
 
@@ -354,7 +336,7 @@ msgstr "Итог корзины"
 
 #: cascade/cart.py:21 templates/shop/navbar/watch-icon.html:7
 msgid "Watch List"
-msgstr "Список просмотренных продуктов"
+msgstr "Список избранных продуктов"
 
 #: cascade/cart.py:29
 msgid "Shall the cart be editable or a static summary?"
@@ -366,25 +348,23 @@ msgstr "Корзина"
 
 #: cascade/catalog.py:25 cascade/search.py:14
 msgid "Use Paginator"
-msgstr ""
+msgstr "Использовать пагинатор"
 
 #: cascade/catalog.py:26 cascade/search.py:15
 msgid "Manual Infinite"
-msgstr ""
+msgstr "Кнопка показать ещё"
 
 #: cascade/catalog.py:27 cascade/search.py:16
 msgid "Auto Infinite"
-msgstr ""
+msgstr "Автоматическая подгрузка"
 
 #: cascade/catalog.py:33 cascade/search.py:20
-#, fuzzy
-#| msgid "Salutation"
 msgid "Pagination"
-msgstr "Обращение"
+msgstr "Пагинация"
 
 #: cascade/catalog.py:35
 msgid "Shall the product list view use a paginator or scroll infinitely?"
-msgstr ""
+msgstr "Будет ли в списке продуктов пагинатор или он будет с бесконечной прокруткой?"
 
 #: cascade/catalog.py:43
 msgid "Catalog List View"
@@ -392,19 +372,19 @@ msgstr "Каталог"
 
 #: cascade/catalog.py:67 cascade/search.py:64
 msgid "Manual Pagination"
-msgstr ""
+msgstr "Ручная пагинация"
 
 #: cascade/catalog.py:68 cascade/search.py:65
 msgid "Infinite Scroll"
-msgstr ""
+msgstr "Бесконечная прокрутка"
 
 #: cascade/catalog.py:75
 msgid "Use Modal Dialog"
-msgstr ""
+msgstr "Использовать диалоговое окно"
 
 #: cascade/catalog.py:78
 msgid "After adding product to cart, render a modal dialog"
-msgstr ""
+msgstr "Показывать диалоговое окно после добавления продукта в корзину"
 
 #: cascade/catalog.py:86
 msgid "Add Product to Cart"
@@ -429,28 +409,24 @@ msgid "Product Gallery"
 msgstr "Галерея изображений продукта"
 
 #: cascade/checkout.py:29
-#, fuzzy
-#| msgid "Next Step Button"
 msgid "Next Step"
-msgstr "Кнопка \"Следующий шаг\""
+msgstr "Следующий шаг"
 
 #: cascade/checkout.py:31
 msgid "Purchase Now"
 msgstr "Купить"
 
 #: cascade/checkout.py:32
-#, fuzzy
-#| msgid "Do Nothing"
 msgid "Do nothing"
 msgstr "Ничего не делать"
 
 #: cascade/checkout.py:36
 msgid "Disable if invalid"
-msgstr ""
+msgstr "Отключить, если не верно"
 
 #: cascade/checkout.py:38
 msgid "Disable button if any form in this set is invalid."
-msgstr ""
+msgstr "Отключить кнопку, если одна из форм в наборе неверна"
 
 #: cascade/checkout.py:49
 msgid "Proceed Button"
@@ -473,55 +449,46 @@ msgid "Only guest customers can access this form."
 msgstr "Только гости-покупатели могут иметь доступ к этой форме"
 
 #: cascade/checkout.py:144
-#, fuzzy
-#| msgid "Billing Address Form"
 msgid "Address Form"
-msgstr "Форма \"Адрес оплаты\""
+msgstr "Форма адреса"
 
 #: cascade/checkout.py:149
 msgid "Multiple Addresses"
 msgstr "Несколько адресов"
 
 #: cascade/checkout.py:152
-#, fuzzy
-#| msgid "Shall the customer be allowed to edit multiple addresses."
 msgid "Allow the customer to add and edit multiple addresses."
-msgstr "Позволяет покупателю редактировать несколько адресов"
+msgstr "Позволить покупателю редактировать несколько адресов"
 
 #: cascade/checkout.py:156
-#, fuzzy
-#| msgid "Use shipping address"
 msgid "Use primary address"
-msgstr "Использовать адрес доставки"
+msgstr "Использовать основной адрес"
 
 #: cascade/checkout.py:159
-#, fuzzy
-#| msgid "Allow the customer to use the shipping address for billing."
 msgid ""
 "Allow the customer to use the primary address, if this is the secondary form."
 msgstr ""
 "Позволять покупателю использовать адрес доставки в качестве адреса оплаты"
 
 #: cascade/checkout.py:167
-#, fuzzy
-#| msgid "Shipping Address Form"
 msgid "Checkout Address Form"
-msgstr "Фома \"Адрес доставки\""
+msgstr "Фома \"Адрес оплаты\""
 
 #: cascade/checkout.py:218
 msgctxt "get_identifier"
 msgid "for {} {}"
-msgstr ""
+msgstr "для {} {}"
 
 #: cascade/checkout.py:238
 msgid "Show additional charge"
-msgstr ""
+msgstr "Показать дополнительную оплату"
 
 #: cascade/checkout.py:241
 msgid ""
 "Add an extra line showing the additional charge depending on the chosen "
 "payment/shipping method."
-msgstr ""
+msgstr "Добавить дополнительную строку со стоимостью "
+"в зависимости от выбранного способа оплаты/доставки."
 
 #: cascade/checkout.py:249
 msgid "Payment Method Form"
@@ -544,18 +511,16 @@ msgid "Required Form Fields"
 msgstr "Требуемые поля формы"
 
 #: cascade/checkout.py:385
-#, fuzzy
-#| msgid "Validate Set of Forms"
 msgid "Manage Set of Forms"
-msgstr "Проверка набора форм"
+msgstr "Управление набором форм"
 
 #: cascade/extensions.py:42
 msgid "Left Extension"
-msgstr ""
+msgstr "Левое расширение"
 
 #: cascade/extensions.py:52
 msgid "Right Extension"
-msgstr ""
+msgstr "Правое расширение"
 
 #: cascade/order.py:28
 msgid "Order Views"
@@ -563,29 +528,27 @@ msgstr "Заказы"
 
 #: cascade/order.py:73
 msgid "Reorder Button"
-msgstr ""
+msgstr "Кнопка перезаказать"
 
 #: cascade/order.py:86
-#, fuzzy
-#| msgid "Cancel Order"
 msgid "Cancel Order Button"
 msgstr "Отменить заказ"
 
 #: cascade/order.py:107
 msgid "Show History"
-msgstr ""
+msgstr "Показать историю"
 
 #: cascade/order.py:110
 msgid "Show historical annotations."
-msgstr ""
+msgstr "Показать исторические примечания"
 
 #: cascade/order.py:118
 msgid "Order Addendum Form"
-msgstr ""
+msgstr "Форма дополнения к заказу"
 
 #: cascade/plugin_base.py:51
 msgid "Download File"
-msgstr ""
+msgstr "Скачать файл"
 
 #: cascade/plugin_base.py:52
 msgid "External URL"
@@ -596,14 +559,12 @@ msgid "Mail To"
 msgstr "E-mail"
 
 #: cascade/plugin_base.py:59
-#, fuzzy
-#| msgid "An internal link onto a product from the shop"
 msgid "An internal link onto a product from the catalog"
 msgstr "Внутренняя ссылка на продукт"
 
 #: cascade/plugin_base.py:71
 msgid "Product to link to is missing."
-msgstr ""
+msgstr "Продукт для ссылки отсутствует."
 
 #: cascade/plugin_base.py:101
 msgid "Form dialog"
@@ -621,11 +582,11 @@ msgstr ""
 
 #: cascade/plugin_base.py:114
 msgid "Headline Legend"
-msgstr ""
+msgstr "Легенда заголовка"
 
 #: cascade/plugin_base.py:117
 msgid "Render a legend inside the dialog's headline."
-msgstr ""
+msgstr "Визуализация легенды внутри заголовка диалога"
 
 #: cascade/plugin_base.py:157
 msgctxt "get_identifier"
@@ -661,7 +622,7 @@ msgstr "Шаг выполнения"
 
 #: cascade/search.py:23
 msgid "Shall the list of search results use a paginator or scroll infinitely?"
-msgstr ""
+msgstr "Список результатов поиска будет использовать пагинатор или бесконечно прокручиваться?"
 
 #: cascade/search.py:38
 msgid "Search Results"
@@ -669,38 +630,28 @@ msgstr "Результаты поиска"
 
 #: cascade/settings.py:36
 msgid "Responsive Feedback"
-msgstr ""
+msgstr "Адаптивный"
 
 #: cms_apphooks.py:7
-#, fuzzy
-#| msgid "Catalog List View"
 msgid "Catalog List"
 msgstr "Каталог"
 
 #: cms_apphooks.py:20
-#, fuzzy
-#| msgid "Search"
 msgid "Catalog Search"
-msgstr "Gjbcr"
+msgstr "Поиск по каталогу"
 
 #: cms_apphooks.py:37
-#, fuzzy
-#| msgctxt "order_models"
 #| msgid "Orders"
 msgid "View Orders"
 msgstr "Заказы"
 
 #: cms_apphooks.py:52
-#, fuzzy
-#| msgid "Password Reset Form"
 msgid "Password Reset Confirm"
-msgstr "Восстановление пароля"
+msgstr "Подтверждение сброса пароля"
 
 #: cms_menus.py:9
-#, fuzzy
-#| msgid "Catalog List View"
 msgid "Catalog Menu"
-msgstr "Каталог"
+msgstr "Меню каталога"
 
 #: forms/auth.py:27 templates/shop/auth/login.html:11
 #: templates/shop/auth/password-reset-request-fields.html:5
@@ -708,8 +659,6 @@ msgid "Your e-mail address"
 msgstr "Ваш e-mail"
 
 #: forms/auth.py:28
-#, fuzzy
-#| msgid "Email address"
 msgid "E-mail address"
 msgstr "Email"
 
@@ -722,8 +671,6 @@ msgid "Send a randomly generated password to your e-mail address."
 msgstr "Отправить произвольный сгенерированный пароль на ваш e-mail почту."
 
 #: forms/auth.py:39
-#, fuzzy
-#| msgid "Passwords do not match"
 msgid "The two password fields didn't match."
 msgstr "Пароли не совпадают"
 
@@ -738,35 +685,24 @@ msgid "Password"
 msgstr "Пароль"
 
 #: forms/auth.py:50
-#, fuzzy
-#| msgctxt "admin"
-#| msgid "Order Confirmation"
 msgid "New password confirmation"
-msgstr "Подтверждение заказа"
+msgstr "Подтверждение нового пароля"
 
 #: forms/auth.py:53
-#, fuzzy
-#| msgid "Confirm password."
 msgid "Confirm the password."
-msgstr "Пароль подтверждён"
+msgstr "Подтвердите пароль"
 
 #: forms/base.py:119
-#, fuzzy
-#| msgid "Please provide a valid email address"
 msgid "Please provide a valid e-mail address"
 msgstr "Пожалуйста, введите правильный email адрес"
 
 #: forms/base.py:122
-#, fuzzy, python-brace-format
-#| msgid ""
-#| "A customer with the e-mail address ‘{email}’ already exists.\n"
-#| "If you have used this address previously, try to reset the password."
 msgid ""
 "A customer with the e-mail address '{email}' already exists.\n"
 "If you have used this address previously, try to reset the password."
 msgstr ""
 "Покупатель с e-mail ‘{email}’ уже существует.\n"
-"Если вы пользовались этим e-mail ранее, то попытайтесь восстановить пароль."
+"Если вы пользовались этим e-mail ранее, то попробуйте восстановить пароль."
 
 #: forms/checkout.py:16
 msgid "Customer's Details"
@@ -795,10 +731,8 @@ msgid "Shipping Address"
 msgstr "Адрес доставки"
 
 #: forms/checkout.py:235
-#, fuzzy
-#| msgid "Use shipping address for billing"
 msgid "Use billing address for shipping"
-msgstr "Использовать адрес доставки в качестве адреса оплаты"
+msgstr "Использовать адрес оплаты в качестве адреса доставки"
 
 #: forms/checkout.py:248 models/defaults/address.py:49
 #: models/defaults/order.py:28
@@ -1839,10 +1773,8 @@ msgid "Product code"
 msgstr "Код продукта"
 
 #: models/cart.py:86
-#, fuzzy
-#| msgid "Product code"
 msgid "Product code of added item."
-msgstr "Код продукта"
+msgstr "Код продукта добавляемой позиции."
 
 #: models/cart.py:90 models/cart.py:190 models/order.py:191
 #: models/product.py:212
@@ -1851,7 +1783,7 @@ msgstr "Обновлено"
 
 #: models/cart.py:94
 msgid "Arbitrary information for this cart item"
-msgstr ""
+msgstr "Произвольная информация об этом элементе корзины"
 
 #: models/cart.py:100
 msgid "Cart item"
@@ -1874,14 +1806,10 @@ msgid "Shopping Carts"
 msgstr "Корзины"
 
 #: models/customer.py:26
-#, fuzzy
-#| msgid "Recognized as"
 msgid "Unrecognized"
-msgstr "Распознан как"
+msgstr "Неопознанный"
 
 #: models/customer.py:27
-#, fuzzy
-#| msgid "Guest Form"
 msgid "Guest"
 msgstr "Форма \"Гость\""
 
@@ -1970,7 +1898,7 @@ msgstr "Количество"
 
 #: models/defaults/commodity.py:94 models/defaults/commodity.py:201
 msgid "Available quantity in stock"
-msgstr ""
+msgstr "Доступное наличие в продаже"
 
 #: models/defaults/commodity.py:110 models/defaults/commodity.py:222
 msgid "Commodity"
@@ -2017,16 +1945,14 @@ msgid "Billing address at the moment of purchase."
 msgstr "Адрес плательцика на момент покупки."
 
 #: models/defaults/order.py:35
-#, fuzzy
-#| msgid "Tokelau"
 msgid "Token"
-msgstr "Токелау"
+msgstr "Токен"
 
 #: models/defaults/order.py:39
 msgid ""
 "Secret key to verify ownership on detail view without requiring "
 "authentication."
-msgstr ""
+msgstr "Секретный ключ для подтверждения прав в detail view без аутентификации"
 
 #: models/defaults/order.py:43
 msgctxt "order_models"
@@ -2043,18 +1969,14 @@ msgid "Ordered quantity"
 msgstr "Заказанное количество"
 
 #: models/defaults/order_item.py:11 models/order.py:509
-#, fuzzy
-#| msgid "Ordered item"
 msgctxt "order_models"
 msgid "Ordered Item"
-msgstr "Элемент заказа"
+msgstr "Заказанная позиция"
 
 #: models/defaults/order_item.py:12 models/order.py:510
-#, fuzzy
-#| msgid "Ordered item"
 msgctxt "order_models"
 msgid "Ordered Items"
-msgstr "Элемент заказа"
+msgstr "Заказанные позиции"
 
 #: models/delivery.py:20
 msgid "Shipping ID"
@@ -2066,7 +1988,7 @@ msgstr "Описание платежной системы, осуществля
 
 #: models/delivery.py:31
 msgid "Timestamp of delivery fulfillment"
-msgstr ""
+msgstr "Время доставки"
 
 #: models/delivery.py:35 templates/shop/print/delivery-note.html:38
 msgid "Shipped at"
@@ -2074,24 +1996,20 @@ msgstr "Доставлен"
 
 #: models/delivery.py:38
 msgid "Timestamp of delivery shipment"
-msgstr ""
+msgstr "Время отгрузки"
 
 #: models/delivery.py:42
 msgid "Shipping method"
 msgstr "Метод доставки"
 
 #: models/delivery.py:44
-#, fuzzy
-#| msgid "The shipping backend used to deliver the items for this order"
 msgid "The shipping backend used to deliver items of this order"
 msgstr ""
 "Модуль доставки, через который производится доставка товаров для этого заказа"
 
 #: models/delivery.py:53
-#, fuzzy
-#| msgid "Delivery"
 msgid "Delivery ID: {}"
-msgstr "Доставка"
+msgstr "Идентификатор доставки: {}"
 
 #: models/delivery.py:95
 msgid "Refer to the shipping provider used to ship this item"
@@ -2099,7 +2017,7 @@ msgstr "Служба доставки, которая доставляет эт�
 
 #: models/delivery.py:102
 msgid "Ordered item"
-msgstr "Элемент заказа"
+msgstr "Заказанная позиция"
 
 #: models/delivery.py:107
 msgid "Deliver item"
@@ -2115,29 +2033,23 @@ msgstr "Статус распознавания покупателя"
 
 #: models/inventory.py:106
 msgid "Available after"
-msgstr ""
+msgstr "Доступно после"
 
 #: models/inventory.py:112
 msgid "Available before"
-msgstr ""
+msgstr "Доступно до"
 
 #: models/inventory.py:119
-#, fuzzy
-#| msgid "Product name"
 msgid "Product Inventory"
-msgstr "Название товара"
+msgstr "Запас товара"
 
 #: models/inventory.py:120
-#, fuzzy
-#| msgid "Product Images"
 msgid "Product Inventories"
-msgstr "Название товара"
+msgstr "Запасы товара"
 
 #: models/notification.py:13
-#, fuzzy
-#| msgid "Andorra"
 msgid "Vendor"
-msgstr "Андорра"
+msgstr "Продавец"
 
 #: models/notification.py:15
 msgid "Nobody"
@@ -2149,7 +2061,7 @@ msgstr "Название"
 
 #: models/notification.py:33
 msgid "Whom to notify"
-msgstr ""
+msgstr "Кого уведомить"
 
 #: models/notification.py:48
 msgid "Template"
@@ -2176,10 +2088,8 @@ msgid "Payment confirmed"
 msgstr "Оплата подтверждена"
 
 #: models/order.py:148
-#, fuzzy
-#| msgid "Payment confirmed"
 msgid "Payment declined"
-msgstr "Оплата подтверждена"
+msgstr "Платеж отклонен"
 
 #: models/order.py:166
 msgid "Status"
@@ -2256,10 +2166,8 @@ msgid "Order payments"
 msgstr "Оплаты заказов"
 
 #: models/order.py:450
-#, fuzzy
-#| msgid "Payment"
 msgid "Payment ID: {}"
-msgstr "Оплата"
+msgstr "Идентификатор оплаты: {}"
 
 #: models/order.py:465
 msgid "Product name"
@@ -2319,12 +2227,12 @@ msgid ""
 "The ordered quantity for item '{product_name}' has been adjusted to "
 "{quantity} which is the maximum, currently available in stock."
 msgstr ""
+"Заказанное количество для позиции '{product_name}' будет "
+"уменьшено до {quantity}. Максимума, доступного сейчас на складе."
 
 #: modifiers/defaults.py:33
-#, fuzzy
-#| msgid "Quantity"
 msgid "Verify Quantity"
-msgstr "Количество"
+msgstr "Проверьте количество"
 
 #: modifiers/taxes.py:24
 msgid "plus {}% VAT"
@@ -2353,15 +2261,13 @@ msgstr "Бахрейнский динар"
 
 #: money/iso4217.py:13
 msgid "Boliviano"
-msgstr ""
+msgstr "Боливиано"
 
 #: money/iso4217.py:14
 msgid "Brazilian Real"
 msgstr "Бразильский Реал"
 
 #: money/iso4217.py:15
-#, fuzzy
-#| msgid "Australian Dollar"
 msgid "Canadian Dollar"
 msgstr "Австралийский доллар"
 
@@ -2386,10 +2292,8 @@ msgid "Pound Sterling"
 msgstr "Фунт стерлингов"
 
 #: money/iso4217.py:21
-#, fuzzy
-#| msgid "Hong Kong"
 msgid "Hong Kong Dollar"
-msgstr "Гонконг"
+msgstr "Доллар гонконга"
 
 #: money/iso4217.py:22
 msgid "Croatian kuna"
@@ -2405,7 +2309,7 @@ msgstr "Израильский шекель"
 
 #: money/iso4217.py:25
 msgid "Indian Rupee"
-msgstr ""
+msgstr "Индийская рупия"
 
 #: money/iso4217.py:26
 msgid "Japanese Yen"
@@ -2445,13 +2349,11 @@ msgstr "Доллар США"
 
 #: money/iso4217.py:35
 msgid "Swedish Kronor"
-msgstr ""
+msgstr "Шведская крона"
 
 #: money/iso4217.py:36
-#, fuzzy
-#| msgid "South Africa"
 msgid "South African Rand"
-msgstr "Южная Африка"
+msgstr "Южноафриканский рэнд"
 
 #: payment/modifiers.py:84
 msgid "Pay in advance"
@@ -2470,23 +2372,16 @@ msgid "No Payment Required"
 msgstr "Оплата не требуется"
 
 #: payment/workflows.py:48
-#, fuzzy
-#| msgid "No Payment Required"
 msgid "Payment Received"
-msgstr "Оплата не требуется"
+msgstr "Оплата получена"
 
 #: payment/workflows.py:64
-#, fuzzy
-#| msgid "Mark as Paid"
 msgid "Mark as Refunded"
-msgstr "Отметить как оплачено"
+msgstr "Отметить как возвращено"
 
 #: payment/workflows.py:79
-#, fuzzy
-#| msgctxt "order_models"
-#| msgid "Order payment"
 msgid "Refund payment"
-msgstr "Оплата заказа"
+msgstr "Возврат оплаты"
 
 #: payment/workflows.py:80
 msgid "Order Canceled"
@@ -2497,8 +2392,6 @@ msgid "Cancel Order"
 msgstr "Отменить заказ"
 
 #: shipping/modifiers.py:78
-#, fuzzy
-#| msgid "Self collection"
 msgid "Self-collection"
 msgstr "Самовывоз"
 
@@ -2512,7 +2405,7 @@ msgstr "Упаковка товаров"
 
 #: shipping/workflows.py:24 shipping/workflows.py:53
 msgid "Prepare for shipping"
-msgstr ""
+msgstr "Подготовка к отправке"
 
 #: shipping/workflows.py:43 shipping/workflows.py:150
 msgid "Pick the goods"
@@ -2532,7 +2425,7 @@ msgstr "Изменить"
 
 #: templates/shop/admin/edit_inline/stacked-order.html:12
 msgid "View"
-msgstr ""
+msgstr "Представление"
 
 #: templates/shop/admin/edit_inline/stacked-order.html:14
 msgid "View on site"
@@ -2548,11 +2441,11 @@ msgstr "Примечание"
 
 #: templates/shop/auth/anonymous-base.html:16
 msgid "This form shall only be reachable by anonymous users"
-msgstr ""
+msgstr "Эта форма доступна только анонимным пользователям."
 
 #: templates/shop/auth/authenticated-base.html:16
 msgid "This form shall only be reachable by authenticated users"
-msgstr ""
+msgstr "Эта форма должна быть доступна только аутентифицированным пользователям."
 
 #: templates/shop/auth/change-password-fields.html:3
 #: templates/shop/auth/change-password-fields.html:6
@@ -2566,8 +2459,6 @@ msgstr "Новый пароль"
 #: templates/shop/auth/register-user.html:17
 #: templates/shop/auth/register-user.html:36
 #: templates/shop/auth/register-user.html:50
-#, fuzzy
-#| msgid "These fields are required"
 msgid "This field is required."
 msgstr "Эти поля обязательны для заполнения"
 
@@ -2588,7 +2479,7 @@ msgstr "Продолжить как гость"
 #: templates/shop/auth/form-not-found.html:2
 #, python-format
 msgid "No form named `%(form_name)s` exists"
-msgstr ""
+msgstr "Формы с названием `%(form_name)s` не существует"
 
 #: templates/shop/auth/login-reset-request.html:6
 #: templates/shop/auth/password-reset-request.html:4
@@ -2601,14 +2492,12 @@ msgid "Sign In"
 msgstr "Войти"
 
 #: templates/shop/auth/login.html:14
-#, fuzzy
-#| msgid "Username"
 msgid "Email or Username"
-msgstr "Имя пользователя"
+msgstr "Email или логин"
 
 #: templates/shop/auth/login.html:32 templates/shop/navbar/login-logout.html:69
 msgid "Stay logged in"
-msgstr ""
+msgstr "Запомнить меня"
 
 #: templates/shop/auth/login.html:38 templates/shop/navbar/login-logout.html:74
 msgid "Login"
@@ -2620,20 +2509,11 @@ msgid "Logout"
 msgstr "Выйти"
 
 #: templates/shop/auth/password-reset-confirm.html:4
-#, fuzzy
-#| msgid ""
-#| "Please enter your new password twice so we can verify you typed it in "
-#| "correctly."
 msgid "Please enter your new password twice"
 msgstr ""
-"Пожалуйста, введите новый пароль дважды, чтобы мы могли убедиться в "
-"правильности написания."
+"Пожалуйста, введите новый пароль дважды"
 
 #: templates/shop/auth/password-reset-confirm.html:14
-#, fuzzy
-#| msgid ""
-#| "The password reset link was invalid, possibly because it has already been "
-#| "used.  Please request a new password reset."
 msgid ""
 "The password reset link was invalid, possibly because it has already been "
 "used."
@@ -2648,8 +2528,6 @@ msgstr "Email"
 
 #: templates/shop/auth/password-reset-request-fields.html:12
 #: templates/shop/auth/register-user.html:18
-#, fuzzy
-#| msgid "Please provide a valid email address"
 msgid "Enter a valid email address."
 msgstr "Пожалуйста, введите правильный email адрес"
 
@@ -2664,62 +2542,44 @@ msgstr "Зарегистрироваться"
 
 #: templates/shop/auth/register-user.html:37
 #: templates/shop/auth/register-user.html:51
-#, fuzzy
-#| msgid "Password Reset Form"
 msgid "Password is too short"
-msgstr "Восстановление пароля"
+msgstr "Пароль слишком короткий"
 
 #: templates/shop/auth/register-user.html:60
 msgid "Register"
 msgstr "Зарегистрироваться"
 
 #: templates/shop/breadcrumb/catalog.html:12
-#, fuzzy
-#| msgid "Found Products"
 msgctxt "breadcrumb"
 msgid "Found Products"
 msgstr "Найденные товары"
 
 #: templates/shop/cart/editable.html:19 templates/shop/cart/static.html:10
-#, fuzzy
-#| msgid "Unable to proceed as guest without items in the cart."
 msgctxt "cart"
 msgid "There are no items in the cart."
-msgstr "Невозможно продолжать в качестве гостя без товаров в корзине."
+msgstr "У вас нет позиций в корзине."
 
 #: templates/shop/cart/editable.html:50 templates/shop/cart/watch.html:29
-#, fuzzy
-#| msgid "Remove"
 msgctxt "cart"
 msgid "Remove"
 msgstr "Удалить"
 
 #: templates/shop/cart/editable.html:56
-#, fuzzy
-#| msgid "Watch Item"
 msgctxt "cart"
 msgid "Watch Item"
-msgstr "Элемент в списке просмотренных товаров"
+msgstr "В списке избнанных товаров"
 
 #: templates/shop/cart/editable.html:73 templates/shop/cart/static.html:51
-#: templates/shop/cart/summary.html:9
-#, fuzzy
-#| msgid "Subtotal"
 msgctxt "cart"
 msgid "Subtotal"
 msgstr "Стоимость корзины"
 
 #: templates/shop/cart/editable.html:84 templates/shop/cart/static.html:68
-#: templates/shop/cart/summary.html:23
-#, fuzzy
-#| msgid "Total"
 msgctxt "cart"
 msgid "Total"
 msgstr "Всего к оплате за товары"
 
 #: templates/shop/cart/summary.html:5
-#, fuzzy
-#| msgid "Number of items"
 msgctxt "cart"
 msgid "Number of items"
 msgstr "Количество элементов"
@@ -2727,11 +2587,9 @@ msgstr "Количество элементов"
 #: templates/shop/cart/watch.html:13
 msgctxt "cart"
 msgid "You are perfectly happy!"
-msgstr ""
+msgstr "Вы совершенно счастливы!"
 
 #: templates/shop/cart/watch.html:32
-#, fuzzy
-#| msgid "Add to cart"
 msgctxt "cart"
 msgid "Add to cart"
 msgstr "Добавить в корзину"
@@ -2739,12 +2597,10 @@ msgstr "Добавить в корзину"
 #: templates/shop/catalog/available-product-add2cart.html:6
 msgctxt "catalog"
 msgid "Available"
-msgstr ""
+msgstr "Имеется в наличии"
 
 #: templates/shop/catalog/available-product-add2cart.html:15
 #: templates/shop/catalog/product-add2cart.html:27
-#, fuzzy
-#| msgid "Quantity"
 msgctxt "catalog"
 msgid "Quantity"
 msgstr "Количество"
@@ -2752,13 +2608,13 @@ msgstr "Количество"
 #: templates/shop/catalog/available-product-add2cart.html:20
 msgctxt "catalog"
 msgid "Currently not available."
-msgstr ""
+msgstr "В данный момент недоступно."
 
 #: templates/shop/catalog/available-product-add2cart.html:27
 msgctxt "catalog"
 msgid ""
 "Deliverable from {{ context.availability.earliest|date:'d. MMM.' }} onwards."
-msgstr ""
+msgstr "Срок поставки от {{ context.availability.earliest|date:'d. MMM.' }}."
 
 #: templates/shop/catalog/available-product-add2cart.html:30
 msgctxt "catalog"
@@ -2766,51 +2622,41 @@ msgid ""
 "Available no later than {{ context.availability.latest|date:'d. MMM. H:"
 "mm' }}."
 msgstr ""
+"Доступно не позже чем {{ context.availability.latest|date:'d. MMM. H:"
+"mm' }}."
 
 #: templates/shop/catalog/pagination.html:7
 #: templates/shop/catalog/pagination.html:17
 msgctxt "catalog"
 msgid "Page navigation"
-msgstr ""
+msgstr "Пагинация"
 
 #: templates/shop/catalog/pagination.html:24
-#, fuzzy
-#| msgid "Loading more products"
 msgctxt "catalog"
 msgid "Loading more products"
 msgstr "Загрузка товаров"
 
 #: templates/shop/catalog/pagination.html:31
-#, fuzzy
-#| msgid "Loading more products"
 msgctxt "catalog"
 msgid "Load more products"
 msgstr "Загрузка товаров"
 
 #: templates/shop/catalog/pagination.html:37
-#, fuzzy
-#| msgid "No products found"
 msgctxt "catalog"
 msgid "No products found"
 msgstr "Товары не найдены"
 
 #: templates/shop/catalog/product-add2cart.html:18
-#, fuzzy, python-format
-#| msgid "Add Product to Cart"
 msgctxt "catalog"
 msgid "Add %(product_name)s to cart"
 msgstr "Добавить продукты в корзину"
 
 #: templates/shop/catalog/product-add2cart.html:35
-#, fuzzy
-#| msgid "Unit Price"
 msgctxt "catalog"
 msgid "Unit Price"
 msgstr "Стоимость единицы"
 
 #: templates/shop/catalog/product-add2cart.html:43
-#, fuzzy
-#| msgid "Subtotal"
 msgctxt "catalog"
 msgid "Subtotal"
 msgstr "Стоимость корзины"
@@ -2818,98 +2664,70 @@ msgstr "Стоимость корзины"
 #: templates/shop/catalog/product-add2cart.html:54
 msgctxt "catalog"
 msgid "incl. VAT, plus shipping costs."
-msgstr ""
+msgstr "вкл. НДС, плюс стоимость доставки."
 
 #: templates/shop/catalog/product-add2cart.html:65
-#, fuzzy
-#| msgid "Watch product"
 msgctxt "catalog"
 msgid "Watch product"
-msgstr "Просмотренный товар"
+msgstr "Избранный товар"
 
 #: templates/shop/catalog/product-add2cart.html:68
 msgid "The product has been successfully placed in the shopping cart:"
 msgstr "Товар успешно добавлен в корзину:"
 
 #: templates/shop/catalog/product-add2cart.html:70
-#, fuzzy
-#| msgid "Add to cart"
 msgctxt "catalog"
 msgid "Add to cart"
 msgstr "Добавить в корзину"
 
 #: templates/shop/catalog/product-add2cart.html:76
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "\t\t\t\tBy adding a product to the cart you are giving consent to cookies "
-#| "being used.<br>\n"
-#| "\t\t\t\tFor technical reasons cookies can not be disabled here.\n"
-#| "\t\t\t"
 msgctxt "catalog"
 msgid ""
 "By adding a product to the cart you are giving consent to cookies being used."
 msgstr ""
-"\n"
-"\t\t\t\tДобавляя товар в корзину, вы даёте согласие на использование куки "
+"Добавляя товар в корзину, вы даёте согласие на использование куки "
 "сайта.<br>\n"
 "\t\t\t\tПо техническим причинам куки не могут быть отключены для этого \n"
 "сайта.\n"
 "\t\t\t"
 
 #: templates/shop/catalog/product-add2cart.html:96
-#, fuzzy
-#| msgid "for {{ context.unit_price }} per piece: {{ context.subtotal }}"
 msgctxt "catalog"
 msgid "for {{ context.unit_price }} per piece: {{ context.subtotal }}"
 msgstr "за {{ context.unit_price }}. Итого: {{ context.subtotal }}"
 
 #: templates/shop/catalog/product-add2cart.html:104
-#, fuzzy
-#| msgid "Show Cart"
 msgctxt "catalog"
 msgid "Show Cart"
 msgstr "Показать корзину"
 
 #: templates/shop/catalog/product-add2cart.html:106
-#, fuzzy
-#| msgid "Continue Shopping"
 msgctxt "catalog"
 msgid "Continue Shopping"
 msgstr "Продолжить покупки"
 
 #: templates/shop/catalog/product-add2cart.html:107
-#, fuzzy
-#| msgid "Cancel"
 msgctxt "catalog"
 msgid "Cancel"
 msgstr "Отменить"
 
 #: templates/shop/catalog/product-figure.html:10
-#, fuzzy
-#| msgid "Price"
 msgctxt "catalog"
 msgid "Price"
 msgstr "Цена"
 
 #: templates/shop/checkout/billing-address-form.html:30
-#, fuzzy
-#| msgid "Choose a previously used billing address"
 msgctxt "catalog"
 msgid "Choose a previously used billing address"
 msgstr "Выберите ранее используемый адрес для выставления счета"
 
 #: templates/shop/checkout/billing-address-form.html:35
-#, fuzzy
-#| msgid "Add a new billing address"
 msgctxt "checkout"
 msgid "Add a new billing address"
 msgstr "Добвить новый адрес для выставления счета"
 
 #: templates/shop/checkout/billing-address-form.html:45
 #: templates/shop/checkout/shipping-address-form.html:46
-#, fuzzy
-#| msgid "Remove this address"
 msgctxt "checkout"
 msgid "Remove this address"
 msgstr "Удалить этот адрес"
@@ -2918,18 +2736,16 @@ msgstr "Удалить этот адрес"
 #: templates/shop/checkout/shipping-method-form.html:22
 msgctxt "checkout"
 msgid "Additional charge: {{ extra_row.amount }}"
-msgstr ""
+msgstr "Дополнительная плата: {{ extra_row.amount }}"
 
 #: templates/shop/checkout/payment-method-form.html:25
 #: templates/shop/checkout/shipping-method-form.html:25
 #, python-format
 msgctxt "checkout"
 msgid "Additional charge: %(amount)s"
-msgstr ""
+msgstr "Дополнительная плата: %(amount)s"
 
 #: templates/shop/checkout/payment-method-form.html:31
-#, fuzzy
-#| msgid "Payment method"
 msgctxt "checkout"
 msgid "No payment method available"
 msgstr "Метод оплаты"
@@ -2937,35 +2753,27 @@ msgstr "Метод оплаты"
 #: templates/shop/checkout/purchase-button.html:10
 msgctxt "checkout"
 msgid "Dismiss"
-msgstr ""
+msgstr "Отклонить"
 
 #: templates/shop/checkout/required-form-fields.html:1
-#, fuzzy
-#| msgid "These fields are required"
 msgctxt "checkout"
 msgid "These fields are required."
 msgstr "Эти поля обязательны для заполнения"
 
 #: templates/shop/checkout/shipping-address-form.html:31
-#, fuzzy
-#| msgid "Choose a previously used shipping address"
 msgctxt "checkout"
 msgid "Choose a previously used shipping address"
 msgstr "Выберите ранее используемый адрес доставки"
 
 #: templates/shop/checkout/shipping-address-form.html:36
-#, fuzzy
-#| msgid "Add a new shipping address"
 msgctxt "checkout"
 msgid "Add a new shipping address"
 msgstr "Добавить новый адрес доставки"
 
 #: templates/shop/checkout/shipping-method-form.html:31
-#, fuzzy
-#| msgid "Shipping method"
 msgctxt "checkout"
 msgid "No shipping method available"
-msgstr "Метод доставки"
+msgstr "Способ доставки недоступен"
 
 #: templates/shop/email/customer-information.html:5
 msgid "Your Details"
@@ -2973,10 +2781,8 @@ msgstr "Ваши данные"
 
 #: templates/shop/email/order-detail.html:8
 #: templates/shop/email/order-detail.txt:1
-#, fuzzy, python-format
-#| msgid "Summary of Your Order"
 msgid "Summary of Your Order %(order_number)s"
-msgstr "Краткое описание Вашего заказа"
+msgstr "Всего ваших заказов: %(order_number)"
 
 #: templates/shop/email/order-detail.html:15
 msgid "Price"
@@ -2985,17 +2791,17 @@ msgstr "Цена"
 #: templates/shop/email/order-detail.txt:5
 #, python-format
 msgid "Line Total: %(line_total)s"
-msgstr ""
+msgstr "Всего позиций: %(line_total)"
 
 #: templates/shop/email/order-detail.txt:8
 #, python-format
 msgid "Subtotal: %(subtotal)s"
-msgstr ""
+msgstr "Подитог: %(subtotal)"
 
 #: templates/shop/email/order-detail.txt:10
 #, python-format
 msgid "Total: %(total)s"
-msgstr ""
+msgstr "Итого: %(total)"
 
 #: templates/shop/email/password-reset-body.txt:2
 #, python-format
@@ -3029,11 +2835,6 @@ msgid "Password reset on %(site_name)s"
 msgstr "Восстановление пароля на сайте %(site_name)s"
 
 #: templates/shop/email/register-user-body.txt:1
-#, fuzzy, python-format
-#| msgid ""
-#| "You're receiving this email because you requested a password reset for "
-#| "your user\n"
-#| "account '%(user)s' at %(site_name)s."
 msgid ""
 "You're receiving this e-mail because you or someone else has requested an "
 "auto-generated password\n"
@@ -3096,101 +2897,75 @@ msgstr ""
 "\t"
 
 #: templates/shop/order/addendum-form.html:13
-#, fuzzy
-#| msgid "Annotation"
 msgctxt "order"
 msgid "Previous annotations"
-msgstr "Примечание"
+msgstr "Передыдущие примечания"
 
 #: templates/shop/order/cancel-button.html:23
-#, fuzzy
-#| msgid "Order Canceled"
 msgctxt "order"
 msgid "This Order can't be cancelled"
-msgstr "Заказ отменён"
+msgstr "Этот заказ не может быть отменён"
 
 #: templates/shop/order/detail.html:11
-#, fuzzy, python-format
-#| msgctxt "admin"
-#| msgid "Order number"
 msgctxt "order"
 msgid "Order %(number)s"
-msgstr "Номер заказа"
+msgstr "Заказ %(number)"
 
 #: templates/shop/order/detail.html:12
-#, fuzzy
-#| msgctxt "order-detail"
-#| msgid "from"
 msgctxt "order"
 msgid "from"
 msgstr "из"
 
 #: templates/shop/order/detail.html:21
-#, fuzzy
-#| msgid "Shipping Address"
 msgctxt "order"
 msgid "Shipping Address"
 msgstr "Адрес доставки"
 
 #: templates/shop/order/detail.html:25
-#, fuzzy, python-format
-#| msgid "Shipping Method"
 msgctxt "order"
 msgid "Shipping Method: %(label)s"
-msgstr "Метод доставки"
+msgstr "Метод доставки: %(label)"
 
 #: templates/shop/order/detail.html:30
-#, fuzzy
-#| msgid "Billing Address"
 msgctxt "order"
 msgid "Billing Address"
 msgstr "Адрес плательщика"
 
 #: templates/shop/order/detail.html:34
-#, fuzzy, python-format
-#| msgid "Payment Method"
 msgctxt "order"
 msgid "Payment Method: %(label)s"
-msgstr "Метод оплаты"
+msgstr "Метод оплаты: %(label)"
 
 #: templates/shop/order/detail.html:41
-#, fuzzy
-#| msgid "Ordered item"
 msgctxt "order"
 msgid "Ordered Items"
-msgstr "Элемент заказа"
+msgstr "Заказанные позиции"
 
 #: templates/shop/order/detail.html:76
-#, fuzzy
-#| msgid "Subtotal"
 msgctxt "order"
 msgid "Subtotal"
-msgstr "Стоимость корзины"
+msgstr "Подитог"
 
 #: templates/shop/order/detail.html:89
-#, fuzzy
-#| msgid "Total"
 msgctxt "order"
 msgid "Total"
 msgstr "Всего к оплате за товары"
 
 #: templates/shop/order/list.html:17
 msgid "You have never ordered anything from this site."
-msgstr ""
+msgstr "Вы никогда не заказывали на этом сайте."
 
 #: templates/shop/order/list.html:49 templates/shop/search/results.html:40
 msgid "Page navigation"
-msgstr ""
+msgstr "Пагинация"
 
 #: templates/shop/print/invoice.html:4 templates/shop/print/invoice.html:8
 msgid "Invoice"
 msgstr "Счёт"
 
 #: templates/shop/print/invoice.html:60
-#, fuzzy
-#| msgid "Ordered item"
 msgid "Ordered on"
-msgstr "Элемент заказа"
+msgstr "Заказано"
 
 #: templates/shop/search/results.html:17
 msgid "{{ search_data.count }} matching products found"
@@ -3201,8 +2976,6 @@ msgid "Base Price"
 msgstr "Основная цена"
 
 #: templates/shop/search/results.html:21
-#, fuzzy
-#| msgid "Searching for '{{ searchQuery }}' did not return any results"
 msgid "Searching for <em>{{ searchQuery }}</em> has revealed nothing."
 msgstr "Ничего не найдено для запроса '{{ searchQuery }}'"
 
@@ -3211,16 +2984,12 @@ msgid "Details"
 msgstr "Посмотреть"
 
 #: templates/shop/search/results.html:47
-#, fuzzy
-#| msgid "Loading more products"
 msgid "Loading more results"
-msgstr "Загрузка товаров"
+msgstr "Загрузка дополнительных результатов"
 
 #: templates/shop/search/results.html:54
-#, fuzzy
-#| msgid "Loading more products"
 msgid "Load more products"
-msgstr "Загрузка товаров"
+msgstr "Загрузить больше продуктов"
 
 #: templates/shop/templatetags/cart-icon.html:16
 msgctxt "cart icon"
@@ -3235,23 +3004,19 @@ msgstr "{} товаров"
 #: templates/shop/templatetags/cart-icon.html:33
 #, python-format
 msgid "and %(remaining)s <a href=\"%(shop_cart_url)s\">more items</a>."
-msgstr ""
+msgstr "и %(remaining) <a href=\"%(shop_cart_url)s\">больше позиций</a>."
 
 #: views/auth.py:42
-#, fuzzy
-#| msgid "Successfully logged out."
 msgid "Successfully registered yourself."
-msgstr "Успешно осуществлён выход из системы"
+msgstr "Успешно зарегистрировались"
 
 #: views/auth.py:110
 msgid "Successfully logged out."
 msgstr "Успешно осуществлён выход из системы"
 
 #: views/auth.py:123
-#, fuzzy
-#| msgid "Password reset unsuccessful"
 msgid "Password has been changed successfully."
-msgstr "Сброс пароля успешно проведён"
+msgstr "Пароль успешно изменён"
 
 #: views/auth.py:153
 #, python-brace-format
@@ -3260,7 +3025,7 @@ msgstr "Инструкции по восстановлению пароля бы
 
 #: views/auth.py:190
 msgid "Invalid POST data."
-msgstr ""
+msgstr "Недействительные данные POST."
 
 #: views/auth.py:196
 msgid "Password has been reset with the new password."
@@ -3274,161 +3039,34 @@ msgid ""
 " Please recheck the cart or add an alternative product and proceed with the "
 "checkout."
 msgstr ""
+"Продукт '{product_name}' ({product_code}) внезапно стал недоступен, "
+"поскольку кто-то быстрее вас купил его.\n"
+"Пожалуйста, перепроверьте корзину или добавьте альтернативный продукт "
+"и продолжите оформление заказа."
 
 #: views/checkout.py:122
-#, fuzzy
-#| msgid "Product Gallery"
 msgid "Product Disappeared"
-msgstr "Галерея изображений продукта"
+msgstr "Продукт исчез"
 
 #: views/checkout.py:123
 #, python-brace-format
 msgid ""
 "The product '{product_name}' ({product_code}) suddenly became unavailable."
 msgstr ""
+"Продукт '{product_name}' ({product_code}) внезапно стал недоступен."
 
 #: views/checkout.py:138
 msgid "Please select a valid payment method."
-msgstr ""
+msgstr "Пожалуйста, выберите правильный способ оплаты"
 
 #: views/checkout.py:139
-#, fuzzy
-#| msgid "Payment Method"
 msgid "Choose Payment Method"
 msgstr "Метод оплаты"
 
 #: views/order.py:27
-#, fuzzy
-#| msgid "Only signed in customers can view their orders"
 msgid "Only signed in customers can view their list of orders."
 msgstr "Только авторизованные покупатели могут просматривать свои заказы"
 
 #: views/order.py:36
 msgid "This order does not belong to you."
-msgstr ""
-
-#~ msgid "Default Breadcrumb"
-#~ msgstr "Дефолтная навигационная цепочка"
-
-#~ msgid "Hidden Breadcrumb"
-#~ msgstr "Скрытая навигационная цепочка"
-
-#~ msgid "Cart"
-#~ msgstr "Корзина"
-
-#~ msgid "Button Content"
-#~ msgstr "Название кнопки"
-
-#~ msgid "HTML content"
-#~ msgstr "HTML содержимое"
-
-#~ msgid "Supplementary annotation for this Order"
-#~ msgstr "Дополнительная информация для этого заказа"
-
-#~ msgid "Choose a password"
-#~ msgstr "Выберите пароль"
-
-#~ msgid "Minimum length is 6 characters."
-#~ msgstr "Минимальная длина - 6 символов."
-
-#~ msgid "Repeat password"
-#~ msgstr "Повторите пароль"
-
-#~ msgid ""
-#~ "A registered customer with the e-mail address '{email}' already exists.\n"
-#~ "If you have used this address previously, try to reset the password."
-#~ msgstr ""
-#~ "Зарегистрированный покупатель с e-mail ‘{email}’ уже существует.\n"
-#~ "Если вы пользовались этим e-mail ранее, то попытайтесь восстановить "
-#~ "пароль."
-
-#~ msgid "Collect information about all customers which accessed this shop."
-#~ msgstr ""
-#~ "Собирает информацию о всех покупателях, которые доступны этому магазину."
-
-#~ msgid "Delete customers with expired sessions."
-#~ msgstr "Удаляет покупатели с истекшими сессиями."
-
-#~ msgid ""
-#~ "Customers in this shop: total={total}, anonymous={anonymous}, "
-#~ "expired={expired}, active={active}, guests={guests}, "
-#~ "registered={registered}, staff={staff}."
-#~ msgstr ""
-#~ "Покупатели в этом магазине: всего={total}, безымянные={anonymous}, "
-#~ "истекшие={expired}, активные={active}, гости={guests}, "
-#~ "зарегистрированные={registered}, сотрудники={staff}."
-
-#~ msgid "CustomerState.Unrecognized"
-#~ msgstr "СтатусПокупателя.Нераспознанный"
-
-#~ msgid "CustomerState.Guest"
-#~ msgstr "СтатусПокупателя.Гость"
-
-#~ msgid "CustomerState.Registered"
-#~ msgstr "СтатусПокупателя.Зарегистрированный"
-
-#~ msgid "Mail to"
-#~ msgstr "Email"
-
-#~ msgid "Order item"
-#~ msgstr "Элемент заказа"
-
-#~ msgid "Order items"
-#~ msgstr "Элементы заказа"
-
-#~ msgid "Deposited too little"
-#~ msgstr "Вложение слишком мало"
-
-#~ msgid "Ship goods"
-#~ msgstr "Доставить товар"
-
-#~ msgid "Add another %(verbose_name)s"
-#~ msgstr "Добавить ещё один %(verbose_name)s"
-
-#~ msgid "Submit Changes"
-#~ msgstr "Отправить изменения"
-
-#~ msgid "Authenticated as: %(user)s"
-#~ msgstr "Авторизован как: %(user)s"
-
-#~ msgid "New password for '%(user_name)s'"
-#~ msgstr "Новый пароль для '%(user_name)s'"
-
-#~ msgid "Confirm password"
-#~ msgstr "Подтвердите пароль"
-
-#~ msgid "Change my password"
-#~ msgstr "Изменить мой пароль"
-
-#~ msgid "Order Product"
-#~ msgstr "Заказанный продукт"
-
-#~ msgid "Watching this product"
-#~ msgstr "Товар добавлен в список просмотренных товаров"
-
-#~ msgid "Add another billing address"
-#~ msgstr "Добвить другой адрес для выставления счета"
-
-#~ msgid ""
-#~ "You are receiving this email because you asked for a auto-generated "
-#~ "password for your\n"
-#~ "user account at %(site_name)s."
-#~ msgstr ""
-#~ "Вы получили это письмо, потому что вы (или кто-то другой) запросили "
-#~ "автоматически сгенерировать пароль для вашей\n"
-#~ "учётной записи на сайте %(site_name)s."
-
-#~ msgid "Thereof Paid"
-#~ msgstr "Уже заплачено"
-
-#~ msgid "Order Date"
-#~ msgstr "Дата заказа"
-
-#~ msgid "Sum"
-#~ msgstr "Сумма"
-
-#~ msgid "Order confirmation for"
-#~ msgstr "Подтверждение заказа"
-
-#~ msgid "Loading search results"
-#~ msgstr "Загрузка результатов поиска"
+msgstr "Этот заказ принадлежит не вам"
