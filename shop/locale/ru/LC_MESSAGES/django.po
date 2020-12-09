@@ -2108,7 +2108,7 @@ msgstr "Стоимость корзины"
 #: models/order.py:181 templates/shop/email/order-detail.html:70
 #: templates/shop/print/invoice.html:52
 msgid "Total"
-msgstr "Всего к оплате за товары"
+msgstr "Всего"
 
 #: models/order.py:196 models/order.py:503
 msgid "Extra fields"
@@ -2577,7 +2577,7 @@ msgstr "Стоимость корзины"
 #: templates/shop/cart/editable.html:84 templates/shop/cart/static.html:68
 msgctxt "cart"
 msgid "Total"
-msgstr "Всего к оплате за товары"
+msgstr "Всего"
 
 #: templates/shop/cart/summary.html:5
 msgctxt "cart"
@@ -2955,7 +2955,7 @@ msgstr "Подитог"
 #: templates/shop/order/detail.html:89
 msgctxt "order"
 msgid "Total"
-msgstr "Всего к оплате за товары"
+msgstr "Всего"
 
 #: templates/shop/order/list.html:17
 msgid "You have never ordered anything from this site."
