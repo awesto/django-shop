@@ -4,6 +4,7 @@
 #
 # Pavel Zhukov <gelios@gmail.com>, 2011.
 # Mikhail Kolesnik <mike@openbunker.org>, 2012.
+# Yuriy Mamaev <execut>, 2020.
 msgid ""
 msgstr ""
 "Project-Id-Version: django-shop\n"
@@ -754,7 +755,7 @@ msgstr "Метод доставки"
 
 #: forms/checkout.py:335
 msgid "Extra annotation for this order"
-msgstr "Дополнительная информация об этом заказе"
+msgstr "Дополнительная информация о заказе"
 
 #: forms/wizards.py:12 models/defaults/commodity.py:127
 #: models/defaults/commodity.py:153
@@ -2582,7 +2583,7 @@ msgstr "Всего"
 #: templates/shop/cart/summary.html:5
 msgctxt "cart"
 msgid "Number of items"
-msgstr "Количество элементов"
+msgstr "Количество позиций"
 
 #: templates/shop/cart/watch.html:13
 msgctxt "cart"
