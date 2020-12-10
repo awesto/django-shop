@@ -2919,7 +2919,7 @@ msgstr "Заказ %(number)s"
 #: templates/shop/order/detail.html:12
 msgctxt "order"
 msgid "from"
-msgstr "из"
+msgstr "от"
 
 #: templates/shop/order/detail.html:21
 msgctxt "order"
