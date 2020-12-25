@@ -4,7 +4,8 @@ from urllib.parse import urljoin
 
 from django.apps import apps
 from django.conf import settings
-from django.core import cache, checks
+from django.core import checks
+from django.core.cache import cache
 from django.db import models
 from django.db.models.aggregates import Sum
 from django.db.models.functions import Coalesce
