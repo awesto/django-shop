@@ -2880,7 +2880,7 @@ msgstr "E-mail"
 
 #: templates/shop/navbar/search-form.html:14
 msgid "Search"
-msgstr "Gjbcr"
+msgstr "Поиск"
 
 #: templates/shop/navbar/search-form.html:16
 msgid "Refine your search"
