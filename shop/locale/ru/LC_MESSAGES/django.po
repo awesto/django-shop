@@ -4,6 +4,7 @@
 #
 # Pavel Zhukov <gelios@gmail.com>, 2011.
 # Mikhail Kolesnik <mike@openbunker.org>, 2012.
+# Yuriy Mamaev <execut>, 2020.
 msgid ""
 msgstr ""
 "Project-Id-Version: django-shop\n"
@@ -754,7 +755,7 @@ msgstr "Метод доставки"
 
 #: forms/checkout.py:335
 msgid "Extra annotation for this order"
-msgstr "Дополнительная информация об этом заказе"
+msgstr "Дополнительная информация о заказе"
 
 #: forms/wizards.py:12 models/defaults/commodity.py:127
 #: models/defaults/commodity.py:153
@@ -2108,7 +2109,7 @@ msgstr "Стоимость корзины"
 #: models/order.py:181 templates/shop/email/order-detail.html:70
 #: templates/shop/print/invoice.html:52
 msgid "Total"
-msgstr "Всего к оплате за товары"
+msgstr "Всего"
 
 #: models/order.py:196 models/order.py:503
 msgid "Extra fields"
@@ -2577,12 +2578,12 @@ msgstr "Стоимость корзины"
 #: templates/shop/cart/editable.html:84 templates/shop/cart/static.html:68
 msgctxt "cart"
 msgid "Total"
-msgstr "Всего к оплате за товары"
+msgstr "Всего"
 
 #: templates/shop/cart/summary.html:5
 msgctxt "cart"
 msgid "Number of items"
-msgstr "Количество элементов"
+msgstr "Количество позиций"
 
 #: templates/shop/cart/watch.html:13
 msgctxt "cart"
@@ -2879,7 +2880,7 @@ msgstr "E-mail"
 
 #: templates/shop/navbar/search-form.html:14
 msgid "Search"
-msgstr "Gjbcr"
+msgstr "Поиск"
 
 #: templates/shop/navbar/search-form.html:16
 msgid "Refine your search"
@@ -2918,7 +2919,7 @@ msgstr "Заказ %(number)s"
 #: templates/shop/order/detail.html:12
 msgctxt "order"
 msgid "from"
-msgstr "из"
+msgstr "от"
 
 #: templates/shop/order/detail.html:21
 msgctxt "order"
@@ -2955,7 +2956,7 @@ msgstr "Подитог"
 #: templates/shop/order/detail.html:89
 msgctxt "order"
 msgid "Total"
-msgstr "Всего к оплате за товары"
+msgstr "Всего"
 
 #: templates/shop/order/list.html:17
 msgid "You have never ordered anything from this site."
