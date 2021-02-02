@@ -21,7 +21,7 @@ REQUIREMENTS = [
     'django_polymorphic',
     'django-post_office',
     'django-cms>=3.7',
-    'djangocms-cascade>=1.3',
+    'djangocms-cascade>=1.3,<2',
 ]
 
 CLASSIFIERS = [

@@ -79,9 +79,15 @@ class _ProductDocument(Document):
 class ProductDocument:
     """
     Factory for building an elasticsearch-dsl Document class. This class
+    language_analizers needs to be a dictionary using language as a key and analyzer as a value
+    language also needs to set if language_analizers is set
+    see https://elasticsearch-dsl.readthedocs.io/en/latest/api.html#elasticsearch_dsl.Index.analyzer
     """
-    def __new__(cls, language=None, settings=None):
+    def __new__(cls, language=None, settings=None, language_analizers=None):
         index_name_parts = [app_settings.SHOP_APP_LABEL]
+        if language_analizers:
+            copy = language_analizers.copy()
+            body_analyzers.update(copy) #overrides default language settings
         if language:
             index_name_parts.append(language.lower())
             doc_name = 'ProductDocument{}'.format(language.title())
