@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from django.contrib import admin
-from django.db.models.fields import Field, FieldDoesNotExist
+from django.core.exceptions import FieldDoesNotExist
+from django.db.models.fields import Field
 from django.forms import widgets
 from django.http import HttpResponse
 from django.template.loader import select_template
