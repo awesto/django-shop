@@ -2790,7 +2790,7 @@ msgstr "Ваши данные"
 #: templates/shop/email/order-detail.txt:1
 #, python-format
 msgid "Summary of Your Order %(order_number)s"
-msgstr "Всего ваших заказов: %(order_number)s"
+msgstr "Резюме вашего заказа %(order_number)s"
 
 #: templates/shop/email/order-detail.html:15
 msgid "Price"
