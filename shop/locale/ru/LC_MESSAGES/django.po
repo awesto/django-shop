@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-shop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-06 20:22+0300\n"
+"POT-Creation-Date: 2021-02-28 16:32+0300\n"
 "PO-Revision-Date: 2011-07-13 16:16+0000\n"
 "Last-Translator: chrisglass <tribaal@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -53,7 +53,7 @@ msgstr "Статус"
 msgid "No data"
 msgstr "Нет данных"
 
-#: admin/customer.py:123 models/customer.py:200
+#: admin/customer.py:123 models/customer.py:199
 msgid "Last accessed"
 msgstr "Последний вход"
 
@@ -160,57 +160,57 @@ msgstr "Вложения"
 msgid "Mail Recipient"
 msgstr "Получатель почты"
 
-#: admin/order.py:61
+#: admin/order.py:62
 msgctxt "admin"
 msgid "Amount Paid"
 msgstr "Сумма"
 
-#: admin/order.py:91 admin/order.py:163
+#: admin/order.py:92 admin/order.py:164
 msgctxt "admin"
 msgid "Extra data"
 msgstr "Дополнительные данные"
 
-#: admin/order.py:95
+#: admin/order.py:96
 msgctxt "admin"
 msgid "Status"
 msgstr "Статус"
 
-#: admin/order.py:136
+#: admin/order.py:137
 msgctxt "admin"
 msgid "Order number"
 msgstr "Номер заказа"
 
-#: admin/order.py:140
+#: admin/order.py:141
 msgctxt "admin"
 msgid "Total"
 msgstr "Итого"
 
-#: admin/order.py:144
+#: admin/order.py:145
 msgctxt "admin"
 msgid "Subtotal"
 msgstr "Подитог"
 
-#: admin/order.py:148
+#: admin/order.py:149
 msgctxt "admin"
 msgid "Outstanding amount"
 msgstr "Осталось оплатить"
 
-#: admin/order.py:152
+#: admin/order.py:153
 msgctxt "admin"
 msgid "Is fully paid"
 msgstr "Полностью оплачен"
 
-#: admin/order.py:171
+#: admin/order.py:172
 msgctxt "admin"
 msgid "Customer"
 msgstr "Покупатель"
 
-#: admin/order.py:245
+#: admin/order.py:246
 msgctxt "admin"
 msgid "Invoice"
 msgstr "Счёт"
 
-#: admin/order.py:250
+#: admin/order.py:251
 msgctxt "admin"
 msgid "Print out"
 msgstr "Вывод на печать"
@@ -365,7 +365,8 @@ msgstr "Пагинация"
 
 #: cascade/catalog.py:35
 msgid "Shall the product list view use a paginator or scroll infinitely?"
-msgstr "Будет ли в списке продуктов пагинатор или он будет с бесконечной прокруткой?"
+msgstr ""
+"Будет ли в списке продуктов пагинатор или он будет с бесконечной прокруткой?"
 
 #: cascade/catalog.py:43
 msgid "Catalog List View"
@@ -400,7 +401,7 @@ msgid "Choose related product"
 msgstr "Выберите продукт"
 
 #: cascade/catalog.py:136 cascade/plugin_base.py:50 cascade/plugin_base.py:57
-#: models/order.py:483 models/product.py:224
+#: models/order.py:483 models/product.py:225
 #: templates/shop/email/order-detail.html:14
 msgid "Product"
 msgstr "Продукт"
@@ -488,8 +489,9 @@ msgstr "Показать дополнительную оплату"
 msgid ""
 "Add an extra line showing the additional charge depending on the chosen "
 "payment/shipping method."
-msgstr "Добавить дополнительную строку со стоимостью "
-"в зависимости от выбранного способа оплаты/доставки."
+msgstr ""
+"Добавить дополнительную строку со стоимостью в зависимости от выбранного "
+"способа оплаты/доставки."
 
 #: cascade/checkout.py:249
 msgid "Payment Method Form"
@@ -623,7 +625,9 @@ msgstr "Шаг выполнения"
 
 #: cascade/search.py:23
 msgid "Shall the list of search results use a paginator or scroll infinitely?"
-msgstr "Список результатов поиска будет использовать пагинатор или бесконечно прокручиваться?"
+msgstr ""
+"Список результатов поиска будет использовать пагинатор или бесконечно "
+"прокручиваться?"
 
 #: cascade/search.py:38
 msgid "Search Results"
@@ -642,7 +646,6 @@ msgid "Catalog Search"
 msgstr "Поиск по каталогу"
 
 #: cms_apphooks.py:37
-#| msgid "Orders"
 msgid "View Orders"
 msgstr "Заказы"
 
@@ -669,7 +672,7 @@ msgstr "Сгенерировать пароль"
 
 #: forms/auth.py:35
 msgid "Send a randomly generated password to your e-mail address."
-msgstr "Отправить произвольный сгенерированный пароль на ваш e-mail почту."
+msgstr "Отправить произвольный сгенерированный пароль на ваш e-mail адрес."
 
 #: forms/auth.py:39
 msgid "The two password fields didn't match."
@@ -698,6 +701,7 @@ msgid "Please provide a valid e-mail address"
 msgstr "Пожалуйста, введите правильный email адрес"
 
 #: forms/base.py:122
+#, python-brace-format
 msgid ""
 "A customer with the e-mail address '{email}' already exists.\n"
 "If you have used this address previously, try to reset the password."
@@ -1778,7 +1782,7 @@ msgid "Product code of added item."
 msgstr "Код продукта добавляемой позиции."
 
 #: models/cart.py:90 models/cart.py:190 models/order.py:191
-#: models/product.py:212
+#: models/product.py:213
 msgid "Updated at"
 msgstr "Обновлено"
 
@@ -1794,7 +1798,7 @@ msgstr "Элемент заказа"
 msgid "Cart items"
 msgstr "Элементы заказа"
 
-#: models/cart.py:185 models/order.py:186 models/product.py:207
+#: models/cart.py:185 models/order.py:186 models/product.py:208
 msgid "Created at"
 msgstr "Дата создания"
 
@@ -1806,24 +1810,24 @@ msgstr "Дополнительная информация к этой корзи
 msgid "Shopping Carts"
 msgstr "Корзины"
 
-#: models/customer.py:26
+#: models/customer.py:25
 msgid "Unrecognized"
 msgstr "Неопознанный"
 
-#: models/customer.py:27
+#: models/customer.py:26
 msgid "Guest"
 msgstr "Форма \"Гость\""
 
-#: models/customer.py:194
+#: models/customer.py:193
 msgid "Recognized as"
 msgstr "Распознан как"
 
-#: models/customer.py:196
+#: models/customer.py:195
 msgid "Designates the state the customer is recognized as."
 msgstr ""
 "Обозначает статус покупателя относительно его распознавания в магазине."
 
-#: models/customer.py:206
+#: models/customer.py:205
 msgid "Extra information about this customer"
 msgstr "Дополнительная информация об этом покупателе"
 
@@ -2198,19 +2202,19 @@ msgstr "Всего к оплате за товары на счёте на мом
 msgid "Arbitrary information for this order item"
 msgstr "Дополнительная информация об элементе заказа"
 
-#: models/product.py:217
+#: models/product.py:218
 msgid "Active"
 msgstr "Активен"
 
-#: models/product.py:219
+#: models/product.py:220
 msgid "Is this product publicly visible."
 msgstr "Определяет будет ли показан товар на сайте"
 
-#: models/product.py:225
+#: models/product.py:226
 msgid "Products"
 msgstr "Продукты"
 
-#: models/product.py:232
+#: models/product.py:233
 msgid "Product type"
 msgstr "Тип продукта"
 
@@ -2228,8 +2232,8 @@ msgid ""
 "The ordered quantity for item '{product_name}' has been adjusted to "
 "{quantity} which is the maximum, currently available in stock."
 msgstr ""
-"Заказанное количество для позиции '{product_name}' будет "
-"уменьшено до {quantity}. Максимума, доступного сейчас на складе."
+"Заказанное количество для позиции '{product_name}' будет уменьшено до "
+"{quantity}. Максимума, доступного сейчас на складе."
 
 #: modifiers/defaults.py:33
 msgid "Verify Quantity"
@@ -2446,7 +2450,8 @@ msgstr "Эта форма доступна только анонимным по�
 
 #: templates/shop/auth/authenticated-base.html:16
 msgid "This form shall only be reachable by authenticated users"
-msgstr "Эта форма должна быть доступна только аутентифицированным пользователям."
+msgstr ""
+"Эта форма должна быть доступна только аутентифицированным пользователям."
 
 #: templates/shop/auth/change-password-fields.html:3
 #: templates/shop/auth/change-password-fields.html:6
@@ -2511,8 +2516,7 @@ msgstr "Выйти"
 
 #: templates/shop/auth/password-reset-confirm.html:4
 msgid "Please enter your new password twice"
-msgstr ""
-"Пожалуйста, введите новый пароль дважды"
+msgstr "Пожалуйста, введите новый пароль дважды"
 
 #: templates/shop/auth/password-reset-confirm.html:14
 msgid ""
@@ -2571,11 +2575,13 @@ msgid "Watch Item"
 msgstr "В списке избнанных товаров"
 
 #: templates/shop/cart/editable.html:73 templates/shop/cart/static.html:51
+#: templates/shop/cart/summary.html:9
 msgctxt "cart"
 msgid "Subtotal"
 msgstr "Стоимость корзины"
 
 #: templates/shop/cart/editable.html:84 templates/shop/cart/static.html:68
+#: templates/shop/cart/summary.html:23
 msgctxt "cart"
 msgid "Total"
 msgstr "Всего"
@@ -2623,8 +2629,7 @@ msgid ""
 "Available no later than {{ context.availability.latest|date:'d. MMM. H:"
 "mm' }}."
 msgstr ""
-"Доступно не позже чем {{ context.availability.latest|date:'d. MMM. H:"
-"mm' }}."
+"Доступно не позже чем {{ context.availability.latest|date:'d. MMM. H:mm' }}."
 
 #: templates/shop/catalog/pagination.html:7
 #: templates/shop/catalog/pagination.html:17
@@ -2687,8 +2692,8 @@ msgctxt "catalog"
 msgid ""
 "By adding a product to the cart you are giving consent to cookies being used."
 msgstr ""
-"Добавляя товар в корзину, вы даёте согласие на использование куки "
-"сайта.<br>\n"
+"Добавляя товар в корзину, вы даёте согласие на использование куки сайта."
+"<br>\n"
 "\t\t\t\tПо техническим причинам куки не могут быть отключены для этого \n"
 "сайта.\n"
 "\t\t\t"
@@ -2785,7 +2790,7 @@ msgstr "Ваши данные"
 #: templates/shop/email/order-detail.txt:1
 #, python-format
 msgid "Summary of Your Order %(order_number)s"
-msgstr "Всего ваших заказов: %(order_number)s"
+msgstr "Резюме вашего заказа %(order_number)s"
 
 #: templates/shop/email/order-detail.html:15
 msgid "Price"
@@ -3048,8 +3053,8 @@ msgid ""
 msgstr ""
 "Продукт '{product_name}' ({product_code}) внезапно стал недоступен, "
 "поскольку кто-то быстрее вас купил его.\n"
-"Пожалуйста, перепроверьте корзину или добавьте альтернативный продукт "
-"и продолжите оформление заказа."
+"Пожалуйста, перепроверьте корзину или добавьте альтернативный продукт и "
+"продолжите оформление заказа."
 
 #: views/checkout.py:122
 msgid "Product Disappeared"
@@ -3059,8 +3064,7 @@ msgstr "Продукт исчез"
 #, python-brace-format
 msgid ""
 "The product '{product_name}' ({product_code}) suddenly became unavailable."
-msgstr ""
-"Продукт '{product_name}' ({product_code}) внезапно стал недоступен."
+msgstr "Продукт '{product_name}' ({product_code}) внезапно стал недоступен."
 
 #: views/checkout.py:138
 msgid "Please select a valid payment method."
