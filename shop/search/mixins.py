@@ -57,4 +57,6 @@ class CatalogSearchViewMixin(SearchViewMixin):
         search = document.search().source(excludes=['body'])
         if query:
             search = search.query('multi_match', query=query, fields=self.search_fields)
+            #otherwise only 10 products will be returned and there will be no pagination
+            search = search[0:search.count()]  
         return search.to_queryset()
