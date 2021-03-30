@@ -7,7 +7,8 @@
 	{% addtoblock "js" %}<script src="{% static 'shop/js/search-form.js' %}" type="text/javascript"></script>{% endaddtoblock %}
 	{% add_data "ng-requires" "django.shop.search" %}
 
-<form shop-product-search class="{{ search_form_classes }}" role="search" method="get"{% if search_product_url %} action="{{ search_product_url }}"{% endif %}>
+<li class="nav-item shop-search-form">
+<form {% if instance_css_classes %} class="{{ search_form_classes }} {{ instance.css_classes }}"{% endif %}{% if instance_inline_styles %} style="{{ instance.inline_styles }}"{% endif %} shop-product-search class="{{ search_form_classes }}" role="search" method="get"{% if search_product_url %} action="{{ search_product_url }}"{% endif %}>
 	{% if search_product_url %}
 	<div class="input-group w-100">
 	{% endif %}
@@ -19,6 +20,6 @@
 	</div>
 	{% endif %}
 </form>
-
+</li>
 {% endif %}
 {% endspaceless %}

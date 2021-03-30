@@ -1,0 +1,11 @@
+{% load static i18n cms_tags menu_tags sekizai_tags sass_tags shop_tags %}
+{% spaceless %}
+{% with item_class=instance.css_classes %}
+	{% if current_page.reverse_id == 'shop-cart' or current_page.reverse_id == 'shop-watch-list' %}
+		{% cart_icon without %}
+	{% else %}
+		{% cart_icon unsorted %}
+	{% endif %}
+{% endwith %}
+{% endspaceless %}
+
