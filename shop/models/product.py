@@ -30,6 +30,7 @@ class Availability:
     """
     Contains the currently available quantity for a given product and period.
     """
+
     def __init__(self, **kwargs):
         """
         :param earliest:
@@ -70,6 +71,7 @@ class AvailableProductMixin:
 
     The product class must implement a field named ``quantity`` accepting numerical values.
     """
+
     def get_availability(self, request, **kwargs):
         """
         Returns the current available quantity for this product.
@@ -149,6 +151,7 @@ class BaseProductManager(PolymorphicManager):
     """
     A base ModelManager for all non-object manipulation needs, mostly statistics and querying.
     """
+
     def select_lookup(self, search_term):
         """
         Returning a queryset containing the products matching the declared lookup fields together
@@ -230,6 +233,7 @@ class BaseProduct(PolymorphicModel, metaclass=PolymorphicProductMetaclass):
         Returns the polymorphic type of the product.
         """
         return force_str(self.polymorphic_ctype)
+
     product_type.short_description = _("Product type")
 
     @property
@@ -353,6 +357,8 @@ class BaseProduct(PolymorphicModel, metaclass=PolymorphicProductMetaclass):
         of the product.
         """
         documents = elasticsearch_registry.get_documents([ProductModel])
+        if len(documents) == 0:
+            return
         if settings.USE_I18N:
             for language, _ in settings.LANGUAGES:
                 try:
@@ -372,6 +378,7 @@ class BaseProduct(PolymorphicModel, metaclass=PolymorphicProductMetaclass):
         shop_app = apps.get_app_config('shop')
         if shop_app.cache_supporting_wildcard:
             cache.delete_pattern('product:{}|*'.format(self.id))
+
 
 ProductModel = deferred.MaterializedModel(BaseProduct)
 
