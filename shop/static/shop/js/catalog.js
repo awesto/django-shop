@@ -124,6 +124,8 @@ djangoShopModule.controller('CatalogListController', ['$log', '$scope', '$http',
 	this.loadProducts = function(config) {
 		if ($scope.isLoading || fetchURL === null)
 			return;
+
+		config = this.deleteExistedSearchParams(config);
 		$scope.isLoading = true;
 		$http.get(fetchURL, config).then(function(response) {
 			fetchURL = response.data.next;
@@ -134,6 +136,19 @@ djangoShopModule.controller('CatalogListController', ['$log', '$scope', '$http',
 		}).finally(function() {
 			$scope.isLoading = false;
 		});
+	};
+
+	this.deleteExistedSearchParams = function (config) {
+		if (typeof URLSearchParams !== 'undefined') {
+			let searchParams =  new URLSearchParams(fetchURL.substring(fetchURL.indexOf('?')));
+			for (let key in config.params) {
+				if (searchParams.has(key)) {
+					delete config.params[key];
+				}
+			}
+		}
+
+		return config;
 	};
 
 	this.resetProductsList = function() {

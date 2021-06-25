@@ -57,7 +57,16 @@ class ShopCatalogPlugin(ShopPluginBase):
         return select_template(templates)
 
     def render(self, context, instance, placeholder):
-        context['pagination'] = instance.glossary.get('pagination', 'paginator')
+        try:
+            paginator = context['paginator']
+        except KeyError:
+            paginator = False
+        if paginator and paginator.get_offset(paginator.request) > 0:
+            pagination = 'paginator'
+        else:
+            pagination = instance.glossary.get('pagination', 'paginator')
+
+        context['pagination'] = pagination
         return context
 
     @classmethod
