@@ -147,6 +147,8 @@ djangoShopModule.controller('CatalogListController', ['$log', '$scope', '$http',
 				}
 			}
 		}
+
+		return config;
 	};
 
 	this.resetProductsList = function() {
