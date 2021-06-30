@@ -45,12 +45,8 @@ class CatalogLinkForm(LinkForm):
     Note: In this form class the field ``product`` is missing. It is added later, when the shop's
     Product knows about its materialized model.
     """
-    LINK_TYPE_CHOICES = [
-        ('cmspage', _("CMS Page")),
+    LINK_TYPE_CHOICES = LinkForm.LINK_TYPE_CHOICES + [
         ('product', _("Product")),
-        ('download', _("Download File")),
-        ('exturl', _("External URL")),
-        ('email', _("Mail To")),
     ]
 
     product = ProductSelectField(
