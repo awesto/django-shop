@@ -52,7 +52,8 @@ class CatalogLinkForm(LinkForm):
         ('exturl', _("External URL")),
         ('email', _("Mail To")),
     ]
-
+    if PhoneNumberField:
+        LINK_TYPE_CHOICES.append(('phonenumber', _("Phone number")))
     product = ProductSelectField(
         label=_("Product"),
         required=False,
