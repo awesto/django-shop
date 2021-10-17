@@ -1,4 +1,4 @@
-# django-SHOP
+# Django-SHOP
 
 **Django-SHOP** aims to be a the easy, fun and fast e-commerce counterpart to
 [django-CMS](https://www.django-cms.org/).
@@ -20,7 +20,7 @@ esspecially true for products with a hierarchy of variants. In many popular e-co
 you either have far too many attributes per product, and/or the really required attributes are
 missing.
 
-In **django-SHOP** implementations, the product models reflect their pysical properties making it
+In **Django-SHOP** implementations, the product models reflect their pysical properties making it
 possible to create complete and deep hierarchies of variations, but without having to fiddle with
 unneeded properties. It furthermore avoids the need for an
 [Entity Attribute Value Model](https://en.wikipedia.org/wiki/Entity–attribute–value_model), which
@@ -33,7 +33,7 @@ by property.
 With the advent of frameworks, such as Angular, React, Vue and Aurelia, building web-applications
 shifted from a page-centric to a component-based approach.
 
-In **django-SHOP**, you are in full control over the page's layout, since all components are
+In **Django-SHOP**, you are in full control over the page's layout, since all components are
 encapsulated and independent from each other. This means that instead of adopting the Catalog, Cart,
 Checkout and Order pages, use the **django-CMS** plugin system to compose everything required for
 those pages.
@@ -72,7 +72,7 @@ allowed are limited to explicitly defined state transitions.
 ## It's modular
 
 Whenever possible, extra features should be added by third party libraries. This implies that
-**django-SHOP** aims to provide an API, which allows merchants to add every feature they desire.
+**Django-SHOP** aims to provide an API, which allows merchants to add every feature they desire.
 
 Currently there are third party libraries for several Payment Service Providers, such as
 [PayPal](https://developer.paypal.com/docs/api/overview/), [Stripe](https://stripe.com/docs/api),
@@ -86,7 +86,7 @@ available for your region.
 
 ## Start by building your own demo
 
-Instead of providing an accessible online demo, **django-SHOP** can be set up in less than three
+Instead of providing an accessible online demo, **Django-SHOP** can be set up in less than three
 minutes and preconfigured to your needs. Having access to the product models, you can immediatly
 start to play arround with, rename, and modify them to reflect the properties of your products.
 This is the easiest way to get a shop up and running out of the box with the flexibility of a
@@ -108,7 +108,7 @@ can be used to build a minimalistic editor for each of them.
 ## Consultancy
 
 We provide full consultancy support and are available for building complete e-commerce systems based
-on **django-SHOP**. Please contact office@awesto.com for further questions.
+on **Django-SHOP**. Please contact office@awesto.com for further questions.
 
 
 ## Documentation
