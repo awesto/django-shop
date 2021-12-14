@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: admin/customer.py:19 models/defaults/address.py:25
+#: admin/customer.py:19 modeCustomerls/defaults/address.py:25
 #, fuzzy
 #| msgid "Shipping Address"
 msgid "Shipping Addresses"
