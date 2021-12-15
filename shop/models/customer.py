@@ -11,9 +11,9 @@ from django.db import models, DEFAULT_DB_ALIAS
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.functional import SimpleLazyObject
-from django.utils.translation import gettext_lazy as _
+# from django.utils.translation import gettext_lazy as _
 
-from shop import deferred
+# from shop import deferred
 from shop.models.fields import JSONField
 from shop.signals import customer_recognized
 from shop.models.fields import ChoiceEnum, ChoiceEnumField
@@ -21,10 +21,15 @@ from shop.models.fields import ChoiceEnum, ChoiceEnumField
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore()
 
 
+# class CustomerState(ChoiceEnum):
+#     UNRECOGNIZED = 0, _("Unrecognized")
+#     GUEST = 1, _("Guest")
+#     REGISTERED = 2, _("Registered")
+
 class CustomerState(ChoiceEnum):
-    UNRECOGNIZED = 0, _("Unrecognized")
-    GUEST = 1, _("Guest")
-    REGISTERED = 2, ("Registered")
+    UNRECOGNIZED = 0, "Unrecognized"
+    GUEST = 1, "Guest"
+    REGISTERED = 2, "Registered"
 
 
 class CustomerQuerySet(models.QuerySet):
@@ -66,42 +71,42 @@ class CustomerManager(models.Manager):
     an entity in the database but otherwise are considered as anonymous. The username of these
     so called unrecognized customers is a compact version of the session key.
     """
-    BASE64_ALPHABET = string.digits + string.ascii_uppercase + string.ascii_lowercase + '.@'
-    REVERSE_ALPHABET = dict((c, i) for i, c in enumerate(BASE64_ALPHABET))
-    BASE36_ALPHABET = string.digits + string.ascii_lowercase
+    # BASE64_ALPHABET = string.digits + string.ascii_uppercase + string.ascii_lowercase + '.@'
+    # REVERSE_ALPHABET = dict((c, i) for i, c in enumerate(BASE64_ALPHABET))
+    # BASE36_ALPHABET = string.digits + string.ascii_lowercase
 
     _queryset_class = CustomerQuerySet
 
-    @classmethod
-    def encode_session_key(cls, session_key):
-        """
-        Session keys have base 36 and length 32. Since the field ``username`` accepts only up
-        to 30 characters, the session key is converted to a base 64 representation, resulting
-        in a length of approximately 28.
-        """
-        return cls._encode(int(session_key[:32], 36), cls.BASE64_ALPHABET)
-
-    @classmethod
-    def decode_session_key(cls, compact_session_key):
-        """
-        Decode a compact session key back to its original length and base.
-        """
-        base_length = len(cls.BASE64_ALPHABET)
-        n = 0
-        for c in compact_session_key:
-            n = n * base_length + cls.REVERSE_ALPHABET[c]
-        return cls._encode(n, cls.BASE36_ALPHABET).zfill(32)
-
-    @classmethod
-    def _encode(cls, n, base_alphabet):
-        base_length = len(base_alphabet)
-        s = []
-        while True:
-            n, r = divmod(n, base_length)
-            s.append(base_alphabet[r])
-            if n == 0:
-                break
-        return ''.join(reversed(s))
+    # @classmethod
+    # def encode_session_key(cls, session_key):
+    #     """
+    #     Session keys have base 36 and length 32. Since the field ``username`` accepts only up
+    #     to 30 characters, the session key is converted to a base 64 representation, resulting
+    #     in a length of approximately 28.
+    #     """
+    #     return cls._encode(int(session_key[:32], 36), cls.BASE64_ALPHABET)
+    #
+    # @classmethod
+    # def decode_session_key(cls, compact_session_key):
+    #     """
+    #     Decode a compact session key back to its original length and base.
+    #     """
+    #     base_length = len(cls.BASE64_ALPHABET)
+    #     n = 0
+    #     for c in compact_session_key:
+    #         n = n * base_length + cls.REVERSE_ALPHABET[c]
+    #     return cls._encode(n, cls.BASE36_ALPHABET).zfill(32)
+    #
+    # @classmethod
+    # def _encode(cls, n, base_alphabet):
+    #     base_length = len(base_alphabet)
+    #     s = []
+    #     while True:
+    #         n, r = divmod(n, base_length)
+    #         s.append(base_alphabet[r])
+    #         if n == 0:
+    #             break
+    #     return ''.join(reversed(s))
 
     def get_queryset(self):
         """
@@ -133,11 +138,12 @@ class CustomerManager(models.Manager):
         """
         Return an Customer object for the current User object.
         """
-        if request.user.is_anonymous and request.session.session_key:
-            # the visitor is determined through the session key
-            user = self._get_visiting_user(request.session.session_key)
-        else:
-            user = request.user
+        # if request.user.is_anonymous and request.session.session_key:
+        #     # the visitor is determined through the session key
+        #     user = self._get_visiting_user(request.session.session_key)
+        # else:
+        #     user = request.user
+        user = request.user
         try:
             if user.customer:
                 return user.customer
@@ -151,30 +157,31 @@ class CustomerManager(models.Manager):
             customer = VisitingCustomer()
         return customer
 
-    def get_or_create_from_request(self, request):
-        if request.user.is_authenticated:
-            user = request.user
-            recognized = CustomerState.REGISTERED
-        else:
-            if not request.session.session_key:
-                request.session.cycle_key()
-                assert request.session.session_key
-            username = self.encode_session_key(request.session.session_key)
-            # create or get a previously created inactive intermediate user,
-            # which later can declare himself as guest, or register as a valid Django user
-            try:
-                user = get_user_model().objects.get(username=username)
-            except get_user_model().DoesNotExist:
-                user = get_user_model().objects.create_user(username)
-                user.is_active = False
-                user.save()
+    # def get_or_create_from_request(self, request):
+    #     if request.user.is_authenticated:
+    #         user = request.user
+    #         recognized = CustomerState.REGISTERED
+    #     else:
+    #         if not request.session.session_key:
+    #             request.session.cycle_key()
+    #             assert request.session.session_key
+    #         username = self.encode_session_key(request.session.session_key)
+    #         # create or get a previously created inactive intermediate user,
+    #         # which later can declare himself as guest, or register as a valid Django user
+    #         try:
+    #             user = get_user_model().objects.get(username=username)
+    #         except get_user_model().DoesNotExist:
+    #             user = get_user_model().objects.create_user(username)
+    #             user.is_active = False
+    #             user.save()
+    #
+    #         recognized = CustomerState.UNRECOGNIZED
+    #     customer, created = self.get_or_create(user=user, recognized=recognized)
+    #     return customer
 
-            recognized = CustomerState.UNRECOGNIZED
-        customer, created = self.get_or_create(user=user, recognized=recognized)
-        return customer
 
-
-class BaseCustomer(models.Model, metaclass=deferred.ForeignKeyBuilder):
+# class BaseCustomer(models.Model, metaclass=deferred.ForeignKeyBuilder):
+class BaseCustomer(models.Model):
     """
     Base class for shop customers.
 
@@ -182,28 +189,38 @@ class BaseCustomer(models.Model, metaclass=deferred.ForeignKeyBuilder):
     the django User model if a customer is authenticated. On checkout, a User
     object is created for anonymous customers also (with unusable password).
     """
+    # user = models.OneToOneField(
+    #     settings.AUTH_USER_MODEL,
+    #     on_delete=models.CASCADE,
+    #     primary_key=True,
+    #     related_name='customer',
+    # )
+    #
+    # recognized = ChoiceEnumField(
+    #     _("Recognized as"),
+    #     enum_type=CustomerState,
+    #     help_text=_("Designates the state the customer is recognized as."),
+    # )
+    #
+    # last_access = models.DateTimeField(
+    #     _("Last accessed"),
+    #     default=timezone.now,
+    # )
+    #
+    # extra = JSONField(
+    #     editable=False,
+    #     verbose_name=_("Extra information about this customer"),
+    # )
+
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        primary_key=True,
-        related_name='customer',
+        primary_key=True
     )
 
-    recognized = ChoiceEnumField(
-        _("Recognized as"),
-        enum_type=CustomerState,
-        help_text=_("Designates the state the customer is recognized as."),
-    )
-
-    last_access = models.DateTimeField(
-        _("Last accessed"),
-        default=timezone.now,
-    )
-
-    extra = JSONField(
-        editable=False,
-        verbose_name=_("Extra information about this customer"),
-    )
+    recognized = ChoiceEnumField(enum_type=CustomerState)
+    last_access = models.DateTimeField(default=timezone.now)
+    extra = JSONField(editable=False)
 
     objects = CustomerManager()
 
@@ -318,23 +335,23 @@ class BaseCustomer(models.Model, metaclass=deferred.ForeignKeyBuilder):
         """
         return False
 
-    @property
-    def is_expired(self):
-        """
-        Return True if the session of an unrecognized customer expired or is not decodable.
-        Registered customers never expire.
-        Guest customers only expire, if they failed fulfilling the purchase.
-        """
-        is_expired = False
-        if self.recognized is CustomerState.UNRECOGNIZED:
-            try:
-                session_key = CustomerManager.decode_session_key(self.user.username)
-                is_expired = not SessionStore.exists(session_key)
-            except KeyError:
-                msg = "Unable to decode username '{}' as session key"
-                warnings.warn(msg.format(self.user.username))
-                is_expired = True
-        return is_expired
+    # @property
+    # def is_expired(self):
+    #     """
+    #     Return True if the session of an unrecognized customer expired or is not decodable.
+    #     Registered customers never expire.
+    #     Guest customers only expire, if they failed fulfilling the purchase.
+    #     """
+    #     is_expired = False
+    #     if self.recognized is CustomerState.UNRECOGNIZED:
+    #         try:
+    #             session_key = CustomerManager.decode_session_key(self.user.username)
+    #             is_expired = not SessionStore.exists(session_key)
+    #         except KeyError:
+    #             msg = "Unable to decode username '{}' as session key"
+    #             warnings.warn(msg.format(self.user.username))
+    #             is_expired = True
+    #     return is_expired
 
     def get_or_assign_number(self):
         """
@@ -366,8 +383,8 @@ class BaseCustomer(models.Model, metaclass=deferred.ForeignKeyBuilder):
             # also delete self through cascading
             self.user.delete(*args, **kwargs)
 
-CustomerModel = deferred.MaterializedModel(BaseCustomer)
 
+# CustomerModel = deferred.MaterializedModel(BaseCustomer)
 
 class VisitingCustomer:
     """
@@ -423,7 +440,9 @@ def handle_customer_login(sender, **kwargs):
     try:
         kwargs['request'].customer = kwargs['user'].customer
     except (AttributeError, ObjectDoesNotExist):
-        kwargs['request'].customer = SimpleLazyObject(lambda: CustomerModel.objects.get_from_request(kwargs['request']))
+        # kwargs['request'].customer = SimpleLazyObject(lambda:
+        # CustomerModel.objects.get_from_request(kwargs['request']))
+        kwargs['request'].customer = SimpleLazyObject(lambda: BaseCustomer.objects.get_from_request(kwargs['request']))
 
 
 @receiver(user_logged_out)
@@ -432,4 +451,5 @@ def handle_customer_logout(sender, **kwargs):
     Update request.customer to a visiting Customer
     """
     # defer assignment to anonymous customer, since the session_key is not yet rotated
-    kwargs['request'].customer = SimpleLazyObject(lambda: CustomerModel.objects.get_from_request(kwargs['request']))
+    # kwargs['request'].customer = SimpleLazyObject(lambda: CustomerModel.objects.get_from_request(kwargs['request']))
+    kwargs['request'].customer = SimpleLazyObject(lambda: BaseCustomer.objects.get_from_request(kwargs['request']))

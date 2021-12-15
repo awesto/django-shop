@@ -11,7 +11,7 @@ from django.db.models.aggregates import Sum
 from django.db.models.functions import Coalesce
 from django.utils import timezone
 from django.utils.encoding import force_str
-from django.utils.translation import gettext_lazy as _
+# from django.utils.translation import gettext_lazy as _
 
 try:
     from django_elasticsearch_dsl.registries import registry as elasticsearch_registry
@@ -21,7 +21,7 @@ except ImportError:
 from polymorphic.managers import PolymorphicManager
 from polymorphic.models import PolymorphicModel
 
-from shop import deferred
+# from shop import deferred
 from shop.conf import app_settings
 from shop.exceptions import ProductNotAvailable
 
@@ -92,20 +92,24 @@ class AvailableProductMixin:
 
     @classmethod
     def check(cls, **kwargs):
-        from shop.models.cart import CartItemModel
+        # from shop.models.cart import CartItemModel
+        from shop.models.cart import BaseCartItem
 
         errors = super().check(**kwargs)
-        for cart_field in CartItemModel._meta.fields:
+        # for cart_field in CartItemModel._meta.fields:
+        for cart_field in BaseCartItem._meta.fields:
             if cart_field.attname == 'quantity':
                 break
         else:
             msg = "Class `{}` must implement a field named `quantity`."
-            errors.append(checks.Error(msg.format(CartItemModel.__name__)))
+            # errors.append(checks.Error(msg.format(CartItemModel.__name__)))
+            errors.append(checks.Error(msg.format(BaseCartItem.__name__)))
         for field in cls._meta.fields:
             if field.attname == 'quantity':
                 if field.get_internal_type() != cart_field.get_internal_type():
                     msg = "Field `{}.quantity` must be of same type as `{}.quantity`."
-                    errors.append(checks.Error(msg.format(cls.__name__, CartItemModel.__name__)))
+                    # errors.append(checks.Error(msg.format(cls.__name__, CartItemModel.__name__)))
+                    errors.append(checks.Error(msg.format(cls.__name__, BaseCartItem.__name__)))
                 break
         else:
             msg = "Class `{}` must implement a field named `quantity`."
@@ -123,10 +127,12 @@ class BaseReserveProductMixin:
         converted into an order after a determined period of time. Otherwise the quantity
         returned by this function might be considerably lower, than what it could be.
         """
-        from shop.models.cart import CartItemModel
+        # from shop.models.cart import CartItemModel
+        from shop.models.cart import BaseCartItem
 
         availability = super().get_availability(request, **kwargs)
-        cart_items = CartItemModel.objects.filter(product=self).values('quantity')
+        # cart_items = CartItemModel.objects.filter(product=self).values('quantity')
+        cart_items = BaseCartItem.objects.filter(product=self).values('quantity')
         availability.quantity -= cart_items.aggregate(sum=Coalesce(Sum('quantity'), 0))['sum']
         return availability
 
@@ -167,7 +173,8 @@ class BaseProductManager(PolymorphicManager):
         return queryset
 
 
-class PolymorphicProductMetaclass(deferred.PolymorphicForeignKeyBuilder):
+# class PolymorphicProductMetaclass(deferred.PolymorphicForeignKeyBuilder):
+class PolymorphicProductMetaclass(models.PolymorphicForeignKeyBuilder):
 
     @classmethod
     def perform_meta_model_check(cls, Model):
@@ -204,33 +211,50 @@ class BaseProduct(PolymorphicModel, metaclass=PolymorphicProductMetaclass):
     a field ``product_code = models.CharField(_("Product code"), max_length=255, unique=True)``
     to the class implementing the product.
     """
-    created_at = models.DateTimeField(
-        _("Created at"),
-        auto_now_add=True,
-    )
+    # created_at = models.DateTimeField(
+    #     _("Created at"),
+    #     auto_now_add=True,
+    # )
+    #
+    # updated_at = models.DateTimeField(
+    #     _("Updated at"),
+    #     auto_now=True,
+    # )
+    #
+    # active = models.BooleanField(
+    #     _("Active"),
+    #     default=True,
+    #     help_text=_("Is this product publicly visible."),
+    # )
+    #
+    # class Meta:
+    #     abstract = True
+    #     verbose_name = _("Product")
+    #     verbose_name_plural = _("Products")
+    #
+    # def product_type(self):
+    #     """
+    #     Returns the polymorphic type of the product.
+    #     """
+    #     return force_str(self.polymorphic_ctype)
+    # product_type.short_description = _("Product type")
 
-    updated_at = models.DateTimeField(
-        _("Updated at"),
-        auto_now=True,
-    )
-
-    active = models.BooleanField(
-        _("Active"),
-        default=True,
-        help_text=_("Is this product publicly visible."),
-    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    active = models.BooleanField(default=True)
 
     class Meta:
         abstract = True
-        verbose_name = _("Product")
-        verbose_name_plural = _("Products")
+        # verbose_name = _("Product")
+        # verbose_name_plural = _("Products")
 
     def product_type(self):
         """
         Returns the polymorphic type of the product.
         """
         return force_str(self.polymorphic_ctype)
-    product_type.short_description = _("Product type")
+
+    # product_type.short_description = _("Product type")
 
     @property
     def product_model(self):
@@ -311,8 +335,10 @@ class BaseProduct(PolymorphicModel, metaclass=PolymorphicProductMetaclass):
         :returns: The cart item (of type CartItem) containing the product considered as equal to the
             current one, or ``None`` if no product matches in the cart.
         """
-        from shop.models.cart import CartItemModel
-        cart_item_qs = CartItemModel.objects.filter(cart=cart, product=self)
+        # from shop.models.cart import CartItemModel
+        from shop.models.cart import BaseCartItem
+        # cart_item_qs = CartItemModel.objects.filter(cart=cart, product=self)
+        cart_item_qs = BaseCartItem.objects.filter(cart=cart, product=self)
         return cart_item_qs.first()
 
     def deduct_from_stock(self, quantity, **kwargs):
@@ -352,7 +378,8 @@ class BaseProduct(PolymorphicModel, metaclass=PolymorphicProductMetaclass):
         Update the Document inside the Elasticsearch index after changing relevant parts
         of the product.
         """
-        documents = elasticsearch_registry.get_documents([ProductModel])
+        # documents = elasticsearch_registry.get_documents([ProductModel])
+        documents = elasticsearch_registry.get_documents([BaseProduct])
         if settings.USE_I18N:
             for language, _ in settings.LANGUAGES:
                 try:
@@ -373,24 +400,24 @@ class BaseProduct(PolymorphicModel, metaclass=PolymorphicProductMetaclass):
         if shop_app.cache_supporting_wildcard:
             cache.delete_pattern('product:{}|*'.format(self.id))
 
-ProductModel = deferred.MaterializedModel(BaseProduct)
+# ProductModel = deferred.MaterializedModel(BaseProduct)
 
 
-class CMSPageReferenceMixin:
-    """
-    Products which refer to CMS pages in order to emulate categories, normally need a method for
-    being accessed directly through a canonical URL. Add this mixin class for adding a
-    ``get_absolute_url()`` method to any to product model.
-    """
-    category_fields = ['cms_pages']  # used by ProductIndex to fill the categories
-
-    def get_absolute_url(self):
-        """
-        Return the absolute URL of a product
-        """
-        # sorting by highest level, so that the canonical URL
-        # associates with the most generic category
-        cms_page = self.cms_pages.order_by('node__path').last()
-        if cms_page is None:
-            return urljoin('/category-not-assigned/', self.slug)
-        return urljoin(cms_page.get_absolute_url(), self.slug)
+# class CMSPageReferenceMixin:
+#     """
+#     Products which refer to CMS pages in order to emulate categories, normally need a method for
+#     being accessed directly through a canonical URL. Add this mixin class for adding a
+#     ``get_absolute_url()`` method to any to product model.
+#     """
+#     category_fields = ['cms_pages']  # used by ProductIndex to fill the categories
+#
+#     def get_absolute_url(self):
+#         """
+#         Return the absolute URL of a product
+#         """
+#         # sorting by highest level, so that the canonical URL
+#         # associates with the most generic category
+#         cms_page = self.cms_pages.order_by('node__path').last()
+#         if cms_page is None:
+#             return urljoin('/category-not-assigned/', self.slug)
+#         return urljoin(cms_page.get_absolute_url(), self.slug)

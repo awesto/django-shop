@@ -4,44 +4,66 @@ from urllib.parse import urljoin
 
 from django.db import models
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _, pgettext_lazy
+# from django.utils.translation import gettext_lazy as _, pgettext_lazy
 from shop.models import order
 
 
 class Order(order.BaseOrder):
     """Default materialized model for Order"""
+    # number = models.PositiveIntegerField(
+    #     _("Order Number"),
+    #     null=True,
+    #     default=None,
+    #     unique=True,
+    # )
+    #
+    # shipping_address_text = models.TextField(
+    #     _("Shipping Address"),
+    #     blank=True,
+    #     null=True,
+    #     help_text=_("Shipping address at the moment of purchase."),
+    # )
+    #
+    # billing_address_text = models.TextField(
+    #     _("Billing Address"),
+    #     blank=True,
+    #     null=True,
+    #     help_text=_("Billing address at the moment of purchase."),
+    # )
+    #
+    # token = models.CharField(
+    #     _("Token"),
+    #     max_length=40,
+    #     editable=False,
+    #     null=True,
+    #     help_text=_("Secret key to verify ownership on detail view without requiring authentication."),
+    # )
+    #
+    # class Meta:
+    #     verbose_name = pgettext_lazy('order_models', "Order")
+    #     verbose_name_plural = pgettext_lazy('order_models', "Orders")
+
     number = models.PositiveIntegerField(
-        _("Order Number"),
         null=True,
         default=None,
         unique=True,
     )
 
     shipping_address_text = models.TextField(
-        _("Shipping Address"),
         blank=True,
         null=True,
-        help_text=_("Shipping address at the moment of purchase."),
     )
 
     billing_address_text = models.TextField(
-        _("Billing Address"),
         blank=True,
         null=True,
-        help_text=_("Billing address at the moment of purchase."),
     )
 
     token = models.CharField(
-        _("Token"),
         max_length=40,
         editable=False,
         null=True,
-        help_text=_("Secret key to verify ownership on detail view without requiring authentication."),
     )
-
-    class Meta:
-        verbose_name = pgettext_lazy('order_models', "Order")
-        verbose_name_plural = pgettext_lazy('order_models', "Orders")
 
     def get_or_assign_number(self):
         """

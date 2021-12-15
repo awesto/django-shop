@@ -2,7 +2,7 @@ import enum
 from django.conf import settings
 from django.db import models
 from django.utils.encoding import force_str
-from django.utils.translation import gettext_lazy as _
+# from django.utils.translation import gettext_lazy as _
 
 
 postgresql_engine_names = [
@@ -91,7 +91,7 @@ class ChoiceEnum(enum.Enum, metaclass=ChoiceEnumMeta):
 
 
 class ChoiceEnumField(models.PositiveSmallIntegerField):
-    description = _("Customer recognition state")
+    # description = _("Customer recognition state")
 
     def __init__(self, *args, **kwargs):
         self.enum_type = kwargs.pop('enum_type', ChoiceEnum)  # fallback is required form migrations

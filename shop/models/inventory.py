@@ -2,7 +2,7 @@ from django.core import checks
 from django.db import models
 from django.db.models.aggregates import Sum
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
+# from django.utils.translation import gettext_lazy as _
 from shop.conf import app_settings
 from shop.models.product import Availability, BaseReserveProductMixin
 from shop.exceptions import ProductNotAvailable
@@ -102,39 +102,56 @@ class BaseInventory(models.Model):
     The class implementing this abstract base class, must add a field named 'quantity'
     of type IntegerField, DecimalField or FloatField.
     """
+    # earliest = models.DateTimeField(
+    #     _("Available after"),
+    #     default=timezone.datetime.min.replace(tzinfo=timezone.get_current_timezone()),
+    #     db_index=True,
+    # )
+    #
+    # latest = models.DateTimeField(
+    #     _("Available before"),
+    #     default=timezone.datetime.max.replace(tzinfo=timezone.get_current_timezone()),
+    #     db_index=True,
+    # )
+    #
+    # class Meta:
+    #     abstract = True
+    #     verbose_name = _("Product Inventory")
+    #     verbose_name_plural = _("Product Inventories")
+
     earliest = models.DateTimeField(
-        _("Available after"),
         default=timezone.datetime.min.replace(tzinfo=timezone.get_current_timezone()),
         db_index=True,
     )
 
     latest = models.DateTimeField(
-        _("Available before"),
         default=timezone.datetime.max.replace(tzinfo=timezone.get_current_timezone()),
         db_index=True,
     )
 
     class Meta:
         abstract = True
-        verbose_name = _("Product Inventory")
-        verbose_name_plural = _("Product Inventories")
 
     @classmethod
     def check(cls, **kwargs):
-        from shop.models.cart import CartItemModel
+        # from shop.models.cart import CartItemModel
+        from shop.models.cart import BaseCartItem
 
         errors = super().check(**kwargs)
-        for cart_field in CartItemModel._meta.fields:
+        # for cart_field in CartItemModel._meta.fields:
+        for cart_field in BaseCartItem._meta.fields:
             if cart_field.attname == 'quantity':
                 break
         else:
             msg = "Class `{}` must implement a field named `quantity`."
-            errors.append(checks.Error(msg.format(CartItemModel.__name__)))
+            # errors.append(checks.Error(msg.format(CartItemModel.__name__)))
+            errors.append(checks.Error(msg.format(BaseCartItem.__name__)))
         for field in cls._meta.fields:
             if field.attname == 'quantity':
                 if field.get_internal_type() != cart_field.get_internal_type():
                     msg = "Field `{}.quantity` must be of same type as `{}.quantity`."
-                    errors.append(checks.Error(msg.format(cls.__name__, CartItemModel.__name__)))
+                    # errors.append(checks.Error(msg.format(cls.__name__, CartItemModel.__name__)))
+                    errors.append(checks.Error(msg.format(cls.__name__, BaseCartItem.__name__)))
                 break
         else:
             msg = "Class `{}` must implement a field named `quantity`."
