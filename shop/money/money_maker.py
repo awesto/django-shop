@@ -2,7 +2,7 @@ from decimal import Decimal, InvalidOperation
 from django.conf import settings
 from django.utils.formats import get_format
 from django.utils.translation import get_language
-from cms.utils.helpers import classproperty
+# from cms.utils.helpers import classproperty
 from shop.conf import app_settings
 from shop.money.iso4217 import CURRENCIES
 
@@ -182,12 +182,12 @@ class AbstractMoney(Decimal):
     def __bool__(self):
         return Decimal.__bool__(self) and not self.is_nan()
 
-    @classproperty
-    def currency(cls):
-        """
-        Return the currency in ISO-4217
-        """
-        return cls._currency_code
+    # @classproperty
+    # def currency(cls):
+    #     """
+    #     Return the currency in ISO-4217
+    #     """
+    #     return cls._currency_code
 
     def as_decimal(self):
         """
@@ -205,12 +205,12 @@ class AbstractMoney(Decimal):
         """
         return int(self.as_decimal() * self.subunits)
 
-    @classproperty
-    def subunits(cls):
-        """
-        Return the subunits for the given currency.
-        """
-        return 10**CURRENCIES[cls._currency_code][1]
+    # @classproperty
+    # def subunits(cls):
+    #     """
+    #     Return the subunits for the given currency.
+    #     """
+    #     return 10**CURRENCIES[cls._currency_code][1]
 
     def _assert_addable(self, other):
         if not other:

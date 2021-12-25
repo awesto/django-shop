@@ -1,4 +1,0 @@
-{% load thumbnail %}
-{% thumbnail product.sample_image 80x80 crop as thumb %}
-{% thumbnail product.sample_image 160x160 crop as thumb2 %}
-<img class="mr-3" width="{{ thumb.width }}" height="{{ thumb.height }}" src="{{ thumb.url }}" srcset="{{ thumb.url }} 1x, {{ thumb2.url }} 2x" />

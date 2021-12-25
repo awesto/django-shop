@@ -3,12 +3,13 @@ from collections import OrderedDict
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.forms import fields, models, widgets
-from django.utils.translation import gettext_lazy as _
+# from django.utils.translation import gettext_lazy as _
 
 from django_fsm import RETURN_VALUE
 
 from shop.models.notification import Notify, Notification, NotificationAttachment
-from shop.models.order import OrderModel
+# from shop.models.order import OrderModel
+from shop.models.order import BaseOrder
 
 
 class NotificationAttachmentAdmin(admin.TabularInline):
@@ -17,7 +18,7 @@ class NotificationAttachmentAdmin(admin.TabularInline):
 
 
 class NotificationForm(models.ModelForm):
-    notify_recipient = fields.ChoiceField(label=_("Recipient"))
+    notify_recipient = fields.ChoiceField(label="Recipient")
 
     class Meta:
         model = Notification
@@ -41,12 +42,15 @@ class NotificationForm(models.ModelForm):
 
     def get_transition_choices(self):
         choices = OrderedDict()
-        for transition in OrderModel.get_all_transitions():
+        # for transition in OrderModel.get_all_transitions():
+        for transition in BaseOrder.get_all_transitions():
             if isinstance(transition.target, str):
-                choices[transition.target] = OrderModel.get_transition_name(transition.target)
+                # choices[transition.target] = OrderModel.get_transition_name(transition.target)
+                choices[transition.target] = BaseOrder.get_transition_name(transition.target)
             elif isinstance(transition.target, RETURN_VALUE):
                 for target in transition.target.allowed_states:
-                    choices[target] = OrderModel.get_transition_name(target)
+                    # choices[target] = OrderModel.get_transition_name(target)
+                    choices[target] = BaseOrder.get_transition_name(target)
         return choices.items()
 
     def get_recipient_choices(self):
@@ -79,16 +83,20 @@ class NotificationAdmin(admin.ModelAdmin):
     save_as = True
 
     def transition_name(self, obj):
-        return OrderModel.get_transition_name(obj.transition_target)
-    transition_name.short_description = _("Event")
+        # return OrderModel.get_transition_name(obj.transition_target)
+        return BaseOrder.get_transition_name(obj.transition_target)
+    # transition_name.short_description = _("Event")
+    transition_name.short_description = "Event"
 
     def num_attachments(self, obj):
         return obj.notificationattachment_set.count()
-    num_attachments.short_description = _("Attachments")
+    # num_attachments.short_description = _("Attachments")
+    num_attachments.short_description = "Attachments"
 
     def get_recipient(self, obj):
         if obj.notify is Notify.RECIPIENT:
             return '{0} <{1}>'.format(obj.recipient.get_full_name(), obj.recipient.email)
         else:
             return str(obj.notify)
-    get_recipient.short_description = _("Mail Recipient")
+    # get_recipient.short_description = _("Mail Recipient")
+    get_recipient.short_description = "Mail Recipient"

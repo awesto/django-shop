@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework.fields import empty
-from shop.models.cart import CartModel
+# from shop.models.cart import CartModel
+from shop.models.cart import BaseCart
 from shop.rest.money import MoneyField
 from shop.serializers.bases import AvailabilitySerializer
 
@@ -71,8 +72,10 @@ class AddToCartSerializer(serializers.Serializer):
         product = context['product']
         request = context['request']
         try:
-            cart = CartModel.objects.get_from_request(request)
-        except CartModel.DoesNotExist:
+            # cart = CartModel.objects.get_from_request(request)
+            cart = BaseCart.objects.get_from_request(request)
+        # except CartModel.DoesNotExist:
+        except BaseCart.DoesNotExist:
             cart = None
         extra = data.get('extra', {}) if data is not empty else {}
         return {

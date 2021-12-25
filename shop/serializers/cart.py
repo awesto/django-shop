@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from shop.conf import app_settings
-from shop.models.cart import CartModel, CartItemModel
+# from shop.models.cart import CartModel, CartItemModel
+# from shop.models.cart import CartModel, BaseCartItem
+from shop.models.cart import BaseCart, BaseCartItem
 from shop.rest.money import MoneyField
 from shop.models.fields import ChoiceEnum
 
@@ -38,11 +40,13 @@ class BaseItemSerializer(serializers.ModelSerializer):
     extra_rows = ExtraCartRowList(read_only=True)
 
     class Meta:
-        model = CartItemModel
+        # model = CartItemModel
+        model = BaseCartItem
 
     def create(self, validated_data):
         assert 'cart' in validated_data
-        cart_item, _ = CartItemModel.objects.get_or_create(**validated_data)
+        # cart_item, _ = CartItemModel.objects.get_or_create(**validated_data)
+        cart_item, _ = BaseCartItem.objects.get_or_create(**validated_data)
         cart_item.save()
         return cart_item
 
@@ -69,7 +73,8 @@ class CartItemSerializer(BaseItemSerializer):
         exclude = ['cart', 'id']
 
     def create(self, validated_data):
-        validated_data['cart'] = CartModel.objects.get_or_create_from_request(self.context['request'])
+        # validated_data['cart'] = CartModel.objects.get_or_create_from_request(self.context['request'])
+        validated_data['cart'] = BaseCart.objects.get_or_create_from_request(self.context['request'])
         return super().create(validated_data)
 
 
@@ -78,7 +83,8 @@ class WatchItemSerializer(BaseItemSerializer):
         fields = ['product', 'product_code', 'url', 'summary', 'quantity', 'extra']
 
     def create(self, validated_data):
-        cart = CartModel.objects.get_or_create_from_request(self.context['request'])
+        # cart = CartModel.objects.get_or_create_from_request(self.context['request'])
+        cart = BaseCart.objects.get_or_create_from_request(self.context['request'])
         validated_data.update(cart=cart, quantity=0)
         return super().create(validated_data)
 
@@ -95,7 +101,8 @@ class BaseCartSerializer(serializers.ModelSerializer):
     extra_rows = ExtraCartRowList(read_only=True)
 
     class Meta:
-        model = CartModel
+        # model = CartModel
+        model = BaseCart
         fields = ['subtotal', 'total', 'extra_rows']
 
     def to_representation(self, cart):
@@ -123,9 +130,11 @@ class CartSerializer(BaseCartSerializer):
 
     def represent_items(self, cart):
         if self.with_items == CartItems.unsorted:
-            items = CartItemModel.objects.filter(cart=cart, quantity__gt=0).order_by('-updated_at')
+            # items = CartItemModel.objects.filter(cart=cart, quantity__gt=0).order_by('-updated_at')
+            items = BaseCartItem.objects.filter(cart=cart, quantity__gt=0).order_by('-updated_at')
         else:
-            items = CartItemModel.objects.filter_cart_items(cart, self.context['request'])
+            # items = CartItemModel.objects.filter_cart_items(cart, self.context['request'])
+            items = BaseCartItem.objects.filter_cart_items(cart, self.context['request'])
         serializer = CartItemSerializer(items, context=self.context, label=self.label, many=True)
         return serializer.data
 
@@ -142,8 +151,10 @@ class WatchSerializer(BaseCartSerializer):
 
     def represent_items(self, cart):
         if self.with_items == CartItems.unsorted:
-            items = CartItemModel.objects.filter(cart=cart, quantity=0).order_by('-updated_at')
+            # items = CartItemModel.objects.filter(cart=cart, quantity=0).order_by('-updated_at')
+            items = BaseCartItem.objects.filter(cart=cart, quantity=0).order_by('-updated_at')
         else:
-            items = CartItemModel.objects.filter_watch_items(cart, self.context['request'])
+            # items = CartItemModel.objects.filter_watch_items(cart, self.context['request'])
+            items = BaseCartItem.objects.filter_watch_items(cart, self.context['request'])
         serializer = WatchItemSerializer(items, context=self.context, label=self.label, many=True)
         return serializer.data

@@ -67,4 +67,5 @@ class CartModifiersPool:
             if isinstance(modifier, PaymentModifier) and modifier.is_active(payment_modifier):
                 return modifier
 
+
 cart_modifiers_pool = CartModifiersPool()

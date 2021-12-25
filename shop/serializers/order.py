@@ -1,8 +1,10 @@
 from django.utils import timezone
 from rest_framework import serializers
 from shop.conf import app_settings
-from shop.models.cart import CartModel
-from shop.models.order import OrderModel
+# from shop.models.cart import CartModel
+from shop.models.cart import BaseCart
+# from shop.models.order import OrderModel
+from shop.models.order import BaseOrder
 from shop.modifiers.pool import cart_modifiers_pool
 from shop.rest.money import MoneyField
 
@@ -27,7 +29,8 @@ class OrderListSerializer(serializers.ModelSerializer):
     total = MoneyField()
 
     class Meta:
-        model = OrderModel
+        # model = OrderModel
+        model = BaseOrder
         fields = ['number', 'url', 'created_at', 'updated_at', 'subtotal', 'total', 'status',
                   'shipping_address_text', 'billing_address_text']  # TODO: these fields are not part of the base model
         read_only_fields = ['shipping_address_text', 'billing_address_text']
@@ -69,7 +72,8 @@ class OrderDetailSerializer(OrderListSerializer):
     active_shipping_method = serializers.SerializerMethodField()
 
     class Meta:
-        model = OrderModel
+        # model = OrderModel
+        model = BaseOrder
         exclude = ['id', 'customer', 'stored_request', '_subtotal', '_total']
         read_only_fields = ['shipping_address_text', 'billing_address_text']  # TODO: not part of OrderBase
 
@@ -93,7 +97,8 @@ class OrderDetailSerializer(OrderListSerializer):
             order.extra['addendum'].append((timestamp, validated_data['annotation']))
             order.save()
         if validated_data['reorder'] is True:
-            cart = CartModel.objects.get_from_request(self.context['request'])
+            # cart = CartModel.objects.get_from_request(self.context['request'])
+            cart = BaseCart.objects.get_from_request(self.context['request'])
             order.readd_to_cart(cart)
         if validated_data['cancel'] is True and order.cancelable():
             order.cancel_order()

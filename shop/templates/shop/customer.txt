@@ -1,2 +1,0 @@
-{% if customer.salutation != 'na' %}{{ customer.get_salutation_display }} {% endif %}{{ customer.first_name }} {{ customer.last_name }}
-✉: {{ customer.email }}

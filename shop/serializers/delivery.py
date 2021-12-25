@@ -1,12 +1,14 @@
 from rest_framework import serializers
 from shop.conf import app_settings
-from shop.models.delivery import DeliveryModel, DeliveryItemModel
+# from shop.models.delivery import DeliveryModel, DeliveryItemModel
+from shop.models.delivery import BaseDelivery, BaseDeliveryItem
 from shop.modifiers.pool import cart_modifiers_pool
 
 
 class DeliveryItemSerializer(serializers.ModelSerializer):
     class Meta:
-        model = DeliveryItemModel
+        # model = DeliveryItemModel
+        model = BaseDeliveryItem
         exclude = ['id', 'delivery', 'item']
 
     def to_representation(self, instance):
@@ -26,7 +28,8 @@ class DeliverySerializer(serializers.ModelSerializer):
     shipping_method = serializers.SerializerMethodField()
 
     class Meta:
-        model = DeliveryModel
+        # model = DeliveryModel
+        model = BaseDelivery
         exclude = ['id', 'order']
 
     def get_shipping_method(self, instance):

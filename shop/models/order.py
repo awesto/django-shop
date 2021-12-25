@@ -6,20 +6,20 @@ from django.core import checks
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models, transaction
 from django.db.models.aggregates import Sum
-from django.urls import NoReverseMatch, reverse
+# from django.urls import NoReverseMatch, reverse
 from django.utils.functional import cached_property
 # from django.utils.translation import gettext_lazy as _, pgettext_lazy, get_language_from_request
 
 from django_fsm import FSMField, transition
 from ipware.ip import get_client_ip
-from cms.models import Page
+# from cms.models import Page
 from shop.conf import app_settings
 # from shop.models.cart import CartItemModel
 from shop.models.cart import BaseCartItem
 from shop.models.fields import JSONField
 from shop.money.fields import MoneyField, MoneyMaker
 # from shop import deferred
-from shop.models.product import BaseProduct
+# from shop.models.product import BaseProduct
 
 
 class OrderQuerySet(models.QuerySet):
@@ -81,23 +81,23 @@ class OrderManager(models.Manager):
             'user_agent': request.META.get('HTTP_USER_AGENT'),
         }
 
-    def get_summary_url(self):
-        """
-        Returns the URL of the page with the list view for all orders related to the current customer
-        """
-        if not hasattr(self, '_summary_url'):
-            try:  # via CMS pages
-                page = Page.objects.public().get(reverse_id='shop-order')
-            except Page.DoesNotExist:
-                page = Page.objects.public().filter(application_urls='OrderApp').first()
-            if page:
-                self._summary_url = page.get_absolute_url()
-            else:
-                try:  # through hardcoded urlpatterns
-                    self._summary_url = reverse('shop-order')
-                except NoReverseMatch:
-                    self._summary_url = '/cms-page_or_view_with__reverse_id=shop-order__does_not_exist/'
-        return self._summary_url
+    # def get_summary_url(self):
+    #     """
+    #     Returns the URL of the page with the list view for all orders related to the current customer
+    #     """
+    #     if not hasattr(self, '_summary_url'):
+    #         try:  # via CMS pages
+    #             page = Page.objects.public().get(reverse_id='shop-order')
+    #         except Page.DoesNotExist:
+    #             page = Page.objects.public().filter(application_urls='OrderApp').first()
+    #         if page:
+    #             self._summary_url = page.get_absolute_url()
+    #         else:
+    #             try:  # through hardcoded urlpatterns
+    #                 self._summary_url = reverse('shop-order')
+    #             except NoReverseMatch:
+    #                 self._summary_url = '/cms-page_or_view_with__reverse_id=shop-order__does_not_exist/'
+    #     return self._summary_url
 
 
 # class WorkflowMixinMetaclass(deferred.ForeignKeyBuilder):

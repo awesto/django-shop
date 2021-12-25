@@ -1,5 +1,6 @@
 from shop.conf import app_settings
-from shop.models.customer import CustomerModel, VisitingCustomer
+# from shop.models.customer import CustomerModel, VisitingCustomer
+from shop.models.customer import BaseCustomer, VisitingCustomer
 
 
 def customer(request):
@@ -12,8 +13,10 @@ def customer(request):
     customer = request.customer
     if request.user.is_staff:
         try:
-            customer = CustomerModel.objects.get(pk=request.session['emulate_user_id'])
-        except CustomerModel.DoesNotExist:
+            # customer = CustomerModel.objects.get(pk=request.session['emulate_user_id'])
+            customer = BaseCustomer.objects.get(pk=request.session['emulate_user_id'])
+        # except CustomerModel.DoesNotExist:
+        except BaseCustomer.DoesNotExist:
             customer = VisitingCustomer()
         except (AttributeError, KeyError):
             pass

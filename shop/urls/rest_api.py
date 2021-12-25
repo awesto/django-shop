@@ -2,7 +2,7 @@ from django.conf.urls import url, include
 from django.http import JsonResponse
 from rest_framework import routers
 
-from shop.forms.checkout import ShippingAddressForm, BillingAddressForm
+# from shop.forms.checkout import ShippingAddressForm, BillingAddressForm
 from shop.messages import get_messages_as_json
 from shop.views.address import AddressEditView
 from shop.views.cart import CartViewSet, WatchViewSet
@@ -27,11 +27,11 @@ urlpatterns = [
     url(r'^fetch_messages/?$',
         fetch_messages,
         name='fetch-messages'),
-    url(r'^shipping_address/(?P<priority>({{\s*\w+\s*}}|\d+|add))$',
-        AddressEditView.as_view(form_class=ShippingAddressForm),
-        name='edit-shipping-address'),
-    url(r'^billing_address/(?P<priority>({{\s*\w+\s*}}|\d+|add))$',
-        AddressEditView.as_view(form_class=BillingAddressForm),
-        name='edit-billing-address'),
+    # url(r'^shipping_address/(?P<priority>({{\s*\w+\s*}}|\d+|add))$',
+    #     AddressEditView.as_view(form_class=ShippingAddressForm),
+    #     name='edit-shipping-address'),
+    # url(r'^billing_address/(?P<priority>({{\s*\w+\s*}}|\d+|add))$',
+    #     AddressEditView.as_view(form_class=BillingAddressForm),
+    #     name='edit-billing-address'),
     url(r'^', include(router.urls)),
 ]

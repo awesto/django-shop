@@ -8,9 +8,12 @@ from django.utils.translation import get_language_from_request
 from rest_framework import serializers
 
 from shop.conf import app_settings
-from shop.models.customer import CustomerModel
-from shop.models.product import ProductModel
-from shop.models.order import OrderItemModel
+# from shop.models.customer import CustomerModel
+from shop.models.customer import BaseCustomer
+# from shop.models.product import ProductModel
+from shop.models.product import BaseProduct
+# from shop.models.order import OrderItemModel
+from shop.models.order import BaseOrderItem
 from shop.rest.money import MoneyField
 
 
@@ -18,7 +21,8 @@ class BaseCustomerSerializer(serializers.ModelSerializer):
     number = serializers.CharField(source='get_number')
 
     class Meta:
-        model = CustomerModel
+        # model = CustomerModel
+        model = BaseCustomer
         fields = ['number', 'first_name', 'last_name', 'email']
 
 
@@ -40,7 +44,8 @@ class ProductSerializer(serializers.ModelSerializer):
     product_url = serializers.URLField(source='get_absolute_url', read_only=True)
 
     class Meta:
-        model = ProductModel
+        # model = ProductModel
+        model = BaseProduct
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
@@ -94,4 +99,5 @@ class BaseOrderItemSerializer(serializers.ModelSerializer):
     product_code = serializers.CharField()
 
     class Meta:
-        model = OrderItemModel
+        # model = OrderItemModel
+        model = BaseOrderItem

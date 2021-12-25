@@ -6,7 +6,7 @@ from django.db import models
 # from django.utils.translation import gettext_lazy as _
 
 # from shop import deferred
-from shop.conf import app_settings
+# from shop.conf import app_settings
 
 
 class AddressManager(models.Manager):

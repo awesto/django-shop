@@ -27,9 +27,9 @@ class DefaultCartModifier(BaseCartModifier):
                 raise ProductNotAvailable(cart_item.product)
             cart_item.quantity = availability.quantity
             cart_item.save(update_fields=['quantity'])
-            message = _("The ordered quantity for item '{product_name}' has been adjusted to "\
+            message = _("The ordered quantity for item '{product_name}' has been adjusted to "
                         "{quantity} which is the maximum, currently available in stock.").\
-                        format(product_name=cart_item.product.product_name, quantity=availability.quantity)
+                format(product_name=cart_item.product.product_name, quantity=availability.quantity)
             messages.info(request, message, title=_("Verify Quantity"), delay=5)
         return super().pre_process_cart_item(cart, cart_item, request, raise_exception)
 

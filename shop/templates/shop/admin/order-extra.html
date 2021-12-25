@@ -1,7 +1,0 @@
-{% load i18n %}
-{% for row in rows %}
-<label>&emsp;{{ row.1.label }}:</label><p>{{ row.1.amount }}</p>
-{% endfor %}
-<label>&emsp;{% trans "Shipping" %}:</label><p>{{ shipping_modifier|default:"–" }}</p>
-<label>&emsp;{% trans "Payment" %}:</label><p>{{ payment_modifier|default:"–" }}</p>
-<label>&emsp;{% trans "Annotation" %}:</label><p>{{ annotation|default:"–" }}</p>

@@ -1,5 +1,6 @@
 from django.core.exceptions import ImproperlyConfigured
-from shop.models.order import OrderModel
+# from shop.models.order import OrderModel
+from shop.models.order import BaseOrder
 
 
 class PaymentProvider:
@@ -40,14 +41,17 @@ class ForwardFundPayment(PaymentProvider):
     namespace = 'forward-fund-payment'
 
     def __init__(self):
-        if (not (callable(getattr(OrderModel, 'no_payment_required', None)) and callable(
-                getattr(OrderModel, 'awaiting_payment', None)))):
+        # if (not (callable(getattr(OrderModel, 'no_payment_required', None)) and callable(
+        if (not (callable(getattr(BaseOrder, 'no_payment_required', None)) and callable(
+                # getattr(OrderModel, 'awaiting_payment', None)))):
+                getattr(BaseOrder, 'awaiting_payment', None)))):
             msg = "Missing methods in Order model. Add 'shop.payment.workflows.ManualPaymentWorkflowMixin' to SHOP_ORDER_WORKFLOWS."
             raise ImproperlyConfigured(msg)
         super().__init__()
 
     def get_payment_request(self, cart, request):
-        order = OrderModel.objects.create_from_cart(cart, request)
+        # order = OrderModel.objects.create_from_cart(cart, request)
+        order = BaseOrder.objects.create_from_cart(cart, request)
         order.populate_from_cart(cart, request)
         if order.total == 0:
             order.no_payment_required()

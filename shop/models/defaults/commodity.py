@@ -7,7 +7,7 @@ which can be used on a generic CMS page to describe anything.
 from django.core.validators import MinValueValidator
 from django.db import models
 # from django.utils.translation import gettext_lazy as _
-from cms.models.fields import PlaceholderField
+# from cms.models.fields import PlaceholderField
 from filer.fields import image
 # from djangocms_text_ckeditor.fields import HTMLField
 # from polymorphic.query import PolymorphicQuerySet
@@ -140,127 +140,127 @@ class CommodityMixin(AvailableProductMixin):
 #
 # else:
 
-    # class Commodity(CMSPageReferenceMixin, CommodityMixin, BaseProduct):
-    class Commodity(CommodityMixin, BaseProduct):
-        """
-        Generic Product Commodity to be used whenever the merchant does not require product specific
-        attributes and just required a placeholder field to add arbitrary data.
-        """
-        # # common product fields
-        # product_name = models.CharField(
-        #     max_length=255,
-        #     verbose_name=_("Product Name"),
-        # )
-        #
-        # product_code = models.CharField(
-        #     _("Product code"),
-        #     max_length=255,
-        #     unique=True,
-        # )
-        #
-        # unit_price = MoneyField(
-        #     _("Unit price"),
-        #     decimal_places=3,
-        #     help_text=_("Net price for this product"),
-        # )
-        #
-        # # controlling the catalog
-        # order = models.PositiveIntegerField(
-        #     verbose_name=_("Sort by"),
-        #     db_index=True,
-        # )
-        #
-        # cms_pages = models.ManyToManyField(
-        #     'cms.Page',
-        #     through=ProductPage,
-        #     help_text=_("Choose list view this product shall appear on."),
-        # )
-        #
-        # sample_image = image.FilerImageField(
-        #     verbose_name=_("Sample Image"),
-        #     blank=True,
-        #     null=True,
-        #     default=None,
-        #     on_delete=models.SET_DEFAULT,
-        #     help_text=_("Sample image used in the catalog's list view."),
-        # )
-        #
-        # show_breadcrumb = models.BooleanField(
-        #     _("Show Breadcrumb"),
-        #     default=True,
-        #     help_text=_("Shall the detail page show the product's breadcrumb."),
-        # )
-        #
-        # placeholder = PlaceholderField("Commodity Details")
-        #
-        # quantity = models.PositiveIntegerField(
-        #     _("Quantity"),
-        #     default=0,
-        #     validators=[MinValueValidator(0)],
-        #     help_text=_("Available quantity in stock")
-        # )
-        #
-        # # common fields for the catalog's list- and detail views
-        # slug = models.SlugField(verbose_name=_("Slug"))
-        #
-        # caption = HTMLField(
-        #     verbose_name=_("Caption"),
-        #     blank=True,
-        #     null=True,
-        #     help_text=_("Short description for the catalog list view."),
-        # )
-        #
-        # # filter expression used to search for a product item using the Select2 widget
-        # lookup_fields = ['product_code__startswith', 'product_name__icontains']
-        #
-        # objects = BaseProductManager()
-        #
-        # class Meta:
-        #     app_label = app_settings.APP_LABEL
-        #     ordering = ('order',)
-        #     verbose_name = _("Commodity")
-        #     verbose_name_plural = _("Commodities")
+# class Commodity(CMSPageReferenceMixin, CommodityMixin, BaseProduct):
+class Commodity(CommodityMixin, BaseProduct):
+    """
+    Generic Product Commodity to be used whenever the merchant does not require product specific
+    attributes and just required a placeholder field to add arbitrary data.
+    """
+    # # common product fields
+    # product_name = models.CharField(
+    #     max_length=255,
+    #     verbose_name=_("Product Name"),
+    # )
+    #
+    # product_code = models.CharField(
+    #     _("Product code"),
+    #     max_length=255,
+    #     unique=True,
+    # )
+    #
+    # unit_price = MoneyField(
+    #     _("Unit price"),
+    #     decimal_places=3,
+    #     help_text=_("Net price for this product"),
+    # )
+    #
+    # # controlling the catalog
+    # order = models.PositiveIntegerField(
+    #     verbose_name=_("Sort by"),
+    #     db_index=True,
+    # )
+    #
+    # cms_pages = models.ManyToManyField(
+    #     'cms.Page',
+    #     through=ProductPage,
+    #     help_text=_("Choose list view this product shall appear on."),
+    # )
+    #
+    # sample_image = image.FilerImageField(
+    #     verbose_name=_("Sample Image"),
+    #     blank=True,
+    #     null=True,
+    #     default=None,
+    #     on_delete=models.SET_DEFAULT,
+    #     help_text=_("Sample image used in the catalog's list view."),
+    # )
+    #
+    # show_breadcrumb = models.BooleanField(
+    #     _("Show Breadcrumb"),
+    #     default=True,
+    #     help_text=_("Shall the detail page show the product's breadcrumb."),
+    # )
+    #
+    # placeholder = PlaceholderField("Commodity Details")
+    #
+    # quantity = models.PositiveIntegerField(
+    #     _("Quantity"),
+    #     default=0,
+    #     validators=[MinValueValidator(0)],
+    #     help_text=_("Available quantity in stock")
+    # )
+    #
+    # # common fields for the catalog's list- and detail views
+    # slug = models.SlugField(verbose_name=_("Slug"))
+    #
+    # caption = HTMLField(
+    #     verbose_name=_("Caption"),
+    #     blank=True,
+    #     null=True,
+    #     help_text=_("Short description for the catalog list view."),
+    # )
+    #
+    # # filter expression used to search for a product item using the Select2 widget
+    # lookup_fields = ['product_code__startswith', 'product_name__icontains']
+    #
+    # objects = BaseProductManager()
+    #
+    # class Meta:
+    #     app_label = app_settings.APP_LABEL
+    #     ordering = ('order',)
+    #     verbose_name = _("Commodity")
+    #     verbose_name_plural = _("Commodities")
 
-        # common product fields
-        product_name = models.CharField(max_length=255)
+    # common product fields
+    product_name = models.CharField(max_length=255)
 
-        product_code = models.CharField(
-            max_length=255,
-            unique=True,
-        )
+    product_code = models.CharField(
+        max_length=255,
+        unique=True,
+    )
 
-        unit_price = MoneyField(decimal_places=3)
+    unit_price = MoneyField(decimal_places=3)
 
-        # controlling the catalog
-        order = models.PositiveIntegerField(db_index=True)
+    # controlling the catalog
+    order = models.PositiveIntegerField(db_index=True)
 
-        sample_image = image.FilerImageField(
-            blank=True,
-            null=True,
-            default=None,
-            on_delete=models.SET_DEFAULT,
-        )
+    sample_image = image.FilerImageField(
+        blank=True,
+        null=True,
+        default=None,
+        on_delete=models.SET_DEFAULT,
+    )
 
-        show_breadcrumb = models.BooleanField(default=True)
+    show_breadcrumb = models.BooleanField(default=True)
 
-        placeholder = PlaceholderField("Commodity Details")
+    # placeholder = PlaceholderField("Commodity Details")
 
-        quantity = models.PositiveIntegerField(
-            default=0,
-            validators=[MinValueValidator(0)]
-        )
+    quantity = models.PositiveIntegerField(
+        default=0,
+        validators=[MinValueValidator(0)]
+    )
 
-        # common fields for the catalog's list- and detail views
-        slug = models.SlugField()
+    # common fields for the catalog's list- and detail views
+    slug = models.SlugField()
 
-        # filter expression used to search for a product item using the Select2 widget
-        lookup_fields = ['product_code__startswith', 'product_name__icontains']
+    # filter expression used to search for a product item using the Select2 widget
+    lookup_fields = ['product_code__startswith', 'product_name__icontains']
 
-        objects = BaseProductManager()
+    objects = BaseProductManager()
 
-        class Meta:
-            app_label = app_settings.APP_LABEL
-            ordering = ('order',)
+    class Meta:
+        app_label = app_settings.APP_LABEL
+        ordering = ('order',)
 
-        def __str__(self):
-            return self.product_code
+    def __str__(self):
+        return self.product_code

@@ -3,7 +3,8 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django_fsm import transition
-from shop.models.delivery import DeliveryModel, DeliveryItemModel
+# from shop.models.delivery import DeliveryModel, DeliveryItemModel
+from shop.models.delivery import BaseDelivery, BaseDeliveryItem
 
 
 class SimpleShippingWorkflowMixin:
@@ -95,7 +96,8 @@ class CommissionGoodsWorkflowMixin(SimpleShippingWorkflowMixin):
         """
         Update or create a Delivery object for all items of this Order object.
         """
-        delivery, _ = DeliveryModel.objects.get_or_create(
+        # delivery, _ = DeliveryModel.objects.get_or_create(
+        delivery, _ = BaseDelivery.objects.get_or_create(
             order=self,
             shipping_id__isnull=True,
             shipped_at__isnull=True,
@@ -103,7 +105,8 @@ class CommissionGoodsWorkflowMixin(SimpleShippingWorkflowMixin):
             defaults={'fulfilled_at': timezone.now()}
         )
         for item in self.items.all():
-            DeliveryItemModel.objects.create(
+            # DeliveryItemModel.objects.create(
+            BaseDeliveryItem.objects.create(
                 delivery=delivery,
                 item=item,
                 quantity=item.quantity,
@@ -170,7 +173,8 @@ class PartialDeliveryWorkflowMixin(CommissionGoodsWorkflowMixin):
         """
         Update or create a Delivery object and associate with selected ordered items.
         """
-        delivery, _ = DeliveryModel.objects.get_or_create(
+        # delivery, _ = DeliveryModel.objects.get_or_create(
+        delivery, _ = BaseDelivery.objects.get_or_create(
             order=self,
             shipping_id__isnull=True,
             shipped_at__isnull=True,
@@ -181,7 +185,8 @@ class PartialDeliveryWorkflowMixin(CommissionGoodsWorkflowMixin):
         # create a DeliveryItem object for each ordered item to be shipped with this delivery
         for data in orderitem_data:
             if data['deliver_quantity'] > 0 and not data['canceled']:
-                DeliveryItemModel.objects.create(
+                # DeliveryItemModel.objects.create(
+                BaseDeliveryItem.objects.create(
                     delivery=delivery,
                     item=data['id'],
                     quantity=data['deliver_quantity'],

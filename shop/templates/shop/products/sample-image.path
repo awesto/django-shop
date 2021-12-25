@@ -1,3 +1,0 @@
-{% load thumbnail %}
-{% thumbnail product.sample_image 80x80 crop as thumb %}
-{{ thumb.path }}

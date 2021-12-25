@@ -1,40 +1,40 @@
-from cms.utils import get_current_site
-from cms.utils.page import get_page_from_path
+# from cms.utils import get_current_site
+# from cms.utils.page import get_page_from_path
 from django.urls import reverse
 from filer.models.imagemodels import Image
 from rest_framework import serializers
 
 
-class CMSPagesField(serializers.Field):
-    """
-    A serializer field used to create the many-to-many relations for models inheriting from the
-    unmanaged :class:`shop.models.related.BaseProductPage`.
-
-    Usage in serializers to import/export product model data:
-
-    class MyProductSerializer():
-        ...
-        cms_pages = CMSPagesField()
-        ...
-    """
-    def to_representation(self, value):
-        urls = {page.get_absolute_url() for page in value.all()}
-        return list(urls)
-
-    def to_internal_value(self, data):
-        site = get_current_site()
-        pages_root = reverse('pages-root')
-        ret = []
-        for path in data:
-            if path.startswith(pages_root):
-                path = path[len(pages_root):]
-            # strip any final slash
-            if path.endswith('/'):
-                path = path[:-1]
-            page = get_page_from_path(site, path)
-            if page:
-                ret.append(page)
-        return ret
+# class CMSPagesField(serializers.Field):
+#     """
+#     A serializer field used to create the many-to-many relations for models inheriting from the
+#     unmanaged :class:`shop.models.related.BaseProductPage`.
+#
+#     Usage in serializers to import/export product model data:
+#
+#     class MyProductSerializer():
+#         ...
+#         cms_pages = CMSPagesField()
+#         ...
+#     """
+#     def to_representation(self, value):
+#         urls = {page.get_absolute_url() for page in value.all()}
+#         return list(urls)
+#
+#     def to_internal_value(self, data):
+#         site = get_current_site()
+#         pages_root = reverse('pages-root')
+#         ret = []
+#         for path in data:
+#             if path.startswith(pages_root):
+#                 path = path[len(pages_root):]
+#             # strip any final slash
+#             if path.endswith('/'):
+#                 path = path[:-1]
+#             page = get_page_from_path(site, path)
+#             if page:
+#                 ret.append(page)
+#         return ret
 
 
 class ImagesField(serializers.Field):

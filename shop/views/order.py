@@ -1,16 +1,17 @@
 from django.utils import timezone
 from django.views.decorators.cache import never_cache
-from django.utils.translation import gettext_lazy as _
+# from django.utils.translation import gettext_lazy as _
 from rest_framework import generics, mixins
 from rest_framework.exceptions import NotFound, MethodNotAllowed
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.renderers import BrowsableAPIRenderer
+# from rest_framework.renderers import BrowsableAPIRenderer
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import BasePermission
-from shop.rest.money import JSONRenderer
-from shop.rest.renderers import CMSPageRenderer
+# from shop.rest.money import JSONRenderer
+# from shop.rest.renderers import CMSPageRenderer
 from shop.serializers.order import OrderListSerializer, OrderDetailSerializer
-from shop.models.order import OrderModel
+# from shop.models.order import OrderModel
+from shop.models.order import BaseOrder
 
 
 class OrderPagination(LimitOffsetPagination):
@@ -24,7 +25,7 @@ class OrderPermission(BasePermission):
     """
     def has_permission(self, request, view):
         if view.many and request.customer.is_visitor:
-            detail = _("Only signed in customers can view their list of orders.")
+            detail = "Only signed in customers can view their list of orders."
             raise PermissionDenied(detail=detail)
         return True
 
@@ -33,7 +34,7 @@ class OrderPermission(BasePermission):
             return order.customer.pk == request.user.pk
         if order.secret and order.secret == view.kwargs.get('secret'):
             return True
-        detail = _("This order does not belong to you.")
+        detail = "This order does not belong to you."
         raise PermissionDenied(detail=detail)
 
 
@@ -42,7 +43,7 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateM
     """
     Base View class to render the fulfilled orders for the current user.
     """
-    renderer_classes = [CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer]
+    # renderer_classes = [CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer]
     list_serializer_class = OrderListSerializer
     detail_serializer_class = OrderDetailSerializer
     pagination_class = OrderPagination
@@ -52,7 +53,8 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateM
     last_order_lapse = timezone.timedelta(minutes=15)
 
     def get_queryset(self):
-        queryset = OrderModel.objects.all()
+        # queryset = OrderModel.objects.all()
+        queryset = BaseOrder.objects.all()
         if not self.request.customer.is_visitor:
             queryset = queryset.filter(customer=self.request.customer).order_by('-updated_at')
         return queryset
@@ -108,11 +110,13 @@ class OrderView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateM
     def list(self, request, *args, **kwargs):
         try:
             return super().list(request, *args, **kwargs)
-        except OrderModel.DoesNotExist:
+        # except OrderModel.DoesNotExist:
+        except BaseOrder.DoesNotExist:
             raise NotFound("No orders have been found for the current user.")
 
     def retrieve(self, request, *args, **kwargs):
         try:
             return super().retrieve(request, *args, **kwargs)
-        except OrderModel.DoesNotExist:
+        # except OrderModel.DoesNotExist:
+        except BaseOrder.DoesNotExist:
             raise NotFound("No order has been found for the current user.")

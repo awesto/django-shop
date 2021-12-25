@@ -1,7 +1,8 @@
 from rest_framework import renderers
 from rest_framework.exceptions import APIException
 
-from shop.models.cart import CartModel
+# from shop.models.cart import CartModel
+from shop.models.cart import BaseCart
 from shop.serializers.cart import CartSerializer
 
 
@@ -48,11 +49,13 @@ class ShopTemplateHTMLRenderer(TemplateContextMixin, renderers.TemplateHTMLRende
 
     def update_with_cart_context(self, context):
         try:
-            cart = CartModel.objects.get_from_request(context['request'])
+            # cart = CartModel.objects.get_from_request(context['request'])
+            cart = BaseCart.objects.get_from_request(context['request'])
             context['is_cart_filled'] = cart.items.exists()
             cart_serializer = CartSerializer(cart, context=context, label='cart')
             context['cart'] = cart_serializer.data
-        except (KeyError, CartModel.DoesNotExist):
+        # except (KeyError, CartModel.DoesNotExist):
+        except (KeyError, BaseCart.DoesNotExist):
             pass
 
 

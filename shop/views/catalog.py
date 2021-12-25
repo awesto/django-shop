@@ -17,13 +17,14 @@ from rest_framework.renderers import BrowsableAPIRenderer
 from rest_framework.response import Response
 from rest_framework.utils.urls import replace_query_param
 
-from cms.views import details
+# from cms.views import details
 
 from shop.conf import app_settings
-from shop.models.product import ProductModel
-from shop.rest.filters import CMSPagesFilterBackend
+# from shop.models.product import ProductModel
+from shop.models.product import BaseProduct
+# from shop.rest.filters import CMSPagesFilterBackend
 from shop.rest.money import JSONRenderer
-from shop.rest.renderers import ShopTemplateHTMLRenderer, CMSPageRenderer
+# from shop.rest.renderers import ShopTemplateHTMLRenderer, CMSPageRenderer
 from shop.serializers.bases import ProductSerializer
 from shop.serializers.defaults.catalog import AddToCartSerializer
 
@@ -112,8 +113,9 @@ class ProductListView(generics.ListAPIView):
     :param redirect_to_lonely_product: If ``True``, redirect onto a lonely product in the
         catalog. Defaults to ``False``.
     """
-    renderer_classes = (CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer)
-    product_model = ProductModel
+    # renderer_classes = (CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer)
+    # product_model = ProductModel
+    product_model = BaseProduct
     serializer_class = app_settings.PRODUCT_SUMMARY_SERIALIZER
     limit_choices_to = models.Q()
     filter_class = None
@@ -165,7 +167,8 @@ class SyncCatalogView(views.APIView):
     The class ``SyncCatalogSerializer`` must be provided by the merchant implementation.
     """
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
-    product_model = ProductModel
+    # product_model = ProductModel
+    product_model = BaseProduct
     product_field = 'product'
     serializer_class = None  # must be overridden by SyncCatalogView.as_view()
     filter_class = None  # may be overridden by SyncCatalogView.as_view()
@@ -197,7 +200,8 @@ class AddToCartView(views.APIView):
     Handle the "Add to Cart" dialog on the products detail page.
     """
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
-    product_model = ProductModel
+    # product_model = ProductModel
+    product_model = BaseProduct
     serializer_class = AddToCartSerializer
     lookup_field = lookup_url_kwarg = 'slug'
     limit_choices_to = models.Q()
@@ -255,9 +259,10 @@ class ProductRetrieveView(generics.RetrieveAPIView):
         product to the cart.
     """
 
-    renderer_classes = (ShopTemplateHTMLRenderer, JSONRenderer, BrowsableAPIRenderer)
+    # renderer_classes = (ShopTemplateHTMLRenderer, JSONRenderer, BrowsableAPIRenderer)
     lookup_field = lookup_url_kwarg = 'slug'
-    product_model = ProductModel
+    # product_model = ProductModel
+    product_model = BaseProduct
     serializer_class = ProductSerializer
     limit_choices_to = models.Q()
     use_modal_dialog = True
@@ -323,7 +328,8 @@ class ProductRetrieveView(generics.RetrieveAPIView):
 
 class OnePageResultsSetPagination(pagination.PageNumberPagination):
     def __init__(self):
-        self.page_size = ProductModel.objects.count()
+        # self.page_size = ProductModel.objects.count()
+        self.page_size = BaseProduct.objects.count()
 
 
 class ProductSelectView(generics.ListAPIView):
@@ -338,20 +344,22 @@ class ProductSelectView(generics.ListAPIView):
     def get_queryset(self):
         term = self.request.GET.get('term', '')
         if len(term) >= 2:
-            return ProductModel.objects.select_lookup(term)
-        return ProductModel.objects.all()
+            # return ProductModel.objects.select_lookup(term)
+            return BaseProduct.objects.select_lookup(term)
+        # return ProductModel.objects.all()
+        return BaseProduct.objects.all()
 
 
-class AddFilterContextMixin:
-    """
-    A mixin to enrich the render context by ``filter`` containing information
-    on how to render the filter set, supplied by attribute ``filter_class``.
-    """
-    def get_renderer_context(self):
-        renderer_context = super().get_renderer_context()
-        if self.filter_class and renderer_context['request'].accepted_renderer.format == 'html':
-            # restrict filter set to products associated to this CMS page only
-            queryset = self.product_model.objects.filter(self.limit_choices_to)
-            queryset = CMSPagesFilterBackend().filter_queryset(self.request, queryset, self)
-            renderer_context['filter'] = self.filter_class.get_render_context(self.request, queryset)
-        return renderer_context
+# class AddFilterContextMixin:
+#     """
+#     A mixin to enrich the render context by ``filter`` containing information
+#     on how to render the filter set, supplied by attribute ``filter_class``.
+#     """
+#     def get_renderer_context(self):
+#         renderer_context = super().get_renderer_context()
+#         if self.filter_class and renderer_context['request'].accepted_renderer.format == 'html':
+#             restrict filter set to products associated to this CMS page only
+#             queryset = self.product_model.objects.filter(self.limit_choices_to)
+#             queryset = CMSPagesFilterBackend().filter_queryset(self.request, queryset, self)
+#             renderer_context['filter'] = self.filter_class.get_render_context(self.request, queryset)
+#         return renderer_context

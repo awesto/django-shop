@@ -6,8 +6,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.renderers import BrowsableAPIRenderer
 
-from shop.models.address import ShippingAddressModel, BillingAddressModel
-from shop.models.cart import CartModel
+# from shop.models.address import ShippingAddressModel, BillingAddressModel
+from shop.models.address import BaseShippingAddress, BaseBillingAddress
+# from shop.models.cart import CartModel
+from shop.models.cart import BaseCart
 from shop.rest.money import JSONRenderer
 
 
@@ -34,11 +36,14 @@ class AddressEditView(GenericAPIView):
                 elif self.form_class.__name__ == 'ShippingAddressForm':
                     instance = request.customer.shippingaddress_set.get(priority=priority)
                 else:
-                    raise CartModel.DoesNotExist()
-            except (ShippingAddressModel.DoesNotExist, BillingAddressModel.DoesNotExist):
+                    # raise CartModel.DoesNotExist()
+                    raise BaseCart.DoesNotExist()
+            # except (ShippingAddressModel.DoesNotExist, BillingAddressModel.DoesNotExist):
+            except (BaseShippingAddress.DoesNotExist, BaseBillingAddress.DoesNotExist):
                 return Response(status=status.HTTP_410_GONE)
             else:
-                cart = CartModel.objects.get_from_request(request)
+                # cart = CartModel.objects.get_from_request(request)
+                cart = BaseCart.objects.get_from_request(request)
                 form = self.form_class(instance=instance, cart=cart)
         initial_data = dict((k, v) for k, v in form.get_initial_data().items() if k in self.visible_fields)
         initial_data.pop('use_primary_address', None)
@@ -46,7 +51,8 @@ class AddressEditView(GenericAPIView):
 
     def put(self, request, *args, **kwargs):
         data = request.data.get(self.form_class.scope_prefix, {})
-        cart = CartModel.objects.get_from_request(request)
+        # cart = CartModel.objects.get_from_request(request)
+        cart = BaseCart.objects.get_from_request(request)
         form = self.form_class(data=data, cart=cart)
         if form.is_valid():
             return Response()
@@ -54,14 +60,16 @@ class AddressEditView(GenericAPIView):
         return Response(response_data, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
     def delete(self, request, priority=None, *args, **kwargs):
-        cart = CartModel.objects.get_from_request(request)
+        # cart = CartModel.objects.get_from_request(request)
+        cart = BaseCart.objects.get_from_request(request)
         with transaction.atomic():
             try:
                 if self.form_class.__name__ == 'BillingAddressForm':
                     request.customer.billingaddress_set.get(priority=priority).delete()
                 elif self.form_class.__name__ == 'ShippingAddressForm':
                     request.customer.shippingaddress_set.get(priority=priority).delete()
-            except (ValueError, ShippingAddressModel.DoesNotExist, BillingAddressModel.DoesNotExist):
+            # except (ValueError, ShippingAddressModel.DoesNotExist, BillingAddressModel.DoesNotExist):
+            except (ValueError, BaseShippingAddress.DoesNotExist, BaseBillingAddress.DoesNotExist):
                 pass
 
             # take the last of the remaining addresses
