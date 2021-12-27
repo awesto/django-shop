@@ -2,7 +2,7 @@
 # from django.core.exceptions import ImproperlyConfigured
 from django.contrib import admin
 # from django.contrib.sites.models import Site
-# from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 try:
     from django_elasticsearch_dsl.registries import registry as elasticsearch_registry
@@ -141,8 +141,7 @@ class UnitPriceMixin:
 
     def get_unit_price(self, obj):
         return str(obj.unit_price)
-    # get_unit_price.short_description = _("Unit Price")
-    get_unit_price.short_description = "Unit Price"
+    get_unit_price.short_description = _("Unit Price")
 
 
 # class CMSPageFilter(admin.SimpleListFilter):

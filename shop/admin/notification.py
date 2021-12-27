@@ -3,7 +3,7 @@ from collections import OrderedDict
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.forms import fields, models, widgets
-# from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from django_fsm import RETURN_VALUE
 
@@ -85,18 +85,15 @@ class NotificationAdmin(admin.ModelAdmin):
     def transition_name(self, obj):
         # return OrderModel.get_transition_name(obj.transition_target)
         return BaseOrder.get_transition_name(obj.transition_target)
-    # transition_name.short_description = _("Event")
-    transition_name.short_description = "Event"
+    transition_name.short_description = _("Event")
 
     def num_attachments(self, obj):
         return obj.notificationattachment_set.count()
-    # num_attachments.short_description = _("Attachments")
-    num_attachments.short_description = "Attachments"
+    num_attachments.short_description = _("Attachments")
 
     def get_recipient(self, obj):
         if obj.notify is Notify.RECIPIENT:
             return '{0} <{1}>'.format(obj.recipient.get_full_name(), obj.recipient.email)
         else:
             return str(obj.notify)
-    # get_recipient.short_description = _("Mail Recipient")
-    get_recipient.short_description = "Mail Recipient"
+    get_recipient.short_description = _("Mail Recipient")

@@ -84,4 +84,4 @@ class PayInAdvanceModifier(PaymentModifier):
     payment_provider = ForwardFundPayment()
 
     def get_choice(self):
-        return (self.payment_provider.namespace, _("Pay in advance"))
+        return self.payment_provider.namespace, _("Pay in advance")

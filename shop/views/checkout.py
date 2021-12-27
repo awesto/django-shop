@@ -1,7 +1,7 @@
 # from django.core.exceptions import ImproperlyConfigured
 # from django.db import transaction
 # from django.utils.module_loading import import_string
-# from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -123,8 +123,7 @@ class CheckoutViewSet(GenericViewSet):
                         "presumably because someone else has been faster purchasing it.\n Please "\
                         "recheck the cart or add an alternative product and proceed with the checkout.".\
                        format(product_name=exc.product.product_name, product_code=exc.product.product_code)
-            # messages.error(request, message, title=_("Product Disappeared"), delay=10)
-            messages.error(request, message, title="Product Disappeared", delay=10)
+            messages.error(request, message, title=_("Product Disappeared"), delay=10)
             message = "The product '{product_name}' ({product_code}) suddenly became unavailable.".\
                        format(product_name=exc.product.product_name, product_code=exc.product.product_code)
             response_data = {'purchasing_error_message': message}

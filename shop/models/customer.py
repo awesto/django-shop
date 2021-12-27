@@ -11,7 +11,7 @@ from django.db import models, DEFAULT_DB_ALIAS
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.functional import SimpleLazyObject
-# from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 # from shop import deferred
 from shop.models.fields import JSONField
@@ -21,15 +21,10 @@ from shop.models.fields import ChoiceEnum, ChoiceEnumField
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore()
 
 
-# class CustomerState(ChoiceEnum):
-#     UNRECOGNIZED = 0, _("Unrecognized")
-#     GUEST = 1, _("Guest")
-#     REGISTERED = 2, _("Registered")
-
 class CustomerState(ChoiceEnum):
-    UNRECOGNIZED = 0, "Unrecognized"
-    GUEST = 1, "Guest"
-    REGISTERED = 2, "Registered"
+    UNRECOGNIZED = 0, _("Unrecognized")
+    GUEST = 1, _("Guest")
+    REGISTERED = 2, _("Registered")
 
 
 class CustomerQuerySet(models.QuerySet):

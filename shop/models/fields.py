@@ -2,7 +2,7 @@ import enum
 from django.conf import settings
 from django.db import models
 from django.utils.encoding import force_str
-# from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 
 postgresql_engine_names = [
@@ -44,7 +44,7 @@ class ChoiceEnumMeta(enum.EnumMeta):
                 try:
                     val, labels[key] = source_value
                 except ValueError:
-                    raise ValueError("Invalid ChoiceEnum member '{}'".format(key))
+                    raise ValueError(_("Invalid ChoiceEnum member '{}'").format(key))
             else:
                 val = source_value
                 labels[key] = key.replace("_", " ").title()
@@ -96,7 +96,7 @@ class ChoiceEnumField(models.PositiveSmallIntegerField):
     def __init__(self, *args, **kwargs):
         self.enum_type = kwargs.pop('enum_type', ChoiceEnum)  # fallback is required form migrations
         if not issubclass(self.enum_type, ChoiceEnum):
-            raise ValueError("enum_type must be a subclass of `ChoiceEnum`.")
+            raise ValueError(_("enum_type must be a subclass of `ChoiceEnum`."))
         kwargs.update(choices=self.enum_type.choices)
         kwargs.setdefault('default', self.enum_type.default)
         super().__init__(*args, **kwargs)
@@ -128,5 +128,5 @@ class ChoiceEnumField(models.PositiveSmallIntegerField):
     def value_to_string(self, obj):
         value = getattr(obj, self.name, obj)
         if not isinstance(value, self.enum_type):
-            raise ValueError("Value must be of type {}".format(self.enum_type))
+            raise ValueError(_("Value must be of type {}").format(self.enum_type))
         return value.name

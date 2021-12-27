@@ -3,7 +3,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.utils.encoding import force_str
-# from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -43,8 +43,7 @@ class AuthFormsView(GenericAPIView):
         if form.is_valid():
             form.save(request=request)
             response_data = {form.form_name: {
-                # 'success_message': _("Successfully registered yourself."),
-                'success_message': "Successfully registered yourself.",
+                'success_message': _("Successfully registered yourself."),
             }}
             return Response(response_data, status=status.HTTP_200_OK)
         errors = dict(form.errors)
@@ -115,8 +114,7 @@ class LogoutView(APIView):
             pass
         logout(request)
         request.user = AnonymousUser()
-        # response_data = {self.form_name: {'success_message': _("Successfully logged out.")}}
-        response_data = {self.form_name: {'success_message': "Successfully logged out."}}
+        response_data = {self.form_name: {'success_message': _("Successfully logged out.")}}
         return Response(response_data)
 
 
@@ -129,8 +127,7 @@ class PasswordChangeView(OriginalPasswordChangeView):
         if serializer.is_valid():
             serializer.save()
             response_data = {self.form_name: {
-                # 'success_message': _("Password has been changed successfully."),
-                'success_message': "Password has been changed successfully.",
+                'success_message': _("Password has been changed successfully."),
             }}
             return Response(response_data)
         return Response({self.form_name: serializer.errors}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
@@ -197,15 +194,13 @@ class PasswordResetConfirmView(GenericAPIView):
         try:
             data = dict(request.data['form_data'], uid=uidb64, token=token)
         except (KeyError, TypeError, ValueError):
-            # errors = {'non_field_errors': [_("Invalid POST data.")]}
-            errors = {'non_field_errors': ["Invalid POST data."]}
+            errors = {'non_field_errors': [_("Invalid POST data.")]}
         else:
             serializer = self.get_serializer(data=data)
             if serializer.is_valid():
                 serializer.save()
                 response_data = {self.form_name: {
-                    # 'success_message': _("Password has been reset with the new password."),
-                    'success_message': "Password has been reset with the new password.",
+                    'success_message': _("Password has been reset with the new password."),
                 }}
                 return Response(response_data)
             else:

@@ -145,8 +145,9 @@ class CustomerProxy(get_user_model()):
     """
     class Meta:
         proxy = True
-        verbose_name = _("Customer")
-        verbose_name_plural = _("Customers")
+        # verbose_name = _("Customer")
+        # verbose_name_plural = _("Customers")
+
 
 try:
     admin.site.unregister(get_user_model())

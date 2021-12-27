@@ -8,7 +8,7 @@ from django.db import models, transaction
 from django.db.models.aggregates import Sum
 # from django.urls import NoReverseMatch, reverse
 from django.utils.functional import cached_property
-# from django.utils.translation import gettext_lazy as _, pgettext_lazy, get_language_from_request
+from django.utils.translation import gettext_lazy as _, pgettext_lazy, get_language_from_request
 
 from django_fsm import FSMField, transition
 from ipware.ip import get_client_ip
@@ -75,7 +75,7 @@ class OrderManager(models.Manager):
         during offline rendering.
         """
         return {
-            # 'language': get_language_from_request(request),
+            'language': get_language_from_request(request),
             'absolute_base_uri': request.build_absolute_uri('/'),
             'remote_ip': get_client_ip(request)[0],
             'user_agent': request.META.get('HTTP_USER_AGENT'),
@@ -143,12 +143,12 @@ class BaseOrder(models.Model, metaclass=WorkflowMixinMetaclass):
     cart on the moment of purchase. It also holds stuff like the shipping and billing addresses,
     and keeps all the additional entities, as determined by the cart modifiers.
     """
-    # TRANSITION_TARGETS = {
-    #     'new': _("New order without content"),
-    #     'created': _("Order freshly created"),
-    #     'payment_confirmed': _("Payment confirmed"),
-    #     'payment_declined': _("Payment declined"),
-    # }
+    TRANSITION_TARGETS = {
+        'new': _("New order without content"),
+        'created': _("Order freshly created"),
+        'payment_confirmed': _("Payment confirmed"),
+        'payment_declined': _("Payment declined"),
+    }
     decimalfield_kwargs = {
         'max_digits': 30,
         'decimal_places': 2,

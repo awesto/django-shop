@@ -1,8 +1,7 @@
 from django.db import models
 # from django.utils.translation import gettext_lazy as _
 
-# from shop.models.address import BaseShippingAddress, BaseBillingAddress, CountryField
-from shop.models.address import BaseShippingAddress, BaseBillingAddress
+from shop.models.address import BaseShippingAddress, BaseBillingAddress, CountryField
 
 
 class AddressModelMixin(models.Model):
@@ -33,7 +32,7 @@ class AddressModelMixin(models.Model):
     #     max_length=1024,
     # )
     #
-    # country = CountryField(_("Country"))
+    country = CountryField(_("Country"))
 
     name = models.CharField(max_length=1024)
     address1 = models.CharField(max_length=1024)
@@ -44,7 +43,6 @@ class AddressModelMixin(models.Model):
     )
     zip_code = models.CharField(max_length=12)
     city = models.CharField(max_length=1024)
-    # country = CountryField()
 
     class Meta:
         abstract = True

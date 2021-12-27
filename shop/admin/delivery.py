@@ -7,7 +7,7 @@ from django.template.loader import select_template
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import format_html
-# from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from shop.conf import app_settings
 from shop.admin.order import OrderItemInline
 # from shop.models.order import OrderItemModel
@@ -52,11 +52,9 @@ class OrderItemForm(models.ModelForm):
         cleaned_data = super().clean()
         if cleaned_data.get('deliver_quantity') is not None:
             if cleaned_data['deliver_quantity'] < 0:
-                # raise ValidationError(_("Only a positive number of items can be delivered"), code='invalid')
-                raise ValidationError("Only a positive number of items can be delivered", code='invalid')
+                raise ValidationError(_("Only a positive number of items can be delivered"), code='invalid')
             if cleaned_data['deliver_quantity'] > self.instance.quantity - self.get_delivered(self.instance):
-                # raise ValidationError(_("The number of items to deliver exceeds the ordered quantity"), code='invalid')
-                raise ValidationError("The number of items to deliver exceeds the ordered quantity", code='invalid')
+                raise ValidationError(_("The number of items to deliver exceeds the ordered quantity"), code='invalid')
         return cleaned_data
 
     def has_changed(self):
@@ -85,8 +83,7 @@ class OrderItemInlineDelivery(OrderItemInline):
         """
         Add field `quantity` to the form on the fly, using the same numeric type as `OrderItem.quantity`
         """
-        # labels = {'quantity': _("Deliver quantity")}
-        labels = {'quantity': "Deliver quantity"}
+        labels = {'quantity': _("Deliver quantity")}
         attrs = models.fields_for_model(obj.items.model, fields=['quantity'], labels=labels)
         # rename to deliver_quantity, since quantity is already used
         attrs['deliver_quantity'] = attrs.pop('quantity')
@@ -95,22 +92,19 @@ class OrderItemInlineDelivery(OrderItemInline):
         else:
             attrs['deliver_quantity'].required = False
         form = type(str('OrderItemForm'), (OrderItemForm,), attrs)
-        # labels = {'canceled': _("Cancel this item")}
-        labels = {'canceled': "Cancel this item"}
+        labels = {'canceled': _("Cancel this item")}
         kwargs.update(form=form, labels=labels)
         formset = super().get_formset(request, obj, **kwargs)
         return formset
 
     def get_delivered(self, obj=None):
         return OrderItemForm.get_delivered(obj)
-    # get_delivered.short_description = _("Delivered quantity")
-    get_delivered.short_description = "Delivered quantity"
+    get_delivered.short_description = _("Delivered quantity")
 
     def show_ready(self, obj=None):
         return not obj.canceled
     show_ready.boolean = True
-    # show_ready.short_description = _("Ready for delivery")
-    show_ready.short_description = "Ready for delivery"
+    show_ready.short_description = _("Ready for delivery")
 
 
 def get_shipping_choices():
@@ -120,8 +114,7 @@ def get_shipping_choices():
 
 class DeliveryForm(models.ModelForm):
     shipping_method = models.ChoiceField(
-        # label=_("Shipping by"),
-        label="Shipping by",
+        label=_("Shipping by"),
         choices=get_shipping_choices,
     )
 
@@ -179,27 +172,22 @@ class DeliveryInline(admin.TabularInline):
         aggr['quantity'] = aggr['quantity'] or 0
         aggr.update(items=obj.items.count())
         return '{quantity}/{items}'.format(**aggr)
-    # delivered_items.short_description = _("Quantity/Items")
-    delivered_items.short_description = "Quantity/Items"
+    delivered_items.short_description = _("Quantity/Items")
 
     def print_out(self, obj):
         if obj.fulfilled_at is None:
             return ''
-        # link = reverse('admin:print_delivery_note', args=(obj.id,)), _("Delivery Note")
-        link = reverse('admin:print_delivery_note', args=(obj.id,)), "Delivery Note"
+        link = reverse('admin:print_delivery_note', args=(obj.id,)), _("Delivery Note")
         return format_html(
             '<span class="object-tools"><a href="{0}" class="viewsitelink" target="_new">{1}</a></span>',
             *link)
-    # print_out.short_description = _("Print out")
-    print_out.short_description = "Print out"
+    print_out.short_description = _("Print out")
 
     def fulfilled(self, obj):
         if obj.fulfilled_at:
             return timezone.localtime(obj.fulfilled_at).ctime()  # TODO: find the correct time format
-        # return _("Pending")
-        return "Pending"
-    # fulfilled.short_description = _("Fulfilled at")
-    fulfilled.short_description = "Fulfilled at"
+        return _("Pending")
+    fulfilled.short_description = _("Fulfilled at")
 
 
 class DeliveryOrderAdminMixin:

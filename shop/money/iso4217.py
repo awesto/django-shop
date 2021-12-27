@@ -23,6 +23,7 @@ CURRENCIES = {
     'HUF': ('348', 0, 'Ft', _("Hungarian Forint")),
     'ILS': ('376', 2, '₪', _("Israeli Sheqel")),
     'INR': ('356', 2, '₹', _("Indian Rupee")),
+    'IRR': ('364', 0, 'ریال', _("Iranian Rial")),
     'JPY': ('392', 0, '¥', _("Japanese Yen")),
     'KWD': ('414', 3, 'د.ك', _("Kuwaiti Dinar")),
     'OMR': ('512', 3, 'ر.ع.', _('Omani rial')),

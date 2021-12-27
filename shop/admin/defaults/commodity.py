@@ -32,7 +32,7 @@ if settings.USE_I18N:
                 ],
             }),
         ]
-        filter_horizontal = ['cms_pages']
+        # filter_horizontal = ['cms_pages']
         # list_filter = [CMSPageFilter]
         list_display = ['product_name', 'product_code', 'get_unit_price', 'active']
 

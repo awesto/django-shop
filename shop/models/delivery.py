@@ -1,6 +1,6 @@
 from django.core import checks
 from django.db import models
-# from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 # from shop import deferred
 # from shop.models.order import BaseOrder, BaseOrderItem, OrderItemModel
@@ -72,8 +72,7 @@ class BaseDelivery(models.Model):
         get_latest_by = 'shipped_at'
 
     def __str__(self):
-        # return _("Delivery ID: {}").format(self.id)
-        return "Delivery ID: {}".format(self.id)
+        return _("Delivery ID: {}").format(self.id)
 
     @classmethod
     def check(cls, **kwargs):

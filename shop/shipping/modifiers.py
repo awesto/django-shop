@@ -78,7 +78,7 @@ class SelfCollectionModifier(ShippingModifier):
     identifier = 'self-collection'
 
     def get_choice(self):
-        return (self.identifier, _("Self-collection"))
+        return self.identifier, _("Self-collection")
 
     def ship_the_goods(self, delivery):
         if not delivery.shipping_id:

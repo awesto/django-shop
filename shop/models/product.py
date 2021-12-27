@@ -11,7 +11,7 @@ from django.db.models.aggregates import Sum
 from django.db.models.functions import Coalesce
 from django.utils import timezone
 from django.utils.encoding import force_str
-# from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 try:
     from django_elasticsearch_dsl.registries import registry as elasticsearch_registry
@@ -254,7 +254,7 @@ class BaseProduct(PolymorphicModel, metaclass=PolymorphicProductMetaclass):
         """
         return force_str(self.polymorphic_ctype)
 
-    # product_type.short_description = _("Product type")
+    product_type.short_description = _("Product type")
 
     @property
     def product_model(self):
