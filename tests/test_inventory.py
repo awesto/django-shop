@@ -6,7 +6,7 @@ import factory.fuzzy
 import pytest
 from pytest_factoryboy import register
 from conftest import CommodityFactory
-from testshop.models import MyProduct, MyProductInventory
+from shop.models import MyProduct, MyProductInventory
 
 
 class MyProductFactory(CommodityFactory):

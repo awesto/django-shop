@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.backends.cache import SessionStore
 from shop.models.customer import VisitingCustomer
-from testshop.models import Customer
+from shop.models import Customer
 
 
 @pytest.mark.django_db

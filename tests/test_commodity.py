@@ -3,7 +3,7 @@ from decimal import Decimal
 
 from shop.money.money_maker import MoneyMaker
 
-from testshop.models import Commodity
+from shop.models import Commodity
 
 EUR = MoneyMaker('EUR')
 

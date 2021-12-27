@@ -174,7 +174,7 @@ def test_register_user_with_password(api_client):
     """
     Test if a new user can register himself providing his own new password.
     """
-    from testshop.models import Customer
+    from shop.models import Customer
     register_user_url = reverse('shop:register-user')
     data = {
         'form_data': {
@@ -197,7 +197,7 @@ def test_register_user_generate_password(settings, api_client):
     Test if a new user can register himself and django-SHOP send a generated password by email.
     """
     settings.EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
-    from testshop.models import Customer
+    from shop.models import Customer
     register_user_url = reverse('shop:register-user')
     data = {
         'form_data': {

@@ -4,7 +4,7 @@ from shop.payment.modifiers import PayInAdvanceModifier
 
 class ComplexPayInAdvanceModifier(PayInAdvanceModifier):
     identifier = "complex-pay-in-advance-modifier"
-    
+
     def get_choice(self):
         # return (self.identifier, _("Pay in advance with complex payment system X"))
         return self.identifier, "Pay in advance with complex payment system X"
