@@ -1,18 +1,29 @@
-from django.urls import reverse_lazy
-from django.utils.text import format_lazy
+# from django.urls import reverse_lazy
+# from django.utils.text import format_lazy
+from pathlib import Path
 
 DEBUG = True
 
-ROOT_URLCONF = 'testshop.urls'
+ROOT_URLCONF = 'shop.urls'
 
 SECRET_KEY = 'test'
 
 SITE_ID = 1
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': ':memory:',
+#     }
+# }
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': ':memory:',
+        "ENGINE": "django.db.backends.sqlite3",
+        # "NAME": BASE_DIR / "db.sqlite3"
+        'NAME': str(BASE_DIR / "db.sqlite3"),
     }
 }
 
@@ -35,8 +46,8 @@ TEMPLATES = [{
             'django.template.context_processors.csrf',
             'django.template.context_processors.request',
             'django.contrib.messages.context_processors.messages',
-            'sekizai.context_processors.sekizai',
-            'cms.context_processors.cms_settings',
+            # 'sekizai.context_processors.sekizai',
+            # 'cms.context_processors.cms_settings',
         ]
     }
 }, {
@@ -65,47 +76,49 @@ MIDDLEWARE = [
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.gzip.GZipMiddleware',
-    'cms.middleware.language.LanguageCookieMiddleware',
-    'cms.middleware.user.CurrentUserMiddleware',
-    'cms.middleware.page.CurrentPageMiddleware',
-    'cms.middleware.utils.ApphookReloadMiddleware',
-    'cms.middleware.toolbar.ToolbarMiddleware',
+    # 'cms.middleware.language.LanguageCookieMiddleware',
+    # 'cms.middleware.user.CurrentUserMiddleware',
+    # 'cms.middleware.page.CurrentPageMiddleware',
+    # 'cms.middleware.utils.ApphookReloadMiddleware',
+    # 'cms.middleware.toolbar.ToolbarMiddleware',
 ]
 
 
 INSTALLED_APPS = [
     'django.contrib.auth',
-    'email_auth',
+    # 'email_auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.sites',
+    # 'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.admin',
     'django.contrib.staticfiles',
     'jsonfield',
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_framework_swagger',
     'rest_auth',
+    "drf_yasg",
     'django_fsm',
     'fsm_admin',
     'filer',
     'easy_thumbnails',
-    'treebeard',
-    'menus',
-    'sekizai',
-    'cms',
+    # 'treebeard',
+    # 'menus',
+    # 'sekizai',
+    # 'cms',
     'adminsortable2',
-    'djangocms_text_ckeditor',
+    # 'djangocms_text_ckeditor',
     'django_select2',
-    'cmsplugin_cascade',
-    'cmsplugin_cascade.clipboard',
-    'cmsplugin_cascade.extra_fields',
-    'cmsplugin_cascade.icon',
-    'cmsplugin_cascade.sharable',
-    'cmsplugin_cascade.segmentation',
+    # 'cmsplugin_cascade',
+    # 'cmsplugin_cascade.clipboard',
+    # 'cmsplugin_cascade.extra_fields',
+    # 'cmsplugin_cascade.icon',
+    # 'cmsplugin_cascade.sharable',
+    # 'cmsplugin_cascade.segmentation',
     'post_office',
     'shop',
-    'testshop',
+    # 'testshop',
 ]
 
 USE_I18N = False
@@ -128,39 +141,39 @@ LANGUAGE_CODE = 'en'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
-CMS_TEMPLATES = [
-    ('page.html', "Default Page"),
-]
+# CMS_TEMPLATES = [
+#     ('page.html', "Default Page"),
+# ]
 
-CMS_PLACEHOLDER_CONF = {
-    'Main Content': {
-        'plugins': ['BootstrapContainerPlugin'],
-    },
-}
+# CMS_PLACEHOLDER_CONF = {
+#     'Main Content': {
+#         'plugins': ['BootstrapContainerPlugin'],
+#     },
+# }
 
-CMSPLUGIN_CASCADE_PLUGINS = [
-    'cmsplugin_cascade.bootstrap4',
-    'cmsplugin_cascade.segmentation',
-    'cmsplugin_cascade.generic',
-    'cmsplugin_cascade.icon',
-    'cmsplugin_cascade.leaflet',
-    'cmsplugin_cascade.link',
-    'shop.cascade',
-]
-
-CMSPLUGIN_CASCADE = {
-    'link_plugin_classes': [
-        'shop.cascade.plugin_base.CatalogLinkPluginBase',
-        'shop.cascade.plugin_base.CatalogLinkForm',
-    ],
-    'alien_plugins': ['TextPlugin', 'TextLinkPlugin', 'AcceptConditionPlugin'],
-    'bootstrap4': {
-        'template_basedir': 'angular-ui',
-    },
-    'segmentation_mixins': [
-        ('shop.cascade.segmentation.EmulateCustomerModelMixin', 'shop.cascade.segmentation.EmulateCustomerAdminMixin'),
-    ],
-}
+# CMSPLUGIN_CASCADE_PLUGINS = [
+#     'cmsplugin_cascade.bootstrap4',
+#     'cmsplugin_cascade.segmentation',
+#     'cmsplugin_cascade.generic',
+#     'cmsplugin_cascade.icon',
+#     'cmsplugin_cascade.leaflet',
+#     'cmsplugin_cascade.link',
+#     'shop.cascade',
+# ]
+#
+# CMSPLUGIN_CASCADE = {
+#     'link_plugin_classes': [
+#         'shop.cascade.plugin_base.CatalogLinkPluginBase',
+#         'shop.cascade.plugin_base.CatalogLinkForm',
+#     ],
+#     'alien_plugins': ['TextPlugin', 'TextLinkPlugin', 'AcceptConditionPlugin'],
+#     'bootstrap4': {
+#         'template_basedir': 'angular-ui',
+#     },
+#     'segmentation_mixins': [
+#         ('shop.cascade.segmentation.EmulateCustomerModelMixin', 'shop.cascade.segmentation.EmulateCustomerAdminMixin'),
+#     ],
+# }
 
 THUMBNAIL_PROCESSORS = (
     'easy_thumbnails.processors.colorspace',
@@ -171,33 +184,34 @@ THUMBNAIL_PROCESSORS = (
 
 THUMBNAIL_PRESERVE_EXTENSIONS = True,
 
-CKEDITOR_SETTINGS = {
-    'language': '{{ language }}',
-    'skin': 'moono',
-    'toolbar': 'CMS',
-    'toolbar_HTMLField': [
-        ['Undo', 'Redo'],
-        ['cmsplugins', '-', 'ShowBlocks'],
-        ['Format', 'Styles'],
-        ['TextColor', 'BGColor', '-', 'PasteText', 'PasteFromWord'],
-        ['Maximize', ''],
-        '/',
-        ['Bold', 'Italic', 'Underline', '-', 'Subscript', 'Superscript', '-', 'RemoveFormat'],
-        ['JustifyLeft', 'JustifyCenter', 'JustifyRight'],
-        ['HorizontalRule'],
-        ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Table'],
-        ['Source']
-    ],
-    'stylesSet': format_lazy('default:{}', reverse_lazy('admin:cascade_texteditor_config')),
-}
+# CKEDITOR_SETTINGS = {
+#     'language': '{{ language }}',
+#     'skin': 'moono',
+#     'toolbar': 'CMS',
+#     'toolbar_HTMLField': [
+#         ['Undo', 'Redo'],
+#         ['cmsplugins', '-', 'ShowBlocks'],
+#         ['Format', 'Styles'],
+#         ['TextColor', 'BGColor', '-', 'PasteText', 'PasteFromWord'],
+#         ['Maximize', ''],
+#         '/',
+#         ['Bold', 'Italic', 'Underline', '-', 'Subscript', 'Superscript', '-', 'RemoveFormat'],
+#         ['JustifyLeft', 'JustifyCenter', 'JustifyRight'],
+#         ['HorizontalRule'],
+#         ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Table'],
+#         ['Source']
+#     ],
+#     'stylesSet': format_lazy('default:{}', reverse_lazy('admin:cascade_texteditor_config')),
+# }
 
-SHOP_APP_LABEL = 'testshop'
+SHOP_APP_LABEL = 'shop'
 
 SHOP_CART_MODIFIERS = [
     'shop.modifiers.defaults.DefaultCartModifier',
     'shop.modifiers.taxes.CartIncludeTaxModifier',
     'shop.payment.modifiers.PayInAdvanceModifier',
-    'testshop.modifiers.ComplexPayInAdvanceModifier',
+    # 'testshop.modifiers.ComplexPayInAdvanceModifier',
+    'shop.modifiers.ComplexPayInAdvanceModifier',
     'shop.shipping.modifiers.SelfCollectionModifier',
 ]
 
@@ -207,7 +221,7 @@ SHOP_ORDER_WORKFLOWS = [
     'shop.shipping.workflows.PartialDeliveryWorkflowMixin',
 ]
 
-AUTH_USER_MODEL = 'email_auth.User'
+# AUTH_USER_MODEL = 'shop.User'
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
@@ -220,4 +234,16 @@ REST_AUTH_SERIALIZERS = {
 
 POST_OFFICE = {
     'TEMPLATE_ENGINE': 'post_office',
+}
+
+# Swagger settings.
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "Basic": {"type": "basic"},
+        "DRF Token": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+        },
+    }
 }
