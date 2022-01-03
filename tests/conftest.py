@@ -10,14 +10,14 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AnonymousUser
 from post_office.models import EmailTemplate
 from rest_framework.test import APIClient, APIRequestFactory
-from shop.models.cart import CartModel
-from shop.models.address import ISO_3166_CODES
+# from shop.models.cart import CartModel
+# from shop.models.address import ISO_3166_CODES
 from shop.models.defaults.customer import Customer
 from shop.models.defaults.address import ShippingAddress, BillingAddress
 from shop.models.notification import Notification
-from shop.models.related import ProductPageModel
+# from shop.models.related import ProductPageModel
 from shop.money import Money
-from testshop.models import Commodity
+from shop.models import Commodity
 
 
 @pytest.fixture

@@ -1,3 +1,0 @@
-{% extends "shop/checkout/proceed-button.html" %}
-
-{% block ng-click %}do(prepare()).then(update()).then(showOK()).then(delay(1500)).catch(showFail()).then(delay(1500)).finally(restore()){% endblock %}

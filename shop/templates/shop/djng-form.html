@@ -1,7 +1,0 @@
-{% load static sass_tags sekizai_tags %}
-
-{% addtoblock "css" %}<link href="{% sass_src 'shop/css/djng-forms.scss' %}" rel="stylesheet" type="text/css" />{% endaddtoblock %}
-
-{% addtoblock "js" %}<script src="{% static 'djng/js/django-angular.min.js' %}" type="text/javascript"></script>{% endaddtoblock %}
-{% add_data "ng-requires" "djng.forms" %}
-{% addtoblock "ng-config" %}['djangoFormProvider',function(p){p.setButtonClasses({showOK:'fa fa-check',showFail:'fa fa-times',spinner:'fa fa-spinner fa-spin'})}]{% endaddtoblock %}

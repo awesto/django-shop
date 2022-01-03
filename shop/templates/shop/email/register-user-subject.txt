@@ -1,3 +1,0 @@
-{% load i18n %}{% autoescape off %}
-{% blocktrans %}Password set on {{ site_name }}{% endblocktrans %}
-{% endautoescape %}

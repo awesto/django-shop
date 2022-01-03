@@ -1,1 +1,0 @@
-{# default template to render a textual representation of the product's instance to be used by Elasticsearch for creating a full text search index #}
