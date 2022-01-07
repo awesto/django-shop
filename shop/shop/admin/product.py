@@ -14,14 +14,15 @@ except ImportError:
 # from cms.models import Page
 
 # from shop.models.related import ProductPageModel, ProductImageModel
+from shop.shopmodels.related import ProductImageModel
 # from shop.models.related import ProductImageModel
-from shop.shopmodels.related import BaseProductImage
+# from shop.shopmodels.defaults.mapping import ProductImage
 
 
 # class ProductImageInline(SortableInlineAdminMixin, admin.StackedInline):
 class ProductImageInline(admin.StackedInline):
-    # model = ProductImageModel
-    model = BaseProductImage
+    model = ProductImageModel
+    # model = ProductImage
     extra = 1
     ordering = ['order']
 

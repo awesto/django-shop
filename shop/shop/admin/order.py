@@ -12,11 +12,11 @@ from django.utils.translation import pgettext_lazy
 from fsm_admin.mixins import FSMTransitionMixin
 
 from shop.conf import app_settings
-# from shop.models.customer import CustomerModel
-from shop.shopmodels.defaults.customer import Customer
-# from shop.models.order import OrderItemModel, OrderPayment
+from shop.shopmodels.customer import CustomerModel
+# from shop.shopmodels.defaults.customer import Customer
+from shop.shopmodels.order import OrderItemModel, OrderPayment
 # from shop.shopmodels.defaults.order import OrderPayment
-from shop.shopmodels.defaults.order import OrderItem, OrderPayment
+# from shop.shopmodels.defaults.order import OrderItem, OrderPayment
 from shop.shopmodifiers.pool import cart_modifiers_pool
 from shop.serializers.order import OrderDetailSerializer
 from shop.transition import transition_change_notification
@@ -66,8 +66,8 @@ class OrderPaymentInline(admin.TabularInline):
 
 
 class OrderItemInline(admin.StackedInline):
-    # model = OrderItemModel
-    model = OrderItem
+    model = OrderItemModel
+    # model = OrderItem
     extra = 0
     fields = [
         ('product_code', 'unit_price', 'line_total',),
@@ -180,8 +180,8 @@ class BaseOrderAdmin(FSMTransitionMixin, admin.ModelAdmin):
         search_fields.extend(['customer__user__email', 'customer__user__last_name'])
         try:
             # if CustomerModel contains a number field, let search for it
-            # if isinstance(CustomerModel._meta.get_field('number'), Field):
-            if isinstance(Customer._meta.get_field('number'), Field):
+            if isinstance(CustomerModel._meta.get_field('number'), Field):
+            # if isinstance(Customer._meta.get_field('number'), Field):
                 search_fields.append('customer__number')
         except FieldDoesNotExist:
             pass

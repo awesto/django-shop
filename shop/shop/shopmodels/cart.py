@@ -5,9 +5,10 @@ from django.core import checks
 from django.db import models
 # from django.utils.translation import gettext_lazy as _
 #
-# from shop import deferred
+from shop import deferred
 from shop.shopmodels.fields import JSONField
-from shop.shopmodels.customer import BaseCustomer
+# from shop.shopmodels.customer import BaseCustomer
+from shop.shopmodels.customer import CustomerModel
 # from shop.shopmodels.product import BaseProduct
 # from shop.shopmodels.cart import BaseCart
 # from shop.shopmodels.defaults.cart import CartItem
@@ -64,23 +65,23 @@ class CartItemManager(models.Manager):
         return watch_items
 
 
-# class BaseCartItem(models.Model, metaclass=deferred.ForeignKeyBuilder):
-class BaseCartItem(models.Model):
+class BaseCartItem(models.Model, metaclass=deferred.ForeignKeyBuilder):
+# class BaseCartItem(models.Model):
     """
     This is a holder for the quantity of items in the cart and, obviously, a
     pointer to the actual Product being purchased
     """
-    # cart = deferred.ForeignKey(
-    #     'BaseCart',
-    #     on_delete=models.CASCADE,
-    #     related_name='items',
-    # )
-    #
-    # product = deferred.ForeignKey(
-    #     BaseProduct,
-    #     on_delete=models.CASCADE,
-    # )
-    #
+    cart = deferred.ForeignKey(
+        'BaseCart',
+        on_delete=models.CASCADE,
+        related_name='items',
+    )
+
+    product = deferred.ForeignKey(
+        'BaseProduct',
+        on_delete=models.CASCADE,
+    )
+
     # product_code = models.CharField(
     #     _("Product code"),
     #     max_length=255,
@@ -96,15 +97,15 @@ class BaseCartItem(models.Model):
     #
     # extra = JSONField(verbose_name=_("Arbitrary information for this cart item"))
 
-    cart = models.ForeignKey(
-        'Cart',
-        on_delete=models.CASCADE,
-    )
-
-    product = models.ForeignKey(
-        'Product',
-        on_delete=models.CASCADE,
-    )
+    # cart = models.ForeignKey(
+    #     'BaseCart',
+    #     on_delete=models.CASCADE,
+    # )
+    #
+    # product = models.ForeignKey(
+    #     'BaseProduct',
+    #     on_delete=models.CASCADE,
+    # )
 
     product_code = models.CharField(
         max_length=255,
@@ -165,7 +166,8 @@ class BaseCartItem(models.Model):
             modifier.process_cart_item(self, request)
         self._dirty = False
 
-# CartItemModel = deferred.MaterializedModel(BaseCartItem)
+
+CartItemModel = deferred.MaterializedModel(BaseCartItem)
 
 
 class CartManager(models.Manager):
@@ -186,30 +188,30 @@ class CartManager(models.Manager):
     def get_or_create_from_request(self, request):
         has_cached_cart = hasattr(request, '_cached_cart')
         if request.customer.is_visitor:
-            # request.customer = CustomerModel.objects.get_or_create_from_request(request)
-            request.customer = BaseCustomer.objects.get_or_create_from_request(request)
+            request.customer = CustomerModel.objects.get_or_create_from_request(request)
+            # request.customer = Customer.objects.get_or_create_from_request(request)
             has_cached_cart = False
         if not has_cached_cart or request._cached_cart.customer.user_id != request.customer.user_id:
             request._cached_cart, created = self.get_or_create(customer=request.customer)
         return request._cached_cart
 
 
-# class BaseCart(models.Model, metaclass=deferred.ForeignKeyBuilder):
-class BaseCart(models.Model):
+class BaseCart(models.Model, metaclass=deferred.ForeignKeyBuilder):
+# class BaseCart(models.Model):
     """
     The fundamental part of a shopping cart.
     """
-    # customer = deferred.OneToOneField(
+    customer = deferred.OneToOneField(
+        'BaseCustomer',
+        on_delete=models.CASCADE,
+        related_name='cart',
+        # verbose_name=_("Customer"),
+    )
+
+    # customer = models.OneToOneField(
     #     'BaseCustomer',
     #     on_delete=models.CASCADE,
-    #     related_name='cart',
-    #     verbose_name=_("Customer"),
     # )
-
-    customer = models.OneToOneField(
-        'Customer',
-        on_delete=models.CASCADE,
-    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     # quantity = models.PositiveIntegerField()
@@ -266,8 +268,8 @@ class BaseCart(models.Model):
         if self._cached_cart_items:
             items = self._cached_cart_items
         else:
-            # items = CartItemModel.objects.filter_cart_items(self, request)
-            items = BaseCartItem.objects.filter_cart_items(self, request)
+            items = CartItemModel.objects.filter_cart_items(self, request)
+            # items = CartItem.objects.filter_cart_items(self, request)
 
         # This calls all the pre_process_cart methods and the pre_process_cart_item for each item,
         # before processing the cart. This allows to prepare and collect data on the cart.
@@ -360,4 +362,5 @@ class BaseCart(models.Model):
     #     warnings.warn("This method is deprecated")
     #     return {'num_items': 0, 'total_quantity': 0, 'subtotal': Money(), 'total': Money()}
 
-# CartModel = deferred.MaterializedModel(BaseCart)
+
+CartModel = deferred.MaterializedModel(BaseCart)

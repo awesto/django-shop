@@ -105,6 +105,7 @@ class NotificationAttachment(models.Model):
 
     attachment = FilerFileField(
         on_delete=models.SET_NULL,
+        related_name='email_attachment',
         null=True,
         blank=True,
     )

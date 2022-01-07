@@ -1,6 +1,6 @@
 from rest_framework import serializers
-# from shop.models.product import ProductModel
-from shop.shopmodels.defaults.product import Product
+from shop.shopmodels.product import ProductModel
+# from shop.shopmodels.defaults.product import Product
 
 
 class ProductSelectSerializer(serializers.ModelSerializer):
@@ -15,8 +15,8 @@ class ProductSelectSerializer(serializers.ModelSerializer):
     text = serializers.SerializerMethodField()
 
     class Meta:
-        # model = ProductModel
-        model = Product
+        model = ProductModel
+        # model = Product
         fields = ['id', 'text']
 
     def get_text(self, instance):

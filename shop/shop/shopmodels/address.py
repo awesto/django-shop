@@ -5,8 +5,9 @@ from django.db import models
 # from django.template.loader import select_template
 from django.utils.translation import gettext_lazy as _
 
-# from shop import deferred
+from shop import deferred
 # from shop.conf import app_settings
+# from shop.shopmodels.customer import BaseCustomer
 
 
 class AddressManager(models.Manager):
@@ -23,10 +24,10 @@ class AddressManager(models.Manager):
 
 
 class BaseAddress(models.Model):
-    # customer = deferred.ForeignKey(
-    #     'BaseCustomer',
-    #     on_delete=models.CASCADE,
-    # )
+    customer = deferred.ForeignKey(
+        'BaseCustomer',
+        on_delete=models.CASCADE,
+    )
     #
     # priority = models.SmallIntegerField(
     #     default=0,
@@ -34,10 +35,10 @@ class BaseAddress(models.Model):
     #     help_text=_("Priority for using this address"),
     # )
 
-    customer = models.ForeignKey(
-        'Customer',
-        on_delete=models.CASCADE,
-    )
+    # customer = models.ForeignKey(
+    #     'BaseCustomer',
+    #     on_delete=models.CASCADE,
+    # )
 
     priority = models.SmallIntegerField(
         default=0,
@@ -62,26 +63,26 @@ class BaseAddress(models.Model):
     #     return template.render({'address': self})
 
 
-# class BaseShippingAddress(BaseAddress, metaclass=deferred.ForeignKeyBuilder):
-class BaseShippingAddress(BaseAddress):
+class BaseShippingAddress(BaseAddress, metaclass=deferred.ForeignKeyBuilder):
+# class BaseShippingAddress(BaseAddress):
     address_type = 'shipping'
 
     class Meta:
         abstract = True
 
 
-# ShippingAddressModel = deferred.MaterializedModel(BaseShippingAddress)
+ShippingAddressModel = deferred.MaterializedModel(BaseShippingAddress)
 
 
-# class BaseBillingAddress(BaseAddress, metaclass=deferred.ForeignKeyBuilder):
-class BaseBillingAddress(BaseAddress):
+class BaseBillingAddress(BaseAddress, metaclass=deferred.ForeignKeyBuilder):
+# class BaseBillingAddress(BaseAddress):
     address_type = 'billing'
 
     class Meta:
         abstract = True
 
 
-# BillingAddressModel = deferred.MaterializedModel(BaseBillingAddress)
+BillingAddressModel = deferred.MaterializedModel(BaseBillingAddress)
 
 ISO_3166_CODES = [
     ('AF', _("Afghanistan")),
