@@ -73,7 +73,8 @@ class AvailableProductMixin:
         for rel in cls._meta.related_objects:
             if rel.name == 'inventory_set':
                 if rel.get_internal_type() != 'ForeignKey':
-                    msg = "Field `product` in class inheriting from `BaseInventory` is not a valid foreign key pointing onto {}."
+                    msg = "Field `product` in class inheriting from `BaseInventory` is not a valid foreign key" \
+                          " pointing onto {}."
                     errors.append(checks.Error(msg.format(cls.__name__)))
                 break
         else:
@@ -134,24 +135,24 @@ class BaseInventory(models.Model):
 
     @classmethod
     def check(cls, **kwargs):
-        # from shop.shopmodels.cart import CartItemModel
-        from shop.shopmodels.defaults.cart import CartItem
+        from shop.shopmodels.cart import CartItemModel
+        # from shop.shopmodels.defaults.cart import CartItem
 
         errors = super().check(**kwargs)
-        # for cart_field in CartItemModel._meta.fields:
-        for cart_field in CartItem._meta.fields:
+        for cart_field in CartItemModel._meta.fields:
+        # for cart_field in CartItem._meta.fields:
             if cart_field.attname == 'quantity':
                 break
         else:
             msg = "Class `{}` must implement a field named `quantity`."
-            # errors.append(checks.Error(msg.format(CartItemModel.__name__)))
-            errors.append(checks.Error(msg.format(CartItem.__name__)))
+            errors.append(checks.Error(msg.format(CartItemModel.__name__)))
+            # errors.append(checks.Error(msg.format(CartItem.__name__)))
         for field in cls._meta.fields:
             if field.attname == 'quantity':
                 if field.get_internal_type() != cart_field.get_internal_type():
                     msg = "Field `{}.quantity` must be of same type as `{}.quantity`."
-                    # errors.append(checks.Error(msg.format(cls.__name__, CartItemModel.__name__)))
-                    errors.append(checks.Error(msg.format(cls.__name__, CartItem.__name__)))
+                    errors.append(checks.Error(msg.format(cls.__name__, CartItemModel.__name__)))
+                    # errors.append(checks.Error(msg.format(cls.__name__, CartItem.__name__)))
                 break
         else:
             msg = "Class `{}` must implement a field named `quantity`."

@@ -7,14 +7,13 @@ from django.utils.encoding import force_str
 from django.utils.timezone import localtime
 from django.utils.translation import pgettext_lazy, gettext_lazy as _
 
-# from shop.models.customer import CustomerModel, CustomerState
-from shop.shopmodels.customer import CustomerState
-from shop.shopmodels.defaults.customer import Customer
+from shop.shopmodels.customer import CustomerModel, CustomerState
+# from shop.shopmodels.defaults.customer import Customer
 
 
 class CustomerInlineAdminBase(admin.StackedInline):
-    # model = CustomerModel
-    model = Customer
+    model = CustomerModel
+    # model = Customer
     fieldsets = [
         (None, {'fields': ['get_number']}),
     ]

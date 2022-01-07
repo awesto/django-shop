@@ -6,7 +6,8 @@ from filer.fields import image
 # from cms.models.pagemodel import Page
 
 from shop import deferred
-from shop.shopmodels.product import BaseProduct
+# from shop.shopmodels.product import BaseProduct
+# from shop.shopmodels.defaults.product import Product
 
 
 # class BaseProductPage(models.Model, metaclass=deferred.ForeignKeyBuilder):
@@ -33,17 +34,19 @@ from shop.shopmodels.product import BaseProduct
 # ProductPageModel = deferred.MaterializedModel(BaseProductPage)
 
 
-# class BaseProductImage(models.Model, metaclass=deferred.ForeignKeyBuilder):
-class BaseProductImage(models.Model):
+class BaseProductImage(models.Model, metaclass=deferred.ForeignKeyBuilder):
+# class BaseProductImage(models.Model):
     """
     ManyToMany relation from the polymorphic Product to a set of images.
     """
     image = image.FilerImageField(on_delete=models.CASCADE)
 
-    product = deferred.ForeignKey(
-        BaseProduct,
-        on_delete=models.CASCADE,
-    )
+    # product = deferred.ForeignKey(
+    # # product = models.ForeignKey(
+    #     'BaseProduct',
+    #     # Product,
+    #     on_delete=models.CASCADE,
+    # )
 
     order = models.SmallIntegerField(default=0)
 
@@ -53,4 +56,5 @@ class BaseProductImage(models.Model):
         # verbose_name_plural = _("Product Images")
         ordering = ['order']
 
-# ProductImageModel = deferred.MaterializedModel(BaseProductImage)
+
+ProductImageModel = deferred.MaterializedModel(BaseProductImage)

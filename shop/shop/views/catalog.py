@@ -20,7 +20,8 @@ from rest_framework.utils.urls import replace_query_param
 # from cms.views import details
 
 from shop.conf import app_settings
-# from shop.models.product import ProductModel
+from shop.shopmodels.product import ProductModel
+# from shop.shopmodels.defaults.product import Product
 from shop.shopmodels.product import BaseProduct
 # from shop.rest.filters import CMSPagesFilterBackend
 from shop.rest.money import JSONRenderer
@@ -114,8 +115,8 @@ class ProductListView(generics.ListAPIView):
         catalog. Defaults to ``False``.
     """
     # renderer_classes = (CMSPageRenderer, JSONRenderer, BrowsableAPIRenderer)
-    # product_model = ProductModel
-    product_model = BaseProduct
+    product_model = ProductModel
+    # product_model = Product
     serializer_class = app_settings.PRODUCT_SUMMARY_SERIALIZER
     limit_choices_to = models.Q()
     filter_class = None
@@ -167,8 +168,8 @@ class SyncCatalogView(views.APIView):
     The class ``SyncCatalogSerializer`` must be provided by the merchant implementation.
     """
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
-    # product_model = ProductModel
-    product_model = BaseProduct
+    product_model = ProductModel
+    # product_model = Product
     product_field = 'product'
     serializer_class = None  # must be overridden by SyncCatalogView.as_view()
     filter_class = None  # may be overridden by SyncCatalogView.as_view()
@@ -200,8 +201,8 @@ class AddToCartView(views.APIView):
     Handle the "Add to Cart" dialog on the products detail page.
     """
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
-    # product_model = ProductModel
-    product_model = BaseProduct
+    product_model = ProductModel
+    # product_model = Product
     serializer_class = AddToCartSerializer
     lookup_field = lookup_url_kwarg = 'slug'
     limit_choices_to = models.Q()
@@ -261,8 +262,8 @@ class ProductRetrieveView(generics.RetrieveAPIView):
 
     # renderer_classes = (ShopTemplateHTMLRenderer, JSONRenderer, BrowsableAPIRenderer)
     lookup_field = lookup_url_kwarg = 'slug'
-    # product_model = ProductModel
-    product_model = BaseProduct
+    product_model = ProductModel
+    # product_model = Product
     serializer_class = ProductSerializer
     limit_choices_to = models.Q()
     use_modal_dialog = True
@@ -328,8 +329,8 @@ class ProductRetrieveView(generics.RetrieveAPIView):
 
 class OnePageResultsSetPagination(pagination.PageNumberPagination):
     def __init__(self):
-        # self.page_size = ProductModel.objects.count()
-        self.page_size = BaseProduct.objects.count()
+        self.page_size = ProductModel.objects.count()
+        # self.page_size = Product.objects.count()
 
 
 class ProductSelectView(generics.ListAPIView):
@@ -344,10 +345,10 @@ class ProductSelectView(generics.ListAPIView):
     def get_queryset(self):
         term = self.request.GET.get('term', '')
         if len(term) >= 2:
-            # return ProductModel.objects.select_lookup(term)
-            return BaseProduct.objects.select_lookup(term)
-        # return ProductModel.objects.all()
-        return BaseProduct.objects.all()
+            return ProductModel.objects.select_lookup(term)
+            # return BaseProduct.objects.select_lookup(term)
+        return ProductModel.objects.all()
+        # return BaseProduct.objects.all()
 
 
 # class AddFilterContextMixin:

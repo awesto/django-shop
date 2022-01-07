@@ -11,7 +11,7 @@ from django.db.models.aggregates import Sum
 from django.db.models.functions import Coalesce
 from django.utils import timezone
 from django.utils.encoding import force_str
-from django.utils.translation import gettext_lazy as _
+# from django.utils.translation import gettext_lazy as _
 
 try:
     from django_elasticsearch_dsl.registries import registry as elasticsearch_registry
@@ -22,7 +22,7 @@ from polymorphic.managers import PolymorphicManager
 from polymorphic.models import PolymorphicModel
 # PolymorphicModel.po
 
-# from shop import deferred
+from shop import deferred
 from shop.conf import app_settings
 from shop.exceptions import ProductNotAvailable
 
@@ -93,24 +93,24 @@ class AvailableProductMixin:
 
     @classmethod
     def check(cls, **kwargs):
-        # from shop.shopmodels.cart import CartItemModel
-        from shop.shopmodels.defaults.cart import CartItem
+        from shop.shopmodels.cart import CartItemModel
+        # from shop.shopmodels.defaults.cart import CartItem
 
         errors = super().check(**kwargs)
-        # for cart_field in CartItemModel._meta.fields:
-        for cart_field in CartItem._meta.fields:
+        for cart_field in CartItemModel._meta.fields:
+        # for cart_field in CartItem._meta.fields:
             if cart_field.attname == 'quantity':
                 break
         else:
             msg = "Class `{}` must implement a field named `quantity`."
-            # errors.append(checks.Error(msg.format(CartItemModel.__name__)))
-            errors.append(checks.Error(msg.format(CartItem.__name__)))
+            errors.append(checks.Error(msg.format(CartItemModel.__name__)))
+            # errors.append(checks.Error(msg.format(CartItem.__name__)))
         for field in cls._meta.fields:
             if field.attname == 'quantity':
                 if field.get_internal_type() != cart_field.get_internal_type():
                     msg = "Field `{}.quantity` must be of same type as `{}.quantity`."
-                    # errors.append(checks.Error(msg.format(cls.__name__, CartItemModel.__name__)))
-                    errors.append(checks.Error(msg.format(cls.__name__, CartItem.__name__)))
+                    errors.append(checks.Error(msg.format(cls.__name__, CartItemModel.__name__)))
+                    # errors.append(checks.Error(msg.format(cls.__name__, CartItem.__name__)))
                 break
         else:
             msg = "Class `{}` must implement a field named `quantity`."
@@ -128,12 +128,12 @@ class BaseReserveProductMixin:
         converted into an order after a determined period of time. Otherwise the quantity
         returned by this function might be considerably lower, than what it could be.
         """
-        # from shop.shopmodels.cart import CartItemModel
-        from shop.shopmodels.defaults.cart import CartItem
+        from shop.shopmodels.cart import CartItemModel
+        # from shop.shopmodels.defaults.cart import CartItem
 
         availability = super().get_availability(request, **kwargs)
-        # cart_items = CartItemModel.objects.filter(product=self).values('quantity')
-        cart_items = CartItem.objects.filter(product=self).values('quantity')
+        cart_items = CartItemModel.objects.filter(product=self).values('quantity')
+        # cart_items = CartItem.objects.filter(product=self).values('quantity')
         availability.quantity -= cart_items.aggregate(sum=Coalesce(Sum('quantity'), 0))['sum']
         return availability
 
@@ -174,8 +174,8 @@ class BaseProductManager(PolymorphicManager):
         return queryset
 
 
-# class PolymorphicProductMetaclass(deferred.PolymorphicForeignKeyBuilder):
-class PolymorphicProductMetaclass(models.Model):
+class PolymorphicProductMetaclass(deferred.PolymorphicForeignKeyBuilder):
+# class PolymorphicProductMetaclass(models.Model):
 
     @classmethod
     def perform_meta_model_check(cls, Model):
@@ -195,8 +195,8 @@ class PolymorphicProductMetaclass(models.Model):
             raise NotImplementedError(msg.format(cls.__name__))
 
 
-# class BaseProduct(PolymorphicModel, metaclass=PolymorphicProductMetaclass):
-class BaseProduct(PolymorphicModel):
+class BaseProduct(PolymorphicModel, metaclass=PolymorphicProductMetaclass):
+# class BaseProduct(PolymorphicModel):
     """
     An abstract basic product model for the shop. It is intended to be overridden by one or
     more polymorphic models, adding all the fields and relations, required to describe this
@@ -258,7 +258,7 @@ class BaseProduct(PolymorphicModel):
         """
         return force_str(self.polymorphic_ctype)
 
-    product_type.short_description = _("Product type")
+    # product_type.short_description = _("Product type")
 
     @property
     def product_model(self):
@@ -339,10 +339,10 @@ class BaseProduct(PolymorphicModel):
         :returns: The cart item (of type CartItem) containing the product considered as equal to the
             current one, or ``None`` if no product matches in the cart.
         """
-        # from shop.shopmodels.cart import CartItemModel
-        from shop.shopmodels.defaults.cart import CartItem
-        # cart_item_qs = CartItemModel.objects.filter(cart=cart, product=self)
-        cart_item_qs = CartItem.objects.filter(cart=cart, product=self)
+        from shop.shopmodels.cart import CartItemModel
+        # from shop.shopmodels.defaults.cart import CartItem
+        cart_item_qs = CartItemModel.objects.filter(cart=cart, product=self)
+        # cart_item_qs = CartItem.objects.filter(cart=cart, product=self)
         return cart_item_qs.first()
 
     def deduct_from_stock(self, quantity, **kwargs):
@@ -382,8 +382,8 @@ class BaseProduct(PolymorphicModel):
         Update the Document inside the Elasticsearch index after changing relevant parts
         of the product.
         """
-        # documents = elasticsearch_registry.get_documents([ProductModel])
-        documents = elasticsearch_registry.get_documents([BaseProduct])
+        documents = elasticsearch_registry.get_documents([ProductModel])
+        # documents = elasticsearch_registry.get_documents([BaseProduct])
         if settings.USE_I18N:
             for language, _ in settings.LANGUAGES:
                 try:
@@ -404,7 +404,8 @@ class BaseProduct(PolymorphicModel):
         if shop_app.cache_supporting_wildcard:
             cache.delete_pattern('product:{}|*'.format(self.id))
 
-# ProductModel = deferred.MaterializedModel(BaseProduct)
+
+ProductModel = deferred.MaterializedModel(BaseProduct)
 
 
 # class CMSPageReferenceMixin:

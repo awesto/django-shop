@@ -1,7 +1,7 @@
-from django.core.exceptions import ImproperlyConfigured
-from django.utils.module_loading import import_string
-from rest_framework import serializers
-from shop.conf import app_settings
+# from django.core.exceptions import ImproperlyConfigured
+# from django.utils.module_loading import import_string
+# from rest_framework import serializers
+# from shop.conf import app_settings
 
 
 # class SerializeFormAsTextField(serializers.SerializerMethodField):

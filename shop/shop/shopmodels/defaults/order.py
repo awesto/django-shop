@@ -1,18 +1,21 @@
 import binascii
+from decimal import Decimal
 from os import urandom
 from urllib.parse import urljoin
+from django.db import transaction
+from django_fsm import FSMField, transition
 
 from django.db import models
 from django.utils import timezone
-# from django.utils.translation import gettext_lazy as _, pgettext_lazy
-from shop.shopmodels import order
-
-from shop.shopmodels.order import BaseOrderItem
+# from django.utils.translation import gettext_lazy as _   #, pgettext_lazy
+from shop.shopmodels.order import BaseOrder, BaseOrderItem, OrderItemModel
+# from shop.shopmodels.defaults.cart import CartItem
+# from shop.rest.money import MoneyField
 from django.db.models import PositiveIntegerField, BooleanField
 # from django.utils.translation import gettext_lazy as _
 
 
-class Order(order.BaseOrder):
+class Order(BaseOrder):
     """Default materialized model for Order"""
     # number = models.PositiveIntegerField(
     #     _("Order Number"),
@@ -125,57 +128,107 @@ class Order(order.BaseOrder):
             self.billing_address_text = self.shipping_address_text
         super().populate_from_cart(cart, request)
 
+    @transaction.atomic
+    @transition(field=BaseOrder.status, source='new', target='created')
+    def populate_from_cart(self, cart, request):
+        """
+        Populate the order object with the fields from the given cart.
+        For each cart item a corresponding order item is created populating its fields and removing
+        that cart item.
 
-class OrderPayment(models.Model):
-    """
-    A model to hold received payments for a given order.
-    """
-    # order = deferred.ForeignKey(
-    #     BaseOrder,
-    #     on_delete=models.CASCADE,
-    #     verbose_name=_("Order"),
-    # )
-    #
-    # amount = MoneyField(
-    #     _("Amount paid"),
-    #     help_text=_("How much was paid with this particular transfer."),
-    # )
-    #
-    # transaction_id = models.CharField(
-    #     _("Transaction ID"),
-    #     max_length=255,
-    #     help_text=_("The transaction processor's reference"),
-    # )
-    #
-    # created_at = models.DateTimeField(
-    #     _("Received at"),
-    #     auto_now_add=True,
-    # )
-    #
-    # payment_method = models.CharField(
-    #     _("Payment method"),
-    #     max_length=50,
-    #     help_text=_("The payment backend used to process the purchase"),
-    # )
+        Override this method, in case a customized cart has some fields which have to be transferred
+        to the cart.
+        """
+        assert hasattr(cart, 'subtotal') and hasattr(cart, 'total'), \
+            "Did you forget to invoke 'cart.update(request)' before populating from cart?"
+        for cart_item in cart.items.all():
+            cart_item.update(request)
+            order_item = OrderItemModel(order=self)
+            # order_item = OrderItem(order=self)
+            try:
+                order_item.populate_from_cart_item(cart_item, request)
+                order_item.save()
+                cart_item.delete()
+            except CartItemModel.DoesNotExist:
+            # except CartItem.DoesNotExist:
+                pass
+        self._subtotal = Decimal(cart.subtotal)
+        self._total = Decimal(cart.total)
+        self.extra = dict(cart.extra)
+        self.extra.update(rows=[(modifier, extra_row.data) for modifier, extra_row in cart.extra_rows.items()])
+        self.save()
 
-    order = models.ForeignKey(
-        Order,
-        on_delete=models.CASCADE,
-    )
-    transaction_id = models.CharField(max_length=255)
-    created_at = models.DateTimeField(auto_now_add=True)
-    payment_method = models.CharField(max_length=50)
+    def save(self, with_notification=False, **kwargs):
+        """
+        :param with_notification: If ``True``, all notifications for the state of this Order object
+        are executed.
+        """
+        from shop.transition import transition_change_notification
 
-    class Meta:
-        # verbose_name = pgettext_lazy('order_models', "Order payment")
-        # verbose_name_plural = pgettext_lazy('order_models', "Order payments")
-        pass
+        auto_transition = self._auto_transitions.get(self.status)
+        if callable(auto_transition):
+            auto_transition(self)
 
-    def __str__(self):
-        # return _("Payment ID: {}").format(self.id)
-        return "Payment ID: {}".format(self.id)
+        # round the total to the given decimal_places
+        self._subtotal = BaseOrder.round_amount(self._subtotal)
+        self._total = BaseOrder.round_amount(self._total)
+        # self._subtotal = Order.round_amount(self._subtotal)
+        # self._total = Order.round_amount(self._total)
+        super().save(**kwargs)
+        if with_notification:
+            transition_change_notification(self)
 
 
+# class OrderPayment(models.Model):
+#     """
+#     A model to hold received payments for a given order.
+#     """
+#     # order = deferred.ForeignKey(
+#     #     BaseOrder,
+#     #     on_delete=models.CASCADE,
+#     #     verbose_name=_("Order"),
+#     # )
+#     #
+#     amount = MoneyField(
+#         # _("Amount paid"),
+#         # help_text=_("How much was paid with this particular transfer."),
+#     )
+#     #
+#     # transaction_id = models.CharField(
+#     #     _("Transaction ID"),
+#     #     max_length=255,
+#     #     help_text=_("The transaction processor's reference"),
+#     # )
+#     #
+#     # created_at = models.DateTimeField(
+#     #     _("Received at"),
+#     #     auto_now_add=True,
+#     # )
+#     #
+#     # payment_method = models.CharField(
+#     #     _("Payment method"),
+#     #     max_length=50,
+#     #     help_text=_("The payment backend used to process the purchase"),
+#     # )
+#
+#     order = models.ForeignKey(
+#         Order,
+#         on_delete=models.CASCADE,
+#     )
+#     transaction_id = models.CharField(max_length=255)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     payment_method = models.CharField(max_length=50)
+#
+#     class Meta:
+#         # verbose_name = pgettext_lazy('order_models', "Order payment")
+#         # verbose_name_plural = pgettext_lazy('order_models', "Order payments")
+#         pass
+#
+#     def __str__(self):
+#         # return _("Payment ID: {}").format(self.id)
+#         return "Payment ID: {}".format(self.id)
+#
+#
 class OrderItem(BaseOrderItem):
     """Default materialized model for OrderItem"""
     # quantity = PositiveIntegerField(_("Ordered quantity"))
@@ -186,3 +239,14 @@ class OrderItem(BaseOrderItem):
         # verbose_name = pgettext_lazy('order_models', "Ordered Item")
         # verbose_name_plural = pgettext_lazy('order_models', "Ordered Items")
         pass
+
+    def save(self, *args, **kwargs):
+        """
+        Before saving the OrderItem object to the database, round the amounts to the given decimal places
+        """
+        self._unit_price = BaseOrder.round_amount(self._unit_price)
+        self._line_total = BaseOrder.round_amount(self._line_total)
+        # self._unit_price = Order.round_amount(self._unit_price)
+        # self._line_total = Order.round_amount(self._line_total)
+        super().save(*args, **kwargs)
+

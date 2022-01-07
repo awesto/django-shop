@@ -10,10 +10,10 @@ from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from shop.conf import app_settings
 from shop.admin.order import OrderItemInline
-# from shop.models.order import OrderItemModel
-from shop.shopmodels.defaults.order import OrderItem
-# from shop.models.delivery import DeliveryModel
-from shop.shopmodels.defaults.delivery import Delivery
+from shop.shopmodels.order import OrderItemModel
+# from shop.shopmodels.defaults.order import OrderItem
+from shop.shopmodels.delivery import DeliveryModel
+# from shop.shopmodels.defaults.delivery import Delivery
 from shop.shopmodifiers.pool import cart_modifiers_pool
 from shop.serializers.delivery import DeliverySerializer
 from shop.serializers.order import OrderDetailSerializer
@@ -119,8 +119,8 @@ class DeliveryForm(models.ModelForm):
     )
 
     class Meta:
-        # model = DeliveryModel
-        model = Delivery
+        model = DeliveryModel
+        # model = Delivery
         exclude = []
 
     def has_changed(self):
@@ -133,9 +133,9 @@ class DeliveryForm(models.ModelForm):
 
 
 class DeliveryInline(admin.TabularInline):
-    # model = DeliveryModel
-    model = Delivery
-    form = DeliveryForm
+    model = DeliveryModel
+    # model = Delivery
+    # form = DeliveryForm
     extra = 0
     fields = ['shipping_id', 'shipping_method', 'delivered_items', 'print_out', 'fulfilled_at', 'shipped_at']
     readonly_fields = ['delivered_items', 'print_out', 'fulfilled_at', 'shipped_at']
@@ -208,8 +208,8 @@ class DeliveryOrderAdminMixin:
             '{}/print/delivery-note.html'.format(app_settings.APP_LABEL.lower()),
             'shop/print/delivery-note.html'
         ])
-        # delivery = DeliveryModel.objects.get(pk=delivery_pk)
-        delivery = Delivery.objects.get(pk=delivery_pk)
+        delivery = DeliveryModel.objects.get(pk=delivery_pk)
+        # delivery = Delivery.objects.get(pk=delivery_pk)
         context = {'request': request, 'render_label': 'print'}
         customer_serializer = app_settings.CUSTOMER_SERIALIZER(delivery.order.customer)
         order_serializer = OrderDetailSerializer(delivery.order, context=context)
@@ -240,6 +240,6 @@ class DeliveryOrderAdminMixin:
     def save_related(self, request, form, formsets, change):
         super().save_related(request, form, formsets, change)
         if form.instance.status == 'pack_goods' and 'status' in form.changed_data:
-            # orderitem_formset = [fs for fs in formsets if issubclass(fs.model, OrderItemModel)][0]
-            orderitem_formset = [fs for fs in formsets if issubclass(fs.model, OrderItem)][0]
+            orderitem_formset = [fs for fs in formsets if issubclass(fs.model, OrderItemModel)][0]
+            # orderitem_formset = [fs for fs in formsets if issubclass(fs.model, OrderItem)][0]
             form.instance.update_or_create_delivery(orderitem_formset.cleaned_data)

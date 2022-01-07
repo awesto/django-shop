@@ -2,7 +2,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 from django_fsm import transition, RETURN_VALUE
 
-from shop.shopmodels.defaults.order import Order
+# from shop.shopmodels.defaults.order import Order
 
 
 class ManualPaymentWorkflowMixin:
@@ -19,7 +19,7 @@ class ManualPaymentWorkflowMixin:
     _manual_payment_transitions = TRANSITION_TARGETS.keys()
 
     def __init__(self, *args, **kwargs):
-        if not isinstance(self, Order):
+        if not isinstance(self, 'Order'):
             raise ImproperlyConfigured("class 'ManualPaymentWorkflowMixin' is not of type 'Order'")
         CancelOrderWorkflowMixin.CANCELABLE_SOURCES.update(self._manual_payment_transitions)
         super().__init__(*args, **kwargs)

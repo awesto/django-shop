@@ -15,10 +15,10 @@ from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_auth.views import LoginView as OriginalLoginView, PasswordChangeView as OriginalPasswordChangeView
 
-# from shop.models.cart import CartModel
-from shop.shopmodels.defaults.cart import Cart
-# from shop.models.customer import CustomerModel
-from shop.shopmodels.defaults.customer import Customer
+from shop.shopmodels.cart import CartModel
+# from shop.shopmodels.defaults.cart import Cart
+from shop.shopmodels.customer import CustomerModel
+# from shop.shopmodels.defaults.customer import Customer
 # from shop.rest.renderers import CMSPageRenderer
 # from shop.serializers.auth import PasswordResetRequestSerializer, PasswordResetConfirmSerializer
 from shop.serializers.auth import PasswordResetConfirmSerializer
@@ -34,8 +34,8 @@ class AuthFormsView(GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         if request.customer.is_visitor:
-            # customer = CustomerModel.objects.get_or_create_from_request(request)
-            customer = Customer.objects.get_or_create_from_request(request)
+            customer = CustomerModel.objects.get_or_create_from_request(request)
+            # customer = Customer.objects.get_or_create_from_request(request)
         else:
             customer = request.customer
         form_data = request.data.get(self.form_class.scope_prefix, {})
@@ -60,10 +60,10 @@ class LoginView(OriginalLoginView):
         Logs in as the given user, and moves the items from the current to the new cart.
         """
         try:
-            # anonymous_cart = CartModel.objects.get_from_request(self.request)
-            anonymous_cart = Cart.objects.get_from_request(self.request)
-        # except CartModel.DoesNotExist:
-        except Cart.DoesNotExist:
+            anonymous_cart = CartModel.objects.get_from_request(self.request)
+            # anonymous_cart = Cart.objects.get_from_request(self.request)
+        except CartModel.DoesNotExist:
+        # except Cart.DoesNotExist:
             anonymous_cart = None
         if self.request.customer.user.is_anonymous or self.request.customer.is_registered:
             previous_user = None
@@ -72,8 +72,8 @@ class LoginView(OriginalLoginView):
         super().login()  # this rotates the session_key
         if not self.serializer.data.get('stay_logged_in'):
             self.request.session.set_expiry(0)  # log out when the browser is closed
-        # authenticated_cart = CartModel.objects.get_from_request(self.request)
-        authenticated_cart = Cart.objects.get_from_request(self.request)
+        authenticated_cart = CartModel.objects.get_from_request(self.request)
+        # authenticated_cart = Cart.objects.get_from_request(self.request)
         if anonymous_cart:
             # an anonymous customer logged in, now merge his current cart with a cart,
             # which previously might have been created under his account.

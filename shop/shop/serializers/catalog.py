@@ -1,6 +1,6 @@
 # from cms.utils import get_current_site
 # from cms.utils.page import get_page_from_path
-from django.urls import reverse
+# from django.urls import reverse
 from filer.models.imagemodels import Image
 from rest_framework import serializers
 

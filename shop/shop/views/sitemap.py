@@ -1,6 +1,6 @@
 from django.contrib.sitemaps import Sitemap
-# from shop.models.product import ProductModel
-from shop.shopmodels.product import BaseProduct
+from shop.shopmodels.product import ProductModel
+# from shop.shopmodels.product import BaseProduct
 
 
 class ProductsSitemap(Sitemap):
@@ -9,5 +9,5 @@ class ProductsSitemap(Sitemap):
     i18n = True
 
     def items(self):
-        # return ProductModel.objects.all()
-        return BaseProduct.objects.all()
+        return ProductModel.objects.all()
+        # return BaseProduct.objects.all()

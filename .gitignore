@@ -31,3 +31,9 @@ OLD-out-of-date
 node_modules/
 workdir/
 django-shop-workdir_*
+
+venv/
+.venv
+db.sqlite3
+backup-files/
+tests/

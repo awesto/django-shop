@@ -5,6 +5,8 @@ implementation.
 """
 # from shop.shopmodels.related import BaseProductPage, BaseProductImage
 from shop.shopmodels.related import BaseProductImage
+# from shop.shopmodels.defaults.smartcard import SmartCard
+from django.db import models
 
 
 # class ProductPage(BaseProductPage):
@@ -15,5 +17,14 @@ from shop.shopmodels.related import BaseProductImage
 
 class ProductImage(BaseProductImage):
     """Materialize many-to-many relation with images"""
+    smart_card = models.ForeignKey(
+        'SmartCard',
+        on_delete=models.CASCADE,
+    )
+    image = models.ForeignKey(
+        'filer.Image',
+        on_delete=models.CASCADE,
+    )
+
     class Meta(BaseProductImage.Meta):
         abstract = False
