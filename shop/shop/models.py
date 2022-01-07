@@ -10,15 +10,12 @@ from shop.shopmodels.defaults.delivery import Delivery, DeliveryItem
 from shop.shopmodels.defaults.product import Product
 from shop.shopmodels.defaults.address import BillingAddress, ShippingAddress
 from shop.shopmodels.defaults.customer import Customer
+# from shop.shopmodels.defaults.mapping import ProductImage
+from shop.shopmodels.defaults.smartcard import SmartCard
 from shop.shopmodels.inventory import BaseInventory, AvailableProductMixin
 
 __all__ = ['Commodity', 'Cart', 'CartItem', 'Order', 'OrderItem', 'Delivery', 'DeliveryItem',
-           'BillingAddress', 'ShippingAddress', 'Customer', 'Product']
-
-
-# class OrderItem(BaseOrderItem):
-#     quantity = models.PositiveIntegerField()
-#     canceled = models.BooleanField(default=False)
+           'BillingAddress', 'ShippingAddress', 'Customer', 'Product', 'SmartCard']
 
 
 class MyProduct(AvailableProductMixin, Commodity):
