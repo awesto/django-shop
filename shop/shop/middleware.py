@@ -2,14 +2,14 @@ from django.utils.deprecation import MiddlewareMixin
 from django.utils.functional import SimpleLazyObject
 from django.utils import timezone
 
-# from shop.models.customer import CustomerModel
-from shop.shopmodels.defaults.customer import Customer
+from shop.shopmodels.customer import CustomerModel
+# from shop.shopmodels.defaults.customer import Customer
 
 
 def get_customer(request, force=False):
     if force or not hasattr(request, '_cached_customer'):
-        # request._cached_customer = CustomerModel.objects.get_from_request(request)
-        request._cached_customer = Customer.objects.get_from_request(request)
+        request._cached_customer = CustomerModel.objects.get_from_request(request)
+        # request._cached_customer = Customer.objects.get_from_request(request)
     return request._cached_customer
 
 

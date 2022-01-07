@@ -14,6 +14,6 @@ Release logic:
 10. python setup.py sdist
 11. twine upload dist/django-shop-{new version}.tar.gz
 """
-__version__ = '1.2.4'
+__version__ = 'v0.1.0'
 
 default_app_config = 'shop.apps.ShopConfig'

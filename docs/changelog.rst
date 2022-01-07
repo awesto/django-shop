@@ -4,6 +4,13 @@
 Changelog for django-SHOP
 =========================
 
+v0.1.0
+=====
+* Refactor Django-shop to Restful API.
+* Remove cms, treebeard, sekizai, menus, adminsortable2, django_select2.
+* Remove all cms dependencies.
+
+
 1.2.4
 =====
 * Fix setup.py to proper versionsioning.

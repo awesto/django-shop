@@ -1,23 +1,24 @@
 from shop.conf import app_settings
-# from shop.models.customer import CustomerModel, VisitingCustomer
+from shop.shopmodels.customer import CustomerModel, VisitingCustomer
 from shop.shopmodels.customer import VisitingCustomer
-from shop.shopmodels.defaults.customer import Customer
+# from shop.shopmodels.defaults.customer import Customer
 
 
 def customer(request):
     """
     Add the customer to the RequestContext
     """
-    msg = "The request object does not contain a customer. Edit your MIDDLEWARE_CLASSES setting to insert 'shop.middlerware.CustomerMiddleware'."
+    msg = "The request object does not contain a customer. Edit your MIDDLEWARE_CLASSES setting " \
+          "to insert 'shop.middlerware.CustomerMiddleware'."
     assert hasattr(request, 'customer'), msg
 
     customer = request.customer
     if request.user.is_staff:
         try:
-            # customer = CustomerModel.objects.get(pk=request.session['emulate_user_id'])
-            customer = Customer.objects.get(pk=request.session['emulate_user_id'])
-        # except CustomerModel.DoesNotExist:
-        except Customer.DoesNotExist:
+            customer = CustomerModel.objects.get(pk=request.session['emulate_user_id'])
+            # customer = Customer.objects.get(pk=request.session['emulate_user_id'])
+        except CustomerModel.DoesNotExist:
+        # except Customer.DoesNotExist:
             customer = VisitingCustomer()
         except (AttributeError, KeyError):
             pass

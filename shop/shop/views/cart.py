@@ -2,9 +2,9 @@ from django.utils.cache import add_never_cache_headers
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-# from shop.shopmodels.cart import CartModel, CartItemModel
-from shop.shopmodels.cart import CartModel
-from shop.shopmodels.defaults.cart import Cart, CartItem
+from shop.shopmodels.cart import CartModel, CartItemModel
+# from shop.shopmodels.cart import CartModel
+# from shop.shopmodels.defaults.cart import Cart, CartItem
 # from shop.shopmodels.defaults.cart import CartItem
 from shop.serializers.cart import CartSerializer, CartItemSerializer, WatchSerializer, WatchItemSerializer, CartItems
 
@@ -19,8 +19,8 @@ class BaseViewSet(viewsets.ModelViewSet):
             # cart = Cart.objects.get_from_request(self.request)
             if self.kwargs.get(self.lookup_field):
                 # we're interest only into a certain cart item
-                # return CartItemModel.objects.filter(cart=cart)
-                return CartItem.objects.filter(cart=cart)
+                return CartItemModel.objects.filter(cart=cart)
+                # return CartItem.objects.filter(cart=cart)
             return cart
         except CartModel.DoesNotExist:
         # except Cart.DoesNotExist:

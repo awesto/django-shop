@@ -45,21 +45,21 @@ class ShippingModifier(BaseCartModifier):
         """
         Hook to update the rendering context with shipping specific data.
         """
-        # from shop.models.cart import CartModel
-        from shop.shopmodels.defaults.cart import Cart
+        from shop.shopmodels.cart import CartModel
+        # from shop.shopmodels.defaults.cart import Cart
 
         if 'shipping_modifiers' not in context:
             context['shipping_modifiers'] = {}
         try:
-            # cart = CartModel.objects.get_from_request(context['request'])
-            cart = Cart.objects.get_from_request(context['request'])
+            cart = CartModel.objects.get_from_request(context['request'])
+            # cart = Cart.objects.get_from_request(context['request'])
             if self.is_active(cart.extra.get('shipping_modifier')):
                 cart.update(context['request'])
                 data = cart.extra_rows[self.identifier].data
                 data.update(modifier=self.identifier)
                 context['shipping_modifiers']['initial_row'] = data
-        # except (KeyError, CartModel.DoesNotExist):
-        except (KeyError, Cart.DoesNotExist):
+        except (KeyError, CartModel.DoesNotExist):
+        # except (KeyError, Cart.DoesNotExist):
             pass
 
     def ship_the_goods(self, delivery):

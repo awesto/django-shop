@@ -8,8 +8,8 @@ from django.utils.translation import gettext_lazy as _
 from django_fsm import RETURN_VALUE
 
 from shop.shopmodels.notification import Notify, Notification, NotificationAttachment
-# from shop.models.order import OrderModel
-from shop.shopmodels.defaults.order import Order
+from shop.shopmodels.order import OrderModel
+# from shop.shopmodels.defaults.order import Order
 
 
 class NotificationAttachmentAdmin(admin.TabularInline):
@@ -42,15 +42,15 @@ class NotificationForm(models.ModelForm):
 
     def get_transition_choices(self):
         choices = OrderedDict()
-        # for transition in OrderModel.get_all_transitions():
-        for transition in Order.get_all_transitions():
+        for transition in OrderModel.get_all_transitions():
+        # for transition in Order.get_all_transitions():
             if isinstance(transition.target, str):
-                # choices[transition.target] = OrderModel.get_transition_name(transition.target)
-                choices[transition.target] = Order.get_transition_name(transition.target)
+                choices[transition.target] = OrderModel.get_transition_name(transition.target)
+                # choices[transition.target] = Order.get_transition_name(transition.target)
             elif isinstance(transition.target, RETURN_VALUE):
                 for target in transition.target.allowed_states:
-                    # choices[target] = OrderModel.get_transition_name(target)
-                    choices[target] = Order.get_transition_name(target)
+                    choices[target] = OrderModel.get_transition_name(target)
+                    # choices[target] = Order.get_transition_name(target)
         return choices.items()
 
     def get_recipient_choices(self):
@@ -83,8 +83,8 @@ class NotificationAdmin(admin.ModelAdmin):
     save_as = True
 
     def transition_name(self, obj):
-        # return OrderModel.get_transition_name(obj.transition_target)
-        return Order.get_transition_name(obj.transition_target)
+        return OrderModel.get_transition_name(obj.transition_target)
+        # return Order.get_transition_name(obj.transition_target)
     transition_name.short_description = _("Event")
 
     def num_attachments(self, obj):

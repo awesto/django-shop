@@ -6,22 +6,25 @@ with open('README.md', 'r') as fh:
     long_description = fh.read()
 
 REQUIREMENTS = [
-    'Django>=2.1,<3.1',
-    'django-filer>=1.7',
+    # 'Django>=2.1,<3.1',
+    'Django==3.2.10',
+    # 'django-filer>=1.7',
+    'django-filer==2.1.2',
     'django-ipware',
-    'django-fsm>=2.7',
+    # 'django-fsm>=2.7',
+    'django-fsm==2.8.0',
     'django-fsm-admin',
     'djangorestframework>=3.9,<4',
     'django-rest-auth',
-    'django-angular',
-    'Django-Select2',
+    # 'django-angular',
+    # 'Django-Select2',
     'django-rest-auth',
-    'django-admin-sortable2',
-    'django-formtools',
+    # 'django-admin-sortable2',
+    # 'django-formtools',
     'django_polymorphic',
     'django-post_office',
-    'django-cms>=3.7',
-    'djangocms-cascade>=1.3,<2',
+    # 'django-cms>=3.7',
+    # 'djangocms-cascade>=1.3,<2',
 ]
 
 CLASSIFIERS = [
