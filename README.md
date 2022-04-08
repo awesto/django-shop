@@ -20,7 +20,7 @@ esspecially true for products with a hierarchy of variants. In many popular e-co
 you either have far too many attributes per product, and/or the really required attributes are
 missing.
 
-In **django-SHOP** implementations, the product models reflect their pysical properties making it
+In **django-SHOP** implementations, the product models reflect their physical properties making it
 possible to create complete and deep hierarchies of variations, but without having to fiddle with
 unneeded properties. It furthermore avoids the need for an
 [Entity Attribute Value Model](https://en.wikipedia.org/wiki/Entity–attribute–value_model), which
