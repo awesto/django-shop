@@ -7,6 +7,7 @@ import pytest
 from pytest_factoryboy import register
 from conftest import CommodityFactory
 from testshop.models import MyProduct, MyProductInventory
+import datetime
 
 
 class MyProductFactory(CommodityFactory):
@@ -21,8 +22,11 @@ class InventoryFactory(factory.django.DjangoModelFactory):
 
     product = factory.SubFactory(MyProductFactory)
 
-datetime_min = timezone.datetime.min.replace(tzinfo=timezone.get_current_timezone())
-datetime_max = timezone.datetime.max.replace(tzinfo=timezone.get_current_timezone())
+
+datetime_min = timezone.datetime.min.replace(
+    tzinfo=timezone.get_current_timezone()) + datetime.timedelta(weeks=1)
+datetime_max = timezone.datetime.max.replace(
+    tzinfo=timezone.get_current_timezone()) - datetime.timedelta(weeks=1)
 
 
 @pytest.mark.django_db
@@ -59,7 +63,8 @@ def test_limited_offer(api_rf, inventory_factory):
     now = timezone.now()
     earliest = now
     latest = now + app_settings.SHOP_LIMITED_OFFER_PERIOD / 2
-    inventory = inventory_factory(earliest=earliest, latest=latest, quantity=10)
+    inventory = inventory_factory(
+        earliest=earliest, latest=latest, quantity=10)
     availability = inventory.product.get_availability(request)
     assert availability.quantity == 10
     assert availability.earliest == earliest

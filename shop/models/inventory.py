@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from shop.conf import app_settings
 from shop.models.product import Availability, BaseReserveProductMixin
 from shop.exceptions import ProductNotAvailable
+import datetime
 
 
 class AvailableProductMixin:
@@ -18,6 +19,7 @@ class AvailableProductMixin:
 
     The product class must implement a field named ``quantity`` accepting numerical values.
     """
+
     def get_availability(self, request, **kwargs):
         """
         Returns the current available quantity for this product.
@@ -39,12 +41,14 @@ class AvailableProductMixin:
             return Availability(quantity=quantity, earliest=earliest, latest=latest, **kwargs)
 
         now = timezone.now()
-        inventory_set = self.inventory_set.filter(earliest__lt=now, latest__gt=now, quantity__gt=0)
+        inventory_set = self.inventory_set.filter(
+            earliest__lt=now, latest__gt=now, quantity__gt=0)
         if inventory_set.exists():
             return create_availability()
         # check, if we can sell short
         later = now + app_settings.SHOP_SELL_SHORT_PERIOD
-        inventory_set = self.inventory_set.filter(earliest__lt=later, latest__gt=now, quantity__gt=0)
+        inventory_set = self.inventory_set.filter(
+            earliest__lt=later, latest__gt=now, quantity__gt=0)
         if inventory_set.exists():
             return create_availability(sell_short=True)
         return Availability(quantity=0)
@@ -104,13 +108,15 @@ class BaseInventory(models.Model):
     """
     earliest = models.DateTimeField(
         _("Available after"),
-        default=timezone.datetime.min.replace(tzinfo=timezone.get_current_timezone()),
+        default=timezone.datetime.min.replace(
+            tzinfo=timezone.get_current_timezone()) + datetime.timedelta(weeks=1),
         db_index=True,
     )
 
     latest = models.DateTimeField(
         _("Available before"),
-        default=timezone.datetime.max.replace(tzinfo=timezone.get_current_timezone()),
+        default=timezone.datetime.max.replace(
+            tzinfo=timezone.get_current_timezone()) - datetime.timedelta(weeks=1),
         db_index=True,
     )
 
@@ -134,7 +140,8 @@ class BaseInventory(models.Model):
             if field.attname == 'quantity':
                 if field.get_internal_type() != cart_field.get_internal_type():
                     msg = "Field `{}.quantity` must be of same type as `{}.quantity`."
-                    errors.append(checks.Error(msg.format(cls.__name__, CartItemModel.__name__)))
+                    errors.append(checks.Error(msg.format(
+                        cls.__name__, CartItemModel.__name__)))
                 break
         else:
             msg = "Class `{}` must implement a field named `quantity`."
