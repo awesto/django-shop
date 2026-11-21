@@ -130,8 +130,8 @@ risk of overselling. Imagine a customer putting items into the cart and proceedi
 only to discover that these items are not available in the moment he wants to purchase his items.
 
 Instead we want to reserve items, whenever a customer puts them into his cart. Then these items
-are blocked for a certain period, normally only a few minutes, until they either have been puchased,
-or a timeout occured, making them available for other customers again.
+are blocked for a certain period, normally only a few minutes, until they either have been purchased,
+or a timeout occurred, making them available for other customers again.
 
 Independently of the chosen approach, replace ``AvailableProductMixin`` with ``ReserveProductMixin``
 in the product's model declaration. Example for the simple approach:
